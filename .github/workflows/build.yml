@@ -19,6 +19,7 @@ jobs:
         run: msbuild
       - shell: pwsh
         run: |
+          Install-Module -Name PSScriptAnalyzer -Force
           invoke-scriptanalyzer . | Where-Object -Property 'RuleName' -NE 'TypeNotFound'
       - name: PowerShell Tests
         id: powershell_tests
