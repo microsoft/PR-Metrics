@@ -1264,7 +1264,7 @@ Describe -Name 'CodeMetricsCalculator' {
                 $Message -like '*"filePath": "/Ignored1.cs"*' -and
                 $Message -like '*"id": 4*' -and
                 $Message -like "*`"content`": `"$([char]0x2757) **This file may not need to be reviewed.**`"*" -and
-                $Message -like '*"id": 2*'
+                $Message -like '*"id": 2y*'
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq ''
