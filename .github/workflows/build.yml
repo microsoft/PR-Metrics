@@ -12,9 +12,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
-      - name: PowerShell Analyzer-
-        uses: SleepySysadmin/github-action-pscheck@v0.4.2
+        uses: actions/checkout@v2}
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v1.0.2
       #- name: Setup NuGet
@@ -32,3 +30,14 @@ jobs:
           Write-Information -MessageData 'Test:   ${{ steps.powershell_tests.outputs.total_count }}' -InformationAction Continue
           Write-Information -MessageData 'Passed: ${{ steps.powershell_tests.outputs.passed_count }}' -InformationAction Continue
           Write-Information -MessageData 'Failed: ${{ steps.powershell_tests.outputs.failed_count }}' -InformationAction Continue
+
+  analyze:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: PowerShell Analyzer
+        uses: devblackops/github-action-psscriptanalyzer@v2.3.0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
