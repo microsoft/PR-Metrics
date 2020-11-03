@@ -20,7 +20,9 @@ jobs:
       - shell: pwsh
         run: |
           Install-Module -Name PSScriptAnalyzer -Force
-          invoke-scriptanalyzer . | Where-Object -Property 'RuleName' -NE 'TypeNotFound'
+      - shell: pwsh
+        run: |
+          invoke-scriptanalyzer . | Where-Object -Property 'RuleName' -ne 'TypeNotFound'
       - name: PowerShell Tests
         id: powershell_tests
         uses: zyborg/pester-tests-report@v1
