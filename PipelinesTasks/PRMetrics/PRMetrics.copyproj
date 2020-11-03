@@ -12,7 +12,7 @@
     <RemoveDir Directories="$(OutputPath)" Condition="Exists('$(OutputPath)')" />
     <MakeDir Directories="$(OutputPath)" />
     <Copy SourceFiles="@(CopyFile)" DestinationFolder="$(OutputPath)\%(RecursiveDir)" />
-    <Exec Command="PowerShell.exe -NonInteractive -ExecutionPolicy Bypass Install-Package -Name VstsTaskSdk -RequiredVersion 0.11.0 -Source https://www.powershellgallery.com/api/v2/ -Destination $(OutputPath)\ps_modules -Force" />
+    <Exec Command="nuget install VstsTaskSdk -Version 0.11.0 -Source https://www.powershellgallery.com/api/v2/ -OutputDirectory $(OutputPath)\ps_modules" />
   </Target>
   <Target Name="Post-Build" AfterTargets="Build">
     <ItemGroup>
