@@ -9,6 +9,8 @@
 #Requires -Version 5.0
 
 BeforeAll {
+    Set-StrictMode -Version 'Latest'
+
     $env:SYSTEM_CULTURE = 'en-US'
     . $PSScriptRoot\Utilities\Logger.ps1
     . $PSScriptRoot\Invokers\GitInvoker.ps1
@@ -26,6 +28,67 @@ Describe -Name 'CodeMetricsCalculator' {
 
         Mock -CommandName 'Write-Verbose' -MockWith {
             throw [System.NotImplementedException]"Write-Verbose must not be called but was called with '$Message'."
+        }
+
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq 'Entering Select-Match.'
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq "MatchOptions.Dot: 'True'"
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq 'Entering Select-Match.'
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq "MatchOptions.Dot: 'True'"
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq "MatchOptions.FlipNegate: 'False'"
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq "MatchOptions.MatchBase: 'False'"
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq "MatchOptions.NoBrace: 'True'"
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq "MatchOptions.NoCase: 'True'"
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq "MatchOptions.NoComment: 'False'"
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq "MatchOptions.NoExt: 'False'"
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq "MatchOptions.NoGlobStar: 'False'"
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq "MatchOptions.NoNegate: 'False'"
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq "MatchOptions.NoNull: 'False'"
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -like "Pattern: '*"
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -like "Trimmed leading '!'. Pattern: '*"
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq 'Applying include pattern against original list.'
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq 'Applying exclude pattern against original list'
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -like '* matches'
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -like '* final results'
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq 'Leaving Select-Match.'
         }
     }
 
@@ -231,7 +294,7 @@ Describe -Name 'CodeMetricsCalculator' {
             $codeMetricsCalculator.UpdateDetails()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 29
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 45
             Assert-MockCalled -CommandName 'New-Object' -Exactly 1
             Assert-MockCalled -CommandName 'Invoke-RestMethod' -Exactly 2
         }
@@ -545,7 +608,7 @@ Describe -Name 'CodeMetricsCalculator' {
             $codeMetricsCalculator.UpdateComment()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 64
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 80
             Assert-MockCalled -CommandName 'New-Object' -Exactly 1
             Assert-MockCalled -CommandName 'Invoke-RestMethod' -Exactly 5
         }
@@ -892,7 +955,7 @@ Describe -Name 'CodeMetricsCalculator' {
             $codeMetricsCalculator.UpdateComment()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 65
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 81
             Assert-MockCalled -CommandName 'New-Object' -Exactly 1
             Assert-MockCalled -CommandName 'Invoke-RestMethod' -Exactly 5
         }
@@ -1081,7 +1144,7 @@ Describe -Name 'CodeMetricsCalculator' {
             $codeMetricsCalculator.UpdateComment()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 29
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 45
             Assert-MockCalled -CommandName 'New-Object' -Exactly 1
             Assert-MockCalled -CommandName 'Invoke-RestMethod' -Exactly 2
         }
@@ -1426,7 +1489,7 @@ Describe -Name 'CodeMetricsCalculator' {
             $codeMetricsCalculator.UpdateComment()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 63
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 83
             Assert-MockCalled -CommandName 'New-Object' -Exactly 1
             Assert-MockCalled -CommandName 'Invoke-RestMethod' -Exactly 6
         }

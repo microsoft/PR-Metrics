@@ -9,6 +9,8 @@
 #Requires -Version 5.0
 
 BeforeAll {
+    Set-StrictMode -Version 'Latest'
+
     $env:SYSTEM_CULTURE = 'en-US'
     . $PSScriptRoot\..\Utilities\Logger.ps1
     . $PSScriptRoot\..\Invokers\AzureReposCommentThreadStatus.ps1
@@ -23,6 +25,67 @@ Describe -Name 'PullRequest' {
 
         Mock -CommandName 'Write-Verbose' -MockWith {
             throw [System.NotImplementedException]"Write-Verbose must not be called but was called with '$Message'."
+        }
+
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq 'Entering Select-Match.'
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq "MatchOptions.Dot: 'True'"
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq 'Entering Select-Match.'
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq "MatchOptions.Dot: 'True'"
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq "MatchOptions.FlipNegate: 'False'"
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq "MatchOptions.MatchBase: 'False'"
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq "MatchOptions.NoBrace: 'True'"
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq "MatchOptions.NoCase: 'True'"
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq "MatchOptions.NoComment: 'False'"
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq "MatchOptions.NoExt: 'False'"
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq "MatchOptions.NoGlobStar: 'False'"
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq "MatchOptions.NoNegate: 'False'"
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq "MatchOptions.NoNull: 'False'"
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -like "Pattern: '*"
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -like "Trimmed leading '!'. Pattern: '*"
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq 'Applying include pattern against original list.'
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq 'Applying exclude pattern against original list'
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -like '* matches'
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -like '* final results'
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq 'Leaving Select-Match.'
         }
     }
 
@@ -1071,7 +1134,7 @@ Describe -Name 'PullRequest' {
             $response = [PullRequest]::GetMetricsComment($codeMetrics, 1)
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 15
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 31
             $response | Should -Be ("# Metrics for iteration 1$([Environment]::NewLine)" +
                                    $([char]0x274C) +
                                    ' **Try to keep pull requests smaller than 50 lines of new product code by ' +
@@ -1133,7 +1196,7 @@ Describe -Name 'PullRequest' {
             $response = [PullRequest]::GetMetricsComment($codeMetrics, 1)
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 15
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 31
             $response | Should -Be ("# Metrics for iteration 1$([Environment]::NewLine)" +
                                    $([char]0x274C) +
                                    ' **Try to keep pull requests smaller than 50 lines of new product code by ' +
@@ -1196,7 +1259,7 @@ Describe -Name 'PullRequest' {
             $response = [PullRequest]::GetMetricsComment($codeMetrics, 2)
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 15
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 31
             $response | Should -Be ("# Metrics for iteration 2$([Environment]::NewLine)" +
                                    $([char]0x274C) +
                                    ' **Try to keep pull requests smaller than 50 lines of new product code by ' +
@@ -1260,7 +1323,7 @@ Describe -Name 'PullRequest' {
             $response = [PullRequest]::GetMetricsComment($codeMetrics, 3)
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 15
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 31
             $response | Should -Be ("# Metrics for iteration 3$([Environment]::NewLine)" +
                                    $([char]0x274C) +
                                    ' **Try to keep pull requests smaller than 50 lines of new product code by ' +
@@ -1329,7 +1392,7 @@ Describe -Name 'PullRequest' {
             $response = [PullRequest]::GetMetricsComment($codeMetrics, 3)
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 15
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 35
             $response | Should -Be ("# Metrics for iteration 3$([Environment]::NewLine)" +
                                    "$([char]0x2714) **Thanks for keeping your pull request small.**" +
                                    $([Environment]::NewLine) +
@@ -1396,7 +1459,7 @@ Describe -Name 'PullRequest' {
             $response = [PullRequest]::GetMetricsComment($codeMetrics, 3)
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 15
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 35
             $response | Should -Be ("# Metrics for iteration 3$([Environment]::NewLine)" +
                                    $([char]0x274C) +
                                    ' **Try to keep pull requests smaller than 50 lines of new product code by ' +
@@ -1458,7 +1521,7 @@ Describe -Name 'PullRequest' {
             $response = [PullRequest]::GetMetricsComment($codeMetrics, 4)
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 15
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 31
             $response | Should -Be ("# Metrics for iteration 4$([Environment]::NewLine)" +
                                    "$([char]0x2714) **Thanks for keeping your pull request small.**" +
                                    $([Environment]::NewLine) +
@@ -1518,7 +1581,7 @@ Describe -Name 'PullRequest' {
             $response = [PullRequest]::GetMetricsComment($codeMetrics, 5)
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 15
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 31
             $response | Should -Be ("# Metrics for iteration 5$([Environment]::NewLine)" +
                                    "$([char]0x2714) **Thanks for keeping your pull request small.**" +
                                    $([Environment]::NewLine) +
@@ -1574,7 +1637,7 @@ Describe -Name 'PullRequest' {
             $response = [PullRequest]::GetMetricsComment($codeMetrics, 5)
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 14
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 30
             $response | Should -Be ("# Metrics for iteration 5$([Environment]::NewLine)" +
                                    "$([char]0x2714) **Thanks for keeping your pull request small.**" +
                                    $([Environment]::NewLine) +
@@ -1631,7 +1694,7 @@ Describe -Name 'PullRequest' {
             $response = [PullRequest]::GetMetricsComment($codeMetrics, 5)
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 15
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 32
             $response | Should -Be ("# Metrics for iteration 5$([Environment]::NewLine)" +
                                    "$([char]0x2714) **Thanks for keeping your pull request small.**" +
                                    $([Environment]::NewLine) +
@@ -1698,7 +1761,7 @@ Describe -Name 'PullRequest' {
             $response = [PullRequest]::GetMetricsComment($codeMetrics, 5)
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 15
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 35
             $response | Should -Be ("# Metrics for iteration 5$([Environment]::NewLine)" +
                                    $([char]0x274C) +
                                    ' **Try to keep pull requests smaller than 1,000,000 lines of new product code by ' +
@@ -1752,7 +1815,7 @@ Describe -Name 'PullRequest' {
             $response = [PullRequest]::GetMetricsCommentStatus($codeMetrics)
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 8
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 24
             $response | Should -Be Closed
         }
     }
@@ -1791,7 +1854,7 @@ Describe -Name 'PullRequest' {
             $response = [PullRequest]::GetMetricsCommentStatus($codeMetrics)
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 8
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 24
             $response | Should -Be Active
         }
     }
@@ -1828,7 +1891,7 @@ Describe -Name 'PullRequest' {
             $response = [PullRequest]::GetMetricsCommentStatus($codeMetrics)
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 7
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 23
             $response | Should -Be Active
         }
     }

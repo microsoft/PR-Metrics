@@ -9,6 +9,8 @@
 #Requires -Version 5.0
 
 BeforeAll {
+    Set-StrictMode -Version 'Latest'
+
     . $PSScriptRoot\..\Utilities\Logger.ps1
     . $PSScriptRoot\AzureReposCommentThreadStatus.ps1
     . $PSCommandPath.Replace('.Tests.ps1','.ps1')

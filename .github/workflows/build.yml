@@ -13,10 +13,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - name: PowerShell Analyzer
+        uses: devblackops/github-action-psscriptanalyzer@v2.3.0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v1.0.2
-      - name: Setup NuGet
-        uses: nuget/setup-nuget@v1.0.2
+      #- name: Setup NuGet
+      #  uses: nuget/setup-nuget@v1.0.2
       - name: Run MSBuild
         run: msbuild
       - name: PowerShell Tests
@@ -27,10 +31,6 @@ jobs:
       - name: PowerShell Test Results
         shell: pwsh
         run: |
-          Write-Information -MessageData 'Total Tests Executed...:  ${{ steps.powershell_tests.outputs.total_count }}' -InformationAction Continue
-          Write-Information -MessageData 'Total Tests PASSED.....:  ${{ steps.powershell_tests.outputs.passed_count }}' -InformationAction Continue
-          Write-Information -MessageData 'Total Tests FAILED.....:  ${{ steps.powershell_tests.outputs.failed_count }}' -InformationAction Continue
-      - name: PowerShell Analyzer
-        uses: devblackops/github-action-psscriptanalyzer@v2.3.0
-        with:
-          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          Write-Information -MessageData 'Test:   ${{ steps.powershell_tests.outputs.total_count }}' -InformationAction Continue
+          Write-Information -MessageData 'Passed: ${{ steps.powershell_tests.outputs.passed_count }}' -InformationAction Continue
+          Write-Information -MessageData 'Failed: ${{ steps.powershell_tests.outputs.failed_count }}' -InformationAction Continue

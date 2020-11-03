@@ -9,6 +9,8 @@
 #Requires -Version 5.0
 
 BeforeAll {
+    Set-StrictMode -Version 'Latest'
+
     $env:SYSTEM_CULTURE = 'en-US'
     . $PSScriptRoot\..\Utilities\Logger.ps1
     . $PSCommandPath.Replace('.Tests.ps1','.ps1')
@@ -24,6 +26,67 @@ Describe -Name 'CodeMetrics' {
         }
         Mock -CommandName 'Write-Verbose' -MockWith {
             throw [System.NotImplementedException]"Write-Verbose must not be called but was called with '$Message'."
+        }
+
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq 'Entering Select-Match.'
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq "MatchOptions.Dot: 'True'"
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq 'Entering Select-Match.'
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq "MatchOptions.Dot: 'True'"
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq "MatchOptions.FlipNegate: 'False'"
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq "MatchOptions.MatchBase: 'False'"
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq "MatchOptions.NoBrace: 'True'"
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq "MatchOptions.NoCase: 'True'"
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq "MatchOptions.NoComment: 'False'"
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq "MatchOptions.NoExt: 'False'"
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq "MatchOptions.NoGlobStar: 'False'"
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq "MatchOptions.NoNegate: 'False'"
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq "MatchOptions.NoNull: 'False'"
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -like "Pattern: '*"
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -like "Trimmed leading '!'. Pattern: '*"
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq 'Applying include pattern against original list.'
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq 'Applying exclude pattern against original list'
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -like '* matches'
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -like '* final results'
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq 'Leaving Select-Match.'
         }
     }
 
@@ -85,7 +148,7 @@ Describe -Name 'CodeMetrics' {
             $codeMetrics = [CodeMetrics]::new('50', '2.5', '1.0', '**/*', 'cs', "9	1	File1.cs`n")
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 5
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 21
             $codeMetrics.Metrics.Count | Should -Be 5
             $codeMetrics.Metrics.ProductCode | Should -Be 9
             $codeMetrics.Metrics.TestCode | Should -Be 0
@@ -123,7 +186,7 @@ Describe -Name 'CodeMetrics' {
                                                                                  "0	9	File2.cs`n"))
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 5
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 21
             $codeMetrics.Metrics.Count | Should -Be 5
             $codeMetrics.Metrics.ProductCode | Should -Be 9
             $codeMetrics.Metrics.TestCode | Should -Be 0
@@ -162,7 +225,7 @@ Describe -Name 'CodeMetrics' {
                                                                                       "-	-	File.dll`n"))
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 5
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 21
             $codeMetrics.Metrics.Count | Should -Be 5
             $codeMetrics.Metrics.ProductCode | Should -Be 9
             $codeMetrics.Metrics.TestCode | Should -Be 0
@@ -207,7 +270,7 @@ Describe -Name 'CodeMetrics' {
                                                                                       "-	-	test/File.dll`n"))
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 5
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 21
             $codeMetrics.Metrics.Count | Should -Be 5
             $codeMetrics.Metrics.ProductCode | Should -Be 9
             $codeMetrics.Metrics.TestCode | Should -Be 18
@@ -244,7 +307,7 @@ Describe -Name 'CodeMetrics' {
             $codeMetrics = [CodeMetrics]::new('50', '2.5', '1.0', '**/*', 'cs', "9 1 File1.cs`n")
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 5
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 21
             $codeMetrics.Metrics.Count | Should -Be 5
             $codeMetrics.Metrics.ProductCode | Should -Be 9
             $codeMetrics.Metrics.TestCode | Should -Be 0
@@ -298,7 +361,7 @@ Describe -Name 'CodeMetrics' {
                                                "-	-	test/File.dll`n"))
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 5
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 36
             $codeMetrics.Metrics.Count | Should -Be 5
             $codeMetrics.Metrics.ProductCode | Should -Be 0
             $codeMetrics.Metrics.TestCode | Should -Be 0
@@ -346,7 +409,7 @@ Describe -Name 'CodeMetrics' {
                                               "9	1	File1.cs`n")
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 5
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 25
             $codeMetrics.Metrics.Count | Should -Be 5
             $codeMetrics.Metrics.ProductCode | Should -Be 0
             $codeMetrics.Metrics.TestCode | Should -Be 0
@@ -401,7 +464,7 @@ Describe -Name 'CodeMetrics' {
                                                "-	-	{product => test}/File.dll`n"))
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 5
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 36
             $codeMetrics.Metrics.Count | Should -Be 5
             $codeMetrics.Metrics.ProductCode | Should -Be 0
             $codeMetrics.Metrics.TestCode | Should -Be 9
@@ -446,7 +509,7 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             $response | Should -Be "XS$([char]0x2714)"
         }
     }
@@ -482,7 +545,7 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
             $response | Should -Be "XS$([char]0x2714)"
         }
@@ -519,7 +582,7 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
             $response | Should -Be "XS$([char]0x2714)"
         }
@@ -556,7 +619,7 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
             $response | Should -Be "XS$([char]0x2714)"
         }
@@ -593,7 +656,7 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
             $response | Should -Be "XS$([char]0x2714)"
         }
@@ -630,7 +693,7 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
             $response | Should -Be "XS$([char]0x2714)"
         }
@@ -667,7 +730,7 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
             $response | Should -Be "XS$([char]0x2714)"
         }
@@ -704,7 +767,7 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
             $response | Should -Be "XS$([char]0x26A0)$([char]0xFE0F)"
         }
@@ -741,7 +804,7 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
             $response | Should -Be "XS$([char]0x26A0)$([char]0xFE0F)"
         }
@@ -778,7 +841,7 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
             $response | Should -Be "XS$([char]0x26A0)$([char]0xFE0F)"
         }
@@ -815,7 +878,7 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
             $response | Should -Be "XS$([char]0x26A0)$([char]0xFE0F)"
         }
@@ -852,7 +915,7 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
             $response | Should -Be "XS$([char]0x26A0)$([char]0xFE0F)"
         }
@@ -889,7 +952,7 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
             $response | Should -Be "XS$([char]0x26A0)$([char]0xFE0F)"
         }
@@ -926,7 +989,7 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
             $response | Should -Be "XS$([char]0x26A0)$([char]0xFE0F)"
         }
@@ -963,7 +1026,7 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
             $response | Should -Be "XS$([char]0x26A0)$([char]0xFE0F)"
         }
@@ -1000,7 +1063,7 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
             $response | Should -Be "XS$([char]0x26A0)$([char]0xFE0F)"
         }
@@ -1037,7 +1100,7 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
             $response | Should -Be "XS$([char]0x26A0)$([char]0xFE0F)"
         }
@@ -1074,7 +1137,7 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
             $response | Should -Be "XS$([char]0x26A0)$([char]0xFE0F)"
         }
@@ -1111,7 +1174,7 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
             $response | Should -Be "XS$([char]0x26A0)$([char]0xFE0F)"
         }
@@ -1145,7 +1208,7 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             $response | Should -Be "XS$([char]0x2714)"
         }
     }
@@ -1181,7 +1244,7 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
             $response | Should -Be "XS$([char]0x26A0)$([char]0xFE0F)"
         }
@@ -1218,7 +1281,7 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
             $response | Should -Be "XS$([char]0x26A0)$([char]0xFE0F)"
         }
@@ -1255,7 +1318,7 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
             $response | Should -Be "XS$([char]0x26A0)$([char]0xFE0F)"
         }
@@ -1293,7 +1356,7 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
             $response | Should -Be "XS$([char]0x26A0)$([char]0xFE0F)"
         }
@@ -1331,7 +1394,7 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
             $response | Should -Be "XS$([char]0x26A0)$([char]0xFE0F)"
         }
@@ -1369,7 +1432,7 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
             $response | Should -Be "XS$([char]0x26A0)$([char]0xFE0F)"
         }
@@ -1403,7 +1466,7 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             $response | Should -Be "XS$([char]0x26A0)$([char]0xFE0F)"
         }
     }
@@ -1437,7 +1500,7 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             $response | Should -Be "XS$([char]0x2714)"
         }
     }
@@ -1470,7 +1533,7 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             $response | Should -Be "S$([char]0x26A0)$([char]0xFE0F)"
         }
     }
@@ -1504,7 +1567,7 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             $response | Should -Be "M$([char]0x2714)"
         }
     }
@@ -1537,7 +1600,7 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             $response | Should -Be "L$([char]0x26A0)$([char]0xFE0F)"
         }
     }
@@ -1571,7 +1634,7 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             $response | Should -Be "XL$([char]0x2714)"
         }
     }
@@ -1604,7 +1667,7 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             $response | Should -Be "2XL$([char]0x26A0)$([char]0xFE0F)"
         }
     }
@@ -1638,7 +1701,7 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             $response | Should -Be "3XL$([char]0x2714)"
         }
     }
@@ -1671,7 +1734,7 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             $response | Should -Be "4XL$([char]0x26A0)$([char]0xFE0F)"
         }
     }
@@ -1705,7 +1768,7 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             $response | Should -Be "10XL$([char]0x2714)"
         }
     }
@@ -1738,7 +1801,7 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.IsSmall()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             $response | Should -Be $true
         }
     }
@@ -1771,7 +1834,7 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.IsSmall()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             $response | Should -Be $true
         }
     }
@@ -1804,7 +1867,7 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.IsSmall()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             $response | Should -Be $false
         }
     }
@@ -1837,7 +1900,7 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.AreTestsExpected()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             $response | Should -Be $false
         }
     }
@@ -1870,7 +1933,7 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.AreTestsExpected()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             $response | Should -Be $true
         }
     }
@@ -1904,7 +1967,7 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.HasSufficientTestCode()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             $response | Should -Be $true
         }
     }
@@ -1938,7 +2001,7 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.HasSufficientTestCode()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             $response | Should -Be $true
         }
     }
@@ -1972,7 +2035,7 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.HasSufficientTestCode()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             $response | Should -Be $false
         }
     }
