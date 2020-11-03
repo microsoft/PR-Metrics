@@ -947,7 +947,7 @@ Describe -Name 'CodeMetricsCalculator' {
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 81
             Assert-MockCalled -CommandName 'New-Object' -Exactly 1
-            Assert-MockCalled -CommandName 'Invoke-RestMethod' -Exactly 50
+            Assert-MockCalled -CommandName 'Invoke-RestMethod' -Exactly 5
         }
     }
 
