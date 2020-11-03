@@ -9,15 +9,17 @@
 
 #Requires -Version 5.0
 
-$env:SYSTEM_CULTURE = 'en-US'
-. $PSScriptRoot\Utilities\Logger.ps1
-. $PSScriptRoot\Invokers\GitInvoker.ps1
-. $PSScriptRoot\Invokers\AzureReposCommentThreadStatus.ps1
-. $PSScriptRoot\Invokers\AzureReposInvoker.ps1
-. $PSScriptRoot\Updaters\CodeMetrics.ps1
-. $PSScriptRoot\Updaters\PullRequest.ps1
-. $PSScriptRoot\CodeMetricsCalculator.ps1
-Import-Module -Name "$PSScriptRoot\..\..\Release\PipelinesTasks\PRMetrics\ps_modules\VstsTaskSdk\VstsTaskSdk.psm1"
+BeforeAll {
+    $env:SYSTEM_CULTURE = 'en-US'
+    . $PSScriptRoot\Utilities\Logger.ps1
+    . $PSScriptRoot\Invokers\GitInvoker.ps1
+    . $PSScriptRoot\Invokers\AzureReposCommentThreadStatus.ps1
+    . $PSScriptRoot\Invokers\AzureReposInvoker.ps1
+    . $PSScriptRoot\Updaters\CodeMetrics.ps1
+    . $PSScriptRoot\Updaters\PullRequest.ps1
+    . $PSScriptRoot\CodeMetricsCalculator.ps1
+    Import-Module -Name "$PSScriptRoot\..\..\Release\PipelinesTasks\PRMetrics\ps_modules\VstsTaskSdk\VstsTaskSdk.psm1"
+}
 
 Describe -Name 'PRMetrics' {
     BeforeEach {
@@ -721,150 +723,117 @@ Describe -Name 'PRMetrics' {
                 $Message -eq 'System.NotImplementedException: Invoke-RestMethod must not be called.'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq '* [CodeMetricsCalculator]::IsPullRequest() static' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq '* [CodeMetricsCalculator]::IsPullRequest() static'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq '* [PullRequest]::IsPullRequest() static' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq '* [PullRequest]::IsPullRequest() static'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq '* [CodeMetricsCalculator]::IsAccessTokenAvailable() static' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq '* [CodeMetricsCalculator]::IsAccessTokenAvailable() static'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq '* [AzureReposInvoker]::IsAccessTokenAvailable() static' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq '* [AzureReposInvoker]::IsAccessTokenAvailable() static'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq '* [CodeMetricsCalculator]::new()' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq '* [CodeMetricsCalculator]::new()'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq '* [GitInvoker]::GetDiffSummary()' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq '* [GitInvoker]::GetDiffSummary()'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq '* [GitInvoker]::InvokeGit() hidden' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq '* [GitInvoker]::InvokeGit() hidden'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq 'Git diff --numstat origin/develop...pull/12345/merge' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq 'Git diff --numstat origin/develop...pull/12345/merge'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq "1 2 File.cs$([Environment]::NewLine)" -and
-                $InformationAction -eq $Continue
+                $MessageData -eq "1 2 File.cs$([Environment]::NewLine)"
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq '* [CodeMetrics]::new()' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq '* [CodeMetrics]::new()'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq '* [CodeMetrics]::NormalizeParameters() hidden' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq '* [CodeMetrics]::NormalizeParameters() hidden'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq '* [CodeMetrics]::NormalizeCodeFileExtensionsParameter() hidden' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq '* [CodeMetrics]::NormalizeCodeFileExtensionsParameter() hidden'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq '* [CodeMetrics]::InitializeMetrics() hidden' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq '* [CodeMetrics]::InitializeMetrics() hidden'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq '* [CodeMetrics]::InitializeSize() hidden' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq '* [CodeMetrics]::InitializeSize() hidden'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq '* [AzureReposInvoker]::new()' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq '* [AzureReposInvoker]::new()'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq '* [CodeMetricsCalculator]::UpdateDetails()' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq '* [CodeMetricsCalculator]::UpdateDetails()'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq '* [AzureReposInvoker]::GetDetails()' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq '* [AzureReposInvoker]::GetDetails()'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq '* [AzureReposInvoker]::InvokeGetMethod() hidden' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq '* [AzureReposInvoker]::InvokeGetMethod() hidden'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq '* [AzureReposInvoker]::GetUri() hidden' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq '* [AzureReposInvoker]::GetUri() hidden'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
                 $MessageData -eq ('GET ' +
                                   'https://dev.azure.com/prmetrics/PRMetrics/_apis/git/' +
                                   'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/' +
-                                  '12345?api-version=5.1') -and
-                $InformationAction -eq $Continue
+                                  '12345?api-version=5.1')
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq '* [AzureReposInvoker]::WriteOutput() hidden' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq '* [AzureReposInvoker]::WriteOutput() hidden'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
                 $MessageData -eq ("{$([Environment]::NewLine)" +
                                   "    `"description`":  `"`",$([Environment]::NewLine)" +
                                   "    `"title`":  `"Title`"$([Environment]::NewLine)" +
-                                  '}') -and
-                $InformationAction -eq $Continue
+                                  '}')
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq '' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq ''
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq '* [PullRequest]::GetUpdatedDescription() static' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq '* [PullRequest]::GetUpdatedDescription() static'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq '* [CodeMetrics]::GetSizeIndicator()' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq '* [CodeMetrics]::GetSizeIndicator()'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq '* [PullRequest]::GetUpdatedTitle() static' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq '* [PullRequest]::GetUpdatedTitle() static'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq '* [AzureReposInvoker]::SetDetails()' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq '* [AzureReposInvoker]::SetDetails()'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq '* [AzureReposInvoker]::InvokeActionMethod() hidden' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq '* [AzureReposInvoker]::InvokeActionMethod() hidden'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
                 $MessageData -eq ('PATCH https://dev.azure.com/prmetrics/PRMetrics/' +
                                   '_apis/git/repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/' +
                                   '12345?api-version=5.1 ' +
                                   "{`"description`":`"$([char]0x274C) **Add a description.**`"," +
-                                  "`"title`":`"XS$([char]0x26A0)$([char]0xFE0F) $([char]0x25FE) Title`"}") -and
-                $InformationAction -eq $Continue
+                                  "`"title`":`"XS$([char]0x26A0)$([char]0xFE0F) $([char]0x25FE) Title`"}")
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
                 $MessageData -eq ("{$([Environment]::NewLine)" +
                                   "    `"value`":  `"Fake Data`"$([Environment]::NewLine)" +
-                                  '}') -and
-                $InformationAction -eq $Continue
+                                  '}')
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq '* [CodeMetricsCalculator]::UpdateComment()' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq '* [CodeMetricsCalculator]::UpdateComment()'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq '* [AzureReposInvoker]::GetCommentThreads()' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq '* [AzureReposInvoker]::GetCommentThreads()'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
                 $MessageData -eq ('GET https://dev.azure.com/prmetrics/PRMetrics/' +
                                   '_apis/git/repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/' +
-                                  '12345/threads?api-version=5.1') -and
-                $InformationAction -eq $Continue
+                                  '12345/threads?api-version=5.1')
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
                 $MessageData -eq ("{$([Environment]::NewLine)" +
@@ -887,31 +856,25 @@ Describe -Name 'PRMetrics' {
                                   "                      `"id`":  1$([Environment]::NewLine)" +
                                   "                  }$([Environment]::NewLine)" +
                                   "              ]$([Environment]::NewLine)" +
-                                  '}') -and
-                $InformationAction -eq $Continue
+                                  '}')
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq '* [AzureReposInvoker]::GetIterations()' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq '* [AzureReposInvoker]::GetIterations()'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
                 $MessageData -eq ('GET ' +
                                   'https://dev.azure.com/prmetrics/PRMetrics/_apis/git/' +
                                   'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/' +
-                                  'iterations?api-version=5.1') -and
-                $InformationAction -eq $Continue
+                                  'iterations?api-version=5.1')
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq '* [PullRequest]::GetCurrentIteration() static' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq '* [PullRequest]::GetCurrentIteration() static'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq '* [PullRequest]::GetCommentData() static' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq '* [PullRequest]::GetCommentData() static'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq '* [PullRequest]::GetMetricsCommentData() hidden static' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq '* [PullRequest]::GetMetricsCommentData() hidden static'
             }
             [Logger]::Statements.Clear()
 

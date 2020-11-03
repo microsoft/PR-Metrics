@@ -8,8 +8,10 @@
 
 #Requires -Version 5.0
 
-. $PSScriptRoot\..\Utilities\Logger.ps1
-. $PSScriptRoot\GitInvoker.ps1
+BeforeAll {
+    . $PSScriptRoot\..\Utilities\Logger.ps1
+    . $PSCommandPath.Replace('.Tests.ps1','.ps1')
+}
 
 Describe -Name 'GitInvoker' {
     BeforeEach {
@@ -257,7 +259,7 @@ Describe -Name 'GitInvoker' {
             $gitInvoker = [GitInvoker]::new()
 
             # Act & Assert
-            { $gitInvoker.GetDiffSummary() } | Should Throw 'Git failed to run within the allocated time.'
+            { $gitInvoker.GetDiffSummary() } | Should -Throw 'Git failed to run within the allocated time.'
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 3
             Assert-MockCalled -CommandName 'New-Object' -Exactly 1
             [GitInvoker]::TimeoutInMilliseconds = $originalTimeoutInMilliseconds

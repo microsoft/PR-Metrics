@@ -8,12 +8,14 @@
 
 #Requires -Version 5.0
 
-$env:SYSTEM_CULTURE = 'en-US'
-. $PSScriptRoot\..\Utilities\Logger.ps1
-. $PSScriptRoot\..\Invokers\AzureReposCommentThreadStatus.ps1
-. $PSScriptRoot\CodeMetrics.ps1
-. $PSScriptRoot\PullRequest.ps1
-Import-Module -Name "$PSScriptRoot\..\..\..\Release\PipelinesTasks\PRMetrics\ps_modules\VstsTaskSdk\VstsTaskSdk.psm1"
+BeforeAll {
+    $env:SYSTEM_CULTURE = 'en-US'
+    . $PSScriptRoot\..\Utilities\Logger.ps1
+    . $PSScriptRoot\..\Invokers\AzureReposCommentThreadStatus.ps1
+    . $PSScriptRoot\CodeMetrics.ps1
+    . $PSCommandPath.Replace('.Tests.ps1','.ps1')
+    Import-Module -Name "$PSScriptRoot\..\..\..\Release\PipelinesTasks\PRMetrics\ps_modules\VstsTaskSdk\VstsTaskSdk.psm1"
+}
 
 Describe -Name 'PullRequest' {
     BeforeEach {

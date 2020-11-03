@@ -8,15 +8,17 @@
 
 #Requires -Version 5.0
 
-$env:SYSTEM_CULTURE = 'en-US'
-. $PSScriptRoot\Utilities\Logger.ps1
-. $PSScriptRoot\Invokers\GitInvoker.ps1
-. $PSScriptRoot\Invokers\AzureReposCommentThreadStatus.ps1
-. $PSScriptRoot\Invokers\AzureReposInvoker.ps1
-. $PSScriptRoot\Updaters\CodeMetrics.ps1
-. $PSScriptRoot\Updaters\PullRequest.ps1
-. $PSScriptRoot\CodeMetricsCalculator.ps1
-Import-Module -Name "$PSScriptRoot\..\..\Release\PipelinesTasks\PRMetrics\ps_modules\VstsTaskSdk\VstsTaskSdk.psm1"
+BeforeAll {
+    $env:SYSTEM_CULTURE = 'en-US'
+    . $PSScriptRoot\Utilities\Logger.ps1
+    . $PSScriptRoot\Invokers\GitInvoker.ps1
+    . $PSScriptRoot\Invokers\AzureReposCommentThreadStatus.ps1
+    . $PSScriptRoot\Invokers\AzureReposInvoker.ps1
+    . $PSScriptRoot\Updaters\CodeMetrics.ps1
+    . $PSScriptRoot\Updaters\PullRequest.ps1
+    . $PSCommandPath.Replace('.Tests.ps1','.ps1')
+    Import-Module -Name "$PSScriptRoot\..\..\Release\PipelinesTasks\PRMetrics\ps_modules\VstsTaskSdk\VstsTaskSdk.psm1"
+}
 
 Describe -Name 'CodeMetricsCalculator' {
     BeforeEach {

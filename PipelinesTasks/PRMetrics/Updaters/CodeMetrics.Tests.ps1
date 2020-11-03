@@ -8,10 +8,12 @@
 
 #Requires -Version 5.0
 
-$env:SYSTEM_CULTURE = 'en-US'
-. $PSScriptRoot\..\Utilities\Logger.ps1
-. $PSScriptRoot\CodeMetrics.ps1
-Import-Module -Name "$PSScriptRoot\..\..\..\Release\PipelinesTasks\PRMetrics\ps_modules\VstsTaskSdk\VstsTaskSdk.psm1"
+BeforeAll {
+    $env:SYSTEM_CULTURE = 'en-US'
+    . $PSScriptRoot\..\Utilities\Logger.ps1
+    . $PSCommandPath.Replace('.Tests.ps1','.ps1')
+    Import-Module -Name "$PSScriptRoot\..\..\..\Release\PipelinesTasks\PRMetrics\ps_modules\VstsTaskSdk\VstsTaskSdk.psm1"
+}
 
 Describe -Name 'CodeMetrics' {
     BeforeEach {
@@ -463,8 +465,7 @@ Describe -Name 'CodeMetrics' {
                 $Message -eq '* [CodeMetrics]::NormalizeCodeFileExtensionsParameter() hidden'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq 'Adjusting base size parameter to 250.' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq 'Adjusting base size parameter to 250.'
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq '* [CodeMetrics]::InitializeMetrics() hidden'
@@ -501,8 +502,7 @@ Describe -Name 'CodeMetrics' {
                 $Message -eq '* [CodeMetrics]::NormalizeCodeFileExtensionsParameter() hidden'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq 'Adjusting base size parameter to 250.' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq 'Adjusting base size parameter to 250.'
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq '* [CodeMetrics]::InitializeMetrics() hidden'
@@ -539,8 +539,7 @@ Describe -Name 'CodeMetrics' {
                 $Message -eq '* [CodeMetrics]::NormalizeCodeFileExtensionsParameter() hidden'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq 'Adjusting base size parameter to 250.' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq 'Adjusting base size parameter to 250.'
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq '* [CodeMetrics]::InitializeMetrics() hidden'
@@ -577,8 +576,7 @@ Describe -Name 'CodeMetrics' {
                 $Message -eq '* [CodeMetrics]::NormalizeCodeFileExtensionsParameter() hidden'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq 'Adjusting base size parameter to 250.' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq 'Adjusting base size parameter to 250.'
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq '* [CodeMetrics]::InitializeMetrics() hidden'
@@ -615,8 +613,7 @@ Describe -Name 'CodeMetrics' {
                 $Message -eq '* [CodeMetrics]::NormalizeCodeFileExtensionsParameter() hidden'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq 'Adjusting base size parameter to 250.' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq 'Adjusting base size parameter to 250.'
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq '* [CodeMetrics]::InitializeMetrics() hidden'
@@ -653,8 +650,7 @@ Describe -Name 'CodeMetrics' {
                 $Message -eq '* [CodeMetrics]::NormalizeCodeFileExtensionsParameter() hidden'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq 'Adjusting base size parameter to 250.' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq 'Adjusting base size parameter to 250.'
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq '* [CodeMetrics]::InitializeMetrics() hidden'
@@ -691,8 +687,7 @@ Describe -Name 'CodeMetrics' {
                 $Message -eq '* [CodeMetrics]::NormalizeCodeFileExtensionsParameter() hidden'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq 'Adjusting growth rate parameter to 2.0.' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq 'Adjusting growth rate parameter to 2.0.'
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq '* [CodeMetrics]::InitializeMetrics() hidden'
@@ -729,8 +724,7 @@ Describe -Name 'CodeMetrics' {
                 $Message -eq '* [CodeMetrics]::NormalizeCodeFileExtensionsParameter() hidden'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq 'Adjusting growth rate parameter to 2.0.' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq 'Adjusting growth rate parameter to 2.0.'
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq '* [CodeMetrics]::InitializeMetrics() hidden'
@@ -767,8 +761,7 @@ Describe -Name 'CodeMetrics' {
                 $Message -eq '* [CodeMetrics]::NormalizeCodeFileExtensionsParameter() hidden'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq 'Adjusting growth rate parameter to 2.0.' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq 'Adjusting growth rate parameter to 2.0.'
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq '* [CodeMetrics]::InitializeMetrics() hidden'
@@ -805,8 +798,7 @@ Describe -Name 'CodeMetrics' {
                 $Message -eq '* [CodeMetrics]::NormalizeCodeFileExtensionsParameter() hidden'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq 'Adjusting growth rate parameter to 2.0.' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq 'Adjusting growth rate parameter to 2.0.'
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq '* [CodeMetrics]::InitializeMetrics() hidden'
@@ -843,8 +835,7 @@ Describe -Name 'CodeMetrics' {
                 $Message -eq '* [CodeMetrics]::NormalizeCodeFileExtensionsParameter() hidden'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq 'Adjusting growth rate parameter to 2.0.' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq 'Adjusting growth rate parameter to 2.0.'
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq '* [CodeMetrics]::InitializeMetrics() hidden'
@@ -881,8 +872,7 @@ Describe -Name 'CodeMetrics' {
                 $Message -eq '* [CodeMetrics]::NormalizeCodeFileExtensionsParameter() hidden'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq 'Adjusting growth rate parameter to 2.0.' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq 'Adjusting growth rate parameter to 2.0.'
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq '* [CodeMetrics]::InitializeMetrics() hidden'
@@ -919,8 +909,7 @@ Describe -Name 'CodeMetrics' {
                 $Message -eq '* [CodeMetrics]::NormalizeCodeFileExtensionsParameter() hidden'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq 'Adjusting growth rate parameter to 2.0.' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq 'Adjusting growth rate parameter to 2.0.'
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq '* [CodeMetrics]::InitializeMetrics() hidden'
@@ -957,8 +946,7 @@ Describe -Name 'CodeMetrics' {
                 $Message -eq '* [CodeMetrics]::NormalizeCodeFileExtensionsParameter() hidden'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq 'Adjusting test factor parameter to 1.5.' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq 'Adjusting test factor parameter to 1.5.'
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq '* [CodeMetrics]::InitializeMetrics() hidden'
@@ -995,8 +983,7 @@ Describe -Name 'CodeMetrics' {
                 $Message -eq '* [CodeMetrics]::NormalizeCodeFileExtensionsParameter() hidden'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq 'Adjusting test factor parameter to 1.5.' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq 'Adjusting test factor parameter to 1.5.'
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq '* [CodeMetrics]::InitializeMetrics() hidden'
@@ -1033,8 +1020,7 @@ Describe -Name 'CodeMetrics' {
                 $Message -eq '* [CodeMetrics]::NormalizeCodeFileExtensionsParameter() hidden'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq 'Adjusting test factor parameter to 1.5.' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq 'Adjusting test factor parameter to 1.5.'
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq '* [CodeMetrics]::InitializeMetrics() hidden'
@@ -1071,8 +1057,7 @@ Describe -Name 'CodeMetrics' {
                 $Message -eq '* [CodeMetrics]::NormalizeCodeFileExtensionsParameter() hidden'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq 'Adjusting test factor parameter to 1.5.' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq 'Adjusting test factor parameter to 1.5.'
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq '* [CodeMetrics]::InitializeMetrics() hidden'
@@ -1109,8 +1094,7 @@ Describe -Name 'CodeMetrics' {
                 $Message -eq '* [CodeMetrics]::NormalizeCodeFileExtensionsParameter() hidden'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq 'Adjusting test factor parameter to 1.5.' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq 'Adjusting test factor parameter to 1.5.'
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq '* [CodeMetrics]::InitializeMetrics() hidden'
@@ -1180,8 +1164,7 @@ Describe -Name 'CodeMetrics' {
                 $Message -eq '* [CodeMetrics]::NormalizeCodeFileExtensionsParameter() hidden'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq 'Adjusting file matching patterns to **/*.' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq 'Adjusting file matching patterns to **/*.'
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq '* [CodeMetrics]::InitializeMetrics() hidden'
@@ -1218,8 +1201,7 @@ Describe -Name 'CodeMetrics' {
                 $Message -eq '* [CodeMetrics]::NormalizeCodeFileExtensionsParameter() hidden'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq 'Adjusting file matching patterns to **/*.' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq 'Adjusting file matching patterns to **/*.'
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq '* [CodeMetrics]::InitializeMetrics() hidden'
@@ -1256,8 +1238,7 @@ Describe -Name 'CodeMetrics' {
                 $Message -eq '* [CodeMetrics]::NormalizeCodeFileExtensionsParameter() hidden'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq 'Adjusting file matching patterns to **/*.' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq 'Adjusting file matching patterns to **/*.'
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq '* [CodeMetrics]::InitializeMetrics() hidden'
@@ -1294,8 +1275,7 @@ Describe -Name 'CodeMetrics' {
                 $Message -eq '* [CodeMetrics]::NormalizeCodeFileExtensionsParameter() hidden'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq 'Adjusting code file extensions parameter to default values.' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq 'Adjusting code file extensions parameter to default values.'
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq '* [CodeMetrics]::InitializeMetrics() hidden'
@@ -1333,8 +1313,7 @@ Describe -Name 'CodeMetrics' {
                 $Message -eq '* [CodeMetrics]::NormalizeCodeFileExtensionsParameter() hidden'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq 'Adjusting code file extensions parameter to default values.' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq 'Adjusting code file extensions parameter to default values.'
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq '* [CodeMetrics]::InitializeMetrics() hidden'
@@ -1372,8 +1351,7 @@ Describe -Name 'CodeMetrics' {
                 $Message -eq '* [CodeMetrics]::NormalizeCodeFileExtensionsParameter() hidden'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq 'Adjusting code file extensions parameter to default values.' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq 'Adjusting code file extensions parameter to default values.'
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq '* [CodeMetrics]::InitializeMetrics() hidden'

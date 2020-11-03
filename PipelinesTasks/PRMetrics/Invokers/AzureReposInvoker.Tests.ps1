@@ -8,12 +8,9 @@
 
 #Requires -Version 5.0
 
-. $PSScriptRoot\..\Utilities\Logger.ps1
-. $PSScriptRoot\AzureReposCommentThreadStatus.ps1
-. $PSScriptRoot\AzureReposInvoker.ps1
-
 BeforeAll {
-    # DON'T use $MyInvocation.MyCommand.Path
+    . $PSScriptRoot\..\Utilities\Logger.ps1
+    . $PSScriptRoot\AzureReposCommentThreadStatus.ps1
     . $PSCommandPath.Replace('.Tests.ps1','.ps1')
 }
 

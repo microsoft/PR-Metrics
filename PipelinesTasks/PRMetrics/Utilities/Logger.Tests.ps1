@@ -8,7 +8,9 @@
 
 #Requires -Version 5.0
 
-. $PSScriptRoot\Logger.ps1
+BeforeAll {
+    . $PSCommandPath.Replace('.Tests.ps1','.ps1')
+}
 
 Describe -Name 'Logger' {
     BeforeEach {
@@ -49,8 +51,7 @@ Describe -Name 'Logger' {
                 $Message -eq '0123456789'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq '0123456789' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq '0123456789'
             }
             [Logger]::Statements.Clear()
             for ($i = 0; $i -lt 10; $i++) {
