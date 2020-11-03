@@ -113,7 +113,7 @@ be excluded.
 
 ```YAML
 steps:
-- task: 907d3b28-6b37-4ac7-ac75-9631ee53e512.PRMetrics@1
+- task: PRMetrics@1
   displayName: 'PR Metrics'
   inputs:
     BaseSize: 250

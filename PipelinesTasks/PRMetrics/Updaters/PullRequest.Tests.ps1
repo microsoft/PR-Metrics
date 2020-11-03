@@ -13,7 +13,7 @@ $env:SYSTEM_CULTURE = 'en-US'
 . $PSScriptRoot\..\Invokers\AzureReposCommentThreadStatus.ps1
 . $PSScriptRoot\CodeMetrics.ps1
 . $PSScriptRoot\PullRequest.ps1
-Import-Module -Name "$PSScriptRoot\..\..\Modules\VSTSTaskModules\ps_modules\VstsTaskSdk\VstsTaskSdk.psm1"
+Import-Module -Name "$PSScriptRoot\..\..\..\Output\PipelinesTasks\PRMetrics\ps_modules\VstsTaskSdk\VstsTaskSdk.psm1"
 
 Describe -Name 'PullRequest' {
     BeforeEach {

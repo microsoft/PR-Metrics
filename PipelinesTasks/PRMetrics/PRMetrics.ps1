@@ -14,12 +14,7 @@ param()
 
 Set-StrictMode -Version 'Latest'
 
-$azureDevOpsTaskSdkPath = "$PSScriptRoot"
-if (!$env:AGENT_ID -or $env:BUILD_REPOSITORY_NAME -eq 'OfficeVSTSTasks') {
-    $azureDevOpsTaskSdkPath = "$azureDevOpsTaskSdkPath\..\Modules\VSTSTaskModules"
-}
-
-Import-Module -Name "$azureDevOpsTaskSdkPath\ps_modules\VstsTaskSdk\VstsTaskSdk.psm1"
+Import-Module -Name "$PSScriptRoot\ps_modules\VstsTaskSdk\VstsTaskSdk.psm1"
 
 . $PSScriptRoot\Utilities\Logger.ps1
 . $PSScriptRoot\Invokers\GitInvoker.ps1
