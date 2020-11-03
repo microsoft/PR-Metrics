@@ -14,7 +14,13 @@ param()
 
 Set-StrictMode -Version 'Latest'
 
-Import-Module -Name "$PSScriptRoot\ps_modules\VstsTaskSdk\VstsTaskSdk.psm1"
+
+$azureDevOpsTaskSdkPath = "$PSScriptRoot"
+if (!$env:AGENT_ID) {
+    $azureDevOpsTaskSdkPath = "$azureDevOpsTaskSdkPath\..\..\Release\PipelinesTasks\PRMetrics\"
+}
+
+Import-Module -Name "$azureDevOpsTaskSdkPath\ps_modules\VstsTaskSdk\VstsTaskSdk.psm1"
 
 . $PSScriptRoot\Utilities\Logger.ps1
 . $PSScriptRoot\Invokers\GitInvoker.ps1

@@ -12,6 +12,7 @@
 Set-StrictMode -Version 'Latest'
 $Global:ErrorActionPreference = 'Stop'
 
+Remove-Item -Path "$PSScriptRoot\..\..\..\Release\PipelinesTasks\PRMetrics\ps_modules" -Recurse
 Install-Package -Name 'VstsTaskSdk' -RequiredVersion '0.11.0' -Source 'https://www.powershellgallery.com/api/v2/' -Destination "$PSScriptRoot\..\..\..\Release\PipelinesTasks\PRMetrics\ps_modules" -Force
 Rename-Item -Path "$PSScriptRoot\..\..\..\Release\PipelinesTasks\PRMetrics\ps_modules\VstsTaskSdk.0.11.0" -NewName 'VstsTaskSdk'
 
