@@ -152,6 +152,8 @@ This task is tested via unit and integration tests constructed using the
 [Pester][pester] test framework. The code coverage is currently extremely high,
 and a high rate of coverage should be maintained for all changes. Validating
 this task on the server is significantly more expensive than validating locally.
+You may need [PowerShell 7 or later][powershell] installed due to subtle
+differences in the behavior of different PowerShell releases.
 
 The task contains no violations of the [PSScriptAnalyzer][psscriptanalyzer]
 rules. This compliance with the PSScriptAnalyzer rules should also be maintained
@@ -293,4 +295,5 @@ y
 [globs]: https://docs.microsoft.com/azure/devops/pipelines/tasks/file-matching-patterns
 [sdk]: https://github.com/microsoft/azure-pipelines-task-lib
 [pester]: https://github.com/pester/Pester
+[powershell]: https://github.com/powershell/powershell
 [psscriptanalyzer]: https://github.com/PowerShell/PSScriptAnalyzer
