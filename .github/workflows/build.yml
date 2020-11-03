@@ -8,40 +8,33 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Setup MSBuild
-        uses: microsoft/setup-msbuild@v1.0.2
-      - name: Run MSBuild
-        run: msbuild
-      - shell: pwsh
-        run: |
-          Install-Module -Name PSScriptAnalyzer -Force
-      - shell: pwsh
-        run: |
-          invoke-scriptanalyzer -Path '.' -Recurse | Where-Object -Property 'RuleName' -ne 'TypeNotFound'
-      - name: PowerShell Tests
-        id: powershell_tests
-        uses: zyborg/pester-tests-report@v1
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-      - name: PowerShell Test Results
-        shell: pwsh
-        run: |
-          Write-Information -MessageData 'Test:   ${{ steps.powershell_tests.outputs.total_count }}' -InformationAction Continue
-          Write-Information -MessageData 'Passed: ${{ steps.powershell_tests.outputs.passed_count }}' -InformationAction Continue
-          Write-Information -MessageData 'Failed: ${{ steps.powershell_tests.outputs.failed_count }}' -InformationAction Continue
-
-  analyze:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: PowerShell Analyzer
-        uses: devblackops/github-action-psscriptanalyzer@v2.3.0
+      - name: PowerShell Analysis – Installation
+        shell: pwsh
+        run: |
+          Install-Module -Name PSScriptAnalyzer -Force
+      - name: PowerShell Analysis – Run
+        shell: pwsh
+        run: |
+          $Result = (Invoke-ScriptAnalyzer -Path '.' -Recurse | Where-Object -Property 'RuleName' -ne 'TypeNotFound')
+          $Result
+          if ($Result.Count -gt 0) { Throw 'PowerShell Analysis failed.' }
+      - name: MSBuild – Installation
+        uses: microsoft/setup-msbuild@v1.0.2
+      - name: MSBuild – Run
+        run: msbuild
+      - name: PowerShell Tests – Run
+        id: powershell_tests
+        uses: zyborg/pester-tests-report@v1
         with:
-          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: PowerShell Tests – Results
+        shell: pwsh
+        run: |
+          Write-Information -MessageData 'Test:   ${{ steps.powershell_tests.outputs.total_count }}' -InformationAction Continue
+          Write-Information -MessageData 'Passed: ${{ steps.powershell_tests.outputs.passed_count }}' -InformationAction Continue
+          Write-Information -MessageData 'Failed: ${{ steps.powershell_tests.outputs.failed_count }}' -InformationAction Continue
