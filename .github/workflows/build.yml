@@ -8,21 +8,11 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: PowerShell Analysis – Installation
-        shell: pwsh
-        run: |
-          Install-Module -Name PSScriptAnalyzer -Force
-      - name: PowerShell Analysis – Run
-        shell: pwsh
-        run: |
-          $Result = (Invoke-ScriptAnalyzer -Path '.' -Recurse | Where-Object -Property 'RuleName' -ne 'TypeNotFound')
-          $Result
-          if ($Result.Count -gt 0) { Throw 'PowerShell Analysis failed.' }
       - name: MSBuild – Installation
         uses: microsoft/setup-msbuild@v1.0.2
       - name: MSBuild – Run
@@ -38,3 +28,20 @@ jobs:
           Write-Information -MessageData 'Test:   ${{ steps.powershell_tests.outputs.total_count }}' -InformationAction Continue
           Write-Information -MessageData 'Passed: ${{ steps.powershell_tests.outputs.passed_count }}' -InformationAction Continue
           Write-Information -MessageData 'Failed: ${{ steps.powershell_tests.outputs.failed_count }}' -InformationAction Continue
+
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: PowerShell Analysis – Installation
+        shell: pwsh
+        run: |
+          Install-Module -Name PSScriptAnalyzer -Force
+      - name: PowerShell Analysis – Run
+        shell: pwsh
+        run: |
+          $Result = (Invoke-ScriptAnalyzer -Path '.' -Recurse | Where-Object -Property 'RuleName' -ne 'TypeNotFound')
+          $Result
+          if ($Result.Count -gt 0) { Throw 'PowerShell Analysis failed.' }
