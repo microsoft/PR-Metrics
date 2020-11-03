@@ -20,8 +20,16 @@ jobs:
       - name: Run MSBuild
         run: msbuild
       - name: PowerShell Tests
+        id: powershell_tests
+        uses: zyborg/pester-tests-report@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: PowerShell Test Results
         shell: pwsh
-        run: .\PipelinesTasks\PRMetrics\Tools\Validate.ps1
+        run: |
+          Write-Information -MessageData 'Total Tests Executed...:  ${{ steps.powershell_tests.outputs.total_count }}' -InformationAction Continue
+          Write-Information -MessageData 'Total Tests PASSED.....:  ${{ steps.powershell_tests.outputs.passed_count }}' -InformationAction Continue
+          Write-Information -MessageData 'Total Tests FAILED.....:  ${{ steps.powershell_tests.outputs.failed_count }}' -InformationAction Continue
       - name: PowerShell Analyzer
         uses: devblackops/github-action-psscriptanalyzer@v2.3.0
         with:
