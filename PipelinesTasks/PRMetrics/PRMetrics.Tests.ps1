@@ -39,11 +39,8 @@ Describe -Name 'PRMetrics' {
         Mock -CommandName 'Write-TaskWarning' -MockWith {
             throw [System.NotImplementedException]"Write-TaskWarning must not be called but was called with '$Message'."
         }
-        # Mock -CommandName 'Write-Verbose' -MockWith {
-        #     throw [System.NotImplementedException]"Write-Verbose must not be called but was called with '$Message'."
-        # }
-        Mock -CommandName 'Invoke-RestMethod' -MockWith {
-            throw [System.NotImplementedException]"Invoke-RestMethod must not be called but was called with '$Uri'."
+        Mock -CommandName 'Write-Verbose' -MockWith {
+            throw [System.NotImplementedException]"Write-Verbose must not be called but was called with '$Message'."
         }
 
         Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
