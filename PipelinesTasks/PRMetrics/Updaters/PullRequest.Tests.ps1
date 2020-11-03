@@ -23,10 +23,6 @@ Describe -Name 'PullRequest' {
     BeforeEach {
         Set-StrictMode -Version 'Latest'
 
-        Mock -CommandName 'Write-Verbose' -MockWith {
-            throw [System.NotImplementedException]"Write-Verbose must not be called but was called with '$Message'."
-        }
-
         Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
             $Message -eq 'Entering Select-Match.'
         }

@@ -57,6 +57,8 @@ To deploy the task:
    will only need to be performed the first time you use tfx-cli.
 1. Delete any existing copy of the task using
    `tfx build tasks delete --task-id 907d3b28-6b37-4ac7-ac75-9631ee53e512`.
+1. Install `nuget.exe` so that it can accessed from any console window using the
+   instructions [here][nugetcli].
 1. Build the task locally by running `msbuild` from the PRMetrics directory.
    You may need to use a Visual Studio command prompt for this, as `msbuild` is
    not always added to the default path.
@@ -155,12 +157,8 @@ The task contains no violations of the [PSScriptAnalyzer][psscriptanalyzer]
 rules. This compliance with the PSScriptAnalyzer rules should also be maintained
 for all new code.
 
-You can run Pester and PSScriptAnalyzer across all task files by running the
-following from a PowerShell terminal:
-
-```PowerShell
-.\Tools\Validate.ps1
-```
+Compliance will be automatically maintained via the GitHub actions build, which
+will be automatically started whenever a new PR is created.
 
 ## Debugging
 
@@ -290,6 +288,7 @@ y
 [azureserver]: https://azure.microsoft.com/services/devops/server/
 [tfxcli]: https://github.com/Microsoft/tfs-cli
 [npm]: https://www.npmjs.com/
+[nugetcli]: https://docs.microsoft.com/nuget/install-nuget-client-tools#nugetexe-cli
 [addingtask]: https://docs.microsoft.com/azure/devops/pipelines/customize-pipeline
 [globs]: https://docs.microsoft.com/azure/devops/pipelines/tasks/file-matching-patterns
 [sdk]: https://github.com/microsoft/azure-pipelines-task-lib
