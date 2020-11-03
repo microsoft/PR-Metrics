@@ -42,9 +42,7 @@ Finally, if no PR description is provided, the description will be set to:
 
 ## Deploying
 
-The task can be used with either [Azure Pipelines][azurepipelines] or a local
-instance of [Azure DevOps Server/Team Foundation Server][azureserver] 2017
-Update 1 or above.
+The task can be used with [Azure Pipelines][azurepipelines].
 
 To deploy the task:
 
@@ -58,7 +56,7 @@ To deploy the task:
    Token". Select "Full access" and adjust the rest of settings as desired. This
    will only need to be performed the first time you use tfx-cli.
 1. Delete any existing copy of the task using
-   `tfx build tasks delete --task-id 99492a90-fc6e-11e6-a1fd-39c537974205`.
+   `tfx build tasks delete --task-id 907d3b28-6b37-4ac7-ac75-9631ee53e512`.
 1. Build the task locally by running `msbuild` from the PRMetrics directory.
    You may need to use a Visual Studio command prompt for this, as `msbuild` is
    not always added to the default path.
@@ -115,7 +113,7 @@ be excluded.
 
 ```YAML
 steps:
-- task: microsoft.omex-azure-devops-extension.99492a90-fc6e-11e6-a1fd-39c537974205.PRMetrics@4
+- task: 907d3b28-6b37-4ac7-ac75-9631ee53e512.PRMetrics@1
   displayName: 'PR Metrics'
   inputs:
     BaseSize: 250

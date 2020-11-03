@@ -1,16 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <OutputPath>..\..\Output\PRMetrics</OutputPath>
+    <OutputPath>..\Output</OutputPath>
   </PropertyGroup>
-  <ItemGroup>
-    <CopyFile Include="icon.png" />
-    <CopyFile Include="task.json" />
-    <CopyFile Include="**\*.ps1" Exclude="Tools\*.ps1;**\*.Tests.ps1" />
-    <CopyFile Include="..\Modules\VSTSTaskModules\**\*.*" />
-  </ItemGroup>
   <Target Name="Build">
+    <RemoveDir Directories="$(OutputPath)" Condition="Exists('$(OutputPath)')" />
     <MakeDir Directories="$(OutputPath)" Condition="!Exists('$(OutputPath)')" />
     <Copy SourceFiles="@(CopyFile)" DestinationFolder="$(OutputPath)\%(RecursiveDir)" />
+    <MSBuild Projects="PRMetrics\PRMetrics.copyproj" Targets="Build" />
   </Target>
 </Project>
