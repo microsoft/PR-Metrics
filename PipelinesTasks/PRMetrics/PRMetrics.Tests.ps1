@@ -446,24 +446,14 @@ Describe -Name 'PRMetrics' {
                 $Headers.Authorization -eq 'Bearer ACCESSTOKEN'
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
-                $Message -eq ("{$([Environment]::NewLine)" +
-                              "  `"value`": [$([Environment]::NewLine)" +
-                              "    {$([Environment]::NewLine)" +
-                              "      `"threadContext`": null,$([Environment]::NewLine)" +
-                              "      `"comments`": [$([Environment]::NewLine)" +
-                              "        {$([Environment]::NewLine)" +
-                              "          `"author`": {$([Environment]::NewLine)" +
-                              '            "displayName": "Project Collection Build Service (prmetrics)"' +
-                              [Environment]::NewLine +
-                              "          },$([Environment]::NewLine)" +
-                              "          `"id`": 2,$([Environment]::NewLine)" +
-                              "          `"content`": `"# Metrics for iteration 1`"$([Environment]::NewLine)" +
-                              "        }$([Environment]::NewLine)" +
-                              "      ],$([Environment]::NewLine)" +
-                              "      `"id`": 1$([Environment]::NewLine)" +
-                              "    }$([Environment]::NewLine)" +
-                              "  ]$([Environment]::NewLine)" +
-                              '}')
+                $Message -like '*"value": *' -and
+                $Message -like '*"threadContext": null*' -and
+                $Message -like '*"comments": *' -and
+                $Message -like '*"author": *' -and
+                $Message -like '*"displayName": "Project Collection Build Service (prmetrics)"*' -and
+                $Message -like '*"id": 2*' -and
+                $Message -like '*"content": "# Metrics for iteration 1"*' -and
+                $Message -like '*"id": 1*'
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq '* [AzureReposInvoker]::GetIterations()'
@@ -740,24 +730,14 @@ Describe -Name 'PRMetrics' {
                 $Headers.Authorization -eq 'Bearer ACCESSTOKEN'
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
-                $Message -eq ("{$([Environment]::NewLine)" +
-                              "  `"value`": [$([Environment]::NewLine)" +
-                              "    {$([Environment]::NewLine)" +
-                              "      `"threadContext`": null,$([Environment]::NewLine)" +
-                              "      `"comments`": [$([Environment]::NewLine)" +
-                              "        {$([Environment]::NewLine)" +
-                              "          `"author`": {$([Environment]::NewLine)" +
-                              '            "displayName": "Project Collection Build Service (prmetrics)"' +
-                              [Environment]::NewLine +
-                              "          },$([Environment]::NewLine)" +
-                              "          `"id`": 2,$([Environment]::NewLine)" +
-                              "          `"content`": `"# Metrics for iteration 1`"$([Environment]::NewLine)" +
-                              "        }$([Environment]::NewLine)" +
-                              "      ],$([Environment]::NewLine)" +
-                              "      `"id`": 1$([Environment]::NewLine)" +
-                              "    }$([Environment]::NewLine)" +
-                              "  ]$([Environment]::NewLine)" +
-                              '}')
+                $Message -like '*"value": *' -and
+                $Message -like '*"threadContext": null*' #-and
+                $Message -like '*"comments": *' -and
+                $Message -like '*"author": *' -and
+                $Message -like '*"displayName": "Project Collection Build Service (prmetrics)"*' -and
+                $Message -like '*"id": 2*' -and
+                $Message -like '*"content": "# Metrics for iteration 1"*' -and
+                $Message -like '*"id": 1*'
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq '* [AzureReposInvoker]::GetIterations()'
@@ -904,24 +884,14 @@ Describe -Name 'PRMetrics' {
                                   '12345/threads?api-version=5.1')
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $Message -eq ("{$([Environment]::NewLine)" +
-                              "  `"value`": [$([Environment]::NewLine)" +
-                              "    {$([Environment]::NewLine)" +
-                              "      `"threadContext`": null,$([Environment]::NewLine)" +
-                              "      `"comments`": [$([Environment]::NewLine)" +
-                              "        {$([Environment]::NewLine)" +
-                              "          `"author`": {$([Environment]::NewLine)" +
-                              '            "displayName": "Project Collection Build Service (prmetrics)"' +
-                              [Environment]::NewLine +
-                              "          },$([Environment]::NewLine)" +
-                              "          `"id`": 2,$([Environment]::NewLine)" +
-                              "          `"content`": `"# Metrics for iteration 1`"$([Environment]::NewLine)" +
-                              "        }$([Environment]::NewLine)" +
-                              "      ],$([Environment]::NewLine)" +
-                              "      `"id`": 1$([Environment]::NewLine)" +
-                              "    }$([Environment]::NewLine)" +
-                              "  ]$([Environment]::NewLine)" +
-                              '}')
+                $MessageData -like '*"value": *' -and
+                $MessageData -like '*"threadContext": null*' #-and
+                $MessageData -like '*"comments": *' -and
+                $MessageData -like '*"author": *' -and
+                $MessageData -like '*"displayName": "Project Collection Build Service (prmetrics)"*' -and
+                $MessageData -like '*"id": 2*' -and
+                $MessageData -like '*"content": "# Metrics for iteration 1"*' -and
+                $MessageData -like '*"id": 1*'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
                 $MessageData -eq '* [AzureReposInvoker]::GetIterations()'

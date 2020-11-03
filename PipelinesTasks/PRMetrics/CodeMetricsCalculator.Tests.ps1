@@ -722,24 +722,14 @@ Describe -Name 'CodeMetricsCalculator' {
                 $Message -eq '* [AzureReposInvoker]::WriteOutput() hidden'
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
-                $Message -eq ("{$([Environment]::NewLine)" +
-                              "  `"value`": [$([Environment]::NewLine)" +
-                              "    {$([Environment]::NewLine)" +
-                              "      `"threadContext`": null,$([Environment]::NewLine)" +
-                              "      `"comments`": [$([Environment]::NewLine)" +
-                              "        {$([Environment]::NewLine)" +
-                              "          `"author`": {$([Environment]::NewLine)" +
-                              '            "displayName": "Project Collection Build Service (prmetrics)"' +
-                              [Environment]::NewLine +
-                              "          },$([Environment]::NewLine)" +
-                              "          `"id`": 2,$([Environment]::NewLine)" +
-                              "          `"content`": `"# Metrics for iteration 1`"$([Environment]::NewLine)" +
-                              "        }$([Environment]::NewLine)" +
-                              "      ],$([Environment]::NewLine)" +
-                              "      `"id`": 1$([Environment]::NewLine)" +
-                              "    }$([Environment]::NewLine)" +
-                              "  ]$([Environment]::NewLine)" +
-                              '}')
+                $Message -like '*"value": *' -and
+                $Message -like '*"threadContext": null*' -and
+                $Message -like '*"comments": *' -and
+                $Message -like '*"author": *' -and
+                $Message -like '*"displayName": "Project Collection Build Service (prmetrics)"*' -and
+                $Message -like '*"id": 2*' -and
+                $Message -like '*"content": "# Metrics for iteration 1"*' -and
+                $Message -like '*"id": 1*'
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq ''
@@ -1067,24 +1057,14 @@ Describe -Name 'CodeMetricsCalculator' {
                 $Message -eq '* [AzureReposInvoker]::WriteOutput() hidden'
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
-                $Message -eq ("{$([Environment]::NewLine)" +
-                              "  `"value`": [$([Environment]::NewLine)" +
-                              "    {$([Environment]::NewLine)" +
-                              "      `"threadContext`": null,$([Environment]::NewLine)" +
-                              "      `"comments`": [$([Environment]::NewLine)" +
-                              "        {$([Environment]::NewLine)" +
-                              "          `"author`": {$([Environment]::NewLine)" +
-                              '            "displayName": "Project Collection Build Service (prmetrics)"' +
-                              [Environment]::NewLine +
-                              "          },$([Environment]::NewLine)" +
-                              "          `"id`": 2,$([Environment]::NewLine)" +
-                              "          `"content`": `"# Metrics for iteration 1`"$([Environment]::NewLine)" +
-                              "        }$([Environment]::NewLine)" +
-                              "      ],$([Environment]::NewLine)" +
-                              "      `"id`": 1$([Environment]::NewLine)" +
-                              "    }$([Environment]::NewLine)" +
-                              "  ]$([Environment]::NewLine)" +
-                              '}')
+                $Message -like '*"value": *' -and
+                $Message -like '*"threadContext": null*' -and
+                $Message -like '*"comments": *' -and
+                $Message -like '*"author": *' -and
+                $Message -like '*"displayName": "Project Collection Build Service (prmetrics)"*' -and
+                $Message -like '*"id": 2*' -and
+                $Message -like '*"content": "# Metrics for iteration 1"*' -and
+                $Message -like '*"id": 1*'
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq ''
@@ -1273,41 +1253,18 @@ Describe -Name 'CodeMetricsCalculator' {
                 $Message -eq '* [AzureReposInvoker]::WriteOutput() hidden'
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
-                $Message -eq ("{$([Environment]::NewLine)" +
-                              "  `"value`": [$([Environment]::NewLine)" +
-                              "    {$([Environment]::NewLine)" +
-                              "      `"threadContext`": null,$([Environment]::NewLine)" +
-                              "      `"comments`": [$([Environment]::NewLine)" +
-                              "        {$([Environment]::NewLine)" +
-                              "          `"author`": {$([Environment]::NewLine)" +
-                              '            "displayName": "Project Collection Build Service (prmetrics)"' +
-                              [Environment]::NewLine +
-                              "          },$([Environment]::NewLine)" +
-                              "          `"id`": 3,$([Environment]::NewLine)" +
-                              "          `"content`": `"# Metrics for iteration 1`"$([Environment]::NewLine)" +
-                              "        }$([Environment]::NewLine)" +
-                              "      ],$([Environment]::NewLine)" +
-                              "      `"id`": 1$([Environment]::NewLine)" +
-                              "    },$([Environment]::NewLine)" +
-                              "    {$([Environment]::NewLine)" +
-                              "      `"threadContext`": {$([Environment]::NewLine)" +
-                              "        `"filePath`": `"/Ignored1.cs`"$([Environment]::NewLine)" +
-                              "      },$([Environment]::NewLine)" +
-                              "      `"comments`": [$([Environment]::NewLine)" +
-                              "        {$([Environment]::NewLine)" +
-                              "          `"author`": {$([Environment]::NewLine)" +
-                              '            "displayName": "Project Collection Build Service (prmetrics)"' +
-                              [Environment]::NewLine +
-                              "          },$([Environment]::NewLine)" +
-                              "          `"id`": 4,$([Environment]::NewLine)" +
-                              "          `"content`": `"$([char]0x2757) **This file may not need to be reviewed.**`"" +
-                              [Environment]::NewLine +
-                              "        }$([Environment]::NewLine)" +
-                              "      ],$([Environment]::NewLine)" +
-                              "      `"id`": 2$([Environment]::NewLine)" +
-                              "    }$([Environment]::NewLine)" +
-                              "  ]$([Environment]::NewLine)" +
-                              '}')
+                $Message -like '*"value": *' -and
+                $Message -like '*"threadContext": null*' -and
+                $Message -like '*"comments": *' -and
+                $Message -like '*"author": *' -and
+                $Message -like '*"displayName": "Project Collection Build Service (prmetrics)"*' -and
+                $Message -like '*"id": 3*' -and
+                $Message -like '*"content": "# Metrics for iteration 1"*' -and
+                $Message -like '*"id": 1*' -and
+                $Message -like '*"filePath": "/Ignored1.cs"*' -and
+                $Message -like '*"id": 4*' -and
+                $Message -like "*`"content`": `"$([char]0x2757) **This file may not need to be reviewed.**`"*" -and
+                $Message -like '*"id": 2*'
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq ''
