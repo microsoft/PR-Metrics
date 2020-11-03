@@ -13,10 +13,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: PowerShell Analyzer
-        uses: devblackops/github-action-psscriptanalyzer@v2.3.0
-        with:
-          repoToken: ${{ secrets.GITHUB_TOKEN }}
+      - name: PowerShell Analyzer-
+        uses: SleepySysadmin/github-action-pscheck@v0.4.2
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v1.0.2
       #- name: Setup NuGet
