@@ -17,17 +17,21 @@ jobs:
         uses: microsoft/setup-msbuild@v1.0.2
       - name: MSBuild – Run
         run: msbuild
-      - name: PowerShell Tests – Run
-        id: powershell_tests
-        uses: zyborg/pester-tests-report@v1
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-      - name: PowerShell Tests – Results
-        shell: pwsh
-        run: |
-          Write-Information -MessageData 'Test:   ${{ steps.powershell_tests.outputs.total_count }}' -InformationAction Continue
-          Write-Information -MessageData 'Passed: ${{ steps.powershell_tests.outputs.passed_count }}' -InformationAction Continue
-          Write-Information -MessageData 'Failed: ${{ steps.powershell_tests.outputs.failed_count }}' -InformationAction Continue
+      - shell: pwsh
+        run: Install-Module -Name 'Pester' -Force
+      - shell: pwsh
+        run: Invoke-Pester
+      # - name: PowerShell Tests – Run
+      #   id: powershell_tests
+      #   uses: zyborg/pester-tests-report@v1
+      #   with:
+      #     github_token: ${{ secrets.GITHUB_TOKEN }}
+      # - name: PowerShell Tests – Results
+      #   shell: pwsh
+      #   run: |
+      #     Write-Information -MessageData 'Test:   ${{ steps.powershell_tests.outputs.total_count }}' -InformationAction Continue
+      #     Write-Information -MessageData 'Passed: ${{ steps.powershell_tests.outputs.passed_count }}' -InformationAction Continue
+      #     Write-Information -MessageData 'Failed: ${{ steps.powershell_tests.outputs.failed_count }}' -InformationAction Continue
 
   validate:
     runs-on: ubuntu-latest
@@ -37,8 +41,7 @@ jobs:
         uses: actions/checkout@v2
       - name: PowerShell Analysis – Installation
         shell: pwsh
-        run: |
-          Install-Module -Name PSScriptAnalyzer -Force
+        run: Install-Module -Name 'PSScriptAnalyzer' -Force
       - name: PowerShell Analysis – Run
         shell: pwsh
         run: |
