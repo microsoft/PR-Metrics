@@ -24,6 +24,9 @@ Describe -Name 'Logger' {
         Mock -CommandName 'Write-Information' -MockWith {
             throw [System.NotImplementedException]"Write-Information must not be called but was called with '$MessageData'."
         }
+        Mock -CommandName 'Invoke-RestMethod' -MockWith {
+            throw [System.NotImplementedException]"Invoke-RestMethod must not be called but was called with '$Uri'."
+        }
     }
 
     Context -Name 'Log' {

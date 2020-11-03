@@ -17,15 +17,10 @@ jobs:
         uses: microsoft/setup-msbuild@v1.0.2
       - name: MSBuild – Run
         run: msbuild
-      - name: PowerShell Tests – Install
-        shell: pwsh
-        run: Install-Module -Name 'Pester' -Force
       - name: PowerShell Tests – Run
-        shell: pwsh
-        run: |
-          $Result = Invoke-Pester
-          $Result
-          if ($Result -notlike '*Failed: 0,*') { Throw 'PowerShell Tests failed.' } else { exit 0 }
+        uses: zyborg/pester-tests-report@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
   validate:
     runs-on: ubuntu-latest
