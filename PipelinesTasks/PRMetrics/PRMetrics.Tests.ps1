@@ -23,11 +23,6 @@ BeforeAll {
     Import-Module -Name "$PSScriptRoot\..\..\Release\PipelinesTasks\PRMetrics\ps_modules\VstsTaskSdk\VstsTaskSdk.psm1"
 }
 
-function Do-Stuff()
-{
-    
-}
-
 Describe -Name 'PRMetrics' {
     BeforeEach {
         Set-StrictMode -Version 'Latest'
