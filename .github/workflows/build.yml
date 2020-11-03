@@ -13,14 +13,19 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: MSBuild – Installation
+      - name: MSBuild – Install
         uses: microsoft/setup-msbuild@v1.0.2
       - name: MSBuild – Run
         run: msbuild
-      - shell: pwsh
+      - name: PowerShell Tests – Install
+        shell: pwsh
         run: Install-Module -Name 'Pester' -Force
-      - shell: pwsh
-        run: Invoke-Pester
+      - name: PowerShell Tests – Run
+        shell: pwsh
+        run: |
+          $Result = Invoke-Pester
+          $Result
+          if ($Result -notlike '*Failed: 0,*') { Throw 'PowerShell Tests failed.' }
       # - name: PowerShell Tests – Run
       #   id: powershell_tests
       #   uses: zyborg/pester-tests-report@v1
@@ -39,7 +44,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: PowerShell Analysis – Installation
+      - name: PowerShell Analysis – Install
         shell: pwsh
         run: Install-Module -Name 'PSScriptAnalyzer' -Force
       - name: PowerShell Analysis – Run
