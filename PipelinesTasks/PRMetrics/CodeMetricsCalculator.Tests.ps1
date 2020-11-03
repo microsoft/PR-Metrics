@@ -1448,7 +1448,7 @@ Describe -Name 'CodeMetricsCalculator' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 2
-            $response | Should Be $true
+            $response | Should -Be $true
 
             # Teardown
             $env:SYSTEM_PULLREQUEST_PULLREQUESTID = $OriginalPullRequestId
@@ -1473,7 +1473,7 @@ Describe -Name 'CodeMetricsCalculator' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 2
-            $response | Should Be $false
+            $response | Should -Be $false
 
             # Teardown
             $env:SYSTEM_PULLREQUEST_PULLREQUESTID = $OriginalPullRequestId
@@ -1498,7 +1498,7 @@ Describe -Name 'CodeMetricsCalculator' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 2
-            $response | Should Be $true
+            $response | Should -Be $true
 
             # Teardown
             $env:SYSTEM_ACCESSTOKEN = $OriginalAccessToken
@@ -1523,7 +1523,7 @@ Describe -Name 'CodeMetricsCalculator' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 2
-            $response | Should Be $false
+            $response | Should -Be $false
 
             # Teardown
             $env:SYSTEM_ACCESSTOKEN = $OriginalAccessToken

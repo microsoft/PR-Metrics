@@ -84,15 +84,15 @@ Describe -Name 'CodeMetrics' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 5
-            $codeMetrics.Metrics.Count | Should Be 5
-            $codeMetrics.Metrics.ProductCode | Should Be 9
-            $codeMetrics.Metrics.TestCode | Should Be 0
-            $codeMetrics.Metrics.Subtotal | Should Be 9
-            $codeMetrics.Metrics.Ignored | Should Be 0
-            $codeMetrics.Metrics.Total | Should Be 9
-            $codeMetrics.IgnoredFilesWithLinesAdded.Count | Should Be 0
-            $codeMetrics.IgnoredFilesWithoutLinesAdded.Count | Should Be 0
-            $codeMetrics.ExpectedTestCode | Should Be 9
+            $codeMetrics.Metrics.Count | Should -Be 5
+            $codeMetrics.Metrics.ProductCode | Should -Be 9
+            $codeMetrics.Metrics.TestCode | Should -Be 0
+            $codeMetrics.Metrics.Subtotal | Should -Be 9
+            $codeMetrics.Metrics.Ignored | Should -Be 0
+            $codeMetrics.Metrics.Total | Should -Be 9
+            $codeMetrics.IgnoredFilesWithLinesAdded.Count | Should -Be 0
+            $codeMetrics.IgnoredFilesWithoutLinesAdded.Count | Should -Be 0
+            $codeMetrics.ExpectedTestCode | Should -Be 9
         }
     }
 
@@ -122,15 +122,15 @@ Describe -Name 'CodeMetrics' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 5
-            $codeMetrics.Metrics.Count | Should Be 5
-            $codeMetrics.Metrics.ProductCode | Should Be 9
-            $codeMetrics.Metrics.TestCode | Should Be 0
-            $codeMetrics.Metrics.Subtotal | Should Be 9
-            $codeMetrics.Metrics.Ignored | Should Be 0
-            $codeMetrics.Metrics.Total | Should Be 9
-            $codeMetrics.IgnoredFilesWithLinesAdded.Count | Should Be 0
-            $codeMetrics.IgnoredFilesWithoutLinesAdded.Count | Should Be 0
-            $codeMetrics.ExpectedTestCode | Should Be 18
+            $codeMetrics.Metrics.Count | Should -Be 5
+            $codeMetrics.Metrics.ProductCode | Should -Be 9
+            $codeMetrics.Metrics.TestCode | Should -Be 0
+            $codeMetrics.Metrics.Subtotal | Should -Be 9
+            $codeMetrics.Metrics.Ignored | Should -Be 0
+            $codeMetrics.Metrics.Total | Should -Be 9
+            $codeMetrics.IgnoredFilesWithLinesAdded.Count | Should -Be 0
+            $codeMetrics.IgnoredFilesWithoutLinesAdded.Count | Should -Be 0
+            $codeMetrics.ExpectedTestCode | Should -Be 18
         }
     }
 
@@ -161,15 +161,15 @@ Describe -Name 'CodeMetrics' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 5
-            $codeMetrics.Metrics.Count | Should Be 5
-            $codeMetrics.Metrics.ProductCode | Should Be 9
-            $codeMetrics.Metrics.TestCode | Should Be 0
-            $codeMetrics.Metrics.Subtotal | Should Be 9
-            $codeMetrics.Metrics.Ignored | Should Be 0
-            $codeMetrics.Metrics.Total | Should Be 9
-            $codeMetrics.IgnoredFilesWithLinesAdded.Count | Should Be 0
-            $codeMetrics.IgnoredFilesWithoutLinesAdded.Count | Should Be 0
-            $codeMetrics.ExpectedTestCode | Should Be 22
+            $codeMetrics.Metrics.Count | Should -Be 5
+            $codeMetrics.Metrics.ProductCode | Should -Be 9
+            $codeMetrics.Metrics.TestCode | Should -Be 0
+            $codeMetrics.Metrics.Subtotal | Should -Be 9
+            $codeMetrics.Metrics.Ignored | Should -Be 0
+            $codeMetrics.Metrics.Total | Should -Be 9
+            $codeMetrics.IgnoredFilesWithLinesAdded.Count | Should -Be 0
+            $codeMetrics.IgnoredFilesWithoutLinesAdded.Count | Should -Be 0
+            $codeMetrics.ExpectedTestCode | Should -Be 22
         }
     }
 
@@ -206,15 +206,15 @@ Describe -Name 'CodeMetrics' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 5
-            $codeMetrics.Metrics.Count | Should Be 5
-            $codeMetrics.Metrics.ProductCode | Should Be 9
-            $codeMetrics.Metrics.TestCode | Should Be 18
-            $codeMetrics.Metrics.Subtotal | Should Be 27
-            $codeMetrics.Metrics.Ignored | Should Be 0
-            $codeMetrics.Metrics.Total | Should Be 27
-            $codeMetrics.IgnoredFilesWithLinesAdded.Count | Should Be 0
-            $codeMetrics.IgnoredFilesWithoutLinesAdded.Count | Should Be 0
-            $codeMetrics.ExpectedTestCode | Should Be 9
+            $codeMetrics.Metrics.Count | Should -Be 5
+            $codeMetrics.Metrics.ProductCode | Should -Be 9
+            $codeMetrics.Metrics.TestCode | Should -Be 18
+            $codeMetrics.Metrics.Subtotal | Should -Be 27
+            $codeMetrics.Metrics.Ignored | Should -Be 0
+            $codeMetrics.Metrics.Total | Should -Be 27
+            $codeMetrics.IgnoredFilesWithLinesAdded.Count | Should -Be 0
+            $codeMetrics.IgnoredFilesWithoutLinesAdded.Count | Should -Be 0
+            $codeMetrics.ExpectedTestCode | Should -Be 9
         }
     }
 
@@ -243,15 +243,15 @@ Describe -Name 'CodeMetrics' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 5
-            $codeMetrics.Metrics.Count | Should Be 5
-            $codeMetrics.Metrics.ProductCode | Should Be 9
-            $codeMetrics.Metrics.TestCode | Should Be 0
-            $codeMetrics.Metrics.Subtotal | Should Be 9
-            $codeMetrics.Metrics.Ignored | Should Be 0
-            $codeMetrics.Metrics.Total | Should Be 9
-            $codeMetrics.IgnoredFilesWithLinesAdded.Count | Should Be 0
-            $codeMetrics.IgnoredFilesWithoutLinesAdded.Count | Should Be 0
-            $codeMetrics.ExpectedTestCode | Should Be 9
+            $codeMetrics.Metrics.Count | Should -Be 5
+            $codeMetrics.Metrics.ProductCode | Should -Be 9
+            $codeMetrics.Metrics.TestCode | Should -Be 0
+            $codeMetrics.Metrics.Subtotal | Should -Be 9
+            $codeMetrics.Metrics.Ignored | Should -Be 0
+            $codeMetrics.Metrics.Total | Should -Be 9
+            $codeMetrics.IgnoredFilesWithLinesAdded.Count | Should -Be 0
+            $codeMetrics.IgnoredFilesWithoutLinesAdded.Count | Should -Be 0
+            $codeMetrics.ExpectedTestCode | Should -Be 9
         }
     }
 
@@ -297,20 +297,20 @@ Describe -Name 'CodeMetrics' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 5
-            $codeMetrics.Metrics.Count | Should Be 5
-            $codeMetrics.Metrics.ProductCode | Should Be 0
-            $codeMetrics.Metrics.TestCode | Should Be 0
-            $codeMetrics.Metrics.Subtotal | Should Be 0
-            $codeMetrics.Metrics.Ignored | Should Be 27
-            $codeMetrics.Metrics.Total | Should Be 27
-            $codeMetrics.IgnoredFilesWithLinesAdded.Count | Should Be 3
-            $codeMetrics.IgnoredFilesWithLinesAdded[0] | Should Be 'File1.cs'
-            $codeMetrics.IgnoredFilesWithLinesAdded[1] | Should Be 'test/File1.cs'
-            $codeMetrics.IgnoredFilesWithLinesAdded[2] | Should Be 'FileTest1.cs'
-            $codeMetrics.IgnoredFilesWithoutLinesAdded.Count | Should Be 2
-            $codeMetrics.IgnoredFilesWithoutLinesAdded[0] | Should Be 'File2.cs'
-            $codeMetrics.IgnoredFilesWithoutLinesAdded[1] | Should Be 'Filetest2.cs'
-            $codeMetrics.ExpectedTestCode | Should Be 0
+            $codeMetrics.Metrics.Count | Should -Be 5
+            $codeMetrics.Metrics.ProductCode | Should -Be 0
+            $codeMetrics.Metrics.TestCode | Should -Be 0
+            $codeMetrics.Metrics.Subtotal | Should -Be 0
+            $codeMetrics.Metrics.Ignored | Should -Be 27
+            $codeMetrics.Metrics.Total | Should -Be 27
+            $codeMetrics.IgnoredFilesWithLinesAdded.Count | Should -Be 3
+            $codeMetrics.IgnoredFilesWithLinesAdded[0] | Should -Be 'File1.cs'
+            $codeMetrics.IgnoredFilesWithLinesAdded[1] | Should -Be 'test/File1.cs'
+            $codeMetrics.IgnoredFilesWithLinesAdded[2] | Should -Be 'FileTest1.cs'
+            $codeMetrics.IgnoredFilesWithoutLinesAdded.Count | Should -Be 2
+            $codeMetrics.IgnoredFilesWithoutLinesAdded[0] | Should -Be 'File2.cs'
+            $codeMetrics.IgnoredFilesWithoutLinesAdded[1] | Should -Be 'Filetest2.cs'
+            $codeMetrics.ExpectedTestCode | Should -Be 0
         }
     }
 
@@ -345,16 +345,16 @@ Describe -Name 'CodeMetrics' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 5
-            $codeMetrics.Metrics.Count | Should Be 5
-            $codeMetrics.Metrics.ProductCode | Should Be 0
-            $codeMetrics.Metrics.TestCode | Should Be 0
-            $codeMetrics.Metrics.Subtotal | Should Be 0
-            $codeMetrics.Metrics.Ignored | Should Be 9
-            $codeMetrics.Metrics.Total | Should Be 9
-            $codeMetrics.IgnoredFilesWithLinesAdded.Count | Should Be 1
-            $codeMetrics.IgnoredFilesWithLinesAdded[0] | Should Be 'File1.cs'
-            $codeMetrics.IgnoredFilesWithoutLinesAdded.Count | Should Be 0
-            $codeMetrics.ExpectedTestCode | Should Be 0
+            $codeMetrics.Metrics.Count | Should -Be 5
+            $codeMetrics.Metrics.ProductCode | Should -Be 0
+            $codeMetrics.Metrics.TestCode | Should -Be 0
+            $codeMetrics.Metrics.Subtotal | Should -Be 0
+            $codeMetrics.Metrics.Ignored | Should -Be 9
+            $codeMetrics.Metrics.Total | Should -Be 9
+            $codeMetrics.IgnoredFilesWithLinesAdded.Count | Should -Be 1
+            $codeMetrics.IgnoredFilesWithLinesAdded[0] | Should -Be 'File1.cs'
+            $codeMetrics.IgnoredFilesWithoutLinesAdded.Count | Should -Be 0
+            $codeMetrics.ExpectedTestCode | Should -Be 0
         }
     }
 
@@ -400,19 +400,19 @@ Describe -Name 'CodeMetrics' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 5
-            $codeMetrics.Metrics.Count | Should Be 5
-            $codeMetrics.Metrics.ProductCode | Should Be 0
-            $codeMetrics.Metrics.TestCode | Should Be 9
-            $codeMetrics.Metrics.Subtotal | Should Be 9
-            $codeMetrics.Metrics.Ignored | Should Be 18
-            $codeMetrics.Metrics.Total | Should Be 27
-            $codeMetrics.IgnoredFilesWithLinesAdded.Count | Should Be 2
-            $codeMetrics.IgnoredFilesWithLinesAdded[0] | Should Be 'File1.cs'
-            $codeMetrics.IgnoredFilesWithLinesAdded[1] | Should Be 'test/File1.cs'
-            $codeMetrics.IgnoredFilesWithoutLinesAdded.Count | Should Be 2
-            $codeMetrics.IgnoredFilesWithoutLinesAdded[0] | Should Be 'File2.cs'
-            $codeMetrics.IgnoredFilesWithoutLinesAdded[1] | Should Be 'Filetest2.cs'
-            $codeMetrics.ExpectedTestCode | Should Be 0
+            $codeMetrics.Metrics.Count | Should -Be 5
+            $codeMetrics.Metrics.ProductCode | Should -Be 0
+            $codeMetrics.Metrics.TestCode | Should -Be 9
+            $codeMetrics.Metrics.Subtotal | Should -Be 9
+            $codeMetrics.Metrics.Ignored | Should -Be 18
+            $codeMetrics.Metrics.Total | Should -Be 27
+            $codeMetrics.IgnoredFilesWithLinesAdded.Count | Should -Be 2
+            $codeMetrics.IgnoredFilesWithLinesAdded[0] | Should -Be 'File1.cs'
+            $codeMetrics.IgnoredFilesWithLinesAdded[1] | Should -Be 'test/File1.cs'
+            $codeMetrics.IgnoredFilesWithoutLinesAdded.Count | Should -Be 2
+            $codeMetrics.IgnoredFilesWithoutLinesAdded[0] | Should -Be 'File2.cs'
+            $codeMetrics.IgnoredFilesWithoutLinesAdded[1] | Should -Be 'Filetest2.cs'
+            $codeMetrics.ExpectedTestCode | Should -Be 0
         }
     }
 
@@ -445,7 +445,7 @@ Describe -Name 'CodeMetrics' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
-            $response | Should Be "XS$([char]0x2714)"
+            $response | Should -Be "XS$([char]0x2714)"
         }
     }
 
@@ -483,7 +483,7 @@ Describe -Name 'CodeMetrics' {
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
-            $response | Should Be "XS$([char]0x2714)"
+            $response | Should -Be "XS$([char]0x2714)"
         }
     }
 
@@ -521,7 +521,7 @@ Describe -Name 'CodeMetrics' {
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
-            $response | Should Be "XS$([char]0x2714)"
+            $response | Should -Be "XS$([char]0x2714)"
         }
     }
 
@@ -559,7 +559,7 @@ Describe -Name 'CodeMetrics' {
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
-            $response | Should Be "XS$([char]0x2714)"
+            $response | Should -Be "XS$([char]0x2714)"
         }
     }
 
@@ -597,7 +597,7 @@ Describe -Name 'CodeMetrics' {
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
-            $response | Should Be "XS$([char]0x2714)"
+            $response | Should -Be "XS$([char]0x2714)"
         }
     }
 
@@ -635,7 +635,7 @@ Describe -Name 'CodeMetrics' {
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
-            $response | Should Be "XS$([char]0x2714)"
+            $response | Should -Be "XS$([char]0x2714)"
         }
     }
 
@@ -673,7 +673,7 @@ Describe -Name 'CodeMetrics' {
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
-            $response | Should Be "XS$([char]0x2714)"
+            $response | Should -Be "XS$([char]0x2714)"
         }
     }
 
@@ -711,7 +711,7 @@ Describe -Name 'CodeMetrics' {
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
-            $response | Should Be "XS$([char]0x26A0)$([char]0xFE0F)"
+            $response | Should -Be "XS$([char]0x26A0)$([char]0xFE0F)"
         }
     }
 
@@ -749,7 +749,7 @@ Describe -Name 'CodeMetrics' {
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
-            $response | Should Be "XS$([char]0x26A0)$([char]0xFE0F)"
+            $response | Should -Be "XS$([char]0x26A0)$([char]0xFE0F)"
         }
     }
 
@@ -787,7 +787,7 @@ Describe -Name 'CodeMetrics' {
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
-            $response | Should Be "XS$([char]0x26A0)$([char]0xFE0F)"
+            $response | Should -Be "XS$([char]0x26A0)$([char]0xFE0F)"
         }
     }
 
@@ -825,7 +825,7 @@ Describe -Name 'CodeMetrics' {
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
-            $response | Should Be "XS$([char]0x26A0)$([char]0xFE0F)"
+            $response | Should -Be "XS$([char]0x26A0)$([char]0xFE0F)"
         }
     }
 
@@ -863,7 +863,7 @@ Describe -Name 'CodeMetrics' {
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
-            $response | Should Be "XS$([char]0x26A0)$([char]0xFE0F)"
+            $response | Should -Be "XS$([char]0x26A0)$([char]0xFE0F)"
         }
     }
 
@@ -901,7 +901,7 @@ Describe -Name 'CodeMetrics' {
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
-            $response | Should Be "XS$([char]0x26A0)$([char]0xFE0F)"
+            $response | Should -Be "XS$([char]0x26A0)$([char]0xFE0F)"
         }
     }
 
@@ -939,7 +939,7 @@ Describe -Name 'CodeMetrics' {
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
-            $response | Should Be "XS$([char]0x26A0)$([char]0xFE0F)"
+            $response | Should -Be "XS$([char]0x26A0)$([char]0xFE0F)"
         }
     }
 
@@ -977,7 +977,7 @@ Describe -Name 'CodeMetrics' {
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
-            $response | Should Be "XS$([char]0x26A0)$([char]0xFE0F)"
+            $response | Should -Be "XS$([char]0x26A0)$([char]0xFE0F)"
         }
     }
 
@@ -1015,7 +1015,7 @@ Describe -Name 'CodeMetrics' {
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
-            $response | Should Be "XS$([char]0x26A0)$([char]0xFE0F)"
+            $response | Should -Be "XS$([char]0x26A0)$([char]0xFE0F)"
         }
     }
 
@@ -1053,7 +1053,7 @@ Describe -Name 'CodeMetrics' {
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
-            $response | Should Be "XS$([char]0x26A0)$([char]0xFE0F)"
+            $response | Should -Be "XS$([char]0x26A0)$([char]0xFE0F)"
         }
     }
 
@@ -1091,7 +1091,7 @@ Describe -Name 'CodeMetrics' {
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
-            $response | Should Be "XS$([char]0x26A0)$([char]0xFE0F)"
+            $response | Should -Be "XS$([char]0x26A0)$([char]0xFE0F)"
         }
     }
 
@@ -1129,7 +1129,7 @@ Describe -Name 'CodeMetrics' {
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
-            $response | Should Be "XS$([char]0x26A0)$([char]0xFE0F)"
+            $response | Should -Be "XS$([char]0x26A0)$([char]0xFE0F)"
         }
     }
 
@@ -1162,7 +1162,7 @@ Describe -Name 'CodeMetrics' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
-            $response | Should Be "XS$([char]0x2714)"
+            $response | Should -Be "XS$([char]0x2714)"
         }
     }
 
@@ -1200,7 +1200,7 @@ Describe -Name 'CodeMetrics' {
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
-            $response | Should Be "XS$([char]0x26A0)$([char]0xFE0F)"
+            $response | Should -Be "XS$([char]0x26A0)$([char]0xFE0F)"
         }
     }
 
@@ -1238,7 +1238,7 @@ Describe -Name 'CodeMetrics' {
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
-            $response | Should Be "XS$([char]0x26A0)$([char]0xFE0F)"
+            $response | Should -Be "XS$([char]0x26A0)$([char]0xFE0F)"
         }
     }
 
@@ -1276,7 +1276,7 @@ Describe -Name 'CodeMetrics' {
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
-            $response | Should Be "XS$([char]0x26A0)$([char]0xFE0F)"
+            $response | Should -Be "XS$([char]0x26A0)$([char]0xFE0F)"
         }
     }
 
@@ -1315,7 +1315,7 @@ Describe -Name 'CodeMetrics' {
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
-            $response | Should Be "XS$([char]0x26A0)$([char]0xFE0F)"
+            $response | Should -Be "XS$([char]0x26A0)$([char]0xFE0F)"
         }
     }
 
@@ -1354,7 +1354,7 @@ Describe -Name 'CodeMetrics' {
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
-            $response | Should Be "XS$([char]0x26A0)$([char]0xFE0F)"
+            $response | Should -Be "XS$([char]0x26A0)$([char]0xFE0F)"
         }
     }
 
@@ -1393,7 +1393,7 @@ Describe -Name 'CodeMetrics' {
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
-            $response | Should Be "XS$([char]0x26A0)$([char]0xFE0F)"
+            $response | Should -Be "XS$([char]0x26A0)$([char]0xFE0F)"
         }
     }
 
@@ -1426,7 +1426,7 @@ Describe -Name 'CodeMetrics' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
-            $response | Should Be "XS$([char]0x26A0)$([char]0xFE0F)"
+            $response | Should -Be "XS$([char]0x26A0)$([char]0xFE0F)"
         }
     }
 
@@ -1460,7 +1460,7 @@ Describe -Name 'CodeMetrics' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
-            $response | Should Be "XS$([char]0x2714)"
+            $response | Should -Be "XS$([char]0x2714)"
         }
     }
 
@@ -1493,7 +1493,7 @@ Describe -Name 'CodeMetrics' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
-            $response | Should Be "S$([char]0x26A0)$([char]0xFE0F)"
+            $response | Should -Be "S$([char]0x26A0)$([char]0xFE0F)"
         }
     }
 
@@ -1527,7 +1527,7 @@ Describe -Name 'CodeMetrics' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
-            $response | Should Be "M$([char]0x2714)"
+            $response | Should -Be "M$([char]0x2714)"
         }
     }
 
@@ -1560,7 +1560,7 @@ Describe -Name 'CodeMetrics' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
-            $response | Should Be "L$([char]0x26A0)$([char]0xFE0F)"
+            $response | Should -Be "L$([char]0x26A0)$([char]0xFE0F)"
         }
     }
 
@@ -1594,7 +1594,7 @@ Describe -Name 'CodeMetrics' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
-            $response | Should Be "XL$([char]0x2714)"
+            $response | Should -Be "XL$([char]0x2714)"
         }
     }
 
@@ -1627,7 +1627,7 @@ Describe -Name 'CodeMetrics' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
-            $response | Should Be "2XL$([char]0x26A0)$([char]0xFE0F)"
+            $response | Should -Be "2XL$([char]0x26A0)$([char]0xFE0F)"
         }
     }
 
@@ -1661,7 +1661,7 @@ Describe -Name 'CodeMetrics' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
-            $response | Should Be "3XL$([char]0x2714)"
+            $response | Should -Be "3XL$([char]0x2714)"
         }
     }
 
@@ -1694,7 +1694,7 @@ Describe -Name 'CodeMetrics' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
-            $response | Should Be "4XL$([char]0x26A0)$([char]0xFE0F)"
+            $response | Should -Be "4XL$([char]0x26A0)$([char]0xFE0F)"
         }
     }
 
@@ -1728,7 +1728,7 @@ Describe -Name 'CodeMetrics' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
-            $response | Should Be "10XL$([char]0x2714)"
+            $response | Should -Be "10XL$([char]0x2714)"
         }
     }
 
@@ -1761,7 +1761,7 @@ Describe -Name 'CodeMetrics' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
-            $response | Should Be $true
+            $response | Should -Be $true
         }
     }
 
@@ -1794,7 +1794,7 @@ Describe -Name 'CodeMetrics' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
-            $response | Should Be $true
+            $response | Should -Be $true
         }
     }
 
@@ -1827,7 +1827,7 @@ Describe -Name 'CodeMetrics' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
-            $response | Should Be $false
+            $response | Should -Be $false
         }
     }
 
@@ -1860,7 +1860,7 @@ Describe -Name 'CodeMetrics' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
-            $response | Should Be $false
+            $response | Should -Be $false
         }
     }
 
@@ -1893,7 +1893,7 @@ Describe -Name 'CodeMetrics' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
-            $response | Should Be $true
+            $response | Should -Be $true
         }
     }
 
@@ -1927,7 +1927,7 @@ Describe -Name 'CodeMetrics' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
-            $response | Should Be $true
+            $response | Should -Be $true
         }
     }
 
@@ -1961,7 +1961,7 @@ Describe -Name 'CodeMetrics' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
-            $response | Should Be $true
+            $response | Should -Be $true
         }
     }
 
@@ -1995,7 +1995,7 @@ Describe -Name 'CodeMetrics' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
-            $response | Should Be $false
+            $response | Should -Be $false
         }
     }
 }

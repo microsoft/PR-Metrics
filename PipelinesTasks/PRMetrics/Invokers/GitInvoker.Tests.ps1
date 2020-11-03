@@ -99,7 +99,7 @@ Describe -Name 'GitInvoker' {
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 4
             Assert-MockCalled -CommandName 'New-Object' -Exactly 1
-            $response | Should Be "0123456789$([Environment]::NewLine)"
+            $response | Should -Be "0123456789$([Environment]::NewLine)"
         }
     }
 
@@ -153,7 +153,7 @@ Describe -Name 'GitInvoker' {
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 4
             Assert-MockCalled -CommandName 'New-Object' -Exactly 1
-            $response | Should Be "0123456789$([Environment]::NewLine)"
+            $response | Should -Be "0123456789$([Environment]::NewLine)"
             $env:SYSTEM_PULLREQUEST_TARGETBRANCH = 'refs/heads/develop'
         }
     }
@@ -212,7 +212,7 @@ Describe -Name 'GitInvoker' {
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 4
             Assert-MockCalled -CommandName 'New-Object' -Exactly 1
-            $response | Should Be "$inputObject$([Environment]::NewLine)"
+            $response | Should -Be "$inputObject$([Environment]::NewLine)"
         }
     }
 

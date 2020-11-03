@@ -36,8 +36,8 @@ Describe -Name 'Logger' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 1
-            [Logger]::Statements.Count | Should Be 1
-            [Logger]::Statements[0] | Should Be '0123456789'
+            [Logger]::Statements.Count | Should -Be 1
+            [Logger]::Statements[0] | Should -Be '0123456789'
         }
     }
 
@@ -63,9 +63,9 @@ Describe -Name 'Logger' {
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 10
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 10
-            [Logger]::Statements.Count | Should Be 10
+            [Logger]::Statements.Count | Should -Be 10
             foreach ($statement in [Logger]::Statements) {
-                $statement | Should Be '0123456789'
+                $statement | Should -Be '0123456789'
             }
         }
     }

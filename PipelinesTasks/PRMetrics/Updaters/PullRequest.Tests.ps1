@@ -53,7 +53,7 @@ Describe -Name 'PullRequest' {
             $response = [PullRequest]::IsPullRequest()
 
             # Assert
-            $response | Should Be $true
+            $response | Should -Be $true
 
             # Teardown
             $env:SYSTEM_PULLREQUEST_PULLREQUESTID = $OriginalPullRequestId
@@ -74,7 +74,7 @@ Describe -Name 'PullRequest' {
             $response = [PullRequest]::IsPullRequest()
 
             # Assert
-            $response | Should Be $false
+            $response | Should -Be $false
 
             # Teardown
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 1
@@ -98,7 +98,7 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 1
-            $response | Should BeNullOrEmpty
+            $response | Should -BeNullOrEmpty
         }
     }
 
@@ -118,7 +118,7 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 1
-            $response | Should Be "$([char]0x274C) **Add a description.**"
+            $response | Should -Be "$([char]0x274C) **Add a description.**"
         }
     }
 
@@ -138,7 +138,7 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 1
-            $response | Should Be "$([char]0x274C) **Add a description.**"
+            $response | Should -Be "$([char]0x274C) **Add a description.**"
         }
     }
 
@@ -158,7 +158,7 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 1
-            $response | Should Be "$([char]0x274C) **Add a description.**"
+            $response | Should -Be "$([char]0x274C) **Add a description.**"
         }
     }
 
@@ -178,7 +178,7 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 1
-            $response | Should Be "$([char]0x274C) **Add a description.**"
+            $response | Should -Be "$([char]0x274C) **Add a description.**"
         }
     }
 
@@ -197,7 +197,7 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 1
-            $response | Should Be "$([char]0x274C) **Add a description.**"
+            $response | Should -Be "$([char]0x274C) **Add a description.**"
         }
     }
 
@@ -214,7 +214,7 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 1
-            $response | Should BeNullOrEmpty
+            $response | Should -BeNullOrEmpty
         }
     }
 
@@ -231,7 +231,7 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 1
-            $response | Should Be "XS$([char]0x2714) $([char]0x25FE) Title"
+            $response | Should -Be "XS$([char]0x2714) $([char]0x25FE) Title"
         }
     }
 
@@ -249,7 +249,7 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 1
-            $response | Should Be "10XL$([char]0x2714) $([char]0x25FE) Title"
+            $response | Should -Be "10XL$([char]0x2714) $([char]0x25FE) Title"
         }
     }
 
@@ -266,7 +266,7 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 1
-            $response | Should Be "10XL$([char]0x2714) $([char]0x25FE) Title"
+            $response | Should -Be "10XL$([char]0x2714) $([char]0x25FE) Title"
         }
     }
 
@@ -284,7 +284,7 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 1
-            $response | Should Be "10XL$([char]0x2714) $([char]0x25FE) Title"
+            $response | Should -Be "10XL$([char]0x2714) $([char]0x25FE) Title"
         }
     }
 
@@ -301,7 +301,7 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 1
-            $response | Should Be "10XL$([char]0x2714) $([char]0x25FE) Title"
+            $response | Should -Be "10XL$([char]0x2714) $([char]0x25FE) Title"
         }
     }
 
@@ -319,7 +319,7 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 1
-            $response | Should Be "10XL$([char]0x2714) $([char]0x25FE) Title"
+            $response | Should -Be "10XL$([char]0x2714) $([char]0x25FE) Title"
         }
     }
 
@@ -337,7 +337,7 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 1
-            $response | Should Be "10XL$([char]0x2714) $([char]0x25FE) Title"
+            $response | Should -Be "10XL$([char]0x2714) $([char]0x25FE) Title"
         }
     }
 
@@ -355,7 +355,7 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 1
-            $response | Should Be "10XL$([char]0x2714) $([char]0x25FE) Title"
+            $response | Should -Be "10XL$([char]0x2714) $([char]0x25FE) Title"
         }
     }
 
@@ -373,7 +373,7 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 1
-            $response | Should Be "10XL$([char]0x2714) $([char]0x25FE) Title XL$([char]0x2714) $([char]0x25FE) "
+            $response | Should -Be "10XL$([char]0x2714) $([char]0x25FE) Title XL$([char]0x2714) $([char]0x25FE) "
         }
     }
 
@@ -397,7 +397,7 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 1
-            $response | Should Be 1
+            $response | Should -Be 1
         }
     }
 
@@ -427,7 +427,7 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 1
-            $response | Should Be 3
+            $response | Should -Be 3
         }
     }
 
@@ -448,14 +448,14 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 1
-            $response.Count | Should Be 5
-            $response.IsMetricsPresent | Should Be $false
-            $response.MetricsThreadId | Should Be 0
-            $response.MetricsCommentId | Should Be 0
-            $response.IgnoredFilesWithLinesAdded.Count | Should Be 1
-            $response.IgnoredFilesWithLinesAdded[0] | Should Be 'Ignored1.cs'
-            $response.IgnoredFilesWithoutLinesAdded.Count | Should Be 1
-            $response.IgnoredFilesWithoutLinesAdded[0] | Should Be 'Ignored2.cs'
+            $response.Count | Should -Be 5
+            $response.IsMetricsPresent | Should -Be $false
+            $response.MetricsThreadId | Should -Be 0
+            $response.MetricsCommentId | Should -Be 0
+            $response.IgnoredFilesWithLinesAdded.Count | Should -Be 1
+            $response.IgnoredFilesWithLinesAdded[0] | Should -Be 'Ignored1.cs'
+            $response.IgnoredFilesWithoutLinesAdded.Count | Should -Be 1
+            $response.IgnoredFilesWithoutLinesAdded[0] | Should -Be 'Ignored2.cs'
         }
     }
 
@@ -492,14 +492,14 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 2
-            $response.Count | Should Be 5
-            $response.IsMetricsPresent | Should Be $false
-            $response.MetricsThreadId | Should Be 0
-            $response.MetricsCommentId | Should Be 0
-            $response.IgnoredFilesWithLinesAdded.Count | Should Be 1
-            $response.IgnoredFilesWithLinesAdded[0] | Should Be 'Ignored1.cs'
-            $response.IgnoredFilesWithoutLinesAdded.Count | Should Be 1
-            $response.IgnoredFilesWithoutLinesAdded[0] | Should Be 'Ignored2.cs'
+            $response.Count | Should -Be 5
+            $response.IsMetricsPresent | Should -Be $false
+            $response.MetricsThreadId | Should -Be 0
+            $response.MetricsCommentId | Should -Be 0
+            $response.IgnoredFilesWithLinesAdded.Count | Should -Be 1
+            $response.IgnoredFilesWithLinesAdded[0] | Should -Be 'Ignored1.cs'
+            $response.IgnoredFilesWithoutLinesAdded.Count | Should -Be 1
+            $response.IgnoredFilesWithoutLinesAdded[0] | Should -Be 'Ignored2.cs'
         }
     }
 
@@ -535,14 +535,14 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 1
-            $response.Count | Should Be 5
-            $response.IsMetricsPresent | Should Be $false
-            $response.MetricsThreadId | Should Be 0
-            $response.MetricsCommentId | Should Be 0
-            $response.IgnoredFilesWithLinesAdded.Count | Should Be 1
-            $response.IgnoredFilesWithLinesAdded[0] | Should Be 'Ignored1.cs'
-            $response.IgnoredFilesWithoutLinesAdded.Count | Should Be 1
-            $response.IgnoredFilesWithoutLinesAdded[0] | Should Be 'Ignored2.cs'
+            $response.Count | Should -Be 5
+            $response.IsMetricsPresent | Should -Be $false
+            $response.MetricsThreadId | Should -Be 0
+            $response.MetricsCommentId | Should -Be 0
+            $response.IgnoredFilesWithLinesAdded.Count | Should -Be 1
+            $response.IgnoredFilesWithLinesAdded[0] | Should -Be 'Ignored1.cs'
+            $response.IgnoredFilesWithoutLinesAdded.Count | Should -Be 1
+            $response.IgnoredFilesWithoutLinesAdded[0] | Should -Be 'Ignored2.cs'
         }
     }
 
@@ -579,14 +579,14 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 2
-            $response.Count | Should Be 5
-            $response.IsMetricsPresent | Should Be $false
-            $response.MetricsThreadId | Should Be 0
-            $response.MetricsCommentId | Should Be 0
-            $response.IgnoredFilesWithLinesAdded.Count | Should Be 1
-            $response.IgnoredFilesWithLinesAdded[0] | Should Be 'Ignored1.cs'
-            $response.IgnoredFilesWithoutLinesAdded.Count | Should Be 1
-            $response.IgnoredFilesWithoutLinesAdded[0] | Should Be 'Ignored2.cs'
+            $response.Count | Should -Be 5
+            $response.IsMetricsPresent | Should -Be $false
+            $response.MetricsThreadId | Should -Be 0
+            $response.MetricsCommentId | Should -Be 0
+            $response.IgnoredFilesWithLinesAdded.Count | Should -Be 1
+            $response.IgnoredFilesWithLinesAdded[0] | Should -Be 'Ignored1.cs'
+            $response.IgnoredFilesWithoutLinesAdded.Count | Should -Be 1
+            $response.IgnoredFilesWithoutLinesAdded[0] | Should -Be 'Ignored2.cs'
         }
     }
 
@@ -623,14 +623,14 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 2
-            $response.Count | Should Be 5
-            $response.IsMetricsPresent | Should Be $false
-            $response.MetricsThreadId | Should Be 1
-            $response.MetricsCommentId | Should Be 2
-            $response.IgnoredFilesWithLinesAdded.Count | Should Be 1
-            $response.IgnoredFilesWithLinesAdded[0] | Should Be 'Ignored1.cs'
-            $response.IgnoredFilesWithoutLinesAdded.Count | Should Be 1
-            $response.IgnoredFilesWithoutLinesAdded[0] | Should Be 'Ignored2.cs'
+            $response.Count | Should -Be 5
+            $response.IsMetricsPresent | Should -Be $false
+            $response.MetricsThreadId | Should -Be 1
+            $response.MetricsCommentId | Should -Be 2
+            $response.IgnoredFilesWithLinesAdded.Count | Should -Be 1
+            $response.IgnoredFilesWithLinesAdded[0] | Should -Be 'Ignored1.cs'
+            $response.IgnoredFilesWithoutLinesAdded.Count | Should -Be 1
+            $response.IgnoredFilesWithoutLinesAdded[0] | Should -Be 'Ignored2.cs'
         }
     }
 
@@ -674,14 +674,14 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 2
-            $response.Count | Should Be 5
-            $response.IsMetricsPresent | Should Be $false
-            $response.MetricsThreadId | Should Be 1
-            $response.MetricsCommentId | Should Be 2
-            $response.IgnoredFilesWithLinesAdded.Count | Should Be 1
-            $response.IgnoredFilesWithLinesAdded[0] | Should Be 'Ignored1.cs'
-            $response.IgnoredFilesWithoutLinesAdded.Count | Should Be 1
-            $response.IgnoredFilesWithoutLinesAdded[0] | Should Be 'Ignored2.cs'
+            $response.Count | Should -Be 5
+            $response.IsMetricsPresent | Should -Be $false
+            $response.MetricsThreadId | Should -Be 1
+            $response.MetricsCommentId | Should -Be 2
+            $response.IgnoredFilesWithLinesAdded.Count | Should -Be 1
+            $response.IgnoredFilesWithLinesAdded[0] | Should -Be 'Ignored1.cs'
+            $response.IgnoredFilesWithoutLinesAdded.Count | Should -Be 1
+            $response.IgnoredFilesWithoutLinesAdded[0] | Should -Be 'Ignored2.cs'
         }
     }
 
@@ -731,14 +731,14 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 3
-            $response.Count | Should Be 5
-            $response.IsMetricsPresent | Should Be $false
-            $response.MetricsThreadId | Should Be 2
-            $response.MetricsCommentId | Should Be 4
-            $response.IgnoredFilesWithLinesAdded.Count | Should Be 1
-            $response.IgnoredFilesWithLinesAdded[0] | Should Be 'Ignored1.cs'
-            $response.IgnoredFilesWithoutLinesAdded.Count | Should Be 1
-            $response.IgnoredFilesWithoutLinesAdded[0] | Should Be 'Ignored2.cs'
+            $response.Count | Should -Be 5
+            $response.IsMetricsPresent | Should -Be $false
+            $response.MetricsThreadId | Should -Be 2
+            $response.MetricsCommentId | Should -Be 4
+            $response.IgnoredFilesWithLinesAdded.Count | Should -Be 1
+            $response.IgnoredFilesWithLinesAdded[0] | Should -Be 'Ignored1.cs'
+            $response.IgnoredFilesWithoutLinesAdded.Count | Should -Be 1
+            $response.IgnoredFilesWithoutLinesAdded[0] | Should -Be 'Ignored2.cs'
         }
     }
 
@@ -788,14 +788,14 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 3
-            $response.Count | Should Be 5
-            $response.IsMetricsPresent | Should Be $false
-            $response.MetricsThreadId | Should Be 1
-            $response.MetricsCommentId | Should Be 3
-            $response.IgnoredFilesWithLinesAdded.Count | Should Be 1
-            $response.IgnoredFilesWithLinesAdded[0] | Should Be 'Ignored1.cs'
-            $response.IgnoredFilesWithoutLinesAdded.Count | Should Be 1
-            $response.IgnoredFilesWithoutLinesAdded[0] | Should Be 'Ignored2.cs'
+            $response.Count | Should -Be 5
+            $response.IsMetricsPresent | Should -Be $false
+            $response.MetricsThreadId | Should -Be 1
+            $response.MetricsCommentId | Should -Be 3
+            $response.IgnoredFilesWithLinesAdded.Count | Should -Be 1
+            $response.IgnoredFilesWithLinesAdded[0] | Should -Be 'Ignored1.cs'
+            $response.IgnoredFilesWithoutLinesAdded.Count | Should -Be 1
+            $response.IgnoredFilesWithoutLinesAdded[0] | Should -Be 'Ignored2.cs'
         }
     }
 
@@ -839,14 +839,14 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 2
-            $response.Count | Should Be 5
-            $response.IsMetricsPresent | Should Be $true
-            $response.MetricsThreadId | Should Be 1
-            $response.MetricsCommentId | Should Be 3
-            $response.IgnoredFilesWithLinesAdded.Count | Should Be 1
-            $response.IgnoredFilesWithLinesAdded[0] | Should Be 'Ignored1.cs'
-            $response.IgnoredFilesWithoutLinesAdded.Count | Should Be 1
-            $response.IgnoredFilesWithoutLinesAdded[0] | Should Be 'Ignored2.cs'
+            $response.Count | Should -Be 5
+            $response.IsMetricsPresent | Should -Be $true
+            $response.MetricsThreadId | Should -Be 1
+            $response.MetricsCommentId | Should -Be 3
+            $response.IgnoredFilesWithLinesAdded.Count | Should -Be 1
+            $response.IgnoredFilesWithLinesAdded[0] | Should -Be 'Ignored1.cs'
+            $response.IgnoredFilesWithoutLinesAdded.Count | Should -Be 1
+            $response.IgnoredFilesWithoutLinesAdded[0] | Should -Be 'Ignored2.cs'
         }
     }
 
@@ -911,13 +911,13 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 4
-            $response.Count | Should Be 5
-            $response.IsMetricsPresent | Should Be $true
-            $response.MetricsThreadId | Should Be 1
-            $response.MetricsCommentId | Should Be 4
-            $response.IgnoredFilesWithLinesAdded.Count | Should Be 0
-            $response.IgnoredFilesWithoutLinesAdded.Count | Should Be 1
-            $response.IgnoredFilesWithoutLinesAdded[0] | Should Be 'Ignored2.cs'
+            $response.Count | Should -Be 5
+            $response.IsMetricsPresent | Should -Be $true
+            $response.MetricsThreadId | Should -Be 1
+            $response.MetricsCommentId | Should -Be 4
+            $response.IgnoredFilesWithLinesAdded.Count | Should -Be 0
+            $response.IgnoredFilesWithoutLinesAdded.Count | Should -Be 1
+            $response.IgnoredFilesWithoutLinesAdded[0] | Should -Be 'Ignored2.cs'
         }
     }
 
@@ -997,12 +997,12 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
-            $response.Count | Should Be 5
-            $response.IsMetricsPresent | Should Be $true
-            $response.MetricsThreadId | Should Be 1
-            $response.MetricsCommentId | Should Be 4
-            $response.IgnoredFilesWithLinesAdded.Count | Should Be 0
-            $response.IgnoredFilesWithoutLinesAdded.Count | Should Be 0
+            $response.Count | Should -Be 5
+            $response.IsMetricsPresent | Should -Be $true
+            $response.MetricsThreadId | Should -Be 1
+            $response.MetricsCommentId | Should -Be 4
+            $response.IgnoredFilesWithLinesAdded.Count | Should -Be 0
+            $response.IgnoredFilesWithoutLinesAdded.Count | Should -Be 0
         }
     }
 
@@ -1022,7 +1022,7 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 1
-            $response | Should Be 1
+            $response | Should -Be 1
         }
     }
 
@@ -1070,7 +1070,7 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 15
-            $response | Should Be ("# Metrics for iteration 1$([Environment]::NewLine)" +
+            $response | Should -Be ("# Metrics for iteration 1$([Environment]::NewLine)" +
                                    $([char]0x274C) +
                                    ' **Try to keep pull requests smaller than 50 lines of new product code by ' +
                                    'following the ' +
@@ -1132,7 +1132,7 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 15
-            $response | Should Be ("# Metrics for iteration 1$([Environment]::NewLine)" +
+            $response | Should -Be ("# Metrics for iteration 1$([Environment]::NewLine)" +
                                    $([char]0x274C) +
                                    ' **Try to keep pull requests smaller than 50 lines of new product code by ' +
                                    'following the ' +
@@ -1195,7 +1195,7 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 15
-            $response | Should Be ("# Metrics for iteration 2$([Environment]::NewLine)" +
+            $response | Should -Be ("# Metrics for iteration 2$([Environment]::NewLine)" +
                                    $([char]0x274C) +
                                    ' **Try to keep pull requests smaller than 50 lines of new product code by ' +
                                    'following the ' +
@@ -1259,7 +1259,7 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 15
-            $response | Should Be ("# Metrics for iteration 3$([Environment]::NewLine)" +
+            $response | Should -Be ("# Metrics for iteration 3$([Environment]::NewLine)" +
                                    $([char]0x274C) +
                                    ' **Try to keep pull requests smaller than 50 lines of new product code by ' +
                                    'following the ' +
@@ -1328,7 +1328,7 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 15
-            $response | Should Be ("# Metrics for iteration 3$([Environment]::NewLine)" +
+            $response | Should -Be ("# Metrics for iteration 3$([Environment]::NewLine)" +
                                    "$([char]0x2714) **Thanks for keeping your pull request small.**" +
                                    $([Environment]::NewLine) +
                                    "$([char]0x26A0)$([char]0xFE0F) **Consider adding additional tests.**" +
@@ -1395,7 +1395,7 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 15
-            $response | Should Be ("# Metrics for iteration 3$([Environment]::NewLine)" +
+            $response | Should -Be ("# Metrics for iteration 3$([Environment]::NewLine)" +
                                    $([char]0x274C) +
                                    ' **Try to keep pull requests smaller than 50 lines of new product code by ' +
                                    'following the ' +
@@ -1457,7 +1457,7 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 15
-            $response | Should Be ("# Metrics for iteration 4$([Environment]::NewLine)" +
+            $response | Should -Be ("# Metrics for iteration 4$([Environment]::NewLine)" +
                                    "$([char]0x2714) **Thanks for keeping your pull request small.**" +
                                    $([Environment]::NewLine) +
                                    "$([char]0x26A0)$([char]0xFE0F) **Consider adding additional tests.**" +
@@ -1517,7 +1517,7 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 15
-            $response | Should Be ("# Metrics for iteration 5$([Environment]::NewLine)" +
+            $response | Should -Be ("# Metrics for iteration 5$([Environment]::NewLine)" +
                                    "$([char]0x2714) **Thanks for keeping your pull request small.**" +
                                    $([Environment]::NewLine) +
                                    "$([char]0x2714) **Thanks for adding tests.**" +
@@ -1573,7 +1573,7 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 14
-            $response | Should Be ("# Metrics for iteration 5$([Environment]::NewLine)" +
+            $response | Should -Be ("# Metrics for iteration 5$([Environment]::NewLine)" +
                                    "$([char]0x2714) **Thanks for keeping your pull request small.**" +
                                    $([Environment]::NewLine) +
                                    "||Lines$([Environment]::NewLine)" +
@@ -1630,7 +1630,7 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 15
-            $response | Should Be ("# Metrics for iteration 5$([Environment]::NewLine)" +
+            $response | Should -Be ("# Metrics for iteration 5$([Environment]::NewLine)" +
                                    "$([char]0x2714) **Thanks for keeping your pull request small.**" +
                                    $([Environment]::NewLine) +
                                    "$([char]0x2714) **Thanks for adding tests.**" +
@@ -1697,7 +1697,7 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 15
-            $response | Should Be ("# Metrics for iteration 5$([Environment]::NewLine)" +
+            $response | Should -Be ("# Metrics for iteration 5$([Environment]::NewLine)" +
                                    $([char]0x274C) +
                                    ' **Try to keep pull requests smaller than 1,000,000 lines of new product code by ' +
                                    'following the ' +
@@ -1751,7 +1751,7 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 8
-            $response | Should Be Closed
+            $response | Should -Be Closed
         }
     }
 
@@ -1790,7 +1790,7 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 8
-            $response | Should Be Active
+            $response | Should -Be Active
         }
     }
 
@@ -1827,7 +1827,7 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 7
-            $response | Should Be Active
+            $response | Should -Be Active
         }
     }
 
@@ -1844,7 +1844,7 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 1
-            $response | Should Be "$([char]0x2757) **This file may not need to be reviewed.**"
+            $response | Should -Be "$([char]0x2757) **This file may not need to be reviewed.**"
         }
     }
 }

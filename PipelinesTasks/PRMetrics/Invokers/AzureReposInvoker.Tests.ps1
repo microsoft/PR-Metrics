@@ -12,6 +12,11 @@
 . $PSScriptRoot\AzureReposCommentThreadStatus.ps1
 . $PSScriptRoot\AzureReposInvoker.ps1
 
+BeforeAll {
+    # DON'T use $MyInvocation.MyCommand.Path
+    . $PSCommandPath.Replace('.Tests.ps1','.ps1')
+}
+
 Describe -Name 'AzureReposInvoker' {
     BeforeEach {
         Set-StrictMode -Version 'Latest'
@@ -72,9 +77,9 @@ Describe -Name 'AzureReposInvoker' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 1
-            $AzureReposInvoker.OAuthHeader.Count | Should Be 1
-            $AzureReposInvoker.OAuthHeader.Authorization | Should Be 'Bearer ACCESSTOKEN'
-            $AzureReposInvoker.BaseUri | Should Be ('https://dev.azure.com/prmetrics/AzureReposInvoker/' +
+            $AzureReposInvoker.OAuthHeader.Count | Should -Be 1
+            $AzureReposInvoker.OAuthHeader.Authorization | Should -Be 'Bearer ACCESSTOKEN'
+            $AzureReposInvoker.BaseUri | Should -Be ('https://dev.azure.com/prmetrics/AzureReposInvoker/' +
                                               '_apis/git/repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/' +
                                               'pullRequests/12345')
         }
@@ -131,7 +136,7 @@ Describe -Name 'AzureReposInvoker' {
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 8
             Assert-MockCalled -CommandName 'Invoke-RestMethod' -Exactly 1
-            $response.value | Should Be 'Details Data'
+            $response.value | Should -Be 'Details Data'
         }
     }
 
@@ -187,7 +192,7 @@ Describe -Name 'AzureReposInvoker' {
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 8
             Assert-MockCalled -CommandName 'Invoke-RestMethod' -Exactly 1
-            $response.value | Should Be 'Iterations Data'
+            $response.value | Should -Be 'Iterations Data'
         }
     }
 
@@ -242,7 +247,7 @@ Describe -Name 'AzureReposInvoker' {
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 8
             Assert-MockCalled -CommandName 'Invoke-RestMethod' -Exactly 1
-            $response.value | Should Be 'Comment Threads Data'
+            $response.value | Should -Be 'Comment Threads Data'
         }
     }
 
@@ -876,7 +881,7 @@ Describe -Name 'AzureReposInvoker' {
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 7
             Assert-MockCalled -CommandName 'Invoke-RestMethod' -Exactly 1
-            $response.value | Should Be 'Comment Thread Data'
+            $response.value | Should -Be 'Comment Thread Data'
         }
     }
 
@@ -933,7 +938,7 @@ Describe -Name 'AzureReposInvoker' {
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 7
             Assert-MockCalled -CommandName 'Invoke-RestMethod' -Exactly 1
-            $response.value | Should Be 'Comment Thread Data'
+            $response.value | Should -Be 'Comment Thread Data'
         }
     }
 
@@ -990,7 +995,7 @@ Describe -Name 'AzureReposInvoker' {
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 7
             Assert-MockCalled -CommandName 'Invoke-RestMethod' -Exactly 1
-            $response.value | Should Be 'Comment Thread Data'
+            $response.value | Should -Be 'Comment Thread Data'
         }
     }
 
@@ -1134,7 +1139,7 @@ Describe -Name 'AzureReposInvoker' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 1
-            $response | Should Be $true
+            $response | Should -Be $true
             $env:SYSTEM_ACCESSTOKEN = $OriginalAccessToken
         }
     }
@@ -1154,7 +1159,7 @@ Describe -Name 'AzureReposInvoker' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 1
-            $response | Should Be $false
+            $response | Should -Be $false
             $env:SYSTEM_ACCESSTOKEN = $OriginalAccessToken
         }
     }
