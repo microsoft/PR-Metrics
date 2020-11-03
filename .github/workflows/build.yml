@@ -25,8 +25,7 @@ jobs:
         run: |
           $Result = Invoke-Pester
           $Result
-          if ($Result -notlike '*Failed: 0,*') { Throw 'PowerShell Tests failed.' }
-          exit 0
+          if ($Result -notlike '*Failed: 0,*') { Throw 'PowerShell Tests failed.' } else { exit 0 }
 
   validate:
     runs-on: ubuntu-latest
