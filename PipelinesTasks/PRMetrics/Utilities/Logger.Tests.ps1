@@ -18,6 +18,9 @@ Describe -Name 'Logger' {
     BeforeEach {
         Set-StrictMode -Version 'Latest'
 
+        Mock -CommandName 'Write-Verbose' -MockWith {
+            throw [System.NotImplementedException]"Write-Verbose must not be called but was called with '$Message'."
+        }
         Mock -CommandName 'Write-Information' -MockWith {
             throw [System.NotImplementedException]"Write-Information must not be called but was called with '$MessageData'."
         }

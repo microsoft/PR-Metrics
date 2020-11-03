@@ -16,6 +16,14 @@ BeforeAll {
 }
 
 Describe -Name 'GitInvoker' {
+    BeforeEach {
+        Set-StrictMode -Version 'Latest'
+
+        Mock -CommandName 'Write-Verbose' -MockWith {
+            throw [System.NotImplementedException]"Write-Verbose must not be called but was called with '$Message'."
+        }
+    }
+
     BeforeAll {
         Set-StrictMode -Version 'Latest'
 
