@@ -17,6 +17,9 @@ jobs:
         uses: microsoft/setup-msbuild@v1.0.2
       - name: Run MSBuild
         run: msbuild
+      - shell: pwsh
+        run: |
+          invoke-scriptanalyzer . | Where-Object -Property 'RuleName' -NE 'TypeNotFound'
       - name: PowerShell Tests
         id: powershell_tests
         uses: zyborg/pester-tests-report@v1
