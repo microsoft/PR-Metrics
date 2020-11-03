@@ -79,8 +79,8 @@ Describe -Name 'AzureReposInvoker' {
             $AzureReposInvoker.OAuthHeader.Count | Should -Be 1
             $AzureReposInvoker.OAuthHeader.Authorization | Should -Be 'Bearer ACCESSTOKEN'
             $AzureReposInvoker.BaseUri | Should -Be ('https://dev.azure.com/prmetrics/AzureReposInvoker/' +
-                                              '_apis/git/repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/' +
-                                              'pullRequests/12345')
+                                                     '_apis/git/repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/' +
+                                                     'pullRequests/12345')
         }
     }
 
@@ -121,7 +121,7 @@ Describe -Name 'AzureReposInvoker' {
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq ("{$([Environment]::NewLine)" +
-                              "    `"value`":  `"Details Data`"$([Environment]::NewLine)" +
+                              "  `"value`": `"Details Data`"$([Environment]::NewLine)" +
                               '}')
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
@@ -177,7 +177,7 @@ Describe -Name 'AzureReposInvoker' {
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq ("{$([Environment]::NewLine)" +
-                              "    `"value`":  `"Iterations Data`"$([Environment]::NewLine)" +
+                              "  `"value`": `"Iterations Data`"$([Environment]::NewLine)" +
                               '}')
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
@@ -232,7 +232,7 @@ Describe -Name 'AzureReposInvoker' {
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq ("{$([Environment]::NewLine)" +
-                              "    `"value`":  `"Comment Threads Data`"$([Environment]::NewLine)" +
+                              "  `"value`": `"Comment Threads Data`"$([Environment]::NewLine)" +
                               '}')
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
@@ -356,7 +356,7 @@ Describe -Name 'AzureReposInvoker' {
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq ("{$([Environment]::NewLine)" +
-                              "    `"value`":  `"Fake Data`"$([Environment]::NewLine)" +
+                              "  `"value`": `"Fake Data`"$([Environment]::NewLine)" +
                               '}')
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
@@ -413,7 +413,7 @@ Describe -Name 'AzureReposInvoker' {
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq ("{$([Environment]::NewLine)" +
-                              "    `"value`":  `"Fake Data`"$([Environment]::NewLine)" +
+                              "  `"value`": `"Fake Data`"$([Environment]::NewLine)" +
                               '}')
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
@@ -470,7 +470,7 @@ Describe -Name 'AzureReposInvoker' {
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq ("{$([Environment]::NewLine)" +
-                              "    `"value`":  `"Fake Data`"$([Environment]::NewLine)" +
+                              "  `"value`": `"Fake Data`"$([Environment]::NewLine)" +
                               '}')
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
@@ -527,7 +527,7 @@ Describe -Name 'AzureReposInvoker' {
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq ("{$([Environment]::NewLine)" +
-                              "    `"value`":  `"Fake Data`"$([Environment]::NewLine)" +
+                              "  `"value`": `"Fake Data`"$([Environment]::NewLine)" +
                               '}')
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
@@ -584,7 +584,7 @@ Describe -Name 'AzureReposInvoker' {
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq ("{$([Environment]::NewLine)" +
-                              "    `"value`":  `"Fake Data`"$([Environment]::NewLine)" +
+                              "  `"value`": `"Fake Data`"$([Environment]::NewLine)" +
                               '}')
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
@@ -641,7 +641,7 @@ Describe -Name 'AzureReposInvoker' {
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq ("{$([Environment]::NewLine)" +
-                              "    `"value`":  `"Fake Data`"$([Environment]::NewLine)" +
+                              "  `"value`": `"Fake Data`"$([Environment]::NewLine)" +
                               '}')
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
@@ -698,7 +698,7 @@ Describe -Name 'AzureReposInvoker' {
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq ("{$([Environment]::NewLine)" +
-                              "    `"value`":  `"Fake Data`"$([Environment]::NewLine)" +
+                              "  `"value`": `"Fake Data`"$([Environment]::NewLine)" +
                               '}')
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
@@ -755,7 +755,7 @@ Describe -Name 'AzureReposInvoker' {
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq ("{$([Environment]::NewLine)" +
-                              "    `"value`":  `"Fake Data`"$([Environment]::NewLine)" +
+                              "  `"value`": `"Fake Data`"$([Environment]::NewLine)" +
                               '}')
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
@@ -812,7 +812,7 @@ Describe -Name 'AzureReposInvoker' {
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq ("{$([Environment]::NewLine)" +
-                              "    `"value`":  `"Fake Data`"$([Environment]::NewLine)" +
+                              "  `"value`": `"Fake Data`"$([Environment]::NewLine)" +
                               '}')
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
@@ -866,7 +866,7 @@ Describe -Name 'AzureReposInvoker' {
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq ("{$([Environment]::NewLine)" +
-                              "    `"value`":  `"Comment Thread Data`"$([Environment]::NewLine)" +
+                              "  `"value`": `"Comment Thread Data`"$([Environment]::NewLine)" +
                               '}')
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
@@ -923,7 +923,7 @@ Describe -Name 'AzureReposInvoker' {
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq ("{$([Environment]::NewLine)" +
-                              "    `"value`":  `"Comment Thread Data`"$([Environment]::NewLine)" +
+                              "  `"value`": `"Comment Thread Data`"$([Environment]::NewLine)" +
                               '}')
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
@@ -980,7 +980,7 @@ Describe -Name 'AzureReposInvoker' {
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq ("{$([Environment]::NewLine)" +
-                              "    `"value`":  `"Comment Thread Data`"$([Environment]::NewLine)" +
+                              "  `"value`": `"Comment Thread Data`"$([Environment]::NewLine)" +
                               '}')
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
@@ -1039,7 +1039,7 @@ Describe -Name 'AzureReposInvoker' {
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq ("{$([Environment]::NewLine)" +
-                              "    `"value`":  `"Fake Data`"$([Environment]::NewLine)" +
+                              "  `"value`": `"Fake Data`"$([Environment]::NewLine)" +
                               '}')
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
@@ -1070,14 +1070,14 @@ Describe -Name 'AzureReposInvoker' {
                 $Message -eq '* [AzureReposInvoker]::GetUri() hidden'
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
-                $Message -eq ('PATCH ' +
-                              'https://dev.azure.com/prmetrics/AzureReposInvoker/_apis/git/repositories/' +
-                              '41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/properties?' +
-                              'api-version=5.1-preview.1 ' +
-                              '[{"op":"replace","path":"/Element4","value":1},' +
-                              '{"op":"replace","path":"/Element2","value":"Value2"},' +
-                              '{"op":"replace","path":"/Element1","value":"Value1"},' +
-                              '{"op":"replace","path":"/Element3","value":true}]')
+                $Message -like ('PATCH ' +
+                                'https://dev.azure.com/prmetrics/AzureReposInvoker/_apis/git/repositories/' +
+                                '41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/properties?' +
+                                'api-version=5.1-preview.1 *') -and
+                $Message -like '*{"op":"replace","path":"/Element1","value":"Value1"}*' -and
+                $Message -like '*{"op":"replace","path":"/Element2","value":"Value2"}*' -and
+                $Message -like '*{"op":"replace","path":"/Element3","value":true}*' -and
+                $Message -like '*{"op":"replace","path":"/Element4","value":1}*'
             }
             Mock -CommandName 'Invoke-RestMethod' -MockWith {
                 return [PSCustomObject]@{
@@ -1090,10 +1090,10 @@ Describe -Name 'AzureReposInvoker' {
                           'api-version=5.1-preview.1') -and
                 $Headers.Count -eq 1 -and
                 $Headers.Authorization -eq 'Bearer ACCESSTOKEN' -and
-                $Body -eq '[{"op":"replace","path":"/Element4","value":1},' +
-                          '{"op":"replace","path":"/Element2","value":"Value2"},' +
-                          '{"op":"replace","path":"/Element1","value":"Value1"},' +
-                          '{"op":"replace","path":"/Element3","value":true}]' -and
+                $Body -like '*{"op":"replace","path":"/Element1","value":"Value1"}*' -and
+                $Body -like '*{"op":"replace","path":"/Element2","value":"Value2"}*' -and
+                $Body -like '*{"op":"replace","path":"/Element3","value":true}*' -and
+                $Body -like '*{"op":"replace","path":"/Element4","value":1}*' -and
                 $ContentType -eq 'application/json-patch+json; charset=utf-8'
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
@@ -1101,7 +1101,7 @@ Describe -Name 'AzureReposInvoker' {
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq ("{$([Environment]::NewLine)" +
-                              "    `"value`":  `"Fake Data`"$([Environment]::NewLine)" +
+                              "  `"value`": `"Fake Data`"$([Environment]::NewLine)" +
                               '}')
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {

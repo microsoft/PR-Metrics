@@ -1136,20 +1136,20 @@ Describe -Name 'PullRequest' {
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 31
             $response | Should -Be ("# Metrics for iteration 1$([Environment]::NewLine)" +
-                                   $([char]0x274C) +
-                                   ' **Try to keep pull requests smaller than 50 lines of new product code by ' +
-                                   'following the ' +
-                                   '[Single Responsibility Principle (SRP)](https://wikipedia.org/wiki/Single-responsibility_principle).**' +
-                                   $([Environment]::NewLine) +
-                                   "$([char]0x26A0)$([char]0xFE0F) **Consider adding additional tests.**" +
-                                   $([Environment]::NewLine) +
-                                   "||Lines$([Environment]::NewLine)" +
-                                   "-|-:$([Environment]::NewLine)" +
-                                   "Product Code|200$([Environment]::NewLine)" +
-                                   "Test Code|0$([Environment]::NewLine)" +
-                                   "**Subtotal**|**200**$([Environment]::NewLine)" +
-                                   "Ignored|0$([Environment]::NewLine)" +
-                                   '**Total**|**200**')
+                                    $([char]0x274C) +
+                                    ' **Try to keep pull requests smaller than 50 lines of new product code by ' +
+                                    'following the ' +
+                                    '[Single Responsibility Principle (SRP)](https://wikipedia.org/wiki/Single-responsibility_principle).**' +
+                                    $([Environment]::NewLine) +
+                                    "$([char]0x26A0)$([char]0xFE0F) **Consider adding additional tests.**" +
+                                    $([Environment]::NewLine) +
+                                    "||Lines$([Environment]::NewLine)" +
+                                    "-|-:$([Environment]::NewLine)" +
+                                    "Product Code|200$([Environment]::NewLine)" +
+                                    "Test Code|0$([Environment]::NewLine)" +
+                                    "**Subtotal**|**200**$([Environment]::NewLine)" +
+                                    "Ignored|0$([Environment]::NewLine)" +
+                                    '**Total**|**200**')
         }
     }
 
@@ -1198,20 +1198,20 @@ Describe -Name 'PullRequest' {
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 31
             $response | Should -Be ("# Metrics for iteration 1$([Environment]::NewLine)" +
-                                   $([char]0x274C) +
-                                   ' **Try to keep pull requests smaller than 50 lines of new product code by ' +
-                                   'following the ' +
-                                   '[Single Responsibility Principle (SRP)](https://wikipedia.org/wiki/Single-responsibility_principle).**' +
-                                   $([Environment]::NewLine) +
-                                   "$([char]0x26A0)$([char]0xFE0F) **Consider adding additional tests.**" +
-                                   $([Environment]::NewLine) +
-                                   "||Lines$([Environment]::NewLine)" +
-                                   "-|-:$([Environment]::NewLine)" +
-                                   "Product Code|200$([Environment]::NewLine)" +
-                                   "Test Code|0$([Environment]::NewLine)" +
-                                   "**Subtotal**|**200**$([Environment]::NewLine)" +
-                                   "Ignored|0$([Environment]::NewLine)" +
-                                   '**Total**|**200**')
+                                    $([char]0x274C) +
+                                    ' **Try to keep pull requests smaller than 50 lines of new product code by ' +
+                                    'following the ' +
+                                    '[Single Responsibility Principle (SRP)](https://wikipedia.org/wiki/Single-responsibility_principle).**' +
+                                    $([Environment]::NewLine) +
+                                    "$([char]0x26A0)$([char]0xFE0F) **Consider adding additional tests.**" +
+                                    $([Environment]::NewLine) +
+                                    "||Lines$([Environment]::NewLine)" +
+                                    "-|-:$([Environment]::NewLine)" +
+                                    "Product Code|200$([Environment]::NewLine)" +
+                                    "Test Code|0$([Environment]::NewLine)" +
+                                    "**Subtotal**|**200**$([Environment]::NewLine)" +
+                                    "Ignored|0$([Environment]::NewLine)" +
+                                    '**Total**|**200**')
         }
     }
 
@@ -1261,20 +1261,20 @@ Describe -Name 'PullRequest' {
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 31
             $response | Should -Be ("# Metrics for iteration 2$([Environment]::NewLine)" +
-                                   $([char]0x274C) +
-                                   ' **Try to keep pull requests smaller than 50 lines of new product code by ' +
-                                   'following the ' +
-                                   '[Single Responsibility Principle (SRP)](https://wikipedia.org/wiki/Single-responsibility_principle).**' +
-                                   $([Environment]::NewLine) +
-                                   "$([char]0x26A0)$([char]0xFE0F) **Consider adding additional tests.**" +
-                                   $([Environment]::NewLine) +
-                                   "||Lines$([Environment]::NewLine)" +
-                                   "-|-:$([Environment]::NewLine)" +
-                                   "Product Code|200$([Environment]::NewLine)" +
-                                   "Test Code|0$([Environment]::NewLine)" +
-                                   "**Subtotal**|**200**$([Environment]::NewLine)" +
-                                   "Ignored|0$([Environment]::NewLine)" +
-                                   '**Total**|**200**')
+                                    $([char]0x274C) +
+                                    ' **Try to keep pull requests smaller than 50 lines of new product code by ' +
+                                    'following the ' +
+                                    '[Single Responsibility Principle (SRP)](https://wikipedia.org/wiki/Single-responsibility_principle).**' +
+                                    $([Environment]::NewLine) +
+                                    "$([char]0x26A0)$([char]0xFE0F) **Consider adding additional tests.**" +
+                                    $([Environment]::NewLine) +
+                                    "||Lines$([Environment]::NewLine)" +
+                                    "-|-:$([Environment]::NewLine)" +
+                                    "Product Code|200$([Environment]::NewLine)" +
+                                    "Test Code|0$([Environment]::NewLine)" +
+                                    "**Subtotal**|**200**$([Environment]::NewLine)" +
+                                    "Ignored|0$([Environment]::NewLine)" +
+                                    '**Total**|**200**')
         }
     }
 
@@ -1325,20 +1325,20 @@ Describe -Name 'PullRequest' {
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 31
             $response | Should -Be ("# Metrics for iteration 3$([Environment]::NewLine)" +
-                                   $([char]0x274C) +
-                                   ' **Try to keep pull requests smaller than 50 lines of new product code by ' +
-                                   'following the ' +
-                                   '[Single Responsibility Principle (SRP)](https://wikipedia.org/wiki/Single-responsibility_principle).**' +
-                                   $([Environment]::NewLine) +
-                                   "$([char]0x26A0)$([char]0xFE0F) **Consider adding additional tests.**" +
-                                   $([Environment]::NewLine) +
-                                   "||Lines$([Environment]::NewLine)" +
-                                   "-|-:$([Environment]::NewLine)" +
-                                   "Product Code|200$([Environment]::NewLine)" +
-                                   "Test Code|20$([Environment]::NewLine)" +
-                                   "**Subtotal**|**220**$([Environment]::NewLine)" +
-                                   "Ignored|0$([Environment]::NewLine)" +
-                                   '**Total**|**220**')
+                                    $([char]0x274C) +
+                                    ' **Try to keep pull requests smaller than 50 lines of new product code by ' +
+                                    'following the ' +
+                                    '[Single Responsibility Principle (SRP)](https://wikipedia.org/wiki/Single-responsibility_principle).**' +
+                                    $([Environment]::NewLine) +
+                                    "$([char]0x26A0)$([char]0xFE0F) **Consider adding additional tests.**" +
+                                    $([Environment]::NewLine) +
+                                    "||Lines$([Environment]::NewLine)" +
+                                    "-|-:$([Environment]::NewLine)" +
+                                    "Product Code|200$([Environment]::NewLine)" +
+                                    "Test Code|20$([Environment]::NewLine)" +
+                                    "**Subtotal**|**220**$([Environment]::NewLine)" +
+                                    "Ignored|0$([Environment]::NewLine)" +
+                                    '**Total**|**220**')
         }
     }
 
@@ -1394,17 +1394,17 @@ Describe -Name 'PullRequest' {
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 35
             $response | Should -Be ("# Metrics for iteration 3$([Environment]::NewLine)" +
-                                   "$([char]0x2714) **Thanks for keeping your pull request small.**" +
-                                   $([Environment]::NewLine) +
-                                   "$([char]0x26A0)$([char]0xFE0F) **Consider adding additional tests.**" +
-                                   $([Environment]::NewLine) +
-                                   "||Lines$([Environment]::NewLine)" +
-                                   "-|-:$([Environment]::NewLine)" +
-                                   "Product Code|20$([Environment]::NewLine)" +
-                                   "Test Code|0$([Environment]::NewLine)" +
-                                   "**Subtotal**|**20**$([Environment]::NewLine)" +
-                                   "Ignored|200$([Environment]::NewLine)" +
-                                   '**Total**|**220**')
+                                    "$([char]0x2714) **Thanks for keeping your pull request small.**" +
+                                    $([Environment]::NewLine) +
+                                    "$([char]0x26A0)$([char]0xFE0F) **Consider adding additional tests.**" +
+                                    $([Environment]::NewLine) +
+                                    "||Lines$([Environment]::NewLine)" +
+                                    "-|-:$([Environment]::NewLine)" +
+                                    "Product Code|20$([Environment]::NewLine)" +
+                                    "Test Code|0$([Environment]::NewLine)" +
+                                    "**Subtotal**|**20**$([Environment]::NewLine)" +
+                                    "Ignored|200$([Environment]::NewLine)" +
+                                    '**Total**|**220**')
         }
     }
 
@@ -1461,20 +1461,20 @@ Describe -Name 'PullRequest' {
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 35
             $response | Should -Be ("# Metrics for iteration 3$([Environment]::NewLine)" +
-                                   $([char]0x274C) +
-                                   ' **Try to keep pull requests smaller than 50 lines of new product code by ' +
-                                   'following the ' +
-                                   '[Single Responsibility Principle (SRP)](https://wikipedia.org/wiki/Single-responsibility_principle).**' +
-                                   $([Environment]::NewLine) +
-                                   "$([char]0x26A0)$([char]0xFE0F) **Consider adding additional tests.**" +
-                                   $([Environment]::NewLine) +
-                                   "||Lines$([Environment]::NewLine)" +
-                                   "-|-:$([Environment]::NewLine)" +
-                                   "Product Code|200$([Environment]::NewLine)" +
-                                   "Test Code|0$([Environment]::NewLine)" +
-                                   "**Subtotal**|**200**$([Environment]::NewLine)" +
-                                   "Ignored|20$([Environment]::NewLine)" +
-                                   '**Total**|**220**')
+                                    $([char]0x274C) +
+                                    ' **Try to keep pull requests smaller than 50 lines of new product code by ' +
+                                    'following the ' +
+                                    '[Single Responsibility Principle (SRP)](https://wikipedia.org/wiki/Single-responsibility_principle).**' +
+                                    $([Environment]::NewLine) +
+                                    "$([char]0x26A0)$([char]0xFE0F) **Consider adding additional tests.**" +
+                                    $([Environment]::NewLine) +
+                                    "||Lines$([Environment]::NewLine)" +
+                                    "-|-:$([Environment]::NewLine)" +
+                                    "Product Code|200$([Environment]::NewLine)" +
+                                    "Test Code|0$([Environment]::NewLine)" +
+                                    "**Subtotal**|**200**$([Environment]::NewLine)" +
+                                    "Ignored|20$([Environment]::NewLine)" +
+                                    '**Total**|**220**')
         }
     }
 
@@ -1523,17 +1523,17 @@ Describe -Name 'PullRequest' {
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 31
             $response | Should -Be ("# Metrics for iteration 4$([Environment]::NewLine)" +
-                                   "$([char]0x2714) **Thanks for keeping your pull request small.**" +
-                                   $([Environment]::NewLine) +
-                                   "$([char]0x26A0)$([char]0xFE0F) **Consider adding additional tests.**" +
-                                   $([Environment]::NewLine) +
-                                   "||Lines$([Environment]::NewLine)" +
-                                   "-|-:$([Environment]::NewLine)" +
-                                   "Product Code|1$([Environment]::NewLine)" +
-                                   "Test Code|0$([Environment]::NewLine)" +
-                                   "**Subtotal**|**1**$([Environment]::NewLine)" +
-                                   "Ignored|0$([Environment]::NewLine)" +
-                                   '**Total**|**1**')
+                                    "$([char]0x2714) **Thanks for keeping your pull request small.**" +
+                                    $([Environment]::NewLine) +
+                                    "$([char]0x26A0)$([char]0xFE0F) **Consider adding additional tests.**" +
+                                    $([Environment]::NewLine) +
+                                    "||Lines$([Environment]::NewLine)" +
+                                    "-|-:$([Environment]::NewLine)" +
+                                    "Product Code|1$([Environment]::NewLine)" +
+                                    "Test Code|0$([Environment]::NewLine)" +
+                                    "**Subtotal**|**1**$([Environment]::NewLine)" +
+                                    "Ignored|0$([Environment]::NewLine)" +
+                                    '**Total**|**1**')
         }
     }
 
@@ -1583,17 +1583,17 @@ Describe -Name 'PullRequest' {
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 31
             $response | Should -Be ("# Metrics for iteration 5$([Environment]::NewLine)" +
-                                   "$([char]0x2714) **Thanks for keeping your pull request small.**" +
-                                   $([Environment]::NewLine) +
-                                   "$([char]0x2714) **Thanks for adding tests.**" +
-                                   $([Environment]::NewLine) +
-                                   "||Lines$([Environment]::NewLine)" +
-                                   "-|-:$([Environment]::NewLine)" +
-                                   "Product Code|2$([Environment]::NewLine)" +
-                                   "Test Code|2$([Environment]::NewLine)" +
-                                   "**Subtotal**|**4**$([Environment]::NewLine)" +
-                                   "Ignored|0$([Environment]::NewLine)" +
-                                   '**Total**|**4**')
+                                    "$([char]0x2714) **Thanks for keeping your pull request small.**" +
+                                    $([Environment]::NewLine) +
+                                    "$([char]0x2714) **Thanks for adding tests.**" +
+                                    $([Environment]::NewLine) +
+                                    "||Lines$([Environment]::NewLine)" +
+                                    "-|-:$([Environment]::NewLine)" +
+                                    "Product Code|2$([Environment]::NewLine)" +
+                                    "Test Code|2$([Environment]::NewLine)" +
+                                    "**Subtotal**|**4**$([Environment]::NewLine)" +
+                                    "Ignored|0$([Environment]::NewLine)" +
+                                    '**Total**|**4**')
         }
     }
 
@@ -1639,15 +1639,15 @@ Describe -Name 'PullRequest' {
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 30
             $response | Should -Be ("# Metrics for iteration 5$([Environment]::NewLine)" +
-                                   "$([char]0x2714) **Thanks for keeping your pull request small.**" +
-                                   $([Environment]::NewLine) +
-                                   "||Lines$([Environment]::NewLine)" +
-                                   "-|-:$([Environment]::NewLine)" +
-                                   "Product Code|0$([Environment]::NewLine)" +
-                                   "Test Code|200$([Environment]::NewLine)" +
-                                   "**Subtotal**|**200**$([Environment]::NewLine)" +
-                                   "Ignored|0$([Environment]::NewLine)" +
-                                   '**Total**|**200**')
+                                    "$([char]0x2714) **Thanks for keeping your pull request small.**" +
+                                    $([Environment]::NewLine) +
+                                    "||Lines$([Environment]::NewLine)" +
+                                    "-|-:$([Environment]::NewLine)" +
+                                    "Product Code|0$([Environment]::NewLine)" +
+                                    "Test Code|200$([Environment]::NewLine)" +
+                                    "**Subtotal**|**200**$([Environment]::NewLine)" +
+                                    "Ignored|0$([Environment]::NewLine)" +
+                                    '**Total**|**200**')
         }
     }
 
@@ -1696,17 +1696,17 @@ Describe -Name 'PullRequest' {
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 32
             $response | Should -Be ("# Metrics for iteration 5$([Environment]::NewLine)" +
-                                   "$([char]0x2714) **Thanks for keeping your pull request small.**" +
-                                   $([Environment]::NewLine) +
-                                   "$([char]0x2714) **Thanks for adding tests.**" +
-                                   $([Environment]::NewLine) +
-                                   "||Lines$([Environment]::NewLine)" +
-                                   "-|-:$([Environment]::NewLine)" +
-                                   "Product Code|0$([Environment]::NewLine)" +
-                                   "Test Code|0$([Environment]::NewLine)" +
-                                   "**Subtotal**|**0**$([Environment]::NewLine)" +
-                                   "Ignored|200$([Environment]::NewLine)" +
-                                   '**Total**|**200**')
+                                    "$([char]0x2714) **Thanks for keeping your pull request small.**" +
+                                    $([Environment]::NewLine) +
+                                    "$([char]0x2714) **Thanks for adding tests.**" +
+                                    $([Environment]::NewLine) +
+                                    "||Lines$([Environment]::NewLine)" +
+                                    "-|-:$([Environment]::NewLine)" +
+                                    "Product Code|0$([Environment]::NewLine)" +
+                                    "Test Code|0$([Environment]::NewLine)" +
+                                    "**Subtotal**|**0**$([Environment]::NewLine)" +
+                                    "Ignored|200$([Environment]::NewLine)" +
+                                    '**Total**|**200**')
         }
     }
 
@@ -1763,20 +1763,20 @@ Describe -Name 'PullRequest' {
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 35
             $response | Should -Be ("# Metrics for iteration 5$([Environment]::NewLine)" +
-                                   $([char]0x274C) +
-                                   ' **Try to keep pull requests smaller than 1,000,000 lines of new product code by ' +
-                                   'following the ' +
-                                   '[Single Responsibility Principle (SRP)](https://wikipedia.org/wiki/Single-responsibility_principle).**' +
-                                   $([Environment]::NewLine) +
-                                   "$([char]0x26A0)$([char]0xFE0F) **Consider adding additional tests.**" +
-                                   $([Environment]::NewLine) +
-                                   "||Lines$([Environment]::NewLine)" +
-                                   "-|-:$([Environment]::NewLine)" +
-                                   "Product Code|2,000,000$([Environment]::NewLine)" +
-                                   "Test Code|1,000,000$([Environment]::NewLine)" +
-                                   "**Subtotal**|**3,000,000**$([Environment]::NewLine)" +
-                                   "Ignored|1,000,000$([Environment]::NewLine)" +
-                                   '**Total**|**4,000,000**')
+                                    $([char]0x274C) +
+                                    ' **Try to keep pull requests smaller than 1,000,000 lines of new product code by ' +
+                                    'following the ' +
+                                    '[Single Responsibility Principle (SRP)](https://wikipedia.org/wiki/Single-responsibility_principle).**' +
+                                    $([Environment]::NewLine) +
+                                    "$([char]0x26A0)$([char]0xFE0F) **Consider adding additional tests.**" +
+                                    $([Environment]::NewLine) +
+                                    "||Lines$([Environment]::NewLine)" +
+                                    "-|-:$([Environment]::NewLine)" +
+                                    "Product Code|2,000,000$([Environment]::NewLine)" +
+                                    "Test Code|1,000,000$([Environment]::NewLine)" +
+                                    "**Subtotal**|**3,000,000**$([Environment]::NewLine)" +
+                                    "Ignored|1,000,000$([Environment]::NewLine)" +
+                                    '**Total**|**4,000,000**')
         }
     }
 

@@ -238,8 +238,8 @@ Describe -Name 'CodeMetricsCalculator' {
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq ("{$([Environment]::NewLine)" +
-                              "    `"description`":  `"`",$([Environment]::NewLine)" +
-                              "    `"title`":  `"Title`"$([Environment]::NewLine)" +
+                              "  `"description`": `"`",$([Environment]::NewLine)" +
+                              "  `"title`": `"Title`"$([Environment]::NewLine)" +
                               '}')
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
@@ -285,7 +285,7 @@ Describe -Name 'CodeMetricsCalculator' {
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq ("{$([Environment]::NewLine)" +
-                              "    `"value`":  `"Fake Data`"$([Environment]::NewLine)" +
+                              "  `"value`": `"Fake Data`"$([Environment]::NewLine)" +
                               '}')
             }
             $codeMetricsCalculator = [CodeMetricsCalculator]::new('50', '2.5', '1.0', '**/*', 'cs')
@@ -392,7 +392,7 @@ Describe -Name 'CodeMetricsCalculator' {
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq ("{$([Environment]::NewLine)" +
-                              "    `"value`":  null$([Environment]::NewLine)" +
+                              "  `"value`": null$([Environment]::NewLine)" +
                               '}')
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
@@ -425,11 +425,11 @@ Describe -Name 'CodeMetricsCalculator' {
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq ("{$([Environment]::NewLine)" +
-                              "    `"value`":  [$([Environment]::NewLine)" +
-                              "                  {$([Environment]::NewLine)" +
-                              "                      `"id`":  1$([Environment]::NewLine)" +
-                              "                  }$([Environment]::NewLine)" +
-                              "              ]$([Environment]::NewLine)" +
+                              "  `"value`": [$([Environment]::NewLine)" +
+                              "    {$([Environment]::NewLine)" +
+                              "      `"id`": 1$([Environment]::NewLine)" +
+                              "    }$([Environment]::NewLine)" +
+                              "  ]$([Environment]::NewLine)" +
                               '}')
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
@@ -515,7 +515,7 @@ Describe -Name 'CodeMetricsCalculator' {
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq ("{$([Environment]::NewLine)" +
-                              "    `"id`":  1$([Environment]::NewLine)" +
+                              "  `"id`": 1$([Environment]::NewLine)" +
                               "}")
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
@@ -549,7 +549,7 @@ Describe -Name 'CodeMetricsCalculator' {
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq ("{$([Environment]::NewLine)" +
-                              "    `"value`":  `"Fake Data`"$([Environment]::NewLine)" +
+                              "  `"value`": `"Fake Data`"$([Environment]::NewLine)" +
                               "}")
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
@@ -563,16 +563,16 @@ Describe -Name 'CodeMetricsCalculator' {
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -like ('PATCH ' +
-                               'https://dev.azure.com/prmetrics/CodeMetricsCalculator/_apis/git/' +
-                               'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/properties?' +
-                               'api-version=5.1-preview.1 [*]') -and
-                $Message -like '*{"op":"replace","path":"/PRMetrics.TestCode","value":0}*' -and
-                $Message -like '*{"op":"replace","path":"/PRMetrics.Total","value":1}*' -and
+                                'https://dev.azure.com/prmetrics/CodeMetricsCalculator/_apis/git/' +
+                                'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/properties?' +
+                                'api-version=5.1-preview.1 *') -and
+                $Message -like '*{"op":"replace","path":"/PRMetrics.Size","value":"XS"}*' -and
                 $Message -like '*{"op":"replace","path":"/PRMetrics.TestCoverage","value":false}*' -and
-                $Message -like '*{"op":"replace","path":"/PRMetrics.Ignored","value":0}*' -and
                 $Message -like '*{"op":"replace","path":"/PRMetrics.ProductCode","value":1}*' -and
+                $Message -like '*{"op":"replace","path":"/PRMetrics.TestCode","value":0}*' -and
                 $Message -like '*{"op":"replace","path":"/PRMetrics.Subtotal","value":1}*' -and
-                $Message -like '*{"op":"replace","path":"/PRMetrics.Size","value":"XS"}*'
+                $Message -like '*{"op":"replace","path":"/PRMetrics.Ignored","value":0}*' -and
+                $Message -like '*{"op":"replace","path":"/PRMetrics.Total","value":1}*'
             }
             Mock -CommandName 'Invoke-RestMethod' -MockWith {
                 return [PSCustomObject]@{
@@ -585,13 +585,13 @@ Describe -Name 'CodeMetricsCalculator' {
                           'api-version=5.1-preview.1') -and
                 $Headers.Count -eq 1 -and
                 $Headers.Authorization -eq 'Bearer ACCESSTOKEN' -and
-                $Body -like '*{"op":"replace","path":"/PRMetrics.TestCode","value":0}*' -and
-                $Body -like '*{"op":"replace","path":"/PRMetrics.Total","value":1}*' -and
-                $Body -like '*{"op":"replace","path":"/PRMetrics.TestCoverage","value":false}*' -and
-                $Body -like '*{"op":"replace","path":"/PRMetrics.Ignored","value":0}*' -and
-                $Body -like '*{"op":"replace","path":"/PRMetrics.ProductCode","value":1}*' -and
-                $Body -like '*{"op":"replace","path":"/PRMetrics.Subtotal","value":1}*' -and
                 $Body -like '*{"op":"replace","path":"/PRMetrics.Size","value":"XS"}*' -and
+                $Body -like '*{"op":"replace","path":"/PRMetrics.TestCoverage","value":false}*' -and
+                $Body -like '*{"op":"replace","path":"/PRMetrics.ProductCode","value":1}*' -and
+                $Body -like '*{"op":"replace","path":"/PRMetrics.TestCode","value":0}*' -and
+                $Body -like '*{"op":"replace","path":"/PRMetrics.Subtotal","value":1}*' -and
+                $Body -like '*{"op":"replace","path":"/PRMetrics.Ignored","value":0}*' -and
+                $Body -like '*{"op":"replace","path":"/PRMetrics.Total","value":1}*' -and
                 $ContentType -eq 'application/json-patch+json; charset=utf-8'
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
@@ -599,7 +599,7 @@ Describe -Name 'CodeMetricsCalculator' {
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq ("{$([Environment]::NewLine)" +
-                              "    `"value`":  `"Fake Data`"$([Environment]::NewLine)" +
+                              "  `"value`": `"Fake Data`"$([Environment]::NewLine)" +
                               "}")
             }
             $codeMetricsCalculator = [CodeMetricsCalculator]::new('50', '2.5', '1.0', '**/*', 'cs')
@@ -608,7 +608,7 @@ Describe -Name 'CodeMetricsCalculator' {
             $codeMetricsCalculator.UpdateComment()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 79
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 80
             Assert-MockCalled -CommandName 'New-Object' -Exactly 1
             Assert-MockCalled -CommandName 'Invoke-RestMethod' -Exactly 5
         }
@@ -723,26 +723,23 @@ Describe -Name 'CodeMetricsCalculator' {
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq ("{$([Environment]::NewLine)" +
-                              "    `"value`":  [$([Environment]::NewLine)" +
-                              "                  {$([Environment]::NewLine)" +
-                              "                      `"comments`":  [$([Environment]::NewLine)" +
-                              "                                       {$([Environment]::NewLine)" +
-                              "                                           `"content`":  " +
-                              "`"# Metrics for iteration 1`",$([Environment]::NewLine)" +
-                              "                                           `"author`":  {" +
-                              $([Environment]::NewLine) +
-                              "                                                          `"displayName`":  " +
-                              "`"Project Collection Build Service (prmetrics)`"" +
-                              $([Environment]::NewLine) +
-                              "                                                      },$([Environment]::NewLine)" +
-                              "                                           `"id`":  2$([Environment]::NewLine)" +
-                              "                                       }$([Environment]::NewLine)" +
-                              "                                   ],$([Environment]::NewLine)" +
-                              "                      `"threadContext`":  null,$([Environment]::NewLine)" +
-                              "                      `"id`":  1$([Environment]::NewLine)" +
-                              "                  }$([Environment]::NewLine)" +
-                              "              ]$([Environment]::NewLine)" +
-                              "}")
+                              "  `"value`": [$([Environment]::NewLine)" +
+                              "    {$([Environment]::NewLine)" +
+                              "      `"threadContext`": null,$([Environment]::NewLine)" +
+                              "      `"comments`": [$([Environment]::NewLine)" +
+                              "        {$([Environment]::NewLine)" +
+                              "          `"author`": {$([Environment]::NewLine)" +
+                              '            "displayName": "Project Collection Build Service (prmetrics)"' +
+                              [Environment]::NewLine +
+                              "          },$([Environment]::NewLine)" +
+                              "          `"id`": 2,$([Environment]::NewLine)" +
+                              "          `"content`": `"# Metrics for iteration 1`"$([Environment]::NewLine)" +
+                              "        }$([Environment]::NewLine)" +
+                              "      ],$([Environment]::NewLine)" +
+                              "      `"id`": 1$([Environment]::NewLine)" +
+                              "    }$([Environment]::NewLine)" +
+                              "  ]$([Environment]::NewLine)" +
+                              '}')
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq ''
@@ -777,14 +774,14 @@ Describe -Name 'CodeMetricsCalculator' {
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq ("{$([Environment]::NewLine)" +
-                              "    `"value`":  [$([Environment]::NewLine)" +
-                              "                  {$([Environment]::NewLine)" +
-                              "                      `"id`":  1$([Environment]::NewLine)" +
-                              "                  },$([Environment]::NewLine)" +
-                              "                  {$([Environment]::NewLine)" +
-                              "                      `"id`":  2$([Environment]::NewLine)" +
-                              "                  }$([Environment]::NewLine)" +
-                              "              ]$([Environment]::NewLine)" +
+                              "  `"value`": [$([Environment]::NewLine)" +
+                              "    {$([Environment]::NewLine)" +
+                              "      `"id`": 1$([Environment]::NewLine)" +
+                              "    },$([Environment]::NewLine)" +
+                              "    {$([Environment]::NewLine)" +
+                              "      `"id`": 2$([Environment]::NewLine)" +
+                              "    }$([Environment]::NewLine)" +
+                              "  ]$([Environment]::NewLine)" +
                               "}")
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
@@ -873,7 +870,7 @@ Describe -Name 'CodeMetricsCalculator' {
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq ("{$([Environment]::NewLine)" +
-                              "    `"value`":  `"Fake Data`"$([Environment]::NewLine)" +
+                              "  `"value`": `"Fake Data`"$([Environment]::NewLine)" +
                               "}")
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
@@ -909,17 +906,17 @@ Describe -Name 'CodeMetricsCalculator' {
                 $Message -eq '* [AzureReposInvoker]::GetUri() hidden'
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
-                $Message -eq ('PATCH ' +
-                              'https://dev.azure.com/prmetrics/CodeMetricsCalculator/_apis/git/' +
-                              'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/properties?' +
-                              'api-version=5.1-preview.1  [*]') -and
-                $Message -like '*{"op":"replace","path":"/PRMetrics.TestCode","value":0}*' -and
-                $Message -like '*{"op":"replace","path":"/PRMetrics.Total","value":1}*' -and
+                $Message -like ('PATCH ' +
+                                'https://dev.azure.com/prmetrics/CodeMetricsCalculator/_apis/git/' +
+                                'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/properties?' +
+                                'api-version=5.1-preview.1 *') -and
+                $Message -like '*{"op":"replace","path":"/PRMetrics.Size","value":"XS"}*' -and
                 $Message -like '*{"op":"replace","path":"/PRMetrics.TestCoverage","value":false}*' -and
-                $Message -like '*{"op":"replace","path":"/PRMetrics.Ignored","value":0}*' -and
                 $Message -like '*{"op":"replace","path":"/PRMetrics.ProductCode","value":1}*' -and
+                $Message -like '*{"op":"replace","path":"/PRMetrics.TestCode","value":0}*' -and
                 $Message -like '*{"op":"replace","path":"/PRMetrics.Subtotal","value":1}*' -and
-                $Message -like '*{"op":"replace","path":"/PRMetrics.Size","value":"XS"}*'
+                $Message -like '*{"op":"replace","path":"/PRMetrics.Ignored","value":0}*' -and
+                $Message -like '*{"op":"replace","path":"/PRMetrics.Total","value":1}*'
             }
             Mock -CommandName 'Invoke-RestMethod' -MockWith {
                 return [PSCustomObject]@{
@@ -932,13 +929,13 @@ Describe -Name 'CodeMetricsCalculator' {
                           'api-version=5.1-preview.1') -and
                 $Headers.Count -eq 1 -and
                 $Headers.Authorization -eq 'Bearer ACCESSTOKEN' -and
-                $Body -like '*{"op":"replace","path":"/PRMetrics.TestCode","value":0}*' -and
-                $Body -like '*{"op":"replace","path":"/PRMetrics.Total","value":1}*' -and
-                $Body -like '*{"op":"replace","path":"/PRMetrics.TestCoverage","value":false}*' -and
-                $Body -like '*{"op":"replace","path":"/PRMetrics.Ignored","value":0}*' -and
-                $Body -like '*{"op":"replace","path":"/PRMetrics.ProductCode","value":1}*' -and
-                $Body -like '*{"op":"replace","path":"/PRMetrics.Subtotal","value":1}*' -and
                 $Body -like '*{"op":"replace","path":"/PRMetrics.Size","value":"XS"}*' -and
+                $Body -like '*{"op":"replace","path":"/PRMetrics.TestCoverage","value":false}*' -and
+                $Body -like '*{"op":"replace","path":"/PRMetrics.ProductCode","value":1}*' -and
+                $Body -like '*{"op":"replace","path":"/PRMetrics.TestCode","value":0}*' -and
+                $Body -like '*{"op":"replace","path":"/PRMetrics.Subtotal","value":1}*' -and
+                $Body -like '*{"op":"replace","path":"/PRMetrics.Ignored","value":0}*' -and
+                $Body -like '*{"op":"replace","path":"/PRMetrics.Total","value":1}*' -and
                 $ContentType -eq 'application/json-patch+json; charset=utf-8'
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
@@ -946,7 +943,7 @@ Describe -Name 'CodeMetricsCalculator' {
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq ("{$([Environment]::NewLine)" +
-                              "    `"value`":  `"Fake Data`"$([Environment]::NewLine)" +
+                              "  `"value`": `"Fake Data`"$([Environment]::NewLine)" +
                               "}")
             }
             $codeMetricsCalculator = [CodeMetricsCalculator]::new('50', '2.5', '1.0', '**/*', 'cs')
@@ -955,7 +952,7 @@ Describe -Name 'CodeMetricsCalculator' {
             $codeMetricsCalculator.UpdateComment()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 80
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 81
             Assert-MockCalled -CommandName 'New-Object' -Exactly 1
             Assert-MockCalled -CommandName 'Invoke-RestMethod' -Exactly 5
         }
@@ -1071,25 +1068,22 @@ Describe -Name 'CodeMetricsCalculator' {
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq ("{$([Environment]::NewLine)" +
-                              "    `"value`":  [$([Environment]::NewLine)" +
-                              "                  {$([Environment]::NewLine)" +
-                              "                      `"comments`":  [$([Environment]::NewLine)" +
-                              "                                       {$([Environment]::NewLine)" +
-                              '                                           "content":  ' +
-                              "`"# Metrics for iteration 1`",$([Environment]::NewLine)" +
-                              '                                           "author":  {' +
-                              $([Environment]::NewLine) +
-                              '                                                          "displayName":  ' +
-                              '"Project Collection Build Service (prmetrics)"' +
-                              $([Environment]::NewLine) +
-                              "                                                      },$([Environment]::NewLine)" +
-                              "                                           `"id`":  2$([Environment]::NewLine)" +
-                              "                                       }$([Environment]::NewLine)" +
-                              "                                   ],$([Environment]::NewLine)" +
-                              "                      `"threadContext`":  null,$([Environment]::NewLine)" +
-                              "                      `"id`":  1$([Environment]::NewLine)" +
-                              "                  }$([Environment]::NewLine)" +
-                              "              ]$([Environment]::NewLine)" +
+                              "  `"value`": [$([Environment]::NewLine)" +
+                              "    {$([Environment]::NewLine)" +
+                              "      `"threadContext`": null,$([Environment]::NewLine)" +
+                              "      `"comments`": [$([Environment]::NewLine)" +
+                              "        {$([Environment]::NewLine)" +
+                              "          `"author`": {$([Environment]::NewLine)" +
+                              '            "displayName": "Project Collection Build Service (prmetrics)"' +
+                              [Environment]::NewLine +
+                              "          },$([Environment]::NewLine)" +
+                              "          `"id`": 2,$([Environment]::NewLine)" +
+                              "          `"content`": `"# Metrics for iteration 1`"$([Environment]::NewLine)" +
+                              "        }$([Environment]::NewLine)" +
+                              "      ],$([Environment]::NewLine)" +
+                              "      `"id`": 1$([Environment]::NewLine)" +
+                              "    }$([Environment]::NewLine)" +
+                              "  ]$([Environment]::NewLine)" +
                               '}')
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
@@ -1122,11 +1116,11 @@ Describe -Name 'CodeMetricsCalculator' {
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq ("{$([Environment]::NewLine)" +
-                              "    `"value`":  [$([Environment]::NewLine)" +
-                              "                  {$([Environment]::NewLine)" +
-                              "                      `"id`":  1$([Environment]::NewLine)" +
-                              "                  }$([Environment]::NewLine)" +
-                              "              ]$([Environment]::NewLine)" +
+                              "  `"value`": [$([Environment]::NewLine)" +
+                              "    {$([Environment]::NewLine)" +
+                              "      `"id`": 1$([Environment]::NewLine)" +
+                              "    }$([Environment]::NewLine)" +
+                              "  ]$([Environment]::NewLine)" +
                               '}')
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
@@ -1280,46 +1274,39 @@ Describe -Name 'CodeMetricsCalculator' {
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq ("{$([Environment]::NewLine)" +
-                              "    `"value`":  [$([Environment]::NewLine)" +
-                              "                  {$([Environment]::NewLine)" +
-                              "                      `"comments`":  [$([Environment]::NewLine)" +
-                              "                                       {$([Environment]::NewLine)" +
-                              '                                           "content":  ' +
-                              "`"# Metrics for iteration 1`",$([Environment]::NewLine)" +
-                              '                                           "author":  {' +
-                              $([Environment]::NewLine) +
-                              '                                                          "displayName":  ' +
-                              '"Project Collection Build Service (prmetrics)"' +
-                              $([Environment]::NewLine) +
-                              "                                                      },$([Environment]::NewLine)" +
-                              "                                           `"id`":  3$([Environment]::NewLine)" +
-                              "                                       }$([Environment]::NewLine)" +
-                              "                                   ],$([Environment]::NewLine)" +
-                              "                      `"threadContext`":  null,$([Environment]::NewLine)" +
-                              "                      `"id`":  1$([Environment]::NewLine)" +
-                              "                  },$([Environment]::NewLine)" +
-                              "                  {$([Environment]::NewLine)" +
-                              "                      `"comments`":  [$([Environment]::NewLine)" +
-                              "                                       {$([Environment]::NewLine)" +
-                              '                                           "content":  ' +
-                              "`"$([char]0x2757) **This file may not need to be reviewed.**`"," +
-                              $([Environment]::NewLine) +
-                              '                                           "author":  {' +
-                              $([Environment]::NewLine) +
-                              '                                                          "displayName":  ' +
-                              '"Project Collection Build Service (prmetrics)"' +
-                              $([Environment]::NewLine) +
-                              "                                                      },$([Environment]::NewLine)" +
-                              "                                           `"id`":  4$([Environment]::NewLine)" +
-                              "                                       }$([Environment]::NewLine)" +
-                              "                                   ],$([Environment]::NewLine)" +
-                              "                      `"threadContext`":  {$([Environment]::NewLine)" +
-                              '                                            "filePath":  "/Ignored1.cs"' +
-                              $([Environment]::NewLine) +
-                              "                                        },$([Environment]::NewLine)" +
-                              "                      `"id`":  2$([Environment]::NewLine)" +
-                              "                  }$([Environment]::NewLine)" +
-                              "              ]$([Environment]::NewLine)" +
+                              "  `"value`": [$([Environment]::NewLine)" +
+                              "    {$([Environment]::NewLine)" +
+                              "      `"threadContext`": null,$([Environment]::NewLine)" +
+                              "      `"comments`": [$([Environment]::NewLine)" +
+                              "        {$([Environment]::NewLine)" +
+                              "          `"author`": {$([Environment]::NewLine)" +
+                              '            "displayName": "Project Collection Build Service (prmetrics)"' +
+                              [Environment]::NewLine +
+                              "          },$([Environment]::NewLine)" +
+                              "          `"id`": 3,$([Environment]::NewLine)" +
+                              "          `"content`": `"# Metrics for iteration 1`"$([Environment]::NewLine)" +
+                              "        }$([Environment]::NewLine)" +
+                              "      ],$([Environment]::NewLine)" +
+                              "      `"id`": 1$([Environment]::NewLine)" +
+                              "    },$([Environment]::NewLine)" +
+                              "    {$([Environment]::NewLine)" +
+                              "      `"threadContext`": {$([Environment]::NewLine)" +
+                              "        `"filePath`": `"/Ignored1.cs`"$([Environment]::NewLine)" +
+                              "      },$([Environment]::NewLine)" +
+                              "      `"comments`": [$([Environment]::NewLine)" +
+                              "        {$([Environment]::NewLine)" +
+                              "          `"author`": {$([Environment]::NewLine)" +
+                              '            "displayName": "Project Collection Build Service (prmetrics)"' +
+                              [Environment]::NewLine +
+                              "          },$([Environment]::NewLine)" +
+                              "          `"id`": 4,$([Environment]::NewLine)" +
+                              "          `"content`": `"$([char]0x2757) **This file may not need to be reviewed.**`"" +
+                              [Environment]::NewLine +
+                              "        }$([Environment]::NewLine)" +
+                              "      ],$([Environment]::NewLine)" +
+                              "      `"id`": 2$([Environment]::NewLine)" +
+                              "    }$([Environment]::NewLine)" +
+                              "  ]$([Environment]::NewLine)" +
                               '}')
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
@@ -1352,11 +1339,11 @@ Describe -Name 'CodeMetricsCalculator' {
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq ("{$([Environment]::NewLine)" +
-                              "    `"value`":  [$([Environment]::NewLine)" +
-                              "                  {$([Environment]::NewLine)" +
-                              "                      `"id`":  1$([Environment]::NewLine)" +
-                              "                  }$([Environment]::NewLine)" +
-                              "              ]$([Environment]::NewLine)" +
+                              "  `"value`": [$([Environment]::NewLine)" +
+                              "    {$([Environment]::NewLine)" +
+                              "      `"id`": 1$([Environment]::NewLine)" +
+                              "    }$([Environment]::NewLine)" +
+                              "  ]$([Environment]::NewLine)" +
                               '}')
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
@@ -1411,7 +1398,7 @@ Describe -Name 'CodeMetricsCalculator' {
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq ("{$([Environment]::NewLine)" +
-                              "    `"id`":  3$([Environment]::NewLine)" +
+                              "  `"id`": 3$([Environment]::NewLine)" +
                               '}')
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
@@ -1445,7 +1432,7 @@ Describe -Name 'CodeMetricsCalculator' {
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq ("{$([Environment]::NewLine)" +
-                              "    `"id`":  3$([Environment]::NewLine)" +
+                              "  `"id`":  3$([Environment]::NewLine)" +
                               '}')
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
@@ -1479,7 +1466,7 @@ Describe -Name 'CodeMetricsCalculator' {
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq ("{$([Environment]::NewLine)" +
-                              "    `"value`":  `"Fake Data`"$([Environment]::NewLine)" +
+                              "  `"value`": `"Fake Data`"$([Environment]::NewLine)" +
                               '}')
             }
             $codeMetricsCalculator = [CodeMetricsCalculator]::new('50', '2.5', '1.0', ("**/*`n" +

@@ -23,6 +23,11 @@ BeforeAll {
     Import-Module -Name "$PSScriptRoot\..\..\Release\PipelinesTasks\PRMetrics\ps_modules\VstsTaskSdk\VstsTaskSdk.psm1"
 }
 
+function Do-Stuff()
+{
+    
+}
+
 Describe -Name 'PRMetrics' {
     BeforeEach {
         Set-StrictMode -Version 'Latest'
@@ -354,8 +359,8 @@ Describe -Name 'PRMetrics' {
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq ("{$([Environment]::NewLine)" +
-                              "    `"description`":  `"`",$([Environment]::NewLine)" +
-                              "    `"title`":  `"Title`"$([Environment]::NewLine)" +
+                              "  `"description`": `"`",$([Environment]::NewLine)" +
+                              "  `"title`": `"Title`"$([Environment]::NewLine)" +
                               '}')
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
@@ -400,7 +405,7 @@ Describe -Name 'PRMetrics' {
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq ("{$([Environment]::NewLine)" +
-                              "    `"value`":  `"Fake Data`"$([Environment]::NewLine)" +
+                              "  `"value`": `"Fake Data`"$([Environment]::NewLine)" +
                               '}')
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
@@ -442,25 +447,22 @@ Describe -Name 'PRMetrics' {
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq ("{$([Environment]::NewLine)" +
-                              "    `"value`":  [$([Environment]::NewLine)" +
-                              "                  {$([Environment]::NewLine)" +
-                              "                      `"comments`":  [$([Environment]::NewLine)" +
-                              "                                       {$([Environment]::NewLine)" +
-                              '                                           "content":  ' +
-                              "`"# Metrics for iteration 1`",$([Environment]::NewLine)" +
-                              '                                           "author":  {' +
-                              $([Environment]::NewLine) +
-                              '                                                          "displayName":  ' +
-                              '"Project Collection Build Service (prmetrics)"' +
-                              $([Environment]::NewLine) +
-                              "                                                      },$([Environment]::NewLine)" +
-                              "                                           `"id`":  2$([Environment]::NewLine)" +
-                              "                                       }$([Environment]::NewLine)" +
-                              "                                   ],$([Environment]::NewLine)" +
-                              "                      `"threadContext`":  null,$([Environment]::NewLine)" +
-                              "                      `"id`":  1$([Environment]::NewLine)" +
-                              "                  }$([Environment]::NewLine)" +
-                              "              ]$([Environment]::NewLine)" +
+                              "  `"value`": [$([Environment]::NewLine)" +
+                              "    {$([Environment]::NewLine)" +
+                              "      `"threadContext`": null,$([Environment]::NewLine)" +
+                              "      `"comments`": [$([Environment]::NewLine)" +
+                              "        {$([Environment]::NewLine)" +
+                              "          `"author`": {$([Environment]::NewLine)" +
+                              '            "displayName": "Project Collection Build Service (prmetrics)"' +
+                              [Environment]::NewLine +
+                              "          },$([Environment]::NewLine)" +
+                              "          `"id`": 2,$([Environment]::NewLine)" +
+                              "          `"content`": `"# Metrics for iteration 1`"$([Environment]::NewLine)" +
+                              "        }$([Environment]::NewLine)" +
+                              "      ],$([Environment]::NewLine)" +
+                              "      `"id`": 1$([Environment]::NewLine)" +
+                              "    }$([Environment]::NewLine)" +
+                              "  ]$([Environment]::NewLine)" +
                               '}')
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
@@ -490,11 +492,11 @@ Describe -Name 'PRMetrics' {
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq ("{$([Environment]::NewLine)" +
-                              "    `"value`":  [$([Environment]::NewLine)" +
-                              "                  {$([Environment]::NewLine)" +
-                              "                      `"id`":  1$([Environment]::NewLine)" +
-                              "                  }$([Environment]::NewLine)" +
-                              "              ]$([Environment]::NewLine)" +
+                              "  `"value`": [$([Environment]::NewLine)" +
+                              "    {$([Environment]::NewLine)" +
+                              "      `"id`": 1$([Environment]::NewLine)" +
+                              "    }$([Environment]::NewLine)" +
+                              "  ]$([Environment]::NewLine)" +
                               '}')
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
@@ -651,8 +653,8 @@ Describe -Name 'PRMetrics' {
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq ("{$([Environment]::NewLine)" +
-                              "    `"description`":  `"`",$([Environment]::NewLine)" +
-                              "    `"title`":  `"Title`"$([Environment]::NewLine)" +
+                              "  `"description`": `"`",$([Environment]::NewLine)" +
+                              "  `"title`": `"Title`"$([Environment]::NewLine)" +
                               '}')
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
@@ -697,7 +699,7 @@ Describe -Name 'PRMetrics' {
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq ("{$([Environment]::NewLine)" +
-                              "    `"value`":  `"Fake Data`"$([Environment]::NewLine)" +
+                              "  `"value`": `"Fake Data`"$([Environment]::NewLine)" +
                               '}')
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
@@ -739,25 +741,22 @@ Describe -Name 'PRMetrics' {
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq ("{$([Environment]::NewLine)" +
-                              "    `"value`":  [$([Environment]::NewLine)" +
-                              "                  {$([Environment]::NewLine)" +
-                              "                      `"comments`":  [$([Environment]::NewLine)" +
-                              "                                       {$([Environment]::NewLine)" +
-                              '                                           "content":  ' +
-                              "`"# Metrics for iteration 1`",$([Environment]::NewLine)" +
-                              '                                           "author":  {' +
-                              $([Environment]::NewLine) +
-                              '                                                          "displayName":  ' +
-                              '"Project Collection Build Service (prmetrics)"' +
-                              $([Environment]::NewLine) +
-                              "                                                      },$([Environment]::NewLine)" +
-                              "                                           `"id`":  2$([Environment]::NewLine)" +
-                              "                                       }$([Environment]::NewLine)" +
-                              "                                   ],$([Environment]::NewLine)" +
-                              "                      `"threadContext`":  null,$([Environment]::NewLine)" +
-                              "                      `"id`":  1$([Environment]::NewLine)" +
-                              "                  }$([Environment]::NewLine)" +
-                              "              ]$([Environment]::NewLine)" +
+                              "  `"value`": [$([Environment]::NewLine)" +
+                              "    {$([Environment]::NewLine)" +
+                              "      `"threadContext`": null,$([Environment]::NewLine)" +
+                              "      `"comments`": [$([Environment]::NewLine)" +
+                              "        {$([Environment]::NewLine)" +
+                              "          `"author`": {$([Environment]::NewLine)" +
+                              '            "displayName": "Project Collection Build Service (prmetrics)"' +
+                              [Environment]::NewLine +
+                              "          },$([Environment]::NewLine)" +
+                              "          `"id`": 2,$([Environment]::NewLine)" +
+                              "          `"content`": `"# Metrics for iteration 1`"$([Environment]::NewLine)" +
+                              "        }$([Environment]::NewLine)" +
+                              "      ],$([Environment]::NewLine)" +
+                              "      `"id`": 1$([Environment]::NewLine)" +
+                              "    }$([Environment]::NewLine)" +
+                              "  ]$([Environment]::NewLine)" +
                               '}')
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
@@ -859,8 +858,8 @@ Describe -Name 'PRMetrics' {
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
                 $MessageData -eq ("{$([Environment]::NewLine)" +
-                                  "    `"description`":  `"`",$([Environment]::NewLine)" +
-                                  "    `"title`":  `"Title`"$([Environment]::NewLine)" +
+                                  "  `"description`": `"`",$([Environment]::NewLine)" +
+                                  "  `"title`": `"Title`"$([Environment]::NewLine)" +
                                   '}')
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
@@ -890,7 +889,7 @@ Describe -Name 'PRMetrics' {
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
                 $MessageData -eq ("{$([Environment]::NewLine)" +
-                                  "    `"value`":  `"Fake Data`"$([Environment]::NewLine)" +
+                                  "  `"value`": `"Fake Data`"$([Environment]::NewLine)" +
                                   '}')
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
@@ -905,27 +904,24 @@ Describe -Name 'PRMetrics' {
                                   '12345/threads?api-version=5.1')
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq ("{$([Environment]::NewLine)" +
-                                  "    `"value`":  [$([Environment]::NewLine)" +
-                                  "                  {$([Environment]::NewLine)" +
-                                  "                      `"comments`":  [$([Environment]::NewLine)" +
-                                  "                                       {$([Environment]::NewLine)" +
-                                  '                                           "content":  ' +
-                                  "`"# Metrics for iteration 1`",$([Environment]::NewLine)" +
-                                  '                                           "author":  {' +
-                                  $([Environment]::NewLine) +
-                                  '                                                          "displayName":  ' +
-                                  '"Project Collection Build Service (prmetrics)"' +
-                                  $([Environment]::NewLine) +
-                                  "                                                      },$([Environment]::NewLine)" +
-                                  "                                           `"id`":  2$([Environment]::NewLine)" +
-                                  "                                       }$([Environment]::NewLine)" +
-                                  "                                   ],$([Environment]::NewLine)" +
-                                  "                      `"threadContext`":  null,$([Environment]::NewLine)" +
-                                  "                      `"id`":  1$([Environment]::NewLine)" +
-                                  "                  }$([Environment]::NewLine)" +
-                                  "              ]$([Environment]::NewLine)" +
-                                  '}')
+                $Message -eq ("{$([Environment]::NewLine)" +
+                              "  `"value`": [$([Environment]::NewLine)" +
+                              "    {$([Environment]::NewLine)" +
+                              "      `"threadContext`": null,$([Environment]::NewLine)" +
+                              "      `"comments`": [$([Environment]::NewLine)" +
+                              "        {$([Environment]::NewLine)" +
+                              "          `"author`": {$([Environment]::NewLine)" +
+                              '            "displayName": "Project Collection Build Service (prmetrics)"' +
+                              [Environment]::NewLine +
+                              "          },$([Environment]::NewLine)" +
+                              "          `"id`": 2,$([Environment]::NewLine)" +
+                              "          `"content`": `"# Metrics for iteration 1`"$([Environment]::NewLine)" +
+                              "        }$([Environment]::NewLine)" +
+                              "      ],$([Environment]::NewLine)" +
+                              "      `"id`": 1$([Environment]::NewLine)" +
+                              "    }$([Environment]::NewLine)" +
+                              "  ]$([Environment]::NewLine)" +
+                              '}')
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
                 $MessageData -eq '* [AzureReposInvoker]::GetIterations()'

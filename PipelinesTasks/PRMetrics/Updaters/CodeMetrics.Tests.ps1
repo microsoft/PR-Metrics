@@ -369,12 +369,12 @@ Describe -Name 'CodeMetrics' {
             $codeMetrics.Metrics.Ignored | Should -Be 27
             $codeMetrics.Metrics.Total | Should -Be 27
             $codeMetrics.IgnoredFilesWithLinesAdded.Count | Should -Be 3
-            $codeMetrics.IgnoredFilesWithLinesAdded[0] | Should -Be 'File1.cs'
-            $codeMetrics.IgnoredFilesWithLinesAdded[1] | Should -Be 'test/File1.cs'
-            $codeMetrics.IgnoredFilesWithLinesAdded[2] | Should -Be 'FileTest1.cs'
+            'File1.cs' | Should -BeIn $codeMetrics.IgnoredFilesWithLinesAdded
+            'test/File1.cs' | Should -BeIn $codeMetrics.IgnoredFilesWithLinesAdded
+            'FileTest1.cs' | Should -BeIn $codeMetrics.IgnoredFilesWithLinesAdded
             $codeMetrics.IgnoredFilesWithoutLinesAdded.Count | Should -Be 2
-            $codeMetrics.IgnoredFilesWithoutLinesAdded[0] | Should -Be 'File2.cs'
-            $codeMetrics.IgnoredFilesWithoutLinesAdded[1] | Should -Be 'Filetest2.cs'
+            'File2.cs' | Should -BeIn $codeMetrics.IgnoredFilesWithoutLinesAdded
+            'Filetest2.cs' | Should -BeIn $codeMetrics.IgnoredFilesWithoutLinesAdded
             $codeMetrics.ExpectedTestCode | Should -Be 0
         }
     }
@@ -472,11 +472,11 @@ Describe -Name 'CodeMetrics' {
             $codeMetrics.Metrics.Ignored | Should -Be 18
             $codeMetrics.Metrics.Total | Should -Be 27
             $codeMetrics.IgnoredFilesWithLinesAdded.Count | Should -Be 2
-            $codeMetrics.IgnoredFilesWithLinesAdded[0] | Should -Be 'File1.cs'
-            $codeMetrics.IgnoredFilesWithLinesAdded[1] | Should -Be 'test/File1.cs'
+            'File1.cs' | Should -BeIn $codeMetrics.IgnoredFilesWithLinesAdded
+            'test/File1.cs' | Should -BeIn $codeMetrics.IgnoredFilesWithLinesAdded
             $codeMetrics.IgnoredFilesWithoutLinesAdded.Count | Should -Be 2
-            $codeMetrics.IgnoredFilesWithoutLinesAdded[0] | Should -Be 'File2.cs'
-            $codeMetrics.IgnoredFilesWithoutLinesAdded[1] | Should -Be 'Filetest2.cs'
+            'File2.cs' | Should -BeIn $codeMetrics.IgnoredFilesWithoutLinesAdded
+            'Filetest2.cs' | Should -BeIn $codeMetrics.IgnoredFilesWithoutLinesAdded
             $codeMetrics.ExpectedTestCode | Should -Be 0
         }
     }
