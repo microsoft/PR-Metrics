@@ -8,9 +8,6 @@
 
 #Requires -Version 5.0
 
-. $PSScriptRoot\..\Utilities\Logger.ps1
-. $PSScriptRoot\GitInvoker.ps1
-
 Describe -Name 'GitInvoker' {
     BeforeEach {
         Set-StrictMode -Version 'Latest'
@@ -22,6 +19,9 @@ Describe -Name 'GitInvoker' {
 
     BeforeAll {
         Set-StrictMode -Version 'Latest'
+
+        . $PSScriptRoot\..\Utilities\Logger.ps1
+        . $PSScriptRoot\GitInvoker.ps1
 
         $GlobalErrorActionPreference = $Global:ErrorActionPreference
         $Global:ErrorActionPreference = 'Stop'
