@@ -15,15 +15,10 @@ jobs:
         uses: actions/checkout@v2
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v1.0.2
+      - name: Setup NuGet
+        uses: nuget/setup-nuget@v1.0.2
       - name: Run MSBuild
         run: msbuild
-
-  validate:
-    runs-on: windows-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
       - name: PowerShell Tests
         id: powershell_tests
         uses: zyborg/pester-tests-report@v1
