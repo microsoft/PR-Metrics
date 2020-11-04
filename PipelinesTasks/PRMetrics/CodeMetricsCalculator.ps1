@@ -6,7 +6,7 @@
     A class for calculating and updating the code metrics within pull requests.
 #>
 
-#Requires -Version 5.0
+#Requires -Version 5.1
 
 class CodeMetricsCalculator {
     CodeMetricsCalculator([string] $baseSize,

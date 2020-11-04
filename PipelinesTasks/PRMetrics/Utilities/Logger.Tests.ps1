@@ -6,7 +6,7 @@
     Unit tests for the class used to logging telemetry.
 #>
 
-#Requires -Version 5.0
+#Requires -Version 7.0
 
 BeforeAll {
     Set-StrictMode -Version 'Latest'

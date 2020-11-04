@@ -149,11 +149,14 @@ merely be considered a guideline for influencing optimal PR behavior.
 ## Testing
 
 This task is tested via unit and integration tests constructed using the
-[Pester][pester] test framework. The code coverage is currently extremely high,
-and a high rate of coverage should be maintained for all changes. Validating
-this task on the server is significantly more expensive than validating locally.
-You may need [PowerShell 7 or later][powershell] installed due to subtle
-differences in the behavior of different PowerShell releases.
+[Pester 5][pester] test framework. The code coverage is currently extremely
+high, and a high rate of coverage should be maintained for all changes.
+Validating this task on the server is significantly more expensive than
+validating locally. You may need [PowerShell 7 or later][powershell] installed
+due to subtle differences in the behavior of different PowerShell releases.
+
+Test validation and code scanning will be automatically performed whenever a
+PR is opened against the `main` branch. These must pass for the PR to be merged.
 
 The task contains no violations of the [PSScriptAnalyzer][psscriptanalyzer]
 rules. This compliance with the PSScriptAnalyzer rules should also be maintained

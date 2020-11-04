@@ -7,7 +7,7 @@
     calculated code metrics.
 #>
 
-#Requires -Version 5.0
+#Requires -Version 7.0
 
 BeforeAll {
     Set-StrictMode -Version 'Latest'

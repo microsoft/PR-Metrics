@@ -6,7 +6,7 @@
     Unit tests for the class for calculating and updating the code metrics within pull requests.
 #>
 
-#Requires -Version 5.0
+#Requires -Version 7.0
 
 BeforeAll {
     Set-StrictMode -Version 'Latest'

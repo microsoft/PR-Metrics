@@ -6,7 +6,7 @@
     A class invoking Azure Repos REST APIs.
 #>
 
-#Requires -Version 5.0
+#Requires -Version 5.1
 
 class AzureReposInvoker {
     AzureReposInvoker() {
