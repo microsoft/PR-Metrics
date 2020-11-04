@@ -79,6 +79,7 @@ Feel free to file bug reports, feature requests, and suggestions.
 
 ## Useful References
 
+- [Azure DevOps REST SDK](https://docs.microsoft.com/rest/api/azure/devops)
 - [Built-in extensions](https://github.com/microsoft/azure-pipelines-tasks/tree/master/Tasks)
 - [Developing an extension](https://docs.microsoft.com/azure/devops/extend/get-started/node)
 - [Predefined variables](https://docs.microsoft.com/azure/devops/pipelines/build/variables)
