@@ -57,8 +57,8 @@ To add a new extension:
      - `vss-extension.json`: The metadata describing the extension, which will
        be used for deploying the extension to the
        [Marketplace](https://marketplace.visualstudio.com/azuredevops).
-     - `TaskName.ps1`: The PowerShell logic to run. JavaScript/TypeScript is
-       recommended for newer extensions as it can run cross-platform.
+     - `TaskName.ps1`: The PowerShell logic to run. TypeScript is recommended
+       for newer extensions as it can be run on all platforms.
      - `TaskName.copyproj`: The project file specifying the files to include in
        the release.
 1. Make the necessary changes to the scripts.
