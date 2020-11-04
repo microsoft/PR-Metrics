@@ -11,7 +11,7 @@
   "demands": [
     "api-version/5.1"
   ],
-  "minimumAgentVersion": "2.122.1",
+  "minimumAgentVersion": "2.141.0",
   "version": {
     "Major": 1,
     "Minor": 0,
