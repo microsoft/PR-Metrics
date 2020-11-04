@@ -18,7 +18,11 @@ contains a folder fo each individual extension.
 The current set of projects is:
 
 - **Pipelines Tasks**
-  - **PR Metrics:**
+  - [**PR Metrics:**](PipelinesTasks/PRMetrics/README.md) A task for adding size
+    and test coverage indicators to the titles of PRs. This helps ensure
+    engineers keeps PRs to an appropriate size and add sufficient test coverage,
+    while providing insight to reviewers as to how long a PR is likely to take
+    to review.
 
 ## Building
 

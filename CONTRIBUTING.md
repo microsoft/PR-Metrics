@@ -19,19 +19,28 @@ additional questions or comments.
 
 ## Coding Style
 
-Please follow the pattern of what you already see in the code.
+There is an [`.editorconfig`](.editorconfig) file in the root of the project
+specifying some simple formatting guidelines. In addition to adhering to these,
+you should follow the pattern of what you see in existing code.
 
-### Code Overview
+## Code Overview
 
-The code is organized in different projects, each one having its own project file.
-Each project produces a NuGet package.
-All the projects are included in the main solution file in the root directory.
-Please contribute to existing projects.
-If you would like to create a new project, please discuss this with the Team first using GitHub issues.
+The repository is organized into a set of different extensions, as outlined in
+the [README](README.md).
+
+Contributions to existing extensions are appreciated.
+
+If you wish to create a new extension, please discuss this beforehand using
+[GitHub issues](https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/issues).
 
 ## Documentation
 
-All documentation is located in the `./doc` folder. If you would like to contribute to the documentation, please submit a pull request.
+Contributions to documentation are always appreciated. Feel free to submit a
+pull request to contribute to any existing documentation file. If you wish to
+add new documentation, please add it to the `doc` folder.
 
 ## Communicating with the Team
-The easiest way to communicate with the team is via GitHub issues. Please file new issues, feature requests and suggestions.
+
+The easiest way to communicate with the team is via
+[GitHub issues](https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/issues).
+Feel free to file bug reports, feature requests, and suggestions.
