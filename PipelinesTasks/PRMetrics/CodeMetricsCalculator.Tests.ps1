@@ -611,7 +611,317 @@ Describe -Name 'CodeMetricsCalculator' {
             $codeMetricsCalculator.UpdateComment()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 80
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 81
+            Assert-MockCalled -CommandName 'New-Object' -Exactly 1
+            Assert-MockCalled -CommandName 'Invoke-RestMethod' -Exactly 5
+        }
+    }
+
+    Context -Name 'UpdateComment with no relevant comment thread and a zero test factor' {
+        It -Name 'Invokes expected APIs' {
+            # Arrange
+            Set-StrictMode -Version 'Latest'
+            Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+                $Message -eq '* [CodeMetricsCalculator]::new()'
+            }
+            Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+                $Message -eq '* [GitInvoker]::GetDiffSummary()'
+            }
+            Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+                $Message -eq '* [GitInvoker]::InvokeGit() hidden'
+            }
+            Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+                $Message -eq 'Git diff --numstat origin/develop...pull/12345/merge'
+            }
+            Mock -CommandName 'New-Object' -MockWith {
+                return New-Object -TypeName 'System.Diagnostics.ProcessStartInfo' -Property @{
+                    Arguments = @(
+                        'Write-Output'
+                        '-InputObject'
+                        "'1	2	File.cs'"
+                    )
+                    FileName = 'powershell'
+                    RedirectStandardOutput = $true
+                    UseShellExecute = $false
+                }
+            } -Verifiable -ParameterFilter {
+                $TypeName -eq 'System.Diagnostics.ProcessStartInfo' -and
+                $Property.Count -eq 5 -and
+                $Property.Arguments.Count -eq 3 -and
+                $Property.Arguments[0] -eq 'diff' -and
+                $Property.Arguments[1] -eq '--numstat' -and
+                $Property.Arguments[2] -eq 'origin/develop...pull/12345/merge' -and
+                $Property.FileName -eq 'git' -and
+                $Property.RedirectStandardOutput -eq $true -and
+                $Property.UseShellExecute -eq $false -and
+                $Property.WorkingDirectory -eq 'C:\'
+            }
+            Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+                $Message -eq "1 2 File.cs$([Environment]::NewLine)"
+            }
+            Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+                $Message -eq '* [CodeMetrics]::new()'
+            }
+            Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+                $Message -eq '* [CodeMetrics]::NormalizeParameters() hidden'
+            }
+            Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+                $Message -eq '* [CodeMetrics]::NormalizeCodeFileExtensionsParameter() hidden'
+            }
+            Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+                $Message -eq '* [CodeMetrics]::InitializeMetrics() hidden'
+            }
+            Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+                $Message -eq '* [CodeMetrics]::InitializeSize() hidden'
+            }
+            Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+                $Message -eq '* [AzureReposInvoker]::new()'
+            }
+            Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+                $Message -eq '* [CodeMetricsCalculator]::UpdateComment()'
+            }
+            Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+                $Message -eq '* [AzureReposInvoker]::GetCommentThreads()'
+            }
+            Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+                $Message -eq '* [AzureReposInvoker]::InvokeGetMethod() hidden'
+            }
+            Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+                $Message -eq ('GET ' +
+                              'https://dev.azure.com/prmetrics/CodeMetricsCalculator/_apis/git/' +
+                              'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/' +
+                              'threads?api-version=6.0')
+            }
+            Mock -CommandName 'Invoke-RestMethod' -MockWith {
+                return [PSCustomObject]@{
+                    value = $null
+                }
+            } -Verifiable -ParameterFilter {
+                $Method -eq 'GET' -and
+                $Uri -eq ('https://dev.azure.com/prmetrics/CodeMetricsCalculator/_apis/git/' +
+                          'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/threads' +
+                          '?api-version=6.0') -and
+                $Headers.Count -eq 1 -and
+                $Headers.Authorization -eq 'Bearer ACCESSTOKEN'
+            }
+            Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+                $Message -eq '* [AzureReposInvoker]::WriteOutput() hidden'
+            }
+            Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+                $Message -eq ("{$([Environment]::NewLine)" +
+                              "  `"value`": null$([Environment]::NewLine)" +
+                              '}')
+            }
+            Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+                $Message -eq ''
+            }
+            Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+                $Message -eq '* [AzureReposInvoker]::GetIterations()'
+            }
+            Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+                $Message -eq ('GET ' +
+                              'https://dev.azure.com/prmetrics/CodeMetricsCalculator/_apis/git/' +
+                              'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/' +
+                              'iterations?api-version=6.0')
+            }
+            Mock -CommandName 'Invoke-RestMethod' -MockWith {
+                return [PSCustomObject]@{
+                    value = @(
+                        @{
+                            id = 1
+                        }
+                    )
+                }
+            } -Verifiable -ParameterFilter {
+                $Method -eq 'GET' -and
+                $Uri -eq ('https://dev.azure.com/prmetrics/CodeMetricsCalculator/_apis/git/' +
+                          'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/iterations' +
+                          '?api-version=6.0') -and
+                $Headers.Count -eq 1 -and
+                $Headers.Authorization -eq 'Bearer ACCESSTOKEN'
+            }
+            Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+                $Message -eq ("{$([Environment]::NewLine)" +
+                              "  `"value`": [$([Environment]::NewLine)" +
+                              "    {$([Environment]::NewLine)" +
+                              "      `"id`": 1$([Environment]::NewLine)" +
+                              "    }$([Environment]::NewLine)" +
+                              "  ]$([Environment]::NewLine)" +
+                              '}')
+            }
+            Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+                $Message -eq '* [PullRequest]::GetCurrentIteration() static'
+            }
+            Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+                $Message -eq '* [PullRequest]::GetCommentData() static'
+            }
+            Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+                $Message -eq '* [CodeMetricsCalculator]::UpdateMetricsComment() hidden'
+            }
+            Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+                $Message -eq '* [PullRequest]::GetMetricsComment() static'
+            }
+            Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+                $Message -eq '* [PullRequest]::AddCommentStatuses() hidden static'
+            }
+            Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+                $Message -eq '* [CodeMetrics]::IsSmall()'
+            }
+            Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+                $Message -eq '* [CodeMetrics]::AreTestsExpected()'
+            }
+            Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+                $Message -eq '* [CodeMetrics]::HasSufficientTestCode()'
+            }
+            Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+                $Message -eq '* [PullRequest]::AddCommentMetrics() hidden static'
+            }
+            Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+                $Message -eq '* [PullRequest]::GetMetricsCommentStatus() static'
+            }
+            Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+                $Message -eq '* [AzureReposInvoker]::CreateCommentThread()'
+            }
+            Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+                $Message -eq '* [AzureReposInvoker]::GetUri() hidden'
+            }
+            Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+                $Message -eq ('POST ' +
+                              'https://dev.azure.com/prmetrics/CodeMetricsCalculator/_apis/git/' +
+                              'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/' +
+                              'threads?api-version=6.0 ' +
+                              '{"comments":[{"content":"# Metrics for iteration 1' +
+                              $([Environment]::NewLine) +
+                              "$([char]0x2714) **Thanks for keeping your pull request small.**" +
+                              $([Environment]::NewLine) +
+                              "||Lines$([Environment]::NewLine)" +
+                              "-|-:$([Environment]::NewLine)" +
+                              "Product Code|1$([Environment]::NewLine)" +
+                              "Test Code|0$([Environment]::NewLine)" +
+                              "**Subtotal**|**1**$([Environment]::NewLine)" +
+                              "Ignored|0$([Environment]::NewLine)" +
+                              '**Total**|**1**"}]}')
+            }
+            Mock -CommandName 'Invoke-RestMethod' -MockWith {
+                return [PSCustomObject]@{
+                    id = 1
+                }
+            } -Verifiable -ParameterFilter {
+                $Method -eq 'POST' -and
+                $Uri -eq ('https://dev.azure.com/prmetrics/CodeMetricsCalculator/_apis/git/' +
+                          'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/threads' +
+                          '?api-version=6.0') -and
+                $Headers.Count -eq 1 -and
+                $Headers.Authorization -eq 'Bearer ACCESSTOKEN' -and
+                $Body -eq ('{"comments":[{"content":"# Metrics for iteration 1' +
+                           $([Environment]::NewLine) +
+                           "$([char]0x2714) **Thanks for keeping your pull request small.**" +
+                           $([Environment]::NewLine) +
+                           "||Lines$([Environment]::NewLine)" +
+                           "-|-:$([Environment]::NewLine)" +
+                           "Product Code|1$([Environment]::NewLine)" +
+                           "Test Code|0$([Environment]::NewLine)" +
+                           "**Subtotal**|**1**$([Environment]::NewLine)" +
+                           "Ignored|0$([Environment]::NewLine)" +
+                           '**Total**|**1**"}]}') -and
+                $ContentType -eq 'application/json; charset=utf-8'
+            }
+            Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+                $Message -eq ("{$([Environment]::NewLine)" +
+                              "  `"id`": 1$([Environment]::NewLine)" +
+                              "}")
+            }
+            Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+                $Message -eq '* [PullRequest]::GetCommentThreadId() static'
+            }
+            Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+                $Message -eq '* [AzureReposInvoker]::SetCommentThreadStatus()'
+            }
+            Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+                $Message -eq '* [AzureReposInvoker]::InvokeActionMethod() hidden'
+            }
+            Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+                $Message -eq ('PATCH ' +
+                              'https://dev.azure.com/prmetrics/CodeMetricsCalculator/_apis/git/' +
+                              'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/threads/' +
+                              '1?api-version=6.0 {"status":4}')
+            }
+            Mock -CommandName 'Invoke-RestMethod' -MockWith {
+                return [PSCustomObject]@{
+                    value = 'Fake Data'
+                }
+            } -Verifiable -ParameterFilter {
+                $Method -eq 'PATCH' -and
+                $Uri -eq ('https://dev.azure.com/prmetrics/CodeMetricsCalculator/_apis/git/' +
+                          'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/threads/1' +
+                          '?api-version=6.0') -and
+                $Headers.Count -eq 1 -and
+                $Headers.Authorization -eq 'Bearer ACCESSTOKEN' -and
+                $Body -eq '{"status":4}' -and
+                $ContentType -eq 'application/json; charset=utf-8'
+            }
+            Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+                $Message -eq ("{$([Environment]::NewLine)" +
+                              "  `"value`": `"Fake Data`"$([Environment]::NewLine)" +
+                              "}")
+            }
+            Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+                $Message -eq '* [CodeMetricsCalculator]::AddMetadata() hidden'
+            }
+            Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+                $Message -eq '* [AzureReposInvoker]::AddMetadata()'
+            }
+            Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+                $Message -eq '* [AzureReposInvoker]::GetUri() hidden'
+            }
+            Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+                $Message -like ('PATCH ' +
+                                'https://dev.azure.com/prmetrics/CodeMetricsCalculator/_apis/git/' +
+                                'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/properties?' +
+                                'api-version=6.0-preview.1 *') -and
+                $Message -like '*{"op":"replace","path":"/PRMetrics.Size","value":"XS"}*' -and
+                $Message -like '*{"op":"replace","path":"/PRMetrics.ProductCode","value":1}*' -and
+                $Message -like '*{"op":"replace","path":"/PRMetrics.TestCode","value":0}*' -and
+                $Message -like '*{"op":"replace","path":"/PRMetrics.Subtotal","value":1}*' -and
+                $Message -like '*{"op":"replace","path":"/PRMetrics.Ignored","value":0}*' -and
+                $Message -like '*{"op":"replace","path":"/PRMetrics.Total","value":1}*' -and
+                $Message -notlike '*{"op":"replace","path":"/PRMetrics.TestCoverage","value":*'
+            }
+            Mock -CommandName 'Invoke-RestMethod' -MockWith {
+                return [PSCustomObject]@{
+                    value = 'Fake Data'
+                }
+            } -Verifiable -ParameterFilter {
+                $Method -eq 'PATCH' -and
+                $Uri -eq ('https://dev.azure.com/prmetrics/CodeMetricsCalculator/_apis/git/' +
+                          'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/properties?' +
+                          'api-version=6.0-preview.1') -and
+                $Headers.Count -eq 1 -and
+                $Headers.Authorization -eq 'Bearer ACCESSTOKEN' -and
+                $Body -like '*{"op":"replace","path":"/PRMetrics.Size","value":"XS"}*' -and
+                $Body -like '*{"op":"replace","path":"/PRMetrics.ProductCode","value":1}*' -and
+                $Body -like '*{"op":"replace","path":"/PRMetrics.TestCode","value":0}*' -and
+                $Body -like '*{"op":"replace","path":"/PRMetrics.Subtotal","value":1}*' -and
+                $Body -like '*{"op":"replace","path":"/PRMetrics.Ignored","value":0}*' -and
+                $Body -like '*{"op":"replace","path":"/PRMetrics.Total","value":1}*' -and
+                $Message -notlike '*{"op":"replace","path":"/PRMetrics.TestCoverage","value":*' -and
+                $ContentType -eq 'application/json-patch+json; charset=utf-8'
+            }
+            Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+                $Message -eq '* [AzureReposInvoker]::WriteOutput() hidden'
+            }
+            Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+                $Message -eq ("{$([Environment]::NewLine)" +
+                              "  `"value`": `"Fake Data`"$([Environment]::NewLine)" +
+                              "}")
+            }
+            $codeMetricsCalculator = [CodeMetricsCalculator]::new('50', '2.5', '0.0', '**/*', 'cs')
+
+            # Act
+            $codeMetricsCalculator.UpdateComment()
+
+            # Assert
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 79
             Assert-MockCalled -CommandName 'New-Object' -Exactly 1
             Assert-MockCalled -CommandName 'Invoke-RestMethod' -Exactly 5
         }
@@ -945,7 +1255,7 @@ Describe -Name 'CodeMetricsCalculator' {
             $codeMetricsCalculator.UpdateComment()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 81
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 82
             Assert-MockCalled -CommandName 'New-Object' -Exactly 1
             Assert-MockCalled -CommandName 'Invoke-RestMethod' -Exactly 5
         }

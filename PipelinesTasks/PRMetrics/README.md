@@ -36,9 +36,31 @@ be necessary.
 
 > :exclamation: **This file may not need to be reviewed.**
 
-Finally, if no PR description is provided, the description will be set to:
+If no PR description is provided, the description will be set to:
 
 > :x: **Please add a description.**
+
+The extension will also add some properties to the PR, which can be queried by
+other extensions as desired:
+
+- `/PRMetrics.Size`: A string containing the size indicator, e.g. `XS`.
+- `/PRMetrics.TestCoverage`: A Boolean value indicating whether the test
+  coverage is deemed sufficient. If no test coverage is expected (i.e. if the
+  test factor parameter is set to `0.0`), this property will not be present.
+- `/PRMetrics.ProductCode`: An integer indicating the number of lines of product
+  code added via the PR.
+- `/PRMetrics.TestCode`: An integer indicating the number of lines of test
+  code added via the PR.
+- `/PRMetrics.Subtotal`: An integer indicating the number of lines of product
+  and test code added via the PR. This is the sum of `/PRMetrics.ProductCode`
+  and `/PRMetrics.TestCode`.
+- `/PRMetrics.Ignored`: An integer indicating the number of lines of ignored
+  code added via the PR. The includes files ignored through use of the code
+  matching patterns parameter as well as those files whose extensions resulted
+  in the code being ignored.
+- `/PRMetrics.Total`: An integer indicating the total number of lines of code
+  added via the PR. This is the sum of `/PRMetrics.Subtotal` and
+  `/PRMetrics.Ignored`.
 
 ## Deploying
 
@@ -57,8 +79,9 @@ To deploy the task:
    will only need to be performed the first time you use tfx-cli.
 1. Delete any existing copy of the task using
    `tfx build tasks delete --task-id 907d3b28-6b37-4ac7-ac75-9631ee53e512`.
-1. Install `nuget.exe` so that it can accessed from any console window using the
-   instructions [here][nugetcli].
+1. Install `nuget.exe` and add it to your `PATH` environment variable so that
+   NuGet can invoked from any console window. Instructions on the process can be
+   located [here][nugetcli].
 1. Build the task locally by running `msbuild` from the PRMetrics directory.
    You may need to use a Visual Studio command prompt for this, as `msbuild` is
    not always added to the default path.
@@ -151,19 +174,18 @@ merely be considered a guideline for influencing optimal PR behavior.
 This task is tested via unit and integration tests constructed using the
 [Pester 5][pester] test framework. The code coverage is currently extremely
 high, and a high rate of coverage should be maintained for all changes.
-Validating this task on the server is significantly more expensive than
-validating locally. You may need [PowerShell 7 or later][powershell] installed
-due to subtle differences in the behavior of different PowerShell releases.
-
-Test validation and code scanning will be automatically performed whenever a
-PR is opened against the `main` branch. These must pass for the PR to be merged.
+Validating this extension on the server is significantly more time consuming
+than validating locally. You may need [PowerShell 7 or later][powershell]
+installed due to subtle differences in the behavior of different PowerShell
+releases.
 
 The task contains no violations of the [PSScriptAnalyzer][psscriptanalyzer]
 rules. This compliance with the PSScriptAnalyzer rules should also be maintained
 for all new code.
 
-Compliance will be automatically maintained via the GitHub actions build, which
-will be automatically started whenever a new PR is created.
+Test validation and code scanning will be automatically performed whenever a
+PR is opened against the `main` branch. These validations must succeed for the
+PR to be merged.
 
 ## Debugging
 
