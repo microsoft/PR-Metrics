@@ -17,8 +17,7 @@
     "Visual Studio Extensions"
   ],
   "icons": {
-    "default": "documentation/TODO.png",
-    "large": "documentation/TODO.png"
+    "default": "docs/logo.png"
   },
   "targets": [
     {
@@ -36,7 +35,7 @@
   ],
   "content": {
     "details": {
-      "path": "documentation/README.md"
+      "path": "docs/README.md"
     },
     "license": {
       "path": "../../LICENSE.txt"
