@@ -10,7 +10,7 @@ efficient time management.
 
 It also adds detailed metrics as a comment within the PR, highlights missing PR
 descriptions, indicates files that may not need to be reviewed, and adds hidden
-properties for programmatic access.
+properties available programmatically.
 
 ![Metrics comment](comment.png)
 
@@ -20,8 +20,8 @@ properties for programmatic access.
 
 ## How to Use
 
-After installing the extension, you can add the task to a new or existing
-[build definition][build].
+After installing the extension on your Azure DevOps server, you can add the task
+to a new or existing [build definition][build].
 
 ![Adding the PR Metrics task](task-add.png)
 
@@ -58,7 +58,8 @@ The [source][github] for this extension is on GitHub. Take, fork, and extend.
 
 A more thorough description of the extension can be found [here][readme].
 
-If you have feedback or issues, please file an issue on [GitHub][issues].
+If you have feedback or encounter errors, please file an issue on
+[GitHub][issues].
 
 [build]: https://docs.microsoft.com/azure/devops/pipelines/create-first-pipeline
 [github]: https://github.com/microsoft/OMEX-Azure-DevOps-Extensions
