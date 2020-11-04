@@ -20,8 +20,8 @@ additional questions or comments.
 ## Coding Style
 
 There is an [`.editorconfig`](.editorconfig) file in the root of the project
-specifying some simple formatting guidelines. In addition to adhering to these,
-you should follow the pattern of what you see in existing code.
+specifying some simple formatting guidelines. In addition to adhering to those,
+you should follow the pattern of what you see in existing code where possible.
 
 ## Code Overview
 
@@ -41,24 +41,25 @@ Any update will need to increment the version in the task's `task.json` and
 If you wish to create a new extension, please discuss this beforehand using
 [GitHub issues](https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/issues).
 
-To add a new extension:
+The following instructions can be used for adding an extension.
 
-1. If instances of your extension category do not already exist in the repo,
+1. If instances of the extension category do not already exist in the repo,
    create a new folder for this category.
 1. Within the category folder, create a new folder with the name of the task.
 1. To start, copy the necessary files from one of the existing extensions. The
-   set of files can vary by extension type, but in general, the following files
+   set of files can vary by extension type, but, in general, the following files
    are required:
-     - `icon.png`: The default icon should ultimately be replaced by a custom
-       PNG files of size 32×32 pixels with transparencies set appropriately.
-     - `task.json`: The metadata describing the extension and its input. It
-       also references the script files containing the extension logic. Note
-       that the `id` field must be a unique GUID.
+     - `icon.png`: A PNG file of size 32×32 pixels with transparencies set
+       appropriately.
+     - `task.json`: The metadata describing the extension and its inputs. The
+       file also references the script files containing the extension logic.
+       Note that the `id` field must be a unique GUID.
      - `vss-extension.json`: The metadata describing the extension, which will
        be used for deploying the extension to the
        [Marketplace](https://marketplace.visualstudio.com/azuredevops).
      - `TaskName.ps1`: The PowerShell logic to run. TypeScript is recommended
-       for newer extensions as it can be run on all platforms.
+       for newer extensions as it can be run on all platforms, unlike PowerShell
+       extensions, which can only be run on Windows.
      - `TaskName.copyproj`: The project file specifying the files to include in
        the release.
 1. Make the necessary changes to the scripts.
@@ -71,7 +72,7 @@ Contributions to documentation are always appreciated. Feel free to submit a
 pull request to contribute to any existing documentation file. If you wish to
 add new documentation, please add it to the `doc` folder.
 
-## Communicating with the team
+## Communicating with the Team
 
 The easiest way to communicate with the team is via
 [GitHub issues](https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/issues).
