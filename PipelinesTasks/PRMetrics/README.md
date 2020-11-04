@@ -40,10 +40,10 @@ If no PR description is provided, the description will be set to:
 
 > :x: **Please add a description.**
 
-The extension will also add some properties to the PR, which can be queried by
-other extensions as desired:
+The extension will also add properties to the PR, which can be queried by other
+extensions as desired:
 
-- `/PRMetrics.Size`: A string containing the size indicator, e.g. `XS`.
+- `/PRMetrics.Size`: A string representing the size indicator, e.g. `XS`.
 - `/PRMetrics.TestCoverage`: A Boolean value indicating whether the test
   coverage is deemed sufficient. If no test coverage is expected (i.e. if the
   test factor parameter is set to `0.0`), this property will not be present.
@@ -55,9 +55,9 @@ other extensions as desired:
   and test code added via the PR. This is the sum of `/PRMetrics.ProductCode`
   and `/PRMetrics.TestCode`.
 - `/PRMetrics.Ignored`: An integer indicating the number of lines of ignored
-  code added via the PR. The includes files ignored through use of the code
-  matching patterns parameter as well as those files whose extensions resulted
-  in the code being ignored.
+  code added via the PR. This includes files ignored through the use of the code
+  matching patterns parameter, as well as those files whose extensions resulted
+  in their being ignored.
 - `/PRMetrics.Total`: An integer indicating the total number of lines of code
   added via the PR. This is the sum of `/PRMetrics.Subtotal` and
   `/PRMetrics.Ignored`.
