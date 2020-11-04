@@ -18,7 +18,7 @@ commitment for a thorough review of the code.
 The task will also add a comment to the PR with a detailed breakdown of the
 metrics:
 
-> # Metrics for iteration 1
+> **Metrics for iteration 1**
 > :heavy_check_mark: Thanks for keeping your pull request small.
 >
 > :heavy_check_mark: Thanks for adding tests.
