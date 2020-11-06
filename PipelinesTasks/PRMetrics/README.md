@@ -73,9 +73,7 @@ To deploy the task:
    `npm install -g tfx-cli`.
 1. Sign in to the server using
    `tfx login --service-url https://<account>.visualstudio.com/DefaultCollection --token <PAT>`.
-   You can generate a PAT by visiting
-   `https://dev.azure.com/<account>/_usersSettings/tokens` and clicking "New
-   Token". Select "Full access" and adjust the rest of settings as desired. This
+   You can generate a PAT by following the instructions [here][tfxpat]. This
    will only need to be performed the first time you use tfx-cli.
 1. Delete any existing copy of the task using
    `tfx build tasks delete --task-id 907d3b28-6b37-4ac7-ac75-9631ee53e512`.
@@ -315,6 +313,7 @@ y
 [azureserver]: https://azure.microsoft.com/services/devops/server/
 [tfxcli]: https://github.com/Microsoft/tfs-cli
 [npm]: https://www.npmjs.com/
+[tfxpat]: https://docs.microsoft.com/azure/devops/extend/publish/command-line
 [nugetcli]: https://docs.microsoft.com/nuget/install-nuget-client-tools#nugetexe-cli
 [addingtask]: https://docs.microsoft.com/azure/devops/pipelines/customize-pipeline
 [globs]: https://docs.microsoft.com/azure/devops/pipelines/tasks/file-matching-patterns
