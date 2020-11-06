@@ -1,0 +1,44 @@
+name: Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: MSBuild – Install
+        uses: microsoft/setup-msbuild@v1.0.2
+      - name: MSBuild – Run
+        run: msbuild
+      - name: PowerShell Tests – Install
+        shell: pwsh
+        run: Install-Module -Name 'Pester' -Force
+      - name: PowerShell Tests – Run
+        shell: pwsh
+        run: |
+          $Result = Invoke-Pester -PassThru
+          if ($Result.FailedCount -gt 0) { Throw 'PowerShell Tests failed.' }
+          exit 0
+
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: PowerShell Analysis – Install
+        shell: pwsh
+        run: Install-Module -Name 'PSScriptAnalyzer' -Force
+      - name: PowerShell Analysis – Run
+        shell: pwsh
+        run: |
+          $Result = (Invoke-ScriptAnalyzer -Path '.' -Recurse | Where-Object -Property 'RuleName' -ne 'TypeNotFound')
+          $Result
+          if ($Result.Count -gt 0) { Throw 'PowerShell Analysis failed.' }

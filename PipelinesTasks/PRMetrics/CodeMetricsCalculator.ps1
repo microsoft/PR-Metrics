@@ -6,7 +6,7 @@
     A class for calculating and updating the code metrics within pull requests.
 #>
 
-#Requires -Version 5.0
+#Requires -Version 5.1
 
 class CodeMetricsCalculator {
     CodeMetricsCalculator([string] $baseSize,
@@ -86,12 +86,15 @@ class CodeMetricsCalculator {
         [Logger]::Log('* [CodeMetricsCalculator]::AddMetadata() hidden')
         $metadata = @{
             '/PRMetrics.Size' = $this.CodeMetrics.Size
-            '/PRMetrics.TestCoverage' = $this.CodeMetrics.HasSufficientTestCode()
             '/PRMetrics.ProductCode' = $this.CodeMetrics.Metrics.ProductCode
             '/PRMetrics.TestCode' = $this.CodeMetrics.Metrics.TestCode
             '/PRMetrics.Subtotal' = $this.CodeMetrics.Metrics.Subtotal
             '/PRMetrics.Ignored' = $this.CodeMetrics.Metrics.Ignored
             '/PRMetrics.Total' = $this.CodeMetrics.Metrics.Total
+        }
+
+        if ($this.CodeMetrics.AreTestsExpected()) {
+            $metadata['/PRMetrics.TestCoverage'] = $this.CodeMetrics.HasSufficientTestCode()
         }
 
         $this.AzureReposInvoker.AddMetadata($metadata)

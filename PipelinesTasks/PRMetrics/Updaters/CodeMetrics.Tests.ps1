@@ -6,12 +6,16 @@
     Unit tests for the class representing metrics around software code.
 #>
 
-#Requires -Version 5.0
+#Requires -Version 7.0
 
-$env:SYSTEM_CULTURE = 'en-US'
-. $PSScriptRoot\..\Utilities\Logger.ps1
-. $PSScriptRoot\CodeMetrics.ps1
-Import-Module -Name "$PSScriptRoot\..\..\..\Release\PipelinesTasks\PRMetrics\ps_modules\VstsTaskSdk\VstsTaskSdk.psm1"
+BeforeAll {
+    Set-StrictMode -Version 'Latest'
+
+    $env:SYSTEM_CULTURE = 'en-US'
+    . $PSScriptRoot\..\Utilities\Logger.ps1
+    . $PSCommandPath.Replace('.Tests.ps1','.ps1')
+    Import-Module -Name "$PSScriptRoot\..\..\..\Release\PipelinesTasks\PRMetrics\ps_modules\VstsTaskSdk\VstsTaskSdk.psm1"
+}
 
 Describe -Name 'CodeMetrics' {
     BeforeEach {
@@ -22,6 +26,70 @@ Describe -Name 'CodeMetrics' {
         }
         Mock -CommandName 'Write-Verbose' -MockWith {
             throw [System.NotImplementedException]"Write-Verbose must not be called but was called with '$Message'."
+        }
+        Mock -CommandName 'Invoke-RestMethod' -MockWith {
+            throw [System.NotImplementedException]"Invoke-RestMethod must not be called but was called with '$Uri'."
+        }
+
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq 'Entering Select-Match.'
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq "MatchOptions.Dot: 'True'"
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq 'Entering Select-Match.'
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq "MatchOptions.Dot: 'True'"
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq "MatchOptions.FlipNegate: 'False'"
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq "MatchOptions.MatchBase: 'False'"
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq "MatchOptions.NoBrace: 'True'"
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq "MatchOptions.NoCase: 'True'"
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq "MatchOptions.NoComment: 'False'"
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq "MatchOptions.NoExt: 'False'"
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq "MatchOptions.NoGlobStar: 'False'"
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq "MatchOptions.NoNegate: 'False'"
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq "MatchOptions.NoNull: 'False'"
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -like "Pattern: '*"
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -like "Trimmed leading '!'. Pattern: '*"
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq 'Applying include pattern against original list.'
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq 'Applying exclude pattern against original list'
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -like '* matches'
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -like '* final results'
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq 'Leaving Select-Match.'
         }
     }
 
@@ -83,16 +151,16 @@ Describe -Name 'CodeMetrics' {
             $codeMetrics = [CodeMetrics]::new('50', '2.5', '1.0', '**/*', 'cs', "9	1	File1.cs`n")
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 5
-            $codeMetrics.Metrics.Count | Should Be 5
-            $codeMetrics.Metrics.ProductCode | Should Be 9
-            $codeMetrics.Metrics.TestCode | Should Be 0
-            $codeMetrics.Metrics.Subtotal | Should Be 9
-            $codeMetrics.Metrics.Ignored | Should Be 0
-            $codeMetrics.Metrics.Total | Should Be 9
-            $codeMetrics.IgnoredFilesWithLinesAdded.Count | Should Be 0
-            $codeMetrics.IgnoredFilesWithoutLinesAdded.Count | Should Be 0
-            $codeMetrics.ExpectedTestCode | Should Be 9
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 21
+            $codeMetrics.Metrics.Count | Should -Be 5
+            $codeMetrics.Metrics.ProductCode | Should -Be 9
+            $codeMetrics.Metrics.TestCode | Should -Be 0
+            $codeMetrics.Metrics.Subtotal | Should -Be 9
+            $codeMetrics.Metrics.Ignored | Should -Be 0
+            $codeMetrics.Metrics.Total | Should -Be 9
+            $codeMetrics.IgnoredFilesWithLinesAdded.Count | Should -Be 0
+            $codeMetrics.IgnoredFilesWithoutLinesAdded.Count | Should -Be 0
+            $codeMetrics.ExpectedTestCode | Should -Be 9
         }
     }
 
@@ -121,16 +189,16 @@ Describe -Name 'CodeMetrics' {
                                                                                  "0	9	File2.cs`n"))
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 5
-            $codeMetrics.Metrics.Count | Should Be 5
-            $codeMetrics.Metrics.ProductCode | Should Be 9
-            $codeMetrics.Metrics.TestCode | Should Be 0
-            $codeMetrics.Metrics.Subtotal | Should Be 9
-            $codeMetrics.Metrics.Ignored | Should Be 0
-            $codeMetrics.Metrics.Total | Should Be 9
-            $codeMetrics.IgnoredFilesWithLinesAdded.Count | Should Be 0
-            $codeMetrics.IgnoredFilesWithoutLinesAdded.Count | Should Be 0
-            $codeMetrics.ExpectedTestCode | Should Be 18
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 21
+            $codeMetrics.Metrics.Count | Should -Be 5
+            $codeMetrics.Metrics.ProductCode | Should -Be 9
+            $codeMetrics.Metrics.TestCode | Should -Be 0
+            $codeMetrics.Metrics.Subtotal | Should -Be 9
+            $codeMetrics.Metrics.Ignored | Should -Be 0
+            $codeMetrics.Metrics.Total | Should -Be 9
+            $codeMetrics.IgnoredFilesWithLinesAdded.Count | Should -Be 0
+            $codeMetrics.IgnoredFilesWithoutLinesAdded.Count | Should -Be 0
+            $codeMetrics.ExpectedTestCode | Should -Be 18
         }
     }
 
@@ -160,16 +228,16 @@ Describe -Name 'CodeMetrics' {
                                                                                       "-	-	File.dll`n"))
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 5
-            $codeMetrics.Metrics.Count | Should Be 5
-            $codeMetrics.Metrics.ProductCode | Should Be 9
-            $codeMetrics.Metrics.TestCode | Should Be 0
-            $codeMetrics.Metrics.Subtotal | Should Be 9
-            $codeMetrics.Metrics.Ignored | Should Be 0
-            $codeMetrics.Metrics.Total | Should Be 9
-            $codeMetrics.IgnoredFilesWithLinesAdded.Count | Should Be 0
-            $codeMetrics.IgnoredFilesWithoutLinesAdded.Count | Should Be 0
-            $codeMetrics.ExpectedTestCode | Should Be 22
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 21
+            $codeMetrics.Metrics.Count | Should -Be 5
+            $codeMetrics.Metrics.ProductCode | Should -Be 9
+            $codeMetrics.Metrics.TestCode | Should -Be 0
+            $codeMetrics.Metrics.Subtotal | Should -Be 9
+            $codeMetrics.Metrics.Ignored | Should -Be 0
+            $codeMetrics.Metrics.Total | Should -Be 9
+            $codeMetrics.IgnoredFilesWithLinesAdded.Count | Should -Be 0
+            $codeMetrics.IgnoredFilesWithoutLinesAdded.Count | Should -Be 0
+            $codeMetrics.ExpectedTestCode | Should -Be 22
         }
     }
 
@@ -205,16 +273,16 @@ Describe -Name 'CodeMetrics' {
                                                                                       "-	-	test/File.dll`n"))
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 5
-            $codeMetrics.Metrics.Count | Should Be 5
-            $codeMetrics.Metrics.ProductCode | Should Be 9
-            $codeMetrics.Metrics.TestCode | Should Be 18
-            $codeMetrics.Metrics.Subtotal | Should Be 27
-            $codeMetrics.Metrics.Ignored | Should Be 0
-            $codeMetrics.Metrics.Total | Should Be 27
-            $codeMetrics.IgnoredFilesWithLinesAdded.Count | Should Be 0
-            $codeMetrics.IgnoredFilesWithoutLinesAdded.Count | Should Be 0
-            $codeMetrics.ExpectedTestCode | Should Be 9
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 21
+            $codeMetrics.Metrics.Count | Should -Be 5
+            $codeMetrics.Metrics.ProductCode | Should -Be 9
+            $codeMetrics.Metrics.TestCode | Should -Be 18
+            $codeMetrics.Metrics.Subtotal | Should -Be 27
+            $codeMetrics.Metrics.Ignored | Should -Be 0
+            $codeMetrics.Metrics.Total | Should -Be 27
+            $codeMetrics.IgnoredFilesWithLinesAdded.Count | Should -Be 0
+            $codeMetrics.IgnoredFilesWithoutLinesAdded.Count | Should -Be 0
+            $codeMetrics.ExpectedTestCode | Should -Be 9
         }
     }
 
@@ -242,16 +310,16 @@ Describe -Name 'CodeMetrics' {
             $codeMetrics = [CodeMetrics]::new('50', '2.5', '1.0', '**/*', 'cs', "9 1 File1.cs`n")
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 5
-            $codeMetrics.Metrics.Count | Should Be 5
-            $codeMetrics.Metrics.ProductCode | Should Be 9
-            $codeMetrics.Metrics.TestCode | Should Be 0
-            $codeMetrics.Metrics.Subtotal | Should Be 9
-            $codeMetrics.Metrics.Ignored | Should Be 0
-            $codeMetrics.Metrics.Total | Should Be 9
-            $codeMetrics.IgnoredFilesWithLinesAdded.Count | Should Be 0
-            $codeMetrics.IgnoredFilesWithoutLinesAdded.Count | Should Be 0
-            $codeMetrics.ExpectedTestCode | Should Be 9
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 21
+            $codeMetrics.Metrics.Count | Should -Be 5
+            $codeMetrics.Metrics.ProductCode | Should -Be 9
+            $codeMetrics.Metrics.TestCode | Should -Be 0
+            $codeMetrics.Metrics.Subtotal | Should -Be 9
+            $codeMetrics.Metrics.Ignored | Should -Be 0
+            $codeMetrics.Metrics.Total | Should -Be 9
+            $codeMetrics.IgnoredFilesWithLinesAdded.Count | Should -Be 0
+            $codeMetrics.IgnoredFilesWithoutLinesAdded.Count | Should -Be 0
+            $codeMetrics.ExpectedTestCode | Should -Be 9
         }
     }
 
@@ -296,21 +364,21 @@ Describe -Name 'CodeMetrics' {
                                                "-	-	test/File.dll`n"))
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 5
-            $codeMetrics.Metrics.Count | Should Be 5
-            $codeMetrics.Metrics.ProductCode | Should Be 0
-            $codeMetrics.Metrics.TestCode | Should Be 0
-            $codeMetrics.Metrics.Subtotal | Should Be 0
-            $codeMetrics.Metrics.Ignored | Should Be 27
-            $codeMetrics.Metrics.Total | Should Be 27
-            $codeMetrics.IgnoredFilesWithLinesAdded.Count | Should Be 3
-            $codeMetrics.IgnoredFilesWithLinesAdded[0] | Should Be 'File1.cs'
-            $codeMetrics.IgnoredFilesWithLinesAdded[1] | Should Be 'test/File1.cs'
-            $codeMetrics.IgnoredFilesWithLinesAdded[2] | Should Be 'FileTest1.cs'
-            $codeMetrics.IgnoredFilesWithoutLinesAdded.Count | Should Be 2
-            $codeMetrics.IgnoredFilesWithoutLinesAdded[0] | Should Be 'File2.cs'
-            $codeMetrics.IgnoredFilesWithoutLinesAdded[1] | Should Be 'Filetest2.cs'
-            $codeMetrics.ExpectedTestCode | Should Be 0
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 36
+            $codeMetrics.Metrics.Count | Should -Be 5
+            $codeMetrics.Metrics.ProductCode | Should -Be 0
+            $codeMetrics.Metrics.TestCode | Should -Be 0
+            $codeMetrics.Metrics.Subtotal | Should -Be 0
+            $codeMetrics.Metrics.Ignored | Should -Be 27
+            $codeMetrics.Metrics.Total | Should -Be 27
+            $codeMetrics.IgnoredFilesWithLinesAdded.Count | Should -Be 3
+            'File1.cs' | Should -BeIn $codeMetrics.IgnoredFilesWithLinesAdded
+            'test/File1.cs' | Should -BeIn $codeMetrics.IgnoredFilesWithLinesAdded
+            'FileTest1.cs' | Should -BeIn $codeMetrics.IgnoredFilesWithLinesAdded
+            $codeMetrics.IgnoredFilesWithoutLinesAdded.Count | Should -Be 2
+            'File2.cs' | Should -BeIn $codeMetrics.IgnoredFilesWithoutLinesAdded
+            'Filetest2.cs' | Should -BeIn $codeMetrics.IgnoredFilesWithoutLinesAdded
+            $codeMetrics.ExpectedTestCode | Should -Be 0
         }
     }
 
@@ -344,17 +412,17 @@ Describe -Name 'CodeMetrics' {
                                               "9	1	File1.cs`n")
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 5
-            $codeMetrics.Metrics.Count | Should Be 5
-            $codeMetrics.Metrics.ProductCode | Should Be 0
-            $codeMetrics.Metrics.TestCode | Should Be 0
-            $codeMetrics.Metrics.Subtotal | Should Be 0
-            $codeMetrics.Metrics.Ignored | Should Be 9
-            $codeMetrics.Metrics.Total | Should Be 9
-            $codeMetrics.IgnoredFilesWithLinesAdded.Count | Should Be 1
-            $codeMetrics.IgnoredFilesWithLinesAdded[0] | Should Be 'File1.cs'
-            $codeMetrics.IgnoredFilesWithoutLinesAdded.Count | Should Be 0
-            $codeMetrics.ExpectedTestCode | Should Be 0
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 25
+            $codeMetrics.Metrics.Count | Should -Be 5
+            $codeMetrics.Metrics.ProductCode | Should -Be 0
+            $codeMetrics.Metrics.TestCode | Should -Be 0
+            $codeMetrics.Metrics.Subtotal | Should -Be 0
+            $codeMetrics.Metrics.Ignored | Should -Be 9
+            $codeMetrics.Metrics.Total | Should -Be 9
+            $codeMetrics.IgnoredFilesWithLinesAdded.Count | Should -Be 1
+            $codeMetrics.IgnoredFilesWithLinesAdded[0] | Should -Be 'File1.cs'
+            $codeMetrics.IgnoredFilesWithoutLinesAdded.Count | Should -Be 0
+            $codeMetrics.ExpectedTestCode | Should -Be 0
         }
     }
 
@@ -399,20 +467,20 @@ Describe -Name 'CodeMetrics' {
                                                "-	-	{product => test}/File.dll`n"))
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 5
-            $codeMetrics.Metrics.Count | Should Be 5
-            $codeMetrics.Metrics.ProductCode | Should Be 0
-            $codeMetrics.Metrics.TestCode | Should Be 9
-            $codeMetrics.Metrics.Subtotal | Should Be 9
-            $codeMetrics.Metrics.Ignored | Should Be 18
-            $codeMetrics.Metrics.Total | Should Be 27
-            $codeMetrics.IgnoredFilesWithLinesAdded.Count | Should Be 2
-            $codeMetrics.IgnoredFilesWithLinesAdded[0] | Should Be 'File1.cs'
-            $codeMetrics.IgnoredFilesWithLinesAdded[1] | Should Be 'test/File1.cs'
-            $codeMetrics.IgnoredFilesWithoutLinesAdded.Count | Should Be 2
-            $codeMetrics.IgnoredFilesWithoutLinesAdded[0] | Should Be 'File2.cs'
-            $codeMetrics.IgnoredFilesWithoutLinesAdded[1] | Should Be 'Filetest2.cs'
-            $codeMetrics.ExpectedTestCode | Should Be 0
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 36
+            $codeMetrics.Metrics.Count | Should -Be 5
+            $codeMetrics.Metrics.ProductCode | Should -Be 0
+            $codeMetrics.Metrics.TestCode | Should -Be 9
+            $codeMetrics.Metrics.Subtotal | Should -Be 9
+            $codeMetrics.Metrics.Ignored | Should -Be 18
+            $codeMetrics.Metrics.Total | Should -Be 27
+            $codeMetrics.IgnoredFilesWithLinesAdded.Count | Should -Be 2
+            'File1.cs' | Should -BeIn $codeMetrics.IgnoredFilesWithLinesAdded
+            'test/File1.cs' | Should -BeIn $codeMetrics.IgnoredFilesWithLinesAdded
+            $codeMetrics.IgnoredFilesWithoutLinesAdded.Count | Should -Be 2
+            'File2.cs' | Should -BeIn $codeMetrics.IgnoredFilesWithoutLinesAdded
+            'Filetest2.cs' | Should -BeIn $codeMetrics.IgnoredFilesWithoutLinesAdded
+            $codeMetrics.ExpectedTestCode | Should -Be 0
         }
     }
 
@@ -444,8 +512,8 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
-            $response | Should Be "XS$([char]0x2714)"
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
+            $response | Should -Be "XS$([char]0x2714)"
         }
     }
 
@@ -463,8 +531,7 @@ Describe -Name 'CodeMetrics' {
                 $Message -eq '* [CodeMetrics]::NormalizeCodeFileExtensionsParameter() hidden'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq 'Adjusting base size parameter to 250.' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq 'Adjusting base size parameter to 250.'
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq '* [CodeMetrics]::InitializeMetrics() hidden'
@@ -481,9 +548,9 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
-            $response | Should Be "XS$([char]0x2714)"
+            $response | Should -Be "XS$([char]0x2714)"
         }
     }
 
@@ -501,8 +568,7 @@ Describe -Name 'CodeMetrics' {
                 $Message -eq '* [CodeMetrics]::NormalizeCodeFileExtensionsParameter() hidden'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq 'Adjusting base size parameter to 250.' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq 'Adjusting base size parameter to 250.'
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq '* [CodeMetrics]::InitializeMetrics() hidden'
@@ -519,9 +585,9 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
-            $response | Should Be "XS$([char]0x2714)"
+            $response | Should -Be "XS$([char]0x2714)"
         }
     }
 
@@ -539,8 +605,7 @@ Describe -Name 'CodeMetrics' {
                 $Message -eq '* [CodeMetrics]::NormalizeCodeFileExtensionsParameter() hidden'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq 'Adjusting base size parameter to 250.' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq 'Adjusting base size parameter to 250.'
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq '* [CodeMetrics]::InitializeMetrics() hidden'
@@ -557,9 +622,9 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
-            $response | Should Be "XS$([char]0x2714)"
+            $response | Should -Be "XS$([char]0x2714)"
         }
     }
 
@@ -577,8 +642,7 @@ Describe -Name 'CodeMetrics' {
                 $Message -eq '* [CodeMetrics]::NormalizeCodeFileExtensionsParameter() hidden'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq 'Adjusting base size parameter to 250.' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq 'Adjusting base size parameter to 250.'
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq '* [CodeMetrics]::InitializeMetrics() hidden'
@@ -595,9 +659,9 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
-            $response | Should Be "XS$([char]0x2714)"
+            $response | Should -Be "XS$([char]0x2714)"
         }
     }
 
@@ -615,8 +679,7 @@ Describe -Name 'CodeMetrics' {
                 $Message -eq '* [CodeMetrics]::NormalizeCodeFileExtensionsParameter() hidden'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq 'Adjusting base size parameter to 250.' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq 'Adjusting base size parameter to 250.'
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq '* [CodeMetrics]::InitializeMetrics() hidden'
@@ -633,9 +696,9 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
-            $response | Should Be "XS$([char]0x2714)"
+            $response | Should -Be "XS$([char]0x2714)"
         }
     }
 
@@ -653,8 +716,7 @@ Describe -Name 'CodeMetrics' {
                 $Message -eq '* [CodeMetrics]::NormalizeCodeFileExtensionsParameter() hidden'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq 'Adjusting base size parameter to 250.' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq 'Adjusting base size parameter to 250.'
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq '* [CodeMetrics]::InitializeMetrics() hidden'
@@ -671,9 +733,9 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
-            $response | Should Be "XS$([char]0x2714)"
+            $response | Should -Be "XS$([char]0x2714)"
         }
     }
 
@@ -691,8 +753,7 @@ Describe -Name 'CodeMetrics' {
                 $Message -eq '* [CodeMetrics]::NormalizeCodeFileExtensionsParameter() hidden'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq 'Adjusting growth rate parameter to 2.0.' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq 'Adjusting growth rate parameter to 2.0.'
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq '* [CodeMetrics]::InitializeMetrics() hidden'
@@ -709,9 +770,9 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
-            $response | Should Be "XS$([char]0x26A0)$([char]0xFE0F)"
+            $response | Should -Be "XS$([char]0x26A0)$([char]0xFE0F)"
         }
     }
 
@@ -729,8 +790,7 @@ Describe -Name 'CodeMetrics' {
                 $Message -eq '* [CodeMetrics]::NormalizeCodeFileExtensionsParameter() hidden'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq 'Adjusting growth rate parameter to 2.0.' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq 'Adjusting growth rate parameter to 2.0.'
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq '* [CodeMetrics]::InitializeMetrics() hidden'
@@ -747,9 +807,9 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
-            $response | Should Be "XS$([char]0x26A0)$([char]0xFE0F)"
+            $response | Should -Be "XS$([char]0x26A0)$([char]0xFE0F)"
         }
     }
 
@@ -767,8 +827,7 @@ Describe -Name 'CodeMetrics' {
                 $Message -eq '* [CodeMetrics]::NormalizeCodeFileExtensionsParameter() hidden'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq 'Adjusting growth rate parameter to 2.0.' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq 'Adjusting growth rate parameter to 2.0.'
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq '* [CodeMetrics]::InitializeMetrics() hidden'
@@ -785,9 +844,9 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
-            $response | Should Be "XS$([char]0x26A0)$([char]0xFE0F)"
+            $response | Should -Be "XS$([char]0x26A0)$([char]0xFE0F)"
         }
     }
 
@@ -805,8 +864,7 @@ Describe -Name 'CodeMetrics' {
                 $Message -eq '* [CodeMetrics]::NormalizeCodeFileExtensionsParameter() hidden'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq 'Adjusting growth rate parameter to 2.0.' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq 'Adjusting growth rate parameter to 2.0.'
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq '* [CodeMetrics]::InitializeMetrics() hidden'
@@ -823,9 +881,9 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
-            $response | Should Be "XS$([char]0x26A0)$([char]0xFE0F)"
+            $response | Should -Be "XS$([char]0x26A0)$([char]0xFE0F)"
         }
     }
 
@@ -843,8 +901,7 @@ Describe -Name 'CodeMetrics' {
                 $Message -eq '* [CodeMetrics]::NormalizeCodeFileExtensionsParameter() hidden'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq 'Adjusting growth rate parameter to 2.0.' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq 'Adjusting growth rate parameter to 2.0.'
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq '* [CodeMetrics]::InitializeMetrics() hidden'
@@ -861,9 +918,9 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
-            $response | Should Be "XS$([char]0x26A0)$([char]0xFE0F)"
+            $response | Should -Be "XS$([char]0x26A0)$([char]0xFE0F)"
         }
     }
 
@@ -881,8 +938,7 @@ Describe -Name 'CodeMetrics' {
                 $Message -eq '* [CodeMetrics]::NormalizeCodeFileExtensionsParameter() hidden'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq 'Adjusting growth rate parameter to 2.0.' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq 'Adjusting growth rate parameter to 2.0.'
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq '* [CodeMetrics]::InitializeMetrics() hidden'
@@ -899,9 +955,9 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
-            $response | Should Be "XS$([char]0x26A0)$([char]0xFE0F)"
+            $response | Should -Be "XS$([char]0x26A0)$([char]0xFE0F)"
         }
     }
 
@@ -919,8 +975,7 @@ Describe -Name 'CodeMetrics' {
                 $Message -eq '* [CodeMetrics]::NormalizeCodeFileExtensionsParameter() hidden'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq 'Adjusting growth rate parameter to 2.0.' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq 'Adjusting growth rate parameter to 2.0.'
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq '* [CodeMetrics]::InitializeMetrics() hidden'
@@ -937,9 +992,9 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
-            $response | Should Be "XS$([char]0x26A0)$([char]0xFE0F)"
+            $response | Should -Be "XS$([char]0x26A0)$([char]0xFE0F)"
         }
     }
 
@@ -957,8 +1012,7 @@ Describe -Name 'CodeMetrics' {
                 $Message -eq '* [CodeMetrics]::NormalizeCodeFileExtensionsParameter() hidden'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq 'Adjusting test factor parameter to 1.5.' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq 'Adjusting test factor parameter to 1.5.'
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq '* [CodeMetrics]::InitializeMetrics() hidden'
@@ -975,9 +1029,9 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
-            $response | Should Be "XS$([char]0x26A0)$([char]0xFE0F)"
+            $response | Should -Be "XS$([char]0x26A0)$([char]0xFE0F)"
         }
     }
 
@@ -995,8 +1049,7 @@ Describe -Name 'CodeMetrics' {
                 $Message -eq '* [CodeMetrics]::NormalizeCodeFileExtensionsParameter() hidden'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq 'Adjusting test factor parameter to 1.5.' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq 'Adjusting test factor parameter to 1.5.'
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq '* [CodeMetrics]::InitializeMetrics() hidden'
@@ -1013,9 +1066,9 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
-            $response | Should Be "XS$([char]0x26A0)$([char]0xFE0F)"
+            $response | Should -Be "XS$([char]0x26A0)$([char]0xFE0F)"
         }
     }
 
@@ -1033,8 +1086,7 @@ Describe -Name 'CodeMetrics' {
                 $Message -eq '* [CodeMetrics]::NormalizeCodeFileExtensionsParameter() hidden'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq 'Adjusting test factor parameter to 1.5.' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq 'Adjusting test factor parameter to 1.5.'
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq '* [CodeMetrics]::InitializeMetrics() hidden'
@@ -1051,9 +1103,9 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
-            $response | Should Be "XS$([char]0x26A0)$([char]0xFE0F)"
+            $response | Should -Be "XS$([char]0x26A0)$([char]0xFE0F)"
         }
     }
 
@@ -1071,8 +1123,7 @@ Describe -Name 'CodeMetrics' {
                 $Message -eq '* [CodeMetrics]::NormalizeCodeFileExtensionsParameter() hidden'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq 'Adjusting test factor parameter to 1.5.' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq 'Adjusting test factor parameter to 1.5.'
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq '* [CodeMetrics]::InitializeMetrics() hidden'
@@ -1089,9 +1140,9 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
-            $response | Should Be "XS$([char]0x26A0)$([char]0xFE0F)"
+            $response | Should -Be "XS$([char]0x26A0)$([char]0xFE0F)"
         }
     }
 
@@ -1109,8 +1160,7 @@ Describe -Name 'CodeMetrics' {
                 $Message -eq '* [CodeMetrics]::NormalizeCodeFileExtensionsParameter() hidden'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq 'Adjusting test factor parameter to 1.5.' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq 'Adjusting test factor parameter to 1.5.'
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq '* [CodeMetrics]::InitializeMetrics() hidden'
@@ -1127,9 +1177,9 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
-            $response | Should Be "XS$([char]0x26A0)$([char]0xFE0F)"
+            $response | Should -Be "XS$([char]0x26A0)$([char]0xFE0F)"
         }
     }
 
@@ -1161,8 +1211,8 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
-            $response | Should Be "XS$([char]0x2714)"
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
+            $response | Should -Be "XS$([char]0x2714)"
         }
     }
 
@@ -1180,8 +1230,7 @@ Describe -Name 'CodeMetrics' {
                 $Message -eq '* [CodeMetrics]::NormalizeCodeFileExtensionsParameter() hidden'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq 'Adjusting file matching patterns to **/*.' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq 'Adjusting file matching patterns to **/*.'
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq '* [CodeMetrics]::InitializeMetrics() hidden'
@@ -1198,9 +1247,9 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
-            $response | Should Be "XS$([char]0x26A0)$([char]0xFE0F)"
+            $response | Should -Be "XS$([char]0x26A0)$([char]0xFE0F)"
         }
     }
 
@@ -1218,8 +1267,7 @@ Describe -Name 'CodeMetrics' {
                 $Message -eq '* [CodeMetrics]::NormalizeCodeFileExtensionsParameter() hidden'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq 'Adjusting file matching patterns to **/*.' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq 'Adjusting file matching patterns to **/*.'
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq '* [CodeMetrics]::InitializeMetrics() hidden'
@@ -1236,9 +1284,9 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
-            $response | Should Be "XS$([char]0x26A0)$([char]0xFE0F)"
+            $response | Should -Be "XS$([char]0x26A0)$([char]0xFE0F)"
         }
     }
 
@@ -1256,8 +1304,7 @@ Describe -Name 'CodeMetrics' {
                 $Message -eq '* [CodeMetrics]::NormalizeCodeFileExtensionsParameter() hidden'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq 'Adjusting file matching patterns to **/*.' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq 'Adjusting file matching patterns to **/*.'
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq '* [CodeMetrics]::InitializeMetrics() hidden'
@@ -1274,9 +1321,9 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
-            $response | Should Be "XS$([char]0x26A0)$([char]0xFE0F)"
+            $response | Should -Be "XS$([char]0x26A0)$([char]0xFE0F)"
         }
     }
 
@@ -1294,8 +1341,7 @@ Describe -Name 'CodeMetrics' {
                 $Message -eq '* [CodeMetrics]::NormalizeCodeFileExtensionsParameter() hidden'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq 'Adjusting code file extensions parameter to default values.' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq 'Adjusting code file extensions parameter to default values.'
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq '* [CodeMetrics]::InitializeMetrics() hidden'
@@ -1313,9 +1359,9 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
-            $response | Should Be "XS$([char]0x26A0)$([char]0xFE0F)"
+            $response | Should -Be "XS$([char]0x26A0)$([char]0xFE0F)"
         }
     }
 
@@ -1333,8 +1379,7 @@ Describe -Name 'CodeMetrics' {
                 $Message -eq '* [CodeMetrics]::NormalizeCodeFileExtensionsParameter() hidden'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq 'Adjusting code file extensions parameter to default values.' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq 'Adjusting code file extensions parameter to default values.'
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq '* [CodeMetrics]::InitializeMetrics() hidden'
@@ -1352,9 +1397,9 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
-            $response | Should Be "XS$([char]0x26A0)$([char]0xFE0F)"
+            $response | Should -Be "XS$([char]0x26A0)$([char]0xFE0F)"
         }
     }
 
@@ -1372,8 +1417,7 @@ Describe -Name 'CodeMetrics' {
                 $Message -eq '* [CodeMetrics]::NormalizeCodeFileExtensionsParameter() hidden'
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
-                $MessageData -eq 'Adjusting code file extensions parameter to default values.' -and
-                $InformationAction -eq $Continue
+                $MessageData -eq 'Adjusting code file extensions parameter to default values.'
             }
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq '* [CodeMetrics]::InitializeMetrics() hidden'
@@ -1391,9 +1435,9 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
             Assert-MockCalled -CommandName 'Write-Information' -Exactly 1
-            $response | Should Be "XS$([char]0x26A0)$([char]0xFE0F)"
+            $response | Should -Be "XS$([char]0x26A0)$([char]0xFE0F)"
         }
     }
 
@@ -1425,8 +1469,8 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
-            $response | Should Be "XS$([char]0x26A0)$([char]0xFE0F)"
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
+            $response | Should -Be "XS$([char]0x26A0)$([char]0xFE0F)"
         }
     }
 
@@ -1459,8 +1503,8 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
-            $response | Should Be "XS$([char]0x2714)"
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
+            $response | Should -Be "XS$([char]0x2714)"
         }
     }
 
@@ -1492,8 +1536,8 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
-            $response | Should Be "S$([char]0x26A0)$([char]0xFE0F)"
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
+            $response | Should -Be "S$([char]0x26A0)$([char]0xFE0F)"
         }
     }
 
@@ -1526,8 +1570,8 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
-            $response | Should Be "M$([char]0x2714)"
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
+            $response | Should -Be "M$([char]0x2714)"
         }
     }
 
@@ -1559,8 +1603,8 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
-            $response | Should Be "L$([char]0x26A0)$([char]0xFE0F)"
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
+            $response | Should -Be "L$([char]0x26A0)$([char]0xFE0F)"
         }
     }
 
@@ -1593,8 +1637,8 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
-            $response | Should Be "XL$([char]0x2714)"
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
+            $response | Should -Be "XL$([char]0x2714)"
         }
     }
 
@@ -1626,8 +1670,8 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
-            $response | Should Be "2XL$([char]0x26A0)$([char]0xFE0F)"
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
+            $response | Should -Be "2XL$([char]0x26A0)$([char]0xFE0F)"
         }
     }
 
@@ -1660,8 +1704,8 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
-            $response | Should Be "3XL$([char]0x2714)"
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
+            $response | Should -Be "3XL$([char]0x2714)"
         }
     }
 
@@ -1693,8 +1737,8 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
-            $response | Should Be "4XL$([char]0x26A0)$([char]0xFE0F)"
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
+            $response | Should -Be "4XL$([char]0x26A0)$([char]0xFE0F)"
         }
     }
 
@@ -1727,8 +1771,8 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.GetSizeIndicator()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
-            $response | Should Be "10XL$([char]0x2714)"
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
+            $response | Should -Be "10XL$([char]0x2714)"
         }
     }
 
@@ -1760,8 +1804,8 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.IsSmall()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
-            $response | Should Be $true
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
+            $response | Should -Be $true
         }
     }
 
@@ -1793,8 +1837,8 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.IsSmall()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
-            $response | Should Be $true
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
+            $response | Should -Be $true
         }
     }
 
@@ -1826,8 +1870,8 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.IsSmall()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
-            $response | Should Be $false
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
+            $response | Should -Be $false
         }
     }
 
@@ -1859,8 +1903,8 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.AreTestsExpected()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
-            $response | Should Be $false
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
+            $response | Should -Be $false
         }
     }
 
@@ -1892,8 +1936,8 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.AreTestsExpected()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
-            $response | Should Be $true
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
+            $response | Should -Be $true
         }
     }
 
@@ -1926,8 +1970,8 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.HasSufficientTestCode()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
-            $response | Should Be $true
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
+            $response | Should -Be $true
         }
     }
 
@@ -1960,8 +2004,8 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.HasSufficientTestCode()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
-            $response | Should Be $true
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
+            $response | Should -Be $true
         }
     }
 
@@ -1994,8 +2038,8 @@ Describe -Name 'CodeMetrics' {
             $response = $codeMetrics.HasSufficientTestCode()
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
-            $response | Should Be $false
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 22
+            $response | Should -Be $false
         }
     }
 }

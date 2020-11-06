@@ -6,7 +6,7 @@
     A class for interacting with pull requests.
 #>
 
-#Requires -Version 5.0
+#Requires -Version 5.1
 
 class PullRequest {
     static [bool] IsPullRequest() {

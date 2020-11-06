@@ -6,7 +6,7 @@
     A class used to logging telemetry.
 #>
 
-#Requires -Version 5.0
+#Requires -Version 5.1
 
 class Logger {
     static [void] Log([string] $statement) {
