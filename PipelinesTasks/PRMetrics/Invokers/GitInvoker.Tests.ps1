@@ -6,10 +6,14 @@
     Unit tests for the class invoking Git commands.
 #>
 
-#Requires -Version 5.0
+#Requires -Version 7.0
 
-. $PSScriptRoot\..\Utilities\Logger.ps1
-. $PSScriptRoot\GitInvoker.ps1
+BeforeAll {
+    Set-StrictMode -Version 'Latest'
+
+    . $PSScriptRoot\..\Utilities\Logger.ps1
+    . $PSCommandPath.Replace('.Tests.ps1','.ps1')
+}
 
 Describe -Name 'GitInvoker' {
     BeforeEach {
@@ -17,6 +21,9 @@ Describe -Name 'GitInvoker' {
 
         Mock -CommandName 'Write-Verbose' -MockWith {
             throw [System.NotImplementedException]"Write-Verbose must not be called but was called with '$Message'."
+        }
+        Mock -CommandName 'Invoke-RestMethod' -MockWith {
+            throw [System.NotImplementedException]"Invoke-RestMethod must not be called but was called with '$Uri'."
         }
     }
 
@@ -99,7 +106,7 @@ Describe -Name 'GitInvoker' {
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 4
             Assert-MockCalled -CommandName 'New-Object' -Exactly 1
-            $response | Should Be "0123456789$([Environment]::NewLine)"
+            $response | Should -Be "0123456789$([Environment]::NewLine)"
         }
     }
 
@@ -153,7 +160,7 @@ Describe -Name 'GitInvoker' {
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 4
             Assert-MockCalled -CommandName 'New-Object' -Exactly 1
-            $response | Should Be "0123456789$([Environment]::NewLine)"
+            $response | Should -Be "0123456789$([Environment]::NewLine)"
             $env:SYSTEM_PULLREQUEST_TARGETBRANCH = 'refs/heads/develop'
         }
     }
@@ -212,7 +219,7 @@ Describe -Name 'GitInvoker' {
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 4
             Assert-MockCalled -CommandName 'New-Object' -Exactly 1
-            $response | Should Be "$inputObject$([Environment]::NewLine)"
+            $response | Should -Be "$inputObject$([Environment]::NewLine)"
         }
     }
 
@@ -257,7 +264,7 @@ Describe -Name 'GitInvoker' {
             $gitInvoker = [GitInvoker]::new()
 
             # Act & Assert
-            { $gitInvoker.GetDiffSummary() } | Should Throw 'Git failed to run within the allocated time.'
+            { $gitInvoker.GetDiffSummary() } | Should -Throw 'Git failed to run within the allocated time.'
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 3
             Assert-MockCalled -CommandName 'New-Object' -Exactly 1
             [GitInvoker]::TimeoutInMilliseconds = $originalTimeoutInMilliseconds

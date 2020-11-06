@@ -6,7 +6,7 @@
     A class invoking Git commands.
 #>
 
-#Requires -Version 5.0
+#Requires -Version 5.1
 
 class GitInvoker {
     [string] GetDiffSummary() {

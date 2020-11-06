@@ -7,7 +7,7 @@
     code metrics.
 #>
 
-#Requires -Version 5.0
+#Requires -Version 5.1
 
 [CmdletBinding()]
 param()

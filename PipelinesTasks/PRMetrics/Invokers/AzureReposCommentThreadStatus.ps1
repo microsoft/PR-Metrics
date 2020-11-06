@@ -6,7 +6,7 @@
     An enumeration of Azure Repos comment thread statuses.
 #>
 
-#Requires -Version 5.0
+#Requires -Version 5.1
 
 enum AzureReposCommentThreadStatus {
     Active = 1

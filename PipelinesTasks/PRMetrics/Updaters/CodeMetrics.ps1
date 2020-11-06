@@ -6,7 +6,7 @@
     A class representing metrics around software code.
 #>
 
-#Requires -Version 5.0
+#Requires -Version 5.1
 
 class CodeMetrics {
     CodeMetrics([string] $baseSize,

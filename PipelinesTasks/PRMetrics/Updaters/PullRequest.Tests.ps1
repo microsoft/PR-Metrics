@@ -6,14 +6,18 @@
     Unit tests for the class for interacting with pull requests.
 #>
 
-#Requires -Version 5.0
+#Requires -Version 7.0
 
-$env:SYSTEM_CULTURE = 'en-US'
-. $PSScriptRoot\..\Utilities\Logger.ps1
-. $PSScriptRoot\..\Invokers\AzureReposCommentThreadStatus.ps1
-. $PSScriptRoot\CodeMetrics.ps1
-. $PSScriptRoot\PullRequest.ps1
-Import-Module -Name "$PSScriptRoot\..\..\..\Release\PipelinesTasks\PRMetrics\ps_modules\VstsTaskSdk\VstsTaskSdk.psm1"
+BeforeAll {
+    Set-StrictMode -Version 'Latest'
+
+    $env:SYSTEM_CULTURE = 'en-US'
+    . $PSScriptRoot\..\Utilities\Logger.ps1
+    . $PSScriptRoot\..\Invokers\AzureReposCommentThreadStatus.ps1
+    . $PSScriptRoot\CodeMetrics.ps1
+    . $PSCommandPath.Replace('.Tests.ps1','.ps1')
+    Import-Module -Name "$PSScriptRoot\..\..\..\Release\PipelinesTasks\PRMetrics\ps_modules\VstsTaskSdk\VstsTaskSdk.psm1"
+}
 
 Describe -Name 'PullRequest' {
     BeforeEach {
@@ -21,6 +25,70 @@ Describe -Name 'PullRequest' {
 
         Mock -CommandName 'Write-Verbose' -MockWith {
             throw [System.NotImplementedException]"Write-Verbose must not be called but was called with '$Message'."
+        }
+        Mock -CommandName 'Invoke-RestMethod' -MockWith {
+            throw [System.NotImplementedException]"Invoke-RestMethod must not be called but was called with '$Uri'."
+        }
+
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq 'Entering Select-Match.'
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq "MatchOptions.Dot: 'True'"
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq 'Entering Select-Match.'
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq "MatchOptions.Dot: 'True'"
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq "MatchOptions.FlipNegate: 'False'"
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq "MatchOptions.MatchBase: 'False'"
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq "MatchOptions.NoBrace: 'True'"
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq "MatchOptions.NoCase: 'True'"
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq "MatchOptions.NoComment: 'False'"
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq "MatchOptions.NoExt: 'False'"
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq "MatchOptions.NoGlobStar: 'False'"
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq "MatchOptions.NoNegate: 'False'"
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq "MatchOptions.NoNull: 'False'"
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -like "Pattern: '*"
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -like "Trimmed leading '!'. Pattern: '*"
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq 'Applying include pattern against original list.'
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq 'Applying exclude pattern against original list'
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -like '* matches'
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -like '* final results'
+        }
+        Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
+            $Message -eq 'Leaving Select-Match.'
         }
     }
 
@@ -53,7 +121,7 @@ Describe -Name 'PullRequest' {
             $response = [PullRequest]::IsPullRequest()
 
             # Assert
-            $response | Should Be $true
+            $response | Should -Be $true
 
             # Teardown
             $env:SYSTEM_PULLREQUEST_PULLREQUESTID = $OriginalPullRequestId
@@ -74,7 +142,7 @@ Describe -Name 'PullRequest' {
             $response = [PullRequest]::IsPullRequest()
 
             # Assert
-            $response | Should Be $false
+            $response | Should -Be $false
 
             # Teardown
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 1
@@ -98,7 +166,7 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 1
-            $response | Should BeNullOrEmpty
+            $response | Should -BeNullOrEmpty
         }
     }
 
@@ -118,7 +186,7 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 1
-            $response | Should Be "$([char]0x274C) **Add a description.**"
+            $response | Should -Be "$([char]0x274C) **Add a description.**"
         }
     }
 
@@ -138,7 +206,7 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 1
-            $response | Should Be "$([char]0x274C) **Add a description.**"
+            $response | Should -Be "$([char]0x274C) **Add a description.**"
         }
     }
 
@@ -158,7 +226,7 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 1
-            $response | Should Be "$([char]0x274C) **Add a description.**"
+            $response | Should -Be "$([char]0x274C) **Add a description.**"
         }
     }
 
@@ -178,7 +246,7 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 1
-            $response | Should Be "$([char]0x274C) **Add a description.**"
+            $response | Should -Be "$([char]0x274C) **Add a description.**"
         }
     }
 
@@ -197,7 +265,7 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 1
-            $response | Should Be "$([char]0x274C) **Add a description.**"
+            $response | Should -Be "$([char]0x274C) **Add a description.**"
         }
     }
 
@@ -214,7 +282,7 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 1
-            $response | Should BeNullOrEmpty
+            $response | Should -BeNullOrEmpty
         }
     }
 
@@ -231,7 +299,7 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 1
-            $response | Should Be "XS$([char]0x2714) $([char]0x25FE) Title"
+            $response | Should -Be "XS$([char]0x2714) $([char]0x25FE) Title"
         }
     }
 
@@ -249,7 +317,7 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 1
-            $response | Should Be "10XL$([char]0x2714) $([char]0x25FE) Title"
+            $response | Should -Be "10XL$([char]0x2714) $([char]0x25FE) Title"
         }
     }
 
@@ -266,7 +334,7 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 1
-            $response | Should Be "10XL$([char]0x2714) $([char]0x25FE) Title"
+            $response | Should -Be "10XL$([char]0x2714) $([char]0x25FE) Title"
         }
     }
 
@@ -284,7 +352,7 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 1
-            $response | Should Be "10XL$([char]0x2714) $([char]0x25FE) Title"
+            $response | Should -Be "10XL$([char]0x2714) $([char]0x25FE) Title"
         }
     }
 
@@ -301,7 +369,7 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 1
-            $response | Should Be "10XL$([char]0x2714) $([char]0x25FE) Title"
+            $response | Should -Be "10XL$([char]0x2714) $([char]0x25FE) Title"
         }
     }
 
@@ -319,7 +387,7 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 1
-            $response | Should Be "10XL$([char]0x2714) $([char]0x25FE) Title"
+            $response | Should -Be "10XL$([char]0x2714) $([char]0x25FE) Title"
         }
     }
 
@@ -337,7 +405,7 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 1
-            $response | Should Be "10XL$([char]0x2714) $([char]0x25FE) Title"
+            $response | Should -Be "10XL$([char]0x2714) $([char]0x25FE) Title"
         }
     }
 
@@ -355,7 +423,7 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 1
-            $response | Should Be "10XL$([char]0x2714) $([char]0x25FE) Title"
+            $response | Should -Be "10XL$([char]0x2714) $([char]0x25FE) Title"
         }
     }
 
@@ -373,7 +441,7 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 1
-            $response | Should Be "10XL$([char]0x2714) $([char]0x25FE) Title XL$([char]0x2714) $([char]0x25FE) "
+            $response | Should -Be "10XL$([char]0x2714) $([char]0x25FE) Title XL$([char]0x2714) $([char]0x25FE) "
         }
     }
 
@@ -397,7 +465,7 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 1
-            $response | Should Be 1
+            $response | Should -Be 1
         }
     }
 
@@ -427,7 +495,7 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 1
-            $response | Should Be 3
+            $response | Should -Be 3
         }
     }
 
@@ -448,14 +516,14 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 1
-            $response.Count | Should Be 5
-            $response.IsMetricsPresent | Should Be $false
-            $response.MetricsThreadId | Should Be 0
-            $response.MetricsCommentId | Should Be 0
-            $response.IgnoredFilesWithLinesAdded.Count | Should Be 1
-            $response.IgnoredFilesWithLinesAdded[0] | Should Be 'Ignored1.cs'
-            $response.IgnoredFilesWithoutLinesAdded.Count | Should Be 1
-            $response.IgnoredFilesWithoutLinesAdded[0] | Should Be 'Ignored2.cs'
+            $response.Count | Should -Be 5
+            $response.IsMetricsPresent | Should -Be $false
+            $response.MetricsThreadId | Should -Be 0
+            $response.MetricsCommentId | Should -Be 0
+            $response.IgnoredFilesWithLinesAdded.Count | Should -Be 1
+            $response.IgnoredFilesWithLinesAdded[0] | Should -Be 'Ignored1.cs'
+            $response.IgnoredFilesWithoutLinesAdded.Count | Should -Be 1
+            $response.IgnoredFilesWithoutLinesAdded[0] | Should -Be 'Ignored2.cs'
         }
     }
 
@@ -492,14 +560,14 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 2
-            $response.Count | Should Be 5
-            $response.IsMetricsPresent | Should Be $false
-            $response.MetricsThreadId | Should Be 0
-            $response.MetricsCommentId | Should Be 0
-            $response.IgnoredFilesWithLinesAdded.Count | Should Be 1
-            $response.IgnoredFilesWithLinesAdded[0] | Should Be 'Ignored1.cs'
-            $response.IgnoredFilesWithoutLinesAdded.Count | Should Be 1
-            $response.IgnoredFilesWithoutLinesAdded[0] | Should Be 'Ignored2.cs'
+            $response.Count | Should -Be 5
+            $response.IsMetricsPresent | Should -Be $false
+            $response.MetricsThreadId | Should -Be 0
+            $response.MetricsCommentId | Should -Be 0
+            $response.IgnoredFilesWithLinesAdded.Count | Should -Be 1
+            $response.IgnoredFilesWithLinesAdded[0] | Should -Be 'Ignored1.cs'
+            $response.IgnoredFilesWithoutLinesAdded.Count | Should -Be 1
+            $response.IgnoredFilesWithoutLinesAdded[0] | Should -Be 'Ignored2.cs'
         }
     }
 
@@ -535,14 +603,14 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 1
-            $response.Count | Should Be 5
-            $response.IsMetricsPresent | Should Be $false
-            $response.MetricsThreadId | Should Be 0
-            $response.MetricsCommentId | Should Be 0
-            $response.IgnoredFilesWithLinesAdded.Count | Should Be 1
-            $response.IgnoredFilesWithLinesAdded[0] | Should Be 'Ignored1.cs'
-            $response.IgnoredFilesWithoutLinesAdded.Count | Should Be 1
-            $response.IgnoredFilesWithoutLinesAdded[0] | Should Be 'Ignored2.cs'
+            $response.Count | Should -Be 5
+            $response.IsMetricsPresent | Should -Be $false
+            $response.MetricsThreadId | Should -Be 0
+            $response.MetricsCommentId | Should -Be 0
+            $response.IgnoredFilesWithLinesAdded.Count | Should -Be 1
+            $response.IgnoredFilesWithLinesAdded[0] | Should -Be 'Ignored1.cs'
+            $response.IgnoredFilesWithoutLinesAdded.Count | Should -Be 1
+            $response.IgnoredFilesWithoutLinesAdded[0] | Should -Be 'Ignored2.cs'
         }
     }
 
@@ -579,14 +647,14 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 2
-            $response.Count | Should Be 5
-            $response.IsMetricsPresent | Should Be $false
-            $response.MetricsThreadId | Should Be 0
-            $response.MetricsCommentId | Should Be 0
-            $response.IgnoredFilesWithLinesAdded.Count | Should Be 1
-            $response.IgnoredFilesWithLinesAdded[0] | Should Be 'Ignored1.cs'
-            $response.IgnoredFilesWithoutLinesAdded.Count | Should Be 1
-            $response.IgnoredFilesWithoutLinesAdded[0] | Should Be 'Ignored2.cs'
+            $response.Count | Should -Be 5
+            $response.IsMetricsPresent | Should -Be $false
+            $response.MetricsThreadId | Should -Be 0
+            $response.MetricsCommentId | Should -Be 0
+            $response.IgnoredFilesWithLinesAdded.Count | Should -Be 1
+            $response.IgnoredFilesWithLinesAdded[0] | Should -Be 'Ignored1.cs'
+            $response.IgnoredFilesWithoutLinesAdded.Count | Should -Be 1
+            $response.IgnoredFilesWithoutLinesAdded[0] | Should -Be 'Ignored2.cs'
         }
     }
 
@@ -623,14 +691,14 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 2
-            $response.Count | Should Be 5
-            $response.IsMetricsPresent | Should Be $false
-            $response.MetricsThreadId | Should Be 1
-            $response.MetricsCommentId | Should Be 2
-            $response.IgnoredFilesWithLinesAdded.Count | Should Be 1
-            $response.IgnoredFilesWithLinesAdded[0] | Should Be 'Ignored1.cs'
-            $response.IgnoredFilesWithoutLinesAdded.Count | Should Be 1
-            $response.IgnoredFilesWithoutLinesAdded[0] | Should Be 'Ignored2.cs'
+            $response.Count | Should -Be 5
+            $response.IsMetricsPresent | Should -Be $false
+            $response.MetricsThreadId | Should -Be 1
+            $response.MetricsCommentId | Should -Be 2
+            $response.IgnoredFilesWithLinesAdded.Count | Should -Be 1
+            $response.IgnoredFilesWithLinesAdded[0] | Should -Be 'Ignored1.cs'
+            $response.IgnoredFilesWithoutLinesAdded.Count | Should -Be 1
+            $response.IgnoredFilesWithoutLinesAdded[0] | Should -Be 'Ignored2.cs'
         }
     }
 
@@ -674,14 +742,14 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 2
-            $response.Count | Should Be 5
-            $response.IsMetricsPresent | Should Be $false
-            $response.MetricsThreadId | Should Be 1
-            $response.MetricsCommentId | Should Be 2
-            $response.IgnoredFilesWithLinesAdded.Count | Should Be 1
-            $response.IgnoredFilesWithLinesAdded[0] | Should Be 'Ignored1.cs'
-            $response.IgnoredFilesWithoutLinesAdded.Count | Should Be 1
-            $response.IgnoredFilesWithoutLinesAdded[0] | Should Be 'Ignored2.cs'
+            $response.Count | Should -Be 5
+            $response.IsMetricsPresent | Should -Be $false
+            $response.MetricsThreadId | Should -Be 1
+            $response.MetricsCommentId | Should -Be 2
+            $response.IgnoredFilesWithLinesAdded.Count | Should -Be 1
+            $response.IgnoredFilesWithLinesAdded[0] | Should -Be 'Ignored1.cs'
+            $response.IgnoredFilesWithoutLinesAdded.Count | Should -Be 1
+            $response.IgnoredFilesWithoutLinesAdded[0] | Should -Be 'Ignored2.cs'
         }
     }
 
@@ -731,14 +799,14 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 3
-            $response.Count | Should Be 5
-            $response.IsMetricsPresent | Should Be $false
-            $response.MetricsThreadId | Should Be 2
-            $response.MetricsCommentId | Should Be 4
-            $response.IgnoredFilesWithLinesAdded.Count | Should Be 1
-            $response.IgnoredFilesWithLinesAdded[0] | Should Be 'Ignored1.cs'
-            $response.IgnoredFilesWithoutLinesAdded.Count | Should Be 1
-            $response.IgnoredFilesWithoutLinesAdded[0] | Should Be 'Ignored2.cs'
+            $response.Count | Should -Be 5
+            $response.IsMetricsPresent | Should -Be $false
+            $response.MetricsThreadId | Should -Be 2
+            $response.MetricsCommentId | Should -Be 4
+            $response.IgnoredFilesWithLinesAdded.Count | Should -Be 1
+            $response.IgnoredFilesWithLinesAdded[0] | Should -Be 'Ignored1.cs'
+            $response.IgnoredFilesWithoutLinesAdded.Count | Should -Be 1
+            $response.IgnoredFilesWithoutLinesAdded[0] | Should -Be 'Ignored2.cs'
         }
     }
 
@@ -788,14 +856,14 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 3
-            $response.Count | Should Be 5
-            $response.IsMetricsPresent | Should Be $false
-            $response.MetricsThreadId | Should Be 1
-            $response.MetricsCommentId | Should Be 3
-            $response.IgnoredFilesWithLinesAdded.Count | Should Be 1
-            $response.IgnoredFilesWithLinesAdded[0] | Should Be 'Ignored1.cs'
-            $response.IgnoredFilesWithoutLinesAdded.Count | Should Be 1
-            $response.IgnoredFilesWithoutLinesAdded[0] | Should Be 'Ignored2.cs'
+            $response.Count | Should -Be 5
+            $response.IsMetricsPresent | Should -Be $false
+            $response.MetricsThreadId | Should -Be 1
+            $response.MetricsCommentId | Should -Be 3
+            $response.IgnoredFilesWithLinesAdded.Count | Should -Be 1
+            $response.IgnoredFilesWithLinesAdded[0] | Should -Be 'Ignored1.cs'
+            $response.IgnoredFilesWithoutLinesAdded.Count | Should -Be 1
+            $response.IgnoredFilesWithoutLinesAdded[0] | Should -Be 'Ignored2.cs'
         }
     }
 
@@ -839,14 +907,14 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 2
-            $response.Count | Should Be 5
-            $response.IsMetricsPresent | Should Be $true
-            $response.MetricsThreadId | Should Be 1
-            $response.MetricsCommentId | Should Be 3
-            $response.IgnoredFilesWithLinesAdded.Count | Should Be 1
-            $response.IgnoredFilesWithLinesAdded[0] | Should Be 'Ignored1.cs'
-            $response.IgnoredFilesWithoutLinesAdded.Count | Should Be 1
-            $response.IgnoredFilesWithoutLinesAdded[0] | Should Be 'Ignored2.cs'
+            $response.Count | Should -Be 5
+            $response.IsMetricsPresent | Should -Be $true
+            $response.MetricsThreadId | Should -Be 1
+            $response.MetricsCommentId | Should -Be 3
+            $response.IgnoredFilesWithLinesAdded.Count | Should -Be 1
+            $response.IgnoredFilesWithLinesAdded[0] | Should -Be 'Ignored1.cs'
+            $response.IgnoredFilesWithoutLinesAdded.Count | Should -Be 1
+            $response.IgnoredFilesWithoutLinesAdded[0] | Should -Be 'Ignored2.cs'
         }
     }
 
@@ -911,13 +979,13 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 4
-            $response.Count | Should Be 5
-            $response.IsMetricsPresent | Should Be $true
-            $response.MetricsThreadId | Should Be 1
-            $response.MetricsCommentId | Should Be 4
-            $response.IgnoredFilesWithLinesAdded.Count | Should Be 0
-            $response.IgnoredFilesWithoutLinesAdded.Count | Should Be 1
-            $response.IgnoredFilesWithoutLinesAdded[0] | Should Be 'Ignored2.cs'
+            $response.Count | Should -Be 5
+            $response.IsMetricsPresent | Should -Be $true
+            $response.MetricsThreadId | Should -Be 1
+            $response.MetricsCommentId | Should -Be 4
+            $response.IgnoredFilesWithLinesAdded.Count | Should -Be 0
+            $response.IgnoredFilesWithoutLinesAdded.Count | Should -Be 1
+            $response.IgnoredFilesWithoutLinesAdded[0] | Should -Be 'Ignored2.cs'
         }
     }
 
@@ -997,12 +1065,12 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 6
-            $response.Count | Should Be 5
-            $response.IsMetricsPresent | Should Be $true
-            $response.MetricsThreadId | Should Be 1
-            $response.MetricsCommentId | Should Be 4
-            $response.IgnoredFilesWithLinesAdded.Count | Should Be 0
-            $response.IgnoredFilesWithoutLinesAdded.Count | Should Be 0
+            $response.Count | Should -Be 5
+            $response.IsMetricsPresent | Should -Be $true
+            $response.MetricsThreadId | Should -Be 1
+            $response.MetricsCommentId | Should -Be 4
+            $response.IgnoredFilesWithLinesAdded.Count | Should -Be 0
+            $response.IgnoredFilesWithoutLinesAdded.Count | Should -Be 0
         }
     }
 
@@ -1022,7 +1090,7 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 1
-            $response | Should Be 1
+            $response | Should -Be 1
         }
     }
 
@@ -1069,22 +1137,22 @@ Describe -Name 'PullRequest' {
             $response = [PullRequest]::GetMetricsComment($codeMetrics, 1)
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 15
-            $response | Should Be ("# Metrics for iteration 1$([Environment]::NewLine)" +
-                                   $([char]0x274C) +
-                                   ' **Try to keep pull requests smaller than 50 lines of new product code by ' +
-                                   'following the ' +
-                                   '[Single Responsibility Principle (SRP)](https://wikipedia.org/wiki/Single-responsibility_principle).**' +
-                                   $([Environment]::NewLine) +
-                                   "$([char]0x26A0)$([char]0xFE0F) **Consider adding additional tests.**" +
-                                   $([Environment]::NewLine) +
-                                   "||Lines$([Environment]::NewLine)" +
-                                   "-|-:$([Environment]::NewLine)" +
-                                   "Product Code|200$([Environment]::NewLine)" +
-                                   "Test Code|0$([Environment]::NewLine)" +
-                                   "**Subtotal**|**200**$([Environment]::NewLine)" +
-                                   "Ignored|0$([Environment]::NewLine)" +
-                                   '**Total**|**200**')
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 31
+            $response | Should -Be ("# Metrics for iteration 1$([Environment]::NewLine)" +
+                                    $([char]0x274C) +
+                                    ' **Try to keep pull requests smaller than 50 lines of new product code by ' +
+                                    'following the ' +
+                                    '[Single Responsibility Principle (SRP)](https://wikipedia.org/wiki/Single-responsibility_principle).**' +
+                                    $([Environment]::NewLine) +
+                                    "$([char]0x26A0)$([char]0xFE0F) **Consider adding additional tests.**" +
+                                    $([Environment]::NewLine) +
+                                    "||Lines$([Environment]::NewLine)" +
+                                    "-|-:$([Environment]::NewLine)" +
+                                    "Product Code|200$([Environment]::NewLine)" +
+                                    "Test Code|0$([Environment]::NewLine)" +
+                                    "**Subtotal**|**200**$([Environment]::NewLine)" +
+                                    "Ignored|0$([Environment]::NewLine)" +
+                                    '**Total**|**200**')
         }
     }
 
@@ -1131,22 +1199,22 @@ Describe -Name 'PullRequest' {
             $response = [PullRequest]::GetMetricsComment($codeMetrics, 1)
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 15
-            $response | Should Be ("# Metrics for iteration 1$([Environment]::NewLine)" +
-                                   $([char]0x274C) +
-                                   ' **Try to keep pull requests smaller than 50 lines of new product code by ' +
-                                   'following the ' +
-                                   '[Single Responsibility Principle (SRP)](https://wikipedia.org/wiki/Single-responsibility_principle).**' +
-                                   $([Environment]::NewLine) +
-                                   "$([char]0x26A0)$([char]0xFE0F) **Consider adding additional tests.**" +
-                                   $([Environment]::NewLine) +
-                                   "||Lines$([Environment]::NewLine)" +
-                                   "-|-:$([Environment]::NewLine)" +
-                                   "Product Code|200$([Environment]::NewLine)" +
-                                   "Test Code|0$([Environment]::NewLine)" +
-                                   "**Subtotal**|**200**$([Environment]::NewLine)" +
-                                   "Ignored|0$([Environment]::NewLine)" +
-                                   '**Total**|**200**')
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 31
+            $response | Should -Be ("# Metrics for iteration 1$([Environment]::NewLine)" +
+                                    $([char]0x274C) +
+                                    ' **Try to keep pull requests smaller than 50 lines of new product code by ' +
+                                    'following the ' +
+                                    '[Single Responsibility Principle (SRP)](https://wikipedia.org/wiki/Single-responsibility_principle).**' +
+                                    $([Environment]::NewLine) +
+                                    "$([char]0x26A0)$([char]0xFE0F) **Consider adding additional tests.**" +
+                                    $([Environment]::NewLine) +
+                                    "||Lines$([Environment]::NewLine)" +
+                                    "-|-:$([Environment]::NewLine)" +
+                                    "Product Code|200$([Environment]::NewLine)" +
+                                    "Test Code|0$([Environment]::NewLine)" +
+                                    "**Subtotal**|**200**$([Environment]::NewLine)" +
+                                    "Ignored|0$([Environment]::NewLine)" +
+                                    '**Total**|**200**')
         }
     }
 
@@ -1194,22 +1262,22 @@ Describe -Name 'PullRequest' {
             $response = [PullRequest]::GetMetricsComment($codeMetrics, 2)
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 15
-            $response | Should Be ("# Metrics for iteration 2$([Environment]::NewLine)" +
-                                   $([char]0x274C) +
-                                   ' **Try to keep pull requests smaller than 50 lines of new product code by ' +
-                                   'following the ' +
-                                   '[Single Responsibility Principle (SRP)](https://wikipedia.org/wiki/Single-responsibility_principle).**' +
-                                   $([Environment]::NewLine) +
-                                   "$([char]0x26A0)$([char]0xFE0F) **Consider adding additional tests.**" +
-                                   $([Environment]::NewLine) +
-                                   "||Lines$([Environment]::NewLine)" +
-                                   "-|-:$([Environment]::NewLine)" +
-                                   "Product Code|200$([Environment]::NewLine)" +
-                                   "Test Code|0$([Environment]::NewLine)" +
-                                   "**Subtotal**|**200**$([Environment]::NewLine)" +
-                                   "Ignored|0$([Environment]::NewLine)" +
-                                   '**Total**|**200**')
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 31
+            $response | Should -Be ("# Metrics for iteration 2$([Environment]::NewLine)" +
+                                    $([char]0x274C) +
+                                    ' **Try to keep pull requests smaller than 50 lines of new product code by ' +
+                                    'following the ' +
+                                    '[Single Responsibility Principle (SRP)](https://wikipedia.org/wiki/Single-responsibility_principle).**' +
+                                    $([Environment]::NewLine) +
+                                    "$([char]0x26A0)$([char]0xFE0F) **Consider adding additional tests.**" +
+                                    $([Environment]::NewLine) +
+                                    "||Lines$([Environment]::NewLine)" +
+                                    "-|-:$([Environment]::NewLine)" +
+                                    "Product Code|200$([Environment]::NewLine)" +
+                                    "Test Code|0$([Environment]::NewLine)" +
+                                    "**Subtotal**|**200**$([Environment]::NewLine)" +
+                                    "Ignored|0$([Environment]::NewLine)" +
+                                    '**Total**|**200**')
         }
     }
 
@@ -1258,22 +1326,22 @@ Describe -Name 'PullRequest' {
             $response = [PullRequest]::GetMetricsComment($codeMetrics, 3)
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 15
-            $response | Should Be ("# Metrics for iteration 3$([Environment]::NewLine)" +
-                                   $([char]0x274C) +
-                                   ' **Try to keep pull requests smaller than 50 lines of new product code by ' +
-                                   'following the ' +
-                                   '[Single Responsibility Principle (SRP)](https://wikipedia.org/wiki/Single-responsibility_principle).**' +
-                                   $([Environment]::NewLine) +
-                                   "$([char]0x26A0)$([char]0xFE0F) **Consider adding additional tests.**" +
-                                   $([Environment]::NewLine) +
-                                   "||Lines$([Environment]::NewLine)" +
-                                   "-|-:$([Environment]::NewLine)" +
-                                   "Product Code|200$([Environment]::NewLine)" +
-                                   "Test Code|20$([Environment]::NewLine)" +
-                                   "**Subtotal**|**220**$([Environment]::NewLine)" +
-                                   "Ignored|0$([Environment]::NewLine)" +
-                                   '**Total**|**220**')
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 31
+            $response | Should -Be ("# Metrics for iteration 3$([Environment]::NewLine)" +
+                                    $([char]0x274C) +
+                                    ' **Try to keep pull requests smaller than 50 lines of new product code by ' +
+                                    'following the ' +
+                                    '[Single Responsibility Principle (SRP)](https://wikipedia.org/wiki/Single-responsibility_principle).**' +
+                                    $([Environment]::NewLine) +
+                                    "$([char]0x26A0)$([char]0xFE0F) **Consider adding additional tests.**" +
+                                    $([Environment]::NewLine) +
+                                    "||Lines$([Environment]::NewLine)" +
+                                    "-|-:$([Environment]::NewLine)" +
+                                    "Product Code|200$([Environment]::NewLine)" +
+                                    "Test Code|20$([Environment]::NewLine)" +
+                                    "**Subtotal**|**220**$([Environment]::NewLine)" +
+                                    "Ignored|0$([Environment]::NewLine)" +
+                                    '**Total**|**220**')
         }
     }
 
@@ -1327,19 +1395,19 @@ Describe -Name 'PullRequest' {
             $response = [PullRequest]::GetMetricsComment($codeMetrics, 3)
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 15
-            $response | Should Be ("# Metrics for iteration 3$([Environment]::NewLine)" +
-                                   "$([char]0x2714) **Thanks for keeping your pull request small.**" +
-                                   $([Environment]::NewLine) +
-                                   "$([char]0x26A0)$([char]0xFE0F) **Consider adding additional tests.**" +
-                                   $([Environment]::NewLine) +
-                                   "||Lines$([Environment]::NewLine)" +
-                                   "-|-:$([Environment]::NewLine)" +
-                                   "Product Code|20$([Environment]::NewLine)" +
-                                   "Test Code|0$([Environment]::NewLine)" +
-                                   "**Subtotal**|**20**$([Environment]::NewLine)" +
-                                   "Ignored|200$([Environment]::NewLine)" +
-                                   '**Total**|**220**')
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 35
+            $response | Should -Be ("# Metrics for iteration 3$([Environment]::NewLine)" +
+                                    "$([char]0x2714) **Thanks for keeping your pull request small.**" +
+                                    $([Environment]::NewLine) +
+                                    "$([char]0x26A0)$([char]0xFE0F) **Consider adding additional tests.**" +
+                                    $([Environment]::NewLine) +
+                                    "||Lines$([Environment]::NewLine)" +
+                                    "-|-:$([Environment]::NewLine)" +
+                                    "Product Code|20$([Environment]::NewLine)" +
+                                    "Test Code|0$([Environment]::NewLine)" +
+                                    "**Subtotal**|**20**$([Environment]::NewLine)" +
+                                    "Ignored|200$([Environment]::NewLine)" +
+                                    '**Total**|**220**')
         }
     }
 
@@ -1394,22 +1462,22 @@ Describe -Name 'PullRequest' {
             $response = [PullRequest]::GetMetricsComment($codeMetrics, 3)
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 15
-            $response | Should Be ("# Metrics for iteration 3$([Environment]::NewLine)" +
-                                   $([char]0x274C) +
-                                   ' **Try to keep pull requests smaller than 50 lines of new product code by ' +
-                                   'following the ' +
-                                   '[Single Responsibility Principle (SRP)](https://wikipedia.org/wiki/Single-responsibility_principle).**' +
-                                   $([Environment]::NewLine) +
-                                   "$([char]0x26A0)$([char]0xFE0F) **Consider adding additional tests.**" +
-                                   $([Environment]::NewLine) +
-                                   "||Lines$([Environment]::NewLine)" +
-                                   "-|-:$([Environment]::NewLine)" +
-                                   "Product Code|200$([Environment]::NewLine)" +
-                                   "Test Code|0$([Environment]::NewLine)" +
-                                   "**Subtotal**|**200**$([Environment]::NewLine)" +
-                                   "Ignored|20$([Environment]::NewLine)" +
-                                   '**Total**|**220**')
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 35
+            $response | Should -Be ("# Metrics for iteration 3$([Environment]::NewLine)" +
+                                    $([char]0x274C) +
+                                    ' **Try to keep pull requests smaller than 50 lines of new product code by ' +
+                                    'following the ' +
+                                    '[Single Responsibility Principle (SRP)](https://wikipedia.org/wiki/Single-responsibility_principle).**' +
+                                    $([Environment]::NewLine) +
+                                    "$([char]0x26A0)$([char]0xFE0F) **Consider adding additional tests.**" +
+                                    $([Environment]::NewLine) +
+                                    "||Lines$([Environment]::NewLine)" +
+                                    "-|-:$([Environment]::NewLine)" +
+                                    "Product Code|200$([Environment]::NewLine)" +
+                                    "Test Code|0$([Environment]::NewLine)" +
+                                    "**Subtotal**|**200**$([Environment]::NewLine)" +
+                                    "Ignored|20$([Environment]::NewLine)" +
+                                    '**Total**|**220**')
         }
     }
 
@@ -1456,19 +1524,19 @@ Describe -Name 'PullRequest' {
             $response = [PullRequest]::GetMetricsComment($codeMetrics, 4)
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 15
-            $response | Should Be ("# Metrics for iteration 4$([Environment]::NewLine)" +
-                                   "$([char]0x2714) **Thanks for keeping your pull request small.**" +
-                                   $([Environment]::NewLine) +
-                                   "$([char]0x26A0)$([char]0xFE0F) **Consider adding additional tests.**" +
-                                   $([Environment]::NewLine) +
-                                   "||Lines$([Environment]::NewLine)" +
-                                   "-|-:$([Environment]::NewLine)" +
-                                   "Product Code|1$([Environment]::NewLine)" +
-                                   "Test Code|0$([Environment]::NewLine)" +
-                                   "**Subtotal**|**1**$([Environment]::NewLine)" +
-                                   "Ignored|0$([Environment]::NewLine)" +
-                                   '**Total**|**1**')
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 31
+            $response | Should -Be ("# Metrics for iteration 4$([Environment]::NewLine)" +
+                                    "$([char]0x2714) **Thanks for keeping your pull request small.**" +
+                                    $([Environment]::NewLine) +
+                                    "$([char]0x26A0)$([char]0xFE0F) **Consider adding additional tests.**" +
+                                    $([Environment]::NewLine) +
+                                    "||Lines$([Environment]::NewLine)" +
+                                    "-|-:$([Environment]::NewLine)" +
+                                    "Product Code|1$([Environment]::NewLine)" +
+                                    "Test Code|0$([Environment]::NewLine)" +
+                                    "**Subtotal**|**1**$([Environment]::NewLine)" +
+                                    "Ignored|0$([Environment]::NewLine)" +
+                                    '**Total**|**1**')
         }
     }
 
@@ -1516,19 +1584,19 @@ Describe -Name 'PullRequest' {
             $response = [PullRequest]::GetMetricsComment($codeMetrics, 5)
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 15
-            $response | Should Be ("# Metrics for iteration 5$([Environment]::NewLine)" +
-                                   "$([char]0x2714) **Thanks for keeping your pull request small.**" +
-                                   $([Environment]::NewLine) +
-                                   "$([char]0x2714) **Thanks for adding tests.**" +
-                                   $([Environment]::NewLine) +
-                                   "||Lines$([Environment]::NewLine)" +
-                                   "-|-:$([Environment]::NewLine)" +
-                                   "Product Code|2$([Environment]::NewLine)" +
-                                   "Test Code|2$([Environment]::NewLine)" +
-                                   "**Subtotal**|**4**$([Environment]::NewLine)" +
-                                   "Ignored|0$([Environment]::NewLine)" +
-                                   '**Total**|**4**')
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 31
+            $response | Should -Be ("# Metrics for iteration 5$([Environment]::NewLine)" +
+                                    "$([char]0x2714) **Thanks for keeping your pull request small.**" +
+                                    $([Environment]::NewLine) +
+                                    "$([char]0x2714) **Thanks for adding tests.**" +
+                                    $([Environment]::NewLine) +
+                                    "||Lines$([Environment]::NewLine)" +
+                                    "-|-:$([Environment]::NewLine)" +
+                                    "Product Code|2$([Environment]::NewLine)" +
+                                    "Test Code|2$([Environment]::NewLine)" +
+                                    "**Subtotal**|**4**$([Environment]::NewLine)" +
+                                    "Ignored|0$([Environment]::NewLine)" +
+                                    '**Total**|**4**')
         }
     }
 
@@ -1572,17 +1640,17 @@ Describe -Name 'PullRequest' {
             $response = [PullRequest]::GetMetricsComment($codeMetrics, 5)
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 14
-            $response | Should Be ("# Metrics for iteration 5$([Environment]::NewLine)" +
-                                   "$([char]0x2714) **Thanks for keeping your pull request small.**" +
-                                   $([Environment]::NewLine) +
-                                   "||Lines$([Environment]::NewLine)" +
-                                   "-|-:$([Environment]::NewLine)" +
-                                   "Product Code|0$([Environment]::NewLine)" +
-                                   "Test Code|200$([Environment]::NewLine)" +
-                                   "**Subtotal**|**200**$([Environment]::NewLine)" +
-                                   "Ignored|0$([Environment]::NewLine)" +
-                                   '**Total**|**200**')
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 30
+            $response | Should -Be ("# Metrics for iteration 5$([Environment]::NewLine)" +
+                                    "$([char]0x2714) **Thanks for keeping your pull request small.**" +
+                                    $([Environment]::NewLine) +
+                                    "||Lines$([Environment]::NewLine)" +
+                                    "-|-:$([Environment]::NewLine)" +
+                                    "Product Code|0$([Environment]::NewLine)" +
+                                    "Test Code|200$([Environment]::NewLine)" +
+                                    "**Subtotal**|**200**$([Environment]::NewLine)" +
+                                    "Ignored|0$([Environment]::NewLine)" +
+                                    '**Total**|**200**')
         }
     }
 
@@ -1629,19 +1697,19 @@ Describe -Name 'PullRequest' {
             $response = [PullRequest]::GetMetricsComment($codeMetrics, 5)
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 15
-            $response | Should Be ("# Metrics for iteration 5$([Environment]::NewLine)" +
-                                   "$([char]0x2714) **Thanks for keeping your pull request small.**" +
-                                   $([Environment]::NewLine) +
-                                   "$([char]0x2714) **Thanks for adding tests.**" +
-                                   $([Environment]::NewLine) +
-                                   "||Lines$([Environment]::NewLine)" +
-                                   "-|-:$([Environment]::NewLine)" +
-                                   "Product Code|0$([Environment]::NewLine)" +
-                                   "Test Code|0$([Environment]::NewLine)" +
-                                   "**Subtotal**|**0**$([Environment]::NewLine)" +
-                                   "Ignored|200$([Environment]::NewLine)" +
-                                   '**Total**|**200**')
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 32
+            $response | Should -Be ("# Metrics for iteration 5$([Environment]::NewLine)" +
+                                    "$([char]0x2714) **Thanks for keeping your pull request small.**" +
+                                    $([Environment]::NewLine) +
+                                    "$([char]0x2714) **Thanks for adding tests.**" +
+                                    $([Environment]::NewLine) +
+                                    "||Lines$([Environment]::NewLine)" +
+                                    "-|-:$([Environment]::NewLine)" +
+                                    "Product Code|0$([Environment]::NewLine)" +
+                                    "Test Code|0$([Environment]::NewLine)" +
+                                    "**Subtotal**|**0**$([Environment]::NewLine)" +
+                                    "Ignored|200$([Environment]::NewLine)" +
+                                    '**Total**|**200**')
         }
     }
 
@@ -1696,22 +1764,22 @@ Describe -Name 'PullRequest' {
             $response = [PullRequest]::GetMetricsComment($codeMetrics, 5)
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 15
-            $response | Should Be ("# Metrics for iteration 5$([Environment]::NewLine)" +
-                                   $([char]0x274C) +
-                                   ' **Try to keep pull requests smaller than 1,000,000 lines of new product code by ' +
-                                   'following the ' +
-                                   '[Single Responsibility Principle (SRP)](https://wikipedia.org/wiki/Single-responsibility_principle).**' +
-                                   $([Environment]::NewLine) +
-                                   "$([char]0x26A0)$([char]0xFE0F) **Consider adding additional tests.**" +
-                                   $([Environment]::NewLine) +
-                                   "||Lines$([Environment]::NewLine)" +
-                                   "-|-:$([Environment]::NewLine)" +
-                                   "Product Code|2,000,000$([Environment]::NewLine)" +
-                                   "Test Code|1,000,000$([Environment]::NewLine)" +
-                                   "**Subtotal**|**3,000,000**$([Environment]::NewLine)" +
-                                   "Ignored|1,000,000$([Environment]::NewLine)" +
-                                   '**Total**|**4,000,000**')
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 35
+            $response | Should -Be ("# Metrics for iteration 5$([Environment]::NewLine)" +
+                                    $([char]0x274C) +
+                                    ' **Try to keep pull requests smaller than 1,000,000 lines of new product code by ' +
+                                    'following the ' +
+                                    '[Single Responsibility Principle (SRP)](https://wikipedia.org/wiki/Single-responsibility_principle).**' +
+                                    $([Environment]::NewLine) +
+                                    "$([char]0x26A0)$([char]0xFE0F) **Consider adding additional tests.**" +
+                                    $([Environment]::NewLine) +
+                                    "||Lines$([Environment]::NewLine)" +
+                                    "-|-:$([Environment]::NewLine)" +
+                                    "Product Code|2,000,000$([Environment]::NewLine)" +
+                                    "Test Code|1,000,000$([Environment]::NewLine)" +
+                                    "**Subtotal**|**3,000,000**$([Environment]::NewLine)" +
+                                    "Ignored|1,000,000$([Environment]::NewLine)" +
+                                    '**Total**|**4,000,000**')
         }
     }
 
@@ -1750,8 +1818,8 @@ Describe -Name 'PullRequest' {
             $response = [PullRequest]::GetMetricsCommentStatus($codeMetrics)
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 8
-            $response | Should Be Closed
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 24
+            $response | Should -Be Closed
         }
     }
 
@@ -1789,8 +1857,8 @@ Describe -Name 'PullRequest' {
             $response = [PullRequest]::GetMetricsCommentStatus($codeMetrics)
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 8
-            $response | Should Be Active
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 24
+            $response | Should -Be Active
         }
     }
 
@@ -1826,8 +1894,8 @@ Describe -Name 'PullRequest' {
             $response = [PullRequest]::GetMetricsCommentStatus($codeMetrics)
 
             # Assert
-            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 7
-            $response | Should Be Active
+            Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 23
+            $response | Should -Be Active
         }
     }
 
@@ -1844,7 +1912,7 @@ Describe -Name 'PullRequest' {
 
             # Assert
             Assert-MockCalled -CommandName 'Write-Verbose' -Exactly 1
-            $response | Should Be "$([char]0x2757) **This file may not need to be reviewed.**"
+            $response | Should -Be "$([char]0x2757) **This file may not need to be reviewed.**"
         }
     }
 }
