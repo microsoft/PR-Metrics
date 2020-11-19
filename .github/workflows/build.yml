@@ -29,7 +29,8 @@ jobs:
       - name: Install TFX CLI
         run: npm install -g tfx-cli
       - name: Open PRMetrics Directory
-        run: cd Release\PipelinesTasks\PRMetrics
+        run: cd ${{ github.workspace }}\Release\PipelinesTasks\PRMetrics
+      - run: pwd
       - name: Create PRMetrics Package
         run: tfx extension create --manifest-globs vss-extension.json
       - name: Upload PRMetrics
