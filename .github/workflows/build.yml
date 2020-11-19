@@ -32,14 +32,13 @@ jobs:
       - name: Create PRMetrics Package
         shell: pwsh
         run: |
-            cd ${{ github.workspace }}\Release\PipelinesTasks\PRMetrics
-            pwd
-            tfx extension create --manifest-globs vss-extension.json
-      - name: Upload PRMetrics
+          cd ${{ github.workspace }}\Release\PipelinesTasks\PRMetrics
+          tfx extension create --manifest-globs vss-extension.json
+      - name: Upload VSIX
         uses: actions/upload-artifact@v2
         with:
-            name: microsoft-omex.prmetrics-1.0.0.vsix
-            path: Release\PipelinesTasks\PRMetrics\microsoft-omex.prmetrics-1.0.0.vsix
+          name: VSIX
+          path: '**/*.vsix'
 
   validate:
     runs-on: ubuntu-latest
