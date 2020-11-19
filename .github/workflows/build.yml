@@ -27,12 +27,14 @@ jobs:
           if ($Result.FailedCount -gt 0) { Throw 'PowerShell Tests failed.' }
           exit 0
       - name: Install TFX CLI
+        shell: pwsh
         run: npm install -g tfx-cli
-      - name: Open PRMetrics Directory
-        run: cd ${{ github.workspace }}\Release\PipelinesTasks\PRMetrics
-      - run: pwd
       - name: Create PRMetrics Package
-        run: tfx extension create --manifest-globs vss-extension.json
+        shell: pwsh
+        run: |
+            cd ${{ github.workspace }}\Release\PipelinesTasks\PRMetrics
+            pwd
+            tfx extension create --manifest-globs vss-extension.json
       - name: Upload PRMetrics
         uses: actions/upload-artifact@v2
         with:
