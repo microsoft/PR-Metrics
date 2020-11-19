@@ -5,8 +5,11 @@
   </PropertyGroup>
   <Target Name="Build">
     <ItemGroup>
-      <CopyFile Include="icon.png" />
       <CopyFile Include="task.json" />
+      <CopyFile Include="vss-extension.json" />
+      <CopyFile Include="..\..\LICENSE.txt" />
+      <CopyFile Include="**\*.md" Exclude="README.md" />
+      <CopyFile Include="**\*.png" />
       <CopyFile Include="**\*.ps1" Exclude="Tools\*.ps1;**\*.Tests.ps1" />
     </ItemGroup>
     <RemoveDir Directories="$(OutputPath)" Condition="Exists('$(OutputPath)')" />

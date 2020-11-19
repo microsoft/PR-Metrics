@@ -26,6 +26,17 @@ jobs:
           $Result = Invoke-Pester -PassThru
           if ($Result.FailedCount -gt 0) { Throw 'PowerShell Tests failed.' }
           exit 0
+      - name: Install TFX CLI
+        run: npm i tfx-cli
+      - name: Open PRMetrics Directory
+        run: cd Release\PipelinesTasks\PRMetrics
+      - name: Create PRMetrics Package
+        run: tfx extension create --manifest-globs vss-extension.json
+      - name: Upload PRMetrics
+        uses: actions/upload-artifact@v2
+        with:
+            name: microsoft-omex.prmetrics-1.0.0.vsix
+            path: Release\PipelinesTasks\PRMetrics\microsoft-omex.prmetrics-1.0.0.vsix
 
   validate:
     runs-on: ubuntu-latest
