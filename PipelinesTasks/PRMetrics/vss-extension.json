@@ -38,7 +38,7 @@
       "path": "docs/marketplace.md"
     },
     "license": {
-      "path": "../../LICENSE.txt"
+      "path": "LICENSE.txt"
     }
   },
   "links": {
@@ -61,7 +61,7 @@
   },
   "files": [
     {
-      "path": "../../Output/PipelinesTasks/PRMetrics"
+      "path": "."
     }
   ],
   "contributions": [

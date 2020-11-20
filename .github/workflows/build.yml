@@ -26,6 +26,19 @@ jobs:
           $Result = Invoke-Pester -PassThru
           if ($Result.FailedCount -gt 0) { Throw 'PowerShell Tests failed.' }
           exit 0
+      - name: Install TFX CLI
+        shell: pwsh
+        run: npm install -g tfx-cli
+      - name: Create PRMetrics Package
+        shell: pwsh
+        run: |
+          cd ${{ github.workspace }}\Release\PipelinesTasks\PRMetrics
+          tfx extension create --manifest-globs vss-extension.json
+      - name: Upload VSIX
+        uses: actions/upload-artifact@v2
+        with:
+          name: VSIX
+          path: '**/*.vsix'
 
   validate:
     runs-on: ubuntu-latest
