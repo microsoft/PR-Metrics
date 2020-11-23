@@ -35,7 +35,7 @@
   ],
   "content": {
     "details": {
-      "path": "marketplace.md"
+      "path": "overview.md"
     },
     "license": {
       "path": "LICENSE.txt"
@@ -62,6 +62,10 @@
   "files": [
     {
       "path": "task"
+    },
+    {
+      "path": "images",
+      "addressable": true
     }
   ],
   "contributions": [
