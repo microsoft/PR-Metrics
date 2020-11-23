@@ -6,24 +6,24 @@ appropriate levels of test coverage. It furthermore helps reviewers understand
 the time they will likely need to spend reviewing a PR, allowing for more
 efficient time management.
 
-![PR titles prefixed by size and test indicators](titles.png)
+![PR titles prefixed by size and test indicators](images/titles.png)
 
 It also adds detailed metrics as a comment within the PR, highlights missing PR
 descriptions, indicates files that may not need to be reviewed, and adds hidden
 properties available programmatically.
 
-![Metrics comment](comment.png)
+![Metrics comment](images/comment.png)
 
-![Missing description indicator](description.png)
+![Missing description indicator](images/description.png)
 
-![Potentially ignorable file indicator](ignored.png)
+![Potentially ignorable file indicator](images/ignored.png)
 
 ## How to Use
 
 After installing the extension on your Azure DevOps server, you can add the task
 to a new or existing [build definition][build].
 
-![Adding the PR Metrics task](task-add.png)
+![Adding the PR Metrics task](images/task-add.png)
 
 ### Parameters
 
@@ -48,7 +48,7 @@ The task parameters are:
   non-code files can be excluded. If left blank,
   [a default set of file extensions will be used][defaultextensions].
 
-![The PR Metrics task definition](task-definition.png)
+![The PR Metrics task definition](images/task-definition.png)
 
 ## Source Code
 
