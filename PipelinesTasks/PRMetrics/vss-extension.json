@@ -61,7 +61,7 @@
   },
   "files": [
     {
-      "path": "."
+      "path": "task"
     }
   ],
   "contributions": [
@@ -73,7 +73,7 @@
         "ms.vss-distributed-task.tasks"
       ],
       "properties": {
-        "name": "PR Metrics"
+        "name": "task"
       }
     }
   ]

@@ -84,7 +84,7 @@ To deploy the task:
    You may need to use a Visual Studio command prompt for this, as `msbuild` is
    not always added to the default path.
 1. If the build is successful, upload the task using
-   `tfx build tasks upload --task-path  ..\..\Release\PipelinesTasks\PRMetrics\`.
+   `tfx build tasks upload --task-path  ..\..\Release\PipelinesTasks\PRMetrics\task\`.
 
 ## Configuring
 
