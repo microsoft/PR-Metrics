@@ -10,7 +10,7 @@ efficient time management.
 
 It also adds detailed metrics as a comment within the PR, highlights missing PR
 descriptions, indicates files that may not need to be reviewed, and adds hidden
-properties available programmatically.
+properties that can be accessed programmatically.
 
 ![Metrics comment](images/comment.png)
 
@@ -20,8 +20,8 @@ properties available programmatically.
 
 ## How to Use
 
-After installing the extension on your Azure DevOps server, you can add the task
-to a new or existing [build definition][build].
+After sharing the extension with your Azure DevOps instance, you can add the
+task to a new or existing [build definition][build].
 
 ![Adding the PR Metrics task](images/task-add.png)
 
