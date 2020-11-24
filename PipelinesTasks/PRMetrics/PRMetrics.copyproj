@@ -5,9 +5,8 @@
   </PropertyGroup>
   <Target Name="Build">
     <ItemGroup>
-      <CopyFile Include="task.json" />
-      <CopyFile Include="vss-extension.json" />
       <CopyFile Include="..\..\LICENSE.txt" />
+      <CopyFile Include="**\*.json" />
       <CopyFile Include="**\*.md" Exclude="README.md" />
       <CopyFile Include="**\*.png" />
       <CopyFile Include="**\*.ps1" Exclude="Tools\*.ps1;**\*.Tests.ps1" />
@@ -15,14 +14,14 @@
     <RemoveDir Directories="$(OutputPath)" Condition="Exists('$(OutputPath)')" />
     <MakeDir Directories="$(OutputPath)" />
     <Copy SourceFiles="@(CopyFile)" DestinationFolder="$(OutputPath)\%(RecursiveDir)" />
-    <Exec Command="nuget install VstsTaskSdk -Version 0.11.0 -Source https://www.powershellgallery.com/api/v2/ -OutputDirectory $(OutputPath)\ps_modules" />
+    <Exec Command="nuget install VstsTaskSdk -Version 0.11.0 -Source https://www.powershellgallery.com/api/v2/ -OutputDirectory $(OutputPath)\task\ps_modules" />
   </Target>
   <Target Name="Post-Build" AfterTargets="Build">
     <ItemGroup>
-      <MoveFile Include="$(OutputPath)\ps_modules\VstsTaskSdk.0.11.0\*.*" />
+      <MoveFile Include="$(OutputPath)\task\ps_modules\VstsTaskSdk.0.11.0\*.*" />
     </ItemGroup>
-    <MakeDir Directories="$(OutputPath)\ps_modules\VstsTaskSdk" />
-    <Move SourceFiles="@(MoveFile)" DestinationFolder="$(OutputPath)\ps_modules\VstsTaskSdk\%(RecursiveDir)" />
-    <RemoveDir Directories="$(OutputPath)\ps_modules\VstsTaskSdk.0.11.0" />
+    <MakeDir Directories="$(OutputPath)\task\ps_modules\VstsTaskSdk" />
+    <Move SourceFiles="@(MoveFile)" DestinationFolder="$(OutputPath)\task\ps_modules\VstsTaskSdk\%(RecursiveDir)" />
+    <RemoveDir Directories="$(OutputPath)\task\ps_modules\VstsTaskSdk.0.11.0" />
   </Target>
 </Project>

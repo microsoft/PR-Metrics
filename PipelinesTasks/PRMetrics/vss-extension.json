@@ -3,7 +3,7 @@
   "id": "prmetrics",
   "name": "PR Metrics",
   "version": "1.0.0",
-  "publisher": "microsoft-omex",
+  "publisher": "ms-omex",
   "description": "Updates the title, description, and comments of pull requests to provide at-a-glance metrics.",
   "tags": [
     "Extension",
@@ -17,7 +17,7 @@
     "Visual Studio Extensions"
   ],
   "icons": {
-    "default": "docs/logo.png"
+    "default": "images/logo.png"
   },
   "targets": [
     {
@@ -35,7 +35,7 @@
   ],
   "content": {
     "details": {
-      "path": "docs/marketplace.md"
+      "path": "overview.md"
     },
     "license": {
       "path": "LICENSE.txt"
@@ -61,7 +61,11 @@
   },
   "files": [
     {
-      "path": "."
+      "path": "task"
+    },
+    {
+      "path": "images",
+      "addressable": true
     }
   ],
   "contributions": [
@@ -73,7 +77,7 @@
         "ms.vss-distributed-task.tasks"
       ],
       "properties": {
-        "name": "PR Metrics"
+        "name": "task"
       }
     }
   ]
