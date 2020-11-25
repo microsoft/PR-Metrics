@@ -3,7 +3,8 @@ name: Release
 on:
   workflow_dispatch:
   release:
-    types: [created]
+    types:
+    - created
 
 jobs:
   release:
@@ -29,3 +30,4 @@ jobs:
         with:
           pat: ${{ secrets.VS_PAT }}
           manifestPath: ${{ github.workspace }}\Release\PipelinesTasks\PRMetrics\vss-extension.json
+          vsixPath: ${{ github.workspace }}\Release\PipelinesTasks\PRMetrics\ms-omex.prmetrics-1.0.0.vsix
