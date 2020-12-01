@@ -136,7 +136,7 @@ be excluded.
 
 ```YAML
 steps:
-- task: PRMetrics@1
+- task: ms-omex.prmetrics.prmetrics.PRMetrics@1
   displayName: 'PR Metrics'
   inputs:
     BaseSize: 250
