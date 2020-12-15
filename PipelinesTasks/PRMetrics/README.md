@@ -3,6 +3,9 @@
 PR Metrics is an Azure Pipelines task for adding size and test coverage
 indicators to the start of each Pull Request title.
 
+It can be downloaded from the Visual Studio Marketplace at
+<https://marketplace.visualstudio.com/items?itemName=ms-omex.prmetrics>.
+
 For example, a PR with the title "Adding code" could become either:
 
 - XS:heavy_check_mark: :black_small_square: Adding code

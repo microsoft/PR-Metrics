@@ -30,4 +30,4 @@ jobs:
         with:
           pat: ${{ secrets.VS_PAT }}
           manifestPath: ${{ github.workspace }}\Release\PipelinesTasks\PRMetrics\vss-extension.json
-          vsixPath: ${{ github.workspace }}\Release\PipelinesTasks\PRMetrics\ms-omex.prmetrics-1.0.0.vsix
+          vsixPath: ${{ github.workspace }}\Release\PipelinesTasks\PRMetrics\ms-omex.prmetrics-1.0.1.vsix
