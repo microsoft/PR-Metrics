@@ -54,6 +54,11 @@ The task parameters are:
 
 The [source][github] for this extension is on GitHub. Take, fork, and extend.
 
+## Privacy
+
+The Azure DevOps extensions in this repo collect no user information. Further
+information can be found in [Microsoft's privacy statement][privacy].
+
 ## Feedback & Issues
 
 A more thorough description of the extension can be found [here][readme].

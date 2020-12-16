@@ -55,9 +55,6 @@
     "license": {
       "uri": "https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/blob/main/LICENSE.txt"
     },
-    "privacy": {
-      "uri": "https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/blob/main/documentation/privacy.md"
-    },
     "support": {
       "uri": "https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/blob/main/documentation/support.md"
     }
