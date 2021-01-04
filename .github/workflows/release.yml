@@ -14,7 +14,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: MSBuild – Install
-        uses: microsoft/setup-msbuild@v1.0.3
+        uses: microsoft/setup-msbuild@v1.0.2
       - name: MSBuild – Run
         run: msbuild
       - name: Install TFX CLI
