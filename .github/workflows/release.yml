@@ -20,14 +20,15 @@ jobs:
       - name: Install TFX CLI
         shell: pwsh
         run: npm install -g tfx-cli
-      - name: Create PRMetrics Package
+      - name: PRMetrics Package – Create
         shell: pwsh
-        run: |
-          cd ${{ github.workspace }}\Release\PipelinesTasks\PRMetrics
-          tfx extension create --manifest-globs vss-extension.json
-      - name: Publish PRMetrics to Marketplace
-        uses: mrluje/vs-marketplace-publisher@v2
-        with:
-          pat: ${{ secrets.VS_PAT }}
-          manifestPath: ${{ github.workspace }}\Release\PipelinesTasks\PRMetrics\vss-extension.json
-          vsixPath: ${{ github.workspace }}\Release\PipelinesTasks\PRMetrics\ms-omex.prmetrics-1.0.2.vsix
+        run: >-
+          tfx extension create
+          --manifest-globs ${{ github.workspace }}\Release\PipelinesTasks\PRMetrics\vss-extension.json
+      - name: PRMetrics Package – Publish
+        shell: pwsh
+        run: >-
+          tfx extension publish
+          --manifest-globs ${{ github.workspace }}\Release\PipelinesTasks\PRMetrics\vss-extension.json
+          --vsix ${{ github.workspace }}\Release\PipelinesTasks\PRMetrics\ms-omex.prmetrics-1.0.2.vsix
+          --token ${{ secrets.VS_PAT }}
