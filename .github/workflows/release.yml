@@ -22,9 +22,9 @@ jobs:
         run: npm install -g tfx-cli
       - name: PRMetrics Package – Create
         shell: pwsh
-        run: >-
-          tfx extension create
-          --manifest-globs ${{ github.workspace }}\Release\PipelinesTasks\PRMetrics\vss-extension.json
+        run: |
+          cd ${{ github.workspace }}\Release\PipelinesTasks\PRMetrics
+          tfx extension create --manifest-globs vss-extension.json
       - name: PRMetrics Package – Publish
         shell: pwsh
         run: >-
