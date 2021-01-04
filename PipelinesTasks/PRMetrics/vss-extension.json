@@ -2,7 +2,7 @@
   "manifestVersion": 1,
   "id": "prmetrics",
   "name": "PR Metrics",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "publisher": "ms-omex",
   "description": "Updates the title, description, and comments of pull requests to provide at-a-glance metrics.",
   "public": true,
@@ -56,7 +56,7 @@
       "uri": "https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/blob/main/LICENSE.txt"
     },
     "support": {
-      "uri": "https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/blob/main/documentation/support.md"
+      "uri": "https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/blob/main/docs/support.md"
     }
   },
   "repository": {
