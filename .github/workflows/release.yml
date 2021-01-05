@@ -13,6 +13,42 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - name: Tag – Get Latest
+        uses: oprypin/find-latest-tag@v1.0.4
+        id: latest-tag
+        with:
+          repository: microsoft/OMEX-Azure-DevOps-Extensions
+          releases-only: true
+      - name: Tag – Remove Prefix
+        uses: bhowell2/github-substring-action@v1.0.0
+        id: latest-tag-prefix
+        with:
+          value: ${{ steps.latest-tag.outputs.tag }}
+          index_of_str: "v"
+      - name: Tag – Extract
+        uses: jungwinter/split@v1
+        id: latest-tag-split
+        with:
+          msg: ${{ steps.latest-tag-prefix.outputs.substring }}
+          seperator: '.'
+      - name: Tag – Replace Major
+        uses: jacobtomlinson/gha-find-replace@0.1.2
+        with:
+          find: "%MAJOR%"
+          replace: ${{ steps.split.outputs._0 }}
+          include: "*.json"
+      - name: Tag – Replace Minor
+        uses: jacobtomlinson/gha-find-replace@0.1.2
+        with:
+          find: "%MINOR%"
+          replace: ${{ steps.split.outputs._1 }}
+          include: "*.json"
+      - name: Tag – Replace Patch
+        uses: jacobtomlinson/gha-find-replace@0.1.2
+        with:
+          find: "%PATCH%"
+          replace: ${{ steps.split.outputs._2 }}
+          include: "*.json"
       - name: MSBuild – Install
         uses: microsoft/setup-msbuild@v1.0.2
       - name: MSBuild – Run
@@ -24,11 +60,18 @@ jobs:
         shell: pwsh
         run: |
           cd ${{ github.workspace }}\Release\PipelinesTasks\PRMetrics
-          tfx extension create --manifest-globs vss-extension.json
+          tfx extension create --manifest-globs vss-extension.json --output-path ms-omex.prmetrics.vsix
+      - name: PRMetrics Package – Validate
+        shell: pwsh
+        run: >-
+          tfx extension isvalid
+          --vsix ${{ github.workspace }}\Release\PipelinesTasks\PRMetrics\ms-omex.prmetrics.vsix
+          --token ${{ secrets.VS_PAT }}
       - name: PRMetrics Package – Publish
         shell: pwsh
         run: >-
           tfx extension publish
+          --bypass-validation
           --manifest-globs ${{ github.workspace }}\Release\PipelinesTasks\PRMetrics\vss-extension.json
-          --vsix ${{ github.workspace }}\Release\PipelinesTasks\PRMetrics\ms-omex.prmetrics-1.0.3.vsix
+          --vsix ${{ github.workspace }}\Release\PipelinesTasks\PRMetrics\ms-omex.prmetrics.vsix
           --token ${{ secrets.VS_PAT }}
