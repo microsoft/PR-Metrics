@@ -35,7 +35,7 @@ jobs:
         uses: datamonsters/replace-action@v2
         with:
           files: "PipelinesTasks/PRMetrics/vss-extension.json,PipelinesTasks/PRMetrics/task/task.json"
-          replacements: "%MAJOR%=${{ steps.split.outputs._0 }},%MINOR%=${{ steps.split.outputs._1 }},%PATCH%=${{ steps.split.outputs._2 }}"
+          replacements: "%MAJOR%=${{ steps.latest-tag-split.outputs._0 }},%MINOR%=${{ steps.latest-tag-split.outputs._1 }},%PATCH%=${{ steps.latest-tag-split.outputs._2 }}"
       - name: MSBuild – Install
         uses: microsoft/setup-msbuild@v1.0.2
       - name: MSBuild – Run
