@@ -31,24 +31,11 @@ jobs:
         with:
           string: ${{ steps.latest-tag-prefix.outputs.substring }}
           split-by: '.'
-      - name: Tag – Replace Major
-        uses: jacobtomlinson/gha-find-replace@0.1.2
+      - name: Tag – Replace Version
+        uses: datamonsters/replace-action@v2
         with:
-          find: "%MAJOR%"
-          replace: ${{ steps.split.outputs._0 }}
-          include: "*.json"
-      - name: Tag – Replace Minor
-        uses: jacobtomlinson/gha-find-replace@0.1.2
-        with:
-          find: "%MINOR%"
-          replace: ${{ steps.split.outputs._1 }}
-          include: "*.json"
-      - name: Tag – Replace Patch
-        uses: jacobtomlinson/gha-find-replace@0.1.2
-        with:
-          find: "%PATCH%"
-          replace: ${{ steps.split.outputs._2 }}
-          include: "*.json"
+          files: "PipelineTasks/PRMetrics/vss-extension.json,PipelineTasks/PRMetrics/task/task.json"
+          replacements: "%MAJOR%=${{ steps.split.outputs._0 }},%MINOR%=${{ steps.split.outputs._1 }},%PATCH%=${{ steps.split.outputs._2 }}"
       - name: MSBuild – Install
         uses: microsoft/setup-msbuild@v1.0.2
       - name: MSBuild – Run
