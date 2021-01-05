@@ -31,7 +31,12 @@ jobs:
         with:
           string: ${{ steps.latest-tag-prefix.outputs.substring }}
           split-by: '.'
-      - name: Tag – Replace Version
+      - name: Tag – Replace Version 1
+        uses: datamonsters/replace-action@v2
+        with:
+          files: "PipelinesTasks/PRMetrics/vss-extension.json,PipelinesTasks/PRMetrics/task/task.json"
+          replacements: "%MAJOR%=${{ steps.latest-tag-split.outputs._0 }},%MINOR%=${{ steps.latest-tag-split.outputs._1 }},%PATCH%=${{ steps.latest-tag-split.outputs._2 }}"
+      - name: Tag – Replace Version 2
         uses: datamonsters/replace-action@v2
         with:
           files: "PipelinesTasks/PRMetrics/vss-extension.json,PipelinesTasks/PRMetrics/task/task.json"
