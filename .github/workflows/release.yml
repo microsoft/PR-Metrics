@@ -26,11 +26,11 @@ jobs:
           value: ${{ steps.latest-tag.outputs.tag }}
           index_of_str: "v"
       - name: Tag – Extract
-        uses: jungwinter/split@v1
+        uses: rishabhgupta/split-by@v1.0.1
         id: latest-tag-split
         with:
-          msg: ${{ steps.latest-tag-prefix.outputs.substring }}
-          seperator: '.'
+          string: ${{ steps.latest-tag-prefix.outputs.substring }}
+          split-by: '.'
       - name: Tag – Replace Major
         uses: jacobtomlinson/gha-find-replace@0.1.2
         with:
