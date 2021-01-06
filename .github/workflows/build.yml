@@ -16,27 +16,34 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+
       - name: MSBuild – Install
         uses: microsoft/setup-msbuild@v1.0.2
+        
       - name: MSBuild – Run
         run: msbuild
+
       - name: PowerShell Tests – Install
         shell: pwsh
         run: Install-Module -Name 'Pester' -Force
+
       - name: PowerShell Tests – Run
         shell: pwsh
         run: |
           $Result = Invoke-Pester -PassThru
           if ($Result.FailedCount -gt 0) { Throw 'PowerShell Tests failed.' }
           exit 0
+
       - name: Install TFX CLI
         shell: pwsh
         run: npm install -g tfx-cli
+
       - name: Create PRMetrics Package
         shell: pwsh
         run: |
           cd ${{ github.workspace }}\Release\PipelinesTasks\PRMetrics
           tfx extension create --manifest-globs vss-extension.json
+
       - name: Upload VSIX
         uses: actions/upload-artifact@v2
         with:
@@ -49,9 +56,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+
       - name: PowerShell Analysis – Install
         shell: pwsh
         run: Install-Module -Name 'PSScriptAnalyzer' -Force
+        
       - name: PowerShell Analysis – Run
         shell: pwsh
         run: |
