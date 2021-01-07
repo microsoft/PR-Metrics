@@ -56,17 +56,14 @@ jobs:
         run: msbuild
 
       - name: Install TFX CLI
-        shell: pwsh
         run: npm install -g tfx-cli
 
       - name: PRMetrics Package – Create
-        shell: pwsh
         run: |
           cd ${{ github.workspace }}\Release\PipelinesTasks\PRMetrics
           tfx extension create --manifest-globs vss-extension.json --output-path ms-omex.prmetrics.vsix
 
       - name: PRMetrics Package – Publish
-        shell: pwsh
         run: >-
           tfx extension publish
           --manifest-globs ${{ github.workspace }}\Release\PipelinesTasks\PRMetrics\vss-extension.json

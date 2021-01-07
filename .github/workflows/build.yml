@@ -68,14 +68,12 @@ jobs:
           exit 0
 
       - name: Install TFX CLI
-        shell: pwsh
         run: npm install -g tfx-cli
 
-      - name: Create PRMetrics Package
-        shell: pwsh
+      - name: PRMetrics Package – Create
         run: |
           cd ${{ github.workspace }}\Release\PipelinesTasks\PRMetrics
-          tfx extension create --manifest-globs vss-extension.json
+          tfx extension create --manifest-globs vss-extension.json --output-path ms-omex.prmetrics.vsix
 
       - name: Upload VSIX
         uses: actions/upload-artifact@v2
