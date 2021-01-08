@@ -88,7 +88,52 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Tag – Get Latest
+        uses: oprypin/find-latest-tag@v1.0.4
+        id: latest-tag
+        with:
+          repository: microsoft/OMEX-Azure-DevOps-Extensions
+          releases-only: true
+
+      - name: Tag – Remove Prefix
+        uses: bhowell2/github-substring-action@v1.0.0
+        id: latest-tag-prefix
+        with:
+          value: ${{ steps.latest-tag.outputs.tag }}
+          index_of_str: "v"
+
+      - name: Tag – Extract
+        uses: rishabhgupta/split-by@v1.0.1
+        id: latest-tag-split
+        with:
+          string: ${{ steps.latest-tag-prefix.outputs.substring }}
+          split-by: '.'
+
+      - name: Tag – Replace Version – Iteration 1
+        uses: datamonsters/replace-action@v2
+        with:
+          files: "PipelinesTasks/PRMetrics/vss-extension.json,PipelinesTasks/PRMetrics/task/task.json"
+          replacements: "%MAJOR%=${{ steps.latest-tag-split.outputs._0 }},%MINOR%=${{ steps.latest-tag-split.outputs._1 }},%PATCH%=${{ steps.latest-tag-split.outputs._2 }}"
+
+      - name: Tag – Replace Version – Iteration 2
+        uses: datamonsters/replace-action@v2
+        with:
+          files: "PipelinesTasks/PRMetrics/vss-extension.json,PipelinesTasks/PRMetrics/task/task.json"
+          replacements: "%MAJOR%=${{ steps.latest-tag-split.outputs._0 }},%MINOR%=${{ steps.latest-tag-split.outputs._1 }},%PATCH%=${{ steps.latest-tag-split.outputs._2 }}"
+
+      - name: PowerShell Analysis – Install
+        shell: pwsh
+        run: Install-Module -Name 'PSScriptAnalyzer' -Force
+        
+      - name: PowerShell Analysis – Run
+        shell: pwsh
+        run: |
+          $Result = (Invoke-ScriptAnalyzer -Path '.' -Recurse | Where-Object -Property 'RuleName' -ne 'TypeNotFound')
+          $Result
+          if ($Result.Count -gt 0) { Throw 'PowerShell Analysis failed.' }
+
       - name: Lint Code Base
         uses: github/super-linter@latest
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VALIDATE_POWERSHELL: false

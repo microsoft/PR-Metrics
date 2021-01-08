@@ -12,3 +12,6 @@ insert_final_newline = true
 
 [*.{copyproj,json,proj,yml}]
 indent_size = 2
+
+[*.{md,ps1}]
+indent_size = unset
