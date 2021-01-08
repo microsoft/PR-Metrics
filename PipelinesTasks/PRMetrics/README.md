@@ -31,8 +31,8 @@ metrics:
 > | Product Code |   100   |
 > | Test Code    |    50   |
 > | **Subtotal** | **150** |
-> | Ignored      |     5   |
-> | **Total**    | **155** |
+> | Ignored      |     6   |
+> | **Total**    | **156** |
 
 It will furthermore add a comment to indicate that a review of the file may not
 be necessary.
