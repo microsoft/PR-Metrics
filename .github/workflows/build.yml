@@ -88,13 +88,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: PowerShell Analysis – Install
-        shell: pwsh
-        run: Install-Module -Name 'PSScriptAnalyzer' -Force
-        
-      - name: PowerShell Analysis – Run
-        shell: pwsh
-        run: |
-          $Result = (Invoke-ScriptAnalyzer -Path '.' -Recurse | Where-Object -Property 'RuleName' -ne 'TypeNotFound')
-          $Result
-          if ($Result.Count -gt 0) { Throw 'PowerShell Analysis failed.' }
+      - name: Lint Code Base
+        uses: github/super-linter@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
