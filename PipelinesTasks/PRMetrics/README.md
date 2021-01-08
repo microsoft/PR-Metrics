@@ -74,8 +74,12 @@ To deploy the task:
 1. Acquire administrator access to the server to which you wish to deploy.
 1. Install [tfx-cli][tfxcli] using [npm][npm] via the command-line
    `npm install -g tfx-cli`.
-1. Sign in to the server using
-   `tfx login --service-url https://<account>.visualstudio.com/DefaultCollection --token <PAT>`.
+1. Sign in to the server using:
+
+   ```Batchfile
+   tfx login --service-url https://<account>.visualstudio.com/DefaultCollection --token <PAT>
+   ```
+
    You can generate a PAT by following the instructions [here][tfxpat]. This
    will only need to be performed the first time you use tfx-cli.
 1. Delete any existing copy of the task using
@@ -83,6 +87,11 @@ To deploy the task:
 1. Install `nuget.exe` and add it to your `PATH` environment variable so that
    NuGet can invoked from any console window. Instructions on the process can be
    located [here][nugetcli].
+1. Replace `%MAJOR%`, `%MINOR%`, and `%PATCH%` with any numeric values in
+   [vss-extension.json][vssextensionjson] (1 instance of each) and
+   [task/task.json][taskjson] (2 instances of each). Ensure you undo these
+   changes before creating a PR, as these values will be updated as part of the
+   release task.
 1. Build the task locally by running `msbuild` from the PRMetrics directory.
    You may need to use a Visual Studio command prompt for this, as `msbuild` is
    not always added to the default path.
@@ -318,6 +327,8 @@ y
 [npm]: https://www.npmjs.com/
 [tfxpat]: https://docs.microsoft.com/azure/devops/extend/publish/command-line
 [nugetcli]: https://docs.microsoft.com/nuget/install-nuget-client-tools#nugetexe-cli
+[vssextensionjson]: https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/blob/main/PipelinesTasks/PRMetrics/vss-extension.json
+[taskjson]: https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/blob/main/PipelinesTasks/PRMetrics/task/task.json
 [addingtask]: https://docs.microsoft.com/azure/devops/pipelines/customize-pipeline
 [globs]: https://docs.microsoft.com/azure/devops/pipelines/tasks/file-matching-patterns
 [sdk]: https://github.com/microsoft/azure-pipelines-task-lib

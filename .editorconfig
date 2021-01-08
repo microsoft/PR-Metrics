@@ -1,4 +1,5 @@
-# Copyright (c) Microsoft Corporation. All rights reserved.
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
 
 root = true
 
@@ -9,5 +10,8 @@ indent_size = 4
 indent_style = space
 insert_final_newline = true
 
-[*.{copyproj,json,proj}]
+[*.{copyproj,json,proj,yml}]
 indent_size = 2
+
+[*.{md,ps1}]
+indent_size = unset
