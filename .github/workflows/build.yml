@@ -136,5 +136,4 @@ jobs:
         uses: github/super-linter@latest
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          MARKDOWN_CONFIG_FILE: .markdownlint.json
           VALIDATE_POWERSHELL: false
