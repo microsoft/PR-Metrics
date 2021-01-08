@@ -74,8 +74,12 @@ To deploy the task:
 1. Acquire administrator access to the server to which you wish to deploy.
 1. Install [tfx-cli][tfxcli] using [npm][npm] via the command-line
    `npm install -g tfx-cli`.
-1. Sign in to the server using
-   `tfx login --service-url https://<account>.visualstudio.com/DefaultCollection --token <PAT>`.
+1. Sign in to the server using:
+
+   ```Batchfile
+   tfx login --service-url https://<account>.visualstudio.com/DefaultCollection --token <PAT>
+   ```
+
    You can generate a PAT by following the instructions [here][tfxpat]. This
    will only need to be performed the first time you use tfx-cli.
 1. Delete any existing copy of the task using

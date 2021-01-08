@@ -124,7 +124,7 @@ jobs:
       - name: PowerShell Analysis – Install
         shell: pwsh
         run: Install-Module -Name 'PSScriptAnalyzer' -Force
-        
+
       - name: PowerShell Analysis – Run
         shell: pwsh
         run: |
@@ -132,7 +132,13 @@ jobs:
           $Result
           if ($Result.Count -gt 0) { Throw 'PowerShell Analysis failed.' }
 
-      - name: Lint Code Base
+      - name: Super Linter – Setup
+        shell: pwsh
+        run: |
+          New-Item -ItemType 'Directory' -Path '.github' -Name 'linters'
+          Copy-Item -Path '.markdownlint.yml' -Destination '.github/linters/.markdown-lint.yml'
+
+      - name: Super Linter – Run
         uses: github/super-linter@latest
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
