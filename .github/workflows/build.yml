@@ -114,11 +114,11 @@ jobs:
 
       - name: Tag – Version Replace in task.json
         run: |-
-          $FileContent = Get-Content -Path 'Tasks/PRMetricsV1/task/task.json' -Raw
+          $FileContent = Get-Content -Path 'PipelinesTasks/PRMetricsV1/task/task.json' -Raw
           $FileContent = $FileContent -replace '%MAJOR%', '${{ steps.version.outputs.major }}'
           $FileContent = $FileContent -replace '%MINOR%', '${{ steps.version.outputs.minor }}'
           $FileContent = $FileContent -replace '%PATCH%', '${{ steps.version.outputs.patch }}'
-          Set-Content -NoNewline -Path 'Tasks/PRMetricsV1/task/task.json' -Value $FileContent
+          Set-Content -NoNewline -Path 'PipelinesTasks/PRMetricsV1/task/task.json' -Value $FileContent
 
       - name: PowerShell Analysis – Install
         run: Install-Module -Name 'PSScriptAnalyzer' -Force
@@ -166,21 +166,3 @@ jobs:
         uses: github/codeql-action/upload-sarif@v1
         with:
           sarif_file: reports
-
-  validate-codeql:
-    name: Validate – CodeQL
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Initialize
-        uses: github/codeql-action/init@v1
-        with:
-          queries: security-and-quality
-
-      - name: Build
-        uses: github/codeql-action/autobuild@v1
-
-      - name: Analyze
-        uses: github/codeql-action/analyze@v1
