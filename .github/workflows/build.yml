@@ -8,7 +8,7 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
-  workflow_dispatch: null
+  workflow_dispatch
 
 defaults:
   run:
@@ -137,10 +137,11 @@ jobs:
           MARKDOWN_CONFIG_FILE: ../../.markdownlint.json
           VALIDATE_POWERSHELL: false
 
-      - name: Validate Markdown Links
-        uses: gaurav-nelson/github-action-markdown-link-check@v1
-        with:
-          config-file: .github/linters/markdown-link-check.json
+      # TODO: Enable after file relocation complete.
+      #- name: Validate Markdown Links
+      #  uses: gaurav-nelson/github-action-markdown-link-check@v1
+      #  with:
+      #    config-file: .github/linters/markdown-link-check.json
 
       - name: Validate .markdownlint.json
         uses: Zingabopp/JsonValidate-Action@v1

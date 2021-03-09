@@ -1,7 +1,5 @@
 # Microsoft OMEX Azure DevOps Extensions
 
-![Build Status](https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/workflows/Build/badge.svg)
-
 This repository contains source code for
 [Azure DevOps](https://azure.microsoft.com/services/devops/) Extensions created
 by the OMEX team in Microsoft, which is part of the Office organization.
