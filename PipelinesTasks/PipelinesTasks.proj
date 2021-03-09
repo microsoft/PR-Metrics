@@ -6,6 +6,6 @@
   <Target Name="Build">
     <RemoveDir Directories="$(OutputPath)" Condition="Exists('$(OutputPath)')" />
     <MakeDir Directories="$(OutputPath)" />
-    <MSBuild Projects="PRMetrics\PRMetrics.copyproj" Targets="Build" />
+    <MSBuild Projects="PRMetricsV1\PRMetricsV1.copyproj" Targets="Build" />
   </Target>
 </Project>

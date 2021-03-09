@@ -17,7 +17,7 @@ Set-StrictMode -Version 'Latest'
 
 $azureDevOpsTaskSdkPath = "$PSScriptRoot"
 if (!$env:AGENT_ID) {
-    $azureDevOpsTaskSdkPath = "$azureDevOpsTaskSdkPath\..\..\..\Release\PipelinesTasks\PRMetrics\task\"
+    $azureDevOpsTaskSdkPath = "$azureDevOpsTaskSdkPath\..\..\..\Release\PipelinesTasks\PRMetricsV1\task\"
 }
 
 Import-Module -Name "$azureDevOpsTaskSdkPath\ps_modules\VstsTaskSdk\VstsTaskSdk.psm1"

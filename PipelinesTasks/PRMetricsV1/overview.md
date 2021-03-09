@@ -70,5 +70,5 @@ If you have feedback or encounter errors, please file an issue on
 [github]: https://github.com/microsoft/OMEX-Azure-DevOps-Extensions
 [issues]: https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/issues
 [globs]: https://docs.microsoft.com/azure/devops/pipelines/tasks/file-matching-patterns
-[defaultextensions]: https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/blob/main/PipelinesTasks/PRMetrics/README.md#default-code-file-extensions
-[readme]: https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/blob/main/PipelinesTasks/PRMetrics/README.md
+[defaultextensions]: README.md#default-code-file-extensions
+[readme]: README.md
