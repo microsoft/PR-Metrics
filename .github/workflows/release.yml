@@ -32,9 +32,9 @@ jobs:
         run: |-
           $Version = '${{ steps.tag.outputs.tag_name }}'.Substring(1)
           $VersionElements = $Version.Split('.')
-          Write-Output -InputObject "::set-output name=major::$VersionElements[0]"
-          Write-Output -InputObject "::set-output name=minor::$VersionElements[1]"
-          Write-Output -InputObject "::set-output name=patch::$VersionElements[2]"
+          Write-Output -InputObject "::set-output name=major::$($VersionElements[0])"
+          Write-Output -InputObject "::set-output name=minor::$($VersionElements[1])"
+          Write-Output -InputObject "::set-output name=patch::$($VersionElements[2])"
 
       - name: Tag – Version Replace in vss-extension.json
         run: |-
