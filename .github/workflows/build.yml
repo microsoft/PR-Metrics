@@ -145,11 +145,21 @@ jobs:
           json-schema: https://raw.githubusercontent.com/DavidAnson/markdownlint/main/schema/markdownlint-config-schema.json
           use-draft: draft-07
 
+      - name: JSON VALIDATION – Validate task.json – Download tasks.schema.json
+        run: Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/microsoft/azure-pipelines-task-lib/master/tasks.schema.json' -OutFile 'tasks.schema.json'
+
+      - name: JSON VALIDATION – Validate task.json – Update tasks.schema.json
+        run: |-
+          $FileContent = Get-Content -Path 'tasks.schema.json' -Raw
+          $FileContent = $FileContent -replace 'draft-04', 'draft-07'
+          Set-Content -NoNewline -Path 'tasks.schema.json' -Value $FileContent
+
       - name: Validate task.json
         uses: Zingabopp/JsonValidate-Action@v1
         with:
           json-file: PipelinesTasks/PRMetricsV1/task/task.json
-          json-schema: https://raw.githubusercontent.com/microsoft/azure-pipelines-task-lib/master/tasks.schema.json
+          json-schema: tasks.schema.json
+          use-draft: draft-07
 
       - name: Security Scan – Validate
         uses: ShiftLeftSecurity/scan-action@v1.3.0
