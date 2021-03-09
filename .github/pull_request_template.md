@@ -1,5 +1,3 @@
-# Pull Request
-
 ## Summary
 
 <!-- Provide a summary of the PR and what it aims to accomplish. -->

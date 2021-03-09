@@ -47,11 +47,11 @@ jobs:
 
       - name: Tag – Version Replace in task.json
         run: |-
-          $FileContent = Get-Content -Path 'Tasks/PRMetricsV1/task/task.json' -Raw
+          $FileContent = Get-Content -Path 'PipelinesTasks/PRMetricsV1/task/task.json' -Raw
           $FileContent = $FileContent -replace '%MAJOR%', '${{ steps.version.outputs.major }}'
           $FileContent = $FileContent -replace '%MINOR%', '${{ steps.version.outputs.minor }}'
           $FileContent = $FileContent -replace '%PATCH%', '${{ steps.version.outputs.patch }}'
-          Set-Content -NoNewline -Path 'Tasks/PRMetricsV1/task/task.json' -Value $FileContent
+          Set-Content -NoNewline -Path 'PipelinesTasks/PRMetricsV1/task/task.json' -Value $FileContent
 
       - name: MSBuild – Install
         uses: microsoft/setup-msbuild@v1.0.2
@@ -135,13 +135,8 @@ jobs:
           EDITORCONFIG_FILE_NAME: ../../.editorconfig
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MARKDOWN_CONFIG_FILE: ../../.markdownlint.json
+          VALIDATE_JSCPD: false
           VALIDATE_POWERSHELL: false
-
-      # TODO: Enable after file relocation complete.
-      #- name: Validate Markdown Links
-      #  uses: gaurav-nelson/github-action-markdown-link-check@v1
-      #  with:
-      #    config-file: .github/linters/markdown-link-check.json
 
       - name: Validate .markdownlint.json
         uses: Zingabopp/JsonValidate-Action@v1
