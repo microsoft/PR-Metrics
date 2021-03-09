@@ -150,7 +150,6 @@ jobs:
         with:
           json-file: PipelinesTasks/PRMetricsV1/task/task.json
           json-schema: https://raw.githubusercontent.com/microsoft/azure-pipelines-task-lib/master/tasks.schema.json
-          use-draft: draft-04
 
       - name: Security Scan – Validate
         uses: ShiftLeftSecurity/scan-action@v1.3.0
