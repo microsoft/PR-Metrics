@@ -19,14 +19,14 @@ additional questions or comments.
 
 ## Coding Style
 
-There is an [`.editorconfig`](.editorconfig) file in the root of the project
+There is an [`.editorconfig`](../.editorconfig) file in the root of the project
 specifying some simple formatting guidelines. In addition to adhering to those,
 you should follow the pattern of what you see in existing code where possible.
 
 ## Code Overview
 
 The repository is organized into a set of different extensions, as outlined in
-the [README](README.md).
+the [README](../README.md).
 
 ## Updating an Extension
 
