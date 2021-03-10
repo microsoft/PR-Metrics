@@ -4,8 +4,8 @@
   "name": "PRMetrics",
   "friendlyName": "PR Metrics %MAJOR%.%MINOR%.%PATCH%",
   "description": "Updates the title, description, and comments of pull requests to provide at-a-glance metrics.",
-  "helpUrl": "https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/blob/main/PipelinesTasks/PRMetrics/README.md",
-  "helpMarkDown": "[More information](https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/blob/main/PipelinesTasks/PRMetrics/README.md)",
+  "helpUrl": "https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/blob/main/PipelinesTasks/PRMetricsV1/README.md",
+  "helpMarkDown": "[More information](https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/blob/main/PipelinesTasks/PRMetricsV1/README.md)",
   "author": "Microsoft Corporation",
   "category": "Azure Pipelines",
   "demands": [

@@ -1,7 +1,5 @@
 # Microsoft OMEX Azure DevOps Extensions
 
-![Build Status](https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/workflows/Build/badge.svg)
-
 This repository contains source code for
 [Azure DevOps](https://azure.microsoft.com/services/devops/) Extensions created
 by the OMEX team in Microsoft, which is part of the Office organization.
@@ -20,8 +18,8 @@ contains a folder for each individual extension.
 The current set of projects is:
 
 - **Pipelines Tasks**
-  - [**PR Metrics:**](PipelinesTasks/PRMetrics/README.md) A task for adding size
-    and test coverage indicators to the titles of PRs. This helps ensure
+  - [**PR Metrics:**](PipelinesTasks/PRMetricsV1/README.md) A task for adding
+    size and test coverage indicators to the titles of PRs. This helps ensure
     engineers keep PRs to an appropriate size and add sufficient test coverage,
     while providing insight to reviewers as to how long a PR is likely to take
     to review. **It can be downloaded from the Visual Studio Marketplace at
@@ -59,7 +57,7 @@ PR to be merged.
 ## Contributing
 
 Instructions on contributing can be located in
-[CONTRIBUTING.md](CONTRIBUTING.md).
+[CONTRIBUTING.md](.github/CONTRIBUTING.md).
 
 ## Code of Conduct
 

@@ -96,7 +96,7 @@ To deploy the task:
    You may need to use a Visual Studio command prompt for this, as `msbuild` is
    not always added to the default path.
 1. If the build is successful, upload the task using
-   `tfx build tasks upload --task-path  ..\..\Release\PipelinesTasks\PRMetrics\task\`.
+   `tfx build tasks upload --task-path  ..\..\Release\PipelinesTasks\PRMetricsV1\task\`.
 
 ## Configuring
 
@@ -327,8 +327,8 @@ y
 [npm]: https://www.npmjs.com/
 [tfxpat]: https://docs.microsoft.com/azure/devops/extend/publish/command-line
 [nugetcli]: https://docs.microsoft.com/nuget/install-nuget-client-tools#nugetexe-cli
-[vssextensionjson]: https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/blob/main/PipelinesTasks/PRMetrics/vss-extension.json
-[taskjson]: https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/blob/main/PipelinesTasks/PRMetrics/task/task.json
+[vssextensionjson]: vss-extension.json
+[taskjson]: task/task.json
 [addingtask]: https://docs.microsoft.com/azure/devops/pipelines/customize-pipeline
 [globs]: https://docs.microsoft.com/azure/devops/pipelines/tasks/file-matching-patterns
 [sdk]: https://github.com/microsoft/azure-pipelines-task-lib

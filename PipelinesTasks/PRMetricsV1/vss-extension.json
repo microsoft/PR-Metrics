@@ -44,7 +44,7 @@
   },
   "links": {
     "getstarted": {
-      "uri": "https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/blob/main/PipelinesTasks/PRMetrics/README.md"
+      "uri": "https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/blob/main/PipelinesTasks/PRMetricsV1/README.md"
     },
     "learn": {
       "uri": "https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/blob/main/README.md"
@@ -56,7 +56,7 @@
       "uri": "https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/blob/main/LICENSE.txt"
     },
     "support": {
-      "uri": "https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/blob/main/docs/support.md"
+      "uri": "https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/blob/main/.github/SUPPORT.md"
     }
   },
   "repository": {

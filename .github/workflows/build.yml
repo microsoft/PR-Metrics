@@ -8,61 +8,62 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+  workflow_dispatch: null
+
+defaults:
+  run:
+    shell: pwsh
 
 jobs:
   build:
+    name: Build
     runs-on: windows-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
       - name: Tag – Get Latest
-        uses: oprypin/find-latest-tag@v1.0.4
-        id: latest-tag
-        with:
-          repository: microsoft/OMEX-Azure-DevOps-Extensions
-          releases-only: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        id: tag
+        uses: jossef/action-latest-release-info@v1.1.0
 
-      - name: Tag – Remove Prefix
-        uses: bhowell2/github-substring-action@v1.0.0
-        id: latest-tag-prefix
-        with:
-          value: ${{ steps.latest-tag.outputs.tag }}
-          index_of_str: "v"
+      - name: Tag – Version Extract
+        id: version
+        run: |-
+          $Version = '${{ steps.tag.outputs.tag_name }}'.Substring(1)
+          $VersionElements = $Version.Split('.')
+          Write-Output -InputObject "::set-output name=major::$($VersionElements[0])"
+          Write-Output -InputObject "::set-output name=minor::$($VersionElements[1])"
+          Write-Output -InputObject "::set-output name=patch::$($VersionElements[2])"
 
-      - name: Tag – Extract
-        uses: rishabhgupta/split-by@v1.0.1
-        id: latest-tag-split
-        with:
-          string: ${{ steps.latest-tag-prefix.outputs.substring }}
-          split-by: '.'
+      - name: Tag – Version Replace in vss-extension.json
+        run: |-
+          $FileContent = Get-Content -Path 'PipelinesTasks/PRMetricsV1/vss-extension.json' -Raw
+          $FileContent = $FileContent -replace '%MAJOR%', '${{ steps.version.outputs.major }}'
+          $FileContent = $FileContent -replace '%MINOR%', '${{ steps.version.outputs.minor }}'
+          $FileContent = $FileContent -replace '%PATCH%', '${{ steps.version.outputs.patch }}'
+          Set-Content -NoNewline -Path 'PipelinesTasks/PRMetricsV1/vss-extension.json' -Value $FileContent
 
-      - name: Tag – Replace Version – Iteration 1
-        uses: datamonsters/replace-action@v2
-        with:
-          files: "PipelinesTasks/PRMetrics/vss-extension.json,PipelinesTasks/PRMetrics/task/task.json"
-          replacements: "%MAJOR%=${{ steps.latest-tag-split.outputs._0 }},%MINOR%=${{ steps.latest-tag-split.outputs._1 }},%PATCH%=${{ steps.latest-tag-split.outputs._2 }}"
-
-      - name: Tag – Replace Version – Iteration 2
-        uses: datamonsters/replace-action@v2
-        with:
-          files: "PipelinesTasks/PRMetrics/vss-extension.json,PipelinesTasks/PRMetrics/task/task.json"
-          replacements: "%MAJOR%=${{ steps.latest-tag-split.outputs._0 }},%MINOR%=${{ steps.latest-tag-split.outputs._1 }},%PATCH%=${{ steps.latest-tag-split.outputs._2 }}"
+      - name: Tag – Version Replace in task.json
+        run: |-
+          $FileContent = Get-Content -Path 'PipelinesTasks/PRMetricsV1/task/task.json' -Raw
+          $FileContent = $FileContent -replace '%MAJOR%', '${{ steps.version.outputs.major }}'
+          $FileContent = $FileContent -replace '%MINOR%', '${{ steps.version.outputs.minor }}'
+          $FileContent = $FileContent -replace '%PATCH%', '${{ steps.version.outputs.patch }}'
+          Set-Content -NoNewline -Path 'PipelinesTasks/PRMetricsV1/task/task.json' -Value $FileContent
 
       - name: MSBuild – Install
         uses: microsoft/setup-msbuild@v1.0.2
-        
+
       - name: MSBuild – Run
         run: msbuild
 
       - name: PowerShell Tests – Install
-        shell: pwsh
         run: Install-Module -Name 'Pester' -Force
 
       - name: PowerShell Tests – Run
-        shell: pwsh
-        run: |
+        run: |-
           $Result = Invoke-Pester -PassThru
           if ($Result.FailedCount -gt 0) { Throw 'PowerShell Tests failed.' }
           exit 0
@@ -71,8 +72,8 @@ jobs:
         run: npm install -g tfx-cli
 
       - name: PRMetrics Package – Create
-        run: |
-          cd ${{ github.workspace }}\Release\PipelinesTasks\PRMetrics
+        run: |-
+          Set-Location -Path '${{ github.workspace }}/Release/PipelinesTasks/PRMetricsV1'
           tfx extension create --manifest-globs vss-extension.json --output-path ms-omex.prmetrics.vsix
 
       - name: Upload VSIX
@@ -81,65 +82,91 @@ jobs:
           name: VSIX
           path: '**/*.vsix'
 
-  validate:
+  test-validate:
+    name: Test & Validate
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
       - name: Tag – Get Latest
-        uses: oprypin/find-latest-tag@v1.0.4
-        id: latest-tag
-        with:
-          repository: microsoft/OMEX-Azure-DevOps-Extensions
-          releases-only: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        id: tag
+        uses: jossef/action-latest-release-info@v1.1.0
 
-      - name: Tag – Remove Prefix
-        uses: bhowell2/github-substring-action@v1.0.0
-        id: latest-tag-prefix
-        with:
-          value: ${{ steps.latest-tag.outputs.tag }}
-          index_of_str: "v"
+      - name: Tag – Version Extract
+        id: version
+        run: |-
+          $Version = '${{ steps.tag.outputs.tag_name }}'.Substring(1)
+          $VersionElements = $Version.Split('.')
+          Write-Output -InputObject "::set-output name=major::$($VersionElements[0])"
+          Write-Output -InputObject "::set-output name=minor::$($VersionElements[1])"
+          Write-Output -InputObject "::set-output name=patch::$($VersionElements[2])"
 
-      - name: Tag – Extract
-        uses: rishabhgupta/split-by@v1.0.1
-        id: latest-tag-split
-        with:
-          string: ${{ steps.latest-tag-prefix.outputs.substring }}
-          split-by: '.'
+      - name: Tag – Version Replace in vss-extension.json
+        run: |-
+          $FileContent = Get-Content -Path 'PipelinesTasks/PRMetricsV1/vss-extension.json' -Raw
+          $FileContent = $FileContent -replace '%MAJOR%', '${{ steps.version.outputs.major }}'
+          $FileContent = $FileContent -replace '%MINOR%', '${{ steps.version.outputs.minor }}'
+          $FileContent = $FileContent -replace '%PATCH%', '${{ steps.version.outputs.patch }}'
+          Set-Content -NoNewline -Path 'PipelinesTasks/PRMetricsV1/vss-extension.json' -Value $FileContent
 
-      - name: Tag – Replace Version – Iteration 1
-        uses: datamonsters/replace-action@v2
-        with:
-          files: "PipelinesTasks/PRMetrics/vss-extension.json,PipelinesTasks/PRMetrics/task/task.json"
-          replacements: "%MAJOR%=${{ steps.latest-tag-split.outputs._0 }},%MINOR%=${{ steps.latest-tag-split.outputs._1 }},%PATCH%=${{ steps.latest-tag-split.outputs._2 }}"
-
-      - name: Tag – Replace Version – Iteration 2
-        uses: datamonsters/replace-action@v2
-        with:
-          files: "PipelinesTasks/PRMetrics/vss-extension.json,PipelinesTasks/PRMetrics/task/task.json"
-          replacements: "%MAJOR%=${{ steps.latest-tag-split.outputs._0 }},%MINOR%=${{ steps.latest-tag-split.outputs._1 }},%PATCH%=${{ steps.latest-tag-split.outputs._2 }}"
+      - name: Tag – Version Replace in task.json
+        run: |-
+          $FileContent = Get-Content -Path 'PipelinesTasks/PRMetricsV1/task/task.json' -Raw
+          $FileContent = $FileContent -replace '%MAJOR%', '${{ steps.version.outputs.major }}'
+          $FileContent = $FileContent -replace '%MINOR%', '${{ steps.version.outputs.minor }}'
+          $FileContent = $FileContent -replace '%PATCH%', '${{ steps.version.outputs.patch }}'
+          Set-Content -NoNewline -Path 'PipelinesTasks/PRMetricsV1/task/task.json' -Value $FileContent
 
       - name: PowerShell Analysis – Install
-        shell: pwsh
         run: Install-Module -Name 'PSScriptAnalyzer' -Force
 
       - name: PowerShell Analysis – Run
-        shell: pwsh
-        run: |
+        run: |-
           $Result = (Invoke-ScriptAnalyzer -Path '.' -Recurse | Where-Object -Property 'RuleName' -ne 'TypeNotFound')
           $Result
           if ($Result.Count -gt 0) { Throw 'PowerShell Analysis failed.' }
 
-      - name: Super Linter – Setup
-        shell: pwsh
-        run: |
-          New-Item -ItemType 'Directory' -Path '.github' -Name 'linters'
-          Copy-Item -Path '.markdownlint.yml' -Destination '.github/linters/.markdown-lint.yml'
-
-      - name: Super Linter – Run
-        uses: github/super-linter@latest
+      - name: Super Linter
+        uses: github/super-linter@v3.15.2
         env:
+          EDITORCONFIG_FILE_NAME: ../../.editorconfig
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MARKDOWN_CONFIG_FILE: ../../.markdownlint.json
+          VALIDATE_JSCPD: false
           VALIDATE_POWERSHELL: false
+
+      - name: Validate .markdownlint.json
+        uses: Zingabopp/JsonValidate-Action@v1
+        with:
+          json-file: .markdownlint.json
+          json-schema: https://raw.githubusercontent.com/DavidAnson/markdownlint/main/schema/markdownlint-config-schema.json
+          use-draft: draft-07
+
+      - name: JSON VALIDATION – Validate task.json – Download tasks.schema.json
+        run: Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/microsoft/azure-pipelines-task-lib/master/tasks.schema.json' -OutFile 'tasks.schema.json'
+
+      - name: JSON VALIDATION – Validate task.json – Update tasks.schema.json
+        run: |-
+          $FileContent = Get-Content -Path 'tasks.schema.json' -Raw
+          $FileContent = $FileContent -replace 'draft-04', 'draft-07'
+          Set-Content -NoNewline -Path 'tasks.schema.json' -Value $FileContent
+
+      - name: Validate task.json
+        uses: Zingabopp/JsonValidate-Action@v1
+        with:
+          json-file: PipelinesTasks/PRMetricsV1/task/task.json
+          json-schema: tasks.schema.json
+          use-draft: draft-07
+
+      - name: Security Scan – Validate
+        uses: ShiftLeftSecurity/scan-action@v1.3.0
+        with:
+          type: credscan,depscan
+
+      - name: Security Scan – Upload Report
+        uses: github/codeql-action/upload-sarif@v1
+        with:
+          sarif_file: reports

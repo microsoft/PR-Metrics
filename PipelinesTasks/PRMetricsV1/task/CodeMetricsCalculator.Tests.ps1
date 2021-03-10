@@ -19,7 +19,7 @@ BeforeAll {
     . $PSScriptRoot\Updaters\CodeMetrics.ps1
     . $PSScriptRoot\Updaters\PullRequest.ps1
     . $PSCommandPath.Replace('.Tests.ps1','.ps1')
-    Import-Module -Name "$PSScriptRoot\..\..\..\Release\PipelinesTasks\PRMetrics\task\ps_modules\VstsTaskSdk\VstsTaskSdk.psm1"
+    Import-Module -Name "$PSScriptRoot\..\..\..\Release\PipelinesTasks\PRMetricsV1\task\ps_modules\VstsTaskSdk\VstsTaskSdk.psm1"
 }
 
 Describe -Name 'CodeMetricsCalculator' {

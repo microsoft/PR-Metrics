@@ -6,48 +6,51 @@ name: Release
 on:
   release:
     types:
-    - created
+      - created
+  workflow_dispatch: null
+
+defaults:
+  run:
+    shell: pwsh
 
 jobs:
   release:
+    name: Release
     runs-on: windows-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
       - name: Tag – Get Latest
-        uses: oprypin/find-latest-tag@v1.0.4
-        id: latest-tag
-        with:
-          repository: microsoft/OMEX-Azure-DevOps-Extensions
-          releases-only: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        id: tag
+        uses: jossef/action-latest-release-info@v1.1.0
 
-      - name: Tag – Remove Prefix
-        uses: bhowell2/github-substring-action@v1.0.0
-        id: latest-tag-prefix
-        with:
-          value: ${{ steps.latest-tag.outputs.tag }}
-          index_of_str: "v"
+      - name: Tag – Version Extract
+        id: version
+        run: |-
+          $Version = '${{ steps.tag.outputs.tag_name }}'.Substring(1)
+          $VersionElements = $Version.Split('.')
+          Write-Output -InputObject "::set-output name=major::$($VersionElements[0])"
+          Write-Output -InputObject "::set-output name=minor::$($VersionElements[1])"
+          Write-Output -InputObject "::set-output name=patch::$($VersionElements[2])"
 
-      - name: Tag – Extract
-        uses: rishabhgupta/split-by@v1.0.1
-        id: latest-tag-split
-        with:
-          string: ${{ steps.latest-tag-prefix.outputs.substring }}
-          split-by: '.'
+      - name: Tag – Version Replace in vss-extension.json
+        run: |-
+          $FileContent = Get-Content -Path 'PipelinesTasks/PRMetricsV1/vss-extension.json' -Raw
+          $FileContent = $FileContent -replace '%MAJOR%', '${{ steps.version.outputs.major }}'
+          $FileContent = $FileContent -replace '%MINOR%', '${{ steps.version.outputs.minor }}'
+          $FileContent = $FileContent -replace '%PATCH%', '${{ steps.version.outputs.patch }}'
+          Set-Content -NoNewline -Path 'PipelinesTasks/PRMetricsV1/vss-extension.json' -Value $FileContent
 
-      - name: Tag – Replace Version – Iteration 1
-        uses: datamonsters/replace-action@v2
-        with:
-          files: "PipelinesTasks/PRMetrics/vss-extension.json,PipelinesTasks/PRMetrics/task/task.json"
-          replacements: "%MAJOR%=${{ steps.latest-tag-split.outputs._0 }},%MINOR%=${{ steps.latest-tag-split.outputs._1 }},%PATCH%=${{ steps.latest-tag-split.outputs._2 }}"
-
-      - name: Tag – Replace Version – Iteration 2
-        uses: datamonsters/replace-action@v2
-        with:
-          files: "PipelinesTasks/PRMetrics/vss-extension.json,PipelinesTasks/PRMetrics/task/task.json"
-          replacements: "%MAJOR%=${{ steps.latest-tag-split.outputs._0 }},%MINOR%=${{ steps.latest-tag-split.outputs._1 }},%PATCH%=${{ steps.latest-tag-split.outputs._2 }}"
+      - name: Tag – Version Replace in task.json
+        run: |-
+          $FileContent = Get-Content -Path 'PipelinesTasks/PRMetricsV1/task/task.json' -Raw
+          $FileContent = $FileContent -replace '%MAJOR%', '${{ steps.version.outputs.major }}'
+          $FileContent = $FileContent -replace '%MINOR%', '${{ steps.version.outputs.minor }}'
+          $FileContent = $FileContent -replace '%PATCH%', '${{ steps.version.outputs.patch }}'
+          Set-Content -NoNewline -Path 'PipelinesTasks/PRMetricsV1/task/task.json' -Value $FileContent
 
       - name: MSBuild – Install
         uses: microsoft/setup-msbuild@v1.0.2
@@ -59,13 +62,13 @@ jobs:
         run: npm install -g tfx-cli
 
       - name: PRMetrics Package – Create
-        run: |
-          cd ${{ github.workspace }}\Release\PipelinesTasks\PRMetrics
+        run: |-
+          Set-Location -Path '${{ github.workspace }}/Release/PipelinesTasks/PRMetricsV1'
           tfx extension create --manifest-globs vss-extension.json --output-path ms-omex.prmetrics.vsix
 
       - name: PRMetrics Package – Publish
         run: >-
           tfx extension publish
-          --manifest-globs ${{ github.workspace }}\Release\PipelinesTasks\PRMetrics\vss-extension.json
-          --vsix ${{ github.workspace }}\Release\PipelinesTasks\PRMetrics\ms-omex.prmetrics.vsix
+          --manifest-globs ${{ github.workspace }}/Release/PipelinesTasks/PRMetricsV1/vss-extension.json
+          --vsix ${{ github.workspace }/Release/PipelinesTasks/PRMetricsV1/ms-omex.prmetrics.vsix
           --token ${{ secrets.VS_PAT }}
