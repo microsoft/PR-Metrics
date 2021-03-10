@@ -28,9 +28,6 @@
   "scopes": [
     "vso.code_write"
   ],
-  "demands": [
-    "api-version/6.0"
-  ],
   "categories": [
     "Azure Pipelines"
   ],
