@@ -106,7 +106,7 @@ Describe -Name 'AzureReposInvoker' {
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq ('GET ' +
                               'https://dev.azure.com/prmetrics/AzureReposInvoker/_apis/git/repositories/' +
-                              '41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345?api-version=6.0')
+                              '41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345?api-version=4.1')
             }
             Mock -CommandName 'Invoke-RestMethod' -MockWith {
                 return [PSCustomObject]@{
@@ -115,7 +115,7 @@ Describe -Name 'AzureReposInvoker' {
             } -Verifiable -ParameterFilter {
                 $Method -eq 'GET' -and
                 $Uri -eq ('https://dev.azure.com/prmetrics/AzureReposInvoker/_apis/git/repositories/' +
-                          '41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345?api-version=6.0') -and
+                          '41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345?api-version=4.1') -and
                 $Headers.Count -eq 1 -and
                 $Headers.Authorization -eq 'Bearer ACCESSTOKEN'
             }
@@ -161,7 +161,7 @@ Describe -Name 'AzureReposInvoker' {
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq ('GET ' +
                               'https://dev.azure.com/prmetrics/AzureReposInvoker/_apis/git/repositories/' +
-                              '41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/iterations?api-version=6.0')
+                              '41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/iterations?api-version=4.1')
             }
             Mock -CommandName 'Invoke-RestMethod' -MockWith {
                 return [PSCustomObject]@{
@@ -171,7 +171,7 @@ Describe -Name 'AzureReposInvoker' {
                 $Method -eq 'GET' -and
                 $Uri -eq ('https://dev.azure.com/prmetrics/AzureReposInvoker/_apis/git/repositories/' +
                           '41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/iterations' +
-                          '?api-version=6.0') -and
+                          '?api-version=4.1') -and
                 $Headers.Count -eq 1 -and
                 $Headers.Authorization -eq 'Bearer ACCESSTOKEN'
             }
@@ -217,7 +217,7 @@ Describe -Name 'AzureReposInvoker' {
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq ('GET ' +
                               'https://dev.azure.com/prmetrics/AzureReposInvoker/_apis/git/repositories/' +
-                              '41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/threads?api-version=6.0')
+                              '41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/threads?api-version=4.1')
             }
             Mock -CommandName 'Invoke-RestMethod' -MockWith {
                 return [PSCustomObject]@{
@@ -226,7 +226,7 @@ Describe -Name 'AzureReposInvoker' {
             } -Verifiable -ParameterFilter {
                 $Method -eq 'GET' -and
                 $Uri -eq ('https://dev.azure.com/prmetrics/AzureReposInvoker/_apis/git/repositories/' +
-                          '41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/threads?api-version=6.0') -and
+                          '41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/threads?api-version=4.1') -and
                 $Headers.Count -eq 1 -and
                 $Headers.Authorization -eq 'Bearer ACCESSTOKEN'
             }
@@ -338,7 +338,7 @@ Describe -Name 'AzureReposInvoker' {
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq ('PATCH ' +
                               'https://dev.azure.com/prmetrics/AzureReposInvoker/_apis/git/repositories/' +
-                              '41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345?api-version=6.0 ' +
+                              '41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345?api-version=4.1 ' +
                               '{"description":"Description","title":"Title"}')
             }
             Mock -CommandName 'Invoke-RestMethod' -MockWith {
@@ -348,7 +348,7 @@ Describe -Name 'AzureReposInvoker' {
             } -Verifiable -ParameterFilter {
                 $Method -eq 'PATCH' -and
                 $Uri -eq ('https://dev.azure.com/prmetrics/AzureReposInvoker/_apis/git/repositories/' +
-                          '41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345?api-version=6.0') -and
+                          '41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345?api-version=4.1') -and
                 $Headers.Count -eq 1 -and
                 $Headers.Authorization -eq 'Bearer ACCESSTOKEN' -and
                 $Body -eq '{"description":"Description","title":"Title"}' -and
@@ -395,7 +395,7 @@ Describe -Name 'AzureReposInvoker' {
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq ('PATCH ' +
                               'https://dev.azure.com/prmetrics/AzureReposInvoker/_apis/git/repositories/' +
-                              '41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345?api-version=6.0 ' +
+                              '41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345?api-version=4.1 ' +
                               '{"description":"Description"}')
             }
             Mock -CommandName 'Invoke-RestMethod' -MockWith {
@@ -405,7 +405,7 @@ Describe -Name 'AzureReposInvoker' {
             } -Verifiable -ParameterFilter {
                 $Method -eq 'PATCH' -and
                 $Uri -eq ('https://dev.azure.com/prmetrics/AzureReposInvoker/_apis/git/repositories/' +
-                          '41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345?api-version=6.0') -and
+                          '41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345?api-version=4.1') -and
                 $Headers.Count -eq 1 -and
                 $Headers.Authorization -eq 'Bearer ACCESSTOKEN' -and
                 $Body -eq '{"description":"Description"}' -and
@@ -452,7 +452,7 @@ Describe -Name 'AzureReposInvoker' {
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq ('PATCH ' +
                               'https://dev.azure.com/prmetrics/AzureReposInvoker/_apis/git/repositories/' +
-                              '41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345?api-version=6.0 ' +
+                              '41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345?api-version=4.1 ' +
                               '{"description":"Description"}')
             }
             Mock -CommandName 'Invoke-RestMethod' -MockWith {
@@ -462,7 +462,7 @@ Describe -Name 'AzureReposInvoker' {
             } -Verifiable -ParameterFilter {
                 $Method -eq 'PATCH' -and
                 $Uri -eq ('https://dev.azure.com/prmetrics/AzureReposInvoker/_apis/git/repositories/' +
-                          '41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345?api-version=6.0') -and
+                          '41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345?api-version=4.1') -and
                 $Headers.Count -eq 1 -and
                 $Headers.Authorization -eq 'Bearer ACCESSTOKEN' -and
                 $Body -eq '{"description":"Description"}' -and
@@ -509,7 +509,7 @@ Describe -Name 'AzureReposInvoker' {
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq ('PATCH ' +
                               'https://dev.azure.com/prmetrics/AzureReposInvoker/_apis/git/repositories/' +
-                              '41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345?api-version=6.0 ' +
+                              '41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345?api-version=4.1 ' +
                               '{"description":"Description"}')
             }
             Mock -CommandName 'Invoke-RestMethod' -MockWith {
@@ -519,7 +519,7 @@ Describe -Name 'AzureReposInvoker' {
             } -Verifiable -ParameterFilter {
                 $Method -eq 'PATCH' -and
                 $Uri -eq ('https://dev.azure.com/prmetrics/AzureReposInvoker/_apis/git/repositories/' +
-                          '41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345?api-version=6.0') -and
+                          '41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345?api-version=4.1') -and
                 $Headers.Count -eq 1 -and
                 $Headers.Authorization -eq 'Bearer ACCESSTOKEN' -and
                 $Body -eq '{"description":"Description"}' -and
@@ -566,7 +566,7 @@ Describe -Name 'AzureReposInvoker' {
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq ('PATCH ' +
                               'https://dev.azure.com/prmetrics/AzureReposInvoker/_apis/git/repositories/' +
-                              '41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345?api-version=6.0 ' +
+                              '41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345?api-version=4.1 ' +
                               '{"title":"Title"}')
             }
             Mock -CommandName 'Invoke-RestMethod' -MockWith {
@@ -576,7 +576,7 @@ Describe -Name 'AzureReposInvoker' {
             } -Verifiable -ParameterFilter {
                 $Method -eq 'PATCH' -and
                 $Uri -eq ('https://dev.azure.com/prmetrics/AzureReposInvoker/_apis/git/repositories/' +
-                          '41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345?api-version=6.0') -and
+                          '41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345?api-version=4.1') -and
                 $Headers.Count -eq 1 -and
                 $Headers.Authorization -eq 'Bearer ACCESSTOKEN' -and
                 $Body -eq '{"title":"Title"}' -and
@@ -623,7 +623,7 @@ Describe -Name 'AzureReposInvoker' {
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq ('PATCH ' +
                               'https://dev.azure.com/prmetrics/AzureReposInvoker/_apis/git/repositories/' +
-                              '41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345?api-version=6.0 ' +
+                              '41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345?api-version=4.1 ' +
                               '{"title":"Title"}')
             }
             Mock -CommandName 'Invoke-RestMethod' -MockWith {
@@ -633,7 +633,7 @@ Describe -Name 'AzureReposInvoker' {
             } -Verifiable -ParameterFilter {
                 $Method -eq 'PATCH' -and
                 $Uri -eq ('https://dev.azure.com/prmetrics/AzureReposInvoker/_apis/git/repositories/' +
-                          '41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345?api-version=6.0') -and
+                          '41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345?api-version=4.1') -and
                 $Headers.Count -eq 1 -and
                 $Headers.Authorization -eq 'Bearer ACCESSTOKEN' -and
                 $Body -eq '{"title":"Title"}' -and
@@ -680,7 +680,7 @@ Describe -Name 'AzureReposInvoker' {
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq ('PATCH ' +
                               'https://dev.azure.com/prmetrics/AzureReposInvoker/_apis/git/repositories/' +
-                              '41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345?api-version=6.0 ' +
+                              '41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345?api-version=4.1 ' +
                               '{"title":"Title"}')
             }
             Mock -CommandName 'Invoke-RestMethod' -MockWith {
@@ -690,7 +690,7 @@ Describe -Name 'AzureReposInvoker' {
             } -Verifiable -ParameterFilter {
                 $Method -eq 'PATCH' -and
                 $Uri -eq ('https://dev.azure.com/prmetrics/AzureReposInvoker/_apis/git/repositories/' +
-                          '41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345?api-version=6.0') -and
+                          '41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345?api-version=4.1') -and
                 $Headers.Count -eq 1 -and
                 $Headers.Authorization -eq 'Bearer ACCESSTOKEN' -and
                 $Body -eq '{"title":"Title"}' -and
@@ -738,7 +738,7 @@ Describe -Name 'AzureReposInvoker' {
                 $Message -eq ('PATCH ' +
                               'https://dev.azure.com/prmetrics/AzureReposInvoker/_apis/git/repositories/' +
                               '41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/threads/' +
-                              '1?api-version=6.0 {"status":2}')
+                              '1?api-version=4.1 {"status":2}')
             }
             Mock -CommandName 'Invoke-RestMethod' -MockWith {
                 return [PSCustomObject]@{
@@ -747,7 +747,7 @@ Describe -Name 'AzureReposInvoker' {
             } -Verifiable -ParameterFilter {
                 $Method -eq 'PATCH' -and
                 $Uri -eq ('https://dev.azure.com/prmetrics/AzureReposInvoker/_apis/git/repositories/' +
-                          '41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/threads/1?api-version=6.0') -and
+                          '41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/threads/1?api-version=4.1') -and
                 $Headers.Count -eq 1 -and
                 $Headers.Authorization -eq 'Bearer ACCESSTOKEN' -and
                 $Body -eq '{"status":2}' -and
@@ -794,7 +794,7 @@ Describe -Name 'AzureReposInvoker' {
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq ('PATCH ' +
                               'https://dev.azure.com/prmetrics/AzureReposInvoker/_apis/git/repositories/' +
-                              '41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345?api-version=6.0 ' +
+                              '41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345?api-version=4.1 ' +
                               '{"title":"\""}')
             }
             Mock -CommandName 'Invoke-RestMethod' -MockWith {
@@ -804,7 +804,7 @@ Describe -Name 'AzureReposInvoker' {
             } -Verifiable -ParameterFilter {
                 $Method -eq 'PATCH' -and
                 $Uri -eq ('https://dev.azure.com/prmetrics/AzureReposInvoker/_apis/git/repositories/' +
-                          '41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345?api-version=6.0') -and
+                          '41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345?api-version=4.1') -and
                 $Headers.Count -eq 1 -and
                 $Headers.Authorization -eq 'Bearer ACCESSTOKEN' -and
                 $Body -eq '{"title":"\""}' -and
@@ -848,7 +848,7 @@ Describe -Name 'AzureReposInvoker' {
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq ('POST ' +
                               'https://dev.azure.com/prmetrics/AzureReposInvoker/_apis/git/repositories/' +
-                              '41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/threads?api-version=6.0 ' +
+                              '41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/threads?api-version=4.1 ' +
                               '{"comments":[{"content":"Comment"}]}')
             }
             Mock -CommandName 'Invoke-RestMethod' -MockWith {
@@ -858,7 +858,7 @@ Describe -Name 'AzureReposInvoker' {
             } -Verifiable -ParameterFilter {
                 $Method -eq 'POST' -and
                 $Uri -eq ('https://dev.azure.com/prmetrics/AzureReposInvoker/_apis/git/repositories/' +
-                          '41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/threads?api-version=6.0') -and
+                          '41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/threads?api-version=4.1') -and
                 $Headers.Count -eq 1 -and
                 $Headers.Authorization -eq 'Bearer ACCESSTOKEN' -and
                 $Body -eq '{"comments":[{"content":"Comment"}]}' -and
@@ -903,7 +903,7 @@ Describe -Name 'AzureReposInvoker' {
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq ('POST ' +
                               'https://dev.azure.com/prmetrics/AzureReposInvoker/_apis/git/repositories/' +
-                              '41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/threads?api-version=6.0 ' +
+                              '41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/threads?api-version=4.1 ' +
                               '{"comments":[{"content":"Comment"}],"threadContext":{"filePath":"/File.cs",' +
                               '"rightFileStart":{"line":1,"offset":1},"rightFileEnd":{"line":1,"offset":2}}}')
             }
@@ -914,7 +914,7 @@ Describe -Name 'AzureReposInvoker' {
             } -Verifiable -ParameterFilter {
                 $Method -eq 'POST' -and
                 $Uri -eq ('https://dev.azure.com/prmetrics/AzureReposInvoker/_apis/git/repositories/' +
-                          '41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/threads?api-version=6.0') -and
+                          '41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/threads?api-version=4.1') -and
                 $Headers.Count -eq 1 -and
                 $Headers.Authorization -eq 'Bearer ACCESSTOKEN' -and
                 $Body -eq ('{"comments":[{"content":"Comment"}],"threadContext":{"filePath":"/File.cs",' +
@@ -960,7 +960,7 @@ Describe -Name 'AzureReposInvoker' {
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq ('POST ' +
                               'https://dev.azure.com/prmetrics/AzureReposInvoker/_apis/git/repositories/' +
-                              '41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/threads?api-version=6.0 ' +
+                              '41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/threads?api-version=4.1 ' +
                               '{"comments":[{"content":"Comment"}],"threadContext":{"filePath":"/File.cs",' +
                               '"leftFileStart":{"line":1,"offset":1},"leftFileEnd":{"line":1,"offset":2}}}')
             }
@@ -971,7 +971,7 @@ Describe -Name 'AzureReposInvoker' {
             } -Verifiable -ParameterFilter {
                 $Method -eq 'POST' -and
                 $Uri -eq ('https://dev.azure.com/prmetrics/AzureReposInvoker/_apis/git/repositories/' +
-                          '41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/threads?api-version=6.0') -and
+                          '41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/threads?api-version=4.1') -and
                 $Headers.Count -eq 1 -and
                 $Headers.Authorization -eq 'Bearer ACCESSTOKEN' -and
                 $Body -eq ('{"comments":[{"content":"Comment"}],"threadContext":{"filePath":"/File.cs",' +
@@ -1021,7 +1021,7 @@ Describe -Name 'AzureReposInvoker' {
                 $Message -eq ('POST ' +
                               'https://dev.azure.com/prmetrics/AzureReposInvoker/_apis/git/repositories/' +
                               '41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/threads/1/' +
-                              'comments?api-version=6.0 {"parentCommentId":2,"content":"Comment"}')
+                              'comments?api-version=4.1 {"parentCommentId":2,"content":"Comment"}')
             }
             Mock -CommandName 'Invoke-RestMethod' -MockWith {
                 return [PSCustomObject]@{
@@ -1031,7 +1031,7 @@ Describe -Name 'AzureReposInvoker' {
                 $Method -eq 'POST' -and
                 $Uri -eq ('https://dev.azure.com/prmetrics/AzureReposInvoker/_apis/git/repositories/' +
                           '41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/threads/1/comments' +
-                          '?api-version=6.0') -and
+                          '?api-version=4.1') -and
                 $Headers.Count -eq 1 -and
                 $Headers.Authorization -eq 'Bearer ACCESSTOKEN' -and
                 $Body -eq '{"parentCommentId":2,"content":"Comment"}' -and
@@ -1076,7 +1076,7 @@ Describe -Name 'AzureReposInvoker' {
                 $Message -like ('PATCH ' +
                                 'https://dev.azure.com/prmetrics/AzureReposInvoker/_apis/git/repositories/' +
                                 '41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/properties?' +
-                                'api-version=6.0-preview.1 *') -and
+                                'api-version=4.1-preview.1 *') -and
                 $Message -like '*{"op":"replace","path":"/Element1","value":"Value1"}*' -and
                 $Message -like '*{"op":"replace","path":"/Element2","value":"Value2"}*' -and
                 $Message -like '*{"op":"replace","path":"/Element3","value":true}*' -and
@@ -1090,7 +1090,7 @@ Describe -Name 'AzureReposInvoker' {
                 $Method -eq 'PATCH' -and
                 $Uri -eq ('https://dev.azure.com/prmetrics/AzureReposInvoker/_apis/git/repositories/' +
                           '41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/properties?' +
-                          'api-version=6.0-preview.1') -and
+                          'api-version=4.1-preview.1') -and
                 $Headers.Count -eq 1 -and
                 $Headers.Authorization -eq 'Bearer ACCESSTOKEN' -and
                 $Body -like '*{"op":"replace","path":"/Element1","value":"Value1"}*' -and

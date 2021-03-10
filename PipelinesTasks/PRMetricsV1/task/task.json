@@ -8,9 +8,6 @@
   "helpMarkDown": "[More information](https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/blob/main/PipelinesTasks/PRMetricsV1/README.md)",
   "author": "Microsoft Corporation",
   "category": "Azure Pipelines",
-  "demands": [
-    "api-version/6.0"
-  ],
   "minimumAgentVersion": "2.141.0",
   "version": {
     "Major": %MAJOR%,
