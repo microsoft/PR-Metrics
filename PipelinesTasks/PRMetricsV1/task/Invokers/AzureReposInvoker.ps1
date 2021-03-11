@@ -174,7 +174,7 @@ class AzureReposInvoker {
 
     hidden [string] GetUri([string] $uriElements, [string] $uriSuffix) {
         [Logger]::Log('* [AzureReposInvoker]::GetUri() hidden')
-        return "$($this.BaseUri)$($uriElements)?api-version=6.0$($uriSuffix)"
+        return "$($this.BaseUri)$($uriElements)?api-version=4.1$($uriSuffix)"
     }
 
     hidden [void] WriteOutput([PSCustomObject] $output) {

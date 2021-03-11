@@ -221,7 +221,7 @@ Describe -Name 'CodeMetricsCalculator' {
                 $Message -eq ('GET ' +
                               'https://dev.azure.com/prmetrics/CodeMetricsCalculator/_apis/git/' +
                               'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/' +
-                              '12345?api-version=6.0')
+                              '12345?api-version=4.1')
             }
             Mock -CommandName 'Invoke-RestMethod' -MockWith {
                 return [PSCustomObject]@{
@@ -232,7 +232,7 @@ Describe -Name 'CodeMetricsCalculator' {
                 $Method -eq 'GET' -and
                 $Uri -eq ('https://dev.azure.com/prmetrics/CodeMetricsCalculator/_apis/git/' +
                           'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345' +
-                          '?api-version=6.0') -and
+                          '?api-version=4.1') -and
                 $Headers.Count -eq 1 -and
                 $Headers.Authorization -eq 'Bearer ACCESSTOKEN'
             }
@@ -267,7 +267,7 @@ Describe -Name 'CodeMetricsCalculator' {
                 $Message -eq ('PATCH ' +
                               'https://dev.azure.com/prmetrics/CodeMetricsCalculator/_apis/git/' +
                               'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/' +
-                              '12345?api-version=6.0 ' +
+                              '12345?api-version=4.1 ' +
                               "{`"description`":`"$([char]0x274C) **Add a description.**`"," +
                               "`"title`":`"XS$([char]0x26A0)$([char]0xFE0F) $([char]0x25FE) Title`"}")
             }
@@ -279,7 +279,7 @@ Describe -Name 'CodeMetricsCalculator' {
                 $Method -eq 'PATCH' -and
                 $Uri -eq ('https://dev.azure.com/prmetrics/CodeMetricsCalculator/_apis/git/' +
                           'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345' +
-                          '?api-version=6.0') -and
+                          '?api-version=4.1') -and
                 $Headers.Count -eq 1 -and
                 $Headers.Authorization -eq 'Bearer ACCESSTOKEN' -and
                 $Body -eq ("{`"description`":`"$([char]0x274C) **Add a description.**`"," +
@@ -376,7 +376,7 @@ Describe -Name 'CodeMetricsCalculator' {
                 $Message -eq ('GET ' +
                               'https://dev.azure.com/prmetrics/CodeMetricsCalculator/_apis/git/' +
                               'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/' +
-                              'threads?api-version=6.0')
+                              'threads?api-version=4.1')
             }
             Mock -CommandName 'Invoke-RestMethod' -MockWith {
                 return [PSCustomObject]@{
@@ -386,7 +386,7 @@ Describe -Name 'CodeMetricsCalculator' {
                 $Method -eq 'GET' -and
                 $Uri -eq ('https://dev.azure.com/prmetrics/CodeMetricsCalculator/_apis/git/' +
                           'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/threads' +
-                          '?api-version=6.0') -and
+                          '?api-version=4.1') -and
                 $Headers.Count -eq 1 -and
                 $Headers.Authorization -eq 'Bearer ACCESSTOKEN'
             }
@@ -408,7 +408,7 @@ Describe -Name 'CodeMetricsCalculator' {
                 $Message -eq ('GET ' +
                               'https://dev.azure.com/prmetrics/CodeMetricsCalculator/_apis/git/' +
                               'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/' +
-                              'iterations?api-version=6.0')
+                              'iterations?api-version=4.1')
             }
             Mock -CommandName 'Invoke-RestMethod' -MockWith {
                 return [PSCustomObject]@{
@@ -422,7 +422,7 @@ Describe -Name 'CodeMetricsCalculator' {
                 $Method -eq 'GET' -and
                 $Uri -eq ('https://dev.azure.com/prmetrics/CodeMetricsCalculator/_apis/git/' +
                           'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/iterations' +
-                          '?api-version=6.0') -and
+                          '?api-version=4.1') -and
                 $Headers.Count -eq 1 -and
                 $Headers.Authorization -eq 'Bearer ACCESSTOKEN'
             }
@@ -475,7 +475,7 @@ Describe -Name 'CodeMetricsCalculator' {
                 $Message -eq ('POST ' +
                               'https://dev.azure.com/prmetrics/CodeMetricsCalculator/_apis/git/' +
                               'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/' +
-                              'threads?api-version=6.0 ' +
+                              'threads?api-version=4.1 ' +
                               '{"comments":[{"content":"# Metrics for iteration 1' +
                               $([Environment]::NewLine) +
                               "$([char]0x2714) **Thanks for keeping your pull request small.**" +
@@ -498,7 +498,7 @@ Describe -Name 'CodeMetricsCalculator' {
                 $Method -eq 'POST' -and
                 $Uri -eq ('https://dev.azure.com/prmetrics/CodeMetricsCalculator/_apis/git/' +
                           'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/threads' +
-                          '?api-version=6.0') -and
+                          '?api-version=4.1') -and
                 $Headers.Count -eq 1 -and
                 $Headers.Authorization -eq 'Bearer ACCESSTOKEN' -and
                 $Body -eq ('{"comments":[{"content":"# Metrics for iteration 1' +
@@ -534,7 +534,7 @@ Describe -Name 'CodeMetricsCalculator' {
                 $Message -eq ('PATCH ' +
                               'https://dev.azure.com/prmetrics/CodeMetricsCalculator/_apis/git/' +
                               'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/threads/' +
-                              '1?api-version=6.0 {"status":1}')
+                              '1?api-version=4.1 {"status":1}')
             }
             Mock -CommandName 'Invoke-RestMethod' -MockWith {
                 return [PSCustomObject]@{
@@ -544,7 +544,7 @@ Describe -Name 'CodeMetricsCalculator' {
                 $Method -eq 'PATCH' -and
                 $Uri -eq ('https://dev.azure.com/prmetrics/CodeMetricsCalculator/_apis/git/' +
                           'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/threads/1' +
-                          '?api-version=6.0') -and
+                          '?api-version=4.1') -and
                 $Headers.Count -eq 1 -and
                 $Headers.Authorization -eq 'Bearer ACCESSTOKEN' -and
                 $Body -eq '{"status":1}' -and
@@ -568,7 +568,7 @@ Describe -Name 'CodeMetricsCalculator' {
                 $Message -like ('PATCH ' +
                                 'https://dev.azure.com/prmetrics/CodeMetricsCalculator/_apis/git/' +
                                 'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/properties?' +
-                                'api-version=6.0-preview.1 *') -and
+                                'api-version=4.1-preview.1 *') -and
                 $Message -like '*{"op":"replace","path":"/PRMetrics.Size","value":"XS"}*' -and
                 $Message -like '*{"op":"replace","path":"/PRMetrics.TestCoverage","value":false}*' -and
                 $Message -like '*{"op":"replace","path":"/PRMetrics.ProductCode","value":1}*' -and
@@ -585,7 +585,7 @@ Describe -Name 'CodeMetricsCalculator' {
                 $Method -eq 'PATCH' -and
                 $Uri -eq ('https://dev.azure.com/prmetrics/CodeMetricsCalculator/_apis/git/' +
                           'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/properties?' +
-                          'api-version=6.0-preview.1') -and
+                          'api-version=4.1-preview.1') -and
                 $Headers.Count -eq 1 -and
                 $Headers.Authorization -eq 'Bearer ACCESSTOKEN' -and
                 $Body -like '*{"op":"replace","path":"/PRMetrics.Size","value":"XS"}*' -and
@@ -690,7 +690,7 @@ Describe -Name 'CodeMetricsCalculator' {
                 $Message -eq ('GET ' +
                               'https://dev.azure.com/prmetrics/CodeMetricsCalculator/_apis/git/' +
                               'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/' +
-                              'threads?api-version=6.0')
+                              'threads?api-version=4.1')
             }
             Mock -CommandName 'Invoke-RestMethod' -MockWith {
                 return [PSCustomObject]@{
@@ -700,7 +700,7 @@ Describe -Name 'CodeMetricsCalculator' {
                 $Method -eq 'GET' -and
                 $Uri -eq ('https://dev.azure.com/prmetrics/CodeMetricsCalculator/_apis/git/' +
                           'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/threads' +
-                          '?api-version=6.0') -and
+                          '?api-version=4.1') -and
                 $Headers.Count -eq 1 -and
                 $Headers.Authorization -eq 'Bearer ACCESSTOKEN'
             }
@@ -722,7 +722,7 @@ Describe -Name 'CodeMetricsCalculator' {
                 $Message -eq ('GET ' +
                               'https://dev.azure.com/prmetrics/CodeMetricsCalculator/_apis/git/' +
                               'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/' +
-                              'iterations?api-version=6.0')
+                              'iterations?api-version=4.1')
             }
             Mock -CommandName 'Invoke-RestMethod' -MockWith {
                 return [PSCustomObject]@{
@@ -736,7 +736,7 @@ Describe -Name 'CodeMetricsCalculator' {
                 $Method -eq 'GET' -and
                 $Uri -eq ('https://dev.azure.com/prmetrics/CodeMetricsCalculator/_apis/git/' +
                           'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/iterations' +
-                          '?api-version=6.0') -and
+                          '?api-version=4.1') -and
                 $Headers.Count -eq 1 -and
                 $Headers.Authorization -eq 'Bearer ACCESSTOKEN'
             }
@@ -789,7 +789,7 @@ Describe -Name 'CodeMetricsCalculator' {
                 $Message -eq ('POST ' +
                               'https://dev.azure.com/prmetrics/CodeMetricsCalculator/_apis/git/' +
                               'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/' +
-                              'threads?api-version=6.0 ' +
+                              'threads?api-version=4.1 ' +
                               '{"comments":[{"content":"# Metrics for iteration 1' +
                               $([Environment]::NewLine) +
                               "$([char]0x2714) **Thanks for keeping your pull request small.**" +
@@ -810,7 +810,7 @@ Describe -Name 'CodeMetricsCalculator' {
                 $Method -eq 'POST' -and
                 $Uri -eq ('https://dev.azure.com/prmetrics/CodeMetricsCalculator/_apis/git/' +
                           'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/threads' +
-                          '?api-version=6.0') -and
+                          '?api-version=4.1') -and
                 $Headers.Count -eq 1 -and
                 $Headers.Authorization -eq 'Bearer ACCESSTOKEN' -and
                 $Body -eq ('{"comments":[{"content":"# Metrics for iteration 1' +
@@ -844,7 +844,7 @@ Describe -Name 'CodeMetricsCalculator' {
                 $Message -eq ('PATCH ' +
                               'https://dev.azure.com/prmetrics/CodeMetricsCalculator/_apis/git/' +
                               'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/threads/' +
-                              '1?api-version=6.0 {"status":4}')
+                              '1?api-version=4.1 {"status":4}')
             }
             Mock -CommandName 'Invoke-RestMethod' -MockWith {
                 return [PSCustomObject]@{
@@ -854,7 +854,7 @@ Describe -Name 'CodeMetricsCalculator' {
                 $Method -eq 'PATCH' -and
                 $Uri -eq ('https://dev.azure.com/prmetrics/CodeMetricsCalculator/_apis/git/' +
                           'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/threads/1' +
-                          '?api-version=6.0') -and
+                          '?api-version=4.1') -and
                 $Headers.Count -eq 1 -and
                 $Headers.Authorization -eq 'Bearer ACCESSTOKEN' -and
                 $Body -eq '{"status":4}' -and
@@ -878,7 +878,7 @@ Describe -Name 'CodeMetricsCalculator' {
                 $Message -like ('PATCH ' +
                                 'https://dev.azure.com/prmetrics/CodeMetricsCalculator/_apis/git/' +
                                 'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/properties?' +
-                                'api-version=6.0-preview.1 *') -and
+                                'api-version=4.1-preview.1 *') -and
                 $Message -like '*{"op":"replace","path":"/PRMetrics.Size","value":"XS"}*' -and
                 $Message -like '*{"op":"replace","path":"/PRMetrics.ProductCode","value":1}*' -and
                 $Message -like '*{"op":"replace","path":"/PRMetrics.TestCode","value":0}*' -and
@@ -895,7 +895,7 @@ Describe -Name 'CodeMetricsCalculator' {
                 $Method -eq 'PATCH' -and
                 $Uri -eq ('https://dev.azure.com/prmetrics/CodeMetricsCalculator/_apis/git/' +
                           'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/properties?' +
-                          'api-version=6.0-preview.1') -and
+                          'api-version=4.1-preview.1') -and
                 $Headers.Count -eq 1 -and
                 $Headers.Authorization -eq 'Bearer ACCESSTOKEN' -and
                 $Body -like '*{"op":"replace","path":"/PRMetrics.Size","value":"XS"}*' -and
@@ -1003,7 +1003,7 @@ Describe -Name 'CodeMetricsCalculator' {
                 $Message -eq ('GET ' +
                               'https://dev.azure.com/prmetrics/CodeMetricsCalculator/_apis/git/' +
                               'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/' +
-                              'threads?api-version=6.0')
+                              'threads?api-version=4.1')
             }
             Mock -CommandName 'Invoke-RestMethod' -MockWith {
                 return [PSCustomObject]@{
@@ -1027,7 +1027,7 @@ Describe -Name 'CodeMetricsCalculator' {
                 $Method -eq 'GET' -and
                 $Uri -eq ('https://dev.azure.com/prmetrics/CodeMetricsCalculator/_apis/git/' +
                           'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/threads' +
-                          '?api-version=6.0') -and
+                          '?api-version=4.1') -and
                 $Headers.Count -eq 1 -and
                 $Headers.Authorization -eq 'Bearer ACCESSTOKEN'
             }
@@ -1054,7 +1054,7 @@ Describe -Name 'CodeMetricsCalculator' {
                 $Message -eq ('GET ' +
                               'https://dev.azure.com/prmetrics/CodeMetricsCalculator/_apis/git/' +
                               'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/' +
-                              'iterations?api-version=6.0')
+                              'iterations?api-version=4.1')
             }
             Mock -CommandName 'Invoke-RestMethod' -MockWith {
                 return [PSCustomObject]@{
@@ -1071,7 +1071,7 @@ Describe -Name 'CodeMetricsCalculator' {
                 $Method -eq 'GET' -and
                 $Uri -eq ('https://dev.azure.com/prmetrics/CodeMetricsCalculator/_apis/git/' +
                           'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/iterations' +
-                          '?api-version=6.0') -and
+                          '?api-version=4.1') -and
                 $Headers.Count -eq 1 -and
                 $Headers.Authorization -eq 'Bearer ACCESSTOKEN'
             }
@@ -1130,7 +1130,7 @@ Describe -Name 'CodeMetricsCalculator' {
                 $Message -eq ('POST ' +
                               'https://dev.azure.com/prmetrics/CodeMetricsCalculator/_apis/git/' +
                               'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/' +
-                              'threads/1/comments?api-version=6.0 ' +
+                              'threads/1/comments?api-version=4.1 ' +
                               '{"parentCommentId":2,"content":"# Metrics for iteration 2' +
                               $([Environment]::NewLine) +
                               "$([char]0x2714) **Thanks for keeping your pull request small.**" +
@@ -1153,7 +1153,7 @@ Describe -Name 'CodeMetricsCalculator' {
                 $Method -eq 'POST' -and
                 $Uri -eq ('https://dev.azure.com/prmetrics/CodeMetricsCalculator/_apis/git/' +
                           'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/threads/1/' +
-                          'comments?api-version=6.0') -and
+                          'comments?api-version=4.1') -and
                 $Headers.Count -eq 1 -and
                 $Headers.Authorization -eq 'Bearer ACCESSTOKEN' -and
                 $Body -eq ('{"parentCommentId":2,"content":"# Metrics for iteration 2' +
@@ -1183,7 +1183,7 @@ Describe -Name 'CodeMetricsCalculator' {
                 $Message -eq ('PATCH ' +
                               'https://dev.azure.com/prmetrics/CodeMetricsCalculator/_apis/git/' +
                               'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/threads/' +
-                              '1?api-version=6.0 {"status":1}')
+                              '1?api-version=4.1 {"status":1}')
             }
             Mock -CommandName 'Invoke-RestMethod' -MockWith {
                 return [PSCustomObject]@{
@@ -1193,7 +1193,7 @@ Describe -Name 'CodeMetricsCalculator' {
                 $Method -eq 'PATCH' -and
                 $Uri -eq ('https://dev.azure.com/prmetrics/CodeMetricsCalculator/_apis/git/' +
                           'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/threads/1' +
-                          '?api-version=6.0') -and
+                          '?api-version=4.1') -and
                 $Headers.Count -eq 1 -and
                 $Headers.Authorization -eq 'Bearer ACCESSTOKEN' -and
                 $Body -eq '{"status":1}' -and
@@ -1212,7 +1212,7 @@ Describe -Name 'CodeMetricsCalculator' {
                 $Message -like ('PATCH ' +
                                 'https://dev.azure.com/prmetrics/CodeMetricsCalculator/_apis/git/' +
                                 'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/properties?' +
-                                'api-version=6.0-preview.1 *') -and
+                                'api-version=4.1-preview.1 *') -and
                 $Message -like '*{"op":"replace","path":"/PRMetrics.Size","value":"XS"}*' -and
                 $Message -like '*{"op":"replace","path":"/PRMetrics.TestCoverage","value":false}*' -and
                 $Message -like '*{"op":"replace","path":"/PRMetrics.ProductCode","value":1}*' -and
@@ -1229,7 +1229,7 @@ Describe -Name 'CodeMetricsCalculator' {
                 $Method -eq 'PATCH' -and
                 $Uri -eq ('https://dev.azure.com/prmetrics/CodeMetricsCalculator/_apis/git/' +
                           'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/properties?' +
-                          'api-version=6.0-preview.1') -and
+                          'api-version=4.1-preview.1') -and
                 $Headers.Count -eq 1 -and
                 $Headers.Authorization -eq 'Bearer ACCESSTOKEN' -and
                 $Body -like '*{"op":"replace","path":"/PRMetrics.Size","value":"XS"}*' -and
@@ -1338,7 +1338,7 @@ Describe -Name 'CodeMetricsCalculator' {
                 $Message -eq ('GET ' +
                               'https://dev.azure.com/prmetrics/CodeMetricsCalculator/_apis/git/' +
                               'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/' +
-                              'threads?api-version=6.0')
+                              'threads?api-version=4.1')
             }
             Mock -CommandName 'Invoke-RestMethod' -MockWith {
                 return [PSCustomObject]@{
@@ -1362,7 +1362,7 @@ Describe -Name 'CodeMetricsCalculator' {
                 $Method -eq 'GET' -and
                 $Uri -eq ('https://dev.azure.com/prmetrics/CodeMetricsCalculator/_apis/git/' +
                           'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/threads' +
-                          '?api-version=6.0') -and
+                          '?api-version=4.1') -and
                 $Headers.Count -eq 1 -and
                 $Headers.Authorization -eq 'Bearer ACCESSTOKEN'
             }
@@ -1389,7 +1389,7 @@ Describe -Name 'CodeMetricsCalculator' {
                 $Message -eq ('GET ' +
                               'https://dev.azure.com/prmetrics/CodeMetricsCalculator/_apis/git/' +
                               'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/' +
-                              'iterations?api-version=6.0')
+                              'iterations?api-version=4.1')
             }
             Mock -CommandName 'Invoke-RestMethod' -MockWith {
                 return [PSCustomObject]@{
@@ -1403,7 +1403,7 @@ Describe -Name 'CodeMetricsCalculator' {
                 $Method -eq 'GET' -and
                 $Uri -eq ('https://dev.azure.com/prmetrics/CodeMetricsCalculator/_apis/git/' +
                           'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/iterations' +
-                          '?api-version=6.0') -and
+                          '?api-version=4.1') -and
                 $Headers.Count -eq 1 -and
                 $Headers.Authorization -eq 'Bearer ACCESSTOKEN'
             }
@@ -1519,7 +1519,7 @@ Describe -Name 'CodeMetricsCalculator' {
                 $Message -eq ('GET ' +
                               'https://dev.azure.com/prmetrics/CodeMetricsCalculator/_apis/git/' +
                               'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/' +
-                              'threads?api-version=6.0')
+                              'threads?api-version=4.1')
             }
             Mock -CommandName 'Invoke-RestMethod' -MockWith {
                 return [PSCustomObject]@{
@@ -1558,7 +1558,7 @@ Describe -Name 'CodeMetricsCalculator' {
                 $Method -eq 'GET' -and
                 $Uri -eq ('https://dev.azure.com/prmetrics/CodeMetricsCalculator/_apis/git/' +
                           'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/threads' +
-                          '?api-version=6.0') -and
+                          '?api-version=4.1') -and
                 $Headers.Count -eq 1 -and
                 $Headers.Authorization -eq 'Bearer ACCESSTOKEN'
             }
@@ -1589,7 +1589,7 @@ Describe -Name 'CodeMetricsCalculator' {
                 $Message -eq ('GET ' +
                               'https://dev.azure.com/prmetrics/CodeMetricsCalculator/_apis/git/' +
                               'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/' +
-                              'iterations?api-version=6.0')
+                              'iterations?api-version=4.1')
             }
             Mock -CommandName 'Invoke-RestMethod' -MockWith {
                 return [PSCustomObject]@{
@@ -1603,7 +1603,7 @@ Describe -Name 'CodeMetricsCalculator' {
                 $Method -eq 'GET' -and
                 $Uri -eq ('https://dev.azure.com/prmetrics/CodeMetricsCalculator/_apis/git/' +
                           'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/iterations' +
-                          '?api-version=6.0') -and
+                          '?api-version=4.1') -and
                 $Headers.Count -eq 1 -and
                 $Headers.Authorization -eq 'Bearer ACCESSTOKEN'
             }
@@ -1641,7 +1641,7 @@ Describe -Name 'CodeMetricsCalculator' {
                 $Message -eq ('POST ' +
                               'https://dev.azure.com/prmetrics/CodeMetricsCalculator/_apis/git/' +
                               'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/' +
-                              'threads?api-version=6.0 ' +
+                              'threads?api-version=4.1 ' +
                               '{"comments":[{"content":' +
                               "`"$([char]0x2757) **This file may not need to be reviewed.**`"}]," +
                               '"threadContext":{"filePath":"/Ignored2.cs",' +
@@ -1656,7 +1656,7 @@ Describe -Name 'CodeMetricsCalculator' {
                 $Method -eq 'POST' -and
                 $Uri -eq ('https://dev.azure.com/prmetrics/CodeMetricsCalculator/_apis/git/' +
                           'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/threads' +
-                          '?api-version=6.0') -and
+                          '?api-version=4.1') -and
                 $Headers.Count -eq 1 -and
                 $Headers.Authorization -eq 'Bearer ACCESSTOKEN' -and
                 $Body -eq ("{`"comments`":[{`"content`":`"$([char]0x2757) **This file may not need to be " +
@@ -1675,7 +1675,7 @@ Describe -Name 'CodeMetricsCalculator' {
                 $Message -eq ('POST ' +
                               'https://dev.azure.com/prmetrics/CodeMetricsCalculator/_apis/git/' +
                               'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/' +
-                              'threads?api-version=6.0 ' +
+                              'threads?api-version=4.1 ' +
                               '{"comments":[{"content":' +
                               "`"$([char]0x2757) **This file may not need to be reviewed.**`"}]," +
                               '"threadContext":{"filePath":"/Ignored3.cs",' +
@@ -1690,7 +1690,7 @@ Describe -Name 'CodeMetricsCalculator' {
                 $Method -eq 'POST' -and
                 $Uri -eq ('https://dev.azure.com/prmetrics/CodeMetricsCalculator/_apis/git/' +
                           'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/threads' +
-                          '?api-version=6.0') -and
+                          '?api-version=4.1') -and
                 $Headers.Count -eq 1 -and
                 $Headers.Authorization -eq 'Bearer ACCESSTOKEN' -and
                 $Body -eq ("{`"comments`":[{`"content`":`"$([char]0x2757) **This file may not need to be " +
@@ -1718,7 +1718,7 @@ Describe -Name 'CodeMetricsCalculator' {
                 $Message -eq ('PATCH ' +
                               'https://dev.azure.com/prmetrics/CodeMetricsCalculator/_apis/git/' +
                               'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/threads/' +
-                              '3?api-version=6.0 {"status":4}')
+                              '3?api-version=4.1 {"status":4}')
             }
             Mock -CommandName 'Invoke-RestMethod' -MockWith {
                 return [PSCustomObject]@{
@@ -1728,7 +1728,7 @@ Describe -Name 'CodeMetricsCalculator' {
                 $Method -eq 'PATCH' -and
                 $Uri -eq ('https://dev.azure.com/prmetrics/CodeMetricsCalculator/_apis/git/' +
                           'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/threads/3' +
-                          '?api-version=6.0') -and
+                          '?api-version=4.1') -and
                 $Headers.Count -eq 1 -and
                 $Headers.Authorization -eq 'Bearer ACCESSTOKEN' -and
                 $Body -eq '{"status":4}' -and

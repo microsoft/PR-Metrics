@@ -337,7 +337,7 @@ Describe -Name 'PRMetrics' {
                 $Message -eq ('GET ' +
                               'https://dev.azure.com/prmetrics/PRMetrics/_apis/git/' +
                               'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/' +
-                              '12345?api-version=6.0')
+                              '12345?api-version=4.1')
             }
             Mock -CommandName 'Invoke-RestMethod' -MockWith {
                 return [PSCustomObject]@{
@@ -348,7 +348,7 @@ Describe -Name 'PRMetrics' {
                 $Method -eq 'GET' -and
                 $Uri -eq ('https://dev.azure.com/prmetrics/PRMetrics/_apis/git/' +
                           'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345?' +
-                          'api-version=6.0') -and
+                          'api-version=4.1') -and
                 $Headers.Count -eq 1 -and
                 $Headers.Authorization -eq 'Bearer ACCESSTOKEN'
             }
@@ -382,7 +382,7 @@ Describe -Name 'PRMetrics' {
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq ('PATCH https://dev.azure.com/prmetrics/PRMetrics/_apis/' +
                               'git/repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/' +
-                              '12345?api-version=6.0 ' +
+                              '12345?api-version=4.1 ' +
                               "{`"description`":`"$([char]0x274C) **Add a description.**`"," +
                               "`"title`":`"XS$([char]0x26A0)$([char]0xFE0F) $([char]0x25FE) Title`"}")
             }
@@ -394,7 +394,7 @@ Describe -Name 'PRMetrics' {
                 $Method -eq 'PATCH' -and
                 $Uri -eq ('https://dev.azure.com/prmetrics/PRMetrics/_apis/git/' +
                           'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345' +
-                          '?api-version=6.0') -and
+                          '?api-version=4.1') -and
                 $Headers.Count -eq 1 -and
                 $Headers.Authorization -eq 'Bearer ACCESSTOKEN' -and
                 $Body -eq ("{`"description`":`"$([char]0x274C) **Add a description.**`"," +
@@ -415,7 +415,7 @@ Describe -Name 'PRMetrics' {
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq ('GET https://dev.azure.com/prmetrics/PRMetrics/_apis/' +
                               'git/repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/' +
-                              'threads?api-version=6.0')
+                              'threads?api-version=4.1')
             }
             Mock -CommandName 'Invoke-RestMethod' -MockWith {
                 return [PSCustomObject]@{
@@ -439,7 +439,7 @@ Describe -Name 'PRMetrics' {
                 $Method -eq 'GET' -and
                 $Uri -eq ('https://dev.azure.com/prmetrics/PRMetrics/_apis/git/' +
                           'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/threads' +
-                          '?api-version=6.0') -and
+                          '?api-version=4.1') -and
                 $Headers.Count -eq 1 -and
                 $Headers.Authorization -eq 'Bearer ACCESSTOKEN'
             }
@@ -460,7 +460,7 @@ Describe -Name 'PRMetrics' {
                 $Message -eq ('GET ' +
                               'https://dev.azure.com/prmetrics/PRMetrics/_apis/git/' +
                               'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/' +
-                              'iterations?api-version=6.0')
+                              'iterations?api-version=4.1')
             }
             Mock -CommandName 'Invoke-RestMethod' -MockWith {
                 return [PSCustomObject]@{
@@ -474,7 +474,7 @@ Describe -Name 'PRMetrics' {
                 $Method -eq 'GET' -and
                 $Uri -eq ('https://dev.azure.com/prmetrics/PRMetrics/_apis/git/' +
                           'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/iterations' +
-                          '?api-version=6.0') -and
+                          '?api-version=4.1') -and
                 $Headers.Count -eq 1 -and
                 $Headers.Authorization -eq 'Bearer ACCESSTOKEN'
             }
@@ -621,7 +621,7 @@ Describe -Name 'PRMetrics' {
                 $Message -eq ('GET ' +
                               'https://dev.azure.com/prmetrics/PRMetrics/_apis/git/' +
                               'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/' +
-                              '12345?api-version=6.0')
+                              '12345?api-version=4.1')
             }
             Mock -CommandName 'Invoke-RestMethod' -MockWith {
                 return [PSCustomObject]@{
@@ -632,7 +632,7 @@ Describe -Name 'PRMetrics' {
                 $Method -eq 'GET' -and
                 $Uri -eq ('https://dev.azure.com/prmetrics/PRMetrics/_apis/git/' +
                           'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345?' +
-                          'api-version=6.0') -and
+                          'api-version=4.1') -and
                 $Headers.Count -eq 1 -and
                 $Headers.Authorization -eq 'Bearer ACCESSTOKEN'
             }
@@ -666,7 +666,7 @@ Describe -Name 'PRMetrics' {
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq ('PATCH https://dev.azure.com/prmetrics/PRMetrics/_apis/' +
                               'git/repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/' +
-                              '12345?api-version=6.0 ' +
+                              '12345?api-version=4.1 ' +
                               "{`"description`":`"$([char]0x274C) **Add a description.**`"," +
                               "`"title`":`"XS$([char]0x26A0)$([char]0xFE0F) $([char]0x25FE) Title`"}")
             }
@@ -678,7 +678,7 @@ Describe -Name 'PRMetrics' {
                 $Method -eq 'PATCH' -and
                 $Uri -eq ('https://dev.azure.com/prmetrics/PRMetrics/_apis/git/' +
                           'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345' +
-                          '?api-version=6.0') -and
+                          '?api-version=4.1') -and
                 $Headers.Count -eq 1 -and
                 $Headers.Authorization -eq 'Bearer ACCESSTOKEN' -and
                 $Body -eq ("{`"description`":`"$([char]0x274C) **Add a description.**`"," +
@@ -699,7 +699,7 @@ Describe -Name 'PRMetrics' {
             Mock -CommandName 'Write-Verbose' -MockWith {} -Verifiable -ParameterFilter {
                 $Message -eq ('GET https://dev.azure.com/prmetrics/PRMetrics/_apis/' +
                               'git/repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/' +
-                              'threads?api-version=6.0')
+                              'threads?api-version=4.1')
             }
             Mock -CommandName 'Invoke-RestMethod' -MockWith {
                 return [PSCustomObject]@{
@@ -723,7 +723,7 @@ Describe -Name 'PRMetrics' {
                 $Method -eq 'GET' -and
                 $Uri -eq ('https://dev.azure.com/prmetrics/PRMetrics/_apis/git/' +
                           'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/threads' +
-                          '?api-version=6.0') -and
+                          '?api-version=4.1') -and
                 $Headers.Count -eq 1 -and
                 $Headers.Authorization -eq 'Bearer ACCESSTOKEN'
             }
@@ -744,7 +744,7 @@ Describe -Name 'PRMetrics' {
                 $Message -eq ('GET ' +
                               'https://dev.azure.com/prmetrics/PRMetrics/_apis/git/' +
                               'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/' +
-                              'iterations?api-version=6.0')
+                              'iterations?api-version=4.1')
             }
             Mock -CommandName 'Invoke-RestMethod' -MockWith {
                 throw [System.NotImplementedException]'Invoke-RestMethod must not be called.'
@@ -752,7 +752,7 @@ Describe -Name 'PRMetrics' {
                 $Method -eq 'GET' -and
                 $Uri -eq ('https://dev.azure.com/prmetrics/PRMetrics/_apis/git/' +
                           'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/iterations' +
-                          '?api-version=6.0') -and
+                          '?api-version=4.1') -and
                 $Headers.Count -eq 1 -and
                 $Headers.Authorization -eq 'Bearer ACCESSTOKEN'
             }
@@ -829,7 +829,7 @@ Describe -Name 'PRMetrics' {
                 $MessageData -eq ('GET ' +
                                   'https://dev.azure.com/prmetrics/PRMetrics/_apis/git/' +
                                   'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/' +
-                                  '12345?api-version=6.0')
+                                  '12345?api-version=4.1')
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
                 $MessageData -eq '* [AzureReposInvoker]::WriteOutput() hidden'
@@ -861,7 +861,7 @@ Describe -Name 'PRMetrics' {
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
                 $MessageData -eq ('PATCH https://dev.azure.com/prmetrics/PRMetrics/' +
                                   '_apis/git/repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/' +
-                                  '12345?api-version=6.0 ' +
+                                  '12345?api-version=4.1 ' +
                                   "{`"description`":`"$([char]0x274C) **Add a description.**`"," +
                                   "`"title`":`"XS$([char]0x26A0)$([char]0xFE0F) $([char]0x25FE) Title`"}")
             }
@@ -879,7 +879,7 @@ Describe -Name 'PRMetrics' {
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
                 $MessageData -eq ('GET https://dev.azure.com/prmetrics/PRMetrics/' +
                                   '_apis/git/repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/' +
-                                  '12345/threads?api-version=6.0')
+                                  '12345/threads?api-version=4.1')
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
                 $MessageData -like '*"value": *' -and
@@ -898,7 +898,7 @@ Describe -Name 'PRMetrics' {
                 $MessageData -eq ('GET ' +
                                   'https://dev.azure.com/prmetrics/PRMetrics/_apis/git/' +
                                   'repositories/41d31ec7-6c0a-467d-9e51-0cac9ae9a598/pullRequests/12345/' +
-                                  'iterations?api-version=6.0')
+                                  'iterations?api-version=4.1')
             }
             Mock -CommandName 'Write-Information' -MockWith {} -Verifiable -ParameterFilter {
                 $MessageData -eq '* [PullRequest]::GetCurrentIteration() static'
