@@ -70,5 +70,5 @@ jobs:
         run: >-
           tfx extension publish
           --manifest-globs ${{ github.workspace }}/Release/PipelinesTasks/PRMetricsV1/vss-extension.json
-          --vsix ${{ github.workspace }/Release/PipelinesTasks/PRMetricsV1/ms-omex.prmetrics.vsix
+          --vsix ${{ github.workspace }}/Release/PipelinesTasks/PRMetricsV1/ms-omex.prmetrics.vsix
           --token ${{ secrets.VS_PAT }}
