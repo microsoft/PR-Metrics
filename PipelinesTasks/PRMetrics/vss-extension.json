@@ -1,8 +1,8 @@
 {
   "manifestVersion": 1,
-  "id": "prmetrics",
+  "id": "pr-metrics",
   "name": "PR Metrics",
-  "version": "1.0.4",
+  "version": "1.1.0",
   "publisher": "ms-omex",
   "description": "Updates the title, description, and comments of pull requests to provide at-a-glance metrics.",
   "public": true,
@@ -18,7 +18,7 @@
     "Visual Studio Extensions"
   ],
   "icons": {
-    "default": "images/logo.png"
+    "default": "buildAndReleaseTask/icon.png"
   },
   "targets": [
     {
@@ -36,7 +36,7 @@
   ],
   "content": {
     "details": {
-      "path": "overview.md"
+      "path": "docs/overview.md"
     },
     "license": {
       "path": "LICENSE.txt"
@@ -65,23 +65,22 @@
   },
   "files": [
     {
-      "path": "task"
+      "path": "buildAndReleaseTask"
     },
     {
-      "path": "images",
+      "path": "docs/images",
       "addressable": true
     }
   ],
   "contributions": [
     {
-      "id": "prmetrics",
+      "id": "907d3b28-6b37-4ac7-ac75-9631ee53e512",
       "type": "ms.vss-distributed-task.task",
-      "description": "Updates the title, description, and comments of pull requests to provide at-a-glance metrics.",
       "targets": [
         "ms.vss-distributed-task.tasks"
       ],
       "properties": {
-        "name": "task"
+        "name": "buildAndReleaseTask"
       }
     }
   ]

@@ -1,0 +1,58 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+  "id": "907d3b28-6b37-4ac7-ac75-9631ee53e512",
+  "name": "prmetrics",
+  "friendlyName": "ms-resource:loc.friendlyName",
+  "description": "ms-resource:loc.description",
+  "helpUrl": "https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/blob/main/PipelinesTasks/PRMetrics/README.md",
+  "helpMarkDown": "ms-resource:loc.helpMarkDown",
+  "author": "Microsoft Corporation",
+  "category": "Azure Pipelines",
+  "demands": [
+    "api-version/4.1"
+  ],
+  "minimumAgentVersion": "2.141.0",
+  "version": {
+    "Major": 1,
+    "Minor": 1,
+    "Patch": 0
+  },
+  "instanceNameFormat": "ms-resource:loc.instanceNameFormat",
+  "inputs": [
+    {
+      "name": "BaseSize",
+      "label": "ms-resource:loc.input.label.baseSize",
+      "type": "string",
+      "helpMarkDown": "ms-resource:loc.input.helpMarkDown.baseSize"
+    },
+    {
+      "name": "GrowthRate",
+      "label": "ms-resource:loc.input.label.growthRate",
+      "type": "string",
+      "helpMarkDown": "ms-resource:loc.input.helpMarkDown.growthRate"
+    },
+    {
+      "name": "TestFactor",
+      "label": "ms-resource:loc.input.label.testFactor",
+      "type": "string",
+      "helpMarkDown": "ms-resource:loc.input.helpMarkDown.testFactor"
+    },
+    {
+      "name": "FileMatchingPatterns",
+      "label": "ms-resource:loc.input.label.fileMatchingPatterns",
+      "type": "multiLine",
+      "helpMarkDown": "ms-resource:loc.input.helpMarkDown.fileMatchingPatterns"
+    },
+    {
+      "name": "CodeFileExtensions",
+      "label": "ms-resource:loc.input.label.codeFileExtensions",
+      "type": "multiLine",
+      "helpMarkDown": "ms-resource:loc.input.helpMarkDown.codeFileExtensions"
+    }
+  ],
+  "execution": {
+    "Node10": {
+      "target": "index.js"
+    }
+  }
+}

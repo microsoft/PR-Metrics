@@ -1,0 +1,56 @@
+{
+  "name": "prmetrics",
+  "version": "1.1.0",
+  "description": "Updates the title, description, and comments of pull requests to provide at-a-glance metrics.",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc && typedoc",
+    "test": "tsc && nyc mocha tests/**/*.spec.js",
+    "deploy": "tsc && exitzero tfx build tasks delete --task-id 907d3b28-6b37-4ac7-ac75-9631ee53e512 && tfx build tasks upload --task-path .",
+    "lint": "eslint --fix **/*.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/microsoft/OMEX-Azure-DevOps-Extensions.git"
+  },
+  "keywords": [
+    "Extension",
+    "Marketplace",
+    "Continuous Integration",
+    "Continuous Delivery",
+    "Build",
+    "Release",
+    "Azure Pipelines",
+    "Azure DevOps Extensions",
+    "Visual Studio Extensions"
+  ],
+  "author": "Microsoft Corporation",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/issues"
+  },
+  "homepage": "https://github.com/microsoft/OMEX-Azure-DevOps-Extensions#readme",
+  "dependencies": {
+    "azure-devops-node-api": "^8.1.1",
+    "azure-pipelines-task-lib": "^3.1.0",
+    "path": "^0.12.7"
+  },
+  "devDependencies": {
+    "@istanbuljs/nyc-config-typescript": "^1.0.1",
+    "@types/async": "^3.2.5",
+    "@types/chai": "^4.2.15",
+    "@types/mocha": "^8.2.1",
+    "@types/node": "^10.17.55",
+    "async": "^1.5.2",
+    "chai": "^4.3.3",
+    "eslint": "^7.21.0",
+    "exitzero": "^1.0.1",
+    "mocha": "^8.3.1",
+    "nyc": "^15.1.0",
+    "source-map-support": "^0.5.19",
+    "tfx-cli": "^0.8.3",
+    "ts-mockito": "^2.6.1",
+    "typedoc": "^0.20.30",
+    "typescript": "^4.2.3"
+  }
+}

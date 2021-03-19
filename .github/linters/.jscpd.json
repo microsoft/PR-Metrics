@@ -1,0 +1,7 @@
+{
+  "ignore": [
+    ".github/workflows/build.yml",
+    ".github/workflows/release.yml",
+    "**/*.ps1"
+  ]
+}

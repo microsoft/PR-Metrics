@@ -1,11 +1,11 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
   "id": "907d3b28-6b37-4ac7-ac75-9631ee53e512",
-  "name": "PRMetrics",
-  "friendlyName": "PR Metrics 1.0.4",
+  "name": "prmetrics",
+  "friendlyName": "PR Metrics 1.1.0",
   "description": "Updates the title, description, and comments of pull requests to provide at-a-glance metrics.",
-  "helpUrl": "https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/blob/main/PipelinesTasks/PRMetricsV1/README.md",
-  "helpMarkDown": "[More information](https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/blob/main/PipelinesTasks/PRMetricsV1/README.md)",
+  "helpUrl": "https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/blob/main/PipelinesTasks/PRMetrics/README.md",
+  "helpMarkDown": "[More information](https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/blob/main/PipelinesTasks/PRMetrics/README.md)",
   "author": "Microsoft Corporation",
   "category": "Azure Pipelines",
   "demands": [
@@ -14,8 +14,8 @@
   "minimumAgentVersion": "2.141.0",
   "version": {
     "Major": 1,
-    "Minor": 0,
-    "Patch": 4
+    "Minor": 1,
+    "Patch": 0
   },
   "instanceNameFormat": "PR Metrics",
   "inputs": [
@@ -51,8 +51,8 @@
     }
   ],
   "execution": {
-    "PowerShell3": {
-      "target": "PRMetrics.ps1"
+    "Node10": {
+      "target": "index.js"
     }
   }
 }

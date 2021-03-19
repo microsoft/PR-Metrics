@@ -80,23 +80,15 @@ To deploy the task:
    tfx login --service-url https://<account>.visualstudio.com/DefaultCollection --token <PAT>
    ```
 
-   You can generate a PAT by following the instructions [here][tfxpat]. This
-   will only need to be performed the first time you use tfx-cli.
-1. Delete any existing copy of the task using
-   `tfx build tasks delete --task-id 907d3b28-6b37-4ac7-ac75-9631ee53e512`.
-1. Install `nuget.exe` and add it to your `PATH` environment variable so that
-   NuGet can invoked from any console window. Instructions on the process can be
-   located [here][nugetcli].
-1. Build the task locally by running `msbuild` from the PRMetrics directory.
-   You may need to use a Visual Studio command prompt for this, as `msbuild` is
-   not always added to the default path.
-1. If the build is successful, upload the task using
-   `tfx build tasks upload --task-path  ..\..\build\Release\PipelinesTasks\PRMetricsV1\task\`.
+   You can generate a PAT with at least the "Agent Pools (Read & manage)" scope
+   by following the instructions [here][tfxpat]. This will only need to be
+   performed the first time you use tfx-cli.
+1. To build and deploy, from within the `buildAndReleaseTask` folder, run
+   `npm run deploy`.
 
 ## Configuring
 
-The task can be added to a pipeline as detailed [here][addingtask]. Note that
-only Windows pipelines are supported as the task is written in PowerShell.
+The task can be added to a pipeline as detailed [here][addingtask].
 
 The agent running the task must allow access to the OAuth token. If access is
 unavailable, the task will generate a warning.
@@ -161,7 +153,8 @@ steps:
 
 ## Implementation
 
-This task is written in PowerShell using the [Azure Pipelines Task SDK][sdk].
+This task is written in [TypeScript][typescript] using the
+[Azure Pipelines Task SDK][sdk].
 
 It works by querying Git for changes using the command
 `git diff --numstat origin/<target>...pull/<pull_request_id>/merge`. Files with
@@ -174,19 +167,30 @@ treated as such. For example, the task should not be used to replace
 comprehensive and thorough code coverage metrics. Instead, the task should
 merely be considered a guideline for influencing optimal PR behavior.
 
+The task can be built using `npm run build` from the `buildAndReleaseTask`
+folder.
+
 ## Testing
 
 This task is tested via unit and integration tests constructed using the
-[Pester 5][pester] test framework. The code coverage is currently extremely
-high, and a high rate of coverage should be maintained for all changes.
-Validating this extension on the server is significantly more time consuming
-than validating locally. You may need [PowerShell 7 or later][powershell]
-installed due to subtle differences in the behavior of different PowerShell
-releases.
+[Mocha][mocha] test framework, the [Chai][chai] assertion library and the
+[ts-mockito][tsmockito] mocking library. Tests follow the
+[Arrange-Act-Assert pattern][aaa], and they can be run using `npm test` from
+within the `buildAndReleaseTask` folder. This command will output both the test
+results and code coverage metrics.
 
-The task contains no violations of the [PSScriptAnalyzer][psscriptanalyzer]
-rules. This compliance with the PSScriptAnalyzer rules should also be maintained
-for all new code.
+The code coverage is currently extremely high, and a high rate of coverage
+should be maintained for all changes. There are a large number of edge cases
+which were only discovered through experience and the unit tests ensure that
+these edge case solutions do not regress. Moreover, validating this extension on
+the server is significantly more time consuming than validating locally.
+
+The code formatting complies with the [ESLint][eslint] "Standard" rules. The
+formatting can be checked and automatically fixed by running `npm run lint`
+from within the `buildAndReleaseTask` folder. [TypeDoc][typedoc] comments are
+present on public methods and are converted to HTML during the `npm run build`
+process. [Dependency injection][depinjection] is used throughout the project to
+facilitate testability.
 
 Test validation and code scanning will be automatically performed whenever a
 PR is opened against the `main` branch. These validations must succeed for the
@@ -252,6 +256,7 @@ hxx
 i
 inc
 java
+js
 l
 lgt
 lisp
@@ -309,6 +314,7 @@ spin
 stk
 swg
 tcl
+ts
 vb
 xpl
 xq
@@ -321,12 +327,16 @@ y
 [tfxcli]: https://github.com/Microsoft/tfs-cli
 [npm]: https://www.npmjs.com/
 [tfxpat]: https://docs.microsoft.com/azure/devops/extend/publish/command-line
-[nugetcli]: https://docs.microsoft.com/nuget/install-nuget-client-tools#nugetexe-cli
 [vssextensionjson]: vss-extension.json
-[taskjson]: task/task.json
+[taskjson]: buildAndReleaseTask/task.json
 [addingtask]: https://docs.microsoft.com/azure/devops/pipelines/customize-pipeline
 [globs]: https://docs.microsoft.com/azure/devops/pipelines/tasks/file-matching-patterns
+[typescript]: https://www.typescriptlang.org/
 [sdk]: https://github.com/microsoft/azure-pipelines-task-lib
-[pester]: https://github.com/pester/Pester
-[powershell]: https://github.com/powershell/powershell
-[psscriptanalyzer]: https://github.com/PowerShell/PSScriptAnalyzer
+[mocha]: https://mochajs.org/
+[chai]: https://www.chaijs.com/
+[aaa]: https://automationpanda.com/2020/07/07/arrange-act-assert-a-pattern-for-writing-good-tests/
+[tsmockito]: https://github.com/NagRock/ts-mockito
+[eslint]: https://eslint.org/
+[typedoc]: https://typedoc.org/
+[depinjection]: https://wikipedia.org/wiki/Dependency_injection
