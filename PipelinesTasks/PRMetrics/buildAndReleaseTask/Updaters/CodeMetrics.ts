@@ -7,8 +7,7 @@
 // Licensed under the MIT License.
 
 import { IMetrics } from './iMetrics';
-
-//import { isNullOrWhitespace } from './CodeMetricsHelpers';
+import { isNullOrWhitespace } from './CodeMetricsHelpers';
 
 class CodeMetrics {
     public Size: string;
@@ -19,8 +18,8 @@ class CodeMetrics {
     public ExpectedTestCode: number;
     private GrowthRate: number;
     private TestFactor: number;
-    //private FileMatchingPatterns: Array<string>; // was [string[]]
-    //private CodeFileExtensions: Array<string>; // was [string[]]
+    private FileMatchingPatterns: Array<string>; // was [string[]]
+    private CodeFileExtensions: Array<string>; // was [string[]]
     private SufficientTestCode: boolean;
 
     constructor(
@@ -37,6 +36,9 @@ class CodeMetrics {
         this.BaseSize = 0;
         this.TestFactor = 0;
         this.GrowthRate = 0;
+
+        this.CodeFileExtensions = new Array<string>();
+        this.FileMatchingPatterns = new Array<string>();
 
         this.Metrics = {
             ProductCode: 0,
@@ -56,8 +58,9 @@ class CodeMetrics {
             codeFileExtensions
         );
         this.InitializeMetrics(gitDiffSummary);
-        this.ExpectedTestCode = 0; // this.Metrics.ProductCode * this.TestFactor;
-        this.SufficientTestCode = false; // this.Metrics.TestCode >= this.ExpectedTestCode;
+        this.ExpectedTestCode = this.Metrics.ProductCode * this.TestFactor;
+        this.SufficientTestCode =
+            this.Metrics.TestCode >= this.ExpectedTestCode;
         this.InitializeSize();
     }
 
@@ -97,53 +100,62 @@ class CodeMetrics {
         codeFileExtensions: string
     ): void {
         // [Logger]::Log('* [CodeMetrics]::NormalizeParameters() private');
-        /*
-        const integerOutput = 0;
-        if (isNullOrWhitespace(baseSize) || ![int]::TryParse(baseSize, [ref] integerOutput) || integerOutput < 0) {
-            Write-Information -MessageData 'Adjusting base size parameter to 250.' -InformationAction 'Continue';
+
+        let integerOutput = 0;
+        integerOutput = parseInt(baseSize);
+        if (
+            isNullOrWhitespace(baseSize) ||
+            !integerOutput ||
+            integerOutput < 0
+        ) {
+            //Write-Information -MessageData 'Adjusting base size parameter to 250.' -InformationAction 'Continue';
             this.BaseSize = 250;
-        }
-        else {
+        } else {
             this.BaseSize = integerOutput;
         }
 
-        const doubleOutput = 0.0;
-        if (isNullOrWhitespace(growthRate) || ![double]::TryParse(growthRate, [ref] doubleOutput) || doubleOutput < 1.0) {
-           Write-Information -MessageData 'Adjusting growth rate parameter to 2.0.' -InformationAction 'Continue';
+        let doubleOutput = 0.0;
+        doubleOutput = parseFloat(growthRate);
+        if (
+            isNullOrWhitespace(growthRate) ||
+            !doubleOutput ||
+            doubleOutput < 1.0
+        ) {
+            //Write-Information -MessageData 'Adjusting growth rate parameter to 2.0.' -InformationAction 'Continue';
             this.GrowthRate = 2.0;
-        }
-        else {
+        } else {
             this.GrowthRate = doubleOutput;
         }
 
-        if (isNullOrWhitespace(testFactor) || ![double]::TryParse(testFactor, [ref] doubleOutput) || doubleOutput < 0.0) {
-            Write-Information -MessageData 'Adjusting test factor parameter to 1.5.' -InformationAction 'Continue';
+        doubleOutput = parseFloat(testFactor);
+        if (
+            isNullOrWhitespace(testFactor) ||
+            !doubleOutput ||
+            doubleOutput < 0.0
+        ) {
+            //Write-Information -MessageData 'Adjusting test factor parameter to 1.5.' -InformationAction 'Continue';
             this.TestFactor = 1.5;
-        }
-        else {
+        } else {
             this.TestFactor = doubleOutput;
         }
 
         if (isNullOrWhitespace(fileMatchingPatterns)) {
-            Write-Information -MessageData "Adjusting file matching patterns to **"/*."" -InformationAction 'Continue';
-            this.FileMatchingPatterns = "**"/*';
-        }
-        else {
-            this.FileMatchingPatterns = fileMatchingPatterns.split(["`n"], [StringSplitOptions]::RemoveEmptyEntries);
+            // Write-Information -MessageData "Adjusting file matching patterns to **"/*."" -InformationAction 'Continue';
+            this.FileMatchingPatterns.push('**/*');
+        } else {
+            this.FileMatchingPatterns = fileMatchingPatterns.split('\n');
         }
 
         this.NormalizeCodeFileExtensionsParameter(codeFileExtensions);
-
-        */
     }
 
     private NormalizeCodeFileExtensionsParameter(
         codeFileExtensions: string
     ): void {
-        /*
-        [Logger]::Log('* [CodeMetrics]::NormalizeCodeFileExtensionsParameter() private')
-        if ([string]::IsNullOrWhiteSpace(codeFileExtensions)) {
-            Write-Information -MessageData 'Adjusting code file extensions parameter to default values.' -InformationAction 'Continue'
+        //        [Logger]::Log('* [CodeMetrics]::NormalizeCodeFileExtensionsParameter() private')
+
+        if (isNullOrWhitespace(codeFileExtensions)) {
+            //Write-Information -MessageData 'Adjusting code file extensions parameter to default values.' -InformationAction 'Continue'
 
             this.CodeFileExtensions = [
                 '*.ada',
@@ -252,15 +264,15 @@ class CodeMetrics {
                 '*.xq',
                 '*.xsl',
                 '*.y'
-            ]
-        }
-        else {
-            this.CodeFileExtensions = codeFileExtensions.split(["`n"], [StringSplitOptions]::RemoveEmptyEntries)
-            for ($i = 0; $i < this.CodeFileExtensions.Length; $i++) {
-                this.CodeFileExtensions[$i] = "*.$(this.CodeFileExtensions[$i])";
+            ];
+        } else {
+            this.CodeFileExtensions = codeFileExtensions.split('\n');
+            for (let $i = 0; $i < this.CodeFileExtensions.length; $i++) {
+                this.CodeFileExtensions[
+                    $i
+                ] = `*.${this.CodeFileExtensions[$i]}`;
             }
         }
-        */
     }
 
     private InitializeMetrics(gitDiffSummary: string): void {
@@ -340,16 +352,16 @@ class CodeMetrics {
         // [Logger]::Log('* [CodeMetrics]::InitializeSize() private')
         const indicators: string[] = new Array('XS', 'S', 'M', 'L', 'XL');
 
-        this.Size = indicators[1]!;
+        this.Size = indicators[1];
         let currentSize = this.BaseSize;
         let index = 1;
 
         if (this.Metrics.Subtotal === 0) {
-            this.Size = indicators[0]!;
+            this.Size = indicators[0];
         } else {
             // Calculate the smaller sizes.
             if (this.Metrics.ProductCode < this.BaseSize / this.GrowthRate) {
-                this.Size = indicators[0]!;
+                this.Size = indicators[0];
             }
 
             // Calculate the larger sizes.
@@ -359,7 +371,7 @@ class CodeMetrics {
                     currentSize *= this.GrowthRate;
 
                     if (index < indicators.length) {
-                        this.Size = indicators[index]!;
+                        this.Size = indicators[index];
                     } else {
                         this.Size =
                             (index - indicators.length + 2).toString() +
