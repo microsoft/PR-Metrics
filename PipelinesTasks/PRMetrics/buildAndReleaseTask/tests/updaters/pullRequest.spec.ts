@@ -1,11 +1,11 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+import async from 'async'
 import PullRequest from '../../updaters/pullRequest'
 import TaskLibWrapper from '../../wrappers/taskLibWrapper'
 import { expect } from 'chai'
 import { instance, mock, verify, when } from 'ts-mockito'
-import async from 'async'
 
 describe('pullRequest.ts', (): void => {
   let taskLibWrapper: TaskLibWrapper
@@ -37,7 +37,7 @@ describe('pullRequest.ts', (): void => {
       expect(result).to.equal(true)
       verify(taskLibWrapper.debug('* PullRequest.isPullRequest()')).once()
 
-      // Disposal
+      // Finalization
       delete process.env.SYSTEM_PULLREQUEST_PULLREQUESTID
     })
 
@@ -153,5 +153,19 @@ describe('pullRequest.ts', (): void => {
           verify(taskLibWrapper.debug('* PullRequest.getUpdatedTitle()')).once()
         })
       })
+  })
+
+  describe('getCurrentIteration()', (): void => {
+    it('should return the expected result', (): void => {
+      // Arrange
+      const pullRequest: PullRequest = new PullRequest(instance(taskLibWrapper))
+
+      // Act
+      const result: number = pullRequest.getCurrentIteration()
+
+      // Assert
+      expect(result).to.equal(1)
+      verify(taskLibWrapper.debug('* PullRequest.getCurrentIteration()')).once()
+    })
   })
 })

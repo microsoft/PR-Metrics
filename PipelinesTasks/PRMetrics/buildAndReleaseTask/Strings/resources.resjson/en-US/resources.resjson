@@ -69,5 +69,8 @@
   "loc.messages.updaters.pullRequest.titleTestsInsufficient.comment": "The title test coverage prefix for a pull request with insufficient test coverage.",
 
   "loc.messages.updaters.pullRequest.titleTestsSufficient": "✔",
-  "loc.messages.updaters.pullRequest.titleTestsSufficient.comment": "The title test coverage prefix for a pull request with sufficient test coverage."
+  "loc.messages.updaters.pullRequest.titleTestsSufficient.comment": "The title test coverage prefix for a pull request with sufficient test coverage.",
+
+  "loc.messages.updaters.pullRequestComments.fileIgnoredComment": "❗ **This file may not need to be reviewed.**",
+  "loc.messages.updaters.pullRequestComments.fileIgnoredComment.comment": "The comment added to files that are ignored."
 }

@@ -65,6 +65,7 @@
     "updaters.pullRequest.titleSizeXL": "ms-resource:loc.messages.updaters.pullRequest.titleSizeXL",
     "updaters.pullRequest.titleSizeXS": "ms-resource:loc.messages.updaters.pullRequest.titleSizeXS",
     "updaters.pullRequest.titleTestsInsufficient": "ms-resource:loc.messages.updaters.pullRequest.titleTestsInsufficient",
-    "updaters.pullRequest.titleTestsSufficient": "ms-resource:loc.messages.updaters.pullRequest.titleTestsSufficient"
+    "updaters.pullRequest.titleTestsSufficient": "ms-resource:loc.messages.updaters.pullRequest.titleTestsSufficient",
+    "updaters.pullRequestComments.fileIgnoredComment": "ms-resource:loc.messages.updaters.pullRequestComments.fileIgnoredComment"
   }
 }
