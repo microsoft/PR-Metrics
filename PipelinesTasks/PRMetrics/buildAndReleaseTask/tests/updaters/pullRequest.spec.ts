@@ -4,13 +4,24 @@
 import PullRequest from '../../updaters/pullRequest'
 import TaskLibWrapper from '../../wrappers/taskLibWrapper'
 import { expect } from 'chai'
-import { instance, mock, verify } from 'ts-mockito'
+import { instance, mock, verify, when } from 'ts-mockito'
+import async from 'async'
 
 describe('pullRequest.ts', (): void => {
   let taskLibWrapper: TaskLibWrapper
 
   beforeEach((): void => {
     taskLibWrapper = mock(TaskLibWrapper)
+    when(taskLibWrapper.loc('updaters.pullRequest.addDescription')).thenReturn('❌ **Add a description.**')
+    when(taskLibWrapper.loc('updaters.pullRequest.titleFormat', '(XS|S|M|L|\\d*XL)(✔|⚠️)?', '(.*)')).thenReturn('(XS|S|M|L|\\d*XL)(✔|⚠️)? ◾ (.*)')
+    when(taskLibWrapper.loc('updaters.pullRequest.titleSizeIndicatorFormat', '(XS|S|M|L|\\d*XL)', '(✔|⚠️)?')).thenReturn('(XS|S|M|L|\\d*XL)(✔|⚠️)?')
+    when(taskLibWrapper.loc('updaters.pullRequest.titleSizeL')).thenReturn('L')
+    when(taskLibWrapper.loc('updaters.pullRequest.titleSizeM')).thenReturn('M')
+    when(taskLibWrapper.loc('updaters.pullRequest.titleSizeS')).thenReturn('S')
+    when(taskLibWrapper.loc('updaters.pullRequest.titleSizeXL', '\\d*')).thenReturn('\\d*XL')
+    when(taskLibWrapper.loc('updaters.pullRequest.titleSizeXS')).thenReturn('XS')
+    when(taskLibWrapper.loc('updaters.pullRequest.titleTestsInsufficient')).thenReturn('⚠️')
+    when(taskLibWrapper.loc('updaters.pullRequest.titleTestsSufficient')).thenReturn('✔')
   })
 
   describe('isPullRequest()', (): void => {
@@ -82,5 +93,65 @@ describe('pullRequest.ts', (): void => {
       expect(result).to.equal(null)
       verify(taskLibWrapper.debug('* PullRequest.getUpdatedTitle()')).once()
     })
+
+    async.each(
+      [
+        'Title',
+        'PREFIX ◾ Title',
+        'PREFIX✔ ◾ Title',
+        'PREFIX⚠️ ◾ Title',
+        'PS ◾ Title',
+        'PS✔ ◾ Title',
+        'PS⚠️ ◾ Title'
+      ], (currentTitle: string): void => {
+        it(`should prefix the current title '${currentTitle}' when no prefix exists`, (): void => {
+          // Arrange
+          const pullRequest: PullRequest = new PullRequest(instance(taskLibWrapper))
+
+          // Act
+          const result: string | null = pullRequest.getUpdatedTitle(currentTitle, 'S✔')
+
+          // Assert
+          expect(result).to.equal(`S✔ ◾ ${currentTitle}`)
+          verify(taskLibWrapper.debug('* PullRequest.getUpdatedTitle()')).once()
+        })
+      })
+
+    async.each(
+      [
+        'XS✔ ◾ Title',
+        'XS⚠️ ◾ Title',
+        'XS ◾ Title',
+        'S✔ ◾ Title',
+        'S⚠️ ◾ Title',
+        'S ◾ Title',
+        'M✔ ◾ Title',
+        'M⚠️ ◾ Title',
+        'M ◾ Title',
+        'L✔ ◾ Title',
+        'L⚠️ ◾ Title',
+        'L ◾ Title',
+        'XL✔ ◾ Title',
+        'XL⚠️ ◾ Title',
+        'XL ◾ Title',
+        '2XL✔ ◾ Title',
+        '2XL⚠️ ◾ Title',
+        '2XL ◾ Title',
+        '20XL✔ ◾ Title',
+        '20XL⚠️ ◾ Title',
+        '20XL ◾ Title'
+      ], (currentTitle: string): void => {
+        it(`should update the current title '${currentTitle}' correctly`, (): void => {
+          // Arrange
+          const pullRequest: PullRequest = new PullRequest(instance(taskLibWrapper))
+
+          // Act
+          const result: string | null = pullRequest.getUpdatedTitle(currentTitle, 'PREFIX')
+
+          // Assert
+          expect(result).to.equal('PREFIX ◾ Title')
+          verify(taskLibWrapper.debug('* PullRequest.getUpdatedTitle()')).once()
+        })
+      })
   })
 })

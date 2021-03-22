@@ -39,7 +39,7 @@ class PullRequest {
       return null
     }
 
-    return '❌ **Add a description.**'
+    return this.taskLibWrapper.loc('updaters.pullRequest.addDescription')
   }
 
   /**
@@ -55,8 +55,25 @@ class PullRequest {
       return null
     }
 
-    const prefixRegExp: RegExp = /^(XS|S|M|L|XL|\d+XL)(✔|⚠️)\s◾\s/u
-    const originalTitle: string = currentTitle.replace(prefixRegExp, '')
+    const sizeRegExp: string =
+      `(${this.taskLibWrapper.loc('updaters.pullRequest.titleSizeXS')}` +
+      `|${this.taskLibWrapper.loc('updaters.pullRequest.titleSizeS')}` +
+      `|${this.taskLibWrapper.loc('updaters.pullRequest.titleSizeM')}` +
+      `|${this.taskLibWrapper.loc('updaters.pullRequest.titleSizeL')}` +
+      `|${this.taskLibWrapper.loc('updaters.pullRequest.titleSizeXL', '\\d*')})`
+    const testsRegExp: string =
+      `(${this.taskLibWrapper.loc('updaters.pullRequest.titleTestsSufficient')}` +
+      `|${this.taskLibWrapper.loc('updaters.pullRequest.titleTestsInsufficient')})?`
+    const sizeIndicatorRegExp: string = this.taskLibWrapper.loc('updaters.pullRequest.titleSizeIndicatorFormat', sizeRegExp, testsRegExp)
+    const completeRegExp: string = `^${this.taskLibWrapper.loc('updaters.pullRequest.titleFormat', sizeIndicatorRegExp, '(.*)')}$`
+
+    const prefixRegExp: RegExp = new RegExp(completeRegExp, 'u')
+    const prefixRegExpMatches: RegExpMatchArray | null = currentTitle.match(prefixRegExp)
+    let originalTitle: string = currentTitle
+    if (prefixRegExpMatches !== null) {
+      originalTitle = prefixRegExpMatches[3]!
+    }
+
     return `${sizeIndicator} ◾ ${originalTitle}`
   }
 }

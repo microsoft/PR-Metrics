@@ -54,5 +54,17 @@
     "Node10": {
       "target": "index.js"
     }
+  },
+  "messages": {
+    "updaters.pullRequest.addDescription": "ms-resource:loc.messages.updaters.pullRequest.addDescription",
+    "updaters.pullRequest.titleFormat": "ms-resource:loc.messages.updaters.pullRequest.titleFormat",
+    "updaters.pullRequest.titleSizeIndicatorFormat": "ms-resource:loc.messages.updaters.pullRequest.titleSizeIndicatorFormat",
+    "updaters.pullRequest.titleSizeL": "ms-resource:loc.messages.updaters.pullRequest.titleSizeL",
+    "updaters.pullRequest.titleSizeM": "ms-resource:loc.messages.updaters.pullRequest.titleSizeM",
+    "updaters.pullRequest.titleSizeS": "ms-resource:loc.messages.updaters.pullRequest.titleSizeS",
+    "updaters.pullRequest.titleSizeXL": "ms-resource:loc.messages.updaters.pullRequest.titleSizeXL",
+    "updaters.pullRequest.titleSizeXS": "ms-resource:loc.messages.updaters.pullRequest.titleSizeXS",
+    "updaters.pullRequest.titleTestsInsufficient": "ms-resource:loc.messages.updaters.pullRequest.titleTestsInsufficient",
+    "updaters.pullRequest.titleTestsSufficient": "ms-resource:loc.messages.updaters.pullRequest.titleTestsSufficient"
   }
 }

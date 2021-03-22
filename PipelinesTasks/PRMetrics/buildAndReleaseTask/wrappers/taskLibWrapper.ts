@@ -26,6 +26,16 @@ class TaskLibWrapper {
   public execSync (tool: string, args: string | string[], options?: IExecSyncOptions): IExecSyncResult {
     return taskLib.execSync(tool, args, options)
   }
+
+  /**
+   * Gets the localized string from the JSON resource file and optionally formats using the additional parameters.
+   * @param key The key of the resources string in the resource file.
+   * @param param Optional additional parameters for formatting the string.
+   * @returns The localized and formatted string.
+   */
+  public loc (key: string, ...param: any[]): string {
+    return taskLib.loc(key, ...param)
+  }
 }
 
 export default TaskLibWrapper
