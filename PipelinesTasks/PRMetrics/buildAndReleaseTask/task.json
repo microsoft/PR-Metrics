@@ -66,6 +66,18 @@
     "updaters.pullRequest.titleSizeXS": "XS",
     "updaters.pullRequest.titleTestsInsufficient": "⚠️",
     "updaters.pullRequest.titleTestsSufficient": "✔",
-    "updaters.pullRequestComments.fileIgnoredComment": "❗ **This file may not need to be reviewed.**"
+    "updaters.pullRequestComments.commentFooter": "[Metrics added by PR Metrics. Add to Azure DevOps today!](https://marketplace.visualstudio.com/items?itemName=ms-omex.prmetrics)",
+    "updaters.pullRequestComments.commentTitle": "# Metrics for iteration %s",
+    "updaters.pullRequestComments.fileIgnoredComment": "❗ **This file may not need to be reviewed.**",
+    "updaters.pullRequestComments.largePullRequestComment": "❌ **Try to keep pull requests smaller than %s lines of new product code by following the [Single Responsibility Principle (SRP)](https://wikipedia.org/wiki/Single-responsibility_principle).**",
+    "updaters.pullRequestComments.smallPullRequestComment": "✔ **Thanks for keeping your pull request small.**",
+    "updaters.pullRequestComments.tableIgnored": "Ignored",
+    "updaters.pullRequestComments.tableLines": "Lines",
+    "updaters.pullRequestComments.tableProductCode": "Product Code",
+    "updaters.pullRequestComments.tableSubtotal": "Subtotal",
+    "updaters.pullRequestComments.tableTestCode": "Test Code",
+    "updaters.pullRequestComments.tableTotal": "Total",
+    "updaters.pullRequestComments.testsInsufficientComment": "⚠️ **Consider adding additional tests.**",
+    "updaters.pullRequestComments.testsSufficientComment": "✔ **Thanks for adding tests.**"
   }
 }
