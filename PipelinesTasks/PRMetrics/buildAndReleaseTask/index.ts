@@ -12,6 +12,7 @@ async function run (): Promise<void> {
 
     try {
       const taskLibWrapper: TaskLibWrapper = new TaskLibWrapper()
+      process.stdout.write('Description:' + taskLibWrapper.loc('updaters.pullRequest.addDescription'))
       const gitInvoker: GitInvoker = new GitInvoker(taskLibWrapper)
       process.stdout.write(gitInvoker.getDiffSummary())
     } catch (error) {
