@@ -1,27 +1,30 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { instance, mock, verify, when } from 'ts-mockito'
-
-import CodeMetrics from '../../updaters/codeMetrics'
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
+import { expect } from 'chai'
+import { instance, mock, verify, when } from 'ts-mockito'
+import async from 'async'
+import CodeMetrics from '../../updaters/codeMetrics'
 import Metrics from '../../updaters/metrics'
+import os from 'os'
+import Parameters from '../../updaters/parameters'
 import PullRequestComments from '../../updaters/pullRequestComments'
 import TaskLibWrapper from '../../wrappers/taskLibWrapper'
-import async from 'async'
-import { expect } from 'chai'
-import os from 'os'
 
 describe('pullRequestComments.ts', (): void => {
   let codeMetrics: CodeMetrics
+  let parameters: Parameters
   let taskLibWrapper: TaskLibWrapper
 
   beforeEach((): void => {
     codeMetrics = mock(CodeMetrics)
-    when(codeMetrics.baseSize).thenReturn(250)
-    when(codeMetrics.sufficientTestCode).thenReturn(true)
+    when(codeMetrics.hasSufficientTestCode).thenReturn(true)
     when(codeMetrics.isSmall).thenReturn(true)
     when(codeMetrics.metrics).thenReturn(new Metrics(1000, 1000, 1000))
+
+    parameters = mock(Parameters)
+    when(parameters.baseSize).thenReturn(250)
 
     taskLibWrapper = mock(TaskLibWrapper)
     when(taskLibWrapper.loc('updaters.pullRequestComments.commentFooter')).thenReturn('[Metrics added by PR Metrics. Add to Azure DevOps today!](https://marketplace.visualstudio.com/items?itemName=ms-omex.prmetrics)')
@@ -44,7 +47,7 @@ describe('pullRequestComments.ts', (): void => {
   describe('ignoredComment', (): void => {
     it('should return the expected result', (): void => {
       // Arrange
-      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(taskLibWrapper))
+      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(parameters), instance(taskLibWrapper))
 
       // Act
       const result: string = pullRequestComments.ignoredComment
@@ -58,7 +61,7 @@ describe('pullRequestComments.ts', (): void => {
   describe('getCommentData()', (): void => {
     it('should return the expected result', (): void => {
       // Arrange
-      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(taskLibWrapper))
+      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(parameters), instance(taskLibWrapper))
 
       // Act
       const result: string = pullRequestComments.getCommentData()
@@ -72,7 +75,7 @@ describe('pullRequestComments.ts', (): void => {
   describe('getCommentThreadId()', (): void => {
     it('should return the expected result', (): void => {
       // Arrange
-      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(taskLibWrapper))
+      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(parameters), instance(taskLibWrapper))
 
       // Act
       const result: number | null = pullRequestComments.getCommentThreadId()
@@ -95,7 +98,7 @@ describe('pullRequestComments.ts', (): void => {
         it(`should return the expected result for metrics '[${code[0]}, ${code[1]}, ${code[2]}, ${code[3]}, ${code[4]}]'`, (): void => {
           // Arrange
           when(codeMetrics.metrics).thenReturn(new Metrics(code[0]!, code[1]!, code[3]!))
-          const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(taskLibWrapper))
+          const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(parameters), instance(taskLibWrapper))
 
           // Act
           const result: string = pullRequestComments.getMetricsComment()
@@ -129,9 +132,9 @@ describe('pullRequestComments.ts', (): void => {
       ], (baseSize: number): void => {
         it(`should return the expected result when the pull request is not small and the base size is '${baseSize}'`, (): void => {
           // Arrange
-          when(codeMetrics.baseSize).thenReturn(baseSize)
           when(codeMetrics.isSmall).thenReturn(false)
-          const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(taskLibWrapper))
+          when(parameters.baseSize).thenReturn(baseSize)
+          const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(parameters), instance(taskLibWrapper))
 
           // Act
           const result: string = pullRequestComments.getMetricsComment()
@@ -159,8 +162,8 @@ describe('pullRequestComments.ts', (): void => {
 
     it('should return the expected result when the pull request has insufficient test coverage', (): void => {
       // Arrange
-      when(codeMetrics.sufficientTestCode).thenReturn(false)
-      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(taskLibWrapper))
+      when(codeMetrics.hasSufficientTestCode).thenReturn(false)
+      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(parameters), instance(taskLibWrapper))
 
       // Act
       const result: string = pullRequestComments.getMetricsComment()
@@ -187,8 +190,8 @@ describe('pullRequestComments.ts', (): void => {
 
     it('should return the expected result when the pull request does not require a specific level of test coverage', (): void => {
       // Arrange
-      when(codeMetrics.sufficientTestCode).thenReturn(null)
-      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(taskLibWrapper))
+      when(codeMetrics.hasSufficientTestCode).thenReturn(null)
+      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(parameters), instance(taskLibWrapper))
 
       // Act
       const result: string = pullRequestComments.getMetricsComment()
@@ -216,10 +219,10 @@ describe('pullRequestComments.ts', (): void => {
   describe('getMetricsCommentStatus()', (): void => {
     it('should return Closed when the pull request is small and has sufficient test coverage', (): void => {
       // Arrange
-      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(taskLibWrapper))
+      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(parameters), instance(taskLibWrapper))
 
       // Act
-      const result: CommentThreadStatus = pullRequestComments.getMetricsCommentStatus(true, true)
+      const result: CommentThreadStatus = pullRequestComments.getMetricsCommentStatus()
 
       // Assert
       expect(result).to.equal(CommentThreadStatus.Closed)
@@ -233,13 +236,15 @@ describe('pullRequestComments.ts', (): void => {
         [false, true],
         [false, false],
         [false, null]
-      ], (parameters: (boolean| null)[]): void => {
-        it(`should return Active when the pull request small status is '${parameters[0]}' and the sufficient test coverage status is '${parameters[1]}'`, (): void => {
+      ], (codeMetricsSettings: (boolean| null)[]): void => {
+        it(`should return Active when the pull request small status is '${codeMetricsSettings[0]}' and the sufficient test coverage status is '${codeMetricsSettings[1]}'`, (): void => {
           // Arrange
-          const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(taskLibWrapper))
+          when(codeMetrics.isSmall).thenReturn(codeMetricsSettings[0]!)
+          when(codeMetrics.hasSufficientTestCode).thenReturn(codeMetricsSettings[1]!)
+          const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(parameters), instance(taskLibWrapper))
 
           // Act
-          const result: CommentThreadStatus = pullRequestComments.getMetricsCommentStatus(parameters[0]!, parameters[1]!)
+          const result: CommentThreadStatus = pullRequestComments.getMetricsCommentStatus()
 
           // Assert
           expect(result).to.equal(CommentThreadStatus.Active)

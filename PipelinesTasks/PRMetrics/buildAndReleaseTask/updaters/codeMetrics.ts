@@ -1,270 +1,131 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import ConsoleWrapper from '../wrappers/consoleWrapper'
 import Metrics from './metrics'
+import Parameters from './parameters'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
 
-class CodeMetrics {
-  private _size: string = '';
-  private _baseSize: number = 0;
-  private _growthRate: number = 0;
-  private _testFactor: number = 0;
-  private _sufficientTestCode: boolean | null = null;
-  private _metrics: Metrics = new Metrics(0, 0, 0);
+/**
+ * A class for computing metrics for software code in pull requests.
+ */
+export default class CodeMetrics {
+  private _parameters: Parameters
+  private _taskLibWrapper: TaskLibWrapper;
+
   private _ignoredFilesWithLinesAdded: string[] = [];
   private _ignoredFilesWithoutLinesAdded: string[] = [];
-  private _fileMatchingPatterns: string[] = [];
-  private _codeFileExtensions: string[] = [];
-  private _taskLibWrapper: TaskLibWrapper;
-  private _consoleWrapper: ConsoleWrapper;
+  private _sizeIndicator: string = '';
+  private _metrics: Metrics = new Metrics(0, 0, 0);
 
-  constructor (baseSize: string, growthRate: string, testFactor: string, fileMatchingPatterns: string, codeFileExtensions: string, gitDiffSummary: string, taskLibWrapper: TaskLibWrapper, consoleWrapper: ConsoleWrapper) {
+  /**
+   * Initializes a new instance of the `CodeMetrics` class.
+   * @param parameters The parameters passed to the task.
+   * @param taskLibWrapper The wrapper around the Azure Pipelines Task Lib.
+   */
+  constructor (parameters: Parameters, taskLibWrapper: TaskLibWrapper) {
+    this._parameters = parameters
     this._taskLibWrapper = taskLibWrapper
-    this._taskLibWrapper.debug('* CodeMetrics.new()')
-
-    this._consoleWrapper = consoleWrapper
-
-    this.normalizeParameters(baseSize, growthRate, testFactor, fileMatchingPatterns, codeFileExtensions)
-    this.initializeMetrics(gitDiffSummary)
-    this.setSufficientTestCode()
-    this.initializeSize()
   }
 
-  private setSufficientTestCode (): void {
-    if (this._testFactor <= 0.0) {
-      this._sufficientTestCode = null
-    } else {
-      this._sufficientTestCode = this._metrics.testCode >= (this._metrics.productCode * this._testFactor)
-    }
+  /**
+   * Gets the set of ignored files with added lines.
+   * @returns The set of ignored files with added lines.
+   */
+  public get ignoredFilesWithLinesAdded (): string[] {
+    this._taskLibWrapper.debug('* CodeMetrics.ignoredFilesWithLinesAdded')
+
+    return this._ignoredFilesWithLinesAdded
   }
 
-  public get metrics () {
-    return this._metrics
+  /**
+   * Gets the set of ignored files without added lines.
+   * @returns The set of ignored files without added lines.
+   */
+  public get ignoredFilesWithoutLinesAdded (): string[] {
+    this._taskLibWrapper.debug('* CodeMetrics.ignoredFilesWithoutLinesAdded')
+
+    return this._ignoredFilesWithoutLinesAdded
   }
 
-  public get size (): string {
-    return this._size
-  }
-
-  public get baseSize (): number {
-    return this._baseSize
-  }
-
-  public get growthRate (): number {
-    return this._growthRate
-  }
-
-  public get testFactor (): number {
-    return this._testFactor
-  }
-
-  public get sufficientTestCode (): boolean | null {
-    return this._sufficientTestCode
-  }
-
-  // FROM HERE
+  /**
+   * Gets the size indicator, which will form part of the title.
+   * @returns The size indicator.
+   */
   public get sizeIndicator (): string {
     this._taskLibWrapper.debug('* CodeMetrics.sizeIndicator')
 
-    let indicator: string = this._size
-
-    if (this._sufficientTestCode) {
-      indicator += '$([char]0x2714)'
-    } else {
-      indicator += '$([char]0x26A0)$([char]0xFE0F)'
-    }
-
-    return indicator
+    return this._sizeIndicator
   }
 
+  /**
+   * Gets the set of pull request metrics.
+   * @returns The set of pull request metrics.
+   */
+  public get metrics (): Metrics {
+    this._taskLibWrapper.debug('* CodeMetrics.metrics')
+
+    return this._metrics
+  }
+
+  /**
+   * Gets a value indicating whether the pull request is small or extra small.
+   * @returns A value indicating whether the pull request is small or extra small.
+   */
   public get isSmall (): boolean {
     this._taskLibWrapper.debug('* CodeMetrics.isSmall')
 
-    return this._metrics.productCode <= this._baseSize
+    return this._metrics.productCode <= this._parameters.baseSize
   }
 
-  private normalizeParameters (baseSize: string, growthRate: string, testFactor: string, fileMatchingPatterns: string, codeFileExtensions: string): void {
-    this._taskLibWrapper.debug('* CodeMetrics.normalizeParameters()')
+  /**
+   * Gets a value indicating whether the pull request has sufficient test coverage.
+   * @returns A value indicating whether the pull request has sufficient test coverage. If the test coverage is not being checked, the value will be `null`.
+   */
+  public get hasSufficientTestCode (): boolean | null {
+    this._taskLibWrapper.debug('* CodeMetrics.hasSufficientTestCode')
 
-    const baseSizeNumber: number = parseInt(baseSize)
-    if (!baseSize || !baseSizeNumber || baseSizeNumber <= 0) {
-      this._consoleWrapper.log('Adjusting base size parameter to 250.')
-      this._baseSize = 250
-    } else {
-      this._baseSize = baseSizeNumber
+    if (this._parameters.testFactor <= 0.0) {
+      return null
     }
 
-    const growthRateNumber: number = parseFloat(growthRate)
-    if (!growthRate || !growthRateNumber || growthRateNumber < 1.0) {
-      this._consoleWrapper.log('Adjusting growth rate parameter to 2.0.')
-      this._growthRate = 2.0
-    } else {
-      this._growthRate = growthRateNumber
-    }
-
-    const testFactorNumber: number = parseFloat(testFactor)
-    if (!testFactor || !testFactorNumber || testFactorNumber < 0.0) {
-      this._consoleWrapper.log('Adjusting test factor parameter to 1.5.')
-      this._testFactor = 1.5
-    } else {
-      this._testFactor = testFactorNumber
-    }
-
-    if (!fileMatchingPatterns) {
-      this._consoleWrapper.log('Adjusting file matching patterns to **/*.')
-      this._fileMatchingPatterns.push('**/*')
-    } else {
-      this._fileMatchingPatterns = fileMatchingPatterns.split('\n')
-    }
-
-    this.normalizeCodeFileExtensionsParameter(codeFileExtensions)
+    return this._metrics.testCode >= (this._metrics.productCode * this._parameters.testFactor)
   }
 
-  private normalizeCodeFileExtensionsParameter (codeFileExtensions: string): void {
-    this._taskLibWrapper.debug('* CodeMetrics.normalizeCodeFileExtensionsParameter()')
+  /**
+   * Initializes the object with the specified Git input.
+   * @param gitDiffSummary The Git diff summary input.
+   */
+  public initialize (gitDiffSummary: string): void {
+    this._taskLibWrapper.debug('* CodeMetrics.initialize()')
 
-    if (codeFileExtensions) {
-      this._consoleWrapper.log("Adjusting code file extensions parameter to default values.'")
-
-      this._codeFileExtensions = [
-        '*.ada',
-        '*.adb',
-        '*.ads',
-        '*.asm',
-        '*.bas',
-        '*.bb',
-        '*.bmx',
-        '*.c',
-        '*.cbl',
-        '*.cbp',
-        '*.cc',
-        '*.clj',
-        '*.cls',
-        '*.cob',
-        '*.cpp',
-        '*.cs',
-        '*.cxx',
-        '*.d',
-        '*.dba',
-        '*.e',
-        '*.efs',
-        '*.egt',
-        '*.el',
-        '*.f',
-        '*.f77',
-        '*.f90',
-        '*.for',
-        '*.frm',
-        '*.frx',
-        '*.fth',
-        '*.ftn',
-        '*.ged',
-        '*.gm6',
-        '*.gmd',
-        '*.gmk',
-        '*.gml',
-        '*.go',
-        '*.h',
-        '*.hpp',
-        '*.hs',
-        '*.hxx',
-        '*.i',
-        '*.inc',
-        '*.js',
-        '*.java',
-        '*.l',
-        '*.lgt',
-        '*.lisp',
-        '*.m',
-        '*.m4',
-        '*.ml',
-        '*.msqr',
-        '*.n',
-        '*.nb',
-        '*.p',
-        '*.pas',
-        '*.php',
-        '*.php3',
-        '*.php4',
-        '*.php5',
-        '*.phps',
-        '*.phtml',
-        '*.piv',
-        '*.pl',
-        '*.pl1',
-        '*.pli',
-        '*.pm',
-        '*.pol',
-        '*.pp',
-        '*.prg',
-        '*.pro',
-        '*.py',
-        '*.r',
-        '*.rb',
-        '*.red',
-        '*.reds',
-        '*.rkt',
-        '*.rktl',
-        '*.s',
-        '*.scala',
-        '*.sce',
-        '*.sci',
-        '*.scm',
-        '*.sd7',
-        '*.skb',
-        '*.skc',
-        '*.skd',
-        '*.skf',
-        '*.skg',
-        '*.ski',
-        '*.skk',
-        '*.skm',
-        '*.sko',
-        '*.skp',
-        '*.skq',
-        '*.sks',
-        '*.skt',
-        '*.skz',
-        '*.spin',
-        '*.stk',
-        '*.swg',
-        '*.tcl',
-        '*.ts',
-        '*.vb',
-        '*.xpl',
-        '*.xq',
-        '*.xsl',
-        '*.y'
-      ]
-    } else {
-      const codeFileExtensionsArray: string[] = codeFileExtensions.split('\n')
-      codeFileExtensionsArray.forEach((value: string): void => {
-        this._codeFileExtensions.push(`*.${value}`)
-      })
-    }
+    this.initializeMetrics(gitDiffSummary)
+    this.initializeSizeIndicator()
   }
 
   private initializeMetrics (gitDiffSummary: string): void {
     this._taskLibWrapper.debug('* CodeMetrics.initializeMetrics()')
 
     const lines: string[] = gitDiffSummary.split('\n')
-    const filesAll: Map<string, any> = new Map()
+    const fileMetrics: Map<string, number> = this.extractFileMetrics(lines)
+    const filteredFiles: string[] = this.filterFiles(fileMetrics)
+    this.constructMetrics(fileMetrics, filteredFiles)
+  }
+
+  private extractFileMetrics (lines: string[]): Map<string, number> {
+    this._taskLibWrapper.debug('* CodeMetrics.extractFileMetrics()')
+
+    const result: Map<string, number> = new Map<string, number>()
 
     // Skip the last line as it will always be empty.
-    for (let i = 0; i < lines.length - 1; i++) {
-      let elements: string[]
+    for (let i: number = 0; i < lines.length - 1; i++) {
+      let elements: string[] = []
       const line: string | undefined = lines[i]
-
       if (line) {
         elements = line.split('s')
-      } else {
-        elements = []
       }
 
       let fileName: string = ''
-
-      for (let j = 2; j < elements.length; j++) {
+      for (let j: number = 2; j < elements.length; j++) {
         if (elements[j] !== '=>') {
           const element: string = elements[j] || ''
           const lastIndex: number = element.indexOf('{')
@@ -279,42 +140,48 @@ class CodeMetrics {
 
       if (elements[0] !== '-') {
         fileName = fileName.replace('}', '')
-        filesAll.set(fileName, elements[0])
+        result.set(fileName, parseInt(elements[0]!))
       }
     }
 
-    // filter the files based on the file extensions
-    let filesFiltered: string[] = []
+    return result
+  }
 
-    filesFiltered = [...filesAll.keys()].filter((item: string) => {
+  private filterFiles (fileMetrics: Map<string, number>): string[] {
+    this._taskLibWrapper.debug('* CodeMetrics.filterFiles()')
+
+    return [...fileMetrics.keys()].filter((item: string): boolean => {
       let matchFound: boolean = false
 
-      this._fileMatchingPatterns.every((entry: string) => {
-        if (new RegExp(`${entry}`, 'ig').test(item)) {
+      this._parameters.fileMatchingPatterns.every((entry: string): boolean => {
+        if (new RegExp(`${entry}`, 'i').test(item)) {
           matchFound = true
           return false
         }
+
         return true
       })
 
       return matchFound
     })
+  }
+
+  private constructMetrics (fileMetrics: Map<string, number>, filteredFiles: string[]): void {
+    this._taskLibWrapper.debug('* CodeMetrics.constructMetrics()')
 
     let filesFilteredIndex: number = 0
     let productCode: number = 0
     let testCode: number = 0
     let ignoredCode: number = 0
-
-    filesAll.forEach((value, key) => {
-      // The next if statement works on the principal that the result from Select-Match is guaranteed to be in the
-      // same order as the input.
-      if (filesFiltered != null && filesFilteredIndex < filesFiltered.length && filesFiltered[filesFilteredIndex] === key) {
+    fileMetrics.forEach((value: number, key: string): void => {
+      // The next if statement works on the principal that the result from the match operation is guaranteed to be in the same order as the input.
+      if (filteredFiles !== null && filesFilteredIndex < filteredFiles.length && filteredFiles[filesFilteredIndex] === key) {
         filesFilteredIndex++
-        let updatedMetrics: boolean = false
 
-        for (const codeFileExtension in this._codeFileExtensions) {
-          if (new RegExp(`${codeFileExtension}`, 'ig').test(key)) {
-            if (/\*Test\*/ig.test(key)) {
+        let updatedMetrics: boolean = false
+        for (const codeFileExtension in this._parameters.codeFileExtensions) {
+          if (new RegExp(`${codeFileExtension}`, 'i').test(key)) {
+            if (/.*Test.*/i.test(key)) {
               testCode += value
             } else {
               productCode += value
@@ -329,7 +196,7 @@ class CodeMetrics {
           ignoredCode += value
         }
       } else {
-        if (value !== '0') {
+        if (value !== 0) {
           this._ignoredFilesWithLinesAdded.push(key)
         } else {
           this._ignoredFilesWithoutLinesAdded.push(key)
@@ -342,38 +209,60 @@ class CodeMetrics {
     this._metrics = new Metrics(productCode, testCode, ignoredCode)
   }
 
-  private initializeSize (): void {
-    this._taskLibWrapper.debug('* CodeMetrics.initializeSize()')
+  private initializeSizeIndicator (): void {
+    this._taskLibWrapper.debug('* CodeMetrics.initializeSizeIndicator()')
 
-    const indicators: string[] = ['XS', 'S', 'M', 'L', 'XL']
+    const size: string = this.calculateSize()
+    let testIndicator: string = ''
+    if (this.hasSufficientTestCode !== null) {
+      if (this.hasSufficientTestCode) {
+        testIndicator = this._taskLibWrapper.loc('updaters.codeMetrics.titleTestsSufficient')
+      } else {
+        testIndicator = this._taskLibWrapper.loc('updaters.codeMetrics.titleTestsInsufficient')
+      }
+    }
 
-    this._size = indicators[1]!
-    let currentSize: number = this._baseSize
+    this._sizeIndicator = this._taskLibWrapper.loc('updaters.codeMetrics.titleSizeIndicatorFormat', size, testIndicator)
+  }
+
+  private calculateSize (): string {
+    this._taskLibWrapper.debug('* CodeMetrics.calculateSize()')
+
+    const indicators: ((prefix: string) => string)[] = [
+      (_: string): string => this._taskLibWrapper.loc('updaters.codeMetrics.titleSizeXS'),
+      (_: string): string => this._taskLibWrapper.loc('updaters.codeMetrics.titleSizeS'),
+      (_: string): string => this._taskLibWrapper.loc('updaters.codeMetrics.titleSizeM'),
+      (_: string): string => this._taskLibWrapper.loc('updaters.codeMetrics.titleSizeL'),
+      (prefix: string): string => this._taskLibWrapper.loc('updaters.codeMetrics.titleSizeXL', prefix)
+    ]
+
+    let result: string = indicators[1]!('')
+    let currentSize: number = this._parameters.baseSize
     let index: number = 1
 
     if (this._metrics.subtotal === 0) {
-      this._size = indicators[0]!
+      result = indicators[0]!('')
     } else {
       // Calculate the smaller sizes.
-      if (this._metrics.productCode < this._baseSize / this._growthRate) {
-        this._size = indicators[0]!
+      if (this._metrics.productCode < this._parameters.baseSize / this._parameters.growthRate) {
+        result = indicators[0]!('')
       }
 
       // Calculate the larger sizes.
-      if (this._metrics.productCode > this._baseSize) {
+      if (this._metrics.productCode > this._parameters.baseSize) {
         while (this._metrics.productCode > currentSize) {
           index++
-          currentSize *= this._growthRate
+          currentSize *= this._parameters.growthRate
 
           if (index < indicators.length) {
-            this._size = indicators[index]!
+            result = indicators[index]!('')
           } else {
-            this._size = (index - indicators.length + 2).toLocaleString() + indicators[-1]
+            result = indicators[indicators.length - 1]!((index - indicators.length + 2).toLocaleString())
           }
         }
       }
     }
+
+    return result
   }
 }
-
-export default CodeMetrics

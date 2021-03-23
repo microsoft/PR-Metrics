@@ -4,7 +4,7 @@
 /**
  * A class representing code metrics.
  */
-class Metrics {
+export default class Metrics {
   private readonly _productCode: number;
   private readonly _testCode: number;
   private readonly _ignoredCode: number;
@@ -73,5 +73,3 @@ class Metrics {
     return this.subtotal + this.ignoredCode
   }
 }
-
-export default Metrics

@@ -8,7 +8,7 @@ import TaskLibWrapper from './wrappers/taskLibWrapper'
 /**
  * A class for calculating and updating the code metrics within pull requests.
  */
-class CodeMetricsCalculator {
+export default class CodeMetricsCalculator {
   private _pullRequest: PullRequest;
   private _pullRequestComments: PullRequestComments;
   private _taskLibWrapper: TaskLibWrapper;
@@ -78,5 +78,3 @@ class CodeMetricsCalculator {
     this._taskLibWrapper.debug(commentData)
   }
 }
-
-export default CodeMetricsCalculator

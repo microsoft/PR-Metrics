@@ -1,8 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import Metrics from '../../updaters/metrics'
 import { expect } from 'chai'
+import Metrics from '../../updaters/metrics'
 
 describe('metrics.ts', (): void => {
   describe('constructor()', (): void => {

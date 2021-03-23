@@ -1,12 +1,12 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+import { expect } from 'chai'
+import { instance, mock, verify, when } from 'ts-mockito'
 import async from 'async'
 import CodeMetrics from '../../updaters/codeMetrics'
 import PullRequest from '../../updaters/pullRequest'
 import TaskLibWrapper from '../../wrappers/taskLibWrapper'
-import { expect } from 'chai'
-import { instance, mock, verify, when } from 'ts-mockito'
 
 describe('pullRequest.ts', (): void => {
   let codeMetrics: CodeMetrics
@@ -17,16 +17,16 @@ describe('pullRequest.ts', (): void => {
     when(codeMetrics.sizeIndicator).thenReturn('S✔')
 
     taskLibWrapper = mock(TaskLibWrapper)
+    when(taskLibWrapper.loc('updaters.codeMetrics.titleSizeIndicatorFormat', '(XS|S|M|L|\\d*XL)', '(✔|⚠️)?')).thenReturn('(XS|S|M|L|\\d*XL)(✔|⚠️)?')
+    when(taskLibWrapper.loc('updaters.codeMetrics.titleSizeL')).thenReturn('L')
+    when(taskLibWrapper.loc('updaters.codeMetrics.titleSizeM')).thenReturn('M')
+    when(taskLibWrapper.loc('updaters.codeMetrics.titleSizeS')).thenReturn('S')
+    when(taskLibWrapper.loc('updaters.codeMetrics.titleSizeXL', '\\d*')).thenReturn('\\d*XL')
+    when(taskLibWrapper.loc('updaters.codeMetrics.titleSizeXS')).thenReturn('XS')
+    when(taskLibWrapper.loc('updaters.codeMetrics.titleTestsInsufficient')).thenReturn('⚠️')
+    when(taskLibWrapper.loc('updaters.codeMetrics.titleTestsSufficient')).thenReturn('✔')
     when(taskLibWrapper.loc('updaters.pullRequest.addDescription')).thenReturn('❌ **Add a description.**')
     when(taskLibWrapper.loc('updaters.pullRequest.titleFormat', '(XS|S|M|L|\\d*XL)(✔|⚠️)?', '(.*)')).thenReturn('(XS|S|M|L|\\d*XL)(✔|⚠️)? ◾ (.*)')
-    when(taskLibWrapper.loc('updaters.pullRequest.titleSizeIndicatorFormat', '(XS|S|M|L|\\d*XL)', '(✔|⚠️)?')).thenReturn('(XS|S|M|L|\\d*XL)(✔|⚠️)?')
-    when(taskLibWrapper.loc('updaters.pullRequest.titleSizeL')).thenReturn('L')
-    when(taskLibWrapper.loc('updaters.pullRequest.titleSizeM')).thenReturn('M')
-    when(taskLibWrapper.loc('updaters.pullRequest.titleSizeS')).thenReturn('S')
-    when(taskLibWrapper.loc('updaters.pullRequest.titleSizeXL', '\\d*')).thenReturn('\\d*XL')
-    when(taskLibWrapper.loc('updaters.pullRequest.titleSizeXS')).thenReturn('XS')
-    when(taskLibWrapper.loc('updaters.pullRequest.titleTestsInsufficient')).thenReturn('⚠️')
-    when(taskLibWrapper.loc('updaters.pullRequest.titleTestsSufficient')).thenReturn('✔')
   })
 
   describe('isPullRequest', (): void => {

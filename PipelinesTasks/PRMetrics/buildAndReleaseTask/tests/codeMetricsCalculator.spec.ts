@@ -1,13 +1,13 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+import { expect } from 'chai'
+import { instance, mock, verify, when } from 'ts-mockito'
 import async from 'async'
 import CodeMetricsCalculator from '../codeMetricsCalculator'
 import PullRequest from '../updaters/pullRequest'
 import PullRequestComments from '../updaters/pullRequestComments'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
-import { expect } from 'chai'
-import { instance, mock, verify, when } from 'ts-mockito'
 
 describe('codeMetricsCalculator.ts', (): void => {
   let pullRequest: PullRequest

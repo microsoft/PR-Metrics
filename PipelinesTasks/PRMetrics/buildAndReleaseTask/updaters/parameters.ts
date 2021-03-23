@@ -7,7 +7,7 @@ import TaskLibWrapper from '../wrappers/taskLibWrapper'
 /**
  * A class representing parameters passed to the task.
  */
-class Parameters {
+export default class Parameters {
   private _consoleWrapper: ConsoleWrapper;
   private _taskLibWrapper: TaskLibWrapper;
 
@@ -269,5 +269,3 @@ class Parameters {
     }
   }
 }
-
-export default Parameters
