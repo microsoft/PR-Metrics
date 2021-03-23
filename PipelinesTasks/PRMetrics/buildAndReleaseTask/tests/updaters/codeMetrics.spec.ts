@@ -45,7 +45,7 @@ describe('codeMetrics.ts', (): void => {
       codeMetrics.metrics.testCode = 500 // sufficientTestCode = true
       codeMetrics.metrics.productCode = 0
       codeMetrics.testFactor = 0
-      expect(codeMetrics.hasSufficientTestCode()).to.equal(true)
+      expect(codeMetrics.sufficientTestCode).to.equal(true)
       result = codeMetrics.getSizeIndicator()
       expect(result).to.equal('abc=$([char]0x2714)')
 
@@ -53,7 +53,7 @@ describe('codeMetrics.ts', (): void => {
       codeMetrics.metrics.testCode = -500 // sufficientTestCode = false
       codeMetrics.metrics.productCode = 0
       codeMetrics.testFactor = 5
-      expect(codeMetrics.hasSufficientTestCode()).to.equal(false)
+      expect(codeMetrics.sufficientTestCode).to.equal(false)
       result = codeMetrics.getSizeIndicator()
       expect(result).to.equal('abc=$([char]0x26A0)$([char]0xFE0F)')
       verify(taskLibWrapper.debug('* CodeMetrics.getSizeIndicator()')).thrice()

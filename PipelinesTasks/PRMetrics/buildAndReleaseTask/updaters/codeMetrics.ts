@@ -10,6 +10,7 @@ class CodeMetrics {
   private _baseSize: number = 0;
   private _growthRate: number = 0;
   private _testFactor: number = 0;
+  private _sufficientTestCode: boolean = false;
   private _metrics: IMetrics = {
     productCode: 0,
     testCode: 0,
@@ -22,8 +23,6 @@ class CodeMetrics {
   private ignoredFilesWithoutLinesAdded: string[] = [];
   private fileMatchingPatterns: string[] = [];
   private codeFileExtensions: string[] = [];
-
-  private sufficientTestCode: boolean;
   private taskLibWrapper: TaskLibWrapper;
   private processWrapper: ProcessWrapper;
 
@@ -34,15 +33,13 @@ class CodeMetrics {
     this.processWrapper = processWrapper
 
     this.normalizeParameters(baseSize, growthRate, testFactor, fileMatchingPatterns, codeFileExtensions)
-
     this.initializeMetrics(gitDiffSummary)
-
-    this.sufficientTestCode = this.setSufficientTestCode()
+    this.setSufficientTestCode()
     this.initializeSize()
   }
 
-  private setSufficientTestCode (): boolean {
-    return this._metrics.testCode >= (this._metrics.productCode * this._testFactor)
+  private setSufficientTestCode (): void {
+    this._sufficientTestCode = this._metrics.testCode >= (this._metrics.productCode * this._testFactor)
   }
 
   public get metrics () {
@@ -52,7 +49,7 @@ class CodeMetrics {
   public set metrics (newMetrics: IMetrics) {
     // throw error if input is incorrect
     this.metrics = newMetrics
-    this.sufficientTestCode = this.setSufficientTestCode()
+    this.setSufficientTestCode()
   }
 
   public get size (): string {
@@ -89,7 +86,11 @@ class CodeMetrics {
   public set testFactor (newtestFactor: number) {
     // throw error if input is incorrect
     this._testFactor = newtestFactor
-    this.sufficientTestCode = this.setSufficientTestCode()
+    this.setSufficientTestCode()
+  }
+
+  public get sufficientTestCode (): boolean {
+    return this._sufficientTestCode
   }
 
   public getSizeIndicator (): string {
@@ -97,7 +98,7 @@ class CodeMetrics {
 
     let indicator: string = this._size
 
-    if (this.sufficientTestCode) {
+    if (this._sufficientTestCode) {
       indicator += '$([char]0x2714)'
     } else {
       indicator += '$([char]0x26A0)$([char]0xFE0F)'
@@ -116,12 +117,6 @@ class CodeMetrics {
     this.taskLibWrapper.debug('* CodeMetrics.areTestsExpected()')
 
     return this._testFactor > 0.0
-  }
-
-  public hasSufficientTestCode (): boolean {
-    this.taskLibWrapper.debug('* CodeMetrics.hasSufficientTestCode()')
-
-    return this.sufficientTestCode
   }
 
   private normalizeParameters (baseSize: string, growthRate: string, testFactor: string, fileMatchingPatterns: string, codeFileExtensions: string): void {
