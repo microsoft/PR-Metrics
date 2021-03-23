@@ -6,45 +6,33 @@ import ProcessWrapper from '../wrappers/processWrapper'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
 
 class CodeMetrics {
-  public size: string;
-  public metrics: IMetrics;
-  public ignoredFilesWithLinesAdded: string[];
-  public ignoredFilesWithoutLinesAdded: string[];
-  public baseSize: number;
+  public size: string = '';
+  public metrics: IMetrics = {
+    productCode: 0,
+    testCode: 0,
+    subtotal: 0,
+    ignored: 0,
+    total: 0
+  };
+
+  public ignoredFilesWithLinesAdded: string[] = [];
+  public ignoredFilesWithoutLinesAdded: string[] = [];
+  public baseSize: number = 0;
   public expectedTestCode: number;
 
-  private growthRate: number;
-  private testFactor: number;
-  private fileMatchingPatterns: string[];
-  private codeFileExtensions: string[];
+  private growthRate: number = 0;
+  private testFactor: number = 0;
+  private fileMatchingPatterns: string[] = [];
+  private codeFileExtensions: string[] = [];
   private sufficientTestCode: boolean;
   private taskLibWrapper: TaskLibWrapper;
   private processWrapper: ProcessWrapper;
 
   constructor (baseSize: string, growthRate: string, testFactor: string, fileMatchingPatterns: string, codeFileExtensions: string, gitDiffSummary: string, taskLibWrapper: TaskLibWrapper, processWrapper: ProcessWrapper) {
-    
     this.taskLibWrapper = taskLibWrapper
     this.taskLibWrapper.debug('* CodeMetrics.new()')
 
     this.processWrapper = processWrapper
-
-    this.size = ''
-    this.baseSize = 0
-    this.testFactor = 0
-    this.growthRate = 0
-
-    this.codeFileExtensions = []
-    this.fileMatchingPatterns = []
-    this.ignoredFilesWithLinesAdded = []
-    this.ignoredFilesWithoutLinesAdded = []
-
-    this.metrics = {
-      productCode: 0,
-      testCode: 0,
-      subtotal: 0,
-      ignored: 0,
-      total: 0
-    }
 
     this.normalizeParameters(baseSize, growthRate, testFactor, fileMatchingPatterns, codeFileExtensions)
 
