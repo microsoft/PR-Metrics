@@ -137,7 +137,6 @@ class CodeMetrics {
     doubleOutput = parseFloat(testFactor)
     if (!testFactor || !doubleOutput || doubleOutput < 0.0) {
       this._consoleWrapper.log('Adjusting test factor parameter to 1.5.')
-
       this._testFactor = 1.5
     } else {
       this._testFactor = doubleOutput
@@ -316,7 +315,22 @@ class CodeMetrics {
       }
     }
 
-    const filesFiltered: string = `Select-Match -ItemPath ${filesAll.keys()} -Pattern ${this.fileMatchingPatterns}`
+    // filter the files based on the file extensions
+    let filesFiltered: string[] = []
+
+    filesFiltered = [...filesAll.keys()].filter((item: string) => {
+      let matchFound: boolean = false
+
+      this.fileMatchingPatterns.every((entry: string) => {
+        if (new RegExp(`${entry}`, 'ig').test(item)) {
+          matchFound = true
+          return false
+        }
+        return true
+      })
+
+      return matchFound
+    })
 
     let filesFilteredIndex: number = 0
     let productCode: number = 0
