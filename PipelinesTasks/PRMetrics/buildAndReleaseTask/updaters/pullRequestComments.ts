@@ -10,7 +10,7 @@ import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfa
  * A class for managing pull requests comments.
  */
 class PullRequestComments {
-  private _taskLibWrapper: TaskLibWrapper;
+  private readonly _taskLibWrapper: TaskLibWrapper;
 
   /**
    * Initializes a new instance of the `PullRequestComments` class.

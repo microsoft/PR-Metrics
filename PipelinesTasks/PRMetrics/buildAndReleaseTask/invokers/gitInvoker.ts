@@ -8,7 +8,7 @@ import { IExecSyncResult } from 'azure-pipelines-task-lib/toolrunner'
  * A class for invoking Git commands.
  */
 class GitInvoker {
-  private _taskLibWrapper: TaskLibWrapper;
+  private readonly _taskLibWrapper: TaskLibWrapper;
 
   /**
    * Initializes a new instance of the `GitInvoker` class.

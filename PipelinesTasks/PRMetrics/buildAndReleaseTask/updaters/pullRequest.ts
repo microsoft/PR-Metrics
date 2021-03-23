@@ -7,7 +7,7 @@ import TaskLibWrapper from '../wrappers/taskLibWrapper'
  * A class for managing pull requests.
  */
 class PullRequest {
-  private _taskLibWrapper: TaskLibWrapper;
+  private readonly _taskLibWrapper: TaskLibWrapper;
 
   /**
    * Initializes a new instance of the `PullRequest` class.
