@@ -2,9 +2,10 @@
 // Licensed under the MIT License.
 
 import * as os from 'os'
+
 import CodeMetrics from './codeMetrics'
-import TaskLibWrapper from '../wrappers/taskLibWrapper'
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
+import TaskLibWrapper from '../wrappers/taskLibWrapper'
 
 /**
  * A class for managing pull requests comments.
@@ -99,7 +100,7 @@ class PullRequestComments {
     this._taskLibWrapper.debug('* PullRequestComments.addCommentSizeStatus()')
 
     let result: string = ''
-    if (this._codeMetrics.isSmall) {
+    if (this._codeMetrics.isSmall()) {
       result += this._taskLibWrapper.loc('updaters.pullRequestComments.smallPullRequestComment')
     } else {
       result += this._taskLibWrapper.loc('updaters.pullRequestComments.largePullRequestComment', this._codeMetrics.baseSize.toLocaleString())
@@ -113,8 +114,8 @@ class PullRequestComments {
     this._taskLibWrapper.debug('* PullRequestComments.addCommentTestStatus()')
 
     let result: string = ''
-    if (this._codeMetrics.hasSufficientTestCode !== null) {
-      if (this._codeMetrics.hasSufficientTestCode) {
+    if (this._codeMetrics.sufficientTestCode !== null) {
+      if (this._codeMetrics.sufficientTestCode) {
         result += this._taskLibWrapper.loc('updaters.pullRequestComments.testsSufficientComment')
       } else {
         result += this._taskLibWrapper.loc('updaters.pullRequestComments.testsInsufficientComment')
