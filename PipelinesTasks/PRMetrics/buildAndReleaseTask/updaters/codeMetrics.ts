@@ -10,7 +10,7 @@ class CodeMetrics {
   private _baseSize: number = 0;
   private _growthRate: number = 0;
   private _testFactor: number = 0;
-  private _sufficientTestCode: boolean = false;
+  private _sufficientTestCode: boolean | null = null;
   private _metrics: Metrics = new Metrics(0, 0, 0);
   private _ignoredFilesWithLinesAdded: string[] = [];
   private _ignoredFilesWithoutLinesAdded: string[] = [];
@@ -32,7 +32,11 @@ class CodeMetrics {
   }
 
   private setSufficientTestCode (): void {
-    this._sufficientTestCode = this._metrics.testCode >= (this._metrics.productCode * this._testFactor)
+    if (this._testFactor <= 0.0) {
+      this._sufficientTestCode = null
+    } else {
+      this._sufficientTestCode = this._metrics.testCode >= (this._metrics.productCode * this._testFactor)
+    }
   }
 
   public get metrics () {
@@ -59,6 +63,7 @@ class CodeMetrics {
     return this._sufficientTestCode
   }
 
+  // FROM HERE
   public get sizeIndicator (): string {
     this._taskLibWrapper.debug('* CodeMetrics.sizeIndicator')
 
@@ -79,39 +84,31 @@ class CodeMetrics {
     return this._metrics.productCode <= this._baseSize
   }
 
-  public areTestsExpected (): boolean {
-    this._taskLibWrapper.debug('* CodeMetrics.areTestsExpected()')
-
-    return this._testFactor > 0.0
-  }
-
   private normalizeParameters (baseSize: string, growthRate: string, testFactor: string, fileMatchingPatterns: string, codeFileExtensions: string): void {
     this._taskLibWrapper.debug('* CodeMetrics.normalizeParameters()')
 
-    let integerOutput: number = 0
-    integerOutput = parseInt(baseSize)
-    if (!baseSize || !integerOutput || integerOutput < 0) {
+    const baseSizeNumber: number = parseInt(baseSize)
+    if (!baseSize || !baseSizeNumber || baseSizeNumber <= 0) {
       this._consoleWrapper.log('Adjusting base size parameter to 250.')
       this._baseSize = 250
     } else {
-      this._baseSize = integerOutput
+      this._baseSize = baseSizeNumber
     }
 
-    let doubleOutput: number = 0.0
-    doubleOutput = parseFloat(growthRate)
-    if (!growthRate || !doubleOutput || doubleOutput < 1.0) {
+    const growthRateNumber: number = parseFloat(growthRate)
+    if (!growthRate || !growthRateNumber || growthRateNumber < 1.0) {
       this._consoleWrapper.log('Adjusting growth rate parameter to 2.0.')
       this._growthRate = 2.0
     } else {
-      this._growthRate = doubleOutput
+      this._growthRate = growthRateNumber
     }
 
-    doubleOutput = parseFloat(testFactor)
-    if (!testFactor || !doubleOutput || doubleOutput < 0.0) {
+    const testFactorNumber: number = parseFloat(testFactor)
+    if (!testFactor || !testFactorNumber || testFactorNumber < 0.0) {
       this._consoleWrapper.log('Adjusting test factor parameter to 1.5.')
       this._testFactor = 1.5
     } else {
-      this._testFactor = doubleOutput
+      this._testFactor = testFactorNumber
     }
 
     if (!fileMatchingPatterns) {
@@ -241,11 +238,10 @@ class CodeMetrics {
         '*.y'
       ]
     } else {
-      this._codeFileExtensions = codeFileExtensions.split('\n')
-
-      for (let i = 0; i < this._codeFileExtensions.length; i++) {
-        this._codeFileExtensions[i] = `*.${this._codeFileExtensions[i]}`
-      }
+      const codeFileExtensionsArray: string[] = codeFileExtensions.split('\n')
+      codeFileExtensionsArray.forEach((value: string): void => {
+        this._codeFileExtensions.push(`*.${value}`)
+      })
     }
   }
 
