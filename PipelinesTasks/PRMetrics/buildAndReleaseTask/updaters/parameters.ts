@@ -4,6 +4,9 @@
 import ConsoleWrapper from '../wrappers/consoleWrapper'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
 
+/**
+ * A class representing parameters passed to the task.
+ */
 class Parameters {
   private _consoleWrapper: ConsoleWrapper;
   private _taskLibWrapper: TaskLibWrapper;
@@ -14,41 +17,74 @@ class Parameters {
   private _fileMatchingPatterns: string[] = [];
   private _codeFileExtensions: string[] = [];
 
+  /**
+   * Initializes a new instance of the `Parameters` class.
+   * @param codeMetrics The wrapper around the console.
+   * @param taskLibWrapper The wrapper around the Azure Pipelines Task Lib.
+   */
   constructor (consoleWrapper: ConsoleWrapper, taskLibWrapper: TaskLibWrapper) {
     this._taskLibWrapper = taskLibWrapper
     this._consoleWrapper = consoleWrapper
   }
 
+  /**
+   * Gets the base size parameter, which is the maximum number of new lines in a small pull request.
+   * @returns The base size parameter.
+   */
   public get baseSize (): number {
     this._taskLibWrapper.debug('* Parameters.baseSize')
 
     return this._baseSize
   }
 
+  /**
+   * Gets the growth rate parameter, which is applied to the base size for calculating the size of larger pull requests.
+   * @returns The growth rate parameter.
+   */
   public get growthRate (): number {
     this._taskLibWrapper.debug('* Parameters.growthRate')
 
     return this._growthRate
   }
 
+  /**
+   * Gets the test factor parameter, which is the number of lines of test code expected for each line of product code.
+   * @returns The test factor parameter.
+   */
   public get testFactor (): number {
     this._taskLibWrapper.debug('* Parameters.testFactor')
 
     return this._testFactor
   }
 
+  /**
+   * Gets the file matching patterns parameter, which is the set of Azure DevOps file matching patterns specifying the files and folders to include.
+   * @returns The file matching patterns parameter.
+   */
   public get fileMatchingPatterns (): string[] {
     this._taskLibWrapper.debug('* Parameters.fileMatchingPatterns')
 
     return this._fileMatchingPatterns
   }
 
+  /**
+   * Gets the code file extensions parameter, which is the set of extensions for files containing code so that non-code files can be excluded.
+   * @returns The code file extensions parameter.
+   */
   public get codeFileExtensions (): string[] {
     this._taskLibWrapper.debug('* Parameters.codeFileExtensions')
 
     return this._codeFileExtensions
   }
 
+  /**
+   * Initializes the object with the specified input parameter values.
+   * @param baseSize The base size parameter input.
+   * @param growthRate The growth rate parameter input.
+   * @param testFactor The test factor parameter input.
+   * @param fileMatchingPatterns The file matching patterns parameter input.
+   * @param codeFileExtensions The code file extensions parameter input.
+   */
   public initialize (baseSize: string, growthRate: string, testFactor: string, fileMatchingPatterns: string, codeFileExtensions: string): void {
     this._taskLibWrapper.debug('* Parameters.initialize()')
 
