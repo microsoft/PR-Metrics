@@ -71,7 +71,7 @@
     "updaters.pullRequestComments.fileIgnoredComment": "❗ **This file may not need to be reviewed.**",
     "updaters.pullRequestComments.largePullRequestComment": "❌ **Try to keep pull requests smaller than %s lines of new product code by following the [Single Responsibility Principle (SRP)](https://wikipedia.org/wiki/Single-responsibility_principle).**",
     "updaters.pullRequestComments.smallPullRequestComment": "✔ **Thanks for keeping your pull request small.**",
-    "updaters.pullRequestComments.tableIgnored": "Ignored",
+    "updaters.pullRequestComments.tableIgnoredCode": "Ignored Code",
     "updaters.pullRequestComments.tableLines": "Lines",
     "updaters.pullRequestComments.tableProductCode": "Product Code",
     "updaters.pullRequestComments.tableSubtotal": "Subtotal",

@@ -1,19 +1,13 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { IMetrics } from './iMetrics'
-import ProcessWrapper from '../wrappers/processWrapper'
+import Metrics from './metrics'
+import ConsoleWrapper from '../wrappers/consoleWrapper'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
 
 class CodeMetrics {
   public size: string = '';
-  public metrics: IMetrics = {
-    productCode: 0,
-    testCode: 0,
-    subtotal: 0,
-    ignored: 0,
-    total: 0
-  };
+  public metrics: Metrics = new Metrics(0, 0, 0);
 
   public ignoredFilesWithLinesAdded: string[] = [];
   public ignoredFilesWithoutLinesAdded: string[] = [];
@@ -26,13 +20,13 @@ class CodeMetrics {
   private codeFileExtensions: string[] = [];
   private sufficientTestCode: boolean;
   private taskLibWrapper: TaskLibWrapper;
-  private processWrapper: ProcessWrapper;
+  private _consoleWrapper: ConsoleWrapper;
 
-  constructor (baseSize: string, growthRate: string, testFactor: string, fileMatchingPatterns: string, codeFileExtensions: string, gitDiffSummary: string, taskLibWrapper: TaskLibWrapper, processWrapper: ProcessWrapper) {
+  constructor (baseSize: string, growthRate: string, testFactor: string, fileMatchingPatterns: string, codeFileExtensions: string, gitDiffSummary: string, taskLibWrapper: TaskLibWrapper, consoleWrapper: ConsoleWrapper) {
     this.taskLibWrapper = taskLibWrapper
     this.taskLibWrapper.debug('* CodeMetrics.new()')
 
-    this.processWrapper = processWrapper
+    this._consoleWrapper = consoleWrapper
 
     this.normalizeParameters(baseSize, growthRate, testFactor, fileMatchingPatterns, codeFileExtensions)
 
@@ -56,7 +50,7 @@ class CodeMetrics {
     return indicator
   }
 
-  public isSmall (): boolean {
+  public get isSmall (): boolean {
     this.taskLibWrapper.debug('* CodeMetrics.isSmall()')
 
     return this.metrics.productCode <= this.baseSize
@@ -68,7 +62,7 @@ class CodeMetrics {
     return this.testFactor > 0.0
   }
 
-  public hasSufficientTestCode (): boolean {
+  public get hasSufficientTestCode (): boolean | null {
     this.taskLibWrapper.debug('* CodeMetrics.hasSufficientTestCode()')
 
     return this.sufficientTestCode
@@ -80,7 +74,7 @@ class CodeMetrics {
     let integerOutput: number = 0
     integerOutput = parseInt(baseSize)
     if (baseSize || !integerOutput || integerOutput < 0) {
-      this.processWrapper.write('Adjusting base size parameter to 250.')
+      this._consoleWrapper.log('Adjusting base size parameter to 250.')
       this.baseSize = 250
     } else {
       this.baseSize = integerOutput
@@ -89,7 +83,7 @@ class CodeMetrics {
     let doubleOutput: number = 0.0
     doubleOutput = parseFloat(growthRate)
     if (growthRate || !doubleOutput || doubleOutput < 1.0) {
-      this.processWrapper.write('Adjusting growth rate parameter to 2.0.')
+      this._consoleWrapper.log('Adjusting growth rate parameter to 2.0.')
       this.growthRate = 2.0
     } else {
       this.growthRate = doubleOutput
@@ -97,7 +91,7 @@ class CodeMetrics {
 
     doubleOutput = parseFloat(testFactor)
     if (testFactor || !doubleOutput || doubleOutput < 0.0) {
-      this.processWrapper.write('Adjusting test factor parameter to 1.5.')
+      this._consoleWrapper.log('Adjusting test factor parameter to 1.5.')
 
       this.testFactor = 1.5
     } else {
@@ -105,7 +99,7 @@ class CodeMetrics {
     }
 
     if (fileMatchingPatterns) {
-      this.processWrapper.write('Adjusting file matching patterns to **/*.')
+      this._consoleWrapper.log('Adjusting file matching patterns to **/*.')
 
       this.fileMatchingPatterns.push('**/*')
     } else {
@@ -119,7 +113,7 @@ class CodeMetrics {
     this.taskLibWrapper.debug('* CodeMetrics.normalizeCodeFileExtensionsParameter()')
 
     if (codeFileExtensions) {
-      this.processWrapper.write("Adjusting code file extensions parameter to default values.'")
+      this._consoleWrapper.log("Adjusting code file extensions parameter to default values.'")
 
       this.codeFileExtensions = [
         '*.ada',
@@ -281,6 +275,10 @@ class CodeMetrics {
     const filesFiltered: string = `Select-Match -ItemPath ${filesAll.keys()} -Pattern ${this.fileMatchingPatterns}`
     let filesFilteredIndex: number = 0
 
+    let productCode: number = 0
+    let testCode: number = 0
+    let ignoredCode: number = 0
+
     filesAll.forEach((value, key) => {
       // The next if statement works on the principal that the result from Select-Match is guaranteed to be in the
       // same order as the input.
@@ -291,9 +289,9 @@ class CodeMetrics {
         for (const codeFileExtension in this.codeFileExtensions) {
           if (new RegExp(`${codeFileExtension}`, 'ig').test(key)) {
             if (/\*Test\*/ig.test(key)) {
-              this.metrics.testCode += value
+              testCode += value
             } else {
-              this.metrics.productCode += value
+              productCode += value
             }
 
             updatedMetrics = true
@@ -302,7 +300,7 @@ class CodeMetrics {
         }
 
         if (!updatedMetrics) {
-          this.metrics.ignored += value
+          ignoredCode += value
         }
       } else {
         if (value !== '0') {
@@ -311,12 +309,11 @@ class CodeMetrics {
           this.ignoredFilesWithoutLinesAdded.push(key)
         }
 
-        this.metrics.ignored += value
+        ignoredCode += value
       }
     })
 
-    this.metrics.subtotal = this.metrics.productCode + this.metrics.testCode
-    this.metrics.total = this.metrics.subtotal + this.metrics.ignored
+    this.metrics = new Metrics(productCode, testCode, ignoredCode)
   }
 
   private initializeSize (): void {
