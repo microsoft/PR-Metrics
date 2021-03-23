@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 import * as os from 'os'
-import Metrics from './metrics'
+import CodeMetrics from './codeMetrics'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
 
@@ -10,13 +10,16 @@ import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfa
  * A class for managing pull requests comments.
  */
 class PullRequestComments {
+  private readonly _codeMetrics: CodeMetrics;
   private readonly _taskLibWrapper: TaskLibWrapper;
 
   /**
    * Initializes a new instance of the `PullRequestComments` class.
+   * @param codeMetrics The code metrics calculation logic.
    * @param taskLibWrapper The wrapper around the Azure Pipelines Task Lib.
    */
-  public constructor (taskLibWrapper: TaskLibWrapper) {
+  public constructor (codeMetrics: CodeMetrics, taskLibWrapper: TaskLibWrapper) {
+    this._codeMetrics = codeMetrics
     this._taskLibWrapper = taskLibWrapper
   }
 
@@ -42,24 +45,23 @@ class PullRequestComments {
 
   /**
    * Gets the comment to add to the comment thread.
-   * @param metrics The code metrics with which to populate the comment.
    * @returns The comment to add to the comment thread.
    */
-  public getMetricsComment (metrics: Metrics): string {
+  public getMetricsComment (): string {
     this._taskLibWrapper.debug('* PullRequestComments.getMetricsComment()')
 
     // TODO: Update once dependencies are added
     let result: string = `${this._taskLibWrapper.loc('updaters.pullRequestComments.commentTitle', '1')}${os.EOL}`
-    result += this.addCommentSizeStatus(1000, true)
-    result += this.addCommentTestStatus(true)
+    result += this.addCommentSizeStatus()
+    result += this.addCommentTestStatus()
 
     result += `||${this._taskLibWrapper.loc('updaters.pullRequestComments.tableLines')}${os.EOL}`
     result += `-|-:${os.EOL}`
-    result += this.addCommentMetrics(this._taskLibWrapper.loc('updaters.pullRequestComments.tableProductCode'), metrics.productCode, false)
-    result += this.addCommentMetrics(this._taskLibWrapper.loc('updaters.pullRequestComments.tableTestCode'), metrics.testCode, false)
-    result += this.addCommentMetrics(this._taskLibWrapper.loc('updaters.pullRequestComments.tableSubtotal'), metrics.subtotal, true)
-    result += this.addCommentMetrics(this._taskLibWrapper.loc('updaters.pullRequestComments.tableIgnoredCode'), metrics.ignoredCode, false)
-    result += this.addCommentMetrics(this._taskLibWrapper.loc('updaters.pullRequestComments.tableTotal'), metrics.total, true)
+    result += this.addCommentMetrics(this._taskLibWrapper.loc('updaters.pullRequestComments.tableProductCode'), this._codeMetrics.metrics.productCode, false)
+    result += this.addCommentMetrics(this._taskLibWrapper.loc('updaters.pullRequestComments.tableTestCode'), this._codeMetrics.metrics.testCode, false)
+    result += this.addCommentMetrics(this._taskLibWrapper.loc('updaters.pullRequestComments.tableSubtotal'), this._codeMetrics.metrics.subtotal, true)
+    result += this.addCommentMetrics(this._taskLibWrapper.loc('updaters.pullRequestComments.tableIgnoredCode'), this._codeMetrics.metrics.ignoredCode, false)
+    result += this.addCommentMetrics(this._taskLibWrapper.loc('updaters.pullRequestComments.tableTotal'), this._codeMetrics.metrics.total, true)
 
     result += os.EOL
     result += this._taskLibWrapper.loc('updaters.pullRequestComments.commentFooter')
@@ -93,26 +95,26 @@ class PullRequestComments {
     return this._taskLibWrapper.loc('updaters.pullRequestComments.fileIgnoredComment')
   }
 
-  private addCommentSizeStatus (baseSize: number, isSmall: boolean): string {
+  private addCommentSizeStatus (): string {
     this._taskLibWrapper.debug('* PullRequestComments.addCommentSizeStatus()')
 
     let result: string = ''
-    if (isSmall) {
+    if (this._codeMetrics.isSmall) {
       result += this._taskLibWrapper.loc('updaters.pullRequestComments.smallPullRequestComment')
     } else {
-      result += this._taskLibWrapper.loc('updaters.pullRequestComments.largePullRequestComment', baseSize.toLocaleString())
+      result += this._taskLibWrapper.loc('updaters.pullRequestComments.largePullRequestComment', this._codeMetrics.baseSize.toLocaleString())
     }
 
     result += os.EOL
     return result
   }
 
-  private addCommentTestStatus (hasSufficientTestCode: boolean | null): string {
+  private addCommentTestStatus (): string {
     this._taskLibWrapper.debug('* PullRequestComments.addCommentTestStatus()')
 
     let result: string = ''
-    if (hasSufficientTestCode !== null) {
-      if (hasSufficientTestCode) {
+    if (this._codeMetrics.hasSufficientTestCode !== null) {
+      if (this._codeMetrics.hasSufficientTestCode) {
         result += this._taskLibWrapper.loc('updaters.pullRequestComments.testsSufficientComment')
       } else {
         result += this._taskLibWrapper.loc('updaters.pullRequestComments.testsInsufficientComment')

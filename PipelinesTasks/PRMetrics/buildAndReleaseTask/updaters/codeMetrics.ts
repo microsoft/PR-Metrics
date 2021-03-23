@@ -1,19 +1,13 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { IMetrics } from './iMetrics'
+import Metrics from './metrics'
 import ProcessWrapper from '../wrappers/processWrapper'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
 
 class CodeMetrics {
   public size: string = '';
-  public metrics: IMetrics = {
-    productCode: 0,
-    testCode: 0,
-    subtotal: 0,
-    ignored: 0,
-    total: 0
-  };
+  public metrics: Metrics = new Metrics(0, 0, 0);
 
   public ignoredFilesWithLinesAdded: string[] = [];
   public ignoredFilesWithoutLinesAdded: string[] = [];
@@ -56,7 +50,7 @@ class CodeMetrics {
     return indicator
   }
 
-  public isSmall (): boolean {
+  public get isSmall (): boolean {
     this.taskLibWrapper.debug('* CodeMetrics.isSmall()')
 
     return this.metrics.productCode <= this.baseSize
@@ -68,7 +62,7 @@ class CodeMetrics {
     return this.testFactor > 0.0
   }
 
-  public hasSufficientTestCode (): boolean {
+  public get hasSufficientTestCode (): boolean | null {
     this.taskLibWrapper.debug('* CodeMetrics.hasSufficientTestCode()')
 
     return this.sufficientTestCode
@@ -281,6 +275,10 @@ class CodeMetrics {
     const filesFiltered: string = `Select-Match -ItemPath ${filesAll.keys()} -Pattern ${this.fileMatchingPatterns}`
     let filesFilteredIndex: number = 0
 
+    let productCode: number = 0
+    let testCode: number = 0
+    let ignoredCode: number = 0
+
     filesAll.forEach((value, key) => {
       // The next if statement works on the principal that the result from Select-Match is guaranteed to be in the
       // same order as the input.
@@ -291,9 +289,9 @@ class CodeMetrics {
         for (const codeFileExtension in this.codeFileExtensions) {
           if (new RegExp(`${codeFileExtension}`, 'ig').test(key)) {
             if (/\*Test\*/ig.test(key)) {
-              this.metrics.testCode += value
+              testCode += value
             } else {
-              this.metrics.productCode += value
+              productCode += value
             }
 
             updatedMetrics = true
@@ -302,7 +300,7 @@ class CodeMetrics {
         }
 
         if (!updatedMetrics) {
-          this.metrics.ignored += value
+          ignoredCode += value
         }
       } else {
         if (value !== '0') {
@@ -311,12 +309,11 @@ class CodeMetrics {
           this.ignoredFilesWithoutLinesAdded.push(key)
         }
 
-        this.metrics.ignored += value
+        ignoredCode += value
       }
     })
 
-    this.metrics.subtotal = this.metrics.productCode + this.metrics.testCode
-    this.metrics.total = this.metrics.subtotal + this.metrics.ignored
+    this.metrics = new Metrics(productCode, testCode, ignoredCode)
   }
 
   private initializeSize (): void {
