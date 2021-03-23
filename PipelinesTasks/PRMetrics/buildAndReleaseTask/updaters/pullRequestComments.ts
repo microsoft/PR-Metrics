@@ -25,6 +25,16 @@ class PullRequestComments {
   }
 
   /**
+   * Gets the comment to add to ignored files within the pull request.
+   * @returns The comment to add to ignored files within the pull request.
+   */
+  public get ignoredComment (): string {
+    this._taskLibWrapper.debug('* PullRequestComments.ignoredComment')
+
+    return this._taskLibWrapper.loc('updaters.pullRequestComments.fileIgnoredComment')
+  }
+
+  /**
    * Gets the data used for constructing the comment within the pull request.
    * @returns The data used for constructing the comment within the pull request.
    */
@@ -86,21 +96,11 @@ class PullRequestComments {
     return CommentThreadStatus.Active
   }
 
-  /**
-   * Gets the comment to add to ignored files within the pull request.
-   * @returns The comment to add to ignored files within the pull request.
-   */
-  public getIgnoredComment (): string {
-    this._taskLibWrapper.debug('* PullRequestComments.getIgnoredComment()')
-
-    return this._taskLibWrapper.loc('updaters.pullRequestComments.fileIgnoredComment')
-  }
-
   private addCommentSizeStatus (): string {
     this._taskLibWrapper.debug('* PullRequestComments.addCommentSizeStatus()')
 
     let result: string = ''
-    if (this._codeMetrics.isSmall()) {
+    if (this._codeMetrics.isSmall) {
       result += this._taskLibWrapper.loc('updaters.pullRequestComments.smallPullRequestComment')
     } else {
       result += this._taskLibWrapper.loc('updaters.pullRequestComments.largePullRequestComment', this._codeMetrics.baseSize.toLocaleString())

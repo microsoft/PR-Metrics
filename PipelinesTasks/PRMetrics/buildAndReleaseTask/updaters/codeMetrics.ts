@@ -55,12 +55,12 @@ class CodeMetrics {
     return this._testFactor
   }
 
-  public get sufficientTestCode (): boolean {
+  public get sufficientTestCode (): boolean | null {
     return this._sufficientTestCode
   }
 
-  public getSizeIndicator (): string {
-    this._taskLibWrapper.debug('* CodeMetrics.getSizeIndicator()')
+  public get sizeIndicator (): string {
+    this._taskLibWrapper.debug('* CodeMetrics.sizeIndicator')
 
     let indicator: string = this._size
 

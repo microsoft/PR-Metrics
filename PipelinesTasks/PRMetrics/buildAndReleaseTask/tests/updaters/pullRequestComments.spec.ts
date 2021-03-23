@@ -19,8 +19,8 @@ describe('pullRequestComments.ts', (): void => {
   beforeEach((): void => {
     codeMetrics = mock(CodeMetrics)
     when(codeMetrics.baseSize).thenReturn(250)
-    // when(codeMetrics.sufficientTestCode).thenReturn(true)
-    when(codeMetrics.isSmall()).thenReturn(true)
+    when(codeMetrics.sufficientTestCode).thenReturn(true)
+    when(codeMetrics.isSmall).thenReturn(true)
     when(codeMetrics.metrics).thenReturn(new Metrics(1000, 1000, 1000))
 
     taskLibWrapper = mock(TaskLibWrapper)
@@ -39,6 +39,20 @@ describe('pullRequestComments.ts', (): void => {
     when(taskLibWrapper.loc('updaters.pullRequestComments.tableTotal')).thenReturn('Total')
     when(taskLibWrapper.loc('updaters.pullRequestComments.testsInsufficientComment')).thenReturn('⚠️ **Consider adding additional tests.**')
     when(taskLibWrapper.loc('updaters.pullRequestComments.testsSufficientComment')).thenReturn('✔ **Thanks for adding tests.**')
+  })
+
+  describe('ignoredComment', (): void => {
+    it('should return the expected result', (): void => {
+      // Arrange
+      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(taskLibWrapper))
+
+      // Act
+      const result: string = pullRequestComments.ignoredComment
+
+      // Assert
+      expect(result).to.equal('❗ **This file may not need to be reviewed.**')
+      verify(taskLibWrapper.debug('* PullRequestComments.ignoredComment')).once()
+    })
   })
 
   describe('getCommentData()', (): void => {
@@ -116,7 +130,7 @@ describe('pullRequestComments.ts', (): void => {
         it(`should return the expected result when the pull request is not small and the base size is '${baseSize}'`, (): void => {
           // Arrange
           when(codeMetrics.baseSize).thenReturn(baseSize)
-          when(codeMetrics.isSmall()).thenReturn(false)
+          when(codeMetrics.isSmall).thenReturn(false)
           const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(taskLibWrapper))
 
           // Act
@@ -173,7 +187,7 @@ describe('pullRequestComments.ts', (): void => {
 
     it('should return the expected result when the pull request does not require a specific level of test coverage', (): void => {
       // Arrange
-      // when(codeMetrics.sufficientTestCode).thenReturn(null)
+      when(codeMetrics.sufficientTestCode).thenReturn(null)
       const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(taskLibWrapper))
 
       // Act
@@ -232,19 +246,5 @@ describe('pullRequestComments.ts', (): void => {
           verify(taskLibWrapper.debug('* PullRequestComments.getMetricsCommentStatus()')).once()
         })
       })
-  })
-
-  describe('getIgnoredComment()', (): void => {
-    it('should return the expected result', (): void => {
-      // Arrange
-      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(taskLibWrapper))
-
-      // Act
-      const result: string = pullRequestComments.getIgnoredComment()
-
-      // Assert
-      expect(result).to.equal('❗ **This file may not need to be reviewed.**')
-      verify(taskLibWrapper.debug('* PullRequestComments.getIgnoredComment()')).once()
-    })
   })
 })

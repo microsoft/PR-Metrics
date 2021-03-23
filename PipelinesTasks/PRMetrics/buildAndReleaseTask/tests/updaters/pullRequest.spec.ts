@@ -2,15 +2,20 @@
 // Licensed under the MIT License.
 
 import async from 'async'
+import CodeMetrics from '../../updaters/codeMetrics'
 import PullRequest from '../../updaters/pullRequest'
 import TaskLibWrapper from '../../wrappers/taskLibWrapper'
 import { expect } from 'chai'
 import { instance, mock, verify, when } from 'ts-mockito'
 
 describe('pullRequest.ts', (): void => {
+  let codeMetrics: CodeMetrics
   let taskLibWrapper: TaskLibWrapper
 
   beforeEach((): void => {
+    codeMetrics = mock(CodeMetrics)
+    when(codeMetrics.sizeIndicator).thenReturn('S✔')
+
     taskLibWrapper = mock(TaskLibWrapper)
     when(taskLibWrapper.loc('updaters.pullRequest.addDescription')).thenReturn('❌ **Add a description.**')
     when(taskLibWrapper.loc('updaters.pullRequest.titleFormat', '(XS|S|M|L|\\d*XL)(✔|⚠️)?', '(.*)')).thenReturn('(XS|S|M|L|\\d*XL)(✔|⚠️)? ◾ (.*)')
@@ -24,18 +29,18 @@ describe('pullRequest.ts', (): void => {
     when(taskLibWrapper.loc('updaters.pullRequest.titleTestsSufficient')).thenReturn('✔')
   })
 
-  describe('isPullRequest()', (): void => {
+  describe('isPullRequest', (): void => {
     it('should return true when SYSTEM_PULLREQUEST_PULLREQUESTID is defined', (): void => {
       // Arrange
       process.env.SYSTEM_PULLREQUEST_PULLREQUESTID = 'refs/heads/develop'
-      const pullRequest: PullRequest = new PullRequest(instance(taskLibWrapper))
+      const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(taskLibWrapper))
 
       // Act
-      const result: boolean = pullRequest.isPullRequest()
+      const result: boolean = pullRequest.isPullRequest
 
       // Assert
       expect(result).to.equal(true)
-      verify(taskLibWrapper.debug('* PullRequest.isPullRequest()')).once()
+      verify(taskLibWrapper.debug('* PullRequest.isPullRequest')).once()
 
       // Finalization
       delete process.env.SYSTEM_PULLREQUEST_PULLREQUESTID
@@ -44,21 +49,21 @@ describe('pullRequest.ts', (): void => {
     it('should return false when SYSTEM_PULLREQUEST_PULLREQUESTID is not defined', (): void => {
       // Arrange
       delete process.env.SYSTEM_PULLREQUEST_TARGETBRANCH
-      const pullRequest: PullRequest = new PullRequest(instance(taskLibWrapper))
+      const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(taskLibWrapper))
 
       // Act
-      const result: boolean = pullRequest.isPullRequest()
+      const result: boolean = pullRequest.isPullRequest
 
       // Assert
       expect(result).to.equal(false)
-      verify(taskLibWrapper.debug('* PullRequest.isPullRequest()')).once()
+      verify(taskLibWrapper.debug('* PullRequest.isPullRequest')).once()
     })
   })
 
   describe('getUpdatedDescription()', (): void => {
     it('should return null when the current description is set', (): void => {
       // Arrange
-      const pullRequest: PullRequest = new PullRequest(instance(taskLibWrapper))
+      const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(taskLibWrapper))
 
       // Act
       const result: string | null = pullRequest.getUpdatedDescription('Description')
@@ -70,7 +75,7 @@ describe('pullRequest.ts', (): void => {
 
     it('should return the default description when the current description is empty', (): void => {
       // Arrange
-      const pullRequest: PullRequest = new PullRequest(instance(taskLibWrapper))
+      const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(taskLibWrapper))
 
       // Act
       const result: string | null = pullRequest.getUpdatedDescription('')
@@ -84,10 +89,10 @@ describe('pullRequest.ts', (): void => {
   describe('getUpdatedTitle()', (): void => {
     it('should return null when the current title is set to the expected title', (): void => {
       // Arrange
-      const pullRequest: PullRequest = new PullRequest(instance(taskLibWrapper))
+      const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(taskLibWrapper))
 
       // Act
-      const result: string | null = pullRequest.getUpdatedTitle('S✔ ◾ Title', 'S✔')
+      const result: string | null = pullRequest.getUpdatedTitle('S✔ ◾ Title')
 
       // Assert
       expect(result).to.equal(null)
@@ -106,10 +111,10 @@ describe('pullRequest.ts', (): void => {
       ], (currentTitle: string): void => {
         it(`should prefix the current title '${currentTitle}' when no prefix exists`, (): void => {
           // Arrange
-          const pullRequest: PullRequest = new PullRequest(instance(taskLibWrapper))
+          const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(taskLibWrapper))
 
           // Act
-          const result: string | null = pullRequest.getUpdatedTitle(currentTitle, 'S✔')
+          const result: string | null = pullRequest.getUpdatedTitle(currentTitle)
 
           // Assert
           expect(result).to.equal(`S✔ ◾ ${currentTitle}`)
@@ -143,10 +148,11 @@ describe('pullRequest.ts', (): void => {
       ], (currentTitle: string): void => {
         it(`should update the current title '${currentTitle}' correctly`, (): void => {
           // Arrange
-          const pullRequest: PullRequest = new PullRequest(instance(taskLibWrapper))
+          when(codeMetrics.sizeIndicator).thenReturn('PREFIX')
+          const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(taskLibWrapper))
 
           // Act
-          const result: string | null = pullRequest.getUpdatedTitle(currentTitle, 'PREFIX')
+          const result: string | null = pullRequest.getUpdatedTitle(currentTitle)
 
           // Assert
           expect(result).to.equal('PREFIX ◾ Title')
@@ -158,7 +164,7 @@ describe('pullRequest.ts', (): void => {
   describe('getCurrentIteration()', (): void => {
     it('should return the expected result', (): void => {
       // Arrange
-      const pullRequest: PullRequest = new PullRequest(instance(taskLibWrapper))
+      const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(taskLibWrapper))
 
       // Act
       const result: number = pullRequest.getCurrentIteration()
