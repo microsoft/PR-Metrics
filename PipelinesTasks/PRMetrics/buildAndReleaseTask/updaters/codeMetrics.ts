@@ -6,8 +6,11 @@ import ProcessWrapper from '../wrappers/processWrapper'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
 
 class CodeMetrics {
-  public size: string = '';
-  public metrics: IMetrics = {
+  private _size: string = '';
+  private _baseSize: number = 0;
+  private _growthRate: number = 0;
+  private _testFactor: number = 0;
+  private _metrics: IMetrics = {
     productCode: 0,
     testCode: 0,
     subtotal: 0,
@@ -15,15 +18,11 @@ class CodeMetrics {
     total: 0
   };
 
-  public ignoredFilesWithLinesAdded: string[] = [];
-  public ignoredFilesWithoutLinesAdded: string[] = [];
-  public baseSize: number = 0;
-  public expectedTestCode: number;
-
-  private growthRate: number = 0;
-  private testFactor: number = 0;
+  private ignoredFilesWithLinesAdded: string[] = [];
+  private ignoredFilesWithoutLinesAdded: string[] = [];
   private fileMatchingPatterns: string[] = [];
   private codeFileExtensions: string[] = [];
+  private expectedTestCode: number;
   private sufficientTestCode: boolean;
   private taskLibWrapper: TaskLibWrapper;
   private processWrapper: ProcessWrapper;
@@ -37,15 +36,60 @@ class CodeMetrics {
     this.normalizeParameters(baseSize, growthRate, testFactor, fileMatchingPatterns, codeFileExtensions)
 
     this.initializeMetrics(gitDiffSummary)
-    this.expectedTestCode = this.metrics.productCode * this.testFactor
-    this.sufficientTestCode = this.metrics.testCode >= this.expectedTestCode
+    this.expectedTestCode = this._metrics.productCode * this._testFactor
+    this.sufficientTestCode = this._metrics.testCode >= this.expectedTestCode
     this.initializeSize()
+  }
+
+  public get metrics () {
+    return this._metrics
+  }
+
+  public set metrics (newMetrics: IMetrics) {
+    // throw error if input is incorrect
+    this.metrics = newMetrics
+  }
+
+  public get size (): string {
+    return this._size
+  }
+
+  public set size (newSize: string) {
+    // throw error if input is incorrect
+    this._size = newSize
+  }
+
+  public get baseSize (): number {
+    return this._baseSize
+  }
+
+  public set baseSize (newSize: number) {
+    // throw error if input is incorrect
+    this._baseSize = newSize
+  }
+
+  public get growthRate (): number {
+    return this._growthRate
+  }
+
+  public set growthRate (newGrowthRate: number) {
+    // throw error if input is incorrect
+    this._growthRate = newGrowthRate
+  }
+
+  public get testFactor (): number {
+    return this._testFactor
+  }
+
+  public set testFactor (newtestFactor: number) {
+    // throw error if input is incorrect
+    this._testFactor = newtestFactor
   }
 
   public getSizeIndicator (): string {
     this.taskLibWrapper.debug('* CodeMetrics.getSizeIndicator()')
 
-    let indicator: string = this.size
+    let indicator: string = this._size
 
     if (this.sufficientTestCode) {
       indicator += '$([char]0x2714)'
@@ -59,13 +103,13 @@ class CodeMetrics {
   public isSmall (): boolean {
     this.taskLibWrapper.debug('* CodeMetrics.isSmall()')
 
-    return this.metrics.productCode <= this.baseSize
+    return this._metrics.productCode <= this._baseSize
   }
 
   public areTestsExpected (): boolean {
     this.taskLibWrapper.debug('* CodeMetrics.areTestsExpected()')
 
-    return this.testFactor > 0.0
+    return this._testFactor > 0.0
   }
 
   public hasSufficientTestCode (): boolean {
@@ -81,27 +125,27 @@ class CodeMetrics {
     integerOutput = parseInt(baseSize)
     if (baseSize || !integerOutput || integerOutput < 0) {
       this.processWrapper.write('Adjusting base size parameter to 250.')
-      this.baseSize = 250
+      this._baseSize = 250
     } else {
-      this.baseSize = integerOutput
+      this._baseSize = integerOutput
     }
 
     let doubleOutput: number = 0.0
     doubleOutput = parseFloat(growthRate)
     if (growthRate || !doubleOutput || doubleOutput < 1.0) {
       this.processWrapper.write('Adjusting growth rate parameter to 2.0.')
-      this.growthRate = 2.0
+      this._growthRate = 2.0
     } else {
-      this.growthRate = doubleOutput
+      this._growthRate = doubleOutput
     }
 
     doubleOutput = parseFloat(testFactor)
     if (testFactor || !doubleOutput || doubleOutput < 0.0) {
       this.processWrapper.write('Adjusting test factor parameter to 1.5.')
 
-      this.testFactor = 1.5
+      this._testFactor = 1.5
     } else {
-      this.testFactor = doubleOutput
+      this._testFactor = doubleOutput
     }
 
     if (fileMatchingPatterns) {
@@ -278,7 +322,7 @@ class CodeMetrics {
       }
     }
 
-    const filesFiltered: string = `Select-Match -ItemPath ${filesAll.keys()} -Pattern ${this.fileMatchingPatterns}`
+    const filesFiltered: string = `Select-Match -ItemPath ${filesAll.keys()} -Pattern ${this.fileMatchingPatterns}` // TODO: need to fix this one
     let filesFilteredIndex: number = 0
 
     filesAll.forEach((value, key) => {
@@ -291,9 +335,9 @@ class CodeMetrics {
         for (const codeFileExtension in this.codeFileExtensions) {
           if (new RegExp(`${codeFileExtension}`, 'ig').test(key)) {
             if (/\*Test\*/ig.test(key)) {
-              this.metrics.testCode += value
+              this._metrics.testCode += value
             } else {
-              this.metrics.productCode += value
+              this._metrics.productCode += value
             }
 
             updatedMetrics = true
@@ -302,7 +346,7 @@ class CodeMetrics {
         }
 
         if (!updatedMetrics) {
-          this.metrics.ignored += value
+          this._metrics.ignored += value
         }
       } else {
         if (value !== '0') {
@@ -311,12 +355,12 @@ class CodeMetrics {
           this.ignoredFilesWithoutLinesAdded.push(key)
         }
 
-        this.metrics.ignored += value
+        this._metrics.ignored += value
       }
     })
 
-    this.metrics.subtotal = this.metrics.productCode + this.metrics.testCode
-    this.metrics.total = this.metrics.subtotal + this.metrics.ignored
+    this._metrics.subtotal = this._metrics.productCode + this._metrics.testCode
+    this._metrics.total = this._metrics.subtotal + this._metrics.ignored
   }
 
   private initializeSize (): void {
@@ -324,28 +368,28 @@ class CodeMetrics {
 
     const indicators: string[] = ['XS', 'S', 'M', 'L', 'XL']
 
-    this.size = indicators[1]!
-    let currentSize: number = this.baseSize
+    this._size = indicators[1]!
+    let currentSize: number = this._baseSize
     let index: number = 1
 
-    if (this.metrics.subtotal === 0) {
-      this.size = indicators[0]!
+    if (this._metrics.subtotal === 0) {
+      this._size = indicators[0]!
     } else {
       // Calculate the smaller sizes.
-      if (this.metrics.productCode < this.baseSize / this.growthRate) {
-        this.size = indicators[0]!
+      if (this._metrics.productCode < this._baseSize / this._growthRate) {
+        this._size = indicators[0]!
       }
 
       // Calculate the larger sizes.
-      if (this.metrics.productCode > this.baseSize) {
-        while (this.metrics.productCode > currentSize) {
+      if (this._metrics.productCode > this._baseSize) {
+        while (this._metrics.productCode > currentSize) {
           index++
-          currentSize *= this.growthRate
+          currentSize *= this._growthRate
 
           if (index < indicators.length) {
-            this.size = indicators[index]!
+            this._size = indicators[index]!
           } else {
-            this.size = (index - indicators.length + 2).toLocaleString() + indicators[-1]
+            this._size = (index - indicators.length + 2).toLocaleString() + indicators[-1]
           }
         }
       }
