@@ -112,7 +112,7 @@ class Parameters {
     this._taskLibWrapper.debug('* Parameters.initializeGrowthRate()')
 
     const convertedValue: number = parseFloat(growthRate)
-    if (!growthRate || !convertedValue || convertedValue < 1.0) {
+    if (!growthRate?.trim() || !convertedValue || convertedValue < 1.0) {
       const defaultValue: number = 2.0
       this._consoleWrapper.log(this._taskLibWrapper.loc('updaters.parameters.adjustingGrowthRate', defaultValue.toLocaleString()))
       this._growthRate = defaultValue
@@ -125,7 +125,7 @@ class Parameters {
     this._taskLibWrapper.debug('* Parameters.initializeTestFactor()')
 
     const convertedValue: number = parseFloat(testFactor)
-    if (!testFactor || !convertedValue || convertedValue < 0.0) {
+    if (!testFactor?.trim() || !convertedValue || convertedValue < 0.0) {
       const defaultValue: number = 1.5
       this._consoleWrapper.log(this._taskLibWrapper.loc('updaters.parameters.adjustingTestFactor', defaultValue.toLocaleString()))
       this._testFactor = defaultValue
@@ -137,7 +137,7 @@ class Parameters {
   private initializeFileMatchingPatterns (fileMatchingPatterns: string): void {
     this._taskLibWrapper.debug('* Parameters.initializeFileMatchingPatterns()')
 
-    if (!fileMatchingPatterns) {
+    if (!fileMatchingPatterns?.trim()) {
       const defaultValue: string = '**/*'
       this._consoleWrapper.log(this._taskLibWrapper.loc('updaters.parameters.adjustingFileMatchingPatterns', defaultValue))
       this._fileMatchingPatterns.push(defaultValue)
@@ -149,7 +149,7 @@ class Parameters {
   private initializeCodeFileExtensions (codeFileExtensions: string): void {
     this._taskLibWrapper.debug('* Parameters.initializeCodeFileExtensions()')
 
-    if (!codeFileExtensions) {
+    if (!codeFileExtensions?.trim()) {
       const codeFileExtensionsArray: string[] = codeFileExtensions.split('\n')
       codeFileExtensionsArray.forEach((value: string): void => {
         this._codeFileExtensions.push(`*.${value}`)
