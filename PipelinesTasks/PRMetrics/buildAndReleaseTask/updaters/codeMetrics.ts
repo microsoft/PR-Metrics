@@ -42,7 +42,7 @@ class CodeMetrics {
 
   public set metrics (newMetrics: Metrics) {
     // throw error if input is incorrect
-    this.metrics = newMetrics
+    this._metrics = newMetrics
     this.setSufficientTestCode()
   }
 
@@ -118,7 +118,7 @@ class CodeMetrics {
 
     let integerOutput: number = 0
     integerOutput = parseInt(baseSize)
-    if (baseSize || !integerOutput || integerOutput < 0) {
+    if (!baseSize || !integerOutput || integerOutput < 0) {
       this._consoleWrapper.log('Adjusting base size parameter to 250.')
       this._baseSize = 250
     } else {
@@ -127,7 +127,7 @@ class CodeMetrics {
 
     let doubleOutput: number = 0.0
     doubleOutput = parseFloat(growthRate)
-    if (growthRate || !doubleOutput || doubleOutput < 1.0) {
+    if (!growthRate || !doubleOutput || doubleOutput < 1.0) {
       this._consoleWrapper.log('Adjusting growth rate parameter to 2.0.')
       this._growthRate = 2.0
     } else {
@@ -135,7 +135,7 @@ class CodeMetrics {
     }
 
     doubleOutput = parseFloat(testFactor)
-    if (testFactor || !doubleOutput || doubleOutput < 0.0) {
+    if (!testFactor || !doubleOutput || doubleOutput < 0.0) {
       this._consoleWrapper.log('Adjusting test factor parameter to 1.5.')
 
       this._testFactor = 1.5
@@ -143,9 +143,8 @@ class CodeMetrics {
       this._testFactor = doubleOutput
     }
 
-    if (fileMatchingPatterns) {
+    if (!fileMatchingPatterns) {
       this._consoleWrapper.log('Adjusting file matching patterns to **/*.')
-
       this.fileMatchingPatterns.push('**/*')
     } else {
       this.fileMatchingPatterns = fileMatchingPatterns.split('\n')
@@ -301,8 +300,8 @@ class CodeMetrics {
       for (let j = 2; j < elements.length; j++) {
         if (elements[j] !== '=>') {
           const element: string = elements[j] || ''
-
           const lastIndex: number = element.indexOf('{')
+
           if (lastIndex >= 0) {
             elements[j] = element.substring(0, lastIndex)
           }
@@ -318,8 +317,8 @@ class CodeMetrics {
     }
 
     const filesFiltered: string = `Select-Match -ItemPath ${filesAll.keys()} -Pattern ${this.fileMatchingPatterns}`
-    let filesFilteredIndex: number = 0
 
+    let filesFilteredIndex: number = 0
     let productCode: number = 0
     let testCode: number = 0
     let ignoredCode: number = 0
@@ -358,7 +357,7 @@ class CodeMetrics {
       }
     })
 
-    this.metrics = new Metrics(productCode, testCode, ignoredCode)
+    this._metrics = new Metrics(productCode, testCode, ignoredCode)
   }
 
   private initializeSize (): void {
