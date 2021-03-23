@@ -22,16 +22,8 @@ class CodeMetrics {
   private taskLibWrapper: TaskLibWrapper;
   private processWrapper: ProcessWrapper;
 
-  constructor (
-    baseSize: string,
-    growthRate: string,
-    testFactor: string,
-    fileMatchingPatterns: string,
-    codeFileExtensions: string,
-    gitDiffSummary: string,
-    taskLibWrapper: TaskLibWrapper,
-    processWrapper: ProcessWrapper
-  ) {
+  constructor (baseSize: string, growthRate: string, testFactor: string, fileMatchingPatterns: string, codeFileExtensions: string, gitDiffSummary: string, taskLibWrapper: TaskLibWrapper, processWrapper: ProcessWrapper) {
+    
     this.taskLibWrapper = taskLibWrapper
     this.taskLibWrapper.debug('* CodeMetrics.new()')
 
@@ -55,15 +47,15 @@ class CodeMetrics {
       total: 0
     }
 
-    this.NormalizeParameters(baseSize, growthRate, testFactor, fileMatchingPatterns, codeFileExtensions)
+    this.normalizeParameters(baseSize, growthRate, testFactor, fileMatchingPatterns, codeFileExtensions)
 
-    this.InitializeMetrics(gitDiffSummary)
+    this.initializeMetrics(gitDiffSummary)
     this.expectedTestCode = this.metrics.productCode * this.testFactor
     this.sufficientTestCode = this.metrics.testCode >= this.expectedTestCode
-    this.InitializeSize()
+    this.initializeSize()
   }
 
-  public GetSizeIndicator (): string {
+  public getSizeIndicator (): string {
     this.taskLibWrapper.debug('* CodeMetrics.GetSizeIndicator()')
 
     let indicator = this.size
@@ -77,31 +69,25 @@ class CodeMetrics {
     return indicator
   }
 
-  public IsSmall (): boolean {
+  public isSmall (): boolean {
     this.taskLibWrapper.debug('* CodeMetrics.IsSmall()')
 
     return this.metrics.productCode <= this.baseSize
   }
 
-  public AreTestsExpected (): boolean {
+  public areTestsExpected (): boolean {
     this.taskLibWrapper.debug('* CodeMetrics.AreTestsExpected()')
 
     return this.testFactor > 0.0
   }
 
-  public HasSufficientTestCode (): boolean {
+  public hasSufficientTestCode (): boolean {
     this.taskLibWrapper.debug('* CodeMetrics.HasSufficientTestCode()')
 
     return this.sufficientTestCode
   }
 
-  private NormalizeParameters (
-    baseSize: string,
-    growthRate: string,
-    testFactor: string,
-    fileMatchingPatterns: string,
-    codeFileExtensions: string
-  ): void {
+  private normalizeParameters (baseSize: string, growthRate: string, testFactor: string, fileMatchingPatterns: string, codeFileExtensions: string): void {
     this.taskLibWrapper.debug('* CodeMetrics.NormalizeParameters()')
 
     let integerOutput: number = 0
@@ -139,10 +125,10 @@ class CodeMetrics {
       this.fileMatchingPatterns = fileMatchingPatterns.split('\n')
     }
 
-    this.NormalizeCodeFileExtensionsParameter(codeFileExtensions)
+    this.normalizeCodeFileExtensionsParameter(codeFileExtensions)
   }
 
-  private NormalizeCodeFileExtensionsParameter (codeFileExtensions: string): void {
+  private normalizeCodeFileExtensionsParameter (codeFileExtensions: string): void {
     this.taskLibWrapper.debug('* CodeMetrics.NormalizeCodeFileExtensionsParameter()')
 
     if (isNullOrWhitespace(codeFileExtensions)) {
@@ -267,7 +253,7 @@ class CodeMetrics {
     }
   }
 
-  private InitializeMetrics (gitDiffSummary: string): void {
+  private initializeMetrics (gitDiffSummary: string): void {
     this.taskLibWrapper.debug('* CodeMetrics.InitializeMetrics()')
 
     const lines: string[] = gitDiffSummary.split('\n')
@@ -346,7 +332,7 @@ class CodeMetrics {
     this.metrics.total = this.metrics.subtotal + this.metrics.ignored
   }
 
-  private InitializeSize (): void {
+  private initializeSize (): void {
     this.taskLibWrapper.debug('* CodeMetrics.InitializeSize()')
 
     const indicators: string[] = ['XS', 'S', 'M', 'L', 'XL']
