@@ -1,7 +1,9 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
 class ProcessWrapper {
-    public log(input: string) {
-        process.stdout.write(input);
-    }
+  public write (input: string): void {
+    process.stdout.write(input)
+  }
 }
 
-export default ProcessWrapper;
+export default ProcessWrapper

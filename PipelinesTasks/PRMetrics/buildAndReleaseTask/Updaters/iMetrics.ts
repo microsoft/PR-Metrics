@@ -1,7 +1,9 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
 export interface IMetrics {
-    ProductCode: number;
-    TestCode: number;
-    Subtotal: number;
-    Ignored: number;
-    Total: number;
+    productCode: number;
+    testCode: number;
+    subtotal: number;
+    ignored: number;
+    total: number;
 }
