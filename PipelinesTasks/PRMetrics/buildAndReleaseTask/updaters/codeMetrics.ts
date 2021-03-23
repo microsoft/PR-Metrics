@@ -12,17 +12,16 @@ class CodeMetrics {
   private _testFactor: number = 0;
   private _sufficientTestCode: boolean = false;
   private _metrics: Metrics = new Metrics(0, 0, 0);
-
-  private ignoredFilesWithLinesAdded: string[] = [];
-  private ignoredFilesWithoutLinesAdded: string[] = [];
-  private fileMatchingPatterns: string[] = [];
-  private codeFileExtensions: string[] = [];
-  private taskLibWrapper: TaskLibWrapper;
+  private _ignoredFilesWithLinesAdded: string[] = [];
+  private _ignoredFilesWithoutLinesAdded: string[] = [];
+  private _fileMatchingPatterns: string[] = [];
+  private _codeFileExtensions: string[] = [];
+  private _taskLibWrapper: TaskLibWrapper;
   private _consoleWrapper: ConsoleWrapper;
 
   constructor (baseSize: string, growthRate: string, testFactor: string, fileMatchingPatterns: string, codeFileExtensions: string, gitDiffSummary: string, taskLibWrapper: TaskLibWrapper, consoleWrapper: ConsoleWrapper) {
-    this.taskLibWrapper = taskLibWrapper
-    this.taskLibWrapper.debug('* CodeMetrics.new()')
+    this._taskLibWrapper = taskLibWrapper
+    this._taskLibWrapper.debug('* CodeMetrics.new()')
 
     this._consoleWrapper = consoleWrapper
 
@@ -40,47 +39,20 @@ class CodeMetrics {
     return this._metrics
   }
 
-  public set metrics (newMetrics: Metrics) {
-    // throw error if input is incorrect
-    this._metrics = newMetrics
-    this.setSufficientTestCode()
-  }
-
   public get size (): string {
     return this._size
-  }
-
-  public set size (newSize: string) {
-    // throw error if input is incorrect
-    this._size = newSize
   }
 
   public get baseSize (): number {
     return this._baseSize
   }
 
-  public set baseSize (newSize: number) {
-    // throw error if input is incorrect
-    this._baseSize = newSize
-  }
-
   public get growthRate (): number {
     return this._growthRate
   }
 
-  public set growthRate (newGrowthRate: number) {
-    // throw error if input is incorrect
-    this._growthRate = newGrowthRate
-  }
-
   public get testFactor (): number {
     return this._testFactor
-  }
-
-  public set testFactor (newtestFactor: number) {
-    // throw error if input is incorrect
-    this._testFactor = newtestFactor
-    this.setSufficientTestCode()
   }
 
   public get sufficientTestCode (): boolean {
@@ -88,7 +60,7 @@ class CodeMetrics {
   }
 
   public getSizeIndicator (): string {
-    this.taskLibWrapper.debug('* CodeMetrics.getSizeIndicator()')
+    this._taskLibWrapper.debug('* CodeMetrics.getSizeIndicator()')
 
     let indicator: string = this._size
 
@@ -101,20 +73,20 @@ class CodeMetrics {
     return indicator
   }
 
-  public isSmall (): boolean {
-    this.taskLibWrapper.debug('* CodeMetrics.isSmall()')
+  public get isSmall (): boolean {
+    this._taskLibWrapper.debug('* CodeMetrics.isSmall')
 
     return this._metrics.productCode <= this._baseSize
   }
 
   public areTestsExpected (): boolean {
-    this.taskLibWrapper.debug('* CodeMetrics.areTestsExpected()')
+    this._taskLibWrapper.debug('* CodeMetrics.areTestsExpected()')
 
     return this._testFactor > 0.0
   }
 
   private normalizeParameters (baseSize: string, growthRate: string, testFactor: string, fileMatchingPatterns: string, codeFileExtensions: string): void {
-    this.taskLibWrapper.debug('* CodeMetrics.normalizeParameters()')
+    this._taskLibWrapper.debug('* CodeMetrics.normalizeParameters()')
 
     let integerOutput: number = 0
     integerOutput = parseInt(baseSize)
@@ -144,21 +116,21 @@ class CodeMetrics {
 
     if (!fileMatchingPatterns) {
       this._consoleWrapper.log('Adjusting file matching patterns to **/*.')
-      this.fileMatchingPatterns.push('**/*')
+      this._fileMatchingPatterns.push('**/*')
     } else {
-      this.fileMatchingPatterns = fileMatchingPatterns.split('\n')
+      this._fileMatchingPatterns = fileMatchingPatterns.split('\n')
     }
 
     this.normalizeCodeFileExtensionsParameter(codeFileExtensions)
   }
 
   private normalizeCodeFileExtensionsParameter (codeFileExtensions: string): void {
-    this.taskLibWrapper.debug('* CodeMetrics.normalizeCodeFileExtensionsParameter()')
+    this._taskLibWrapper.debug('* CodeMetrics.normalizeCodeFileExtensionsParameter()')
 
     if (codeFileExtensions) {
       this._consoleWrapper.log("Adjusting code file extensions parameter to default values.'")
 
-      this.codeFileExtensions = [
+      this._codeFileExtensions = [
         '*.ada',
         '*.adb',
         '*.ads',
@@ -269,16 +241,16 @@ class CodeMetrics {
         '*.y'
       ]
     } else {
-      this.codeFileExtensions = codeFileExtensions.split('\n')
+      this._codeFileExtensions = codeFileExtensions.split('\n')
 
-      for (let i = 0; i < this.codeFileExtensions.length; i++) {
-        this.codeFileExtensions[i] = `*.${this.codeFileExtensions[i]}`
+      for (let i = 0; i < this._codeFileExtensions.length; i++) {
+        this._codeFileExtensions[i] = `*.${this._codeFileExtensions[i]}`
       }
     }
   }
 
   private initializeMetrics (gitDiffSummary: string): void {
-    this.taskLibWrapper.debug('* CodeMetrics.initializeMetrics()')
+    this._taskLibWrapper.debug('* CodeMetrics.initializeMetrics()')
 
     const lines: string[] = gitDiffSummary.split('\n')
     const filesAll: Map<string, any> = new Map()
@@ -321,7 +293,7 @@ class CodeMetrics {
     filesFiltered = [...filesAll.keys()].filter((item: string) => {
       let matchFound: boolean = false
 
-      this.fileMatchingPatterns.every((entry: string) => {
+      this._fileMatchingPatterns.every((entry: string) => {
         if (new RegExp(`${entry}`, 'ig').test(item)) {
           matchFound = true
           return false
@@ -344,7 +316,7 @@ class CodeMetrics {
         filesFilteredIndex++
         let updatedMetrics: boolean = false
 
-        for (const codeFileExtension in this.codeFileExtensions) {
+        for (const codeFileExtension in this._codeFileExtensions) {
           if (new RegExp(`${codeFileExtension}`, 'ig').test(key)) {
             if (/\*Test\*/ig.test(key)) {
               testCode += value
@@ -362,9 +334,9 @@ class CodeMetrics {
         }
       } else {
         if (value !== '0') {
-          this.ignoredFilesWithLinesAdded.push(key)
+          this._ignoredFilesWithLinesAdded.push(key)
         } else {
-          this.ignoredFilesWithoutLinesAdded.push(key)
+          this._ignoredFilesWithoutLinesAdded.push(key)
         }
 
         ignoredCode += value
@@ -375,7 +347,7 @@ class CodeMetrics {
   }
 
   private initializeSize (): void {
-    this.taskLibWrapper.debug('* CodeMetrics.initializeSize()')
+    this._taskLibWrapper.debug('* CodeMetrics.initializeSize()')
 
     const indicators: string[] = ['XS', 'S', 'M', 'L', 'XL']
 
