@@ -4,7 +4,6 @@
 import { IMetrics } from './iMetrics'
 import ProcessWrapper from '../wrappers/processWrapper'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
-import { isNullOrWhitespace } from './codeMetricsHelpers'
 
 class CodeMetrics {
   public size: string;
@@ -56,7 +55,7 @@ class CodeMetrics {
   }
 
   public getSizeIndicator (): string {
-    this.taskLibWrapper.debug('* CodeMetrics.GetSizeIndicator()')
+    this.taskLibWrapper.debug('* CodeMetrics.getSizeIndicator()')
 
     let indicator = this.size
 
@@ -70,29 +69,29 @@ class CodeMetrics {
   }
 
   public isSmall (): boolean {
-    this.taskLibWrapper.debug('* CodeMetrics.IsSmall()')
+    this.taskLibWrapper.debug('* CodeMetrics.isSmall()')
 
     return this.metrics.productCode <= this.baseSize
   }
 
   public areTestsExpected (): boolean {
-    this.taskLibWrapper.debug('* CodeMetrics.AreTestsExpected()')
+    this.taskLibWrapper.debug('* CodeMetrics.areTestsExpected()')
 
     return this.testFactor > 0.0
   }
 
   public hasSufficientTestCode (): boolean {
-    this.taskLibWrapper.debug('* CodeMetrics.HasSufficientTestCode()')
+    this.taskLibWrapper.debug('* CodeMetrics.hasSufficientTestCode()')
 
     return this.sufficientTestCode
   }
 
   private normalizeParameters (baseSize: string, growthRate: string, testFactor: string, fileMatchingPatterns: string, codeFileExtensions: string): void {
-    this.taskLibWrapper.debug('* CodeMetrics.NormalizeParameters()')
+    this.taskLibWrapper.debug('* CodeMetrics.normalizeParameters()')
 
     let integerOutput: number = 0
     integerOutput = parseInt(baseSize)
-    if (isNullOrWhitespace(baseSize) || !integerOutput || integerOutput < 0) {
+    if (baseSize || !integerOutput || integerOutput < 0) {
       this.processWrapper.write('Adjusting base size parameter to 250.')
       this.baseSize = 250
     } else {
@@ -101,7 +100,7 @@ class CodeMetrics {
 
     let doubleOutput: number = 0.0
     doubleOutput = parseFloat(growthRate)
-    if (isNullOrWhitespace(growthRate) || !doubleOutput || doubleOutput < 1.0) {
+    if (growthRate || !doubleOutput || doubleOutput < 1.0) {
       this.processWrapper.write('Adjusting growth rate parameter to 2.0.')
       this.growthRate = 2.0
     } else {
@@ -109,7 +108,7 @@ class CodeMetrics {
     }
 
     doubleOutput = parseFloat(testFactor)
-    if (isNullOrWhitespace(testFactor) || !doubleOutput || doubleOutput < 0.0) {
+    if (testFactor || !doubleOutput || doubleOutput < 0.0) {
       this.processWrapper.write('Adjusting test factor parameter to 1.5.')
 
       this.testFactor = 1.5
@@ -117,7 +116,7 @@ class CodeMetrics {
       this.testFactor = doubleOutput
     }
 
-    if (isNullOrWhitespace(fileMatchingPatterns)) {
+    if (fileMatchingPatterns) {
       this.processWrapper.write('Adjusting file matching patterns to **/*.')
 
       this.fileMatchingPatterns.push('**/*')
@@ -129,9 +128,9 @@ class CodeMetrics {
   }
 
   private normalizeCodeFileExtensionsParameter (codeFileExtensions: string): void {
-    this.taskLibWrapper.debug('* CodeMetrics.NormalizeCodeFileExtensionsParameter()')
+    this.taskLibWrapper.debug('* CodeMetrics.normalizeCodeFileExtensionsParameter()')
 
-    if (isNullOrWhitespace(codeFileExtensions)) {
+    if (codeFileExtensions) {
       this.processWrapper.write("Adjusting code file extensions parameter to default values.'")
 
       this.codeFileExtensions = [
@@ -254,7 +253,7 @@ class CodeMetrics {
   }
 
   private initializeMetrics (gitDiffSummary: string): void {
-    this.taskLibWrapper.debug('* CodeMetrics.InitializeMetrics()')
+    this.taskLibWrapper.debug('* CodeMetrics.initializeMetrics()')
 
     const lines: string[] = gitDiffSummary.split('\n')
     const filesAll = new Map()
@@ -333,7 +332,7 @@ class CodeMetrics {
   }
 
   private initializeSize (): void {
-    this.taskLibWrapper.debug('* CodeMetrics.InitializeSize()')
+    this.taskLibWrapper.debug('* CodeMetrics.initializeSize()')
 
     const indicators: string[] = ['XS', 'S', 'M', 'L', 'XL']
 
