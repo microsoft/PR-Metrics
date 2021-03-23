@@ -3,6 +3,7 @@
 
 import async from 'async'
 import os from 'os'
+import Metrics from '../../updaters/metrics'
 import PullRequestComments from '../../updaters/pullRequestComments'
 import TaskLibWrapper from '../../wrappers/taskLibWrapper'
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
@@ -19,7 +20,7 @@ describe('pullRequestComments.ts', (): void => {
     when(taskLibWrapper.loc('updaters.pullRequestComments.fileIgnoredComment')).thenReturn('❗ **This file may not need to be reviewed.**')
     when(taskLibWrapper.loc('updaters.pullRequestComments.largePullRequestComment', '1,000')).thenReturn('❌ **Try to keep pull requests smaller than 1,000 lines of new product code by following the [Single Responsibility Principle (SRP)](https://wikipedia.org/wiki/Single-responsibility_principle).**')
     when(taskLibWrapper.loc('updaters.pullRequestComments.smallPullRequestComment')).thenReturn('✔ **Thanks for keeping your pull request small.**')
-    when(taskLibWrapper.loc('updaters.pullRequestComments.tableIgnored')).thenReturn('Ignored')
+    when(taskLibWrapper.loc('updaters.pullRequestComments.tableIgnoredCode')).thenReturn('Ignored Code')
     when(taskLibWrapper.loc('updaters.pullRequestComments.tableLines')).thenReturn('Lines')
     when(taskLibWrapper.loc('updaters.pullRequestComments.tableProductCode')).thenReturn('Product Code')
     when(taskLibWrapper.loc('updaters.pullRequestComments.tableSubtotal')).thenReturn('Subtotal')
@@ -58,32 +59,42 @@ describe('pullRequestComments.ts', (): void => {
   })
 
   describe('getMetricsComment()', (): void => {
-    it('should return the expected result', (): void => {
-      // Arrange
-      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(taskLibWrapper))
+    async.each(
+      [
+        [0, 0, 0, 0, 0],
+        [1, 0, 1, 0, 1],
+        [1, 1, 2, 1, 3],
+        [1000, 1000, 2000, 1000, 3000],
+        [1000000, 1000000, 2000000, 1000000, 3000000]
+      ], (code: number[]): void => {
+        it('should return the expected result', (): void => {
+          // Arrange
+          const pullRequestComments: PullRequestComments = new PullRequestComments(instance(taskLibWrapper))
+          const metrics: Metrics = new Metrics(code[0]!, code[1]!, code[3]!)
 
-      // Act
-      const result: string = pullRequestComments.getMetricsComment()
+          // Act
+          const result: string = pullRequestComments.getMetricsComment(metrics)
 
-      // Assert
-      expect(result).to.equal(
-        `# Metrics for iteration 1${os.EOL}` +
-        `✔ **Thanks for keeping your pull request small.**${os.EOL}` +
-        `✔ **Thanks for adding tests.**${os.EOL}` +
-        `||Lines${os.EOL}` +
-        `-|-:${os.EOL}` +
-        `Product Code|1,000${os.EOL}` +
-        `Test Code|1,000${os.EOL}` +
-        `**Subtotal**|**1,000**${os.EOL}` +
-        `Ignored|1,000${os.EOL}` +
-        `**Total**|**1,000**${os.EOL}` +
-        os.EOL +
-        '[Metrics added by PR Metrics. Add to Azure DevOps today!](https://marketplace.visualstudio.com/items?itemName=ms-omex.prmetrics)')
-      verify(taskLibWrapper.debug('* PullRequestComments.getMetricsComment()')).once()
-      verify(taskLibWrapper.debug('* PullRequestComments.addCommentSizeStatus()')).once()
-      verify(taskLibWrapper.debug('* PullRequestComments.addCommentTestStatus()')).once()
-      verify(taskLibWrapper.debug('* PullRequestComments.addCommentMetrics()')).times(5)
-    })
+          // Assert
+          expect(result).to.equal(
+            `# Metrics for iteration 1${os.EOL}` +
+            `✔ **Thanks for keeping your pull request small.**${os.EOL}` +
+            `✔ **Thanks for adding tests.**${os.EOL}` +
+            `||Lines${os.EOL}` +
+            `-|-:${os.EOL}` +
+            `Product Code|${code[0]!.toLocaleString()}${os.EOL}` +
+            `Test Code|${code[1]!.toLocaleString()}${os.EOL}` +
+            `**Subtotal**|**${code[2]!.toLocaleString()}**${os.EOL}` +
+            `Ignored Code|${code[3]!.toLocaleString()}${os.EOL}` +
+            `**Total**|**${code[4]!.toLocaleString()}**${os.EOL}` +
+            os.EOL +
+            '[Metrics added by PR Metrics. Add to Azure DevOps today!](https://marketplace.visualstudio.com/items?itemName=ms-omex.prmetrics)')
+          verify(taskLibWrapper.debug('* PullRequestComments.getMetricsComment()')).once()
+          verify(taskLibWrapper.debug('* PullRequestComments.addCommentSizeStatus()')).once()
+          verify(taskLibWrapper.debug('* PullRequestComments.addCommentTestStatus()')).once()
+          verify(taskLibWrapper.debug('* PullRequestComments.addCommentMetrics()')).times(5)
+        })
+      })
   })
 
   describe('getMetricsCommentStatus()', (): void => {

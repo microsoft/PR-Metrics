@@ -71,7 +71,7 @@
     "updaters.pullRequestComments.fileIgnoredComment": "ms-resource:loc.messages.updaters.pullRequestComments.fileIgnoredComment",
     "updaters.pullRequestComments.largePullRequestComment": "ms-resource:loc.messages.updaters.pullRequestComments.largePullRequestComment",
     "updaters.pullRequestComments.smallPullRequestComment": "ms-resource:loc.messages.updaters.pullRequestComments.smallPullRequestComment",
-    "updaters.pullRequestComments.tableIgnored": "ms-resource:loc.messages.updaters.pullRequestComments.tableIgnored",
+    "updaters.pullRequestComments.tableIgnoredCode": "ms-resource:loc.messages.updaters.pullRequestComments.tableIgnoredCode",
     "updaters.pullRequestComments.tableLines": "ms-resource:loc.messages.updaters.pullRequestComments.tableLines",
     "updaters.pullRequestComments.tableProductCode": "ms-resource:loc.messages.updaters.pullRequestComments.tableProductCode",
     "updaters.pullRequestComments.tableSubtotal": "ms-resource:loc.messages.updaters.pullRequestComments.tableSubtotal",

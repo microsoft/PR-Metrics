@@ -86,8 +86,8 @@
   "loc.messages.updaters.pullRequestComments.smallPullRequestComment": "✔ **Thanks for keeping your pull request small.**",
   "loc.messages.updaters.pullRequestComments.smallPullRequestComment.comment": "The comment added to pull requests that are small or extra small.",
 
-  "loc.messages.updaters.pullRequestComments.tableIgnored": "Ignored",
-  "loc.messages.updaters.pullRequestComments.tableIgnored.comment": "The row title for ignored code in the table in the comment added to pull requests.",
+  "loc.messages.updaters.pullRequestComments.tableIgnoredCode": "Ignored Code",
+  "loc.messages.updaters.pullRequestComments.tableIgnoredCode.comment": "The row title for ignored code in the table in the comment added to pull requests.",
 
   "loc.messages.updaters.pullRequestComments.tableLines": "Lines",
   "loc.messages.updaters.pullRequestComments.tableLines.comment": "The column title for the number of lines in the table in the comment added to pull requests.",
