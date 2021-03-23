@@ -1,19 +1,23 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+import CodeMetrics from './codeMetrics'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
 
 /**
  * A class for managing pull requests.
  */
 class PullRequest {
+  private readonly _codeMetrics: CodeMetrics;
   private readonly _taskLibWrapper: TaskLibWrapper;
 
   /**
    * Initializes a new instance of the `PullRequest` class.
+   * @param codeMetrics The code metrics calculation logic.
    * @param taskLibWrapper The wrapper around the Azure Pipelines Task Lib.
    */
-  public constructor (taskLibWrapper: TaskLibWrapper) {
+  public constructor (codeMetrics: CodeMetrics, taskLibWrapper: TaskLibWrapper) {
+    this._codeMetrics = codeMetrics
     this._taskLibWrapper = taskLibWrapper
   }
 
@@ -21,8 +25,8 @@ class PullRequest {
    * Determines whether the task is running against a pull request.
    * @returns A value indicating whether the task is running against a pull request.
    */
-  public isPullRequest (): boolean {
-    this._taskLibWrapper.debug('* PullRequest.isPullRequest()')
+  public get isPullRequest (): boolean {
+    this._taskLibWrapper.debug('* PullRequest.isPullRequest')
 
     return process.env.SYSTEM_PULLREQUEST_PULLREQUESTID !== undefined
   }
@@ -45,12 +49,12 @@ class PullRequest {
   /**
    * Gets the description to which to update the pull request's current title.
    * @param currentTitle The pull request's current title.
-   * @param sizeIndicator The size indicator with which to prefix the title.
    * @returns The value to which to update the title or `null` if the title is not to be updated.
    */
-  public getUpdatedTitle (currentTitle: string, sizeIndicator: string): string | null {
+  public getUpdatedTitle (currentTitle: string): string | null {
     this._taskLibWrapper.debug('* PullRequest.getUpdatedTitle()')
 
+    const sizeIndicator: string = this._codeMetrics.sizeIndicator
     if (currentTitle.startsWith(`${sizeIndicator} ◾ `)) {
       return null
     }

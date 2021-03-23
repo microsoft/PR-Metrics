@@ -36,8 +36,8 @@ class CodeMetrics {
     this.initializeSize()
   }
 
-  public getSizeIndicator (): string {
-    this.taskLibWrapper.debug('* CodeMetrics.getSizeIndicator()')
+  public get sizeIndicator (): string {
+    this.taskLibWrapper.debug('* CodeMetrics.sizeIndicator')
 
     let indicator: string = this.size
 
@@ -51,7 +51,7 @@ class CodeMetrics {
   }
 
   public get isSmall (): boolean {
-    this.taskLibWrapper.debug('* CodeMetrics.isSmall()')
+    this.taskLibWrapper.debug('* CodeMetrics.isSmall')
 
     return this.metrics.productCode <= this.baseSize
   }
