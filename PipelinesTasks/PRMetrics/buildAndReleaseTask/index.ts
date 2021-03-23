@@ -10,10 +10,14 @@ async function run (): Promise<void> {
   try {
     taskLib.setResourcePath(path.join(__dirname, 'task.json'))
 
+    const taskLibWrapper: TaskLibWrapper = new TaskLibWrapper()
+    console.log('Description:')
+    console.log(taskLib.loc('updaters.pullRequest.addDescription'))
+    console.log('Description through wrapper:')
+    console.log(taskLibWrapper.loc('updaters.pullRequest.addDescription'))
     try {
-      const taskLibWrapper: TaskLibWrapper = new TaskLibWrapper()
       const gitInvoker: GitInvoker = new GitInvoker(taskLibWrapper)
-      process.stdout.write(gitInvoker.getDiffSummary())
+      console.log(gitInvoker.getDiffSummary())
     } catch (error) {
       // Suppress errors temporarily for the purposes of testing.
     }

@@ -39,5 +39,74 @@
   "loc.input.label.testFactor.comment": "The label for the 'test ratio' setting on the Azure Pipelines task properties page.",
 
   "loc.instanceNameFormat": "PR Metrics",
-  "loc.instanceNameFormat.comment": "The name of the task on the Azure Pipelines task properties page."
+  "loc.instanceNameFormat.comment": "The name of the task on the Azure Pipelines task properties page.",
+
+  "loc.messages.updaters.pullRequest.addDescription": "❌ **Add a description.**",
+  "loc.messages.updaters.pullRequest.addDescription.comment": "The description to add to the pull request if none exists.",
+
+  "loc.messages.updaters.pullRequest.titleFormat": "%s ◾ %s",
+  "loc.messages.updaters.pullRequest.titleFormat.comment": "The title format. The first placeholder will be replaced by the title size and test coverage prefix, and the second placeholder will be replaced by the original pull request title.",
+
+  "loc.messages.updaters.pullRequest.titleSizeIndicatorFormat": "%s%s",
+  "loc.messages.updaters.pullRequest.titleSizeIndicatorFormat.comment": "The title size and test coverage prefix format. The first placeholder will be replaced by the title size prefix, and the second placeholder will be replaced by the test coverage prefix.",
+
+  "loc.messages.updaters.pullRequest.titleSizeL": "L",
+  "loc.messages.updaters.pullRequest.titleSizeL.comment": "The title size prefix for a large pull request.",
+
+  "loc.messages.updaters.pullRequest.titleSizeM": "M",
+  "loc.messages.updaters.pullRequest.titleSizeM.comment": "The title size prefix for a medium pull request.",
+
+  "loc.messages.updaters.pullRequest.titleSizeS": "S",
+  "loc.messages.updaters.pullRequest.titleSizeS.comment": "The title size prefix for a small pull request.",
+
+  "loc.messages.updaters.pullRequest.titleSizeXL": "%sXL",
+  "loc.messages.updaters.pullRequest.titleSizeXL.comment": "The title size prefix for an extra large pull request. The placeholder will be replaced with either an empty string or a number indicating a multiple of the extra large size.",
+
+  "loc.messages.updaters.pullRequest.titleSizeXS": "XS",
+  "loc.messages.updaters.pullRequest.titleSizeXS.comment": "The title size prefix for an extra small pull request.",
+
+  "loc.messages.updaters.pullRequest.titleTestsInsufficient": "⚠️",
+  "loc.messages.updaters.pullRequest.titleTestsInsufficient.comment": "The title test coverage prefix for a pull request with insufficient test coverage.",
+
+  "loc.messages.updaters.pullRequest.titleTestsSufficient": "✔",
+  "loc.messages.updaters.pullRequest.titleTestsSufficient.comment": "The title test coverage prefix for a pull request with sufficient test coverage.",
+
+  "loc.messages.updaters.pullRequestComments.commentTitle": "# Metrics for iteration %s",
+  "loc.messages.updaters.pullRequestComments.commentTitle.comment": "The title of the comment added to pull requests. The placeholder will be replaced by the number of the pull request iteration.",
+
+  "loc.messages.updaters.pullRequestComments.commentFooter": "[Metrics added by PR Metrics. Add to Azure DevOps today!](https://marketplace.visualstudio.com/items?itemName=ms-omex.prmetrics)",
+  "loc.messages.updaters.pullRequestComments.commentFooter.comment": "The footer of the comment added to pull requests.",
+
+  "loc.messages.updaters.pullRequestComments.fileIgnoredComment": "❗ **This file may not need to be reviewed.**",
+  "loc.messages.updaters.pullRequestComments.fileIgnoredComment.comment": "The comment added to files that are ignored.",
+
+  "loc.messages.updaters.pullRequestComments.largePullRequestComment": "❌ **Try to keep pull requests smaller than %s lines of new product code by following the [Single Responsibility Principle (SRP)](https://wikipedia.org/wiki/Single-responsibility_principle).**",
+  "loc.messages.updaters.pullRequestComments.largePullRequestComment.comment": "The comment added to pull requests that are neither small nor extra small. The placeholder will be replaced with the number of maximum number of lines allowed within a small pull request.",
+
+  "loc.messages.updaters.pullRequestComments.smallPullRequestComment": "✔ **Thanks for keeping your pull request small.**",
+  "loc.messages.updaters.pullRequestComments.smallPullRequestComment.comment": "The comment added to pull requests that are small or extra small.",
+
+  "loc.messages.updaters.pullRequestComments.tableIgnoredCode": "Ignored Code",
+  "loc.messages.updaters.pullRequestComments.tableIgnoredCode.comment": "The row title for ignored code in the table in the comment added to pull requests.",
+
+  "loc.messages.updaters.pullRequestComments.tableLines": "Lines",
+  "loc.messages.updaters.pullRequestComments.tableLines.comment": "The column title for the number of lines in the table in the comment added to pull requests.",
+
+  "loc.messages.updaters.pullRequestComments.tableProductCode": "Product Code",
+  "loc.messages.updaters.pullRequestComments.tableProductCode.comment": "The row title for product code in the table in the comment added to pull requests.",
+
+  "loc.messages.updaters.pullRequestComments.tableSubtotal": "Subtotal",
+  "loc.messages.updaters.pullRequestComments.tableSubtotal.comment": "The row title for the subtotal (i.e. the sum of the product and test code) in the table in the comment added to pull requests.",
+
+  "loc.messages.updaters.pullRequestComments.tableTestCode": "Test Code",
+  "loc.messages.updaters.pullRequestComments.tableTestCode.comment": "The row title for test code in the table in the comment added to pull requests.",
+
+  "loc.messages.updaters.pullRequestComments.tableTotal": "Total",
+  "loc.messages.updaters.pullRequestComments.tableTotal.comment": "The row title for the total in the table in the comment added to pull requests.",
+
+  "loc.messages.updaters.pullRequestComments.testsInsufficientComment": "⚠️ **Consider adding additional tests.**",
+  "loc.messages.updaters.pullRequestComments.testsInsufficientComment.comment": "The comment added to pull requests with insufficient test coverage.",
+
+  "loc.messages.updaters.pullRequestComments.testsSufficientComment": "✔ **Thanks for adding tests.**",
+  "loc.messages.updaters.pullRequestComments.testsSufficientComment.comment": "The comment added to pull requests with sufficient test coverage."
 }

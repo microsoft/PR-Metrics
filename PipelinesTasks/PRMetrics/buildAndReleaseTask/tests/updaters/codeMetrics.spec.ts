@@ -1,16 +1,17 @@
 import { instance, mock, verify, when } from 'ts-mockito'
 
 import CodeMetrics from '../../updaters/codeMetrics'
+import ConsoleWrapper from '../../wrappers/consoleWrapper'
 import ExecSyncResult from '../wrappers/execSyncResult'
 import { IExecSyncResult } from 'azure-pipelines-task-lib/toolrunner'
-import ProcessWrapper from '../../wrappers/processWrapper'
+import Metrics from '../../updaters/metrics'
 import TaskLibWrapper from '../../wrappers/taskLibWrapper'
 import { expect } from 'chai'
 
 describe('codeMetrics.ts', (): void => {
   let execSyncResult: IExecSyncResult
   let taskLibWrapper: TaskLibWrapper
-  let processWrapper: ProcessWrapper
+  let consoleWrapper: ConsoleWrapper
 
   beforeEach((): void => {
     process.env.SYSTEM_PULLREQUEST_TARGETBRANCH = 'refs/heads/develop'
@@ -20,7 +21,7 @@ describe('codeMetrics.ts', (): void => {
     execSyncResult.stdout = '1\t2\tFile.txt'
 
     taskLibWrapper = mock(TaskLibWrapper)
-    processWrapper = mock(ProcessWrapper)
+    consoleWrapper = mock(consoleWrapper)
     when(taskLibWrapper.execSync('git', 'diff --numstat origin/develop...pull/12345/merge')).thenReturn(execSyncResult)
   })
 
@@ -32,7 +33,7 @@ describe('codeMetrics.ts', (): void => {
   describe('getSizeIndicator()', (): void => {
     it('should returns the correct output when no error occurs', (): void => {
       // Arrange
-      const codeMetrics: CodeMetrics = new CodeMetrics('', '', '', '', '', '', instance(taskLibWrapper), instance(processWrapper))
+      const codeMetrics: CodeMetrics = new CodeMetrics('', '', '', '', '', '', instance(taskLibWrapper), instance(consoleWrapper))
 
       // Act
       let result: string = codeMetrics.getSizeIndicator()
@@ -42,16 +43,14 @@ describe('codeMetrics.ts', (): void => {
 
       // can change the value by setting the metric
       codeMetrics.size = 'abc='
-      codeMetrics.metrics.testCode = 500 // sufficientTestCode = true
-      codeMetrics.metrics.productCode = 0
+      codeMetrics.metrics = new Metrics(0, 500, 0) // sufficientTestCode = true
       codeMetrics.testFactor = 0
       expect(codeMetrics.sufficientTestCode).to.equal(true)
       result = codeMetrics.getSizeIndicator()
       expect(result).to.equal('abc=$([char]0x2714)')
 
       codeMetrics.size = 'abc='
-      codeMetrics.metrics.testCode = -500 // sufficientTestCode = false
-      codeMetrics.metrics.productCode = 0
+      codeMetrics.metrics = new Metrics(0, -500, 0)
       codeMetrics.testFactor = 5
       expect(codeMetrics.sufficientTestCode).to.equal(false)
       result = codeMetrics.getSizeIndicator()
@@ -63,7 +62,7 @@ describe('codeMetrics.ts', (): void => {
   describe('isSmall()', (): void => {
     it('should returns the correct output when no error occurs', (): void => {
       // Arrange
-      const codeMetrics: CodeMetrics = new CodeMetrics('', '', '', '', '', '', instance(taskLibWrapper), instance(processWrapper))
+      const codeMetrics: CodeMetrics = new CodeMetrics('', '', '', '', '', '', instance(taskLibWrapper), instance(consoleWrapper))
 
       // Act
       let result: boolean = codeMetrics.isSmall()
@@ -71,12 +70,12 @@ describe('codeMetrics.ts', (): void => {
       // Assert
       expect(result).to.equal(true)
 
-      codeMetrics.metrics.productCode = 4
+      codeMetrics.metrics = new Metrics(4, -500, 0)
       codeMetrics.baseSize = 0
       result = codeMetrics.isSmall()
       expect(result).to.equal(false)
 
-      codeMetrics.metrics.productCode = 0
+      codeMetrics.metrics = new Metrics(0, -500, 0)
       codeMetrics.baseSize = 5
       result = codeMetrics.isSmall()
       expect(result).to.equal(true)
@@ -87,7 +86,7 @@ describe('codeMetrics.ts', (): void => {
   describe('areTestsExpected()', (): void => {
     it('should returns the correct output when no error occurs', (): void => {
       // Arrange
-      const codeMetrics: CodeMetrics = new CodeMetrics('', '', '', '', '', '', instance(taskLibWrapper), instance(processWrapper))
+      const codeMetrics: CodeMetrics = new CodeMetrics('', '', '', '', '', '', instance(taskLibWrapper), instance(consoleWrapper))
 
       // Act
       let result: boolean = codeMetrics.areTestsExpected()
@@ -109,7 +108,7 @@ describe('codeMetrics.ts', (): void => {
   describe('initializeSize()', (): void => {
     it('should returns the correct output when no error occurs', (): void => {
       // Arrange
-      const codeMetrics: CodeMetrics = new CodeMetrics('', '', '', '', '', '', instance(taskLibWrapper), instance(processWrapper))
+      const codeMetrics: CodeMetrics = new CodeMetrics('', '', '', '', '', '', instance(taskLibWrapper), instance(consoleWrapper))
       verify(taskLibWrapper.debug('* CodeMetrics.initializeSize()')).once()
 
       expect(codeMetrics.size).to.equal('XS')
