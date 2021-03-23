@@ -4,13 +4,13 @@
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
 
 /**
- * A class for managing pull requests
+ * A class for managing pull requests.
  */
 class PullRequest {
   private taskLibWrapper: TaskLibWrapper;
 
   /**
-   * Initializes a new instance of the PullRequest class.
+   * Initializes a new instance of the `PullRequest` class.
    * @param taskLibWrapper The wrapper around the Azure Pipelines Task Lib.
    */
   public constructor (taskLibWrapper: TaskLibWrapper) {
@@ -75,6 +75,16 @@ class PullRequest {
     }
 
     return `${sizeIndicator} ◾ ${originalTitle}`
+  }
+
+  /**
+   * Gets the current iteration of the pull request.
+   * @returns The current iteration of the pull request.
+   */
+  public getCurrentIteration (): number {
+    this.taskLibWrapper.debug('* PullRequest.getCurrentIteration()')
+
+    return 1 // TODO: Update once dependencies are added
   }
 }
 

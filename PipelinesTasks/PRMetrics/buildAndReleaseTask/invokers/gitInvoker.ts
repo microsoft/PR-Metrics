@@ -11,7 +11,7 @@ class GitInvoker {
   private taskLibWrapper: TaskLibWrapper;
 
   /**
-   * Initializes a new instance of the GitInvoker class.
+   * Initializes a new instance of the `GitInvoker` class.
    * @param taskLibWrapper The wrapper around the Azure Pipelines Task Lib.
    */
   public constructor (taskLibWrapper: TaskLibWrapper) {
