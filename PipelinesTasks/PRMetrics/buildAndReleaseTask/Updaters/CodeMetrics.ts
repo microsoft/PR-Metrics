@@ -45,7 +45,7 @@ class CodeMetrics {
   public getSizeIndicator (): string {
     this.taskLibWrapper.debug('* CodeMetrics.getSizeIndicator()')
 
-    let indicator = this.size
+    let indicator: string = this.size
 
     if (this.sufficientTestCode) {
       indicator += '$([char]0x2714)'
@@ -244,12 +244,12 @@ class CodeMetrics {
     this.taskLibWrapper.debug('* CodeMetrics.initializeMetrics()')
 
     const lines: string[] = gitDiffSummary.split('\n')
-    const filesAll = new Map()
+    const filesAll: Map<string, any> = new Map()
 
     // Skip the last line as it will always be empty.
     for (let i = 0; i < lines.length - 1; i++) {
       let elements: string[]
-      const line = lines[i]
+      const line: string | undefined = lines[i]
 
       if (line) {
         elements = line.split('s')
@@ -257,13 +257,13 @@ class CodeMetrics {
         elements = []
       }
 
-      let fileName = ''
+      let fileName: string = ''
 
       for (let j = 2; j < elements.length; j++) {
         if (elements[j] !== '=>') {
-          const element = elements[j] || ''
+          const element: string = elements[j] || ''
 
-          const lastIndex = element.indexOf('{')
+          const lastIndex: number = element.indexOf('{')
           if (lastIndex >= 0) {
             elements[j] = element.substring(0, lastIndex)
           }
@@ -289,8 +289,8 @@ class CodeMetrics {
         let updatedMetrics: boolean = false
 
         for (const codeFileExtension in this.codeFileExtensions) {
-          if (key.test(new RegExp(`${codeFileExtension}`, 'ig'))) {
-            if (key.test(new RegExp('/*Test*/', 'ig'))) {
+          if (new RegExp(`${codeFileExtension}`, 'ig').test(key)) {
+            if (/\*Test\*/ig.test(key)) {
               this.metrics.testCode += value
             } else {
               this.metrics.productCode += value
@@ -325,8 +325,8 @@ class CodeMetrics {
     const indicators: string[] = ['XS', 'S', 'M', 'L', 'XL']
 
     this.size = indicators[1]!
-    let currentSize = this.baseSize
-    let index = 1
+    let currentSize: number = this.baseSize
+    let index: number = 1
 
     if (this.metrics.subtotal === 0) {
       this.size = indicators[0]!
