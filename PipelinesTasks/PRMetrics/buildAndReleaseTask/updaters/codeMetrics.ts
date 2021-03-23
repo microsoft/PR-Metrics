@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 import Metrics from './metrics'
-import ProcessWrapper from '../wrappers/processWrapper'
+import ConsoleWrapper from '../wrappers/consoleWrapper'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
 
 class CodeMetrics {
@@ -20,13 +20,13 @@ class CodeMetrics {
   private codeFileExtensions: string[] = [];
   private sufficientTestCode: boolean;
   private taskLibWrapper: TaskLibWrapper;
-  private processWrapper: ProcessWrapper;
+  private _consoleWrapper: ConsoleWrapper;
 
-  constructor (baseSize: string, growthRate: string, testFactor: string, fileMatchingPatterns: string, codeFileExtensions: string, gitDiffSummary: string, taskLibWrapper: TaskLibWrapper, processWrapper: ProcessWrapper) {
+  constructor (baseSize: string, growthRate: string, testFactor: string, fileMatchingPatterns: string, codeFileExtensions: string, gitDiffSummary: string, taskLibWrapper: TaskLibWrapper, consoleWrapper: ConsoleWrapper) {
     this.taskLibWrapper = taskLibWrapper
     this.taskLibWrapper.debug('* CodeMetrics.new()')
 
-    this.processWrapper = processWrapper
+    this._consoleWrapper = consoleWrapper
 
     this.normalizeParameters(baseSize, growthRate, testFactor, fileMatchingPatterns, codeFileExtensions)
 
@@ -74,7 +74,7 @@ class CodeMetrics {
     let integerOutput: number = 0
     integerOutput = parseInt(baseSize)
     if (baseSize || !integerOutput || integerOutput < 0) {
-      this.processWrapper.write('Adjusting base size parameter to 250.')
+      this._consoleWrapper.log('Adjusting base size parameter to 250.')
       this.baseSize = 250
     } else {
       this.baseSize = integerOutput
@@ -83,7 +83,7 @@ class CodeMetrics {
     let doubleOutput: number = 0.0
     doubleOutput = parseFloat(growthRate)
     if (growthRate || !doubleOutput || doubleOutput < 1.0) {
-      this.processWrapper.write('Adjusting growth rate parameter to 2.0.')
+      this._consoleWrapper.log('Adjusting growth rate parameter to 2.0.')
       this.growthRate = 2.0
     } else {
       this.growthRate = doubleOutput
@@ -91,7 +91,7 @@ class CodeMetrics {
 
     doubleOutput = parseFloat(testFactor)
     if (testFactor || !doubleOutput || doubleOutput < 0.0) {
-      this.processWrapper.write('Adjusting test factor parameter to 1.5.')
+      this._consoleWrapper.log('Adjusting test factor parameter to 1.5.')
 
       this.testFactor = 1.5
     } else {
@@ -99,7 +99,7 @@ class CodeMetrics {
     }
 
     if (fileMatchingPatterns) {
-      this.processWrapper.write('Adjusting file matching patterns to **/*.')
+      this._consoleWrapper.log('Adjusting file matching patterns to **/*.')
 
       this.fileMatchingPatterns.push('**/*')
     } else {
@@ -113,7 +113,7 @@ class CodeMetrics {
     this.taskLibWrapper.debug('* CodeMetrics.normalizeCodeFileExtensionsParameter()')
 
     if (codeFileExtensions) {
-      this.processWrapper.write("Adjusting code file extensions parameter to default values.'")
+      this._consoleWrapper.log("Adjusting code file extensions parameter to default values.'")
 
       this.codeFileExtensions = [
         '*.ada',
