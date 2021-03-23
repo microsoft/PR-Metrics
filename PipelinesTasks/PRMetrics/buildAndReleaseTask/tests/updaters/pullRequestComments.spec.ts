@@ -1,15 +1,16 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import async from 'async'
-import os from 'os'
+import { instance, mock, verify, when } from 'ts-mockito'
+
 import CodeMetrics from '../../updaters/codeMetrics'
+import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import Metrics from '../../updaters/metrics'
 import PullRequestComments from '../../updaters/pullRequestComments'
 import TaskLibWrapper from '../../wrappers/taskLibWrapper'
-import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
+import async from 'async'
 import { expect } from 'chai'
-import { instance, mock, verify, when } from 'ts-mockito'
+import os from 'os'
 
 describe('pullRequestComments.ts', (): void => {
   let codeMetrics: CodeMetrics
@@ -18,7 +19,7 @@ describe('pullRequestComments.ts', (): void => {
   beforeEach((): void => {
     codeMetrics = mock(CodeMetrics)
     when(codeMetrics.baseSize).thenReturn(250)
-    when(codeMetrics.hasSufficientTestCode).thenReturn(true)
+    when(codeMetrics.sufficientTestCode).thenReturn(true)
     when(codeMetrics.isSmall).thenReturn(true)
     when(codeMetrics.metrics).thenReturn(new Metrics(1000, 1000, 1000))
 
@@ -158,7 +159,7 @@ describe('pullRequestComments.ts', (): void => {
 
     it('should return the expected result when the pull request has insufficient test coverage', (): void => {
       // Arrange
-      when(codeMetrics.hasSufficientTestCode).thenReturn(false)
+      when(codeMetrics.sufficientTestCode).thenReturn(false)
       const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(taskLibWrapper))
 
       // Act
@@ -186,7 +187,7 @@ describe('pullRequestComments.ts', (): void => {
 
     it('should return the expected result when the pull request does not require a specific level of test coverage', (): void => {
       // Arrange
-      when(codeMetrics.hasSufficientTestCode).thenReturn(null)
+      when(codeMetrics.sufficientTestCode).thenReturn(null)
       const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(taskLibWrapper))
 
       // Act
