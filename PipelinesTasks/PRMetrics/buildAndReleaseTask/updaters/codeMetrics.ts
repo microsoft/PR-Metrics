@@ -22,7 +22,7 @@ class CodeMetrics {
   private ignoredFilesWithoutLinesAdded: string[] = [];
   private fileMatchingPatterns: string[] = [];
   private codeFileExtensions: string[] = [];
-  private expectedTestCode: number;
+
   private sufficientTestCode: boolean;
   private taskLibWrapper: TaskLibWrapper;
   private processWrapper: ProcessWrapper;
@@ -36,9 +36,13 @@ class CodeMetrics {
     this.normalizeParameters(baseSize, growthRate, testFactor, fileMatchingPatterns, codeFileExtensions)
 
     this.initializeMetrics(gitDiffSummary)
-    this.expectedTestCode = this._metrics.productCode * this._testFactor
-    this.sufficientTestCode = this._metrics.testCode >= this.expectedTestCode
+
+    this.sufficientTestCode = this.setSufficientTestCode()
     this.initializeSize()
+  }
+
+  private setSufficientTestCode (): boolean {
+    return this._metrics.testCode >= (this._metrics.productCode * this._testFactor)
   }
 
   public get metrics () {
@@ -48,6 +52,7 @@ class CodeMetrics {
   public set metrics (newMetrics: IMetrics) {
     // throw error if input is incorrect
     this.metrics = newMetrics
+    this.sufficientTestCode = this.setSufficientTestCode()
   }
 
   public get size (): string {
@@ -84,6 +89,7 @@ class CodeMetrics {
   public set testFactor (newtestFactor: number) {
     // throw error if input is incorrect
     this._testFactor = newtestFactor
+    this.sufficientTestCode = this.setSufficientTestCode()
   }
 
   public getSizeIndicator (): string {
