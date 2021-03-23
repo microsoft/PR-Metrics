@@ -130,7 +130,7 @@ jobs:
           if ($Result.Count -gt 0) { Throw 'PowerShell Analysis failed.' }
 
       - name: Super Linter
-        uses: github/super-linter@v3.15.3
+        uses: github/super-linter@v3.15.5
         env:
           EDITORCONFIG_FILE_NAME: ../../.editorconfig
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
