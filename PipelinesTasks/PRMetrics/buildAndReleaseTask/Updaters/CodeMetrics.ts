@@ -93,7 +93,7 @@ class CodeMetrics {
     let integerOutput: number = 0
     integerOutput = parseInt(baseSize)
     if (isNullOrWhitespace(baseSize) || !integerOutput || integerOutput < 0) {
-      this.processWrapper.write("Write-Information -MessageData 'Adjusting base size parameter to 250.' -InformationAction 'Continue'")
+      this.processWrapper.write('Adjusting base size parameter to 250.')
       this.baseSize = 250
     } else {
       this.baseSize = integerOutput
@@ -102,7 +102,7 @@ class CodeMetrics {
     let doubleOutput: number = 0.0
     doubleOutput = parseFloat(growthRate)
     if (isNullOrWhitespace(growthRate) || !doubleOutput || doubleOutput < 1.0) {
-      this.processWrapper.write("Write-Information -MessageData 'Adjusting growth rate parameter to 2.0.' -InformationAction 'Continue'")
+      this.processWrapper.write('Adjusting growth rate parameter to 2.0.')
       this.growthRate = 2.0
     } else {
       this.growthRate = doubleOutput
@@ -110,7 +110,7 @@ class CodeMetrics {
 
     doubleOutput = parseFloat(testFactor)
     if (isNullOrWhitespace(testFactor) || !doubleOutput || doubleOutput < 0.0) {
-      this.processWrapper.write("Write-Information -MessageData 'Adjusting test factor parameter to 1.5.' -InformationAction 'Continue'")
+      this.processWrapper.write('Adjusting test factor parameter to 1.5.')
 
       this.testFactor = 1.5
     } else {
@@ -118,7 +118,7 @@ class CodeMetrics {
     }
 
     if (isNullOrWhitespace(fileMatchingPatterns)) {
-      this.processWrapper.write("Write-Information -MessageData 'Adjusting file matching patterns to **/*.' -InformationAction 'Continue'")
+      this.processWrapper.write('Adjusting file matching patterns to **/*.')
 
       this.fileMatchingPatterns.push('**/*')
     } else {
@@ -132,7 +132,7 @@ class CodeMetrics {
     this.taskLibWrapper.debug('* CodeMetrics.NormalizeCodeFileExtensionsParameter()')
 
     if (isNullOrWhitespace(codeFileExtensions)) {
-      this.processWrapper.write("Write-Information -MessageData 'Adjusting code file extensions parameter to default values.' -InformationAction 'Continue''")
+      this.processWrapper.write("Adjusting code file extensions parameter to default values.'")
 
       this.codeFileExtensions = [
         '*.ada',
