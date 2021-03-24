@@ -14,6 +14,8 @@ import TaskLibWrapper from '../wrappers/taskLibWrapper'
  * A class for managing pull requests comments.
  */
 export default class PullRequestComments {
+  private static readonly taskCommentAuthorPrefix: string = 'Project Collection Build Service (';
+
   private readonly _azureReposInvoker: AzureReposInvoker;
   private readonly _codeMetrics: CodeMetrics;
   private readonly _parameters: Parameters;
@@ -128,10 +130,10 @@ export default class PullRequestComments {
       validator.validateField(comment.author, 'comment.author')
       validator.validateField(comment.author!.displayName, 'comment.author.displayName')
 
-      if (comment.author!.displayName!.startsWith('Project Collection Build Service (')) {
+      if (comment.author!.displayName!.startsWith(PullRequestComments.taskCommentAuthorPrefix)) {
         validator.validateField(comment.content, 'comment.content')
 
-        const commentHeader: RegExp = new RegExp(`^${this._taskLibWrapper.loc('updaters.pullRequestComments.commentTitle', currentIteration.toLocaleString())}`)
+        const commentHeader: RegExp = new RegExp(`^${this._taskLibWrapper.loc('updaters.pullRequestComments.commentTitle', '.+')}`)
         if (!comment.content!.match(commentHeader)) {
           validator.validateField(commentThread.id, 'commentThread.id')
           validator.validateField(comment.id, 'comment.id')
@@ -158,7 +160,7 @@ export default class PullRequestComments {
     validator.validateField(comment.author!.displayName, 'comment.author.displayName')
     validator.validateField(comment.content, 'comment.content')
 
-    if (comment.author!.displayName!.startsWith('Project Collection Build Service (')) {
+    if (comment.author!.displayName!.startsWith(PullRequestComments.taskCommentAuthorPrefix)) {
       if (comment.content! === this.ignoredComment) {
         const index: number = ignoredFiles.indexOf(fileName)
         if (index === -1) {

@@ -23,11 +23,27 @@ describe('pullRequestComments.ts', (): void => {
 
   beforeEach((): void => {
     azureReposInvoker = mock(AzureReposInvoker)
+    when(azureReposInvoker.getCommentThreads()).thenResolve([
+      {
+        comments: [
+          {
+            author: {
+              displayName: 'Author'
+            },
+            content: 'Content',
+            id: 1
+          }
+        ],
+        id: 2
+      }
+    ])
 
     codeMetrics = mock(CodeMetrics)
     when(codeMetrics.isSmall).thenReturn(true)
     when(codeMetrics.isSufficientlyTested).thenReturn(true)
     when(codeMetrics.metrics).thenReturn(new Metrics(1000, 1000, 1000))
+    when(codeMetrics.ignoredFilesWithLinesAdded).thenReturn([])
+    when(codeMetrics.ignoredFilesWithoutLinesAdded).thenReturn([])
 
     parameters = mock(Parameters)
     when(parameters.baseSize).thenReturn(250)
@@ -69,7 +85,7 @@ describe('pullRequestComments.ts', (): void => {
   })
 
   describe('getCommentData()', (): void => {
-    it('should return the expected result', async (): Promise<void> => {
+    it('should return the expected result when no comment is present', async (): Promise<void> => {
       // Arrange
       const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(parameters), instance(taskLibWrapper))
 
@@ -77,7 +93,11 @@ describe('pullRequestComments.ts', (): void => {
       const result: CommentData = await pullRequestComments.getCommentData(1)
 
       // Assert
+      expect(result.isPresent).to.equal(false)
       expect(result.commentId).to.equal(0)
+      expect(result.threadId).to.equal(0)
+      expect(result.ignoredFilesWithLinesAdded.length).to.equal(0)
+      expect(result.ignoredFilesWithoutLinesAdded.length).to.deep.equal(0)
       verify(taskLibWrapper.debug('* PullRequestComments.getCommentData()')).once()
     })
   })

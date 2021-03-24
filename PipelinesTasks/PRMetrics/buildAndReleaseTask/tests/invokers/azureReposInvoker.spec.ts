@@ -84,7 +84,7 @@ describe('azureReposInvoker.ts', function (): void {
     verify(taskLibWrapper.debug('* AzureReposInvoker.getDetails()')).once()
   })
 
-  it('getCurrentIterationId should return valid iteration id', async (): Promise<void> => {
+  it('getCurrentIteration should return valid iteration id', async (): Promise<void> => {
     // Act
     const result = await azureReposInvoker.getCurrentIteration()
 
