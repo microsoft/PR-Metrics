@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { instance, mock } from 'ts-mockito'
+import { instance, mock, verify } from 'ts-mockito'
 
 import ConsoleWrapper from '../../wrappers/consoleWrapper'
 import Parameters from '../../updaters/parameters'
@@ -33,6 +33,18 @@ describe('parameters.ts', (): void => {
         expect(parameters.testFactor).to.equal(1.5)
         expect(parameters.fileMatchingPatterns).to.deep.equal(['**/*'])
         expect(parameters.codeFileExtensions.length).to.equal(108)
+
+        verify(taskLibWrapper.debug('* Parameters.initialize()')).once()
+        verify(taskLibWrapper.debug('* Parameters.initializeBaseSize()')).once()
+        verify(taskLibWrapper.debug('* Parameters.initializeGrowthRate()')).once()
+        verify(taskLibWrapper.debug('* Parameters.initializeTestFactor()')).once()
+        verify(taskLibWrapper.debug('* Parameters.initializeFileMatchingPatterns()')).once()
+        verify(taskLibWrapper.debug('* Parameters.initializeCodeFileExtensions()')).once()
+        verify(taskLibWrapper.debug('* Parameters.baseSize')).once()
+        verify(taskLibWrapper.debug('* Parameters.growthRate')).once()
+        verify(taskLibWrapper.debug('* Parameters.testFactor')).once()
+        verify(taskLibWrapper.debug('* Parameters.fileMatchingPatterns')).once()
+        verify(taskLibWrapper.debug('* Parameters.codeFileExtensions')).once()
       })
 
       it('initialize - should give all the expected values', (): void => {
@@ -48,6 +60,18 @@ describe('parameters.ts', (): void => {
         expect(parameters.testFactor).to.equal(2.7)
         expect(parameters.fileMatchingPatterns).to.deep.equal(['aa', 'bb'])
         expect(parameters.codeFileExtensions).to.deep.equal(['*.js', '*.ts'])
+
+        verify(taskLibWrapper.debug('* Parameters.initialize()')).once()
+        verify(taskLibWrapper.debug('* Parameters.initializeBaseSize()')).once()
+        verify(taskLibWrapper.debug('* Parameters.initializeGrowthRate()')).once()
+        verify(taskLibWrapper.debug('* Parameters.initializeTestFactor()')).once()
+        verify(taskLibWrapper.debug('* Parameters.initializeFileMatchingPatterns()')).once()
+        verify(taskLibWrapper.debug('* Parameters.initializeCodeFileExtensions()')).once()
+        verify(taskLibWrapper.debug('* Parameters.baseSize')).once()
+        verify(taskLibWrapper.debug('* Parameters.growthRate')).once()
+        verify(taskLibWrapper.debug('* Parameters.testFactor')).once()
+        verify(taskLibWrapper.debug('* Parameters.fileMatchingPatterns')).once()
+        verify(taskLibWrapper.debug('* Parameters.codeFileExtensions')).once()
       })
     })
 
@@ -71,6 +95,14 @@ describe('parameters.ts', (): void => {
 
             // Assert
             expect(parameters.baseSize).to.equal(250)
+
+            verify(taskLibWrapper.debug('* Parameters.initialize()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeBaseSize()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeGrowthRate()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeTestFactor()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeFileMatchingPatterns()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeCodeFileExtensions()')).once()
+            verify(taskLibWrapper.debug('* Parameters.baseSize')).once()
           })
         })
 
@@ -90,6 +122,14 @@ describe('parameters.ts', (): void => {
 
             // Assert
             expect(parameters.baseSize).to.equal(250)
+
+            verify(taskLibWrapper.debug('* Parameters.initialize()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeBaseSize()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeGrowthRate()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeTestFactor()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeFileMatchingPatterns()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeCodeFileExtensions()')).once()
+            verify(taskLibWrapper.debug('* Parameters.baseSize')).once()
           })
         })
 
@@ -109,6 +149,14 @@ describe('parameters.ts', (): void => {
 
             // Assert
             expect(parameters.baseSize).to.equal(parseInt(currentBaseSize))
+
+            verify(taskLibWrapper.debug('* Parameters.initialize()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeBaseSize()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeGrowthRate()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeTestFactor()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeFileMatchingPatterns()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeCodeFileExtensions()')).once()
+            verify(taskLibWrapper.debug('* Parameters.baseSize')).once()
           })
         })
     })
@@ -133,6 +181,14 @@ describe('parameters.ts', (): void => {
 
             // Assert
             expect(parameters.growthRate).to.equal(2.0)
+
+            verify(taskLibWrapper.debug('* Parameters.initialize()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeBaseSize()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeGrowthRate()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeTestFactor()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeFileMatchingPatterns()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeCodeFileExtensions()')).once()
+            verify(taskLibWrapper.debug('* Parameters.growthRate')).once()
           })
         })
 
@@ -154,6 +210,14 @@ describe('parameters.ts', (): void => {
 
             // Assert
             expect(parameters.growthRate).to.equal(2.0)
+
+            verify(taskLibWrapper.debug('* Parameters.initialize()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeBaseSize()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeGrowthRate()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeTestFactor()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeFileMatchingPatterns()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeCodeFileExtensions()')).once()
+            verify(taskLibWrapper.debug('* Parameters.growthRate')).once()
           })
         })
 
@@ -177,6 +241,14 @@ describe('parameters.ts', (): void => {
 
             // Assert
             expect(parameters.growthRate).to.equal(parseFloat(currentGrowthRate))
+
+            verify(taskLibWrapper.debug('* Parameters.initialize()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeBaseSize()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeGrowthRate()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeTestFactor()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeFileMatchingPatterns()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeCodeFileExtensions()')).once()
+            verify(taskLibWrapper.debug('* Parameters.growthRate')).once()
           })
         })
     })
@@ -200,6 +272,14 @@ describe('parameters.ts', (): void => {
 
             // Assert
             expect(parameters.testFactor).to.equal(1.5)
+
+            verify(taskLibWrapper.debug('* Parameters.initialize()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeBaseSize()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeGrowthRate()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeTestFactor()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeFileMatchingPatterns()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeCodeFileExtensions()')).once()
+            verify(taskLibWrapper.debug('* Parameters.testFactor')).once()
           })
         })
 
@@ -221,6 +301,14 @@ describe('parameters.ts', (): void => {
 
             // Assert
             expect(parameters.testFactor).to.equal(1.5)
+
+            verify(taskLibWrapper.debug('* Parameters.initialize()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeBaseSize()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeGrowthRate()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeTestFactor()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeFileMatchingPatterns()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeCodeFileExtensions()')).once()
+            verify(taskLibWrapper.debug('* Parameters.testFactor')).once()
           })
         })
 
@@ -244,6 +332,14 @@ describe('parameters.ts', (): void => {
 
             // Assert
             expect(parameters.testFactor).to.equal(parseFloat(currentTestFactor))
+
+            verify(taskLibWrapper.debug('* Parameters.initialize()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeBaseSize()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeGrowthRate()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeTestFactor()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeFileMatchingPatterns()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeCodeFileExtensions()')).once()
+            verify(taskLibWrapper.debug('* Parameters.testFactor')).once()
           })
         })
     })
@@ -265,6 +361,14 @@ describe('parameters.ts', (): void => {
 
             // Assert
             expect(parameters.fileMatchingPatterns).to.deep.equal(expectedOutput)
+
+            verify(taskLibWrapper.debug('* Parameters.initialize()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeBaseSize()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeGrowthRate()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeTestFactor()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeFileMatchingPatterns()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeCodeFileExtensions()')).once()
+            verify(taskLibWrapper.debug('* Parameters.fileMatchingPatterns')).once()
           })
         })
 
@@ -283,6 +387,14 @@ describe('parameters.ts', (): void => {
 
             // Assert
             expect(parameters.fileMatchingPatterns).to.deep.equal([currentFileMatchingPatterns])
+
+            verify(taskLibWrapper.debug('* Parameters.initialize()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeBaseSize()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeGrowthRate()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeTestFactor()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeFileMatchingPatterns()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeCodeFileExtensions()')).once()
+            verify(taskLibWrapper.debug('* Parameters.fileMatchingPatterns')).once()
           })
         })
 
@@ -301,6 +413,14 @@ describe('parameters.ts', (): void => {
 
             // Assert
             expect(parameters.fileMatchingPatterns).to.deep.equal(expectedOutput)
+
+            verify(taskLibWrapper.debug('* Parameters.initialize()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeBaseSize()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeGrowthRate()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeTestFactor()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeFileMatchingPatterns()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeCodeFileExtensions()')).once()
+            verify(taskLibWrapper.debug('* Parameters.fileMatchingPatterns')).once()
           })
         })
     })
@@ -322,6 +442,14 @@ describe('parameters.ts', (): void => {
 
             // Assert
             expect(parameters.codeFileExtensions.length).to.equal(108)
+
+            verify(taskLibWrapper.debug('* Parameters.initialize()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeBaseSize()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeGrowthRate()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeTestFactor()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeFileMatchingPatterns()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeCodeFileExtensions()')).once()
+            verify(taskLibWrapper.debug('* Parameters.codeFileExtensions')).once()
           })
         })
 
@@ -343,6 +471,14 @@ describe('parameters.ts', (): void => {
 
             // Assert
             expect(parameters.codeFileExtensions).to.deep.equal(expectedResult)
+
+            verify(taskLibWrapper.debug('* Parameters.initialize()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeBaseSize()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeGrowthRate()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeTestFactor()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeFileMatchingPatterns()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeCodeFileExtensions()')).once()
+            verify(taskLibWrapper.debug('* Parameters.codeFileExtensions')).once()
           })
         })
     })
