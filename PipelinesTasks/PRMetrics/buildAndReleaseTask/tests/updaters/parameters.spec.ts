@@ -17,6 +17,7 @@ describe('parameters.ts', (): void => {
     taskLibWrapper = mock(TaskLibWrapper)
     consoleWrapper = mock(ConsoleWrapper)
   })
+
   describe('initialize', (): void => {
     describe('initializer function', (): void => {
       it('initialize - should give all default values', (): void => {
