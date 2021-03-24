@@ -120,7 +120,7 @@ describe('parameters.ts', (): void => {
           const parameters: Parameters = new Parameters(instance(consoleWrapper), instance(taskLibWrapper))
 
           // Act
-          parameters.initialize('', currentGrowthRate, '', '', '') // NaN
+          parameters.initialize('', currentGrowthRate, '', '', '') // < 1.0
 
           // Assert
           expect(parameters.growthRate).to.equal(2.0)
@@ -135,6 +135,7 @@ describe('parameters.ts', (): void => {
         '1.001',
         '1.2',
         '1.0000000001',
+        '1.09',
         '7'
       ], (currentGrowthRate: string): void => {
         it(`initializeGrowthRate - should give the converted when it is greater than 1.0 '${currentGrowthRate}'`, (): void => {
@@ -143,10 +144,80 @@ describe('parameters.ts', (): void => {
           const parameters: Parameters = new Parameters(instance(consoleWrapper), instance(taskLibWrapper))
 
           // Act
-          parameters.initialize('', currentGrowthRate, '', '', '') // NaN
+          parameters.initialize('', currentGrowthRate, '', '', '') // > 1.0
 
           // Assert
           expect(parameters.growthRate).to.equal(parseFloat(currentGrowthRate))
+        })
+      })
+
+    /** initializeTestFactor */
+    async.each(
+      [
+        '',
+        ' ',
+        'abc',
+        '===',
+        '!2',
+        'null',
+        'undefined'
+      ], (currentTestFactor: string): void => {
+        it(`initializeTestFactor - should give a value of 1.5 when base size is invalid input '${currentTestFactor}'`, (): void => {
+          // Arrange
+
+          const parameters: Parameters = new Parameters(instance(consoleWrapper), instance(taskLibWrapper))
+
+          // Act
+          parameters.initialize('', '', currentTestFactor, '', '') // NaN
+
+          // Assert
+          expect(parameters.testFactor).to.equal(1.5)
+        })
+      })
+
+    async.each(
+      [
+        '0',
+        '-0.0000009',
+        '-2',
+        '-1.2',
+        '-5',
+        '-0.9999999999'
+      ], (currentTestFactor: string): void => {
+        it(`initializeTestFactor - should give a value of 1.5 when converted value is less than 0.0 '${currentTestFactor}'`, (): void => {
+          // Arrange
+
+          const parameters: Parameters = new Parameters(instance(consoleWrapper), instance(taskLibWrapper))
+
+          // Act
+          parameters.initialize('', '', currentTestFactor, '', '') // < 0.0
+
+          // Assert
+          expect(parameters.testFactor).to.equal(1.5)
+        })
+      })
+
+    async.each(
+      [
+        '5',
+        '2.0',
+        '1000',
+        '1.001',
+        '1.2',
+        '0.000000000000009',
+        '0.09',
+        '7'
+      ], (currentTestFactor: string): void => {
+        it(`initializeTestFactor - should give the converted when it is greater than 0.0 '${currentTestFactor}'`, (): void => {
+          // Arrange
+
+          const parameters: Parameters = new Parameters(instance(consoleWrapper), instance(taskLibWrapper))
+
+          // Act
+          parameters.initialize('', '', currentTestFactor, '', '') // > 0.0
+
+          // Assert
+          expect(parameters.testFactor).to.equal(parseFloat(currentTestFactor))
         })
       })
   }) // end of describe
