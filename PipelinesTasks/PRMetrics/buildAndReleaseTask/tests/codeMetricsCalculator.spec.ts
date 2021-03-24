@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 import { expect } from 'chai'
-import { instance, mock, verify, when } from 'ts-mockito'
+import { anyNumber, instance, mock, verify, when } from 'ts-mockito'
 import async from 'async'
 import CodeMetricsCalculator from '../codeMetricsCalculator'
 import PullRequest from '../updaters/pullRequest'
@@ -71,13 +71,19 @@ describe('codeMetricsCalculator.ts', (): void => {
   })
 
   describe('updateComments()', (): void => {
-    it('should return the expected result', (): void => {
+    it('should return the expected result', async (): Promise<void> => {
       // Arrange
-      when(pullRequestComments.getCommentData()).thenReturn('TODO')
+      when(pullRequestComments.getCommentData(anyNumber())).thenResolve({
+        isPresent: false,
+        threadId: 0,
+        commentId: 0,
+        ignoredFilesWithLinesAdded: [],
+        ignoredFilesWithoutLinesAdded: []
+      })
       const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
 
       // Act
-      codeMetricsCalculator.updateComments()
+      await codeMetricsCalculator.updateComments()
 
       // Assert
       verify(taskLibWrapper.debug('* CodeMetricsCalculator.updateComments()')).once()

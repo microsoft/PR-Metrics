@@ -8,6 +8,7 @@ import { instance, mock, verify, when } from 'ts-mockito'
 import async from 'async'
 import AzureReposInvoker from '../../invokers/azureReposInvoker'
 import CodeMetrics from '../../updaters/codeMetrics'
+import CommentData from '../../updaters/commentData'
 import Metrics from '../../updaters/metrics'
 import os from 'os'
 import Parameters from '../../updaters/parameters'
@@ -22,7 +23,6 @@ describe('pullRequestComments.ts', (): void => {
 
   beforeEach((): void => {
     azureReposInvoker = mock(AzureReposInvoker)
-    when(azureReposInvoker.getCurrentIteration()).thenResolve(1)
 
     codeMetrics = mock(CodeMetrics)
     when(codeMetrics.isSmall).thenReturn(true)
@@ -69,15 +69,15 @@ describe('pullRequestComments.ts', (): void => {
   })
 
   describe('getCommentData()', (): void => {
-    it('should return the expected result', (): void => {
+    it('should return the expected result', async (): Promise<void> => {
       // Arrange
       const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(parameters), instance(taskLibWrapper))
 
       // Act
-      const result: string = pullRequestComments.getCommentData()
+      const result: CommentData = await pullRequestComments.getCommentData(1)
 
       // Assert
-      expect(result).to.equal('TODO')
+      expect(result.commentId).to.equal(0)
       verify(taskLibWrapper.debug('* PullRequestComments.getCommentData()')).once()
     })
   })
@@ -111,7 +111,7 @@ describe('pullRequestComments.ts', (): void => {
           const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(parameters), instance(taskLibWrapper))
 
           // Act
-          const result: string = await pullRequestComments.getMetricsComment()
+          const result: string = await pullRequestComments.getMetricsComment(1)
 
           // Assert
           expect(result).to.equal(
@@ -147,7 +147,7 @@ describe('pullRequestComments.ts', (): void => {
           const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(parameters), instance(taskLibWrapper))
 
           // Act
-          const result: string = await pullRequestComments.getMetricsComment()
+          const result: string = await pullRequestComments.getMetricsComment(1)
 
           // Assert
           expect(result).to.equal(
@@ -180,11 +180,10 @@ describe('pullRequestComments.ts', (): void => {
       ], (iteration: number): void => {
         it(`should return the expected result when the pull request iteration is '${iteration}'`, async (): Promise<void> => {
           // Arrange
-          when(azureReposInvoker.getCurrentIteration()).thenResolve(iteration)
           const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(parameters), instance(taskLibWrapper))
 
           // Act
-          const result: string = await pullRequestComments.getMetricsComment()
+          const result: string = await pullRequestComments.getMetricsComment(iteration)
 
           // Assert
           expect(result).to.equal(
@@ -213,7 +212,7 @@ describe('pullRequestComments.ts', (): void => {
       const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(parameters), instance(taskLibWrapper))
 
       // Act
-      const result: string = await pullRequestComments.getMetricsComment()
+      const result: string = await pullRequestComments.getMetricsComment(1)
 
       // Assert
       expect(result).to.equal(
@@ -241,7 +240,7 @@ describe('pullRequestComments.ts', (): void => {
       const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(parameters), instance(taskLibWrapper))
 
       // Act
-      const result: string = await pullRequestComments.getMetricsComment()
+      const result: string = await pullRequestComments.getMetricsComment(1)
 
       // Assert
       expect(result).to.equal(

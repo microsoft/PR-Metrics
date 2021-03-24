@@ -1,10 +1,11 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
+import { Comment, CommentThreadStatus, GitPullRequestCommentThread } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import * as os from 'os'
 import AzureReposInvoker from '../invokers/azureReposInvoker'
 import CodeMetrics from './codeMetrics'
+import CommentData from './commentData'
 import Parameters from './parameters'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
 
@@ -42,12 +43,41 @@ export default class PullRequestComments {
 
   /**
    * Gets the data used for constructing the comment within the pull request.
-   * @returns The data used for constructing the comment within the pull request.
+   * @param The number of the current iteration.
+   * @returns A promise containing the data used for constructing the comment within the pull request.
    */
-  public getCommentData (): string {
+  public async getCommentData (currentIteration: number): Promise<CommentData> {
     this._taskLibWrapper.debug('* PullRequestComments.getCommentData()')
 
-    return 'TODO' // TODO: Update once dependencies are added
+    const result: CommentData = {
+      isPresent: false,
+      threadId: 0,
+      commentId: 0,
+      ignoredFilesWithLinesAdded: this._codeMetrics.ignoredFilesWithLinesAdded,
+      ignoredFilesWithoutLinesAdded: this._codeMetrics.ignoredFilesWithoutLinesAdded
+    }
+
+    const commentThreads: GitPullRequestCommentThread[] = await this._azureReposInvoker.getCommentThreads()
+    for (let i: number = 0; i < commentThreads.length; i++) {
+      const commentThread: GitPullRequestCommentThread = commentThreads[i]!
+      if (!commentThread.pullRequestThreadContext) {
+        this.getMetricsCommentData(result, commentThread, currentIteration)
+      } else {
+        // const fileName: string = commentThread.pullRequestThreadContext.trackingCriteria?.origFilePath.Substring(1)
+
+        // if (IgnoredFilesWithLinesAdded.Contains($fileName)) {
+        //     [PullRequest]::GetIgnoredCommentData($result.IgnoredFilesWithLinesAdded, $fileName, $commentThread)
+        // }
+
+        // if (IgnoredFilesWithoutLinesAdded.Contains($fileName)) {
+        //     [PullRequest]::GetIgnoredCommentData($result.IgnoredFilesWithoutLinesAdded,
+        //                                          $fileName,
+        //                                          $commentThread)
+        // }
+      }
+    }
+
+    return result
   }
 
   /**
@@ -62,12 +92,12 @@ export default class PullRequestComments {
 
   /**
    * Gets the comment to add to the comment thread.
+   * @param The number of the current iteration.
    * @returns A promise containing the comment to add to the comment thread.
    */
-  public async getMetricsComment (): Promise<string> {
+  public async getMetricsComment (currentIteration: number): Promise<string> {
     this._taskLibWrapper.debug('* PullRequestComments.getMetricsComment()')
 
-    const currentIteration: number = await this._azureReposInvoker.getCurrentIteration()
     let result: string = `${this._taskLibWrapper.loc('updaters.pullRequestComments.commentTitle', currentIteration.toLocaleString())}${os.EOL}`
     result += this.addCommentSizeStatus()
     result += this.addCommentTestStatus()
@@ -99,6 +129,53 @@ export default class PullRequestComments {
 
     return CommentThreadStatus.Active
   }
+
+  private getMetricsCommentData (result: CommentData, commentThread: GitPullRequestCommentThread, currentIteration: number): void {
+    this._taskLibWrapper.debug('* PullRequestComments.getMetricsCommentData()')
+
+    this.validateField(commentThread.comments, 'commentThread.comments')
+
+    for (let i: number = 0; i < commentThread.comments!.length; i++) {
+      const comment: Comment = commentThread.comments![i]!
+
+      this.validateField(comment.author, 'comment.author')
+      this.validateField(comment.author!.displayName, 'comment.author.displayName')
+
+      if (comment.author!.displayName!.startsWith('Project Collection Build Service (')) {
+        this.validateField(comment.content, 'comment.content')
+
+        const commentHeader: RegExp = new RegExp(`^${this._taskLibWrapper.loc('updaters.pullRequestComments.commentTitle', currentIteration.toLocaleString())}`)
+        if (!comment.content!.match(commentHeader)) {
+          this.validateField(commentThread.id, 'commentThread.id')
+          this.validateField(comment.id, 'comment.id')
+
+          result.threadId = commentThread!.id!
+          result.commentId = comment.id!
+          const commentHeader: string = this._taskLibWrapper.loc('updaters.pullRequestComments.commentTitle', currentIteration.toLocaleString())
+          if (comment.content!.startsWith(commentHeader)) {
+            result.isPresent = true
+          }
+        }
+      }
+    }
+  }
+
+  private validateField<T> (field: T | null | undefined, fieldName: string): void {
+    if (!field) {
+      throw new Error(`Field '${fieldName}' is null or undefined.`)
+    }
+  }
+
+    // hidden static [void] GetIgnoredCommentData([System.Collections.Generic.List[string]] $ignoredFiles,
+    //                                            [string] $fileName,
+    //                                            [PSCustomObject] $commentThread) {
+    //     [Logger]::Log('* [PullRequest]::GetIgnoredCommentData() hidden static')
+    //     if ($commentThread.comments[0].author.displayName.StartsWith([PullRequest]::Author)) {
+    //         if ($commentThread.comments[0].content -eq [PullRequest]::GetIgnoredComment()) {
+    //             $ignoredFiles.Remove($fileName)
+    //         }
+    //     }
+    // }
 
   private addCommentSizeStatus (): string {
     this._taskLibWrapper.debug('* PullRequestComments.addCommentSizeStatus()')
