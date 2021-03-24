@@ -220,5 +220,25 @@ describe('parameters.ts', (): void => {
           expect(parameters.testFactor).to.equal(parseFloat(currentTestFactor))
         })
       })
+
+    /** initializeFileMatchingPatterns */
+    async.each(
+      [
+        '',
+        ' ',
+        '     '
+      ], (currentFileMatchingPatterns: string): void => {
+        it(`initializeFileMatchingPatterns - should give a value of [] when input is invalid '${currentFileMatchingPatterns}'`, (): void => {
+          // Arrange
+          const expectedOutput: string[] = ['**/*']
+          const parameters: Parameters = new Parameters(instance(consoleWrapper), instance(taskLibWrapper))
+
+          // Act
+          parameters.initialize('', '', '', currentFileMatchingPatterns, '')
+
+          // Assert
+          expect(parameters.fileMatchingPatterns).to.deep.equal(expectedOutput)
+        })
+      })
   }) // end of describe
 }) // end of describe
