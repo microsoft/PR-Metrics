@@ -1,9 +1,10 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import * as os from 'os'
+
 import CodeMetrics from './codeMetrics'
+import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import Parameters from './parameters'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
 
@@ -90,7 +91,7 @@ export default class PullRequestComments {
   public getMetricsCommentStatus (): CommentThreadStatus {
     this._taskLibWrapper.debug('* PullRequestComments.getMetricsCommentStatus()')
 
-    if (this._codeMetrics.isSmall && this._codeMetrics.hasSufficientTestCode) {
+    if (this._codeMetrics.isSmall && this._codeMetrics.isSufficientlyTested) {
       return CommentThreadStatus.Closed
     }
 
@@ -115,8 +116,8 @@ export default class PullRequestComments {
     this._taskLibWrapper.debug('* PullRequestComments.addCommentTestStatus()')
 
     let result: string = ''
-    if (this._codeMetrics.hasSufficientTestCode !== null) {
-      if (this._codeMetrics.hasSufficientTestCode) {
+    if (this._codeMetrics.isSufficientlyTested !== null) {
+      if (this._codeMetrics.isSufficientlyTested) {
         result += this._taskLibWrapper.loc('updaters.pullRequestComments.testsSufficientComment')
       } else {
         result += this._taskLibWrapper.loc('updaters.pullRequestComments.testsInsufficientComment')

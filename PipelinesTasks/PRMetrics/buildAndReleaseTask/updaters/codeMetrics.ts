@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+import { FixedLengthArray } from '../utilities/fixedLengthArray'
 import Metrics from './metrics'
 import Parameters from './parameters'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
@@ -81,8 +82,8 @@ export default class CodeMetrics {
    * Gets a value indicating whether the pull request has sufficient test coverage.
    * @returns A value indicating whether the pull request has sufficient test coverage. If the test coverage is not being checked, the value will be `null`.
    */
-  public get hasSufficientTestCode (): boolean | null {
-    this._taskLibWrapper.debug('* CodeMetrics.hasSufficientTestCode')
+  public get isSufficientlyTested (): boolean | null {
+    this._taskLibWrapper.debug('* CodeMetrics.isSufficientlyTested')
 
     if (this._parameters.testFactor <= 0.0) {
       return null
@@ -214,8 +215,8 @@ export default class CodeMetrics {
 
     const size: string = this.calculateSize()
     let testIndicator: string = ''
-    if (this.hasSufficientTestCode !== null) {
-      if (this.hasSufficientTestCode) {
+    if (this.isSufficientlyTested !== null) {
+      if (this.isSufficientlyTested) {
         testIndicator = this._taskLibWrapper.loc('updaters.codeMetrics.titleTestsSufficient')
       } else {
         testIndicator = this._taskLibWrapper.loc('updaters.codeMetrics.titleTestsInsufficient')
@@ -228,7 +229,7 @@ export default class CodeMetrics {
   private calculateSize (): string {
     this._taskLibWrapper.debug('* CodeMetrics.calculateSize()')
 
-    const indicators: ((prefix: string) => string)[] = [
+    const indicators: FixedLengthArray<((prefix: string) => string), 5> = [
       (_: string): string => this._taskLibWrapper.loc('updaters.codeMetrics.titleSizeXS'),
       (_: string): string => this._taskLibWrapper.loc('updaters.codeMetrics.titleSizeS'),
       (_: string): string => this._taskLibWrapper.loc('updaters.codeMetrics.titleSizeM'),
@@ -236,16 +237,16 @@ export default class CodeMetrics {
       (prefix: string): string => this._taskLibWrapper.loc('updaters.codeMetrics.titleSizeXL', prefix)
     ]
 
-    let result: string = indicators[1]!('')
+    let result: string = indicators[1]('')
     let currentSize: number = this._parameters.baseSize
     let index: number = 1
 
     if (this._metrics.subtotal === 0) {
-      result = indicators[0]!('')
+      result = indicators[0]('')
     } else {
       // Calculate the smaller sizes.
       if (this._metrics.productCode < this._parameters.baseSize / this._parameters.growthRate) {
-        result = indicators[0]!('')
+        result = indicators[0]('')
       }
 
       // Calculate the larger sizes.
