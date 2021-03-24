@@ -226,11 +226,49 @@ describe('parameters.ts', (): void => {
       [
         '',
         ' ',
-        '     '
+        '     ',
+        '\n'
       ], (currentFileMatchingPatterns: string): void => {
         it(`initializeFileMatchingPatterns - should give a value of [] when input is invalid '${currentFileMatchingPatterns}'`, (): void => {
           // Arrange
           const expectedOutput: string[] = ['**/*']
+          const parameters: Parameters = new Parameters(instance(consoleWrapper), instance(taskLibWrapper))
+
+          // Act
+          parameters.initialize('', '', '', currentFileMatchingPatterns, '')
+
+          // Assert
+          expect(parameters.fileMatchingPatterns).to.deep.equal(expectedOutput)
+        })
+      })
+
+    async.each(
+      [
+        'abc',
+        'abc def hik',
+        '*.ada *.js *ts *.bb *txt'
+      ], (currentFileMatchingPatterns: string): void => {
+        it(`initializeFileMatchingPatterns - should not break the string up '${currentFileMatchingPatterns}'`, (): void => {
+          // Arrange
+
+          const parameters: Parameters = new Parameters(instance(consoleWrapper), instance(taskLibWrapper))
+
+          // Act
+          parameters.initialize('', '', '', currentFileMatchingPatterns, '')
+
+          // Assert
+          expect(parameters.fileMatchingPatterns).to.deep.equal([currentFileMatchingPatterns])
+        })
+      })
+
+    async.each(
+      [
+        '*.ada\n*.js\n*ts\n*.bb\n*txt',
+        'abc\ndef\nhij'
+      ], (currentFileMatchingPatterns: string): void => {
+        it(`initializeFileMatchingPatterns - should break the string at the newline character '${currentFileMatchingPatterns}'`, (): void => {
+          // Arrange
+          const expectedOutput: string[] = currentFileMatchingPatterns.split('\n')
           const parameters: Parameters = new Parameters(instance(consoleWrapper), instance(taskLibWrapper))
 
           // Act
