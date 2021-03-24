@@ -8,6 +8,7 @@ import CodeMetricsCalculator from '../codeMetricsCalculator'
 import PullRequest from '../updaters/pullRequest'
 import PullRequestComments from '../updaters/pullRequestComments'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
+import CommentData from '../updaters/commentData'
 
 describe('codeMetricsCalculator.ts', (): void => {
   let pullRequest: PullRequest
@@ -73,13 +74,7 @@ describe('codeMetricsCalculator.ts', (): void => {
   describe('updateComments()', (): void => {
     it('should return the expected result', async (): Promise<void> => {
       // Arrange
-      when(pullRequestComments.getCommentData(anyNumber())).thenResolve({
-        isPresent: false,
-        threadId: 0,
-        commentId: 0,
-        ignoredFilesWithLinesAdded: [],
-        ignoredFilesWithoutLinesAdded: []
-      })
+      when(pullRequestComments.getCommentData(anyNumber())).thenResolve(new CommentData([], []))
       const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
 
       // Act

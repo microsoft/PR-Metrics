@@ -52,28 +52,31 @@ export default class PullRequestComments {
   public async getCommentData (currentIteration: number): Promise<CommentData> {
     this._taskLibWrapper.debug('* PullRequestComments.getCommentData()')
 
-    const result: CommentData = {
-      isPresent: false,
-      threadId: 0,
-      commentId: 0,
-      ignoredFilesWithLinesAdded: this._codeMetrics.ignoredFilesWithLinesAdded,
-      ignoredFilesWithoutLinesAdded: this._codeMetrics.ignoredFilesWithoutLinesAdded
-    }
+    let result: CommentData = new CommentData(this._codeMetrics.ignoredFilesWithLinesAdded, this._codeMetrics.ignoredFilesWithoutLinesAdded)
 
     const commentThreads: GitPullRequestCommentThread[] = await this._azureReposInvoker.getCommentThreads()
     for (let i: number = 0; i < commentThreads.length; i++) {
       const commentThread: GitPullRequestCommentThread = commentThreads[i]!
       if (!commentThread.pullRequestThreadContext) {
-        this.getMetricsCommentData(result, currentIteration, commentThread, i)
+        result = this.getMetricsCommentData(result, currentIteration, commentThread, i)
       } else {
         validator.validateField(commentThread.pullRequestThreadContext.trackingCriteria, `commentThread[${i}].pullRequestThreadContext.trackingCriteria`)
         validator.validateField(commentThread.pullRequestThreadContext.trackingCriteria!.origFilePath, `commentThread[${i}].pullRequestThreadContext.trackingCriteria.origFilePath`)
-        const fileName: string = commentThread.pullRequestThreadContext.trackingCriteria!.origFilePath!.substring(1)
+        const filePath: string = commentThread.pullRequestThreadContext.trackingCriteria!.origFilePath!
+        if (filePath.length <= 1) {
+          throw Error(`'commentThread[${i}].pullRequestThreadContext.trackingCriteria.origFilePath' '${filePath}' is of length '${filePath.length}'.`)
+        }
 
-        if (this._codeMetrics.ignoredFilesWithLinesAdded.includes(fileName)) {
-          this.getIgnoredCommentData(result.ignoredFilesWithLinesAdded, fileName, commentThread, i)
-        } else if (this._codeMetrics.ignoredFilesWithoutLinesAdded.includes(fileName)) {
-          this.getIgnoredCommentData(result.ignoredFilesWithoutLinesAdded, fileName, commentThread, i)
+        const fileName: string = filePath.substring(1)
+        const withLinesAddedIndex: number = this._codeMetrics.ignoredFilesWithLinesAdded.indexOf(fileName)
+        if (withLinesAddedIndex !== -1) {
+          result.ignoredFilesWithLinesAdded = this.getIgnoredCommentData(result.ignoredFilesWithLinesAdded, withLinesAddedIndex, commentThread, i)
+          continue
+        }
+
+        const withoutLinesAddedIndex: number = this._codeMetrics.ignoredFilesWithoutLinesAdded.indexOf(fileName)
+        if (withoutLinesAddedIndex !== -1) {
+          result.ignoredFilesWithoutLinesAdded = this.getIgnoredCommentData(result.ignoredFilesWithoutLinesAdded, withoutLinesAddedIndex, commentThread, i)
         }
       }
     }
@@ -121,7 +124,7 @@ export default class PullRequestComments {
     return CommentThreadStatus.Active
   }
 
-  private getMetricsCommentData (result: CommentData, currentIteration: number, commentThread: GitPullRequestCommentThread, commentThreadIndex: number): void {
+  private getMetricsCommentData (result: CommentData, currentIteration: number, commentThread: GitPullRequestCommentThread, commentThreadIndex: number): CommentData {
     this._taskLibWrapper.debug('* PullRequestComments.getMetricsCommentData()')
 
     validator.validateField(commentThread.id, `commentThread[${commentThreadIndex}].id`)
@@ -137,21 +140,23 @@ export default class PullRequestComments {
         validator.validateField(comment.content, `commentThread[${commentThreadIndex}].comments[${i}].content`)
 
         const commentHeader: RegExp = new RegExp(`^${this._taskLibWrapper.loc('updaters.pullRequestComments.commentTitle', '.+')}`)
-        if (!comment.content!.match(commentHeader)) {
+        if (comment.content!.match(commentHeader)) {
           validator.validateField(comment.id, `commentThread[${commentThreadIndex}].comments[${i}].id`)
 
           result.threadId = commentThread!.id!
           result.commentId = comment.id!
-          const commentHeader: string = this._taskLibWrapper.loc('updaters.pullRequestComments.commentTitle', currentIteration.toLocaleString())
+          const commentHeader: string = `${this._taskLibWrapper.loc('updaters.pullRequestComments.commentTitle', currentIteration.toLocaleString())}${os.EOL}`
           if (comment.content!.startsWith(commentHeader)) {
             result.isPresent = true
           }
         }
       }
     }
+
+    return result
   }
 
-  private getIgnoredCommentData (ignoredFiles: string[], fileName: string, commentThread: GitPullRequestCommentThread, commentThreadIndex: number): void {
+  private getIgnoredCommentData (ignoredFiles: string[], fileNameIndex: number, commentThread: GitPullRequestCommentThread, commentThreadIndex: number): string[] {
     this._taskLibWrapper.debug('* PullRequestComments.getIgnoredCommentData()')
 
     validator.validateField(commentThread.comments, `commentThread[${commentThreadIndex}].comments`)
@@ -162,16 +167,11 @@ export default class PullRequestComments {
     validator.validateField(comment.author!.displayName, `commentThread[${commentThreadIndex}].comments[0].author.displayName`)
     validator.validateField(comment.content, `commentThread[${commentThreadIndex}].comments[0].content`)
 
-    if (comment.author!.displayName!.startsWith(PullRequestComments.taskCommentAuthorPrefix)) {
-      if (comment.content! === this.ignoredComment) {
-        const index: number = ignoredFiles.indexOf(fileName)
-        if (index === -1) {
-          throw new Error(`Element ${fileName} not in array.`)
-        }
-
-        ignoredFiles.splice(index, 1)
-      }
+    if (comment.author!.displayName!.startsWith(PullRequestComments.taskCommentAuthorPrefix) && comment.content! === this.ignoredComment) {
+      ignoredFiles.splice(fileNameIndex, 1)
     }
+
+    return ignoredFiles
   }
 
   private addCommentSizeStatus (): string {

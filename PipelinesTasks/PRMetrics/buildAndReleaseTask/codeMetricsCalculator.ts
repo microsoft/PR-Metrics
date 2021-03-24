@@ -74,6 +74,6 @@ export default class CodeMetricsCalculator {
     // $iterations = $this.AzureReposInvoker.GetIterations()
     const commentData: CommentData = await this._pullRequestComments.getCommentData(1)
 
-    this._taskLibWrapper.debug(commentData.commentId.toLocaleString())
+    this._taskLibWrapper.debug((commentData.commentId ?? 0).toLocaleString())
   }
 }

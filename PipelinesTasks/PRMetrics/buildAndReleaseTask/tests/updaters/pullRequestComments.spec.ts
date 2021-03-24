@@ -28,7 +28,7 @@ describe('pullRequestComments.ts', (): void => {
         author: {
           displayName: 'Project Collection Build Service ('
         },
-        content: 'Content',
+        content: '# Metrics for iteration 1',
         id: 1
       }],
       id: 1
@@ -59,6 +59,7 @@ describe('pullRequestComments.ts', (): void => {
     when(taskLibWrapper.loc('updaters.pullRequestComments.commentTitle', '100')).thenReturn('# Metrics for iteration 100')
     when(taskLibWrapper.loc('updaters.pullRequestComments.commentTitle', '1,000')).thenReturn('# Metrics for iteration 1,000')
     when(taskLibWrapper.loc('updaters.pullRequestComments.commentTitle', '1,000,000')).thenReturn('# Metrics for iteration 1,000,000')
+    when(taskLibWrapper.loc('updaters.pullRequestComments.commentTitle', '.+')).thenReturn('# Metrics for iteration .+')
     when(taskLibWrapper.loc('updaters.pullRequestComments.fileIgnoredComment')).thenReturn('❗ **This file may not need to be reviewed.**')
     when(taskLibWrapper.loc('updaters.pullRequestComments.largePullRequestComment', '250')).thenReturn('❌ **Try to keep pull requests smaller than 250 lines of new product code by following the [Single Responsibility Principle (SRP)](https://wikipedia.org/wiki/Single-responsibility_principle).**')
     when(taskLibWrapper.loc('updaters.pullRequestComments.largePullRequestComment', '1,000')).thenReturn('❌ **Try to keep pull requests smaller than 1,000 lines of new product code by following the [Single Responsibility Principle (SRP)](https://wikipedia.org/wiki/Single-responsibility_principle).**')
@@ -98,11 +99,181 @@ describe('pullRequestComments.ts', (): void => {
 
       // Assert
       expect(result.isPresent).to.equal(false)
-      expect(result.commentId).to.equal(0)
-      expect(result.threadId).to.equal(0)
-      expect(result.ignoredFilesWithLinesAdded.length).to.equal(0)
-      expect(result.ignoredFilesWithoutLinesAdded.length).to.equal(0)
+      expect(result.commentId).to.equal(null)
+      expect(result.threadId).to.equal(null)
+      expect(result.ignoredFilesWithLinesAdded).to.deep.equal([])
+      expect(result.ignoredFilesWithoutLinesAdded).to.deep.equal([])
       verify(taskLibWrapper.debug('* PullRequestComments.getCommentData()')).once()
+    })
+
+    async.each(
+      [
+        [1, [{ comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: `# Metrics for iteration 1${os.EOL}`, id: 10 }], id: 20 }]],
+        [1, [{ comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: `# Metrics for iteration 100${os.EOL}`, id: 1 }, { author: { displayName: 'Project Collection Build Service (' }, content: `# Metrics for iteration 1${os.EOL}`, id: 10 }], id: 20 }]],
+        [2, [{ comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: `# Metrics for iteration 2${os.EOL}`, id: 10 }], id: 20 }]],
+        [100, [{ comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: `# Metrics for iteration 1${os.EOL}`, id: 1 }, { author: { displayName: 'Project Collection Build Service (' }, content: `# Metrics for iteration 100${os.EOL}`, id: 10 }], id: 20 }]],
+        [1000000, [{ comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: `# Metrics for iteration 1,000,000${os.EOL}`, id: 10 }], id: 20 }]],
+        [1, [{ comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: `# Metrics for iteration 1${os.EOL}`, id: 10 }], id: 20 }]],
+        [1, [{ comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: 'Content', id: 1 }], id: 2 }, { comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: `# Metrics for iteration 1${os.EOL}`, id: 10 }], id: 20 }]],
+        [1, [{ comments: [{ author: { displayName: 'Name' }, id: 1 }], id: 2 }, { comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: `# Metrics for iteration 1${os.EOL}`, id: 10 }], id: 20 }]]
+      ], (data: [number, GitPullRequestCommentThread[]]): void => {
+        it(`should return the expected result when the metrics comment is present with payload '${JSON.stringify(data[1])}'`, async (): Promise<void> => {
+          // Arrange
+          when(azureReposInvoker.getCommentThreads()).thenResolve(data[1])
+          const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(parameters), instance(taskLibWrapper))
+
+          // Act
+          const result: CommentData = await pullRequestComments.getCommentData(data[0])
+
+          // Assert
+          expect(result.isPresent).to.equal(true)
+          expect(result.commentId).to.equal(10)
+          expect(result.threadId).to.equal(20)
+          expect(result.ignoredFilesWithLinesAdded).to.deep.equal([])
+          expect(result.ignoredFilesWithoutLinesAdded).to.deep.equal([])
+          verify(taskLibWrapper.debug('* PullRequestComments.getCommentData()')).once()
+          verify(taskLibWrapper.debug('* PullRequestComments.getMetricsCommentData()')).atLeast(1)
+        })
+      })
+
+    it('should return the expected result when the metrics comment is present but not for the current payload', async (): Promise<void> => {
+      // Arrange
+      when(azureReposInvoker.getCommentThreads()).thenResolve([{ comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: `# Metrics for iteration 10${os.EOL}`, id: 10 }], id: 20 }])
+      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(parameters), instance(taskLibWrapper))
+
+      // Act
+      const result: CommentData = await pullRequestComments.getCommentData(1)
+
+      // Assert
+      expect(result.isPresent).to.equal(false)
+      expect(result.commentId).to.equal(10)
+      expect(result.threadId).to.equal(20)
+      expect(result.ignoredFilesWithLinesAdded).to.deep.equal([])
+      expect(result.ignoredFilesWithoutLinesAdded).to.deep.equal([])
+      verify(taskLibWrapper.debug('* PullRequestComments.getCommentData()')).once()
+      verify(taskLibWrapper.debug('* PullRequestComments.getMetricsCommentData()')).once()
+    })
+
+    async.each(
+      [
+        [['folder/file1.ts', 'file3.ts'], [{ pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file2.ts' } }, comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: '❗ **This file may not need to be reviewed.**' }] }]],
+        [['folder/file1.ts', 'file3.ts'], [{ pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file1.ts' } }, comments: [{ author: { displayName: 'Author' }, content: '❗ **This file may not need to be reviewed.**' }] }, { pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file2.ts' } }, comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: '❗ **This file may not need to be reviewed.**' }] }]],
+        [['folder/file1.ts', 'file3.ts'], [{ pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file1.ts' } }, comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: 'Content' }] }, { pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file2.ts' } }, comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: '❗ **This file may not need to be reviewed.**' }] }]],
+        [['folder/file1.ts', 'file3.ts'], [{ pullRequestThreadContext: { trackingCriteria: { origFilePath: ' fileA.ts' } }, comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: '❗ **This file may not need to be reviewed.**' }] }, { pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file2.ts' } }, comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: '❗ **This file may not need to be reviewed.**' }] }]],
+        [['file3.ts'], [{ pullRequestThreadContext: { trackingCriteria: { origFilePath: ' folder/file1.ts' } }, comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: '❗ **This file may not need to be reviewed.**' }] }, { pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file2.ts' } }, comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: '❗ **This file may not need to be reviewed.**' }] }]]
+      ], (data: [string[], GitPullRequestCommentThread[]]): void => {
+        it(`should return the expected result for ignored files with lines added when the comment is present with payload '${JSON.stringify(data[1])}'`, async (): Promise<void> => {
+          // Arrange
+          when(azureReposInvoker.getCommentThreads()).thenResolve(data[1])
+          when(codeMetrics.ignoredFilesWithLinesAdded).thenReturn(['folder/file1.ts', 'file2.ts', 'file3.ts'])
+          when(codeMetrics.ignoredFilesWithoutLinesAdded).thenReturn(['file4.ts', 'file5.ts', 'file6.ts'])
+          const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(parameters), instance(taskLibWrapper))
+
+          // Act
+          const result: CommentData = await pullRequestComments.getCommentData(1)
+
+          // Assert
+          expect(result.isPresent).to.equal(false)
+          expect(result.commentId).to.equal(null)
+          expect(result.threadId).to.equal(null)
+          expect(result.ignoredFilesWithLinesAdded).to.deep.equal(data[0])
+          expect(result.ignoredFilesWithoutLinesAdded).to.deep.equal(['file4.ts', 'file5.ts', 'file6.ts'])
+          verify(taskLibWrapper.debug('* PullRequestComments.getCommentData()')).once()
+          verify(taskLibWrapper.debug('* PullRequestComments.getIgnoredCommentData()')).atLeast(1)
+        })
+      })
+
+    async.each(
+      [
+        [['folder/file4.ts', 'file6.ts'], [{ pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file5.ts' } }, comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: '❗ **This file may not need to be reviewed.**' }] }]],
+        [['folder/file4.ts', 'file6.ts'], [{ pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file4.ts' } }, comments: [{ author: { displayName: 'Author' }, content: '❗ **This file may not need to be reviewed.**' }] }, { pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file5.ts' } }, comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: '❗ **This file may not need to be reviewed.**' }] }]],
+        [['folder/file4.ts', 'file6.ts'], [{ pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file4.ts' } }, comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: 'Content' }] }, { pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file5.ts' } }, comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: '❗ **This file may not need to be reviewed.**' }] }]],
+        [['folder/file4.ts', 'file6.ts'], [{ pullRequestThreadContext: { trackingCriteria: { origFilePath: ' fileA.ts' } }, comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: '❗ **This file may not need to be reviewed.**' }] }, { pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file5.ts' } }, comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: '❗ **This file may not need to be reviewed.**' }] }]],
+        [['file6.ts'], [{ pullRequestThreadContext: { trackingCriteria: { origFilePath: ' folder/file4.ts' } }, comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: '❗ **This file may not need to be reviewed.**' }] }, { pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file5.ts' } }, comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: '❗ **This file may not need to be reviewed.**' }] }]]
+      ], (data: [string[], GitPullRequestCommentThread[]]): void => {
+        it(`should return the expected result for ignored files without lines added when the comment is present with payload '${JSON.stringify(data[1])}'`, async (): Promise<void> => {
+          // Arrange
+          when(azureReposInvoker.getCommentThreads()).thenResolve(data[1])
+          when(codeMetrics.ignoredFilesWithLinesAdded).thenReturn(['folder/file1.ts', 'file2.ts', 'file3.ts'])
+          when(codeMetrics.ignoredFilesWithoutLinesAdded).thenReturn(['folder/file4.ts', 'file5.ts', 'file6.ts'])
+          const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(parameters), instance(taskLibWrapper))
+
+          // Act
+          const result: CommentData = await pullRequestComments.getCommentData(1)
+
+          // Assert
+          expect(result.isPresent).to.equal(false)
+          expect(result.commentId).to.equal(null)
+          expect(result.threadId).to.equal(null)
+          expect(result.ignoredFilesWithLinesAdded).to.deep.equal(['folder/file1.ts', 'file2.ts', 'file3.ts'])
+          expect(result.ignoredFilesWithoutLinesAdded).to.deep.equal(data[0])
+          verify(taskLibWrapper.debug('* PullRequestComments.getCommentData()')).once()
+          verify(taskLibWrapper.debug('* PullRequestComments.getIgnoredCommentData()')).atLeast(1)
+        })
+      })
+
+    it('should return the expected result when all comment types are present', async (): Promise<void> => {
+      // Arrange
+      when(azureReposInvoker.getCommentThreads()).thenResolve([
+        {
+          comments: [
+            {
+              author: {
+                displayName: 'Project Collection Build Service ('
+              },
+              content: `# Metrics for iteration 1${os.EOL}`,
+              id: 10
+            }
+          ],
+          id: 20
+        },
+        {
+          pullRequestThreadContext: {
+            trackingCriteria: {
+              origFilePath: ' file2.ts'
+            }
+          },
+          comments: [
+            {
+              author: {
+                displayName: 'Project Collection Build Service ('
+              },
+              content: '❗ **This file may not need to be reviewed.**'
+            }
+          ]
+        },
+        {
+          pullRequestThreadContext: {
+            trackingCriteria: {
+              origFilePath: ' file5.ts'
+            }
+          },
+          comments: [
+            {
+              author: {
+                displayName: 'Project Collection Build Service ('
+              },
+              content: '❗ **This file may not need to be reviewed.**'
+            }
+          ]
+        }
+      ])
+      when(codeMetrics.ignoredFilesWithLinesAdded).thenReturn(['folder/file1.ts', 'file2.ts', 'file3.ts'])
+      when(codeMetrics.ignoredFilesWithoutLinesAdded).thenReturn(['folder/file4.ts', 'file5.ts', 'file6.ts'])
+      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(parameters), instance(taskLibWrapper))
+
+      // Act
+      const result: CommentData = await pullRequestComments.getCommentData(1)
+
+      // Assert
+      expect(result.isPresent).to.equal(true)
+      expect(result.commentId).to.equal(10)
+      expect(result.threadId).to.equal(20)
+      expect(result.ignoredFilesWithLinesAdded).to.deep.equal(['folder/file1.ts', 'file3.ts'])
+      expect(result.ignoredFilesWithoutLinesAdded).to.deep.equal(['folder/file4.ts', 'file6.ts'])
+      verify(taskLibWrapper.debug('* PullRequestComments.getCommentData()')).once()
+      verify(taskLibWrapper.debug('* PullRequestComments.getMetricsCommentData()')).once()
+      verify(taskLibWrapper.debug('* PullRequestComments.getIgnoredCommentData()')).twice()
     })
 
     async.each(
@@ -112,11 +283,11 @@ describe('pullRequestComments.ts', (): void => {
         ['commentThread[0].comments[0].author', [{ comments: [{}], id: 1 }]],
         ['commentThread[0].comments[0].author.displayName', [{ comments: [{ author: {} }], id: 1 }]],
         ['commentThread[0].comments[0].content', [{ comments: [{ author: { displayName: 'Project Collection Build Service (' } }], id: 1 }]],
-        ['commentThread[0].comments[0].id', [{ comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: 'Content' }], id: 1 }]],
+        ['commentThread[0].comments[0].id', [{ comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: '# Metrics for iteration 1' }], id: 1 }]],
         ['commentThread[0].comments[1].author', [{ comments: [validGitPullRequestCommentThread.comments![0]!, {}], id: 1 }]],
         ['commentThread[0].comments[1].author.displayName', [{ comments: [validGitPullRequestCommentThread.comments![0]!, { author: {} }], id: 1 }]],
         ['commentThread[0].comments[1].content', [{ comments: [validGitPullRequestCommentThread.comments![0]!, { author: { displayName: 'Project Collection Build Service (' } }], id: 1 }]],
-        ['commentThread[0].comments[1].id', [{ comments: [validGitPullRequestCommentThread.comments![0]!, { author: { displayName: 'Project Collection Build Service (' }, content: 'Content' }], id: 1 }]],
+        ['commentThread[0].comments[1].id', [{ comments: [validGitPullRequestCommentThread.comments![0]!, { author: { displayName: 'Project Collection Build Service (' }, content: '# Metrics for iteration 1' }], id: 1 }]],
         ['commentThread[0].pullRequestThreadContext.trackingCriteria', [{ pullRequestThreadContext: {} }]],
         ['commentThread[0].pullRequestThreadContext.trackingCriteria.origFilePath', [{ pullRequestThreadContext: { trackingCriteria: {} } }]],
         ['commentThread[0].comments', [{ pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file.ts' } } }]],
@@ -129,11 +300,11 @@ describe('pullRequestComments.ts', (): void => {
         ['commentThread[1].comments[0].author', [validGitPullRequestCommentThread, { comments: [{}], id: 1 }]],
         ['commentThread[1].comments[0].author.displayName', [validGitPullRequestCommentThread, { comments: [{ author: {} }], id: 1 }]],
         ['commentThread[1].comments[0].content', [validGitPullRequestCommentThread, { comments: [{ author: { displayName: 'Project Collection Build Service (' } }], id: 1 }]],
-        ['commentThread[1].comments[0].id', [validGitPullRequestCommentThread, { comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: 'Content' }], id: 1 }]],
+        ['commentThread[1].comments[0].id', [validGitPullRequestCommentThread, { comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: '# Metrics for iteration 1' }], id: 1 }]],
         ['commentThread[1].comments[1].author', [validGitPullRequestCommentThread, { comments: [validGitPullRequestCommentThread.comments![0]!, {}], id: 1 }]],
         ['commentThread[1].comments[1].author.displayName', [validGitPullRequestCommentThread, { comments: [validGitPullRequestCommentThread.comments![0]!, { author: {} }], id: 1 }]],
         ['commentThread[1].comments[1].content', [validGitPullRequestCommentThread, { comments: [validGitPullRequestCommentThread.comments![0]!, { author: { displayName: 'Project Collection Build Service (' } }], id: 1 }]],
-        ['commentThread[1].comments[1].id', [validGitPullRequestCommentThread, { comments: [validGitPullRequestCommentThread.comments![0]!, { author: { displayName: 'Project Collection Build Service (' }, content: 'Content' }], id: 1 }]],
+        ['commentThread[1].comments[1].id', [validGitPullRequestCommentThread, { comments: [validGitPullRequestCommentThread.comments![0]!, { author: { displayName: 'Project Collection Build Service (' }, content: '# Metrics for iteration 1' }], id: 1 }]],
         ['commentThread[1].pullRequestThreadContext.trackingCriteria', [validGitPullRequestCommentThread, { pullRequestThreadContext: {} }]],
         ['commentThread[1].pullRequestThreadContext.trackingCriteria.origFilePath', [validGitPullRequestCommentThread, { pullRequestThreadContext: { trackingCriteria: {} } }]],
         ['commentThread[1].comments', [validGitPullRequestCommentThread, { pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file.ts' } } }]],
@@ -148,11 +319,12 @@ describe('pullRequestComments.ts', (): void => {
           when(codeMetrics.ignoredFilesWithLinesAdded).thenReturn(['file.ts'])
           const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(parameters), instance(taskLibWrapper))
 
-          // Act
           let exceptionThrown: boolean = false
           try {
+            // Act
             await pullRequestComments.getCommentData(1)
           } catch (error) {
+            // Assert
             exceptionThrown = true
             expect(error.message).to.equal(`Field '${data[0]}' is invalid, null, or undefined 'undefined'.`)
           }
@@ -161,6 +333,25 @@ describe('pullRequestComments.ts', (): void => {
           verify(taskLibWrapper.debug('* PullRequestComments.getCommentData()')).once()
         })
       })
+
+    it('should throw an error when the file name is not of the expected length', async (): Promise<void> => {
+      // Arrange
+      when(azureReposInvoker.getCommentThreads()).thenResolve([{ pullRequestThreadContext: { trackingCriteria: { origFilePath: ' ' } } }])
+      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(parameters), instance(taskLibWrapper))
+
+      let exceptionThrown: boolean = false
+      try {
+        // Act
+        await pullRequestComments.getCommentData(1)
+      } catch (error) {
+        // Assert
+        exceptionThrown = true
+        expect(error.message).to.equal('\'commentThread[0].pullRequestThreadContext.trackingCriteria.origFilePath\' \' \' is of length \'1\'.')
+      }
+
+      expect(exceptionThrown).to.equal(true)
+      verify(taskLibWrapper.debug('* PullRequestComments.getCommentData()')).once()
+    })
   })
 
   describe('getMetricsComment()', (): void => {

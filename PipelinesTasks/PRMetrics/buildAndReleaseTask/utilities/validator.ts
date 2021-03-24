@@ -14,7 +14,7 @@ export module validator {
    */
   export function validateField<T> (value: T | null | undefined, fieldName: string): void {
     if (!value) {
-      throw new Error(`Field '${fieldName}' is invalid, null, or undefined '${value}'.`)
+      throw Error(`Field '${fieldName}' is invalid, null, or undefined '${value}'.`)
     }
   }
 }
