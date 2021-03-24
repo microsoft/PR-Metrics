@@ -1,9 +1,9 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import CommentData from './updaters/commentData'
 import PullRequest from './updaters/pullRequest'
 import PullRequestComments from './updaters/pullRequestComments'
+import PullRequestCommentsData from './updaters/pullRequestCommentsData'
 import TaskLibWrapper from './wrappers/taskLibWrapper'
 
 /**
@@ -72,7 +72,7 @@ export default class CodeMetricsCalculator {
     // TODO: Update once dependencies are added
     // $commentThreads = $this.AzureReposInvoker.GetCommentThreads()
     // $iterations = $this.AzureReposInvoker.GetIterations()
-    const commentData: CommentData = await this._pullRequestComments.getCommentData(1)
+    const commentData: PullRequestCommentsData = await this._pullRequestComments.getCommentData(1)
 
     this._taskLibWrapper.debug((commentData.commentId ?? 0).toLocaleString())
   }

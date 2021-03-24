@@ -29,8 +29,8 @@ export default class CodeMetrics {
   }
 
   /**
-   * Gets the set of ignored files with added lines.
-   * @returns The set of ignored files with added lines.
+   * Gets the collection of ignored files with added lines.
+   * @returns The collection of ignored files with added lines.
    */
   public get ignoredFilesWithLinesAdded (): string[] {
     this._taskLibWrapper.debug('* CodeMetrics.ignoredFilesWithLinesAdded')
@@ -39,8 +39,8 @@ export default class CodeMetrics {
   }
 
   /**
-   * Gets the set of ignored files without added lines.
-   * @returns The set of ignored files without added lines.
+   * Gets the collection of ignored files without added lines.
+   * @returns The collection of ignored files without added lines.
    */
   public get ignoredFilesWithoutLinesAdded (): string[] {
     this._taskLibWrapper.debug('* CodeMetrics.ignoredFilesWithoutLinesAdded')
@@ -59,8 +59,8 @@ export default class CodeMetrics {
   }
 
   /**
-   * Gets the set of pull request metrics.
-   * @returns The set of pull request metrics.
+   * Gets the collection of pull request metrics.
+   * @returns The collection of pull request metrics.
    */
   public get metrics (): Metrics {
     this._taskLibWrapper.debug('* CodeMetrics.metrics')

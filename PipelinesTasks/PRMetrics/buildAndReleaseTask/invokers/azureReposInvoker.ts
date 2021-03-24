@@ -53,7 +53,7 @@ export default class AzureReposInvoker {
       const gitApi: IGitApi = await this.openConnection()
       const pullRequestIterations: GitPullRequestIteration[] = await gitApi.getPullRequestIterations(this.repositoryId, this.pullRequestId, this.project)
       if (pullRequestIterations.length === 0) {
-        throw Error('The set of pull request iterations was of length zero.')
+        throw Error('The collection of pull request iterations was of length zero.')
       }
 
       const latestIteration: GitPullRequestIteration = pullRequestIterations[pullRequestIterations.length - 1]!

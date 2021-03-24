@@ -6,8 +6,8 @@ import { validator } from '../utilities/validator'
 import * as os from 'os'
 import AzureReposInvoker from '../invokers/azureReposInvoker'
 import CodeMetrics from './codeMetrics'
-import CommentData from './commentData'
 import Parameters from './parameters'
+import PullRequestCommentsData from './pullRequestCommentsData'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
 
 /**
@@ -49,10 +49,10 @@ export default class PullRequestComments {
    * @param The number of the current iteration.
    * @returns A promise containing the data used for constructing the comment within the pull request.
    */
-  public async getCommentData (currentIteration: number): Promise<CommentData> {
+  public async getCommentData (currentIteration: number): Promise<PullRequestCommentsData> {
     this._taskLibWrapper.debug('* PullRequestComments.getCommentData()')
 
-    let result: CommentData = new CommentData(this._codeMetrics.ignoredFilesWithLinesAdded, this._codeMetrics.ignoredFilesWithoutLinesAdded)
+    let result: PullRequestCommentsData = new PullRequestCommentsData(this._codeMetrics.ignoredFilesWithLinesAdded, this._codeMetrics.ignoredFilesWithoutLinesAdded)
 
     const commentThreads: GitPullRequestCommentThread[] = await this._azureReposInvoker.getCommentThreads()
     for (let i: number = 0; i < commentThreads.length; i++) {
@@ -124,7 +124,7 @@ export default class PullRequestComments {
     return CommentThreadStatus.Active
   }
 
-  private getMetricsCommentData (result: CommentData, currentIteration: number, commentThread: GitPullRequestCommentThread, commentThreadIndex: number): CommentData {
+  private getMetricsCommentData (result: PullRequestCommentsData, currentIteration: number, commentThread: GitPullRequestCommentThread, commentThreadIndex: number): PullRequestCommentsData {
     this._taskLibWrapper.debug('* PullRequestComments.getMetricsCommentData()')
 
     validator.validateField(commentThread.id, `commentThread[${commentThreadIndex}].id`)

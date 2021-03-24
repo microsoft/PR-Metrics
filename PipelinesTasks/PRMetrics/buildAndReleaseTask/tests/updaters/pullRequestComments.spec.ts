@@ -8,11 +8,11 @@ import { instance, mock, verify, when } from 'ts-mockito'
 import async from 'async'
 import AzureReposInvoker from '../../invokers/azureReposInvoker'
 import CodeMetrics from '../../updaters/codeMetrics'
-import CommentData from '../../updaters/commentData'
 import Metrics from '../../updaters/metrics'
 import os from 'os'
 import Parameters from '../../updaters/parameters'
 import PullRequestComments from '../../updaters/pullRequestComments'
+import PullRequestCommentsData from '../../updaters/pullRequestCommentsData'
 import TaskLibWrapper from '../../wrappers/taskLibWrapper'
 
 describe('pullRequestComments.ts', (): void => {
@@ -95,7 +95,7 @@ describe('pullRequestComments.ts', (): void => {
       const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(parameters), instance(taskLibWrapper))
 
       // Act
-      const result: CommentData = await pullRequestComments.getCommentData(1)
+      const result: PullRequestCommentsData = await pullRequestComments.getCommentData(1)
 
       // Assert
       expect(result.isPresent).to.equal(false)
@@ -123,7 +123,7 @@ describe('pullRequestComments.ts', (): void => {
           const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(parameters), instance(taskLibWrapper))
 
           // Act
-          const result: CommentData = await pullRequestComments.getCommentData(data[0])
+          const result: PullRequestCommentsData = await pullRequestComments.getCommentData(data[0])
 
           // Assert
           expect(result.isPresent).to.equal(true)
@@ -142,7 +142,7 @@ describe('pullRequestComments.ts', (): void => {
       const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(parameters), instance(taskLibWrapper))
 
       // Act
-      const result: CommentData = await pullRequestComments.getCommentData(1)
+      const result: PullRequestCommentsData = await pullRequestComments.getCommentData(1)
 
       // Assert
       expect(result.isPresent).to.equal(false)
@@ -170,7 +170,7 @@ describe('pullRequestComments.ts', (): void => {
           const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(parameters), instance(taskLibWrapper))
 
           // Act
-          const result: CommentData = await pullRequestComments.getCommentData(1)
+          const result: PullRequestCommentsData = await pullRequestComments.getCommentData(1)
 
           // Assert
           expect(result.isPresent).to.equal(false)
@@ -199,7 +199,7 @@ describe('pullRequestComments.ts', (): void => {
           const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(parameters), instance(taskLibWrapper))
 
           // Act
-          const result: CommentData = await pullRequestComments.getCommentData(1)
+          const result: PullRequestCommentsData = await pullRequestComments.getCommentData(1)
 
           // Assert
           expect(result.isPresent).to.equal(false)
@@ -263,7 +263,7 @@ describe('pullRequestComments.ts', (): void => {
       const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(parameters), instance(taskLibWrapper))
 
       // Act
-      const result: CommentData = await pullRequestComments.getCommentData(1)
+      const result: PullRequestCommentsData = await pullRequestComments.getCommentData(1)
 
       // Assert
       expect(result.isPresent).to.equal(true)
