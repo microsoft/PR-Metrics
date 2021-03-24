@@ -99,12 +99,12 @@ export default class Parameters {
     this._taskLibWrapper.debug('* Parameters.initializeBaseSize()')
 
     const convertedValue: number = parseInt(baseSize)
-    if (!convertedValue || convertedValue <= 0) {
+    if (!isNaN(convertedValue) && convertedValue > 0) {
+      this._baseSize = convertedValue
+    } else {
       const defaultValue: number = 250
       this._consoleWrapper.log(this._taskLibWrapper.loc('updaters.parameters.adjustingBaseSize', defaultValue.toLocaleString()))
       this._baseSize = defaultValue
-    } else {
-      this._baseSize = convertedValue
     }
   }
 
@@ -112,12 +112,12 @@ export default class Parameters {
     this._taskLibWrapper.debug('* Parameters.initializeGrowthRate()')
 
     const convertedValue: number = parseFloat(growthRate)
-    if (!convertedValue || convertedValue < 1.0) {
+    if (!isNaN(convertedValue) && convertedValue >= 1.0) {
+      this._growthRate = convertedValue
+    } else {
       const defaultValue: number = 2.0
       this._consoleWrapper.log(this._taskLibWrapper.loc('updaters.parameters.adjustingGrowthRate', defaultValue.toLocaleString()))
       this._growthRate = defaultValue
-    } else {
-      this._growthRate = convertedValue
     }
   }
 
@@ -125,31 +125,31 @@ export default class Parameters {
     this._taskLibWrapper.debug('* Parameters.initializeTestFactor()')
 
     const convertedValue: number = parseFloat(testFactor)
-    if (!convertedValue || convertedValue < 0.0) {
+    if (!isNaN(convertedValue) && convertedValue >= 0.0) {
+      this._testFactor = convertedValue
+    } else {
       const defaultValue: number = 1.5
       this._consoleWrapper.log(this._taskLibWrapper.loc('updaters.parameters.adjustingTestFactor', defaultValue.toLocaleString()))
       this._testFactor = defaultValue
-    } else {
-      this._testFactor = convertedValue
     }
   }
 
   private initializeFileMatchingPatterns (fileMatchingPatterns: string): void {
     this._taskLibWrapper.debug('* Parameters.initializeFileMatchingPatterns()')
 
-    if (!fileMatchingPatterns?.trim()) {
+    if (fileMatchingPatterns.trim()) {
+      this._fileMatchingPatterns = fileMatchingPatterns.split('\n')
+    } else {
       const defaultValue: string = '**/*'
       this._consoleWrapper.log(this._taskLibWrapper.loc('updaters.parameters.adjustingFileMatchingPatterns', defaultValue))
       this._fileMatchingPatterns.push(defaultValue)
-    } else {
-      this._fileMatchingPatterns = fileMatchingPatterns.split('\n')
     }
   }
 
   private initializeCodeFileExtensions (codeFileExtensions: string): void {
     this._taskLibWrapper.debug('* Parameters.initializeCodeFileExtensions()')
 
-    if (codeFileExtensions?.trim()) {
+    if (codeFileExtensions.trim()) {
       const codeFileExtensionsArray: string[] = codeFileExtensions.split('\n')
       codeFileExtensionsArray.forEach((value: string): void => {
         this._codeFileExtensions.push(`*.${value}`)

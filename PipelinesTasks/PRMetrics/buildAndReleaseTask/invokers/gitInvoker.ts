@@ -35,12 +35,12 @@ export default class GitInvoker {
 
     const variable: string | undefined = process.env.SYSTEM_PULLREQUEST_TARGETBRANCH
     if (variable === undefined) {
-      throw new Error('Environment variable SYSTEM_PULLREQUEST_TARGETBRANCH undefined.')
+      throw Error('Environment variable SYSTEM_PULLREQUEST_TARGETBRANCH undefined.')
     }
 
     const expectedStart: string = 'refs/heads/'
     if (!variable.startsWith(expectedStart)) {
-      throw new Error(`Environment variable SYSTEM_PULLREQUEST_TARGETBRANCH '${variable}' in unexpected format.`)
+      throw Error(`Environment variable SYSTEM_PULLREQUEST_TARGETBRANCH '${variable}' in unexpected format.`)
     }
 
     const startIndex: number = expectedStart.length
@@ -52,7 +52,7 @@ export default class GitInvoker {
 
     const variable: string | undefined = process.env.SYSTEM_PULLREQUEST_PULLREQUESTID
     if (variable === undefined) {
-      throw new Error('Environment variable SYSTEM_PULLREQUEST_PULLREQUESTID undefined.')
+      throw Error('Environment variable SYSTEM_PULLREQUEST_PULLREQUESTID undefined.')
     }
 
     return variable

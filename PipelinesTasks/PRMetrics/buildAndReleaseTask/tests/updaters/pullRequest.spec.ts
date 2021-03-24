@@ -160,18 +160,4 @@ describe('pullRequest.ts', (): void => {
         })
       })
   })
-
-  describe('getCurrentIteration()', (): void => {
-    it('should return the expected result', (): void => {
-      // Arrange
-      const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(taskLibWrapper))
-
-      // Act
-      const result: number = pullRequest.getCurrentIteration()
-
-      // Assert
-      expect(result).to.equal(1)
-      verify(taskLibWrapper.debug('* PullRequest.getCurrentIteration()')).once()
-    })
-  })
 })
