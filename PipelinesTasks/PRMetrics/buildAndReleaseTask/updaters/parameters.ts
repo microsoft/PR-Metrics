@@ -99,7 +99,7 @@ export default class Parameters {
     this._taskLibWrapper.debug('* Parameters.initializeBaseSize()')
 
     const convertedValue: number = parseInt(baseSize)
-    if (!baseSize || !convertedValue || convertedValue <= 0) {
+    if (!baseSize?.trim() || !convertedValue || convertedValue <= 0) {
       const defaultValue: number = 250
       this._consoleWrapper.log(this._taskLibWrapper.loc('updaters.parameters.adjustingBaseSize', defaultValue.toLocaleString()))
       this._baseSize = defaultValue
