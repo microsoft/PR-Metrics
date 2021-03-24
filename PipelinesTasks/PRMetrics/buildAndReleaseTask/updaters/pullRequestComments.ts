@@ -80,9 +80,9 @@ export default class PullRequestComments {
   /**
    * Gets the comment to add to the comment thread.
    * @param The number of the current iteration.
-   * @returns A promise containing the comment to add to the comment thread.
+   * @returns The comment to add to the comment thread.
    */
-  public async getMetricsComment (currentIteration: number): Promise<string> {
+  public getMetricsComment (currentIteration: number): string {
     this._taskLibWrapper.debug('* PullRequestComments.getMetricsComment()')
 
     let result: string = `${this._taskLibWrapper.loc('updaters.pullRequestComments.commentTitle', currentIteration.toLocaleString())}${os.EOL}`
