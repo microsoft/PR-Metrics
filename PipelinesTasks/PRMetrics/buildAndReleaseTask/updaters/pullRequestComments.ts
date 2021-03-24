@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 import { Comment, CommentThreadStatus, GitPullRequestCommentThread } from 'azure-devops-node-api/interfaces/GitInterfaces'
+import { validator } from '../utilities/validator'
 import * as os from 'os'
 import AzureReposInvoker from '../invokers/azureReposInvoker'
 import CodeMetrics from './codeMetrics'
@@ -119,21 +120,21 @@ export default class PullRequestComments {
   private getMetricsCommentData (result: CommentData, commentThread: GitPullRequestCommentThread, currentIteration: number): void {
     this._taskLibWrapper.debug('* PullRequestComments.getMetricsCommentData()')
 
-    this.validateField(commentThread.comments, 'commentThread.comments')
+    validator.validateField(commentThread.comments, 'commentThread.comments')
 
     for (let i: number = 0; i < commentThread.comments!.length; i++) {
       const comment: Comment = commentThread.comments![i]!
 
-      this.validateField(comment.author, 'comment.author')
-      this.validateField(comment.author!.displayName, 'comment.author.displayName')
+      validator.validateField(comment.author, 'comment.author')
+      validator.validateField(comment.author!.displayName, 'comment.author.displayName')
 
       if (comment.author!.displayName!.startsWith('Project Collection Build Service (')) {
-        this.validateField(comment.content, 'comment.content')
+        validator.validateField(comment.content, 'comment.content')
 
         const commentHeader: RegExp = new RegExp(`^${this._taskLibWrapper.loc('updaters.pullRequestComments.commentTitle', currentIteration.toLocaleString())}`)
         if (!comment.content!.match(commentHeader)) {
-          this.validateField(commentThread.id, 'commentThread.id')
-          this.validateField(comment.id, 'comment.id')
+          validator.validateField(commentThread.id, 'commentThread.id')
+          validator.validateField(comment.id, 'comment.id')
 
           result.threadId = commentThread!.id!
           result.commentId = comment.id!
@@ -149,13 +150,13 @@ export default class PullRequestComments {
   private getIgnoredCommentData (ignoredFiles: string[], fileName: string, commentThread: GitPullRequestCommentThread): void {
     this._taskLibWrapper.debug('* PullRequestComments.getIgnoredCommentData()')
 
-    this.validateField(commentThread.comments, 'commentThread.comments')
-    this.validateField(commentThread.comments![0], 'commentThread.comments[0]')
+    validator.validateField(commentThread.comments, 'commentThread.comments')
+    validator.validateField(commentThread.comments![0], 'commentThread.comments[0]')
 
     const comment: Comment = commentThread.comments![0]!
-    this.validateField(comment.author, 'comment.author')
-    this.validateField(comment.author!.displayName, 'comment.author.displayName')
-    this.validateField(comment.content, 'comment.content')
+    validator.validateField(comment.author, 'comment.author')
+    validator.validateField(comment.author!.displayName, 'comment.author.displayName')
+    validator.validateField(comment.content, 'comment.content')
 
     if (comment.author!.displayName!.startsWith('Project Collection Build Service (')) {
       if (comment.content! === this.ignoredComment) {
@@ -166,12 +167,6 @@ export default class PullRequestComments {
 
         ignoredFiles.splice(index, 1)
       }
-    }
-  }
-
-  private validateField<T> (field: T | null | undefined, fieldName: string): void {
-    if (!field) {
-      throw new Error(`Field '${fieldName}' is null or undefined.`)
     }
   }
 
