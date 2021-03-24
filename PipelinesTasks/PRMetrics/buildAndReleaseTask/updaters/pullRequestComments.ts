@@ -1,9 +1,10 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import * as os from 'os'
+
 import CodeMetrics from './codeMetrics'
+import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import Parameters from './parameters'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
 

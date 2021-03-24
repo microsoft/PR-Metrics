@@ -1,17 +1,18 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
-import { expect } from 'chai'
-import { FixedLengthArray } from '../../utilities/fixedLengthArray'
 import { instance, mock, verify, when } from 'ts-mockito'
-import async from 'async'
+
 import CodeMetrics from '../../updaters/codeMetrics'
+import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
+import { FixedLengthArray } from '../../utilities/fixedLengthArray'
 import Metrics from '../../updaters/metrics'
-import os from 'os'
 import Parameters from '../../updaters/parameters'
 import PullRequestComments from '../../updaters/pullRequestComments'
 import TaskLibWrapper from '../../wrappers/taskLibWrapper'
+import async from 'async'
+import { expect } from 'chai'
+import os from 'os'
 
 describe('pullRequestComments.ts', (): void => {
   let codeMetrics: CodeMetrics
