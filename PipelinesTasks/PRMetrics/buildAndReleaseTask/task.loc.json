@@ -54,5 +54,30 @@
     "Node10": {
       "target": "index.js"
     }
+  },
+  "messages": {
+    "updaters.pullRequest.addDescription": "ms-resource:loc.messages.updaters.pullRequest.addDescription",
+    "updaters.pullRequest.titleFormat": "ms-resource:loc.messages.updaters.pullRequest.titleFormat",
+    "updaters.pullRequest.titleSizeIndicatorFormat": "ms-resource:loc.messages.updaters.pullRequest.titleSizeIndicatorFormat",
+    "updaters.pullRequest.titleSizeL": "ms-resource:loc.messages.updaters.pullRequest.titleSizeL",
+    "updaters.pullRequest.titleSizeM": "ms-resource:loc.messages.updaters.pullRequest.titleSizeM",
+    "updaters.pullRequest.titleSizeS": "ms-resource:loc.messages.updaters.pullRequest.titleSizeS",
+    "updaters.pullRequest.titleSizeXL": "ms-resource:loc.messages.updaters.pullRequest.titleSizeXL",
+    "updaters.pullRequest.titleSizeXS": "ms-resource:loc.messages.updaters.pullRequest.titleSizeXS",
+    "updaters.pullRequest.titleTestsInsufficient": "ms-resource:loc.messages.updaters.pullRequest.titleTestsInsufficient",
+    "updaters.pullRequest.titleTestsSufficient": "ms-resource:loc.messages.updaters.pullRequest.titleTestsSufficient",
+    "updaters.pullRequestComments.commentFooter": "ms-resource:loc.messages.updaters.pullRequestComments.commentFooter",
+    "updaters.pullRequestComments.commentTitle": "ms-resource:loc.messages.updaters.pullRequestComments.commentTitle",
+    "updaters.pullRequestComments.fileIgnoredComment": "ms-resource:loc.messages.updaters.pullRequestComments.fileIgnoredComment",
+    "updaters.pullRequestComments.largePullRequestComment": "ms-resource:loc.messages.updaters.pullRequestComments.largePullRequestComment",
+    "updaters.pullRequestComments.smallPullRequestComment": "ms-resource:loc.messages.updaters.pullRequestComments.smallPullRequestComment",
+    "updaters.pullRequestComments.tableIgnoredCode": "ms-resource:loc.messages.updaters.pullRequestComments.tableIgnoredCode",
+    "updaters.pullRequestComments.tableLines": "ms-resource:loc.messages.updaters.pullRequestComments.tableLines",
+    "updaters.pullRequestComments.tableProductCode": "ms-resource:loc.messages.updaters.pullRequestComments.tableProductCode",
+    "updaters.pullRequestComments.tableSubtotal": "ms-resource:loc.messages.updaters.pullRequestComments.tableSubtotal",
+    "updaters.pullRequestComments.tableTestCode": "ms-resource:loc.messages.updaters.pullRequestComments.tableTestCode",
+    "updaters.pullRequestComments.tableTotal": "ms-resource:loc.messages.updaters.pullRequestComments.tableTotal",
+    "updaters.pullRequestComments.testsInsufficientComment": "ms-resource:loc.messages.updaters.pullRequestComments.testsInsufficientComment",
+    "updaters.pullRequestComments.testsSufficientComment": "ms-resource:loc.messages.updaters.pullRequestComments.testsSufficientComment"
   }
 }

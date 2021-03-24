@@ -8,14 +8,14 @@ import { IExecSyncResult } from 'azure-pipelines-task-lib/toolrunner'
  * A class for invoking Git commands.
  */
 class GitInvoker {
-  private taskLibWrapper: TaskLibWrapper;
+  private readonly _taskLibWrapper: TaskLibWrapper;
 
   /**
-   * Initializes a new instance of the GitInvoker class.
+   * Initializes a new instance of the `GitInvoker` class.
    * @param taskLibWrapper The wrapper around the Azure Pipelines Task Lib.
    */
   public constructor (taskLibWrapper: TaskLibWrapper) {
-    this.taskLibWrapper = taskLibWrapper
+    this._taskLibWrapper = taskLibWrapper
   }
 
   /**
@@ -23,7 +23,7 @@ class GitInvoker {
    * @returns The diff summary.
    */
   public getDiffSummary (): string {
-    this.taskLibWrapper.debug('* GitInvoker.getDiffSummary()')
+    this._taskLibWrapper.debug('* GitInvoker.getDiffSummary()')
 
     const targetBranch: string = this.getTargetBranch()
     const pullRequestId: string = this.getPullRequestId()
@@ -31,7 +31,7 @@ class GitInvoker {
   }
 
   private getTargetBranch (): string {
-    this.taskLibWrapper.debug('* GitInvoker.getTargetBranch()')
+    this._taskLibWrapper.debug('* GitInvoker.getTargetBranch()')
 
     const variable: string | undefined = process.env.SYSTEM_PULLREQUEST_TARGETBRANCH
     if (variable === undefined) {
@@ -48,7 +48,7 @@ class GitInvoker {
   }
 
   private getPullRequestId (): string {
-    this.taskLibWrapper.debug('* GitInvoker.getPullRequestId()')
+    this._taskLibWrapper.debug('* GitInvoker.getPullRequestId()')
 
     const variable: string | undefined = process.env.SYSTEM_PULLREQUEST_PULLREQUESTID
     if (variable === undefined) {
@@ -59,9 +59,9 @@ class GitInvoker {
   }
 
   private invokeGit (parameters: string): string {
-    this.taskLibWrapper.debug('* GitInvoker.invokeGit()')
+    this._taskLibWrapper.debug('* GitInvoker.invokeGit()')
 
-    const result: IExecSyncResult = this.taskLibWrapper.execSync('git', parameters)
+    const result: IExecSyncResult = this._taskLibWrapper.execSync('git', parameters)
     if (result.code !== 0) {
       throw result.error
     }
