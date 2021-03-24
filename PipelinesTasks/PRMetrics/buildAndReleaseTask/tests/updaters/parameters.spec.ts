@@ -1,13 +1,21 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { instance, mock, verify } from 'ts-mockito'
+import { instance, mock, verify, when } from 'ts-mockito'
 
 import ConsoleWrapper from '../../wrappers/consoleWrapper'
 import Parameters from '../../updaters/parameters'
 import TaskLibWrapper from '../../wrappers/taskLibWrapper'
 import async from 'async'
 import { expect } from 'chai'
+
+const localizations = {
+  adjustingBaseSize: 'Adjusting base size parameter to 250',
+  adjustingGrowthRate: 'Adjusting growth rate parameter to 2.0',
+  adjustingTestFactor: 'Adjusting test factor parameter to 1.5',
+  adjustingFileMatchingPatterns: 'Adjusting file matching patterns to **/*',
+  adjustCodeFileExtensions: 'Adjusting code file extensions parameter to default values'
+}
 
 describe('parameters.ts', (): void => {
   let taskLibWrapper: TaskLibWrapper
@@ -16,6 +24,12 @@ describe('parameters.ts', (): void => {
   beforeEach((): void => {
     taskLibWrapper = mock(TaskLibWrapper)
     consoleWrapper = mock(ConsoleWrapper)
+
+    when(taskLibWrapper.loc('updaters.parameters.adjustingBaseSize', '250')).thenReturn(localizations.adjustingBaseSize)
+    when(taskLibWrapper.loc('updaters.parameters.adjustingGrowthRate', '2')).thenReturn(localizations.adjustingGrowthRate)
+    when(taskLibWrapper.loc('updaters.parameters.adjustingTestFactor', '1.5')).thenReturn(localizations.adjustingTestFactor)
+    when(taskLibWrapper.loc('updaters.parameters.adjustingFileMatchingPatterns', '**/*')).thenReturn(localizations.adjustingFileMatchingPatterns)
+    when(taskLibWrapper.loc('updaters.parameters.adjustingCodeFileExtensions')).thenReturn(localizations.adjustCodeFileExtensions)
   })
 
   describe('initialize', (): void => {
@@ -45,6 +59,11 @@ describe('parameters.ts', (): void => {
         verify(taskLibWrapper.debug('* Parameters.testFactor')).once()
         verify(taskLibWrapper.debug('* Parameters.fileMatchingPatterns')).once()
         verify(taskLibWrapper.debug('* Parameters.codeFileExtensions')).once()
+        verify(consoleWrapper.log(localizations.adjustingBaseSize)).once()
+        verify(consoleWrapper.log(localizations.adjustingGrowthRate)).once()
+        verify(consoleWrapper.log(localizations.adjustingTestFactor)).once()
+        verify(consoleWrapper.log(localizations.adjustingFileMatchingPatterns)).once()
+        verify(consoleWrapper.log(localizations.adjustCodeFileExtensions)).once()
       })
 
       it('initialize - should give all the expected values', (): void => {
@@ -72,6 +91,11 @@ describe('parameters.ts', (): void => {
         verify(taskLibWrapper.debug('* Parameters.testFactor')).once()
         verify(taskLibWrapper.debug('* Parameters.fileMatchingPatterns')).once()
         verify(taskLibWrapper.debug('* Parameters.codeFileExtensions')).once()
+        verify(consoleWrapper.log(localizations.adjustingBaseSize)).never()
+        verify(consoleWrapper.log(localizations.adjustingGrowthRate)).never()
+        verify(consoleWrapper.log(localizations.adjustingTestFactor)).never()
+        verify(consoleWrapper.log(localizations.adjustingFileMatchingPatterns)).never()
+        verify(consoleWrapper.log(localizations.adjustCodeFileExtensions)).never()
       })
     })
 
@@ -103,6 +127,11 @@ describe('parameters.ts', (): void => {
             verify(taskLibWrapper.debug('* Parameters.initializeFileMatchingPatterns()')).once()
             verify(taskLibWrapper.debug('* Parameters.initializeCodeFileExtensions()')).once()
             verify(taskLibWrapper.debug('* Parameters.baseSize')).once()
+            verify(consoleWrapper.log(localizations.adjustingBaseSize)).once()
+            verify(consoleWrapper.log(localizations.adjustingGrowthRate)).once()
+            verify(consoleWrapper.log(localizations.adjustingTestFactor)).once()
+            verify(consoleWrapper.log(localizations.adjustingFileMatchingPatterns)).once()
+            verify(consoleWrapper.log(localizations.adjustCodeFileExtensions)).once()
           })
         })
 
@@ -130,6 +159,11 @@ describe('parameters.ts', (): void => {
             verify(taskLibWrapper.debug('* Parameters.initializeFileMatchingPatterns()')).once()
             verify(taskLibWrapper.debug('* Parameters.initializeCodeFileExtensions()')).once()
             verify(taskLibWrapper.debug('* Parameters.baseSize')).once()
+            verify(consoleWrapper.log(localizations.adjustingBaseSize)).once()
+            verify(consoleWrapper.log(localizations.adjustingGrowthRate)).once()
+            verify(consoleWrapper.log(localizations.adjustingTestFactor)).once()
+            verify(consoleWrapper.log(localizations.adjustingFileMatchingPatterns)).once()
+            verify(consoleWrapper.log(localizations.adjustCodeFileExtensions)).once()
           })
         })
 
@@ -157,6 +191,11 @@ describe('parameters.ts', (): void => {
             verify(taskLibWrapper.debug('* Parameters.initializeFileMatchingPatterns()')).once()
             verify(taskLibWrapper.debug('* Parameters.initializeCodeFileExtensions()')).once()
             verify(taskLibWrapper.debug('* Parameters.baseSize')).once()
+            verify(consoleWrapper.log(localizations.adjustingBaseSize)).never()
+            verify(consoleWrapper.log(localizations.adjustingGrowthRate)).once()
+            verify(consoleWrapper.log(localizations.adjustingTestFactor)).once()
+            verify(consoleWrapper.log(localizations.adjustingFileMatchingPatterns)).once()
+            verify(consoleWrapper.log(localizations.adjustCodeFileExtensions)).once()
           })
         })
     })
@@ -189,6 +228,11 @@ describe('parameters.ts', (): void => {
             verify(taskLibWrapper.debug('* Parameters.initializeFileMatchingPatterns()')).once()
             verify(taskLibWrapper.debug('* Parameters.initializeCodeFileExtensions()')).once()
             verify(taskLibWrapper.debug('* Parameters.growthRate')).once()
+            verify(consoleWrapper.log(localizations.adjustingBaseSize)).once()
+            verify(consoleWrapper.log(localizations.adjustingGrowthRate)).once()
+            verify(consoleWrapper.log(localizations.adjustingTestFactor)).once()
+            verify(consoleWrapper.log(localizations.adjustingFileMatchingPatterns)).once()
+            verify(consoleWrapper.log(localizations.adjustCodeFileExtensions)).once()
           })
         })
 
@@ -218,6 +262,11 @@ describe('parameters.ts', (): void => {
             verify(taskLibWrapper.debug('* Parameters.initializeFileMatchingPatterns()')).once()
             verify(taskLibWrapper.debug('* Parameters.initializeCodeFileExtensions()')).once()
             verify(taskLibWrapper.debug('* Parameters.growthRate')).once()
+            verify(consoleWrapper.log(localizations.adjustingBaseSize)).once()
+            verify(consoleWrapper.log(localizations.adjustingGrowthRate)).once()
+            verify(consoleWrapper.log(localizations.adjustingTestFactor)).once()
+            verify(consoleWrapper.log(localizations.adjustingFileMatchingPatterns)).once()
+            verify(consoleWrapper.log(localizations.adjustCodeFileExtensions)).once()
           })
         })
 
@@ -249,6 +298,11 @@ describe('parameters.ts', (): void => {
             verify(taskLibWrapper.debug('* Parameters.initializeFileMatchingPatterns()')).once()
             verify(taskLibWrapper.debug('* Parameters.initializeCodeFileExtensions()')).once()
             verify(taskLibWrapper.debug('* Parameters.growthRate')).once()
+            verify(consoleWrapper.log(localizations.adjustingBaseSize)).once()
+            verify(consoleWrapper.log(localizations.adjustingGrowthRate)).never()
+            verify(consoleWrapper.log(localizations.adjustingTestFactor)).once()
+            verify(consoleWrapper.log(localizations.adjustingFileMatchingPatterns)).once()
+            verify(consoleWrapper.log(localizations.adjustCodeFileExtensions)).once()
           })
         })
     })
@@ -280,6 +334,11 @@ describe('parameters.ts', (): void => {
             verify(taskLibWrapper.debug('* Parameters.initializeFileMatchingPatterns()')).once()
             verify(taskLibWrapper.debug('* Parameters.initializeCodeFileExtensions()')).once()
             verify(taskLibWrapper.debug('* Parameters.testFactor')).once()
+            verify(consoleWrapper.log(localizations.adjustingBaseSize)).once()
+            verify(consoleWrapper.log(localizations.adjustingGrowthRate)).once()
+            verify(consoleWrapper.log(localizations.adjustingTestFactor)).once()
+            verify(consoleWrapper.log(localizations.adjustingFileMatchingPatterns)).once()
+            verify(consoleWrapper.log(localizations.adjustCodeFileExtensions)).once()
           })
         })
 
@@ -309,6 +368,11 @@ describe('parameters.ts', (): void => {
             verify(taskLibWrapper.debug('* Parameters.initializeFileMatchingPatterns()')).once()
             verify(taskLibWrapper.debug('* Parameters.initializeCodeFileExtensions()')).once()
             verify(taskLibWrapper.debug('* Parameters.testFactor')).once()
+            verify(consoleWrapper.log(localizations.adjustingBaseSize)).once()
+            verify(consoleWrapper.log(localizations.adjustingGrowthRate)).once()
+            verify(consoleWrapper.log(localizations.adjustingTestFactor)).once()
+            verify(consoleWrapper.log(localizations.adjustingFileMatchingPatterns)).once()
+            verify(consoleWrapper.log(localizations.adjustCodeFileExtensions)).once()
           })
         })
 
@@ -340,6 +404,11 @@ describe('parameters.ts', (): void => {
             verify(taskLibWrapper.debug('* Parameters.initializeFileMatchingPatterns()')).once()
             verify(taskLibWrapper.debug('* Parameters.initializeCodeFileExtensions()')).once()
             verify(taskLibWrapper.debug('* Parameters.testFactor')).once()
+            verify(consoleWrapper.log(localizations.adjustingBaseSize)).once()
+            verify(consoleWrapper.log(localizations.adjustingGrowthRate)).once()
+            verify(consoleWrapper.log(localizations.adjustingTestFactor)).never()
+            verify(consoleWrapper.log(localizations.adjustingFileMatchingPatterns)).once()
+            verify(consoleWrapper.log(localizations.adjustCodeFileExtensions)).once()
           })
         })
     })
@@ -369,6 +438,11 @@ describe('parameters.ts', (): void => {
             verify(taskLibWrapper.debug('* Parameters.initializeFileMatchingPatterns()')).once()
             verify(taskLibWrapper.debug('* Parameters.initializeCodeFileExtensions()')).once()
             verify(taskLibWrapper.debug('* Parameters.fileMatchingPatterns')).once()
+            verify(consoleWrapper.log(localizations.adjustingBaseSize)).once()
+            verify(consoleWrapper.log(localizations.adjustingGrowthRate)).once()
+            verify(consoleWrapper.log(localizations.adjustingTestFactor)).once()
+            verify(consoleWrapper.log(localizations.adjustingFileMatchingPatterns)).once()
+            verify(consoleWrapper.log(localizations.adjustCodeFileExtensions)).once()
           })
         })
 
@@ -395,6 +469,11 @@ describe('parameters.ts', (): void => {
             verify(taskLibWrapper.debug('* Parameters.initializeFileMatchingPatterns()')).once()
             verify(taskLibWrapper.debug('* Parameters.initializeCodeFileExtensions()')).once()
             verify(taskLibWrapper.debug('* Parameters.fileMatchingPatterns')).once()
+            verify(consoleWrapper.log(localizations.adjustingBaseSize)).once()
+            verify(consoleWrapper.log(localizations.adjustingGrowthRate)).once()
+            verify(consoleWrapper.log(localizations.adjustingTestFactor)).once()
+            verify(consoleWrapper.log(localizations.adjustingFileMatchingPatterns)).never()
+            verify(consoleWrapper.log(localizations.adjustCodeFileExtensions)).once()
           })
         })
 
@@ -421,6 +500,11 @@ describe('parameters.ts', (): void => {
             verify(taskLibWrapper.debug('* Parameters.initializeFileMatchingPatterns()')).once()
             verify(taskLibWrapper.debug('* Parameters.initializeCodeFileExtensions()')).once()
             verify(taskLibWrapper.debug('* Parameters.fileMatchingPatterns')).once()
+            verify(consoleWrapper.log(localizations.adjustingBaseSize)).once()
+            verify(consoleWrapper.log(localizations.adjustingGrowthRate)).once()
+            verify(consoleWrapper.log(localizations.adjustingTestFactor)).once()
+            verify(consoleWrapper.log(localizations.adjustingFileMatchingPatterns)).never()
+            verify(consoleWrapper.log(localizations.adjustCodeFileExtensions)).once()
           })
         })
     })
@@ -450,6 +534,11 @@ describe('parameters.ts', (): void => {
             verify(taskLibWrapper.debug('* Parameters.initializeFileMatchingPatterns()')).once()
             verify(taskLibWrapper.debug('* Parameters.initializeCodeFileExtensions()')).once()
             verify(taskLibWrapper.debug('* Parameters.codeFileExtensions')).once()
+            verify(consoleWrapper.log(localizations.adjustingBaseSize)).once()
+            verify(consoleWrapper.log(localizations.adjustingGrowthRate)).once()
+            verify(consoleWrapper.log(localizations.adjustingTestFactor)).once()
+            verify(consoleWrapper.log(localizations.adjustingFileMatchingPatterns)).once()
+            verify(consoleWrapper.log(localizations.adjustCodeFileExtensions)).once()
           })
         })
 
@@ -479,6 +568,11 @@ describe('parameters.ts', (): void => {
             verify(taskLibWrapper.debug('* Parameters.initializeFileMatchingPatterns()')).once()
             verify(taskLibWrapper.debug('* Parameters.initializeCodeFileExtensions()')).once()
             verify(taskLibWrapper.debug('* Parameters.codeFileExtensions')).once()
+            verify(consoleWrapper.log(localizations.adjustingBaseSize)).once()
+            verify(consoleWrapper.log(localizations.adjustingGrowthRate)).once()
+            verify(consoleWrapper.log(localizations.adjustingTestFactor)).once()
+            verify(consoleWrapper.log(localizations.adjustingFileMatchingPatterns)).once()
+            verify(consoleWrapper.log(localizations.adjustCodeFileExtensions)).never()
           })
         })
     })
