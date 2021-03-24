@@ -3,6 +3,7 @@
 
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import { expect } from 'chai'
+import { FixedLengthArray } from '../../utilities/fixedLengthArray'
 import { instance, mock, verify, when } from 'ts-mockito'
 import async from 'async'
 import CodeMetrics from '../../updaters/codeMetrics'
@@ -19,8 +20,8 @@ describe('pullRequestComments.ts', (): void => {
 
   beforeEach((): void => {
     codeMetrics = mock(CodeMetrics)
-    when(codeMetrics.hasSufficientTestCode).thenReturn(true)
     when(codeMetrics.isSmall).thenReturn(true)
+    when(codeMetrics.isSufficientlyTested).thenReturn(true)
     when(codeMetrics.metrics).thenReturn(new Metrics(1000, 1000, 1000))
 
     parameters = mock(Parameters)
@@ -94,10 +95,10 @@ describe('pullRequestComments.ts', (): void => {
         [1, 1, 2, 1, 3],
         [1000, 1000, 2000, 1000, 3000],
         [1000000, 1000000, 2000000, 1000000, 3000000]
-      ], (code: number[]): void => {
+      ], (code: FixedLengthArray<number, 5>): void => {
         it(`should return the expected result for metrics '[${code[0]}, ${code[1]}, ${code[2]}, ${code[3]}, ${code[4]}]'`, (): void => {
           // Arrange
-          when(codeMetrics.metrics).thenReturn(new Metrics(code[0]!, code[1]!, code[3]!))
+          when(codeMetrics.metrics).thenReturn(new Metrics(code[0], code[1], code[3]))
           const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(parameters), instance(taskLibWrapper))
 
           // Act
@@ -110,11 +111,11 @@ describe('pullRequestComments.ts', (): void => {
             `✔ **Thanks for adding tests.**${os.EOL}` +
             `||Lines${os.EOL}` +
             `-|-:${os.EOL}` +
-            `Product Code|${code[0]!.toLocaleString()}${os.EOL}` +
-            `Test Code|${code[1]!.toLocaleString()}${os.EOL}` +
-            `**Subtotal**|**${code[2]!.toLocaleString()}**${os.EOL}` +
-            `Ignored Code|${code[3]!.toLocaleString()}${os.EOL}` +
-            `**Total**|**${code[4]!.toLocaleString()}**${os.EOL}` +
+            `Product Code|${code[0].toLocaleString()}${os.EOL}` +
+            `Test Code|${code[1].toLocaleString()}${os.EOL}` +
+            `**Subtotal**|**${code[2].toLocaleString()}**${os.EOL}` +
+            `Ignored Code|${code[3].toLocaleString()}${os.EOL}` +
+            `**Total**|**${code[4].toLocaleString()}**${os.EOL}` +
             os.EOL +
             '[Metrics added by PR Metrics. Add to Azure DevOps today!](https://marketplace.visualstudio.com/items?itemName=ms-omex.prmetrics)')
           verify(taskLibWrapper.debug('* PullRequestComments.getMetricsComment()')).once()
@@ -162,7 +163,7 @@ describe('pullRequestComments.ts', (): void => {
 
     it('should return the expected result when the pull request has insufficient test coverage', (): void => {
       // Arrange
-      when(codeMetrics.hasSufficientTestCode).thenReturn(false)
+      when(codeMetrics.isSufficientlyTested).thenReturn(false)
       const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(parameters), instance(taskLibWrapper))
 
       // Act
@@ -190,7 +191,7 @@ describe('pullRequestComments.ts', (): void => {
 
     it('should return the expected result when the pull request does not require a specific level of test coverage', (): void => {
       // Arrange
-      when(codeMetrics.hasSufficientTestCode).thenReturn(null)
+      when(codeMetrics.isSufficientlyTested).thenReturn(null)
       const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(parameters), instance(taskLibWrapper))
 
       // Act
@@ -236,11 +237,11 @@ describe('pullRequestComments.ts', (): void => {
         [false, true],
         [false, false],
         [false, null]
-      ], (codeMetricsSettings: (boolean| null)[]): void => {
+      ], (codeMetricsSettings: [boolean, boolean | null]): void => {
         it(`should return Active when the pull request small status is '${codeMetricsSettings[0]}' and the sufficient test coverage status is '${codeMetricsSettings[1]}'`, (): void => {
           // Arrange
-          when(codeMetrics.isSmall).thenReturn(codeMetricsSettings[0]!)
-          when(codeMetrics.hasSufficientTestCode).thenReturn(codeMetricsSettings[1]!)
+          when(codeMetrics.isSmall).thenReturn(codeMetricsSettings[0])
+          when(codeMetrics.isSufficientlyTested).thenReturn(codeMetricsSettings[1])
           const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(parameters), instance(taskLibWrapper))
 
           // Act

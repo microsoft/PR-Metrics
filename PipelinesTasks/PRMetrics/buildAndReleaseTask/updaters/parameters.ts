@@ -99,7 +99,7 @@ export default class Parameters {
     this._taskLibWrapper.debug('* Parameters.initializeBaseSize()')
 
     const convertedValue: number = parseInt(baseSize)
-    if (!baseSize || !convertedValue || convertedValue <= 0) {
+    if (!convertedValue || convertedValue <= 0) {
       const defaultValue: number = 250
       this._consoleWrapper.log(this._taskLibWrapper.loc('updaters.parameters.adjustingBaseSize', defaultValue.toLocaleString()))
       this._baseSize = defaultValue
@@ -112,7 +112,7 @@ export default class Parameters {
     this._taskLibWrapper.debug('* Parameters.initializeGrowthRate()')
 
     const convertedValue: number = parseFloat(growthRate)
-    if (!growthRate?.trim() || !convertedValue || convertedValue < 1.0) {
+    if (!convertedValue || convertedValue < 1.0) {
       const defaultValue: number = 2.0
       this._consoleWrapper.log(this._taskLibWrapper.loc('updaters.parameters.adjustingGrowthRate', defaultValue.toLocaleString()))
       this._growthRate = defaultValue
@@ -125,7 +125,7 @@ export default class Parameters {
     this._taskLibWrapper.debug('* Parameters.initializeTestFactor()')
 
     const convertedValue: number = parseFloat(testFactor)
-    if (!testFactor?.trim() || !convertedValue || convertedValue < 0.0) {
+    if (!convertedValue || convertedValue < 0.0) {
       const defaultValue: number = 1.5
       this._consoleWrapper.log(this._taskLibWrapper.loc('updaters.parameters.adjustingTestFactor', defaultValue.toLocaleString()))
       this._testFactor = defaultValue
