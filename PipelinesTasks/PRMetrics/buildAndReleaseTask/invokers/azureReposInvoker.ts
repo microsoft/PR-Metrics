@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { IGitApi } from 'azure-devops-node-api/gitApi'
+import { IGitApi } from 'azure-devops-node-api/GitApi'
 import { JsonPatchDocument, JsonPatchOperation, Operation } from 'azure-devops-node-api/interfaces/common/VSSInterfaces'
 import { Comment, CommentThreadStatus, GitPullRequest, GitPullRequestCommentThread, GitPullRequestIteration } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import { IPullRequestInfo, IPullRequestMetadata } from '../models/pullRequestInterfaces'
