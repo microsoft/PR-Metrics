@@ -229,7 +229,7 @@ describe('parameters.ts', (): void => {
         '     ',
         '\n'
       ], (currentFileMatchingPatterns: string): void => {
-        it(`initializeFileMatchingPatterns - should give a value of [] when input is invalid '${currentFileMatchingPatterns}'`, (): void => {
+        it(`initializeFileMatchingPatterns - should give a value of [**/*] when input is invalid '${currentFileMatchingPatterns}'`, (): void => {
           // Arrange
           const expectedOutput: string[] = ['**/*']
           const parameters: Parameters = new Parameters(instance(consoleWrapper), instance(taskLibWrapper))
@@ -276,6 +276,28 @@ describe('parameters.ts', (): void => {
 
           // Assert
           expect(parameters.fileMatchingPatterns).to.deep.equal(expectedOutput)
+        })
+      })
+
+    /** initializeCodeFileExtensions */
+
+    // 115
+    async.each(
+      [
+        '',
+        ' ',
+        '     ',
+        '\n'
+      ], (currentCodeFileExtensions: string): void => {
+        it(`initializeCodeFileExtensions - should give the default array when input is invalid '${currentCodeFileExtensions}'`, (): void => {
+          // Arrange
+          const parameters: Parameters = new Parameters(instance(consoleWrapper), instance(taskLibWrapper))
+
+          // Act
+          parameters.initialize('', '', '', '', currentCodeFileExtensions)
+
+          // Assert
+          expect(parameters.codeFileExtensions.length).to.equal(108)
         })
       })
   }) // end of describe

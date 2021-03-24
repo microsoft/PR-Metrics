@@ -149,7 +149,7 @@ export default class Parameters {
   private initializeCodeFileExtensions (codeFileExtensions: string): void {
     this._taskLibWrapper.debug('* Parameters.initializeCodeFileExtensions()')
 
-    if (!codeFileExtensions?.trim()) {
+    if (codeFileExtensions?.trim()) {
       const codeFileExtensionsArray: string[] = codeFileExtensions.split('\n')
       codeFileExtensionsArray.forEach((value: string): void => {
         this._codeFileExtensions.push(`*.${value}`)
