@@ -24,7 +24,7 @@ describe('parameters.ts', (): void => {
         const parameters: Parameters = new Parameters(instance(consoleWrapper), instance(taskLibWrapper))
 
         // // Act
-        parameters.initialize('', '', '', '', '') // NaN
+        parameters.initialize('', '', '', '', '')
 
         // // Assert
         expect(parameters.baseSize).to.equal(250)
@@ -39,7 +39,7 @@ describe('parameters.ts', (): void => {
         const parameters: Parameters = new Parameters(instance(consoleWrapper), instance(taskLibWrapper))
 
         // // Act
-        parameters.initialize('5.0', '4.4', '2.7', 'aa\nbb', 'js\nts') // NaN
+        parameters.initialize('5.0', '4.4', '2.7', 'aa\nbb', 'js\nts')
 
         // // Assert
         expect(parameters.baseSize).to.equal(5.0)
@@ -66,7 +66,7 @@ describe('parameters.ts', (): void => {
             const parameters: Parameters = new Parameters(instance(consoleWrapper), instance(taskLibWrapper))
 
             // Act
-            parameters.initialize(currentBaseSize, '', '', '', '') // NaN
+            parameters.initialize(currentBaseSize, '', '', '', '')
 
             // Assert
             expect(parameters.baseSize).to.equal(250)
@@ -85,7 +85,7 @@ describe('parameters.ts', (): void => {
             const parameters: Parameters = new Parameters(instance(consoleWrapper), instance(taskLibWrapper))
 
             // Act
-            parameters.initialize(currentBaseSize, '', '', '', '') // negative or zero
+            parameters.initialize(currentBaseSize, '', '', '', '')
 
             // Assert
             expect(parameters.baseSize).to.equal(250)
@@ -104,7 +104,7 @@ describe('parameters.ts', (): void => {
             const parameters: Parameters = new Parameters(instance(consoleWrapper), instance(taskLibWrapper))
 
             // Act
-            parameters.initialize(currentBaseSize, '', '', '', '') // positive integer
+            parameters.initialize(currentBaseSize, '', '', '', '')
 
             // Assert
             expect(parameters.baseSize).to.equal(parseInt(currentBaseSize))
@@ -128,7 +128,7 @@ describe('parameters.ts', (): void => {
             const parameters: Parameters = new Parameters(instance(consoleWrapper), instance(taskLibWrapper))
 
             // Act
-            parameters.initialize('', currentGrowthRate, '', '', '') // NaN
+            parameters.initialize('', currentGrowthRate, '', '', '')
 
             // Assert
             expect(parameters.growthRate).to.equal(2.0)
@@ -149,7 +149,7 @@ describe('parameters.ts', (): void => {
             const parameters: Parameters = new Parameters(instance(consoleWrapper), instance(taskLibWrapper))
 
             // Act
-            parameters.initialize('', currentGrowthRate, '', '', '') // < 1.0
+            parameters.initialize('', currentGrowthRate, '', '', '')
 
             // Assert
             expect(parameters.growthRate).to.equal(2.0)
@@ -172,7 +172,7 @@ describe('parameters.ts', (): void => {
             const parameters: Parameters = new Parameters(instance(consoleWrapper), instance(taskLibWrapper))
 
             // Act
-            parameters.initialize('', currentGrowthRate, '', '', '') // > 1.0
+            parameters.initialize('', currentGrowthRate, '', '', '')
 
             // Assert
             expect(parameters.growthRate).to.equal(parseFloat(currentGrowthRate))
@@ -195,7 +195,7 @@ describe('parameters.ts', (): void => {
             const parameters: Parameters = new Parameters(instance(consoleWrapper), instance(taskLibWrapper))
 
             // Act
-            parameters.initialize('', '', currentTestFactor, '', '') // NaN
+            parameters.initialize('', '', currentTestFactor, '', '')
 
             // Assert
             expect(parameters.testFactor).to.equal(1.5)
@@ -216,7 +216,7 @@ describe('parameters.ts', (): void => {
             const parameters: Parameters = new Parameters(instance(consoleWrapper), instance(taskLibWrapper))
 
             // Act
-            parameters.initialize('', '', currentTestFactor, '', '') // < 0.0
+            parameters.initialize('', '', currentTestFactor, '', '')
 
             // Assert
             expect(parameters.testFactor).to.equal(1.5)
@@ -239,7 +239,7 @@ describe('parameters.ts', (): void => {
             const parameters: Parameters = new Parameters(instance(consoleWrapper), instance(taskLibWrapper))
 
             // Act
-            parameters.initialize('', '', currentTestFactor, '', '') // > 0.0
+            parameters.initialize('', '', currentTestFactor, '', '')
 
             // Assert
             expect(parameters.testFactor).to.equal(parseFloat(currentTestFactor))
