@@ -82,20 +82,6 @@ describe('pullRequestComments.ts', (): void => {
     })
   })
 
-  describe('getCommentThreadId()', (): void => {
-    it('should return the expected result', (): void => {
-      // Arrange
-      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(parameters), instance(taskLibWrapper))
-
-      // Act
-      const result: number | null = pullRequestComments.getCommentThreadId()
-
-      // Assert
-      expect(result).to.equal(1)
-      verify(taskLibWrapper.debug('* PullRequestComments.getCommentThreadId()')).once()
-    })
-  })
-
   describe('getMetricsComment()', (): void => {
     async.each(
       [

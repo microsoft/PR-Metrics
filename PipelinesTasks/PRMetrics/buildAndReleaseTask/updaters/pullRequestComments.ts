@@ -63,31 +63,17 @@ export default class PullRequestComments {
       if (!commentThread.pullRequestThreadContext) {
         this.getMetricsCommentData(result, commentThread, currentIteration)
       } else {
-        // const fileName: string = commentThread.pullRequestThreadContext.trackingCriteria?.origFilePath.Substring(1)
+        const fileName: string = commentThread.pullRequestThreadContext.trackingCriteria!.origFilePath!.substring(1)
 
-        // if (IgnoredFilesWithLinesAdded.Contains($fileName)) {
-        //     [PullRequest]::GetIgnoredCommentData($result.IgnoredFilesWithLinesAdded, $fileName, $commentThread)
-        // }
-
-        // if (IgnoredFilesWithoutLinesAdded.Contains($fileName)) {
-        //     [PullRequest]::GetIgnoredCommentData($result.IgnoredFilesWithoutLinesAdded,
-        //                                          $fileName,
-        //                                          $commentThread)
-        // }
+        if (this._codeMetrics.ignoredFilesWithLinesAdded.includes(fileName)) {
+          this.getIgnoredCommentData(result.ignoredFilesWithLinesAdded, fileName, commentThread)
+        } else if (this._codeMetrics.ignoredFilesWithoutLinesAdded.includes(fileName)) {
+          this.getIgnoredCommentData(result.ignoredFilesWithoutLinesAdded, fileName, commentThread)
+        }
       }
     }
 
     return result
-  }
-
-  /**
-   * Gets the ID of the comment thread used by this task.
-   * @returns The ID of the comment thread used by this task or `null` if no comment thread exists.
-   */
-  public getCommentThreadId (): number | null {
-    this._taskLibWrapper.debug('* PullRequestComments.getCommentThreadId()')
-
-    return 1 // TODO: Update once dependencies are added
   }
 
   /**
@@ -160,22 +146,34 @@ export default class PullRequestComments {
     }
   }
 
+  private getIgnoredCommentData (ignoredFiles: string[], fileName: string, commentThread: GitPullRequestCommentThread): void {
+    this._taskLibWrapper.debug('* PullRequestComments.getIgnoredCommentData()')
+
+    this.validateField(commentThread.comments, 'commentThread.comments')
+    this.validateField(commentThread.comments![0], 'commentThread.comments[0]')
+
+    const comment: Comment = commentThread.comments![0]!
+    this.validateField(comment.author, 'comment.author')
+    this.validateField(comment.author!.displayName, 'comment.author.displayName')
+    this.validateField(comment.content, 'comment.content')
+
+    if (comment.author!.displayName!.startsWith('Project Collection Build Service (')) {
+      if (comment.content! === this.ignoredComment) {
+        const index: number = ignoredFiles.indexOf(fileName)
+        if (index === -1) {
+          throw new Error(`Element ${fileName} not in array.`)
+        }
+
+        ignoredFiles.splice(index, 1)
+      }
+    }
+  }
+
   private validateField<T> (field: T | null | undefined, fieldName: string): void {
     if (!field) {
       throw new Error(`Field '${fieldName}' is null or undefined.`)
     }
   }
-
-    // hidden static [void] GetIgnoredCommentData([System.Collections.Generic.List[string]] $ignoredFiles,
-    //                                            [string] $fileName,
-    //                                            [PSCustomObject] $commentThread) {
-    //     [Logger]::Log('* [PullRequest]::GetIgnoredCommentData() hidden static')
-    //     if ($commentThread.comments[0].author.displayName.StartsWith([PullRequest]::Author)) {
-    //         if ($commentThread.comments[0].content -eq [PullRequest]::GetIgnoredComment()) {
-    //             $ignoredFiles.Remove($fileName)
-    //         }
-    //     }
-    // }
 
   private addCommentSizeStatus (): string {
     this._taskLibWrapper.debug('* PullRequestComments.addCommentSizeStatus()')
