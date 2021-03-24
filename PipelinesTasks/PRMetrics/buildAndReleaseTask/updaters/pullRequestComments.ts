@@ -1,26 +1,29 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import * as os from 'os'
-
-import CodeMetrics from './codeMetrics'
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
+import * as os from 'os'
+import CodeMetrics from './codeMetrics'
+import Parameters from './parameters'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
 
 /**
  * A class for managing pull requests comments.
  */
-class PullRequestComments {
+export default class PullRequestComments {
   private readonly _codeMetrics: CodeMetrics;
+  private readonly _parameters: Parameters;
   private readonly _taskLibWrapper: TaskLibWrapper;
 
   /**
    * Initializes a new instance of the `PullRequestComments` class.
    * @param codeMetrics The code metrics calculation logic.
+   * @param parameters The parameters passed to the task.
    * @param taskLibWrapper The wrapper around the Azure Pipelines Task Lib.
    */
-  public constructor (codeMetrics: CodeMetrics, taskLibWrapper: TaskLibWrapper) {
+  public constructor (codeMetrics: CodeMetrics, parameters: Parameters, taskLibWrapper: TaskLibWrapper) {
     this._codeMetrics = codeMetrics
+    this._parameters = parameters
     this._taskLibWrapper = taskLibWrapper
   }
 
@@ -82,14 +85,12 @@ class PullRequestComments {
 
   /**
    * Gets the status to which to update the comment thread.
-   * @param isSmall A value indicating whether the pull request is small or extra small.
-   * @param hasSufficientTestCode A value indicating whether the pull request has sufficient test code.
    * @returns The status to which to update the comment thread.
    */
-  public getMetricsCommentStatus (isSmall: boolean, hasSufficientTestCode: boolean | null): CommentThreadStatus {
+  public getMetricsCommentStatus (): CommentThreadStatus {
     this._taskLibWrapper.debug('* PullRequestComments.getMetricsCommentStatus()')
 
-    if (isSmall && hasSufficientTestCode) {
+    if (this._codeMetrics.isSmall && this._codeMetrics.isSufficientlyTested) {
       return CommentThreadStatus.Closed
     }
 
@@ -103,7 +104,7 @@ class PullRequestComments {
     if (this._codeMetrics.isSmall) {
       result += this._taskLibWrapper.loc('updaters.pullRequestComments.smallPullRequestComment')
     } else {
-      result += this._taskLibWrapper.loc('updaters.pullRequestComments.largePullRequestComment', this._codeMetrics.baseSize.toLocaleString())
+      result += this._taskLibWrapper.loc('updaters.pullRequestComments.largePullRequestComment', this._parameters.baseSize.toLocaleString())
     }
 
     result += os.EOL
@@ -114,8 +115,8 @@ class PullRequestComments {
     this._taskLibWrapper.debug('* PullRequestComments.addCommentTestStatus()')
 
     let result: string = ''
-    if (this._codeMetrics.sufficientTestCode !== null) {
-      if (this._codeMetrics.sufficientTestCode) {
+    if (this._codeMetrics.isSufficientlyTested !== null) {
+      if (this._codeMetrics.isSufficientlyTested) {
         result += this._taskLibWrapper.loc('updaters.pullRequestComments.testsSufficientComment')
       } else {
         result += this._taskLibWrapper.loc('updaters.pullRequestComments.testsInsufficientComment')
@@ -138,5 +139,3 @@ class PullRequestComments {
     return `${surround}${title}${surround}|${surround}${metric.toLocaleString()}${surround}${os.EOL}`
   }
 }
-
-export default PullRequestComments

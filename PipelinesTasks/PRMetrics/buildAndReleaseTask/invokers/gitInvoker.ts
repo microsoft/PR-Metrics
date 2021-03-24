@@ -1,13 +1,13 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import TaskLibWrapper from '../wrappers/taskLibWrapper'
 import { IExecSyncResult } from 'azure-pipelines-task-lib/toolrunner'
+import TaskLibWrapper from '../wrappers/taskLibWrapper'
 
 /**
  * A class for invoking Git commands.
  */
-class GitInvoker {
+export default class GitInvoker {
   private readonly _taskLibWrapper: TaskLibWrapper;
 
   /**
@@ -69,5 +69,3 @@ class GitInvoker {
     return result.stdout
   }
 }
-
-export default GitInvoker

@@ -1,13 +1,13 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import * as taskLib from 'azure-pipelines-task-lib/task'
 import { IExecSyncResult, IExecSyncOptions } from 'azure-pipelines-task-lib/toolrunner'
+import * as taskLib from 'azure-pipelines-task-lib/task'
 
 /**
  * A wrapper around the Azure Pipelines Task Lib, to facilitate testability.
  */
-class TaskLibWrapper {
+export default class TaskLibWrapper {
   /**
    * Logs a debug message.
    * @param message The message to log.
@@ -37,5 +37,3 @@ class TaskLibWrapper {
     return taskLib.loc(key, ...param)
   }
 }
-
-export default TaskLibWrapper

@@ -41,35 +41,50 @@
   "loc.instanceNameFormat": "PR Metrics",
   "loc.instanceNameFormat.comment": "The name of the task on the Azure Pipelines task properties page.",
 
+  "loc.messages.updaters.codeMetrics.titleSizeIndicatorFormat": "%s%s",
+  "loc.messages.updaters.codeMetrics.titleSizeIndicatorFormat.comment": "The title size and test coverage prefix format. The first placeholder will be replaced by the title size prefix, and the second placeholder will be replaced by the test coverage prefix.",
+
+  "loc.messages.updaters.codeMetrics.titleSizeL": "L",
+  "loc.messages.updaters.codeMetrics.titleSizeL.comment": "The title size prefix for a large pull request.",
+
+  "loc.messages.updaters.codeMetrics.titleSizeM": "M",
+  "loc.messages.updaters.codeMetrics.titleSizeM.comment": "The title size prefix for a medium pull request.",
+
+  "loc.messages.updaters.codeMetrics.titleSizeS": "S",
+  "loc.messages.updaters.codeMetrics.titleSizeS.comment": "The title size prefix for a small pull request.",
+
+  "loc.messages.updaters.codeMetrics.titleSizeXL": "%sXL",
+  "loc.messages.updaters.codeMetrics.titleSizeXL.comment": "The title size prefix for an extra large pull request. The placeholder will be replaced with either an empty string or a number indicating a multiple of the extra large size.",
+
+  "loc.messages.updaters.codeMetrics.titleSizeXS": "XS",
+  "loc.messages.updaters.codeMetrics.titleSizeXS.comment": "The title size prefix for an extra small pull request.",
+
+  "loc.messages.updaters.codeMetrics.titleTestsInsufficient": "⚠️",
+  "loc.messages.updaters.codeMetrics.titleTestsInsufficient.comment": "The title test coverage prefix for a pull request with insufficient test coverage.",
+
+  "loc.messages.updaters.codeMetrics.titleTestsSufficient": "✔",
+  "loc.messages.updaters.codeMetrics.titleTestsSufficient.comment": "The title test coverage prefix for a pull request with sufficient test coverage.",
+
+  "loc.messages.updaters.parameters.adjustingBaseSize": "Adjusting base size parameter to %s.",
+  "loc.messages.updaters.parameters.adjustingBaseSize.comment": "The message printed when the base size parameter is being adjusted to the default. The placeholder will be replaced by the default value.",
+
+  "loc.messages.updaters.parameters.adjustCodeFileExtensions": "Adjusting code file extensions parameter to default values.",
+  "loc.messages.updaters.parameters.adjustCodeFileExtensions.comment": "The message printed when the code file extensions parameter is being adjusted to the default.",
+
+  "loc.messages.updaters.parameters.adjustingFileMatchingPatterns": "Adjusting file matching patterns to %s.",
+  "loc.messages.updaters.parameters.adjustingFileMatchingPatterns.comment": "The message printed when the file matching patterns parameter is being adjusted to the default. The placeholder will be replaced by the default value.",
+
+  "loc.messages.updaters.parameters.adjustingGrowthRate": "Adjusting growth rate parameter to %s.",
+  "loc.messages.updaters.parameters.adjustingGrowthRate.comment": "The message printed when the growth rate parameter is being adjusted to the default. The placeholder will be replaced by the default value.",
+
+  "loc.messages.updaters.parameters.adjustingTestFactor": "Adjusting test factor parameter to %s.",
+  "loc.messages.updaters.parameters.adjustingTestFactor.comment": "The message printed when the test factor parameter is being adjusted to the default. The placeholder will be replaced by the default value.",
+
   "loc.messages.updaters.pullRequest.addDescription": "❌ **Add a description.**",
   "loc.messages.updaters.pullRequest.addDescription.comment": "The description to add to the pull request if none exists.",
 
   "loc.messages.updaters.pullRequest.titleFormat": "%s ◾ %s",
   "loc.messages.updaters.pullRequest.titleFormat.comment": "The title format. The first placeholder will be replaced by the title size and test coverage prefix, and the second placeholder will be replaced by the original pull request title.",
-
-  "loc.messages.updaters.pullRequest.titleSizeIndicatorFormat": "%s%s",
-  "loc.messages.updaters.pullRequest.titleSizeIndicatorFormat.comment": "The title size and test coverage prefix format. The first placeholder will be replaced by the title size prefix, and the second placeholder will be replaced by the test coverage prefix.",
-
-  "loc.messages.updaters.pullRequest.titleSizeL": "L",
-  "loc.messages.updaters.pullRequest.titleSizeL.comment": "The title size prefix for a large pull request.",
-
-  "loc.messages.updaters.pullRequest.titleSizeM": "M",
-  "loc.messages.updaters.pullRequest.titleSizeM.comment": "The title size prefix for a medium pull request.",
-
-  "loc.messages.updaters.pullRequest.titleSizeS": "S",
-  "loc.messages.updaters.pullRequest.titleSizeS.comment": "The title size prefix for a small pull request.",
-
-  "loc.messages.updaters.pullRequest.titleSizeXL": "%sXL",
-  "loc.messages.updaters.pullRequest.titleSizeXL.comment": "The title size prefix for an extra large pull request. The placeholder will be replaced with either an empty string or a number indicating a multiple of the extra large size.",
-
-  "loc.messages.updaters.pullRequest.titleSizeXS": "XS",
-  "loc.messages.updaters.pullRequest.titleSizeXS.comment": "The title size prefix for an extra small pull request.",
-
-  "loc.messages.updaters.pullRequest.titleTestsInsufficient": "⚠️",
-  "loc.messages.updaters.pullRequest.titleTestsInsufficient.comment": "The title test coverage prefix for a pull request with insufficient test coverage.",
-
-  "loc.messages.updaters.pullRequest.titleTestsSufficient": "✔",
-  "loc.messages.updaters.pullRequest.titleTestsSufficient.comment": "The title test coverage prefix for a pull request with sufficient test coverage.",
 
   "loc.messages.updaters.pullRequestComments.commentTitle": "# Metrics for iteration %s",
   "loc.messages.updaters.pullRequestComments.commentTitle.comment": "The title of the comment added to pull requests. The placeholder will be replaced by the number of the pull request iteration.",

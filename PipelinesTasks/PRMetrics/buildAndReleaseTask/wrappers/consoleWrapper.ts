@@ -4,7 +4,7 @@
 /**
  * A wrapper around the console, to facilitate testability.
  */
-class ConsoleWrapper {
+export default class ConsoleWrapper {
   /**
    * Logs a message to `stdout` suffixed with a new line character.
    * @param message The optional message to log.
@@ -14,5 +14,3 @@ class ConsoleWrapper {
     console.log(message, ...optionalParams)
   }
 }
-
-export default ConsoleWrapper

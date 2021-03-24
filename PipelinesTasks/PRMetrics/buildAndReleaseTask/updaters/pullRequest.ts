@@ -7,7 +7,7 @@ import TaskLibWrapper from '../wrappers/taskLibWrapper'
 /**
  * A class for managing pull requests.
  */
-class PullRequest {
+export default class PullRequest {
   private readonly _codeMetrics: CodeMetrics;
   private readonly _taskLibWrapper: TaskLibWrapper;
 
@@ -60,15 +60,15 @@ class PullRequest {
     }
 
     const sizeRegExp: string =
-      `(${this._taskLibWrapper.loc('updaters.pullRequest.titleSizeXS')}` +
-      `|${this._taskLibWrapper.loc('updaters.pullRequest.titleSizeS')}` +
-      `|${this._taskLibWrapper.loc('updaters.pullRequest.titleSizeM')}` +
-      `|${this._taskLibWrapper.loc('updaters.pullRequest.titleSizeL')}` +
-      `|${this._taskLibWrapper.loc('updaters.pullRequest.titleSizeXL', '\\d*')})`
+      `(${this._taskLibWrapper.loc('updaters.codeMetrics.titleSizeXS')}` +
+      `|${this._taskLibWrapper.loc('updaters.codeMetrics.titleSizeS')}` +
+      `|${this._taskLibWrapper.loc('updaters.codeMetrics.titleSizeM')}` +
+      `|${this._taskLibWrapper.loc('updaters.codeMetrics.titleSizeL')}` +
+      `|${this._taskLibWrapper.loc('updaters.codeMetrics.titleSizeXL', '\\d*')})`
     const testsRegExp: string =
-      `(${this._taskLibWrapper.loc('updaters.pullRequest.titleTestsSufficient')}` +
-      `|${this._taskLibWrapper.loc('updaters.pullRequest.titleTestsInsufficient')})?`
-    const sizeIndicatorRegExp: string = this._taskLibWrapper.loc('updaters.pullRequest.titleSizeIndicatorFormat', sizeRegExp, testsRegExp)
+      `(${this._taskLibWrapper.loc('updaters.codeMetrics.titleTestsSufficient')}` +
+      `|${this._taskLibWrapper.loc('updaters.codeMetrics.titleTestsInsufficient')})?`
+    const sizeIndicatorRegExp: string = this._taskLibWrapper.loc('updaters.codeMetrics.titleSizeIndicatorFormat', sizeRegExp, testsRegExp)
     const completeRegExp: string = `^${this._taskLibWrapper.loc('updaters.pullRequest.titleFormat', sizeIndicatorRegExp, '(.*)')}$`
 
     const prefixRegExp: RegExp = new RegExp(completeRegExp, 'u')
@@ -91,5 +91,3 @@ class PullRequest {
     return 1 // TODO: Update once dependencies are added
   }
 }
-
-export default PullRequest
