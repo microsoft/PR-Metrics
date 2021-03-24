@@ -3,6 +3,7 @@
 
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import * as os from 'os'
+import AzureReposInvoker from '../invokers/azureReposInvoker'
 import CodeMetrics from './codeMetrics'
 import Parameters from './parameters'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
@@ -11,6 +12,7 @@ import TaskLibWrapper from '../wrappers/taskLibWrapper'
  * A class for managing pull requests comments.
  */
 export default class PullRequestComments {
+  private readonly _azureReposInvoker: AzureReposInvoker;
   private readonly _codeMetrics: CodeMetrics;
   private readonly _parameters: Parameters;
   private readonly _taskLibWrapper: TaskLibWrapper;
@@ -21,7 +23,8 @@ export default class PullRequestComments {
    * @param parameters The parameters passed to the task.
    * @param taskLibWrapper The wrapper around the Azure Pipelines Task Lib.
    */
-  public constructor (codeMetrics: CodeMetrics, parameters: Parameters, taskLibWrapper: TaskLibWrapper) {
+  public constructor (azureReposInvoker: AzureReposInvoker, codeMetrics: CodeMetrics, parameters: Parameters, taskLibWrapper: TaskLibWrapper) {
+    this._azureReposInvoker = azureReposInvoker
     this._codeMetrics = codeMetrics
     this._parameters = parameters
     this._taskLibWrapper = taskLibWrapper
@@ -59,13 +62,13 @@ export default class PullRequestComments {
 
   /**
    * Gets the comment to add to the comment thread.
-   * @returns The comment to add to the comment thread.
+   * @returns A promise containing the comment to add to the comment thread.
    */
-  public getMetricsComment (): string {
+  public async getMetricsComment (): Promise<string> {
     this._taskLibWrapper.debug('* PullRequestComments.getMetricsComment()')
 
-    // TODO: Update once dependencies are added
-    let result: string = `${this._taskLibWrapper.loc('updaters.pullRequestComments.commentTitle', '1')}${os.EOL}`
+    const currentIteration: number = await this._azureReposInvoker.getCurrentIteration()
+    let result: string = `${this._taskLibWrapper.loc('updaters.pullRequestComments.commentTitle', currentIteration.toLocaleString())}${os.EOL}`
     result += this.addCommentSizeStatus()
     result += this.addCommentTestStatus()
 

@@ -3,7 +3,7 @@
 
 import { IGitApi } from 'azure-devops-node-api/gitApi'
 import { JsonPatchDocument, JsonPatchOperation, Operation } from 'azure-devops-node-api/interfaces/common/VSSInterfaces'
-import { Comment, CommentThreadStatus, GitPullRequest, GitPullRequestCommentThread } from 'azure-devops-node-api/interfaces/GitInterfaces'
+import { Comment, CommentThreadStatus, GitPullRequest, GitPullRequestCommentThread, GitPullRequestIteration } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import { IPullRequestInfo, IPullRequestMetadata } from '../models/pullRequestInterfaces'
 import DevOpsApiWrapper from '../wrappers/devOpsApiWrapper'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
@@ -44,21 +44,21 @@ export default class AzureReposInvoker {
     }
 
     /**
-      * Gets the current iteration id of the pull request from the devops api.
-      * Returns undefined if no iteration exists.
+      * Gets the current iteration of the pull request.
+      * @returns A promise containing the current iteration of the pull request.
       */
-    public async getCurrentIterationId (): Promise<number | undefined> {
-      this.taskLibWrapper.debug('* AzureReposInvoker.getCurrentIterationId()')
+    public async getCurrentIteration (): Promise<number> {
+      this.taskLibWrapper.debug('* AzureReposInvoker.getCurrentIteration()')
 
-      const gitApi = await this.openConnection()
-      const pullRequestIterations = await gitApi.getPullRequestIterations(this.repositoryId, this.pullRequestId, this.project)
-      if (!pullRequestIterations.length) {
-        return
+      const gitApi: IGitApi = await this.openConnection()
+      const pullRequestIterations: GitPullRequestIteration[] = await gitApi.getPullRequestIterations(this.repositoryId, this.pullRequestId, this.project)
+      if (pullRequestIterations.length === 0) {
+        throw new Error('The set of pull request iterations was of length zero.')
       }
 
-      const latestIteration = pullRequestIterations[pullRequestIterations.length - 1]
-      if (!latestIteration) {
-        return
+      const latestIteration: GitPullRequestIteration = pullRequestIterations[pullRequestIterations.length - 1]!
+      if (!latestIteration.id) {
+        throw new Error('The pull request iteration is undefined.')
       }
 
       return latestIteration.id

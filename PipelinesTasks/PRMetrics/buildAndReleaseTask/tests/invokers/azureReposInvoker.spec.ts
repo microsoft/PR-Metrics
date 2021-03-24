@@ -86,12 +86,12 @@ describe('azureReposInvoker.ts', function (): void {
 
   it('getCurrentIterationId should return valid iteration id', async (): Promise<void> => {
     // Act
-    const result = await azureReposInvoker.getCurrentIterationId()
+    const result = await azureReposInvoker.getCurrentIteration()
 
     // Assert
     expect(result).to.deep.equal(mockId)
     verify(mockGitApi.getPullRequestIterations(anyString(), anyNumber(), anyString())).once()
-    verify(taskLibWrapper.debug('* AzureReposInvoker.getCurrentIterationId()')).once()
+    verify(taskLibWrapper.debug('* AzureReposInvoker.getCurrentIteration()')).once()
   })
 
   it('getCommentThreads should return valid GitPullRequestCommentThread[]', async (): Promise<void> => {

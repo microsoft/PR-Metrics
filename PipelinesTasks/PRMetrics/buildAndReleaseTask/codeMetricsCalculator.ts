@@ -71,10 +71,8 @@ export default class CodeMetricsCalculator {
     // TODO: Update once dependencies are added
     // $commentThreads = $this.AzureReposInvoker.GetCommentThreads()
     // $iterations = $this.AzureReposInvoker.GetIterations()
-    const iteration: number = this._pullRequest.getCurrentIteration()
     const commentData: string = this._pullRequestComments.getCommentData()
 
-    this._taskLibWrapper.debug(iteration.toLocaleString())
     this._taskLibWrapper.debug(commentData)
   }
 }

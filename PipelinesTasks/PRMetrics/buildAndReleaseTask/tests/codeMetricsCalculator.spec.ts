@@ -73,7 +73,6 @@ describe('codeMetricsCalculator.ts', (): void => {
   describe('updateComments()', (): void => {
     it('should return the expected result', (): void => {
       // Arrange
-      when(pullRequest.getCurrentIteration()).thenReturn(1)
       when(pullRequestComments.getCommentData()).thenReturn('TODO')
       const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
 

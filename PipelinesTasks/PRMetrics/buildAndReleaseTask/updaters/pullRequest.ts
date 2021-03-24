@@ -80,14 +80,4 @@ export default class PullRequest {
 
     return `${sizeIndicator} ◾ ${originalTitle}`
   }
-
-  /**
-   * Gets the current iteration of the pull request.
-   * @returns The current iteration of the pull request.
-   */
-  public getCurrentIteration (): number {
-    this._taskLibWrapper.debug('* PullRequest.getCurrentIteration()')
-
-    return 1 // TODO: Update once dependencies are added
-  }
 }
