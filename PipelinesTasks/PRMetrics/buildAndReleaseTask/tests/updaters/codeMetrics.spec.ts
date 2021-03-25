@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { instance, mock, verify } from 'ts-mockito'
+import { instance, mock, verify, when } from 'ts-mockito'
 
 import CodeMetrics from '../../updaters/codeMetrics'
 import ConsoleWrapper from '../../wrappers/consoleWrapper'
@@ -10,6 +10,13 @@ import Parameters from '../../updaters/parameters'
 import TaskLibWrapper from '../../wrappers/taskLibWrapper'
 import { expect } from 'chai'
 
+const localizations = {
+  titleSizeXS: 'XS',
+  titleSizeS: 'S',
+  titleSizeM: 'M',
+  titleSizeL: 'L',
+  titleSizeXL: 'XL'
+}
 describe('codeMetrics.ts', (): void => {
   let taskLibWrapper: TaskLibWrapper
   let consoleWrapper: ConsoleWrapper
@@ -19,14 +26,13 @@ describe('codeMetrics.ts', (): void => {
     taskLibWrapper = mock(TaskLibWrapper)
     consoleWrapper = mock(ConsoleWrapper)
     parameters = new Parameters(instance(consoleWrapper), instance(taskLibWrapper))
+
+    when(taskLibWrapper.loc('updaters.codeMetrics.titleSizeXS')).thenReturn(localizations.titleSizeXS)
+    when(taskLibWrapper.loc('updaters.codeMetrics.titleSizeS')).thenReturn(localizations.titleSizeS)
+    when(taskLibWrapper.loc('updaters.codeMetrics.titleSizeM')).thenReturn(localizations.titleSizeM)
+    when(taskLibWrapper.loc('updaters.codeMetrics.titleSizeL')).thenReturn(localizations.titleSizeL)
+    when(taskLibWrapper.loc('updaters.codeMetrics.titleSizeXL')).thenReturn(localizations.titleSizeXL)
   })
-
-  // public initialize (gitDiffSummary: string): void {
-  //   this._taskLibWrapper.debug('* CodeMetrics.initialize()')
-
-  //   this.initializeMetrics(gitDiffSummary)
-  //   this.initializeSizeIndicator()
-  // }
 
   describe('initialize', (): void => {
     describe('initializer function', (): void => {
@@ -42,7 +48,7 @@ describe('codeMetrics.ts', (): void => {
         const expectedMetrics: Metrics = new Metrics(0, 0, 0)
         expect(codeMetrics.ignoredFilesWithLinesAdded).to.deep.equal([])
         expect(codeMetrics.ignoredFilesWithoutLinesAdded).to.deep.equal([])
-        expect(codeMetrics.sizeIndicator).to.equal('XS')
+        expect(codeMetrics.sizeIndicator).to.equal(localizations.titleSizeXS)
         expect(codeMetrics.metrics).to.deep.equal(expectedMetrics)
 
         verify(taskLibWrapper.debug('* CodeMetrics.initialize()')).once()
