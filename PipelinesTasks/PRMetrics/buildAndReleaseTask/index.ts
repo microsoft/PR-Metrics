@@ -1,34 +1,29 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+import 'reflect-metadata'
+import { container } from 'tsyringe'
 import * as path from 'path'
 import * as taskLib from 'azure-pipelines-task-lib/task'
-import GitInvoker from './invokers/gitInvoker'
-import TaskLibWrapper from './wrappers/taskLibWrapper'
+import CodeMetricsCalculator from './codeMetricsCalculator'
 
 async function run (): Promise<void> {
   try {
     taskLib.setResourcePath(path.join(__dirname, 'task.json'))
 
-    const taskLibWrapper: TaskLibWrapper = new TaskLibWrapper()
-    console.log('Description:')
-    console.log(taskLib.loc('updaters.pullRequest.addDescription'))
-    console.log('Description through wrapper:')
-    console.log(taskLibWrapper.loc('updaters.pullRequest.addDescription'))
-    try {
-      const gitInvoker: GitInvoker = new GitInvoker(taskLibWrapper)
-      console.log(gitInvoker.getDiffSummary())
-    } catch (error) {
-      // Suppress errors temporarily for the purposes of testing.
-    }
-
-    const inputString: string | undefined = taskLib.getInput('samplestring', true)
-    if (inputString === 'bad') {
-      taskLib.setResult(taskLib.TaskResult.Failed, 'Bad input was given')
+    const codeMetricsCalculator: CodeMetricsCalculator = container.resolve(CodeMetricsCalculator)
+    const skipMessage: string | null = codeMetricsCalculator.isRunnable
+    if (skipMessage !== null) {
+      taskLib.setResult(taskLib.TaskResult.Skipped, skipMessage)
       return
     }
 
-    console.log('Hello', inputString)
+    await Promise.all([
+      codeMetricsCalculator.updateDetails(),
+      codeMetricsCalculator.updateComments()
+    ])
+
+    taskLib.setResult(taskLib.TaskResult.Succeeded, taskLib.loc('index.succeeded'))
   } catch (error) {
     taskLib.setResult(taskLib.TaskResult.Failed, error.message)
   }

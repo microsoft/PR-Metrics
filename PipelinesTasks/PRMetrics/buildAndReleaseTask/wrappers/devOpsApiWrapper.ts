@@ -1,12 +1,14 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import * as azdev from 'azure-devops-node-api'
 import { IRequestHandler } from 'azure-devops-node-api/interfaces/common/VsoBaseInterfaces'
+import { singleton } from 'tsyringe'
+import * as azdev from 'azure-devops-node-api'
 
 /**
  * A wrapper around the Azure Devops Api, to facilitate testability.
  */
+@singleton()
 class DevOpsApiWrapper {
   /**
    * Returns a personal access token handler.

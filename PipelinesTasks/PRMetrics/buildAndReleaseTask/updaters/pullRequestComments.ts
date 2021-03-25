@@ -3,6 +3,7 @@
 
 import { Comment, CommentThreadStatus, CommentTrackingCriteria, GitPullRequestCommentThread } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import { IdentityRef } from 'azure-devops-node-api/interfaces/common/VSSInterfaces'
+import { singleton } from 'tsyringe'
 import { Validator } from '../utilities/validator'
 import * as os from 'os'
 import AzureReposInvoker from '../invokers/azureReposInvoker'
@@ -14,6 +15,7 @@ import TaskLibWrapper from '../wrappers/taskLibWrapper'
 /**
  * A class for managing pull requests comments.
  */
+@singleton()
 export default class PullRequestComments {
   private static readonly taskCommentAuthorPrefix: string = 'Project Collection Build Service ('
 
@@ -24,6 +26,7 @@ export default class PullRequestComments {
 
   /**
    * Initializes a new instance of the `PullRequestComments` class.
+   * @param azureReposInvoker The Azure Repos invoker logic.
    * @param codeMetrics The code metrics calculation logic.
    * @param parameters The parameters passed to the task.
    * @param taskLibWrapper The wrapper around the Azure Pipelines Task Lib.

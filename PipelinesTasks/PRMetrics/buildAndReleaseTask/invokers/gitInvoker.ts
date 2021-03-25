@@ -2,11 +2,13 @@
 // Licensed under the MIT License.
 
 import { IExecSyncResult } from 'azure-pipelines-task-lib/toolrunner'
+import { singleton } from 'tsyringe'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
 
 /**
  * A class for invoking Git commands.
  */
+@singleton()
 export default class GitInvoker {
   private readonly _taskLibWrapper: TaskLibWrapper
 

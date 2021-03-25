@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+import 'reflect-metadata'
 import { expect } from 'chai'
 import { instance, mock, verify, when } from 'ts-mockito'
 import async from 'async'
@@ -73,17 +74,24 @@ describe('pullRequest.ts', (): void => {
       verify(taskLibWrapper.debug('* PullRequest.getUpdatedDescription()')).once()
     })
 
-    it('should return the default description when the current description is empty', (): void => {
-      // Arrange
-      const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(taskLibWrapper))
+    async.each(
+      [
+        undefined,
+        '',
+        ' '
+      ], (currentDescription: string | undefined): void => {
+        it(`should return the default description when the current description '${currentDescription}' is empty`, (): void => {
+          // Arrange
+          const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(taskLibWrapper))
 
-      // Act
-      const result: string | null = pullRequest.getUpdatedDescription('')
+          // Act
+          const result: string | null = pullRequest.getUpdatedDescription(currentDescription)
 
-      // Assert
-      expect(result).to.equal('❌ **Add a description.**')
-      verify(taskLibWrapper.debug('* PullRequest.getUpdatedDescription()')).once()
-    })
+          // Assert
+          expect(result).to.equal('❌ **Add a description.**')
+          verify(taskLibWrapper.debug('* PullRequest.getUpdatedDescription()')).once()
+        })
+      })
   })
 
   describe('getUpdatedTitle()', (): void => {

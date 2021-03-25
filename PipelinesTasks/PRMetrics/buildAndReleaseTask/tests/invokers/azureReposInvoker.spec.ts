@@ -1,17 +1,18 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { WebApi } from 'azure-devops-node-api'
-import { IGitApi } from 'azure-devops-node-api/GitApi'
-import { IRequestHandler } from 'azure-devops-node-api/interfaces/common/VsoBaseInterfaces'
+import 'reflect-metadata'
+import { anyNumber, anyString, anything, instance, mock, verify, when } from 'ts-mockito'
 import { CommentThreadStatus, GitPullRequest, GitPullRequestCommentThread, GitPullRequestIteration } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import { expect } from 'chai'
-import { anyNumber, anyString, anything, instance, mock, verify, when } from 'ts-mockito'
-import AzureReposInvoker from '../../invokers/azureReposInvoker'
+import { IGitApi } from 'azure-devops-node-api/GitApi'
 import { IPullRequestInfo, IPullRequestMetadata } from '../../models/pullRequestInterfaces'
+import { IRequestHandler } from 'azure-devops-node-api/interfaces/common/VsoBaseInterfaces'
+import { resolvableInstance } from '../utils/resolvableInstance'
+import { WebApi } from 'azure-devops-node-api'
+import AzureReposInvoker from '../../invokers/azureReposInvoker'
 import DevOpsApiWrapper from '../../wrappers/devOpsApiWrapper'
 import TaskLibWrapper from '../../wrappers/taskLibWrapper'
-import { resolvableInstance } from '../utils/resolvableInstance'
 
 describe('azureReposInvoker.ts', function (): void {
   const mockId = 3333
@@ -166,11 +167,11 @@ describe('azureReposInvoker.ts', function (): void {
 
   describe('isAccessTokenAvailable function', (): void => {
     it('should return true when token exists', (): void => {
-      const result = azureReposInvoker.isAccessTokenAvailable()
+      const result = azureReposInvoker.isAccessTokenAvailable
 
       // Assert
       expect(result).to.equal(true)
-      verify(taskLibWrapper.debug('* AzureReposInvoker.isAccessTokenAvailable()')).once()
+      verify(taskLibWrapper.debug('* AzureReposInvoker.isAccessTokenAvailable')).once()
     })
 
     it('should return false when token does not exist', (): void => {
@@ -179,11 +180,11 @@ describe('azureReposInvoker.ts', function (): void {
       const azureReposInvoker = new AzureReposInvoker(instance(devOpsApiWrapper), instance(taskLibWrapper))
 
       // Act
-      const result = azureReposInvoker.isAccessTokenAvailable()
+      const result = azureReposInvoker.isAccessTokenAvailable
 
       // Assert
       expect(result).to.equal(false)
-      verify(taskLibWrapper.debug('* AzureReposInvoker.isAccessTokenAvailable()')).once()
+      verify(taskLibWrapper.debug('* AzureReposInvoker.isAccessTokenAvailable')).once()
     })
   })
 

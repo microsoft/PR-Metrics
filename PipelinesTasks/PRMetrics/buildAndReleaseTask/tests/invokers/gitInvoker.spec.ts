@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+import 'reflect-metadata'
 import { expect } from 'chai'
 import { IExecSyncResult } from 'azure-pipelines-task-lib/toolrunner'
 import { instance, mock, verify, when } from 'ts-mockito'

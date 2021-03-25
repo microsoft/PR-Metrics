@@ -41,6 +41,15 @@
   "loc.instanceNameFormat": "PR Metrics",
   "loc.instanceNameFormat.comment": "The name of the task on the Azure Pipelines task properties page.",
 
+  "loc.messages.codeMetricsCalculator.noAccessToken": "Could not access the OAuth token. Enable the option 'Allow scripts to access OAuth token' under the build process phase settings.",
+  "loc.messages.codeMetricsCalculator.noAccessToken.comment": "The message to display when terminating as no access token is available.",
+
+  "loc.messages.codeMetricsCalculator.noPullRequest": "The build is not running against a pull request. Canceling task with warning.",
+  "loc.messages.codeMetricsCalculator.noPullRequest.comment": "The message to display when terminating the build is not running against a pull request.",
+
+  "loc.messages.index.success": "PR Metrics succeeded",
+  "loc.messages.index.success.comment": "The message to display when completing after a successful run.",
+
   "loc.messages.updaters.codeMetrics.titleSizeIndicatorFormat": "%s%s",
   "loc.messages.updaters.codeMetrics.titleSizeIndicatorFormat.comment": "The title size and test coverage prefix format. The first placeholder will be replaced by the title size prefix, and the second placeholder will be replaced by the test coverage prefix.",
 

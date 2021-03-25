@@ -1,12 +1,14 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+import { singleton } from 'tsyringe'
 import CodeMetrics from './codeMetrics'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
 
 /**
  * A class for managing pull requests.
  */
+@singleton()
 export default class PullRequest {
   private readonly _codeMetrics: CodeMetrics
   private readonly _taskLibWrapper: TaskLibWrapper
@@ -36,10 +38,10 @@ export default class PullRequest {
    * @param currentDescription The pull request's current description.
    * @returns The value to which to update the description or `null` if the description is not to be updated.
    */
-  public getUpdatedDescription (currentDescription: string): string | null {
+  public getUpdatedDescription (currentDescription: string | undefined): string | null {
     this._taskLibWrapper.debug('* PullRequest.getUpdatedDescription()')
 
-    if (currentDescription) {
+    if (currentDescription?.trim()) {
       return null
     }
 

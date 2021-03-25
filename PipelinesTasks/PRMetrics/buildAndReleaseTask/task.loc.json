@@ -53,6 +53,9 @@
     }
   },
   "messages": {
+    "codeMetricsCalculator.noAccessToken": "ms-resource:loc.messages.codeMetricsCalculator.noAccessToken",
+    "codeMetricsCalculator.noPullRequest": "ms-resource:loc.messages.codeMetricsCalculator.noPullRequest",
+    "index.success": "ms-resource:loc.messages.index.success",
     "updaters.codeMetrics.titleSizeIndicatorFormat": "ms-resource:loc.messages.updaters.codeMetrics.titleSizeIndicatorFormat",
     "updaters.codeMetrics.titleSizeL": "ms-resource:loc.messages.updaters.codeMetrics.titleSizeL",
     "updaters.codeMetrics.titleSizeM": "ms-resource:loc.messages.updaters.codeMetrics.titleSizeM",

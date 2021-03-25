@@ -1,87 +1,55 @@
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
+// // Copyright (c) Microsoft Corporation.
+// // Licensed under the MIT License.
 
-import { anyNumber, instance, mock, verify, when } from 'ts-mockito'
-import { expect } from 'chai'
-import async from 'async'
-import CodeMetricsCalculator from '../codeMetricsCalculator'
-import PullRequest from '../updaters/pullRequest'
-import PullRequestComments from '../updaters/pullRequestComments'
-import PullRequestCommentsData from '../updaters/pullRequestCommentsData'
-import TaskLibWrapper from '../wrappers/taskLibWrapper'
+// import { anyNumber, instance, mock, verify, when } from 'ts-mockito'
+// import { expect } from 'chai'
+// import async from 'async'
+// import AzureReposInvoker from '../invokers/azureReposInvoker'
+// import CodeMetricsCalculator from '../codeMetricsCalculator'
+// import PullRequest from '../updaters/pullRequest'
+// import PullRequestComments from '../updaters/pullRequestComments'
+// import PullRequestCommentsData from '../updaters/pullRequestCommentsData'
+// import TaskLibWrapper from '../wrappers/taskLibWrapper'
 
-describe('codeMetricsCalculator.ts', (): void => {
-  let pullRequest: PullRequest
-  let pullRequestComments: PullRequestComments
-  let taskLibWrapper: TaskLibWrapper
+// describe('codeMetricsCalculator.ts', (): void => {
+//   let azureReposInvoker: AzureReposInvoker
+//   let pullRequest: PullRequest
+//   let pullRequestComments: PullRequestComments
+//   let taskLibWrapper: TaskLibWrapper
 
-  beforeEach((): void => {
-    pullRequest = mock(PullRequest)
-    pullRequestComments = mock(PullRequestComments)
-    taskLibWrapper = mock(TaskLibWrapper)
-  })
+//   beforeEach((): void => {
+//     azureReposInvoker = mock(AzureReposInvoker)
+//     pullRequest = mock(PullRequest)
+//     pullRequestComments = mock(PullRequestComments)
+//     taskLibWrapper = mock(TaskLibWrapper)
+//   })
 
-  describe('isPullRequest', (): void => {
-    async.each(
-      [
-        true,
-        false
-      ], (isPullRequest: boolean): void => {
-        it(`should return the expected result when '${isPullRequest}'`, (): void => {
-          // Arrange
-          when(pullRequest.isPullRequest).thenReturn(isPullRequest)
-          const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
+//   describe('updateDetails()', (): void => {
+//     it('should return the expected result', async (): Promise<void> => {
+//       // Arrange
+//       when(pullRequest.getUpdatedDescription('TODO')).thenReturn('TODO')
+//       when(pullRequest.getUpdatedTitle('TODO')).thenReturn('S✔ ◾ TODO')
+//       const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
 
-          // Act
-          const result: boolean = codeMetricsCalculator.isPullRequest
+//       // Act
+//       await codeMetricsCalculator.updateDetails()
 
-          // Assert
-          expect(result).to.equal(isPullRequest)
-          verify(taskLibWrapper.debug('* CodeMetricsCalculator.isPullRequest')).once()
-        })
-      })
-  })
+//       // Assert
+//       verify(taskLibWrapper.debug('* CodeMetricsCalculator.updateDetails()')).once()
+//     })
+//   })
 
-  describe('isAccessTokenAvailable', (): void => {
-    it('should return the expected result', (): void => {
-      // Arrange
-      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
+//   describe('updateComments()', (): void => {
+//     it('should return the expected result', async (): Promise<void> => {
+//       // Arrange
+//       when(pullRequestComments.getCommentData(anyNumber())).thenResolve(new PullRequestCommentsData([], []))
+//       const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
 
-      // Act
-      const result: boolean = codeMetricsCalculator.isAccessTokenAvailable
+//       // Act
+//       await codeMetricsCalculator.updateComments()
 
-      // Assert
-      expect(result).to.equal(true)
-      verify(taskLibWrapper.debug('* CodeMetricsCalculator.isAccessTokenAvailable')).once()
-    })
-  })
-
-  describe('updateDetails()', (): void => {
-    it('should return the expected result', (): void => {
-      // Arrange
-      when(pullRequest.getUpdatedDescription('TODO')).thenReturn('TODO')
-      when(pullRequest.getUpdatedTitle('TODO')).thenReturn('S✔ ◾ TODO')
-      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
-
-      // Act
-      codeMetricsCalculator.updateDetails()
-
-      // Assert
-      verify(taskLibWrapper.debug('* CodeMetricsCalculator.updateDetails()')).once()
-    })
-  })
-
-  describe('updateComments()', (): void => {
-    it('should return the expected result', async (): Promise<void> => {
-      // Arrange
-      when(pullRequestComments.getCommentData(anyNumber())).thenResolve(new PullRequestCommentsData([], []))
-      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
-
-      // Act
-      await codeMetricsCalculator.updateComments()
-
-      // Assert
-      verify(taskLibWrapper.debug('* CodeMetricsCalculator.updateComments()')).once()
-    })
-  })
-})
+//       // Assert
+//       verify(taskLibWrapper.debug('* CodeMetricsCalculator.updateComments()')).once()
+//     })
+//   })
+// })
