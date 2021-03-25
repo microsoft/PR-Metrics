@@ -4,7 +4,7 @@
 import 'reflect-metadata'
 import { expect } from 'chai'
 import { ParametersDefault } from '../../updaters/parametersDefault'
-import { anything, instance, mock, verify, when } from 'ts-mockito'
+import { instance, mock, verify, when } from 'ts-mockito'
 import async from 'async'
 import ConsoleWrapper from '../../wrappers/consoleWrapper'
 import Parameters from '../../updaters/parameters'
@@ -24,11 +24,11 @@ describe('parameters.ts', (): void => {
     consoleWrapper = mock(ConsoleWrapper)
 
     taskLibWrapper = mock(TaskLibWrapper)
-    when(taskLibWrapper.getInput('BaseSize', anything())).thenReturn('')
-    when(taskLibWrapper.getInput('GrowthRate', anything())).thenReturn('')
-    when(taskLibWrapper.getInput('TestFactor', anything())).thenReturn('')
-    when(taskLibWrapper.getInput('FileMatchingPatterns', anything())).thenReturn('')
-    when(taskLibWrapper.getInput('CodeFileExtensions', anything())).thenReturn('')
+    when(taskLibWrapper.getInput('BaseSize', false)).thenReturn('')
+    when(taskLibWrapper.getInput('GrowthRate', false)).thenReturn('')
+    when(taskLibWrapper.getInput('TestFactor', false)).thenReturn('')
+    when(taskLibWrapper.getInput('FileMatchingPatterns', false)).thenReturn('')
+    when(taskLibWrapper.getInput('CodeFileExtensions', false)).thenReturn('')
     when(taskLibWrapper.loc('updaters.parameters.adjustingBaseSize', ParametersDefault.baseSize.toLocaleString())).thenReturn(adjustingBaseSizeResource)
     when(taskLibWrapper.loc('updaters.parameters.adjustingGrowthRate', ParametersDefault.growthRate.toLocaleString())).thenReturn(adjustingGrowthRateResource)
     when(taskLibWrapper.loc('updaters.parameters.adjustingTestFactor', ParametersDefault.testFactor.toLocaleString())).thenReturn(adjustingTestFactorResource)
@@ -68,11 +68,11 @@ describe('parameters.ts', (): void => {
 
       it('should set all input values when all are specified', (): void => {
         // Arrange
-        when(taskLibWrapper.getInput('BaseSize', anything())).thenReturn('5.0')
-        when(taskLibWrapper.getInput('GrowthRate', anything())).thenReturn('4.4')
-        when(taskLibWrapper.getInput('TestFactor', anything())).thenReturn('2.7')
-        when(taskLibWrapper.getInput('FileMatchingPatterns', anything())).thenReturn('aa\nbb')
-        when(taskLibWrapper.getInput('CodeFileExtensions', anything())).thenReturn('js\nts')
+        when(taskLibWrapper.getInput('BaseSize', false)).thenReturn('5.0')
+        when(taskLibWrapper.getInput('GrowthRate', false)).thenReturn('4.4')
+        when(taskLibWrapper.getInput('TestFactor', false)).thenReturn('2.7')
+        when(taskLibWrapper.getInput('FileMatchingPatterns', false)).thenReturn('aa\nbb')
+        when(taskLibWrapper.getInput('CodeFileExtensions', false)).thenReturn('js\nts')
 
         // Act
         const parameters: Parameters = new Parameters(instance(consoleWrapper), instance(taskLibWrapper))
@@ -116,7 +116,7 @@ describe('parameters.ts', (): void => {
         ], (baseSize: string | undefined): void => {
           it(`should set the default when the input '${baseSize}' is invalid`, (): void => {
             // Arrange
-            when(taskLibWrapper.getInput('BaseSize', anything())).thenReturn(baseSize)
+            when(taskLibWrapper.getInput('BaseSize', false)).thenReturn(baseSize)
 
             // Act
             const parameters: Parameters = new Parameters(instance(consoleWrapper), instance(taskLibWrapper))
@@ -147,7 +147,7 @@ describe('parameters.ts', (): void => {
         ], (baseSize: string): void => {
           it(`should set the default when the input '${baseSize}' is less than or equal to 0`, (): void => {
             // Arrange
-            when(taskLibWrapper.getInput('BaseSize', anything())).thenReturn(baseSize)
+            when(taskLibWrapper.getInput('BaseSize', false)).thenReturn(baseSize)
 
             // Act
             const parameters: Parameters = new Parameters(instance(consoleWrapper), instance(taskLibWrapper))
@@ -178,7 +178,7 @@ describe('parameters.ts', (): void => {
         ], (baseSize: string): void => {
           it(`should set the converted value when the input '${baseSize}' is greater than 0`, (): void => {
             // Arrange
-            when(taskLibWrapper.getInput('BaseSize', anything())).thenReturn(baseSize)
+            when(taskLibWrapper.getInput('BaseSize', false)).thenReturn(baseSize)
 
             // Act
             const parameters: Parameters = new Parameters(instance(consoleWrapper), instance(taskLibWrapper))
@@ -215,7 +215,7 @@ describe('parameters.ts', (): void => {
         ], (growthRate: string | undefined): void => {
           it(`should set the default when the input '${growthRate}' is invalid`, (): void => {
             // Arrange
-            when(taskLibWrapper.getInput('GrowthRate', anything())).thenReturn(growthRate)
+            when(taskLibWrapper.getInput('GrowthRate', false)).thenReturn(growthRate)
 
             // Act
             const parameters: Parameters = new Parameters(instance(consoleWrapper), instance(taskLibWrapper))
@@ -248,7 +248,7 @@ describe('parameters.ts', (): void => {
         ], (growthRate: string): void => {
           it(`should set the default when the input '${growthRate}' is less than 1.0`, (): void => {
             // Arrange
-            when(taskLibWrapper.getInput('GrowthRate', anything())).thenReturn(growthRate)
+            when(taskLibWrapper.getInput('GrowthRate', false)).thenReturn(growthRate)
 
             // Act
             const parameters: Parameters = new Parameters(instance(consoleWrapper), instance(taskLibWrapper))
@@ -284,7 +284,7 @@ describe('parameters.ts', (): void => {
         ], (growthRate: string): void => {
           it(`should set the converted value when the input '${growthRate}' is greater than or equal to 1.0`, (): void => {
             // Arrange
-            when(taskLibWrapper.getInput('GrowthRate', anything())).thenReturn(growthRate)
+            when(taskLibWrapper.getInput('GrowthRate', false)).thenReturn(growthRate)
 
             // Act
             const parameters: Parameters = new Parameters(instance(consoleWrapper), instance(taskLibWrapper))
@@ -321,7 +321,7 @@ describe('parameters.ts', (): void => {
         ], (testFactor: string | undefined): void => {
           it(`should set the default when the input '${testFactor}' is invalid`, (): void => {
             // Arrange
-            when(taskLibWrapper.getInput('TestFactor', anything())).thenReturn(testFactor)
+            when(taskLibWrapper.getInput('TestFactor', false)).thenReturn(testFactor)
 
             // Act
             const parameters: Parameters = new Parameters(instance(consoleWrapper), instance(taskLibWrapper))
@@ -353,7 +353,7 @@ describe('parameters.ts', (): void => {
         ], (testFactor: string): void => {
           it(`should set the default when the input '${testFactor}' is less than 0.0`, (): void => {
             // Arrange
-            when(taskLibWrapper.getInput('TestFactor', anything())).thenReturn(testFactor)
+            when(taskLibWrapper.getInput('TestFactor', false)).thenReturn(testFactor)
 
             // Act
             const parameters: Parameters = new Parameters(instance(consoleWrapper), instance(taskLibWrapper))
@@ -388,7 +388,7 @@ describe('parameters.ts', (): void => {
         ], (testFactor: string): void => {
           it(`should set the converted value when the input '${testFactor}' is greater than 0.0`, (): void => {
             // Arrange
-            when(taskLibWrapper.getInput('TestFactor', anything())).thenReturn(testFactor)
+            when(taskLibWrapper.getInput('TestFactor', false)).thenReturn(testFactor)
 
             // Act
             const parameters: Parameters = new Parameters(instance(consoleWrapper), instance(taskLibWrapper))
@@ -417,7 +417,7 @@ describe('parameters.ts', (): void => {
         ], (testFactor: string): void => {
           it(`should set null when the input '${testFactor}' is equal to 0.0`, (): void => {
             // Arrange
-            when(taskLibWrapper.getInput('TestFactor', anything())).thenReturn(testFactor)
+            when(taskLibWrapper.getInput('TestFactor', false)).thenReturn(testFactor)
 
             // Act
             const parameters: Parameters = new Parameters(instance(consoleWrapper), instance(taskLibWrapper))
@@ -451,7 +451,7 @@ describe('parameters.ts', (): void => {
         ], (fileMatchingPatterns: string | undefined): void => {
           it(`should set the default when the input '${fileMatchingPatterns}' is invalid`, (): void => {
             // Arrange
-            when(taskLibWrapper.getInput('FileMatchingPatterns', anything())).thenReturn(fileMatchingPatterns)
+            when(taskLibWrapper.getInput('FileMatchingPatterns', false)).thenReturn(fileMatchingPatterns)
 
             // Act
             const parameters: Parameters = new Parameters(instance(consoleWrapper), instance(taskLibWrapper))
@@ -481,7 +481,7 @@ describe('parameters.ts', (): void => {
         ], (fileMatchingPatterns: string): void => {
           it(`should not split '${fileMatchingPatterns}'`, (): void => {
             // Arrange
-            when(taskLibWrapper.getInput('FileMatchingPatterns', anything())).thenReturn(fileMatchingPatterns)
+            when(taskLibWrapper.getInput('FileMatchingPatterns', false)).thenReturn(fileMatchingPatterns)
 
             // Act
             const parameters: Parameters = new Parameters(instance(consoleWrapper), instance(taskLibWrapper))
@@ -511,7 +511,7 @@ describe('parameters.ts', (): void => {
           it(`should split '${fileMatchingPatterns}' at the newline character`, (): void => {
             // Arrange
             const expectedOutput: string[] = fileMatchingPatterns.split('\n')
-            when(taskLibWrapper.getInput('FileMatchingPatterns', anything())).thenReturn(fileMatchingPatterns)
+            when(taskLibWrapper.getInput('FileMatchingPatterns', false)).thenReturn(fileMatchingPatterns)
 
             // Act
             const parameters: Parameters = new Parameters(instance(consoleWrapper), instance(taskLibWrapper))
@@ -545,7 +545,7 @@ describe('parameters.ts', (): void => {
         ], (codeFileExtensions: string | undefined): void => {
           it(`should set the default when the input '${codeFileExtensions}' is invalid`, (): void => {
             // Arrange
-            when(taskLibWrapper.getInput('CodeFileExtensions', anything())).thenReturn(codeFileExtensions)
+            when(taskLibWrapper.getInput('CodeFileExtensions', false)).thenReturn(codeFileExtensions)
 
             // Act
             const parameters: Parameters = new Parameters(instance(consoleWrapper), instance(taskLibWrapper))
@@ -577,7 +577,7 @@ describe('parameters.ts', (): void => {
             // Arrange
             const splitExtensions: string[] = codeFileExtensions.split('\n')
             const expectedResult: string[] = splitExtensions.map(entry => `*.${entry}`)
-            when(taskLibWrapper.getInput('CodeFileExtensions', anything())).thenReturn(codeFileExtensions)
+            when(taskLibWrapper.getInput('CodeFileExtensions', false)).thenReturn(codeFileExtensions)
 
             // Act
             const parameters: Parameters = new Parameters(instance(consoleWrapper), instance(taskLibWrapper))
