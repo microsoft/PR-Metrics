@@ -4,8 +4,8 @@
 // import { instance, mock, verify } from 'ts-mockito'
 
 // import CodeMetrics from '../../updaters/codeMetrics'
+// import CodeMetricsData from '../../updaters/codeMetricsData'
 // import ConsoleWrapper from '../../wrappers/consoleWrapper'
-// import Metrics from '../../updaters/metrics'
 // import TaskLibWrapper from '../../wrappers/taskLibWrapper'
 // import { expect } from 'chai'
 

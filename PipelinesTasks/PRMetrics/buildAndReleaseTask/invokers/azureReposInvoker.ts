@@ -9,15 +9,15 @@ import DevOpsApiWrapper from '../wrappers/devOpsApiWrapper'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
 
 export default class AzureReposInvoker {
-    private taskLibWrapper: TaskLibWrapper;
-    private devOpsApiWrapper: DevOpsApiWrapper;
-    private gitApi: IGitApi | undefined;
+    private taskLibWrapper: TaskLibWrapper
+    private devOpsApiWrapper: DevOpsApiWrapper
+    private gitApi: IGitApi | undefined
 
-    private baseUri = process.env.SYSTEM_TEAMFOUNDATIONCOLLECTIONURI as string;
-    private project = process.env.SYSTEM_TEAMPROJECT;
-    private repositoryId = process.env.BUILD_REPOSITORY_ID as string;
-    private pullRequestId = process.env.SYSTEM_PULLREQUEST_PULLREQUESTID ? parseInt(process.env.SYSTEM_PULLREQUEST_PULLREQUESTID) : -1;
-    private azurePAT = process.env.SYSTEM_ACCESSTOKEN;
+    private baseUri = process.env.SYSTEM_TEAMFOUNDATIONCOLLECTIONURI as string
+    private project = process.env.SYSTEM_TEAMPROJECT
+    private repositoryId = process.env.BUILD_REPOSITORY_ID as string
+    private pullRequestId = process.env.SYSTEM_PULLREQUEST_PULLREQUESTID ? parseInt(process.env.SYSTEM_PULLREQUEST_PULLREQUESTID) : -1
+    private azurePAT = process.env.SYSTEM_ACCESSTOKEN
 
     /**
       * Initializes a new instance of the AzureReposInvoker class.
@@ -53,12 +53,12 @@ export default class AzureReposInvoker {
       const gitApi: IGitApi = await this.openConnection()
       const pullRequestIterations: GitPullRequestIteration[] = await gitApi.getPullRequestIterations(this.repositoryId, this.pullRequestId, this.project)
       if (pullRequestIterations.length === 0) {
-        throw Error('The collection of pull request iterations was of length zero.')
+        throw RangeError('The collection of pull request iterations was of length zero.')
       }
 
       const latestIteration: GitPullRequestIteration = pullRequestIterations[pullRequestIterations.length - 1]!
       if (!latestIteration.id) {
-        throw Error('The pull request iteration is undefined.')
+        throw TypeError('The pull request iteration is undefined.')
       }
 
       return latestIteration.id

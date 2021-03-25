@@ -8,7 +8,7 @@ import { instance, mock, verify, when } from 'ts-mockito'
 import async from 'async'
 import AzureReposInvoker from '../../invokers/azureReposInvoker'
 import CodeMetrics from '../../updaters/codeMetrics'
-import Metrics from '../../updaters/metrics'
+import CodeMetricsData from '../../updaters/codeMetricsData'
 import os from 'os'
 import Parameters from '../../updaters/parameters'
 import PullRequestComments from '../../updaters/pullRequestComments'
@@ -45,7 +45,7 @@ describe('pullRequestComments.ts', (): void => {
     codeMetrics = mock(CodeMetrics)
     when(codeMetrics.isSmall).thenReturn(true)
     when(codeMetrics.isSufficientlyTested).thenReturn(true)
-    when(codeMetrics.metrics).thenReturn(new Metrics(1000, 1000, 1000))
+    when(codeMetrics.metrics).thenReturn(new CodeMetricsData(1000, 1000, 1000))
     when(codeMetrics.ignoredFilesWithLinesAdded).thenReturn([])
     when(codeMetrics.ignoredFilesWithoutLinesAdded).thenReturn([])
 
@@ -54,16 +54,16 @@ describe('pullRequestComments.ts', (): void => {
 
     taskLibWrapper = mock(TaskLibWrapper)
     when(taskLibWrapper.loc('updaters.pullRequestComments.commentFooter')).thenReturn('[Metrics added by PR Metrics. Add to Azure DevOps today!](https://marketplace.visualstudio.com/items?itemName=ms-omex.prmetrics)')
-    when(taskLibWrapper.loc('updaters.pullRequestComments.commentTitle', '1')).thenReturn('# Metrics for iteration 1')
-    when(taskLibWrapper.loc('updaters.pullRequestComments.commentTitle', '2')).thenReturn('# Metrics for iteration 2')
-    when(taskLibWrapper.loc('updaters.pullRequestComments.commentTitle', '100')).thenReturn('# Metrics for iteration 100')
-    when(taskLibWrapper.loc('updaters.pullRequestComments.commentTitle', '1,000')).thenReturn('# Metrics for iteration 1,000')
-    when(taskLibWrapper.loc('updaters.pullRequestComments.commentTitle', '1,000,000')).thenReturn('# Metrics for iteration 1,000,000')
+    when(taskLibWrapper.loc('updaters.pullRequestComments.commentTitle', Number(1).toLocaleString())).thenReturn(`# Metrics for iteration ${Number(1).toLocaleString()}`)
+    when(taskLibWrapper.loc('updaters.pullRequestComments.commentTitle', Number(2).toLocaleString())).thenReturn(`# Metrics for iteration ${Number(2).toLocaleString()}`)
+    when(taskLibWrapper.loc('updaters.pullRequestComments.commentTitle', Number(100).toLocaleString())).thenReturn(`# Metrics for iteration ${Number(100).toLocaleString()}`)
+    when(taskLibWrapper.loc('updaters.pullRequestComments.commentTitle', Number(1000).toLocaleString())).thenReturn(`# Metrics for iteration ${Number(1000).toLocaleString()}`)
+    when(taskLibWrapper.loc('updaters.pullRequestComments.commentTitle', Number(1000000).toLocaleString())).thenReturn(`# Metrics for iteration ${Number(1000000).toLocaleString()}`)
     when(taskLibWrapper.loc('updaters.pullRequestComments.commentTitle', '.+')).thenReturn('# Metrics for iteration .+')
     when(taskLibWrapper.loc('updaters.pullRequestComments.fileIgnoredComment')).thenReturn('❗ **This file may not need to be reviewed.**')
-    when(taskLibWrapper.loc('updaters.pullRequestComments.largePullRequestComment', '250')).thenReturn('❌ **Try to keep pull requests smaller than 250 lines of new product code by following the [Single Responsibility Principle (SRP)](https://wikipedia.org/wiki/Single-responsibility_principle).**')
-    when(taskLibWrapper.loc('updaters.pullRequestComments.largePullRequestComment', '1,000')).thenReturn('❌ **Try to keep pull requests smaller than 1,000 lines of new product code by following the [Single Responsibility Principle (SRP)](https://wikipedia.org/wiki/Single-responsibility_principle).**')
-    when(taskLibWrapper.loc('updaters.pullRequestComments.largePullRequestComment', '1,000,000')).thenReturn('❌ **Try to keep pull requests smaller than 1,000,000 lines of new product code by following the [Single Responsibility Principle (SRP)](https://wikipedia.org/wiki/Single-responsibility_principle).**')
+    when(taskLibWrapper.loc('updaters.pullRequestComments.largePullRequestComment', Number(250).toLocaleString())).thenReturn(`❌ **Try to keep pull requests smaller than ${Number(250).toLocaleString()} lines of new product code by following the [Single Responsibility Principle (SRP)](https://wikipedia.org/wiki/Single-responsibility_principle).**`)
+    when(taskLibWrapper.loc('updaters.pullRequestComments.largePullRequestComment', Number(1000).toLocaleString())).thenReturn(`❌ **Try to keep pull requests smaller than ${Number(1000).toLocaleString()} lines of new product code by following the [Single Responsibility Principle (SRP)](https://wikipedia.org/wiki/Single-responsibility_principle).**`)
+    when(taskLibWrapper.loc('updaters.pullRequestComments.largePullRequestComment', Number(1000000).toLocaleString())).thenReturn(`❌ **Try to keep pull requests smaller than ${Number(1000000).toLocaleString()} lines of new product code by following the [Single Responsibility Principle (SRP)](https://wikipedia.org/wiki/Single-responsibility_principle).**`)
     when(taskLibWrapper.loc('updaters.pullRequestComments.smallPullRequestComment')).thenReturn('✔ **Thanks for keeping your pull request small.**')
     when(taskLibWrapper.loc('updaters.pullRequestComments.tableIgnoredCode')).thenReturn('Ignored Code')
     when(taskLibWrapper.loc('updaters.pullRequestComments.tableLines')).thenReturn('Lines')
@@ -112,7 +112,7 @@ describe('pullRequestComments.ts', (): void => {
         [1, [{ comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: `# Metrics for iteration 100${os.EOL}`, id: 1 }, { author: { displayName: 'Project Collection Build Service (' }, content: `# Metrics for iteration 1${os.EOL}`, id: 10 }], id: 20 }]],
         [2, [{ comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: `# Metrics for iteration 2${os.EOL}`, id: 10 }], id: 20 }]],
         [100, [{ comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: `# Metrics for iteration 1${os.EOL}`, id: 1 }, { author: { displayName: 'Project Collection Build Service (' }, content: `# Metrics for iteration 100${os.EOL}`, id: 10 }], id: 20 }]],
-        [1000000, [{ comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: `# Metrics for iteration 1,000,000${os.EOL}`, id: 10 }], id: 20 }]],
+        [1000000, [{ comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: `# Metrics for iteration ${Number(1000000).toLocaleString()}${os.EOL}`, id: 10 }], id: 20 }]],
         [1, [{ comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: `# Metrics for iteration 1${os.EOL}`, id: 10 }], id: 20 }]],
         [1, [{ comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: 'Content', id: 1 }], id: 2 }, { comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: `# Metrics for iteration 1${os.EOL}`, id: 10 }], id: 20 }]],
         [1, [{ comments: [{ author: { displayName: 'Name' }, id: 1 }], id: 2 }, { comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: `# Metrics for iteration 1${os.EOL}`, id: 10 }], id: 20 }]]
@@ -157,8 +157,8 @@ describe('pullRequestComments.ts', (): void => {
     async.each(
       [
         [['folder/file1.ts', 'file3.ts'], [{ pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file2.ts' } }, comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: '❗ **This file may not need to be reviewed.**' }] }]],
-        [['folder/file1.ts', 'file3.ts'], [{ pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file1.ts' } }, comments: [{ author: { displayName: 'Author' }, content: '❗ **This file may not need to be reviewed.**' }] }, { pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file2.ts' } }, comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: '❗ **This file may not need to be reviewed.**' }] }]],
-        [['folder/file1.ts', 'file3.ts'], [{ pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file1.ts' } }, comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: 'Content' }] }, { pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file2.ts' } }, comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: '❗ **This file may not need to be reviewed.**' }] }]],
+        [['folder/file1.ts', 'file3.ts'], [{ pullRequestThreadContext: { trackingCriteria: { origFilePath: ' folder/file1.ts' } }, comments: [{ author: { displayName: 'Author' }, content: '❗ **This file may not need to be reviewed.**' }] }, { pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file2.ts' } }, comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: '❗ **This file may not need to be reviewed.**' }] }]],
+        [['folder/file1.ts', 'file3.ts'], [{ pullRequestThreadContext: { trackingCriteria: { origFilePath: ' folder/file1.ts' } }, comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: 'Content' }] }, { pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file2.ts' } }, comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: '❗ **This file may not need to be reviewed.**' }] }]],
         [['folder/file1.ts', 'file3.ts'], [{ pullRequestThreadContext: { trackingCriteria: { origFilePath: ' fileA.ts' } }, comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: '❗ **This file may not need to be reviewed.**' }] }, { pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file2.ts' } }, comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: '❗ **This file may not need to be reviewed.**' }] }]],
         [['file3.ts'], [{ pullRequestThreadContext: { trackingCriteria: { origFilePath: ' folder/file1.ts' } }, comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: '❗ **This file may not need to be reviewed.**' }] }, { pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file2.ts' } }, comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: '❗ **This file may not need to be reviewed.**' }] }]]
       ], (data: [string[], GitPullRequestCommentThread[]]): void => {
@@ -186,8 +186,8 @@ describe('pullRequestComments.ts', (): void => {
     async.each(
       [
         [['folder/file4.ts', 'file6.ts'], [{ pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file5.ts' } }, comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: '❗ **This file may not need to be reviewed.**' }] }]],
-        [['folder/file4.ts', 'file6.ts'], [{ pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file4.ts' } }, comments: [{ author: { displayName: 'Author' }, content: '❗ **This file may not need to be reviewed.**' }] }, { pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file5.ts' } }, comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: '❗ **This file may not need to be reviewed.**' }] }]],
-        [['folder/file4.ts', 'file6.ts'], [{ pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file4.ts' } }, comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: 'Content' }] }, { pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file5.ts' } }, comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: '❗ **This file may not need to be reviewed.**' }] }]],
+        [['folder/file4.ts', 'file6.ts'], [{ pullRequestThreadContext: { trackingCriteria: { origFilePath: ' folder/file4.ts' } }, comments: [{ author: { displayName: 'Author' }, content: '❗ **This file may not need to be reviewed.**' }] }, { pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file5.ts' } }, comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: '❗ **This file may not need to be reviewed.**' }] }]],
+        [['folder/file4.ts', 'file6.ts'], [{ pullRequestThreadContext: { trackingCriteria: { origFilePath: ' folder/file4.ts' } }, comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: 'Content' }] }, { pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file5.ts' } }, comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: '❗ **This file may not need to be reviewed.**' }] }]],
         [['folder/file4.ts', 'file6.ts'], [{ pullRequestThreadContext: { trackingCriteria: { origFilePath: ' fileA.ts' } }, comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: '❗ **This file may not need to be reviewed.**' }] }, { pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file5.ts' } }, comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: '❗ **This file may not need to be reviewed.**' }] }]],
         [['file6.ts'], [{ pullRequestThreadContext: { trackingCriteria: { origFilePath: ' folder/file4.ts' } }, comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: '❗ **This file may not need to be reviewed.**' }] }, { pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file5.ts' } }, comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: '❗ **This file may not need to be reviewed.**' }] }]]
       ], (data: [string[], GitPullRequestCommentThread[]]): void => {
@@ -278,44 +278,44 @@ describe('pullRequestComments.ts', (): void => {
 
     async.each(
       [
-        ['commentThread[0].id', [{}]],
-        ['commentThread[0].comments', [{ id: 1 }]],
-        ['commentThread[0].comments[0].author', [{ comments: [{}], id: 1 }]],
-        ['commentThread[0].comments[0].author.displayName', [{ comments: [{ author: {} }], id: 1 }]],
-        ['commentThread[0].comments[0].content', [{ comments: [{ author: { displayName: 'Project Collection Build Service (' } }], id: 1 }]],
-        ['commentThread[0].comments[0].id', [{ comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: '# Metrics for iteration 1' }], id: 1 }]],
-        ['commentThread[0].comments[1].author', [{ comments: [validGitPullRequestCommentThread.comments![0]!, {}], id: 1 }]],
-        ['commentThread[0].comments[1].author.displayName', [{ comments: [validGitPullRequestCommentThread.comments![0]!, { author: {} }], id: 1 }]],
-        ['commentThread[0].comments[1].content', [{ comments: [validGitPullRequestCommentThread.comments![0]!, { author: { displayName: 'Project Collection Build Service (' } }], id: 1 }]],
-        ['commentThread[0].comments[1].id', [{ comments: [validGitPullRequestCommentThread.comments![0]!, { author: { displayName: 'Project Collection Build Service (' }, content: '# Metrics for iteration 1' }], id: 1 }]],
-        ['commentThread[0].pullRequestThreadContext.trackingCriteria', [{ pullRequestThreadContext: {} }]],
-        ['commentThread[0].pullRequestThreadContext.trackingCriteria.origFilePath', [{ pullRequestThreadContext: { trackingCriteria: {} } }]],
-        ['commentThread[0].comments', [{ pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file.ts' } } }]],
-        ['commentThread[0].comments[0]', [{ pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file.ts' } }, comments: [] }]],
-        ['commentThread[0].comments[0].author', [{ pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file.ts' } }, comments: [{}] }]],
-        ['commentThread[0].comments[0].author.displayName', [{ pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file.ts' } }, comments: [{ author: {} }] }]],
-        ['commentThread[0].comments[0].content', [{ pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file.ts' } }, comments: [{ author: { displayName: 'Project Collection Build Service (' } }] }]],
-        ['commentThread[1].id', [validGitPullRequestCommentThread, {}]],
-        ['commentThread[1].comments', [validGitPullRequestCommentThread, { id: 1 }]],
-        ['commentThread[1].comments[0].author', [validGitPullRequestCommentThread, { comments: [{}], id: 1 }]],
-        ['commentThread[1].comments[0].author.displayName', [validGitPullRequestCommentThread, { comments: [{ author: {} }], id: 1 }]],
-        ['commentThread[1].comments[0].content', [validGitPullRequestCommentThread, { comments: [{ author: { displayName: 'Project Collection Build Service (' } }], id: 1 }]],
-        ['commentThread[1].comments[0].id', [validGitPullRequestCommentThread, { comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: '# Metrics for iteration 1' }], id: 1 }]],
-        ['commentThread[1].comments[1].author', [validGitPullRequestCommentThread, { comments: [validGitPullRequestCommentThread.comments![0]!, {}], id: 1 }]],
-        ['commentThread[1].comments[1].author.displayName', [validGitPullRequestCommentThread, { comments: [validGitPullRequestCommentThread.comments![0]!, { author: {} }], id: 1 }]],
-        ['commentThread[1].comments[1].content', [validGitPullRequestCommentThread, { comments: [validGitPullRequestCommentThread.comments![0]!, { author: { displayName: 'Project Collection Build Service (' } }], id: 1 }]],
-        ['commentThread[1].comments[1].id', [validGitPullRequestCommentThread, { comments: [validGitPullRequestCommentThread.comments![0]!, { author: { displayName: 'Project Collection Build Service (' }, content: '# Metrics for iteration 1' }], id: 1 }]],
-        ['commentThread[1].pullRequestThreadContext.trackingCriteria', [validGitPullRequestCommentThread, { pullRequestThreadContext: {} }]],
-        ['commentThread[1].pullRequestThreadContext.trackingCriteria.origFilePath', [validGitPullRequestCommentThread, { pullRequestThreadContext: { trackingCriteria: {} } }]],
-        ['commentThread[1].comments', [validGitPullRequestCommentThread, { pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file.ts' } } }]],
-        ['commentThread[1].comments[0]', [validGitPullRequestCommentThread, { pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file.ts' } }, comments: [] }]],
-        ['commentThread[1].comments[0].author', [validGitPullRequestCommentThread, { pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file.ts' } }, comments: [{}] }]],
-        ['commentThread[1].comments[0].author.displayName', [validGitPullRequestCommentThread, { pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file.ts' } }, comments: [{ author: {} }] }]],
-        ['commentThread[1].comments[0].content', [validGitPullRequestCommentThread, { pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file.ts' } }, comments: [{ author: { displayName: 'Project Collection Build Service (' } }] }]]
-      ], (data: [string, GitPullRequestCommentThread[]]): void => {
-        it(`should throw an error for field '${data[0]}' when it is missing`, async (): Promise<void> => {
+        ['commentThread[0].comments', 'getMetricsCommentData', [{ }]],
+        ['commentThread[0].comments[0].author', 'getMetricsCommentData', [{ comments: [{}] }]],
+        ['commentThread[0].comments[0].author.displayName', 'getMetricsCommentData', [{ comments: [{ author: {} }] }]],
+        ['commentThread[0].comments[0].content', 'getMetricsCommentData', [{ comments: [{ author: { displayName: 'Project Collection Build Service (' } }] }]],
+        ['commentThread[0].id', 'getMetricsCommentData', [{ comments: [validGitPullRequestCommentThread.comments![0]!, { author: { displayName: 'Project Collection Build Service (' }, content: '# Metrics for iteration 1' }] }]],
+        ['commentThread[0].comments[0].id', 'getMetricsCommentData', [{ comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: '# Metrics for iteration 1' }], id: 1 }]],
+        ['commentThread[0].comments[1].author', 'getMetricsCommentData', [{ comments: [validGitPullRequestCommentThread.comments![0]!, {}], id: 1 }]],
+        ['commentThread[0].comments[1].author.displayName', 'getMetricsCommentData', [{ comments: [validGitPullRequestCommentThread.comments![0]!, { author: {} }], id: 1 }]],
+        ['commentThread[0].comments[1].content', 'getMetricsCommentData', [{ comments: [validGitPullRequestCommentThread.comments![0]!, { author: { displayName: 'Project Collection Build Service (' } }], id: 1 }]],
+        ['commentThread[0].comments[1].id', 'getMetricsCommentData', [{ comments: [validGitPullRequestCommentThread.comments![0]!, { author: { displayName: 'Project Collection Build Service (' }, content: '# Metrics for iteration 1' }], id: 1 }]],
+        ['commentThread[0].pullRequestThreadContext.trackingCriteria', 'getCommentData', [{ pullRequestThreadContext: {} }]],
+        ['commentThread[0].pullRequestThreadContext.trackingCriteria.origFilePath', 'getCommentData', [{ pullRequestThreadContext: { trackingCriteria: {} } }]],
+        ['commentThread[0].comments', 'getIgnoredCommentData', [{ pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file.ts' } } }]],
+        ['commentThread[0].comments[0]', 'getIgnoredCommentData', [{ pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file.ts' } }, comments: [] }]],
+        ['commentThread[0].comments[0].author', 'getIgnoredCommentData', [{ pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file.ts' } }, comments: [{}] }]],
+        ['commentThread[0].comments[0].author.displayName', 'getIgnoredCommentData', [{ pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file.ts' } }, comments: [{ author: {} }] }]],
+        ['commentThread[0].comments[0].content', 'getIgnoredCommentData', [{ pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file.ts' } }, comments: [{ author: { displayName: 'Project Collection Build Service (' } }] }]],
+        ['commentThread[1].comments', 'getMetricsCommentData', [validGitPullRequestCommentThread, { }]],
+        ['commentThread[1].comments[0].author', 'getMetricsCommentData', [validGitPullRequestCommentThread, { comments: [{}] }]],
+        ['commentThread[1].comments[0].author.displayName', 'getMetricsCommentData', [validGitPullRequestCommentThread, { comments: [{ author: {} }] }]],
+        ['commentThread[1].comments[0].content', 'getMetricsCommentData', [validGitPullRequestCommentThread, { comments: [{ author: { displayName: 'Project Collection Build Service (' } }] }]],
+        ['commentThread[1].id', 'getMetricsCommentData', [validGitPullRequestCommentThread, { comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: '# Metrics for iteration 1' }] }]],
+        ['commentThread[1].comments[0].id', 'getMetricsCommentData', [validGitPullRequestCommentThread, { comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: '# Metrics for iteration 1' }], id: 1 }]],
+        ['commentThread[1].comments[1].author', 'getMetricsCommentData', [validGitPullRequestCommentThread, { comments: [validGitPullRequestCommentThread.comments![0]!, {}], id: 1 }]],
+        ['commentThread[1].comments[1].author.displayName', 'getMetricsCommentData', [validGitPullRequestCommentThread, { comments: [validGitPullRequestCommentThread.comments![0]!, { author: {} }], id: 1 }]],
+        ['commentThread[1].comments[1].content', 'getMetricsCommentData', [validGitPullRequestCommentThread, { comments: [validGitPullRequestCommentThread.comments![0]!, { author: { displayName: 'Project Collection Build Service (' } }], id: 1 }]],
+        ['commentThread[1].comments[1].id', 'getMetricsCommentData', [validGitPullRequestCommentThread, { comments: [validGitPullRequestCommentThread.comments![0]!, { author: { displayName: 'Project Collection Build Service (' }, content: '# Metrics for iteration 1' }], id: 1 }]],
+        ['commentThread[1].pullRequestThreadContext.trackingCriteria', 'getCommentData', [validGitPullRequestCommentThread, { pullRequestThreadContext: {} }]],
+        ['commentThread[1].pullRequestThreadContext.trackingCriteria.origFilePath', 'getCommentData', [validGitPullRequestCommentThread, { pullRequestThreadContext: { trackingCriteria: {} } }]],
+        ['commentThread[1].comments', 'getIgnoredCommentData', [validGitPullRequestCommentThread, { pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file.ts' } } }]],
+        ['commentThread[1].comments[0]', 'getIgnoredCommentData', [validGitPullRequestCommentThread, { pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file.ts' } }, comments: [] }]],
+        ['commentThread[1].comments[0].author', 'getIgnoredCommentData', [validGitPullRequestCommentThread, { pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file.ts' } }, comments: [{}] }]],
+        ['commentThread[1].comments[0].author.displayName', 'getIgnoredCommentData', [validGitPullRequestCommentThread, { pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file.ts' } }, comments: [{ author: {} }] }]],
+        ['commentThread[1].comments[0].content', 'getIgnoredCommentData', [validGitPullRequestCommentThread, { pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file.ts' } }, comments: [{ author: { displayName: 'Project Collection Build Service (' } }] }]]
+      ], (data: [string, string, GitPullRequestCommentThread[]]): void => {
+        it(`should throw an error for field '${data[0]}', accessed within '${data[1]}', when it is missing`, async (): Promise<void> => {
           // Arrange
-          when(azureReposInvoker.getCommentThreads()).thenResolve(data[1])
+          when(azureReposInvoker.getCommentThreads()).thenResolve(data[2])
           when(codeMetrics.ignoredFilesWithLinesAdded).thenReturn(['file.ts'])
           const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(parameters), instance(taskLibWrapper))
 
@@ -326,7 +326,7 @@ describe('pullRequestComments.ts', (): void => {
           } catch (error) {
             // Assert
             exceptionThrown = true
-            expect(error.message).to.equal(`Field '${data[0]}' is invalid, null, or undefined 'undefined'.`)
+            expect(error.message).to.equal(`Field '${data[0]}', accessed within 'PullRequestComments.${data[1]}()', is invalid, null, or undefined 'undefined'.`)
           }
 
           expect(exceptionThrown).to.equal(true)
@@ -365,7 +365,7 @@ describe('pullRequestComments.ts', (): void => {
       ], (code: FixedLengthArray<number, 5>): void => {
         it(`should return the expected result for metrics '[${code[0]}, ${code[1]}, ${code[2]}, ${code[3]}, ${code[4]}]'`, (): void => {
           // Arrange
-          when(codeMetrics.metrics).thenReturn(new Metrics(code[0], code[1], code[3]))
+          when(codeMetrics.metrics).thenReturn(new CodeMetricsData(code[0], code[1], code[3]))
           const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(parameters), instance(taskLibWrapper))
 
           // Act
@@ -414,11 +414,11 @@ describe('pullRequestComments.ts', (): void => {
             `✔ **Thanks for adding tests.**${os.EOL}` +
             `||Lines${os.EOL}` +
             `-|-:${os.EOL}` +
-            `Product Code|1,000${os.EOL}` +
-            `Test Code|1,000${os.EOL}` +
-            `**Subtotal**|**2,000**${os.EOL}` +
-            `Ignored Code|1,000${os.EOL}` +
-            `**Total**|**3,000**${os.EOL}` +
+            `Product Code|${Number(1000).toLocaleString()}${os.EOL}` +
+            `Test Code|${Number(1000).toLocaleString()}${os.EOL}` +
+            `**Subtotal**|**${Number(2000).toLocaleString()}**${os.EOL}` +
+            `Ignored Code|${Number(1000).toLocaleString()}${os.EOL}` +
+            `**Total**|**${Number(3000).toLocaleString()}**${os.EOL}` +
             os.EOL +
             '[Metrics added by PR Metrics. Add to Azure DevOps today!](https://marketplace.visualstudio.com/items?itemName=ms-omex.prmetrics)')
           verify(taskLibWrapper.debug('* PullRequestComments.getMetricsComment()')).once()
@@ -450,11 +450,11 @@ describe('pullRequestComments.ts', (): void => {
             `✔ **Thanks for adding tests.**${os.EOL}` +
             `||Lines${os.EOL}` +
             `-|-:${os.EOL}` +
-            `Product Code|1,000${os.EOL}` +
-            `Test Code|1,000${os.EOL}` +
-            `**Subtotal**|**2,000**${os.EOL}` +
-            `Ignored Code|1,000${os.EOL}` +
-            `**Total**|**3,000**${os.EOL}` +
+            `Product Code|${Number(1000).toLocaleString()}${os.EOL}` +
+            `Test Code|${Number(1000).toLocaleString()}${os.EOL}` +
+            `**Subtotal**|**${Number(2000).toLocaleString()}**${os.EOL}` +
+            `Ignored Code|${Number(1000).toLocaleString()}${os.EOL}` +
+            `**Total**|**${Number(3000).toLocaleString()}**${os.EOL}` +
             os.EOL +
             '[Metrics added by PR Metrics. Add to Azure DevOps today!](https://marketplace.visualstudio.com/items?itemName=ms-omex.prmetrics)')
           verify(taskLibWrapper.debug('* PullRequestComments.getMetricsComment()')).once()
@@ -479,11 +479,11 @@ describe('pullRequestComments.ts', (): void => {
         `⚠️ **Consider adding additional tests.**${os.EOL}` +
         `||Lines${os.EOL}` +
         `-|-:${os.EOL}` +
-        `Product Code|1,000${os.EOL}` +
-        `Test Code|1,000${os.EOL}` +
-        `**Subtotal**|**2,000**${os.EOL}` +
-        `Ignored Code|1,000${os.EOL}` +
-        `**Total**|**3,000**${os.EOL}` +
+        `Product Code|${Number(1000).toLocaleString()}${os.EOL}` +
+        `Test Code|${Number(1000).toLocaleString()}${os.EOL}` +
+        `**Subtotal**|**${Number(2000).toLocaleString()}**${os.EOL}` +
+        `Ignored Code|${Number(1000).toLocaleString()}${os.EOL}` +
+        `**Total**|**${Number(3000).toLocaleString()}**${os.EOL}` +
         os.EOL +
         '[Metrics added by PR Metrics. Add to Azure DevOps today!](https://marketplace.visualstudio.com/items?itemName=ms-omex.prmetrics)')
       verify(taskLibWrapper.debug('* PullRequestComments.getMetricsComment()')).once()
@@ -506,11 +506,11 @@ describe('pullRequestComments.ts', (): void => {
         `✔ **Thanks for keeping your pull request small.**${os.EOL}` +
         `||Lines${os.EOL}` +
         `-|-:${os.EOL}` +
-        `Product Code|1,000${os.EOL}` +
-        `Test Code|1,000${os.EOL}` +
-        `**Subtotal**|**2,000**${os.EOL}` +
-        `Ignored Code|1,000${os.EOL}` +
-        `**Total**|**3,000**${os.EOL}` +
+        `Product Code|${Number(1000).toLocaleString()}${os.EOL}` +
+        `Test Code|${Number(1000).toLocaleString()}${os.EOL}` +
+        `**Subtotal**|**${Number(2000).toLocaleString()}**${os.EOL}` +
+        `Ignored Code|${Number(1000).toLocaleString()}${os.EOL}` +
+        `**Total**|**${Number(3000).toLocaleString()}**${os.EOL}` +
         os.EOL +
         '[Metrics added by PR Metrics. Add to Azure DevOps today!](https://marketplace.visualstudio.com/items?itemName=ms-omex.prmetrics)')
       verify(taskLibWrapper.debug('* PullRequestComments.getMetricsComment()')).once()

@@ -8,8 +8,8 @@ import TaskLibWrapper from '../wrappers/taskLibWrapper'
  * A class for managing pull requests.
  */
 export default class PullRequest {
-  private readonly _codeMetrics: CodeMetrics;
-  private readonly _taskLibWrapper: TaskLibWrapper;
+  private readonly _codeMetrics: CodeMetrics
+  private readonly _taskLibWrapper: TaskLibWrapper
 
   /**
    * Initializes a new instance of the `PullRequest` class.
