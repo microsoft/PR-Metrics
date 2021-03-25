@@ -54,16 +54,16 @@ describe('pullRequestComments.ts', (): void => {
 
     taskLibWrapper = mock(TaskLibWrapper)
     when(taskLibWrapper.loc('updaters.pullRequestComments.commentFooter')).thenReturn('[Metrics added by PR Metrics. Add to Azure DevOps today!](https://marketplace.visualstudio.com/items?itemName=ms-omex.prmetrics)')
-    when(taskLibWrapper.loc('updaters.pullRequestComments.commentTitle', '1')).thenReturn('# Metrics for iteration 1')
-    when(taskLibWrapper.loc('updaters.pullRequestComments.commentTitle', '2')).thenReturn('# Metrics for iteration 2')
-    when(taskLibWrapper.loc('updaters.pullRequestComments.commentTitle', '100')).thenReturn('# Metrics for iteration 100')
-    when(taskLibWrapper.loc('updaters.pullRequestComments.commentTitle', '1,000')).thenReturn('# Metrics for iteration 1,000')
-    when(taskLibWrapper.loc('updaters.pullRequestComments.commentTitle', '1,000,000')).thenReturn('# Metrics for iteration 1,000,000')
+    when(taskLibWrapper.loc('updaters.pullRequestComments.commentTitle', Number(1).toLocaleString())).thenReturn(`# Metrics for iteration ${Number(1).toLocaleString()}`)
+    when(taskLibWrapper.loc('updaters.pullRequestComments.commentTitle', Number(2).toLocaleString())).thenReturn(`# Metrics for iteration ${Number(2).toLocaleString()}`)
+    when(taskLibWrapper.loc('updaters.pullRequestComments.commentTitle', Number(100).toLocaleString())).thenReturn(`# Metrics for iteration ${Number(100).toLocaleString()}`)
+    when(taskLibWrapper.loc('updaters.pullRequestComments.commentTitle', Number(1000).toLocaleString())).thenReturn(`# Metrics for iteration ${Number(1000).toLocaleString()}`)
+    when(taskLibWrapper.loc('updaters.pullRequestComments.commentTitle', Number(1000000).toLocaleString())).thenReturn(`# Metrics for iteration ${Number(1000000).toLocaleString()}`)
     when(taskLibWrapper.loc('updaters.pullRequestComments.commentTitle', '.+')).thenReturn('# Metrics for iteration .+')
     when(taskLibWrapper.loc('updaters.pullRequestComments.fileIgnoredComment')).thenReturn('❗ **This file may not need to be reviewed.**')
-    when(taskLibWrapper.loc('updaters.pullRequestComments.largePullRequestComment', '250')).thenReturn('❌ **Try to keep pull requests smaller than 250 lines of new product code by following the [Single Responsibility Principle (SRP)](https://wikipedia.org/wiki/Single-responsibility_principle).**')
-    when(taskLibWrapper.loc('updaters.pullRequestComments.largePullRequestComment', '1,000')).thenReturn('❌ **Try to keep pull requests smaller than 1,000 lines of new product code by following the [Single Responsibility Principle (SRP)](https://wikipedia.org/wiki/Single-responsibility_principle).**')
-    when(taskLibWrapper.loc('updaters.pullRequestComments.largePullRequestComment', '1,000,000')).thenReturn('❌ **Try to keep pull requests smaller than 1,000,000 lines of new product code by following the [Single Responsibility Principle (SRP)](https://wikipedia.org/wiki/Single-responsibility_principle).**')
+    when(taskLibWrapper.loc('updaters.pullRequestComments.largePullRequestComment', Number(250).toLocaleString())).thenReturn(`❌ **Try to keep pull requests smaller than ${Number(250).toLocaleString()} lines of new product code by following the [Single Responsibility Principle (SRP)](https://wikipedia.org/wiki/Single-responsibility_principle).**`)
+    when(taskLibWrapper.loc('updaters.pullRequestComments.largePullRequestComment', Number(1000).toLocaleString())).thenReturn(`❌ **Try to keep pull requests smaller than ${Number(1000).toLocaleString()} lines of new product code by following the [Single Responsibility Principle (SRP)](https://wikipedia.org/wiki/Single-responsibility_principle).**`)
+    when(taskLibWrapper.loc('updaters.pullRequestComments.largePullRequestComment', Number(1000000).toLocaleString())).thenReturn(`❌ **Try to keep pull requests smaller than ${Number(1000000).toLocaleString()} lines of new product code by following the [Single Responsibility Principle (SRP)](https://wikipedia.org/wiki/Single-responsibility_principle).**`)
     when(taskLibWrapper.loc('updaters.pullRequestComments.smallPullRequestComment')).thenReturn('✔ **Thanks for keeping your pull request small.**')
     when(taskLibWrapper.loc('updaters.pullRequestComments.tableIgnoredCode')).thenReturn('Ignored Code')
     when(taskLibWrapper.loc('updaters.pullRequestComments.tableLines')).thenReturn('Lines')
@@ -112,7 +112,7 @@ describe('pullRequestComments.ts', (): void => {
         [1, [{ comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: `# Metrics for iteration 100${os.EOL}`, id: 1 }, { author: { displayName: 'Project Collection Build Service (' }, content: `# Metrics for iteration 1${os.EOL}`, id: 10 }], id: 20 }]],
         [2, [{ comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: `# Metrics for iteration 2${os.EOL}`, id: 10 }], id: 20 }]],
         [100, [{ comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: `# Metrics for iteration 1${os.EOL}`, id: 1 }, { author: { displayName: 'Project Collection Build Service (' }, content: `# Metrics for iteration 100${os.EOL}`, id: 10 }], id: 20 }]],
-        [1000000, [{ comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: `# Metrics for iteration 1,000,000${os.EOL}`, id: 10 }], id: 20 }]],
+        [1000000, [{ comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: `# Metrics for iteration ${Number(1000000).toLocaleString()}${os.EOL}`, id: 10 }], id: 20 }]],
         [1, [{ comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: `# Metrics for iteration 1${os.EOL}`, id: 10 }], id: 20 }]],
         [1, [{ comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: 'Content', id: 1 }], id: 2 }, { comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: `# Metrics for iteration 1${os.EOL}`, id: 10 }], id: 20 }]],
         [1, [{ comments: [{ author: { displayName: 'Name' }, id: 1 }], id: 2 }, { comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: `# Metrics for iteration 1${os.EOL}`, id: 10 }], id: 20 }]]
@@ -414,11 +414,11 @@ describe('pullRequestComments.ts', (): void => {
             `✔ **Thanks for adding tests.**${os.EOL}` +
             `||Lines${os.EOL}` +
             `-|-:${os.EOL}` +
-            `Product Code|1,000${os.EOL}` +
-            `Test Code|1,000${os.EOL}` +
-            `**Subtotal**|**2,000**${os.EOL}` +
-            `Ignored Code|1,000${os.EOL}` +
-            `**Total**|**3,000**${os.EOL}` +
+            `Product Code|${Number(1000).toLocaleString()}${os.EOL}` +
+            `Test Code|${Number(1000).toLocaleString()}${os.EOL}` +
+            `**Subtotal**|**${Number(2000).toLocaleString()}**${os.EOL}` +
+            `Ignored Code|${Number(1000).toLocaleString()}${os.EOL}` +
+            `**Total**|**${Number(3000).toLocaleString()}**${os.EOL}` +
             os.EOL +
             '[Metrics added by PR Metrics. Add to Azure DevOps today!](https://marketplace.visualstudio.com/items?itemName=ms-omex.prmetrics)')
           verify(taskLibWrapper.debug('* PullRequestComments.getMetricsComment()')).once()
@@ -450,11 +450,11 @@ describe('pullRequestComments.ts', (): void => {
             `✔ **Thanks for adding tests.**${os.EOL}` +
             `||Lines${os.EOL}` +
             `-|-:${os.EOL}` +
-            `Product Code|1,000${os.EOL}` +
-            `Test Code|1,000${os.EOL}` +
-            `**Subtotal**|**2,000**${os.EOL}` +
-            `Ignored Code|1,000${os.EOL}` +
-            `**Total**|**3,000**${os.EOL}` +
+            `Product Code|${Number(1000).toLocaleString()}${os.EOL}` +
+            `Test Code|${Number(1000).toLocaleString()}${os.EOL}` +
+            `**Subtotal**|**${Number(2000).toLocaleString()}**${os.EOL}` +
+            `Ignored Code|${Number(1000).toLocaleString()}${os.EOL}` +
+            `**Total**|**${Number(3000).toLocaleString()}**${os.EOL}` +
             os.EOL +
             '[Metrics added by PR Metrics. Add to Azure DevOps today!](https://marketplace.visualstudio.com/items?itemName=ms-omex.prmetrics)')
           verify(taskLibWrapper.debug('* PullRequestComments.getMetricsComment()')).once()
@@ -479,11 +479,11 @@ describe('pullRequestComments.ts', (): void => {
         `⚠️ **Consider adding additional tests.**${os.EOL}` +
         `||Lines${os.EOL}` +
         `-|-:${os.EOL}` +
-        `Product Code|1,000${os.EOL}` +
-        `Test Code|1,000${os.EOL}` +
-        `**Subtotal**|**2,000**${os.EOL}` +
-        `Ignored Code|1,000${os.EOL}` +
-        `**Total**|**3,000**${os.EOL}` +
+        `Product Code|${Number(1000).toLocaleString()}${os.EOL}` +
+        `Test Code|${Number(1000).toLocaleString()}${os.EOL}` +
+        `**Subtotal**|**${Number(2000).toLocaleString()}**${os.EOL}` +
+        `Ignored Code|${Number(1000).toLocaleString()}${os.EOL}` +
+        `**Total**|**${Number(3000).toLocaleString()}**${os.EOL}` +
         os.EOL +
         '[Metrics added by PR Metrics. Add to Azure DevOps today!](https://marketplace.visualstudio.com/items?itemName=ms-omex.prmetrics)')
       verify(taskLibWrapper.debug('* PullRequestComments.getMetricsComment()')).once()
@@ -506,11 +506,11 @@ describe('pullRequestComments.ts', (): void => {
         `✔ **Thanks for keeping your pull request small.**${os.EOL}` +
         `||Lines${os.EOL}` +
         `-|-:${os.EOL}` +
-        `Product Code|1,000${os.EOL}` +
-        `Test Code|1,000${os.EOL}` +
-        `**Subtotal**|**2,000**${os.EOL}` +
-        `Ignored Code|1,000${os.EOL}` +
-        `**Total**|**3,000**${os.EOL}` +
+        `Product Code|${Number(1000).toLocaleString()}${os.EOL}` +
+        `Test Code|${Number(1000).toLocaleString()}${os.EOL}` +
+        `**Subtotal**|**${Number(2000).toLocaleString()}**${os.EOL}` +
+        `Ignored Code|${Number(1000).toLocaleString()}${os.EOL}` +
+        `**Total**|**${Number(3000).toLocaleString()}**${os.EOL}` +
         os.EOL +
         '[Metrics added by PR Metrics. Add to Azure DevOps today!](https://marketplace.visualstudio.com/items?itemName=ms-omex.prmetrics)')
       verify(taskLibWrapper.debug('* PullRequestComments.getMetricsComment()')).once()
