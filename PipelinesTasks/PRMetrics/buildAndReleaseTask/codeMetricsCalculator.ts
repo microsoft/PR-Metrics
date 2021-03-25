@@ -7,6 +7,7 @@ import { singleton } from 'tsyringe'
 import { Validator } from './utilities/validator'
 import AzureReposInvoker from './invokers/azureReposInvoker'
 import CodeMetrics from './updaters/codeMetrics'
+import CodeMetricsData from './updaters/codeMetricsData'
 import PullRequest from './updaters/pullRequest'
 import PullRequestComments from './updaters/pullRequestComments'
 import PullRequestCommentsData from './updaters/pullRequestCommentsData'
@@ -83,18 +84,18 @@ export default class CodeMetricsCalculator {
 
     const currentIteration: number = await this._azureReposInvoker.getCurrentIteration()
     const commentData: PullRequestCommentsData = await this._pullRequestComments.getCommentData(currentIteration)
-    if (commentData.isPresent) {
+    if (!commentData.isPresent) {
       promises.push(this.updateMetricsComment(commentData, currentIteration))
       promises.push(this.addMetadata())
     }
 
-    for (const fileName in commentData.ignoredFilesWithLinesAdded) {
+    commentData.ignoredFilesWithLinesAdded.forEach((fileName: string): void => {
       promises.push(this.updateIgnoredComment(fileName, true))
-    }
+    })
 
-    for (const fileName in commentData.ignoredFilesWithoutLinesAdded) {
+    commentData.ignoredFilesWithoutLinesAdded.forEach((fileName: string): void => {
       promises.push(this.updateIgnoredComment(fileName, false))
-    }
+    })
 
     await Promise.all(promises)
   }
@@ -107,7 +108,7 @@ export default class CodeMetricsCalculator {
       await this._azureReposInvoker.createComment(commentData.threadId, commentData.commentId!, comment)
     } else {
       const commentThread: GitPullRequestCommentThread = await this._azureReposInvoker.createCommentThread(comment, null, true)
-      commentData.threadId = Validator.validateField(commentThread.id, 'commentThread.id', 'CodeMetricsCalculator.updateMetricsComment()')
+      commentData.threadId = Validator.validateField(commentThread.id, 'id', 'CodeMetricsCalculator.updateMetricsComment()')
     }
 
     const status: CommentThreadStatus = this._pullRequestComments.getMetricsCommentStatus()
@@ -117,7 +118,7 @@ export default class CodeMetricsCalculator {
   private async addMetadata (): Promise<void> {
     this._taskLibWrapper.debug('* CodeMetricsCalculator.addMetadata()')
 
-    const metrics = this._codeMetrics.metrics
+    const metrics: CodeMetricsData = this._codeMetrics.metrics
     const metadata: IPullRequestMetadata[] = [
       {
         key: '/PRMetrics.Size',
@@ -148,7 +149,7 @@ export default class CodeMetricsCalculator {
     if (this._codeMetrics.isSufficientlyTested !== null) {
       metadata.push({
         key: '/PRMetrics.TestCoverage',
-        value: metrics.total
+        value: this._codeMetrics.isSufficientlyTested
       })
     }
 
@@ -161,7 +162,7 @@ export default class CodeMetricsCalculator {
     const ignoredComment: string = this._pullRequestComments.ignoredComment
     const commentThread: GitPullRequestCommentThread = await this._azureReposInvoker.createCommentThread(ignoredComment, fileName, withLinesAdded)
 
-    const commentThreadId: number = Validator.validateField(commentThread.id, 'commentThread.id', 'CodeMetricsCalculator.updateIgnoredComment()')
+    const commentThreadId: number = Validator.validateField(commentThread.id, 'id', 'CodeMetricsCalculator.updateIgnoredComment()')
     await this._azureReposInvoker.setCommentThreadStatus(commentThreadId, CommentThreadStatus.Closed)
   }
 }

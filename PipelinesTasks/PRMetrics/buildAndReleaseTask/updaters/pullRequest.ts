@@ -1,14 +1,14 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { singleton } from 'tsyringe'
+import { injectable } from 'tsyringe'
 import CodeMetrics from './codeMetrics'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
 
 /**
  * A class for managing pull requests.
  */
-@singleton()
+@injectable()
 export default class PullRequest {
   private readonly _codeMetrics: CodeMetrics
   private readonly _taskLibWrapper: TaskLibWrapper

@@ -314,43 +314,43 @@ describe('pullRequestComments.ts', (): void => {
         ['commentThread[1].comments[0].author.displayName', 'getIgnoredCommentData', [validGitPullRequestCommentThread, { pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file.ts' } }, comments: [{ author: {} }] }]],
         ['commentThread[1].comments[0].content', 'getIgnoredCommentData', [validGitPullRequestCommentThread, { pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file.ts' } }, comments: [{ author: { displayName: 'Project Collection Build Service (' } }] }]]
       ], (data: [string, string, GitPullRequestCommentThread[]]): void => {
-        it(`should throw an error for field '${data[0]}', accessed within '${data[1]}', when it is missing`, async (): Promise<void> => {
+        it(`should throw for field '${data[0]}', accessed within '${data[1]}', when it is missing`, async (): Promise<void> => {
           // Arrange
           when(azureReposInvoker.getCommentThreads()).thenResolve(data[2])
           when(codeMetrics.ignoredFilesWithLinesAdded).thenReturn(['file.ts'])
           const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(parameters), instance(taskLibWrapper))
-          let exceptionThrown: boolean = false
+          let errorThrown: boolean = false
 
           try {
             // Act
             await pullRequestComments.getCommentData(1)
           } catch (error) {
             // Assert
-            exceptionThrown = true
+            errorThrown = true
             expect(error.message).to.equal(`Field '${data[0]}', accessed within 'PullRequestComments.${data[1]}()', is invalid, null, or undefined 'undefined'.`)
           }
 
-          expect(exceptionThrown).to.equal(true)
+          expect(errorThrown).to.equal(true)
           verify(taskLibWrapper.debug('* PullRequestComments.getCommentData()')).once()
         })
       })
 
-    it('should throw an error when the file name is not of the expected length', async (): Promise<void> => {
+    it('should throw when the file name is not of the expected length', async (): Promise<void> => {
       // Arrange
       when(azureReposInvoker.getCommentThreads()).thenResolve([{ pullRequestThreadContext: { trackingCriteria: { origFilePath: ' ' } } }])
       const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(parameters), instance(taskLibWrapper))
-      let exceptionThrown: boolean = false
+      let errorThrown: boolean = false
 
       try {
         // Act
         await pullRequestComments.getCommentData(1)
       } catch (error) {
         // Assert
-        exceptionThrown = true
+        errorThrown = true
         expect(error.message).to.equal('\'commentThread[0].pullRequestThreadContext.trackingCriteria.origFilePath\' \' \' is of length \'1\'.')
       }
 
-      expect(exceptionThrown).to.equal(true)
+      expect(errorThrown).to.equal(true)
       verify(taskLibWrapper.debug('* PullRequestComments.getCommentData()')).once()
     })
   })
