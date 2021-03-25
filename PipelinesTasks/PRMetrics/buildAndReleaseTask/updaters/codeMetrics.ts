@@ -100,6 +100,10 @@ export default class CodeMetrics {
   public initialize (gitDiffSummary: string): void {
     this._taskLibWrapper.debug('* CodeMetrics.initialize()')
 
+    if (!gitDiffSummary) {
+      throw RangeError('The git diff summary was empty.')
+    }
+
     this.initializeMetrics(gitDiffSummary)
     this.initializeSizeIndicator()
   }
@@ -116,8 +120,7 @@ export default class CodeMetrics {
     this.constructMetrics(fileMetrics)
   }
 
-  // TODO: make private
-  public createFileMetricsMap (input: string[]): IFileCodeMetric[] {
+  private createFileMetricsMap (input: string[]): IFileCodeMetric[] {
     this._taskLibWrapper.debug('* CodeMetrics.createFileMetricsMap()')
 
     const result: IFileCodeMetric[] = []
@@ -199,7 +202,8 @@ export default class CodeMetrics {
     this._sizeIndicator = this._taskLibWrapper.loc('updaters.codeMetrics.titleSizeIndicatorFormat', size, testIndicator)
   }
 
-  private calculateSize (): string {
+  // TODO: make private
+  public calculateSize (): string {
     this._taskLibWrapper.debug('* CodeMetrics.calculateSize()')
 
     const indicators: FixedLengthArray<((prefix: string) => string), 5> = [

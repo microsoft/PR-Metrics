@@ -50,6 +50,27 @@ describe('codeMetrics.ts', (): void => {
   })
 
   describe('initialize', (): void => {
+    async.each(
+      [
+        { productCode: 0, baseSize: 5 },
+        { productCode: 5, baseSize: 4 },
+        { productCode: 20, baseSize: 12 },
+        { productCode: 7, baseSize: 7 }
+      ], (entryObj): void => {
+        it('isSmall', (): void => {
+        // Arrage
+          parameters.initialize(`${entryObj.baseSize}`, '5', '5', 'js', 'js')
+          const codeMetrics: CodeMetrics = new CodeMetrics(parameters, instance(taskLibWrapper))
+          const gitDiffSummary: string = `${entryObj.productCode}    5    File1.js`
+          // Act
+          codeMetrics.initialize(gitDiffSummary)
+
+          // Assert
+          expect(codeMetrics.isSmall).to.equal(entryObj.productCode <= entryObj.baseSize)
+          verify(taskLibWrapper.debug('* CodeMetrics.isSmall')).once()
+        })
+      })
+
     describe('initializer function', (): void => {
       async.each(
         [
@@ -204,6 +225,19 @@ describe('codeMetrics.ts', (): void => {
         })
     })
     describe('initializer function', (): void => {
+      it('TEST', (): void => {
+        // Arrage
+        parameters.initialize('5', '5', '5', 'js', 'js')
+        const codeMetrics: CodeMetrics = new CodeMetrics(parameters, instance(taskLibWrapper))
+
+        // Act
+        codeMetrics.initialize('5    5    File1.js')
+
+        const result = codeMetrics.calculateSize()
+
+        expect(result).to.equal('S')
+      })
+
       it('should give all default values', (): void => {
         // Arrage
         parameters.initialize('', '', '', '', '')
@@ -232,20 +266,20 @@ describe('codeMetrics.ts', (): void => {
         verify(taskLibWrapper.debug('* CodeMetrics.metrics')).once()
       })
 
-      it('temp test', (): void => {
-        // Arrange
-        parameters.initialize('5.0', '4.4', '2.7', 'js\nts', 'js\nts')
-        const codeMetrics: CodeMetrics = new CodeMetrics(parameters, instance(taskLibWrapper))
-        const gitDiffSummary: string = '9 1  File1.js\n0  9    File2.ts\n-  -    File.dll\n'
-        const lines = gitDiffSummary.split('\n')
-        // const expectedMetrics: Metrics = new Metrics(9, 0, 0)
+      // it('temp test', (): void => {
+      //   // Arrange
+      //   parameters.initialize('5.0', '4.4', '2.7', 'js\nts', 'js\nts')
+      //   const codeMetrics: CodeMetrics = new CodeMetrics(parameters, instance(taskLibWrapper))
+      //   const gitDiffSummary: string = '9 1  File1.js\n0  9    File2.ts\n-  -    File.dll\n'
+      //   const lines = gitDiffSummary.split('\n')
+      //   // const expectedMetrics: Metrics = new Metrics(9, 0, 0)
 
-        // Act
-        // codeMetrics.initialize(gitDiffSummary)
+      //   // Act
+      //   // codeMetrics.initialize(gitDiffSummary)
 
-        const result = codeMetrics.createFileMetricsMap(lines)
-        expect(result).to.deep.equal([{ filename: 'File1.js', value: '9' }, { filename: 'File2.ts', value: '0' }, { filename: 'File.dll', value: '-' }])
-      })
+      //   const result = codeMetrics.createFileMetricsMap(lines)
+      //   expect(result).to.deep.equal([{ filename: 'File1.js', value: '9' }, { filename: 'File2.ts', value: '0' }, { filename: 'File.dll', value: '-' }])
+      // })
 
       it('should set all input values when all are specified', (): void => {
         // Arrange
