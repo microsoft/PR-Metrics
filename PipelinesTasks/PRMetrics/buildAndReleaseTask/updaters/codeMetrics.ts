@@ -131,27 +131,18 @@ export default class CodeMetrics {
     return result
   }
 
-  private filterFiles (input: any[]): any[] {
+  private filterFiles (input: any[], matchDesired: boolean): any[] {
+    this._taskLibWrapper.debug('* CodeMetrics.filterFiles()')
     const result:any[] = []
 
     input.forEach(entry => {
       const regexp = new RegExp('(' + this._parameters.fileMatchingPatterns.join('|') + ')')
 
-      if (regexp.test(entry.filename)) {
+      if (matchDesired && regexp.test(entry.filename)) {
         result.push(entry)
       }
-    })
 
-    return result
-  }
-
-  private filterFiles2 (input: any[]): any[] {
-    const result:any[] = []
-
-    input.forEach(entry => {
-      const regexp = new RegExp('(' + this._parameters.fileMatchingPatterns.join('|') + ')')
-
-      if (!regexp.test(entry.filename)) {
+      if (!matchDesired && !regexp.test(entry.filename)) {
         result.push(entry)
       }
     })
@@ -167,7 +158,7 @@ export default class CodeMetrics {
     let ignoredCode: number = 0
 
     // matches code file extension
-    const matches: any[] = this.filterFiles(fileMetrics)
+    const matches: any[] = this.filterFiles(fileMetrics, true)
     matches.forEach((entry: any) => {
       if (/.*Test.*/i.test(entry.filename)) {
         testCode += parseInt(entry.value)
@@ -177,7 +168,7 @@ export default class CodeMetrics {
     })
 
     // does not match code file extension
-    const doesNotMatch = this.filterFiles2(fileMetrics)
+    const doesNotMatch = this.filterFiles(fileMetrics, false)
     doesNotMatch.forEach((entry: any) => {
       if (entry.value !== '-') {
         ignoredCode += parseInt(entry.value)
