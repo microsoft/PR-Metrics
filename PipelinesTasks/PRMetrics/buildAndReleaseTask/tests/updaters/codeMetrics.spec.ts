@@ -126,6 +126,44 @@ describe('codeMetrics.ts', (): void => {
             verify(taskLibWrapper.debug('* CodeMetrics.metrics')).once()
           })
         })
+
+      async.each(
+        [
+          { file1: 9, file2: 8, file3: 2, testFile: 8 },
+          { file1: 20, file2: 5, file3: 4, testFile: 0 },
+          { file1: 1, file2: 7, file3: 1, testFile: 24 }
+        ], (entryObj): void => {
+          it('test files and unused files have some changes', (): void => {
+            // Arrange
+            parameters.initialize('5.0', '4.4', '2.7', 'js\nts', 'js\nts')
+            const codeMetrics: CodeMetrics = new CodeMetrics(parameters, instance(taskLibWrapper))
+            const gitDiffSummary: string = `${entryObj.file1}    1    File1.js\n${entryObj.file2}    9    File2.ts\n${entryObj.file3}    -    File.dll\n${entryObj.testFile}    8    FileTest1.ts`
+            const expectedMetrics: CodeMetricsData = new CodeMetricsData(entryObj.file1 + entryObj.file2, entryObj.testFile, entryObj.file3)
+
+            // Act
+            codeMetrics.initialize(gitDiffSummary)
+
+            // Assert
+            expect(codeMetrics.metrics.testCode).to.equal(expectedMetrics.testCode)
+            expect(codeMetrics.metrics.productCode).to.equal(expectedMetrics.productCode)
+            expect(codeMetrics.metrics.ignoredCode).to.equal(expectedMetrics.ignoredCode)
+            expect(codeMetrics.metrics).to.deep.equal(expectedMetrics)
+            expect(codeMetrics.ignoredFilesWithLinesAdded).to.deep.equal(['File.dll'])
+            expect(codeMetrics.ignoredFilesWithoutLinesAdded).to.deep.equal([])
+            expect(codeMetrics.sizeIndicator).to.equal('S')
+            verify(taskLibWrapper.debug('* CodeMetrics.initialize()')).once()
+            verify(taskLibWrapper.debug('* CodeMetrics.initializeMetrics()')).once()
+            verify(taskLibWrapper.debug('* CodeMetrics.extractFileMetrics()')).once()
+            verify(taskLibWrapper.debug('* CodeMetrics.filterFiles()')).once()
+            verify(taskLibWrapper.debug('* CodeMetrics.constructMetrics()')).once()
+            verify(taskLibWrapper.debug('* CodeMetrics.initializeSizeIndicator()')).once()
+            verify(taskLibWrapper.debug('* CodeMetrics.calculateSize()')).once()
+            verify(taskLibWrapper.debug('* CodeMetrics.ignoredFilesWithLinesAdded')).once()
+            verify(taskLibWrapper.debug('* CodeMetrics.ignoredFilesWithoutLinesAdded')).once()
+            verify(taskLibWrapper.debug('* CodeMetrics.sizeIndicator')).once()
+            verify(taskLibWrapper.debug('* CodeMetrics.metrics')).once()
+          })
+        })
     })
     describe('initializer function', (): void => {
       it('should give all default values', (): void => {
