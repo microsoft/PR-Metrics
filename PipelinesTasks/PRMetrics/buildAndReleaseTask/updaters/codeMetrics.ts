@@ -162,7 +162,7 @@ export default class CodeMetrics {
     // matches code file extension
     const matches: IFileCodeMetric[] = this.filterFiles(fileMetrics, true)
     matches.forEach((entry: IFileCodeMetric) => {
-      if (/.*Test.*/i.test(entry.filename)) {
+      if (/.*Test.*/i.test(entry.filename) || /.*.spec.*/i.test(entry.filename)) {
         testCode += parseInt(entry.value)
       } else {
         productCode += parseInt(entry.value)

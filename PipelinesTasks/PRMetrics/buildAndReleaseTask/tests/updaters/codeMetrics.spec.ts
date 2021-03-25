@@ -175,7 +175,7 @@ describe('codeMetrics.ts', (): void => {
             // Arrange
             parameters.initialize('5.0', '4.4', '2.7', 'js\nts', 'js\nts')
             const codeMetrics: CodeMetrics = new CodeMetrics(parameters, instance(taskLibWrapper))
-            const gitDiffSummary: string = `${entryObj.file1}    1    File1.js\n${entryObj.file2}    9    File2.ts\n${entryObj.unusedFile}    -    File.dll\n${entryObj.testFile}    8    FileTest1.ts\n${entryObj.testFile2} - fileTest2.spec.ts`
+            const gitDiffSummary: string = `${entryObj.file1}    1    File1.js\n${entryObj.file2}    9    File2.ts\n${entryObj.unusedFile}    -    File.dll\n${entryObj.testFile}    8    FileTest1.ts\n${entryObj.testFile2} - fileT2.spec.ts`
             const expectedMetrics: CodeMetricsData = new CodeMetricsData(entryObj.file1 + entryObj.file2, entryObj.testFile + entryObj.testFile2, entryObj.unusedFile)
 
             // Act
