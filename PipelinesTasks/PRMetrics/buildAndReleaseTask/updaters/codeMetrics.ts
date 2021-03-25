@@ -3,6 +3,7 @@
 
 import CodeMetricsData from './codeMetricsData'
 import { FixedLengthArray } from '../utilities/fixedLengthArray'
+import { IFileCodeMetric } from './iFileCodeMetric'
 import Parameters from './parameters'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
 
@@ -107,7 +108,7 @@ export default class CodeMetrics {
     this._taskLibWrapper.debug('* CodeMetrics.initializeMetrics()')
 
     const lines: string[] = gitDiffSummary.split('\n')
-    const fileMetrics: any[] = this.createFileMetricsMap(lines)
+    const fileMetrics: IFileCodeMetric[] = this.createFileMetricsMap(lines)
 
     // TODO: rename the ones
     // canuse a map function
@@ -115,25 +116,25 @@ export default class CodeMetrics {
     this.constructMetrics(fileMetrics)
   }
 
-  public createFileMetricsMap (input: string[]): any[] {
+  public createFileMetricsMap (input: string[]): IFileCodeMetric[] {
     this._taskLibWrapper.debug('* CodeMetrics.createFileMetricsMap()')
 
-    const result: any[] = []
+    const result: IFileCodeMetric[] = []
 
     // Skip the last line as it will always be empty.
     const inputEmptyRemoved: string[] = input.filter(e => e)
 
     inputEmptyRemoved.forEach((line: string) => {
       const elements: string[] = line.split(/\s+/)
-      result.push({ filename: elements[2], value: elements[0] })
+      result.push({ filename: elements[2]!, value: elements[0]! })
     })
 
     return result
   }
 
-  private filterFiles (input: any[], matchDesired: boolean): any[] {
+  private filterFiles (input: IFileCodeMetric[], matchDesired: boolean): IFileCodeMetric[] {
     this._taskLibWrapper.debug('* CodeMetrics.filterFiles()')
-    const result:any[] = []
+    const result:IFileCodeMetric[] = []
 
     input.forEach(entry => {
       const regexp = new RegExp('(' + this._parameters.fileMatchingPatterns.join('|') + ')')
@@ -150,7 +151,7 @@ export default class CodeMetrics {
     return result
   }
 
-  public constructMetrics (fileMetrics: any[]): void {
+  public constructMetrics (fileMetrics: IFileCodeMetric[]): void {
     this._taskLibWrapper.debug('* CodeMetrics.constructMetrics()')
 
     let productCode: number = 0
@@ -158,8 +159,8 @@ export default class CodeMetrics {
     let ignoredCode: number = 0
 
     // matches code file extension
-    const matches: any[] = this.filterFiles(fileMetrics, true)
-    matches.forEach((entry: any) => {
+    const matches: IFileCodeMetric[] = this.filterFiles(fileMetrics, true)
+    matches.forEach((entry: IFileCodeMetric) => {
       if (/.*Test.*/i.test(entry.filename)) {
         testCode += parseInt(entry.value)
       } else {
@@ -169,7 +170,7 @@ export default class CodeMetrics {
 
     // does not match code file extension
     const doesNotMatch = this.filterFiles(fileMetrics, false)
-    doesNotMatch.forEach((entry: any) => {
+    doesNotMatch.forEach((entry: IFileCodeMetric) => {
       if (entry.value !== '-') {
         ignoredCode += parseInt(entry.value)
         this._ignoredFilesWithLinesAdded.push(entry.filename)
