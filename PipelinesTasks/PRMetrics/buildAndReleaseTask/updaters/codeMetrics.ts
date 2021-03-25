@@ -1,8 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { FixedLengthArray } from '../utilities/fixedLengthArray'
 import CodeMetricsData from './codeMetricsData'
+import { FixedLengthArray } from '../utilities/fixedLengthArray'
 import Parameters from './parameters'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
 
@@ -11,11 +11,11 @@ import TaskLibWrapper from '../wrappers/taskLibWrapper'
  */
 export default class CodeMetrics {
   private _parameters: Parameters
-  private _taskLibWrapper: TaskLibWrapper
+  private _taskLibWrapper: TaskLibWrapper;
 
-  private _ignoredFilesWithLinesAdded: string[] = []
-  private _ignoredFilesWithoutLinesAdded: string[] = []
-  private _sizeIndicator: string = ''
+  private _ignoredFilesWithLinesAdded: string[] = [];
+  private _ignoredFilesWithoutLinesAdded: string[] = [];
+  private _sizeIndicator: string = '';
   private _metrics: CodeMetricsData = new CodeMetricsData(0, 0, 0)
 
   /**
@@ -107,119 +107,57 @@ export default class CodeMetrics {
     this._taskLibWrapper.debug('* CodeMetrics.initializeMetrics()')
 
     const lines: string[] = gitDiffSummary.split('\n')
-    // 9 1 File1.js
-    // 0 9 File2.ts
-    // 9 1 FileTest1.ts
-    // -           -           File.dll
-
     const fileMetrics: any[] = this.createFileMetricsMap(lines)
 
     // TODO: rename the ones
     // canuse a map function
 
-    // these are going to give us our metrics
-    // const filteredFiles: any[] = fileMetrics.filter(item => this._parameters.fileMatchingPatterns.forEach(entry => new RegExp(`${entry}`, 'i').test(item.filename)))
-
-    // const lines: string[] = gitDiffSummary.split('\n')
-    // const fileMetrics: Map<string, number> = this.extractFileMetrics(lines)
-    // const filteredFiles: string[] = this.filterFiles(fileMetrics)
     this.constructMetrics(fileMetrics)
   }
 
-  public createFileMetricsMap (input: string[]): any[] { // 9    1    File1.js
+  public createFileMetricsMap (input: string[]): any[] {
     this._taskLibWrapper.debug('* CodeMetrics.createFileMetricsMap()')
 
     const result: any[] = []
 
-    const inputEmptyRemoved = input.filter(e => e)
-
     // Skip the last line as it will always be empty.
-    inputEmptyRemoved.forEach(line => {
-      const elements = line.split(/\s+/)
+    const inputEmptyRemoved: string[] = input.filter(e => e)
+
+    inputEmptyRemoved.forEach((line: string) => {
+      const elements: string[] = line.split(/\s+/)
       result.push({ filename: elements[2], value: elements[0] })
     })
 
     return result
   }
 
-  // private filterFiles (input: any[]): any[] {
-  //   this._taskLibWrapper.debug('* CodeMetrics.filterFiles()')
+  private filterFiles (input: any[]): any[] {
+    const result:any[] = []
 
-  //   return input.filter(item => this._parameters.fileMatchingPatterns.forEach(entry => new RegExp(`${entry}`, 'i').test(item)))
+    input.forEach(entry => {
+      const regexp = new RegExp('(' + this._parameters.fileMatchingPatterns.join('|') + ')')
 
-  //   // return [...fileMetrics.keys()].filter((item: string): boolean => {
-  //   //   let matchFound: boolean = false
-
-  //   //   this._parameters.fileMatchingPatterns.every((entry: string): boolean => {
-  //   //     if (new RegExp(`${entry}`, 'i').test(item)) {
-  //   //       matchFound = true
-  //   //       return false
-  //   //     }
-
-  //   //     return true
-  //   //   })
-
-  //   //   return matchFound
-  //   // })
-  // }
-
-  /*
-  private extractFileMetrics (lines: string[]): Map<string, number> {
-    this._taskLibWrapper.debug('* CodeMetrics.extractFileMetrics()')
-
-    const result: Map<string, number> = new Map<string, number>()
-
-    // Skip the last line as it will always be empty.
-    for (let i: number = 0; i < lines.length - 1; i++) {
-      let elements: string[] = []
-      const line: string | undefined = lines[i]
-      if (line) {
-        elements = line.split('s')
+      if (regexp.test(entry.filename)) {
+        result.push(entry)
       }
-
-      let fileName: string = ''
-      for (let j: number = 2; j < elements.length; j++) {
-        if (elements[j] !== '=>') {
-          const element: string = elements[j] || ''
-          const lastIndex: number = element.indexOf('{')
-
-          if (lastIndex >= 0) {
-            elements[j] = element.substring(0, lastIndex)
-          }
-
-          fileName += element
-        }
-      }
-
-      if (elements[0] !== '-') {
-        fileName = fileName.replace('}', '')
-        result.set(fileName, parseInt(elements[0]!))
-      }
-    }
+    })
 
     return result
-  } */
-
-  /*
-  private filterFiles (fileMetrics: Map<string, number>): string[] {
-    this._taskLibWrapper.debug('* CodeMetrics.filterFiles()')
-
-    return [...fileMetrics.keys()].filter((item: string): boolean => {
-      let matchFound: boolean = false
-
-      this._parameters.fileMatchingPatterns.every((entry: string): boolean => {
-        if (new RegExp(`${entry}`, 'i').test(item)) {
-          matchFound = true
-          return false
-        }
-
-        return true
-      })
-
-      return matchFound
-    })
   }
-*/
+
+  private filterFiles2 (input: any[]): any[] {
+    const result:any[] = []
+
+    input.forEach(entry => {
+      const regexp = new RegExp('(' + this._parameters.fileMatchingPatterns.join('|') + ')')
+
+      if (!regexp.test(entry.filename)) {
+        result.push(entry)
+      }
+    })
+
+    return result
+  }
 
   public constructMetrics (fileMetrics: any[]): void {
     this._taskLibWrapper.debug('* CodeMetrics.constructMetrics()')
@@ -228,73 +166,29 @@ export default class CodeMetrics {
     let testCode: number = 0
     let ignoredCode: number = 0
 
-    // loop through each file
-    fileMetrics.forEach((entry: any): void => {
-      for (const codeFileExtension in this._parameters.codeFileExtensions) {
-        // matches our file extensions
-        if (new RegExp(`${codeFileExtension}`, 'i').test(entry.filename)) {
-          // is a test file
-          if (/.*Test.*/i.test(entry.filename)) {
-            testCode += parseInt(entry.value)
-          } else {
-            productCode += parseInt(entry.value)
-          }
-        } else { // does not match out file extensions
-          if (entry.value !== '-' && parseInt(entry.value) !== 0) {
-            ignoredCode += parseInt(entry.value)
-            this._ignoredFilesWithLinesAdded.push(entry.filename)
-          } else {
-            this._ignoredFilesWithoutLinesAdded.push(entry.filename)
-          }
-        }
+    // matches code file extension
+    const matches: any[] = this.filterFiles(fileMetrics)
+    matches.forEach((entry: any) => {
+      if (/.*Test.*/i.test(entry.filename)) {
+        testCode += parseInt(entry.value)
+      } else {
+        productCode += parseInt(entry.value)
+      }
+    })
+
+    // does not match code file extension
+    const doesNotMatch = this.filterFiles2(fileMetrics)
+    doesNotMatch.forEach((entry: any) => {
+      if (entry.value !== '-') {
+        ignoredCode += parseInt(entry.value)
+        this._ignoredFilesWithLinesAdded.push(entry.filename)
+      } else {
+        this._ignoredFilesWithoutLinesAdded.push(entry.filename)
       }
     })
 
     this._metrics = new CodeMetricsData(productCode, testCode, ignoredCode)
   }
-
-  // private constructMetrics (fileMetrics: Map<string, number>, filteredFiles: string[]): void {
-  //   this._taskLibWrapper.debug('* CodeMetrics.constructMetrics()')
-
-  //   let filesFilteredIndex: number = 0
-  //   let productCode: number = 0
-  //   let testCode: number = 0
-  //   let ignoredCode: number = 0
-  //   fileMetrics.forEach((value: number, key: string): void => {
-  //     // The next if statement works on the principal that the result from the match operation is guaranteed to be in the same order as the input.
-  //     if (filteredFiles !== null && filesFilteredIndex < filteredFiles.length && filteredFiles[filesFilteredIndex] === key) {
-  //       filesFilteredIndex++
-
-  //       let updatedMetrics: boolean = false
-  //       for (const codeFileExtension in this._parameters.codeFileExtensions) {
-  //         if (new RegExp(`${codeFileExtension}`, 'i').test(key)) {
-  //           if (/.*Test.*/i.test(key)) {
-  //             testCode += value
-  //           } else {
-  //             productCode += value
-  //           }
-
-  //           updatedMetrics = true
-  //           break
-  //         }
-  //       }
-
-  //       if (!updatedMetrics) {
-  //         ignoredCode += value
-  //       }
-  //     } else {
-  //       if (value !== 0) {
-  //         this._ignoredFilesWithLinesAdded.push(key)
-  //       } else {
-  //         this._ignoredFilesWithoutLinesAdded.push(key)
-  //       }
-
-  //       ignoredCode += value
-  //     }
-  //   })
-
-  //   this._metrics = new Metrics(productCode, testCode, ignoredCode)
-  // }
 
   private initializeSizeIndicator (): void {
     this._taskLibWrapper.debug('* CodeMetrics.initializeSizeIndicator()')
