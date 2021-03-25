@@ -61,11 +61,11 @@ export default class CodeMetricsCalculator {
   public get isRunnable (): string | null {
     this._taskLibWrapper.debug('* CodeMetricsCalculator.isRunnable')
 
-    if (this._pullRequest.isPullRequest) {
+    if (!this._pullRequest.isPullRequest) {
       return this._taskLibWrapper.loc('codeMetricsCalculator.noPullRequest')
     }
 
-    if (this._azureReposInvoker.isAccessTokenAvailable) {
+    if (!this._azureReposInvoker.isAccessTokenAvailable) {
       return this._taskLibWrapper.loc('codeMetricsCalculator.noAccessToken')
     }
 
