@@ -5,9 +5,11 @@ import { IGitApi } from 'azure-devops-node-api/GitApi'
 import { JsonPatchDocument, JsonPatchOperation, Operation } from 'azure-devops-node-api/interfaces/common/VSSInterfaces'
 import { Comment, CommentThreadStatus, GitPullRequest, GitPullRequestCommentThread, GitPullRequestIteration } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import { IPullRequestInfo, IPullRequestMetadata } from '../models/pullRequestInterfaces'
+import { singleton } from 'tsyringe'
 import DevOpsApiWrapper from '../wrappers/devOpsApiWrapper'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
 
+@singleton()
 export default class AzureReposInvoker {
     private taskLibWrapper: TaskLibWrapper
     private devOpsApiWrapper: DevOpsApiWrapper
@@ -87,13 +89,13 @@ export default class AzureReposInvoker {
 
     /**
       * Updates the description and title of the pull request.
-      * @param description New pull request description.
       * @param title New pull request title.
+      * @param description New pull request description.
       */
-    public async setDetails (description?: string, title?: string): Promise<void> {
+    public async setDetails (title: string | null, description: string | null): Promise<void> {
       this.taskLibWrapper.debug('* AzureReposInvoker.setDetails()')
 
-      if (!description?.trim() && !title?.trim()) {
+      if (!title?.trim() && !description?.trim()) {
         return
       }
 
@@ -131,7 +133,7 @@ export default class AzureReposInvoker {
       * @param fileName File name to be used in the comment.
       * @param withLinesAdded Flag to determine if lines added or not.
       */
-    public async createCommentThread (comment: string, fileName: string, withLinesAdded: boolean): Promise<GitPullRequestCommentThread> {
+    public async createCommentThread (comment: string, fileName: string | null, withLinesAdded: boolean): Promise<GitPullRequestCommentThread> {
       this.taskLibWrapper.debug('* AzureReposInvoker.createCommentThread()')
 
       const gitApi = await this.openConnection()
@@ -214,8 +216,8 @@ export default class AzureReposInvoker {
     /**
       * Returns if the devops api token exists or not.
       */
-    public isAccessTokenAvailable (): boolean {
-      this.taskLibWrapper.debug('* AzureReposInvoker.isAccessTokenAvailable()')
+    public get isAccessTokenAvailable (): boolean {
+      this.taskLibWrapper.debug('* AzureReposInvoker.isAccessTokenAvailable')
 
       return !!this.azurePAT
     }

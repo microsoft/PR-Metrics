@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 import { FixedLengthArray } from '../utilities/fixedLengthArray'
+import { singleton } from 'tsyringe'
 import CodeMetricsData from './codeMetricsData'
 import Parameters from './parameters'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
@@ -9,12 +10,14 @@ import TaskLibWrapper from '../wrappers/taskLibWrapper'
 /**
  * A class for computing metrics for software code in pull requests.
  */
+@singleton()
 export default class CodeMetrics {
   private _parameters: Parameters
   private _taskLibWrapper: TaskLibWrapper
 
   private _ignoredFilesWithLinesAdded: string[] = []
   private _ignoredFilesWithoutLinesAdded: string[] = []
+  private _size: string = ''
   private _sizeIndicator: string = ''
   private _metrics: CodeMetricsData = new CodeMetricsData(0, 0, 0)
 
@@ -46,6 +49,16 @@ export default class CodeMetrics {
     this._taskLibWrapper.debug('* CodeMetrics.ignoredFilesWithoutLinesAdded')
 
     return this._ignoredFilesWithoutLinesAdded
+  }
+
+  /**
+   * Gets the size.
+   * @returns The size.
+   */
+  public get size (): string {
+    this._taskLibWrapper.debug('* CodeMetrics.size')
+
+    return this._size
   }
 
   /**
@@ -213,7 +226,7 @@ export default class CodeMetrics {
   private initializeSizeIndicator (): void {
     this._taskLibWrapper.debug('* CodeMetrics.initializeSizeIndicator()')
 
-    const size: string = this.calculateSize()
+    this._size = this.calculateSize()
     let testIndicator: string = ''
     if (this.isSufficientlyTested !== null) {
       if (this.isSufficientlyTested) {
@@ -223,7 +236,7 @@ export default class CodeMetrics {
       }
     }
 
-    this._sizeIndicator = this._taskLibWrapper.loc('updaters.codeMetrics.titleSizeIndicatorFormat', size, testIndicator)
+    this._sizeIndicator = this._taskLibWrapper.loc('updaters.codeMetrics.titleSizeIndicatorFormat', this._size, testIndicator)
   }
 
   private calculateSize (): string {

@@ -1,13 +1,15 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+import { ParametersDefault } from './parametersDefault'
+import { singleton } from 'tsyringe'
 import ConsoleWrapper from '../wrappers/consoleWrapper'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
-import { ParametersDefault } from './parametersDefault'
 
 /**
  * A class representing parameters passed to the task.
  */
+@singleton()
 export default class Parameters {
   private _consoleWrapper: ConsoleWrapper
   private _taskLibWrapper: TaskLibWrapper
@@ -26,6 +28,7 @@ export default class Parameters {
   constructor (consoleWrapper: ConsoleWrapper, taskLibWrapper: TaskLibWrapper) {
     this._taskLibWrapper = taskLibWrapper
     this._consoleWrapper = consoleWrapper
+    this.initialize()
   }
 
   /**
@@ -78,28 +81,29 @@ export default class Parameters {
     return this._codeFileExtensions
   }
 
-  /**
-   * Initializes the object with the specified input parameter values.
-   * @param baseSize The base size parameter input.
-   * @param growthRate The growth rate parameter input.
-   * @param testFactor The test factor parameter input.
-   * @param fileMatchingPatterns The file matching patterns parameter input.
-   * @param codeFileExtensions The code file extensions parameter input.
-   */
-  public initialize (baseSize: string, growthRate: string, testFactor: string, fileMatchingPatterns: string, codeFileExtensions: string): void {
+  private initialize (): void {
     this._taskLibWrapper.debug('* Parameters.initialize()')
 
+    const baseSize: string | undefined = this._taskLibWrapper.getInput('BaseSize', false)
     this.initializeBaseSize(baseSize)
+
+    const growthRate: string | undefined = this._taskLibWrapper.getInput('GrowthRate', false)
     this.initializeGrowthRate(growthRate)
+
+    const testFactor: string | undefined = this._taskLibWrapper.getInput('TestFactor', false)
     this.initializeTestFactor(testFactor)
+
+    const fileMatchingPatterns: string | undefined = this._taskLibWrapper.getInput('FileMatchingPatterns', false)
     this.initializeFileMatchingPatterns(fileMatchingPatterns)
+
+    const codeFileExtensions: string | undefined = this._taskLibWrapper.getInput('CodeFileExtensions', false)
     this.initializeCodeFileExtensions(codeFileExtensions)
   }
 
-  private initializeBaseSize (baseSize: string): void {
+  private initializeBaseSize (baseSize: string | undefined): void {
     this._taskLibWrapper.debug('* Parameters.initializeBaseSize()')
 
-    const convertedValue: number = parseInt(baseSize)
+    const convertedValue: number = parseInt(baseSize!)
     if (!isNaN(convertedValue) && convertedValue > 0) {
       this._baseSize = convertedValue
       return
@@ -109,10 +113,10 @@ export default class Parameters {
     this._baseSize = ParametersDefault.baseSize
   }
 
-  private initializeGrowthRate (growthRate: string): void {
+  private initializeGrowthRate (growthRate: string | undefined): void {
     this._taskLibWrapper.debug('* Parameters.initializeGrowthRate()')
 
-    const convertedValue: number = parseFloat(growthRate)
+    const convertedValue: number = parseFloat(growthRate!)
     if (!isNaN(convertedValue) && convertedValue >= 1.0) {
       this._growthRate = convertedValue
       return
@@ -122,10 +126,10 @@ export default class Parameters {
     this._growthRate = ParametersDefault.growthRate
   }
 
-  private initializeTestFactor (testFactor: string): void {
+  private initializeTestFactor (testFactor: string | undefined): void {
     this._taskLibWrapper.debug('* Parameters.initializeTestFactor()')
 
-    const convertedValue: number = parseFloat(testFactor)
+    const convertedValue: number = parseFloat(testFactor!)
     if (!isNaN(convertedValue) && convertedValue >= 0.0) {
       this._testFactor = convertedValue === 0.0 ? null : convertedValue
       return
@@ -135,10 +139,10 @@ export default class Parameters {
     this._testFactor = ParametersDefault.testFactor
   }
 
-  private initializeFileMatchingPatterns (fileMatchingPatterns: string): void {
+  private initializeFileMatchingPatterns (fileMatchingPatterns: string | undefined): void {
     this._taskLibWrapper.debug('* Parameters.initializeFileMatchingPatterns()')
 
-    if (fileMatchingPatterns.trim()) {
+    if (fileMatchingPatterns?.trim()) {
       this._fileMatchingPatterns = fileMatchingPatterns.split('\n')
       return
     }
@@ -147,10 +151,10 @@ export default class Parameters {
     this._fileMatchingPatterns = ParametersDefault.fileMatchingPatterns
   }
 
-  private initializeCodeFileExtensions (codeFileExtensions: string): void {
+  private initializeCodeFileExtensions (codeFileExtensions: string | undefined): void {
     this._taskLibWrapper.debug('* Parameters.initializeCodeFileExtensions()')
 
-    if (codeFileExtensions.trim()) {
+    if (codeFileExtensions?.trim()) {
       const codeFileExtensionsArray: string[] = codeFileExtensions.split('\n')
       codeFileExtensionsArray.forEach((value: string): void => {
         this._codeFileExtensions.push(`*.${value}`)
