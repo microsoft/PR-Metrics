@@ -36,7 +36,7 @@ describe('codeMetrics.ts', (): void => {
 
   describe('initialize', (): void => {
     describe('initializer function', (): void => {
-      it('initialize - should give all default values', (): void => {
+      it('should give all default values', (): void => {
         // Arrage
         parameters.initialize('', '', '', '', '')
         const codeMetrics: CodeMetrics = new CodeMetrics(parameters, instance(taskLibWrapper))
@@ -63,10 +63,68 @@ describe('codeMetrics.ts', (): void => {
         verify(taskLibWrapper.debug('* CodeMetrics.sizeIndicator')).once()
         verify(taskLibWrapper.debug('* CodeMetrics.metrics')).once()
       })
+
+      it('temp test', (): void => {
+        // Arrange
+        parameters.initialize('5.0', '4.4', '2.7', 'js\nts', 'js\nts')
+        const codeMetrics: CodeMetrics = new CodeMetrics(parameters, instance(taskLibWrapper))
+        const gitDiffSummary: string = '9 1  File1.js\n0  9    File2.ts\n-  -    File.dll\n'
+        const lines = gitDiffSummary.split('\n')
+        // const expectedMetrics: Metrics = new Metrics(9, 0, 0)
+
+        // Act
+        // codeMetrics.initialize(gitDiffSummary)
+
+        const result = codeMetrics.createFileMetricsMap(lines)
+        expect(result).to.deep.equal([{ filename: 'File1.js', value: '9' }, { filename: 'File2.ts', value: '0' }, { filename: 'File.dll', value: '-' }])
+      })
+
+      it('should set all input values when all are specified', (): void => {
+        // Arrange
+        parameters.initialize('5.0', '4.4', '2.7', 'js\nts', 'js\nts')
+        const codeMetrics: CodeMetrics = new CodeMetrics(parameters, instance(taskLibWrapper))
+        const gitDiffSummary: string = '9    1    File1.js\n0    9    File2.ts\n-    -    File.dll\n'
+        const expectedMetrics: Metrics = new Metrics(9, 0, 0)
+
+        // Act
+        codeMetrics.initialize(gitDiffSummary)
+
+        // Assert
+        expect(codeMetrics.metrics.testCode).to.equal(expectedMetrics.testCode)
+        expect(codeMetrics.metrics.productCode).to.equal(expectedMetrics.productCode)
+        expect(codeMetrics.metrics.ignoredCode).to.equal(expectedMetrics.ignoredCode)
+        expect(codeMetrics.metrics).to.deep.equal(expectedMetrics)
+        expect(codeMetrics.ignoredFilesWithLinesAdded).to.deep.equal([])
+        expect(codeMetrics.ignoredFilesWithoutLinesAdded).to.deep.equal([])
+        expect(codeMetrics.sizeIndicator).to.equal('S')
+        verify(taskLibWrapper.debug('* CodeMetrics.initialize()')).once()
+        verify(taskLibWrapper.debug('* CodeMetrics.initializeMetrics()')).once()
+        verify(taskLibWrapper.debug('* CodeMetrics.extractFileMetrics()')).once()
+        verify(taskLibWrapper.debug('* CodeMetrics.filterFiles()')).once()
+        verify(taskLibWrapper.debug('* CodeMetrics.constructMetrics()')).once()
+        verify(taskLibWrapper.debug('* CodeMetrics.initializeSizeIndicator()')).once()
+        verify(taskLibWrapper.debug('* CodeMetrics.calculateSize()')).once()
+        verify(taskLibWrapper.debug('* CodeMetrics.ignoredFilesWithLinesAdded')).once()
+        verify(taskLibWrapper.debug('* CodeMetrics.ignoredFilesWithoutLinesAdded')).once()
+        verify(taskLibWrapper.debug('* CodeMetrics.sizeIndicator')).once()
+        verify(taskLibWrapper.debug('* CodeMetrics.metrics')).once()
+      })
     })
     describe('initializeMetrics', (): void => {
 
     })
-    describe('initializeSizeIndicator', (): void => {})
+    describe('initializeSizeIndicator', (): void => {
+
+      // parameters and metrics
+      // it('initialize - should give all default values', (): void => {
+      // Arrage
+      // parameters.initialize('5', '5', '5', '', '')
+      // const codeMetrics: CodeMetrics = new CodeMetrics(parameters, instance(taskLibWrapper))
+
+      // Act
+      // codeMetrics.initialize('')
+
+      // })
+    })
   })
 })
