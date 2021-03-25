@@ -3,7 +3,7 @@
 
 import async from 'async'
 import { expect } from 'chai'
-import { validator } from '../../utilities/validator'
+import { Validator } from '../../utilities/validator'
 
 describe('validator.ts', (): void => {
   describe('validateField', (): void => {
@@ -16,10 +16,10 @@ describe('validator.ts', (): void => {
       ], (value: number | null | undefined): void => {
         it(`should throw an error when passed invalid number value '${value}'`, (): void => {
           // Act
-          const func: () => void = () => validator.validateField(value, 'number test')
+          const func: () => void = () => Validator.validateField(value, 'number test', 'number test method name')
 
           // Assert
-          expect(func).to.throw(`Field 'number test' is invalid, null, or undefined '${value}'.`)
+          expect(func).to.throw(`Field 'number test', access within 'number test method name', is invalid, null, or undefined '${value}'.`)
         })
       })
 
@@ -31,10 +31,10 @@ describe('validator.ts', (): void => {
       ], (value: string | null | undefined): void => {
         it(`should throw an error when passed invalid string value '${value}'`, (): void => {
           // Act
-          const func: () => void = () => validator.validateField(value, 'string test')
+          const func: () => void = () => Validator.validateField(value, 'string test', 'string test method name')
 
           // Assert
-          expect(func).to.throw(`Field 'string test' is invalid, null, or undefined '${value}'.`)
+          expect(func).to.throw(`Field 'string test', access within 'string test method name', is invalid, null, or undefined '${value}'.`)
         })
       })
 
@@ -45,10 +45,10 @@ describe('validator.ts', (): void => {
       ], (value: string[] | null | undefined): void => {
         it(`should throw an error when passed invalid string array value '${value}'`, (): void => {
           // Act
-          const func: () => void = () => validator.validateField(value, 'string array test')
+          const func: () => void = () => Validator.validateField(value, 'string array test', 'string array test method name')
 
           // Assert
-          expect(func).to.throw(`Field 'string array test' is invalid, null, or undefined '${value}'.`)
+          expect(func).to.throw(`Field 'string array test', access within 'string array test method name', is invalid, null, or undefined '${value}'.`)
         })
       })
 
@@ -59,43 +59,43 @@ describe('validator.ts', (): void => {
       ], (value: object | null | undefined): void => {
         it(`should throw an error when passed invalid object value '${value}'`, (): void => {
           // Act
-          const func: () => void = () => validator.validateField(value, 'object test')
+          const func: () => void = () => Validator.validateField(value, 'object test', 'object test method name')
 
           // Assert
-          expect(func).to.throw(`Field 'object test' is invalid, null, or undefined '${value}'.`)
+          expect(func).to.throw(`Field 'object test', access within 'object test method name', is invalid, null, or undefined '${value}'.`)
         })
       })
 
     it('should not throw an error when passed a valid number value', (): void => {
       // Act
-      const func: () => void = () => validator.validateField(1, 'number test')
+      const result: number = Validator.validateField(1, 'number test', 'number test method name')
 
       // Assert
-      expect(func).not.to.throw()
+      expect(result).to.equal(1)
     })
 
     it('should not throw an error when passed a valid string value', (): void => {
       // Act
-      const func: () => void = () => validator.validateField('value', 'string test')
+      const result: string = Validator.validateField('value', 'string test', 'string test method name')
 
       // Assert
-      expect(func).not.to.throw()
+      expect(result).to.equal('value')
     })
 
     it('should not throw an error when passed a valid string array value', (): void => {
       // Act
-      const func: () => void = () => validator.validateField([], 'string array test')
+      const result: string[] = Validator.validateField([], 'string array test', 'string array test method name')
 
       // Assert
-      expect(func).not.to.throw()
+      expect(result).to.equal([])
     })
 
     it('should not throw an error when passed a valid object value', (): void => {
       // Act
-      const func: () => void = () => validator.validateField({}, 'object test')
+      const result: object = Validator.validateField({}, 'object test', 'object test method name')
 
       // Assert
-      expect(func).not.to.throw()
+      expect(result).to.equal({})
     })
   })
 })

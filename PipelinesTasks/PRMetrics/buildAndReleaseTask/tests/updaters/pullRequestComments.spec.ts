@@ -278,44 +278,44 @@ describe('pullRequestComments.ts', (): void => {
 
     async.each(
       [
-        ['commentThread[0].id', [{}]],
-        ['commentThread[0].comments', [{ id: 1 }]],
-        ['commentThread[0].comments[0].author', [{ comments: [{}], id: 1 }]],
-        ['commentThread[0].comments[0].author.displayName', [{ comments: [{ author: {} }], id: 1 }]],
-        ['commentThread[0].comments[0].content', [{ comments: [{ author: { displayName: 'Project Collection Build Service (' } }], id: 1 }]],
-        ['commentThread[0].comments[0].id', [{ comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: '# Metrics for iteration 1' }], id: 1 }]],
-        ['commentThread[0].comments[1].author', [{ comments: [validGitPullRequestCommentThread.comments![0]!, {}], id: 1 }]],
-        ['commentThread[0].comments[1].author.displayName', [{ comments: [validGitPullRequestCommentThread.comments![0]!, { author: {} }], id: 1 }]],
-        ['commentThread[0].comments[1].content', [{ comments: [validGitPullRequestCommentThread.comments![0]!, { author: { displayName: 'Project Collection Build Service (' } }], id: 1 }]],
-        ['commentThread[0].comments[1].id', [{ comments: [validGitPullRequestCommentThread.comments![0]!, { author: { displayName: 'Project Collection Build Service (' }, content: '# Metrics for iteration 1' }], id: 1 }]],
-        ['commentThread[0].pullRequestThreadContext.trackingCriteria', [{ pullRequestThreadContext: {} }]],
-        ['commentThread[0].pullRequestThreadContext.trackingCriteria.origFilePath', [{ pullRequestThreadContext: { trackingCriteria: {} } }]],
-        ['commentThread[0].comments', [{ pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file.ts' } } }]],
-        ['commentThread[0].comments[0]', [{ pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file.ts' } }, comments: [] }]],
-        ['commentThread[0].comments[0].author', [{ pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file.ts' } }, comments: [{}] }]],
-        ['commentThread[0].comments[0].author.displayName', [{ pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file.ts' } }, comments: [{ author: {} }] }]],
-        ['commentThread[0].comments[0].content', [{ pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file.ts' } }, comments: [{ author: { displayName: 'Project Collection Build Service (' } }] }]],
-        ['commentThread[1].id', [validGitPullRequestCommentThread, {}]],
-        ['commentThread[1].comments', [validGitPullRequestCommentThread, { id: 1 }]],
-        ['commentThread[1].comments[0].author', [validGitPullRequestCommentThread, { comments: [{}], id: 1 }]],
-        ['commentThread[1].comments[0].author.displayName', [validGitPullRequestCommentThread, { comments: [{ author: {} }], id: 1 }]],
-        ['commentThread[1].comments[0].content', [validGitPullRequestCommentThread, { comments: [{ author: { displayName: 'Project Collection Build Service (' } }], id: 1 }]],
-        ['commentThread[1].comments[0].id', [validGitPullRequestCommentThread, { comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: '# Metrics for iteration 1' }], id: 1 }]],
-        ['commentThread[1].comments[1].author', [validGitPullRequestCommentThread, { comments: [validGitPullRequestCommentThread.comments![0]!, {}], id: 1 }]],
-        ['commentThread[1].comments[1].author.displayName', [validGitPullRequestCommentThread, { comments: [validGitPullRequestCommentThread.comments![0]!, { author: {} }], id: 1 }]],
-        ['commentThread[1].comments[1].content', [validGitPullRequestCommentThread, { comments: [validGitPullRequestCommentThread.comments![0]!, { author: { displayName: 'Project Collection Build Service (' } }], id: 1 }]],
-        ['commentThread[1].comments[1].id', [validGitPullRequestCommentThread, { comments: [validGitPullRequestCommentThread.comments![0]!, { author: { displayName: 'Project Collection Build Service (' }, content: '# Metrics for iteration 1' }], id: 1 }]],
-        ['commentThread[1].pullRequestThreadContext.trackingCriteria', [validGitPullRequestCommentThread, { pullRequestThreadContext: {} }]],
-        ['commentThread[1].pullRequestThreadContext.trackingCriteria.origFilePath', [validGitPullRequestCommentThread, { pullRequestThreadContext: { trackingCriteria: {} } }]],
-        ['commentThread[1].comments', [validGitPullRequestCommentThread, { pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file.ts' } } }]],
-        ['commentThread[1].comments[0]', [validGitPullRequestCommentThread, { pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file.ts' } }, comments: [] }]],
-        ['commentThread[1].comments[0].author', [validGitPullRequestCommentThread, { pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file.ts' } }, comments: [{}] }]],
-        ['commentThread[1].comments[0].author.displayName', [validGitPullRequestCommentThread, { pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file.ts' } }, comments: [{ author: {} }] }]],
-        ['commentThread[1].comments[0].content', [validGitPullRequestCommentThread, { pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file.ts' } }, comments: [{ author: { displayName: 'Project Collection Build Service (' } }] }]]
-      ], (data: [string, GitPullRequestCommentThread[]]): void => {
-        it(`should throw an error for field '${data[0]}' when it is missing`, async (): Promise<void> => {
+        ['commentThread[0].comments', 'getMetricsCommentData', [{ }]],
+        ['commentThread[0].comments[0].author', 'getMetricsCommentData', [{ comments: [{}] }]],
+        ['commentThread[0].comments[0].author.displayName', 'getMetricsCommentData', [{ comments: [{ author: {} }] }]],
+        ['commentThread[0].comments[0].content', 'getMetricsCommentData', [{ comments: [{ author: { displayName: 'Project Collection Build Service (' } }] }]],
+        ['commentThread[0].id', 'getMetricsCommentData', [{ comments: [validGitPullRequestCommentThread.comments![0]!, { author: { displayName: 'Project Collection Build Service (' }, content: '# Metrics for iteration 1' }] }]],
+        ['commentThread[0].comments[0].id', 'getMetricsCommentData', [{ comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: '# Metrics for iteration 1' }], id: 1 }]],
+        ['commentThread[0].comments[1].author', 'getMetricsCommentData', [{ comments: [validGitPullRequestCommentThread.comments![0]!, {}], id: 1 }]],
+        ['commentThread[0].comments[1].author.displayName', 'getMetricsCommentData', [{ comments: [validGitPullRequestCommentThread.comments![0]!, { author: {} }], id: 1 }]],
+        ['commentThread[0].comments[1].content', 'getMetricsCommentData', [{ comments: [validGitPullRequestCommentThread.comments![0]!, { author: { displayName: 'Project Collection Build Service (' } }], id: 1 }]],
+        ['commentThread[0].comments[1].id', 'getMetricsCommentData', [{ comments: [validGitPullRequestCommentThread.comments![0]!, { author: { displayName: 'Project Collection Build Service (' }, content: '# Metrics for iteration 1' }], id: 1 }]],
+        ['commentThread[0].pullRequestThreadContext.trackingCriteria', 'getCommentData', [{ pullRequestThreadContext: {} }]],
+        ['commentThread[0].pullRequestThreadContext.trackingCriteria.origFilePath', 'getCommentData', [{ pullRequestThreadContext: { trackingCriteria: {} } }]],
+        ['commentThread[0].comments', 'getIgnoredCommentData', [{ pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file.ts' } } }]],
+        ['commentThread[0].comments[0]', 'getIgnoredCommentData', [{ pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file.ts' } }, comments: [] }]],
+        ['commentThread[0].comments[0].author', 'getIgnoredCommentData', [{ pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file.ts' } }, comments: [{}] }]],
+        ['commentThread[0].comments[0].author.displayName', 'getIgnoredCommentData', [{ pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file.ts' } }, comments: [{ author: {} }] }]],
+        ['commentThread[0].comments[0].content', 'getIgnoredCommentData', [{ pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file.ts' } }, comments: [{ author: { displayName: 'Project Collection Build Service (' } }] }]],
+        ['commentThread[1].comments', 'getMetricsCommentData', [validGitPullRequestCommentThread, { }]],
+        ['commentThread[1].comments[0].author', 'getMetricsCommentData', [validGitPullRequestCommentThread, { comments: [{}] }]],
+        ['commentThread[1].comments[0].author.displayName', 'getMetricsCommentData', [validGitPullRequestCommentThread, { comments: [{ author: {} }] }]],
+        ['commentThread[1].comments[0].content', 'getMetricsCommentData', [validGitPullRequestCommentThread, { comments: [{ author: { displayName: 'Project Collection Build Service (' } }] }]],
+        ['commentThread[1].id', 'getMetricsCommentData', [validGitPullRequestCommentThread, { comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: '# Metrics for iteration 1' }] }]],
+        ['commentThread[1].comments[0].id', 'getMetricsCommentData', [validGitPullRequestCommentThread, { comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: '# Metrics for iteration 1' }], id: 1 }]],
+        ['commentThread[1].comments[1].author', 'getMetricsCommentData', [validGitPullRequestCommentThread, { comments: [validGitPullRequestCommentThread.comments![0]!, {}], id: 1 }]],
+        ['commentThread[1].comments[1].author.displayName', 'getMetricsCommentData', [validGitPullRequestCommentThread, { comments: [validGitPullRequestCommentThread.comments![0]!, { author: {} }], id: 1 }]],
+        ['commentThread[1].comments[1].content', 'getMetricsCommentData', [validGitPullRequestCommentThread, { comments: [validGitPullRequestCommentThread.comments![0]!, { author: { displayName: 'Project Collection Build Service (' } }], id: 1 }]],
+        ['commentThread[1].comments[1].id', 'getMetricsCommentData', [validGitPullRequestCommentThread, { comments: [validGitPullRequestCommentThread.comments![0]!, { author: { displayName: 'Project Collection Build Service (' }, content: '# Metrics for iteration 1' }], id: 1 }]],
+        ['commentThread[1].pullRequestThreadContext.trackingCriteria', 'getCommentData', [validGitPullRequestCommentThread, { pullRequestThreadContext: {} }]],
+        ['commentThread[1].pullRequestThreadContext.trackingCriteria.origFilePath', 'getCommentData', [validGitPullRequestCommentThread, { pullRequestThreadContext: { trackingCriteria: {} } }]],
+        ['commentThread[1].comments', 'getIgnoredCommentData', [validGitPullRequestCommentThread, { pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file.ts' } } }]],
+        ['commentThread[1].comments[0]', 'getIgnoredCommentData', [validGitPullRequestCommentThread, { pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file.ts' } }, comments: [] }]],
+        ['commentThread[1].comments[0].author', 'getIgnoredCommentData', [validGitPullRequestCommentThread, { pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file.ts' } }, comments: [{}] }]],
+        ['commentThread[1].comments[0].author.displayName', 'getIgnoredCommentData', [validGitPullRequestCommentThread, { pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file.ts' } }, comments: [{ author: {} }] }]],
+        ['commentThread[1].comments[0].content', 'getIgnoredCommentData', [validGitPullRequestCommentThread, { pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file.ts' } }, comments: [{ author: { displayName: 'Project Collection Build Service (' } }] }]]
+      ], (data: [string, string, GitPullRequestCommentThread[]]): void => {
+        it(`should throw an error for field '${data[0]}', accessed within '${data[1]}', when it is missing`, async (): Promise<void> => {
           // Arrange
-          when(azureReposInvoker.getCommentThreads()).thenResolve(data[1])
+          when(azureReposInvoker.getCommentThreads()).thenResolve(data[2])
           when(codeMetrics.ignoredFilesWithLinesAdded).thenReturn(['file.ts'])
           const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(parameters), instance(taskLibWrapper))
 
@@ -326,7 +326,7 @@ describe('pullRequestComments.ts', (): void => {
           } catch (error) {
             // Assert
             exceptionThrown = true
-            expect(error.message).to.equal(`Field '${data[0]}' is invalid, null, or undefined 'undefined'.`)
+            expect(error.message).to.equal(`Field '${data[0]}', accessed within 'PullRequestComments.${data[1]}()', is invalid, null, or undefined 'undefined'.`)
           }
 
           expect(exceptionThrown).to.equal(true)

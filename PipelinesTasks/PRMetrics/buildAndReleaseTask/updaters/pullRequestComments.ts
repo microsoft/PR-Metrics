@@ -1,8 +1,9 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { Comment, CommentThreadStatus, GitPullRequestCommentThread } from 'azure-devops-node-api/interfaces/GitInterfaces'
-import { validator } from '../utilities/validator'
+import { Comment, CommentThreadStatus, CommentTrackingCriteria, GitPullRequestCommentThread } from 'azure-devops-node-api/interfaces/GitInterfaces'
+import { IdentityRef } from 'azure-devops-node-api/interfaces/common/VSSInterfaces'
+import { Validator } from '../utilities/validator'
 import * as os from 'os'
 import AzureReposInvoker from '../invokers/azureReposInvoker'
 import CodeMetrics from './codeMetrics'
@@ -58,16 +59,18 @@ export default class PullRequestComments {
     for (let i: number = 0; i < commentThreads.length; i++) {
       const commentThread: GitPullRequestCommentThread = commentThreads[i]!
       if (!commentThread.pullRequestThreadContext) {
+        // If the current comment thread is not applied to a specified file, check if it is the metrics comment thread.
         result = this.getMetricsCommentData(result, currentIteration, commentThread, i)
       } else {
-        validator.validateField(commentThread.pullRequestThreadContext.trackingCriteria, `commentThread[${i}].pullRequestThreadContext.trackingCriteria`)
-        validator.validateField(commentThread.pullRequestThreadContext.trackingCriteria!.origFilePath, `commentThread[${i}].pullRequestThreadContext.trackingCriteria.origFilePath`)
-        const filePath: string = commentThread.pullRequestThreadContext.trackingCriteria!.origFilePath!
+        // If the current comment thread is applied to a specified file, check if it already contains a comment related to files that can be ignored.
+        const trackingCriteria: CommentTrackingCriteria = Validator.validateField(commentThread.pullRequestThreadContext.trackingCriteria, `commentThread[${i}].pullRequestThreadContext.trackingCriteria`, 'PullRequestComments.getCommentData()')
+        const filePath: string = Validator.validateField(trackingCriteria.origFilePath, `commentThread[${i}].pullRequestThreadContext.trackingCriteria.origFilePath`, 'PullRequestComments.getCommentData()')
         if (filePath.length <= 1) {
-          throw Error(`'commentThread[${i}].pullRequestThreadContext.trackingCriteria.origFilePath' '${filePath}' is of length '${filePath.length}'.`)
+          throw RangeError(`'commentThread[${i}].pullRequestThreadContext.trackingCriteria.origFilePath' '${filePath}' is of length '${filePath.length}'.`)
         }
 
         const fileName: string = filePath.substring(1)
+
         const withLinesAddedIndex: number = this._codeMetrics.ignoredFilesWithLinesAdded.indexOf(fileName)
         if (withLinesAddedIndex !== -1) {
           result.ignoredFilesWithLinesAdded = this.getIgnoredCommentData(result.ignoredFilesWithLinesAdded, withLinesAddedIndex, commentThread, i)
@@ -127,30 +130,25 @@ export default class PullRequestComments {
   private getMetricsCommentData (result: PullRequestCommentsData, currentIteration: number, commentThread: GitPullRequestCommentThread, commentThreadIndex: number): PullRequestCommentsData {
     this._taskLibWrapper.debug('* PullRequestComments.getMetricsCommentData()')
 
-    validator.validateField(commentThread.id, `commentThread[${commentThreadIndex}].id`)
-    validator.validateField(commentThread.comments, `commentThread[${commentThreadIndex}].comments`)
+    const comments: Comment[] = Validator.validateField(commentThread.comments, `commentThread[${commentThreadIndex}].comments`, 'PullRequestComments.getMetricsCommentData()')
+    for (let i: number = 0; i < comments.length; i++) {
+      const comment: Comment = comments[i]!
 
-    for (let i: number = 0; i < commentThread.comments!.length; i++) {
-      const comment: Comment = commentThread.comments![i]!
-
-      validator.validateField(comment.author, `commentThread[${commentThreadIndex}].comments[${i}].author`)
-      validator.validateField(comment.author!.displayName, `commentThread[${commentThreadIndex}].comments[${i}].author.displayName`)
-
-      if (comment.author!.displayName!.startsWith(PullRequestComments.taskCommentAuthorPrefix)) {
-        validator.validateField(comment.content, `commentThread[${commentThreadIndex}].comments[${i}].content`)
-
-        const commentHeader: RegExp = new RegExp(`^${this._taskLibWrapper.loc('updaters.pullRequestComments.commentTitle', '.+')}`)
-        if (comment.content!.match(commentHeader)) {
-          validator.validateField(comment.id, `commentThread[${commentThreadIndex}].comments[${i}].id`)
-
-          result.threadId = commentThread!.id!
-          result.commentId = comment.id!
-          const commentHeader: string = `${this._taskLibWrapper.loc('updaters.pullRequestComments.commentTitle', currentIteration.toLocaleString())}${os.EOL}`
-          if (comment.content!.startsWith(commentHeader)) {
-            result.isPresent = true
-          }
-        }
+      const author: IdentityRef = Validator.validateField(comment.author, `commentThread[${commentThreadIndex}].comments[${i}].author`, 'PullRequestComments.getMetricsCommentData()')
+      const authorDisplayName: string = Validator.validateField(author.displayName, `commentThread[${commentThreadIndex}].comments[${i}].author.displayName`, 'PullRequestComments.getMetricsCommentData()')
+      if (!authorDisplayName.startsWith(PullRequestComments.taskCommentAuthorPrefix)) {
+        continue
       }
+
+      const content: string = Validator.validateField(comment.content, `commentThread[${commentThreadIndex}].comments[${i}].content`, 'PullRequestComments.getMetricsCommentData()')
+      const commentHeaderRegExp: RegExp = new RegExp(`^${this._taskLibWrapper.loc('updaters.pullRequestComments.commentTitle', '.+')}`)
+      if (!content.match(commentHeaderRegExp)) {
+        continue
+      }
+
+      result.isPresent = content.startsWith(`${this._taskLibWrapper.loc('updaters.pullRequestComments.commentTitle', currentIteration.toLocaleString())}${os.EOL}`)
+      result.threadId = Validator.validateField(commentThread.id, `commentThread[${commentThreadIndex}].id`, 'PullRequestComments.getMetricsCommentData()')
+      result.commentId = Validator.validateField(comment.id, `commentThread[${commentThreadIndex}].comments[${i}].id`, 'PullRequestComments.getMetricsCommentData()')
     }
 
     return result
@@ -159,18 +157,21 @@ export default class PullRequestComments {
   private getIgnoredCommentData (ignoredFiles: string[], fileNameIndex: number, commentThread: GitPullRequestCommentThread, commentThreadIndex: number): string[] {
     this._taskLibWrapper.debug('* PullRequestComments.getIgnoredCommentData()')
 
-    validator.validateField(commentThread.comments, `commentThread[${commentThreadIndex}].comments`)
-    validator.validateField(commentThread.comments![0], `commentThread[${commentThreadIndex}].comments[0]`)
+    const comments: Comment[] = Validator.validateField(commentThread.comments, `commentThread[${commentThreadIndex}].comments`, 'PullRequestComments.getIgnoredCommentData()')
+    const comment: Comment = Validator.validateField(comments[0], `commentThread[${commentThreadIndex}].comments[0]`, 'PullRequestComments.getIgnoredCommentData()')
 
-    const comment: Comment = commentThread.comments![0]!
-    validator.validateField(comment.author, `commentThread[${commentThreadIndex}].comments[0].author`)
-    validator.validateField(comment.author!.displayName, `commentThread[${commentThreadIndex}].comments[0].author.displayName`)
-    validator.validateField(comment.content, `commentThread[${commentThreadIndex}].comments[0].content`)
-
-    if (comment.author!.displayName!.startsWith(PullRequestComments.taskCommentAuthorPrefix) && comment.content! === this.ignoredComment) {
-      ignoredFiles.splice(fileNameIndex, 1)
+    const author: IdentityRef = Validator.validateField(comment.author, `commentThread[${commentThreadIndex}].comments[0].author`, 'PullRequestComments.getIgnoredCommentData()')
+    const authorDisplayName: string = Validator.validateField(author.displayName, `commentThread[${commentThreadIndex}].comments[0].author.displayName`, 'PullRequestComments.getIgnoredCommentData()')
+    if (!authorDisplayName.startsWith(PullRequestComments.taskCommentAuthorPrefix)) {
+      return ignoredFiles
     }
 
+    const content: string = Validator.validateField(comment.content, `commentThread[${commentThreadIndex}].comments[0].content`, 'PullRequestComments.getIgnoredCommentData()')
+    if (content !== this.ignoredComment) {
+      return ignoredFiles
+    }
+
+    ignoredFiles.splice(fileNameIndex, 1)
     return ignoredFiles
   }
 
