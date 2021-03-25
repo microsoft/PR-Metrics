@@ -319,8 +319,8 @@ describe('pullRequestComments.ts', (): void => {
           when(azureReposInvoker.getCommentThreads()).thenResolve(data[2])
           when(codeMetrics.ignoredFilesWithLinesAdded).thenReturn(['file.ts'])
           const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(parameters), instance(taskLibWrapper))
-
           let exceptionThrown: boolean = false
+
           try {
             // Act
             await pullRequestComments.getCommentData(1)
@@ -339,8 +339,8 @@ describe('pullRequestComments.ts', (): void => {
       // Arrange
       when(azureReposInvoker.getCommentThreads()).thenResolve([{ pullRequestThreadContext: { trackingCriteria: { origFilePath: ' ' } } }])
       const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(parameters), instance(taskLibWrapper))
-
       let exceptionThrown: boolean = false
+
       try {
         // Act
         await pullRequestComments.getCommentData(1)

@@ -40,21 +40,6 @@ export default class CodeMetricsCalculator {
   }
 
   /**
-   * Updates the pull request details.
-   * @returns A promise for await the completion of the method call.
-   */
-  public async updateDetails (): Promise<void> {
-    this._taskLibWrapper.debug('* CodeMetricsCalculator.updateDetails()')
-
-    const details: GitPullRequest = await this._azureReposInvoker.getDetails()
-    const currentTitle: string = Validator.validateField(details.title, 'details.title', 'CodeMetricsCalculator.updateDetails()')
-    const updatedTitle: string | null = this._pullRequest.getUpdatedTitle(currentTitle)
-    const updatedDescription: string | null = this._pullRequest.getUpdatedDescription(details.description)
-
-    await this._azureReposInvoker.setDetails(updatedDescription, updatedTitle)
-  }
-
-  /**
    * Gets a message indicating whether the task can be run.
    * @returns `null` if the task can be run, or a message to display if the task cannot be run.
    */
@@ -70,6 +55,21 @@ export default class CodeMetricsCalculator {
     }
 
     return null
+  }
+
+  /**
+   * Updates the pull request details.
+   * @returns A promise for await the completion of the method call.
+   */
+  public async updateDetails (): Promise<void> {
+    this._taskLibWrapper.debug('* CodeMetricsCalculator.updateDetails()')
+
+    const details: GitPullRequest = await this._azureReposInvoker.getDetails()
+    const currentTitle: string = Validator.validateField(details.title, 'title', 'CodeMetricsCalculator.updateDetails()')
+    const updatedTitle: string | null = this._pullRequest.getUpdatedTitle(currentTitle)
+    const updatedDescription: string | null = this._pullRequest.getUpdatedDescription(details.description)
+
+    await this._azureReposInvoker.setDetails(updatedTitle, updatedDescription)
   }
 
   /**

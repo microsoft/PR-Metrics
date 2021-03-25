@@ -89,13 +89,13 @@ export default class AzureReposInvoker {
 
     /**
       * Updates the description and title of the pull request.
-      * @param description New pull request description.
       * @param title New pull request title.
+      * @param description New pull request description.
       */
-    public async setDetails (description: string | null, title: string | null): Promise<void> {
+    public async setDetails (title: string | null, description: string | null): Promise<void> {
       this.taskLibWrapper.debug('* AzureReposInvoker.setDetails()')
 
-      if (!description?.trim() && !title?.trim()) {
+      if (!title?.trim() && !description?.trim()) {
         return
       }
 

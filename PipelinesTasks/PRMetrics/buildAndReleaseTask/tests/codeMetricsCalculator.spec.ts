@@ -74,20 +74,60 @@ describe('codeMetricsCalculator.ts', (): void => {
     })
   })
 
-  // describe('updateDetails()', (): void => {
-  //   it('should return the expected result', async (): Promise<void> => {
-  //     // Arrange
-  //     when(pullRequest.getUpdatedDescription('TODO')).thenReturn('TODO')
-  //     when(pullRequest.getUpdatedTitle('TODO')).thenReturn('S✔ ◾ TODO')
-  //     const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(codeMetrics), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
+  describe('updateDetails()', (): void => {
+    it('should perform the expected actions', async (): Promise<void> => {
+      // Arrange
+      when(azureReposInvoker.getDetails()).thenResolve({ title: 'Title', description: 'Description' })
+      when(pullRequest.getUpdatedTitle('Title')).thenReturn('S✔ ◾ TODO')
+      when(pullRequest.getUpdatedDescription('Description')).thenReturn('Description')
+      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(codeMetrics), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
 
-  //     // Act
-  //     await codeMetricsCalculator.updateDetails()
+      // Act
+      await codeMetricsCalculator.updateDetails()
 
-  //     // Assert
-  //     verify(taskLibWrapper.debug('* CodeMetricsCalculator.updateDetails()')).once()
-  //   })
-  // })
+      // Assert
+      verify(taskLibWrapper.debug('* CodeMetricsCalculator.updateDetails()')).once()
+      verify(pullRequest.getUpdatedTitle('Title')).once()
+      verify(pullRequest.getUpdatedDescription('Description')).once()
+      verify(azureReposInvoker.setDetails('S✔ ◾ TODO', 'Description')).once()
+    })
+
+    it('should throw an exception when the title is missing', async (): Promise<void> => {
+      // Arrange
+      when(azureReposInvoker.getDetails()).thenResolve({})
+      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(codeMetrics), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
+      let exceptionThrown: boolean = false
+
+      try {
+        // Act
+        await codeMetricsCalculator.updateDetails()
+      } catch (error) {
+        // Assert
+        exceptionThrown = true
+        expect(error.message).to.equal('Field \'title\', accessed within \'CodeMetricsCalculator.updateDetails()\', is invalid, null, or undefined \'undefined\'.')
+      }
+
+      expect(exceptionThrown).to.equal(true)
+      verify(taskLibWrapper.debug('* CodeMetricsCalculator.updateDetails()')).once()
+    })
+
+    it('should perform the expected actions when the description is missing', async (): Promise<void> => {
+      // Arrange
+      when(azureReposInvoker.getDetails()).thenResolve({ title: 'Title' })
+      when(pullRequest.getUpdatedTitle('Title')).thenReturn('S✔ ◾ TODO')
+      when(pullRequest.getUpdatedDescription(undefined)).thenReturn('Description')
+      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(codeMetrics), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
+
+      // Act
+      await codeMetricsCalculator.updateDetails()
+
+      // Assert
+      verify(taskLibWrapper.debug('* CodeMetricsCalculator.updateDetails()')).once()
+      verify(pullRequest.getUpdatedTitle('Title')).once()
+      verify(pullRequest.getUpdatedDescription(undefined)).once()
+      verify(azureReposInvoker.setDetails('S✔ ◾ TODO', 'Description')).once()
+    })
+  })
 
   // describe('updateComments()', (): void => {
   //   it('should return the expected result', async (): Promise<void> => {

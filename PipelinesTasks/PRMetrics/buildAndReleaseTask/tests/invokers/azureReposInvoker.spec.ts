@@ -189,7 +189,7 @@ describe('azureReposInvoker.ts', function (): void {
   })
 
   describe('setDetails function', (): void => {
-    it('should not call the api when both description and title are invalid', async (): Promise<void> => {
+    it('should not call the api when both title and description are invalid', async (): Promise<void> => {
       // Act
       await azureReposInvoker.setDetails('', '')
 
@@ -198,7 +198,7 @@ describe('azureReposInvoker.ts', function (): void {
       verify(taskLibWrapper.debug('* AzureReposInvoker.setDetails()')).once()
     })
 
-    it('should not call the api when both description and title are invalid', async (): Promise<void> => {
+    it('should not call the api when both title and description are invalid', async (): Promise<void> => {
       // Act
       await azureReposInvoker.setDetails('   ', '     ')
 
@@ -207,7 +207,7 @@ describe('azureReposInvoker.ts', function (): void {
       verify(taskLibWrapper.debug('* AzureReposInvoker.setDetails()')).once()
     })
 
-    it('should call the api when description is valid', async (): Promise<void> => {
+    it('should call the api when title is valid', async (): Promise<void> => {
       // Act
       await azureReposInvoker.setDetails('test', '')
 
@@ -216,7 +216,7 @@ describe('azureReposInvoker.ts', function (): void {
       verify(taskLibWrapper.debug('* AzureReposInvoker.setDetails()')).once()
     })
 
-    it('should call the api when title is valid', async (): Promise<void> => {
+    it('should call the api when description is valid', async (): Promise<void> => {
       // Act
       await azureReposInvoker.setDetails('', 'test')
 
@@ -225,7 +225,7 @@ describe('azureReposInvoker.ts', function (): void {
       verify(taskLibWrapper.debug('* AzureReposInvoker.setDetails()')).once()
     })
 
-    it('should call the api when description and title are valid', async (): Promise<void> => {
+    it('should call the api when title and description are valid', async (): Promise<void> => {
       // Act
       await azureReposInvoker.setDetails('test', 'test')
 
