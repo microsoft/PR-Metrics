@@ -376,7 +376,7 @@ describe('parameters.ts', (): void => {
           '0.09',
           '7'
         ], (testFactor: string): void => {
-          it(`should set the converted value when the input '${testFactor}' is greater than or equal to 0.0`, (): void => {
+          it(`should set the converted value when the input '${testFactor}' is greater than 0.0`, (): void => {
             // Arrange
             const parameters: Parameters = new Parameters(instance(consoleWrapper), instance(taskLibWrapper))
 
@@ -385,6 +385,35 @@ describe('parameters.ts', (): void => {
 
             // Assert
             expect(parameters.testFactor).to.equal(parseFloat(testFactor))
+            verify(taskLibWrapper.debug('* Parameters.initialize()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeBaseSize()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeGrowthRate()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeTestFactor()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeFileMatchingPatterns()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeCodeFileExtensions()')).once()
+            verify(taskLibWrapper.debug('* Parameters.testFactor')).once()
+            verify(consoleWrapper.log(adjustingBaseSizeResource)).once()
+            verify(consoleWrapper.log(adjustingGrowthRateResource)).once()
+            verify(consoleWrapper.log(adjustingTestFactorResource)).never()
+            verify(consoleWrapper.log(adjustingFileMatchingPatternsResource)).once()
+            verify(consoleWrapper.log(adjustCodeFileExtensionsResource)).once()
+          })
+        })
+
+      async.each(
+        [
+          '0',
+          '0.0'
+        ], (testFactor: string): void => {
+          it(`should set null when the input '${testFactor}' is equal to 0.0`, (): void => {
+            // Arrange
+            const parameters: Parameters = new Parameters(instance(consoleWrapper), instance(taskLibWrapper))
+
+            // Act
+            parameters.initialize('', '', testFactor, '', '')
+
+            // Assert
+            expect(parameters.testFactor).to.equal(null)
             verify(taskLibWrapper.debug('* Parameters.initialize()')).once()
             verify(taskLibWrapper.debug('* Parameters.initializeBaseSize()')).once()
             verify(taskLibWrapper.debug('* Parameters.initializeGrowthRate()')).once()

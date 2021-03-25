@@ -5,9 +5,9 @@
  * A class representing code metrics.
  */
 export default class Metrics {
-  private readonly _productCode: number;
-  private readonly _testCode: number;
-  private readonly _ignoredCode: number;
+  private readonly _productCode: number
+  private readonly _testCode: number
+  private readonly _ignoredCode: number
 
   /**
    * Initializes a new instance of the `Metrics` class.

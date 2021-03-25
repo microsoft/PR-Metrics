@@ -8,14 +8,14 @@ import TaskLibWrapper from '../wrappers/taskLibWrapper'
  * A class representing parameters passed to the task.
  */
 export default class Parameters {
-  private _consoleWrapper: ConsoleWrapper;
-  private _taskLibWrapper: TaskLibWrapper;
+  private _consoleWrapper: ConsoleWrapper
+  private _taskLibWrapper: TaskLibWrapper
 
-  private _baseSize: number = 0;
-  private _growthRate: number = 0;
-  private _testFactor: number = 0;
-  private _fileMatchingPatterns: string[] = [];
-  private _codeFileExtensions: string[] = [];
+  private _baseSize: number = 0
+  private _growthRate: number = 0
+  private _testFactor: number | null = 0
+  private _fileMatchingPatterns: string[] = []
+  private _codeFileExtensions: string[] = []
 
   /**
    * Initializes a new instance of the `Parameters` class.
@@ -51,7 +51,7 @@ export default class Parameters {
    * Gets the test factor parameter, which is the number of lines of test code expected for each line of product code.
    * @returns The test factor parameter.
    */
-  public get testFactor (): number {
+  public get testFactor (): number | null {
     this._taskLibWrapper.debug('* Parameters.testFactor')
 
     return this._testFactor
@@ -126,7 +126,7 @@ export default class Parameters {
 
     const convertedValue: number = parseFloat(testFactor)
     if (!isNaN(convertedValue) && convertedValue >= 0.0) {
-      this._testFactor = convertedValue
+      this._testFactor = convertedValue === 0.0 ? null : convertedValue
     } else {
       const defaultValue: number = 1.5
       this._consoleWrapper.log(this._taskLibWrapper.loc('updaters.parameters.adjustingTestFactor', defaultValue.toLocaleString()))

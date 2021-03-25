@@ -15,12 +15,12 @@ import TaskLibWrapper from '../wrappers/taskLibWrapper'
  * A class for managing pull requests comments.
  */
 export default class PullRequestComments {
-  private static readonly taskCommentAuthorPrefix: string = 'Project Collection Build Service (';
+  private static readonly taskCommentAuthorPrefix: string = 'Project Collection Build Service ('
 
-  private readonly _azureReposInvoker: AzureReposInvoker;
-  private readonly _codeMetrics: CodeMetrics;
-  private readonly _parameters: Parameters;
-  private readonly _taskLibWrapper: TaskLibWrapper;
+  private readonly _azureReposInvoker: AzureReposInvoker
+  private readonly _codeMetrics: CodeMetrics
+  private readonly _parameters: Parameters
+  private readonly _taskLibWrapper: TaskLibWrapper
 
   /**
    * Initializes a new instance of the `PullRequestComments` class.

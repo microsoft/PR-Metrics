@@ -11,12 +11,12 @@ import TaskLibWrapper from '../wrappers/taskLibWrapper'
  */
 export default class CodeMetrics {
   private _parameters: Parameters
-  private _taskLibWrapper: TaskLibWrapper;
+  private _taskLibWrapper: TaskLibWrapper
 
-  private _ignoredFilesWithLinesAdded: string[] = [];
-  private _ignoredFilesWithoutLinesAdded: string[] = [];
-  private _sizeIndicator: string = '';
-  private _metrics: Metrics = new Metrics(0, 0, 0);
+  private _ignoredFilesWithLinesAdded: string[] = []
+  private _ignoredFilesWithoutLinesAdded: string[] = []
+  private _sizeIndicator: string = ''
+  private _metrics: Metrics = new Metrics(0, 0, 0)
 
   /**
    * Initializes a new instance of the `CodeMetrics` class.
@@ -85,7 +85,7 @@ export default class CodeMetrics {
   public get isSufficientlyTested (): boolean | null {
     this._taskLibWrapper.debug('* CodeMetrics.isSufficientlyTested')
 
-    if (this._parameters.testFactor <= 0.0) {
+    if (this._parameters.testFactor === null) {
       return null
     }
 
