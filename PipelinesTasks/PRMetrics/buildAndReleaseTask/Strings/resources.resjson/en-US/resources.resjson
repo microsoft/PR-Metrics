@@ -41,6 +41,15 @@
   "loc.instanceNameFormat": "PR Metrics",
   "loc.instanceNameFormat.comment": "The name of the task on the Azure Pipelines task properties page.",
 
+  "loc.messages.codeMetricsCalculator.noAccessToken": "Could not access the OAuth token. Enable the option 'Allow scripts to access OAuth token' under the build process phase settings.",
+  "loc.messages.codeMetricsCalculator.noAccessToken.comment": "The message to display when terminating as no access token is available.",
+
+  "loc.messages.codeMetricsCalculator.noPullRequest": "The build is not running against a pull request. Canceling task with warning.",
+  "loc.messages.codeMetricsCalculator.noPullRequest.comment": "The message to display when terminating the build is not running against a pull request.",
+
+  "loc.messages.index.succeeded": "PR Metrics succeeded",
+  "loc.messages.index.succeeded.comment": "The message to display when completing after a successful run.",
+
   "loc.messages.updaters.codeMetrics.titleSizeIndicatorFormat": "%s%s",
   "loc.messages.updaters.codeMetrics.titleSizeIndicatorFormat.comment": "The title size and test coverage prefix format. The first placeholder will be replaced by the title size prefix, and the second placeholder will be replaced by the test coverage prefix.",
 
@@ -68,8 +77,8 @@
   "loc.messages.updaters.parameters.adjustingBaseSize": "Adjusting base size parameter to %s.",
   "loc.messages.updaters.parameters.adjustingBaseSize.comment": "The message printed when the base size parameter is being adjusted to the default. The placeholder will be replaced by the default value.",
 
-  "loc.messages.updaters.parameters.adjustCodeFileExtensions": "Adjusting code file extensions parameter to default values.",
-  "loc.messages.updaters.parameters.adjustCodeFileExtensions.comment": "The message printed when the code file extensions parameter is being adjusted to the default.",
+  "loc.messages.updaters.parameters.adjustingCodeFileExtensions": "Adjusting code file extensions parameter to default values.",
+  "loc.messages.updaters.parameters.adjustingCodeFileExtensions.comment": "The message printed when the code file extensions parameter is being adjusted to the default.",
 
   "loc.messages.updaters.parameters.adjustingFileMatchingPatterns": "Adjusting file matching patterns to %s.",
   "loc.messages.updaters.parameters.adjustingFileMatchingPatterns.comment": "The message printed when the file matching patterns parameter is being adjusted to the default. The placeholder will be replaced by the default value.",

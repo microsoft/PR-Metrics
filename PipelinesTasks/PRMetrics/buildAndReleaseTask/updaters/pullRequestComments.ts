@@ -1,8 +1,9 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { Comment, CommentThreadStatus, CommentTrackingCriteria, GitPullRequestCommentThread } from 'azure-devops-node-api/interfaces/GitInterfaces'
+import { Comment, CommentThreadStatus, GitPullRequestCommentThread } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import { IdentityRef } from 'azure-devops-node-api/interfaces/common/VSSInterfaces'
+import { injectable } from 'tsyringe'
 import { Validator } from '../utilities/validator'
 import * as os from 'os'
 import AzureReposInvoker from '../invokers/azureReposInvoker'
@@ -14,6 +15,7 @@ import TaskLibWrapper from '../wrappers/taskLibWrapper'
 /**
  * A class for managing pull requests comments.
  */
+@injectable()
 export default class PullRequestComments {
   private static readonly taskCommentAuthorPrefix: string = 'Project Collection Build Service ('
 
@@ -24,6 +26,7 @@ export default class PullRequestComments {
 
   /**
    * Initializes a new instance of the `PullRequestComments` class.
+   * @param azureReposInvoker The Azure Repos invoker logic.
    * @param codeMetrics The code metrics calculation logic.
    * @param parameters The parameters passed to the task.
    * @param taskLibWrapper The wrapper around the Azure Pipelines Task Lib.
@@ -58,13 +61,12 @@ export default class PullRequestComments {
     const commentThreads: GitPullRequestCommentThread[] = await this._azureReposInvoker.getCommentThreads()
     for (let i: number = 0; i < commentThreads.length; i++) {
       const commentThread: GitPullRequestCommentThread = commentThreads[i]!
-      if (!commentThread.pullRequestThreadContext) {
+      if (!commentThread.pullRequestThreadContext || !commentThread.pullRequestThreadContext.trackingCriteria) {
         // If the current comment thread is not applied to a specified file, check if it is the metrics comment thread.
         result = this.getMetricsCommentData(result, currentIteration, commentThread, i)
       } else {
         // If the current comment thread is applied to a specified file, check if it already contains a comment related to files that can be ignored.
-        const trackingCriteria: CommentTrackingCriteria = Validator.validateField(commentThread.pullRequestThreadContext.trackingCriteria, `commentThread[${i}].pullRequestThreadContext.trackingCriteria`, 'PullRequestComments.getCommentData()')
-        const filePath: string = Validator.validateField(trackingCriteria.origFilePath, `commentThread[${i}].pullRequestThreadContext.trackingCriteria.origFilePath`, 'PullRequestComments.getCommentData()')
+        const filePath: string = Validator.validateField(commentThread.pullRequestThreadContext.trackingCriteria.origFilePath, `commentThread[${i}].pullRequestThreadContext.trackingCriteria.origFilePath`, 'PullRequestComments.getCommentData()')
         if (filePath.length <= 1) {
           throw RangeError(`'commentThread[${i}].pullRequestThreadContext.trackingCriteria.origFilePath' '${filePath}' is of length '${filePath.length}'.`)
         }
