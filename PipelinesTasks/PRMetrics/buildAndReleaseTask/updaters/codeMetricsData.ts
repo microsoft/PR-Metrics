@@ -2,15 +2,15 @@
 // Licensed under the MIT License.
 
 /**
- * A class representing code metrics.
+ * A class representing code metrics data.
  */
-export default class Metrics {
+export default class CodeMetricsData {
   private readonly _productCode: number
   private readonly _testCode: number
   private readonly _ignoredCode: number
 
   /**
-   * Initializes a new instance of the `Metrics` class.
+   * Initializes a new instance of the `CodeMetricsData` class.
    * @param productCode The number of lines of product code.
    * @param testCode The number of lines of test code.
    * @param ignoredCode The number of lines of ignored code.

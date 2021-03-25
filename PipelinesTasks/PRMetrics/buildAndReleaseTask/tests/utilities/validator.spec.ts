@@ -19,7 +19,7 @@ describe('validator.ts', (): void => {
           const func: () => void = () => Validator.validateField(value, 'number test', 'number test method name')
 
           // Assert
-          expect(func).to.throw(`Field 'number test', access within 'number test method name', is invalid, null, or undefined '${value}'.`)
+          expect(func).to.throw(`Field 'number test', accessed within 'number test method name', is invalid, null, or undefined '${value}'.`)
         })
       })
 
@@ -34,7 +34,7 @@ describe('validator.ts', (): void => {
           const func: () => void = () => Validator.validateField(value, 'string test', 'string test method name')
 
           // Assert
-          expect(func).to.throw(`Field 'string test', access within 'string test method name', is invalid, null, or undefined '${value}'.`)
+          expect(func).to.throw(`Field 'string test', accessed within 'string test method name', is invalid, null, or undefined '${value}'.`)
         })
       })
 
@@ -48,7 +48,7 @@ describe('validator.ts', (): void => {
           const func: () => void = () => Validator.validateField(value, 'string array test', 'string array test method name')
 
           // Assert
-          expect(func).to.throw(`Field 'string array test', access within 'string array test method name', is invalid, null, or undefined '${value}'.`)
+          expect(func).to.throw(`Field 'string array test', accessed within 'string array test method name', is invalid, null, or undefined '${value}'.`)
         })
       })
 
@@ -62,7 +62,7 @@ describe('validator.ts', (): void => {
           const func: () => void = () => Validator.validateField(value, 'object test', 'object test method name')
 
           // Assert
-          expect(func).to.throw(`Field 'object test', access within 'object test method name', is invalid, null, or undefined '${value}'.`)
+          expect(func).to.throw(`Field 'object test', accessed within 'object test method name', is invalid, null, or undefined '${value}'.`)
         })
       })
 
@@ -87,7 +87,7 @@ describe('validator.ts', (): void => {
       const result: string[] = Validator.validateField([], 'string array test', 'string array test method name')
 
       // Assert
-      expect(result).to.equal([])
+      expect(result).to.deep.equal([])
     })
 
     it('should not throw an error when passed a valid object value', (): void => {
@@ -95,7 +95,7 @@ describe('validator.ts', (): void => {
       const result: object = Validator.validateField({}, 'object test', 'object test method name')
 
       // Assert
-      expect(result).to.equal({})
+      expect(result).to.deep.equal({})
     })
   })
 })

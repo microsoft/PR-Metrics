@@ -8,7 +8,7 @@ import { instance, mock, verify, when } from 'ts-mockito'
 import async from 'async'
 import AzureReposInvoker from '../../invokers/azureReposInvoker'
 import CodeMetrics from '../../updaters/codeMetrics'
-import Metrics from '../../updaters/metrics'
+import CodeMetricsData from '../../updaters/codeMetricsData'
 import os from 'os'
 import Parameters from '../../updaters/parameters'
 import PullRequestComments from '../../updaters/pullRequestComments'
@@ -45,7 +45,7 @@ describe('pullRequestComments.ts', (): void => {
     codeMetrics = mock(CodeMetrics)
     when(codeMetrics.isSmall).thenReturn(true)
     when(codeMetrics.isSufficientlyTested).thenReturn(true)
-    when(codeMetrics.metrics).thenReturn(new Metrics(1000, 1000, 1000))
+    when(codeMetrics.metrics).thenReturn(new CodeMetricsData(1000, 1000, 1000))
     when(codeMetrics.ignoredFilesWithLinesAdded).thenReturn([])
     when(codeMetrics.ignoredFilesWithoutLinesAdded).thenReturn([])
 
@@ -365,7 +365,7 @@ describe('pullRequestComments.ts', (): void => {
       ], (code: FixedLengthArray<number, 5>): void => {
         it(`should return the expected result for metrics '[${code[0]}, ${code[1]}, ${code[2]}, ${code[3]}, ${code[4]}]'`, (): void => {
           // Arrange
-          when(codeMetrics.metrics).thenReturn(new Metrics(code[0], code[1], code[3]))
+          when(codeMetrics.metrics).thenReturn(new CodeMetricsData(code[0], code[1], code[3]))
           const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(parameters), instance(taskLibWrapper))
 
           // Act

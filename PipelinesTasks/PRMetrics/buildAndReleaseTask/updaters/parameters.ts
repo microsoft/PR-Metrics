@@ -3,6 +3,7 @@
 
 import ConsoleWrapper from '../wrappers/consoleWrapper'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
+import { ParametersDefault } from './parametersDefault'
 
 /**
  * A class representing parameters passed to the task.
@@ -49,7 +50,7 @@ export default class Parameters {
 
   /**
    * Gets the test factor parameter, which is the number of lines of test code expected for each line of product code.
-   * @returns The test factor parameter.
+   * @returns The test factor parameter. If the test coverage is not to be checked, this will be `null`.
    */
   public get testFactor (): number | null {
     this._taskLibWrapper.debug('* Parameters.testFactor')
@@ -101,11 +102,11 @@ export default class Parameters {
     const convertedValue: number = parseInt(baseSize)
     if (!isNaN(convertedValue) && convertedValue > 0) {
       this._baseSize = convertedValue
-    } else {
-      const defaultValue: number = 250
-      this._consoleWrapper.log(this._taskLibWrapper.loc('updaters.parameters.adjustingBaseSize', defaultValue.toLocaleString()))
-      this._baseSize = defaultValue
+      return
     }
+
+    this._consoleWrapper.log(this._taskLibWrapper.loc('updaters.parameters.adjustingBaseSize', ParametersDefault.baseSize.toLocaleString()))
+    this._baseSize = ParametersDefault.baseSize
   }
 
   private initializeGrowthRate (growthRate: string): void {
@@ -114,11 +115,11 @@ export default class Parameters {
     const convertedValue: number = parseFloat(growthRate)
     if (!isNaN(convertedValue) && convertedValue >= 1.0) {
       this._growthRate = convertedValue
-    } else {
-      const defaultValue: number = 2.0
-      this._consoleWrapper.log(this._taskLibWrapper.loc('updaters.parameters.adjustingGrowthRate', defaultValue.toLocaleString()))
-      this._growthRate = defaultValue
+      return
     }
+
+    this._consoleWrapper.log(this._taskLibWrapper.loc('updaters.parameters.adjustingGrowthRate', ParametersDefault.growthRate.toLocaleString()))
+    this._growthRate = ParametersDefault.growthRate
   }
 
   private initializeTestFactor (testFactor: string): void {
@@ -127,11 +128,11 @@ export default class Parameters {
     const convertedValue: number = parseFloat(testFactor)
     if (!isNaN(convertedValue) && convertedValue >= 0.0) {
       this._testFactor = convertedValue === 0.0 ? null : convertedValue
-    } else {
-      const defaultValue: number = 1.5
-      this._consoleWrapper.log(this._taskLibWrapper.loc('updaters.parameters.adjustingTestFactor', defaultValue.toLocaleString()))
-      this._testFactor = defaultValue
+      return
     }
+
+    this._consoleWrapper.log(this._taskLibWrapper.loc('updaters.parameters.adjustingTestFactor', ParametersDefault.testFactor.toLocaleString()))
+    this._testFactor = ParametersDefault.testFactor
   }
 
   private initializeFileMatchingPatterns (fileMatchingPatterns: string): void {
@@ -139,11 +140,11 @@ export default class Parameters {
 
     if (fileMatchingPatterns.trim()) {
       this._fileMatchingPatterns = fileMatchingPatterns.split('\n')
-    } else {
-      const defaultValue: string = '**/*'
-      this._consoleWrapper.log(this._taskLibWrapper.loc('updaters.parameters.adjustingFileMatchingPatterns', defaultValue))
-      this._fileMatchingPatterns.push(defaultValue)
+      return
     }
+
+    this._consoleWrapper.log(this._taskLibWrapper.loc('updaters.parameters.adjustingFileMatchingPatterns', JSON.stringify(ParametersDefault.fileMatchingPatterns)))
+    this._fileMatchingPatterns = ParametersDefault.fileMatchingPatterns
   }
 
   private initializeCodeFileExtensions (codeFileExtensions: string): void {
@@ -154,118 +155,10 @@ export default class Parameters {
       codeFileExtensionsArray.forEach((value: string): void => {
         this._codeFileExtensions.push(`*.${value}`)
       })
-    } else {
-      this._consoleWrapper.log(this._taskLibWrapper.loc('updaters.parameters.adjustingCodeFileExtensions'))
-      this._codeFileExtensions = [
-        '*.ada',
-        '*.adb',
-        '*.ads',
-        '*.asm',
-        '*.bas',
-        '*.bb',
-        '*.bmx',
-        '*.c',
-        '*.cbl',
-        '*.cbp',
-        '*.cc',
-        '*.clj',
-        '*.cls',
-        '*.cob',
-        '*.cpp',
-        '*.cs',
-        '*.cxx',
-        '*.d',
-        '*.dba',
-        '*.e',
-        '*.efs',
-        '*.egt',
-        '*.el',
-        '*.f',
-        '*.f77',
-        '*.f90',
-        '*.for',
-        '*.frm',
-        '*.frx',
-        '*.fth',
-        '*.ftn',
-        '*.ged',
-        '*.gm6',
-        '*.gmd',
-        '*.gmk',
-        '*.gml',
-        '*.go',
-        '*.h',
-        '*.hpp',
-        '*.hs',
-        '*.hxx',
-        '*.i',
-        '*.inc',
-        '*.js',
-        '*.java',
-        '*.l',
-        '*.lgt',
-        '*.lisp',
-        '*.m',
-        '*.m4',
-        '*.ml',
-        '*.msqr',
-        '*.n',
-        '*.nb',
-        '*.p',
-        '*.pas',
-        '*.php',
-        '*.php3',
-        '*.php4',
-        '*.php5',
-        '*.phps',
-        '*.phtml',
-        '*.piv',
-        '*.pl',
-        '*.pl1',
-        '*.pli',
-        '*.pm',
-        '*.pol',
-        '*.pp',
-        '*.prg',
-        '*.pro',
-        '*.py',
-        '*.r',
-        '*.rb',
-        '*.red',
-        '*.reds',
-        '*.rkt',
-        '*.rktl',
-        '*.s',
-        '*.scala',
-        '*.sce',
-        '*.sci',
-        '*.scm',
-        '*.sd7',
-        '*.skb',
-        '*.skc',
-        '*.skd',
-        '*.skf',
-        '*.skg',
-        '*.ski',
-        '*.skk',
-        '*.skm',
-        '*.sko',
-        '*.skp',
-        '*.skq',
-        '*.sks',
-        '*.skt',
-        '*.skz',
-        '*.spin',
-        '*.stk',
-        '*.swg',
-        '*.tcl',
-        '*.ts',
-        '*.vb',
-        '*.xpl',
-        '*.xq',
-        '*.xsl',
-        '*.y'
-      ]
+      return
     }
+
+    this._consoleWrapper.log(this._taskLibWrapper.loc('updaters.parameters.adjustingCodeFileExtensions'))
+    this._codeFileExtensions = ParametersDefault.codeFileExtensions
   }
 }
