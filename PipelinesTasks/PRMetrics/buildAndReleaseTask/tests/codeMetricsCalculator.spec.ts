@@ -1,12 +1,13 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+import { anyNumber, instance, mock, verify, when } from 'ts-mockito'
 import { expect } from 'chai'
-import { instance, mock, verify, when } from 'ts-mockito'
 import async from 'async'
 import CodeMetricsCalculator from '../codeMetricsCalculator'
 import PullRequest from '../updaters/pullRequest'
 import PullRequestComments from '../updaters/pullRequestComments'
+import PullRequestCommentsData from '../updaters/pullRequestCommentsData'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
 
 describe('codeMetricsCalculator.ts', (): void => {
@@ -71,14 +72,13 @@ describe('codeMetricsCalculator.ts', (): void => {
   })
 
   describe('updateComments()', (): void => {
-    it('should return the expected result', (): void => {
+    it('should return the expected result', async (): Promise<void> => {
       // Arrange
-      when(pullRequest.getCurrentIteration()).thenReturn(1)
-      when(pullRequestComments.getCommentData()).thenReturn('TODO')
+      when(pullRequestComments.getCommentData(anyNumber())).thenResolve(new PullRequestCommentsData([], []))
       const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
 
       // Act
-      codeMetricsCalculator.updateComments()
+      await codeMetricsCalculator.updateComments()
 
       // Assert
       verify(taskLibWrapper.debug('* CodeMetricsCalculator.updateComments()')).once()
