@@ -449,7 +449,7 @@ describe('parameters.ts', (): void => {
           '     ',
           '\n'
         ], (fileMatchingPatterns: string | undefined): void => {
-          it(`should set the default when the input '${fileMatchingPatterns}' is invalid`, (): void => {
+          it(`should set the default when the input '${fileMatchingPatterns?.replace(/\n/g, '\\n')}' is invalid`, (): void => {
             // Arrange
             when(taskLibWrapper.getInput('FileMatchingPatterns', false)).thenReturn(fileMatchingPatterns)
 
@@ -508,7 +508,7 @@ describe('parameters.ts', (): void => {
           '*.ada\n*.js\n*.ts\n*.bb\n*.txt',
           'abc\ndef\nhij'
         ], (fileMatchingPatterns: string): void => {
-          it(`should split '${fileMatchingPatterns}' at the newline character`, (): void => {
+          it(`should split '${fileMatchingPatterns.replace(/\n/g, '\\n')}' at the newline character`, (): void => {
             // Arrange
             const expectedOutput: string[] = fileMatchingPatterns.split('\n')
             when(taskLibWrapper.getInput('FileMatchingPatterns', false)).thenReturn(fileMatchingPatterns)
@@ -543,7 +543,7 @@ describe('parameters.ts', (): void => {
           '     ',
           '\n'
         ], (codeFileExtensions: string | undefined): void => {
-          it(`should set the default when the input '${codeFileExtensions}' is invalid`, (): void => {
+          it(`should set the default when the input '${codeFileExtensions?.replace(/\n/g, '\\n')}' is invalid`, (): void => {
             // Arrange
             when(taskLibWrapper.getInput('CodeFileExtensions', false)).thenReturn(codeFileExtensions)
 
@@ -573,7 +573,7 @@ describe('parameters.ts', (): void => {
           'abc\ndef\nhij',
           'ts'
         ], (codeFileExtensions: string): void => {
-          it(`should split '${codeFileExtensions}' at the newline character`, (): void => {
+          it(`should split '${codeFileExtensions.replace(/\n/g, '\\n')}' at the newline character`, (): void => {
             // Arrange
             const splitExtensions: string[] = codeFileExtensions.split('\n')
             const expectedResult: string[] = splitExtensions.map(entry => `*.${entry}`)
