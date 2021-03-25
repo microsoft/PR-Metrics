@@ -47,8 +47,8 @@
   "loc.messages.codeMetricsCalculator.noPullRequest": "The build is not running against a pull request. Canceling task with warning.",
   "loc.messages.codeMetricsCalculator.noPullRequest.comment": "The message to display when terminating the build is not running against a pull request.",
 
-  "loc.messages.index.success": "PR Metrics succeeded",
-  "loc.messages.index.success.comment": "The message to display when completing after a successful run.",
+  "loc.messages.index.succeeded": "PR Metrics succeeded",
+  "loc.messages.index.succeeded.comment": "The message to display when completing after a successful run.",
 
   "loc.messages.updaters.codeMetrics.titleSizeIndicatorFormat": "%s%s",
   "loc.messages.updaters.codeMetrics.titleSizeIndicatorFormat.comment": "The title size and test coverage prefix format. The first placeholder will be replaced by the title size prefix, and the second placeholder will be replaced by the test coverage prefix.",

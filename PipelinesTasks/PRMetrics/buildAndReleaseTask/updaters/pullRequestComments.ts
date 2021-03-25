@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { Comment, CommentThreadStatus, CommentTrackingCriteria, GitPullRequestCommentThread } from 'azure-devops-node-api/interfaces/GitInterfaces'
+import { Comment, CommentThreadStatus, GitPullRequestCommentThread } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import { IdentityRef } from 'azure-devops-node-api/interfaces/common/VSSInterfaces'
 import { injectable } from 'tsyringe'
 import { Validator } from '../utilities/validator'
@@ -61,13 +61,12 @@ export default class PullRequestComments {
     const commentThreads: GitPullRequestCommentThread[] = await this._azureReposInvoker.getCommentThreads()
     for (let i: number = 0; i < commentThreads.length; i++) {
       const commentThread: GitPullRequestCommentThread = commentThreads[i]!
-      if (!commentThread.pullRequestThreadContext) {
+      if (!commentThread.pullRequestThreadContext || !commentThread.pullRequestThreadContext.trackingCriteria) {
         // If the current comment thread is not applied to a specified file, check if it is the metrics comment thread.
         result = this.getMetricsCommentData(result, currentIteration, commentThread, i)
       } else {
         // If the current comment thread is applied to a specified file, check if it already contains a comment related to files that can be ignored.
-        const trackingCriteria: CommentTrackingCriteria = Validator.validateField(commentThread.pullRequestThreadContext.trackingCriteria, `commentThread[${i}].pullRequestThreadContext.trackingCriteria`, 'PullRequestComments.getCommentData()')
-        const filePath: string = Validator.validateField(trackingCriteria.origFilePath, `commentThread[${i}].pullRequestThreadContext.trackingCriteria.origFilePath`, 'PullRequestComments.getCommentData()')
+        const filePath: string = Validator.validateField(commentThread.pullRequestThreadContext.trackingCriteria.origFilePath, `commentThread[${i}].pullRequestThreadContext.trackingCriteria.origFilePath`, 'PullRequestComments.getCommentData()')
         if (filePath.length <= 1) {
           throw RangeError(`'commentThread[${i}].pullRequestThreadContext.trackingCriteria.origFilePath' '${filePath}' is of length '${filePath.length}'.`)
         }

@@ -139,7 +139,7 @@ export default class AzureReposInvoker {
       const gitApi = await this.openConnection()
       const updatedCommentThread: GitPullRequestCommentThread = {
         comments: [{ content: comment }],
-        threadContext: { filePath: `/${fileName}` }
+        threadContext: { filePath: fileName === null ? undefined : `/${fileName}` }
       }
 
       const fileStart = {

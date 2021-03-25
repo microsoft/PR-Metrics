@@ -55,7 +55,7 @@
   "messages": {
     "codeMetricsCalculator.noAccessToken": "Could not access the OAuth token. Enable the option 'Allow scripts to access OAuth token' under the build process phase settings.",
     "codeMetricsCalculator.noPullRequest": "The build is not running against a pull request. Canceling task with warning.",
-    "index.success": "PR Metrics succeeded",
+    "index.succeeded": "PR Metrics succeeded",
     "updaters.codeMetrics.titleSizeIndicatorFormat": "%s%s",
     "updaters.codeMetrics.titleSizeL": "L",
     "updaters.codeMetrics.titleSizeM": "M",
