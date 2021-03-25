@@ -116,7 +116,8 @@ describe('pullRequestComments.ts', (): void => {
         [1000000, [{ comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: `# Metrics for iteration ${Number(1000000).toLocaleString()}${os.EOL}`, id: 10 }], id: 20 }]],
         [1, [{ comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: `# Metrics for iteration 1${os.EOL}`, id: 10 }], id: 20 }]],
         [1, [{ comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: 'Content', id: 1 }], id: 2 }, { comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: `# Metrics for iteration 1${os.EOL}`, id: 10 }], id: 20 }]],
-        [1, [{ comments: [{ author: { displayName: 'Name' }, id: 1 }], id: 2 }, { comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: `# Metrics for iteration 1${os.EOL}`, id: 10 }], id: 20 }]]
+        [1, [{ comments: [{ author: { displayName: 'Name' }, id: 1 }], id: 2 }, { comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: `# Metrics for iteration 1${os.EOL}`, id: 10 }], id: 20 }]],
+        [1, [{ pullRequestThreadContext: {}, comments: [{ author: { displayName: 'Project Collection Build Service (' }, content: `# Metrics for iteration 1${os.EOL}`, id: 10 }], id: 20 }]]
       ], (data: [number, GitPullRequestCommentThread[]]): void => {
         it(`should return the expected result when the metrics comment is present with payload '${JSON.stringify(data[1])}'`, async (): Promise<void> => {
           // Arrange
@@ -289,7 +290,6 @@ describe('pullRequestComments.ts', (): void => {
         ['commentThread[0].comments[1].author.displayName', 'getMetricsCommentData', [{ comments: [validGitPullRequestCommentThread.comments![0]!, { author: {} }], id: 1 }]],
         ['commentThread[0].comments[1].content', 'getMetricsCommentData', [{ comments: [validGitPullRequestCommentThread.comments![0]!, { author: { displayName: 'Project Collection Build Service (' } }], id: 1 }]],
         ['commentThread[0].comments[1].id', 'getMetricsCommentData', [{ comments: [validGitPullRequestCommentThread.comments![0]!, { author: { displayName: 'Project Collection Build Service (' }, content: '# Metrics for iteration 1' }], id: 1 }]],
-        ['commentThread[0].pullRequestThreadContext.trackingCriteria', 'getCommentData', [{ pullRequestThreadContext: {} }]],
         ['commentThread[0].pullRequestThreadContext.trackingCriteria.origFilePath', 'getCommentData', [{ pullRequestThreadContext: { trackingCriteria: {} } }]],
         ['commentThread[0].comments', 'getIgnoredCommentData', [{ pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file.ts' } } }]],
         ['commentThread[0].comments[0]', 'getIgnoredCommentData', [{ pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file.ts' } }, comments: [] }]],
@@ -306,7 +306,6 @@ describe('pullRequestComments.ts', (): void => {
         ['commentThread[1].comments[1].author.displayName', 'getMetricsCommentData', [validGitPullRequestCommentThread, { comments: [validGitPullRequestCommentThread.comments![0]!, { author: {} }], id: 1 }]],
         ['commentThread[1].comments[1].content', 'getMetricsCommentData', [validGitPullRequestCommentThread, { comments: [validGitPullRequestCommentThread.comments![0]!, { author: { displayName: 'Project Collection Build Service (' } }], id: 1 }]],
         ['commentThread[1].comments[1].id', 'getMetricsCommentData', [validGitPullRequestCommentThread, { comments: [validGitPullRequestCommentThread.comments![0]!, { author: { displayName: 'Project Collection Build Service (' }, content: '# Metrics for iteration 1' }], id: 1 }]],
-        ['commentThread[1].pullRequestThreadContext.trackingCriteria', 'getCommentData', [validGitPullRequestCommentThread, { pullRequestThreadContext: {} }]],
         ['commentThread[1].pullRequestThreadContext.trackingCriteria.origFilePath', 'getCommentData', [validGitPullRequestCommentThread, { pullRequestThreadContext: { trackingCriteria: {} } }]],
         ['commentThread[1].comments', 'getIgnoredCommentData', [validGitPullRequestCommentThread, { pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file.ts' } } }]],
         ['commentThread[1].comments[0]', 'getIgnoredCommentData', [validGitPullRequestCommentThread, { pullRequestThreadContext: { trackingCriteria: { origFilePath: ' file.ts' } }, comments: [] }]],
