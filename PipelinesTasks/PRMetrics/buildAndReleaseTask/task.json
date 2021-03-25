@@ -32,7 +32,7 @@
       "name": "TestFactor",
       "label": "Test factor",
       "type": "string",
-      "helpMarkDown": "The lines of test code expected for each line of product code. If left blank, a default of '1.5' will be used."
+      "helpMarkDown": "The lines of test code expected for each line of product code. This check can be disabled by setting the value to '0'. If left blank, a default of '1.5' will be used."
     },
     {
       "name": "FileMatchingPatterns",

@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 import { FixedLengthArray } from '../utilities/fixedLengthArray'
-import Metrics from './metrics'
+import CodeMetricsData from './codeMetricsData'
 import Parameters from './parameters'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
 
@@ -11,12 +11,12 @@ import TaskLibWrapper from '../wrappers/taskLibWrapper'
  */
 export default class CodeMetrics {
   private _parameters: Parameters
-  private _taskLibWrapper: TaskLibWrapper;
+  private _taskLibWrapper: TaskLibWrapper
 
-  private _ignoredFilesWithLinesAdded: string[] = [];
-  private _ignoredFilesWithoutLinesAdded: string[] = [];
-  private _sizeIndicator: string = '';
-  private _metrics: Metrics = new Metrics(0, 0, 0);
+  private _ignoredFilesWithLinesAdded: string[] = []
+  private _ignoredFilesWithoutLinesAdded: string[] = []
+  private _sizeIndicator: string = ''
+  private _metrics: CodeMetricsData = new CodeMetricsData(0, 0, 0)
 
   /**
    * Initializes a new instance of the `CodeMetrics` class.
@@ -62,7 +62,7 @@ export default class CodeMetrics {
    * Gets the collection of pull request metrics.
    * @returns The collection of pull request metrics.
    */
-  public get metrics (): Metrics {
+  public get metrics (): CodeMetricsData {
     this._taskLibWrapper.debug('* CodeMetrics.metrics')
 
     return this._metrics
@@ -85,7 +85,7 @@ export default class CodeMetrics {
   public get isSufficientlyTested (): boolean | null {
     this._taskLibWrapper.debug('* CodeMetrics.isSufficientlyTested')
 
-    if (this._parameters.testFactor <= 0.0) {
+    if (this._parameters.testFactor === null) {
       return null
     }
 
@@ -250,7 +250,7 @@ export default class CodeMetrics {
       }
     })
 
-    this._metrics = new Metrics(productCode, testCode, ignoredCode)
+    this._metrics = new CodeMetricsData(productCode, testCode, ignoredCode)
   }
 
   // private constructMetrics (fileMetrics: Map<string, number>, filteredFiles: string[]): void {

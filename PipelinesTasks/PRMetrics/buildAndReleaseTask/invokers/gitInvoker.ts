@@ -8,7 +8,7 @@ import TaskLibWrapper from '../wrappers/taskLibWrapper'
  * A class for invoking Git commands.
  */
 export default class GitInvoker {
-  private readonly _taskLibWrapper: TaskLibWrapper;
+  private readonly _taskLibWrapper: TaskLibWrapper
 
   /**
    * Initializes a new instance of the `GitInvoker` class.

@@ -10,9 +10,9 @@ import TaskLibWrapper from './wrappers/taskLibWrapper'
  * A class for calculating and updating the code metrics within pull requests.
  */
 export default class CodeMetricsCalculator {
-  private _pullRequest: PullRequest;
-  private _pullRequestComments: PullRequestComments;
-  private _taskLibWrapper: TaskLibWrapper;
+  private _pullRequest: PullRequest
+  private _pullRequestComments: PullRequestComments
+  private _taskLibWrapper: TaskLibWrapper
 
   /**
    * Initializes a new instance of the `CodeMetricsCalculator` class.

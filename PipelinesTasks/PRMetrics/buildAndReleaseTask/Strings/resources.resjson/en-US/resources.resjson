@@ -20,7 +20,7 @@
   "loc.input.helpMarkDown.growthRate": "The growth rate applied to the base size for calculating the size of larger PRs. If left blank, a default of '2.0' will be used.",
   "loc.input.helpMarkDown.growthRate.comment": "The Markdown-formatted help text for the 'growth rate' setting on the Azure Pipelines task properties page.",
 
-  "loc.input.helpMarkDown.testFactor": "The lines of test code expected for each line of product code. If left blank, a default of '1.5' will be used.",
+  "loc.input.helpMarkDown.testFactor": "The lines of test code expected for each line of product code. This check can be disabled by setting the value to '0'. If left blank, a default of '1.5' will be used.",
   "loc.input.helpMarkDown.testFactor.comment": "The Markdown-formatted help text for the 'test ratio' setting on the Azure Pipelines task properties page.",
 
   "loc.input.label.baseSize": "Base size",

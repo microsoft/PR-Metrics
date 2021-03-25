@@ -2,11 +2,11 @@
 // Licensed under the MIT License.
 
 export interface IPullRequestInfo {
-    description?: string;
-    title?: string;
+    description?: string
+    title?: string
 }
 
 export interface IPullRequestMetadata {
-    key: string;
-    value: string | number | boolean;
+    key: string
+    value: string | number | boolean
 }

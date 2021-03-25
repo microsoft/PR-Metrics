@@ -1,19 +1,19 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+import { expect } from 'chai'
 import { instance, mock, verify, when } from 'ts-mockito'
-
+import async from 'async'
 import ConsoleWrapper from '../../wrappers/consoleWrapper'
 import Parameters from '../../updaters/parameters'
 import TaskLibWrapper from '../../wrappers/taskLibWrapper'
-import async from 'async'
-import { expect } from 'chai'
+import { ParametersDefault } from '../../updaters/parametersDefault'
 
 describe('parameters.ts', (): void => {
-  const adjustingBaseSizeResource: string = 'Adjusting base size parameter to 250'
-  const adjustingGrowthRateResource: string = 'Adjusting growth rate parameter to 2.0'
-  const adjustingTestFactorResource: string = 'Adjusting test factor parameter to 1.5'
-  const adjustingFileMatchingPatternsResource: string = 'Adjusting file matching patterns to **/*'
+  const adjustingBaseSizeResource: string = `Adjusting base size parameter to ${ParametersDefault.baseSize}`
+  const adjustingGrowthRateResource: string = `Adjusting growth rate parameter to ${ParametersDefault.growthRate}`
+  const adjustingTestFactorResource: string = `Adjusting test factor parameter to ${ParametersDefault.testFactor}`
+  const adjustingFileMatchingPatternsResource: string = `Adjusting file matching patterns to ${JSON.stringify(ParametersDefault.fileMatchingPatterns)}`
   const adjustCodeFileExtensionsResource: string = 'Adjusting code file extensions parameter to default values'
 
   let taskLibWrapper: TaskLibWrapper
@@ -21,12 +21,12 @@ describe('parameters.ts', (): void => {
 
   beforeEach((): void => {
     consoleWrapper = mock(ConsoleWrapper)
-    taskLibWrapper = mock(TaskLibWrapper)
 
-    when(taskLibWrapper.loc('updaters.parameters.adjustingBaseSize', '250')).thenReturn(adjustingBaseSizeResource)
-    when(taskLibWrapper.loc('updaters.parameters.adjustingGrowthRate', '2')).thenReturn(adjustingGrowthRateResource)
-    when(taskLibWrapper.loc('updaters.parameters.adjustingTestFactor', '1.5')).thenReturn(adjustingTestFactorResource)
-    when(taskLibWrapper.loc('updaters.parameters.adjustingFileMatchingPatterns', '**/*')).thenReturn(adjustingFileMatchingPatternsResource)
+    taskLibWrapper = mock(TaskLibWrapper)
+    when(taskLibWrapper.loc('updaters.parameters.adjustingBaseSize', ParametersDefault.baseSize.toLocaleString())).thenReturn(adjustingBaseSizeResource)
+    when(taskLibWrapper.loc('updaters.parameters.adjustingGrowthRate', ParametersDefault.growthRate.toLocaleString())).thenReturn(adjustingGrowthRateResource)
+    when(taskLibWrapper.loc('updaters.parameters.adjustingTestFactor', ParametersDefault.testFactor.toLocaleString())).thenReturn(adjustingTestFactorResource)
+    when(taskLibWrapper.loc('updaters.parameters.adjustingFileMatchingPatterns', JSON.stringify(ParametersDefault.fileMatchingPatterns))).thenReturn(adjustingFileMatchingPatternsResource)
     when(taskLibWrapper.loc('updaters.parameters.adjustingCodeFileExtensions')).thenReturn(adjustCodeFileExtensionsResource)
   })
 
@@ -40,11 +40,11 @@ describe('parameters.ts', (): void => {
         parameters.initialize('', '', '', '', '')
 
         // Assert
-        expect(parameters.baseSize).to.equal(250)
-        expect(parameters.growthRate).to.equal(2.0)
-        expect(parameters.testFactor).to.equal(1.5)
-        expect(parameters.fileMatchingPatterns).to.deep.equal(['**/*'])
-        expect(parameters.codeFileExtensions.length).to.equal(108)
+        expect(parameters.baseSize).to.equal(ParametersDefault.baseSize)
+        expect(parameters.growthRate).to.equal(ParametersDefault.growthRate)
+        expect(parameters.testFactor).to.equal(ParametersDefault.testFactor)
+        expect(parameters.fileMatchingPatterns).to.deep.equal(ParametersDefault.fileMatchingPatterns)
+        expect(parameters.codeFileExtensions).to.deep.equal(ParametersDefault.codeFileExtensions)
         verify(taskLibWrapper.debug('* Parameters.initialize()')).once()
         verify(taskLibWrapper.debug('* Parameters.initializeBaseSize()')).once()
         verify(taskLibWrapper.debug('* Parameters.initializeGrowthRate()')).once()
@@ -106,7 +106,7 @@ describe('parameters.ts', (): void => {
           'null',
           'undefined'
         ], (baseSize: string): void => {
-          it(`should set a value of 250 when the input '${baseSize}' is invalid`, (): void => {
+          it(`should set the default when the input '${baseSize}' is invalid`, (): void => {
             // Arrange
             const parameters: Parameters = new Parameters(instance(consoleWrapper), instance(taskLibWrapper))
 
@@ -114,7 +114,7 @@ describe('parameters.ts', (): void => {
             parameters.initialize(baseSize, '', '', '', '')
 
             // Assert
-            expect(parameters.baseSize).to.equal(250)
+            expect(parameters.baseSize).to.equal(ParametersDefault.baseSize)
             verify(taskLibWrapper.debug('* Parameters.initialize()')).once()
             verify(taskLibWrapper.debug('* Parameters.initializeBaseSize()')).once()
             verify(taskLibWrapper.debug('* Parameters.initializeGrowthRate()')).once()
@@ -137,7 +137,7 @@ describe('parameters.ts', (): void => {
           '-1000',
           '-5'
         ], (baseSize: string): void => {
-          it(`should set a value of 250 when the input '${baseSize}' is less than or equal to 0`, (): void => {
+          it(`should set the default when the input '${baseSize}' is less than or equal to 0`, (): void => {
             // Arrange
             const parameters: Parameters = new Parameters(instance(consoleWrapper), instance(taskLibWrapper))
 
@@ -145,7 +145,7 @@ describe('parameters.ts', (): void => {
             parameters.initialize(baseSize, '', '', '', '')
 
             // Assert
-            expect(parameters.baseSize).to.equal(250)
+            expect(parameters.baseSize).to.equal(ParametersDefault.baseSize)
             verify(taskLibWrapper.debug('* Parameters.initialize()')).once()
             verify(taskLibWrapper.debug('* Parameters.initializeBaseSize()')).once()
             verify(taskLibWrapper.debug('* Parameters.initializeGrowthRate()')).once()
@@ -204,7 +204,7 @@ describe('parameters.ts', (): void => {
           'null',
           'undefined'
         ], (growthRate: string): void => {
-          it(`should set a value of 2.0 when the input '${growthRate}' is invalid`, (): void => {
+          it(`should set the default when the input '${growthRate}' is invalid`, (): void => {
             // Arrange
             const parameters: Parameters = new Parameters(instance(consoleWrapper), instance(taskLibWrapper))
 
@@ -212,7 +212,7 @@ describe('parameters.ts', (): void => {
             parameters.initialize('', growthRate, '', '', '')
 
             // Assert
-            expect(parameters.growthRate).to.equal(2.0)
+            expect(parameters.growthRate).to.equal(ParametersDefault.growthRate)
             verify(taskLibWrapper.debug('* Parameters.initialize()')).once()
             verify(taskLibWrapper.debug('* Parameters.initializeBaseSize()')).once()
             verify(taskLibWrapper.debug('* Parameters.initializeGrowthRate()')).once()
@@ -237,7 +237,7 @@ describe('parameters.ts', (): void => {
           '-5',
           '0.9999999999'
         ], (growthRate: string): void => {
-          it(`should set a value of 2.0 when the input '${growthRate}' is less than 1.0`, (): void => {
+          it(`should set the default when the input '${growthRate}' is less than 1.0`, (): void => {
             // Arrange
             const parameters: Parameters = new Parameters(instance(consoleWrapper), instance(taskLibWrapper))
 
@@ -245,7 +245,7 @@ describe('parameters.ts', (): void => {
             parameters.initialize('', growthRate, '', '', '')
 
             // Assert
-            expect(parameters.growthRate).to.equal(2.0)
+            expect(parameters.growthRate).to.equal(ParametersDefault.growthRate)
             verify(taskLibWrapper.debug('* Parameters.initialize()')).once()
             verify(taskLibWrapper.debug('* Parameters.initializeBaseSize()')).once()
             verify(taskLibWrapper.debug('* Parameters.initializeGrowthRate()')).once()
@@ -309,7 +309,7 @@ describe('parameters.ts', (): void => {
           'null',
           'undefined'
         ], (testFactor: string): void => {
-          it(`should set a value of 1.5 when the input '${testFactor}' is invalid`, (): void => {
+          it(`should set the default when the input '${testFactor}' is invalid`, (): void => {
             // Arrange
             const parameters: Parameters = new Parameters(instance(consoleWrapper), instance(taskLibWrapper))
 
@@ -317,7 +317,7 @@ describe('parameters.ts', (): void => {
             parameters.initialize('', '', testFactor, '', '')
 
             // Assert
-            expect(parameters.testFactor).to.equal(1.5)
+            expect(parameters.testFactor).to.equal(ParametersDefault.testFactor)
             verify(taskLibWrapper.debug('* Parameters.initialize()')).once()
             verify(taskLibWrapper.debug('* Parameters.initializeBaseSize()')).once()
             verify(taskLibWrapper.debug('* Parameters.initializeGrowthRate()')).once()
@@ -341,7 +341,7 @@ describe('parameters.ts', (): void => {
           '-5',
           '-0.9999999999'
         ], (testFactor: string): void => {
-          it(`should set a value of 1.5 when the input '${testFactor}' is less than 0.0`, (): void => {
+          it(`should set the default when the input '${testFactor}' is less than 0.0`, (): void => {
             // Arrange
             const parameters: Parameters = new Parameters(instance(consoleWrapper), instance(taskLibWrapper))
 
@@ -349,7 +349,7 @@ describe('parameters.ts', (): void => {
             parameters.initialize('', '', testFactor, '', '')
 
             // Assert
-            expect(parameters.testFactor).to.equal(1.5)
+            expect(parameters.testFactor).to.equal(ParametersDefault.testFactor)
             verify(taskLibWrapper.debug('* Parameters.initialize()')).once()
             verify(taskLibWrapper.debug('* Parameters.initializeBaseSize()')).once()
             verify(taskLibWrapper.debug('* Parameters.initializeGrowthRate()')).once()
@@ -367,7 +367,6 @@ describe('parameters.ts', (): void => {
 
       async.each(
         [
-          '0',
           '5',
           '2.0',
           '1000',
@@ -377,7 +376,7 @@ describe('parameters.ts', (): void => {
           '0.09',
           '7'
         ], (testFactor: string): void => {
-          it(`should set the converted value when the input '${testFactor}' is greater than or equal to 0.0`, (): void => {
+          it(`should set the converted value when the input '${testFactor}' is greater than 0.0`, (): void => {
             // Arrange
             const parameters: Parameters = new Parameters(instance(consoleWrapper), instance(taskLibWrapper))
 
@@ -386,6 +385,35 @@ describe('parameters.ts', (): void => {
 
             // Assert
             expect(parameters.testFactor).to.equal(parseFloat(testFactor))
+            verify(taskLibWrapper.debug('* Parameters.initialize()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeBaseSize()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeGrowthRate()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeTestFactor()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeFileMatchingPatterns()')).once()
+            verify(taskLibWrapper.debug('* Parameters.initializeCodeFileExtensions()')).once()
+            verify(taskLibWrapper.debug('* Parameters.testFactor')).once()
+            verify(consoleWrapper.log(adjustingBaseSizeResource)).once()
+            verify(consoleWrapper.log(adjustingGrowthRateResource)).once()
+            verify(consoleWrapper.log(adjustingTestFactorResource)).never()
+            verify(consoleWrapper.log(adjustingFileMatchingPatternsResource)).once()
+            verify(consoleWrapper.log(adjustCodeFileExtensionsResource)).once()
+          })
+        })
+
+      async.each(
+        [
+          '0',
+          '0.0'
+        ], (testFactor: string): void => {
+          it(`should set null when the input '${testFactor}' is equal to 0.0`, (): void => {
+            // Arrange
+            const parameters: Parameters = new Parameters(instance(consoleWrapper), instance(taskLibWrapper))
+
+            // Act
+            parameters.initialize('', '', testFactor, '', '')
+
+            // Assert
+            expect(parameters.testFactor).to.equal(null)
             verify(taskLibWrapper.debug('* Parameters.initialize()')).once()
             verify(taskLibWrapper.debug('* Parameters.initializeBaseSize()')).once()
             verify(taskLibWrapper.debug('* Parameters.initializeGrowthRate()')).once()
@@ -410,16 +438,15 @@ describe('parameters.ts', (): void => {
           '     ',
           '\n'
         ], (fileMatchingPatterns: string): void => {
-          it(`should set a value of [**/*] when the input '${fileMatchingPatterns}' is invalid`, (): void => {
+          it(`should set the default when the input '${fileMatchingPatterns}' is invalid`, (): void => {
             // Arrange
-            const expectedOutput: string[] = ['**/*']
             const parameters: Parameters = new Parameters(instance(consoleWrapper), instance(taskLibWrapper))
 
             // Act
             parameters.initialize('', '', '', fileMatchingPatterns, '')
 
             // Assert
-            expect(parameters.fileMatchingPatterns).to.deep.equal(expectedOutput)
+            expect(parameters.fileMatchingPatterns).to.deep.equal(ParametersDefault.fileMatchingPatterns)
             verify(taskLibWrapper.debug('* Parameters.initialize()')).once()
             verify(taskLibWrapper.debug('* Parameters.initializeBaseSize()')).once()
             verify(taskLibWrapper.debug('* Parameters.initializeGrowthRate()')).once()
@@ -504,7 +531,7 @@ describe('parameters.ts', (): void => {
           '     ',
           '\n'
         ], (codeFileExtensions: string): void => {
-          it(`should set the default array when the input '${codeFileExtensions}' is invalid`, (): void => {
+          it(`should set the default when the input '${codeFileExtensions}' is invalid`, (): void => {
             // Arrange
             const parameters: Parameters = new Parameters(instance(consoleWrapper), instance(taskLibWrapper))
 
@@ -512,7 +539,7 @@ describe('parameters.ts', (): void => {
             parameters.initialize('', '', '', '', codeFileExtensions)
 
             // Assert
-            expect(parameters.codeFileExtensions.length).to.equal(108)
+            expect(parameters.codeFileExtensions).to.deep.equal(ParametersDefault.codeFileExtensions)
             verify(taskLibWrapper.debug('* Parameters.initialize()')).once()
             verify(taskLibWrapper.debug('* Parameters.initializeBaseSize()')).once()
             verify(taskLibWrapper.debug('* Parameters.initializeGrowthRate()')).once()
