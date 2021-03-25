@@ -23,12 +23,10 @@ const localizations = {
 describe('codeMetrics.ts', (): void => {
   let taskLibWrapper: TaskLibWrapper
   let consoleWrapper: ConsoleWrapper
-  let parameters: Parameters
 
   beforeEach((): void => {
     taskLibWrapper = mock(TaskLibWrapper)
     consoleWrapper = mock(ConsoleWrapper)
-    parameters = new Parameters(instance(consoleWrapper), instance(taskLibWrapper))
 
     when(taskLibWrapper.loc('updaters.codeMetrics.titleSizeXS')).thenReturn(localizations.titleSizeXS)
     when(taskLibWrapper.loc('updaters.codeMetrics.titleSizeS')).thenReturn(localizations.titleSizeS)
@@ -59,7 +57,15 @@ describe('codeMetrics.ts', (): void => {
       ], (entryObj): void => {
         it('isSmall', (): void => {
         // Arrage
-          parameters.initialize(`${entryObj.baseSize}`, '5', '5', 'js', 'js')
+
+          const parameters = new Parameters(instance(consoleWrapper), instance(taskLibWrapper))
+
+          when(taskLibWrapper.getInput('BaseSize', false)).thenReturn(`${entryObj.baseSize}`)
+          when(taskLibWrapper.getInput('GrowthRate', false)).thenReturn('5')
+          when(taskLibWrapper.getInput('TestFactor', false)).thenReturn('5')
+          when(taskLibWrapper.getInput('FileMatchingPatterns', false)).thenReturn('js')
+          when(taskLibWrapper.getInput('CodeFileExtensions', false)).thenReturn('js')
+
           const codeMetrics: CodeMetrics = new CodeMetrics(parameters, instance(taskLibWrapper))
           const gitDiffSummary: string = `${entryObj.productCode}    5    File1.js`
           // Act
@@ -80,7 +86,14 @@ describe('codeMetrics.ts', (): void => {
         ], (entryObj): void => {
           it('hould set all input values when all are specified', (): void => {
             // Arrange
-            parameters.initialize('5.0', '4.4', '2.7', 'js\nts', 'js\nts')
+            const parameters = new Parameters(instance(consoleWrapper), instance(taskLibWrapper))
+
+            when(taskLibWrapper.getInput('BaseSize', false)).thenReturn('5.0')
+            when(taskLibWrapper.getInput('GrowthRate', false)).thenReturn('40')
+            when(taskLibWrapper.getInput('TestFactor', false)).thenReturn('20')
+            when(taskLibWrapper.getInput('FileMatchingPatterns', false)).thenReturn('js\nts')
+            when(taskLibWrapper.getInput('CodeFileExtensions', false)).thenReturn('js\nts')
+
             const codeMetrics: CodeMetrics = new CodeMetrics(parameters, instance(taskLibWrapper))
             const gitDiffSummary: string = `${entryObj.file1}    1    File1.js\n${entryObj.file2}    9    File2.ts\n${entryObj.file3}    -    File.dll\n`
             const expectedMetrics: CodeMetricsData = new CodeMetricsData(entryObj.file1 + entryObj.file2, 0, 0)
@@ -118,7 +131,15 @@ describe('codeMetrics.ts', (): void => {
         ], (entryObj): void => {
           it('unused files have some changes', (): void => {
             // Arrange
-            parameters.initialize('5.0', '4.4', '2.7', 'js\nts', 'js\nts')
+
+            const parameters = new Parameters(instance(consoleWrapper), instance(taskLibWrapper))
+
+            when(taskLibWrapper.getInput('BaseSize', false)).thenReturn('5.0')
+            when(taskLibWrapper.getInput('GrowthRate', false)).thenReturn('40')
+            when(taskLibWrapper.getInput('TestFactor', false)).thenReturn('20')
+            when(taskLibWrapper.getInput('FileMatchingPatterns', false)).thenReturn('js\nts')
+            when(taskLibWrapper.getInput('CodeFileExtensions', false)).thenReturn('js\nts')
+
             const codeMetrics: CodeMetrics = new CodeMetrics(parameters, instance(taskLibWrapper))
             const gitDiffSummary: string = `${entryObj.file1}    1    File1.js\n${entryObj.file2}    9    File2.ts\n${entryObj.file3}    -    File.dll\n`
             const expectedMetrics: CodeMetricsData = new CodeMetricsData(entryObj.file1 + entryObj.file2, 0, entryObj.file3)
@@ -156,7 +177,14 @@ describe('codeMetrics.ts', (): void => {
         ], (entryObj): void => {
           it('test files and unused files have some changes', (): void => {
             // Arrange
-            parameters.initialize('5.0', '4.4', '2.7', 'js\nts', 'js\nts')
+            const parameters = new Parameters(instance(consoleWrapper), instance(taskLibWrapper))
+
+            when(taskLibWrapper.getInput('BaseSize', false)).thenReturn('5.0')
+            when(taskLibWrapper.getInput('GrowthRate', false)).thenReturn('40')
+            when(taskLibWrapper.getInput('TestFactor', false)).thenReturn('20')
+            when(taskLibWrapper.getInput('FileMatchingPatterns', false)).thenReturn('js\nts')
+            when(taskLibWrapper.getInput('CodeFileExtensions', false)).thenReturn('js\nts')
+
             const codeMetrics: CodeMetrics = new CodeMetrics(parameters, instance(taskLibWrapper))
             const gitDiffSummary: string = `${entryObj.file1}    1    File1.js\n${entryObj.file2}    9    File2.ts\n${entryObj.file3}    -    File.dll\n${entryObj.testFile}    8    FileTest1.ts`
             const expectedMetrics: CodeMetricsData = new CodeMetricsData(entryObj.file1 + entryObj.file2, entryObj.testFile, entryObj.file3)
@@ -194,7 +222,13 @@ describe('codeMetrics.ts', (): void => {
         ], (entryObj): void => {
           it('test files and unused files have some changes', (): void => {
             // Arrange
-            parameters.initialize('5.0', '4.4', '2.7', 'js\nts', 'js\nts')
+            const parameters = new Parameters(instance(consoleWrapper), instance(taskLibWrapper))
+
+            when(taskLibWrapper.getInput('BaseSize', false)).thenReturn('5.0')
+            when(taskLibWrapper.getInput('GrowthRate', false)).thenReturn('40')
+            when(taskLibWrapper.getInput('TestFactor', false)).thenReturn('20')
+            when(taskLibWrapper.getInput('FileMatchingPatterns', false)).thenReturn('js\nts')
+            when(taskLibWrapper.getInput('CodeFileExtensions', false)).thenReturn('js\nts')
             const codeMetrics: CodeMetrics = new CodeMetrics(parameters, instance(taskLibWrapper))
             const gitDiffSummary: string = `${entryObj.file1}    1    File1.js\n${entryObj.file2}    9    File2.ts\n${entryObj.unusedFile}    -    File.dll\n${entryObj.testFile}    8    FileTest1.ts\n${entryObj.testFile2} - fileT2.spec.ts`
             const expectedMetrics: CodeMetricsData = new CodeMetricsData(entryObj.file1 + entryObj.file2, entryObj.testFile + entryObj.testFile2, entryObj.unusedFile)
@@ -227,7 +261,13 @@ describe('codeMetrics.ts', (): void => {
     describe('initializer function', (): void => {
       it('TEST', (): void => {
         // Arrage
-        parameters.initialize('5', '5', '5', 'js', 'js')
+        const parameters = new Parameters(instance(consoleWrapper), instance(taskLibWrapper))
+
+        when(taskLibWrapper.getInput('BaseSize', false)).thenReturn('5')
+        when(taskLibWrapper.getInput('GrowthRate', false)).thenReturn('5')
+        when(taskLibWrapper.getInput('TestFactor', false)).thenReturn('5')
+        when(taskLibWrapper.getInput('FileMatchingPatterns', false)).thenReturn('js\nts')
+        when(taskLibWrapper.getInput('CodeFileExtensions', false)).thenReturn('js\nts')
         const codeMetrics: CodeMetrics = new CodeMetrics(parameters, instance(taskLibWrapper))
 
         // Act
@@ -240,7 +280,13 @@ describe('codeMetrics.ts', (): void => {
 
       it('should give all default values', (): void => {
         // Arrage
-        parameters.initialize('', '', '', '', '')
+        const parameters = new Parameters(instance(consoleWrapper), instance(taskLibWrapper))
+
+        when(taskLibWrapper.getInput('BaseSize', false)).thenReturn('')
+        when(taskLibWrapper.getInput('GrowthRate', false)).thenReturn('')
+        when(taskLibWrapper.getInput('TestFactor', false)).thenReturn('')
+        when(taskLibWrapper.getInput('FileMatchingPatterns', false)).thenReturn('')
+        when(taskLibWrapper.getInput('CodeFileExtensions', false)).thenReturn('')
         const codeMetrics: CodeMetrics = new CodeMetrics(parameters, instance(taskLibWrapper))
 
         // Act
@@ -266,24 +312,15 @@ describe('codeMetrics.ts', (): void => {
         verify(taskLibWrapper.debug('* CodeMetrics.metrics')).once()
       })
 
-      // it('temp test', (): void => {
-      //   // Arrange
-      //   parameters.initialize('5.0', '4.4', '2.7', 'js\nts', 'js\nts')
-      //   const codeMetrics: CodeMetrics = new CodeMetrics(parameters, instance(taskLibWrapper))
-      //   const gitDiffSummary: string = '9 1  File1.js\n0  9    File2.ts\n-  -    File.dll\n'
-      //   const lines = gitDiffSummary.split('\n')
-      //   // const expectedMetrics: Metrics = new Metrics(9, 0, 0)
-
-      //   // Act
-      //   // codeMetrics.initialize(gitDiffSummary)
-
-      //   const result = codeMetrics.createFileMetricsMap(lines)
-      //   expect(result).to.deep.equal([{ filename: 'File1.js', value: '9' }, { filename: 'File2.ts', value: '0' }, { filename: 'File.dll', value: '-' }])
-      // })
-
       it('should set all input values when all are specified', (): void => {
         // Arrange
-        parameters.initialize('5.0', '4.4', '2.7', 'js\nts', 'js\nts')
+        const parameters = new Parameters(instance(consoleWrapper), instance(taskLibWrapper))
+
+        when(taskLibWrapper.getInput('BaseSize', false)).thenReturn('5.0')
+        when(taskLibWrapper.getInput('GrowthRate', false)).thenReturn('40')
+        when(taskLibWrapper.getInput('TestFactor', false)).thenReturn('20')
+        when(taskLibWrapper.getInput('FileMatchingPatterns', false)).thenReturn('js\nts')
+        when(taskLibWrapper.getInput('CodeFileExtensions', false)).thenReturn('js\nts')
         const codeMetrics: CodeMetrics = new CodeMetrics(parameters, instance(taskLibWrapper))
         const gitDiffSummary: string = '9    1    File1.js\n0    9    File2.ts\n-    -    File.dll\n'
         const expectedMetrics: CodeMetricsData = new CodeMetricsData(9, 0, 0)
@@ -314,7 +351,13 @@ describe('codeMetrics.ts', (): void => {
 
       it('should set all input values when all are specified', (): void => {
         // Arrange
-        parameters.initialize('5.0', '4.4', '2.7', 'js\nts', 'js\nts')
+        const parameters = new Parameters(instance(consoleWrapper), instance(taskLibWrapper))
+
+        when(taskLibWrapper.getInput('BaseSize', false)).thenReturn('5.0')
+        when(taskLibWrapper.getInput('GrowthRate', false)).thenReturn('40')
+        when(taskLibWrapper.getInput('TestFactor', false)).thenReturn('20')
+        when(taskLibWrapper.getInput('FileMatchingPatterns', false)).thenReturn('js\nts')
+        when(taskLibWrapper.getInput('CodeFileExtensions', false)).thenReturn('js\nts')
         const codeMetrics: CodeMetrics = new CodeMetrics(parameters, instance(taskLibWrapper))
         const gitDiffSummary: string = '9    10    File1.js\n9    10    File2.ts\n-    -    File.dll\n'
         const expectedMetrics: CodeMetricsData = new CodeMetricsData(18, 0, 0)
