@@ -116,6 +116,7 @@ export default class CodeMetrics {
     this.constructMetrics(fileMetrics)
   }
 
+  // TODO: make private
   public createFileMetricsMap (input: string[]): IFileCodeMetric[] {
     this._taskLibWrapper.debug('* CodeMetrics.createFileMetricsMap()')
 
