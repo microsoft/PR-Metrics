@@ -2,11 +2,12 @@
 // Licensed under the MIT License.
 
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
-import { IPullRequestInfo, IPullRequestMetadata } from './models/pullRequestInterfaces'
 import { singleton } from 'tsyringe'
 import AzureReposInvoker from './invokers/azureReposInvoker'
 import CodeMetrics from './updaters/codeMetrics'
 import CodeMetricsData from './updaters/codeMetricsData'
+import IPullRequestDetails from './invokers/iPullRequestDetails'
+import IPullRequestMetadata from './invokers/iPullRequestMetadata'
 import PullRequest from './updaters/pullRequest'
 import PullRequestComments from './updaters/pullRequestComments'
 import PullRequestCommentsData from './updaters/pullRequestCommentsData'
@@ -69,12 +70,12 @@ export default class CodeMetricsCalculator {
 
   /**
    * Updates the pull request details.
-   * @returns A promise for await the completion of the method call.
+   * @returns A promise for awaiting the completion of the method call.
    */
   public async updateDetails (): Promise<void> {
     this._taskLibWrapper.debug('* CodeMetricsCalculator.updateDetails()')
 
-    const details: IPullRequestInfo = await this._azureReposInvoker.getTitleAndDescription()
+    const details: IPullRequestDetails = await this._azureReposInvoker.getTitleAndDescription()
     const updatedTitle: string | null = this._pullRequest.getUpdatedTitle(details.title)
     const updatedDescription: string | null = this._pullRequest.getUpdatedDescription(details.description)
 
@@ -83,7 +84,7 @@ export default class CodeMetricsCalculator {
 
   /**
    * Updates the pull request comments.
-   * @returns A promise for await the completion of the method call.
+   * @returns A promise for awaiting the completion of the method call.
    */
   public async updateComments (): Promise<void> {
     this._taskLibWrapper.debug('* CodeMetricsCalculator.updateComments()')
@@ -127,34 +128,34 @@ export default class CodeMetricsCalculator {
     const metrics: CodeMetricsData = this._codeMetrics.metrics
     const metadata: IPullRequestMetadata[] = [
       {
-        key: '/PRMetrics.Size',
+        key: 'Size',
         value: this._codeMetrics.size
       },
       {
-        key: '/PRMetrics.ProductCode',
+        key: 'ProductCode',
         value: metrics.productCode
       },
       {
-        key: '/PRMetrics.TestCode',
+        key: 'TestCode',
         value: metrics.testCode
       },
       {
-        key: '/PRMetrics.Subtotal',
+        key: 'Subtotal',
         value: metrics.subtotal
       },
       {
-        key: '/PRMetrics.IgnoredCode',
+        key: 'IgnoredCode',
         value: metrics.ignoredCode
       },
       {
-        key: '/PRMetrics.Total',
+        key: 'Total',
         value: metrics.total
       }
     ]
 
     if (this._codeMetrics.isSufficientlyTested !== null) {
       metadata.push({
-        key: '/PRMetrics.TestCoverage',
+        key: 'TestCoverage',
         value: this._codeMetrics.isSufficientlyTested
       })
     }

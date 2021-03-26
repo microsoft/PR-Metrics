@@ -5,12 +5,12 @@ import 'reflect-metadata'
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import { deepEqual, instance, mock, verify, when } from 'ts-mockito'
 import { expect } from 'chai'
-import { IPullRequestMetadata } from '../models/pullRequestInterfaces'
 import async from 'async'
 import AzureReposInvoker from '../invokers/azureReposInvoker'
 import CodeMetrics from '../updaters/codeMetrics'
 import CodeMetricsCalculator from '../codeMetricsCalculator'
 import CodeMetricsData from '../updaters/codeMetricsData'
+import IPullRequestMetadata from '../invokers/iPullRequestMetadata'
 import PullRequest from '../updaters/pullRequest'
 import PullRequestComments from '../updaters/pullRequestComments'
 import PullRequestCommentsData from '../updaters/pullRequestCommentsData'
@@ -159,31 +159,31 @@ describe('codeMetricsCalculator.ts', (): void => {
       when(codeMetrics.isSufficientlyTested).thenReturn(true)
       const expectedMetadata: IPullRequestMetadata[] = [
         {
-          key: '/PRMetrics.Size',
+          key: 'Size',
           value: 'S'
         },
         {
-          key: '/PRMetrics.ProductCode',
+          key: 'ProductCode',
           value: 1
         },
         {
-          key: '/PRMetrics.TestCode',
+          key: 'TestCode',
           value: 2
         },
         {
-          key: '/PRMetrics.Subtotal',
+          key: 'Subtotal',
           value: 3
         },
         {
-          key: '/PRMetrics.IgnoredCode',
+          key: 'IgnoredCode',
           value: 4
         },
         {
-          key: '/PRMetrics.Total',
+          key: 'Total',
           value: 7
         },
         {
-          key: '/PRMetrics.TestCoverage',
+          key: 'TestCoverage',
           value: true
         }
       ]
@@ -215,27 +215,27 @@ describe('codeMetricsCalculator.ts', (): void => {
       when(codeMetrics.isSufficientlyTested).thenReturn(null)
       const expectedMetadata: IPullRequestMetadata[] = [
         {
-          key: '/PRMetrics.Size',
+          key: 'Size',
           value: 'S'
         },
         {
-          key: '/PRMetrics.ProductCode',
+          key: 'ProductCode',
           value: 1
         },
         {
-          key: '/PRMetrics.TestCode',
+          key: 'TestCode',
           value: 2
         },
         {
-          key: '/PRMetrics.Subtotal',
+          key: 'Subtotal',
           value: 3
         },
         {
-          key: '/PRMetrics.IgnoredCode',
+          key: 'IgnoredCode',
           value: 4
         },
         {
-          key: '/PRMetrics.Total',
+          key: 'Total',
           value: 7
         }
       ]
@@ -265,31 +265,31 @@ describe('codeMetricsCalculator.ts', (): void => {
       when(codeMetrics.isSufficientlyTested).thenReturn(true)
       const expectedMetadata: IPullRequestMetadata[] = [
         {
-          key: '/PRMetrics.Size',
+          key: 'Size',
           value: 'S'
         },
         {
-          key: '/PRMetrics.ProductCode',
+          key: 'ProductCode',
           value: 1
         },
         {
-          key: '/PRMetrics.TestCode',
+          key: 'TestCode',
           value: 2
         },
         {
-          key: '/PRMetrics.Subtotal',
+          key: 'Subtotal',
           value: 3
         },
         {
-          key: '/PRMetrics.IgnoredCode',
+          key: 'IgnoredCode',
           value: 4
         },
         {
-          key: '/PRMetrics.Total',
+          key: 'Total',
           value: 7
         },
         {
-          key: '/PRMetrics.TestCoverage',
+          key: 'TestCoverage',
           value: true
         }
       ]

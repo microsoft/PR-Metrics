@@ -3,18 +3,22 @@
 
 import { Comment, CommentPosition, CommentThreadStatus, GitPullRequest, GitPullRequestCommentThread, GitPullRequestIteration } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import { IGitApi } from 'azure-devops-node-api/GitApi'
-import { IPullRequestInfo, IPullRequestMetadata } from '../models/pullRequestInterfaces'
 import { IRequestHandler } from 'azure-devops-node-api/interfaces/common/VsoBaseInterfaces'
 import { JsonPatchOperation, Operation } from 'azure-devops-node-api/interfaces/common/VSSInterfaces'
 import { singleton } from 'tsyringe'
 import { Validator } from '../utilities/validator'
 import { WebApi } from 'azure-devops-node-api'
-import DevOpsApiWrapper from '../wrappers/devOpsApiWrapper'
+import AzureDevOpsApiWrapper from '../wrappers/azureDevOpsApiWrapper'
+import IPullRequestDetails from './iPullRequestDetails'
+import IPullRequestMetadata from './iPullRequestMetadata'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
 
+/**
+ * A class for invoking Azure Repos functionality
+ */
 @singleton()
 export default class AzureReposInvoker {
-  private _devOpsApiWrapper: DevOpsApiWrapper
+  private _azureDevOpsApiWrapper: AzureDevOpsApiWrapper
   private _taskLibWrapper: TaskLibWrapper
   private _gitApi: IGitApi | undefined
 
@@ -24,18 +28,19 @@ export default class AzureReposInvoker {
   private _pullRequestId: number = parseInt(process.env.SYSTEM_PULLREQUEST_PULLREQUESTID!)
 
   /**
-    * Initializes a new instance of the AzureReposInvoker class.
-    * @param devOpsApiWrapper The wrapper around the Azure Devops Api Task Lib.
-    * @param taskLibWrapper The wrapper around the Azure Pipelines Task Lib.
-    */
-  public constructor (devOpsApiWrapper: DevOpsApiWrapper, taskLibWrapper: TaskLibWrapper) {
-    this._devOpsApiWrapper = devOpsApiWrapper
+   * Initializes a new instance of the `AzureReposInvoker` class.
+   * @param azureDevOpsApiWrapper The wrapper around the Azure DevOps API.
+   * @param taskLibWrapper The wrapper around the Azure Pipelines Task Lib.
+   */
+  public constructor (azureDevOpsApiWrapper: AzureDevOpsApiWrapper, taskLibWrapper: TaskLibWrapper) {
+    this._azureDevOpsApiWrapper = azureDevOpsApiWrapper
     this._taskLibWrapper = taskLibWrapper
   }
 
   /**
-    * Returns if the devops api token exists or not.
-    */
+   * Gets a value indicating whether the OAuth access token is available.
+   * @returns A value indicating whether the OAuth access token is available.
+   */
   public get isAccessTokenAvailable (): boolean {
     this._taskLibWrapper.debug('* AzureReposInvoker.isAccessTokenAvailable')
 
@@ -43,9 +48,10 @@ export default class AzureReposInvoker {
   }
 
   /**
-    * Gets the pull request from the devops api.
-    */
-  public async getTitleAndDescription (): Promise<IPullRequestInfo> {
+   * Gets the title and description for the current pull request.
+   * @returns A promise containing the title and description.
+   */
+  public async getTitleAndDescription (): Promise<IPullRequestDetails> {
     this._taskLibWrapper.debug('* AzureReposInvoker.getTitleAndDescription()')
 
     const gitApi: IGitApi = await this.openConnection()
@@ -59,9 +65,9 @@ export default class AzureReposInvoker {
   }
 
   /**
-    * Gets the current iteration of the pull request.
-    * @returns A promise containing the current iteration of the pull request.
-    */
+   * Gets the current iteration for the current pull request.
+   * @returns A promise containing the current iteration.
+   */
   public async getCurrentIteration (): Promise<number> {
     this._taskLibWrapper.debug('* AzureReposInvoker.getCurrentIteration()')
 
@@ -75,8 +81,9 @@ export default class AzureReposInvoker {
   }
 
   /**
-    * Gets the pull request comment threads from the devops api.
-    */
+   * Gets all comment threads for the current pull request.
+   * @returns A promise containing the comment threads.
+   */
   public async getCommentThreads (): Promise<GitPullRequestCommentThread[]> {
     this._taskLibWrapper.debug('* AzureReposInvoker.getCommentThreads()')
 
@@ -85,10 +92,11 @@ export default class AzureReposInvoker {
   }
 
   /**
-    * Updates the description and title of the pull request.
-    * @param title New pull request title.
-    * @param description New pull request description.
-    */
+   * Updates the title and description for the current pull request.
+   * @param title The new title.
+   * @param description The new description.
+   * @returns A promise for awaiting the completion of the method call.
+   */
   public async setTitleAndDescription (title: string | null, description: string | null): Promise<void> {
     this._taskLibWrapper.debug('* AzureReposInvoker.setTitleAndDescription()')
 
@@ -110,29 +118,32 @@ export default class AzureReposInvoker {
   }
 
   /**
-    * Creates new comment.
-    * @param commentThreadId Comment thread id to add the comment.
-    * @param parentCommentId Parent comment id.
-    * @param comment Text of the new comment.
-    */
+   * Creates a new comment within the current pull request.
+   * @param commentContent The text of the new comment.
+   * @param commentThreadId The comment thread ID to which to add the comment.
+   * @param parentCommentId The parent comment ID, after which to add the new comment.
+   * @returns A promise for awaiting the completion of the method call.
+   */
   public async createComment (commentContent: string, commentThreadId: number, parentCommentId: number): Promise<void> {
     this._taskLibWrapper.debug('* AzureReposInvoker.createComment()')
 
     const gitApiPromise: Promise<IGitApi> = this.openConnection()
     const comment: Comment = {
       content: commentContent,
-      parentCommentId: parentCommentId,
+      parentCommentId: parentCommentId
     }
 
     await (await gitApiPromise).createComment(comment, this._repositoryId, this._pullRequestId, commentThreadId, this._project)
   }
 
   /**
-    * Creates new comment thread.
-    * @param commentContent Comment text.
-    * @param fileName File name to be used in the comment.
-    * @param withLinesAdded Flag to determine if lines added or not.
-    */
+   * Creates a new comment thread within the current pull request.
+   * @param commentContent The text of the new comment.
+   * @param status The status to which to the set the comment thread.
+   * @param fileName The file to which to add the comment. If this is unspecified, the comment will be created in the global pull request scope.
+   * @param withLinesAdded A value indicating whether lines have been added to `fileName`.
+   * @returns A promise for awaiting the completion of the method call.
+   */
   public async createCommentThread (commentContent: string, status: CommentThreadStatus, fileName?: string, withLinesAdded?: boolean): Promise<void> {
     this._taskLibWrapper.debug('* AzureReposInvoker.createCommentThread()')
 
@@ -169,10 +180,11 @@ export default class AzureReposInvoker {
   }
 
   /**
-    * Updates the comment thread status.
-    * @param commentThreadId Comment thread id to update the status.
-    * @param status The new comment thread status.
-    */
+   * Updates the status of a comment thread within the current pull request.
+   * @param commentThreadId The comment thread ID to which to add the comment.
+   * @param status The status to which to the set the comment thread.
+   * @returns A promise for awaiting the completion of the method call.
+   */
   public async setCommentThreadStatus (commentThreadId: number, status: CommentThreadStatus): Promise<void> {
     this._taskLibWrapper.debug('* AzureReposInvoker.setCommentThreadStatus()')
 
@@ -185,9 +197,10 @@ export default class AzureReposInvoker {
   }
 
   /**
-    * Adds metadata to the pull request.
-    * @param pullRequestMetadata Metadata array.
-    */
+   * Adds metadata to the current pull request.
+   * @param metadata The metadata to be added.
+   * @returns A promise for awaiting the completion of the method call.
+   */
   public async addMetadata (metadata: IPullRequestMetadata[]): Promise<void> {
     this._taskLibWrapper.debug('* AzureReposInvoker.addMetadata()')
 
@@ -217,8 +230,8 @@ export default class AzureReposInvoker {
       return this._gitApi
     }
 
-    const authHandler: IRequestHandler = this._devOpsApiWrapper.getPersonalAccessTokenHandler(process.env.SYSTEM_ACCESSTOKEN!)
-    const connection: WebApi = this._devOpsApiWrapper.getWebApiInstance(this._baseUri, authHandler)
+    const authHandler: IRequestHandler = this._azureDevOpsApiWrapper.getPersonalAccessTokenHandler(process.env.SYSTEM_ACCESSTOKEN!)
+    const connection: WebApi = this._azureDevOpsApiWrapper.getWebApiInstance(this._baseUri, authHandler)
     this._gitApi = await connection.getGitApi()
 
     return this._gitApi

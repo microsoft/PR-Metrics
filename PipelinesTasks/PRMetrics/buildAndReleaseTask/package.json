@@ -5,11 +5,11 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc && typedoc",
-    "clean": "del-cli  **/*.js.map **/*.js !node_modules/**/*.js tsdocs",
+    "clean": "del-cli  **/*.js.map **/*.js !node_modules/**/*.js coverage tsdocs",
     "debug": "ts-node index.ts",
     "deploy": "tsc && exitzero tfx build tasks delete --task-id 907d3b28-6b37-4ac7-ac75-9631ee53e512 && tfx build tasks upload --task-path . && npm run clean",
     "lint": "eslint --fix **/*.ts",
-    "test:pipeline": "tsc && nyc --reporter=text --reporter=text-summary mocha tests/**/*.spec.js --color",
+    "test:pipeline": "tsc && nyc --reporter=text --reporter=text-summary mocha tests/**/azure*.spec.js --color",
     "test": "npm run test:pipeline && npm run clean"
   },
   "repository": {

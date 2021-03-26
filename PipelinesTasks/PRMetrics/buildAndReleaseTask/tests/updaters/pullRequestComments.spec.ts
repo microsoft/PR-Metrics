@@ -494,22 +494,29 @@ describe('pullRequestComments.ts', (): void => {
   })
 
   describe('getMetricsCommentStatus()', (): void => {
-    it('should return Closed when the pull request is small and has sufficient test coverage', (): void => {
-      // Arrange
-      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(parameters), instance(taskLibWrapper))
+    async.each(
+      [
+        true,
+        null
+      ], (sufficientlyTested: boolean | null): void => {
+        it(`should return Closed when the pull request is small and has sufficient test coverage '${sufficientlyTested}'`, (): void => {
+          // Arrange
+          when(codeMetrics.isSmall).thenReturn(true)
+          when(codeMetrics.isSufficientlyTested).thenReturn(sufficientlyTested)
+          const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(parameters), instance(taskLibWrapper))
 
-      // Act
-      const result: CommentThreadStatus = pullRequestComments.getMetricsCommentStatus()
+          // Act
+          const result: CommentThreadStatus = pullRequestComments.getMetricsCommentStatus()
 
-      // Assert
-      expect(result).to.equal(CommentThreadStatus.Closed)
-      verify(taskLibWrapper.debug('* PullRequestComments.getMetricsCommentStatus()')).once()
-    })
+          // Assert
+          expect(result).to.equal(CommentThreadStatus.Closed)
+          verify(taskLibWrapper.debug('* PullRequestComments.getMetricsCommentStatus()')).once()
+        })
+      })
 
     async.each(
       [
         [true, false],
-        [true, null],
         [false, true],
         [false, false],
         [false, null]

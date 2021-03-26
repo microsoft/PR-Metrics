@@ -119,7 +119,7 @@ export default class PullRequestComments {
   public getMetricsCommentStatus (): CommentThreadStatus {
     this._taskLibWrapper.debug('* PullRequestComments.getMetricsCommentStatus()')
 
-    if (this._codeMetrics.isSmall && this._codeMetrics.isSufficientlyTested) {
+    if (this._codeMetrics.isSmall && (this._codeMetrics.isSufficientlyTested || this._codeMetrics.isSufficientlyTested === null)) {
       return CommentThreadStatus.Closed
     }
 
