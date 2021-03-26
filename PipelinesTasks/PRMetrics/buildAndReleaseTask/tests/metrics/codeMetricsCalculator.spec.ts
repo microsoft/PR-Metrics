@@ -5,16 +5,16 @@ import 'reflect-metadata'
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import { deepEqual, instance, mock, verify, when } from 'ts-mockito'
 import { expect } from 'chai'
-import { IPullRequestMetadata } from '../models/pullRequestInterfaces'
 import async from 'async'
-import AzureReposInvoker from '../invokers/azureReposInvoker'
-import CodeMetrics from '../updaters/codeMetrics'
-import CodeMetricsCalculator from '../codeMetricsCalculator'
-import CodeMetricsData from '../updaters/codeMetricsData'
-import PullRequest from '../updaters/pullRequest'
-import PullRequestComments from '../updaters/pullRequestComments'
-import PullRequestCommentsData from '../updaters/pullRequestCommentsData'
-import TaskLibWrapper from '../wrappers/taskLibWrapper'
+import AzureReposInvoker from '../../azureRepos/azureReposInvoker'
+import CodeMetrics from '../../metrics/codeMetrics'
+import CodeMetricsCalculator from '../../metrics/codeMetricsCalculator'
+import CodeMetricsData from '../../metrics/codeMetricsData'
+import IPullRequestMetadata from '../../azureRepos/iPullRequestMetadata'
+import PullRequest from '../../pullRequests/pullRequest'
+import PullRequestComments from '../../pullRequests/pullRequestComments'
+import PullRequestCommentsData from '../../pullRequests/pullRequestCommentsData'
+import TaskLibWrapper from '../../wrappers/taskLibWrapper'
 
 describe('codeMetricsCalculator.ts', (): void => {
   let azureReposInvoker: AzureReposInvoker
@@ -35,8 +35,8 @@ describe('codeMetricsCalculator.ts', (): void => {
     pullRequestComments = mock(PullRequestComments)
 
     taskLibWrapper = mock(TaskLibWrapper)
-    when(taskLibWrapper.loc('codeMetricsCalculator.noAccessToken')).thenReturn('Could not access the OAuth token. Enable the option \'Allow scripts to access OAuth token\' under the build process phase settings.')
-    when(taskLibWrapper.loc('codeMetricsCalculator.noPullRequest')).thenReturn('The build is not running against a pull request. Canceling task with warning.')
+    when(taskLibWrapper.loc('metrics.codeMetricsCalculator.noAccessToken')).thenReturn('Could not access the OAuth token. Enable the option \'Allow scripts to access OAuth token\' under the build process phase settings.')
+    when(taskLibWrapper.loc('metrics.codeMetricsCalculator.noPullRequest')).thenReturn('The build is not running against a pull request. Canceling task with warning.')
   })
 
   describe('shouldSkip', (): void => {
@@ -96,7 +96,7 @@ describe('codeMetricsCalculator.ts', (): void => {
   describe('updateDetails()', (): void => {
     it('should perform the expected actions', async (): Promise<void> => {
       // Arrange
-      when(azureReposInvoker.getDetails()).thenResolve({ title: 'Title', description: 'Description' })
+      when(azureReposInvoker.getTitleAndDescription()).thenResolve({ title: 'Title', description: 'Description' })
       when(pullRequest.getUpdatedTitle('Title')).thenReturn('S✔ ◾ TODO')
       when(pullRequest.getUpdatedDescription('Description')).thenReturn('Description')
       const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(codeMetrics), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
@@ -108,31 +108,12 @@ describe('codeMetricsCalculator.ts', (): void => {
       verify(taskLibWrapper.debug('* CodeMetricsCalculator.updateDetails()')).once()
       verify(pullRequest.getUpdatedTitle('Title')).once()
       verify(pullRequest.getUpdatedDescription('Description')).once()
-      verify(azureReposInvoker.setDetails('S✔ ◾ TODO', 'Description')).once()
-    })
-
-    it('should throw when the title is missing', async (): Promise<void> => {
-      // Arrange
-      when(azureReposInvoker.getDetails()).thenResolve({})
-      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(codeMetrics), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
-      let errorThrown: boolean = false
-
-      try {
-        // Act
-        await codeMetricsCalculator.updateDetails()
-      } catch (error) {
-        // Assert
-        errorThrown = true
-        expect(error.message).to.equal('Field \'title\', accessed within \'CodeMetricsCalculator.updateDetails()\', is invalid, null, or undefined \'undefined\'.')
-      }
-
-      expect(errorThrown).to.equal(true)
-      verify(taskLibWrapper.debug('* CodeMetricsCalculator.updateDetails()')).once()
+      verify(azureReposInvoker.setTitleAndDescription('S✔ ◾ TODO', 'Description')).once()
     })
 
     it('should perform the expected actions when the description is missing', async (): Promise<void> => {
       // Arrange
-      when(azureReposInvoker.getDetails()).thenResolve({ title: 'Title' })
+      when(azureReposInvoker.getTitleAndDescription()).thenResolve({ title: 'Title' })
       when(pullRequest.getUpdatedTitle('Title')).thenReturn('S✔ ◾ TODO')
       when(pullRequest.getUpdatedDescription(undefined)).thenReturn('Description')
       const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(codeMetrics), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
@@ -144,7 +125,7 @@ describe('codeMetricsCalculator.ts', (): void => {
       verify(taskLibWrapper.debug('* CodeMetricsCalculator.updateDetails()')).once()
       verify(pullRequest.getUpdatedTitle('Title')).once()
       verify(pullRequest.getUpdatedDescription(undefined)).once()
-      verify(azureReposInvoker.setDetails('S✔ ◾ TODO', 'Description')).once()
+      verify(azureReposInvoker.setTitleAndDescription('S✔ ◾ TODO', 'Description')).once()
     })
   })
 
@@ -178,31 +159,31 @@ describe('codeMetricsCalculator.ts', (): void => {
       when(codeMetrics.isSufficientlyTested).thenReturn(true)
       const expectedMetadata: IPullRequestMetadata[] = [
         {
-          key: '/PRMetrics.Size',
+          key: 'Size',
           value: 'S'
         },
         {
-          key: '/PRMetrics.ProductCode',
+          key: 'ProductCode',
           value: 1
         },
         {
-          key: '/PRMetrics.TestCode',
+          key: 'TestCode',
           value: 2
         },
         {
-          key: '/PRMetrics.Subtotal',
+          key: 'Subtotal',
           value: 3
         },
         {
-          key: '/PRMetrics.IgnoredCode',
+          key: 'IgnoredCode',
           value: 4
         },
         {
-          key: '/PRMetrics.Total',
+          key: 'Total',
           value: 7
         },
         {
-          key: '/PRMetrics.TestCoverage',
+          key: 'TestCoverage',
           value: true
         }
       ]
@@ -215,7 +196,7 @@ describe('codeMetricsCalculator.ts', (): void => {
       verify(taskLibWrapper.debug('* CodeMetricsCalculator.updateComments()')).once()
       verify(taskLibWrapper.debug('* CodeMetricsCalculator.updateMetricsComment()')).once()
       verify(taskLibWrapper.debug('* CodeMetricsCalculator.addMetadata()')).once()
-      verify(azureReposInvoker.createComment(1, 2, 'Description')).once()
+      verify(azureReposInvoker.createComment('Description', 1, 2)).once()
       verify(azureReposInvoker.setCommentThreadStatus(1, CommentThreadStatus.Active)).once()
       verify(azureReposInvoker.addMetadata(deepEqual(expectedMetadata))).once()
     })
@@ -234,27 +215,27 @@ describe('codeMetricsCalculator.ts', (): void => {
       when(codeMetrics.isSufficientlyTested).thenReturn(null)
       const expectedMetadata: IPullRequestMetadata[] = [
         {
-          key: '/PRMetrics.Size',
+          key: 'Size',
           value: 'S'
         },
         {
-          key: '/PRMetrics.ProductCode',
+          key: 'ProductCode',
           value: 1
         },
         {
-          key: '/PRMetrics.TestCode',
+          key: 'TestCode',
           value: 2
         },
         {
-          key: '/PRMetrics.Subtotal',
+          key: 'Subtotal',
           value: 3
         },
         {
-          key: '/PRMetrics.IgnoredCode',
+          key: 'IgnoredCode',
           value: 4
         },
         {
-          key: '/PRMetrics.Total',
+          key: 'Total',
           value: 7
         }
       ]
@@ -267,7 +248,7 @@ describe('codeMetricsCalculator.ts', (): void => {
       verify(taskLibWrapper.debug('* CodeMetricsCalculator.updateComments()')).once()
       verify(taskLibWrapper.debug('* CodeMetricsCalculator.updateMetricsComment()')).once()
       verify(taskLibWrapper.debug('* CodeMetricsCalculator.addMetadata()')).once()
-      verify(azureReposInvoker.createComment(1, 2, 'Description')).once()
+      verify(azureReposInvoker.createComment('Description', 1, 2)).once()
       verify(azureReposInvoker.setCommentThreadStatus(1, CommentThreadStatus.Active)).once()
       verify(azureReposInvoker.addMetadata(deepEqual(expectedMetadata))).once()
     })
@@ -278,38 +259,37 @@ describe('codeMetricsCalculator.ts', (): void => {
       const commentData: PullRequestCommentsData = new PullRequestCommentsData([], [])
       when(pullRequestComments.getCommentData(1)).thenResolve(commentData)
       when(pullRequestComments.getMetricsComment(1)).thenReturn('Description')
-      when(azureReposInvoker.createCommentThread('Description', null, true)).thenResolve({ id: 1 })
       when(pullRequestComments.getMetricsCommentStatus()).thenReturn(CommentThreadStatus.Active)
       when(codeMetrics.metrics).thenReturn(new CodeMetricsData(1, 2, 4))
       when(codeMetrics.size).thenReturn('S')
       when(codeMetrics.isSufficientlyTested).thenReturn(true)
       const expectedMetadata: IPullRequestMetadata[] = [
         {
-          key: '/PRMetrics.Size',
+          key: 'Size',
           value: 'S'
         },
         {
-          key: '/PRMetrics.ProductCode',
+          key: 'ProductCode',
           value: 1
         },
         {
-          key: '/PRMetrics.TestCode',
+          key: 'TestCode',
           value: 2
         },
         {
-          key: '/PRMetrics.Subtotal',
+          key: 'Subtotal',
           value: 3
         },
         {
-          key: '/PRMetrics.IgnoredCode',
+          key: 'IgnoredCode',
           value: 4
         },
         {
-          key: '/PRMetrics.Total',
+          key: 'Total',
           value: 7
         },
         {
-          key: '/PRMetrics.TestCoverage',
+          key: 'TestCoverage',
           value: true
         }
       ]
@@ -322,34 +302,8 @@ describe('codeMetricsCalculator.ts', (): void => {
       verify(taskLibWrapper.debug('* CodeMetricsCalculator.updateComments()')).once()
       verify(taskLibWrapper.debug('* CodeMetricsCalculator.updateMetricsComment()')).once()
       verify(taskLibWrapper.debug('* CodeMetricsCalculator.addMetadata()')).once()
-      verify(azureReposInvoker.createCommentThread('Description', null, true)).once()
-      verify(azureReposInvoker.setCommentThreadStatus(1, CommentThreadStatus.Active)).once()
+      verify(azureReposInvoker.createCommentThread('Description', CommentThreadStatus.Active)).once()
       verify(azureReposInvoker.addMetadata(deepEqual(expectedMetadata))).once()
-    })
-
-    it('should throw when the metrics comment is to be updated but the thread ID is missing', async (): Promise<void> => {
-      // Arrange
-      when(azureReposInvoker.getCurrentIteration()).thenResolve(1)
-      const commentData: PullRequestCommentsData = new PullRequestCommentsData([], [])
-      when(pullRequestComments.getCommentData(1)).thenResolve(commentData)
-      when(pullRequestComments.getMetricsComment(1)).thenReturn('Description')
-      when(azureReposInvoker.createCommentThread('Description', null, true)).thenResolve({})
-      when(codeMetrics.metrics).thenReturn(new CodeMetricsData(1, 2, 4))
-      when(codeMetrics.size).thenReturn('S')
-      when(codeMetrics.isSufficientlyTested).thenReturn(null)
-      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(codeMetrics), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
-      let errorThrown: boolean = false
-
-      try {
-        // Act
-        await codeMetricsCalculator.updateComments()
-      } catch (error) {
-        // Assert
-        errorThrown = true
-        expect(error.message).to.equal('Field \'id\', accessed within \'CodeMetricsCalculator.updateMetricsComment()\', is invalid, null, or undefined \'undefined\'.')
-      }
-
-      expect(errorThrown).to.equal(true)
     })
 
     async.each(
@@ -368,10 +322,6 @@ describe('codeMetricsCalculator.ts', (): void => {
           commentData.isMetricsCommentPresent = true
           when(pullRequestComments.getCommentData(1)).thenResolve(commentData)
           when(pullRequestComments.ignoredComment).thenReturn('Ignored')
-          when(azureReposInvoker.createCommentThread('Ignored', 'file1.ts', true)).thenResolve({ id: 1 })
-          when(azureReposInvoker.createCommentThread('Ignored', 'file2.ts', true)).thenResolve({ id: 2 })
-          when(azureReposInvoker.createCommentThread('Ignored', 'file3.ts', false)).thenResolve({ id: 3 })
-          when(azureReposInvoker.createCommentThread('Ignored', 'file4.ts', false)).thenResolve({ id: 4 })
           const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(codeMetrics), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
 
           // Act
@@ -380,38 +330,11 @@ describe('codeMetricsCalculator.ts', (): void => {
           // Assert
           verify(taskLibWrapper.debug('* CodeMetricsCalculator.updateComments()')).once()
           verify(taskLibWrapper.debug('* CodeMetricsCalculator.updateIgnoredComment()')).times(data[2] + data[3] + data[4] + data[5])
-          verify(azureReposInvoker.createCommentThread('Ignored', 'file1.ts', true)).times(data[2])
-          verify(azureReposInvoker.createCommentThread('Ignored', 'file2.ts', true)).times(data[3])
-          verify(azureReposInvoker.createCommentThread('Ignored', 'file3.ts', false)).times(data[4])
-          verify(azureReposInvoker.createCommentThread('Ignored', 'file4.ts', false)).times(data[5])
-          verify(azureReposInvoker.setCommentThreadStatus(1, CommentThreadStatus.Closed)).times(data[2])
-          verify(azureReposInvoker.setCommentThreadStatus(2, CommentThreadStatus.Closed)).times(data[3])
-          verify(azureReposInvoker.setCommentThreadStatus(3, CommentThreadStatus.Closed)).times(data[4])
-          verify(azureReposInvoker.setCommentThreadStatus(4, CommentThreadStatus.Closed)).times(data[5])
+          verify(azureReposInvoker.createCommentThread('Ignored', CommentThreadStatus.Closed, 'file1.ts', true)).times(data[2])
+          verify(azureReposInvoker.createCommentThread('Ignored', CommentThreadStatus.Closed, 'file2.ts', true)).times(data[3])
+          verify(azureReposInvoker.createCommentThread('Ignored', CommentThreadStatus.Closed, 'file3.ts', false)).times(data[4])
+          verify(azureReposInvoker.createCommentThread('Ignored', CommentThreadStatus.Closed, 'file4.ts', false)).times(data[5])
         })
       })
-
-    it('should throw when comments are to be added to ignored files but the thread ID is missing', async (): Promise<void> => {
-      // Arrange
-      when(azureReposInvoker.getCurrentIteration()).thenResolve(1)
-      const commentData: PullRequestCommentsData = new PullRequestCommentsData(['file1.ts'], [])
-      commentData.isMetricsCommentPresent = true
-      when(pullRequestComments.getCommentData(1)).thenResolve(commentData)
-      when(pullRequestComments.ignoredComment).thenReturn('Ignored')
-      when(azureReposInvoker.createCommentThread('Ignored', 'file1.ts', true)).thenResolve({})
-      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(codeMetrics), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
-      let errorThrown: boolean = false
-
-      try {
-        // Act
-        await codeMetricsCalculator.updateComments()
-      } catch (error) {
-        // Assert
-        errorThrown = true
-        expect(error.message).to.equal('Field \'id\', accessed within \'CodeMetricsCalculator.updateIgnoredComment()\', is invalid, null, or undefined \'undefined\'.')
-      }
-
-      expect(errorThrown).to.equal(true)
-    })
   })
 })

@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 import { expect } from 'chai'
-import PullRequestCommentsData from '../../updaters/pullRequestCommentsData'
+import PullRequestCommentsData from '../../pullRequests/pullRequestCommentsData'
 
 describe('pullRequestCommentsData.ts', (): void => {
   describe('constructor()', (): void => {

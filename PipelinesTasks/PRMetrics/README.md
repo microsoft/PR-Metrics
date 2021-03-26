@@ -234,6 +234,7 @@ should combine with the unit tests to provide a high level of coverage.
    - Subtotal: 35
    - Ignored: 30
    - Total: 65
+   The metrics comment thread should be closed.
 1. Modify the build task definition to change the parameters to the following:
    - Base size: 1
    - Growth rate: 1
@@ -253,7 +254,8 @@ should combine with the unit tests to provide a high level of coverage.
    - Subtotal: 10
    - Ignored: 56
    - Total: 66
-   `temporary1.ts` and `temporary2.ts` should both include the closed comment
+   The metrics comment thread should be active. `temporary1.ts` and
+   temporary2.ts` should both include the closed comment
    ":exclamation: This file may not need to be reviewed."
 1. Modify the build task definition to change the "test factor" parameter to "0"
    (not blank). Push a new change to the build, adding 1 more line to
@@ -268,6 +270,7 @@ should combine with the unit tests to provide a high level of coverage.
    - Subtotal: 10
    - Ignored: 57
    - Total: 67
+   The metrics comment thread should be active.
 1. Without pushing addition changes, go back to your PR and click "Re-queue"
    next to the build. The build should success but no changes should be made to
    the PR.

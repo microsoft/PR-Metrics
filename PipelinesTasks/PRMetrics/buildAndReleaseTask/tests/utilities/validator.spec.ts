@@ -1,9 +1,9 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import async from 'async'
 import { expect } from 'chai'
 import { Validator } from '../../utilities/validator'
+import async from 'async'
 
 describe('validator.ts', (): void => {
   describe('validateField', (): void => {

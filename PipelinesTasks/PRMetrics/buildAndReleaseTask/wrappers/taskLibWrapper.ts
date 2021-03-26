@@ -1,11 +1,9 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import * as taskLib from 'azure-pipelines-task-lib/task'
-
 import { IExecSyncOptions, IExecSyncResult } from 'azure-pipelines-task-lib/toolrunner'
-
 import { singleton } from 'tsyringe'
+import * as taskLib from 'azure-pipelines-task-lib/task'
 
 /**
  * A wrapper around the Azure Pipelines Task Lib, to facilitate testability.
@@ -32,14 +30,10 @@ export default class TaskLibWrapper {
   }
 
   /**
-   * Logs a warning message.
-   * @param message The message to log.
- * Gets the value of an input.
- * If required is true and the value is not set, it will throw.
- *
- * @param     name     name of the input to get
- * @param     required whether input is required.  optional, defaults to false
- * @returns   string
+   * Gets the value of an input. If the input is `required` but nonexistent, this method will throw.
+   * @param name The name of the input.
+   * @param required A value indicating whether the input is required.
+   * @returns The value of the input or `undefined` if the input was not set.
    */
   public getInput (name: string, required: boolean | undefined): string | undefined {
     return taskLib.getInput(name, required)

@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 import { injectable } from 'tsyringe'
-import CodeMetrics from './codeMetrics'
+import CodeMetrics from '../metrics/codeMetrics'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
 
 /**
@@ -45,7 +45,7 @@ export default class PullRequest {
       return null
     }
 
-    return this._taskLibWrapper.loc('updaters.pullRequest.addDescription')
+    return this._taskLibWrapper.loc('pullRequests.pullRequest.addDescription')
   }
 
   /**
@@ -57,21 +57,21 @@ export default class PullRequest {
     this._taskLibWrapper.debug('* PullRequest.getUpdatedTitle()')
 
     const sizeIndicator: string = this._codeMetrics.sizeIndicator
-    if (currentTitle.startsWith(`${sizeIndicator} ◾ `)) {
+    if (currentTitle.startsWith(this._taskLibWrapper.loc('pullRequests.pullRequest.titleFormat', sizeIndicator, ''))) {
       return null
     }
 
     const sizeRegExp: string =
-      `(${this._taskLibWrapper.loc('updaters.codeMetrics.titleSizeXS')}` +
-      `|${this._taskLibWrapper.loc('updaters.codeMetrics.titleSizeS')}` +
-      `|${this._taskLibWrapper.loc('updaters.codeMetrics.titleSizeM')}` +
-      `|${this._taskLibWrapper.loc('updaters.codeMetrics.titleSizeL')}` +
-      `|${this._taskLibWrapper.loc('updaters.codeMetrics.titleSizeXL', '\\d*')})`
+      `(${this._taskLibWrapper.loc('metrics.codeMetrics.titleSizeXS')}` +
+      `|${this._taskLibWrapper.loc('metrics.codeMetrics.titleSizeS')}` +
+      `|${this._taskLibWrapper.loc('metrics.codeMetrics.titleSizeM')}` +
+      `|${this._taskLibWrapper.loc('metrics.codeMetrics.titleSizeL')}` +
+      `|${this._taskLibWrapper.loc('metrics.codeMetrics.titleSizeXL', '\\d*')})`
     const testsRegExp: string =
-      `(${this._taskLibWrapper.loc('updaters.codeMetrics.titleTestsSufficient')}` +
-      `|${this._taskLibWrapper.loc('updaters.codeMetrics.titleTestsInsufficient')})?`
-    const sizeIndicatorRegExp: string = this._taskLibWrapper.loc('updaters.codeMetrics.titleSizeIndicatorFormat', sizeRegExp, testsRegExp)
-    const completeRegExp: string = `^${this._taskLibWrapper.loc('updaters.pullRequest.titleFormat', sizeIndicatorRegExp, '(.*)')}$`
+      `(${this._taskLibWrapper.loc('metrics.codeMetrics.titleTestsSufficient')}` +
+      `|${this._taskLibWrapper.loc('metrics.codeMetrics.titleTestsInsufficient')})?`
+    const sizeIndicatorRegExp: string = this._taskLibWrapper.loc('metrics.codeMetrics.titleSizeIndicatorFormat', sizeRegExp, testsRegExp)
+    const completeRegExp: string = `^${this._taskLibWrapper.loc('pullRequests.pullRequest.titleFormat', sizeIndicatorRegExp, '(.*)')}$`
 
     const prefixRegExp: RegExp = new RegExp(completeRegExp, 'u')
     const prefixRegExpMatches: RegExpMatchArray | null = currentTitle.match(prefixRegExp)
@@ -80,6 +80,6 @@ export default class PullRequest {
       originalTitle = prefixRegExpMatches[3]!
     }
 
-    return `${sizeIndicator} ◾ ${originalTitle}`
+    return this._taskLibWrapper.loc('pullRequests.pullRequest.titleFormat', sizeIndicator, originalTitle)
   }
 }

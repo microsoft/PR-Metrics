@@ -3,9 +3,9 @@
 // Licensed under the MIT License.
 
 /**
- * A module encapsulating default parameter values.
+ * A module encapsulating default input values.
  */
-export module ParametersDefault {
+export module InputsDefault {
   /**
    * The default base size, which is the maximum number of new lines in a small pull request.
    */
