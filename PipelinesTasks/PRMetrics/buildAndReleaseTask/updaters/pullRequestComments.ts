@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 import { Comment, CommentThreadStatus, GitPullRequestCommentThread } from 'azure-devops-node-api/interfaces/GitInterfaces'
-import { IdentityRef } from 'azure-devops-node-api/interfaces/common/VSSInterfaces'
 import { injectable } from 'tsyringe'
 import { Validator } from '../utilities/validator'
 import * as os from 'os'
@@ -17,8 +16,6 @@ import TaskLibWrapper from '../wrappers/taskLibWrapper'
  */
 @injectable()
 export default class PullRequestComments {
-  private static readonly taskCommentAuthorPrefix: string = 'Project Collection Build Service ('
-
   private readonly _azureReposInvoker: AzureReposInvoker
   private readonly _codeMetrics: CodeMetrics
   private readonly _parameters: Parameters
@@ -136,12 +133,6 @@ export default class PullRequestComments {
     for (let i: number = 0; i < comments.length; i++) {
       const comment: Comment = comments[i]!
 
-      const author: IdentityRef = Validator.validateField(comment.author, `commentThread[${commentThreadIndex}].comments[${i}].author`, 'PullRequestComments.getMetricsCommentData()')
-      const authorDisplayName: string = Validator.validateField(author.displayName, `commentThread[${commentThreadIndex}].comments[${i}].author.displayName`, 'PullRequestComments.getMetricsCommentData()')
-      if (!authorDisplayName.startsWith(PullRequestComments.taskCommentAuthorPrefix)) {
-        continue
-      }
-
       const content: string = Validator.validateField(comment.content, `commentThread[${commentThreadIndex}].comments[${i}].content`, 'PullRequestComments.getMetricsCommentData()')
       const commentHeaderRegExp: RegExp = new RegExp(`^${this._taskLibWrapper.loc('updaters.pullRequestComments.commentTitle', '.+')}`)
       if (!content.match(commentHeaderRegExp)) {
@@ -161,12 +152,6 @@ export default class PullRequestComments {
 
     const comments: Comment[] = Validator.validateField(commentThread.comments, `commentThread[${commentThreadIndex}].comments`, 'PullRequestComments.getIgnoredCommentData()')
     const comment: Comment = Validator.validateField(comments[0], `commentThread[${commentThreadIndex}].comments[0]`, 'PullRequestComments.getIgnoredCommentData()')
-
-    const author: IdentityRef = Validator.validateField(comment.author, `commentThread[${commentThreadIndex}].comments[0].author`, 'PullRequestComments.getIgnoredCommentData()')
-    const authorDisplayName: string = Validator.validateField(author.displayName, `commentThread[${commentThreadIndex}].comments[0].author.displayName`, 'PullRequestComments.getIgnoredCommentData()')
-    if (!authorDisplayName.startsWith(PullRequestComments.taskCommentAuthorPrefix)) {
-      return ignoredFiles
-    }
 
     const content: string = Validator.validateField(comment.content, `commentThread[${commentThreadIndex}].comments[0].content`, 'PullRequestComments.getIgnoredCommentData()')
     if (content !== this.ignoredComment) {

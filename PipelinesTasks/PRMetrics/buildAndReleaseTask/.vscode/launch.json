@@ -2,26 +2,94 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "type": "pwa-node",
+      "type": "node",
       "request": "launch",
-      "name": "Run Task",
+      "name": "Build",
+      "runtimeExecutable": "npm",
       "runtimeArgs": [
-        "-r",
-        "ts-node/register"
+        "run-script",
+        "build"
       ],
-      "args": [
-        "${workspaceFolder}/index.ts"
+      "skipFiles": [
+        "<node_internals>/**"
       ],
       "resolveSourceMapLocations": [
         "${workspaceFolder}/**",
         "!**/node_modules/**"
-      ],
-      "restart": true
+      ]
     },
     {
       "type": "node",
       "request": "launch",
-      "name": "Run Tests",
+      "name": "Clean",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run-script",
+        "clean"
+      ],
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "resolveSourceMapLocations": [
+        "${workspaceFolder}/**",
+        "!**/node_modules/**"
+      ]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run-script",
+        "debug"
+      ],
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "resolveSourceMapLocations": [
+        "${workspaceFolder}/**",
+        "!**/node_modules/**"
+      ]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Deploy",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run-script",
+        "deploy"
+      ],
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "resolveSourceMapLocations": [
+        "${workspaceFolder}/**",
+        "!**/node_modules/**"
+      ]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Lint",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run-script",
+        "lint"
+      ],
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "resolveSourceMapLocations": [
+        "${workspaceFolder}/**",
+        "!**/node_modules/**"
+      ]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Test",
       "args": [
         "-u",
         "bdd",
@@ -34,6 +102,10 @@
       "skipFiles": [
         "<node_internals>/**"
       ],
+      "resolveSourceMapLocations": [
+        "${workspaceFolder}/**",
+        "!**/node_modules/**"
+      ]
     }
   ]
 }
