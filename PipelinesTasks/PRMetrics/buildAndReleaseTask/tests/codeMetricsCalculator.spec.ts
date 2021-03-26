@@ -39,17 +39,17 @@ describe('codeMetricsCalculator.ts', (): void => {
     when(taskLibWrapper.loc('codeMetricsCalculator.noPullRequest')).thenReturn('The build is not running against a pull request. Canceling task with warning.')
   })
 
-  describe('isRunnable', (): void => {
-    it('should return null when runnable', (): void => {
+  describe('shouldSkip', (): void => {
+    it('should return null when the task should not be skipped', (): void => {
       // Arrange
       const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(codeMetrics), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
 
       // Act
-      const result: string | null = codeMetricsCalculator.isRunnable
+      const result: string | null = codeMetricsCalculator.shouldSkip
 
       // Assert
       expect(result).to.equal(null)
-      verify(taskLibWrapper.debug('* CodeMetricsCalculator.isRunnable')).once()
+      verify(taskLibWrapper.debug('* CodeMetricsCalculator.shouldSkip')).once()
     })
 
     it('should return the appropriate message when not a pull request', (): void => {
@@ -58,11 +58,25 @@ describe('codeMetricsCalculator.ts', (): void => {
       const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(codeMetrics), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
 
       // Act
-      const result: string | null = codeMetricsCalculator.isRunnable
+      const result: string | null = codeMetricsCalculator.shouldSkip
 
       // Assert
       expect(result).to.equal('The build is not running against a pull request. Canceling task with warning.')
-      verify(taskLibWrapper.debug('* CodeMetricsCalculator.isRunnable')).once()
+      verify(taskLibWrapper.debug('* CodeMetricsCalculator.shouldSkip')).once()
+    })
+  })
+
+  describe('shouldTerminate', (): void => {
+    it('should return null when the task should not terminate', (): void => {
+      // Arrange
+      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(codeMetrics), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
+
+      // Act
+      const result: string | null = codeMetricsCalculator.shouldTerminate
+
+      // Assert
+      expect(result).to.equal(null)
+      verify(taskLibWrapper.debug('* CodeMetricsCalculator.shouldTerminate')).once()
     })
 
     it('should return the appropriate message when no access token is available', (): void => {
@@ -71,11 +85,11 @@ describe('codeMetricsCalculator.ts', (): void => {
       const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(codeMetrics), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
 
       // Act
-      const result: string | null = codeMetricsCalculator.isRunnable
+      const result: string | null = codeMetricsCalculator.shouldTerminate
 
       // Assert
       expect(result).to.equal('Could not access the OAuth token. Enable the option \'Allow scripts to access OAuth token\' under the build process phase settings.')
-      verify(taskLibWrapper.debug('* CodeMetricsCalculator.isRunnable')).once()
+      verify(taskLibWrapper.debug('* CodeMetricsCalculator.shouldTerminate')).once()
     })
   })
 

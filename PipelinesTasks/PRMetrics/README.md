@@ -196,6 +196,13 @@ Test validation and code scanning will be automatically performed whenever a
 PR is opened against the `main` branch. These validations must succeed for the
 PR to be merged.
 
+### Manual Test Cases
+
+Unfortunately, it is not possible to automatically test everything. Therefore,
+it is recommended that you perform the following manual test cases whenever
+significant changes are made. These don't cover all possible scenarios, but they
+should combine with the unit tests to provide a high level of coverage.
+
 ## Debugging
 
 To gain greater insight into the cause of failures, you can set the
