@@ -9,7 +9,7 @@
     "debug": "ts-node index.ts",
     "deploy": "tsc && exitzero tfx build tasks delete --task-id 907d3b28-6b37-4ac7-ac75-9631ee53e512 && tfx build tasks upload --task-path . && npm run clean",
     "lint": "eslint --fix **/*.ts",
-    "test": "tsc && nyc mocha tests/**/*.js --color"
+    "test": "tsc && nyc --reporter=text --reporter=text-summary mocha tests/**/*.spec.js --color && npm run clean"
   },
   "repository": {
     "type": "git",
