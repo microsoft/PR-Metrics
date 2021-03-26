@@ -14,6 +14,7 @@ export default class Parameters {
   private _consoleWrapper: ConsoleWrapper
   private _taskLibWrapper: TaskLibWrapper
 
+  private _isInitialized: boolean = false
   private _baseSize: number = 0
   private _growthRate: number = 0
   private _testFactor: number | null = 0
@@ -28,7 +29,6 @@ export default class Parameters {
   constructor (consoleWrapper: ConsoleWrapper, taskLibWrapper: TaskLibWrapper) {
     this._taskLibWrapper = taskLibWrapper
     this._consoleWrapper = consoleWrapper
-    this.initialize()
   }
 
   /**
@@ -38,6 +38,7 @@ export default class Parameters {
   public get baseSize (): number {
     this._taskLibWrapper.debug('* Parameters.baseSize')
 
+    this.initialize()
     return this._baseSize
   }
 
@@ -48,6 +49,7 @@ export default class Parameters {
   public get growthRate (): number {
     this._taskLibWrapper.debug('* Parameters.growthRate')
 
+    this.initialize()
     return this._growthRate
   }
 
@@ -58,6 +60,7 @@ export default class Parameters {
   public get testFactor (): number | null {
     this._taskLibWrapper.debug('* Parameters.testFactor')
 
+    this.initialize()
     return this._testFactor
   }
 
@@ -68,6 +71,7 @@ export default class Parameters {
   public get fileMatchingPatterns (): string[] {
     this._taskLibWrapper.debug('* Parameters.fileMatchingPatterns')
 
+    this.initialize()
     return this._fileMatchingPatterns
   }
 
@@ -78,11 +82,16 @@ export default class Parameters {
   public get codeFileExtensions (): string[] {
     this._taskLibWrapper.debug('* Parameters.codeFileExtensions')
 
+    this.initialize()
     return this._codeFileExtensions
   }
 
   private initialize (): void {
     this._taskLibWrapper.debug('* Parameters.initialize()')
+
+    if (this._isInitialized) {
+      return
+    }
 
     const baseSize: string | undefined = this._taskLibWrapper.getInput('BaseSize', false)
     this.initializeBaseSize(baseSize)
@@ -98,6 +107,8 @@ export default class Parameters {
 
     const codeFileExtensions: string | undefined = this._taskLibWrapper.getInput('CodeFileExtensions', false)
     this.initializeCodeFileExtensions(codeFileExtensions)
+
+    this._isInitialized = true
   }
 
   private initializeBaseSize (baseSize: string | undefined): void {

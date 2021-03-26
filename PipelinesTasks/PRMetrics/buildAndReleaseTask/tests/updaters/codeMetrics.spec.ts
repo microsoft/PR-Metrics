@@ -9,6 +9,7 @@ import Parameters from '../../updaters/parameters'
 import TaskLibWrapper from '../../wrappers/taskLibWrapper'
 import async from 'async'
 import { expect } from 'chai'
+import * as taskLib from 'azure-pipelines-task-lib/task'
 
 const localizations = {
   titleSizeXS: 'XS',
@@ -24,6 +25,9 @@ describe('codeMetrics.ts', (): void => {
   let parameters: Parameters
 
   beforeEach((): void => {
+    // eslint-disable-next-line no-import-assign
+    taskLib.debug = () => {}
+
     taskLibWrapper = mock(TaskLibWrapper)
     parameters = mock(Parameters)
 

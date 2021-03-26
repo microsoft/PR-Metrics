@@ -1,11 +1,9 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import * as taskLib from 'azure-pipelines-task-lib/task'
-
 import { IExecSyncOptions, IExecSyncResult } from 'azure-pipelines-task-lib/toolrunner'
-
 import { singleton } from 'tsyringe'
+import * as taskLib from 'azure-pipelines-task-lib/task'
 
 /**
  * A wrapper around the Azure Pipelines Task Lib, to facilitate testability.
@@ -18,6 +16,19 @@ export default class TaskLibWrapper {
    */
   public debug (message: string): void {
     taskLib.debug(message)
+  }
+
+
+  /**
+ * Applies glob patterns to a list of paths. Supports interleaved exclude patterns.
+ *
+ * @param  list         array of paths
+ * @param  patterns     patterns to apply. supports interleaved exclude patterns.
+ * @param  patternRoot  optional. default root to apply to unrooted patterns. not applied to basename-only patterns when matchBase:true.
+ * @param  options      optional. defaults to { dot: true, nobrace: true, nocase: process.platform == 'win32' }.
+   */
+   public match (list: string[], patterns: string[] | string, patternRoot?: string, options?: taskLib.MatchOptions): string[] {
+    return taskLib.match(list, patterns, patternRoot, options)
   }
 
   /**
