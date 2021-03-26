@@ -5,9 +5,9 @@
  * A class representing data about the pull request comments to be added and updated.
  */
 export default class PullRequestCommentsData {
-  private _isPresent: boolean = false
-  private _threadId: number | null = null
-  private _commentId: number | null = null
+  private _isMetricsCommentPresent: boolean = false
+  private _metricsCommentThreadId: number | null = null
+  private _metricsCommentId: number | null = null
   private _ignoredFilesWithLinesAdded: string[] = []
   private _ignoredFilesWithoutLinesAdded: string[] = []
 
@@ -25,48 +25,48 @@ export default class PullRequestCommentsData {
    * Gets a value indicating whether the metrics comment for the current iteration is already present.
    * @returns A value indicating whether the metrics comment for the current iteration is already present.
    */
-  public get isPresent (): boolean {
-    return this._isPresent
+  public get isMetricsCommentPresent (): boolean {
+    return this._isMetricsCommentPresent
   }
 
   /**
    * Sets a value indicating whether the metrics comment for the current iteration is already present.
    * @param value A value indicating whether the metrics comment for the current iteration is already present.
    */
-  public set isPresent (value: boolean) {
-    this._isPresent = value
+  public set isMetricsCommentPresent (value: boolean) {
+    this._isMetricsCommentPresent = value
   }
 
   /**
    * Gets the ID of the metrics comment thread.
    * @returns The ID of the metrics comment thread.
    */
-  public get threadId (): number | null {
-    return this._threadId
+  public get metricsCommentThreadId (): number | null {
+    return this._metricsCommentThreadId
   }
 
   /**
    * Sets the ID of the metrics comment thread.
    * @param value The ID of the metrics comment thread.
    */
-  public set threadId (value: number | null) {
-    this._threadId = value
+  public set metricsCommentThreadId (value: number | null) {
+    this._metricsCommentThreadId = value
   }
 
   /**
    * Gets the ID of the last comment in the metrics comment thread.
    * @returns The ID of the last comment in the metrics comment thread.
    */
-  public get commentId (): number | null {
-    return this._commentId
+  public get metricsCommentId (): number | null {
+    return this._metricsCommentId
   }
 
   /**
    * Sets the ID of the last comment in the metrics comment thread.
    * @param value The ID of the last comment in the metrics comment thread.
    */
-  public set commentId (value: number | null) {
-    this._commentId = value
+  public set metricsCommentId (value: number | null) {
+    this._metricsCommentId = value
   }
 
   /**

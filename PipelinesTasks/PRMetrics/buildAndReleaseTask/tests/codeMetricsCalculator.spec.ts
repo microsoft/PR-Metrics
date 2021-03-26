@@ -139,7 +139,7 @@ describe('codeMetricsCalculator.ts', (): void => {
       // Arrange
       when(azureReposInvoker.getCurrentIteration()).thenResolve(1)
       const commentData: PullRequestCommentsData = new PullRequestCommentsData([], [])
-      commentData.isPresent = true
+      commentData.isMetricsCommentPresent = true
       when(pullRequestComments.getCommentData(1)).thenResolve(commentData)
       const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(codeMetrics), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
 
@@ -154,8 +154,8 @@ describe('codeMetricsCalculator.ts', (): void => {
       // Arrange
       when(azureReposInvoker.getCurrentIteration()).thenResolve(1)
       const commentData: PullRequestCommentsData = new PullRequestCommentsData([], [])
-      commentData.threadId = 1
-      commentData.commentId = 2
+      commentData.metricsCommentThreadId = 1
+      commentData.metricsCommentId = 2
       when(pullRequestComments.getCommentData(1)).thenResolve(commentData)
       when(pullRequestComments.getMetricsComment(1)).thenReturn('Description')
       when(pullRequestComments.getMetricsCommentStatus()).thenReturn(CommentThreadStatus.Active)
@@ -210,8 +210,8 @@ describe('codeMetricsCalculator.ts', (): void => {
       // Arrange
       when(azureReposInvoker.getCurrentIteration()).thenResolve(1)
       const commentData: PullRequestCommentsData = new PullRequestCommentsData([], [])
-      commentData.threadId = 1
-      commentData.commentId = 2
+      commentData.metricsCommentThreadId = 1
+      commentData.metricsCommentId = 2
       when(pullRequestComments.getCommentData(1)).thenResolve(commentData)
       when(pullRequestComments.getMetricsComment(1)).thenReturn('Description')
       when(pullRequestComments.getMetricsCommentStatus()).thenReturn(CommentThreadStatus.Active)
@@ -351,7 +351,7 @@ describe('codeMetricsCalculator.ts', (): void => {
           // Arrange
           when(azureReposInvoker.getCurrentIteration()).thenResolve(1)
           const commentData: PullRequestCommentsData = new PullRequestCommentsData(data[0], data[1])
-          commentData.isPresent = true
+          commentData.isMetricsCommentPresent = true
           when(pullRequestComments.getCommentData(1)).thenResolve(commentData)
           when(pullRequestComments.ignoredComment).thenReturn('Ignored')
           when(azureReposInvoker.createCommentThread('Ignored', 'file1.ts', true)).thenResolve({ id: 1 })
@@ -381,7 +381,7 @@ describe('codeMetricsCalculator.ts', (): void => {
       // Arrange
       when(azureReposInvoker.getCurrentIteration()).thenResolve(1)
       const commentData: PullRequestCommentsData = new PullRequestCommentsData(['file1.ts'], [])
-      commentData.isPresent = true
+      commentData.isMetricsCommentPresent = true
       when(pullRequestComments.getCommentData(1)).thenResolve(commentData)
       when(pullRequestComments.ignoredComment).thenReturn('Ignored')
       when(azureReposInvoker.createCommentThread('Ignored', 'file1.ts', true)).thenResolve({})

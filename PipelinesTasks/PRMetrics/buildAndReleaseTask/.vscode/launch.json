@@ -90,15 +90,11 @@
       "type": "node",
       "request": "launch",
       "name": "Test",
-      "args": [
-        "-u",
-        "bdd",
-        "--timeout",
-        "999999",
-        "--colors",
-        "${workspaceFolder}/tests/**/*.spec.js"
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run-script",
+        "test"
       ],
-      "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
       "skipFiles": [
         "<node_internals>/**"
       ],

@@ -84,7 +84,7 @@ export default class CodeMetricsCalculator {
 
     const currentIteration: number = await this._azureReposInvoker.getCurrentIteration()
     const commentData: PullRequestCommentsData = await this._pullRequestComments.getCommentData(currentIteration)
-    if (!commentData.isPresent) {
+    if (!commentData.isMetricsCommentPresent) {
       promises.push(this.updateMetricsComment(commentData, currentIteration))
       promises.push(this.addMetadata())
     }
@@ -104,15 +104,15 @@ export default class CodeMetricsCalculator {
     this._taskLibWrapper.debug('* CodeMetricsCalculator.updateMetricsComment()')
 
     const comment: string = this._pullRequestComments.getMetricsComment(currentIteration)
-    if (commentData.threadId !== null) {
-      await this._azureReposInvoker.createComment(commentData.threadId, commentData.commentId!, comment)
+    if (commentData.metricsCommentThreadId !== null) {
+      await this._azureReposInvoker.createComment(commentData.metricsCommentThreadId, commentData.metricsCommentId!, comment)
     } else {
       const commentThread: GitPullRequestCommentThread = await this._azureReposInvoker.createCommentThread(comment, null, true)
-      commentData.threadId = Validator.validateField(commentThread.id, 'id', 'CodeMetricsCalculator.updateMetricsComment()')
+      commentData.metricsCommentThreadId = Validator.validateField(commentThread.id, 'id', 'CodeMetricsCalculator.updateMetricsComment()')
     }
 
     const status: CommentThreadStatus = this._pullRequestComments.getMetricsCommentStatus()
-    await this._azureReposInvoker.setCommentThreadStatus(commentData.threadId, status)
+    await this._azureReposInvoker.setCommentThreadStatus(commentData.metricsCommentThreadId, status)
   }
 
   private async addMetadata (): Promise<void> {
