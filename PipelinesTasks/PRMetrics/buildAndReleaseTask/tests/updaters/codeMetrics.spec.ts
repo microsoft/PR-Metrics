@@ -269,6 +269,47 @@ describe('codeMetrics.ts', (): void => {
 
       async.each(
         [
+          { file1: '-', file2: 8, file3: 4 },
+          { file1: '-', file2: 5, file3: 4 },
+          { file1: '-', file2: 7, file3: 4 }
+        ], (entryObj): void => {
+          it('should set all input values when all are specified', (): void => {
+            // Arrange
+            when(parameters.baseSize).thenReturn(5)
+            when(parameters.growthRate).thenReturn(40)
+            when(parameters.testFactor).thenReturn(20)
+            when(parameters.fileMatchingPatterns).thenReturn(['*.js', '*.ts'])
+            when(parameters.codeFileExtensions).thenReturn(['*.js', '*.ts'])
+
+            const codeMetrics: CodeMetrics = new CodeMetrics(instance(parameters), instance(taskLibWrapper))
+            const gitDiffSummary: string = `${entryObj.file1}    1    File1.js\n${entryObj.file2}    9    File2.ts\n${entryObj.file3}    -    File.dll\n`
+
+            const expectedMetrics: CodeMetricsData = new CodeMetricsData(entryObj.file2, 0, entryObj.file3)
+
+            // Act
+            codeMetrics.initialize(gitDiffSummary)
+
+            // Assert
+            expect(codeMetrics.metrics.testCode).to.equal(expectedMetrics.testCode)
+            expect(codeMetrics.metrics.productCode).to.equal(expectedMetrics.productCode)
+            expect(codeMetrics.metrics.ignoredCode).to.equal(expectedMetrics.ignoredCode)
+            expect(codeMetrics.metrics).to.deep.equal(expectedMetrics)
+            expect(codeMetrics.ignoredFilesWithLinesAdded).to.deep.equal(['File.dll'])
+            expect(codeMetrics.ignoredFilesWithoutLinesAdded).to.deep.equal([])
+            // expect(codeMetrics.size).to.equal('S')
+            verify(taskLibWrapper.debug('* CodeMetrics.initialize()')).once()
+            verify(taskLibWrapper.debug('* CodeMetrics.initializeMetrics()')).once()
+            verify(taskLibWrapper.debug('* CodeMetrics.constructMetrics()')).once()
+            verify(taskLibWrapper.debug('* CodeMetrics.createFileMetricsMap()')).twice()
+            verify(taskLibWrapper.debug('* CodeMetrics.initializeSizeIndicator()')).once()
+            verify(taskLibWrapper.debug('* CodeMetrics.calculateSize()')).once()
+            verify(taskLibWrapper.debug('* CodeMetrics.ignoredFilesWithLinesAdded')).once()
+            verify(taskLibWrapper.debug('* CodeMetrics.ignoredFilesWithoutLinesAdded')).once()
+          })
+        })
+
+      async.each(
+        [
           { file1: 9, file2: 8, file3: 2 },
           { file1: 20, file2: 5, file3: 4 },
           { file1: 1, file2: 7, file3: 1 }
