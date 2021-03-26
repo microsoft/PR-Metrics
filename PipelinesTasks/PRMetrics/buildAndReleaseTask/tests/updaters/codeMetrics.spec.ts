@@ -48,31 +48,80 @@ describe('codeMetrics.ts', (): void => {
     when(taskLibWrapper.loc('updaters.codeMetrics.titleSizeIndicatorFormat', localizations.titleSizeS, localizations.titleTestsInsufficient)).thenReturn(localizations.titleSizeS + localizations.titleTestsInsufficient)
     when(taskLibWrapper.loc('updaters.codeMetrics.titleSizeIndicatorFormat', localizations.titleSizeM, localizations.titleTestsSufficient)).thenReturn(localizations.titleSizeM + localizations.titleTestsSufficient)
     when(taskLibWrapper.loc('updaters.codeMetrics.titleSizeIndicatorFormat', localizations.titleSizeM, localizations.titleTestsInsufficient)).thenReturn(localizations.titleSizeM + localizations.titleTestsInsufficient)
+
+    when(taskLibWrapper.loc('updaters.codeMetrics.titleSizeIndicatorFormat', localizations.titleSizeXS, '')).thenReturn(localizations.titleSizeS)
+    when(taskLibWrapper.loc('updaters.codeMetrics.titleSizeIndicatorFormat', localizations.titleSizeXS, '')).thenReturn(localizations.titleSizeXS)
+    when(taskLibWrapper.loc('updaters.codeMetrics.titleSizeIndicatorFormat', localizations.titleSizeS, '')).thenReturn(localizations.titleSizeS)
+    when(taskLibWrapper.loc('updaters.codeMetrics.titleSizeIndicatorFormat', localizations.titleSizeS, '')).thenReturn(localizations.titleSizeS)
+    when(taskLibWrapper.loc('updaters.codeMetrics.titleSizeIndicatorFormat', localizations.titleSizeM, '')).thenReturn(localizations.titleSizeM)
+    when(taskLibWrapper.loc('updaters.codeMetrics.titleSizeIndicatorFormat', localizations.titleSizeM, '')).thenReturn(localizations.titleSizeM)
   })
 
   describe('initialize', (): void => {
-    async.each(
-      [
-        { productCode: 0, baseSize: 5 },
-        { productCode: 5, baseSize: 4 },
-        { productCode: 20, baseSize: 12 },
-        { productCode: 7, baseSize: 7 }
-      ], (entryObj): void => {
-        it('isSmall', (): void => {
-          // Arrage
-          when(parameters.baseSize).thenReturn(entryObj.baseSize)
+    describe('isSmall function', (): void => {
+      async.each(
+        [
+          { productCode: 0, baseSize: 5 },
+          { productCode: 5, baseSize: 4 },
+          { productCode: 20, baseSize: 12 },
+          { productCode: 7, baseSize: 7 }
+        ], (entryObj): void => {
+          it('isSmall', (): void => {
+            // Arrage
+            when(parameters.baseSize).thenReturn(entryObj.baseSize)
 
-          const codeMetrics: CodeMetrics = new CodeMetrics(instance(parameters), instance(taskLibWrapper))
-          const gitDiffSummary: string = `${entryObj.productCode}    5    File1.js`
+            const codeMetrics: CodeMetrics = new CodeMetrics(instance(parameters), instance(taskLibWrapper))
+            const gitDiffSummary: string = `${entryObj.productCode}    5    File1.js`
 
-          // Act
-          codeMetrics.initialize(gitDiffSummary)
+            // Act
+            codeMetrics.initialize(gitDiffSummary)
 
-          // Assert
-          expect(codeMetrics.isSmall).to.equal(entryObj.productCode <= entryObj.baseSize)
-          verify(taskLibWrapper.debug('* CodeMetrics.isSmall')).once()
+            // Assert
+            expect(codeMetrics.isSmall).to.equal(entryObj.productCode <= entryObj.baseSize)
+            verify(taskLibWrapper.debug('* CodeMetrics.isSmall')).once()
+          })
         })
+    })
+
+    describe('isSufficientlyTested function', (): void => {
+      async.each(
+        [
+          { productCode: 0, testCode: 5, testFactor: 0 },
+          { productCode: 5, testCode: 4, testFactor: 8 },
+          { productCode: 20, testCode: 12, testFactor: 2 },
+          { productCode: 7, testCode: 40, testFactor: 0 }
+        ], (entryObj): void => {
+          it('isSufficientlyTested', (): void => {
+            // Arrage
+            when(parameters.testFactor).thenReturn(entryObj.testFactor)
+
+            const codeMetrics: CodeMetrics = new CodeMetrics(instance(parameters), instance(taskLibWrapper))
+            const gitDiffSummary: string = `${entryObj.productCode}    5    File1.js\n${entryObj.testCode}    5    File1Test.js`
+
+            // Act
+            codeMetrics.initialize(gitDiffSummary)
+
+            // Assert
+            expect(codeMetrics.isSufficientlyTested).to.equal(entryObj.testCode >= (entryObj.productCode * entryObj.testFactor))
+            verify(taskLibWrapper.debug('* CodeMetrics.isSufficientlyTested')).thrice()
+          })
+        })
+
+      it('isSufficientlyTested', (): void => {
+        // Arrage
+        when(parameters.testFactor).thenReturn(null)
+
+        const codeMetrics: CodeMetrics = new CodeMetrics(instance(parameters), instance(taskLibWrapper))
+        const gitDiffSummary: string = '5    5    File1.js\n5    5    File1Test.js'
+
+        // Act
+        codeMetrics.initialize(gitDiffSummary)
+
+        // Assert
+        expect(codeMetrics.isSufficientlyTested).to.equal(null)
+        verify(taskLibWrapper.debug('* CodeMetrics.isSufficientlyTested')).twice()
       })
+    })
 
     describe('initializer function', (): void => {
       async.each(
