@@ -1,4 +1,6 @@
 {
+  "$schema": "https://raw.githubusercontent.com/JamesNK/Newtonsoft.Json.Schema/master/Src/Newtonsoft.Json.Schema.Tests/Resources/Schemas/resjson.json",
+
   "loc.description": "Updates the title, description, and comments of pull requests to provide at-a-glance metrics.",
   "loc.description.comment": "The description of the task.",
 
@@ -95,11 +97,11 @@
   "loc.messages.updaters.pullRequest.titleFormat": "%s ◾ %s",
   "loc.messages.updaters.pullRequest.titleFormat.comment": "The title format. The first placeholder will be replaced by the title size and test coverage prefix, and the second placeholder will be replaced by the original pull request title.",
 
-  "loc.messages.updaters.pullRequestComments.commentTitle": "# Metrics for iteration %s",
-  "loc.messages.updaters.pullRequestComments.commentTitle.comment": "The title of the comment added to pull requests. The placeholder will be replaced by the number of the pull request iteration.",
-
   "loc.messages.updaters.pullRequestComments.commentFooter": "[Metrics added by PR Metrics. Add to Azure DevOps today!](https://marketplace.visualstudio.com/items?itemName=ms-omex.prmetrics)",
   "loc.messages.updaters.pullRequestComments.commentFooter.comment": "The footer of the comment added to pull requests.",
+
+  "loc.messages.updaters.pullRequestComments.commentTitle": "# Metrics for iteration %s",
+  "loc.messages.updaters.pullRequestComments.commentTitle.comment": "The title of the comment added to pull requests. The placeholder will be replaced by the number of the pull request iteration.",
 
   "loc.messages.updaters.pullRequestComments.fileIgnoredComment": "❗ **This file may not need to be reviewed.**",
   "loc.messages.updaters.pullRequestComments.fileIgnoredComment.comment": "The comment added to files that are ignored.",
