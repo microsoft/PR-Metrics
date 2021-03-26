@@ -58,6 +58,21 @@ describe('codeMetrics.ts', (): void => {
   })
 
   describe('initialize', (): void => {
+    describe('size indicator test', (): void => {
+      it('should be XS', (): void => {
+      // Arrage
+
+        const codeMetrics: CodeMetrics = new CodeMetrics(instance(parameters), instance(taskLibWrapper))
+        const gitDiffSummary: string = '0    0    File1.js'
+
+        // Act
+        codeMetrics.initialize(gitDiffSummary)
+
+        // Assert
+        expect(codeMetrics.size).to.equal('XS')
+      })
+    })
+
     describe('isSmall function', (): void => {
       async.each(
         [
