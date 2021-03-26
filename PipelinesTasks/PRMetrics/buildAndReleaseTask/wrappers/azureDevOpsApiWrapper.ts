@@ -20,11 +20,11 @@ export default class AzureDevOpsApiWrapper {
   }
 
   /**
-    * Gets a web API instance on which the Azure DevOps operations can be invoked.
-    * @param defaultUrl The default URL, which represents the base URL on which the operations are to be invoked.
-    * @param authHandler The authentication handler instance.
-    * @returns The web API instance.
-    */
+   * Gets a web API instance on which the Azure DevOps operations can be invoked.
+   * @param defaultUrl The default URL, which represents the base URL on which the operations are to be invoked.
+   * @param authHandler The authentication handler instance.
+   * @returns The web API instance.
+   */
   public getWebApiInstance (defaultUrl: string, authHandler: IRequestHandler): azureDevOpsApi.WebApi {
     return new azureDevOpsApi.WebApi(defaultUrl, authHandler)
   }
