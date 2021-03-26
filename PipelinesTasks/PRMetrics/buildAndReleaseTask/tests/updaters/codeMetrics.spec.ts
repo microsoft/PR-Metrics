@@ -1,6 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
+
 import 'reflect-metadata'
+
 import { instance, mock, verify, when } from 'ts-mockito'
 
 import CodeMetrics from '../../updaters/codeMetrics'
@@ -62,6 +64,22 @@ describe('codeMetrics.ts', (): void => {
       it('should be XS', (): void => {
       // Arrage
 
+        const codeMetrics: CodeMetrics = new CodeMetrics(instance(parameters), instance(taskLibWrapper))
+        const gitDiffSummary: string = '0    0    File1.js'
+
+        // Act
+        codeMetrics.initialize(gitDiffSummary)
+
+        // Assert
+        expect(codeMetrics.size).to.equal('XS')
+      })
+
+      it('should be XS', (): void => {
+        // Arrage
+
+        when(parameters.baseSize).thenReturn(0)
+        when(parameters.growthRate).thenReturn(0)
+        when(parameters.testFactor).thenReturn(0)
         const codeMetrics: CodeMetrics = new CodeMetrics(instance(parameters), instance(taskLibWrapper))
         const gitDiffSummary: string = '0    0    File1.js'
 
