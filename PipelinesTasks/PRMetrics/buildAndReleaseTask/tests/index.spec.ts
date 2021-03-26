@@ -18,7 +18,6 @@ describe('index.ts', (): void => {
     task.run()
 
     // Assert
-    expect(Number(1000).toLocaleString()).to.equal('1,000')
     expect(task.succeeded).to.equal(true)
     expect(task.warningIssues).to.deep.equal([])
     expect(task.errorIssues).to.deep.equal([])
