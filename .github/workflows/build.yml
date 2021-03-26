@@ -43,7 +43,7 @@ jobs:
         working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask
 
       - name: Test
-        run: npm test
+        run: npm run test:pipeline
         working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask
 
       - name: Remove 'node_modules'
@@ -164,4 +164,27 @@ jobs:
         with:
           json-file: PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask/task.json
           json-schema: tasks.schema.json
+          use-draft: draft-07
+
+      - name: Validate task.loc.json
+        uses: Zingabopp/JsonValidate-Action@v1
+        with:
+          json-file: PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask/task.loc.json
+          json-schema: tasks.schema.json
+          use-draft: draft-07
+
+      - name: Download resjson.schema.json
+        run: Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/JamesNK/Newtonsoft.Json.Schema/master/Src/Newtonsoft.Json.Schema.Tests/Resources/Schemas/resjson.json' -OutFile 'resjson.schema.json'
+
+      - name: Update resjson.schema.json
+        run: |-
+          $FileContent = Get-Content -Path 'resjson.schema.json' -Raw
+          $FileContent = $FileContent -replace 'draft-04', 'draft-07'
+          Set-Content -NoNewline -Path 'resjson.schema.json' -Value $FileContent
+
+      - name: Validate en-US/resources.resjson
+        uses: Zingabopp/JsonValidate-Action@v1
+        with:
+          json-file: PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask/Strings/resources.resjson/en-US/resources.resjson
+          json-schema: resjson.schema.json
           use-draft: draft-07

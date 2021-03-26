@@ -39,17 +39,17 @@ describe('codeMetricsCalculator.ts', (): void => {
     when(taskLibWrapper.loc('codeMetricsCalculator.noPullRequest')).thenReturn('The build is not running against a pull request. Canceling task with warning.')
   })
 
-  describe('isRunnable', (): void => {
-    it('should return null when runnable', (): void => {
+  describe('shouldSkip', (): void => {
+    it('should return null when the task should not be skipped', (): void => {
       // Arrange
       const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(codeMetrics), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
 
       // Act
-      const result: string | null = codeMetricsCalculator.isRunnable
+      const result: string | null = codeMetricsCalculator.shouldSkip
 
       // Assert
       expect(result).to.equal(null)
-      verify(taskLibWrapper.debug('* CodeMetricsCalculator.isRunnable')).once()
+      verify(taskLibWrapper.debug('* CodeMetricsCalculator.shouldSkip')).once()
     })
 
     it('should return the appropriate message when not a pull request', (): void => {
@@ -58,11 +58,25 @@ describe('codeMetricsCalculator.ts', (): void => {
       const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(codeMetrics), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
 
       // Act
-      const result: string | null = codeMetricsCalculator.isRunnable
+      const result: string | null = codeMetricsCalculator.shouldSkip
 
       // Assert
       expect(result).to.equal('The build is not running against a pull request. Canceling task with warning.')
-      verify(taskLibWrapper.debug('* CodeMetricsCalculator.isRunnable')).once()
+      verify(taskLibWrapper.debug('* CodeMetricsCalculator.shouldSkip')).once()
+    })
+  })
+
+  describe('shouldTerminate', (): void => {
+    it('should return null when the task should not terminate', (): void => {
+      // Arrange
+      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(codeMetrics), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
+
+      // Act
+      const result: string | null = codeMetricsCalculator.shouldTerminate
+
+      // Assert
+      expect(result).to.equal(null)
+      verify(taskLibWrapper.debug('* CodeMetricsCalculator.shouldTerminate')).once()
     })
 
     it('should return the appropriate message when no access token is available', (): void => {
@@ -71,11 +85,11 @@ describe('codeMetricsCalculator.ts', (): void => {
       const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(codeMetrics), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
 
       // Act
-      const result: string | null = codeMetricsCalculator.isRunnable
+      const result: string | null = codeMetricsCalculator.shouldTerminate
 
       // Assert
       expect(result).to.equal('Could not access the OAuth token. Enable the option \'Allow scripts to access OAuth token\' under the build process phase settings.')
-      verify(taskLibWrapper.debug('* CodeMetricsCalculator.isRunnable')).once()
+      verify(taskLibWrapper.debug('* CodeMetricsCalculator.shouldTerminate')).once()
     })
   })
 
@@ -139,7 +153,7 @@ describe('codeMetricsCalculator.ts', (): void => {
       // Arrange
       when(azureReposInvoker.getCurrentIteration()).thenResolve(1)
       const commentData: PullRequestCommentsData = new PullRequestCommentsData([], [])
-      commentData.isPresent = true
+      commentData.isMetricsCommentPresent = true
       when(pullRequestComments.getCommentData(1)).thenResolve(commentData)
       const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(codeMetrics), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
 
@@ -154,8 +168,8 @@ describe('codeMetricsCalculator.ts', (): void => {
       // Arrange
       when(azureReposInvoker.getCurrentIteration()).thenResolve(1)
       const commentData: PullRequestCommentsData = new PullRequestCommentsData([], [])
-      commentData.threadId = 1
-      commentData.commentId = 2
+      commentData.metricsCommentThreadId = 1
+      commentData.metricsCommentId = 2
       when(pullRequestComments.getCommentData(1)).thenResolve(commentData)
       when(pullRequestComments.getMetricsComment(1)).thenReturn('Description')
       when(pullRequestComments.getMetricsCommentStatus()).thenReturn(CommentThreadStatus.Active)
@@ -210,8 +224,8 @@ describe('codeMetricsCalculator.ts', (): void => {
       // Arrange
       when(azureReposInvoker.getCurrentIteration()).thenResolve(1)
       const commentData: PullRequestCommentsData = new PullRequestCommentsData([], [])
-      commentData.threadId = 1
-      commentData.commentId = 2
+      commentData.metricsCommentThreadId = 1
+      commentData.metricsCommentId = 2
       when(pullRequestComments.getCommentData(1)).thenResolve(commentData)
       when(pullRequestComments.getMetricsComment(1)).thenReturn('Description')
       when(pullRequestComments.getMetricsCommentStatus()).thenReturn(CommentThreadStatus.Active)
@@ -351,7 +365,7 @@ describe('codeMetricsCalculator.ts', (): void => {
           // Arrange
           when(azureReposInvoker.getCurrentIteration()).thenResolve(1)
           const commentData: PullRequestCommentsData = new PullRequestCommentsData(data[0], data[1])
-          commentData.isPresent = true
+          commentData.isMetricsCommentPresent = true
           when(pullRequestComments.getCommentData(1)).thenResolve(commentData)
           when(pullRequestComments.ignoredComment).thenReturn('Ignored')
           when(azureReposInvoker.createCommentThread('Ignored', 'file1.ts', true)).thenResolve({ id: 1 })
@@ -381,7 +395,7 @@ describe('codeMetricsCalculator.ts', (): void => {
       // Arrange
       when(azureReposInvoker.getCurrentIteration()).thenResolve(1)
       const commentData: PullRequestCommentsData = new PullRequestCommentsData(['file1.ts'], [])
-      commentData.isPresent = true
+      commentData.isMetricsCommentPresent = true
       when(pullRequestComments.getCommentData(1)).thenResolve(commentData)
       when(pullRequestComments.ignoredComment).thenReturn('Ignored')
       when(azureReposInvoker.createCommentThread('Ignored', 'file1.ts', true)).thenResolve({})
