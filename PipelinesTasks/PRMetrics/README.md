@@ -168,7 +168,7 @@ comprehensive and thorough code coverage metrics. Instead, the task should
 merely be considered a guideline for influencing optimal PR behavior.
 
 The task can be built using `npm run build` from the `buildAndReleaseTask`
-folder.
+folder. `npm run clean` can be used to clean the build outputs.
 
 ## Testing
 
@@ -184,6 +184,9 @@ should be maintained for all changes. There are a large number of edge cases
 which were only discovered through experience and the unit tests ensure that
 these edge case solutions do not regress. Moreover, validating this extension on
 the server is significantly more time consuming than validating locally.
+
+You can use `npm run debug` for limited local testing, and `npm run deploy` for
+server-based testing.
 
 The code formatting complies with the [ESLint][eslint] "Standard" rules. The
 formatting can be checked and automatically fixed by running `npm run lint`
@@ -202,6 +205,72 @@ Unfortunately, it is not possible to automatically test everything. Therefore,
 it is recommended that you perform the following manual test cases whenever
 significant changes are made. These don't cover all possible scenarios, but they
 should combine with the unit tests to provide a high level of coverage.
+
+1. Create an [Azure Pipelines build task][docsbuildtask] including PR Metrics.
+   Do not allow [access to the OAuth token][docsoauth]. Run the pipeline against
+   any branch. Ensure that the task is skipped as it is not running against a
+   PR.
+1. Make your build task a [requirement for a custom branch][docsbranch], and
+   create a PR against that branch. In the PR:
+   - create `file.ts` with 10 lines
+   - create `fileTest.cs` with 20 lines
+   - create `file.ignored` with 30 lines
+   - rename an existing file in the repo to `temporary1.ts`
+   - rename an existing file in the repo to `temporary2.ts`
+   - add 5 lines to `temporary2.ts`
+   Leave the description blank. After creating the PR, check the status of the
+   build task. It should fail with an error as the OAuth token cannot be
+   accessed.
+1. Modify the build task definition to provide
+   [access to the OAuth token][docsoauth]. Go back to your PR and click
+   "Re-queue" next to the build failure. This time, the task should succeed. The
+   title should be prefixed with "XS:heavy_check_mark: :black_small_square:",
+   the description should be changed to ":x: Please add a description.", and
+   the metrics comment should be added to the PR with the following details:
+   - :heavy_check_mark: Thanks for keeping your pull request small.
+   - :heavy_check_mark: Thanks for adding tests.
+   - Product code: 15
+   - Test code: 20
+   - Subtotal: 35
+   - Ignored: 30
+   - Total: 65
+1. Modify the build task definition to change the parameters to the following:
+   - Base size: 1
+   - Growth rate: 1
+   - Test factor: 100
+   - File matching patterns: \*\*/file*
+   - Code file extensions: ts
+   Push a new change to the build, adding 1 more line to `file.ignored`. The
+   build will re-run and you should see the title prefix updated to
+   "XL:warning: :black_small_square:". A new comment corresponding to the new
+   iteration will be added to the thread, which should have the following
+   details:
+   - :x: Try to keep pull requests smaller than 1 lines of new product code by
+     following the Single Responsibility Principle (SRP).
+   - :warning: Consider adding additional tests.
+   - Product code: 10
+   - Test code: 0
+   - Subtotal: 10
+   - Ignored: 56
+   - Total: 66
+   `temporary1.ts` and `temporary2.ts` should both include the closed comment
+   ":exclamation: This file may not need to be reviewed."
+1. Modify the build task definition to change the "test factor" parameter to "0"
+   (not blank). Push a new change to the build, adding 1 more line to
+   `file.ignored`. The build will re-run and you should see the title prefix
+   updated to "XL :black_small_square:". A new comment corresponding to the new
+   iteration will be added to the thread, which should have the following
+   details:
+   - :x: Try to keep pull requests smaller than 1 lines of new product code by
+     following the Single Responsibility Principle (SRP).
+   - Product code: 10
+   - Test code: 0
+   - Subtotal: 10
+   - Ignored: 57
+   - Total: 67
+1. Without pushing addition changes, go back to your PR and click "Re-queue"
+   next to the build. The build should success but no changes should be made to
+   the PR.
 
 ## Debugging
 
@@ -347,3 +416,6 @@ y
 [eslint]: https://eslint.org/
 [typedoc]: https://typedoc.org/
 [depinjection]: https://wikipedia.org/wiki/Dependency_injection
+[docsbuildtask]: https://docs.microsoft.com/azure/devops/pipelines/create-first-pipeline
+[docsoauth]: https://docs.microsoft.com/azure/devops/pipelines/build/options#allow-scripts-to-access-the-oauth-token
+[docsbranch]: https://docs.microsoft.com/azure/devops/repos/git/branch-policies#build-validation
