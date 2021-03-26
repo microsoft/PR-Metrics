@@ -118,136 +118,133 @@ describe('codeMetrics.ts', (): void => {
           })
         })
 
-      // async.each(
-      //   [
-      //     { file1: 9, file2: 8, file3: 2 },
-      //     { file1: 20, file2: 5, file3: 4 },
-      //     { file1: 1, file2: 7, file3: 1 }
-      //   ], (entryObj): void => {
-      //     it('unused files have some changes', (): void => {
+      async.each(
+        [
+          { file1: 9, file2: 8, file3: 2 },
+          { file1: 20, file2: 5, file3: 4 },
+          { file1: 1, file2: 7, file3: 1 }
+        ], (entryObj): void => {
+          it('unused files have some changes', (): void => {
+            // Arrange
+            when(parameters.baseSize).thenReturn(5)
+            when(parameters.growthRate).thenReturn(40)
+            when(parameters.testFactor).thenReturn(20)
+            when(parameters.fileMatchingPatterns).thenReturn(['js', 'ts'])
+            when(parameters.codeFileExtensions).thenReturn(['*.js', '*.ts'])
 
-      //       // Arrange
-      //       when(taskLibWrapper.getInput('BaseSize', false)).thenReturn('5.0')
-      //       when(taskLibWrapper.getInput('GrowthRate', false)).thenReturn('40')
-      //       when(taskLibWrapper.getInput('TestFactor', false)).thenReturn('20')
-      //       when(taskLibWrapper.getInput('FileMatchingPatterns', false)).thenReturn('js\nts')
-      //       when(taskLibWrapper.getInput('CodeFileExtensions', false)).thenReturn('js\nts')
+            const codeMetrics: CodeMetrics = new CodeMetrics(instance(parameters), instance(taskLibWrapper))
+            const gitDiffSummary: string = `${entryObj.file1}    1    File1.js\n${entryObj.file2}    9    File2.ts\n${entryObj.file3}    -    File.dll\n`
+            const expectedMetrics: CodeMetricsData = new CodeMetricsData(entryObj.file1 + entryObj.file2, 0, entryObj.file3)
 
-      //       const codeMetrics: CodeMetrics = new CodeMetrics(instance(parameters), instance(taskLibWrapper))
-      //       const gitDiffSummary: string = `${entryObj.file1}    1    File1.js\n${entryObj.file2}    9    File2.ts\n${entryObj.file3}    -    File.dll\n`
-      //       const expectedMetrics: CodeMetricsData = new CodeMetricsData(entryObj.file1 + entryObj.file2, 0, entryObj.file3)
+            // Act
+            codeMetrics.initialize(gitDiffSummary)
 
-      //       // Act
-      //       codeMetrics.initialize(gitDiffSummary)
+            // Assert
+            expect(codeMetrics.metrics.testCode).to.equal(expectedMetrics.testCode)
+            expect(codeMetrics.metrics.productCode).to.equal(expectedMetrics.productCode)
+            expect(codeMetrics.metrics.ignoredCode).to.equal(expectedMetrics.ignoredCode)
+            expect(codeMetrics.metrics).to.deep.equal(expectedMetrics)
+            expect(codeMetrics.ignoredFilesWithLinesAdded).to.deep.equal(['File.dll'])
+            expect(codeMetrics.ignoredFilesWithoutLinesAdded).to.deep.equal([])
+            expect(codeMetrics.sizeIndicator).to.equal('S')
+            verify(taskLibWrapper.debug('* CodeMetrics.initialize()')).once()
+            verify(taskLibWrapper.debug('* CodeMetrics.initializeMetrics()')).once()
+            verify(taskLibWrapper.debug('* CodeMetrics.extractFileMetrics()')).once()
+            verify(taskLibWrapper.debug('* CodeMetrics.filterFiles()')).once()
+            verify(taskLibWrapper.debug('* CodeMetrics.constructMetrics()')).once()
+            verify(taskLibWrapper.debug('* CodeMetrics.initializeSizeIndicator()')).once()
+            verify(taskLibWrapper.debug('* CodeMetrics.calculateSize()')).once()
+            verify(taskLibWrapper.debug('* CodeMetrics.ignoredFilesWithLinesAdded')).once()
+            verify(taskLibWrapper.debug('* CodeMetrics.ignoredFilesWithoutLinesAdded')).once()
+            verify(taskLibWrapper.debug('* CodeMetrics.sizeIndicator')).once()
+            verify(taskLibWrapper.debug('* CodeMetrics.metrics')).once()
+          })
+        })
 
-      //       // Assert
-      //       expect(codeMetrics.metrics.testCode).to.equal(expectedMetrics.testCode)
-      //       expect(codeMetrics.metrics.productCode).to.equal(expectedMetrics.productCode)
-      //       expect(codeMetrics.metrics.ignoredCode).to.equal(expectedMetrics.ignoredCode)
-      //       expect(codeMetrics.metrics).to.deep.equal(expectedMetrics)
-      //       expect(codeMetrics.ignoredFilesWithLinesAdded).to.deep.equal(['File.dll'])
-      //       expect(codeMetrics.ignoredFilesWithoutLinesAdded).to.deep.equal([])
-      //       expect(codeMetrics.sizeIndicator).to.equal('S')
-      //       verify(taskLibWrapper.debug('* CodeMetrics.initialize()')).once()
-      //       verify(taskLibWrapper.debug('* CodeMetrics.initializeMetrics()')).once()
-      //       verify(taskLibWrapper.debug('* CodeMetrics.extractFileMetrics()')).once()
-      //       verify(taskLibWrapper.debug('* CodeMetrics.filterFiles()')).once()
-      //       verify(taskLibWrapper.debug('* CodeMetrics.constructMetrics()')).once()
-      //       verify(taskLibWrapper.debug('* CodeMetrics.initializeSizeIndicator()')).once()
-      //       verify(taskLibWrapper.debug('* CodeMetrics.calculateSize()')).once()
-      //       verify(taskLibWrapper.debug('* CodeMetrics.ignoredFilesWithLinesAdded')).once()
-      //       verify(taskLibWrapper.debug('* CodeMetrics.ignoredFilesWithoutLinesAdded')).once()
-      //       verify(taskLibWrapper.debug('* CodeMetrics.sizeIndicator')).once()
-      //       verify(taskLibWrapper.debug('* CodeMetrics.metrics')).once()
-      //     })
-      //   })
+      async.each(
+        [
+          { file1: 9, file2: 8, file3: 2, testFile: 8 },
+          { file1: 20, file2: 5, file3: 4, testFile: 0 },
+          { file1: 1, file2: 7, file3: 1, testFile: 24 }
+        ], (entryObj): void => {
+          it('test files and unused files have some changes', (): void => {
+            // Arrange
+            when(parameters.baseSize).thenReturn(5)
+            when(parameters.growthRate).thenReturn(40)
+            when(parameters.testFactor).thenReturn(20)
+            when(parameters.fileMatchingPatterns).thenReturn(['js', 'ts'])
+            when(parameters.codeFileExtensions).thenReturn(['*.js', '*.ts'])
 
-      // async.each(
-      //   [
-      //     { file1: 9, file2: 8, file3: 2, testFile: 8 },
-      //     { file1: 20, file2: 5, file3: 4, testFile: 0 },
-      //     { file1: 1, file2: 7, file3: 1, testFile: 24 }
-      //   ], (entryObj): void => {
-      //     it('test files and unused files have some changes', (): void => {
-      //       // Arrange
+            const codeMetrics: CodeMetrics = new CodeMetrics(instance(parameters), instance(taskLibWrapper))
+            const gitDiffSummary: string = `${entryObj.file1}    1    File1.js\n${entryObj.file2}    9    File2.ts\n${entryObj.file3}    -    File.dll\n${entryObj.testFile}    8    FileTest1.ts`
+            const expectedMetrics: CodeMetricsData = new CodeMetricsData(entryObj.file1 + entryObj.file2, entryObj.testFile, entryObj.file3)
 
-      //       when(taskLibWrapper.getInput('BaseSize', false)).thenReturn('5.0')
-      //       when(taskLibWrapper.getInput('GrowthRate', false)).thenReturn('40')
-      //       when(taskLibWrapper.getInput('TestFactor', false)).thenReturn('20')
-      //       when(taskLibWrapper.getInput('FileMatchingPatterns', false)).thenReturn('js\nts')
-      //       when(taskLibWrapper.getInput('CodeFileExtensions', false)).thenReturn('js\nts')
+            // Act
+            codeMetrics.initialize(gitDiffSummary)
 
-      //       const codeMetrics: CodeMetrics = new CodeMetrics(instance(parameters), instance(taskLibWrapper))
-      //       const gitDiffSummary: string = `${entryObj.file1}    1    File1.js\n${entryObj.file2}    9    File2.ts\n${entryObj.file3}    -    File.dll\n${entryObj.testFile}    8    FileTest1.ts`
-      //       const expectedMetrics: CodeMetricsData = new CodeMetricsData(entryObj.file1 + entryObj.file2, entryObj.testFile, entryObj.file3)
+            // Assert
+            expect(codeMetrics.metrics.testCode).to.equal(expectedMetrics.testCode)
+            expect(codeMetrics.metrics.productCode).to.equal(expectedMetrics.productCode)
+            expect(codeMetrics.metrics.ignoredCode).to.equal(expectedMetrics.ignoredCode)
+            expect(codeMetrics.metrics).to.deep.equal(expectedMetrics)
+            expect(codeMetrics.ignoredFilesWithLinesAdded).to.deep.equal(['File.dll'])
+            expect(codeMetrics.ignoredFilesWithoutLinesAdded).to.deep.equal([])
+            expect(codeMetrics.sizeIndicator).to.equal('S')
+            verify(taskLibWrapper.debug('* CodeMetrics.initialize()')).once()
+            verify(taskLibWrapper.debug('* CodeMetrics.initializeMetrics()')).once()
+            verify(taskLibWrapper.debug('* CodeMetrics.extractFileMetrics()')).once()
+            verify(taskLibWrapper.debug('* CodeMetrics.filterFiles()')).once()
+            verify(taskLibWrapper.debug('* CodeMetrics.constructMetrics()')).once()
+            verify(taskLibWrapper.debug('* CodeMetrics.initializeSizeIndicator()')).once()
+            verify(taskLibWrapper.debug('* CodeMetrics.calculateSize()')).once()
+            verify(taskLibWrapper.debug('* CodeMetrics.ignoredFilesWithLinesAdded')).once()
+            verify(taskLibWrapper.debug('* CodeMetrics.ignoredFilesWithoutLinesAdded')).once()
+            verify(taskLibWrapper.debug('* CodeMetrics.sizeIndicator')).once()
+            verify(taskLibWrapper.debug('* CodeMetrics.metrics')).once()
+          })
+        })
 
-      //       // Act
-      //       codeMetrics.initialize(gitDiffSummary)
+      async.each(
+        [
+          { file1: 9, file2: 8, unusedFile: 2, testFile: 8, testFile2: 0 },
+          { file1: 20, file2: 5, unusedFile: 4, testFile: 0, testFile2: 7 },
+          { file1: 1, file2: 7, unusedFile: 1, testFile: 24, testFile2: 3 }
+        ], (entryObj): void => {
+          it('test files and unused files have some changes', (): void => {
+            // Arrange
+            when(parameters.baseSize).thenReturn(5)
+            when(parameters.growthRate).thenReturn(40)
+            when(parameters.testFactor).thenReturn(20)
+            when(parameters.fileMatchingPatterns).thenReturn(['js', 'ts'])
+            when(parameters.codeFileExtensions).thenReturn(['*.js', '*.ts'])
+            const codeMetrics: CodeMetrics = new CodeMetrics(instance(parameters), instance(taskLibWrapper))
+            const gitDiffSummary: string = `${entryObj.file1}    1    File1.js\n${entryObj.file2}    9    File2.ts\n${entryObj.unusedFile}    -    File.dll\n${entryObj.testFile}    8    FileTest1.ts\n${entryObj.testFile2} - fileT2.spec.ts`
+            const expectedMetrics: CodeMetricsData = new CodeMetricsData(entryObj.file1 + entryObj.file2, entryObj.testFile + entryObj.testFile2, entryObj.unusedFile)
 
-      //       // Assert
-      //       expect(codeMetrics.metrics.testCode).to.equal(expectedMetrics.testCode)
-      //       expect(codeMetrics.metrics.productCode).to.equal(expectedMetrics.productCode)
-      //       expect(codeMetrics.metrics.ignoredCode).to.equal(expectedMetrics.ignoredCode)
-      //       expect(codeMetrics.metrics).to.deep.equal(expectedMetrics)
-      //       expect(codeMetrics.ignoredFilesWithLinesAdded).to.deep.equal(['File.dll'])
-      //       expect(codeMetrics.ignoredFilesWithoutLinesAdded).to.deep.equal([])
-      //       expect(codeMetrics.sizeIndicator).to.equal('S')
-      //       verify(taskLibWrapper.debug('* CodeMetrics.initialize()')).once()
-      //       verify(taskLibWrapper.debug('* CodeMetrics.initializeMetrics()')).once()
-      //       verify(taskLibWrapper.debug('* CodeMetrics.extractFileMetrics()')).once()
-      //       verify(taskLibWrapper.debug('* CodeMetrics.filterFiles()')).once()
-      //       verify(taskLibWrapper.debug('* CodeMetrics.constructMetrics()')).once()
-      //       verify(taskLibWrapper.debug('* CodeMetrics.initializeSizeIndicator()')).once()
-      //       verify(taskLibWrapper.debug('* CodeMetrics.calculateSize()')).once()
-      //       verify(taskLibWrapper.debug('* CodeMetrics.ignoredFilesWithLinesAdded')).once()
-      //       verify(taskLibWrapper.debug('* CodeMetrics.ignoredFilesWithoutLinesAdded')).once()
-      //       verify(taskLibWrapper.debug('* CodeMetrics.sizeIndicator')).once()
-      //       verify(taskLibWrapper.debug('* CodeMetrics.metrics')).once()
-      //     })
-      //   })
+            // Act
+            codeMetrics.initialize(gitDiffSummary)
 
-      // async.each(
-      //   [
-      //     { file1: 9, file2: 8, unusedFile: 2, testFile: 8, testFile2: 0 },
-      //     { file1: 20, file2: 5, unusedFile: 4, testFile: 0, testFile2: 7 },
-      //     { file1: 1, file2: 7, unusedFile: 1, testFile: 24, testFile2: 3 }
-      //   ], (entryObj): void => {
-      //     it('test files and unused files have some changes', (): void => {
-      //       // Arrange
-
-      //       when(taskLibWrapper.getInput('BaseSize', false)).thenReturn('5.0')
-      //       when(taskLibWrapper.getInput('GrowthRate', false)).thenReturn('40')
-      //       when(taskLibWrapper.getInput('TestFactor', false)).thenReturn('20')
-      //       when(taskLibWrapper.getInput('FileMatchingPatterns', false)).thenReturn('js\nts')
-      //       when(taskLibWrapper.getInput('CodeFileExtensions', false)).thenReturn('js\nts')
-      //       const codeMetrics: CodeMetrics = new CodeMetrics(instance(parameters), instance(taskLibWrapper))
-      //       const gitDiffSummary: string = `${entryObj.file1}    1    File1.js\n${entryObj.file2}    9    File2.ts\n${entryObj.unusedFile}    -    File.dll\n${entryObj.testFile}    8    FileTest1.ts\n${entryObj.testFile2} - fileT2.spec.ts`
-      //       const expectedMetrics: CodeMetricsData = new CodeMetricsData(entryObj.file1 + entryObj.file2, entryObj.testFile + entryObj.testFile2, entryObj.unusedFile)
-
-      //       // Act
-      //       codeMetrics.initialize(gitDiffSummary)
-
-      //       // Assert
-      //       expect(codeMetrics.metrics.testCode).to.equal(expectedMetrics.testCode)
-      //       expect(codeMetrics.metrics.productCode).to.equal(expectedMetrics.productCode)
-      //       expect(codeMetrics.metrics.ignoredCode).to.equal(expectedMetrics.ignoredCode)
-      //       expect(codeMetrics.metrics).to.deep.equal(expectedMetrics)
-      //       expect(codeMetrics.ignoredFilesWithLinesAdded).to.deep.equal(['File.dll'])
-      //       expect(codeMetrics.ignoredFilesWithoutLinesAdded).to.deep.equal([])
-      //       expect(codeMetrics.sizeIndicator).to.equal('S')
-      //       verify(taskLibWrapper.debug('* CodeMetrics.initialize()')).once()
-      //       verify(taskLibWrapper.debug('* CodeMetrics.initializeMetrics()')).once()
-      //       verify(taskLibWrapper.debug('* CodeMetrics.extractFileMetrics()')).once()
-      //       verify(taskLibWrapper.debug('* CodeMetrics.filterFiles()')).once()
-      //       verify(taskLibWrapper.debug('* CodeMetrics.constructMetrics()')).once()
-      //       verify(taskLibWrapper.debug('* CodeMetrics.initializeSizeIndicator()')).once()
-      //       verify(taskLibWrapper.debug('* CodeMetrics.calculateSize()')).once()
-      //       verify(taskLibWrapper.debug('* CodeMetrics.ignoredFilesWithLinesAdded')).once()
-      //       verify(taskLibWrapper.debug('* CodeMetrics.ignoredFilesWithoutLinesAdded')).once()
-      //       verify(taskLibWrapper.debug('* CodeMetrics.sizeIndicator')).once()
-      //       verify(taskLibWrapper.debug('* CodeMetrics.metrics')).once()
-      //     })
-      //   })
+            // Assert
+            expect(codeMetrics.metrics.testCode).to.equal(expectedMetrics.testCode)
+            expect(codeMetrics.metrics.productCode).to.equal(expectedMetrics.productCode)
+            expect(codeMetrics.metrics.ignoredCode).to.equal(expectedMetrics.ignoredCode)
+            expect(codeMetrics.metrics).to.deep.equal(expectedMetrics)
+            expect(codeMetrics.ignoredFilesWithLinesAdded).to.deep.equal(['File.dll'])
+            expect(codeMetrics.ignoredFilesWithoutLinesAdded).to.deep.equal([])
+            expect(codeMetrics.sizeIndicator).to.equal('S')
+            verify(taskLibWrapper.debug('* CodeMetrics.initialize()')).once()
+            verify(taskLibWrapper.debug('* CodeMetrics.initializeMetrics()')).once()
+            verify(taskLibWrapper.debug('* CodeMetrics.extractFileMetrics()')).once()
+            verify(taskLibWrapper.debug('* CodeMetrics.filterFiles()')).once()
+            verify(taskLibWrapper.debug('* CodeMetrics.constructMetrics()')).once()
+            verify(taskLibWrapper.debug('* CodeMetrics.initializeSizeIndicator()')).once()
+            verify(taskLibWrapper.debug('* CodeMetrics.calculateSize()')).once()
+            verify(taskLibWrapper.debug('* CodeMetrics.ignoredFilesWithLinesAdded')).once()
+            verify(taskLibWrapper.debug('* CodeMetrics.ignoredFilesWithoutLinesAdded')).once()
+            verify(taskLibWrapper.debug('* CodeMetrics.sizeIndicator')).once()
+            verify(taskLibWrapper.debug('* CodeMetrics.metrics')).once()
+          })
+        })
     })
     describe('initializer function', (): void => {
       async.each(
@@ -264,11 +261,10 @@ describe('codeMetrics.ts', (): void => {
             try {
               codeMetrics.initialize(input)
             } catch (error) {
+              // Assert
+              verify(taskLibWrapper.debug('* CodeMetrics.initialize()')).once()
               expect(error.message).to.equal('The git diff summary was empty.')
             }
-
-            // Assert
-            verify(taskLibWrapper.debug('* CodeMetrics.initialize()')).once()
           })
         })
       // it('should set all input values when all are specified', (): void => {

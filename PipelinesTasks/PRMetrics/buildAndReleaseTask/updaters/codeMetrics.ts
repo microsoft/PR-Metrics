@@ -168,7 +168,7 @@ export default class CodeMetrics {
     return result
   }
 
-  public constructMetrics (fileMetrics: IFileCodeMetric[]): void {
+  private constructMetrics (fileMetrics: IFileCodeMetric[]): void {
     this._taskLibWrapper.debug('* CodeMetrics.constructMetrics()')
 
     let productCode: number = 0
@@ -215,8 +215,7 @@ export default class CodeMetrics {
     this._sizeIndicator = this._taskLibWrapper.loc('updaters.codeMetrics.titleSizeIndicatorFormat', this._size, testIndicator)
   }
 
-  // TODO: make private
-  public calculateSize (): string {
+  private calculateSize (): string {
     this._taskLibWrapper.debug('* CodeMetrics.calculateSize()')
 
     const indicators: FixedLengthArray<((prefix: string) => string), 5> = [
