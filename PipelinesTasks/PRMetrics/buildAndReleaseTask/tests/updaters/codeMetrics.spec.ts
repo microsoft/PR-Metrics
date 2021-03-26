@@ -1,6 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+import 'reflect-metadata'
+
 import { instance, mock, verify, when } from 'ts-mockito'
 
 import CodeMetrics from '../../updaters/codeMetrics'
@@ -42,7 +44,7 @@ describe('codeMetrics.ts', (): void => {
     when(taskLibWrapper.loc('updaters.codeMetrics.titleSizeM')).thenReturn(localizations.titleSizeM)
     when(taskLibWrapper.loc('updaters.codeMetrics.titleSizeL')).thenReturn(localizations.titleSizeL)
     when(taskLibWrapper.loc('updaters.codeMetrics.titleSizeXL')).thenReturn(localizations.titleSizeXL)
-
+    when(taskLibWrapper.loc('updaters.codeMetrics.titleSizeXL', '')).thenReturn(localizations.titleSizeXL)
     when(taskLibWrapper.loc(localizations.titleTestsSufficient)).thenReturn('sufficient')
     when(taskLibWrapper.loc(localizations.titleTestsInsufficient)).thenReturn('insufficient')
 
@@ -74,6 +76,92 @@ describe('codeMetrics.ts', (): void => {
 
         // Assert
         expect(codeMetrics.size).to.equal('XS')
+        verify(taskLibWrapper.debug('* CodeMetrics.size')).once()
+      })
+
+      it('should be XS', (): void => {
+        // Arrage
+
+        when(parameters.baseSize).thenReturn(0)
+        when(parameters.growthRate).thenReturn(0)
+        when(parameters.testFactor).thenReturn(0)
+        const codeMetrics: CodeMetrics = new CodeMetrics(instance(parameters), instance(taskLibWrapper))
+        const gitDiffSummary: string = '0    0    File1.js'
+
+        // Act
+        codeMetrics.initialize(gitDiffSummary)
+
+        // Assert
+        expect(codeMetrics.size).to.equal('XS')
+        verify(taskLibWrapper.debug('* CodeMetrics.size')).once()
+      })
+
+      it('should be S', (): void => {
+        // Arrage
+
+        when(parameters.baseSize).thenReturn(5)
+        when(parameters.growthRate).thenReturn(5)
+        when(parameters.testFactor).thenReturn(5)
+        const codeMetrics: CodeMetrics = new CodeMetrics(instance(parameters), instance(taskLibWrapper))
+        const gitDiffSummary: string = '5    0    File1.js'
+
+        // Act
+        codeMetrics.initialize(gitDiffSummary)
+
+        // Assert
+        expect(codeMetrics.size).to.equal('S')
+        verify(taskLibWrapper.debug('* CodeMetrics.size')).once()
+      })
+
+      it('should be M', (): void => {
+        // Arrage
+
+        when(parameters.baseSize).thenReturn(5)
+        when(parameters.growthRate).thenReturn(5)
+        when(parameters.testFactor).thenReturn(5)
+        const codeMetrics: CodeMetrics = new CodeMetrics(instance(parameters), instance(taskLibWrapper))
+        const gitDiffSummary: string = '6    0    File1.js'
+
+        // Act
+        codeMetrics.initialize(gitDiffSummary)
+
+        // Assert
+        expect(codeMetrics.size).to.equal('M')
+        verify(taskLibWrapper.debug('* CodeMetrics.size')).once()
+      })
+
+      it('should be L', (): void => {
+        // Arrage
+
+        when(parameters.baseSize).thenReturn(5)
+        when(parameters.growthRate).thenReturn(2)
+        when(parameters.testFactor).thenReturn(5)
+        const codeMetrics: CodeMetrics = new CodeMetrics(instance(parameters), instance(taskLibWrapper))
+        const gitDiffSummary: string = '20    0    File1.js'
+
+        // Act
+        codeMetrics.initialize(gitDiffSummary)
+
+        // Assert
+        expect(codeMetrics.size).to.equal('L')
+        verify(taskLibWrapper.debug('* CodeMetrics.size')).once()
+      })
+
+      it('should be XL', (): void => {
+        // Arrage
+
+        when(parameters.baseSize).thenReturn(5)
+        when(parameters.growthRate).thenReturn(2)
+        when(parameters.testFactor).thenReturn(5)
+        const codeMetrics: CodeMetrics = new CodeMetrics(instance(parameters), instance(taskLibWrapper))
+        const gitDiffSummary: string = '30    0    File1.js'
+
+        // Act
+        codeMetrics.initialize(gitDiffSummary)
+
+        // Assert
+        expect(codeMetrics.size).to.equal('XL')
+        verify(taskLibWrapper.debug('* CodeMetrics.size')).once()
       })
     })
 
@@ -171,6 +259,47 @@ describe('codeMetrics.ts', (): void => {
             expect(codeMetrics.metrics).to.deep.equal(expectedMetrics)
             expect(codeMetrics.ignoredFilesWithLinesAdded).to.deep.equal([])
             expect(codeMetrics.ignoredFilesWithoutLinesAdded).to.deep.equal(['File.dll'])
+            // expect(codeMetrics.size).to.equal('S')
+            verify(taskLibWrapper.debug('* CodeMetrics.initialize()')).once()
+            verify(taskLibWrapper.debug('* CodeMetrics.initializeMetrics()')).once()
+            verify(taskLibWrapper.debug('* CodeMetrics.constructMetrics()')).once()
+            verify(taskLibWrapper.debug('* CodeMetrics.createFileMetricsMap()')).twice()
+            verify(taskLibWrapper.debug('* CodeMetrics.initializeSizeIndicator()')).once()
+            verify(taskLibWrapper.debug('* CodeMetrics.calculateSize()')).once()
+            verify(taskLibWrapper.debug('* CodeMetrics.ignoredFilesWithLinesAdded')).once()
+            verify(taskLibWrapper.debug('* CodeMetrics.ignoredFilesWithoutLinesAdded')).once()
+          })
+        })
+
+      async.each(
+        [
+          { file1: '-', file2: 8, file3: 4 },
+          { file1: '-', file2: 5, file3: 4 },
+          { file1: '-', file2: 7, file3: 4 }
+        ], (entryObj): void => {
+          it('should set all input values when all are specified', (): void => {
+            // Arrange
+            when(parameters.baseSize).thenReturn(5)
+            when(parameters.growthRate).thenReturn(40)
+            when(parameters.testFactor).thenReturn(20)
+            when(parameters.fileMatchingPatterns).thenReturn(['*.js', '*.ts'])
+            when(parameters.codeFileExtensions).thenReturn(['*.js', '*.ts'])
+
+            const codeMetrics: CodeMetrics = new CodeMetrics(instance(parameters), instance(taskLibWrapper))
+            const gitDiffSummary: string = `${entryObj.file1}    1    File1.js\n${entryObj.file2}    9    File2.ts\n${entryObj.file3}    -    File.dll\n`
+
+            const expectedMetrics: CodeMetricsData = new CodeMetricsData(entryObj.file2, 0, entryObj.file3)
+
+            // Act
+            codeMetrics.initialize(gitDiffSummary)
+
+            // Assert
+            expect(codeMetrics.metrics.testCode).to.equal(expectedMetrics.testCode)
+            expect(codeMetrics.metrics.productCode).to.equal(expectedMetrics.productCode)
+            expect(codeMetrics.metrics.ignoredCode).to.equal(expectedMetrics.ignoredCode)
+            expect(codeMetrics.metrics).to.deep.equal(expectedMetrics)
+            expect(codeMetrics.ignoredFilesWithLinesAdded).to.deep.equal(['File.dll'])
+            expect(codeMetrics.ignoredFilesWithoutLinesAdded).to.deep.equal([])
             // expect(codeMetrics.size).to.equal('S')
             verify(taskLibWrapper.debug('* CodeMetrics.initialize()')).once()
             verify(taskLibWrapper.debug('* CodeMetrics.initializeMetrics()')).once()
