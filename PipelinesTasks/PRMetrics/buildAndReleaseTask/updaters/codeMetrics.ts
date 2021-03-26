@@ -125,6 +125,9 @@ export default class CodeMetrics {
     this._taskLibWrapper.debug('* CodeMetrics.initializeMetrics()')
 
     const lines: string[] = gitDiffSummary.split('\n')
+
+    // TODO : filter out lines that don't match the glob
+
     const fileMetrics: IFileCodeMetric[] = this.createFileMetricsMap(lines)
 
     // TODO: rename the ones
