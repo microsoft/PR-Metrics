@@ -4,7 +4,7 @@
     {
       "type": "pwa-node",
       "request": "launch",
-      "name": "Launch Program",
+      "name": "Run Task",
       "runtimeArgs": [
         "-r",
         "ts-node/register"
@@ -19,6 +19,9 @@
       "restart": true
     },
     {
+      "type": "node",
+      "request": "launch",
+      "name": "Run Tests",
       "args": [
         "-u",
         "bdd",
@@ -27,14 +30,10 @@
         "--colors",
         "${workspaceFolder}/tests/**/*.spec.js"
       ],
-      "internalConsoleOptions": "openOnSessionStart",
-      "name": "Mocha Tests",
       "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
-      "request": "launch",
       "skipFiles": [
         "<node_internals>/**"
       ],
-      "type": "node"
     }
   ]
 }
