@@ -46,6 +46,15 @@ jobs:
         run: npm test
         working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask
 
+      - name: fr_FR.UTF-8
+        run: |
+            sudo locale-gen fr_FR.UTF-8
+            sudo update-locale LANG=fr_FR.UTF-8
+
+      - name: Test fr_FR
+        run: npm test
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask
+
       - name: Remove 'node_modules'
         run: Remove-Item -Path 'node_modules' -Recurse -Force
         working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask
