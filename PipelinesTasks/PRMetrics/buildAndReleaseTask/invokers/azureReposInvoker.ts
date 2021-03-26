@@ -5,7 +5,7 @@ import { Comment, CommentPosition, CommentThreadStatus, GitPullRequest, GitPullR
 import { IGitApi } from 'azure-devops-node-api/GitApi'
 import { IPullRequestInfo, IPullRequestMetadata } from '../models/pullRequestInterfaces'
 import { IRequestHandler } from 'azure-devops-node-api/interfaces/common/VsoBaseInterfaces'
-import { JsonPatchDocument, JsonPatchOperation, Operation } from 'azure-devops-node-api/interfaces/common/VSSInterfaces'
+import { JsonPatchOperation, Operation } from 'azure-devops-node-api/interfaces/common/VSSInterfaces'
 import { singleton } from 'tsyringe'
 import { Validator } from '../utilities/validator'
 import { WebApi } from 'azure-devops-node-api'
@@ -92,19 +92,21 @@ export default class AzureReposInvoker {
   public async setTitleAndDescription (title: string | null, description: string | null): Promise<void> {
     this._taskLibWrapper.debug('* AzureReposInvoker.setTitleAndDescription()')
 
-    const isTitleSet: boolean = title === null
-    const isDescriptionSet: boolean = description === null
-    if (!isTitleSet && !isDescriptionSet) {
+    if (title === null && description === null) {
       return
     }
 
-    const gitApi: IGitApi = await this.openConnection()
-    const updatedGitPullRequest: GitPullRequest = {
-      title: isTitleSet ? title! : undefined,
-      description: isDescriptionSet ? description! : undefined
+    const gitApiPromise: Promise<IGitApi> = this.openConnection()
+    const updatedGitPullRequest: GitPullRequest = {}
+    if (title !== null) {
+      updatedGitPullRequest.title = title
     }
 
-    await gitApi.updatePullRequest(updatedGitPullRequest, this._repositoryId, this._pullRequestId, this._project)
+    if (description !== null) {
+      updatedGitPullRequest.description = description
+    }
+
+    await (await gitApiPromise).updatePullRequest(updatedGitPullRequest, this._repositoryId, this._pullRequestId, this._project)
   }
 
   /**
@@ -116,13 +118,13 @@ export default class AzureReposInvoker {
   public async createComment (commentContent: string, commentThreadId: number, parentCommentId: number): Promise<void> {
     this._taskLibWrapper.debug('* AzureReposInvoker.createComment()')
 
-    const gitApi: IGitApi = await this.openConnection()
+    const gitApiPromise: Promise<IGitApi> = this.openConnection()
     const comment: Comment = {
       content: commentContent,
-      parentCommentId: parentCommentId
+      parentCommentId: parentCommentId,
     }
 
-    await gitApi.createComment(comment, this._repositoryId, this._pullRequestId, commentThreadId, this._project)
+    await (await gitApiPromise).createComment(comment, this._repositoryId, this._pullRequestId, commentThreadId, this._project)
   }
 
   /**
@@ -131,17 +133,17 @@ export default class AzureReposInvoker {
     * @param fileName File name to be used in the comment.
     * @param withLinesAdded Flag to determine if lines added or not.
     */
-  public async createCommentThread (commentContent: string, fileName: string | null, withLinesAdded: boolean): Promise<GitPullRequestCommentThread> {
+  public async createCommentThread (commentContent: string, status: CommentThreadStatus, fileName?: string, withLinesAdded?: boolean): Promise<void> {
     this._taskLibWrapper.debug('* AzureReposInvoker.createCommentThread()')
 
-    const gitApi: IGitApi = await this.openConnection()
-    const updatedCommentThread: GitPullRequestCommentThread = {
+    const gitApiPromise: Promise<IGitApi> = this.openConnection()
+    const commentThread: GitPullRequestCommentThread = {
       comments: [{ content: commentContent }],
-      threadContext: { filePath: fileName !== null ? `/${fileName}` : undefined }
+      status: status
     }
 
-    if (fileName !== null) {
-      updatedCommentThread.threadContext = {
+    if (fileName) {
+      commentThread.threadContext = {
         filePath: `/${fileName}`
       }
 
@@ -155,15 +157,15 @@ export default class AzureReposInvoker {
       }
 
       if (!withLinesAdded) {
-        updatedCommentThread.threadContext.leftFileStart = fileStart
-        updatedCommentThread.threadContext.leftFileEnd = fileEnd
+        commentThread.threadContext.leftFileStart = fileStart
+        commentThread.threadContext.leftFileEnd = fileEnd
       } else {
-        updatedCommentThread.threadContext.rightFileStart = fileStart
-        updatedCommentThread.threadContext.rightFileEnd = fileEnd
+        commentThread.threadContext.rightFileStart = fileStart
+        commentThread.threadContext.rightFileEnd = fileEnd
       }
     }
 
-    return await gitApi.createThread(updatedCommentThread, this._repositoryId, this._pullRequestId, this._project)
+    await (await gitApiPromise).createThread(commentThread, this._repositoryId, this._pullRequestId, this._project)
   }
 
   /**
@@ -174,40 +176,38 @@ export default class AzureReposInvoker {
   public async setCommentThreadStatus (commentThreadId: number, status: CommentThreadStatus): Promise<void> {
     this._taskLibWrapper.debug('* AzureReposInvoker.setCommentThreadStatus()')
 
-    const gitApi: IGitApi = await this.openConnection()
-    const updatedCommentThread: GitPullRequestCommentThread = {
+    const gitApiPromise: Promise<IGitApi> = this.openConnection()
+    const commentThread: GitPullRequestCommentThread = {
       status: status
     }
 
-    await gitApi.updateThread(updatedCommentThread, this._repositoryId, this._pullRequestId, commentThreadId, this._project)
+    await (await gitApiPromise).updateThread(commentThread, this._repositoryId, this._pullRequestId, commentThreadId, this._project)
   }
 
   /**
     * Adds metadata to the pull request.
     * @param pullRequestMetadata Metadata array.
     */
-  public async addMetadata (pullRequestMetadata: IPullRequestMetadata[]): Promise<void> {
+  public async addMetadata (metadata: IPullRequestMetadata[]): Promise<void> {
     this._taskLibWrapper.debug('* AzureReposInvoker.addMetadata()')
 
-    const gitApi: IGitApi = await this.openConnection()
-    const jsonPatchDocumentValues: JsonPatchOperation[] = []
-
-    for (let i: number = 0; i < pullRequestMetadata.length; i++) {
-      const metadata: IPullRequestMetadata | undefined = pullRequestMetadata[i]
-      if (metadata) {
-        const jsonPatchOperation: JsonPatchOperation = {
-          op: Operation.Replace,
-          path: metadata.key,
-          value: metadata.value.toString().toLowerCase()
-        }
-
-        jsonPatchDocumentValues.push(jsonPatchOperation)
-      }
+    if (metadata.length === 0) {
+      throw RangeError('The collection of metadata was of length zero.')
     }
 
-    const jsonPatchDocument: JsonPatchDocument = jsonPatchDocumentValues
+    const gitApiPromise: Promise<IGitApi> = this.openConnection()
+    const jsonPatchDocumentValues: JsonPatchOperation[] = []
+    metadata.forEach((datum: IPullRequestMetadata): void => {
+      const operation: JsonPatchOperation = {
+        op: Operation.Replace,
+        path: `/PRMetrics.${datum.key}`,
+        value: datum.value.toString()
+      }
 
-    await gitApi.updatePullRequestProperties(null, jsonPatchDocument, this._repositoryId, this._pullRequestId, this._project)
+      jsonPatchDocumentValues.push(operation)
+    })
+
+    await (await gitApiPromise).updatePullRequestProperties(null, jsonPatchDocumentValues, this._repositoryId, this._pullRequestId, this._project)
   }
 
   private async openConnection (): Promise<IGitApi> {

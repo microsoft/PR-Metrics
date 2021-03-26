@@ -259,7 +259,6 @@ describe('codeMetricsCalculator.ts', (): void => {
       const commentData: PullRequestCommentsData = new PullRequestCommentsData([], [])
       when(pullRequestComments.getCommentData(1)).thenResolve(commentData)
       when(pullRequestComments.getMetricsComment(1)).thenReturn('Description')
-      when(azureReposInvoker.createCommentThread('Description', null, true)).thenResolve({ id: 1 })
       when(pullRequestComments.getMetricsCommentStatus()).thenReturn(CommentThreadStatus.Active)
       when(codeMetrics.metrics).thenReturn(new CodeMetricsData(1, 2, 4))
       when(codeMetrics.size).thenReturn('S')
@@ -303,34 +302,8 @@ describe('codeMetricsCalculator.ts', (): void => {
       verify(taskLibWrapper.debug('* CodeMetricsCalculator.updateComments()')).once()
       verify(taskLibWrapper.debug('* CodeMetricsCalculator.updateMetricsComment()')).once()
       verify(taskLibWrapper.debug('* CodeMetricsCalculator.addMetadata()')).once()
-      verify(azureReposInvoker.createCommentThread('Description', null, true)).once()
-      verify(azureReposInvoker.setCommentThreadStatus(1, CommentThreadStatus.Active)).once()
+      verify(azureReposInvoker.createCommentThread('Description', CommentThreadStatus.Active)).once()
       verify(azureReposInvoker.addMetadata(deepEqual(expectedMetadata))).once()
-    })
-
-    it('should throw when the metrics comment is to be updated but the thread ID is missing', async (): Promise<void> => {
-      // Arrange
-      when(azureReposInvoker.getCurrentIteration()).thenResolve(1)
-      const commentData: PullRequestCommentsData = new PullRequestCommentsData([], [])
-      when(pullRequestComments.getCommentData(1)).thenResolve(commentData)
-      when(pullRequestComments.getMetricsComment(1)).thenReturn('Description')
-      when(azureReposInvoker.createCommentThread('Description', null, true)).thenResolve({})
-      when(codeMetrics.metrics).thenReturn(new CodeMetricsData(1, 2, 4))
-      when(codeMetrics.size).thenReturn('S')
-      when(codeMetrics.isSufficientlyTested).thenReturn(null)
-      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(codeMetrics), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
-      let errorThrown: boolean = false
-
-      try {
-        // Act
-        await codeMetricsCalculator.updateComments()
-      } catch (error) {
-        // Assert
-        errorThrown = true
-        expect(error.message).to.equal('Field \'id\', accessed within \'CodeMetricsCalculator.updateMetricsComment()\', is invalid, null, or undefined \'undefined\'.')
-      }
-
-      expect(errorThrown).to.equal(true)
     })
 
     async.each(
@@ -349,10 +322,6 @@ describe('codeMetricsCalculator.ts', (): void => {
           commentData.isMetricsCommentPresent = true
           when(pullRequestComments.getCommentData(1)).thenResolve(commentData)
           when(pullRequestComments.ignoredComment).thenReturn('Ignored')
-          when(azureReposInvoker.createCommentThread('Ignored', 'file1.ts', true)).thenResolve({ id: 1 })
-          when(azureReposInvoker.createCommentThread('Ignored', 'file2.ts', true)).thenResolve({ id: 2 })
-          when(azureReposInvoker.createCommentThread('Ignored', 'file3.ts', false)).thenResolve({ id: 3 })
-          when(azureReposInvoker.createCommentThread('Ignored', 'file4.ts', false)).thenResolve({ id: 4 })
           const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(codeMetrics), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
 
           // Act
@@ -361,38 +330,11 @@ describe('codeMetricsCalculator.ts', (): void => {
           // Assert
           verify(taskLibWrapper.debug('* CodeMetricsCalculator.updateComments()')).once()
           verify(taskLibWrapper.debug('* CodeMetricsCalculator.updateIgnoredComment()')).times(data[2] + data[3] + data[4] + data[5])
-          verify(azureReposInvoker.createCommentThread('Ignored', 'file1.ts', true)).times(data[2])
-          verify(azureReposInvoker.createCommentThread('Ignored', 'file2.ts', true)).times(data[3])
-          verify(azureReposInvoker.createCommentThread('Ignored', 'file3.ts', false)).times(data[4])
-          verify(azureReposInvoker.createCommentThread('Ignored', 'file4.ts', false)).times(data[5])
-          verify(azureReposInvoker.setCommentThreadStatus(1, CommentThreadStatus.Closed)).times(data[2])
-          verify(azureReposInvoker.setCommentThreadStatus(2, CommentThreadStatus.Closed)).times(data[3])
-          verify(azureReposInvoker.setCommentThreadStatus(3, CommentThreadStatus.Closed)).times(data[4])
-          verify(azureReposInvoker.setCommentThreadStatus(4, CommentThreadStatus.Closed)).times(data[5])
+          verify(azureReposInvoker.createCommentThread('Ignored', CommentThreadStatus.Closed, 'file1.ts', true)).times(data[2])
+          verify(azureReposInvoker.createCommentThread('Ignored', CommentThreadStatus.Closed, 'file2.ts', true)).times(data[3])
+          verify(azureReposInvoker.createCommentThread('Ignored', CommentThreadStatus.Closed, 'file3.ts', false)).times(data[4])
+          verify(azureReposInvoker.createCommentThread('Ignored', CommentThreadStatus.Closed, 'file4.ts', false)).times(data[5])
         })
       })
-
-    it('should throw when comments are to be added to ignored files but the thread ID is missing', async (): Promise<void> => {
-      // Arrange
-      when(azureReposInvoker.getCurrentIteration()).thenResolve(1)
-      const commentData: PullRequestCommentsData = new PullRequestCommentsData(['file1.ts'], [])
-      commentData.isMetricsCommentPresent = true
-      when(pullRequestComments.getCommentData(1)).thenResolve(commentData)
-      when(pullRequestComments.ignoredComment).thenReturn('Ignored')
-      when(azureReposInvoker.createCommentThread('Ignored', 'file1.ts', true)).thenResolve({})
-      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(codeMetrics), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
-      let errorThrown: boolean = false
-
-      try {
-        // Act
-        await codeMetricsCalculator.updateComments()
-      } catch (error) {
-        // Assert
-        errorThrown = true
-        expect(error.message).to.equal('Field \'id\', accessed within \'CodeMetricsCalculator.updateIgnoredComment()\', is invalid, null, or undefined \'undefined\'.')
-      }
-
-      expect(errorThrown).to.equal(true)
-    })
   })
 })

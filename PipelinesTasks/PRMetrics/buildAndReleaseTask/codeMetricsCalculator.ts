@@ -1,10 +1,9 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { CommentThreadStatus, GitPullRequestCommentThread } from 'azure-devops-node-api/interfaces/GitInterfaces'
+import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import { IPullRequestInfo, IPullRequestMetadata } from './models/pullRequestInterfaces'
 import { singleton } from 'tsyringe'
-import { Validator } from './utilities/validator'
 import AzureReposInvoker from './invokers/azureReposInvoker'
 import CodeMetrics from './updaters/codeMetrics'
 import CodeMetricsData from './updaters/codeMetricsData'
@@ -113,15 +112,13 @@ export default class CodeMetricsCalculator {
     this._taskLibWrapper.debug('* CodeMetricsCalculator.updateMetricsComment()')
 
     const comment: string = this._pullRequestComments.getMetricsComment(currentIteration)
+    const status: CommentThreadStatus = this._pullRequestComments.getMetricsCommentStatus()
     if (commentData.metricsCommentThreadId !== null) {
       await this._azureReposInvoker.createComment(comment, commentData.metricsCommentThreadId, commentData.metricsCommentId!)
+      await this._azureReposInvoker.setCommentThreadStatus(commentData.metricsCommentThreadId, status)
     } else {
-      const commentThread: GitPullRequestCommentThread = await this._azureReposInvoker.createCommentThread(comment, null, true)
-      commentData.metricsCommentThreadId = Validator.validateField(commentThread.id, 'id', 'CodeMetricsCalculator.updateMetricsComment()')
+      await this._azureReposInvoker.createCommentThread(comment, status)
     }
-
-    const status: CommentThreadStatus = this._pullRequestComments.getMetricsCommentStatus()
-    await this._azureReposInvoker.setCommentThreadStatus(commentData.metricsCommentThreadId, status)
   }
 
   private async addMetadata (): Promise<void> {
@@ -169,9 +166,6 @@ export default class CodeMetricsCalculator {
     this._taskLibWrapper.debug('* CodeMetricsCalculator.updateIgnoredComment()')
 
     const ignoredComment: string = this._pullRequestComments.ignoredComment
-    const commentThread: GitPullRequestCommentThread = await this._azureReposInvoker.createCommentThread(ignoredComment, fileName, withLinesAdded)
-
-    const commentThreadId: number = Validator.validateField(commentThread.id, 'id', 'CodeMetricsCalculator.updateIgnoredComment()')
-    await this._azureReposInvoker.setCommentThreadStatus(commentThreadId, CommentThreadStatus.Closed)
+    await this._azureReposInvoker.createCommentThread(ignoredComment, CommentThreadStatus.Closed, fileName, withLinesAdded)
   }
 }
