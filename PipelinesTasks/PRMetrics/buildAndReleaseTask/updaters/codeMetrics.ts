@@ -169,7 +169,7 @@ export default class CodeMetrics {
   private constructMetrics (matches: string[], doesNotMatch: string[]): void {
     this._taskLibWrapper.debug('* CodeMetrics.constructMetrics()')
 
-    const matchesMap = this.createFileMetricsMap(matches)
+    const matchesMap: IFileCodeMetric[] = this.createFileMetricsMap(matches)
 
     matchesMap.forEach((entry: IFileCodeMetric) => {
       if (/.*Test.*/i.test(entry.filename) || /.*.spec.*/i.test(entry.filename) || /.*test\/.*/i.test(entry.filename)) {
@@ -179,7 +179,7 @@ export default class CodeMetrics {
       }
     })
 
-    const doesNotMatchMap = this.createFileMetricsMap(doesNotMatch)
+    const doesNotMatchMap: IFileCodeMetric[] = this.createFileMetricsMap(doesNotMatch)
 
     doesNotMatchMap.forEach((entry: IFileCodeMetric) => {
       if (entry.value !== '-') {
