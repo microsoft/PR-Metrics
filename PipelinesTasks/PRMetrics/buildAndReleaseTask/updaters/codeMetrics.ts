@@ -172,10 +172,12 @@ export default class CodeMetrics {
     const matchesMap: IFileCodeMetric[] = this.createFileMetricsMap(matches)
 
     matchesMap.forEach((entry: IFileCodeMetric) => {
+      const value: number = entry.value === '-' ? 0 : parseInt(entry.value)
+
       if (/.*Test.*/i.test(entry.filename) || /.*.spec.*/i.test(entry.filename) || /.*test\/.*/i.test(entry.filename)) {
-        this._testCodeCounter += parseInt(entry.value)
+        this._testCodeCounter += value
       } else {
-        this._productCodeCounter += parseInt(entry.value)
+        this._productCodeCounter += value
       }
     })
 
