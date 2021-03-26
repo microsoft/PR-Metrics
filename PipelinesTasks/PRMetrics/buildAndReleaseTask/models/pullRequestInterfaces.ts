@@ -2,8 +2,8 @@
 // Licensed under the MIT License.
 
 export interface IPullRequestInfo {
+  title: string
     description?: string
-    title?: string
 }
 
 export interface IPullRequestMetadata {

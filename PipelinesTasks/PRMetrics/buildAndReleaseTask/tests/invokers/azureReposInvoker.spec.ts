@@ -69,7 +69,34 @@ describe('azureReposInvoker.ts', function (): void {
     delete process.env.SYSTEM_ACCESSTOKEN
   })
 
-  it('getDetails should return valid IPullRequestInfo', async (): Promise<void> => {
+  describe('isAccessTokenAvailable', (): void => {
+    it('should return true when the token exists', (): void => {
+      // Arrange
+    const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(devOpsApiWrapper), instance(taskLibWrapper))
+
+    // Act
+      const result: boolean = azureReposInvoker.isAccessTokenAvailable
+
+      // Assert
+      expect(result).to.equal(true)
+      verify(taskLibWrapper.debug('* AzureReposInvoker.isAccessTokenAvailable')).once()
+    })
+
+    it('should return false when the token does not exist', (): void => {
+      // Arrange
+      delete process.env.SYSTEM_ACCESSTOKEN
+    const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(devOpsApiWrapper), instance(taskLibWrapper))
+
+      // Act
+      const result: boolean = azureReposInvoker.isAccessTokenAvailable
+
+      // Assert
+      expect(result).to.equal(false)
+      verify(taskLibWrapper.debug('* AzureReposInvoker.isAccessTokenAvailable')).once()
+    })
+  })
+
+  it('getTitleAndDescription should return valid IPullRequestInfo', async (): Promise<void> => {
     // Arrange
     const expectedResult = {
       description: mockGitPullRequest.description,
@@ -77,12 +104,12 @@ describe('azureReposInvoker.ts', function (): void {
     } as IPullRequestInfo
 
     // Act
-    const result = await azureReposInvoker.getDetails()
+    const result = await azureReposInvoker.getTitleAndDescription()
 
     // Assert
     expect(result).to.deep.equal(expectedResult)
     verify(mockGitApi.getPullRequestById(anyNumber(), anyString())).once()
-    verify(taskLibWrapper.debug('* AzureReposInvoker.getDetails()')).once()
+    verify(taskLibWrapper.debug('* AzureReposInvoker.getTitleAndDescription()')).once()
   })
 
   it('getCurrentIteration should return valid iteration id', async (): Promise<void> => {
@@ -105,16 +132,6 @@ describe('azureReposInvoker.ts', function (): void {
     verify(taskLibWrapper.debug('* AzureReposInvoker.getCommentThreads()')).once()
   })
 
-  it('getCommentThread should return valid GitPullRequestCommentThread', async (): Promise<void> => {
-    // Act
-    const result = await azureReposInvoker.getCommentThread(3)
-
-    // Assert
-    expect(result).to.deep.equal(mockGitPullRequestCommentThread)
-    verify(mockGitApi.getPullRequestThread(anyString(), anyNumber(), anyNumber(), anyString())).once()
-    verify(taskLibWrapper.debug('* AzureReposInvoker.getCommentThread()')).once()
-  })
-
   it('setCommentThreadStatus should call the api', async (): Promise<void> => {
     // Act
     await azureReposInvoker.setCommentThreadStatus(3, CommentThreadStatus.Active)
@@ -135,7 +152,7 @@ describe('azureReposInvoker.ts', function (): void {
 
   it('createComment should call the api', async (): Promise<void> => {
     // Act
-    await azureReposInvoker.createComment(3, 3, 'Test')
+    await azureReposInvoker.createComment('Test', 3, 3)
 
     // Assert
     verify(mockGitApi.createComment(anything(), anyString(), anyNumber(), anyNumber(), anyString())).once()
@@ -165,73 +182,50 @@ describe('azureReposInvoker.ts', function (): void {
     verify(taskLibWrapper.debug('* AzureReposInvoker.addMetadata()')).once()
   })
 
-  describe('isAccessTokenAvailable function', (): void => {
-    it('should return true when token exists', (): void => {
-      const result = azureReposInvoker.isAccessTokenAvailable
+  // describe('setDetails function', (): void => {
+  //   it('should not call the api when both title and description are invalid', async (): Promise<void> => {
+  //     // Act
+  //     await azureReposInvoker.setTitleAndDescription('', '')
 
-      // Assert
-      expect(result).to.equal(true)
-      verify(taskLibWrapper.debug('* AzureReposInvoker.isAccessTokenAvailable')).once()
-    })
+  //     // Assert
+  //     verify(mockGitApi.updatePullRequest(anything(), anyString(), anyNumber(), anyString())).never()
+  //     verify(taskLibWrapper.debug('* AzureReposInvoker.setTitleAndDescription()')).once()
+  //   })
 
-    it('should return false when token does not exist', (): void => {
-      // Arrange
-      delete process.env.SYSTEM_ACCESSTOKEN
-      const azureReposInvoker = new AzureReposInvoker(instance(devOpsApiWrapper), instance(taskLibWrapper))
+  //   it('should not call the api when both title and description are invalid', async (): Promise<void> => {
+  //     // Act
+  //     await azureReposInvoker.setTitleAndDescription('   ', '     ')
 
-      // Act
-      const result = azureReposInvoker.isAccessTokenAvailable
+  //     // Assert
+  //     verify(mockGitApi.updatePullRequest(anything(), anyString(), anyNumber(), anyString())).never()
+  //     verify(taskLibWrapper.debug('* AzureReposInvoker.setTitleAndDescription()')).once()
+  //   })
 
-      // Assert
-      expect(result).to.equal(false)
-      verify(taskLibWrapper.debug('* AzureReposInvoker.isAccessTokenAvailable')).once()
-    })
-  })
+  //   it('should call the api when title is valid', async (): Promise<void> => {
+  //     // Act
+  //     await azureReposInvoker.setTitleAndDescription('test', '')
 
-  describe('setDetails function', (): void => {
-    it('should not call the api when both title and description are invalid', async (): Promise<void> => {
-      // Act
-      await azureReposInvoker.setDetails('', '')
+  //     // Assert
+  //     verify(mockGitApi.updatePullRequest(anything(), anyString(), anyNumber(), anyString())).once()
+  //     verify(taskLibWrapper.debug('* AzureReposInvoker.setTitleAndDescription()')).once()
+  //   })
 
-      // Assert
-      verify(mockGitApi.updatePullRequest(anything(), anyString(), anyNumber(), anyString())).never()
-      verify(taskLibWrapper.debug('* AzureReposInvoker.setDetails()')).once()
-    })
+  //   it('should call the api when description is valid', async (): Promise<void> => {
+  //     // Act
+  //     await azureReposInvoker.setTitleAndDescription('', 'test')
 
-    it('should not call the api when both title and description are invalid', async (): Promise<void> => {
-      // Act
-      await azureReposInvoker.setDetails('   ', '     ')
+  //     // Assert
+  //     verify(mockGitApi.updatePullRequest(anything(), anyString(), anyNumber(), anyString())).once()
+  //     verify(taskLibWrapper.debug('* AzureReposInvoker.setTitleAndDescription()')).once()
+  //   })
 
-      // Assert
-      verify(mockGitApi.updatePullRequest(anything(), anyString(), anyNumber(), anyString())).never()
-      verify(taskLibWrapper.debug('* AzureReposInvoker.setDetails()')).once()
-    })
+  //   it('should call the api when title and description are valid', async (): Promise<void> => {
+  //     // Act
+  //     await azureReposInvoker.setTitleAndDescription('test', 'test')
 
-    it('should call the api when title is valid', async (): Promise<void> => {
-      // Act
-      await azureReposInvoker.setDetails('test', '')
-
-      // Assert
-      verify(mockGitApi.updatePullRequest(anything(), anyString(), anyNumber(), anyString())).once()
-      verify(taskLibWrapper.debug('* AzureReposInvoker.setDetails()')).once()
-    })
-
-    it('should call the api when description is valid', async (): Promise<void> => {
-      // Act
-      await azureReposInvoker.setDetails('', 'test')
-
-      // Assert
-      verify(mockGitApi.updatePullRequest(anything(), anyString(), anyNumber(), anyString())).once()
-      verify(taskLibWrapper.debug('* AzureReposInvoker.setDetails()')).once()
-    })
-
-    it('should call the api when title and description are valid', async (): Promise<void> => {
-      // Act
-      await azureReposInvoker.setDetails('test', 'test')
-
-      // Assert
-      verify(mockGitApi.updatePullRequest(anything(), anyString(), anyNumber(), anyString())).once()
-      verify(taskLibWrapper.debug('* AzureReposInvoker.setDetails()')).once()
-    })
-  })
+  //     // Assert
+  //     verify(mockGitApi.updatePullRequest(anything(), anyString(), anyNumber(), anyString())).once()
+  //     verify(taskLibWrapper.debug('* AzureReposInvoker.setTitleAndDescription()')).once()
+  //   })
+  // })
 })

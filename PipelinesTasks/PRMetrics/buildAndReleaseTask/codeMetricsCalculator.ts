@@ -1,8 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { CommentThreadStatus, GitPullRequest, GitPullRequestCommentThread } from 'azure-devops-node-api/interfaces/GitInterfaces'
-import { IPullRequestMetadata } from './models/pullRequestInterfaces'
+import { CommentThreadStatus, GitPullRequestCommentThread } from 'azure-devops-node-api/interfaces/GitInterfaces'
+import { IPullRequestInfo, IPullRequestMetadata } from './models/pullRequestInterfaces'
 import { singleton } from 'tsyringe'
 import { Validator } from './utilities/validator'
 import AzureReposInvoker from './invokers/azureReposInvoker'
@@ -75,12 +75,11 @@ export default class CodeMetricsCalculator {
   public async updateDetails (): Promise<void> {
     this._taskLibWrapper.debug('* CodeMetricsCalculator.updateDetails()')
 
-    const details: GitPullRequest = await this._azureReposInvoker.getDetails()
-    const currentTitle: string = Validator.validateField(details.title, 'title', 'CodeMetricsCalculator.updateDetails()')
-    const updatedTitle: string | null = this._pullRequest.getUpdatedTitle(currentTitle)
+    const details: IPullRequestInfo = await this._azureReposInvoker.getTitleAndDescription()
+    const updatedTitle: string | null = this._pullRequest.getUpdatedTitle(details.title)
     const updatedDescription: string | null = this._pullRequest.getUpdatedDescription(details.description)
 
-    await this._azureReposInvoker.setDetails(updatedTitle, updatedDescription)
+    await this._azureReposInvoker.setTitleAndDescription(updatedTitle, updatedDescription)
   }
 
   /**
@@ -115,7 +114,7 @@ export default class CodeMetricsCalculator {
 
     const comment: string = this._pullRequestComments.getMetricsComment(currentIteration)
     if (commentData.metricsCommentThreadId !== null) {
-      await this._azureReposInvoker.createComment(commentData.metricsCommentThreadId, commentData.metricsCommentId!, comment)
+      await this._azureReposInvoker.createComment(comment, commentData.metricsCommentThreadId, commentData.metricsCommentId!)
     } else {
       const commentThread: GitPullRequestCommentThread = await this._azureReposInvoker.createCommentThread(comment, null, true)
       commentData.metricsCommentThreadId = Validator.validateField(commentThread.id, 'id', 'CodeMetricsCalculator.updateMetricsComment()')

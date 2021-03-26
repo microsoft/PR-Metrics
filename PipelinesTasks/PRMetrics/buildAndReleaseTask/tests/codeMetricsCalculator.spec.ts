@@ -96,7 +96,7 @@ describe('codeMetricsCalculator.ts', (): void => {
   describe('updateDetails()', (): void => {
     it('should perform the expected actions', async (): Promise<void> => {
       // Arrange
-      when(azureReposInvoker.getDetails()).thenResolve({ title: 'Title', description: 'Description' })
+      when(azureReposInvoker.getTitleAndDescription()).thenResolve({ title: 'Title', description: 'Description' })
       when(pullRequest.getUpdatedTitle('Title')).thenReturn('S✔ ◾ TODO')
       when(pullRequest.getUpdatedDescription('Description')).thenReturn('Description')
       const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(codeMetrics), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
@@ -108,31 +108,12 @@ describe('codeMetricsCalculator.ts', (): void => {
       verify(taskLibWrapper.debug('* CodeMetricsCalculator.updateDetails()')).once()
       verify(pullRequest.getUpdatedTitle('Title')).once()
       verify(pullRequest.getUpdatedDescription('Description')).once()
-      verify(azureReposInvoker.setDetails('S✔ ◾ TODO', 'Description')).once()
-    })
-
-    it('should throw when the title is missing', async (): Promise<void> => {
-      // Arrange
-      when(azureReposInvoker.getDetails()).thenResolve({})
-      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(codeMetrics), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
-      let errorThrown: boolean = false
-
-      try {
-        // Act
-        await codeMetricsCalculator.updateDetails()
-      } catch (error) {
-        // Assert
-        errorThrown = true
-        expect(error.message).to.equal('Field \'title\', accessed within \'CodeMetricsCalculator.updateDetails()\', is invalid, null, or undefined \'undefined\'.')
-      }
-
-      expect(errorThrown).to.equal(true)
-      verify(taskLibWrapper.debug('* CodeMetricsCalculator.updateDetails()')).once()
+      verify(azureReposInvoker.setTitleAndDescription('S✔ ◾ TODO', 'Description')).once()
     })
 
     it('should perform the expected actions when the description is missing', async (): Promise<void> => {
       // Arrange
-      when(azureReposInvoker.getDetails()).thenResolve({ title: 'Title' })
+      when(azureReposInvoker.getTitleAndDescription()).thenResolve({ title: 'Title' })
       when(pullRequest.getUpdatedTitle('Title')).thenReturn('S✔ ◾ TODO')
       when(pullRequest.getUpdatedDescription(undefined)).thenReturn('Description')
       const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(codeMetrics), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
@@ -144,7 +125,7 @@ describe('codeMetricsCalculator.ts', (): void => {
       verify(taskLibWrapper.debug('* CodeMetricsCalculator.updateDetails()')).once()
       verify(pullRequest.getUpdatedTitle('Title')).once()
       verify(pullRequest.getUpdatedDescription(undefined)).once()
-      verify(azureReposInvoker.setDetails('S✔ ◾ TODO', 'Description')).once()
+      verify(azureReposInvoker.setTitleAndDescription('S✔ ◾ TODO', 'Description')).once()
     })
   })
 
@@ -215,7 +196,7 @@ describe('codeMetricsCalculator.ts', (): void => {
       verify(taskLibWrapper.debug('* CodeMetricsCalculator.updateComments()')).once()
       verify(taskLibWrapper.debug('* CodeMetricsCalculator.updateMetricsComment()')).once()
       verify(taskLibWrapper.debug('* CodeMetricsCalculator.addMetadata()')).once()
-      verify(azureReposInvoker.createComment(1, 2, 'Description')).once()
+      verify(azureReposInvoker.createComment('Description', 1, 2)).once()
       verify(azureReposInvoker.setCommentThreadStatus(1, CommentThreadStatus.Active)).once()
       verify(azureReposInvoker.addMetadata(deepEqual(expectedMetadata))).once()
     })
@@ -267,7 +248,7 @@ describe('codeMetricsCalculator.ts', (): void => {
       verify(taskLibWrapper.debug('* CodeMetricsCalculator.updateComments()')).once()
       verify(taskLibWrapper.debug('* CodeMetricsCalculator.updateMetricsComment()')).once()
       verify(taskLibWrapper.debug('* CodeMetricsCalculator.addMetadata()')).once()
-      verify(azureReposInvoker.createComment(1, 2, 'Description')).once()
+      verify(azureReposInvoker.createComment('Description', 1, 2)).once()
       verify(azureReposInvoker.setCommentThreadStatus(1, CommentThreadStatus.Active)).once()
       verify(azureReposInvoker.addMetadata(deepEqual(expectedMetadata))).once()
     })
