@@ -5,8 +5,8 @@ import 'reflect-metadata'
 import { expect } from 'chai'
 import { instance, mock, verify, when } from 'ts-mockito'
 import async from 'async'
-import CodeMetrics from '../../updaters/codeMetrics'
-import PullRequest from '../../updaters/pullRequest'
+import CodeMetrics from '../../metrics/codeMetrics'
+import PullRequest from '../../pullRequests/pullRequest'
 import TaskLibWrapper from '../../wrappers/taskLibWrapper'
 
 describe('pullRequest.ts', (): void => {
@@ -18,16 +18,16 @@ describe('pullRequest.ts', (): void => {
     when(codeMetrics.sizeIndicator).thenReturn('S✔')
 
     taskLibWrapper = mock(TaskLibWrapper)
-    when(taskLibWrapper.loc('updaters.codeMetrics.titleSizeIndicatorFormat', '(XS|S|M|L|\\d*XL)', '(✔|⚠️)?')).thenReturn('(XS|S|M|L|\\d*XL)(✔|⚠️)?')
-    when(taskLibWrapper.loc('updaters.codeMetrics.titleSizeL')).thenReturn('L')
-    when(taskLibWrapper.loc('updaters.codeMetrics.titleSizeM')).thenReturn('M')
-    when(taskLibWrapper.loc('updaters.codeMetrics.titleSizeS')).thenReturn('S')
-    when(taskLibWrapper.loc('updaters.codeMetrics.titleSizeXL', '\\d*')).thenReturn('\\d*XL')
-    when(taskLibWrapper.loc('updaters.codeMetrics.titleSizeXS')).thenReturn('XS')
-    when(taskLibWrapper.loc('updaters.codeMetrics.titleTestsInsufficient')).thenReturn('⚠️')
-    when(taskLibWrapper.loc('updaters.codeMetrics.titleTestsSufficient')).thenReturn('✔')
-    when(taskLibWrapper.loc('updaters.pullRequest.addDescription')).thenReturn('❌ **Add a description.**')
-    when(taskLibWrapper.loc('updaters.pullRequest.titleFormat', '(XS|S|M|L|\\d*XL)(✔|⚠️)?', '(.*)')).thenReturn('(XS|S|M|L|\\d*XL)(✔|⚠️)? ◾ (.*)')
+    when(taskLibWrapper.loc('metrics.codeMetrics.titleSizeIndicatorFormat', '(XS|S|M|L|\\d*XL)', '(✔|⚠️)?')).thenReturn('(XS|S|M|L|\\d*XL)(✔|⚠️)?')
+    when(taskLibWrapper.loc('metrics.codeMetrics.titleSizeL')).thenReturn('L')
+    when(taskLibWrapper.loc('metrics.codeMetrics.titleSizeM')).thenReturn('M')
+    when(taskLibWrapper.loc('metrics.codeMetrics.titleSizeS')).thenReturn('S')
+    when(taskLibWrapper.loc('metrics.codeMetrics.titleSizeXL', '\\d*')).thenReturn('\\d*XL')
+    when(taskLibWrapper.loc('metrics.codeMetrics.titleSizeXS')).thenReturn('XS')
+    when(taskLibWrapper.loc('metrics.codeMetrics.titleTestsInsufficient')).thenReturn('⚠️')
+    when(taskLibWrapper.loc('metrics.codeMetrics.titleTestsSufficient')).thenReturn('✔')
+    when(taskLibWrapper.loc('pullRequests.pullRequest.addDescription')).thenReturn('❌ **Add a description.**')
+    when(taskLibWrapper.loc('pullRequests.pullRequest.titleFormat', '(XS|S|M|L|\\d*XL)(✔|⚠️)?', '(.*)')).thenReturn('(XS|S|M|L|\\d*XL)(✔|⚠️)? ◾ (.*)')
   })
 
   describe('isPullRequest', (): void => {

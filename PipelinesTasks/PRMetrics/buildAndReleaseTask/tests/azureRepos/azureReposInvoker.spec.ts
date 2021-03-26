@@ -11,9 +11,9 @@ import { JsonPatchDocument, Operation } from 'azure-devops-node-api/interfaces/c
 import { resolvableInstance } from '../testUtilities/resolvableInstance'
 import { WebApi } from 'azure-devops-node-api'
 import AzureDevOpsApiWrapper from '../../wrappers/azureDevOpsApiWrapper'
-import AzureReposInvoker from '../../invokers/azureReposInvoker'
-import IPullRequestDetails from '../../invokers/iPullRequestDetails'
-import IPullRequestMetadata from '../../invokers/iPullRequestMetadata'
+import AzureReposInvoker from '../../azureRepos/azureReposInvoker'
+import IPullRequestDetails from '../../azureRepos/iPullRequestDetails'
+import IPullRequestMetadata from '../../azureRepos/iPullRequestMetadata'
 import TaskLibWrapper from '../../wrappers/taskLibWrapper'
 
 describe('azureReposInvoker.ts', function (): void {

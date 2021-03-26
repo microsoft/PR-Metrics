@@ -5,9 +5,9 @@ import { Comment, CommentThreadStatus, GitPullRequestCommentThread } from 'azure
 import { injectable } from 'tsyringe'
 import { Validator } from '../utilities/validator'
 import * as os from 'os'
-import AzureReposInvoker from '../invokers/azureReposInvoker'
-import CodeMetrics from './codeMetrics'
-import Parameters from './parameters'
+import AzureReposInvoker from '../azureRepos/azureReposInvoker'
+import CodeMetrics from '../metrics/codeMetrics'
+import Inputs from '../metrics/inputs'
 import PullRequestCommentsData from './pullRequestCommentsData'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
 
@@ -18,20 +18,20 @@ import TaskLibWrapper from '../wrappers/taskLibWrapper'
 export default class PullRequestComments {
   private readonly _azureReposInvoker: AzureReposInvoker
   private readonly _codeMetrics: CodeMetrics
-  private readonly _parameters: Parameters
+  private readonly _inputs: Inputs
   private readonly _taskLibWrapper: TaskLibWrapper
 
   /**
    * Initializes a new instance of the `PullRequestComments` class.
    * @param azureReposInvoker The Azure Repos invoker logic.
    * @param codeMetrics The code metrics calculation logic.
-   * @param parameters The parameters passed to the task.
+   * @param inputs The inputs passed to the task.
    * @param taskLibWrapper The wrapper around the Azure Pipelines Task Lib.
    */
-  public constructor (azureReposInvoker: AzureReposInvoker, codeMetrics: CodeMetrics, parameters: Parameters, taskLibWrapper: TaskLibWrapper) {
+  public constructor (azureReposInvoker: AzureReposInvoker, codeMetrics: CodeMetrics, inputs: Inputs, taskLibWrapper: TaskLibWrapper) {
     this._azureReposInvoker = azureReposInvoker
     this._codeMetrics = codeMetrics
-    this._parameters = parameters
+    this._inputs = inputs
     this._taskLibWrapper = taskLibWrapper
   }
 
@@ -42,7 +42,7 @@ export default class PullRequestComments {
   public get ignoredComment (): string {
     this._taskLibWrapper.debug('* PullRequestComments.ignoredComment')
 
-    return this._taskLibWrapper.loc('updaters.pullRequestComments.fileIgnoredComment')
+    return this._taskLibWrapper.loc('pullRequests.pullRequestComments.fileIgnoredComment')
   }
 
   /**
@@ -94,20 +94,20 @@ export default class PullRequestComments {
   public getMetricsComment (currentIteration: number): string {
     this._taskLibWrapper.debug('* PullRequestComments.getMetricsComment()')
 
-    let result: string = `${this._taskLibWrapper.loc('updaters.pullRequestComments.commentTitle', currentIteration.toLocaleString())}${os.EOL}`
+    let result: string = `${this._taskLibWrapper.loc('pullRequests.pullRequestComments.commentTitle', currentIteration.toLocaleString())}${os.EOL}`
     result += this.addCommentSizeStatus()
     result += this.addCommentTestStatus()
 
-    result += `||${this._taskLibWrapper.loc('updaters.pullRequestComments.tableLines')}${os.EOL}`
+    result += `||${this._taskLibWrapper.loc('pullRequests.pullRequestComments.tableLines')}${os.EOL}`
     result += `-|-:${os.EOL}`
-    result += this.addCommentMetrics(this._taskLibWrapper.loc('updaters.pullRequestComments.tableProductCode'), this._codeMetrics.metrics.productCode, false)
-    result += this.addCommentMetrics(this._taskLibWrapper.loc('updaters.pullRequestComments.tableTestCode'), this._codeMetrics.metrics.testCode, false)
-    result += this.addCommentMetrics(this._taskLibWrapper.loc('updaters.pullRequestComments.tableSubtotal'), this._codeMetrics.metrics.subtotal, true)
-    result += this.addCommentMetrics(this._taskLibWrapper.loc('updaters.pullRequestComments.tableIgnoredCode'), this._codeMetrics.metrics.ignoredCode, false)
-    result += this.addCommentMetrics(this._taskLibWrapper.loc('updaters.pullRequestComments.tableTotal'), this._codeMetrics.metrics.total, true)
+    result += this.addCommentMetrics(this._taskLibWrapper.loc('pullRequests.pullRequestComments.tableProductCode'), this._codeMetrics.metrics.productCode, false)
+    result += this.addCommentMetrics(this._taskLibWrapper.loc('pullRequests.pullRequestComments.tableTestCode'), this._codeMetrics.metrics.testCode, false)
+    result += this.addCommentMetrics(this._taskLibWrapper.loc('pullRequests.pullRequestComments.tableSubtotal'), this._codeMetrics.metrics.subtotal, true)
+    result += this.addCommentMetrics(this._taskLibWrapper.loc('pullRequests.pullRequestComments.tableIgnoredCode'), this._codeMetrics.metrics.ignoredCode, false)
+    result += this.addCommentMetrics(this._taskLibWrapper.loc('pullRequests.pullRequestComments.tableTotal'), this._codeMetrics.metrics.total, true)
 
     result += os.EOL
-    result += this._taskLibWrapper.loc('updaters.pullRequestComments.commentFooter')
+    result += this._taskLibWrapper.loc('pullRequests.pullRequestComments.commentFooter')
 
     return result
   }
@@ -134,12 +134,12 @@ export default class PullRequestComments {
       const comment: Comment = comments[i]!
 
       const content: string = Validator.validateField(comment.content, `commentThread[${commentThreadIndex}].comments[${i}].content`, 'PullRequestComments.getMetricsCommentData()')
-      const commentHeaderRegExp: RegExp = new RegExp(`^${this._taskLibWrapper.loc('updaters.pullRequestComments.commentTitle', '.+')}`)
+      const commentHeaderRegExp: RegExp = new RegExp(`^${this._taskLibWrapper.loc('pullRequests.pullRequestComments.commentTitle', '.+')}`)
       if (!content.match(commentHeaderRegExp)) {
         continue
       }
 
-      result.isMetricsCommentPresent = content.startsWith(`${this._taskLibWrapper.loc('updaters.pullRequestComments.commentTitle', currentIteration.toLocaleString())}${os.EOL}`)
+      result.isMetricsCommentPresent = content.startsWith(`${this._taskLibWrapper.loc('pullRequests.pullRequestComments.commentTitle', currentIteration.toLocaleString())}${os.EOL}`)
       result.metricsCommentThreadId = Validator.validateField(commentThread.id, `commentThread[${commentThreadIndex}].id`, 'PullRequestComments.getMetricsCommentData()')
       result.metricsCommentId = Validator.validateField(comment.id, `commentThread[${commentThreadIndex}].comments[${i}].id`, 'PullRequestComments.getMetricsCommentData()')
     }
@@ -167,9 +167,9 @@ export default class PullRequestComments {
 
     let result: string = ''
     if (this._codeMetrics.isSmall) {
-      result += this._taskLibWrapper.loc('updaters.pullRequestComments.smallPullRequestComment')
+      result += this._taskLibWrapper.loc('pullRequests.pullRequestComments.smallPullRequestComment')
     } else {
-      result += this._taskLibWrapper.loc('updaters.pullRequestComments.largePullRequestComment', this._parameters.baseSize.toLocaleString())
+      result += this._taskLibWrapper.loc('pullRequests.pullRequestComments.largePullRequestComment', this._inputs.baseSize.toLocaleString())
     }
 
     result += os.EOL
@@ -182,9 +182,9 @@ export default class PullRequestComments {
     let result: string = ''
     if (this._codeMetrics.isSufficientlyTested !== null) {
       if (this._codeMetrics.isSufficientlyTested) {
-        result += this._taskLibWrapper.loc('updaters.pullRequestComments.testsSufficientComment')
+        result += this._taskLibWrapper.loc('pullRequests.pullRequestComments.testsSufficientComment')
       } else {
-        result += this._taskLibWrapper.loc('updaters.pullRequestComments.testsInsufficientComment')
+        result += this._taskLibWrapper.loc('pullRequests.pullRequestComments.testsInsufficientComment')
       }
 
       result += os.EOL

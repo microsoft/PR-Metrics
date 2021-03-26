@@ -7,13 +7,13 @@ import { expect } from 'chai'
 import { FixedLengthArray } from '../../utilities/fixedLengthArray'
 import { instance, mock, verify, when } from 'ts-mockito'
 import async from 'async'
-import AzureReposInvoker from '../../invokers/azureReposInvoker'
-import CodeMetrics from '../../updaters/codeMetrics'
-import CodeMetricsData from '../../updaters/codeMetricsData'
+import AzureReposInvoker from '../../azureRepos/azureReposInvoker'
+import CodeMetrics from '../../metrics/codeMetrics'
+import CodeMetricsData from '../../metrics/codeMetricsData'
 import os from 'os'
-import Parameters from '../../updaters/parameters'
-import PullRequestComments from '../../updaters/pullRequestComments'
-import PullRequestCommentsData from '../../updaters/pullRequestCommentsData'
+import Inputs from '../../metrics/inputs'
+import PullRequestComments from '../../pullRequests/pullRequestComments'
+import PullRequestCommentsData from '../../pullRequests/pullRequestCommentsData'
 import TaskLibWrapper from '../../wrappers/taskLibWrapper'
 
 describe('pullRequestComments.ts', (): void => {
@@ -33,7 +33,7 @@ describe('pullRequestComments.ts', (): void => {
     }
   let azureReposInvoker: AzureReposInvoker
   let codeMetrics: CodeMetrics
-  let parameters: Parameters
+  let inputs: Inputs
   let taskLibWrapper: TaskLibWrapper
 
   beforeEach((): void => {
@@ -47,36 +47,36 @@ describe('pullRequestComments.ts', (): void => {
     when(codeMetrics.ignoredFilesWithLinesAdded).thenReturn([])
     when(codeMetrics.ignoredFilesWithoutLinesAdded).thenReturn([])
 
-    parameters = mock(Parameters)
-    when(parameters.baseSize).thenReturn(250)
+    inputs = mock(Inputs)
+    when(inputs.baseSize).thenReturn(250)
 
     taskLibWrapper = mock(TaskLibWrapper)
-    when(taskLibWrapper.loc('updaters.pullRequestComments.commentFooter')).thenReturn('[Metrics added by PR Metrics. Add to Azure DevOps today!](https://marketplace.visualstudio.com/items?itemName=ms-omex.prmetrics)')
-    when(taskLibWrapper.loc('updaters.pullRequestComments.commentTitle', Number(1).toLocaleString())).thenReturn(`# Metrics for iteration ${Number(1).toLocaleString()}`)
-    when(taskLibWrapper.loc('updaters.pullRequestComments.commentTitle', Number(2).toLocaleString())).thenReturn(`# Metrics for iteration ${Number(2).toLocaleString()}`)
-    when(taskLibWrapper.loc('updaters.pullRequestComments.commentTitle', Number(100).toLocaleString())).thenReturn(`# Metrics for iteration ${Number(100).toLocaleString()}`)
-    when(taskLibWrapper.loc('updaters.pullRequestComments.commentTitle', Number(1000).toLocaleString())).thenReturn(`# Metrics for iteration ${Number(1000).toLocaleString()}`)
-    when(taskLibWrapper.loc('updaters.pullRequestComments.commentTitle', Number(1000000).toLocaleString())).thenReturn(`# Metrics for iteration ${Number(1000000).toLocaleString()}`)
-    when(taskLibWrapper.loc('updaters.pullRequestComments.commentTitle', '.+')).thenReturn('# Metrics for iteration .+')
-    when(taskLibWrapper.loc('updaters.pullRequestComments.fileIgnoredComment')).thenReturn('❗ **This file may not need to be reviewed.**')
-    when(taskLibWrapper.loc('updaters.pullRequestComments.largePullRequestComment', Number(250).toLocaleString())).thenReturn(`❌ **Try to keep pull requests smaller than ${Number(250).toLocaleString()} lines of new product code by following the [Single Responsibility Principle (SRP)](https://wikipedia.org/wiki/Single-responsibility_principle).**`)
-    when(taskLibWrapper.loc('updaters.pullRequestComments.largePullRequestComment', Number(1000).toLocaleString())).thenReturn(`❌ **Try to keep pull requests smaller than ${Number(1000).toLocaleString()} lines of new product code by following the [Single Responsibility Principle (SRP)](https://wikipedia.org/wiki/Single-responsibility_principle).**`)
-    when(taskLibWrapper.loc('updaters.pullRequestComments.largePullRequestComment', Number(1000000).toLocaleString())).thenReturn(`❌ **Try to keep pull requests smaller than ${Number(1000000).toLocaleString()} lines of new product code by following the [Single Responsibility Principle (SRP)](https://wikipedia.org/wiki/Single-responsibility_principle).**`)
-    when(taskLibWrapper.loc('updaters.pullRequestComments.smallPullRequestComment')).thenReturn('✔ **Thanks for keeping your pull request small.**')
-    when(taskLibWrapper.loc('updaters.pullRequestComments.tableIgnoredCode')).thenReturn('Ignored Code')
-    when(taskLibWrapper.loc('updaters.pullRequestComments.tableLines')).thenReturn('Lines')
-    when(taskLibWrapper.loc('updaters.pullRequestComments.tableProductCode')).thenReturn('Product Code')
-    when(taskLibWrapper.loc('updaters.pullRequestComments.tableSubtotal')).thenReturn('Subtotal')
-    when(taskLibWrapper.loc('updaters.pullRequestComments.tableTestCode')).thenReturn('Test Code')
-    when(taskLibWrapper.loc('updaters.pullRequestComments.tableTotal')).thenReturn('Total')
-    when(taskLibWrapper.loc('updaters.pullRequestComments.testsInsufficientComment')).thenReturn('⚠️ **Consider adding additional tests.**')
-    when(taskLibWrapper.loc('updaters.pullRequestComments.testsSufficientComment')).thenReturn('✔ **Thanks for adding tests.**')
+    when(taskLibWrapper.loc('pullRequests.pullRequestComments.commentFooter')).thenReturn('[Metrics added by PR Metrics. Add to Azure DevOps today!](https://marketplace.visualstudio.com/items?itemName=ms-omex.prmetrics)')
+    when(taskLibWrapper.loc('pullRequests.pullRequestComments.commentTitle', Number(1).toLocaleString())).thenReturn(`# Metrics for iteration ${Number(1).toLocaleString()}`)
+    when(taskLibWrapper.loc('pullRequests.pullRequestComments.commentTitle', Number(2).toLocaleString())).thenReturn(`# Metrics for iteration ${Number(2).toLocaleString()}`)
+    when(taskLibWrapper.loc('pullRequests.pullRequestComments.commentTitle', Number(100).toLocaleString())).thenReturn(`# Metrics for iteration ${Number(100).toLocaleString()}`)
+    when(taskLibWrapper.loc('pullRequests.pullRequestComments.commentTitle', Number(1000).toLocaleString())).thenReturn(`# Metrics for iteration ${Number(1000).toLocaleString()}`)
+    when(taskLibWrapper.loc('pullRequests.pullRequestComments.commentTitle', Number(1000000).toLocaleString())).thenReturn(`# Metrics for iteration ${Number(1000000).toLocaleString()}`)
+    when(taskLibWrapper.loc('pullRequests.pullRequestComments.commentTitle', '.+')).thenReturn('# Metrics for iteration .+')
+    when(taskLibWrapper.loc('pullRequests.pullRequestComments.fileIgnoredComment')).thenReturn('❗ **This file may not need to be reviewed.**')
+    when(taskLibWrapper.loc('pullRequests.pullRequestComments.largePullRequestComment', Number(250).toLocaleString())).thenReturn(`❌ **Try to keep pull requests smaller than ${Number(250).toLocaleString()} lines of new product code by following the [Single Responsibility Principle (SRP)](https://wikipedia.org/wiki/Single-responsibility_principle).**`)
+    when(taskLibWrapper.loc('pullRequests.pullRequestComments.largePullRequestComment', Number(1000).toLocaleString())).thenReturn(`❌ **Try to keep pull requests smaller than ${Number(1000).toLocaleString()} lines of new product code by following the [Single Responsibility Principle (SRP)](https://wikipedia.org/wiki/Single-responsibility_principle).**`)
+    when(taskLibWrapper.loc('pullRequests.pullRequestComments.largePullRequestComment', Number(1000000).toLocaleString())).thenReturn(`❌ **Try to keep pull requests smaller than ${Number(1000000).toLocaleString()} lines of new product code by following the [Single Responsibility Principle (SRP)](https://wikipedia.org/wiki/Single-responsibility_principle).**`)
+    when(taskLibWrapper.loc('pullRequests.pullRequestComments.smallPullRequestComment')).thenReturn('✔ **Thanks for keeping your pull request small.**')
+    when(taskLibWrapper.loc('pullRequests.pullRequestComments.tableIgnoredCode')).thenReturn('Ignored Code')
+    when(taskLibWrapper.loc('pullRequests.pullRequestComments.tableLines')).thenReturn('Lines')
+    when(taskLibWrapper.loc('pullRequests.pullRequestComments.tableProductCode')).thenReturn('Product Code')
+    when(taskLibWrapper.loc('pullRequests.pullRequestComments.tableSubtotal')).thenReturn('Subtotal')
+    when(taskLibWrapper.loc('pullRequests.pullRequestComments.tableTestCode')).thenReturn('Test Code')
+    when(taskLibWrapper.loc('pullRequests.pullRequestComments.tableTotal')).thenReturn('Total')
+    when(taskLibWrapper.loc('pullRequests.pullRequestComments.testsInsufficientComment')).thenReturn('⚠️ **Consider adding additional tests.**')
+    when(taskLibWrapper.loc('pullRequests.pullRequestComments.testsSufficientComment')).thenReturn('✔ **Thanks for adding tests.**')
   })
 
   describe('ignoredComment', (): void => {
     it('should return the expected result', (): void => {
       // Arrange
-      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(parameters), instance(taskLibWrapper))
+      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(inputs), instance(taskLibWrapper))
 
       // Act
       const result: string = pullRequestComments.ignoredComment
@@ -90,7 +90,7 @@ describe('pullRequestComments.ts', (): void => {
   describe('getCommentData()', (): void => {
     it('should return the expected result when no comment is present', async (): Promise<void> => {
       // Arrange
-      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(parameters), instance(taskLibWrapper))
+      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(inputs), instance(taskLibWrapper))
 
       // Act
       const result: PullRequestCommentsData = await pullRequestComments.getCommentData(1)
@@ -118,7 +118,7 @@ describe('pullRequestComments.ts', (): void => {
         it(`should return the expected result when the metrics comment is present with payload '${JSON.stringify(data[1])}'`, async (): Promise<void> => {
           // Arrange
           when(azureReposInvoker.getCommentThreads()).thenResolve(data[1])
-          const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(parameters), instance(taskLibWrapper))
+          const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(inputs), instance(taskLibWrapper))
 
           // Act
           const result: PullRequestCommentsData = await pullRequestComments.getCommentData(data[0])
@@ -137,7 +137,7 @@ describe('pullRequestComments.ts', (): void => {
     it('should return the expected result when the metrics comment is present but not for the current payload', async (): Promise<void> => {
       // Arrange
       when(azureReposInvoker.getCommentThreads()).thenResolve([{ comments: [{ content: `# Metrics for iteration 10${os.EOL}`, id: 10 }], id: 20 }])
-      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(parameters), instance(taskLibWrapper))
+      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(inputs), instance(taskLibWrapper))
 
       // Act
       const result: PullRequestCommentsData = await pullRequestComments.getCommentData(1)
@@ -164,7 +164,7 @@ describe('pullRequestComments.ts', (): void => {
           when(azureReposInvoker.getCommentThreads()).thenResolve(data[1])
           when(codeMetrics.ignoredFilesWithLinesAdded).thenReturn(['folder/file1.ts', 'file2.ts', 'file3.ts'])
           when(codeMetrics.ignoredFilesWithoutLinesAdded).thenReturn(['file4.ts', 'file5.ts', 'file6.ts'])
-          const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(parameters), instance(taskLibWrapper))
+          const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(inputs), instance(taskLibWrapper))
 
           // Act
           const result: PullRequestCommentsData = await pullRequestComments.getCommentData(1)
@@ -192,7 +192,7 @@ describe('pullRequestComments.ts', (): void => {
           when(azureReposInvoker.getCommentThreads()).thenResolve(data[1])
           when(codeMetrics.ignoredFilesWithLinesAdded).thenReturn(['folder/file1.ts', 'file2.ts', 'file3.ts'])
           when(codeMetrics.ignoredFilesWithoutLinesAdded).thenReturn(['folder/file4.ts', 'file5.ts', 'file6.ts'])
-          const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(parameters), instance(taskLibWrapper))
+          const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(inputs), instance(taskLibWrapper))
 
           // Act
           const result: PullRequestCommentsData = await pullRequestComments.getCommentData(1)
@@ -247,7 +247,7 @@ describe('pullRequestComments.ts', (): void => {
       ])
       when(codeMetrics.ignoredFilesWithLinesAdded).thenReturn(['folder/file1.ts', 'file2.ts', 'file3.ts'])
       when(codeMetrics.ignoredFilesWithoutLinesAdded).thenReturn(['folder/file4.ts', 'file5.ts', 'file6.ts'])
-      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(parameters), instance(taskLibWrapper))
+      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(inputs), instance(taskLibWrapper))
 
       // Act
       const result: PullRequestCommentsData = await pullRequestComments.getCommentData(1)
@@ -290,7 +290,7 @@ describe('pullRequestComments.ts', (): void => {
           // Arrange
           when(azureReposInvoker.getCommentThreads()).thenResolve(data[2])
           when(codeMetrics.ignoredFilesWithLinesAdded).thenReturn(['file.ts'])
-          const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(parameters), instance(taskLibWrapper))
+          const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(inputs), instance(taskLibWrapper))
           let errorThrown: boolean = false
 
           try {
@@ -310,7 +310,7 @@ describe('pullRequestComments.ts', (): void => {
     it('should throw when the file name is not of the expected length', async (): Promise<void> => {
       // Arrange
       when(azureReposInvoker.getCommentThreads()).thenResolve([{ pullRequestThreadContext: { trackingCriteria: { origFilePath: ' ' } } }])
-      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(parameters), instance(taskLibWrapper))
+      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(inputs), instance(taskLibWrapper))
       let errorThrown: boolean = false
 
       try {
@@ -339,7 +339,7 @@ describe('pullRequestComments.ts', (): void => {
         it(`should return the expected result for metrics '[${code[0]}, ${code[1]}, ${code[2]}, ${code[3]}, ${code[4]}]'`, (): void => {
           // Arrange
           when(codeMetrics.metrics).thenReturn(new CodeMetricsData(code[0], code[1], code[3]))
-          const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(parameters), instance(taskLibWrapper))
+          const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(inputs), instance(taskLibWrapper))
 
           // Act
           const result: string = pullRequestComments.getMetricsComment(1)
@@ -374,8 +374,8 @@ describe('pullRequestComments.ts', (): void => {
         it(`should return the expected result when the pull request is not small and the base size is '${baseSize}'`, (): void => {
           // Arrange
           when(codeMetrics.isSmall).thenReturn(false)
-          when(parameters.baseSize).thenReturn(baseSize)
-          const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(parameters), instance(taskLibWrapper))
+          when(inputs.baseSize).thenReturn(baseSize)
+          const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(inputs), instance(taskLibWrapper))
 
           // Act
           const result: string = pullRequestComments.getMetricsComment(1)
@@ -411,7 +411,7 @@ describe('pullRequestComments.ts', (): void => {
       ], (iteration: number): void => {
         it(`should return the expected result when the pull request iteration is '${iteration}'`, (): void => {
           // Arrange
-          const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(parameters), instance(taskLibWrapper))
+          const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(inputs), instance(taskLibWrapper))
 
           // Act
           const result: string = pullRequestComments.getMetricsComment(iteration)
@@ -440,7 +440,7 @@ describe('pullRequestComments.ts', (): void => {
     it('should return the expected result when the pull request has insufficient test coverage', (): void => {
       // Arrange
       when(codeMetrics.isSufficientlyTested).thenReturn(false)
-      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(parameters), instance(taskLibWrapper))
+      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(inputs), instance(taskLibWrapper))
 
       // Act
       const result: string = pullRequestComments.getMetricsComment(1)
@@ -468,7 +468,7 @@ describe('pullRequestComments.ts', (): void => {
     it('should return the expected result when the pull request does not require a specific level of test coverage', (): void => {
       // Arrange
       when(codeMetrics.isSufficientlyTested).thenReturn(null)
-      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(parameters), instance(taskLibWrapper))
+      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(inputs), instance(taskLibWrapper))
 
       // Act
       const result: string = pullRequestComments.getMetricsComment(1)
@@ -503,7 +503,7 @@ describe('pullRequestComments.ts', (): void => {
           // Arrange
           when(codeMetrics.isSmall).thenReturn(true)
           when(codeMetrics.isSufficientlyTested).thenReturn(sufficientlyTested)
-          const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(parameters), instance(taskLibWrapper))
+          const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(inputs), instance(taskLibWrapper))
 
           // Act
           const result: CommentThreadStatus = pullRequestComments.getMetricsCommentStatus()
@@ -525,7 +525,7 @@ describe('pullRequestComments.ts', (): void => {
           // Arrange
           when(codeMetrics.isSmall).thenReturn(codeMetricsSettings[0])
           when(codeMetrics.isSufficientlyTested).thenReturn(codeMetricsSettings[1])
-          const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(parameters), instance(taskLibWrapper))
+          const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(inputs), instance(taskLibWrapper))
 
           // Act
           const result: CommentThreadStatus = pullRequestComments.getMetricsCommentStatus()

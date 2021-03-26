@@ -18,19 +18,6 @@ export default class TaskLibWrapper {
     taskLib.debug(message)
   }
 
-
-  /**
- * Applies glob patterns to a list of paths. Supports interleaved exclude patterns.
- *
- * @param  list         array of paths
- * @param  patterns     patterns to apply. supports interleaved exclude patterns.
- * @param  patternRoot  optional. default root to apply to unrooted patterns. not applied to basename-only patterns when matchBase:true.
- * @param  options      optional. defaults to { dot: true, nobrace: true, nocase: process.platform == 'win32' }.
-   */
-   public match (list: string[], patterns: string[] | string, patternRoot?: string, options?: taskLib.MatchOptions): string[] {
-    return taskLib.match(list, patterns, patternRoot, options)
-  }
-
   /**
    * Synchronously executes an external tool.
    * @param tool The tool executable to run.
@@ -43,14 +30,10 @@ export default class TaskLibWrapper {
   }
 
   /**
-   * Logs a warning message.
-   * @param message The message to log.
- * Gets the value of an input.
- * If required is true and the value is not set, it will throw.
- *
- * @param     name     name of the input to get
- * @param     required whether input is required.  optional, defaults to false
- * @returns   string
+   * Gets the value of an input. If the input is `required` but nonexistent, this method will throw.
+   * @param name The name of the input.
+   * @param required A value indicating whether the input is required.
+   * @returns The value of the input or `undefined` if the input was not set.
    */
   public getInput (name: string, required: boolean | undefined): string | undefined {
     return taskLib.getInput(name, required)

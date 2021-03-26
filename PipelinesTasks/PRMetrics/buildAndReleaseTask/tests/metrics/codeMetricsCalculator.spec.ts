@@ -6,15 +6,15 @@ import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfa
 import { deepEqual, instance, mock, verify, when } from 'ts-mockito'
 import { expect } from 'chai'
 import async from 'async'
-import AzureReposInvoker from '../invokers/azureReposInvoker'
-import CodeMetrics from '../updaters/codeMetrics'
-import CodeMetricsCalculator from '../codeMetricsCalculator'
-import CodeMetricsData from '../updaters/codeMetricsData'
-import IPullRequestMetadata from '../invokers/iPullRequestMetadata'
-import PullRequest from '../updaters/pullRequest'
-import PullRequestComments from '../updaters/pullRequestComments'
-import PullRequestCommentsData from '../updaters/pullRequestCommentsData'
-import TaskLibWrapper from '../wrappers/taskLibWrapper'
+import AzureReposInvoker from '../../azureRepos/azureReposInvoker'
+import CodeMetrics from '../../metrics/codeMetrics'
+import CodeMetricsCalculator from '../../metrics/codeMetricsCalculator'
+import CodeMetricsData from '../../metrics/codeMetricsData'
+import IPullRequestMetadata from '../../azureRepos/iPullRequestMetadata'
+import PullRequest from '../../pullRequests/pullRequest'
+import PullRequestComments from '../../pullRequests/pullRequestComments'
+import PullRequestCommentsData from '../../pullRequests/pullRequestCommentsData'
+import TaskLibWrapper from '../../wrappers/taskLibWrapper'
 
 describe('codeMetricsCalculator.ts', (): void => {
   let azureReposInvoker: AzureReposInvoker
@@ -35,8 +35,8 @@ describe('codeMetricsCalculator.ts', (): void => {
     pullRequestComments = mock(PullRequestComments)
 
     taskLibWrapper = mock(TaskLibWrapper)
-    when(taskLibWrapper.loc('codeMetricsCalculator.noAccessToken')).thenReturn('Could not access the OAuth token. Enable the option \'Allow scripts to access OAuth token\' under the build process phase settings.')
-    when(taskLibWrapper.loc('codeMetricsCalculator.noPullRequest')).thenReturn('The build is not running against a pull request. Canceling task with warning.')
+    when(taskLibWrapper.loc('metrics.codeMetricsCalculator.noAccessToken')).thenReturn('Could not access the OAuth token. Enable the option \'Allow scripts to access OAuth token\' under the build process phase settings.')
+    when(taskLibWrapper.loc('metrics.codeMetricsCalculator.noPullRequest')).thenReturn('The build is not running against a pull request. Canceling task with warning.')
   })
 
   describe('shouldSkip', (): void => {

@@ -21,7 +21,7 @@ describe('index.ts', (): void => {
     expect(task.succeeded).to.equal(true)
     expect(task.warningIssues).to.deep.equal([])
     expect(task.errorIssues).to.deep.equal([])
-    expect(task.stdout.endsWith(`##vso[task.complete result=Skipped;]loc_mock_codeMetricsCalculator.noPullRequest${os.EOL}`)).to.equal(true)
+    expect(task.stdout.endsWith(`##vso[task.complete result=Skipped;]loc_mock_metrics.codeMetricsCalculator.noPullRequest${os.EOL}`)).to.equal(true)
     done()
   })
 
@@ -38,7 +38,7 @@ describe('index.ts', (): void => {
     // Assert
     expect(task.succeeded).to.equal(false)
     expect(task.warningIssues).to.deep.equal([])
-    expect(task.errorIssues).to.deep.equal(['loc_mock_codeMetricsCalculator.noAccessToken'])
+    expect(task.errorIssues).to.deep.equal(['loc_mock_metrics.codeMetricsCalculator.noAccessToken'])
 
     // Finalization
     delete process.env.SYSTEM_PULLREQUEST_PULLREQUESTID

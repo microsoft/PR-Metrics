@@ -3,15 +3,15 @@
 
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import { singleton } from 'tsyringe'
-import AzureReposInvoker from './invokers/azureReposInvoker'
-import CodeMetrics from './updaters/codeMetrics'
-import CodeMetricsData from './updaters/codeMetricsData'
-import IPullRequestDetails from './invokers/iPullRequestDetails'
-import IPullRequestMetadata from './invokers/iPullRequestMetadata'
-import PullRequest from './updaters/pullRequest'
-import PullRequestComments from './updaters/pullRequestComments'
-import PullRequestCommentsData from './updaters/pullRequestCommentsData'
-import TaskLibWrapper from './wrappers/taskLibWrapper'
+import AzureReposInvoker from '../azureRepos/azureReposInvoker'
+import CodeMetrics from './codeMetrics'
+import CodeMetricsData from './codeMetricsData'
+import IPullRequestDetails from '../azureRepos/iPullRequestDetails'
+import IPullRequestMetadata from '../azureRepos/iPullRequestMetadata'
+import PullRequest from '../pullRequests/pullRequest'
+import PullRequestComments from '../pullRequests/pullRequestComments'
+import PullRequestCommentsData from '../pullRequests/pullRequestCommentsData'
+import TaskLibWrapper from '../wrappers/taskLibWrapper'
 
 /**
  * A class for calculating and updating the code metrics within pull requests.
@@ -48,7 +48,7 @@ export default class CodeMetricsCalculator {
     this._taskLibWrapper.debug('* CodeMetricsCalculator.shouldSkip')
 
     if (!this._pullRequest.isPullRequest) {
-      return this._taskLibWrapper.loc('codeMetricsCalculator.noPullRequest')
+      return this._taskLibWrapper.loc('metrics.codeMetricsCalculator.noPullRequest')
     }
 
     return null
@@ -62,7 +62,7 @@ export default class CodeMetricsCalculator {
     this._taskLibWrapper.debug('* CodeMetricsCalculator.shouldTerminate')
 
     if (!this._azureReposInvoker.isAccessTokenAvailable) {
-      return this._taskLibWrapper.loc('codeMetricsCalculator.noAccessToken')
+      return this._taskLibWrapper.loc('metrics.codeMetricsCalculator.noAccessToken')
     }
 
     return null

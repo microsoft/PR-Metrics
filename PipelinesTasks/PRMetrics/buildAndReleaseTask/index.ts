@@ -5,7 +5,7 @@ import 'reflect-metadata'
 import { container } from 'tsyringe'
 import * as path from 'path'
 import * as taskLib from 'azure-pipelines-task-lib/task'
-import CodeMetricsCalculator from './codeMetricsCalculator'
+import CodeMetricsCalculator from './metrics/codeMetricsCalculator'
 
 async function run (): Promise<void> {
   try {

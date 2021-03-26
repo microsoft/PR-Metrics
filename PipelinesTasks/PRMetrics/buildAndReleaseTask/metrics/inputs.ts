@@ -1,16 +1,16 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { ParametersDefault } from './parametersDefault'
+import { InputsDefault } from './inputsDefault'
 import { singleton } from 'tsyringe'
 import ConsoleWrapper from '../wrappers/consoleWrapper'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
 
 /**
- * A class representing parameters passed to the task.
+ * A class representing inputs passed to the task.
  */
 @singleton()
-export default class Parameters {
+export default class Inputs {
   private _consoleWrapper: ConsoleWrapper
   private _taskLibWrapper: TaskLibWrapper
 
@@ -22,72 +22,72 @@ export default class Parameters {
   private _codeFileExtensions: string[] = []
 
   /**
-   * Initializes a new instance of the `Parameters` class.
-   * @param codeMetrics The wrapper around the console.
+   * Initializes a new instance of the `Inputs` class.
+   * @param consoleWrapper The wrapper around the console.
    * @param taskLibWrapper The wrapper around the Azure Pipelines Task Lib.
    */
   constructor (consoleWrapper: ConsoleWrapper, taskLibWrapper: TaskLibWrapper) {
-    this._taskLibWrapper = taskLibWrapper
     this._consoleWrapper = consoleWrapper
+    this._taskLibWrapper = taskLibWrapper
   }
 
   /**
-   * Gets the base size parameter, which is the maximum number of new lines in a small pull request.
-   * @returns The base size parameter.
+   * Gets the base size input, which is the maximum number of new lines in a small pull request.
+   * @returns The base size input.
    */
   public get baseSize (): number {
-    this._taskLibWrapper.debug('* Parameters.baseSize')
+    this._taskLibWrapper.debug('* Inputs.baseSize')
 
     this.initialize()
     return this._baseSize
   }
 
   /**
-   * Gets the growth rate parameter, which is applied to the base size for calculating the size of larger pull requests.
-   * @returns The growth rate parameter.
+   * Gets the growth rate input, which is applied to the base size for calculating the size of larger pull requests.
+   * @returns The growth rate input.
    */
   public get growthRate (): number {
-    this._taskLibWrapper.debug('* Parameters.growthRate')
+    this._taskLibWrapper.debug('* Inputs.growthRate')
 
     this.initialize()
     return this._growthRate
   }
 
   /**
-   * Gets the test factor parameter, which is the number of lines of test code expected for each line of product code.
-   * @returns The test factor parameter. If the test coverage is not to be checked, this will be `null`.
+   * Gets the test factor input, which is the number of lines of test code expected for each line of product code.
+   * @returns The test factor input. If the test coverage is not to be checked, this will be `null`.
    */
   public get testFactor (): number | null {
-    this._taskLibWrapper.debug('* Parameters.testFactor')
+    this._taskLibWrapper.debug('* Inputs.testFactor')
 
     this.initialize()
     return this._testFactor
   }
 
   /**
-   * Gets the file matching patterns parameter, which is the set of Azure DevOps file matching patterns specifying the files and folders to include.
-   * @returns The file matching patterns parameter.
+   * Gets the file matching patterns input, which is the set of Azure DevOps file matching patterns specifying the files and folders to include.
+   * @returns The file matching patterns input.
    */
   public get fileMatchingPatterns (): string[] {
-    this._taskLibWrapper.debug('* Parameters.fileMatchingPatterns')
+    this._taskLibWrapper.debug('* Inputs.fileMatchingPatterns')
 
     this.initialize()
     return this._fileMatchingPatterns
   }
 
   /**
-   * Gets the code file extensions parameter, which is the set of extensions for files containing code so that non-code files can be excluded.
-   * @returns The code file extensions parameter.
+   * Gets the code file extensions input, which is the set of extensions for files containing code so that non-code files can be excluded.
+   * @returns The code file extensions input.
    */
   public get codeFileExtensions (): string[] {
-    this._taskLibWrapper.debug('* Parameters.codeFileExtensions')
+    this._taskLibWrapper.debug('* Inputs.codeFileExtensions')
 
     this.initialize()
     return this._codeFileExtensions
   }
 
   private initialize (): void {
-    this._taskLibWrapper.debug('* Parameters.initialize()')
+    this._taskLibWrapper.debug('* Inputs.initialize()')
 
     if (this._isInitialized) {
       return
@@ -112,7 +112,7 @@ export default class Parameters {
   }
 
   private initializeBaseSize (baseSize: string | undefined): void {
-    this._taskLibWrapper.debug('* Parameters.initializeBaseSize()')
+    this._taskLibWrapper.debug('* Inputs.initializeBaseSize()')
 
     const convertedValue: number = parseInt(baseSize!)
     if (!isNaN(convertedValue) && convertedValue > 0) {
@@ -120,12 +120,12 @@ export default class Parameters {
       return
     }
 
-    this._consoleWrapper.log(this._taskLibWrapper.loc('updaters.parameters.adjustingBaseSize', ParametersDefault.baseSize.toLocaleString()))
-    this._baseSize = ParametersDefault.baseSize
+    this._consoleWrapper.log(this._taskLibWrapper.loc('metrics.inputs.adjustingBaseSize', InputsDefault.baseSize.toLocaleString()))
+    this._baseSize = InputsDefault.baseSize
   }
 
   private initializeGrowthRate (growthRate: string | undefined): void {
-    this._taskLibWrapper.debug('* Parameters.initializeGrowthRate()')
+    this._taskLibWrapper.debug('* Inputs.initializeGrowthRate()')
 
     const convertedValue: number = parseFloat(growthRate!)
     if (!isNaN(convertedValue) && convertedValue >= 1.0) {
@@ -133,12 +133,12 @@ export default class Parameters {
       return
     }
 
-    this._consoleWrapper.log(this._taskLibWrapper.loc('updaters.parameters.adjustingGrowthRate', ParametersDefault.growthRate.toLocaleString()))
-    this._growthRate = ParametersDefault.growthRate
+    this._consoleWrapper.log(this._taskLibWrapper.loc('metrics.inputs.adjustingGrowthRate', InputsDefault.growthRate.toLocaleString()))
+    this._growthRate = InputsDefault.growthRate
   }
 
   private initializeTestFactor (testFactor: string | undefined): void {
-    this._taskLibWrapper.debug('* Parameters.initializeTestFactor()')
+    this._taskLibWrapper.debug('* Inputs.initializeTestFactor()')
 
     const convertedValue: number = parseFloat(testFactor!)
     if (!isNaN(convertedValue) && convertedValue >= 0.0) {
@@ -146,24 +146,24 @@ export default class Parameters {
       return
     }
 
-    this._consoleWrapper.log(this._taskLibWrapper.loc('updaters.parameters.adjustingTestFactor', ParametersDefault.testFactor.toLocaleString()))
-    this._testFactor = ParametersDefault.testFactor
+    this._consoleWrapper.log(this._taskLibWrapper.loc('metrics.inputs.adjustingTestFactor', InputsDefault.testFactor.toLocaleString()))
+    this._testFactor = InputsDefault.testFactor
   }
 
   private initializeFileMatchingPatterns (fileMatchingPatterns: string | undefined): void {
-    this._taskLibWrapper.debug('* Parameters.initializeFileMatchingPatterns()')
+    this._taskLibWrapper.debug('* Inputs.initializeFileMatchingPatterns()')
 
     if (fileMatchingPatterns?.trim()) {
       this._fileMatchingPatterns = fileMatchingPatterns.split('\n')
       return
     }
 
-    this._consoleWrapper.log(this._taskLibWrapper.loc('updaters.parameters.adjustingFileMatchingPatterns', JSON.stringify(ParametersDefault.fileMatchingPatterns)))
-    this._fileMatchingPatterns = ParametersDefault.fileMatchingPatterns
+    this._consoleWrapper.log(this._taskLibWrapper.loc('metrics.inputs.adjustingFileMatchingPatterns', JSON.stringify(InputsDefault.fileMatchingPatterns)))
+    this._fileMatchingPatterns = InputsDefault.fileMatchingPatterns
   }
 
   private initializeCodeFileExtensions (codeFileExtensions: string | undefined): void {
-    this._taskLibWrapper.debug('* Parameters.initializeCodeFileExtensions()')
+    this._taskLibWrapper.debug('* Inputs.initializeCodeFileExtensions()')
 
     if (codeFileExtensions?.trim()) {
       const codeFileExtensionsArray: string[] = codeFileExtensions.split('\n')
@@ -173,7 +173,7 @@ export default class Parameters {
       return
     }
 
-    this._consoleWrapper.log(this._taskLibWrapper.loc('updaters.parameters.adjustingCodeFileExtensions'))
-    this._codeFileExtensions = ParametersDefault.codeFileExtensions
+    this._consoleWrapper.log(this._taskLibWrapper.loc('metrics.inputs.adjustingCodeFileExtensions'))
+    this._codeFileExtensions = InputsDefault.codeFileExtensions
   }
 }
