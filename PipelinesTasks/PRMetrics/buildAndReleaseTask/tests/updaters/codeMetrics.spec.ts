@@ -30,8 +30,8 @@ describe('codeMetrics.ts', (): void => {
     when(parameters.baseSize).thenReturn(5)
     when(parameters.growthRate).thenReturn(5)
     when(parameters.testFactor).thenReturn(5)
-    when(parameters.fileMatchingPatterns).thenReturn(['js'])
-    when(parameters.codeFileExtensions).thenReturn(['js'])
+    when(parameters.fileMatchingPatterns).thenReturn(['*.js'])
+    when(parameters.codeFileExtensions).thenReturn(['*.js'])
 
     when(taskLibWrapper.loc('updaters.codeMetrics.titleSizeXS')).thenReturn(localizations.titleSizeXS)
     when(taskLibWrapper.loc('updaters.codeMetrics.titleSizeS')).thenReturn(localizations.titleSizeS)
@@ -58,6 +58,49 @@ describe('codeMetrics.ts', (): void => {
   })
 
   describe('initialize', (): void => {
+
+
+    // it('TESTEST ============== TESTEST ==============', (): void => {
+
+    //   const line = '9 9 File1.cs'
+    //   const pattern = ['*.dll']
+
+    //   const codeMetrics: CodeMetrics = new CodeMetrics(instance(parameters), instance(taskLibWrapper))
+    //   expect(codeMetrics.test(line, pattern)).to.equal(true)
+    // })
+
+    // it('TESTEST', ():void => {
+    //   // Arrange
+    //   when(parameters.baseSize).thenReturn(50)
+    //   when(parameters.growthRate).thenReturn(2.5)
+    //   when(parameters.testFactor).thenReturn(1.0)
+    //   when(parameters.fileMatchingPatterns).thenReturn(['**/*', '!File*.cs', '!**/*.dll', '!test/File*.cs', 'test/File2.cs'])
+    //   when(parameters.codeFileExtensions).thenReturn(['*.cs', '*.dll'])
+
+    //   const codeMetrics: CodeMetrics = new CodeMetrics(instance(parameters), instance(taskLibWrapper))
+    //   const gitDiffSummary: string = '9    1    File1.cs\n' +
+    //         '0    9    File2.cs\n' +
+    //         '-    -    File.dll\n' +
+    //         '9    1    {Folder_Old => Folder}/FileTest1.cs\n' +
+    //         '0    9    File{a => t}est2.cs\n' +
+    //         '-    -    F{a => i}leT{b => e}st.d{c => l}l\n' +
+    //         '9    1    {test/File.cs => test/File1.cs}\n' +
+    //         '0    9    {product => test}/File2.cs\n' +
+    //         '-    -    {product => test}/File.dll\n'
+    //   const expectedMetrics: CodeMetricsData = new CodeMetricsData(0, 9, 18)
+
+    //   // Act
+    //   codeMetrics.initialize(gitDiffSummary)
+
+    //   // Assert
+    //   expect(codeMetrics.metrics.testCode).to.equal(expectedMetrics.testCode)
+    //   expect(codeMetrics.metrics.productCode).to.equal(expectedMetrics.productCode)
+    //   expect(codeMetrics.metrics.ignoredCode).to.equal(expectedMetrics.ignoredCode)
+    //   expect(codeMetrics.metrics).to.deep.equal(expectedMetrics)
+    //   expect(codeMetrics.ignoredFilesWithLinesAdded).to.deep.equal(['File1.cs', 'test/File1.cs'])
+    //   expect(codeMetrics.ignoredFilesWithoutLinesAdded).to.deep.equal(['File2.cs', 'Filetest2.cs'])
+    // })
+
     describe('isSmall function', (): void => {
       async.each(
         [
@@ -130,12 +173,12 @@ describe('codeMetrics.ts', (): void => {
           { file1: 20, file2: 5, file3: '-' },
           { file1: 1, file2: 7, file3: '-' }
         ], (entryObj): void => {
-          it('hould set all input values when all are specified', (): void => {
+          it('should set all input values when all are specified', (): void => {
             // Arrange
             when(parameters.baseSize).thenReturn(5)
             when(parameters.growthRate).thenReturn(40)
             when(parameters.testFactor).thenReturn(20)
-            when(parameters.fileMatchingPatterns).thenReturn(['js', 'ts'])
+            when(parameters.fileMatchingPatterns).thenReturn(['*.js', '*.ts'])
             when(parameters.codeFileExtensions).thenReturn(['*.js', '*.ts'])
 
             const codeMetrics: CodeMetrics = new CodeMetrics(instance(parameters), instance(taskLibWrapper))
@@ -178,7 +221,7 @@ describe('codeMetrics.ts', (): void => {
             when(parameters.baseSize).thenReturn(5)
             when(parameters.growthRate).thenReturn(40)
             when(parameters.testFactor).thenReturn(20)
-            when(parameters.fileMatchingPatterns).thenReturn(['js', 'ts'])
+            when(parameters.fileMatchingPatterns).thenReturn(['*.js', '*.ts'])
             when(parameters.codeFileExtensions).thenReturn(['*.js', '*.ts'])
 
             const codeMetrics: CodeMetrics = new CodeMetrics(instance(parameters), instance(taskLibWrapper))
@@ -221,7 +264,7 @@ describe('codeMetrics.ts', (): void => {
             when(parameters.baseSize).thenReturn(5)
             when(parameters.growthRate).thenReturn(40)
             when(parameters.testFactor).thenReturn(20)
-            when(parameters.fileMatchingPatterns).thenReturn(['js', 'ts'])
+            when(parameters.fileMatchingPatterns).thenReturn(['*.js', '*.ts'])
             when(parameters.codeFileExtensions).thenReturn(['*.js', '*.ts'])
 
             const codeMetrics: CodeMetrics = new CodeMetrics(instance(parameters), instance(taskLibWrapper))
@@ -264,7 +307,7 @@ describe('codeMetrics.ts', (): void => {
             when(parameters.baseSize).thenReturn(5)
             when(parameters.growthRate).thenReturn(40)
             when(parameters.testFactor).thenReturn(20)
-            when(parameters.fileMatchingPatterns).thenReturn(['js', 'ts'])
+            when(parameters.fileMatchingPatterns).thenReturn(['*.js', '*.ts'])
             when(parameters.codeFileExtensions).thenReturn(['*.js', '*.ts'])
             const codeMetrics: CodeMetrics = new CodeMetrics(instance(parameters), instance(taskLibWrapper))
             const gitDiffSummary: string = `${entryObj.file1}    1    File1.js\n${entryObj.file2}    9    File2.ts\n${entryObj.unusedFile}    -    File.dll\n${entryObj.testFile}    8    FileTest1.ts\n${entryObj.testFile2} - fileT2.spec.ts`

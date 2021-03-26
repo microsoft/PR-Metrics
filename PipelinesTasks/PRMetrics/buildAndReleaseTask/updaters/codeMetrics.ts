@@ -1,6 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+import * as taskLib from 'azure-pipelines-task-lib/task'
+
 import CodeMetricsData from './codeMetricsData'
 import { FixedLengthArray } from '../utilities/fixedLengthArray'
 import { IFileCodeMetric } from './iFileCodeMetric'
@@ -21,6 +23,10 @@ export default class CodeMetrics {
   private _size: string = ''
   private _sizeIndicator: string = ''
   private _metrics: CodeMetricsData = new CodeMetricsData(0, 0, 0)
+
+  private _productCodeCounter: number = 0
+  private _testCodeCounter: number = 0
+  private _ignoredCodeCounter: number = 0
 
   /**
    * Initializes a new instance of the `CodeMetrics` class.
@@ -121,19 +127,57 @@ export default class CodeMetrics {
     this.initializeSizeIndicator()
   }
 
-  private initializeMetrics (gitDiffSummary: string): void {
+  // public test (line: string, patterns: string[]) {
+  //   return taskLib.match([line], patterns)
+  // }
+
+  // Note: glob match only works with string[]
+  private initializeMetrics (gitDiffSummary: string) {
     this._taskLibWrapper.debug('* CodeMetrics.initializeMetrics()')
 
-    const lines: string[] = gitDiffSummary.split('\n')
+    let lines: string[] = gitDiffSummary.split('\n')
 
-    // TODO : filter out lines that don't match the glob
+    // condense file and folder names that were changed e.g. F{a => i}leT{b => e}st.d{c => l}l"
+    lines = lines.map(line => line.replace(/{.*? => ([^}]+?)}/gmi, '$1'))
 
-    const fileMetrics: IFileCodeMetric[] = this.createFileMetricsMap(lines)
+    const matches: string[] = []
+    const doesNotMatch: string[] = []
 
-    // TODO: rename the ones
-    // canuse a map function
+    // checks for glob matches
+    lines.forEach((line: string) => {
+      if (taskLib.match([line], this._parameters.fileMatchingPatterns).length > 0 && taskLib.match([line], this._parameters.codeFileExtensions).length > 0) {
+        matches.push(line)
+      } else {
+        doesNotMatch.push(line)
+      }
+    })
 
-    this.constructMetrics(fileMetrics)
+    this.constructMetrics(matches, doesNotMatch)
+  }
+
+  private constructMetrics (matches: string[], doesNotMatch: string[]): void {
+    const matchesMap = this.createFileMetricsMap(matches)
+
+    matchesMap.forEach((entry: IFileCodeMetric) => {
+      if (/.*Test.*/i.test(entry.filename) || /.*.spec.*/i.test(entry.filename) || /.*test\/.*/i.test(entry.filename)) {
+        this._testCodeCounter += parseInt(entry.value)
+      } else {
+        this._productCodeCounter += parseInt(entry.value)
+      }
+    })
+
+    const doesNotMatchMap = this.createFileMetricsMap(doesNotMatch)
+
+    doesNotMatchMap.forEach((entry: IFileCodeMetric) => {
+      if (entry.value !== '-') {
+        this._ignoredCodeCounter += parseInt(entry.value)
+        this._ignoredFilesWithLinesAdded.push(entry.filename)
+      } else {
+        this._ignoredFilesWithoutLinesAdded.push(entry.filename)
+      }
+    })
+
+    this._metrics = new CodeMetricsData(this._productCodeCounter, this._testCodeCounter, this._ignoredCodeCounter)
   }
 
   private createFileMetricsMap (input: string[]): IFileCodeMetric[] {
@@ -150,56 +194,6 @@ export default class CodeMetrics {
     })
 
     return result
-  }
-
-  private filterFiles (input: IFileCodeMetric[], matchDesired: boolean): IFileCodeMetric[] {
-    this._taskLibWrapper.debug('* CodeMetrics.filterFiles()')
-    const result:IFileCodeMetric[] = []
-
-    input.forEach(entry => {
-      const regexp = new RegExp('(' + this._parameters.fileMatchingPatterns.join('|') + ')')
-
-      if (matchDesired && regexp.test(entry.filename)) {
-        result.push(entry)
-      }
-
-      if (!matchDesired && !regexp.test(entry.filename)) {
-        result.push(entry)
-      }
-    })
-
-    return result
-  }
-
-  private constructMetrics (fileMetrics: IFileCodeMetric[]): void {
-    this._taskLibWrapper.debug('* CodeMetrics.constructMetrics()')
-
-    let productCode: number = 0
-    let testCode: number = 0
-    let ignoredCode: number = 0
-
-    // matches code file extension
-    const matches: IFileCodeMetric[] = this.filterFiles(fileMetrics, true)
-    matches.forEach((entry: IFileCodeMetric) => {
-      if (/.*Test.*/i.test(entry.filename) || /.*.spec.*/i.test(entry.filename)) {
-        testCode += parseInt(entry.value)
-      } else {
-        productCode += parseInt(entry.value)
-      }
-    })
-
-    // does not match code file extension
-    const doesNotMatch = this.filterFiles(fileMetrics, false)
-    doesNotMatch.forEach((entry: IFileCodeMetric) => {
-      if (entry.value !== '-') {
-        ignoredCode += parseInt(entry.value)
-        this._ignoredFilesWithLinesAdded.push(entry.filename)
-      } else {
-        this._ignoredFilesWithoutLinesAdded.push(entry.filename)
-      }
-    })
-
-    this._metrics = new CodeMetricsData(productCode, testCode, ignoredCode)
   }
 
   private initializeSizeIndicator (): void {

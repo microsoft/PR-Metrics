@@ -55,7 +55,4 @@ export default class TaskLibWrapper {
     return taskLib.loc(key, ...param)
   }
 
-  public match (list:string[], patterns:string[] | string, patternRoot?:string, options?:taskLib.MatchOptions): string[] {
-    return taskLib.match(list, patterns, patternRoot, options)
-  }
 }
