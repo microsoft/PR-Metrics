@@ -72,6 +72,7 @@ describe('codeMetrics.ts', (): void => {
 
         // Assert
         expect(codeMetrics.size).to.equal('XS')
+        verify(taskLibWrapper.debug('* CodeMetrics.size')).twice()
       })
 
       it('should be XS', (): void => {
@@ -88,6 +89,7 @@ describe('codeMetrics.ts', (): void => {
 
         // Assert
         expect(codeMetrics.size).to.equal('XS')
+        verify(taskLibWrapper.debug('* CodeMetrics.size')).twice()
       })
 
       it('should be S', (): void => {
@@ -104,6 +106,7 @@ describe('codeMetrics.ts', (): void => {
 
         // Assert
         expect(codeMetrics.size).to.equal('S')
+        verify(taskLibWrapper.debug('* CodeMetrics.size')).twice()
       })
 
       it('should be M', (): void => {
@@ -120,6 +123,7 @@ describe('codeMetrics.ts', (): void => {
 
         // Assert
         expect(codeMetrics.size).to.equal('M')
+        verify(taskLibWrapper.debug('* CodeMetrics.size')).twice()
       })
 
       it('should be L', (): void => {
@@ -136,6 +140,7 @@ describe('codeMetrics.ts', (): void => {
 
         // Assert
         expect(codeMetrics.size).to.equal('L')
+        verify(taskLibWrapper.debug('* CodeMetrics.size')).twice()
       })
 
       it('should be XL', (): void => {
@@ -152,6 +157,7 @@ describe('codeMetrics.ts', (): void => {
 
         // Assert
         expect(codeMetrics.size).to.equal('XL')
+        verify(taskLibWrapper.debug('* CodeMetrics.size')).twice()
       })
     })
 
