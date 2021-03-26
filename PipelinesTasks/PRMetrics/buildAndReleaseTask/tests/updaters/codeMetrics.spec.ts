@@ -1,6 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
-
+import 'reflect-metadata'
 import { instance, mock, verify, when } from 'ts-mockito'
 
 import CodeMetrics from '../../updaters/codeMetrics'
