@@ -40,7 +40,7 @@ describe('codeMetrics.ts', (): void => {
     when(taskLibWrapper.loc('updaters.codeMetrics.titleSizeM')).thenReturn(localizations.titleSizeM)
     when(taskLibWrapper.loc('updaters.codeMetrics.titleSizeL')).thenReturn(localizations.titleSizeL)
     when(taskLibWrapper.loc('updaters.codeMetrics.titleSizeXL')).thenReturn(localizations.titleSizeXL)
-
+    when(taskLibWrapper.loc('updaters.codeMetrics.titleSizeXL', '')).thenReturn(localizations.titleSizeXL)
     when(taskLibWrapper.loc(localizations.titleTestsSufficient)).thenReturn('sufficient')
     when(taskLibWrapper.loc(localizations.titleTestsInsufficient)).thenReturn('insufficient')
 
@@ -72,7 +72,7 @@ describe('codeMetrics.ts', (): void => {
 
         // Assert
         expect(codeMetrics.size).to.equal('XS')
-        verify(taskLibWrapper.debug('* CodeMetrics.size')).twice()
+        verify(taskLibWrapper.debug('* CodeMetrics.size')).once()
       })
 
       it('should be XS', (): void => {
@@ -89,7 +89,7 @@ describe('codeMetrics.ts', (): void => {
 
         // Assert
         expect(codeMetrics.size).to.equal('XS')
-        verify(taskLibWrapper.debug('* CodeMetrics.size')).twice()
+        verify(taskLibWrapper.debug('* CodeMetrics.size')).once()
       })
 
       it('should be S', (): void => {
@@ -106,7 +106,7 @@ describe('codeMetrics.ts', (): void => {
 
         // Assert
         expect(codeMetrics.size).to.equal('S')
-        verify(taskLibWrapper.debug('* CodeMetrics.size')).twice()
+        verify(taskLibWrapper.debug('* CodeMetrics.size')).once()
       })
 
       it('should be M', (): void => {
@@ -116,48 +116,48 @@ describe('codeMetrics.ts', (): void => {
         when(parameters.growthRate).thenReturn(5)
         when(parameters.testFactor).thenReturn(5)
         const codeMetrics: CodeMetrics = new CodeMetrics(instance(parameters), instance(taskLibWrapper))
-        const gitDiffSummary: string = '10    0    File1.js'
+        const gitDiffSummary: string = '6    0    File1.js'
 
         // Act
         codeMetrics.initialize(gitDiffSummary)
 
         // Assert
         expect(codeMetrics.size).to.equal('M')
-        verify(taskLibWrapper.debug('* CodeMetrics.size')).twice()
+        verify(taskLibWrapper.debug('* CodeMetrics.size')).once()
       })
 
       it('should be L', (): void => {
         // Arrage
 
         when(parameters.baseSize).thenReturn(5)
-        when(parameters.growthRate).thenReturn(5)
+        when(parameters.growthRate).thenReturn(2)
         when(parameters.testFactor).thenReturn(5)
         const codeMetrics: CodeMetrics = new CodeMetrics(instance(parameters), instance(taskLibWrapper))
-        const gitDiffSummary: string = '15    0    File1.js'
+        const gitDiffSummary: string = '20    0    File1.js'
 
         // Act
         codeMetrics.initialize(gitDiffSummary)
 
         // Assert
         expect(codeMetrics.size).to.equal('L')
-        verify(taskLibWrapper.debug('* CodeMetrics.size')).twice()
+        verify(taskLibWrapper.debug('* CodeMetrics.size')).once()
       })
 
       it('should be XL', (): void => {
         // Arrage
 
         when(parameters.baseSize).thenReturn(5)
-        when(parameters.growthRate).thenReturn(5)
+        when(parameters.growthRate).thenReturn(2)
         when(parameters.testFactor).thenReturn(5)
         const codeMetrics: CodeMetrics = new CodeMetrics(instance(parameters), instance(taskLibWrapper))
-        const gitDiffSummary: string = '25    0    File1.js'
+        const gitDiffSummary: string = '30    0    File1.js'
 
         // Act
         codeMetrics.initialize(gitDiffSummary)
 
         // Assert
         expect(codeMetrics.size).to.equal('XL')
-        verify(taskLibWrapper.debug('* CodeMetrics.size')).twice()
+        verify(taskLibWrapper.debug('* CodeMetrics.size')).once()
       })
     })
 
