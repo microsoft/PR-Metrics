@@ -89,6 +89,70 @@ describe('codeMetrics.ts', (): void => {
         // Assert
         expect(codeMetrics.size).to.equal('XS')
       })
+
+      it('should be S', (): void => {
+        // Arrage
+
+        when(parameters.baseSize).thenReturn(5)
+        when(parameters.growthRate).thenReturn(5)
+        when(parameters.testFactor).thenReturn(5)
+        const codeMetrics: CodeMetrics = new CodeMetrics(instance(parameters), instance(taskLibWrapper))
+        const gitDiffSummary: string = '5    0    File1.js'
+
+        // Act
+        codeMetrics.initialize(gitDiffSummary)
+
+        // Assert
+        expect(codeMetrics.size).to.equal('S')
+      })
+
+      it('should be M', (): void => {
+        // Arrage
+
+        when(parameters.baseSize).thenReturn(5)
+        when(parameters.growthRate).thenReturn(5)
+        when(parameters.testFactor).thenReturn(5)
+        const codeMetrics: CodeMetrics = new CodeMetrics(instance(parameters), instance(taskLibWrapper))
+        const gitDiffSummary: string = '10    0    File1.js'
+
+        // Act
+        codeMetrics.initialize(gitDiffSummary)
+
+        // Assert
+        expect(codeMetrics.size).to.equal('M')
+      })
+
+      it('should be L', (): void => {
+        // Arrage
+
+        when(parameters.baseSize).thenReturn(5)
+        when(parameters.growthRate).thenReturn(5)
+        when(parameters.testFactor).thenReturn(5)
+        const codeMetrics: CodeMetrics = new CodeMetrics(instance(parameters), instance(taskLibWrapper))
+        const gitDiffSummary: string = '15    0    File1.js'
+
+        // Act
+        codeMetrics.initialize(gitDiffSummary)
+
+        // Assert
+        expect(codeMetrics.size).to.equal('L')
+      })
+
+      it('should be XL', (): void => {
+        // Arrage
+
+        when(parameters.baseSize).thenReturn(5)
+        when(parameters.growthRate).thenReturn(5)
+        when(parameters.testFactor).thenReturn(5)
+        const codeMetrics: CodeMetrics = new CodeMetrics(instance(parameters), instance(taskLibWrapper))
+        const gitDiffSummary: string = '25    0    File1.js'
+
+        // Act
+        codeMetrics.initialize(gitDiffSummary)
+
+        // Assert
+        expect(codeMetrics.size).to.equal('XL')
+      })
     })
 
     describe('isSmall function', (): void => {
