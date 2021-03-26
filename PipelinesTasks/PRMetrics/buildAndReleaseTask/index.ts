@@ -12,9 +12,16 @@ async function run (): Promise<void> {
     taskLib.setResourcePath(path.join(__dirname, 'task.json'))
 
     const codeMetricsCalculator: CodeMetricsCalculator = container.resolve(CodeMetricsCalculator)
-    const skipMessage: string | null = codeMetricsCalculator.isRunnable
+
+    const skipMessage: string | null = codeMetricsCalculator.shouldSkip
     if (skipMessage !== null) {
       taskLib.setResult(taskLib.TaskResult.Skipped, skipMessage)
+      return
+    }
+
+    const terminateMessage: string | null = codeMetricsCalculator.shouldTerminate
+    if (terminateMessage !== null) {
+      taskLib.setResult(taskLib.TaskResult.Failed, terminateMessage)
       return
     }
 
