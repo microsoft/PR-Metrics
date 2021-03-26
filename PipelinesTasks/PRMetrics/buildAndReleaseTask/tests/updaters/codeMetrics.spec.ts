@@ -58,47 +58,6 @@ describe('codeMetrics.ts', (): void => {
   })
 
   describe('initialize', (): void => {
-    // it('TESTEST ============== TESTEST ==============', (): void => {
-
-    //   const line = '9 9 File1.cs'
-    //   const pattern = ['*.dll']
-
-    //   const codeMetrics: CodeMetrics = new CodeMetrics(instance(parameters), instance(taskLibWrapper))
-    //   expect(codeMetrics.test(line, pattern)).to.equal(true)
-    // })
-
-    // it('TESTEST', ():void => {
-    //   // Arrange
-    //   when(parameters.baseSize).thenReturn(50)
-    //   when(parameters.growthRate).thenReturn(2.5)
-    //   when(parameters.testFactor).thenReturn(1.0)
-    //   when(parameters.fileMatchingPatterns).thenReturn(['**/*', '!File*.cs', '!**/*.dll', '!test/File*.cs', 'test/File2.cs'])
-    //   when(parameters.codeFileExtensions).thenReturn(['*.cs', '*.dll'])
-
-    //   const codeMetrics: CodeMetrics = new CodeMetrics(instance(parameters), instance(taskLibWrapper))
-    //   const gitDiffSummary: string = '9    1    File1.cs\n' +
-    //         '0    9    File2.cs\n' +
-    //         '-    -    File.dll\n' +
-    //         '9    1    {Folder_Old => Folder}/FileTest1.cs\n' +
-    //         '0    9    File{a => t}est2.cs\n' +
-    //         '-    -    F{a => i}leT{b => e}st.d{c => l}l\n' +
-    //         '9    1    {test/File.cs => test/File1.cs}\n' +
-    //         '0    9    {product => test}/File2.cs\n' +
-    //         '-    -    {product => test}/File.dll\n'
-    //   const expectedMetrics: CodeMetricsData = new CodeMetricsData(0, 9, 18)
-
-    //   // Act
-    //   codeMetrics.initialize(gitDiffSummary)
-
-    //   // Assert
-    //   expect(codeMetrics.metrics.testCode).to.equal(expectedMetrics.testCode)
-    //   expect(codeMetrics.metrics.productCode).to.equal(expectedMetrics.productCode)
-    //   expect(codeMetrics.metrics.ignoredCode).to.equal(expectedMetrics.ignoredCode)
-    //   expect(codeMetrics.metrics).to.deep.equal(expectedMetrics)
-    //   expect(codeMetrics.ignoredFilesWithLinesAdded).to.deep.equal(['File1.cs', 'test/File1.cs'])
-    //   expect(codeMetrics.ignoredFilesWithoutLinesAdded).to.deep.equal(['File2.cs', 'Filetest2.cs'])
-    // })
-
     describe('isSmall function', (): void => {
       async.each(
         [
@@ -345,83 +304,137 @@ describe('codeMetrics.ts', (): void => {
             }
           })
         })
-      // it('should set all input values when all are specified', (): void => {
-      //   // Arrange
-      //   const parameters = new Parameters(instance(parameters), instance(taskLibWrapper))
+      it('should set all input values when all are specified', (): void => {
+        // Arrange
+        when(parameters.baseSize).thenReturn(5)
+        when(parameters.growthRate).thenReturn(40)
+        when(parameters.testFactor).thenReturn(20)
+        when(parameters.fileMatchingPatterns).thenReturn(['*.js', '*.ts'])
+        when(parameters.codeFileExtensions).thenReturn(['*.js', '*.ts'])
 
-      //   when(taskLibWrapper.getInput('BaseSize', false)).thenReturn('5.0')
-      //   when(taskLibWrapper.getInput('GrowthRate', false)).thenReturn('40')
-      //   when(taskLibWrapper.getInput('TestFactor', false)).thenReturn('20')
-      //   when(taskLibWrapper.getInput('FileMatchingPatterns', false)).thenReturn('js\nts')
-      //   when(taskLibWrapper.getInput('CodeFileExtensions', false)).thenReturn('js\nts')
-      //   const codeMetrics: CodeMetrics = new CodeMetrics(instance(parameters), instance(taskLibWrapper))
-      //   const gitDiffSummary: string = '9    1    File1.js\n0    9    File2.ts\n-    -    File.dll\n'
-      //   const expectedMetrics: CodeMetricsData = new CodeMetricsData(9, 0, 0)
+        const codeMetrics: CodeMetrics = new CodeMetrics(instance(parameters), instance(taskLibWrapper))
+        const gitDiffSummary: string = '9    1    File1.js\n0    9    File2.ts\n-    -    File.dll\n'
+        const expectedMetrics: CodeMetricsData = new CodeMetricsData(9, 0, 0)
 
-      //   // Act
-      //   codeMetrics.initialize(gitDiffSummary)
+        // Act
+        codeMetrics.initialize(gitDiffSummary)
 
-      //   // Assert
-      //   expect(codeMetrics.metrics.testCode).to.equal(expectedMetrics.testCode)
-      //   expect(codeMetrics.metrics.productCode).to.equal(expectedMetrics.productCode)
-      //   expect(codeMetrics.metrics.ignoredCode).to.equal(expectedMetrics.ignoredCode)
-      //   expect(codeMetrics.metrics).to.deep.equal(expectedMetrics)
-      //   expect(codeMetrics.ignoredFilesWithLinesAdded).to.deep.equal([])
-      //   expect(codeMetrics.ignoredFilesWithoutLinesAdded).to.deep.equal(['File.dll'])
-      //   expect(codeMetrics.sizeIndicator).to.equal('S')
-      //   verify(taskLibWrapper.debug('* CodeMetrics.initialize()')).once()
-      //   verify(taskLibWrapper.debug('* CodeMetrics.initializeMetrics()')).once()
-      //   // verify(taskLibWrapper.debug('* CodeMetrics.extractFileMetrics()')).once()
-      //   verify(taskLibWrapper.debug('* CodeMetrics.filterFiles()')).twice()
-      //   verify(taskLibWrapper.debug('* CodeMetrics.constructMetrics()')).once()
-      //   verify(taskLibWrapper.debug('* CodeMetrics.initializeSizeIndicator()')).once()
-      //   verify(taskLibWrapper.debug('* CodeMetrics.calculateSize()')).once()
-      //   verify(taskLibWrapper.debug('* CodeMetrics.ignoredFilesWithLinesAdded')).once()
-      //   verify(taskLibWrapper.debug('* CodeMetrics.ignoredFilesWithoutLinesAdded')).once()
-      //   // verify(taskLibWrapper.debug('* CodeMetrics.sizeIndicator')).once()
-      //   // verify(taskLibWrapper.debug('* CodeMetrics.metrics')).once()
-      // })
+        // Assert
+        expect(codeMetrics.metrics.testCode).to.equal(expectedMetrics.testCode)
+        expect(codeMetrics.metrics.productCode).to.equal(expectedMetrics.productCode)
+        expect(codeMetrics.metrics.ignoredCode).to.equal(expectedMetrics.ignoredCode)
+        expect(codeMetrics.metrics).to.deep.equal(expectedMetrics)
+        expect(codeMetrics.ignoredFilesWithLinesAdded).to.deep.equal([])
+        expect(codeMetrics.ignoredFilesWithoutLinesAdded).to.deep.equal(['File.dll'])
+        // expect(codeMetrics.sizeIndicator).to.equal('S')
+        verify(taskLibWrapper.debug('* CodeMetrics.initialize()')).once()
+        verify(taskLibWrapper.debug('* CodeMetrics.initializeMetrics()')).once()
+        verify(taskLibWrapper.debug('* CodeMetrics.constructMetrics()')).once()
+        verify(taskLibWrapper.debug('* CodeMetrics.createFileMetricsMap()')).twice()
+        verify(taskLibWrapper.debug('* CodeMetrics.initializeSizeIndicator()')).once()
+        verify(taskLibWrapper.debug('* CodeMetrics.calculateSize()')).once()
+        verify(taskLibWrapper.debug('* CodeMetrics.ignoredFilesWithLinesAdded')).once()
+        verify(taskLibWrapper.debug('* CodeMetrics.ignoredFilesWithoutLinesAdded')).once()
+      })
 
-      // it('should set all input values when all are specified', (): void => {
-      //   // Arrange
-      //   const parameters = new Parameters(instance(parameters), instance(taskLibWrapper))
+      it('should set all input values when all are specified', (): void => {
+        // Arrange
+        when(parameters.baseSize).thenReturn(5)
+        when(parameters.growthRate).thenReturn(40)
+        when(parameters.testFactor).thenReturn(20)
+        when(parameters.fileMatchingPatterns).thenReturn(['**/*.js', '**/*.ts'])
+        when(parameters.codeFileExtensions).thenReturn(['*.js', '*.ts'])
 
-      //   when(taskLibWrapper.getInput('BaseSize', false)).thenReturn('5.0')
-      //   when(taskLibWrapper.getInput('GrowthRate', false)).thenReturn('40')
-      //   when(taskLibWrapper.getInput('TestFactor', false)).thenReturn('20')
-      //   when(taskLibWrapper.getInput('FileMatchingPatterns', false)).thenReturn('js\nts')
-      //   when(taskLibWrapper.getInput('CodeFileExtensions', false)).thenReturn('js\nts')
-      //   const codeMetrics: CodeMetrics = new CodeMetrics(instance(parameters), instance(taskLibWrapper))
-      //   const gitDiffSummary: string = '9    10    File1.js\n9    10    File2.ts\n-    -    File.dll\n'
-      //   const expectedMetrics: CodeMetricsData = new CodeMetricsData(18, 0, 0)
+        const codeMetrics: CodeMetrics = new CodeMetrics(instance(parameters), instance(taskLibWrapper))
+        const gitDiffSummary: string = '9    1    folder/File1.js\n0    9    folder/File2.ts\n-    -    File.dll\n'
+        const expectedMetrics: CodeMetricsData = new CodeMetricsData(9, 0, 0)
 
-      //   // Act
-      //   codeMetrics.initialize(gitDiffSummary)
+        // Act
+        codeMetrics.initialize(gitDiffSummary)
 
-      //   // Assert
-      //   expect(codeMetrics.metrics.testCode).to.equal(expectedMetrics.testCode)
-      //   expect(codeMetrics.metrics.productCode).to.equal(expectedMetrics.productCode)
-      //   expect(codeMetrics.metrics.ignoredCode).to.equal(expectedMetrics.ignoredCode)
-      //   expect(codeMetrics.metrics).to.deep.equal(expectedMetrics)
-      //   expect(codeMetrics.ignoredFilesWithLinesAdded).to.deep.equal([])
-      //   expect(codeMetrics.ignoredFilesWithoutLinesAdded).to.deep.equal(['File.dll'])
-      //   expect(codeMetrics.sizeIndicator).to.equal('S')
-      //   verify(taskLibWrapper.debug('* CodeMetrics.initialize()')).once()
-      //   verify(taskLibWrapper.debug('* CodeMetrics.initializeMetrics()')).once()
-      //   // verify(taskLibWrapper.debug('* CodeMetrics.extractFileMetrics()')).once()
-      //   verify(taskLibWrapper.debug('* CodeMetrics.filterFiles()')).twice()
-      //   verify(taskLibWrapper.debug('* CodeMetrics.constructMetrics()')).once()
-      //   verify(taskLibWrapper.debug('* CodeMetrics.initializeSizeIndicator()')).once()
-      //   verify(taskLibWrapper.debug('* CodeMetrics.calculateSize()')).once()
-      //   verify(taskLibWrapper.debug('* CodeMetrics.ignoredFilesWithLinesAdded')).once()
-      //   verify(taskLibWrapper.debug('* CodeMetrics.ignoredFilesWithoutLinesAdded')).once()
-      //   // verify(taskLibWrapper.debug('* CodeMetrics.sizeIndicator')).once()
-      //   // verify(taskLibWrapper.debug('* CodeMetrics.metrics')).once()
-      // })
+        // Assert
+        expect(codeMetrics.metrics.testCode).to.equal(expectedMetrics.testCode)
+        expect(codeMetrics.metrics.productCode).to.equal(expectedMetrics.productCode)
+        expect(codeMetrics.metrics.ignoredCode).to.equal(expectedMetrics.ignoredCode)
+        expect(codeMetrics.metrics).to.deep.equal(expectedMetrics)
+        expect(codeMetrics.ignoredFilesWithLinesAdded).to.deep.equal([])
+        expect(codeMetrics.ignoredFilesWithoutLinesAdded).to.deep.equal(['File.dll'])
+        // expect(codeMetrics.sizeIndicator).to.equal('S')
+        verify(taskLibWrapper.debug('* CodeMetrics.initialize()')).once()
+        verify(taskLibWrapper.debug('* CodeMetrics.initializeMetrics()')).once()
+        verify(taskLibWrapper.debug('* CodeMetrics.constructMetrics()')).once()
+        verify(taskLibWrapper.debug('* CodeMetrics.createFileMetricsMap()')).twice()
+        verify(taskLibWrapper.debug('* CodeMetrics.initializeSizeIndicator()')).once()
+        verify(taskLibWrapper.debug('* CodeMetrics.calculateSize()')).once()
+        verify(taskLibWrapper.debug('* CodeMetrics.ignoredFilesWithLinesAdded')).once()
+        verify(taskLibWrapper.debug('* CodeMetrics.ignoredFilesWithoutLinesAdded')).once()
+      })
     })
 
     describe('old tests', (): void => {
+      it('called with ignored and renamed files 1', ():void => {
+        // Arrange
+        when(parameters.baseSize).thenReturn(50)
+        when(parameters.growthRate).thenReturn(2.5)
+        when(parameters.testFactor).thenReturn(1.0)
+        when(parameters.fileMatchingPatterns).thenReturn(['**/*', '!File*.cs', '!**/*.dll', '!test/File*.cs', 'test/File2.cs'])
+        when(parameters.codeFileExtensions).thenReturn(['*.cs', '*.dll'])
 
+        const codeMetrics: CodeMetrics = new CodeMetrics(instance(parameters), instance(taskLibWrapper))
+        const gitDiffSummary: string = '9    1    File1.cs\n' +
+              '0    9    File2.cs\n' +
+              '-    -    File.dll\n' +
+              '9    1    {Folder_Old => Folder}/FileTest1.cs\n' +
+              '0    9    File{a => t}est2.cs\n' +
+              '-    -    F{a => i}leT{b => e}st.d{c => l}l\n' +
+              '9    1    {test/File.cs => test/File1.cs}\n' +
+              '0    9    {product => test}/File2.cs\n' +
+              '-    -    {product => test}/File.dll\n'
+        const expectedMetrics: CodeMetricsData = new CodeMetricsData(9, 18, 0)
+
+        // Act
+        codeMetrics.initialize(gitDiffSummary)
+
+        // Assert
+        expect(codeMetrics.metrics.testCode).to.equal(expectedMetrics.testCode)
+        expect(codeMetrics.metrics.productCode).to.equal(expectedMetrics.productCode)
+        expect(codeMetrics.metrics.ignoredCode).to.equal(expectedMetrics.ignoredCode)
+        expect(codeMetrics.metrics).to.deep.equal(expectedMetrics)
+        expect(codeMetrics.ignoredFilesWithLinesAdded).to.deep.equal([])
+        expect(codeMetrics.ignoredFilesWithoutLinesAdded).to.deep.equal(['File.dll', 'FileTest.dll', 'test/File.dll'])
+      })
+
+      it('called with ignored and renamed files 2', ():void => {
+        // Arrange
+        when(parameters.baseSize).thenReturn(50)
+        when(parameters.growthRate).thenReturn(2.5)
+        when(parameters.testFactor).thenReturn(1.0)
+        when(parameters.fileMatchingPatterns).thenReturn(['*.cs', '**/*.cs'])
+        when(parameters.codeFileExtensions).thenReturn(['*.cs'])
+
+        const codeMetrics: CodeMetrics = new CodeMetrics(instance(parameters), instance(taskLibWrapper))
+        const gitDiffSummary: string = '9    1    File1.cs\n' +
+              '0    9    File2.cs\n' +
+              '-    -    File.dll\n' +
+              '9    1    {Folder_Old => Folder}/FileTest1.cs\n' +
+              '0    9    File{a => t}est2.cs\n' +
+              '-    -    F{a => i}leT{b => e}st.d{c => l}l\n' +
+              '9    1    {test/File.cs => test/File1.cs}\n' +
+              '0    9    {product => test}/File2.cs\n' +
+              '-    -    {product => test}/File.dll\n'
+        const expectedMetrics: CodeMetricsData = new CodeMetricsData(9, 18, 0)
+
+        // Act
+        codeMetrics.initialize(gitDiffSummary)
+
+        // Assert
+        expect(codeMetrics.metrics.testCode).to.equal(expectedMetrics.testCode)
+        expect(codeMetrics.metrics.productCode).to.equal(expectedMetrics.productCode)
+        expect(codeMetrics.metrics.ignoredCode).to.equal(expectedMetrics.ignoredCode)
+        expect(codeMetrics.metrics).to.deep.equal(expectedMetrics)
+        expect(codeMetrics.ignoredFilesWithLinesAdded).to.deep.equal([])
+        expect(codeMetrics.ignoredFilesWithoutLinesAdded).to.deep.equal(['File.dll', 'FileTest.dll', 'test/File.dll'])
+      })
     })
   })
 })

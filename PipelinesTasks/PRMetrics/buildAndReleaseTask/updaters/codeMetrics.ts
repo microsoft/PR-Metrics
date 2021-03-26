@@ -127,6 +127,20 @@ export default class CodeMetrics {
     this.initializeSizeIndicator()
   }
 
+  private fileExtensionMatch (line: string): boolean {
+    let found = false
+
+    this._parameters.codeFileExtensions.every((item: string) => {
+      if (line.includes(item.replace('*', ''))) {
+        found = true
+        return false
+      }
+      return true
+    })
+
+    return found
+  }
+
   // Note: glob match only works with string[]
   private initializeMetrics (gitDiffSummary: string) {
     this._taskLibWrapper.debug('* CodeMetrics.initializeMetrics()')
@@ -141,7 +155,8 @@ export default class CodeMetrics {
 
     // checks for glob matches
     lines.forEach((line: string) => {
-      if (taskLib.match([line], this._parameters.fileMatchingPatterns).length > 0 && taskLib.match([line], this._parameters.codeFileExtensions).length > 0) {
+      // causing bugs
+      if (taskLib.match([line], this._parameters.fileMatchingPatterns).length > 0 && this.fileExtensionMatch(line)) {
         matches.push(line)
       } else {
         doesNotMatch.push(line)
