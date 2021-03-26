@@ -54,5 +54,4 @@ export default class TaskLibWrapper {
   public loc (key: string, ...param: any[]): string {
     return taskLib.loc(key, ...param)
   }
-
 }

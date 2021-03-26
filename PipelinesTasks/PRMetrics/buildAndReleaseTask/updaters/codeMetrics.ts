@@ -127,10 +127,6 @@ export default class CodeMetrics {
     this.initializeSizeIndicator()
   }
 
-  // public test (line: string, patterns: string[]) {
-  //   return taskLib.match([line], patterns)
-  // }
-
   // Note: glob match only works with string[]
   private initializeMetrics (gitDiffSummary: string) {
     this._taskLibWrapper.debug('* CodeMetrics.initializeMetrics()')
@@ -156,6 +152,8 @@ export default class CodeMetrics {
   }
 
   private constructMetrics (matches: string[], doesNotMatch: string[]): void {
+    this._taskLibWrapper.debug('* CodeMetrics.constructMetrics()')
+
     const matchesMap = this.createFileMetricsMap(matches)
 
     matchesMap.forEach((entry: IFileCodeMetric) => {

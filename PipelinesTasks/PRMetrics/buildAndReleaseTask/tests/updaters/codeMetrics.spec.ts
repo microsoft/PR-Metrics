@@ -58,8 +58,6 @@ describe('codeMetrics.ts', (): void => {
   })
 
   describe('initialize', (): void => {
-
-
     // it('TESTEST ============== TESTEST ==============', (): void => {
 
     //   const line = '9 9 File1.cs'
@@ -198,15 +196,12 @@ describe('codeMetrics.ts', (): void => {
             // expect(codeMetrics.size).to.equal('S')
             verify(taskLibWrapper.debug('* CodeMetrics.initialize()')).once()
             verify(taskLibWrapper.debug('* CodeMetrics.initializeMetrics()')).once()
-            // verify(taskLibWrapper.debug('* CodeMetrics.extractFileMetrics()')).once()
-            verify(taskLibWrapper.debug('* CodeMetrics.filterFiles()')).twice()
             verify(taskLibWrapper.debug('* CodeMetrics.constructMetrics()')).once()
+            verify(taskLibWrapper.debug('* CodeMetrics.createFileMetricsMap()')).twice()
             verify(taskLibWrapper.debug('* CodeMetrics.initializeSizeIndicator()')).once()
             verify(taskLibWrapper.debug('* CodeMetrics.calculateSize()')).once()
             verify(taskLibWrapper.debug('* CodeMetrics.ignoredFilesWithLinesAdded')).once()
             verify(taskLibWrapper.debug('* CodeMetrics.ignoredFilesWithoutLinesAdded')).once()
-            // verify(taskLibWrapper.debug('* CodeMetrics.sizeIndicator')).once()
-            // verify(taskLibWrapper.debug('* CodeMetrics.metrics')).once()
           })
         })
 
@@ -241,15 +236,12 @@ describe('codeMetrics.ts', (): void => {
             // expect(codeMetrics.sizeIndicator).to.equal('S')
             verify(taskLibWrapper.debug('* CodeMetrics.initialize()')).once()
             verify(taskLibWrapper.debug('* CodeMetrics.initializeMetrics()')).once()
-            // verify(taskLibWrapper.debug('* CodeMetrics.extractFileMetrics()')).once()
-            verify(taskLibWrapper.debug('* CodeMetrics.filterFiles()')).twice()
             verify(taskLibWrapper.debug('* CodeMetrics.constructMetrics()')).once()
+            verify(taskLibWrapper.debug('* CodeMetrics.createFileMetricsMap()')).twice()
             verify(taskLibWrapper.debug('* CodeMetrics.initializeSizeIndicator()')).once()
             verify(taskLibWrapper.debug('* CodeMetrics.calculateSize()')).once()
             verify(taskLibWrapper.debug('* CodeMetrics.ignoredFilesWithLinesAdded')).once()
             verify(taskLibWrapper.debug('* CodeMetrics.ignoredFilesWithoutLinesAdded')).once()
-            // verify(taskLibWrapper.debug('* CodeMetrics.sizeIndicator')).once()
-            // verify(taskLibWrapper.debug('* CodeMetrics.metrics')).once()
           })
         })
 
@@ -284,15 +276,12 @@ describe('codeMetrics.ts', (): void => {
             // expect(codeMetrics.sizeIndicator).to.equal('S')
             verify(taskLibWrapper.debug('* CodeMetrics.initialize()')).once()
             verify(taskLibWrapper.debug('* CodeMetrics.initializeMetrics()')).once()
-            // verify(taskLibWrapper.debug('* CodeMetrics.extractFileMetrics()')).once()
-            verify(taskLibWrapper.debug('* CodeMetrics.filterFiles()')).twice()
             verify(taskLibWrapper.debug('* CodeMetrics.constructMetrics()')).once()
+            verify(taskLibWrapper.debug('* CodeMetrics.createFileMetricsMap()')).twice()
             verify(taskLibWrapper.debug('* CodeMetrics.initializeSizeIndicator()')).once()
             verify(taskLibWrapper.debug('* CodeMetrics.calculateSize()')).once()
             verify(taskLibWrapper.debug('* CodeMetrics.ignoredFilesWithLinesAdded')).once()
             verify(taskLibWrapper.debug('* CodeMetrics.ignoredFilesWithoutLinesAdded')).once()
-            // verify(taskLibWrapper.debug('* CodeMetrics.sizeIndicator')).once()
-            // verify(taskLibWrapper.debug('* CodeMetrics.metrics')).once()
           })
         })
 
@@ -326,15 +315,12 @@ describe('codeMetrics.ts', (): void => {
             // expect(codeMetrics.sizeIndicator).to.equal('S')
             verify(taskLibWrapper.debug('* CodeMetrics.initialize()')).once()
             verify(taskLibWrapper.debug('* CodeMetrics.initializeMetrics()')).once()
-            // verify(taskLibWrapper.debug('* CodeMetrics.extractFileMetrics()')).once()
-            verify(taskLibWrapper.debug('* CodeMetrics.filterFiles()')).twice()
             verify(taskLibWrapper.debug('* CodeMetrics.constructMetrics()')).once()
+            verify(taskLibWrapper.debug('* CodeMetrics.createFileMetricsMap()')).twice()
             verify(taskLibWrapper.debug('* CodeMetrics.initializeSizeIndicator()')).once()
             verify(taskLibWrapper.debug('* CodeMetrics.calculateSize()')).once()
             verify(taskLibWrapper.debug('* CodeMetrics.ignoredFilesWithLinesAdded')).once()
             verify(taskLibWrapper.debug('* CodeMetrics.ignoredFilesWithoutLinesAdded')).once()
-            // verify(taskLibWrapper.debug('* CodeMetrics.sizeIndicator')).once()
-            // verify(taskLibWrapper.debug('* CodeMetrics.metrics')).once()
           })
         })
     })
