@@ -57,7 +57,7 @@ export default class PullRequest {
     this._taskLibWrapper.debug('* PullRequest.getUpdatedTitle()')
 
     const sizeIndicator: string = this._codeMetrics.sizeIndicator
-    if (currentTitle.startsWith(`${sizeIndicator} ◾ `)) {
+    if (currentTitle.startsWith(this._taskLibWrapper.loc('pullRequests.pullRequest.titleFormat', sizeIndicator, ''))) {
       return null
     }
 
@@ -80,6 +80,6 @@ export default class PullRequest {
       originalTitle = prefixRegExpMatches[3]!
     }
 
-    return `${sizeIndicator} ◾ ${originalTitle}`
+    return this._taskLibWrapper.loc('pullRequests.pullRequest.titleFormat', sizeIndicator, originalTitle)
   }
 }

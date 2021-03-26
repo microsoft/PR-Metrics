@@ -58,14 +58,14 @@ export default class PullRequestComments {
     const commentThreads: GitPullRequestCommentThread[] = await this._azureReposInvoker.getCommentThreads()
     for (let i: number = 0; i < commentThreads.length; i++) {
       const commentThread: GitPullRequestCommentThread = commentThreads[i]!
-      if (!commentThread.pullRequestThreadContext || !commentThread.pullRequestThreadContext.trackingCriteria) {
+      if (!commentThread.threadContext) {
         // If the current comment thread is not applied to a specified file, check if it is the metrics comment thread.
         result = this.getMetricsCommentData(result, currentIteration, commentThread, i)
       } else {
         // If the current comment thread is applied to a specified file, check if it already contains a comment related to files that can be ignored.
-        const filePath: string = Validator.validateField(commentThread.pullRequestThreadContext.trackingCriteria.origFilePath, `commentThread[${i}].pullRequestThreadContext.trackingCriteria.origFilePath`, 'PullRequestComments.getCommentData()')
+        const filePath: string = Validator.validateField(commentThread.threadContext.filePath, `commentThread[${i}].threadContext.filePath`, 'PullRequestComments.getCommentData()')
         if (filePath.length <= 1) {
-          throw RangeError(`'commentThread[${i}].pullRequestThreadContext.trackingCriteria.origFilePath' '${filePath}' is of length '${filePath.length}'.`)
+          throw RangeError(`'commentThread[${i}].threadContext.filePath' '${filePath}' is of length '${filePath.length}'.`)
         }
 
         const fileName: string = filePath.substring(1)

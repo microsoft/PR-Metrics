@@ -71,7 +71,7 @@
     "metrics.inputs.adjustingTestFactor": "Adjusting test factor parameter to %s.",
     "pullRequests.pullRequest.addDescription": "❌ **Add a description.**",
     "pullRequests.pullRequest.titleFormat": "%s ◾ %s",
-    "pullRequests.pullRequestComments.commentFooter": "[Metrics added by PR Metrics. Add to Azure DevOps today!](https://marketplace.visualstudio.com/items?itemName=ms-omex.prmetrics)",
+    "pullRequests.pullRequestComments.commentFooter": "[Metrics computed by PR Metrics. Add it to your Azure DevOps builds!](https://marketplace.visualstudio.com/items?itemName=ms-omex.prmetrics)",
     "pullRequests.pullRequestComments.commentTitle": "# Metrics for iteration %s",
     "pullRequests.pullRequestComments.fileIgnoredComment": "❗ **This file may not need to be reviewed.**",
     "pullRequests.pullRequestComments.largePullRequestComment": "❌ **Try to keep pull requests smaller than %s lines of new product code by following the [Single Responsibility Principle (SRP)](https://wikipedia.org/wiki/Single-responsibility_principle).**",

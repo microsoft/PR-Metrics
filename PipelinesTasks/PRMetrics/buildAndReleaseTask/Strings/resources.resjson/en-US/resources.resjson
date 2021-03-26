@@ -97,7 +97,7 @@
   "loc.messages.pullRequests.pullRequest.titleFormat": "%s ◾ %s",
   "loc.messages.pullRequests.pullRequest.titleFormat.comment": "The title format. The first placeholder will be replaced by the title size and test coverage prefix, and the second placeholder will be replaced by the original pull request title.",
 
-  "loc.messages.pullRequests.pullRequestComments.commentFooter": "[Metrics added by PR Metrics. Add to Azure DevOps today!](https://marketplace.visualstudio.com/items?itemName=ms-omex.prmetrics)",
+  "loc.messages.pullRequests.pullRequestComments.commentFooter": "[Metrics computed by PR Metrics. Add it to your Azure DevOps builds!](https://marketplace.visualstudio.com/items?itemName=ms-omex.prmetrics)",
   "loc.messages.pullRequests.pullRequestComments.commentFooter.comment": "The footer of the comment added to pull requests.",
 
   "loc.messages.pullRequests.pullRequestComments.commentTitle": "# Metrics for iteration %s",
