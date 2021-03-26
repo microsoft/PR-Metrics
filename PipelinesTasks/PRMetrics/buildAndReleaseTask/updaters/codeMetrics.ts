@@ -113,7 +113,7 @@ export default class CodeMetrics {
   public initialize (gitDiffSummary: string): void {
     this._taskLibWrapper.debug('* CodeMetrics.initialize()')
 
-    if (!gitDiffSummary) {
+    if (!gitDiffSummary?.trim()) {
       throw RangeError('The git diff summary was empty.')
     }
 
