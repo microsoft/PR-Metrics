@@ -1,9 +1,11 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { IExecSyncResult, IExecSyncOptions } from 'azure-pipelines-task-lib/toolrunner'
-import { singleton } from 'tsyringe'
 import * as taskLib from 'azure-pipelines-task-lib/task'
+
+import { IExecSyncOptions, IExecSyncResult } from 'azure-pipelines-task-lib/toolrunner'
+
+import { singleton } from 'tsyringe'
 
 /**
  * A wrapper around the Azure Pipelines Task Lib, to facilitate testability.
