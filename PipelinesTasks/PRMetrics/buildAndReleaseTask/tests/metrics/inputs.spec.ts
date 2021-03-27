@@ -4,7 +4,7 @@
 import 'reflect-metadata'
 import { expect } from 'chai'
 import { InputsDefault } from '../../src/metrics/inputsDefault'
-import { instance, mock, verify, when } from 'ts-mockito'
+import { anyString, instance, mock, verify, when } from 'ts-mockito'
 import async from 'async'
 import ConsoleWrapper from '../../src/wrappers/consoleWrapper'
 import Inputs from '../../src/metrics/inputs'
@@ -14,8 +14,14 @@ describe('inputs.ts', (): void => {
   const adjustingBaseSizeResource: string = `Adjusting base size input to ${InputsDefault.baseSize}`
   const adjustingGrowthRateResource: string = `Adjusting growth rate input to ${InputsDefault.growthRate}`
   const adjustingTestFactorResource: string = `Adjusting test factor input to ${InputsDefault.testFactor}`
-  const adjustingFileMatchingPatternsResource: string = `Adjusting file matching patterns to ${JSON.stringify(InputsDefault.fileMatchingPatterns)}`
-  const adjustCodeFileExtensionsResource: string = 'Adjusting code file extensions input to default values'
+  const adjustingFileMatchingPatternsResource: string = `Adjusting file matching patterns input to ${JSON.stringify(InputsDefault.fileMatchingPatterns)}`
+  const adjustingCodeFileExtensionsResource: string = `Adjusting code file extensions input to ${JSON.stringify(InputsDefault.fileMatchingPatterns)}`
+  const disablingTestFactorResource: string = 'Disabling test factor validation.'
+  const settingBaseSizeResource: string = 'Setting base size input to VALUE.'
+  const settingGrowthRateResource: string = 'Setting growth rate input to VALUE.'
+  const settingTestFactorResource: string = 'Setting test factor input to VALUE.'
+  const settingFileMatchingPatternsResource: string = 'Setting file matching patterns input to VALUE.'
+  const settingCodeFileExtensionsResource: string = 'Setting code file extensions input to VALUE.'
 
   let taskLibWrapper: TaskLibWrapper
   let consoleWrapper: ConsoleWrapper
@@ -33,7 +39,13 @@ describe('inputs.ts', (): void => {
     when(taskLibWrapper.loc('metrics.inputs.adjustingGrowthRate', InputsDefault.growthRate.toLocaleString())).thenReturn(adjustingGrowthRateResource)
     when(taskLibWrapper.loc('metrics.inputs.adjustingTestFactor', InputsDefault.testFactor.toLocaleString())).thenReturn(adjustingTestFactorResource)
     when(taskLibWrapper.loc('metrics.inputs.adjustingFileMatchingPatterns', JSON.stringify(InputsDefault.fileMatchingPatterns))).thenReturn(adjustingFileMatchingPatternsResource)
-    when(taskLibWrapper.loc('metrics.inputs.adjustingCodeFileExtensions')).thenReturn(adjustCodeFileExtensionsResource)
+    when(taskLibWrapper.loc('metrics.inputs.adjustingCodeFileExtensions', JSON.stringify(InputsDefault.codeFileExtensions))).thenReturn(adjustingCodeFileExtensionsResource)
+    when(taskLibWrapper.loc('metrics.inputs.disablingTestFactor')).thenReturn(disablingTestFactorResource)
+    when(taskLibWrapper.loc('metrics.inputs.settingBaseSize', anyString())).thenReturn(settingBaseSizeResource)
+    when(taskLibWrapper.loc('metrics.inputs.settingGrowthRate', anyString())).thenReturn(settingGrowthRateResource)
+    when(taskLibWrapper.loc('metrics.inputs.settingTestFactor', anyString())).thenReturn(settingTestFactorResource)
+    when(taskLibWrapper.loc('metrics.inputs.settingFileMatchingPatterns', anyString())).thenReturn(settingFileMatchingPatternsResource)
+    when(taskLibWrapper.loc('metrics.inputs.settingCodeFileExtensions', anyString())).thenReturn(settingCodeFileExtensionsResource)
   })
 
   describe('initialize()', (): void => {
@@ -42,7 +54,7 @@ describe('inputs.ts', (): void => {
         // Act
         const inputs: Inputs = new Inputs(instance(consoleWrapper), instance(taskLibWrapper))
 
-        // Assert
+        // AssertanyString
         expect(inputs.baseSize).to.equal(InputsDefault.baseSize)
         expect(inputs.growthRate).to.equal(InputsDefault.growthRate)
         expect(inputs.testFactor).to.equal(InputsDefault.testFactor)
@@ -63,7 +75,13 @@ describe('inputs.ts', (): void => {
         verify(consoleWrapper.log(adjustingGrowthRateResource)).once()
         verify(consoleWrapper.log(adjustingTestFactorResource)).once()
         verify(consoleWrapper.log(adjustingFileMatchingPatternsResource)).once()
-        verify(consoleWrapper.log(adjustCodeFileExtensionsResource)).once()
+        verify(consoleWrapper.log(adjustingCodeFileExtensionsResource)).once()
+        verify(consoleWrapper.log(disablingTestFactorResource)).never()
+        verify(consoleWrapper.log(settingBaseSizeResource)).never()
+        verify(consoleWrapper.log(settingGrowthRateResource)).never()
+        verify(consoleWrapper.log(settingTestFactorResource)).never()
+        verify(consoleWrapper.log(settingFileMatchingPatternsResource)).never()
+        verify(consoleWrapper.log(settingCodeFileExtensionsResource)).never()
       })
 
       it('should set all input values when all are specified', (): void => {
@@ -98,7 +116,13 @@ describe('inputs.ts', (): void => {
         verify(consoleWrapper.log(adjustingGrowthRateResource)).never()
         verify(consoleWrapper.log(adjustingTestFactorResource)).never()
         verify(consoleWrapper.log(adjustingFileMatchingPatternsResource)).never()
-        verify(consoleWrapper.log(adjustCodeFileExtensionsResource)).never()
+        verify(consoleWrapper.log(adjustingCodeFileExtensionsResource)).never()
+        verify(consoleWrapper.log(disablingTestFactorResource)).never()
+        verify(consoleWrapper.log(settingBaseSizeResource)).once()
+        verify(consoleWrapper.log(settingGrowthRateResource)).once()
+        verify(consoleWrapper.log(settingTestFactorResource)).once()
+        verify(consoleWrapper.log(settingFileMatchingPatternsResource)).once()
+        verify(consoleWrapper.log(settingCodeFileExtensionsResource)).once()
       })
     })
 
@@ -134,7 +158,13 @@ describe('inputs.ts', (): void => {
             verify(consoleWrapper.log(adjustingGrowthRateResource)).once()
             verify(consoleWrapper.log(adjustingTestFactorResource)).once()
             verify(consoleWrapper.log(adjustingFileMatchingPatternsResource)).once()
-            verify(consoleWrapper.log(adjustCodeFileExtensionsResource)).once()
+            verify(consoleWrapper.log(adjustingCodeFileExtensionsResource)).once()
+            verify(consoleWrapper.log(disablingTestFactorResource)).never()
+            verify(consoleWrapper.log(settingBaseSizeResource)).never()
+            verify(consoleWrapper.log(settingGrowthRateResource)).never()
+            verify(consoleWrapper.log(settingTestFactorResource)).never()
+            verify(consoleWrapper.log(settingFileMatchingPatternsResource)).never()
+            verify(consoleWrapper.log(settingCodeFileExtensionsResource)).never()
           })
         })
 
@@ -165,7 +195,13 @@ describe('inputs.ts', (): void => {
             verify(consoleWrapper.log(adjustingGrowthRateResource)).once()
             verify(consoleWrapper.log(adjustingTestFactorResource)).once()
             verify(consoleWrapper.log(adjustingFileMatchingPatternsResource)).once()
-            verify(consoleWrapper.log(adjustCodeFileExtensionsResource)).once()
+            verify(consoleWrapper.log(adjustingCodeFileExtensionsResource)).once()
+            verify(consoleWrapper.log(disablingTestFactorResource)).never()
+            verify(consoleWrapper.log(settingBaseSizeResource)).never()
+            verify(consoleWrapper.log(settingGrowthRateResource)).never()
+            verify(consoleWrapper.log(settingTestFactorResource)).never()
+            verify(consoleWrapper.log(settingFileMatchingPatternsResource)).never()
+            verify(consoleWrapper.log(settingCodeFileExtensionsResource)).never()
           })
         })
 
@@ -196,7 +232,13 @@ describe('inputs.ts', (): void => {
             verify(consoleWrapper.log(adjustingGrowthRateResource)).once()
             verify(consoleWrapper.log(adjustingTestFactorResource)).once()
             verify(consoleWrapper.log(adjustingFileMatchingPatternsResource)).once()
-            verify(consoleWrapper.log(adjustCodeFileExtensionsResource)).once()
+            verify(consoleWrapper.log(adjustingCodeFileExtensionsResource)).once()
+            verify(consoleWrapper.log(disablingTestFactorResource)).never()
+            verify(consoleWrapper.log(settingBaseSizeResource)).once()
+            verify(consoleWrapper.log(settingGrowthRateResource)).never()
+            verify(consoleWrapper.log(settingTestFactorResource)).never()
+            verify(consoleWrapper.log(settingFileMatchingPatternsResource)).never()
+            verify(consoleWrapper.log(settingCodeFileExtensionsResource)).never()
           })
         })
     })
@@ -233,7 +275,13 @@ describe('inputs.ts', (): void => {
             verify(consoleWrapper.log(adjustingGrowthRateResource)).once()
             verify(consoleWrapper.log(adjustingTestFactorResource)).once()
             verify(consoleWrapper.log(adjustingFileMatchingPatternsResource)).once()
-            verify(consoleWrapper.log(adjustCodeFileExtensionsResource)).once()
+            verify(consoleWrapper.log(adjustingCodeFileExtensionsResource)).once()
+            verify(consoleWrapper.log(disablingTestFactorResource)).never()
+            verify(consoleWrapper.log(settingBaseSizeResource)).never()
+            verify(consoleWrapper.log(settingGrowthRateResource)).never()
+            verify(consoleWrapper.log(settingTestFactorResource)).never()
+            verify(consoleWrapper.log(settingFileMatchingPatternsResource)).never()
+            verify(consoleWrapper.log(settingCodeFileExtensionsResource)).never()
           })
         })
 
@@ -266,7 +314,13 @@ describe('inputs.ts', (): void => {
             verify(consoleWrapper.log(adjustingGrowthRateResource)).once()
             verify(consoleWrapper.log(adjustingTestFactorResource)).once()
             verify(consoleWrapper.log(adjustingFileMatchingPatternsResource)).once()
-            verify(consoleWrapper.log(adjustCodeFileExtensionsResource)).once()
+            verify(consoleWrapper.log(adjustingCodeFileExtensionsResource)).once()
+            verify(consoleWrapper.log(disablingTestFactorResource)).never()
+            verify(consoleWrapper.log(settingBaseSizeResource)).never()
+            verify(consoleWrapper.log(settingGrowthRateResource)).never()
+            verify(consoleWrapper.log(settingTestFactorResource)).never()
+            verify(consoleWrapper.log(settingFileMatchingPatternsResource)).never()
+            verify(consoleWrapper.log(settingCodeFileExtensionsResource)).never()
           })
         })
 
@@ -302,7 +356,13 @@ describe('inputs.ts', (): void => {
             verify(consoleWrapper.log(adjustingGrowthRateResource)).never()
             verify(consoleWrapper.log(adjustingTestFactorResource)).once()
             verify(consoleWrapper.log(adjustingFileMatchingPatternsResource)).once()
-            verify(consoleWrapper.log(adjustCodeFileExtensionsResource)).once()
+            verify(consoleWrapper.log(adjustingCodeFileExtensionsResource)).once()
+            verify(consoleWrapper.log(disablingTestFactorResource)).never()
+            verify(consoleWrapper.log(settingBaseSizeResource)).never()
+            verify(consoleWrapper.log(settingGrowthRateResource)).once()
+            verify(consoleWrapper.log(settingTestFactorResource)).never()
+            verify(consoleWrapper.log(settingFileMatchingPatternsResource)).never()
+            verify(consoleWrapper.log(settingCodeFileExtensionsResource)).never()
           })
         })
     })
@@ -339,7 +399,13 @@ describe('inputs.ts', (): void => {
             verify(consoleWrapper.log(adjustingGrowthRateResource)).once()
             verify(consoleWrapper.log(adjustingTestFactorResource)).once()
             verify(consoleWrapper.log(adjustingFileMatchingPatternsResource)).once()
-            verify(consoleWrapper.log(adjustCodeFileExtensionsResource)).once()
+            verify(consoleWrapper.log(adjustingCodeFileExtensionsResource)).once()
+            verify(consoleWrapper.log(disablingTestFactorResource)).never()
+            verify(consoleWrapper.log(settingBaseSizeResource)).never()
+            verify(consoleWrapper.log(settingGrowthRateResource)).never()
+            verify(consoleWrapper.log(settingTestFactorResource)).never()
+            verify(consoleWrapper.log(settingFileMatchingPatternsResource)).never()
+            verify(consoleWrapper.log(settingCodeFileExtensionsResource)).never()
           })
         })
 
@@ -371,7 +437,13 @@ describe('inputs.ts', (): void => {
             verify(consoleWrapper.log(adjustingGrowthRateResource)).once()
             verify(consoleWrapper.log(adjustingTestFactorResource)).once()
             verify(consoleWrapper.log(adjustingFileMatchingPatternsResource)).once()
-            verify(consoleWrapper.log(adjustCodeFileExtensionsResource)).once()
+            verify(consoleWrapper.log(adjustingCodeFileExtensionsResource)).once()
+            verify(consoleWrapper.log(disablingTestFactorResource)).never()
+            verify(consoleWrapper.log(settingBaseSizeResource)).never()
+            verify(consoleWrapper.log(settingGrowthRateResource)).never()
+            verify(consoleWrapper.log(settingTestFactorResource)).never()
+            verify(consoleWrapper.log(settingFileMatchingPatternsResource)).never()
+            verify(consoleWrapper.log(settingCodeFileExtensionsResource)).never()
           })
         })
 
@@ -406,7 +478,13 @@ describe('inputs.ts', (): void => {
             verify(consoleWrapper.log(adjustingGrowthRateResource)).once()
             verify(consoleWrapper.log(adjustingTestFactorResource)).never()
             verify(consoleWrapper.log(adjustingFileMatchingPatternsResource)).once()
-            verify(consoleWrapper.log(adjustCodeFileExtensionsResource)).once()
+            verify(consoleWrapper.log(adjustingCodeFileExtensionsResource)).once()
+            verify(consoleWrapper.log(disablingTestFactorResource)).never()
+            verify(consoleWrapper.log(settingBaseSizeResource)).never()
+            verify(consoleWrapper.log(settingGrowthRateResource)).never()
+            verify(consoleWrapper.log(settingTestFactorResource)).once()
+            verify(consoleWrapper.log(settingFileMatchingPatternsResource)).never()
+            verify(consoleWrapper.log(settingCodeFileExtensionsResource)).never()
           })
         })
 
@@ -435,7 +513,13 @@ describe('inputs.ts', (): void => {
             verify(consoleWrapper.log(adjustingGrowthRateResource)).once()
             verify(consoleWrapper.log(adjustingTestFactorResource)).never()
             verify(consoleWrapper.log(adjustingFileMatchingPatternsResource)).once()
-            verify(consoleWrapper.log(adjustCodeFileExtensionsResource)).once()
+            verify(consoleWrapper.log(adjustingCodeFileExtensionsResource)).once()
+            verify(consoleWrapper.log(disablingTestFactorResource)).once()
+            verify(consoleWrapper.log(settingBaseSizeResource)).never()
+            verify(consoleWrapper.log(settingGrowthRateResource)).never()
+            verify(consoleWrapper.log(settingTestFactorResource)).never()
+            verify(consoleWrapper.log(settingFileMatchingPatternsResource)).never()
+            verify(consoleWrapper.log(settingCodeFileExtensionsResource)).never()
           })
         })
     })
@@ -469,7 +553,13 @@ describe('inputs.ts', (): void => {
             verify(consoleWrapper.log(adjustingGrowthRateResource)).once()
             verify(consoleWrapper.log(adjustingTestFactorResource)).once()
             verify(consoleWrapper.log(adjustingFileMatchingPatternsResource)).once()
-            verify(consoleWrapper.log(adjustCodeFileExtensionsResource)).once()
+            verify(consoleWrapper.log(adjustingCodeFileExtensionsResource)).once()
+            verify(consoleWrapper.log(disablingTestFactorResource)).never()
+            verify(consoleWrapper.log(settingBaseSizeResource)).never()
+            verify(consoleWrapper.log(settingGrowthRateResource)).never()
+            verify(consoleWrapper.log(settingTestFactorResource)).never()
+            verify(consoleWrapper.log(settingFileMatchingPatternsResource)).never()
+            verify(consoleWrapper.log(settingCodeFileExtensionsResource)).never()
           })
         })
 
@@ -499,7 +589,13 @@ describe('inputs.ts', (): void => {
             verify(consoleWrapper.log(adjustingGrowthRateResource)).once()
             verify(consoleWrapper.log(adjustingTestFactorResource)).once()
             verify(consoleWrapper.log(adjustingFileMatchingPatternsResource)).never()
-            verify(consoleWrapper.log(adjustCodeFileExtensionsResource)).once()
+            verify(consoleWrapper.log(adjustingCodeFileExtensionsResource)).once()
+            verify(consoleWrapper.log(disablingTestFactorResource)).never()
+            verify(consoleWrapper.log(settingBaseSizeResource)).never()
+            verify(consoleWrapper.log(settingGrowthRateResource)).never()
+            verify(consoleWrapper.log(settingTestFactorResource)).never()
+            verify(consoleWrapper.log(settingFileMatchingPatternsResource)).once()
+            verify(consoleWrapper.log(settingCodeFileExtensionsResource)).never()
           })
         })
 
@@ -529,7 +625,13 @@ describe('inputs.ts', (): void => {
             verify(consoleWrapper.log(adjustingGrowthRateResource)).once()
             verify(consoleWrapper.log(adjustingTestFactorResource)).once()
             verify(consoleWrapper.log(adjustingFileMatchingPatternsResource)).never()
-            verify(consoleWrapper.log(adjustCodeFileExtensionsResource)).once()
+            verify(consoleWrapper.log(adjustingCodeFileExtensionsResource)).once()
+            verify(consoleWrapper.log(disablingTestFactorResource)).never()
+            verify(consoleWrapper.log(settingBaseSizeResource)).never()
+            verify(consoleWrapper.log(settingGrowthRateResource)).never()
+            verify(consoleWrapper.log(settingTestFactorResource)).never()
+            verify(consoleWrapper.log(settingFileMatchingPatternsResource)).once()
+            verify(consoleWrapper.log(settingCodeFileExtensionsResource)).never()
           })
         })
     })
@@ -563,7 +665,13 @@ describe('inputs.ts', (): void => {
             verify(consoleWrapper.log(adjustingGrowthRateResource)).once()
             verify(consoleWrapper.log(adjustingTestFactorResource)).once()
             verify(consoleWrapper.log(adjustingFileMatchingPatternsResource)).once()
-            verify(consoleWrapper.log(adjustCodeFileExtensionsResource)).once()
+            verify(consoleWrapper.log(adjustingCodeFileExtensionsResource)).once()
+            verify(consoleWrapper.log(disablingTestFactorResource)).never()
+            verify(consoleWrapper.log(settingBaseSizeResource)).never()
+            verify(consoleWrapper.log(settingGrowthRateResource)).never()
+            verify(consoleWrapper.log(settingTestFactorResource)).never()
+            verify(consoleWrapper.log(settingFileMatchingPatternsResource)).never()
+            verify(consoleWrapper.log(settingCodeFileExtensionsResource)).never()
           })
         })
 
@@ -594,7 +702,13 @@ describe('inputs.ts', (): void => {
             verify(consoleWrapper.log(adjustingGrowthRateResource)).once()
             verify(consoleWrapper.log(adjustingTestFactorResource)).once()
             verify(consoleWrapper.log(adjustingFileMatchingPatternsResource)).once()
-            verify(consoleWrapper.log(adjustCodeFileExtensionsResource)).never()
+            verify(consoleWrapper.log(adjustingCodeFileExtensionsResource)).never()
+            verify(consoleWrapper.log(disablingTestFactorResource)).never()
+            verify(consoleWrapper.log(settingBaseSizeResource)).never()
+            verify(consoleWrapper.log(settingGrowthRateResource)).never()
+            verify(consoleWrapper.log(settingTestFactorResource)).never()
+            verify(consoleWrapper.log(settingFileMatchingPatternsResource)).never()
+            verify(consoleWrapper.log(settingCodeFileExtensionsResource)).once()
           })
         })
 
@@ -618,7 +732,13 @@ describe('inputs.ts', (): void => {
         verify(consoleWrapper.log(adjustingGrowthRateResource)).once()
         verify(consoleWrapper.log(adjustingTestFactorResource)).once()
         verify(consoleWrapper.log(adjustingFileMatchingPatternsResource)).once()
-        verify(consoleWrapper.log(adjustCodeFileExtensionsResource)).never()
+        verify(consoleWrapper.log(adjustingCodeFileExtensionsResource)).never()
+        verify(consoleWrapper.log(disablingTestFactorResource)).never()
+        verify(consoleWrapper.log(settingBaseSizeResource)).never()
+        verify(consoleWrapper.log(settingGrowthRateResource)).never()
+        verify(consoleWrapper.log(settingTestFactorResource)).never()
+        verify(consoleWrapper.log(settingFileMatchingPatternsResource)).never()
+        verify(consoleWrapper.log(settingCodeFileExtensionsResource)).once()
       })
 
       it('should remove . and * from extension names', (): void => {
@@ -641,7 +761,13 @@ describe('inputs.ts', (): void => {
         verify(consoleWrapper.log(adjustingGrowthRateResource)).once()
         verify(consoleWrapper.log(adjustingTestFactorResource)).once()
         verify(consoleWrapper.log(adjustingFileMatchingPatternsResource)).once()
-        verify(consoleWrapper.log(adjustCodeFileExtensionsResource)).never()
+        verify(consoleWrapper.log(adjustingCodeFileExtensionsResource)).never()
+        verify(consoleWrapper.log(disablingTestFactorResource)).never()
+        verify(consoleWrapper.log(settingBaseSizeResource)).never()
+        verify(consoleWrapper.log(settingGrowthRateResource)).never()
+        verify(consoleWrapper.log(settingTestFactorResource)).never()
+        verify(consoleWrapper.log(settingFileMatchingPatternsResource)).never()
+        verify(consoleWrapper.log(settingCodeFileExtensionsResource)).once()
       })
     })
   })

@@ -135,7 +135,7 @@ export default class PullRequestComments {
 
       const content: string = Validator.validateField(comment.content, `commentThread[${commentThreadIndex}].comments[${i}].content`, 'PullRequestComments.getMetricsCommentData()')
       const commentHeaderRegExp: RegExp = new RegExp(`^${this._taskLibWrapper.loc('pullRequests.pullRequestComments.commentTitle', '.+')}`)
-      if (!content.match(commentHeaderRegExp)) {
+      if (!commentHeaderRegExp.test(content)) {
         continue
       }
 

@@ -2,9 +2,8 @@
 // Licensed under the MIT License.
 
 import { FixedLengthArray } from '../utilities/fixedLengthArray'
-import { IFileCodeMetric } from './iFileCodeMetric'
+import { ICodeFileMetric } from './iCodeFileMetric'
 import { singleton } from 'tsyringe'
-import { Validator } from '../utilities/validator'
 import * as taskLib from 'azure-pipelines-task-lib/task'
 import CodeMetricsData from './codeMetricsData'
 import GitInvoker from '../git/gitInvoker'
@@ -26,6 +25,7 @@ export default class CodeMetrics {
   private _size: string = ''
   private _sizeIndicator: string = ''
   private _metrics: CodeMetricsData = new CodeMetricsData(0, 0, 0)
+  private _isSufficientlyTested: boolean | null = null
 
   /**
    * Initializes a new instance of the `CodeMetrics` class.
@@ -102,7 +102,7 @@ export default class CodeMetrics {
     this._taskLibWrapper.debug('* CodeMetrics.isSmall')
 
     this.initialize()
-    return this._metrics.productCode <= this._inputs.baseSize
+    return this._metrics.productCode < (this._inputs.baseSize * this._inputs.growthRate)
   }
 
   /**
@@ -112,11 +112,8 @@ export default class CodeMetrics {
   public get isSufficientlyTested (): boolean | null {
     this._taskLibWrapper.debug('* CodeMetrics.isSufficientlyTested')
 
-    if (this._inputs.testFactor === null) {
-      return null
-    }
-
-    return this._metrics.testCode >= (this._metrics.productCode * this._inputs.testFactor)
+    this.initialize()
+    return this._isSufficientlyTested
   }
 
   private initialize (): void {
@@ -131,105 +128,119 @@ export default class CodeMetrics {
       throw Error('The Git diff summary is empty.')
     }
 
-    this.initializeMetrics(gitDiffSummary)
-    this.initializeSizeIndicator()
     this._isInitialized = true
+    this.initializeMetrics(gitDiffSummary)
+    this.initializeIsSufficientlyTested()
+    this.initializeSizeIndicator()
   }
 
   private initializeMetrics (gitDiffSummary: string) {
     this._taskLibWrapper.debug('* CodeMetrics.initializeMetrics()')
 
-    let lines: string[] = gitDiffSummary.split('\n')
+    const codeFileMetrics: ICodeFileMetric[] = this.createFileMetricsMap(gitDiffSummary)
 
-    // Condense file and folder names that were renamed e.g. F{a => i}leT{b => e}st.d{c => l}l".
-    lines = lines.map(line => line.replace(/{.*? => ([^}]+?)}/g, '$1'))
-
-    const matches: string[] = []
-    const nonMatchesWithComment: string[] = []
-    const nonMatchesWithoutComment: string[] = []
+    const matches: ICodeFileMetric[] = []
+    const nonMatchesWithComment: ICodeFileMetric[] = []
+    const nonMatchesWithoutComment: ICodeFileMetric[] = []
 
     // Check for glob matches.
-    lines.forEach((line: string): void => {
-      const isValidFilePattern: boolean = taskLib.match([line], this._inputs.fileMatchingPatterns).length > 0
-      const isValidFileExtension: boolean = this.matchFileExtension(line)
+    codeFileMetrics.forEach((codeFileMetric: ICodeFileMetric): void => {
+      const isValidFilePattern: boolean = taskLib.match([codeFileMetric.fileName], this._inputs.fileMatchingPatterns).length > 0
+      const isValidFileExtension: boolean = this.matchFileExtension(codeFileMetric.fileName)
+
       if (isValidFilePattern && isValidFileExtension) {
-        matches.push(line)
+        matches.push(codeFileMetric)
       } else if (!isValidFilePattern) {
-        nonMatchesWithComment.push(line)
+        nonMatchesWithComment.push(codeFileMetric)
       } else {
-        nonMatchesWithoutComment.push(line)
+        nonMatchesWithoutComment.push(codeFileMetric)
       }
     })
 
     this.constructMetrics(matches, nonMatchesWithComment, nonMatchesWithoutComment)
   }
 
-  private matchFileExtension (line: string): boolean {
+  private matchFileExtension (fileName: string): boolean {
     this._taskLibWrapper.debug('* CodeMetrics.matchFileExtension()')
 
-    const fileExtension: string | undefined = line.split('.').pop()
-    if (!fileExtension) {
-      return false
-    }
-
+    const fileExtensionIndex: number = fileName.lastIndexOf('.')
+    const fileExtension: string = fileName.substring(fileExtensionIndex + 1)
     return this._inputs.codeFileExtensions.has(fileExtension)
   }
 
-  private constructMetrics (matches: string[], nonMatchesWithComment: string[], nonMatchesWithoutComment: string[]): void {
+  private constructMetrics (matches: ICodeFileMetric[], nonMatchesWithComment: ICodeFileMetric[], nonMatchesWithoutComment: ICodeFileMetric[]): void {
     this._taskLibWrapper.debug('* CodeMetrics.constructMetrics()')
 
     let productCode: number = 0
     let testCode: number = 0
     let ignoredCode: number = 0
 
-    const matchesMap: IFileCodeMetric[] = this.createFileMetricsMap(matches)
-    matchesMap.forEach((entry: IFileCodeMetric): void => {
-      if (entry.value !== '-') {
-        const value: number = parseInt(entry.value)
+    matches.forEach((entry: ICodeFileMetric): void => {
+      if (entry.linesAdded) {
         if (/.*test.*/i.test(entry.fileName)) {
-          testCode += value
+          testCode += entry.linesAdded
         } else {
-          productCode += value
+          productCode += entry.linesAdded
         }
       }
     })
 
-    const nonMatchesWithCommentMap: IFileCodeMetric[] = this.createFileMetricsMap(nonMatchesWithComment)
-    nonMatchesWithCommentMap.forEach((entry: IFileCodeMetric): void => {
-      if (entry.value !== '-') {
-        ignoredCode += parseInt(entry.value)
+    nonMatchesWithComment.forEach((entry: ICodeFileMetric): void => {
+      if (entry.linesAdded) {
+        ignoredCode += entry.linesAdded
         this._ignoredFilesWithLinesAdded.push(entry.fileName)
       } else {
         this._ignoredFilesWithoutLinesAdded.push(entry.fileName)
       }
     })
 
-    const nonMatchesWithoutCommentMap: IFileCodeMetric[] = this.createFileMetricsMap(nonMatchesWithoutComment)
-    nonMatchesWithoutCommentMap.forEach((entry: IFileCodeMetric): void => {
-      if (entry.value !== '-') {
-        ignoredCode += parseInt(entry.value)
+    nonMatchesWithoutComment.forEach((entry: ICodeFileMetric): void => {
+      if (entry.linesAdded) {
+        ignoredCode += entry.linesAdded
       }
     })
 
     this._metrics = new CodeMetricsData(productCode, testCode, ignoredCode)
   }
 
-  private createFileMetricsMap (input: string[]): IFileCodeMetric[] {
+  private createFileMetricsMap (input: string): ICodeFileMetric[] {
     this._taskLibWrapper.debug('* CodeMetrics.createFileMetricsMap()')
 
-    const result: IFileCodeMetric[] = []
-    input.forEach((line: string): void => {
-      const elements: string[] = line.split(/\s+/)
+    // Condense file and folder names that were renamed e.g. F{a => i}leT{b => e}st.d{c => l}l".
+    const lines: string[] = input.split('\n').map(line => line.replace(/{.*? => ([^}]+?)}/g, '$1'))
 
-      const fileName: string = Validator.validateField(elements[2], 'fileName', 'CodeMetrics.createFileMetricsMap()')
-      const value: string = Validator.validateField(elements[0], 'value', 'CodeMetrics.createFileMetricsMap()')
+    const result: ICodeFileMetric[] = []
+    lines.forEach((line: string): void => {
+      const elements: string[] = line.split(/\s+/)
+      if (elements.length !== 3) {
+        throw RangeError(`The number of elements '${elements.length}' in '${line}' did not match the expected 3.`)
+      }
+
+      let linesAddedNumber: number | null = null
+      if (elements[0] !== '-') {
+        linesAddedNumber = parseInt(elements[0]!)
+        if (isNaN(linesAddedNumber)) {
+          throw Error(`Could not parse '${elements[0]}' from line '${line}'.`)
+        }
+      }
+
       result.push({
-        fileName: fileName,
-        value: value
+        fileName: elements[2]!,
+        linesAdded: linesAddedNumber
       })
     })
 
     return result
+  }
+
+  private initializeIsSufficientlyTested (): void {
+    this._taskLibWrapper.debug('* CodeMetrics.initializeIsSufficientlyTested()')
+
+    if (this._inputs.testFactor === null) {
+      this._isSufficientlyTested = null
+    } else {
+      this._isSufficientlyTested = this._metrics.testCode >= (this._metrics.productCode * this._inputs.testFactor)
+    }
   }
 
   private initializeSizeIndicator (): void {
@@ -237,8 +248,8 @@ export default class CodeMetrics {
 
     this._size = this.calculateSize()
     let testIndicator: string = ''
-    if (this.isSufficientlyTested !== null) {
-      if (this.isSufficientlyTested) {
+    if (this._isSufficientlyTested !== null) {
+      if (this._isSufficientlyTested) {
         testIndicator = this._taskLibWrapper.loc('metrics.codeMetrics.titleTestsSufficient')
       } else {
         testIndicator = this._taskLibWrapper.loc('metrics.codeMetrics.titleTestsInsufficient')
@@ -259,30 +270,23 @@ export default class CodeMetrics {
       (prefix: string): string => this._taskLibWrapper.loc('metrics.codeMetrics.titleSizeXL', prefix)
     ]
 
-    let result: string = indicators[1]('')
-    let currentSize: number = this._inputs.baseSize
+    // Calculate the smaller size.
+    if (this._metrics.productCode < this._inputs.baseSize) {
+      return indicators[0]('')
+    }
+
+    // Calculate the larger sizes.
     let index: number = 1
+    let result: string = indicators[1]('')
+    let currentSize: number = this._inputs.baseSize * this._inputs.growthRate
+    while (this._metrics.productCode >= currentSize) {
+      currentSize *= this._inputs.growthRate
+      index++
 
-    if (this._metrics.subtotal === 0) {
-      result = indicators[0]('')
-    } else {
-      // Calculate the smaller sizes.
-      if (this._metrics.productCode < this._inputs.baseSize / this._inputs.growthRate) {
-        result = indicators[0]('')
-      }
-
-      // Calculate the larger sizes.
-      if (this._metrics.productCode > this._inputs.baseSize) {
-        while (this._metrics.productCode > currentSize) {
-          index++
-          currentSize *= this._inputs.growthRate
-
-          if (index < indicators.length) {
-            result = indicators[index]!('')
-          } else {
-            result = indicators[indicators.length - 1]!((index - indicators.length + 2).toLocaleString())
-          }
-        }
+      if (index < indicators.length) {
+        result = indicators[index]!('')
+      } else {
+        result = indicators[indicators.length - 1]!((index - indicators.length + 2).toLocaleString())
       }
     }
 

@@ -117,6 +117,7 @@ export default class Inputs {
     const convertedValue: number = parseInt(baseSize!)
     if (!isNaN(convertedValue) && convertedValue > 0) {
       this._baseSize = convertedValue
+      this._consoleWrapper.log(this._taskLibWrapper.loc('metrics.inputs.settingBaseSize', this._baseSize.toLocaleString()))
       return
     }
 
@@ -130,6 +131,7 @@ export default class Inputs {
     const convertedValue: number = parseFloat(growthRate!)
     if (!isNaN(convertedValue) && convertedValue >= 1.0) {
       this._growthRate = convertedValue
+      this._consoleWrapper.log(this._taskLibWrapper.loc('metrics.inputs.settingGrowthRate', this._growthRate.toLocaleString()))
       return
     }
 
@@ -142,7 +144,14 @@ export default class Inputs {
 
     const convertedValue: number = parseFloat(testFactor!)
     if (!isNaN(convertedValue) && convertedValue >= 0.0) {
-      this._testFactor = convertedValue === 0.0 ? null : convertedValue
+      if (convertedValue === 0.0) {
+        this._testFactor = null
+        this._consoleWrapper.log(this._taskLibWrapper.loc('metrics.inputs.disablingTestFactor'))
+      } else {
+        this._testFactor = convertedValue
+        this._consoleWrapper.log(this._taskLibWrapper.loc('metrics.inputs.settingTestFactor', this._testFactor.toLocaleString()))
+      }
+
       return
     }
 
@@ -155,6 +164,7 @@ export default class Inputs {
 
     if (fileMatchingPatterns?.trim()) {
       this._fileMatchingPatterns = fileMatchingPatterns.split('\n')
+      this._consoleWrapper.log(this._taskLibWrapper.loc('metrics.inputs.settingFileMatchingPatterns', JSON.stringify(this._fileMatchingPatterns)))
       return
     }
 
@@ -176,10 +186,11 @@ export default class Inputs {
 
         this._codeFileExtensions.add(value)
       })
+      this._consoleWrapper.log(this._taskLibWrapper.loc('metrics.inputs.settingCodeFileExtensions', JSON.stringify(this._codeFileExtensions)))
       return
     }
 
-    this._consoleWrapper.log(this._taskLibWrapper.loc('metrics.inputs.adjustingCodeFileExtensions'))
+    this._consoleWrapper.log(this._taskLibWrapper.loc('metrics.inputs.adjustingCodeFileExtensions', JSON.stringify(InputsDefault.codeFileExtensions)))
     this._codeFileExtensions = InputsDefault.codeFileExtensions
   }
 }
