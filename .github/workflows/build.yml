@@ -131,6 +131,8 @@ jobs:
 
       - name: Security Scan – Validate
         uses: ShiftLeftSecurity/scan-action@v1.3.0
+        env:
+          ENABLE_OSS_RISK: true
         with:
           type: credscan,depscan
 
