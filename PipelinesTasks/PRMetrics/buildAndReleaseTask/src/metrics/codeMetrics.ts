@@ -130,8 +130,8 @@ export default class CodeMetrics {
     }
 
     const gitDiffSummary: string = this._gitInvoker.getDiffSummary()
-    if (!gitDiffSummary?.trim()) {
-      throw RangeError('The git diff summary was empty.')
+    if (!gitDiffSummary.trim()) {
+      throw Error('The Git diff summary was empty.')
     }
 
     this.initializeMetrics(gitDiffSummary)
@@ -139,7 +139,34 @@ export default class CodeMetrics {
     this._isInitialized = true
   }
 
+  // Note: glob match only works with string[]
+  private initializeMetrics (gitDiffSummary: string) {
+    this._taskLibWrapper.debug('* CodeMetrics.initializeMetrics()')
+
+    let lines: string[] = gitDiffSummary.split('\n')
+
+    // condense file and folder names that were changed e.g. F{a => i}leT{b => e}st.d{c => l}l"
+    lines = lines.map(line => line.replace(/{.*? => ([^}]+?)}/gm, '$1'))
+
+    const matches: string[] = []
+    const doesNotMatch: string[] = []
+
+    // checks for glob matches
+    lines.forEach((line: string): void => {
+      // causing bugs
+      if (taskLib.match([line], this._inputs.fileMatchingPatterns).length > 0 && this.fileExtensionMatch(line)) {
+        matches.push(line)
+      } else {
+        doesNotMatch.push(line)
+      }
+    })
+
+    this.constructMetrics(matches, doesNotMatch)
+  }
+
   private fileExtensionMatch (line: string): boolean {
+    this._taskLibWrapper.debug('* CodeMetrics.fileExtensionMatch()')
+
     let found = false
 
     this._inputs.codeFileExtensions.every((item: string) => {
@@ -151,31 +178,6 @@ export default class CodeMetrics {
     })
 
     return found
-  }
-
-  // Note: glob match only works with string[]
-  private initializeMetrics (gitDiffSummary: string) {
-    this._taskLibWrapper.debug('* CodeMetrics.initializeMetrics()')
-
-    let lines: string[] = gitDiffSummary.split('\n')
-
-    // condense file and folder names that were changed e.g. F{a => i}leT{b => e}st.d{c => l}l"
-    lines = lines.map(line => line.replace(/{.*? => ([^}]+?)}/gmi, '$1'))
-
-    const matches: string[] = []
-    const doesNotMatch: string[] = []
-
-    // checks for glob matches
-    lines.forEach((line: string) => {
-      // causing bugs
-      if (taskLib.match([line], this._inputs.fileMatchingPatterns).length > 0 && this.fileExtensionMatch(line)) {
-        matches.push(line)
-      } else {
-        doesNotMatch.push(line)
-      }
-    })
-
-    this.constructMetrics(matches, doesNotMatch)
   }
 
   private constructMetrics (matches: string[], doesNotMatch: string[]): void {
