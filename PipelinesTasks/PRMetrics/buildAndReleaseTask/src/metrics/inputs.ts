@@ -19,7 +19,7 @@ export default class Inputs {
   private _growthRate: number = 0
   private _testFactor: number | null = 0
   private _fileMatchingPatterns: string[] = []
-  private _codeFileExtensions: string[] = []
+  private _codeFileExtensions: Set<string> = new Set<string>()
 
   /**
    * Initializes a new instance of the `Inputs` class.
@@ -79,7 +79,7 @@ export default class Inputs {
    * Gets the code file extensions input, which is the set of extensions for files containing code so that non-code files can be excluded.
    * @returns The code file extensions input.
    */
-  public get codeFileExtensions (): string[] {
+  public get codeFileExtensions (): Set<string> {
     this._taskLibWrapper.debug('* Inputs.codeFileExtensions')
 
     this.initialize()
@@ -168,7 +168,13 @@ export default class Inputs {
     if (codeFileExtensions?.trim()) {
       const codeFileExtensionsArray: string[] = codeFileExtensions.split('\n')
       codeFileExtensionsArray.forEach((value: string): void => {
-        this._codeFileExtensions.push(`*.${value}`)
+        if (value.startsWith('*.')) {
+          value = value.substring(2)
+        } else if (value.startsWith('.')) {
+          value = value.substring(1)
+        }
+
+        this._codeFileExtensions.add(value)
       })
       return
     }

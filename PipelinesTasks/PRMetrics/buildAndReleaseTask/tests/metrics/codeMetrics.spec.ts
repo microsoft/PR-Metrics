@@ -54,7 +54,7 @@ describe('codeMetrics.ts', (): void => {
     when(inputs.growthRate).thenReturn(5)
     when(inputs.testFactor).thenReturn(5)
     when(inputs.fileMatchingPatterns).thenReturn(['*.js'])
-    when(inputs.codeFileExtensions).thenReturn(['*.js'])
+    when(inputs.codeFileExtensions).thenReturn(new Set<string>(['js']))
   })
 
   describe('initialize', (): void => {
@@ -236,7 +236,7 @@ describe('codeMetrics.ts', (): void => {
             when(inputs.growthRate).thenReturn(40)
             when(inputs.testFactor).thenReturn(20)
             when(inputs.fileMatchingPatterns).thenReturn(['*.js', '*.ts'])
-            when(inputs.codeFileExtensions).thenReturn(['*.js', '*.ts'])
+            when(inputs.codeFileExtensions).thenReturn(new Set<string>(['js', 'ts']))
 
             const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(taskLibWrapper))
             const gitDiffSummary: string = `${entryObj.file1}    1    File1.js\n${entryObj.file2}    9    File2.ts\n${entryObj.file3}    -    File.dll\n`
@@ -276,7 +276,7 @@ describe('codeMetrics.ts', (): void => {
             when(inputs.growthRate).thenReturn(40)
             when(inputs.testFactor).thenReturn(20)
             when(inputs.fileMatchingPatterns).thenReturn(['*.js', '*.ts'])
-            when(inputs.codeFileExtensions).thenReturn(['*.js', '*.ts'])
+            when(inputs.codeFileExtensions).thenReturn(new Set<string>(['js', 'ts']))
 
             const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(taskLibWrapper))
             const gitDiffSummary: string = `${entryObj.file1}    1    File1.js\n${entryObj.file2}    9    File2.ts\n${entryObj.file3}    -    File.dll\n`
@@ -317,7 +317,7 @@ describe('codeMetrics.ts', (): void => {
             when(inputs.growthRate).thenReturn(40)
             when(inputs.testFactor).thenReturn(20)
             when(inputs.fileMatchingPatterns).thenReturn(['*.js', '*.ts'])
-            when(inputs.codeFileExtensions).thenReturn(['*.js', '*.ts'])
+            when(inputs.codeFileExtensions).thenReturn(new Set<string>(['js', 'ts']))
 
             const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(taskLibWrapper))
             const gitDiffSummary: string = `${entryObj.file1}    1    File1.js\n${entryObj.file2}    9    File2.ts\n${entryObj.file3}    -    File.dll\n`
@@ -357,7 +357,7 @@ describe('codeMetrics.ts', (): void => {
             when(inputs.growthRate).thenReturn(40)
             when(inputs.testFactor).thenReturn(20)
             when(inputs.fileMatchingPatterns).thenReturn(['*.js', '*.ts'])
-            when(inputs.codeFileExtensions).thenReturn(['*.js', '*.ts'])
+            when(inputs.codeFileExtensions).thenReturn(new Set<string>(['js', 'ts']))
 
             const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(taskLibWrapper))
             const gitDiffSummary: string = `${entryObj.file1}    1    File1.js\n${entryObj.file2}    9    File2.ts\n${entryObj.file3}    -    File.dll\n${entryObj.testFile}    8    FileTest1.ts`
@@ -397,7 +397,7 @@ describe('codeMetrics.ts', (): void => {
             when(inputs.growthRate).thenReturn(40)
             when(inputs.testFactor).thenReturn(20)
             when(inputs.fileMatchingPatterns).thenReturn(['*.js', '*.ts'])
-            when(inputs.codeFileExtensions).thenReturn(['*.js', '*.ts'])
+            when(inputs.codeFileExtensions).thenReturn(new Set<string>(['js', 'ts']))
             const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(taskLibWrapper))
             const gitDiffSummary: string = `${entryObj.file1}    1    File1.js\n${entryObj.file2}    9    File2.ts\n${entryObj.unusedFile}    -    File.dll\n${entryObj.testFile}    8    FileTest1.ts\n${entryObj.testFile2} - fileT2.spec.ts`
             const expectedMetrics: CodeMetricsData = new CodeMetricsData(entryObj.file1 + entryObj.file2, entryObj.testFile + entryObj.testFile2, entryObj.unusedFile)
@@ -451,7 +451,7 @@ describe('codeMetrics.ts', (): void => {
         when(inputs.growthRate).thenReturn(40)
         when(inputs.testFactor).thenReturn(20)
         when(inputs.fileMatchingPatterns).thenReturn(['*.js', '*.ts'])
-        when(inputs.codeFileExtensions).thenReturn(['*.js', '*.ts'])
+        when(inputs.codeFileExtensions).thenReturn(new Set<string>(['js', 'ts']))
 
         const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(taskLibWrapper))
         const gitDiffSummary: string = '9    1    File1.js\n0    9    File2.ts\n-    -    File.dll\n'
@@ -484,7 +484,7 @@ describe('codeMetrics.ts', (): void => {
         when(inputs.growthRate).thenReturn(40)
         when(inputs.testFactor).thenReturn(20)
         when(inputs.fileMatchingPatterns).thenReturn(['**/*.js', '**/*.ts'])
-        when(inputs.codeFileExtensions).thenReturn(['*.js', '*.ts'])
+        when(inputs.codeFileExtensions).thenReturn(new Set<string>(['js', 'ts']))
 
         const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(taskLibWrapper))
         const gitDiffSummary: string = '9    1    folder/File1.js\n0    9    folder/File2.ts\n-    -    File.dll\n'
@@ -519,7 +519,7 @@ describe('codeMetrics.ts', (): void => {
         when(inputs.growthRate).thenReturn(2.5)
         when(inputs.testFactor).thenReturn(1.0)
         when(inputs.fileMatchingPatterns).thenReturn(['**/*', '!File*.cs', '!**/*.dll', '!test/File*.cs', 'test/File2.cs'])
-        when(inputs.codeFileExtensions).thenReturn(['*.cs', '*.dll'])
+        when(inputs.codeFileExtensions).thenReturn(new Set<string>(['cs', 'dll']))
 
         const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(taskLibWrapper))
         const gitDiffSummary: string = '9    1    File1.cs\n' +
@@ -551,7 +551,7 @@ describe('codeMetrics.ts', (): void => {
         when(inputs.growthRate).thenReturn(2.5)
         when(inputs.testFactor).thenReturn(1.0)
         when(inputs.fileMatchingPatterns).thenReturn(['*.cs', '**/*.cs'])
-        when(inputs.codeFileExtensions).thenReturn(['*.cs'])
+        when(inputs.codeFileExtensions).thenReturn(new Set<string>(['cs']))
 
         const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(taskLibWrapper))
         const gitDiffSummary: string = '9    1    File1.cs\n' +

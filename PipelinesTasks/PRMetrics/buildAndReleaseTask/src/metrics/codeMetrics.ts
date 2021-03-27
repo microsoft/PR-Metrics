@@ -4,6 +4,7 @@
 import { FixedLengthArray } from '../utilities/fixedLengthArray'
 import { IFileCodeMetric } from './iFileCodeMetric'
 import { singleton } from 'tsyringe'
+import { Validator } from '../utilities/validator'
 import * as taskLib from 'azure-pipelines-task-lib/task'
 import CodeMetricsData from './codeMetricsData'
 import GitInvoker from '../git/gitInvoker'
@@ -25,10 +26,6 @@ export default class CodeMetrics {
   private _size: string = ''
   private _sizeIndicator: string = ''
   private _metrics: CodeMetricsData = new CodeMetricsData(0, 0, 0)
-
-  private _productCodeCounter: number = 0
-  private _testCodeCounter: number = 0
-  private _ignoredCodeCounter: number = 0
 
   /**
    * Initializes a new instance of the `CodeMetrics` class.
@@ -129,9 +126,9 @@ export default class CodeMetrics {
       return
     }
 
-    const gitDiffSummary: string = this._gitInvoker.getDiffSummary()
-    if (!gitDiffSummary.trim()) {
-      throw Error('The Git diff summary was empty.')
+    const gitDiffSummary: string = this._gitInvoker.getDiffSummary().trim()
+    if (!gitDiffSummary) {
+      throw Error('The Git diff summary is empty.')
     }
 
     this.initializeMetrics(gitDiffSummary)
@@ -139,87 +136,97 @@ export default class CodeMetrics {
     this._isInitialized = true
   }
 
-  // Note: glob match only works with string[]
   private initializeMetrics (gitDiffSummary: string) {
     this._taskLibWrapper.debug('* CodeMetrics.initializeMetrics()')
 
     let lines: string[] = gitDiffSummary.split('\n')
 
-    // condense file and folder names that were changed e.g. F{a => i}leT{b => e}st.d{c => l}l"
-    lines = lines.map(line => line.replace(/{.*? => ([^}]+?)}/gm, '$1'))
+    // Condense file and folder names that were renamed e.g. F{a => i}leT{b => e}st.d{c => l}l".
+    lines = lines.map(line => line.replace(/{.*? => ([^}]+?)}/g, '$1'))
 
     const matches: string[] = []
-    const doesNotMatch: string[] = []
+    const nonMatchesWithComment: string[] = []
+    const nonMatchesWithoutComment: string[] = []
 
-    // checks for glob matches
+    // Check for glob matches.
     lines.forEach((line: string): void => {
-      // causing bugs
-      if (taskLib.match([line], this._inputs.fileMatchingPatterns).length > 0 && this.fileExtensionMatch(line)) {
+      const isValidFilePattern: boolean = taskLib.match([line], this._inputs.fileMatchingPatterns).length > 0
+      const isValidFileExtension: boolean = this.matchFileExtension(line)
+      if (isValidFilePattern && isValidFileExtension) {
         matches.push(line)
+      } else if (!isValidFilePattern) {
+        nonMatchesWithComment.push(line)
       } else {
-        doesNotMatch.push(line)
+        nonMatchesWithoutComment.push(line)
       }
     })
 
-    this.constructMetrics(matches, doesNotMatch)
+    this.constructMetrics(matches, nonMatchesWithComment, nonMatchesWithoutComment)
   }
 
-  private fileExtensionMatch (line: string): boolean {
-    this._taskLibWrapper.debug('* CodeMetrics.fileExtensionMatch()')
+  private matchFileExtension (line: string): boolean {
+    this._taskLibWrapper.debug('* CodeMetrics.matchFileExtension()')
 
-    let found = false
+    const fileExtension: string | undefined = line.split('.').pop()
+    if (!fileExtension) {
+      return false
+    }
 
-    this._inputs.codeFileExtensions.every((item: string) => {
-      if (line.includes(item.replace('*', ''))) {
-        found = true
-        return false
-      }
-      return true
-    })
-
-    return found
+    return this._inputs.codeFileExtensions.has(fileExtension)
   }
 
-  private constructMetrics (matches: string[], doesNotMatch: string[]): void {
+  private constructMetrics (matches: string[], nonMatchesWithComment: string[], nonMatchesWithoutComment: string[]): void {
     this._taskLibWrapper.debug('* CodeMetrics.constructMetrics()')
 
+    let productCode: number = 0
+    let testCode: number = 0
+    let ignoredCode: number = 0
+
     const matchesMap: IFileCodeMetric[] = this.createFileMetricsMap(matches)
-
-    matchesMap.forEach((entry: IFileCodeMetric) => {
-      const value: number = entry.value === '-' ? 0 : parseInt(entry.value)
-
-      if (/.*Test.*/i.test(entry.fileName) || /.*.spec.*/i.test(entry.fileName) || /.*test\/.*/i.test(entry.fileName)) {
-        this._testCodeCounter += value
-      } else {
-        this._productCodeCounter += value
+    matchesMap.forEach((entry: IFileCodeMetric): void => {
+      if (entry.value !== '-') {
+        const value: number = parseInt(entry.value)
+        if (/.*test.*/i.test(entry.fileName)) {
+          testCode += value
+        } else {
+          productCode += value
+        }
       }
     })
 
-    const doesNotMatchMap: IFileCodeMetric[] = this.createFileMetricsMap(doesNotMatch)
-
-    doesNotMatchMap.forEach((entry: IFileCodeMetric) => {
+    const nonMatchesWithCommentMap: IFileCodeMetric[] = this.createFileMetricsMap(nonMatchesWithComment)
+    nonMatchesWithCommentMap.forEach((entry: IFileCodeMetric): void => {
       if (entry.value !== '-') {
-        this._ignoredCodeCounter += parseInt(entry.value)
+        ignoredCode += parseInt(entry.value)
         this._ignoredFilesWithLinesAdded.push(entry.fileName)
       } else {
         this._ignoredFilesWithoutLinesAdded.push(entry.fileName)
       }
     })
 
-    this._metrics = new CodeMetricsData(this._productCodeCounter, this._testCodeCounter, this._ignoredCodeCounter)
+    const nonMatchesWithoutCommentMap: IFileCodeMetric[] = this.createFileMetricsMap(nonMatchesWithoutComment)
+    nonMatchesWithoutCommentMap.forEach((entry: IFileCodeMetric): void => {
+      if (entry.value !== '-') {
+        ignoredCode += parseInt(entry.value)
+      }
+    })
+
+    this._metrics = new CodeMetricsData(productCode, testCode, ignoredCode)
   }
 
   private createFileMetricsMap (input: string[]): IFileCodeMetric[] {
     this._taskLibWrapper.debug('* CodeMetrics.createFileMetricsMap()')
 
     const result: IFileCodeMetric[] = []
-
-    // Skip the last line as it will always be empty.
-    const inputEmptyRemoved: string[] = input.filter(e => e)
-
-    inputEmptyRemoved.forEach((line: string) => {
+    input.forEach((line: string): void => {
       const elements: string[] = line.split(/\s+/)
-      result.push({ fileName: elements[2]!, value: elements[0]! })
+
+      const fileName: string = Validator.validateField(elements[2], 'fileName', 'CodeMetrics.createFileMetricsMap()')
+      const value: string = Validator.validateField(elements[0], 'value', 'CodeMetrics.createFileMetricsMap()')
+      result.push({
+        fileName: fileName,
+        value: value
+      })
     })
 
     return result

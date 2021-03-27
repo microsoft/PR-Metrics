@@ -82,7 +82,7 @@ describe('inputs.ts', (): void => {
         expect(inputs.growthRate).to.equal(4.4)
         expect(inputs.testFactor).to.equal(2.7)
         expect(inputs.fileMatchingPatterns).to.deep.equal(['aa', 'bb'])
-        expect(inputs.codeFileExtensions).to.deep.equal(['*.js', '*.ts'])
+        expect(inputs.codeFileExtensions).to.deep.equal(new Set<string>(['js', 'ts']))
         verify(taskLibWrapper.debug('* Inputs.initialize()')).times(5)
         verify(taskLibWrapper.debug('* Inputs.initializeBaseSize()')).once()
         verify(taskLibWrapper.debug('* Inputs.initializeGrowthRate()')).once()
@@ -575,8 +575,7 @@ describe('inputs.ts', (): void => {
         ], (codeFileExtensions: string): void => {
           it(`should split '${codeFileExtensions.replace(/\n/g, '\\n')}' at the newline character`, (): void => {
             // Arrange
-            const splitExtensions: string[] = codeFileExtensions.split('\n')
-            const expectedResult: string[] = splitExtensions.map(entry => `*.${entry}`)
+            const expectedResult: Set<string> = new Set<string>(codeFileExtensions.split('\n'))
             when(taskLibWrapper.getInput('CodeFileExtensions', false)).thenReturn(codeFileExtensions)
 
             // Act
@@ -598,6 +597,52 @@ describe('inputs.ts', (): void => {
             verify(consoleWrapper.log(adjustCodeFileExtensionsResource)).never()
           })
         })
+
+      it('should handle repeated insertion of identical items', (): void => {
+        // Arrange
+        when(taskLibWrapper.getInput('CodeFileExtensions', false)).thenReturn('ada\nada')
+
+        // Act
+        const inputs: Inputs = new Inputs(instance(consoleWrapper), instance(taskLibWrapper))
+
+        // Assert
+        expect(inputs.codeFileExtensions).to.deep.equal(new Set<string>(['ada']))
+        verify(taskLibWrapper.debug('* Inputs.initialize()')).once()
+        verify(taskLibWrapper.debug('* Inputs.initializeBaseSize()')).once()
+        verify(taskLibWrapper.debug('* Inputs.initializeGrowthRate()')).once()
+        verify(taskLibWrapper.debug('* Inputs.initializeTestFactor()')).once()
+        verify(taskLibWrapper.debug('* Inputs.initializeFileMatchingPatterns()')).once()
+        verify(taskLibWrapper.debug('* Inputs.initializeCodeFileExtensions()')).once()
+        verify(taskLibWrapper.debug('* Inputs.codeFileExtensions')).once()
+        verify(consoleWrapper.log(adjustingBaseSizeResource)).once()
+        verify(consoleWrapper.log(adjustingGrowthRateResource)).once()
+        verify(consoleWrapper.log(adjustingTestFactorResource)).once()
+        verify(consoleWrapper.log(adjustingFileMatchingPatternsResource)).once()
+        verify(consoleWrapper.log(adjustCodeFileExtensionsResource)).never()
+      })
+
+      it('should remove . and * from extension names', (): void => {
+        // Arrange
+        when(taskLibWrapper.getInput('CodeFileExtensions', false)).thenReturn('*.ada\n.txt')
+
+        // Act
+        const inputs: Inputs = new Inputs(instance(consoleWrapper), instance(taskLibWrapper))
+
+        // Assert
+        expect(inputs.codeFileExtensions).to.deep.equal(new Set<string>(['ada', 'txt']))
+        verify(taskLibWrapper.debug('* Inputs.initialize()')).once()
+        verify(taskLibWrapper.debug('* Inputs.initializeBaseSize()')).once()
+        verify(taskLibWrapper.debug('* Inputs.initializeGrowthRate()')).once()
+        verify(taskLibWrapper.debug('* Inputs.initializeTestFactor()')).once()
+        verify(taskLibWrapper.debug('* Inputs.initializeFileMatchingPatterns()')).once()
+        verify(taskLibWrapper.debug('* Inputs.initializeCodeFileExtensions()')).once()
+        verify(taskLibWrapper.debug('* Inputs.codeFileExtensions')).once()
+        verify(consoleWrapper.log(adjustingBaseSizeResource)).once()
+        verify(consoleWrapper.log(adjustingGrowthRateResource)).once()
+        verify(consoleWrapper.log(adjustingTestFactorResource)).once()
+        verify(consoleWrapper.log(adjustingFileMatchingPatternsResource)).once()
+        verify(consoleWrapper.log(adjustCodeFileExtensionsResource)).never()
+      })
     })
   })
 })
