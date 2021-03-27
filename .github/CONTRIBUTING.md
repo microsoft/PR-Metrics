@@ -49,19 +49,15 @@ The following instructions can be used for adding an extension.
 1. To start, copy the necessary files from one of the existing extensions. The
    set of files can vary by extension type, but, in general, the following files
    are required:
-     - `icon.png`: A PNG file of size 32×32 pixels with transparencies set
-       appropriately.
-     - `task.json`: The metadata describing the extension and its inputs. The
-       file also references the script files containing the extension logic.
-       Note that the `id` field must be a unique GUID.
-     - `vss-extension.json`: The metadata describing the extension, which will
-       be used for deploying the extension to the
-       [Marketplace](https://marketplace.visualstudio.com/azuredevops).
-     - `TaskName.ps1`: The PowerShell logic to run. TypeScript is recommended
-       for newer extensions as it can be run on all platforms, unlike PowerShell
-       extensions, which can only be run on Windows.
-     - `TaskName.copyproj`: The project file specifying the files to include in
-       the release.
+   - `icon.png`: A PNG file of size 32×32 pixels with transparencies set
+     appropriately.
+   - `task.json`: The metadata describing the extension and its inputs. The file
+     also references the script files containing the extension logic.
+     Note that the `id` field must be a unique GUID.
+   - `vss-extension.json`: The metadata describing the extension, which will
+     be used for deploying the extension to the
+     [Marketplace](https://marketplace.visualstudio.com/azuredevops).
+   - `index.ts`: The TypeScript logic to run.
 1. Make the necessary changes to the scripts.
 1. Update `./OMEXAzureDevOpsExtensions.proj` as well as the `.proj` file in the
    extension category folder.

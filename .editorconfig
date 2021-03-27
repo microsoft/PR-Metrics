@@ -411,7 +411,7 @@ dotnet_naming_rule.parameters_rule.severity             = warning
 # Project-Specific Settings
 ##########################################
 
-[*.{md,ps1}]
+[*.{md}]
 indent_size = unset
 
 [*.{copyproj,resjson}]
