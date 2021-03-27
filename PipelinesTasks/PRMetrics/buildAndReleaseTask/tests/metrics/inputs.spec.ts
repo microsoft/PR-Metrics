@@ -11,17 +11,17 @@ import Inputs from '../../src/metrics/inputs'
 import TaskLibWrapper from '../../src/wrappers/taskLibWrapper'
 
 describe('inputs.ts', (): void => {
-  const adjustingBaseSizeResource: string = `Adjusting base size input to ${InputsDefault.baseSize}`
-  const adjustingGrowthRateResource: string = `Adjusting growth rate input to ${InputsDefault.growthRate}`
-  const adjustingTestFactorResource: string = `Adjusting test factor input to ${InputsDefault.testFactor}`
-  const adjustingFileMatchingPatternsResource: string = `Adjusting file matching patterns input to ${JSON.stringify(InputsDefault.fileMatchingPatterns)}`
-  const adjustingCodeFileExtensionsResource: string = `Adjusting code file extensions input to ${JSON.stringify(InputsDefault.fileMatchingPatterns)}`
-  const disablingTestFactorResource: string = 'Disabling test factor validation.'
-  const settingBaseSizeResource: string = 'Setting base size input to VALUE.'
-  const settingGrowthRateResource: string = 'Setting growth rate input to VALUE.'
-  const settingTestFactorResource: string = 'Setting test factor input to VALUE.'
-  const settingFileMatchingPatternsResource: string = 'Setting file matching patterns input to VALUE.'
-  const settingCodeFileExtensionsResource: string = 'Setting code file extensions input to VALUE.'
+  const adjustingBaseSizeResource: string = `Adjusting the base size input to '${InputsDefault.baseSize}'.`
+  const adjustingGrowthRateResource: string = `Adjusting the growth rate input to '${InputsDefault.growthRate}'.`
+  const adjustingTestFactorResource: string = `Adjusting the test factor input to '${InputsDefault.testFactor}'.`
+  const adjustingFileMatchingPatternsResource: string = `Adjusting the file matching patterns input to '${JSON.stringify(InputsDefault.fileMatchingPatterns)}'.`
+  const adjustingCodeFileExtensionsResource: string = `Adjusting the code file extensions input to '${JSON.stringify(Array.from(InputsDefault.codeFileExtensions))}'.`
+  const disablingTestFactorResource: string = 'Disabling the test factor validation.'
+  const settingBaseSizeResource: string = 'Setting the base size input to \'VALUE\'.'
+  const settingGrowthRateResource: string = 'Setting the growth rate input to \'VALUE\'.'
+  const settingTestFactorResource: string = 'Setting the test factor input to \'VALUE\'.'
+  const settingFileMatchingPatternsResource: string = 'Setting the file matching patterns input to \'VALUE\'.'
+  const settingCodeFileExtensionsResource: string = 'Setting the code file extensions input to \'VALUE\'.'
 
   let taskLibWrapper: TaskLibWrapper
   let consoleWrapper: ConsoleWrapper
@@ -39,7 +39,7 @@ describe('inputs.ts', (): void => {
     when(taskLibWrapper.loc('metrics.inputs.adjustingGrowthRate', InputsDefault.growthRate.toLocaleString())).thenReturn(adjustingGrowthRateResource)
     when(taskLibWrapper.loc('metrics.inputs.adjustingTestFactor', InputsDefault.testFactor.toLocaleString())).thenReturn(adjustingTestFactorResource)
     when(taskLibWrapper.loc('metrics.inputs.adjustingFileMatchingPatterns', JSON.stringify(InputsDefault.fileMatchingPatterns))).thenReturn(adjustingFileMatchingPatternsResource)
-    when(taskLibWrapper.loc('metrics.inputs.adjustingCodeFileExtensions', JSON.stringify(InputsDefault.codeFileExtensions))).thenReturn(adjustingCodeFileExtensionsResource)
+    when(taskLibWrapper.loc('metrics.inputs.adjustingCodeFileExtensions', JSON.stringify(Array.from(InputsDefault.codeFileExtensions)))).thenReturn(adjustingCodeFileExtensionsResource)
     when(taskLibWrapper.loc('metrics.inputs.disablingTestFactor')).thenReturn(disablingTestFactorResource)
     when(taskLibWrapper.loc('metrics.inputs.settingBaseSize', anyString())).thenReturn(settingBaseSizeResource)
     when(taskLibWrapper.loc('metrics.inputs.settingGrowthRate', anyString())).thenReturn(settingGrowthRateResource)
@@ -54,7 +54,7 @@ describe('inputs.ts', (): void => {
         // Act
         const inputs: Inputs = new Inputs(instance(consoleWrapper), instance(taskLibWrapper))
 
-        // AssertanyString
+        // Assert
         expect(inputs.baseSize).to.equal(InputsDefault.baseSize)
         expect(inputs.growthRate).to.equal(InputsDefault.growthRate)
         expect(inputs.testFactor).to.equal(InputsDefault.testFactor)

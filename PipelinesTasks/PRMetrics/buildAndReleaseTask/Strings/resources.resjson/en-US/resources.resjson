@@ -76,37 +76,37 @@
   "loc.messages.metrics.codeMetricsCalculator.noPullRequest": "The build is not running against a pull request. Canceling task with warning.",
   "loc.messages.metrics.codeMetricsCalculator.noPullRequest.comment": "The message to display when terminating the build is not running against a pull request.",
 
-  "loc.messages.metrics.inputs.adjustingBaseSize": "Adjusting base size input to %s.",
+  "loc.messages.metrics.inputs.adjustingBaseSize": "Adjusting the base size input to '%s'.",
   "loc.messages.metrics.inputs.adjustingBaseSize.comment": "The message printed when the base size input is being adjusted to the default. The placeholder will be replaced by the default value.",
 
-  "loc.messages.metrics.inputs.adjustingCodeFileExtensions": "Adjusting code file extensions input to %s.",
+  "loc.messages.metrics.inputs.adjustingCodeFileExtensions": "Adjusting the code file extensions input to '%s'.",
   "loc.messages.metrics.inputs.adjustingCodeFileExtensions.comment": "The message printed when the code file extensions input is being adjusted to the default. The placeholder will be replaced by the default value.",
 
-  "loc.messages.metrics.inputs.adjustingFileMatchingPatterns": "Adjusting file matching patterns input to %s.",
+  "loc.messages.metrics.inputs.adjustingFileMatchingPatterns": "Adjusting the file matching patterns input to '%s'.",
   "loc.messages.metrics.inputs.adjustingFileMatchingPatterns.comment": "The message printed when the file matching patterns input is being adjusted to the default. The placeholder will be replaced by the default value.",
 
-  "loc.messages.metrics.inputs.adjustingGrowthRate": "Adjusting growth rate input to %s.",
+  "loc.messages.metrics.inputs.adjustingGrowthRate": "Adjusting the growth rate input to '%s'.",
   "loc.messages.metrics.inputs.adjustingGrowthRate.comment": "The message printed when the growth rate input is being adjusted to the default. The placeholder will be replaced by the default value.",
 
-  "loc.messages.metrics.inputs.adjustingTestFactor": "Adjusting test factor input to %s.",
+  "loc.messages.metrics.inputs.adjustingTestFactor": "Adjusting the test factor input to '%s'.",
   "loc.messages.metrics.inputs.adjustingTestFactor.comment": "The message printed when the test factor input is being adjusted to the default. The placeholder will be replaced by the default value.",
 
-  "loc.messages.metrics.inputs.disablingTestFactor": "Disabling test factor validation.",
+  "loc.messages.metrics.inputs.disablingTestFactor": "Disabling the test factor validation.",
   "loc.messages.metrics.inputs.disablingTestFactor.comment": "The message printed when the test factor validation is being disabled.",
 
-  "loc.messages.metrics.inputs.settingBaseSize": "Setting base size input to %s.",
+  "loc.messages.metrics.inputs.settingBaseSize": "Setting the base size input to '%s'.",
   "loc.messages.metrics.inputs.settingBaseSize.comment": "The message printed when the base size input is being set to the user-provided value. The placeholder will be replaced by the default value.",
 
-  "loc.messages.metrics.inputs.settingCodeFileExtensions": "Setting code file extensions input to %s.",
+  "loc.messages.metrics.inputs.settingCodeFileExtensions": "Setting the code file extensions input to '%s'.",
   "loc.messages.metrics.inputs.settingCodeFileExtensions.comment": "The message printed when the code file extensions input is set to the user-provided value. The placeholder will be replaced by the default value.",
 
-  "loc.messages.metrics.inputs.settingFileMatchingPatterns": "Setting file matching patterns input to %s.",
+  "loc.messages.metrics.inputs.settingFileMatchingPatterns": "Setting the file matching patterns input to '%s'.",
   "loc.messages.metrics.inputs.settingFileMatchingPatterns.comment": "The message printed when the file matching patterns input is set to the user-provided value. The placeholder will be replaced by the default value.",
 
-  "loc.messages.metrics.inputs.settingGrowthRate": "Setting growth rate input to %s.",
+  "loc.messages.metrics.inputs.settingGrowthRate": "Setting the growth rate input to '%s'.",
   "loc.messages.metrics.inputs.settingGrowthRate.comment": "The message printed when the growth rate input is set to the user-provided value. The placeholder will be replaced by the default value.",
 
-  "loc.messages.metrics.inputs.settingTestFactor": "Setting test factor input to %s.",
+  "loc.messages.metrics.inputs.settingTestFactor": "Setting the test factor input to '%s'.",
   "loc.messages.metrics.inputs.settingTestFactor.comment": "The message printed when the test factor input is set to the user-provided value. The placeholder will be replaced by the default value.",
 
   "loc.messages.pullRequests.pullRequest.addDescription": "❌ **Add a description.**",

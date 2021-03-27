@@ -186,11 +186,11 @@ export default class Inputs {
 
         this._codeFileExtensions.add(value)
       })
-      this._consoleWrapper.log(this._taskLibWrapper.loc('metrics.inputs.settingCodeFileExtensions', JSON.stringify(this._codeFileExtensions)))
+      this._consoleWrapper.log(this._taskLibWrapper.loc('metrics.inputs.settingCodeFileExtensions', JSON.stringify(Array.from(this._codeFileExtensions))))
       return
     }
 
-    this._consoleWrapper.log(this._taskLibWrapper.loc('metrics.inputs.adjustingCodeFileExtensions', JSON.stringify(InputsDefault.codeFileExtensions)))
+    this._consoleWrapper.log(this._taskLibWrapper.loc('metrics.inputs.adjustingCodeFileExtensions', JSON.stringify(Array.from(InputsDefault.codeFileExtensions))))
     this._codeFileExtensions = InputsDefault.codeFileExtensions
   }
 }
