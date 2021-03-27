@@ -51,7 +51,7 @@ describe('index.ts', (): void => {
     // Arrange
     this.timeout(0)
     process.env.SYSTEM_PULLREQUEST_PULLREQUESTID = '12345'
-    process.env.SYSTEM_ACCESSTOKEN = '12345'
+    process.env.SYSTEM_ACCESSTOKEN = 'OAUTH'
     process.env.PRMETRICS_SKIP_APIS = 'true'
     const file: string = path.join(__dirname, 'index.task.js')
     const task: taskLibMock.MockTestRunner = new taskLibMock.MockTestRunner(file)
@@ -76,7 +76,12 @@ describe('index.ts', (): void => {
     // Arrange
     this.timeout(0)
     process.env.SYSTEM_PULLREQUEST_PULLREQUESTID = '12345'
-    process.env.SYSTEM_ACCESSTOKEN = '12345'
+    process.env.SYSTEM_ACCESSTOKEN = 'OAUTH'
+    process.env.SYSTEM_TEAMPROJECT = 'Project'
+    process.env.BUILD_REPOSITORY_ID = 'RepoID'
+    process.env.SYSTEM_PULLREQUEST_PULLREQUESTID = '10'
+    process.env.SYSTEM_TEAMFOUNDATIONCOLLECTIONURI = 'https://dev.azure.com/organization'
+
     const file: string = path.join(__dirname, 'index.task.js')
     const task: taskLibMock.MockTestRunner = new taskLibMock.MockTestRunner(file)
 
@@ -86,11 +91,15 @@ describe('index.ts', (): void => {
     // Assert
     expect(task.succeeded).to.equal(false)
     expect(task.warningIssues).to.deep.equal([])
-    expect(task.errorIssues).to.deep.equal(['The "url" argument must be of type string. Received type undefined'])
+    expect(task.errorIssues).to.deep.equal(['Failed request: (401)'])
 
     // Finalization
     delete process.env.SYSTEM_PULLREQUEST_PULLREQUESTID
     delete process.env.SYSTEM_ACCESSTOKEN
+    delete process.env.SYSTEM_TEAMPROJECT
+    delete process.env.BUILD_REPOSITORY_ID
+    delete process.env.SYSTEM_PULLREQUEST_PULLREQUESTID
+    delete process.env.SYSTEM_TEAMFOUNDATIONCOLLECTIONURI
     done()
   })
 })

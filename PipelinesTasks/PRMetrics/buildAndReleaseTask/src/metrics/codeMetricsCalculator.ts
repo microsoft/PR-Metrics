@@ -98,12 +98,8 @@ export default class CodeMetricsCalculator {
       promises.push(this.addMetadata())
     }
 
-    commentData.ignoredFilesWithLinesAdded.forEach((fileName: string): void => {
-      promises.push(this.updateIgnoredComment(fileName, true))
-    })
-
-    commentData.ignoredFilesWithoutLinesAdded.forEach((fileName: string): void => {
-      promises.push(this.updateIgnoredComment(fileName, false))
+    commentData.ignoredFiles.forEach((fileName: string): void => {
+      promises.push(this.updateIgnoredComment(fileName))
     })
 
     await Promise.all(promises)
@@ -163,10 +159,10 @@ export default class CodeMetricsCalculator {
     await this._azureReposInvoker.addMetadata(metadata)
   }
 
-  private async updateIgnoredComment (fileName: string, withLinesAdded: boolean): Promise<void> {
+  private async updateIgnoredComment (fileName: string): Promise<void> {
     this._taskLibWrapper.debug('* CodeMetricsCalculator.updateIgnoredComment()')
 
     const ignoredComment: string = this._pullRequestComments.ignoredComment
-    await this._azureReposInvoker.createCommentThread(ignoredComment, CommentThreadStatus.Closed, fileName, withLinesAdded)
+    await this._azureReposInvoker.createCommentThread(ignoredComment, CommentThreadStatus.Closed, fileName)
   }
 }

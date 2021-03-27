@@ -70,11 +70,11 @@ describe('codeMetrics.ts', (): void => {
         const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(taskLibWrapper))
 
         // Act
-        const func: () => string[] = () => codeMetrics.ignoredFilesWithLinesAdded
+        const func: () => string[] = () => codeMetrics.ignoredFiles
 
         // Assert
         expect(func).to.throw('The Git diff summary is empty.')
-        verify(taskLibWrapper.debug('* CodeMetrics.ignoredFilesWithLinesAdded')).once()
+        verify(taskLibWrapper.debug('* CodeMetrics.ignoredFiles')).once()
         verify(taskLibWrapper.debug('* CodeMetrics.initialize()')).once()
       })
     })
@@ -96,11 +96,11 @@ describe('codeMetrics.ts', (): void => {
         const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(taskLibWrapper))
 
         // Act
-        const func: () => string[] = () => codeMetrics.ignoredFilesWithLinesAdded
+        const func: () => string[] = () => codeMetrics.ignoredFiles
 
         // Assert
         expect(func).to.throw(`The number of elements '${data[1]}' in '${data[0].trim()}' did not match the expected 3.`)
-        verify(taskLibWrapper.debug('* CodeMetrics.ignoredFilesWithLinesAdded')).once()
+        verify(taskLibWrapper.debug('* CodeMetrics.ignoredFiles')).once()
         verify(taskLibWrapper.debug('* CodeMetrics.initialize()')).once()
         verify(taskLibWrapper.debug('* CodeMetrics.createFileMetricsMap()')).once()
       })
@@ -112,11 +112,11 @@ describe('codeMetrics.ts', (): void => {
     const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(taskLibWrapper))
 
     // Act
-    const func: () => string[] = () => codeMetrics.ignoredFilesWithLinesAdded
+    const func: () => string[] = () => codeMetrics.ignoredFiles
 
     // Assert
     expect(func).to.throw('Could not parse \'A\' from line \'A\t0\tfile.ts\'.')
-    verify(taskLibWrapper.debug('* CodeMetrics.ignoredFilesWithLinesAdded')).once()
+    verify(taskLibWrapper.debug('* CodeMetrics.ignoredFiles')).once()
     verify(taskLibWrapper.debug('* CodeMetrics.initialize()')).once()
     verify(taskLibWrapper.debug('* CodeMetrics.createFileMetricsMap()')).once()
   })
@@ -165,15 +165,11 @@ describe('codeMetrics.ts', (): void => {
       ['8000\t0\tfile.ts\n12000\t0\ttest.ts', '3XL', true, new CodeMetricsData(8000, 12000, 0)],
       ['0\t1\tfile.ts', 'XS', true, new CodeMetricsData(0, 0, 0)],
       ['1\t0\tfile.ignored', 'XS', true, new CodeMetricsData(0, 0, 1)],
-      ['-\t0\tfile.ignored', 'XS', true, new CodeMetricsData(0, 0, 0)],
       ['1\t0\tfile', 'XS', true, new CodeMetricsData(0, 0, 1)],
-      ['-\t0\tfile', 'XS', true, new CodeMetricsData(0, 0, 0)],
       ['1\t0\tfile.ts.ignored', 'XS', true, new CodeMetricsData(0, 0, 1)],
-      ['-\t0\tfile.ts.ignored', 'XS', true, new CodeMetricsData(0, 0, 0)],
       ['1\t0\tfile.ignored.ts', 'XS', false, new CodeMetricsData(1, 0, 0)],
-      ['-\t0\tfile.ignored.ts', 'XS', true, new CodeMetricsData(0, 0, 0)],
       ['1\t0\ttest.ignored', 'XS', true, new CodeMetricsData(0, 0, 1)],
-      ['-\t0\ttest.ignored', 'XS', true, new CodeMetricsData(0, 0, 0)],
+      ['1\t0\ttasb.cc => test.ts', 'XS', true, new CodeMetricsData(0, 1, 0)],
       ['1\t0\tt{a => e}s{b => t}.t{c => s}', 'XS', true, new CodeMetricsData(0, 1, 0)],
       ['1\t0\tt{a => est.ts}', 'XS', true, new CodeMetricsData(0, 1, 0)],
       ['1\t0\t{a => test.ts}', 'XS', true, new CodeMetricsData(0, 1, 0)],
@@ -182,10 +178,8 @@ describe('codeMetrics.ts', (): void => {
       ['1\t0\ttest/file.ts', 'XS', true, new CodeMetricsData(0, 1, 0)],
       ['1\t0\ttests/file.ts', 'XS', true, new CodeMetricsData(0, 1, 0)],
       ['1\t0\tfolder/tests/file.ts', 'XS', true, new CodeMetricsData(0, 1, 0)],
+      ['1\t1\tfa/b => folder/test.ts', 'XS', true, new CodeMetricsData(0, 1, 0)],
       ['1\t1\tf{a => older}/{b => test.ts}', 'XS', true, new CodeMetricsData(0, 1, 0)],
-      ['-\t0\tfile.ts', 'XS', true, new CodeMetricsData(0, 0, 0)],
-      ['-\t-\tfile.ts', 'XS', true, new CodeMetricsData(0, 0, 0)],
-      ['1    0    file.ts', 'XS', false, new CodeMetricsData(1, 0, 0)],
       ['0\t0\tfile.ts\n', 'XS', true, new CodeMetricsData(0, 0, 0)]
     ], (data: [string, string, boolean, CodeMetricsData]): void => {
       it(`with default inputs and git diff '${data[0].replace('\n', '\\n')}', returns '${data[1]}' size and '${data[2]}' test coverage`, (): void => {
@@ -196,17 +190,15 @@ describe('codeMetrics.ts', (): void => {
         const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(taskLibWrapper))
 
         // Assert
-        expect(codeMetrics.ignoredFilesWithLinesAdded).to.deep.equal([])
-        expect(codeMetrics.ignoredFilesWithoutLinesAdded).to.deep.equal([])
+        expect(codeMetrics.ignoredFiles).to.deep.equal([])
         expect(codeMetrics.size).to.equal(data[1])
         expect(codeMetrics.sizeIndicator).to.equal(`${data[1]}${data[2] ? '✔' : '⚠️'}`)
         expect(codeMetrics.metrics).to.deep.equal(data[3])
         expect(codeMetrics.isSmall).to.equal(data[1] === 'XS' || data[1] === 'S')
         expect(codeMetrics.isSufficientlyTested).to.equal(data[2])
-        verify(taskLibWrapper.debug('* CodeMetrics.ignoredFilesWithLinesAdded')).once()
-        verify(taskLibWrapper.debug('* CodeMetrics.ignoredFilesWithoutLinesAdded')).once()
+        verify(taskLibWrapper.debug('* CodeMetrics.ignoredFiles')).once()
         verify(taskLibWrapper.debug('* CodeMetrics.size')).once()
-        verify(taskLibWrapper.debug('* CodeMetrics.initialize()')).times(7)
+        verify(taskLibWrapper.debug('* CodeMetrics.initialize()')).times(6)
         verify(taskLibWrapper.debug('* CodeMetrics.initializeMetrics()')).once()
         verify(taskLibWrapper.debug('* CodeMetrics.matchFileExtension()')).times((data[0].match(/\n/g) || []).length + 1 - (data[0].endsWith('\n') ? 1 : 0))
         verify(taskLibWrapper.debug('* CodeMetrics.constructMetrics()')).once()
@@ -219,60 +211,56 @@ describe('codeMetrics.ts', (): void => {
 
   async.each(
     [
-      ['0\t0\tfile.ts', 'XS', true, new CodeMetricsData(0, 0, 0), [], []],
-      ['1\t0\tfile.ts', 'XS', false, new CodeMetricsData(1, 0, 0), [], []],
-      ['1\t0\tfile.ts\n0\t0\ttest.ts', 'XS', false, new CodeMetricsData(1, 0, 0), [], []],
-      ['1\t0\tfile.ts\n1\t0\ttest.ts', 'XS', true, new CodeMetricsData(1, 1, 0), [], []],
-      ['99\t0\tfile.ts', 'XS', false, new CodeMetricsData(99, 0, 0), [], []],
-      ['99\t0\tfile.ts\n98\t0\ttest.ts', 'XS', false, new CodeMetricsData(99, 98, 0), [], []],
-      ['99\t0\tfile.ts\n99\t0\ttest.ts', 'XS', true, new CodeMetricsData(99, 99, 0), [], []],
-      ['100\t0\tfile.ts', 'S', false, new CodeMetricsData(100, 0, 0), [], []],
-      ['100\t0\tfile.ts\n99\t0\ttest.ts', 'S', false, new CodeMetricsData(100, 99, 0), [], []],
-      ['100\t0\tfile.ts\n100\t0\ttest.ts', 'S', true, new CodeMetricsData(100, 100, 0), [], []],
-      ['199\t0\tfile.ts', 'S', false, new CodeMetricsData(199, 0, 0), [], []],
-      ['199\t0\tfile.ts\n198\t0\ttest.ts', 'S', false, new CodeMetricsData(199, 198, 0), [], []],
-      ['199\t0\tfile.ts\n199\t0\ttest.ts', 'S', true, new CodeMetricsData(199, 199, 0), [], []],
-      ['200\t0\tfile.ts', 'M', false, new CodeMetricsData(200, 0, 0), [], []],
-      ['200\t0\tfile.ts\n199\t0\ttest.ts', 'M', false, new CodeMetricsData(200, 199, 0), [], []],
-      ['200\t0\tfile.ts\n200\t0\ttest.ts', 'M', true, new CodeMetricsData(200, 200, 0), [], []],
-      ['399\t0\tfile.ts', 'M', false, new CodeMetricsData(399, 0, 0), [], []],
-      ['399\t0\tfile.ts\n398\t0\ttest.ts', 'M', false, new CodeMetricsData(399, 398, 0), [], []],
-      ['399\t0\tfile.ts\n399\t0\ttest.ts', 'M', true, new CodeMetricsData(399, 399, 0), [], []],
-      ['400\t0\tfile.ts', 'L', false, new CodeMetricsData(400, 0, 0), [], []],
-      ['400\t0\tfile.ts\n399\t0\ttest.ts', 'L', false, new CodeMetricsData(400, 399, 0), [], []],
-      ['400\t0\tfile.ts\n400\t0\ttest.ts', 'L', true, new CodeMetricsData(400, 400, 0), [], []],
-      ['799\t0\tfile.ts', 'L', false, new CodeMetricsData(799, 0, 0), [], []],
-      ['799\t0\tfile.ts\n798\t0\ttest.ts', 'L', false, new CodeMetricsData(799, 798, 0), [], []],
-      ['799\t0\tfile.ts\n799\t0\ttest.ts', 'L', true, new CodeMetricsData(799, 799, 0), [], []],
-      ['800\t0\tfile.ts', 'XL', false, new CodeMetricsData(800, 0, 0), [], []],
-      ['800\t0\tfile.ts\n799\t0\ttest.ts', 'XL', false, new CodeMetricsData(800, 799, 0), [], []],
-      ['800\t0\tfile.ts\n800\t0\ttest.ts', 'XL', true, new CodeMetricsData(800, 800, 0), [], []],
-      ['1599\t0\tfile.ts', 'XL', false, new CodeMetricsData(1599, 0, 0), [], []],
-      ['1599\t0\tfile.ts\n1598\t0\ttest.ts', 'XL', false, new CodeMetricsData(1599, 1598, 0), [], []],
-      ['1599\t0\tfile.ts\n1599\t0\ttest.ts', 'XL', true, new CodeMetricsData(1599, 1599, 0), [], []],
-      ['1600\t0\tfile.ts', '2XL', false, new CodeMetricsData(1600, 0, 0), [], []],
-      ['1600\t0\tfile.ts\n1599\t0\ttest.ts', '2XL', false, new CodeMetricsData(1600, 1599, 0), [], []],
-      ['1600\t0\tfile.ts\n1600\t0\ttest.ts', '2XL', true, new CodeMetricsData(1600, 1600, 0), [], []],
-      ['3199\t0\tfile.ts', '2XL', false, new CodeMetricsData(3199, 0, 0), [], []],
-      ['3199\t0\tfile.ts\n3198\t0\ttest.ts', '2XL', false, new CodeMetricsData(3199, 3198, 0), [], []],
-      ['3199\t0\tfile.ts\n3199\t0\ttest.ts', '2XL', true, new CodeMetricsData(3199, 3199, 0), [], []],
-      ['3200\t0\tfile.ts', '3XL', false, new CodeMetricsData(3200, 0, 0), [], []],
-      ['3200\t0\tfile.ts\n3199\t0\ttest.ts', '3XL', false, new CodeMetricsData(3200, 3199, 0), [], []],
-      ['3200\t0\tfile.ts\n3200\t0\ttest.ts', '3XL', true, new CodeMetricsData(3200, 3200, 0), [], []],
-      ['1\t0\tfile.cs', 'XS', true, new CodeMetricsData(0, 0, 1), [], []],
-      ['1\t0\ttest.cs', 'XS', true, new CodeMetricsData(0, 0, 1), [], []],
-      ['1\t0\tfile.tst', 'XS', true, new CodeMetricsData(0, 0, 1), [], []],
-      ['1\t0\tfile.tts', 'XS', true, new CodeMetricsData(0, 0, 1), [], []],
-      ['1\t0\tfilets', 'XS', true, new CodeMetricsData(0, 0, 1), [], []],
-      ['1\t0\tignored.ts', 'XS', true, new CodeMetricsData(0, 0, 1), ['ignored.ts'], []],
-      ['1\t0\tignored.cs', 'XS', true, new CodeMetricsData(0, 0, 1), ['ignored.cs'], []],
-      ['1\t0\tfolder/ignored.ts', 'XS', true, new CodeMetricsData(0, 0, 1), ['folder/ignored.ts'], []],
-      ['1\t0\tfolder/ignored.cs', 'XS', true, new CodeMetricsData(0, 0, 1), ['folder/ignored.cs'], []],
-      ['-\t0\tignored.ts', 'XS', true, new CodeMetricsData(0, 0, 0), [], ['ignored.ts']],
-      ['-\t0\tignored.cs', 'XS', true, new CodeMetricsData(0, 0, 0), [], ['ignored.cs']],
-      ['-\t0\tfolder/ignored.ts', 'XS', true, new CodeMetricsData(0, 0, 0), [], ['folder/ignored.ts']],
-      ['-\t0\tfolder/ignored.cs', 'XS', true, new CodeMetricsData(0, 0, 0), [], ['folder/ignored.cs']]
-    ], (data: [string, string, boolean, CodeMetricsData, string[], string[]]): void => {
+      ['0\t0\tfile.ts', 'XS', true, new CodeMetricsData(0, 0, 0), []],
+      ['1\t0\tfile.ts', 'XS', false, new CodeMetricsData(1, 0, 0), []],
+      ['1\t0\tfile.ts\n0\t0\ttest.ts', 'XS', false, new CodeMetricsData(1, 0, 0), []],
+      ['1\t0\tfile.ts\n1\t0\ttest.ts', 'XS', true, new CodeMetricsData(1, 1, 0), []],
+      ['99\t0\tfile.ts', 'XS', false, new CodeMetricsData(99, 0, 0), []],
+      ['99\t0\tfile.ts\n98\t0\ttest.ts', 'XS', false, new CodeMetricsData(99, 98, 0), []],
+      ['99\t0\tfile.ts\n99\t0\ttest.ts', 'XS', true, new CodeMetricsData(99, 99, 0), []],
+      ['100\t0\tfile.ts', 'S', false, new CodeMetricsData(100, 0, 0), []],
+      ['100\t0\tfile.ts\n99\t0\ttest.ts', 'S', false, new CodeMetricsData(100, 99, 0), []],
+      ['100\t0\tfile.ts\n100\t0\ttest.ts', 'S', true, new CodeMetricsData(100, 100, 0), []],
+      ['199\t0\tfile.ts', 'S', false, new CodeMetricsData(199, 0, 0), []],
+      ['199\t0\tfile.ts\n198\t0\ttest.ts', 'S', false, new CodeMetricsData(199, 198, 0), []],
+      ['199\t0\tfile.ts\n199\t0\ttest.ts', 'S', true, new CodeMetricsData(199, 199, 0), []],
+      ['200\t0\tfile.ts', 'M', false, new CodeMetricsData(200, 0, 0), []],
+      ['200\t0\tfile.ts\n199\t0\ttest.ts', 'M', false, new CodeMetricsData(200, 199, 0), []],
+      ['200\t0\tfile.ts\n200\t0\ttest.ts', 'M', true, new CodeMetricsData(200, 200, 0), []],
+      ['399\t0\tfile.ts', 'M', false, new CodeMetricsData(399, 0, 0), []],
+      ['399\t0\tfile.ts\n398\t0\ttest.ts', 'M', false, new CodeMetricsData(399, 398, 0), []],
+      ['399\t0\tfile.ts\n399\t0\ttest.ts', 'M', true, new CodeMetricsData(399, 399, 0), []],
+      ['400\t0\tfile.ts', 'L', false, new CodeMetricsData(400, 0, 0), []],
+      ['400\t0\tfile.ts\n399\t0\ttest.ts', 'L', false, new CodeMetricsData(400, 399, 0), []],
+      ['400\t0\tfile.ts\n400\t0\ttest.ts', 'L', true, new CodeMetricsData(400, 400, 0), []],
+      ['799\t0\tfile.ts', 'L', false, new CodeMetricsData(799, 0, 0), []],
+      ['799\t0\tfile.ts\n798\t0\ttest.ts', 'L', false, new CodeMetricsData(799, 798, 0), []],
+      ['799\t0\tfile.ts\n799\t0\ttest.ts', 'L', true, new CodeMetricsData(799, 799, 0), []],
+      ['800\t0\tfile.ts', 'XL', false, new CodeMetricsData(800, 0, 0), []],
+      ['800\t0\tfile.ts\n799\t0\ttest.ts', 'XL', false, new CodeMetricsData(800, 799, 0), []],
+      ['800\t0\tfile.ts\n800\t0\ttest.ts', 'XL', true, new CodeMetricsData(800, 800, 0), []],
+      ['1599\t0\tfile.ts', 'XL', false, new CodeMetricsData(1599, 0, 0), []],
+      ['1599\t0\tfile.ts\n1598\t0\ttest.ts', 'XL', false, new CodeMetricsData(1599, 1598, 0), []],
+      ['1599\t0\tfile.ts\n1599\t0\ttest.ts', 'XL', true, new CodeMetricsData(1599, 1599, 0), []],
+      ['1600\t0\tfile.ts', '2XL', false, new CodeMetricsData(1600, 0, 0), []],
+      ['1600\t0\tfile.ts\n1599\t0\ttest.ts', '2XL', false, new CodeMetricsData(1600, 1599, 0), []],
+      ['1600\t0\tfile.ts\n1600\t0\ttest.ts', '2XL', true, new CodeMetricsData(1600, 1600, 0), []],
+      ['3199\t0\tfile.ts', '2XL', false, new CodeMetricsData(3199, 0, 0), []],
+      ['3199\t0\tfile.ts\n3198\t0\ttest.ts', '2XL', false, new CodeMetricsData(3199, 3198, 0), []],
+      ['3199\t0\tfile.ts\n3199\t0\ttest.ts', '2XL', true, new CodeMetricsData(3199, 3199, 0), []],
+      ['3200\t0\tfile.ts', '3XL', false, new CodeMetricsData(3200, 0, 0), []],
+      ['3200\t0\tfile.ts\n3199\t0\ttest.ts', '3XL', false, new CodeMetricsData(3200, 3199, 0), []],
+      ['3200\t0\tfile.ts\n3200\t0\ttest.ts', '3XL', true, new CodeMetricsData(3200, 3200, 0), []],
+      ['1\t0\tfile.cs', 'XS', true, new CodeMetricsData(0, 0, 1), []],
+      ['1\t0\ttest.cs', 'XS', true, new CodeMetricsData(0, 0, 1), []],
+      ['1\t0\tfile.tst', 'XS', true, new CodeMetricsData(0, 0, 1), []],
+      ['1\t0\tfile.tts', 'XS', true, new CodeMetricsData(0, 0, 1), []],
+      ['1\t0\tfilets', 'XS', true, new CodeMetricsData(0, 0, 1), []],
+      ['1\t0\tignored.ts', 'XS', true, new CodeMetricsData(0, 0, 1), ['ignored.ts']],
+      ['1\t0\tignored.cs', 'XS', true, new CodeMetricsData(0, 0, 1), ['ignored.cs']],
+      ['1\t0\tfolder/ignored.ts', 'XS', true, new CodeMetricsData(0, 0, 1), ['folder/ignored.ts']],
+      ['1\t0\tfolder/ignored.cs', 'XS', true, new CodeMetricsData(0, 0, 1), ['folder/ignored.cs']]
+    ], (data: [string, string, boolean, CodeMetricsData, string[]]): void => {
       it(`with non-default inputs and git diff '${data[0].replace('\n', '\\n')}', returns '${data[1]}' size and '${data[2]}' test coverage`, (): void => {
         // Arrange
         when(inputs.baseSize).thenReturn(100)
@@ -286,17 +274,15 @@ describe('codeMetrics.ts', (): void => {
         const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(taskLibWrapper))
 
         // Assert
-        expect(codeMetrics.ignoredFilesWithLinesAdded).to.deep.equal(data[4])
-        expect(codeMetrics.ignoredFilesWithoutLinesAdded).to.deep.equal(data[5])
+        expect(codeMetrics.ignoredFiles).to.deep.equal(data[4])
         expect(codeMetrics.size).to.equal(data[1])
         expect(codeMetrics.sizeIndicator).to.equal(`${data[1]}${data[2] ? '✔' : '⚠️'}`)
         expect(codeMetrics.metrics).to.deep.equal(data[3])
         expect(codeMetrics.isSmall).to.equal(data[1] === 'XS' || data[1] === 'S')
         expect(codeMetrics.isSufficientlyTested).to.equal(data[2])
-        verify(taskLibWrapper.debug('* CodeMetrics.ignoredFilesWithLinesAdded')).once()
-        verify(taskLibWrapper.debug('* CodeMetrics.ignoredFilesWithoutLinesAdded')).once()
+        verify(taskLibWrapper.debug('* CodeMetrics.ignoredFiles')).once()
         verify(taskLibWrapper.debug('* CodeMetrics.size')).once()
-        verify(taskLibWrapper.debug('* CodeMetrics.initialize()')).times(7)
+        verify(taskLibWrapper.debug('* CodeMetrics.initialize()')).times(6)
         verify(taskLibWrapper.debug('* CodeMetrics.initializeMetrics()')).once()
         verify(taskLibWrapper.debug('* CodeMetrics.matchFileExtension()')).times((data[0].match(/\n/g) || []).length + 1)
         verify(taskLibWrapper.debug('* CodeMetrics.constructMetrics()')).once()
@@ -316,17 +302,15 @@ describe('codeMetrics.ts', (): void => {
     const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(taskLibWrapper))
 
     // Assert
-    expect(codeMetrics.ignoredFilesWithLinesAdded).to.deep.equal([])
-    expect(codeMetrics.ignoredFilesWithoutLinesAdded).to.deep.equal([])
+    expect(codeMetrics.ignoredFiles).to.deep.equal([])
     expect(codeMetrics.size).to.equal('XS')
     expect(codeMetrics.sizeIndicator).to.equal('XS')
     expect(codeMetrics.metrics).to.deep.equal(new CodeMetricsData(1, 0, 0))
     expect(codeMetrics.isSmall).to.equal(true)
     expect(codeMetrics.isSufficientlyTested).to.equal(null)
-    verify(taskLibWrapper.debug('* CodeMetrics.ignoredFilesWithLinesAdded')).once()
-    verify(taskLibWrapper.debug('* CodeMetrics.ignoredFilesWithoutLinesAdded')).once()
+    verify(taskLibWrapper.debug('* CodeMetrics.ignoredFiles')).once()
     verify(taskLibWrapper.debug('* CodeMetrics.size')).once()
-    verify(taskLibWrapper.debug('* CodeMetrics.initialize()')).times(7)
+    verify(taskLibWrapper.debug('* CodeMetrics.initialize()')).times(6)
     verify(taskLibWrapper.debug('* CodeMetrics.initializeMetrics()')).once()
     verify(taskLibWrapper.debug('* CodeMetrics.matchFileExtension()')).once()
     verify(taskLibWrapper.debug('* CodeMetrics.constructMetrics()')).once()

@@ -15,6 +15,7 @@ import AzureReposInvoker from '../../src/azureRepos/azureReposInvoker'
 import IPullRequestDetails from '../../src/azureRepos/iPullRequestDetails'
 import IPullRequestMetadata from '../../src/azureRepos/iPullRequestMetadata'
 import TaskLibWrapper from '../../src/wrappers/taskLibWrapper'
+import async from 'async'
 
 describe('azureReposInvoker.ts', function (): void {
   let gitApi: IGitApi
@@ -76,6 +77,163 @@ describe('azureReposInvoker.ts', function (): void {
   })
 
   describe('getTitleAndDescription()', (): void => {
+    async.each(
+      [
+        undefined,
+        ''
+      ], (variable: string | undefined): void => {
+        it(`should throw when SYSTEM_TEAMPROJECT is set to the invalid value '${variable}'`, async (): Promise<void> => {
+          // Arrange
+          if (variable === undefined) {
+            delete process.env.SYSTEM_TEAMPROJECT
+          } else {
+            process.env.SYSTEM_TEAMPROJECT = variable
+          }
+
+          const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(taskLibWrapper))
+          let errorThrown: boolean = false
+
+          try {
+            // Act
+            await azureReposInvoker.getTitleAndDescription()
+          } catch (error) {
+            // Assert
+            errorThrown = true
+            expect(error.message).to.equal(`Field 'SYSTEM_TEAMPROJECT', accessed within 'AzureReposInvoker.openConnection()', is invalid, null, or undefined '${variable}'.`)
+          }
+
+          expect(errorThrown).to.equal(true)
+          verify(taskLibWrapper.debug('* AzureReposInvoker.getTitleAndDescription()')).once()
+          verify(taskLibWrapper.debug('* AzureReposInvoker.openConnection()')).once()
+        })
+      })
+
+    async.each(
+      [
+        undefined,
+        ''
+      ], (variable: string | undefined): void => {
+        it(`should throw when BUILD_REPOSITORY_ID is set to the invalid value '${variable}'`, async (): Promise<void> => {
+          // Arrange
+          if (variable === undefined) {
+            delete process.env.BUILD_REPOSITORY_ID
+          } else {
+            process.env.BUILD_REPOSITORY_ID = variable
+          }
+
+          const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(taskLibWrapper))
+          let errorThrown: boolean = false
+
+          try {
+            // Act
+            await azureReposInvoker.getTitleAndDescription()
+          } catch (error) {
+            // Assert
+            errorThrown = true
+            expect(error.message).to.equal(`Field 'BUILD_REPOSITORY_ID', accessed within 'AzureReposInvoker.openConnection()', is invalid, null, or undefined '${variable}'.`)
+          }
+
+          expect(errorThrown).to.equal(true)
+          verify(taskLibWrapper.debug('* AzureReposInvoker.getTitleAndDescription()')).once()
+          verify(taskLibWrapper.debug('* AzureReposInvoker.openConnection()')).once()
+        })
+      })
+
+    async.each(
+      [
+        undefined,
+        '',
+        'A'
+      ], (variable: string | undefined): void => {
+        it(`should throw when SYSTEM_PULLREQUEST_PULLREQUESTID is set to the invalid value '${variable}'`, async (): Promise<void> => {
+          // Arrange
+          if (variable === undefined) {
+            delete process.env.SYSTEM_PULLREQUEST_PULLREQUESTID
+          } else {
+            process.env.SYSTEM_PULLREQUEST_PULLREQUESTID = variable
+          }
+
+          const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(taskLibWrapper))
+          let errorThrown: boolean = false
+
+          try {
+            // Act
+            await azureReposInvoker.getTitleAndDescription()
+          } catch (error) {
+            // Assert
+            errorThrown = true
+            expect(error.message).to.equal('Field \'SYSTEM_PULLREQUEST_PULLREQUESTID\', accessed within \'AzureReposInvoker.openConnection()\', is invalid, null, or undefined \'NaN\'.')
+          }
+
+          expect(errorThrown).to.equal(true)
+          verify(taskLibWrapper.debug('* AzureReposInvoker.getTitleAndDescription()')).once()
+          verify(taskLibWrapper.debug('* AzureReposInvoker.openConnection()')).once()
+        })
+      })
+
+    async.each(
+      [
+        undefined,
+        ''
+      ], (variable: string | undefined): void => {
+        it(`should throw when SYSTEM_ACCESSTOKEN is set to the invalid value '${variable}'`, async (): Promise<void> => {
+          // Arrange
+          if (variable === undefined) {
+            delete process.env.SYSTEM_ACCESSTOKEN
+          } else {
+            process.env.SYSTEM_ACCESSTOKEN = variable
+          }
+
+          const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(taskLibWrapper))
+          let errorThrown: boolean = false
+
+          try {
+            // Act
+            await azureReposInvoker.getTitleAndDescription()
+          } catch (error) {
+            // Assert
+            errorThrown = true
+            expect(error.message).to.equal(`Field 'SYSTEM_ACCESSTOKEN', accessed within 'AzureReposInvoker.openConnection()', is invalid, null, or undefined '${variable}'.`)
+          }
+
+          expect(errorThrown).to.equal(true)
+          verify(taskLibWrapper.debug('* AzureReposInvoker.getTitleAndDescription()')).once()
+          verify(taskLibWrapper.debug('* AzureReposInvoker.openConnection()')).once()
+        })
+      })
+
+    async.each(
+      [
+        undefined,
+        ''
+      ], (variable: string | undefined): void => {
+        it(`should throw when SYSTEM_TEAMFOUNDATIONCOLLECTIONURI is set to the invalid value '${variable}'`, async (): Promise<void> => {
+          // Arrange
+          if (variable === undefined) {
+            delete process.env.SYSTEM_TEAMFOUNDATIONCOLLECTIONURI
+          } else {
+            process.env.SYSTEM_TEAMFOUNDATIONCOLLECTIONURI = variable
+          }
+
+          const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(taskLibWrapper))
+          let errorThrown: boolean = false
+
+          try {
+            // Act
+            await azureReposInvoker.getTitleAndDescription()
+          } catch (error) {
+            // Assert
+            errorThrown = true
+            expect(error.message).to.equal(`Field 'SYSTEM_TEAMFOUNDATIONCOLLECTIONURI', accessed within 'AzureReposInvoker.openConnection()', is invalid, null, or undefined '${variable}'.`)
+          }
+
+          expect(errorThrown).to.equal(true)
+          verify(taskLibWrapper.debug('* AzureReposInvoker.getTitleAndDescription()')).once()
+          verify(taskLibWrapper.debug('* AzureReposInvoker.openConnection()')).once()
+          verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
+        })
+      })
+
     it('should return the title and description when available', async (): Promise<void> => {
       // Arrange
       when(gitApi.getPullRequestById(10, 'Project')).thenResolve({
@@ -500,39 +658,7 @@ describe('azureReposInvoker.ts', function (): void {
       verify(taskLibWrapper.debug('{}')).twice()
     })
 
-    it('should call the API for a file without lines added', async (): Promise<void> => {
-      // Arrange
-      const expectedCommentThread: GitPullRequestCommentThread = {
-        comments: [{ content: 'Comment Content' }],
-        status: CommentThreadStatus.Active,
-        threadContext: {
-          filePath: '/file.ts',
-          leftFileStart: {
-            line: 1,
-            offset: 1
-          },
-          leftFileEnd: {
-            line: 1,
-            offset: 2
-          }
-        }
-      }
-      when(gitApi.createThread(deepEqual(expectedCommentThread), 'RepoID', 10, 'Project')).thenResolve({})
-      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(taskLibWrapper))
-
-      // Act
-      await azureReposInvoker.createCommentThread('Comment Content', CommentThreadStatus.Active, 'file.ts')
-
-      // Assert
-      verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
-      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
-      verify(gitApi.createThread(deepEqual(expectedCommentThread), 'RepoID', 10, 'Project')).once()
-      verify(taskLibWrapper.debug('* AzureReposInvoker.createCommentThread()')).once()
-      verify(taskLibWrapper.debug('* AzureReposInvoker.openConnection()')).once()
-      verify(taskLibWrapper.debug('{}')).once()
-    })
-
-    it('should call the API for a file with lines added', async (): Promise<void> => {
+    it('should call the API for a file', async (): Promise<void> => {
       // Arrange
       const expectedCommentThread: GitPullRequestCommentThread = {
         comments: [{ content: 'Comment Content' }],
@@ -553,7 +679,7 @@ describe('azureReposInvoker.ts', function (): void {
       const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(taskLibWrapper))
 
       // Act
-      await azureReposInvoker.createCommentThread('Comment Content', CommentThreadStatus.Active, 'file.ts', true)
+      await azureReposInvoker.createCommentThread('Comment Content', CommentThreadStatus.Active, 'file.ts')
 
       // Assert
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()

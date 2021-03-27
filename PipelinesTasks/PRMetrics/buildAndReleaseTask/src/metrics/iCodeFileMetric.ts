@@ -13,5 +13,5 @@ export interface ICodeFileMetric {
   /**
    * The number of lines added to the file.
    */
-  linesAdded: number | null
+  linesAdded: number
 }

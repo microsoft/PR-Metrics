@@ -49,7 +49,7 @@ extensions as desired:
 - `/PRMetrics.Size`: A string representing the size indicator, e.g. `XS`.
 - `/PRMetrics.TestCoverage`: A Boolean value indicating whether the test
   coverage is deemed sufficient. If no test coverage is expected (i.e. if the
-  test factor parameter is set to `0.0`), this property will not be present.
+  test factor input is set to `0.0`), this property will not be present.
 - `/PRMetrics.ProductCode`: An integer indicating the number of lines of product
   code added via the PR.
 - `/PRMetrics.TestCode`: An integer indicating the number of lines of test
@@ -59,8 +59,8 @@ extensions as desired:
   and `/PRMetrics.TestCode`.
 - `/PRMetrics.Ignored`: An integer indicating the number of lines of ignored
   code added via the PR. This includes files ignored through the use of the code
-  matching patterns parameter, as well as those files whose extensions resulted
-  in their being ignored.
+  matching patterns input, as well as those files whose extensions resulted in
+  their being ignored.
 - `/PRMetrics.Total`: An integer indicating the total number of lines of code
   added via the PR. This is the sum of `/PRMetrics.Subtotal` and
   `/PRMetrics.Ignored`.
@@ -98,9 +98,9 @@ after code check out is complete. Running the task early in the build process
 allows for the title to be updated quickly, avoiding the need for engineers to
 wait a long time for the title update.
 
-### Parameters
+### Inputs
 
-The task parameters are:
+The task inputs are:
 
 - **Base Size:** The maximum number of new lines in a small PR. If left blank,
   a default of `250` will be used.
@@ -124,7 +124,7 @@ The task parameters are:
 
 ### YAML
 
-The default parameter values are expected to be appropriate for most builds.
+The default input values are expected to be appropriate for most builds.
 Therefore, the following YAML definition is recommended:
 
 ```YAML
@@ -134,7 +134,7 @@ steps:
   continueOnError: true
 ```
 
-If you want to modify the inputs, YAML akin the to the following can be used:
+If you wish to modify the inputs, YAML akin the to the following can be used:
 
 ```YAML
 steps:
@@ -215,14 +215,14 @@ should combine with the unit tests to provide a high level of coverage.
 1. Make your build task a [requirement for a custom branch][docsbranch], and
    create a PR against that branch. In the PR:
    - create `file.ts` with 10 lines
-   - create `fileTest.cs` with 20 lines
+   - create `fileTest.cs` with 30 lines
    - create `file.ignored` with 30 lines
    - rename an existing file in the repo to `temporary1.ts`
-   - rename an existing file in the repo to `temporary2.ts`
+   - rename an existing file in the repo to `temporary2.ts`, keeping the file
+     in its original folder
    - add 5 lines to `temporary2.ts`
-   Leave the description blank. After creating the PR, check the status of the
-   build task. It should fail with an error as the OAuth token cannot be
-   accessed.
+   Clear the description. After creating the PR, check the status of the build
+   task. It should fail with an error as the OAuth token cannot be accessed.
 1. Modify the build task definition to provide
    [access to the OAuth token][docsoauth]. Go back to your PR and click
    "Re-queue" next to the build failure. This time, the task should succeed. The
@@ -231,47 +231,47 @@ should combine with the unit tests to provide a high level of coverage.
    the metrics comment should be added to the PR with the following details:
    - :heavy_check_mark: Thanks for keeping your pull request small.
    - :heavy_check_mark: Thanks for adding tests.
-   - Product code: 15
-   - Test code: 20
-   - Subtotal: 35
+   - Product code: 16
+   - Test code: 30
+   - Subtotal: 46
    - Ignored: 30
-   - Total: 65
+   - Total: 76
    The metrics comment thread should be closed.
-1. Modify the build task definition to change the parameters to the following:
-   - Base size: 1
-   - Growth rate: 1
+1. Modify the build task definition to change the inputs to the following:
+   - Base size: 2
+   - Growth rate: 2
    - Test factor: 100
    - File matching patterns: \*\*/file*
    - Code file extensions: ts
    Push a new change to the build, adding 1 more line to `file.ignored`. The
    build will re-run and you should see the title prefix updated to
-   "XL:warning: :black_small_square:". A new comment corresponding to the new
+   "L:warning: :black_small_square:". A new comment corresponding to the new
    iteration will be added to the thread, which should have the following
    details:
-   - :x: Try to keep pull requests smaller than 1 lines of new product code by
+   - :x: Try to keep pull requests smaller than 2 lines of new product code by
      following the Single Responsibility Principle (SRP).
    - :warning: Consider adding additional tests.
    - Product code: 10
    - Test code: 0
    - Subtotal: 10
-   - Ignored: 56
-   - Total: 66
+   - Ignored: 67
+   - Total: 77
    The metrics comment thread should be active. `temporary1.ts` and
-   temporary2.ts` should both include the closed comment
+   `temporary2.ts` should both include the closed comment
    ":exclamation: This file may not need to be reviewed."
-1. Modify the build task definition to change the "test factor" parameter to "0"
+1. Modify the build task definition to change the "test factor" input to "0"
    (not blank). Push a new change to the build, adding 1 more line to
    `file.ignored`. The build will re-run and you should see the title prefix
-   updated to "XL :black_small_square:". A new comment corresponding to the new
+   updated to "L :black_small_square:". A new comment corresponding to the new
    iteration will be added to the thread, which should have the following
    details:
-   - :x: Try to keep pull requests smaller than 1 lines of new product code by
+   - :x: Try to keep pull requests smaller than 2 lines of new product code by
      following the Single Responsibility Principle (SRP).
    - Product code: 10
    - Test code: 0
    - Subtotal: 10
-   - Ignored: 57
-   - Total: 67
+   - Ignored: 68
+   - Total: 78
    The metrics comment thread should be active.
 1. Without pushing addition changes, go back to your PR and click "Re-queue"
    next to the build. The build should success but no changes should be made to
@@ -289,8 +289,8 @@ outputted by default irrespective of the value of the `system.debug` variable.
 
 ## Default Code File Extensions
 
-The default value for the Code File Extensions parameter outlined
-[above](#parameters) is:
+The default value for the Code File Extensions input outlined
+[above](#inputs) is:
 
 ```Text
 ada

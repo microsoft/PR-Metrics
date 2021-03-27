@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { Comment, CommentPosition, CommentThreadStatus, GitPullRequest, GitPullRequestCommentThread, GitPullRequestIteration } from 'azure-devops-node-api/interfaces/GitInterfaces'
+import { Comment, CommentThreadStatus, GitPullRequest, GitPullRequestCommentThread, GitPullRequestIteration } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import { IGitApi } from 'azure-devops-node-api/GitApi'
 import { IRequestHandler } from 'azure-devops-node-api/interfaces/common/VsoBaseInterfaces'
 import { JsonPatchOperation, Operation } from 'azure-devops-node-api/interfaces/common/VSSInterfaces'
@@ -22,10 +22,9 @@ export default class AzureReposInvoker {
   private _taskLibWrapper: TaskLibWrapper
   private _gitApi: IGitApi | undefined
 
-  private _baseUri: string = process.env.SYSTEM_TEAMFOUNDATIONCOLLECTIONURI!
-  private _project: string = process.env.SYSTEM_TEAMPROJECT!
-  private _repositoryId: string = process.env.BUILD_REPOSITORY_ID!
-  private _pullRequestId: number = parseInt(process.env.SYSTEM_PULLREQUEST_PULLREQUESTID!)
+  private _project: string = ''
+  private _repositoryId: string = ''
+  private _pullRequestId: number = 0
 
   /**
    * Initializes a new instance of the `AzureReposInvoker` class.
@@ -147,10 +146,9 @@ export default class AzureReposInvoker {
    * @param commentContent The text of the new comment.
    * @param status The status to which to the set the comment thread.
    * @param fileName The file to which to add the comment. If this is unspecified, the comment will be created in the global pull request scope.
-   * @param withLinesAdded A value indicating whether lines have been added to `fileName`.
    * @returns A promise for awaiting the completion of the method call.
    */
-  public async createCommentThread (commentContent: string, status: CommentThreadStatus, fileName?: string, withLinesAdded?: boolean): Promise<void> {
+  public async createCommentThread (commentContent: string, status: CommentThreadStatus, fileName?: string): Promise<void> {
     this._taskLibWrapper.debug('* AzureReposInvoker.createCommentThread()')
 
     const gitApiPromise: Promise<IGitApi> = this.openConnection()
@@ -161,24 +159,15 @@ export default class AzureReposInvoker {
 
     if (fileName) {
       commentThread.threadContext = {
-        filePath: `/${fileName}`
-      }
-
-      const fileStart: CommentPosition = {
-        line: 1,
-        offset: 1
-      }
-      const fileEnd: CommentPosition = {
-        line: 1,
-        offset: 2
-      }
-
-      if (!withLinesAdded) {
-        commentThread.threadContext.leftFileStart = fileStart
-        commentThread.threadContext.leftFileEnd = fileEnd
-      } else {
-        commentThread.threadContext.rightFileStart = fileStart
-        commentThread.threadContext.rightFileEnd = fileEnd
+        filePath: `/${fileName}`,
+        rightFileStart: {
+          line: 1,
+          offset: 1
+        },
+        rightFileEnd: {
+          line: 1,
+          offset: 2
+        }
       }
     }
 
@@ -239,8 +228,15 @@ export default class AzureReposInvoker {
       return this._gitApi
     }
 
-    const authHandler: IRequestHandler = this._azureDevOpsApiWrapper.getPersonalAccessTokenHandler(process.env.SYSTEM_ACCESSTOKEN!)
-    const connection: WebApi = this._azureDevOpsApiWrapper.getWebApiInstance(this._baseUri, authHandler)
+    this._project = Validator.validateField(process.env.SYSTEM_TEAMPROJECT, 'SYSTEM_TEAMPROJECT', 'AzureReposInvoker.openConnection()')
+    this._repositoryId = Validator.validateField(process.env.BUILD_REPOSITORY_ID, 'BUILD_REPOSITORY_ID', 'AzureReposInvoker.openConnection()')
+    this._pullRequestId = Validator.validateField(parseInt(process.env.SYSTEM_PULLREQUEST_PULLREQUESTID!), 'SYSTEM_PULLREQUEST_PULLREQUESTID', 'AzureReposInvoker.openConnection()')
+
+    const accessToken: string = Validator.validateField(process.env.SYSTEM_ACCESSTOKEN, 'SYSTEM_ACCESSTOKEN', 'AzureReposInvoker.openConnection()')
+    const authHandler: IRequestHandler = this._azureDevOpsApiWrapper.getPersonalAccessTokenHandler(accessToken)
+
+    const defaultUrl: string = Validator.validateField(process.env.SYSTEM_TEAMFOUNDATIONCOLLECTIONURI, 'SYSTEM_TEAMFOUNDATIONCOLLECTIONURI', 'AzureReposInvoker.openConnection()')
+    const connection: WebApi = this._azureDevOpsApiWrapper.getWebApiInstance(defaultUrl, authHandler)
     this._gitApi = await connection.getGitApi()
 
     return this._gitApi

@@ -8,17 +8,14 @@ export default class PullRequestCommentsData {
   private _isMetricsCommentPresent: boolean = false
   private _metricsCommentThreadId: number | null = null
   private _metricsCommentId: number | null = null
-  private _ignoredFilesWithLinesAdded: string[] = []
-  private _ignoredFilesWithoutLinesAdded: string[] = []
+  private _ignoredFiles: string[] = []
 
   /**
    * Initializes a new instance of the `PullRequestCommentsData` class.
-   * @param ignoredFilesWithLinesAdded The collection of ignored files with added lines.
-   * @param ignoredFilesWithoutLinesAdded The collection of ignored files without added lines.
+   * @param ignoredFiles The collection of ignored files.
    */
-  public constructor (ignoredFilesWithLinesAdded: string[], ignoredFilesWithoutLinesAdded: string[]) {
-    this._ignoredFilesWithLinesAdded = ignoredFilesWithLinesAdded
-    this._ignoredFilesWithoutLinesAdded = ignoredFilesWithoutLinesAdded
+  public constructor (ignoredFiles: string[]) {
+    this._ignoredFiles = ignoredFiles
   }
 
   /**
@@ -70,34 +67,18 @@ export default class PullRequestCommentsData {
   }
 
   /**
-   * Gets the collection of ignored files with added lines.
-   * @returns The collection of ignored files with added lines.
+   * Gets the collection of ignored files.
+   * @returns The collection of ignored files.
    */
-  public get ignoredFilesWithLinesAdded (): string[] {
-    return this._ignoredFilesWithLinesAdded
+  public get ignoredFiles (): string[] {
+    return this._ignoredFiles
   }
 
   /**
-   * Sets the collection of ignored files with added lines.
-   * @param value The collection of ignored files with added lines.
+   * Sets the collection of ignored files.
+   * @param value The collection of ignored files.
    */
-  public set ignoredFilesWithLinesAdded (value: string[]) {
-    this._ignoredFilesWithLinesAdded = value
-  }
-
-  /**
-   * Gets the collection of ignored files without added lines.
-   * @returns The collection of ignored files without added lines.
-   */
-  public get ignoredFilesWithoutLinesAdded (): string[] {
-    return this._ignoredFilesWithoutLinesAdded
-  }
-
-  /**
-   * Sets the collection of ignored files without added lines.
-   * @param value The collection of ignored files without added lines.
-   */
-  public set ignoredFilesWithoutLinesAdded (value: string[]) {
-    this._ignoredFilesWithoutLinesAdded = value
+  public set ignoredFiles (value: string[]) {
+    this._ignoredFiles = value
   }
 }

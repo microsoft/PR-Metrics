@@ -133,7 +133,7 @@ describe('codeMetricsCalculator.ts', (): void => {
     it('should succeed when no comment updates are necessary', async (): Promise<void> => {
       // Arrange
       when(azureReposInvoker.getCurrentIteration()).thenResolve(1)
-      const commentData: PullRequestCommentsData = new PullRequestCommentsData([], [])
+      const commentData: PullRequestCommentsData = new PullRequestCommentsData([])
       commentData.isMetricsCommentPresent = true
       when(pullRequestComments.getCommentData(1)).thenResolve(commentData)
       const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(codeMetrics), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
@@ -148,7 +148,7 @@ describe('codeMetricsCalculator.ts', (): void => {
     it('should perform the expected actions when the metrics comment is to be updated', async (): Promise<void> => {
       // Arrange
       when(azureReposInvoker.getCurrentIteration()).thenResolve(1)
-      const commentData: PullRequestCommentsData = new PullRequestCommentsData([], [])
+      const commentData: PullRequestCommentsData = new PullRequestCommentsData([])
       commentData.metricsCommentThreadId = 1
       commentData.metricsCommentId = 2
       when(pullRequestComments.getCommentData(1)).thenResolve(commentData)
@@ -204,7 +204,7 @@ describe('codeMetricsCalculator.ts', (): void => {
     it('should perform the expected actions when the metrics comment is to be updated and test coverage is excluded', async (): Promise<void> => {
       // Arrange
       when(azureReposInvoker.getCurrentIteration()).thenResolve(1)
-      const commentData: PullRequestCommentsData = new PullRequestCommentsData([], [])
+      const commentData: PullRequestCommentsData = new PullRequestCommentsData([])
       commentData.metricsCommentThreadId = 1
       commentData.metricsCommentId = 2
       when(pullRequestComments.getCommentData(1)).thenResolve(commentData)
@@ -256,7 +256,7 @@ describe('codeMetricsCalculator.ts', (): void => {
     it('should perform the expected actions when the metrics comment is to be updated and there is no existing thread', async (): Promise<void> => {
       // Arrange
       when(azureReposInvoker.getCurrentIteration()).thenResolve(1)
-      const commentData: PullRequestCommentsData = new PullRequestCommentsData([], [])
+      const commentData: PullRequestCommentsData = new PullRequestCommentsData([])
       when(pullRequestComments.getCommentData(1)).thenResolve(commentData)
       when(pullRequestComments.getMetricsComment(1)).thenReturn('Description')
       when(pullRequestComments.getMetricsCommentStatus()).thenReturn(CommentThreadStatus.Active)
@@ -308,17 +308,15 @@ describe('codeMetricsCalculator.ts', (): void => {
 
     async.each(
       [
-        [['file1.ts'], [], 1, 0, 0, 0],
-        [['file1.ts', 'file2.ts'], [], 1, 1, 0, 0],
-        [[], ['file3.ts'], 0, 0, 1, 0],
-        [[], ['file3.ts', 'file4.ts'], 0, 0, 1, 1],
-        [['file1.ts'], ['file3.ts'], 1, 0, 1, 0],
-        [['file1.ts', 'file2.ts'], ['file3.ts', 'file4.ts'], 1, 1, 1, 1]
-      ], (data: [string[], string[], number, number, number, number]): void => {
-        it(`should succeed when comments are to be added to ignored files '${JSON.stringify(data[0])}' and '${JSON.stringify(data[1])}'`, async (): Promise<void> => {
+        [['file1.ts'], 1, 0],
+        [['file1.ts', 'file2.ts'], 1, 1],
+        [[], 0, 0],
+        [['file1.ts', 'file2.ts'], 1, 1]
+      ], (data: [string[], number, number]): void => {
+        it(`should succeed when comments are to be added to ignored files '${JSON.stringify(data[0])}'`, async (): Promise<void> => {
           // Arrange
           when(azureReposInvoker.getCurrentIteration()).thenResolve(1)
-          const commentData: PullRequestCommentsData = new PullRequestCommentsData(data[0], data[1])
+          const commentData: PullRequestCommentsData = new PullRequestCommentsData(data[0])
           commentData.isMetricsCommentPresent = true
           when(pullRequestComments.getCommentData(1)).thenResolve(commentData)
           when(pullRequestComments.ignoredComment).thenReturn('Ignored')
@@ -329,11 +327,9 @@ describe('codeMetricsCalculator.ts', (): void => {
 
           // Assert
           verify(taskLibWrapper.debug('* CodeMetricsCalculator.updateComments()')).once()
-          verify(taskLibWrapper.debug('* CodeMetricsCalculator.updateIgnoredComment()')).times(data[2] + data[3] + data[4] + data[5])
-          verify(azureReposInvoker.createCommentThread('Ignored', CommentThreadStatus.Closed, 'file1.ts', true)).times(data[2])
-          verify(azureReposInvoker.createCommentThread('Ignored', CommentThreadStatus.Closed, 'file2.ts', true)).times(data[3])
-          verify(azureReposInvoker.createCommentThread('Ignored', CommentThreadStatus.Closed, 'file3.ts', false)).times(data[4])
-          verify(azureReposInvoker.createCommentThread('Ignored', CommentThreadStatus.Closed, 'file4.ts', false)).times(data[5])
+          verify(taskLibWrapper.debug('* CodeMetricsCalculator.updateIgnoredComment()')).times(data[1] + data[2])
+          verify(azureReposInvoker.createCommentThread('Ignored', CommentThreadStatus.Closed, 'file1.ts')).times(data[1])
+          verify(azureReposInvoker.createCommentThread('Ignored', CommentThreadStatus.Closed, 'file2.ts')).times(data[2])
         })
       })
   })

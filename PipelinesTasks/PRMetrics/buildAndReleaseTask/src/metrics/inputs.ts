@@ -129,7 +129,7 @@ export default class Inputs {
     this._taskLibWrapper.debug('* Inputs.initializeGrowthRate()')
 
     const convertedValue: number = parseFloat(growthRate!)
-    if (!isNaN(convertedValue) && convertedValue >= 1.0) {
+    if (!isNaN(convertedValue) && convertedValue > 1.0) {
       this._growthRate = convertedValue
       this._consoleWrapper.log(this._taskLibWrapper.loc('metrics.inputs.settingGrowthRate', this._growthRate.toLocaleString()))
       return

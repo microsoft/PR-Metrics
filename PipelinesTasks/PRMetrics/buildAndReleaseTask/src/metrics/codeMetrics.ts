@@ -20,8 +20,7 @@ export default class CodeMetrics {
   private _taskLibWrapper: TaskLibWrapper;
 
   private _isInitialized: boolean = false
-  private _ignoredFilesWithLinesAdded: string[] = []
-  private _ignoredFilesWithoutLinesAdded: string[] = []
+  private _ignoredFiles: string[] = []
   private _size: string = ''
   private _sizeIndicator: string = ''
   private _metrics: CodeMetricsData = new CodeMetricsData(0, 0, 0)
@@ -40,25 +39,14 @@ export default class CodeMetrics {
   }
 
   /**
-   * Gets the collection of ignored files with added lines.
-   * @returns The collection of ignored files with added lines.
+   * Gets the collection of ignored files.
+   * @returns The collection of ignored files.
    */
-  public get ignoredFilesWithLinesAdded (): string[] {
-    this._taskLibWrapper.debug('* CodeMetrics.ignoredFilesWithLinesAdded')
+  public get ignoredFiles (): string[] {
+    this._taskLibWrapper.debug('* CodeMetrics.ignoredFiles')
 
     this.initialize()
-    return this._ignoredFilesWithLinesAdded
-  }
-
-  /**
-   * Gets the collection of ignored files without added lines.
-   * @returns The collection of ignored files without added lines.
-   */
-  public get ignoredFilesWithoutLinesAdded (): string[] {
-    this._taskLibWrapper.debug('* CodeMetrics.ignoredFilesWithoutLinesAdded')
-
-    this.initialize()
-    return this._ignoredFilesWithoutLinesAdded
+    return this._ignoredFiles
   }
 
   /**
@@ -176,28 +164,20 @@ export default class CodeMetrics {
     let ignoredCode: number = 0
 
     matches.forEach((entry: ICodeFileMetric): void => {
-      if (entry.linesAdded) {
-        if (/.*test.*/i.test(entry.fileName)) {
-          testCode += entry.linesAdded
-        } else {
-          productCode += entry.linesAdded
-        }
+      if (/.*test.*/i.test(entry.fileName)) {
+        testCode += entry.linesAdded
+      } else {
+        productCode += entry.linesAdded
       }
     })
 
     nonMatchesWithComment.forEach((entry: ICodeFileMetric): void => {
-      if (entry.linesAdded) {
-        ignoredCode += entry.linesAdded
-        this._ignoredFilesWithLinesAdded.push(entry.fileName)
-      } else {
-        this._ignoredFilesWithoutLinesAdded.push(entry.fileName)
-      }
+      ignoredCode += entry.linesAdded
+      this._ignoredFiles.push(entry.fileName)
     })
 
     nonMatchesWithoutComment.forEach((entry: ICodeFileMetric): void => {
-      if (entry.linesAdded) {
-        ignoredCode += entry.linesAdded
-      }
+      ignoredCode += entry.linesAdded
     })
 
     this._metrics = new CodeMetricsData(productCode, testCode, ignoredCode)
@@ -207,25 +187,27 @@ export default class CodeMetrics {
     this._taskLibWrapper.debug('* CodeMetrics.createFileMetricsMap()')
 
     // Condense file and folder names that were renamed e.g. F{a => i}leT{b => e}st.d{c => l}l".
-    const lines: string[] = input.split('\n').map(line => line.replace(/{.*? => ([^}]+?)}/g, '$1'))
+    const lines: string[] = input.split('\n')
 
     const result: ICodeFileMetric[] = []
     lines.forEach((line: string): void => {
-      const elements: string[] = line.split(/\s+/)
+      const elements: string[] = line.split('\t')
       if (elements.length !== 3) {
         throw RangeError(`The number of elements '${elements.length}' in '${line}' did not match the expected 3.`)
       }
 
-      let linesAddedNumber: number | null = null
-      if (elements[0] !== '-') {
-        linesAddedNumber = parseInt(elements[0]!)
-        if (isNaN(linesAddedNumber)) {
-          throw Error(`Could not parse '${elements[0]}' from line '${line}'.`)
-        }
+      // Condense file and folder names that were renamed e.g. "F{a => i}leT{b => e}st.d{c => l}l" or "FaleTbst.dcl => FileTest.dll".
+      const fileName: string = elements[2]!
+        .replace(/{.*? => ([^}]+?)}/g, '$1')
+        .replace(/.*? => ([^}]+?)/g, '$1')
+
+      const linesAddedNumber: number = parseInt(elements[0]!)
+      if (isNaN(linesAddedNumber)) {
+        throw Error(`Could not parse '${elements[0]}' from line '${line}'.`)
       }
 
       result.push({
-        fileName: elements[2]!,
+        fileName: fileName,
         linesAdded: linesAddedNumber
       })
     })

@@ -53,7 +53,7 @@ export default class PullRequestComments {
   public async getCommentData (currentIteration: number): Promise<PullRequestCommentsData> {
     this._taskLibWrapper.debug('* PullRequestComments.getCommentData()')
 
-    let result: PullRequestCommentsData = new PullRequestCommentsData(this._codeMetrics.ignoredFilesWithLinesAdded, this._codeMetrics.ignoredFilesWithoutLinesAdded)
+    let result: PullRequestCommentsData = new PullRequestCommentsData(this._codeMetrics.ignoredFiles)
 
     const commentThreads: GitPullRequestCommentThread[] = await this._azureReposInvoker.getCommentThreads()
     for (let i: number = 0; i < commentThreads.length; i++) {
@@ -70,15 +70,10 @@ export default class PullRequestComments {
 
         const fileName: string = filePath.substring(1)
 
-        const withLinesAddedIndex: number = this._codeMetrics.ignoredFilesWithLinesAdded.indexOf(fileName)
-        if (withLinesAddedIndex !== -1) {
-          result.ignoredFilesWithLinesAdded = this.getIgnoredCommentData(result.ignoredFilesWithLinesAdded, withLinesAddedIndex, commentThread, i)
+        const index: number = this._codeMetrics.ignoredFiles.indexOf(fileName)
+        if (index !== -1) {
+          result.ignoredFiles = this.getIgnoredCommentData(result.ignoredFiles, index, commentThread, i)
           continue
-        }
-
-        const withoutLinesAddedIndex: number = this._codeMetrics.ignoredFilesWithoutLinesAdded.indexOf(fileName)
-        if (withoutLinesAddedIndex !== -1) {
-          result.ignoredFilesWithoutLinesAdded = this.getIgnoredCommentData(result.ignoredFilesWithoutLinesAdded, withoutLinesAddedIndex, commentThread, i)
         }
       }
     }

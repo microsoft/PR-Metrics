@@ -289,12 +289,13 @@ describe('inputs.ts', (): void => {
         [
           '0',
           '0.5',
+          '1',
           '-2',
           '-1.2',
           '-5',
           '0.9999999999'
         ], (growthRate: string): void => {
-          it(`should set the default when the input '${growthRate}' is less than 1.0`, (): void => {
+          it(`should set the default when the input '${growthRate}' is less than or equal to 1.0`, (): void => {
             // Arrange
             when(taskLibWrapper.getInput('GrowthRate', false)).thenReturn(growthRate)
 
@@ -329,14 +330,13 @@ describe('inputs.ts', (): void => {
           '5',
           '2.0',
           '1000',
-          '1',
           '1.001',
           '1.2',
           '1.0000000001',
           '1.09',
           '7'
         ], (growthRate: string): void => {
-          it(`should set the converted value when the input '${growthRate}' is greater than or equal to 1.0`, (): void => {
+          it(`should set the converted value when the input '${growthRate}' is greater than 1.0`, (): void => {
             // Arrange
             when(taskLibWrapper.getInput('GrowthRate', false)).thenReturn(growthRate)
 

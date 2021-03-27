@@ -94,19 +94,19 @@
   "loc.messages.metrics.inputs.disablingTestFactor": "Disabling test factor validation.",
   "loc.messages.metrics.inputs.disablingTestFactor.comment": "The message printed when the test factor validation is being disabled.",
 
-  "loc.messages.metrics.inputs.settingBaseSize": "Settings base size input to %s.",
+  "loc.messages.metrics.inputs.settingBaseSize": "Setting base size input to %s.",
   "loc.messages.metrics.inputs.settingBaseSize.comment": "The message printed when the base size input is being set to the user-provided value. The placeholder will be replaced by the default value.",
 
-  "loc.messages.metrics.inputs.settingCodeFileExtensions": "Settings code file extensions input to %s.",
+  "loc.messages.metrics.inputs.settingCodeFileExtensions": "Setting code file extensions input to %s.",
   "loc.messages.metrics.inputs.settingCodeFileExtensions.comment": "The message printed when the code file extensions input is set to the user-provided value. The placeholder will be replaced by the default value.",
 
-  "loc.messages.metrics.inputs.settingFileMatchingPatterns": "Settings file matching patterns input to %s.",
+  "loc.messages.metrics.inputs.settingFileMatchingPatterns": "Setting file matching patterns input to %s.",
   "loc.messages.metrics.inputs.settingFileMatchingPatterns.comment": "The message printed when the file matching patterns input is set to the user-provided value. The placeholder will be replaced by the default value.",
 
-  "loc.messages.metrics.inputs.settingGrowthRate": "Settings growth rate input to %s.",
+  "loc.messages.metrics.inputs.settingGrowthRate": "Setting growth rate input to %s.",
   "loc.messages.metrics.inputs.settingGrowthRate.comment": "The message printed when the growth rate input is set to the user-provided value. The placeholder will be replaced by the default value.",
 
-  "loc.messages.metrics.inputs.settingTestFactor": "Settings test factor input to %s.",
+  "loc.messages.metrics.inputs.settingTestFactor": "Setting test factor input to %s.",
   "loc.messages.metrics.inputs.settingTestFactor.comment": "The message printed when the test factor input is set to the user-provided value. The placeholder will be replaced by the default value.",
 
   "loc.messages.pullRequests.pullRequest.addDescription": "❌ **Add a description.**",
