@@ -91,17 +91,12 @@ To deploy the task:
 The task can be added to a pipeline as detailed [here][addingtask].
 
 The agent running the task must allow access to the OAuth token. If access is
-unavailable, the task will generate a warning.
+unavailable, the task will generate an error.
 
-It is recommended to add a custom run condition of
-`and(succeeded(), eq(variables['Build.Reason'], 'PullRequest'))`. If the task is
-not run via a pull request, it will generate a warning. Adding this condition
-avoids the warning.
-
-It is also recommended to run the task as one of the first operations in your
-build, after code check out is complete. Running the task early in the build
-process allows for the title to be updated quickly, avoiding the need for
-engineers to wait a long time for the title update.
+It is recommended to run the task as one of the first operations in your build,
+after code check out is complete. Running the task early in the build process
+allows for the title to be updated quickly, avoiding the need for engineers to
+wait a long time for the title update.
 
 ### Parameters
 
@@ -129,9 +124,17 @@ The task parameters are:
 
 ### YAML
 
-Sample YAML for adding the task is as follows. The default parameter values are
-expected to be appropriate for most repos. Therefore, the `inputs` can typically
-be excluded.
+The default parameter values are expected to be appropriate for most builds.
+Therefore, the following YAML definition is recommended:
+
+```YAML
+steps:
+- task: ms-omex.prmetrics.prmetrics.PRMetrics@1
+  displayName: 'PR Metrics'
+  continueOnError: true
+```
+
+If you want to modify the inputs, YAML akin the to the following can be used:
 
 ```YAML
 steps:
@@ -148,7 +151,6 @@ steps:
       cs
       ps1
   continueOnError: true
-  condition: and(succeeded(), eq(variables['Build.Reason'], 'PullRequest'))
 ```
 
 ## Implementation

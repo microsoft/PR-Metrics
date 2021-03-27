@@ -22,6 +22,8 @@ describe('index.ts', (): void => {
     expect(task.warningIssues).to.deep.equal([])
     expect(task.errorIssues).to.deep.equal([])
     expect(task.stdout.endsWith(`##vso[task.complete result=Skipped;]loc_mock_metrics.codeMetricsCalculator.noPullRequest${os.EOL}`)).to.equal(true)
+
+    // Finalization
     done()
   })
 
@@ -42,6 +44,31 @@ describe('index.ts', (): void => {
 
     // Finalization
     delete process.env.SYSTEM_PULLREQUEST_PULLREQUESTID
+    done()
+  })
+
+  it('should succeed when server access is skipped', function test (done: mocha.Done): void {
+    // Arrange
+    this.timeout(0)
+    process.env.SYSTEM_PULLREQUEST_PULLREQUESTID = '12345'
+    process.env.SYSTEM_ACCESSTOKEN = '12345'
+    process.env.PRMETRICS_SKIP_APIS = 'true'
+    const file: string = path.join(__dirname, 'index.task.js')
+    const task: taskLibMock.MockTestRunner = new taskLibMock.MockTestRunner(file)
+
+    // Act
+    task.run()
+
+    // Assert
+    expect(task.succeeded).to.equal(true)
+    expect(task.warningIssues).to.deep.equal([])
+    expect(task.errorIssues).to.deep.equal([])
+    expect(task.stdout.endsWith(`##vso[task.complete result=Succeeded;]loc_mock_index.succeeded${os.EOL}`)).to.equal(true)
+
+    // Finalization
+    delete process.env.SYSTEM_PULLREQUEST_PULLREQUESTID
+    delete process.env.SYSTEM_ACCESSTOKEN
+    delete process.env.PRMETRICS_SKIP_APIS
     done()
   })
 

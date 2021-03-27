@@ -5,7 +5,7 @@ import 'reflect-metadata'
 import { container } from 'tsyringe'
 import * as path from 'path'
 import * as taskLib from 'azure-pipelines-task-lib/task'
-import CodeMetricsCalculator from './metrics/codeMetricsCalculator'
+import CodeMetricsCalculator from './src/metrics/codeMetricsCalculator'
 
 async function run (): Promise<void> {
   try {
@@ -25,10 +25,12 @@ async function run (): Promise<void> {
       return
     }
 
-    await Promise.all([
-      codeMetricsCalculator.updateDetails(),
-      codeMetricsCalculator.updateComments()
-    ])
+    if (!process.env.PRMETRICS_SKIP_APIS) {
+      await Promise.all([
+        codeMetricsCalculator.updateDetails(),
+        codeMetricsCalculator.updateComments()
+      ])
+    }
 
     taskLib.setResult(taskLib.TaskResult.Succeeded, taskLib.loc('index.succeeded'))
   } catch (error) {

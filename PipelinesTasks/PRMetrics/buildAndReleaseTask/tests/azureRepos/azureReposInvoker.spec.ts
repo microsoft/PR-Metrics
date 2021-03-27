@@ -10,11 +10,11 @@ import { IRequestHandler } from 'azure-devops-node-api/interfaces/common/VsoBase
 import { JsonPatchDocument, Operation } from 'azure-devops-node-api/interfaces/common/VSSInterfaces'
 import { resolvableInstance } from '../testUtilities/resolvableInstance'
 import { WebApi } from 'azure-devops-node-api'
-import AzureDevOpsApiWrapper from '../../wrappers/azureDevOpsApiWrapper'
-import AzureReposInvoker from '../../azureRepos/azureReposInvoker'
-import IPullRequestDetails from '../../azureRepos/iPullRequestDetails'
-import IPullRequestMetadata from '../../azureRepos/iPullRequestMetadata'
-import TaskLibWrapper from '../../wrappers/taskLibWrapper'
+import AzureDevOpsApiWrapper from '../../src/wrappers/azureDevOpsApiWrapper'
+import AzureReposInvoker from '../../src/azureRepos/azureReposInvoker'
+import IPullRequestDetails from '../../src/azureRepos/iPullRequestDetails'
+import IPullRequestMetadata from '../../src/azureRepos/iPullRequestMetadata'
+import TaskLibWrapper from '../../src/wrappers/taskLibWrapper'
 
 describe('azureReposInvoker.ts', function (): void {
   let gitApi: IGitApi

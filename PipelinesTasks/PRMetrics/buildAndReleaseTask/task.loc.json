@@ -8,7 +8,7 @@
   "helpMarkDown": "ms-resource:loc.helpMarkDown",
   "author": "Microsoft Corporation",
   "category": "Azure Pipelines",
-  "minimumAgentVersion": "2.141.0",
+  "minimumAgentVersion": "1.95.1",
   "version": {
     "Major": 1,
     "Minor": 1,

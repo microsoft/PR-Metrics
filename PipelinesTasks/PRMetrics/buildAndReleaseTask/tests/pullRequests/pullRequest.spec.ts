@@ -5,9 +5,9 @@ import 'reflect-metadata'
 import { expect } from 'chai'
 import { instance, mock, verify, when } from 'ts-mockito'
 import async from 'async'
-import CodeMetrics from '../../metrics/codeMetrics'
-import PullRequest from '../../pullRequests/pullRequest'
-import TaskLibWrapper from '../../wrappers/taskLibWrapper'
+import CodeMetrics from '../../src/metrics/codeMetrics'
+import PullRequest from '../../src/pullRequests/pullRequest'
+import TaskLibWrapper from '../../src/wrappers/taskLibWrapper'
 
 describe('pullRequest.ts', (): void => {
   let codeMetrics: CodeMetrics

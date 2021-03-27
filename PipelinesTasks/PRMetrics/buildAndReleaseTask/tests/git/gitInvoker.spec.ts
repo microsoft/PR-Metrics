@@ -6,8 +6,8 @@ import { expect } from 'chai'
 import { IExecSyncResult } from 'azure-pipelines-task-lib/toolrunner'
 import { instance, mock, verify, when } from 'ts-mockito'
 import ExecSyncResult from '../wrappers/execSyncResult'
-import GitInvoker from '../../git/gitInvoker'
-import TaskLibWrapper from '../../wrappers/taskLibWrapper'
+import GitInvoker from '../../src/git/gitInvoker'
+import TaskLibWrapper from '../../src/wrappers/taskLibWrapper'
 
 describe('gitInvoker.ts', (): void => {
   describe('getDiffSummary()', (): void => {

@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 import { expect } from 'chai'
-import { Validator } from '../../utilities/validator'
+import { Validator } from '../../src/utilities/validator'
 import async from 'async'
 
 describe('validator.ts', (): void => {

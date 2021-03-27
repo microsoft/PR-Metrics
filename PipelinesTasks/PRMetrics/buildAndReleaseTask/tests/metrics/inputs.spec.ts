@@ -3,12 +3,12 @@
 
 import 'reflect-metadata'
 import { expect } from 'chai'
-import { InputsDefault } from '../../metrics/inputsDefault'
+import { InputsDefault } from '../../src/metrics/inputsDefault'
 import { instance, mock, verify, when } from 'ts-mockito'
 import async from 'async'
-import ConsoleWrapper from '../../wrappers/consoleWrapper'
-import Inputs from '../../metrics/inputs'
-import TaskLibWrapper from '../../wrappers/taskLibWrapper'
+import ConsoleWrapper from '../../src/wrappers/consoleWrapper'
+import Inputs from '../../src/metrics/inputs'
+import TaskLibWrapper from '../../src/wrappers/taskLibWrapper'
 
 describe('inputs.ts', (): void => {
   const adjustingBaseSizeResource: string = `Adjusting base size input to ${InputsDefault.baseSize}`

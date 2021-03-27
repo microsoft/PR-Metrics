@@ -2,7 +2,7 @@
   "extends": "@istanbuljs/nyc-config-typescript",
   "exclude": [
     "tests/**/*",
-    "wrappers/**/*"
+    "src/wrappers/**/*"
   ],
   "check-coverage": true,
   "statements": 95,

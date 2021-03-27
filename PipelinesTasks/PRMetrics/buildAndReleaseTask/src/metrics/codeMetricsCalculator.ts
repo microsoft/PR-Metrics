@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
-import { singleton } from 'tsyringe'
+import { injectable } from 'tsyringe'
 import AzureReposInvoker from '../azureRepos/azureReposInvoker'
 import CodeMetrics from './codeMetrics'
 import CodeMetricsData from './codeMetricsData'
@@ -16,7 +16,7 @@ import TaskLibWrapper from '../wrappers/taskLibWrapper'
 /**
  * A class for calculating and updating the code metrics within pull requests.
  */
-@singleton()
+@injectable()
 export default class CodeMetricsCalculator {
   private _azureReposInvoker: AzureReposInvoker
   private _codeMetrics: CodeMetrics

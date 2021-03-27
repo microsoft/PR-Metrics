@@ -124,7 +124,7 @@ describe('resources.resjson', (): void => {
 
   it('should have the same number of placeholders across the TypeScript code and resources file', async (): Promise<void> => {
     // Arrange
-    const typeScriptFiles1: string[] = await glob(path.join(basePath, '!(node_modules|tests)**/*.ts'))
+    const typeScriptFiles1: string[] = await glob(path.join(basePath, '!(node_modules|tests)/**/*.ts'))
     const typeScriptFiles2: string[] = await glob(path.join(basePath, '*.ts'))
     const typeScriptFiles: string[] = typeScriptFiles1.concat(typeScriptFiles2)
     const typeScriptResources: Map<string, number> = new Map<string, number>()
