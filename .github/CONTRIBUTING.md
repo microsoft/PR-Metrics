@@ -45,22 +45,13 @@ The following instructions can be used for adding an extension.
 
 1. If instances of the extension category do not already exist in the repo,
    create a new folder for this category.
-1. Within the category folder, create a new folder with the name of the task.
-1. To start, copy the necessary files from one of the existing extensions. The
-   set of files can vary by extension type, but, in general, the following files
-   are required:
-   - `icon.png`: A PNG file of size 32×32 pixels with transparencies set
-     appropriately.
-   - `task.json`: The metadata describing the extension and its inputs. The file
-     also references the script files containing the extension logic.
-     Note that the `id` field must be a unique GUID.
-   - `vss-extension.json`: The metadata describing the extension, which will
-     be used for deploying the extension to the
-     [Marketplace](https://marketplace.visualstudio.com/azuredevops).
-   - `index.ts`: The TypeScript logic to run.
-1. Make the necessary changes to the scripts.
-1. Update `./OMEXAzureDevOpsExtensions.proj` as well as the `.proj` file in the
-   extension category folder.
+1. Within the category folder, create a new folder with the name of the extension.
+1. Follow the existing examples as well as the instructions at
+   [Microsoft Docs](https://docs.microsoft.com/azure/devops/extend/develop/add-build-task).
+1. Add your custom logic.
+1. Update the
+   [GitHub Actions](https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/tree/main/.github/workflows)
+   to reference your new extension.
 
 ## Documentation
 

@@ -741,6 +741,35 @@ describe('inputs.ts', (): void => {
         verify(consoleWrapper.log(settingCodeFileExtensionsResource)).once()
       })
 
+      it('should convert extensions to lower case', (): void => {
+        // Arrange
+        when(taskLibWrapper.getInput('CodeFileExtensions', false)).thenReturn('ADA\ncS\nTxT')
+
+        // Act
+        const inputs: Inputs = new Inputs(instance(consoleWrapper), instance(taskLibWrapper))
+
+        // Assert
+        expect(inputs.codeFileExtensions).to.deep.equal(new Set<string>(['ada', 'cs', 'txt']))
+        verify(taskLibWrapper.debug('* Inputs.initialize()')).once()
+        verify(taskLibWrapper.debug('* Inputs.initializeBaseSize()')).once()
+        verify(taskLibWrapper.debug('* Inputs.initializeGrowthRate()')).once()
+        verify(taskLibWrapper.debug('* Inputs.initializeTestFactor()')).once()
+        verify(taskLibWrapper.debug('* Inputs.initializeFileMatchingPatterns()')).once()
+        verify(taskLibWrapper.debug('* Inputs.initializeCodeFileExtensions()')).once()
+        verify(taskLibWrapper.debug('* Inputs.codeFileExtensions')).once()
+        verify(consoleWrapper.log(adjustingBaseSizeResource)).once()
+        verify(consoleWrapper.log(adjustingGrowthRateResource)).once()
+        verify(consoleWrapper.log(adjustingTestFactorResource)).once()
+        verify(consoleWrapper.log(adjustingFileMatchingPatternsResource)).once()
+        verify(consoleWrapper.log(adjustingCodeFileExtensionsResource)).never()
+        verify(consoleWrapper.log(disablingTestFactorResource)).never()
+        verify(consoleWrapper.log(settingBaseSizeResource)).never()
+        verify(consoleWrapper.log(settingGrowthRateResource)).never()
+        verify(consoleWrapper.log(settingTestFactorResource)).never()
+        verify(consoleWrapper.log(settingFileMatchingPatternsResource)).never()
+        verify(consoleWrapper.log(settingCodeFileExtensionsResource)).once()
+      })
+
       it('should remove . and * from extension names', (): void => {
         // Arrange
         when(taskLibWrapper.getInput('CodeFileExtensions', false)).thenReturn('*.ada\n.txt')

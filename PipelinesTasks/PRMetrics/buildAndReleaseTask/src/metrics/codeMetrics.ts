@@ -152,7 +152,7 @@ export default class CodeMetrics {
     this._taskLibWrapper.debug('* CodeMetrics.matchFileExtension()')
 
     const fileExtensionIndex: number = fileName.lastIndexOf('.')
-    const fileExtension: string = fileName.substring(fileExtensionIndex + 1)
+    const fileExtension: string = fileName.substring(fileExtensionIndex + 1).toLowerCase()
     return this._inputs.codeFileExtensions.has(fileExtension)
   }
 

@@ -20,11 +20,11 @@ import TaskLibWrapper from '../wrappers/taskLibWrapper'
 export default class AzureReposInvoker {
   private _azureDevOpsApiWrapper: AzureDevOpsApiWrapper
   private _taskLibWrapper: TaskLibWrapper
-  private _gitApi: IGitApi | undefined
 
   private _project: string = ''
   private _repositoryId: string = ''
   private _pullRequestId: number = 0
+  private _gitApi: IGitApi | undefined
 
   /**
    * Initializes a new instance of the `AzureReposInvoker` class.
@@ -53,11 +53,11 @@ export default class AzureReposInvoker {
   public async getTitleAndDescription (): Promise<IPullRequestDetails> {
     this._taskLibWrapper.debug('* AzureReposInvoker.getTitleAndDescription()')
 
-    const gitApi: IGitApi = await this.openConnection()
+    const gitApi: IGitApi = await this.initialize()
     const result: GitPullRequest = await gitApi.getPullRequestById(this._pullRequestId, this._project)
     this._taskLibWrapper.debug(JSON.stringify(result))
 
-    const title: string = Validator.validateField(result.title, 'title', 'AzureReposInvoker.getTitleAndDescription()')
+    const title: string = Validator.validate(result.title, 'title', 'AzureReposInvoker.getTitleAndDescription()')
     return {
       title: title,
       description: result.description
@@ -71,14 +71,14 @@ export default class AzureReposInvoker {
   public async getCurrentIteration (): Promise<number> {
     this._taskLibWrapper.debug('* AzureReposInvoker.getCurrentIteration()')
 
-    const gitApi: IGitApi = await this.openConnection()
+    const gitApi: IGitApi = await this.initialize()
     const result: GitPullRequestIteration[] = await gitApi.getPullRequestIterations(this._repositoryId, this._pullRequestId, this._project)
     this._taskLibWrapper.debug(JSON.stringify(result))
     if (result.length === 0) {
       throw RangeError('The collection of pull request iterations was of length zero.')
     }
 
-    return Validator.validateField(result[result.length - 1]!.id, 'id', 'AzureReposInvoker.getCurrentIteration()')
+    return Validator.validate(result[result.length - 1]!.id, 'id', 'AzureReposInvoker.getCurrentIteration()')
   }
 
   /**
@@ -88,7 +88,7 @@ export default class AzureReposInvoker {
   public async getCommentThreads (): Promise<GitPullRequestCommentThread[]> {
     this._taskLibWrapper.debug('* AzureReposInvoker.getCommentThreads()')
 
-    const gitApi: IGitApi = await this.openConnection()
+    const gitApi: IGitApi = await this.initialize()
     const result: GitPullRequestCommentThread[] = await gitApi.getThreads(this._repositoryId, this._pullRequestId, this._project)
     this._taskLibWrapper.debug(JSON.stringify(result))
     return result
@@ -107,7 +107,7 @@ export default class AzureReposInvoker {
       return
     }
 
-    const gitApiPromise: Promise<IGitApi> = this.openConnection()
+    const gitApiPromise: Promise<IGitApi> = this.initialize()
     const updatedGitPullRequest: GitPullRequest = {}
     if (title !== null) {
       updatedGitPullRequest.title = title
@@ -131,7 +131,7 @@ export default class AzureReposInvoker {
   public async createComment (commentContent: string, commentThreadId: number, parentCommentId: number): Promise<void> {
     this._taskLibWrapper.debug('* AzureReposInvoker.createComment()')
 
-    const gitApiPromise: Promise<IGitApi> = this.openConnection()
+    const gitApiPromise: Promise<IGitApi> = this.initialize()
     const comment: Comment = {
       content: commentContent,
       parentCommentId: parentCommentId
@@ -151,7 +151,7 @@ export default class AzureReposInvoker {
   public async createCommentThread (commentContent: string, status: CommentThreadStatus, fileName?: string): Promise<void> {
     this._taskLibWrapper.debug('* AzureReposInvoker.createCommentThread()')
 
-    const gitApiPromise: Promise<IGitApi> = this.openConnection()
+    const gitApiPromise: Promise<IGitApi> = this.initialize()
     const commentThread: GitPullRequestCommentThread = {
       comments: [{ content: commentContent }],
       status: status
@@ -184,7 +184,7 @@ export default class AzureReposInvoker {
   public async setCommentThreadStatus (commentThreadId: number, status: CommentThreadStatus): Promise<void> {
     this._taskLibWrapper.debug('* AzureReposInvoker.setCommentThreadStatus()')
 
-    const gitApiPromise: Promise<IGitApi> = this.openConnection()
+    const gitApiPromise: Promise<IGitApi> = this.initialize()
     const commentThread: GitPullRequestCommentThread = {
       status: status
     }
@@ -205,7 +205,7 @@ export default class AzureReposInvoker {
       throw RangeError('The collection of metadata was of length zero.')
     }
 
-    const gitApiPromise: Promise<IGitApi> = this.openConnection()
+    const gitApiPromise: Promise<IGitApi> = this.initialize()
     const jsonPatchDocumentValues: JsonPatchOperation[] = []
     metadata.forEach((datum: IPullRequestMetadata): void => {
       const operation: JsonPatchOperation = {
@@ -221,21 +221,21 @@ export default class AzureReposInvoker {
     this._taskLibWrapper.debug(JSON.stringify(result))
   }
 
-  private async openConnection (): Promise<IGitApi> {
-    this._taskLibWrapper.debug('* AzureReposInvoker.openConnection()')
+  private async initialize (): Promise<IGitApi> {
+    this._taskLibWrapper.debug('* AzureReposInvoker.initialize()')
 
     if (this._gitApi) {
       return this._gitApi
     }
 
-    this._project = Validator.validateField(process.env.SYSTEM_TEAMPROJECT, 'SYSTEM_TEAMPROJECT', 'AzureReposInvoker.openConnection()')
-    this._repositoryId = Validator.validateField(process.env.BUILD_REPOSITORY_ID, 'BUILD_REPOSITORY_ID', 'AzureReposInvoker.openConnection()')
-    this._pullRequestId = Validator.validateField(parseInt(process.env.SYSTEM_PULLREQUEST_PULLREQUESTID!), 'SYSTEM_PULLREQUEST_PULLREQUESTID', 'AzureReposInvoker.openConnection()')
+    this._project = Validator.validate(process.env.SYSTEM_TEAMPROJECT, 'SYSTEM_TEAMPROJECT', 'AzureReposInvoker.initialize()')
+    this._repositoryId = Validator.validate(process.env.BUILD_REPOSITORY_ID, 'BUILD_REPOSITORY_ID', 'AzureReposInvoker.initialize()')
+    this._pullRequestId = Validator.validate(parseInt(process.env.SYSTEM_PULLREQUEST_PULLREQUESTID!), 'SYSTEM_PULLREQUEST_PULLREQUESTID', 'AzureReposInvoker.initialize()')
 
-    const accessToken: string = Validator.validateField(process.env.SYSTEM_ACCESSTOKEN, 'SYSTEM_ACCESSTOKEN', 'AzureReposInvoker.openConnection()')
+    const accessToken: string = Validator.validate(process.env.SYSTEM_ACCESSTOKEN, 'SYSTEM_ACCESSTOKEN', 'AzureReposInvoker.initialize()')
     const authHandler: IRequestHandler = this._azureDevOpsApiWrapper.getPersonalAccessTokenHandler(accessToken)
 
-    const defaultUrl: string = Validator.validateField(process.env.SYSTEM_TEAMFOUNDATIONCOLLECTIONURI, 'SYSTEM_TEAMFOUNDATIONCOLLECTIONURI', 'AzureReposInvoker.openConnection()')
+    const defaultUrl: string = Validator.validate(process.env.SYSTEM_TEAMFOUNDATIONCOLLECTIONURI, 'SYSTEM_TEAMFOUNDATIONCOLLECTIONURI', 'AzureReposInvoker.initialize()')
     const connection: WebApi = this._azureDevOpsApiWrapper.getWebApiInstance(defaultUrl, authHandler)
     this._gitApi = await connection.getGitApi()
 

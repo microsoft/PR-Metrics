@@ -3,6 +3,7 @@
 
 import { IExecSyncResult } from 'azure-pipelines-task-lib/toolrunner'
 import { singleton } from 'tsyringe'
+import { Validator } from '../utilities/validator'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
 
 /**
@@ -35,11 +36,7 @@ export default class GitInvoker {
   private getTargetBranch (): string {
     this._taskLibWrapper.debug('* GitInvoker.getTargetBranch()')
 
-    const variable: string | undefined = process.env.SYSTEM_PULLREQUEST_TARGETBRANCH
-    if (variable === undefined) {
-      throw Error('Environment variable SYSTEM_PULLREQUEST_TARGETBRANCH undefined.')
-    }
-
+    const variable: string = Validator.validate(process.env.SYSTEM_PULLREQUEST_TARGETBRANCH, 'SYSTEM_PULLREQUEST_TARGETBRANCH', 'GitInvoker.getTargetBranch()')
     const expectedStart: string = 'refs/heads/'
     if (!variable.startsWith(expectedStart)) {
       throw Error(`Environment variable SYSTEM_PULLREQUEST_TARGETBRANCH '${variable}' in unexpected format.`)
@@ -52,12 +49,7 @@ export default class GitInvoker {
   private getPullRequestId (): string {
     this._taskLibWrapper.debug('* GitInvoker.getPullRequestId()')
 
-    const variable: string | undefined = process.env.SYSTEM_PULLREQUEST_PULLREQUESTID
-    if (variable === undefined) {
-      throw Error('Environment variable SYSTEM_PULLREQUEST_PULLREQUESTID undefined.')
-    }
-
-    return variable
+    return Validator.validate(process.env.SYSTEM_PULLREQUEST_PULLREQUESTID, 'SYSTEM_PULLREQUEST_PULLREQUESTID', 'GitInvoker.getPullRequestId()')
   }
 
   private invokeGit (parameters: string): string {

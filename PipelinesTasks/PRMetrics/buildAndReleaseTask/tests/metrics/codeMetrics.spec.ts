@@ -163,6 +163,7 @@ describe('codeMetrics.ts', (): void => {
       ['8000\t0\tfile.ts', '3XL', false, new CodeMetricsData(8000, 0, 0)],
       ['8000\t0\tfile.ts\n11999\t0\ttest.ts', '3XL', false, new CodeMetricsData(8000, 11999, 0)],
       ['8000\t0\tfile.ts\n12000\t0\ttest.ts', '3XL', true, new CodeMetricsData(8000, 12000, 0)],
+      ['1\t0\tfile.TS', 'XS', false, new CodeMetricsData(1, 0, 0)],
       ['0\t1\tfile.ts', 'XS', true, new CodeMetricsData(0, 0, 0)],
       ['1\t0\tfile.ignored', 'XS', true, new CodeMetricsData(0, 0, 1)],
       ['1\t0\tfile', 'XS', true, new CodeMetricsData(0, 0, 1)],

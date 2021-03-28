@@ -184,7 +184,7 @@ export default class Inputs {
           value = value.substring(1)
         }
 
-        this._codeFileExtensions.add(value)
+        this._codeFileExtensions.add(value.toLowerCase())
       })
       this._consoleWrapper.log(this._taskLibWrapper.loc('metrics.inputs.settingCodeFileExtensions', JSON.stringify(Array.from(this._codeFileExtensions))))
       return

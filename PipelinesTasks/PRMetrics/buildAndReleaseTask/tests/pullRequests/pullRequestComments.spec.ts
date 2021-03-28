@@ -256,7 +256,7 @@ describe('pullRequestComments.ts', (): void => {
           } catch (error) {
             // Assert
             errorThrown = true
-            expect(error.message).to.equal(`Field '${data[0]}', accessed within 'PullRequestComments.${data[1]}()', is invalid, null, or undefined 'undefined'.`)
+            expect(error.message).to.equal(`'${data[0]}', accessed within 'PullRequestComments.${data[1]}()', is invalid, null, or undefined 'undefined'.`)
           }
 
           expect(errorThrown).to.equal(true)

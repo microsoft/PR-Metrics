@@ -54,7 +54,7 @@ describe('gitInvoker.ts', (): void => {
       const func: () => string = () => gitInvoker.getDiffSummary()
 
       // Assert
-      expect(func).to.throw('Environment variable SYSTEM_PULLREQUEST_TARGETBRANCH undefined.')
+      expect(func).to.throw('\'SYSTEM_PULLREQUEST_TARGETBRANCH\', accessed within \'GitInvoker.getTargetBranch()\', is invalid, null, or undefined \'undefined\'.')
       verify(taskLibWrapper.debug('* GitInvoker.getDiffSummary()')).once()
       verify(taskLibWrapper.debug('* GitInvoker.getTargetBranch()')).once()
     })
@@ -82,7 +82,7 @@ describe('gitInvoker.ts', (): void => {
       const func: () => string = () => gitInvoker.getDiffSummary()
 
       // Assert
-      expect(func).to.throw('Environment variable SYSTEM_PULLREQUEST_PULLREQUESTID undefined.')
+      expect(func).to.throw('\'SYSTEM_PULLREQUEST_PULLREQUESTID\', accessed within \'GitInvoker.getPullRequestId()\', is invalid, null, or undefined \'undefined\'.')
       verify(taskLibWrapper.debug('* GitInvoker.getDiffSummary()')).once()
       verify(taskLibWrapper.debug('* GitInvoker.getTargetBranch()')).once()
       verify(taskLibWrapper.debug('* GitInvoker.getPullRequestId()')).once()
