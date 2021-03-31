@@ -17,7 +17,7 @@ import TaskLibWrapper from '../wrappers/taskLibWrapper'
 export default class CodeMetrics {
   private _gitInvoker: GitInvoker
   private _inputs: Inputs
-  private _taskLibWrapper: TaskLibWrapper;
+  private _taskLibWrapper: TaskLibWrapper
 
   private _isInitialized: boolean = false
   private _ignoredFiles: string[] = []

@@ -2,10 +2,7 @@
 // Licensed under the MIT License.
 
 import { instance } from 'ts-mockito'
-
-interface ResolvableInstanceTarget<T> {
-  [name: string]: T
-}
+import ResolvableInstanceTarget from './resolvableInstanceTarget'
 
 /**
  * Gets a resolvable instance of the specified mock object.

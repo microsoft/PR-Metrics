@@ -10,5 +10,5 @@ export default interface TaskJson {
   /**
    * The set of resource messages.
    */
-  messages: ResourcesJson;
+  messages: ResourcesJson
 }

@@ -132,6 +132,7 @@ jobs:
         with:
           json-file: package.json
           json-schema: https://json.schemastore.org/package.json
+          use-draft: draft-04
 
       - name: Security Scan – Validate
         uses: ShiftLeftSecurity/scan-action@v1.3.0
@@ -165,7 +166,7 @@ jobs:
       - name: Validate .mocharc.json
         uses: Zingabopp/JsonValidate-Action@v1
         with:
-          json-file: PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask/.mochra.json
+          json-file: PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask/.mocharc.json
           json-schema: https://json.schemastore.org/mocharc.json
 
       - name: Validate package.json
