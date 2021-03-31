@@ -1,4 +1,5 @@
 {
+  "$schema": "https://json.schemastore.org/package.json",
   "name": "omex-azure-devops-extensions",
   "version": "1.0.0",
   "description": "Azure DevOps Extensions created by the OMEX team.",

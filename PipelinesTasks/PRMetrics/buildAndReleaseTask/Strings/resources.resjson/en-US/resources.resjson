@@ -1,5 +1,5 @@
 {
-  "$schema": "https://raw.githubusercontent.com/JamesNK/Newtonsoft.Json.Schema/master/Src/Newtonsoft.Json.Schema.Tests/Resources/Schemas/resjson.json",
+  "$schema": "https://json.schemastore.org/resjson.json",
 
   "loc.description": "Updates the title, description, and comments of pull requests to provide at-a-glance metrics.",
   "loc.description.comment": "The description of the task.",

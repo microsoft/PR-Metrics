@@ -1,4 +1,5 @@
 {
+  "$schema": "https://json.schemastore.org/package.json",
   "name": "prmetrics",
   "version": "1.1.0",
   "description": "Updates the title, description, and comments of pull requests to provide at-a-glance metrics.",

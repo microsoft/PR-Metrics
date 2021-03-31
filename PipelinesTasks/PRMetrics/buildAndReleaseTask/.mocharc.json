@@ -1,3 +1,4 @@
 {
+  "$schema": "https://json.schemastore.org/mocharc.json",
   "file": ["tests/setup.js"]
 }

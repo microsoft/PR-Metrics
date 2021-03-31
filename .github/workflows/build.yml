@@ -126,7 +126,12 @@ jobs:
         with:
           json-file: .markdownlint.json
           json-schema: https://raw.githubusercontent.com/DavidAnson/markdownlint/main/schema/markdownlint-config-schema.json
-          use-draft: draft-07
+
+      - name: Validate package.json
+        uses: Zingabopp/JsonValidate-Action@v1
+        with:
+          json-file: package.json
+          json-schema: https://json.schemastore.org/package.json
 
       - name: Security Scan – Validate
         uses: ShiftLeftSecurity/scan-action@v1.3.0
@@ -151,41 +156,50 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Download tasks.schema.json
-        run: Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/microsoft/azure-pipelines-task-lib/master/tasks.schema.json' -OutFile 'tasks.schema.json'
+      - name: Validate vss-extension.json
+        uses: Zingabopp/JsonValidate-Action@v1
+        with:
+          json-file: PipelinesTasks/${{ matrix.task }}/vss-extension.json
+          json-schema: https://json.schemastore.org/vss-extension.json
 
-      - name: Update tasks.schema.json
-        run: |-
-          $FileContent = Get-Content -Path 'tasks.schema.json' -Raw
-          $FileContent = $FileContent -replace 'draft-04', 'draft-07'
-          Set-Content -NoNewline -Path 'tasks.schema.json' -Value $FileContent
+      - name: Validate .mocharc.json
+        uses: Zingabopp/JsonValidate-Action@v1
+        with:
+          json-file: PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask/.mochra.json
+          json-schema: https://json.schemastore.org/mocharc.json
+
+      - name: Validate package.json
+        uses: Zingabopp/JsonValidate-Action@v1
+        with:
+          json-file: PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask/package.json
+          json-schema: https://json.schemastore.org/package.json
 
       - name: Validate task.json
         uses: Zingabopp/JsonValidate-Action@v1
         with:
           json-file: PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask/task.json
-          json-schema: tasks.schema.json
-          use-draft: draft-07
+          json-schema: https://raw.githubusercontent.com/microsoft/azure-pipelines-task-lib/master/tasks.schema.json
 
       - name: Validate task.loc.json
         uses: Zingabopp/JsonValidate-Action@v1
         with:
           json-file: PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask/task.loc.json
           json-schema: tasks.schema.json
-          use-draft: draft-07
 
-      - name: Download resjson.schema.json
-        run: Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/JamesNK/Newtonsoft.Json.Schema/master/Src/Newtonsoft.Json.Schema.Tests/Resources/Schemas/resjson.json' -OutFile 'resjson.schema.json'
+      - name: Validate tsconfig.json
+        uses: Zingabopp/JsonValidate-Action@v1
+        with:
+          json-file: PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask/tsconfig.json
+          json-schema: https://json.schemastore.org/tsconfig.json
 
-      - name: Update resjson.schema.json
-        run: |-
-          $FileContent = Get-Content -Path 'resjson.schema.json' -Raw
-          $FileContent = $FileContent -replace 'draft-04', 'draft-07'
-          Set-Content -NoNewline -Path 'resjson.schema.json' -Value $FileContent
+      - name: Validate typedoc.json
+        uses: Zingabopp/JsonValidate-Action@v1
+        with:
+          json-file: PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask/typedoc.json
+          json-schema: https://typedoc.org/schema.json
 
       - name: Validate en-US/resources.resjson
         uses: Zingabopp/JsonValidate-Action@v1
         with:
           json-file: PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask/Strings/resources.resjson/en-US/resources.resjson
-          json-schema: resjson.schema.json
-          use-draft: draft-07
+          json-schema: https://json.schemastore.org/resjson.json

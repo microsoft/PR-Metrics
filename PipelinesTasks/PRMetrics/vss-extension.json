@@ -1,4 +1,5 @@
 {
+  "$schema": "https://json.schemastore.org/vss-extension.json",
   "manifestVersion": 1,
   "id": "pr-metrics",
   "name": "PR Metrics",
