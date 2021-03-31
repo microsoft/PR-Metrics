@@ -199,7 +199,7 @@ jobs:
       - name: Validate package.json
         uses: Zingabopp/JsonValidate-Action@v1
         with:
-          json-file: task/${{ matrix.task }}/buildAndReleaseTask/package.json
+          json-file: PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask/package.json
           json-schema: package.schema.json
 
       - name: Validate task.json – Download task.schema.json
