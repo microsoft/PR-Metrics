@@ -221,7 +221,7 @@ jobs:
         uses: Zingabopp/JsonValidate-Action@v1
         with:
           json-file: PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask/task.loc.json
-          json-schema: tasks.schema.json
+          json-schema: task.schema.json
 
       - name: Validate tsconfig.json – Download tsconfig.schema.json
         run: Invoke-WebRequest -Uri 'https://json.schemastore.org/tsconfig.json' -OutFile 'tsconfig.schema.json'

@@ -1,10 +1,10 @@
 This extension provides a build task for updating PR titles with an indicator of
 the PR size and test coverage.
 
-It is designed to help engineers create PRs of an appropriate size, with
-appropriate levels of test coverage. It furthermore helps reviewers understand
-the time they will likely need to spend reviewing a PR, allowing for more
-efficient time management.
+It is designed to help software engineers create PRs of an appropriate size,
+with appropriate levels of test coverage. It furthermore helps reviewers
+understand the time they will likely need to spend reviewing a PR, allowing for
+more efficient time management.
 
 ![PR titles prefixed by size and test indicators](images/titles.png)
 

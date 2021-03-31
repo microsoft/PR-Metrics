@@ -42,7 +42,7 @@ describe('pullRequestComments.ts', (): void => {
     when(codeMetrics.isSmall).thenReturn(true)
     when(codeMetrics.isSufficientlyTested).thenReturn(true)
     when(codeMetrics.metrics).thenReturn(new CodeMetricsData(1000, 1000, 1000))
-    when(codeMetrics.ignoredFilesToComment).thenReturn([])
+    when(codeMetrics.filesNotRequiringReview).thenReturn([])
 
     inputs = mock(Inputs)
     when(inputs.baseSize).thenReturn(250)
@@ -55,10 +55,10 @@ describe('pullRequestComments.ts', (): void => {
     when(taskLibWrapper.loc('pullRequests.pullRequestComments.commentTitle', Number(1000).toLocaleString())).thenReturn(`# Metrics for iteration ${Number(1000).toLocaleString()}`)
     when(taskLibWrapper.loc('pullRequests.pullRequestComments.commentTitle', Number(1000000).toLocaleString())).thenReturn(`# Metrics for iteration ${Number(1000000).toLocaleString()}`)
     when(taskLibWrapper.loc('pullRequests.pullRequestComments.commentTitle', '.+')).thenReturn('# Metrics for iteration .+')
-    when(taskLibWrapper.loc('pullRequests.pullRequestComments.fileIgnoredComment')).thenReturn('❗ **This file may not need to be reviewed.**')
     when(taskLibWrapper.loc('pullRequests.pullRequestComments.largePullRequestComment', Number(250).toLocaleString())).thenReturn(`❌ **Try to keep pull requests smaller than ${Number(250).toLocaleString()} lines of new product code by following the [Single Responsibility Principle (SRP)](https://wikipedia.org/wiki/Single-responsibility_principle).**`)
     when(taskLibWrapper.loc('pullRequests.pullRequestComments.largePullRequestComment', Number(1000).toLocaleString())).thenReturn(`❌ **Try to keep pull requests smaller than ${Number(1000).toLocaleString()} lines of new product code by following the [Single Responsibility Principle (SRP)](https://wikipedia.org/wiki/Single-responsibility_principle).**`)
     when(taskLibWrapper.loc('pullRequests.pullRequestComments.largePullRequestComment', Number(1000000).toLocaleString())).thenReturn(`❌ **Try to keep pull requests smaller than ${Number(1000000).toLocaleString()} lines of new product code by following the [Single Responsibility Principle (SRP)](https://wikipedia.org/wiki/Single-responsibility_principle).**`)
+    when(taskLibWrapper.loc('pullRequests.pullRequestComments.noReviewRequiredComment')).thenReturn('❗ **This file doesn\'t require review.**')
     when(taskLibWrapper.loc('pullRequests.pullRequestComments.smallPullRequestComment')).thenReturn('✔ **Thanks for keeping your pull request small.**')
     when(taskLibWrapper.loc('pullRequests.pullRequestComments.tableIgnoredCode')).thenReturn('Ignored Code')
     when(taskLibWrapper.loc('pullRequests.pullRequestComments.tableLines')).thenReturn('Lines')
@@ -70,17 +70,17 @@ describe('pullRequestComments.ts', (): void => {
     when(taskLibWrapper.loc('pullRequests.pullRequestComments.testsSufficientComment')).thenReturn('✔ **Thanks for adding tests.**')
   })
 
-  describe('ignoredComment', (): void => {
+  describe('noReviewRequiredComment', (): void => {
     it('should return the expected result', (): void => {
       // Arrange
       const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(inputs), instance(taskLibWrapper))
 
       // Act
-      const result: string = pullRequestComments.ignoredComment
+      const result: string = pullRequestComments.noReviewRequiredComment
 
       // Assert
-      expect(result).to.equal('❗ **This file may not need to be reviewed.**')
-      verify(taskLibWrapper.debug('* PullRequestComments.ignoredComment')).once()
+      expect(result).to.equal('❗ **This file doesn\'t require review.**')
+      verify(taskLibWrapper.debug('* PullRequestComments.noReviewRequiredComment')).once()
     })
   })
 
@@ -96,7 +96,7 @@ describe('pullRequestComments.ts', (): void => {
       expect(result.isMetricsCommentPresent).to.equal(false)
       expect(result.metricsCommentThreadId).to.equal(null)
       expect(result.metricsCommentId).to.equal(null)
-      expect(result.ignoredFilesToComment).to.deep.equal([])
+      expect(result.filesNotRequiringReview).to.deep.equal([])
       verify(taskLibWrapper.debug('* PullRequestComments.getCommentData()')).once()
     })
 
@@ -122,7 +122,7 @@ describe('pullRequestComments.ts', (): void => {
           expect(result.isMetricsCommentPresent).to.equal(true)
           expect(result.metricsCommentThreadId).to.equal(20)
           expect(result.metricsCommentId).to.equal(10)
-          expect(result.ignoredFilesToComment).to.deep.equal([])
+          expect(result.filesNotRequiringReview).to.deep.equal([])
           verify(taskLibWrapper.debug('* PullRequestComments.getCommentData()')).once()
           verify(taskLibWrapper.debug('* PullRequestComments.getMetricsCommentData()')).atLeast(1)
         })
@@ -140,22 +140,22 @@ describe('pullRequestComments.ts', (): void => {
       expect(result.isMetricsCommentPresent).to.equal(false)
       expect(result.metricsCommentThreadId).to.equal(20)
       expect(result.metricsCommentId).to.equal(10)
-      expect(result.ignoredFilesToComment).to.deep.equal([])
+      expect(result.filesNotRequiringReview).to.deep.equal([])
       verify(taskLibWrapper.debug('* PullRequestComments.getCommentData()')).once()
       verify(taskLibWrapper.debug('* PullRequestComments.getMetricsCommentData()')).once()
     })
 
     async.each(
       [
-        [['folder/file1.ts', 'file3.ts'], [{ threadContext: { filePath: '/file2.ts' }, comments: [{ content: '❗ **This file may not need to be reviewed.**' }] }]],
-        [['folder/file1.ts', 'file3.ts'], [{ threadContext: { filePath: '/folder/file1.ts' }, comments: [{ content: 'Content' }] }, { threadContext: { filePath: '/file2.ts' }, comments: [{ content: '❗ **This file may not need to be reviewed.**' }] }]],
-        [['folder/file1.ts', 'file3.ts'], [{ threadContext: { filePath: '/fileA.ts' }, comments: [{ content: '❗ **This file may not need to be reviewed.**' }] }, { threadContext: { filePath: '/file2.ts' }, comments: [{ content: '❗ **This file may not need to be reviewed.**' }] }]],
-        [['file3.ts'], [{ threadContext: { filePath: '/folder/file1.ts' }, comments: [{ content: '❗ **This file may not need to be reviewed.**' }] }, { threadContext: { filePath: '/file2.ts' }, comments: [{ content: '❗ **This file may not need to be reviewed.**' }] }]]
+        [['folder/file1.ts', 'file3.ts'], [{ threadContext: { filePath: '/file2.ts' }, comments: [{ content: '❗ **This file doesn\'t require review.**' }] }]],
+        [['folder/file1.ts', 'file3.ts'], [{ threadContext: { filePath: '/folder/file1.ts' }, comments: [{ content: 'Content' }] }, { threadContext: { filePath: '/file2.ts' }, comments: [{ content: '❗ **This file doesn\'t require review.**' }] }]],
+        [['folder/file1.ts', 'file3.ts'], [{ threadContext: { filePath: '/fileA.ts' }, comments: [{ content: '❗ **This file doesn\'t require review.**' }] }, { threadContext: { filePath: '/file2.ts' }, comments: [{ content: '❗ **This file doesn\'t require review.**' }] }]],
+        [['file3.ts'], [{ threadContext: { filePath: '/folder/file1.ts' }, comments: [{ content: '❗ **This file doesn\'t require review.**' }] }, { threadContext: { filePath: '/file2.ts' }, comments: [{ content: '❗ **This file doesn\'t require review.**' }] }]]
       ], (data: [string[], GitPullRequestCommentThread[]]): void => {
-        it(`should return the expected result for ignored files when the comment is present with payload '${JSON.stringify(data[1])}'`, async (): Promise<void> => {
+        it(`should return the expected result for files not requiring review when the comment is present with payload '${JSON.stringify(data[1])}'`, async (): Promise<void> => {
           // Arrange
           when(azureReposInvoker.getCommentThreads()).thenResolve(data[1])
-          when(codeMetrics.ignoredFilesToComment).thenReturn(['folder/file1.ts', 'file2.ts', 'file3.ts'])
+          when(codeMetrics.filesNotRequiringReview).thenReturn(['folder/file1.ts', 'file2.ts', 'file3.ts'])
           const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(inputs), instance(taskLibWrapper))
 
           // Act
@@ -165,9 +165,9 @@ describe('pullRequestComments.ts', (): void => {
           expect(result.isMetricsCommentPresent).to.equal(false)
           expect(result.metricsCommentThreadId).to.equal(null)
           expect(result.metricsCommentId).to.equal(null)
-          expect(result.ignoredFilesToComment).to.deep.equal(data[0])
+          expect(result.filesNotRequiringReview).to.deep.equal(data[0])
           verify(taskLibWrapper.debug('* PullRequestComments.getCommentData()')).once()
-          verify(taskLibWrapper.debug('* PullRequestComments.getIgnoredCommentData()')).atLeast(1)
+          verify(taskLibWrapper.debug('* PullRequestComments.getNoReviewRequiredCommentData()')).atLeast(1)
         })
       })
 
@@ -189,7 +189,7 @@ describe('pullRequestComments.ts', (): void => {
           },
           comments: [
             {
-              content: '❗ **This file may not need to be reviewed.**'
+              content: '❗ **This file doesn\'t require review.**'
             }
           ]
         },
@@ -199,12 +199,12 @@ describe('pullRequestComments.ts', (): void => {
           },
           comments: [
             {
-              content: '❗ **This file may not need to be reviewed.**'
+              content: '❗ **This file doesn\'t require review.**'
             }
           ]
         }
       ])
-      when(codeMetrics.ignoredFilesToComment).thenReturn(['folder/file1.ts', 'file2.ts', 'file3.ts'])
+      when(codeMetrics.filesNotRequiringReview).thenReturn(['folder/file1.ts', 'file2.ts', 'file3.ts'])
       const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(inputs), instance(taskLibWrapper))
 
       // Act
@@ -214,10 +214,10 @@ describe('pullRequestComments.ts', (): void => {
       expect(result.isMetricsCommentPresent).to.equal(true)
       expect(result.metricsCommentThreadId).to.equal(20)
       expect(result.metricsCommentId).to.equal(10)
-      expect(result.ignoredFilesToComment).to.deep.equal(['folder/file1.ts', 'file3.ts'])
+      expect(result.filesNotRequiringReview).to.deep.equal(['folder/file1.ts', 'file3.ts'])
       verify(taskLibWrapper.debug('* PullRequestComments.getCommentData()')).once()
       verify(taskLibWrapper.debug('* PullRequestComments.getMetricsCommentData()')).once()
-      verify(taskLibWrapper.debug('* PullRequestComments.getIgnoredCommentData()')).once()
+      verify(taskLibWrapper.debug('* PullRequestComments.getNoReviewRequiredCommentData()')).once()
     })
 
     async.each(
@@ -229,9 +229,9 @@ describe('pullRequestComments.ts', (): void => {
         ['commentThread[0].comments[1].content', 'getMetricsCommentData', [{ comments: [validGitPullRequestCommentThread.comments![0]!, {}], id: 1 }]],
         ['commentThread[0].comments[1].id', 'getMetricsCommentData', [{ comments: [validGitPullRequestCommentThread.comments![0]!, { content: '# Metrics for iteration 1' }], id: 1 }]],
         ['commentThread[0].threadContext.filePath', 'getCommentData', [{ threadContext: {} }]],
-        ['commentThread[0].comments', 'getIgnoredCommentData', [{ threadContext: { filePath: '/file.ts' } }]],
-        ['commentThread[0].comments[0]', 'getIgnoredCommentData', [{ threadContext: { filePath: '/file.ts' }, comments: [] }]],
-        ['commentThread[0].comments[0].content', 'getIgnoredCommentData', [{ threadContext: { filePath: '/file.ts' }, comments: [{}] }]],
+        ['commentThread[0].comments', 'getNoReviewRequiredCommentData', [{ threadContext: { filePath: '/file.ts' } }]],
+        ['commentThread[0].comments[0]', 'getNoReviewRequiredCommentData', [{ threadContext: { filePath: '/file.ts' }, comments: [] }]],
+        ['commentThread[0].comments[0].content', 'getNoReviewRequiredCommentData', [{ threadContext: { filePath: '/file.ts' }, comments: [{}] }]],
         ['commentThread[1].comments', 'getMetricsCommentData', [validGitPullRequestCommentThread, { }]],
         ['commentThread[1].comments[0].content', 'getMetricsCommentData', [validGitPullRequestCommentThread, { comments: [{}] }]],
         ['commentThread[1].id', 'getMetricsCommentData', [validGitPullRequestCommentThread, { comments: [{ content: '# Metrics for iteration 1' }] }]],
@@ -239,14 +239,14 @@ describe('pullRequestComments.ts', (): void => {
         ['commentThread[1].comments[1].content', 'getMetricsCommentData', [validGitPullRequestCommentThread, { comments: [validGitPullRequestCommentThread.comments![0]!, {}], id: 1 }]],
         ['commentThread[1].comments[1].id', 'getMetricsCommentData', [validGitPullRequestCommentThread, { comments: [validGitPullRequestCommentThread.comments![0]!, { content: '# Metrics for iteration 1' }], id: 1 }]],
         ['commentThread[1].threadContext.filePath', 'getCommentData', [validGitPullRequestCommentThread, { threadContext: {} }]],
-        ['commentThread[1].comments', 'getIgnoredCommentData', [validGitPullRequestCommentThread, { threadContext: { filePath: '/file.ts' } }]],
-        ['commentThread[1].comments[0]', 'getIgnoredCommentData', [validGitPullRequestCommentThread, { threadContext: { filePath: '/file.ts' }, comments: [] }]],
-        ['commentThread[1].comments[0].content', 'getIgnoredCommentData', [validGitPullRequestCommentThread, { threadContext: { filePath: '/file.ts' }, comments: [{}] }]]
+        ['commentThread[1].comments', 'getNoReviewRequiredCommentData', [validGitPullRequestCommentThread, { threadContext: { filePath: '/file.ts' } }]],
+        ['commentThread[1].comments[0]', 'getNoReviewRequiredCommentData', [validGitPullRequestCommentThread, { threadContext: { filePath: '/file.ts' }, comments: [] }]],
+        ['commentThread[1].comments[0].content', 'getNoReviewRequiredCommentData', [validGitPullRequestCommentThread, { threadContext: { filePath: '/file.ts' }, comments: [{}] }]]
       ], (data: [string, string, GitPullRequestCommentThread[]]): void => {
         it(`should throw for field '${data[0]}', accessed within '${data[1]}', when it is missing`, async (): Promise<void> => {
           // Arrange
           when(azureReposInvoker.getCommentThreads()).thenResolve(data[2])
-          when(codeMetrics.ignoredFilesToComment).thenReturn(['file.ts'])
+          when(codeMetrics.filesNotRequiringReview).thenReturn(['file.ts'])
           const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(inputs), instance(taskLibWrapper))
           let errorThrown: boolean = false
 

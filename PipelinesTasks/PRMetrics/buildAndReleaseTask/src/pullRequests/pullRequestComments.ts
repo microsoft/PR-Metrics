@@ -36,13 +36,13 @@ export default class PullRequestComments {
   }
 
   /**
-   * Gets the comment to add to ignored files within the pull request.
-   * @returns The comment to add to ignored files within the pull request.
+   * Gets the comment to add to files within the pull request that do not require review.
+   * @returns The comment to add to files that do not require review.
    */
-  public get ignoredComment (): string {
-    this._taskLibWrapper.debug('* PullRequestComments.ignoredComment')
+  public get noReviewRequiredComment (): string {
+    this._taskLibWrapper.debug('* PullRequestComments.noReviewRequiredComment')
 
-    return this._taskLibWrapper.loc('pullRequests.pullRequestComments.fileIgnoredComment')
+    return this._taskLibWrapper.loc('pullRequests.pullRequestComments.noReviewRequiredComment')
   }
 
   /**
@@ -53,7 +53,7 @@ export default class PullRequestComments {
   public async getCommentData (currentIteration: number): Promise<PullRequestCommentsData> {
     this._taskLibWrapper.debug('* PullRequestComments.getCommentData()')
 
-    let result: PullRequestCommentsData = new PullRequestCommentsData(this._codeMetrics.ignoredFilesToComment)
+    let result: PullRequestCommentsData = new PullRequestCommentsData(this._codeMetrics.filesNotRequiringReview)
 
     const commentThreads: GitPullRequestCommentThread[] = await this._azureReposInvoker.getCommentThreads()
     for (let i: number = 0; i < commentThreads.length; i++) {
@@ -70,9 +70,9 @@ export default class PullRequestComments {
 
         const fileName: string = filePath.substring(1)
 
-        const index: number = this._codeMetrics.ignoredFilesToComment.indexOf(fileName)
+        const index: number = this._codeMetrics.filesNotRequiringReview.indexOf(fileName)
         if (index !== -1) {
-          result.ignoredFilesToComment = this.getIgnoredCommentData(result.ignoredFilesToComment, index, commentThread, i)
+          result.filesNotRequiringReview = this.getNoReviewRequiredCommentData(result.filesNotRequiringReview, index, commentThread, i)
           continue
         }
       }
@@ -142,19 +142,19 @@ export default class PullRequestComments {
     return result
   }
 
-  private getIgnoredCommentData (ignoredFilesToComment: string[], fileNameIndex: number, commentThread: GitPullRequestCommentThread, commentThreadIndex: number): string[] {
-    this._taskLibWrapper.debug('* PullRequestComments.getIgnoredCommentData()')
+  private getNoReviewRequiredCommentData (filesNotRequiringReview: string[], fileNameIndex: number, commentThread: GitPullRequestCommentThread, commentThreadIndex: number): string[] {
+    this._taskLibWrapper.debug('* PullRequestComments.getNoReviewRequiredCommentData()')
 
-    const comments: Comment[] = Validator.validate(commentThread.comments, `commentThread[${commentThreadIndex}].comments`, 'PullRequestComments.getIgnoredCommentData()')
-    const comment: Comment = Validator.validate(comments[0], `commentThread[${commentThreadIndex}].comments[0]`, 'PullRequestComments.getIgnoredCommentData()')
+    const comments: Comment[] = Validator.validate(commentThread.comments, `commentThread[${commentThreadIndex}].comments`, 'PullRequestComments.getNoReviewRequiredCommentData()')
+    const comment: Comment = Validator.validate(comments[0], `commentThread[${commentThreadIndex}].comments[0]`, 'PullRequestComments.getNoReviewRequiredCommentData()')
 
-    const content: string = Validator.validate(comment.content, `commentThread[${commentThreadIndex}].comments[0].content`, 'PullRequestComments.getIgnoredCommentData()')
-    if (content !== this.ignoredComment) {
-      return ignoredFilesToComment
+    const content: string = Validator.validate(comment.content, `commentThread[${commentThreadIndex}].comments[0].content`, 'PullRequestComments.getNoReviewRequiredCommentData()')
+    if (content !== this.noReviewRequiredComment) {
+      return filesNotRequiringReview
     }
 
-    ignoredFilesToComment.splice(fileNameIndex, 1)
-    return ignoredFilesToComment
+    filesNotRequiringReview.splice(fileNameIndex, 1)
+    return filesNotRequiringReview
   }
 
   private addCommentSizeStatus (): string {

@@ -20,7 +20,7 @@ export default class CodeMetrics {
   private _taskLibWrapper: TaskLibWrapper
 
   private _isInitialized: boolean = false
-  private _ignoredFilesToComment: string[] = []
+  private _filesNotRequiringReview: string[] = []
   private _size: string = ''
   private _sizeIndicator: string = ''
   private _metrics: CodeMetricsData = new CodeMetricsData(0, 0, 0)
@@ -39,14 +39,14 @@ export default class CodeMetrics {
   }
 
   /**
-   * Gets the collection of ignored files to which to add a comment indicating that they should be ignored.
-   * @returns The collection of ignored files.
+   * Gets the collection of files not requiring review to which to add a comment.
+   * @returns The collection of files not requiring review.
    */
-  public get ignoredFilesToComment (): string[] {
-    this._taskLibWrapper.debug('* CodeMetrics.ignoredFilesToComment')
+  public get filesNotRequiringReview (): string[] {
+    this._taskLibWrapper.debug('* CodeMetrics.filesNotRequiringReview')
 
     this.initialize()
-    return this._ignoredFilesToComment
+    return this._filesNotRequiringReview
   }
 
   /**
@@ -177,7 +177,7 @@ export default class CodeMetrics {
 
     nonMatchesToComment.forEach((entry: ICodeFileMetric): void => {
       ignoredCode += entry.linesAdded
-      this._ignoredFilesToComment.push(entry.fileName)
+      this._filesNotRequiringReview.push(entry.fileName)
     })
 
     this._metrics = new CodeMetricsData(productCode, testCode, ignoredCode)

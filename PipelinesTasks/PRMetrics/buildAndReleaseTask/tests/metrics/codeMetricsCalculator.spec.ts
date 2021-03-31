@@ -313,13 +313,13 @@ describe('codeMetricsCalculator.ts', (): void => {
         [[], 0, 0],
         [['file1.ts', 'file2.ts'], 1, 1]
       ], (data: [string[], number, number]): void => {
-        it(`should succeed when comments are to be added to ignored files '${JSON.stringify(data[0])}'`, async (): Promise<void> => {
+        it(`should succeed when comments are to be added to files not requiring review '${JSON.stringify(data[0])}'`, async (): Promise<void> => {
           // Arrange
           when(azureReposInvoker.getCurrentIteration()).thenResolve(1)
           const commentData: PullRequestCommentsData = new PullRequestCommentsData(data[0])
           commentData.isMetricsCommentPresent = true
           when(pullRequestComments.getCommentData(1)).thenResolve(commentData)
-          when(pullRequestComments.ignoredComment).thenReturn('Ignored')
+          when(pullRequestComments.noReviewRequiredComment).thenReturn('No Review Required')
           const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(codeMetrics), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
 
           // Act
@@ -327,9 +327,9 @@ describe('codeMetricsCalculator.ts', (): void => {
 
           // Assert
           verify(taskLibWrapper.debug('* CodeMetricsCalculator.updateComments()')).once()
-          verify(taskLibWrapper.debug('* CodeMetricsCalculator.updateIgnoredComment()')).times(data[1] + data[2])
-          verify(azureReposInvoker.createCommentThread('Ignored', CommentThreadStatus.Closed, 'file1.ts')).times(data[1])
-          verify(azureReposInvoker.createCommentThread('Ignored', CommentThreadStatus.Closed, 'file2.ts')).times(data[2])
+          verify(taskLibWrapper.debug('* CodeMetricsCalculator.updateNoReviewRequiredComment()')).times(data[1] + data[2])
+          verify(azureReposInvoker.createCommentThread('No Review Required', CommentThreadStatus.Closed, 'file1.ts')).times(data[1])
+          verify(azureReposInvoker.createCommentThread('No Review Required', CommentThreadStatus.Closed, 'file2.ts')).times(data[2])
         })
       })
   })

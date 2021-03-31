@@ -70,11 +70,11 @@ describe('codeMetrics.ts', (): void => {
         const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(taskLibWrapper))
 
         // Act
-        const func: () => string[] = () => codeMetrics.ignoredFilesToComment
+        const func: () => string[] = () => codeMetrics.filesNotRequiringReview
 
         // Assert
         expect(func).to.throw('The Git diff summary is empty.')
-        verify(taskLibWrapper.debug('* CodeMetrics.ignoredFilesToComment')).once()
+        verify(taskLibWrapper.debug('* CodeMetrics.filesNotRequiringReview')).once()
         verify(taskLibWrapper.debug('* CodeMetrics.initialize()')).once()
       })
     })
@@ -96,11 +96,11 @@ describe('codeMetrics.ts', (): void => {
         const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(taskLibWrapper))
 
         // Act
-        const func: () => string[] = () => codeMetrics.ignoredFilesToComment
+        const func: () => string[] = () => codeMetrics.filesNotRequiringReview
 
         // Assert
         expect(func).to.throw(`The number of elements '${data[1]}' in '${data[0].trim()}' did not match the expected 3.`)
-        verify(taskLibWrapper.debug('* CodeMetrics.ignoredFilesToComment')).once()
+        verify(taskLibWrapper.debug('* CodeMetrics.filesNotRequiringReview')).once()
         verify(taskLibWrapper.debug('* CodeMetrics.initialize()')).once()
         verify(taskLibWrapper.debug('* CodeMetrics.createFileMetricsMap()')).once()
       })
@@ -112,11 +112,11 @@ describe('codeMetrics.ts', (): void => {
     const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(taskLibWrapper))
 
     // Act
-    const func: () => string[] = () => codeMetrics.ignoredFilesToComment
+    const func: () => string[] = () => codeMetrics.filesNotRequiringReview
 
     // Assert
     expect(func).to.throw('Could not parse \'A\' from line \'A\t0\tfile.ts\'.')
-    verify(taskLibWrapper.debug('* CodeMetrics.ignoredFilesToComment')).once()
+    verify(taskLibWrapper.debug('* CodeMetrics.filesNotRequiringReview')).once()
     verify(taskLibWrapper.debug('* CodeMetrics.initialize()')).once()
     verify(taskLibWrapper.debug('* CodeMetrics.createFileMetricsMap()')).once()
   })
@@ -191,13 +191,13 @@ describe('codeMetrics.ts', (): void => {
         const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(taskLibWrapper))
 
         // Assert
-        expect(codeMetrics.ignoredFilesToComment).to.deep.equal([])
+        expect(codeMetrics.filesNotRequiringReview).to.deep.equal([])
         expect(codeMetrics.size).to.equal(data[1])
         expect(codeMetrics.sizeIndicator).to.equal(`${data[1]}${data[2] ? '✔' : '⚠️'}`)
         expect(codeMetrics.metrics).to.deep.equal(data[3])
         expect(codeMetrics.isSmall).to.equal(data[1] === 'XS' || data[1] === 'S')
         expect(codeMetrics.isSufficientlyTested).to.equal(data[2])
-        verify(taskLibWrapper.debug('* CodeMetrics.ignoredFilesToComment')).once()
+        verify(taskLibWrapper.debug('* CodeMetrics.filesNotRequiringReview')).once()
         verify(taskLibWrapper.debug('* CodeMetrics.size')).once()
         verify(taskLibWrapper.debug('* CodeMetrics.initialize()')).times(6)
         verify(taskLibWrapper.debug('* CodeMetrics.initializeMetrics()')).once()
@@ -275,13 +275,13 @@ describe('codeMetrics.ts', (): void => {
         const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(taskLibWrapper))
 
         // Assert
-        expect(codeMetrics.ignoredFilesToComment).to.deep.equal(data[4])
+        expect(codeMetrics.filesNotRequiringReview).to.deep.equal(data[4])
         expect(codeMetrics.size).to.equal(data[1])
         expect(codeMetrics.sizeIndicator).to.equal(`${data[1]}${data[2] ? '✔' : '⚠️'}`)
         expect(codeMetrics.metrics).to.deep.equal(data[3])
         expect(codeMetrics.isSmall).to.equal(data[1] === 'XS' || data[1] === 'S')
         expect(codeMetrics.isSufficientlyTested).to.equal(data[2])
-        verify(taskLibWrapper.debug('* CodeMetrics.ignoredFilesToComment')).once()
+        verify(taskLibWrapper.debug('* CodeMetrics.filesNotRequiringReview')).once()
         verify(taskLibWrapper.debug('* CodeMetrics.size')).once()
         verify(taskLibWrapper.debug('* CodeMetrics.initialize()')).times(6)
         verify(taskLibWrapper.debug('* CodeMetrics.initializeMetrics()')).once()
@@ -303,13 +303,13 @@ describe('codeMetrics.ts', (): void => {
     const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(taskLibWrapper))
 
     // Assert
-    expect(codeMetrics.ignoredFilesToComment).to.deep.equal([])
+    expect(codeMetrics.filesNotRequiringReview).to.deep.equal([])
     expect(codeMetrics.size).to.equal('XS')
     expect(codeMetrics.sizeIndicator).to.equal('XS')
     expect(codeMetrics.metrics).to.deep.equal(new CodeMetricsData(1, 0, 0))
     expect(codeMetrics.isSmall).to.equal(true)
     expect(codeMetrics.isSufficientlyTested).to.equal(null)
-    verify(taskLibWrapper.debug('* CodeMetrics.ignoredFilesToComment')).once()
+    verify(taskLibWrapper.debug('* CodeMetrics.filesNotRequiringReview')).once()
     verify(taskLibWrapper.debug('* CodeMetrics.size')).once()
     verify(taskLibWrapper.debug('* CodeMetrics.initialize()')).times(6)
     verify(taskLibWrapper.debug('* CodeMetrics.initializeMetrics()')).once()

@@ -8,14 +8,14 @@ export default class PullRequestCommentsData {
   private _isMetricsCommentPresent: boolean = false
   private _metricsCommentThreadId: number | null = null
   private _metricsCommentId: number | null = null
-  private _ignoredFilesToComment: string[] = []
+  private _filesNotRequiringReview: string[] = []
 
   /**
    * Initializes a new instance of the `PullRequestCommentsData` class.
-   * @param ignoredFilesToComment The collection of ignored files to which to add a comment indicating that they should be ignored.
+   * @param filesNotRequiringReview The collection of files not requiring review to which to add a comment.
    */
-  public constructor (ignoredFilesToComment: string[]) {
-    this._ignoredFilesToComment = ignoredFilesToComment
+  public constructor (filesNotRequiringReview: string[]) {
+    this._filesNotRequiringReview = filesNotRequiringReview
   }
 
   /**
@@ -67,18 +67,18 @@ export default class PullRequestCommentsData {
   }
 
   /**
-   * Gets the collection of ignored files to which to add a comment indicating that they should be ignored.
-   * @returns The collection of ignored files.
+   * Gets the collection of files not requiring review to which to add a comment.
+   * @returns The collection of files not requiring review.
    */
-  public get ignoredFilesToComment (): string[] {
-    return this._ignoredFilesToComment
+  public get filesNotRequiringReview (): string[] {
+    return this._filesNotRequiringReview
   }
 
   /**
-   * Sets the collection of ignored files to which to add a comment indicating that they should be ignored.
-   * @param value The collection of ignored files.
+   * Sets the collection of files not requiring review to which to add a comment.
+   * @param value The collection of files not requiring review.
    */
-  public set ignoredFilesToComment (value: string[]) {
-    this._ignoredFilesToComment = value
+  public set filesNotRequiringReview (value: string[]) {
+    this._filesNotRequiringReview = value
   }
 }

@@ -37,7 +37,7 @@ metrics:
 It will furthermore add a comment to indicate that a review of the file may not
 be necessary.
 
-> :exclamation: **This file may not need to be reviewed.**
+> :exclamation: **This file doesn't require review.**
 
 If no PR description is provided, the description will be set to:
 
@@ -258,7 +258,7 @@ should combine with the unit tests to provide a high level of coverage.
    - Total: 77
    The metrics comment thread should be active. `temporary1.ts` and
    `temporary2.ts` should both include the closed comment
-   ":exclamation: This file may not need to be reviewed."
+   ":exclamation: This file doesn't require review."
 1. Modify the build task definition to change the "test factor" input to "0"
    (not blank). Push a new change to the build, adding 1 more line to
    `file.ignored`. The build will re-run and you should see the title prefix
