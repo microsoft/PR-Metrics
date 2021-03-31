@@ -37,7 +37,7 @@ export default class AzureReposInvoker {
   }
 
   /**
-   * Gets a value indicating whether the OAuth access token is available.
+   * Gets a value indicating whether the OAuth access token is available to the task.
    * @returns A value indicating whether the OAuth access token is available.
    */
   public get isAccessTokenAvailable (): boolean {

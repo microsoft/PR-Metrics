@@ -66,17 +66,17 @@ describe('codeMetricsCalculator.ts', (): void => {
     })
   })
 
-  describe('shouldTerminate', (): void => {
+  describe('shouldStop', (): void => {
     it('should return null when the task should not terminate', (): void => {
       // Arrange
       const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(codeMetrics), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
 
       // Act
-      const result: string | null = codeMetricsCalculator.shouldTerminate
+      const result: string | null = codeMetricsCalculator.shouldStop
 
       // Assert
       expect(result).to.equal(null)
-      verify(taskLibWrapper.debug('* CodeMetricsCalculator.shouldTerminate')).once()
+      verify(taskLibWrapper.debug('* CodeMetricsCalculator.shouldStop')).once()
     })
 
     it('should return the appropriate message when no access token is available', (): void => {
@@ -85,11 +85,11 @@ describe('codeMetricsCalculator.ts', (): void => {
       const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(codeMetrics), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
 
       // Act
-      const result: string | null = codeMetricsCalculator.shouldTerminate
+      const result: string | null = codeMetricsCalculator.shouldStop
 
       // Assert
       expect(result).to.equal('Could not access the OAuth token. Enable the option \'Allow scripts to access OAuth token\' under the build process phase settings.')
-      verify(taskLibWrapper.debug('* CodeMetricsCalculator.shouldTerminate')).once()
+      verify(taskLibWrapper.debug('* CodeMetricsCalculator.shouldStop')).once()
     })
   })
 

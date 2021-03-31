@@ -41,8 +41,8 @@ export default class CodeMetricsCalculator {
   }
 
   /**
-   * Gets a message indicating whether the task can be run.
-   * @returns `null` if the task can be run, or a message to display if the task cannot be run.
+   * Gets a message if the task should be skipped.
+   * @returns `null` if the task should continue, or a message to be displayed if the task should be skipped.
    */
   public get shouldSkip (): string | null {
     this._taskLibWrapper.debug('* CodeMetricsCalculator.shouldSkip')
@@ -55,11 +55,11 @@ export default class CodeMetricsCalculator {
   }
 
   /**
-   * Gets a message indicating whether the task can be run.
-   * @returns `null` if the task can be run, or a message to display if the task cannot be run.
+   * Gets a message if the task should be stopped.
+   * @returns `null` if the task should continue, or a message to be displayed if the task should be stopped.
    */
-  public get shouldTerminate (): string | null {
-    this._taskLibWrapper.debug('* CodeMetricsCalculator.shouldTerminate')
+  public get shouldStop (): string | null {
+    this._taskLibWrapper.debug('* CodeMetricsCalculator.shouldStop')
 
     if (!this._azureReposInvoker.isAccessTokenAvailable) {
       return this._taskLibWrapper.loc('metrics.codeMetricsCalculator.noAccessToken')

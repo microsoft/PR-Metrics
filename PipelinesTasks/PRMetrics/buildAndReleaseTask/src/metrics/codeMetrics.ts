@@ -50,8 +50,8 @@ export default class CodeMetrics {
   }
 
   /**
-   * Gets the size.
-   * @returns The size.
+   * Gets the size of the pull request – XS, S, M, etc.
+   * @returns The size of the pull request.
    */
   public get size (): string {
     this._taskLibWrapper.debug('* CodeMetrics.size')
@@ -61,7 +61,7 @@ export default class CodeMetrics {
   }
 
   /**
-   * Gets the size indicator, which will form part of the title.
+   * Gets the size indicator comprising the size and test coverage indicator, which will form part of the title.
    * @returns The size indicator.
    */
   public get sizeIndicator (): string {
@@ -72,8 +72,8 @@ export default class CodeMetrics {
   }
 
   /**
-   * Gets the collection of pull request metrics.
-   * @returns The collection of pull request metrics.
+   * Gets the collection of pull request code metrics.
+   * @returns The collection of pull request code metrics.
    */
   public get metrics (): CodeMetricsData {
     this._taskLibWrapper.debug('* CodeMetrics.metrics')
