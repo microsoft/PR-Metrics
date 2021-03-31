@@ -3,7 +3,7 @@
   "id": "907d3b28-6b37-4ac7-ac75-9631ee53e512",
   "name": "prmetrics",
   "friendlyName": "PR Metrics 1.1.0",
-  "description": "Updates the title, description, and comments of pull requests to provide at-a-glance metrics.",
+  "description": "Augments pull request titles to let reviewers quickly determine PR size and test coverage.",
   "helpUrl": "https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/blob/main/PipelinesTasks/PRMetrics/README.md",
   "helpMarkDown": "[More information](https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/blob/main/PipelinesTasks/PRMetrics/README.md)",
   "author": "Microsoft Corporation",

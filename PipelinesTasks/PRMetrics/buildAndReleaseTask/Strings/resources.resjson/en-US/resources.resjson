@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/resjson.json",
 
-  "loc.description": "Updates the title, description, and comments of pull requests to provide at-a-glance metrics.",
+  "loc.description": "Augments pull request titles to let reviewers quickly determine PR size and test coverage.",
   "loc.description.comment": "The description of the task.",
 
   "loc.friendlyName": "PR Metrics 1.1.0",
