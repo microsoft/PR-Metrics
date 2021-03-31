@@ -14,7 +14,7 @@ describe('pullRequestCommentsData.ts', (): void => {
       expect(result.isMetricsCommentPresent).to.equal(false)
       expect(result.metricsCommentThreadId).to.equal(null)
       expect(result.metricsCommentId).to.equal(null)
-      expect(result.ignoredFiles).to.deep.equal(['file1.ts', 'file2.ts'])
+      expect(result.ignoredFilesToComment).to.deep.equal(['file1.ts', 'file2.ts'])
     })
   })
 
@@ -30,7 +30,7 @@ describe('pullRequestCommentsData.ts', (): void => {
       expect(result.isMetricsCommentPresent).to.equal(true)
       expect(result.metricsCommentThreadId).to.equal(null)
       expect(result.metricsCommentId).to.equal(null)
-      expect(result.ignoredFiles).to.deep.equal(['file1.ts', 'file2.ts'])
+      expect(result.ignoredFilesToComment).to.deep.equal(['file1.ts', 'file2.ts'])
     })
   })
 
@@ -46,7 +46,7 @@ describe('pullRequestCommentsData.ts', (): void => {
       expect(result.isMetricsCommentPresent).to.equal(false)
       expect(result.metricsCommentThreadId).to.equal(1)
       expect(result.metricsCommentId).to.equal(null)
-      expect(result.ignoredFiles).to.deep.equal(['file1.ts', 'file2.ts'])
+      expect(result.ignoredFilesToComment).to.deep.equal(['file1.ts', 'file2.ts'])
     })
   })
 
@@ -62,23 +62,23 @@ describe('pullRequestCommentsData.ts', (): void => {
       expect(result.isMetricsCommentPresent).to.equal(false)
       expect(result.metricsCommentThreadId).to.equal(null)
       expect(result.metricsCommentId).to.equal(1)
-      expect(result.ignoredFiles).to.deep.equal(['file1.ts', 'file2.ts'])
+      expect(result.ignoredFilesToComment).to.deep.equal(['file1.ts', 'file2.ts'])
     })
   })
 
-  describe('ignoredFiles', (): void => {
+  describe('ignoredFilesToComment', (): void => {
     it('should set the correct data', (): void => {
       // Arrange
       const result: PullRequestCommentsData = new PullRequestCommentsData(['file1.ts', 'file2.ts'])
 
       // Act
-      result.ignoredFiles = ['file5.ts']
+      result.ignoredFilesToComment = ['file5.ts']
 
       // Assert
       expect(result.isMetricsCommentPresent).to.equal(false)
       expect(result.metricsCommentThreadId).to.equal(null)
       expect(result.metricsCommentId).to.equal(null)
-      expect(result.ignoredFiles).to.deep.equal(['file5.ts'])
+      expect(result.ignoredFilesToComment).to.deep.equal(['file5.ts'])
     })
   })
 })

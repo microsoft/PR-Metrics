@@ -53,7 +53,7 @@ export default class PullRequestComments {
   public async getCommentData (currentIteration: number): Promise<PullRequestCommentsData> {
     this._taskLibWrapper.debug('* PullRequestComments.getCommentData()')
 
-    let result: PullRequestCommentsData = new PullRequestCommentsData(this._codeMetrics.ignoredFiles)
+    let result: PullRequestCommentsData = new PullRequestCommentsData(this._codeMetrics.ignoredFilesToComment)
 
     const commentThreads: GitPullRequestCommentThread[] = await this._azureReposInvoker.getCommentThreads()
     for (let i: number = 0; i < commentThreads.length; i++) {
@@ -70,9 +70,9 @@ export default class PullRequestComments {
 
         const fileName: string = filePath.substring(1)
 
-        const index: number = this._codeMetrics.ignoredFiles.indexOf(fileName)
+        const index: number = this._codeMetrics.ignoredFilesToComment.indexOf(fileName)
         if (index !== -1) {
-          result.ignoredFiles = this.getIgnoredCommentData(result.ignoredFiles, index, commentThread, i)
+          result.ignoredFilesToComment = this.getIgnoredCommentData(result.ignoredFilesToComment, index, commentThread, i)
           continue
         }
       }
@@ -142,7 +142,7 @@ export default class PullRequestComments {
     return result
   }
 
-  private getIgnoredCommentData (ignoredFiles: string[], fileNameIndex: number, commentThread: GitPullRequestCommentThread, commentThreadIndex: number): string[] {
+  private getIgnoredCommentData (ignoredFilesToComment: string[], fileNameIndex: number, commentThread: GitPullRequestCommentThread, commentThreadIndex: number): string[] {
     this._taskLibWrapper.debug('* PullRequestComments.getIgnoredCommentData()')
 
     const comments: Comment[] = Validator.validate(commentThread.comments, `commentThread[${commentThreadIndex}].comments`, 'PullRequestComments.getIgnoredCommentData()')
@@ -150,11 +150,11 @@ export default class PullRequestComments {
 
     const content: string = Validator.validate(comment.content, `commentThread[${commentThreadIndex}].comments[0].content`, 'PullRequestComments.getIgnoredCommentData()')
     if (content !== this.ignoredComment) {
-      return ignoredFiles
+      return ignoredFilesToComment
     }
 
-    ignoredFiles.splice(fileNameIndex, 1)
-    return ignoredFiles
+    ignoredFilesToComment.splice(fileNameIndex, 1)
+    return ignoredFilesToComment
   }
 
   private addCommentSizeStatus (): string {

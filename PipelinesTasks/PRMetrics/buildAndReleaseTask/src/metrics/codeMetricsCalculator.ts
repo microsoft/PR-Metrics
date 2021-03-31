@@ -98,7 +98,7 @@ export default class CodeMetricsCalculator {
       promises.push(this.addMetadata())
     }
 
-    commentData.ignoredFiles.forEach((fileName: string): void => {
+    commentData.ignoredFilesToComment.forEach((fileName: string): void => {
       promises.push(this.updateIgnoredComment(fileName))
     })
 

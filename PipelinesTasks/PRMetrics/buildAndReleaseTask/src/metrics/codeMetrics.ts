@@ -20,7 +20,7 @@ export default class CodeMetrics {
   private _taskLibWrapper: TaskLibWrapper
 
   private _isInitialized: boolean = false
-  private _ignoredFiles: string[] = []
+  private _ignoredFilesToComment: string[] = []
   private _size: string = ''
   private _sizeIndicator: string = ''
   private _metrics: CodeMetricsData = new CodeMetricsData(0, 0, 0)
@@ -39,14 +39,14 @@ export default class CodeMetrics {
   }
 
   /**
-   * Gets the collection of ignored files.
+   * Gets the collection of ignored files to which to add a comment indicating that they should be ignored.
    * @returns The collection of ignored files.
    */
-  public get ignoredFiles (): string[] {
-    this._taskLibWrapper.debug('* CodeMetrics.ignoredFiles')
+  public get ignoredFilesToComment (): string[] {
+    this._taskLibWrapper.debug('* CodeMetrics.ignoredFilesToComment')
 
     this.initialize()
-    return this._ignoredFiles
+    return this._ignoredFilesToComment
   }
 
   /**
@@ -128,8 +128,8 @@ export default class CodeMetrics {
     const codeFileMetrics: ICodeFileMetric[] = this.createFileMetricsMap(gitDiffSummary)
 
     const matches: ICodeFileMetric[] = []
-    const nonMatchesWithComment: ICodeFileMetric[] = []
-    const nonMatchesWithoutComment: ICodeFileMetric[] = []
+    const nonMatches: ICodeFileMetric[] = []
+    const nonMatchesToComment: ICodeFileMetric[] = []
 
     // Check for glob matches.
     codeFileMetrics.forEach((codeFileMetric: ICodeFileMetric): void => {
@@ -139,13 +139,13 @@ export default class CodeMetrics {
       if (isValidFilePattern && isValidFileExtension) {
         matches.push(codeFileMetric)
       } else if (!isValidFilePattern) {
-        nonMatchesWithComment.push(codeFileMetric)
+        nonMatchesToComment.push(codeFileMetric)
       } else {
-        nonMatchesWithoutComment.push(codeFileMetric)
+        nonMatches.push(codeFileMetric)
       }
     })
 
-    this.constructMetrics(matches, nonMatchesWithComment, nonMatchesWithoutComment)
+    this.constructMetrics(matches, nonMatches, nonMatchesToComment)
   }
 
   private matchFileExtension (fileName: string): boolean {
@@ -156,7 +156,7 @@ export default class CodeMetrics {
     return this._inputs.codeFileExtensions.has(fileExtension)
   }
 
-  private constructMetrics (matches: ICodeFileMetric[], nonMatchesWithComment: ICodeFileMetric[], nonMatchesWithoutComment: ICodeFileMetric[]): void {
+  private constructMetrics (matches: ICodeFileMetric[], nonMatches: ICodeFileMetric[], nonMatchesToComment: ICodeFileMetric[]): void {
     this._taskLibWrapper.debug('* CodeMetrics.constructMetrics()')
 
     let productCode: number = 0
@@ -171,13 +171,13 @@ export default class CodeMetrics {
       }
     })
 
-    nonMatchesWithComment.forEach((entry: ICodeFileMetric): void => {
+    nonMatches.forEach((entry: ICodeFileMetric): void => {
       ignoredCode += entry.linesAdded
-      this._ignoredFiles.push(entry.fileName)
     })
 
-    nonMatchesWithoutComment.forEach((entry: ICodeFileMetric): void => {
+    nonMatchesToComment.forEach((entry: ICodeFileMetric): void => {
       ignoredCode += entry.linesAdded
+      this._ignoredFilesToComment.push(entry.fileName)
     })
 
     this._metrics = new CodeMetricsData(productCode, testCode, ignoredCode)

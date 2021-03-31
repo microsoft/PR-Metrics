@@ -42,7 +42,7 @@ describe('pullRequestComments.ts', (): void => {
     when(codeMetrics.isSmall).thenReturn(true)
     when(codeMetrics.isSufficientlyTested).thenReturn(true)
     when(codeMetrics.metrics).thenReturn(new CodeMetricsData(1000, 1000, 1000))
-    when(codeMetrics.ignoredFiles).thenReturn([])
+    when(codeMetrics.ignoredFilesToComment).thenReturn([])
 
     inputs = mock(Inputs)
     when(inputs.baseSize).thenReturn(250)
@@ -96,7 +96,7 @@ describe('pullRequestComments.ts', (): void => {
       expect(result.isMetricsCommentPresent).to.equal(false)
       expect(result.metricsCommentThreadId).to.equal(null)
       expect(result.metricsCommentId).to.equal(null)
-      expect(result.ignoredFiles).to.deep.equal([])
+      expect(result.ignoredFilesToComment).to.deep.equal([])
       verify(taskLibWrapper.debug('* PullRequestComments.getCommentData()')).once()
     })
 
@@ -122,7 +122,7 @@ describe('pullRequestComments.ts', (): void => {
           expect(result.isMetricsCommentPresent).to.equal(true)
           expect(result.metricsCommentThreadId).to.equal(20)
           expect(result.metricsCommentId).to.equal(10)
-          expect(result.ignoredFiles).to.deep.equal([])
+          expect(result.ignoredFilesToComment).to.deep.equal([])
           verify(taskLibWrapper.debug('* PullRequestComments.getCommentData()')).once()
           verify(taskLibWrapper.debug('* PullRequestComments.getMetricsCommentData()')).atLeast(1)
         })
@@ -140,7 +140,7 @@ describe('pullRequestComments.ts', (): void => {
       expect(result.isMetricsCommentPresent).to.equal(false)
       expect(result.metricsCommentThreadId).to.equal(20)
       expect(result.metricsCommentId).to.equal(10)
-      expect(result.ignoredFiles).to.deep.equal([])
+      expect(result.ignoredFilesToComment).to.deep.equal([])
       verify(taskLibWrapper.debug('* PullRequestComments.getCommentData()')).once()
       verify(taskLibWrapper.debug('* PullRequestComments.getMetricsCommentData()')).once()
     })
@@ -155,7 +155,7 @@ describe('pullRequestComments.ts', (): void => {
         it(`should return the expected result for ignored files when the comment is present with payload '${JSON.stringify(data[1])}'`, async (): Promise<void> => {
           // Arrange
           when(azureReposInvoker.getCommentThreads()).thenResolve(data[1])
-          when(codeMetrics.ignoredFiles).thenReturn(['folder/file1.ts', 'file2.ts', 'file3.ts'])
+          when(codeMetrics.ignoredFilesToComment).thenReturn(['folder/file1.ts', 'file2.ts', 'file3.ts'])
           const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(inputs), instance(taskLibWrapper))
 
           // Act
@@ -165,7 +165,7 @@ describe('pullRequestComments.ts', (): void => {
           expect(result.isMetricsCommentPresent).to.equal(false)
           expect(result.metricsCommentThreadId).to.equal(null)
           expect(result.metricsCommentId).to.equal(null)
-          expect(result.ignoredFiles).to.deep.equal(data[0])
+          expect(result.ignoredFilesToComment).to.deep.equal(data[0])
           verify(taskLibWrapper.debug('* PullRequestComments.getCommentData()')).once()
           verify(taskLibWrapper.debug('* PullRequestComments.getIgnoredCommentData()')).atLeast(1)
         })
@@ -204,7 +204,7 @@ describe('pullRequestComments.ts', (): void => {
           ]
         }
       ])
-      when(codeMetrics.ignoredFiles).thenReturn(['folder/file1.ts', 'file2.ts', 'file3.ts'])
+      when(codeMetrics.ignoredFilesToComment).thenReturn(['folder/file1.ts', 'file2.ts', 'file3.ts'])
       const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(inputs), instance(taskLibWrapper))
 
       // Act
@@ -214,7 +214,7 @@ describe('pullRequestComments.ts', (): void => {
       expect(result.isMetricsCommentPresent).to.equal(true)
       expect(result.metricsCommentThreadId).to.equal(20)
       expect(result.metricsCommentId).to.equal(10)
-      expect(result.ignoredFiles).to.deep.equal(['folder/file1.ts', 'file3.ts'])
+      expect(result.ignoredFilesToComment).to.deep.equal(['folder/file1.ts', 'file3.ts'])
       verify(taskLibWrapper.debug('* PullRequestComments.getCommentData()')).once()
       verify(taskLibWrapper.debug('* PullRequestComments.getMetricsCommentData()')).once()
       verify(taskLibWrapper.debug('* PullRequestComments.getIgnoredCommentData()')).once()
@@ -246,7 +246,7 @@ describe('pullRequestComments.ts', (): void => {
         it(`should throw for field '${data[0]}', accessed within '${data[1]}', when it is missing`, async (): Promise<void> => {
           // Arrange
           when(azureReposInvoker.getCommentThreads()).thenResolve(data[2])
-          when(codeMetrics.ignoredFiles).thenReturn(['file.ts'])
+          when(codeMetrics.ignoredFilesToComment).thenReturn(['file.ts'])
           const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(inputs), instance(taskLibWrapper))
           let errorThrown: boolean = false
 
