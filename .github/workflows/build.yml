@@ -148,7 +148,7 @@ jobs:
         env:
           ENABLE_OSS_RISK: true
         with:
-          type: credscan,depscan
+          type: credscan,depscan,nodejs,yaml
 
       - name: Security Scan – Upload Report
         uses: github/codeql-action/upload-sarif@v1
@@ -208,7 +208,7 @@ jobs:
       - name: Validate task.json – Update task.schema.json
         run: |-
           $FileContent = Get-Content -Path 'task.schema.json' -Raw
-          $FileContent = $FileContent -replace 'draft-04/schema#', 'draft-07/schema'
+          $FileContent = $FileContent -replace 'draft-04/schema', 'draft-07/schema'
           Set-Content -NoNewline -Path 'task.schema.json' -Value $FileContent
 
       - name: Validate task.json
