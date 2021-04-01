@@ -17,126 +17,104 @@ defaults:
 jobs:
   build:
     name: Build
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        task: [PRMetrics]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Tag – Get Latest
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        id: tag
-        uses: jossef/action-latest-release-info@v1.1.0
+      - name: Install Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 15.x
 
-      - name: Tag – Version Extract
-        id: version
-        run: |-
-          $Version = '${{ steps.tag.outputs.tag_name }}'.Substring(1)
-          $VersionElements = $Version.Split('.')
-          Write-Output -InputObject "::set-output name=major::$($VersionElements[0])"
-          Write-Output -InputObject "::set-output name=minor::$($VersionElements[1])"
-          Write-Output -InputObject "::set-output name=patch::$($VersionElements[2])"
+      - name: Install Root NPM Dependencies
+        run: npm install
 
-      - name: Tag – Version Replace in vss-extension.json
-        run: |-
-          $FileContent = Get-Content -Path 'PipelinesTasks/PRMetricsV1/vss-extension.json' -Raw
-          $FileContent = $FileContent -replace '%MAJOR%', '${{ steps.version.outputs.major }}'
-          $FileContent = $FileContent -replace '%MINOR%', '${{ steps.version.outputs.minor }}'
-          $FileContent = $FileContent -replace '%PATCH%', '${{ steps.version.outputs.patch }}'
-          Set-Content -NoNewline -Path 'PipelinesTasks/PRMetricsV1/vss-extension.json' -Value $FileContent
+      - name: Install NPM Dependencies
+        run: npm install
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask
 
-      - name: Tag – Version Replace in task.json
-        run: |-
-          $FileContent = Get-Content -Path 'PipelinesTasks/PRMetricsV1/task/task.json' -Raw
-          $FileContent = $FileContent -replace '%MAJOR%', '${{ steps.version.outputs.major }}'
-          $FileContent = $FileContent -replace '%MINOR%', '${{ steps.version.outputs.minor }}'
-          $FileContent = $FileContent -replace '%PATCH%', '${{ steps.version.outputs.patch }}'
-          Set-Content -NoNewline -Path 'PipelinesTasks/PRMetricsV1/task/task.json' -Value $FileContent
+      - name: Build
+        run: npm run build
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask
 
-      - name: MSBuild – Install
-        uses: microsoft/setup-msbuild@v1.0.2
+      - name: Test
+        run: npm run test:pipeline
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask
 
-      - name: MSBuild – Run
-        run: msbuild
+      - name: Remove 'node_modules'
+        run: Remove-Item -Path 'node_modules' -Recurse -Force
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask
 
-      - name: PowerShell Tests – Install
-        run: Install-Module -Name 'Pester' -Force
+      - name: Install Production NPM Dependencies
+        run: npm install --only=production
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask
 
-      - name: PowerShell Tests – Run
-        run: |-
-          $Result = Invoke-Pester -PassThru
-          if ($Result.FailedCount -gt 0) { Throw 'PowerShell Tests failed.' }
-          exit 0
+      - name: Remove '.nyc_output'
+        run: Remove-Item -Path '.nyc_output' -Recurse -Force
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask
+
+      - name: Remove '.taskkey'
+        run: Remove-Item -Path '.taskkey' -Recurse -Force
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask
+
+      - name: Remove 'tests'
+        run: Remove-Item -Path 'tests' -Recurse
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask
+
+      - name: Remove 'tsdocs'
+        run: Remove-Item -Path 'tsdocs' -Recurse -Force
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask
+
+      - name: Remove '*.js.map'
+        run: Get-ChildItem -Path '*' -Include '*.js.map' -Recurse | Remove-Item -Force
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask
+
+      - name: Remove '*.json'
+        run: Remove-Item -Path '*.json' -Exclude 'task*.json' -Force
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask
+
+      - name: Remove '*.ts'
+        run: Get-ChildItem -Path '*' -Include '*.ts' -Recurse | Remove-Item -Force
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask
+
+      - name: Copy to Destination
+        run: Copy-Item -Path '${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}' -Destination '${{ github.workspace }}/build/Release/PipelinesTasks/${{ matrix.task }}' -Recurse
+
+      - name: Copy 'LICENSE.txt'
+        run: Copy-Item -Path '${{ github.workspace }}/LICENSE.txt' -Destination '${{ github.workspace }}/build/Release/PipelinesTasks/${{ matrix.task }}'
 
       - name: Install TFX CLI
         run: npm install -g tfx-cli
 
-      - name: PRMetrics Package – Create
-        run: |-
-          Set-Location -Path '${{ github.workspace }}/Release/PipelinesTasks/PRMetricsV1'
-          tfx extension create --manifest-globs vss-extension.json --output-path ms-omex.prmetrics.vsix
+      - name: Create Release
+        run: tfx extension create --manifest-globs vss-extension.json --output-path ms-omex.${{ matrix.task }}.vsix
+        working-directory: ${{ github.workspace }}/build/Release/PipelinesTasks/${{ matrix.task }}
 
       - name: Upload VSIX
         uses: actions/upload-artifact@v2
         with:
-          name: VSIX
+          name: ${{ matrix.task }}
           path: '**/*.vsix'
 
-  test-validate:
-    name: Test & Validate
+  validate:
+    name: Validate
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Tag – Get Latest
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        id: tag
-        uses: jossef/action-latest-release-info@v1.1.0
-
-      - name: Tag – Version Extract
-        id: version
-        run: |-
-          $Version = '${{ steps.tag.outputs.tag_name }}'.Substring(1)
-          $VersionElements = $Version.Split('.')
-          Write-Output -InputObject "::set-output name=major::$($VersionElements[0])"
-          Write-Output -InputObject "::set-output name=minor::$($VersionElements[1])"
-          Write-Output -InputObject "::set-output name=patch::$($VersionElements[2])"
-
-      - name: Tag – Version Replace in vss-extension.json
-        run: |-
-          $FileContent = Get-Content -Path 'PipelinesTasks/PRMetricsV1/vss-extension.json' -Raw
-          $FileContent = $FileContent -replace '%MAJOR%', '${{ steps.version.outputs.major }}'
-          $FileContent = $FileContent -replace '%MINOR%', '${{ steps.version.outputs.minor }}'
-          $FileContent = $FileContent -replace '%PATCH%', '${{ steps.version.outputs.patch }}'
-          Set-Content -NoNewline -Path 'PipelinesTasks/PRMetricsV1/vss-extension.json' -Value $FileContent
-
-      - name: Tag – Version Replace in task.json
-        run: |-
-          $FileContent = Get-Content -Path 'PipelinesTasks/PRMetricsV1/task/task.json' -Raw
-          $FileContent = $FileContent -replace '%MAJOR%', '${{ steps.version.outputs.major }}'
-          $FileContent = $FileContent -replace '%MINOR%', '${{ steps.version.outputs.minor }}'
-          $FileContent = $FileContent -replace '%PATCH%', '${{ steps.version.outputs.patch }}'
-          Set-Content -NoNewline -Path 'PipelinesTasks/PRMetricsV1/task/task.json' -Value $FileContent
-
-      - name: PowerShell Analysis – Install
-        run: Install-Module -Name 'PSScriptAnalyzer' -Force
-
-      - name: PowerShell Analysis – Run
-        run: |-
-          $Result = (Invoke-ScriptAnalyzer -Path '.' -Recurse | Where-Object -Property 'RuleName' -ne 'TypeNotFound')
-          $Result
-          if ($Result.Count -gt 0) { Throw 'PowerShell Analysis failed.' }
-
       - name: Super Linter
-        uses: github/super-linter@v3.15.3
+        uses: github/super-linter@v3.15.5
         env:
           EDITORCONFIG_FILE_NAME: ../../.editorconfig
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MARKDOWN_CONFIG_FILE: ../../.markdownlint.json
-          VALIDATE_JSCPD: false
-          VALIDATE_POWERSHELL: false
+          TYPESCRIPT_ES_CONFIG_FILE: ../../.eslintrc.yml
 
       - name: Validate Markdown Links
         uses: gaurav-nelson/github-action-markdown-link-check@v1
@@ -150,28 +128,133 @@ jobs:
           json-schema: https://raw.githubusercontent.com/DavidAnson/markdownlint/main/schema/markdownlint-config-schema.json
           use-draft: draft-07
 
-      - name: Validate task.json – Download tasks.schema.json
-        run: Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/microsoft/azure-pipelines-task-lib/master/tasks.schema.json' -OutFile 'tasks.schema.json'
+      - name: Validate package.json – Download package.schema.json
+        run: Invoke-WebRequest -Uri 'https://json.schemastore.org/package.json' -OutFile 'package.schema.json'
 
-      - name: Validate task.json – Update tasks.schema.json
+      - name: Validate package.json – Update package.schema.json
         run: |-
-          $FileContent = Get-Content -Path 'tasks.schema.json' -Raw
-          $FileContent = $FileContent -replace 'draft-04', 'draft-07'
-          Set-Content -NoNewline -Path 'tasks.schema.json' -Value $FileContent
+          $FileContent = Get-Content -Path 'package.schema.json' -Raw
+          $FileContent = $FileContent -replace 'draft-04/schema#', 'draft-07/schema'
+          Set-Content -NoNewline -Path 'package.schema.json' -Value $FileContent
 
-      - name: Validate task.json
+      - name: Validate package.json
         uses: Zingabopp/JsonValidate-Action@v1
         with:
-          json-file: PipelinesTasks/PRMetricsV1/task/task.json
-          json-schema: tasks.schema.json
-          use-draft: draft-07
+          json-file: package.json
+          json-schema: package.schema.json
 
       - name: Security Scan – Validate
         uses: ShiftLeftSecurity/scan-action@v1.3.0
+        env:
+          ENABLE_OSS_RISK: true
         with:
-          type: credscan,depscan
+          type: credscan,depscan,nodejs,yaml
 
       - name: Security Scan – Upload Report
         uses: github/codeql-action/upload-sarif@v1
         with:
           sarif_file: reports
+
+  validate-task:
+    name: Validate – Task
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        task: [PRMetrics]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Validate vss-extension.json
+        uses: Zingabopp/JsonValidate-Action@v1
+        with:
+          json-file: PipelinesTasks/${{ matrix.task }}/vss-extension.json
+          json-schema: https://json.schemastore.org/vss-extension.json
+
+      - name: Validate .mocharc.json – Download .mocharc.schema.json
+        run: Invoke-WebRequest -Uri 'https://json.schemastore.org/mocharc.json' -OutFile '.mocharc.schema.json'
+
+      - name: Validate .mocharc.json – Update .mocharc.schema.json
+        run: |-
+          $FileContent = Get-Content -Path '.mocharc.schema.json' -Raw
+          $FileContent = $FileContent -replace 'draft/2019-09/schema#', 'draft-07/schema'
+          Set-Content -NoNewline -Path '.mocharc.schema.json' -Value $FileContent
+
+      - name: Validate .mocharc.json
+        uses: Zingabopp/JsonValidate-Action@v1
+        with:
+          json-file: PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask/.mocharc.json
+          json-schema: .mocharc.schema.json
+
+      - name: Validate package.json – Download package.schema.json
+        run: Invoke-WebRequest -Uri 'https://json.schemastore.org/package.json' -OutFile 'package.schema.json'
+
+      - name: Validate package.json – Update package.schema.json
+        run: |-
+          $FileContent = Get-Content -Path 'package.schema.json' -Raw
+          $FileContent = $FileContent -replace 'draft-04/schema#', 'draft-07/schema'
+          Set-Content -NoNewline -Path 'package.schema.json' -Value $FileContent
+
+      - name: Validate package.json
+        uses: Zingabopp/JsonValidate-Action@v1
+        with:
+          json-file: PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask/package.json
+          json-schema: package.schema.json
+
+      - name: Validate task.json – Download task.schema.json
+        run: Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/microsoft/azure-pipelines-task-lib/master/tasks.schema.json' -OutFile 'task.schema.json'
+
+      - name: Validate task.json – Update task.schema.json
+        run: |-
+          $FileContent = Get-Content -Path 'task.schema.json' -Raw
+          $FileContent = $FileContent -replace 'draft-04/schema', 'draft-07/schema'
+          Set-Content -NoNewline -Path 'task.schema.json' -Value $FileContent
+
+      - name: Validate task.json
+        uses: Zingabopp/JsonValidate-Action@v1
+        with:
+          json-file: PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask/task.json
+          json-schema: task.schema.json
+
+      - name: Validate task.loc.json
+        uses: Zingabopp/JsonValidate-Action@v1
+        with:
+          json-file: PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask/task.loc.json
+          json-schema: task.schema.json
+
+      - name: Validate tsconfig.json – Download tsconfig.schema.json
+        run: Invoke-WebRequest -Uri 'https://json.schemastore.org/tsconfig.json' -OutFile 'tsconfig.schema.json'
+
+      - name: Validate tsconfig.json – Update tsconfig.schema.json
+        run: |-
+          $FileContent = Get-Content -Path 'tsconfig.schema.json' -Raw
+          $FileContent = $FileContent -replace 'draft-04/schema#', 'draft-07/schema'
+          Set-Content -NoNewline -Path 'tsconfig.schema.json' -Value $FileContent
+
+      - name: Validate tsconfig.json
+        uses: Zingabopp/JsonValidate-Action@v1
+        with:
+          json-file: PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask/tsconfig.json
+          json-schema: tsconfig.schema.json
+
+      - name: Validate typedoc.json
+        uses: Zingabopp/JsonValidate-Action@v1
+        with:
+          json-file: PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask/typedoc.json
+          json-schema: https://typedoc.org/schema.json
+
+      - name: Validate resources.resjson – Download resources.resjson.schema.json
+        run: Invoke-WebRequest -Uri 'https://json.schemastore.org/resjson.json' -OutFile 'resources.resjson.schema.json'
+
+      - name: Validate resources.resjson – Update resources.resjson.schema.json
+        run: |-
+          $FileContent = Get-Content -Path 'resources.resjson.schema.json' -Raw
+          $FileContent = $FileContent -replace 'draft-04/schema#', 'draft-07/schema'
+          Set-Content -NoNewline -Path 'resources.resjson.schema.json' -Value $FileContent
+
+      - name: Validate resources.resjson (en-US)
+        uses: Zingabopp/JsonValidate-Action@v1
+        with:
+          json-file: PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask/Strings/resources.resjson/en-US/resources.resjson
+          json-schema: resources.resjson.schema.json

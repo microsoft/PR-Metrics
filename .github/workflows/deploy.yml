@@ -1,12 +1,9 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT License.
 
-name: Release
+name: Deploy
 
 on:
-  release:
-    types:
-      - created
   workflow_dispatch: null
 
 defaults:
@@ -14,8 +11,8 @@ defaults:
     shell: pwsh
 
 jobs:
-  release:
-    name: Release
+  deploy:
+    name: Deploy
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -75,13 +72,17 @@ jobs:
       - name: Install TFX CLI
         run: npm install -g tfx-cli
 
-      - name: Create Release
-        run: tfx extension create --manifest-globs vss-extension.json --output-path ms-omex.${{ matrix.task }}.vsix
-        working-directory: ${{ github.workspace }}/build/Release/PipelinesTasks/${{ matrix.task }}
+      - name: TFX - Login
+        run: tfx login --service-url https://${{ secrets.AZURE_DEVOPS_INSTANCE }}.visualstudio.com/DefaultCollection --token ${{ secrets.AZURE_DEVOPS_ACCESS_TOKEN }} --no-prompt
 
-      - name: Publish
-        run: >-
-          tfx extension publish
-          --manifest-globs ${{ github.workspace }}/build/Release/PipelinesTasks/${{ matrix.task }}/vss-extension.json
-          --vsix ${{ github.workspace }}/build/Release/PipelinesTasks/${{ matrix.task }}/ms-omex.${{ matrix.task }}.vsix
-          --token ${{ secrets.VS_PAT }}
+      - name: TFX - Delete Old Task
+        env:
+          taskId: >-
+            {
+              "PRMetrics": "907d3b28-6b37-4ac7-ac75-9631ee53e512"
+            }
+        run: tfx build tasks delete --task-id ${{ fromJson(env.taskId)[matrix.task] }} --no-prompt
+        continue-on-error: true
+
+      - name: TFX - Upload New Task
+        run: tfx build tasks upload --task-path ${{ github.workspace }}/build/Release/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask --no-prompt
