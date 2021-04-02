@@ -270,6 +270,7 @@ jobs:
       uses: github/codeql-action/init@v1
       with:
         languages: javascript
+        queries: security-and-quality
 
     - name: Analyze
       uses: github/codeql-action/analyze@v1
