@@ -258,3 +258,18 @@ jobs:
         with:
           json-file: PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask/Strings/resources.resjson/en-US/resources.resjson
           json-schema: resources.resjson.schema.json
+
+  validate-codeql:
+    name: Validate – CodeQL
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Initialize
+      uses: github/codeql-action/init@v1
+      with:
+        languages: javascript
+
+    - name: Analyze
+      uses: github/codeql-action/analyze@v1
