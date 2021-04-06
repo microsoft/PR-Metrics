@@ -50,16 +50,16 @@ jobs:
         run: Remove-Item -Path '.nyc_output' -Recurse -Force
         working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask
 
+      - name: Remove '.taskkey'
+        run: Remove-Item -Path '.taskkey' -Recurse -Force
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask
+
       - name: Remove 'node_modules'
         run: Remove-Item -Path 'node_modules' -Recurse -Force
         working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask
 
       - name: Install Production NPM Dependencies
         run: npm install --only=production
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask
-
-      - name: Remove '.taskkey'
-        run: Remove-Item -Path '.taskkey' -Recurse -Force
         working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask
 
       - name: Remove 'tests'

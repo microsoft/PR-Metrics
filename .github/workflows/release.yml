@@ -49,10 +49,6 @@ jobs:
         run: npm install --only=production
         working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask
 
-      - name: Remove '.taskkey'
-        run: Remove-Item -Path '.taskkey' -Recurse -Force
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask
-
       - name: Remove 'tests'
         run: Remove-Item -Path 'tests' -Recurse
         working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask
