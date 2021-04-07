@@ -3,7 +3,7 @@
   "manifestVersion": 1,
   "id": "prmetrics",
   "name": "PR Metrics",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "publisher": "ms-omex",
   "description": "Augments pull request titles to let reviewers quickly determine PR size and test coverage.",
   "public": true,
@@ -79,10 +79,7 @@
       "type": "ms.vss-distributed-task.task",
       "targets": [
         "ms.vss-distributed-task.tasks"
-      ],
-      "properties": {
-        "name": "buildAndReleaseTask"
-      }
+      ]
     }
   ]
 }
