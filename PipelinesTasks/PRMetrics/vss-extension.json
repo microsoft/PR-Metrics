@@ -3,7 +3,7 @@
   "manifestVersion": 1,
   "id": "prmetrics",
   "name": "PR Metrics",
-  "version": "1.1.3",
+  "version": "1.1.4",
   "publisher": "ms-omex",
   "description": "Augments pull request titles to let reviewers quickly determine PR size and test coverage.",
   "public": true,
@@ -19,7 +19,7 @@
     "Visual Studio Extensions"
   ],
   "icons": {
-    "default": "docs/images/icon.png"
+    "default": "images/icon.png"
   },
   "targets": [
     {
@@ -37,7 +37,7 @@
   ],
   "content": {
     "details": {
-      "path": "docs/overview.md"
+      "path": "overview.md"
     },
     "license": {
       "path": "LICENSE.txt"
@@ -69,7 +69,7 @@
       "path": "buildAndReleaseTask"
     },
     {
-      "path": "docs/images",
+      "path": "images",
       "addressable": true
     }
   ],
