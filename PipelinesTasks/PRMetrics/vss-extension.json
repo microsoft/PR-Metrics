@@ -75,7 +75,7 @@
   ],
   "contributions": [
     {
-      "id": "907d3b28-6b37-4ac7-ac75-9631ee53e512",
+      "id": "prmetrics",
       "type": "ms.vss-distributed-task.task",
       "targets": [
         "ms.vss-distributed-task.tasks"
