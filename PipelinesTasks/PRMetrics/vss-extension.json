@@ -30,7 +30,7 @@
     "vso.code_write"
   ],
   "demands": [
-    "api-version/6.0-preview.1"
+    "api-version/6.0"
   ],
   "categories": [
     "Azure Pipelines"
