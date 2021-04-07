@@ -4,7 +4,7 @@
   "loc.description": "Augments pull request titles to let reviewers quickly determine PR size and test coverage.",
   "loc.description.comment": "The description of the task.",
 
-  "loc.friendlyName": "PR Metrics 1.1.1",
+  "loc.friendlyName": "PR Metrics 1.1.2",
   "loc.friendlyName.comment": "The name of the task.",
 
   "loc.helpMarkDown": "[More information](https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/blob/main/PipelinesTasks/PRMetrics/README.md)",
