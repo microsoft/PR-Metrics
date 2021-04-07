@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/vss-extension.json",
   "manifestVersion": 1,
-  "id": "pr-metrics",
+  "id": "prmetrics",
   "name": "PR Metrics",
   "version": "1.1.0",
   "publisher": "ms-omex",
@@ -19,7 +19,7 @@
     "Visual Studio Extensions"
   ],
   "icons": {
-    "default": "buildAndReleaseTask/icon.png"
+    "default": "docs/images/icon.png"
   },
   "targets": [
     {
@@ -30,7 +30,7 @@
     "vso.code_write"
   ],
   "demands": [
-    "api-version/4.1"
+    "api-version/6.0-preview.1"
   ],
   "categories": [
     "Azure Pipelines"
