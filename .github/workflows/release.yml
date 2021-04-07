@@ -72,6 +72,9 @@ jobs:
       - name: Copy to Destination
         run: Copy-Item -Path '${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}' -Destination '${{ github.workspace }}/build/Release/PipelinesTasks/${{ matrix.task }}' -Recurse
 
+      - name: Copy 'LICENSE.txt'
+        run: Copy-Item -Path '${{ github.workspace }}/LICENSE.txt' -Destination '${{ github.workspace }}/build/Release/PipelinesTasks/${{ matrix.task }}'
+
       - name: Install TFX CLI
         run: npm install -g tfx-cli
 
