@@ -1,9 +1,9 @@
 {
   "$schema": "https://json.schemastore.org/vss-extension.json",
   "manifestVersion": 1,
-  "id": "pr-metrics",
+  "id": "prmetrics",
   "name": "PR Metrics",
-  "version": "1.1.0",
+  "version": "1.1.4",
   "publisher": "ms-omex",
   "description": "Augments pull request titles to let reviewers quickly determine PR size and test coverage.",
   "public": true,
@@ -19,7 +19,7 @@
     "Visual Studio Extensions"
   ],
   "icons": {
-    "default": "buildAndReleaseTask/icon.png"
+    "default": "images/icon.png"
   },
   "targets": [
     {
@@ -30,14 +30,14 @@
     "vso.code_write"
   ],
   "demands": [
-    "api-version/4.1"
+    "api-version/6.0"
   ],
   "categories": [
     "Azure Pipelines"
   ],
   "content": {
     "details": {
-      "path": "docs/overview.md"
+      "path": "overview.md"
     },
     "license": {
       "path": "LICENSE.txt"
@@ -69,13 +69,13 @@
       "path": "buildAndReleaseTask"
     },
     {
-      "path": "docs/images",
+      "path": "images",
       "addressable": true
     }
   ],
   "contributions": [
     {
-      "id": "907d3b28-6b37-4ac7-ac75-9631ee53e512",
+      "id": "prmetrics",
       "type": "ms.vss-distributed-task.task",
       "targets": [
         "ms.vss-distributed-task.tasks"
