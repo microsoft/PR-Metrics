@@ -183,7 +183,7 @@ describe('codeMetrics.ts', (): void => {
       ['1\t1\tf{a => older}/{b => test.ts}', 'XS', true, new CodeMetricsData(0, 1, 0)],
       ['0\t0\tfile.ts\n', 'XS', true, new CodeMetricsData(0, 0, 0)]
     ], (data: [string, string, boolean, CodeMetricsData]): void => {
-      it(`with default inputs and git diff '${data[0].replace('\n', '\\n')}', returns '${data[1]}' size and '${data[2]}' test coverage`, (): void => {
+      it(`with default inputs and git diff '${data[0].replace(/\n/g, '\\n')}', returns '${data[1]}' size and '${data[2]}' test coverage`, (): void => {
         // Arrange
         when(gitInvoker.getDiffSummary()).thenReturn(data[0])
 
@@ -262,7 +262,7 @@ describe('codeMetrics.ts', (): void => {
       ['1\t0\tfolder/ignored.ts', 'XS', true, new CodeMetricsData(0, 0, 1), ['folder/ignored.ts']],
       ['1\t0\tfolder/ignored.cs', 'XS', true, new CodeMetricsData(0, 0, 1), ['folder/ignored.cs']]
     ], (data: [string, string, boolean, CodeMetricsData, string[]]): void => {
-      it(`with non-default inputs and git diff '${data[0].replace('\n', '\\n')}', returns '${data[1]}' size and '${data[2]}' test coverage`, (): void => {
+      it(`with non-default inputs and git diff '${data[0].replace(/\n/g, '\\n')}', returns '${data[1]}' size and '${data[2]}' test coverage`, (): void => {
         // Arrange
         when(inputs.baseSize).thenReturn(100)
         when(inputs.growthRate).thenReturn(2.0)

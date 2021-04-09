@@ -97,7 +97,6 @@ jobs:
       - name: Check Release Validity
         run: >-
           tfx extension isvalid
-          --manifest-globs ${{ github.workspace }}/build/Release/PipelinesTasks/${{ matrix.task }}/vss-extension.json
           --vsix ${{ github.workspace }}/build/Release/PipelinesTasks/${{ matrix.task }}/ms-omex.${{ matrix.task }}.vsix
           --token ${{ secrets.VS_PAT }}
 
@@ -113,14 +112,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-
-      - name: Super Linter
-        uses: github/super-linter@v3.15.5
-        env:
-          EDITORCONFIG_FILE_NAME: ../../.editorconfig
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          MARKDOWN_CONFIG_FILE: ../../.markdownlint.json
-          TYPESCRIPT_ES_CONFIG_FILE: ../../.eslintrc.yml
 
       - name: Validate Markdown Links
         uses: gaurav-nelson/github-action-markdown-link-check@v1
@@ -160,6 +151,36 @@ jobs:
         uses: github/codeql-action/upload-sarif@v1
         with:
           sarif_file: reports
+
+  validate-codeql:
+    name: Validate – CodeQL
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Initialize
+      uses: github/codeql-action/init@v1
+      with:
+        queries: security-and-quality
+
+    - name: Analyze
+      uses: github/codeql-action/analyze@v1
+
+  validate-linter:
+    name: Validate – Linter
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Super Linter
+        uses: github/super-linter@v3.15.5
+        env:
+          EDITORCONFIG_FILE_NAME: ../../.editorconfig
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MARKDOWN_CONFIG_FILE: ../../.markdownlint.json
+          TYPESCRIPT_ES_CONFIG_FILE: ../../.eslintrc.yml
 
   validate-task:
     name: Validate – Task
@@ -264,18 +285,3 @@ jobs:
         with:
           json-file: PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask/Strings/resources.resjson/en-US/resources.resjson
           json-schema: resources.resjson.schema.json
-
-  validate-codeql:
-    name: Validate – CodeQL
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-
-    - name: Initialize
-      uses: github/codeql-action/init@v1
-      with:
-        queries: security-and-quality
-
-    - name: Analyze
-      uses: github/codeql-action/analyze@v1

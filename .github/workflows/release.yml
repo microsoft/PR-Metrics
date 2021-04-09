@@ -85,7 +85,6 @@ jobs:
       - name: Check Release Validity
         run: >-
           tfx extension isvalid
-          --manifest-globs ${{ github.workspace }}/build/Release/PipelinesTasks/${{ matrix.task }}/vss-extension.json
           --vsix ${{ github.workspace }}/build/Release/PipelinesTasks/${{ matrix.task }}/ms-omex.${{ matrix.task }}.vsix
           --token ${{ secrets.VS_PAT }}
 
