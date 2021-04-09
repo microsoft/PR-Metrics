@@ -79,10 +79,8 @@ jobs:
         run: npm install -g tfx-cli
 
       - name: Create Release
-        run: >-
-          tfx extension create
-          --manifest-globs ${{ github.workspace }}/build/Release/PipelinesTasks/${{ matrix.task }}/vss-extension.json
-          --output-path ms-omex.${{ matrix.task }}.vsix
+        run: tfx extension create --manifest-globs vss-extension.json --output-path ms-omex.${{ matrix.task }}.vsix
+        working-directory: ${{ github.workspace }}/build/Release/PipelinesTasks/${{ matrix.task }}
 
       - name: Check Release Validity
         run: >-
