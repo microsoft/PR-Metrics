@@ -79,10 +79,19 @@ jobs:
         run: npm install -g tfx-cli
 
       - name: Create Release
-        run: tfx extension create --manifest-globs vss-extension.json --output-path ms-omex.${{ matrix.task }}.vsix
-        working-directory: ${{ github.workspace }}/build/Release/PipelinesTasks/${{ matrix.task }}
+        run: >-
+          tfx extension create
+          --manifest-globs ${{ github.workspace }}/build/Release/PipelinesTasks/${{ matrix.task }}/vss-extension.json
+          --output-path ms-omex.${{ matrix.task }}.vsix
 
-      - name: Publish
+      - name: Check Release Validity
+        run: >-
+          tfx extension isvalid
+          --manifest-globs ${{ github.workspace }}/build/Release/PipelinesTasks/${{ matrix.task }}/vss-extension.json
+          --vsix ${{ github.workspace }}/build/Release/PipelinesTasks/${{ matrix.task }}/ms-omex.${{ matrix.task }}.vsix
+          --token ${{ secrets.VS_PAT }}
+
+      - name: Publish Release
         run: >-
           tfx extension publish
           --manifest-globs ${{ github.workspace }}/build/Release/PipelinesTasks/${{ matrix.task }}/vss-extension.json
