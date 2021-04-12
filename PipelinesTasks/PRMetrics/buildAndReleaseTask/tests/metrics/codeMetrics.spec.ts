@@ -25,7 +25,7 @@ describe('codeMetrics.ts', (): void => {
     when(inputs.growthRate).thenReturn(InputsDefault.growthRate)
     when(inputs.testFactor).thenReturn(InputsDefault.testFactor)
     when(inputs.fileMatchingPatterns).thenReturn(InputsDefault.fileMatchingPatterns)
-    when(inputs.codeFileExtensions).thenReturn(InputsDefault.codeFileExtensions)
+    when(inputs.codeFileExtensions).thenReturn(new Set<string>(InputsDefault.codeFileExtensions))
 
     taskLibWrapper = mock(TaskLibWrapper)
     when(taskLibWrapper.loc('metrics.codeMetrics.titleSizeXS')).thenReturn('XS')

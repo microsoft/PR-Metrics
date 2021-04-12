@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 import { injectable } from 'tsyringe'
+import { Validator } from '../utilities/validator'
 import CodeMetrics from '../metrics/codeMetrics'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
 
@@ -31,6 +32,21 @@ export default class PullRequest {
     this._taskLibWrapper.debug('* PullRequest.isPullRequest')
 
     return process.env.SYSTEM_PULLREQUEST_PULLREQUESTID !== undefined
+  }
+
+  /**
+   * Determines whether the task is running against a supported pull request provider.
+   * @returns `true` if the task is running against a supported pull request provider, or the name of the pull request provider otherwise.
+   */
+  public get isSupportedProvider (): boolean | string {
+    this._taskLibWrapper.debug('* PullRequest.isSupportedProvider')
+
+    const variable: string = Validator.validate(process.env.BUILD_REPOSITORY_PROVIDER, 'BUILD_REPOSITORY_PROVIDER', 'PullRequest.isSupportedProvider')
+    if (variable === 'TfsGit') {
+      return true
+    }
+
+    return variable
   }
 
   /**

@@ -51,6 +51,11 @@ export default class CodeMetricsCalculator {
       return this._taskLibWrapper.loc('metrics.codeMetricsCalculator.noPullRequest')
     }
 
+    const provider: boolean | string = this._pullRequest.isSupportedProvider
+    if (provider !== true) {
+      return this._taskLibWrapper.loc('metrics.codeMetricsCalculator.unsupportedProvider', provider)
+    }
+
     return null
   }
 

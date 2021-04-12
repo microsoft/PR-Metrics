@@ -15,7 +15,7 @@ describe('inputs.ts', (): void => {
   const adjustingGrowthRateResource: string = `Adjusting the growth rate input to '${InputsDefault.growthRate}'.`
   const adjustingTestFactorResource: string = `Adjusting the test factor input to '${InputsDefault.testFactor}'.`
   const adjustingFileMatchingPatternsResource: string = `Adjusting the file matching patterns input to '${JSON.stringify(InputsDefault.fileMatchingPatterns)}'.`
-  const adjustingCodeFileExtensionsResource: string = `Adjusting the code file extensions input to '${JSON.stringify(Array.from(InputsDefault.codeFileExtensions))}'.`
+  const adjustingCodeFileExtensionsResource: string = `Adjusting the code file extensions input to '${JSON.stringify(InputsDefault.codeFileExtensions)}'.`
   const disablingTestFactorResource: string = 'Disabling the test factor validation.'
   const settingBaseSizeResource: string = 'Setting the base size input to \'VALUE\'.'
   const settingGrowthRateResource: string = 'Setting the growth rate input to \'VALUE\'.'
@@ -39,7 +39,7 @@ describe('inputs.ts', (): void => {
     when(taskLibWrapper.loc('metrics.inputs.adjustingGrowthRate', InputsDefault.growthRate.toLocaleString())).thenReturn(adjustingGrowthRateResource)
     when(taskLibWrapper.loc('metrics.inputs.adjustingTestFactor', InputsDefault.testFactor.toLocaleString())).thenReturn(adjustingTestFactorResource)
     when(taskLibWrapper.loc('metrics.inputs.adjustingFileMatchingPatterns', JSON.stringify(InputsDefault.fileMatchingPatterns))).thenReturn(adjustingFileMatchingPatternsResource)
-    when(taskLibWrapper.loc('metrics.inputs.adjustingCodeFileExtensions', JSON.stringify(Array.from(InputsDefault.codeFileExtensions)))).thenReturn(adjustingCodeFileExtensionsResource)
+    when(taskLibWrapper.loc('metrics.inputs.adjustingCodeFileExtensions', JSON.stringify(InputsDefault.codeFileExtensions))).thenReturn(adjustingCodeFileExtensionsResource)
     when(taskLibWrapper.loc('metrics.inputs.disablingTestFactor')).thenReturn(disablingTestFactorResource)
     when(taskLibWrapper.loc('metrics.inputs.settingBaseSize', anyString())).thenReturn(settingBaseSizeResource)
     when(taskLibWrapper.loc('metrics.inputs.settingGrowthRate', anyString())).thenReturn(settingGrowthRateResource)
@@ -59,7 +59,7 @@ describe('inputs.ts', (): void => {
         expect(inputs.growthRate).to.equal(InputsDefault.growthRate)
         expect(inputs.testFactor).to.equal(InputsDefault.testFactor)
         expect(inputs.fileMatchingPatterns).to.deep.equal(InputsDefault.fileMatchingPatterns)
-        expect(inputs.codeFileExtensions).to.deep.equal(InputsDefault.codeFileExtensions)
+        expect(inputs.codeFileExtensions).to.deep.equal(new Set<string>(InputsDefault.codeFileExtensions))
         verify(taskLibWrapper.debug('* Inputs.initialize()')).times(5)
         verify(taskLibWrapper.debug('* Inputs.initializeBaseSize()')).once()
         verify(taskLibWrapper.debug('* Inputs.initializeGrowthRate()')).once()
@@ -653,7 +653,7 @@ describe('inputs.ts', (): void => {
             const inputs: Inputs = new Inputs(instance(consoleWrapper), instance(taskLibWrapper))
 
             // Assert
-            expect(inputs.codeFileExtensions).to.deep.equal(InputsDefault.codeFileExtensions)
+            expect(inputs.codeFileExtensions).to.deep.equal(new Set<string>(InputsDefault.codeFileExtensions))
             verify(taskLibWrapper.debug('* Inputs.initialize()')).once()
             verify(taskLibWrapper.debug('* Inputs.initializeBaseSize()')).once()
             verify(taskLibWrapper.debug('* Inputs.initializeGrowthRate()')).once()
@@ -797,6 +797,43 @@ describe('inputs.ts', (): void => {
         verify(consoleWrapper.log(settingTestFactorResource)).never()
         verify(consoleWrapper.log(settingFileMatchingPatternsResource)).never()
         verify(consoleWrapper.log(settingCodeFileExtensionsResource)).once()
+      })
+
+      it('should convert extensions to lower case', (): void => {
+        // Arrange
+        when(taskLibWrapper.getInput('CodeFileExtensions', false)).thenReturn('ADA\ncS\nTxT')
+
+        // Act
+        const inputs: Inputs = new Inputs(instance(consoleWrapper), instance(taskLibWrapper))
+
+        // Assert
+        expect(inputs.codeFileExtensions).to.deep.equal(new Set<string>(['ada', 'cs', 'txt']))
+        verify(taskLibWrapper.debug('* Inputs.initialize()')).once()
+        verify(taskLibWrapper.debug('* Inputs.initializeBaseSize()')).once()
+        verify(taskLibWrapper.debug('* Inputs.initializeGrowthRate()')).once()
+        verify(taskLibWrapper.debug('* Inputs.initializeTestFactor()')).once()
+        verify(taskLibWrapper.debug('* Inputs.initializeFileMatchingPatterns()')).once()
+        verify(taskLibWrapper.debug('* Inputs.initializeCodeFileExtensions()')).once()
+        verify(taskLibWrapper.debug('* Inputs.codeFileExtensions')).once()
+        verify(consoleWrapper.log(adjustingBaseSizeResource)).once()
+        verify(consoleWrapper.log(adjustingGrowthRateResource)).once()
+        verify(consoleWrapper.log(adjustingTestFactorResource)).once()
+        verify(consoleWrapper.log(adjustingFileMatchingPatternsResource)).once()
+        verify(consoleWrapper.log(adjustingCodeFileExtensionsResource)).never()
+        verify(consoleWrapper.log(disablingTestFactorResource)).never()
+        verify(consoleWrapper.log(settingBaseSizeResource)).never()
+        verify(consoleWrapper.log(settingGrowthRateResource)).never()
+        verify(consoleWrapper.log(settingTestFactorResource)).never()
+        verify(consoleWrapper.log(settingFileMatchingPatternsResource)).never()
+        verify(consoleWrapper.log(settingCodeFileExtensionsResource)).once()
+      })
+
+      it('InputsDefault.codeFileExtensions should be sorted', (): void => {
+        // Arrange
+        const sortedCodeFileExtensions: string[] = InputsDefault.codeFileExtensions.sort()
+
+        // Assert
+        expect(sortedCodeFileExtensions).to.deep.equal(InputsDefault.codeFileExtensions)
       })
     })
   })

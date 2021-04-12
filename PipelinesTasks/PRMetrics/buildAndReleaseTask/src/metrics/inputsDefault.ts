@@ -29,7 +29,7 @@ export module InputsDefault {
   /**
    * The default code file extensions, which is the set of extensions for files containing code so that non-code files can be excluded.
    */
-  export const codeFileExtensions: Set<string> = new Set<string>([
+  export const codeFileExtensions: string[] = [
     'ada',
     'adb',
     'ads',
@@ -138,5 +138,5 @@ export module InputsDefault {
     'xq',
     'xsl',
     'y'
-  ])
+  ]
 }

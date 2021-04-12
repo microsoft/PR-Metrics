@@ -31,15 +31,17 @@ describe('codeMetricsCalculator.ts', (): void => {
 
     pullRequest = mock(PullRequest)
     when(pullRequest.isPullRequest).thenReturn(true)
+    when(pullRequest.isSupportedProvider).thenReturn(true)
 
     pullRequestComments = mock(PullRequestComments)
 
     taskLibWrapper = mock(TaskLibWrapper)
     when(taskLibWrapper.loc('metrics.codeMetricsCalculator.noAccessToken')).thenReturn('Could not access the OAuth token. Enable the option \'Allow scripts to access OAuth token\' under the build process phase settings.')
-    when(taskLibWrapper.loc('metrics.codeMetricsCalculator.noPullRequest')).thenReturn('The build is not running against a pull request. Canceling task with warning.')
+    when(taskLibWrapper.loc('metrics.codeMetricsCalculator.noPullRequest')).thenReturn('The build is not running against a pull request.')
+    when(taskLibWrapper.loc('metrics.codeMetricsCalculator.unsupportedProvider', 'Other')).thenReturn('The build is running against a pull request from \'Other\', which is not a supported provider.')
   })
 
-  describe('shouldSkip', (): void => {
+  describe('shouldSkipWithUnsupportedProvider', (): void => {
     it('should return null when the task should not be skipped', (): void => {
       // Arrange
       const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(codeMetrics), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
@@ -52,7 +54,7 @@ describe('codeMetricsCalculator.ts', (): void => {
       verify(taskLibWrapper.debug('* CodeMetricsCalculator.shouldSkip')).once()
     })
 
-    it('should return the appropriate message when not a pull request', (): void => {
+    it('should return the appropriate message when not a supported provider', (): void => {
       // Arrange
       when(pullRequest.isPullRequest).thenReturn(false)
       const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(codeMetrics), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
@@ -61,7 +63,20 @@ describe('codeMetricsCalculator.ts', (): void => {
       const result: string | null = codeMetricsCalculator.shouldSkip
 
       // Assert
-      expect(result).to.equal('The build is not running against a pull request. Canceling task with warning.')
+      expect(result).to.equal('The build is not running against a pull request.')
+      verify(taskLibWrapper.debug('* CodeMetricsCalculator.shouldSkip')).once()
+    })
+
+    it('should return null when the task should not be skipped', (): void => {
+      // Arrange
+      when(pullRequest.isSupportedProvider).thenReturn('Other')
+      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(codeMetrics), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
+
+      // Act
+      const result: string | null = codeMetricsCalculator.shouldSkip
+
+      // Assert
+      expect(result).to.equal('The build is running against a pull request from \'Other\', which is not a supported provider.')
       verify(taskLibWrapper.debug('* CodeMetricsCalculator.shouldSkip')).once()
     })
   })

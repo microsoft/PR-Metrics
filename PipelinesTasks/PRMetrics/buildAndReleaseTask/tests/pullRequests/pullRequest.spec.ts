@@ -71,6 +71,53 @@ describe('pullRequest.ts', (): void => {
     })
   })
 
+  describe('isSupportedProvider', (): void => {
+    it('should throw an error when BUILD_REPOSITORY_PROVIDER is undefined', (): void => {
+      // Arrange
+      delete process.env.BUILD_REPOSITORY_PROVIDER
+      const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(taskLibWrapper))
+
+      // Act
+      const func: () => boolean | string = () => pullRequest.isSupportedProvider
+
+      // Assert
+      expect(func).to.throw('\'BUILD_REPOSITORY_PROVIDER\', accessed within \'PullRequest.isSupportedProvider\', is invalid, null, or undefined \'undefined\'.')
+      verify(taskLibWrapper.debug('* PullRequest.isSupportedProvider')).once()
+    })
+
+    it('should return true when BUILD_REPOSITORY_PROVIDER is set to TfsGit', (): void => {
+      // Arrange
+      process.env.BUILD_REPOSITORY_PROVIDER = 'TfsGit'
+      const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(taskLibWrapper))
+
+      // Act
+      const result: boolean | string = pullRequest.isSupportedProvider
+
+      // Assert
+      expect(result).to.equal(true)
+      verify(taskLibWrapper.debug('* PullRequest.isSupportedProvider')).once()
+
+      // Finalization
+      delete process.env.BUILD_REPOSITORY_PROVIDER
+    })
+
+    it('should return the provider when BUILD_REPOSITORY_PROVIDER is not set to TfsGit', (): void => {
+      // Arrange
+      process.env.BUILD_REPOSITORY_PROVIDER = 'Other'
+      const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(taskLibWrapper))
+
+      // Act
+      const result: boolean | string = pullRequest.isSupportedProvider
+
+      // Assert
+      expect(result).to.equal('Other')
+      verify(taskLibWrapper.debug('* PullRequest.isSupportedProvider')).once()
+
+      // Finalization
+      delete process.env.BUILD_REPOSITORY_PROVIDER
+    })
+  })
+
   describe('getUpdatedDescription()', (): void => {
     it('should return null when the current description is set', (): void => {
       // Arrange

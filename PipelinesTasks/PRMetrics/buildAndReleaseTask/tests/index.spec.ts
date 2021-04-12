@@ -27,10 +27,34 @@ describe('index.ts', (): void => {
     done()
   })
 
+  it('should skip when not running for a supported provider', function test (done: mocha.Done): void {
+    // Arrange
+    this.timeout(0)
+    process.env.SYSTEM_PULLREQUEST_PULLREQUESTID = '12345'
+    process.env.BUILD_REPOSITORY_PROVIDER = 'Other'
+    const file: string = path.join(__dirname, 'index.task.js')
+    const task: taskLibMock.MockTestRunner = new taskLibMock.MockTestRunner(file)
+
+    // Act
+    task.run()
+
+    // Assert
+    expect(task.succeeded).to.equal(true)
+    expect(task.warningIssues).to.deep.equal([])
+    expect(task.errorIssues).to.deep.equal([])
+    expect(task.stdout.endsWith(`##vso[task.complete result=Skipped;]loc_mock_metrics.codeMetricsCalculator.unsupportedProvider Other${os.EOL}`)).to.equal(true)
+
+    // Finalization
+    delete process.env.SYSTEM_PULLREQUEST_PULLREQUESTID
+    delete process.env.BUILD_REPOSITORY_PROVIDER
+    done()
+  })
+
   it('should fail when no access token is available', function test (done: mocha.Done): void {
     // Arrange
     this.timeout(0)
     process.env.SYSTEM_PULLREQUEST_PULLREQUESTID = '12345'
+    process.env.BUILD_REPOSITORY_PROVIDER = 'TfsGit'
     const file: string = path.join(__dirname, 'index.task.js')
     const task: taskLibMock.MockTestRunner = new taskLibMock.MockTestRunner(file)
 
@@ -44,6 +68,7 @@ describe('index.ts', (): void => {
 
     // Finalization
     delete process.env.SYSTEM_PULLREQUEST_PULLREQUESTID
+    delete process.env.BUILD_REPOSITORY_PROVIDER
     done()
   })
 
@@ -51,6 +76,7 @@ describe('index.ts', (): void => {
     // Arrange
     this.timeout(0)
     process.env.SYSTEM_PULLREQUEST_PULLREQUESTID = '12345'
+    process.env.BUILD_REPOSITORY_PROVIDER = 'TfsGit'
     process.env.SYSTEM_ACCESSTOKEN = 'OAUTH'
     process.env.PRMETRICS_SKIP_APIS = 'true'
     const file: string = path.join(__dirname, 'index.task.js')
@@ -67,6 +93,7 @@ describe('index.ts', (): void => {
 
     // Finalization
     delete process.env.SYSTEM_PULLREQUEST_PULLREQUESTID
+    delete process.env.BUILD_REPOSITORY_PROVIDER
     delete process.env.SYSTEM_ACCESSTOKEN
     delete process.env.PRMETRICS_SKIP_APIS
     done()
@@ -76,6 +103,7 @@ describe('index.ts', (): void => {
     // Arrange
     this.timeout(0)
     process.env.SYSTEM_PULLREQUEST_PULLREQUESTID = '12345'
+    process.env.BUILD_REPOSITORY_PROVIDER = 'TfsGit'
     process.env.SYSTEM_ACCESSTOKEN = 'OAUTH'
     process.env.SYSTEM_TEAMPROJECT = 'Project'
     process.env.BUILD_REPOSITORY_ID = 'RepoID'
@@ -95,6 +123,7 @@ describe('index.ts', (): void => {
 
     // Finalization
     delete process.env.SYSTEM_PULLREQUEST_PULLREQUESTID
+    delete process.env.BUILD_REPOSITORY_PROVIDER
     delete process.env.SYSTEM_ACCESSTOKEN
     delete process.env.SYSTEM_TEAMPROJECT
     delete process.env.BUILD_REPOSITORY_ID

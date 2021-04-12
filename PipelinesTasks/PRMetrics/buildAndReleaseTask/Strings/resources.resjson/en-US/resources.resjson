@@ -73,8 +73,11 @@
   "loc.messages.metrics.codeMetricsCalculator.noAccessToken": "Could not access the OAuth token. Enable the option 'Allow scripts to access OAuth token' under the build process phase settings.",
   "loc.messages.metrics.codeMetricsCalculator.noAccessToken.comment": "The message to display when terminating as no access token is available.",
 
-  "loc.messages.metrics.codeMetricsCalculator.noPullRequest": "The build is not running against a pull request. Canceling task with warning.",
-  "loc.messages.metrics.codeMetricsCalculator.noPullRequest.comment": "The message to display when terminating the build is not running against a pull request.",
+  "loc.messages.metrics.codeMetricsCalculator.noPullRequest": "The build is not running against a pull request.",
+  "loc.messages.metrics.codeMetricsCalculator.noPullRequest.comment": "The message to display when skipping the build because it is not running against a pull request.",
+
+  "loc.messages.metrics.codeMetricsCalculator.unsupportedProvider": "The build is running against a pull request from '%s', which is not a supported provider.",
+  "loc.messages.metrics.codeMetricsCalculator.unsupportedProvider.comment": "The message to display when skipping the build because it is not running against a pull request from a supported provider.",
 
   "loc.messages.metrics.inputs.adjustingBaseSize": "Adjusting the base size input to '%s'.",
   "loc.messages.metrics.inputs.adjustingBaseSize.comment": "The message printed when the base size input is being adjusted to the default. The placeholder will be replaced by the default value.",
