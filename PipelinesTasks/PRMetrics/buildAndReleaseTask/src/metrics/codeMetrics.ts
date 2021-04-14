@@ -201,9 +201,16 @@ export default class CodeMetrics {
         .replace(/{.*? => ([^}]+?)}/g, '$1')
         .replace(/.*? => ([^}]+?)/g, '$1')
 
-      const linesAddedNumber: number = parseInt(elements[0]!)
-      if (isNaN(linesAddedNumber)) {
-        throw Error(`Could not parse '${elements[0]}' from line '${line}'.`)
+      // Parse the number of lines added. For binary files, the lines added will be '-'.
+      let linesAddedNumber: number
+      const linesAddedElement: string = elements[0]!
+      if (linesAddedElement === '-') {
+        linesAddedNumber = 0
+      } else {
+        linesAddedNumber = parseInt(linesAddedElement)
+        if (isNaN(linesAddedNumber)) {
+          throw Error(`Could not parse '${elements[0]}' from line '${line}'.`)
+        }
       }
 
       result.push({
