@@ -13,6 +13,10 @@ import TaskLibWrapper from '../wrappers/taskLibWrapper'
 export default class GitInvoker {
   private readonly _taskLibWrapper: TaskLibWrapper
 
+  private _isInitialized: boolean = false
+  private _targetBranch: string = ''
+  private _pullRequestId: string = ''
+
   /**
    * Initializes a new instance of the `GitInvoker` class.
    * @param taskLibWrapper The wrapper around the Azure Pipelines Task Lib.
@@ -22,15 +26,50 @@ export default class GitInvoker {
   }
 
   /**
+   * Gets a value indicating whether the current folder corresponds to a Git enlistment.
+   * @returns A value indicating whether the current folder corresponds to a Git enlistment.
+   */
+  public get isGitEnlistment (): boolean {
+    this._taskLibWrapper.debug('* GitInvoker.isGitEnlistment')
+
+    const result: string = this.invokeGit('rev-parse --is-inside-work-tree')
+    return result === 'true'
+  }
+
+  /**
+   * Gets a value indicating whether sufficient Git history is available to generate the PR metrics.
+   * @returns A value indicating whether sufficient Git history is available to generate the PR metrics.
+   */
+  public get isGitHistoryAvailable (): boolean {
+    this._taskLibWrapper.debug('* GitInvoker.isGitHistoryAvailable')
+
+    this.initialize()
+    const result: string = this.invokeGit(`rev-parse --branch origin/${this._targetBranch}...pull/${this._pullRequestId}/merge`)
+
+    return !result.startsWith(`fatal: ambiguous argument 'origin/${this._targetBranch}...pull/${this._pullRequestId}/merge': unknown revision or path not in the working tree.`)
+  }
+
+  /**
    * Gets a diff summary related to the changes in the current branch.
    * @returns The diff summary.
    */
   public getDiffSummary (): string {
     this._taskLibWrapper.debug('* GitInvoker.getDiffSummary()')
 
-    const targetBranch: string = this.getTargetBranch()
-    const pullRequestId: string = this.getPullRequestId()
-    return this.invokeGit(`diff --numstat origin/${targetBranch}...pull/${pullRequestId}/merge`)
+    this.initialize()
+    return this.invokeGit(`diff --numstat origin/${this._targetBranch}...pull/${this._pullRequestId}/merge`)
+  }
+
+  private initialize (): void {
+    this._taskLibWrapper.debug('* GitInvoker.initialize()')
+
+    if (this._isInitialized) {
+      return
+    }
+
+    this._targetBranch = this.getTargetBranch()
+    this._pullRequestId = this.getPullRequestId()
+    this._isInitialized = true
   }
 
   private getTargetBranch (): string {

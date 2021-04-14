@@ -10,6 +10,7 @@ import AzureReposInvoker from '../../src/azureRepos/azureReposInvoker'
 import CodeMetrics from '../../src/metrics/codeMetrics'
 import CodeMetricsCalculator from '../../src/metrics/codeMetricsCalculator'
 import CodeMetricsData from '../../src/metrics/codeMetricsData'
+import GitInvoker from '../../src/git/gitInvoker'
 import IPullRequestMetadata from '../../src/azureRepos/iPullRequestMetadata'
 import PullRequest from '../../src/pullRequests/pullRequest'
 import PullRequestComments from '../../src/pullRequests/pullRequestComments'
@@ -19,6 +20,7 @@ import TaskLibWrapper from '../../src/wrappers/taskLibWrapper'
 describe('codeMetricsCalculator.ts', (): void => {
   let azureReposInvoker: AzureReposInvoker
   let codeMetrics: CodeMetrics
+  let gitInvoker: GitInvoker
   let pullRequest: PullRequest
   let pullRequestComments: PullRequestComments
   let taskLibWrapper: TaskLibWrapper
@@ -28,6 +30,8 @@ describe('codeMetricsCalculator.ts', (): void => {
     when(azureReposInvoker.isAccessTokenAvailable).thenReturn(true)
 
     codeMetrics = mock(CodeMetrics)
+
+    gitInvoker = mock(GitInvoker)
 
     pullRequest = mock(PullRequest)
     when(pullRequest.isPullRequest).thenReturn(true)
@@ -44,7 +48,7 @@ describe('codeMetricsCalculator.ts', (): void => {
   describe('shouldSkipWithUnsupportedProvider', (): void => {
     it('should return null when the task should not be skipped', (): void => {
       // Arrange
-      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(codeMetrics), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
+      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(codeMetrics), instance(gitInvoker), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
 
       // Act
       const result: string | null = codeMetricsCalculator.shouldSkip
@@ -57,7 +61,7 @@ describe('codeMetricsCalculator.ts', (): void => {
     it('should return the appropriate message when not a supported provider', (): void => {
       // Arrange
       when(pullRequest.isPullRequest).thenReturn(false)
-      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(codeMetrics), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
+      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(codeMetrics), instance(gitInvoker), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
 
       // Act
       const result: string | null = codeMetricsCalculator.shouldSkip
@@ -70,7 +74,7 @@ describe('codeMetricsCalculator.ts', (): void => {
     it('should return null when the task should not be skipped', (): void => {
       // Arrange
       when(pullRequest.isSupportedProvider).thenReturn('Other')
-      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(codeMetrics), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
+      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(codeMetrics), instance(gitInvoker), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
 
       // Act
       const result: string | null = codeMetricsCalculator.shouldSkip
@@ -84,7 +88,7 @@ describe('codeMetricsCalculator.ts', (): void => {
   describe('shouldStop', (): void => {
     it('should return null when the task should not terminate', (): void => {
       // Arrange
-      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(codeMetrics), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
+      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(codeMetrics), instance(gitInvoker), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
 
       // Act
       const result: string | null = codeMetricsCalculator.shouldStop
@@ -97,7 +101,7 @@ describe('codeMetricsCalculator.ts', (): void => {
     it('should return the appropriate message when no access token is available', (): void => {
       // Arrange
       when(azureReposInvoker.isAccessTokenAvailable).thenReturn(false)
-      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(codeMetrics), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
+      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(codeMetrics), instance(gitInvoker), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
 
       // Act
       const result: string | null = codeMetricsCalculator.shouldStop
@@ -114,7 +118,7 @@ describe('codeMetricsCalculator.ts', (): void => {
       when(azureReposInvoker.getTitleAndDescription()).thenResolve({ title: 'Title', description: 'Description' })
       when(pullRequest.getUpdatedTitle('Title')).thenReturn('S✔ ◾ TODO')
       when(pullRequest.getUpdatedDescription('Description')).thenReturn('Description')
-      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(codeMetrics), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
+      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(codeMetrics), instance(gitInvoker), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
 
       // Act
       await codeMetricsCalculator.updateDetails()
@@ -131,7 +135,7 @@ describe('codeMetricsCalculator.ts', (): void => {
       when(azureReposInvoker.getTitleAndDescription()).thenResolve({ title: 'Title' })
       when(pullRequest.getUpdatedTitle('Title')).thenReturn('S✔ ◾ TODO')
       when(pullRequest.getUpdatedDescription(undefined)).thenReturn('Description')
-      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(codeMetrics), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
+      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(codeMetrics), instance(gitInvoker), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
 
       // Act
       await codeMetricsCalculator.updateDetails()
@@ -151,7 +155,7 @@ describe('codeMetricsCalculator.ts', (): void => {
       const commentData: PullRequestCommentsData = new PullRequestCommentsData([])
       commentData.isMetricsCommentPresent = true
       when(pullRequestComments.getCommentData(1)).thenResolve(commentData)
-      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(codeMetrics), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
+      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(codeMetrics), instance(gitInvoker), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
 
       // Act
       await codeMetricsCalculator.updateComments()
@@ -202,7 +206,7 @@ describe('codeMetricsCalculator.ts', (): void => {
           value: true
         }
       ]
-      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(codeMetrics), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
+      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(codeMetrics), instance(gitInvoker), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
 
       // Act
       await codeMetricsCalculator.updateComments()
@@ -254,7 +258,7 @@ describe('codeMetricsCalculator.ts', (): void => {
           value: 7
         }
       ]
-      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(codeMetrics), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
+      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(codeMetrics), instance(gitInvoker), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
 
       // Act
       await codeMetricsCalculator.updateComments()
@@ -308,7 +312,7 @@ describe('codeMetricsCalculator.ts', (): void => {
           value: true
         }
       ]
-      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(codeMetrics), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
+      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(codeMetrics), instance(gitInvoker), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
 
       // Act
       await codeMetricsCalculator.updateComments()
@@ -335,7 +339,7 @@ describe('codeMetricsCalculator.ts', (): void => {
           commentData.isMetricsCommentPresent = true
           when(pullRequestComments.getCommentData(1)).thenResolve(commentData)
           when(pullRequestComments.noReviewRequiredComment).thenReturn('No Review Required')
-          const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(codeMetrics), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
+          const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(codeMetrics), instance(gitInvoker), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
 
           // Act
           await codeMetricsCalculator.updateComments()

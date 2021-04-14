@@ -6,6 +6,7 @@ import { injectable } from 'tsyringe'
 import AzureReposInvoker from '../azureRepos/azureReposInvoker'
 import CodeMetrics from './codeMetrics'
 import CodeMetricsData from './codeMetricsData'
+import GitInvoker from '../git/gitInvoker'
 import IPullRequestDetails from '../azureRepos/iPullRequestDetails'
 import IPullRequestMetadata from '../azureRepos/iPullRequestMetadata'
 import PullRequest from '../pullRequests/pullRequest'
@@ -20,6 +21,7 @@ import TaskLibWrapper from '../wrappers/taskLibWrapper'
 export default class CodeMetricsCalculator {
   private _azureReposInvoker: AzureReposInvoker
   private _codeMetrics: CodeMetrics
+  private _gitInvoker: GitInvoker
   private _pullRequest: PullRequest
   private _pullRequestComments: PullRequestComments
   private _taskLibWrapper: TaskLibWrapper
@@ -28,13 +30,15 @@ export default class CodeMetricsCalculator {
    * Initializes a new instance of the `CodeMetricsCalculator` class.
    * @param azureReposInvoker The Azure Repos invoker logic.
    * @param codeMetrics The code metrics calculation logic.
+   * @param gitInvoker The Git invoker.
    * @param pullRequest The pull request modification logic.
    * @param pullRequestComments The pull request comments modification logic.
    * @param taskLibWrapper The wrapper around the Azure Pipelines Task Lib.
    */
-  public constructor (azureReposInvoker: AzureReposInvoker, codeMetrics: CodeMetrics, pullRequest: PullRequest, pullRequestComments: PullRequestComments, taskLibWrapper: TaskLibWrapper) {
+  public constructor (azureReposInvoker: AzureReposInvoker, codeMetrics: CodeMetrics, gitInvoker: GitInvoker, pullRequest: PullRequest, pullRequestComments: PullRequestComments, taskLibWrapper: TaskLibWrapper) {
     this._azureReposInvoker = azureReposInvoker
     this._codeMetrics = codeMetrics
+    this._gitInvoker = gitInvoker
     this._pullRequest = pullRequest
     this._pullRequestComments = pullRequestComments
     this._taskLibWrapper = taskLibWrapper
@@ -67,6 +71,14 @@ export default class CodeMetricsCalculator {
     this._taskLibWrapper.debug('* CodeMetricsCalculator.shouldStop')
 
     if (!this._azureReposInvoker.isAccessTokenAvailable) {
+      return this._taskLibWrapper.loc('metrics.codeMetricsCalculator.noAccessToken')
+    }
+
+    if (!this._gitInvoker.isGitEnlistment) {
+      return this._taskLibWrapper.loc('metrics.codeMetricsCalculator.noAccessToken')
+    }
+
+    if (!this._gitInvoker.isGitHistoryAvailable) {
       return this._taskLibWrapper.loc('metrics.codeMetricsCalculator.noAccessToken')
     }
 
