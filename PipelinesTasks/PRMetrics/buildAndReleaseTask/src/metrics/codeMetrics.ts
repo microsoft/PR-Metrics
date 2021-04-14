@@ -209,7 +209,7 @@ export default class CodeMetrics {
       } else {
         linesAddedNumber = parseInt(linesAddedElement)
         if (isNaN(linesAddedNumber)) {
-          throw Error(`Could not parse '${elements[0]}' from line '${line}'.`)
+          throw Error(`Could not parse '${linesAddedElement}' from line '${line}'.`)
         }
       }
 
