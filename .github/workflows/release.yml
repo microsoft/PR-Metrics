@@ -35,39 +35,39 @@ jobs:
 
       - name: Install NPM Dependencies
         run: npm install
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildTask
 
       - name: Build
         run: npm run build
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildTask
 
       - name: Remove 'node_modules'
         run: Remove-Item -Path 'node_modules' -Recurse -Force
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildTask
 
       - name: Install Production NPM Dependencies
         run: npm install --only=production
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildTask
 
       - name: Remove 'tests'
         run: Remove-Item -Path 'tests' -Recurse
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildTask
 
       - name: Remove 'tsdocs'
         run: Remove-Item -Path 'tsdocs' -Recurse -Force
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildTask
 
       - name: Remove '*.js.map'
         run: Get-ChildItem -Path '*' -Include '*.js.map' -Recurse | Remove-Item -Force
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildTask
 
       - name: Remove '*.json'
         run: Remove-Item -Path '*.json' -Exclude 'task*.json' -Force
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildTask
 
       - name: Remove '*.ts'
         run: Get-ChildItem -Path '*' -Include '*.ts' -Recurse | Remove-Item -Force
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildTask
 
       - name: Copy to Destination
         run: Copy-Item -Path '${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}' -Destination '${{ github.workspace }}/build/Release/PipelinesTasks/${{ matrix.task }}' -Recurse
