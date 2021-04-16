@@ -116,7 +116,11 @@ export default class CodeMetricsCalculator {
     }
 
     commentData.filesNotRequiringReview.forEach((fileName: string): void => {
-      promises.push(this.updateNoReviewRequiredComment(fileName))
+      promises.push(this.updateNoReviewRequiredComment(fileName, false))
+    })
+
+    commentData.deletedFilesNotRequiringReview.forEach((fileName: string): void => {
+      promises.push(this.updateNoReviewRequiredComment(fileName, true))
     })
 
     await Promise.all(promises)
@@ -176,10 +180,10 @@ export default class CodeMetricsCalculator {
     await this._azureReposInvoker.addMetadata(metadata)
   }
 
-  private async updateNoReviewRequiredComment (fileName: string): Promise<void> {
+  private async updateNoReviewRequiredComment (fileName: string, isFileDeleted: boolean): Promise<void> {
     this._taskLibWrapper.debug('* CodeMetricsCalculator.updateNoReviewRequiredComment()')
 
     const noReviewRequiredComment: string = this._pullRequestComments.noReviewRequiredComment
-    await this._azureReposInvoker.createCommentThread(noReviewRequiredComment, CommentThreadStatus.Closed, fileName)
+    await this._azureReposInvoker.createCommentThread(noReviewRequiredComment, CommentThreadStatus.Closed, fileName, isFileDeleted)
   }
 }

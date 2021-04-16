@@ -58,71 +58,6 @@ describe('codeMetrics.ts', (): void => {
 
   async.each(
     [
-      '',
-      '   ',
-      '\t',
-      '\n',
-      '\t\n'
-    ], (gitDiffSummary: string): void => {
-      it(`should throw when the Git diff summary '${gitDiffSummary}' is empty`, (): void => {
-        // Arrange
-        when(gitInvoker.getDiffSummary()).thenReturn(gitDiffSummary)
-        const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(taskLibWrapper))
-
-        // Act
-        const func: () => string[] = () => codeMetrics.filesNotRequiringReview
-
-        // Assert
-        expect(func).to.throw('The Git diff summary is empty.')
-        verify(taskLibWrapper.debug('* CodeMetrics.filesNotRequiringReview')).once()
-        verify(taskLibWrapper.debug('* CodeMetrics.initialize()')).once()
-      })
-    })
-
-  async.each(
-    [
-      ['0', 1],
-      ['0\t', 1],
-      ['0\t0', 2],
-      ['0\t0\t', 2],
-      ['0\tfile.ts', 2],
-      ['0\tfile.ts\t', 2],
-      ['0\t0\tfile1.ts\tfile2.ts', 4],
-      ['0\t0\tfile1.ts\tfile2.ts\t', 4]
-    ], (data: [string, number]): void => {
-      it(`should throw when the file name in the Git diff summary '${data[0]}' cannot be parsed`, (): void => {
-      // Arrange
-        when(gitInvoker.getDiffSummary()).thenReturn(data[0])
-        const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(taskLibWrapper))
-
-        // Act
-        const func: () => string[] = () => codeMetrics.filesNotRequiringReview
-
-        // Assert
-        expect(func).to.throw(`The number of elements '${data[1]}' in '${data[0].trim()}' did not match the expected 3.`)
-        verify(taskLibWrapper.debug('* CodeMetrics.filesNotRequiringReview')).once()
-        verify(taskLibWrapper.debug('* CodeMetrics.initialize()')).once()
-        verify(taskLibWrapper.debug('* CodeMetrics.createFileMetricsMap()')).once()
-      })
-    })
-
-  it('should throw when the lines added in the Git diff summary cannot be converted', (): void => {
-    // Arrange
-    when(gitInvoker.getDiffSummary()).thenReturn('A\t0\tfile.ts')
-    const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(taskLibWrapper))
-
-    // Act
-    const func: () => string[] = () => codeMetrics.filesNotRequiringReview
-
-    // Assert
-    expect(func).to.throw('Could not parse \'A\' from line \'A\t0\tfile.ts\'.')
-    verify(taskLibWrapper.debug('* CodeMetrics.filesNotRequiringReview')).once()
-    verify(taskLibWrapper.debug('* CodeMetrics.initialize()')).once()
-    verify(taskLibWrapper.debug('* CodeMetrics.createFileMetricsMap()')).once()
-  })
-
-  async.each(
-    [
       ['0\t0\tfile.ts', 'XS', true, new CodeMetricsData(0, 0, 0)],
       ['1\t0\tfile.ts', 'XS', false, new CodeMetricsData(1, 0, 0)],
       ['1\t0\tfile.ts\n1\t0\ttest.ts', 'XS', false, new CodeMetricsData(1, 1, 0)],
@@ -193,14 +128,16 @@ describe('codeMetrics.ts', (): void => {
 
         // Assert
         expect(codeMetrics.filesNotRequiringReview).to.deep.equal([])
+        expect(codeMetrics.deletedFilesNotRequiringReview).to.deep.equal([])
         expect(codeMetrics.size).to.equal(data[1])
         expect(codeMetrics.sizeIndicator).to.equal(`${data[1]}${data[2] ? '✔' : '⚠️'}`)
         expect(codeMetrics.metrics).to.deep.equal(data[3])
         expect(codeMetrics.isSmall).to.equal(data[1] === 'XS' || data[1] === 'S')
         expect(codeMetrics.isSufficientlyTested).to.equal(data[2])
         verify(taskLibWrapper.debug('* CodeMetrics.filesNotRequiringReview')).once()
+        verify(taskLibWrapper.debug('* CodeMetrics.deletedFilesNotRequiringReview')).once()
         verify(taskLibWrapper.debug('* CodeMetrics.size')).once()
-        verify(taskLibWrapper.debug('* CodeMetrics.initialize()')).times(6)
+        verify(taskLibWrapper.debug('* CodeMetrics.initialize()')).times(7)
         verify(taskLibWrapper.debug('* CodeMetrics.initializeMetrics()')).once()
         verify(taskLibWrapper.debug('* CodeMetrics.matchFileExtension()')).times((data[0].match(/\n/g) || []).length + 1 - (data[0].endsWith('\n') ? 1 : 0))
         verify(taskLibWrapper.debug('* CodeMetrics.constructMetrics()')).once()
@@ -213,56 +150,61 @@ describe('codeMetrics.ts', (): void => {
 
   async.each(
     [
-      ['0\t0\tfile.ts', 'XS', true, new CodeMetricsData(0, 0, 0), []],
-      ['1\t0\tfile.ts', 'XS', false, new CodeMetricsData(1, 0, 0), []],
-      ['1\t0\tfile.ts\n0\t0\ttest.ts', 'XS', false, new CodeMetricsData(1, 0, 0), []],
-      ['1\t0\tfile.ts\n1\t0\ttest.ts', 'XS', true, new CodeMetricsData(1, 1, 0), []],
-      ['99\t0\tfile.ts', 'XS', false, new CodeMetricsData(99, 0, 0), []],
-      ['99\t0\tfile.ts\n98\t0\ttest.ts', 'XS', false, new CodeMetricsData(99, 98, 0), []],
-      ['99\t0\tfile.ts\n99\t0\ttest.ts', 'XS', true, new CodeMetricsData(99, 99, 0), []],
-      ['100\t0\tfile.ts', 'S', false, new CodeMetricsData(100, 0, 0), []],
-      ['100\t0\tfile.ts\n99\t0\ttest.ts', 'S', false, new CodeMetricsData(100, 99, 0), []],
-      ['100\t0\tfile.ts\n100\t0\ttest.ts', 'S', true, new CodeMetricsData(100, 100, 0), []],
-      ['199\t0\tfile.ts', 'S', false, new CodeMetricsData(199, 0, 0), []],
-      ['199\t0\tfile.ts\n198\t0\ttest.ts', 'S', false, new CodeMetricsData(199, 198, 0), []],
-      ['199\t0\tfile.ts\n199\t0\ttest.ts', 'S', true, new CodeMetricsData(199, 199, 0), []],
-      ['200\t0\tfile.ts', 'M', false, new CodeMetricsData(200, 0, 0), []],
-      ['200\t0\tfile.ts\n199\t0\ttest.ts', 'M', false, new CodeMetricsData(200, 199, 0), []],
-      ['200\t0\tfile.ts\n200\t0\ttest.ts', 'M', true, new CodeMetricsData(200, 200, 0), []],
-      ['399\t0\tfile.ts', 'M', false, new CodeMetricsData(399, 0, 0), []],
-      ['399\t0\tfile.ts\n398\t0\ttest.ts', 'M', false, new CodeMetricsData(399, 398, 0), []],
-      ['399\t0\tfile.ts\n399\t0\ttest.ts', 'M', true, new CodeMetricsData(399, 399, 0), []],
-      ['400\t0\tfile.ts', 'L', false, new CodeMetricsData(400, 0, 0), []],
-      ['400\t0\tfile.ts\n399\t0\ttest.ts', 'L', false, new CodeMetricsData(400, 399, 0), []],
-      ['400\t0\tfile.ts\n400\t0\ttest.ts', 'L', true, new CodeMetricsData(400, 400, 0), []],
-      ['799\t0\tfile.ts', 'L', false, new CodeMetricsData(799, 0, 0), []],
-      ['799\t0\tfile.ts\n798\t0\ttest.ts', 'L', false, new CodeMetricsData(799, 798, 0), []],
-      ['799\t0\tfile.ts\n799\t0\ttest.ts', 'L', true, new CodeMetricsData(799, 799, 0), []],
-      ['800\t0\tfile.ts', 'XL', false, new CodeMetricsData(800, 0, 0), []],
-      ['800\t0\tfile.ts\n799\t0\ttest.ts', 'XL', false, new CodeMetricsData(800, 799, 0), []],
-      ['800\t0\tfile.ts\n800\t0\ttest.ts', 'XL', true, new CodeMetricsData(800, 800, 0), []],
-      ['1599\t0\tfile.ts', 'XL', false, new CodeMetricsData(1599, 0, 0), []],
-      ['1599\t0\tfile.ts\n1598\t0\ttest.ts', 'XL', false, new CodeMetricsData(1599, 1598, 0), []],
-      ['1599\t0\tfile.ts\n1599\t0\ttest.ts', 'XL', true, new CodeMetricsData(1599, 1599, 0), []],
-      ['1600\t0\tfile.ts', '2XL', false, new CodeMetricsData(1600, 0, 0), []],
-      ['1600\t0\tfile.ts\n1599\t0\ttest.ts', '2XL', false, new CodeMetricsData(1600, 1599, 0), []],
-      ['1600\t0\tfile.ts\n1600\t0\ttest.ts', '2XL', true, new CodeMetricsData(1600, 1600, 0), []],
-      ['3199\t0\tfile.ts', '2XL', false, new CodeMetricsData(3199, 0, 0), []],
-      ['3199\t0\tfile.ts\n3198\t0\ttest.ts', '2XL', false, new CodeMetricsData(3199, 3198, 0), []],
-      ['3199\t0\tfile.ts\n3199\t0\ttest.ts', '2XL', true, new CodeMetricsData(3199, 3199, 0), []],
-      ['3200\t0\tfile.ts', '3XL', false, new CodeMetricsData(3200, 0, 0), []],
-      ['3200\t0\tfile.ts\n3199\t0\ttest.ts', '3XL', false, new CodeMetricsData(3200, 3199, 0), []],
-      ['3200\t0\tfile.ts\n3200\t0\ttest.ts', '3XL', true, new CodeMetricsData(3200, 3200, 0), []],
-      ['1\t0\tfile.cs', 'XS', true, new CodeMetricsData(0, 0, 1), []],
-      ['1\t0\ttest.cs', 'XS', true, new CodeMetricsData(0, 0, 1), []],
-      ['1\t0\tfile.tst', 'XS', true, new CodeMetricsData(0, 0, 1), []],
-      ['1\t0\tfile.tts', 'XS', true, new CodeMetricsData(0, 0, 1), []],
-      ['1\t0\tfilets', 'XS', true, new CodeMetricsData(0, 0, 1), []],
-      ['1\t0\tignored.ts', 'XS', true, new CodeMetricsData(0, 0, 1), ['ignored.ts']],
-      ['1\t0\tignored.cs', 'XS', true, new CodeMetricsData(0, 0, 1), ['ignored.cs']],
-      ['1\t0\tfolder/ignored.ts', 'XS', true, new CodeMetricsData(0, 0, 1), ['folder/ignored.ts']],
-      ['1\t0\tfolder/ignored.cs', 'XS', true, new CodeMetricsData(0, 0, 1), ['folder/ignored.cs']]
-    ], (data: [string, string, boolean, CodeMetricsData, string[]]): void => {
+      ['0\t0\tfile.ts', 'XS', true, new CodeMetricsData(0, 0, 0), [], []],
+      ['1\t0\tfile.ts', 'XS', false, new CodeMetricsData(1, 0, 0), [], []],
+      ['1\t0\tfile.ts\n0\t0\ttest.ts', 'XS', false, new CodeMetricsData(1, 0, 0), [], []],
+      ['1\t0\tfile.ts\n1\t0\ttest.ts', 'XS', true, new CodeMetricsData(1, 1, 0), [], []],
+      ['99\t0\tfile.ts', 'XS', false, new CodeMetricsData(99, 0, 0), [], []],
+      ['99\t0\tfile.ts\n98\t0\ttest.ts', 'XS', false, new CodeMetricsData(99, 98, 0), [], []],
+      ['99\t0\tfile.ts\n99\t0\ttest.ts', 'XS', true, new CodeMetricsData(99, 99, 0), [], []],
+      ['100\t0\tfile.ts', 'S', false, new CodeMetricsData(100, 0, 0), [], []],
+      ['100\t0\tfile.ts\n99\t0\ttest.ts', 'S', false, new CodeMetricsData(100, 99, 0), [], []],
+      ['100\t0\tfile.ts\n100\t0\ttest.ts', 'S', true, new CodeMetricsData(100, 100, 0), [], []],
+      ['199\t0\tfile.ts', 'S', false, new CodeMetricsData(199, 0, 0), [], []],
+      ['199\t0\tfile.ts\n198\t0\ttest.ts', 'S', false, new CodeMetricsData(199, 198, 0), [], []],
+      ['199\t0\tfile.ts\n199\t0\ttest.ts', 'S', true, new CodeMetricsData(199, 199, 0), [], []],
+      ['200\t0\tfile.ts', 'M', false, new CodeMetricsData(200, 0, 0), [], []],
+      ['200\t0\tfile.ts\n199\t0\ttest.ts', 'M', false, new CodeMetricsData(200, 199, 0), [], []],
+      ['200\t0\tfile.ts\n200\t0\ttest.ts', 'M', true, new CodeMetricsData(200, 200, 0), [], []],
+      ['399\t0\tfile.ts', 'M', false, new CodeMetricsData(399, 0, 0), [], []],
+      ['399\t0\tfile.ts\n398\t0\ttest.ts', 'M', false, new CodeMetricsData(399, 398, 0), [], []],
+      ['399\t0\tfile.ts\n399\t0\ttest.ts', 'M', true, new CodeMetricsData(399, 399, 0), [], []],
+      ['400\t0\tfile.ts', 'L', false, new CodeMetricsData(400, 0, 0), [], []],
+      ['400\t0\tfile.ts\n399\t0\ttest.ts', 'L', false, new CodeMetricsData(400, 399, 0), [], []],
+      ['400\t0\tfile.ts\n400\t0\ttest.ts', 'L', true, new CodeMetricsData(400, 400, 0), [], []],
+      ['799\t0\tfile.ts', 'L', false, new CodeMetricsData(799, 0, 0), [], []],
+      ['799\t0\tfile.ts\n798\t0\ttest.ts', 'L', false, new CodeMetricsData(799, 798, 0), [], []],
+      ['799\t0\tfile.ts\n799\t0\ttest.ts', 'L', true, new CodeMetricsData(799, 799, 0), [], []],
+      ['800\t0\tfile.ts', 'XL', false, new CodeMetricsData(800, 0, 0), [], []],
+      ['800\t0\tfile.ts\n799\t0\ttest.ts', 'XL', false, new CodeMetricsData(800, 799, 0), [], []],
+      ['800\t0\tfile.ts\n800\t0\ttest.ts', 'XL', true, new CodeMetricsData(800, 800, 0), [], []],
+      ['1599\t0\tfile.ts', 'XL', false, new CodeMetricsData(1599, 0, 0), [], []],
+      ['1599\t0\tfile.ts\n1598\t0\ttest.ts', 'XL', false, new CodeMetricsData(1599, 1598, 0), [], []],
+      ['1599\t0\tfile.ts\n1599\t0\ttest.ts', 'XL', true, new CodeMetricsData(1599, 1599, 0), [], []],
+      ['1600\t0\tfile.ts', '2XL', false, new CodeMetricsData(1600, 0, 0), [], []],
+      ['1600\t0\tfile.ts\n1599\t0\ttest.ts', '2XL', false, new CodeMetricsData(1600, 1599, 0), [], []],
+      ['1600\t0\tfile.ts\n1600\t0\ttest.ts', '2XL', true, new CodeMetricsData(1600, 1600, 0), [], []],
+      ['3199\t0\tfile.ts', '2XL', false, new CodeMetricsData(3199, 0, 0), [], []],
+      ['3199\t0\tfile.ts\n3198\t0\ttest.ts', '2XL', false, new CodeMetricsData(3199, 3198, 0), [], []],
+      ['3199\t0\tfile.ts\n3199\t0\ttest.ts', '2XL', true, new CodeMetricsData(3199, 3199, 0), [], []],
+      ['3200\t0\tfile.ts', '3XL', false, new CodeMetricsData(3200, 0, 0), [], []],
+      ['3200\t0\tfile.ts\n3199\t0\ttest.ts', '3XL', false, new CodeMetricsData(3200, 3199, 0), [], []],
+      ['3200\t0\tfile.ts\n3200\t0\ttest.ts', '3XL', true, new CodeMetricsData(3200, 3200, 0), [], []],
+      ['1\t0\tfile.cs', 'XS', true, new CodeMetricsData(0, 0, 1), [], []],
+      ['1\t0\ttest.cs', 'XS', true, new CodeMetricsData(0, 0, 1), [], []],
+      ['1\t0\tfile.tst', 'XS', true, new CodeMetricsData(0, 0, 1), [], []],
+      ['1\t0\tfile.tts', 'XS', true, new CodeMetricsData(0, 0, 1), [], []],
+      ['1\t0\tfilets', 'XS', true, new CodeMetricsData(0, 0, 1), [], []],
+      ['1\t0\tignored.ts', 'XS', true, new CodeMetricsData(0, 0, 1), ['ignored.ts'], []],
+      ['1\t0\tignored.cs', 'XS', true, new CodeMetricsData(0, 0, 1), ['ignored.cs'], []],
+      ['1\t0\tfolder/ignored.ts', 'XS', true, new CodeMetricsData(0, 0, 1), ['folder/ignored.ts'], []],
+      ['1\t0\tfolder/ignored.cs', 'XS', true, new CodeMetricsData(0, 0, 1), ['folder/ignored.cs'], []],
+      ['0\t0\tignored.ts', 'XS', true, new CodeMetricsData(0, 0, 0), [], ['ignored.ts']],
+      ['0\t0\tignored.cs', 'XS', true, new CodeMetricsData(0, 0, 0), [], ['ignored.cs']],
+      ['0\t0\tfolder/ignored.ts', 'XS', true, new CodeMetricsData(0, 0, 0), [], ['folder/ignored.ts']],
+      ['0\t0\tfolder/ignored.cs', 'XS', true, new CodeMetricsData(0, 0, 0), [], ['folder/ignored.cs']],
+      ['1\t0\tignored.ts\n0\t0\tfolder/ignored.ts', 'XS', true, new CodeMetricsData(0, 0, 1), ['ignored.ts'], ['folder/ignored.ts']]
+    ], (data: [string, string, boolean, CodeMetricsData, string[], string[]]): void => {
       it(`with non-default inputs and git diff '${data[0].replace(/\n/g, '\\n')}', returns '${data[1]}' size and '${data[2]}' test coverage`, (): void => {
         // Arrange
         when(inputs.baseSize).thenReturn(100)
@@ -277,14 +219,16 @@ describe('codeMetrics.ts', (): void => {
 
         // Assert
         expect(codeMetrics.filesNotRequiringReview).to.deep.equal(data[4])
+        expect(codeMetrics.deletedFilesNotRequiringReview).to.deep.equal(data[5])
         expect(codeMetrics.size).to.equal(data[1])
         expect(codeMetrics.sizeIndicator).to.equal(`${data[1]}${data[2] ? '✔' : '⚠️'}`)
         expect(codeMetrics.metrics).to.deep.equal(data[3])
         expect(codeMetrics.isSmall).to.equal(data[1] === 'XS' || data[1] === 'S')
         expect(codeMetrics.isSufficientlyTested).to.equal(data[2])
         verify(taskLibWrapper.debug('* CodeMetrics.filesNotRequiringReview')).once()
+        verify(taskLibWrapper.debug('* CodeMetrics.deletedFilesNotRequiringReview')).once()
         verify(taskLibWrapper.debug('* CodeMetrics.size')).once()
-        verify(taskLibWrapper.debug('* CodeMetrics.initialize()')).times(6)
+        verify(taskLibWrapper.debug('* CodeMetrics.initialize()')).times(7)
         verify(taskLibWrapper.debug('* CodeMetrics.initializeMetrics()')).once()
         verify(taskLibWrapper.debug('* CodeMetrics.matchFileExtension()')).times((data[0].match(/\n/g) || []).length + 1)
         verify(taskLibWrapper.debug('* CodeMetrics.constructMetrics()')).once()
@@ -305,14 +249,16 @@ describe('codeMetrics.ts', (): void => {
 
     // Assert
     expect(codeMetrics.filesNotRequiringReview).to.deep.equal([])
+    expect(codeMetrics.deletedFilesNotRequiringReview).to.deep.equal([])
     expect(codeMetrics.size).to.equal('XS')
     expect(codeMetrics.sizeIndicator).to.equal('XS')
     expect(codeMetrics.metrics).to.deep.equal(new CodeMetricsData(1, 0, 0))
     expect(codeMetrics.isSmall).to.equal(true)
     expect(codeMetrics.isSufficientlyTested).to.equal(null)
     verify(taskLibWrapper.debug('* CodeMetrics.filesNotRequiringReview')).once()
+    verify(taskLibWrapper.debug('* CodeMetrics.deletedFilesNotRequiringReview')).once()
     verify(taskLibWrapper.debug('* CodeMetrics.size')).once()
-    verify(taskLibWrapper.debug('* CodeMetrics.initialize()')).times(6)
+    verify(taskLibWrapper.debug('* CodeMetrics.initialize()')).times(7)
     verify(taskLibWrapper.debug('* CodeMetrics.initializeMetrics()')).once()
     verify(taskLibWrapper.debug('* CodeMetrics.matchFileExtension()')).once()
     verify(taskLibWrapper.debug('* CodeMetrics.constructMetrics()')).once()
@@ -320,5 +266,118 @@ describe('codeMetrics.ts', (): void => {
     verify(taskLibWrapper.debug('* CodeMetrics.initializeIsSufficientlyTested()')).once()
     verify(taskLibWrapper.debug('* CodeMetrics.initializeSizeIndicator()')).once()
     verify(taskLibWrapper.debug('* CodeMetrics.calculateSize()')).once()
+  })
+
+  describe('filesNotRequiringReview', (): void => {
+    async.each(
+      [
+        '',
+        '   ',
+        '\t',
+        '\n',
+        '\t\n'
+      ], (gitDiffSummary: string): void => {
+        it(`should throw when the Git diff summary '${gitDiffSummary}' is empty`, (): void => {
+          // Arrange
+          when(gitInvoker.getDiffSummary()).thenReturn(gitDiffSummary)
+          const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(taskLibWrapper))
+
+          // Act
+          const func: () => string[] = () => codeMetrics.filesNotRequiringReview
+
+          // Assert
+          expect(func).to.throw('The Git diff summary is empty.')
+          verify(taskLibWrapper.debug('* CodeMetrics.filesNotRequiringReview')).once()
+          verify(taskLibWrapper.debug('* CodeMetrics.initialize()')).once()
+        })
+      })
+
+    async.each(
+      [
+        ['0', 1],
+        ['0\t', 1],
+        ['0\t0', 2],
+        ['0\t0\t', 2],
+        ['0\tfile.ts', 2],
+        ['0\tfile.ts\t', 2],
+        ['0\t0\tfile1.ts\tfile2.ts', 4],
+        ['0\t0\tfile1.ts\tfile2.ts\t', 4]
+      ], (data: [string, number]): void => {
+        it(`should throw when the file name in the Git diff summary '${data[0]}' cannot be parsed`, (): void => {
+          // Arrange
+          when(gitInvoker.getDiffSummary()).thenReturn(data[0])
+          const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(taskLibWrapper))
+
+          // Act
+          const func: () => string[] = () => codeMetrics.filesNotRequiringReview
+
+          // Assert
+          expect(func).to.throw(`The number of elements '${data[1]}' in '${data[0].trim()}' did not match the expected 3.`)
+          verify(taskLibWrapper.debug('* CodeMetrics.filesNotRequiringReview')).once()
+          verify(taskLibWrapper.debug('* CodeMetrics.initialize()')).once()
+          verify(taskLibWrapper.debug('* CodeMetrics.createFileMetricsMap()')).once()
+        })
+      })
+
+    it('should throw when the lines added in the Git diff summary cannot be converted', (): void => {
+      // Arrange
+      when(gitInvoker.getDiffSummary()).thenReturn('A\t0\tfile.ts')
+      const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(taskLibWrapper))
+
+      // Act
+      const func: () => string[] = () => codeMetrics.filesNotRequiringReview
+
+      // Assert
+      expect(func).to.throw('Could not parse \'A\' from line \'A\t0\tfile.ts\'.')
+      verify(taskLibWrapper.debug('* CodeMetrics.filesNotRequiringReview')).once()
+      verify(taskLibWrapper.debug('* CodeMetrics.initialize()')).once()
+      verify(taskLibWrapper.debug('* CodeMetrics.createFileMetricsMap()')).once()
+    })
+  })
+
+  describe('deletedFilesNotRequiringReview', (): void => {
+    it('should throw when the Git diff summary \'\' is empty', (): void => {
+      // Arrange
+      when(gitInvoker.getDiffSummary()).thenReturn('')
+      const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(taskLibWrapper))
+
+      // Act
+      const func: () => string[] = () => codeMetrics.deletedFilesNotRequiringReview
+
+      // Assert
+      expect(func).to.throw('The Git diff summary is empty.')
+      verify(taskLibWrapper.debug('* CodeMetrics.deletedFilesNotRequiringReview')).once()
+      verify(taskLibWrapper.debug('* CodeMetrics.initialize()')).once()
+    })
+
+    it('should throw when the file name in the Git diff summary \'0\' cannot be parsed', (): void => {
+      // Arrange
+      when(gitInvoker.getDiffSummary()).thenReturn('0')
+      const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(taskLibWrapper))
+
+      // Act
+      const func: () => string[] = () => codeMetrics.deletedFilesNotRequiringReview
+
+      // Assert
+      expect(func).to.throw('The number of elements \'1\' in \'0\' did not match the expected 3.')
+      verify(taskLibWrapper.debug('* CodeMetrics.deletedFilesNotRequiringReview')).once()
+      verify(taskLibWrapper.debug('* CodeMetrics.initialize()')).once()
+      verify(taskLibWrapper.debug('* CodeMetrics.createFileMetricsMap()')).once()
+    })
+
+    it('should throw when the lines added in the Git diff summary cannot be converted', (): void => {
+      // Arrange
+      when(gitInvoker.getDiffSummary()).thenReturn('A\t0\tfile.ts')
+      const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(taskLibWrapper))
+
+      // Act
+      const func: () => string[] = () => codeMetrics.deletedFilesNotRequiringReview
+
+      // Assert
+      expect(func).to.throw('Could not parse \'A\' from line \'A\t0\tfile.ts\'.')
+      verify(taskLibWrapper.debug('* CodeMetrics.deletedFilesNotRequiringReview')).once()
+      verify(taskLibWrapper.debug('* CodeMetrics.initialize()')).once()
+      verify(taskLibWrapper.debug('* CodeMetrics.createFileMetricsMap()')).once()
+    })
   })
 })

@@ -21,6 +21,7 @@ export default class CodeMetrics {
 
   private _isInitialized: boolean = false
   private _filesNotRequiringReview: string[] = []
+  private _deletedFilesNotRequiringReview: string[] = []
   private _size: string = ''
   private _sizeIndicator: string = ''
   private _metrics: CodeMetricsData = new CodeMetricsData(0, 0, 0)
@@ -47,6 +48,17 @@ export default class CodeMetrics {
 
     this.initialize()
     return this._filesNotRequiringReview
+  }
+
+  /**
+   * Gets the collection of deleted files not requiring review to which to add a comment.
+   * @returns The collection of deleted files not requiring review.
+   */
+  public get deletedFilesNotRequiringReview (): string[] {
+    this._taskLibWrapper.debug('* CodeMetrics.deletedFilesNotRequiringReview')
+
+    this.initialize()
+    return this._deletedFilesNotRequiringReview
   }
 
   /**
@@ -176,8 +188,12 @@ export default class CodeMetrics {
     })
 
     nonMatchesToComment.forEach((entry: ICodeFileMetric): void => {
-      ignoredCode += entry.linesAdded
-      this._filesNotRequiringReview.push(entry.fileName)
+      if (entry.linesAdded > 0) {
+        ignoredCode += entry.linesAdded
+        this._filesNotRequiringReview.push(entry.fileName)
+      } else {
+        this._deletedFilesNotRequiringReview.push(entry.fileName)
+      }
     })
 
     this._metrics = new CodeMetricsData(productCode, testCode, ignoredCode)

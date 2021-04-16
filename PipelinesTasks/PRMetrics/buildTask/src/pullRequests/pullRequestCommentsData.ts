@@ -9,13 +9,16 @@ export default class PullRequestCommentsData {
   private _metricsCommentThreadId: number | null = null
   private _metricsCommentId: number | null = null
   private _filesNotRequiringReview: string[] = []
+  private _deletedFilesNotRequiringReview: string[] = []
 
   /**
    * Initializes a new instance of the `PullRequestCommentsData` class.
    * @param filesNotRequiringReview The collection of files not requiring review to which to add a comment.
+   * @param deletedFilesNotRequiringReview The collection of deleted files not requiring review to which to add a comment.
    */
-  public constructor (filesNotRequiringReview: string[]) {
+  public constructor (filesNotRequiringReview: string[], deletedFilesNotRequiringReview: string[]) {
     this._filesNotRequiringReview = filesNotRequiringReview
+    this._deletedFilesNotRequiringReview = deletedFilesNotRequiringReview
   }
 
   /**
@@ -80,5 +83,21 @@ export default class PullRequestCommentsData {
    */
   public set filesNotRequiringReview (value: string[]) {
     this._filesNotRequiringReview = value
+  }
+
+  /**
+   * Gets the collection of deleted files not requiring review to which to add a comment.
+   * @returns The collection of files not requiring review.
+   */
+  public get deletedFilesNotRequiringReview (): string[] {
+    return this._deletedFilesNotRequiringReview
+  }
+
+  /**
+   * Sets the collection of deleted files not requiring review to which to add a comment.
+   * @param value The collection of files not requiring review.
+   */
+  public set deletedFilesNotRequiringReview (value: string[]) {
+    this._deletedFilesNotRequiringReview = value
   }
 }

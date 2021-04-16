@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { Comment, CommentThreadStatus, GitPullRequest, GitPullRequestCommentThread, GitPullRequestIteration } from 'azure-devops-node-api/interfaces/GitInterfaces'
+import { Comment, CommentPosition, CommentThreadStatus, GitPullRequest, GitPullRequestCommentThread, GitPullRequestIteration } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import { IGitApi } from 'azure-devops-node-api/GitApi'
 import { IRequestHandler } from 'azure-devops-node-api/interfaces/common/VsoBaseInterfaces'
 import { JsonPatchOperation, Operation } from 'azure-devops-node-api/interfaces/common/VSSInterfaces'
@@ -146,9 +146,10 @@ export default class AzureReposInvoker {
    * @param commentContent The text of the new comment.
    * @param status The status to which to the set the comment thread.
    * @param fileName The file to which to add the comment. If this is unspecified, the comment will be created in the global pull request scope.
+   * @param isFileDeleted A value indicating whether the file is being deleted.
    * @returns A promise for awaiting the completion of the method call.
    */
-  public async createCommentThread (commentContent: string, status: CommentThreadStatus, fileName?: string): Promise<void> {
+  public async createCommentThread (commentContent: string, status: CommentThreadStatus, fileName?: string, isFileDeleted?: boolean): Promise<void> {
     this._taskLibWrapper.debug('* AzureReposInvoker.createCommentThread()')
 
     const gitApiPromise: Promise<IGitApi> = this.initialize()
@@ -159,15 +160,24 @@ export default class AzureReposInvoker {
 
     if (fileName) {
       commentThread.threadContext = {
-        filePath: `/${fileName}`,
-        rightFileStart: {
-          line: 1,
-          offset: 1
-        },
-        rightFileEnd: {
-          line: 1,
-          offset: 2
-        }
+        filePath: `/${fileName}`
+      }
+
+      const fileStart: CommentPosition = {
+        line: 1,
+        offset: 1
+      }
+      const fileEnd: CommentPosition = {
+        line: 1,
+        offset: 2
+      }
+
+      if (isFileDeleted) {
+        commentThread.threadContext.leftFileStart = fileStart
+        commentThread.threadContext.leftFileEnd = fileEnd
+      } else {
+        commentThread.threadContext.rightFileStart = fileStart
+        commentThread.threadContext.rightFileEnd = fileEnd
       }
     }
 

@@ -53,7 +53,7 @@ export default class PullRequestComments {
   public async getCommentData (currentIteration: number): Promise<PullRequestCommentsData> {
     this._taskLibWrapper.debug('* PullRequestComments.getCommentData()')
 
-    let result: PullRequestCommentsData = new PullRequestCommentsData(this._codeMetrics.filesNotRequiringReview)
+    let result: PullRequestCommentsData = new PullRequestCommentsData(this._codeMetrics.filesNotRequiringReview, this._codeMetrics.deletedFilesNotRequiringReview)
 
     const commentThreads: GitPullRequestCommentThread[] = await this._azureReposInvoker.getCommentThreads()
     for (let i: number = 0; i < commentThreads.length; i++) {
@@ -70,9 +70,15 @@ export default class PullRequestComments {
 
         const fileName: string = filePath.substring(1)
 
-        const index: number = this._codeMetrics.filesNotRequiringReview.indexOf(fileName)
-        if (index !== -1) {
-          result.filesNotRequiringReview = this.getNoReviewRequiredCommentData(result.filesNotRequiringReview, index, commentThread, i)
+        const fileIndex: number = this._codeMetrics.filesNotRequiringReview.indexOf(fileName)
+        if (fileIndex !== -1) {
+          result.filesNotRequiringReview = this.getNoReviewRequiredCommentData(result.filesNotRequiringReview, fileIndex, commentThread, i)
+          continue
+        }
+
+        const deletedFileIndex: number = this._codeMetrics.deletedFilesNotRequiringReview.indexOf(fileName)
+        if (deletedFileIndex !== -1) {
+          result.deletedFilesNotRequiringReview = this.getNoReviewRequiredCommentData(result.deletedFilesNotRequiringReview, deletedFileIndex, commentThread, i)
           continue
         }
       }
