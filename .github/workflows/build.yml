@@ -94,12 +94,6 @@ jobs:
         run: tfx extension create --manifest-globs vss-extension.json --output-path ms-omex.${{ matrix.task }}.vsix
         working-directory: ${{ github.workspace }}/build/Release/PipelinesTasks/${{ matrix.task }}
 
-      - name: Check Release Validity
-        run: >-
-          tfx extension isvalid
-          --vsix ${{ github.workspace }}/build/Release/PipelinesTasks/${{ matrix.task }}/ms-omex.${{ matrix.task }}.vsix
-          --token ${{ secrets.VS_PAT }}
-
       - name: Publish Release
         uses: actions/upload-artifact@v2
         with:
