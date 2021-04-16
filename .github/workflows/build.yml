@@ -46,12 +46,8 @@ jobs:
         run: npm run test:minify
         working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildTask
 
-      - name: Remove '.taskkey'
-        run: Remove-Item -Path '.taskkey' -Recurse -Force
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildTask
-
-      - name: Remove 'coverage'
-        run: Remove-Item -Path 'coverage' -Recurse
+      - name: Build
+        run: npm run build
         working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildTask
 
       - name: Remove 'node_modules'
