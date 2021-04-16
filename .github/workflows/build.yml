@@ -94,7 +94,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: ${{ matrix.task }}
-          path: '**/*.vsix'
+          path: ${{ github.workspace }}/build/Release/PipelinesTasks/${{ matrix.task }}/*.vsix
 
   validate:
     name: Validate

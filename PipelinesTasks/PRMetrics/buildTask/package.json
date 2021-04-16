@@ -10,7 +10,7 @@
     "debug": "ts-node index.ts",
     "deploy": "tsc && npm run minify && exitzero tfx build tasks delete --task-id 907d3b28-6b37-4ac7-ac75-9631ee53e512 && tfx build tasks upload --task-path . && npm run clean",
     "lint": "eslint --fix **/*.ts",
-    "minify": "foreach --concurrent --glob **/*.js --ignore node_modules/**/*.js --execute \"terser #{path} --compress unsafe=true --mangle --ecma 2015 --output #{path}\"",
+    "minify": "foreach --concurrent --glob **/*.js --ignore node_modules/**/*.js --ignore tests/**/*.js --ignore tsdocs/**/*.js --execute \"terser #{path} --compress unsafe=true --mangle --ecma 2015 --output #{path}\"",
     "test:minify": "tsc && npm run minify && mocha tests/**/*.spec.js && npm run clean",
     "test:pipeline": "tsc && nyc --reporter=text --reporter=text-summary mocha tests/**/*.spec.js --color",
     "test": "exitzero npm run test:pipeline && npm run clean"
