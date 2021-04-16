@@ -64,6 +64,8 @@
     "metrics.codeMetrics.titleTestsInsufficient": "ms-resource:loc.messages.metrics.codeMetrics.titleTestsInsufficient",
     "metrics.codeMetrics.titleTestsSufficient": "ms-resource:loc.messages.metrics.codeMetrics.titleTestsSufficient",
     "metrics.codeMetricsCalculator.noAccessToken": "ms-resource:loc.messages.metrics.codeMetricsCalculator.noAccessToken",
+    "metrics.codeMetricsCalculator.noGitEnlistment": "ms-resource:loc.messages.metrics.codeMetricsCalculator.noGitEnlistment",
+    "metrics.codeMetricsCalculator.noGitHistory": "ms-resource:loc.messages.metrics.codeMetricsCalculator.noGitHistory",
     "metrics.codeMetricsCalculator.noPullRequest": "ms-resource:loc.messages.metrics.codeMetricsCalculator.noPullRequest",
     "metrics.codeMetricsCalculator.unsupportedProvider": "ms-resource:loc.messages.metrics.codeMetricsCalculator.unsupportedProvider",
     "metrics.inputs.adjustingBaseSize": "ms-resource:loc.messages.metrics.inputs.adjustingBaseSize",

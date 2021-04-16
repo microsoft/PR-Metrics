@@ -32,6 +32,8 @@ describe('codeMetricsCalculator.ts', (): void => {
     codeMetrics = mock(CodeMetrics)
 
     gitInvoker = mock(GitInvoker)
+    when(gitInvoker.isGitEnlistment).thenReturn(true)
+    when(gitInvoker.isGitHistoryAvailable).thenReturn(true)
 
     pullRequest = mock(PullRequest)
     when(pullRequest.isPullRequest).thenReturn(true)
@@ -41,6 +43,8 @@ describe('codeMetricsCalculator.ts', (): void => {
 
     taskLibWrapper = mock(TaskLibWrapper)
     when(taskLibWrapper.loc('metrics.codeMetricsCalculator.noAccessToken')).thenReturn('Could not access the OAuth token. Enable the option \'Allow scripts to access OAuth token\' under the build process phase settings.')
+    when(taskLibWrapper.loc('metrics.codeMetricsCalculator.noGitEnlistment')).thenReturn('No Git enlistment present. Disable the option \'Don\'t sync sources\' under the build process phase settings.')
+    when(taskLibWrapper.loc('metrics.codeMetricsCalculator.noGitHistory')).thenReturn('Could not access sufficient Git history. Disable the option \'Shallow fetch\' under the build process phase settings.')
     when(taskLibWrapper.loc('metrics.codeMetricsCalculator.noPullRequest')).thenReturn('The build is not running against a pull request.')
     when(taskLibWrapper.loc('metrics.codeMetricsCalculator.unsupportedProvider', 'Other')).thenReturn('The build is running against a pull request from \'Other\', which is not a supported provider.')
   })
@@ -108,6 +112,32 @@ describe('codeMetricsCalculator.ts', (): void => {
 
       // Assert
       expect(result).to.equal('Could not access the OAuth token. Enable the option \'Allow scripts to access OAuth token\' under the build process phase settings.')
+      verify(taskLibWrapper.debug('* CodeMetricsCalculator.shouldStop')).once()
+    })
+
+    it('should return the appropriate message when not called from a Git enlistment', (): void => {
+      // Arrange
+      when(gitInvoker.isGitEnlistment).thenReturn(false)
+      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(codeMetrics), instance(gitInvoker), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
+
+      // Act
+      const result: string | null = codeMetricsCalculator.shouldStop
+
+      // Assert
+      expect(result).to.equal('No Git enlistment present. Disable the option \'Don\'t sync sources\' under the build process phase settings.')
+      verify(taskLibWrapper.debug('* CodeMetricsCalculator.shouldStop')).once()
+    })
+
+    it('should return the appropriate message when the Git history is unavailable', (): void => {
+      // Arrange
+      when(gitInvoker.isGitHistoryAvailable).thenReturn(false)
+      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(codeMetrics), instance(gitInvoker), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
+
+      // Act
+      const result: string | null = codeMetricsCalculator.shouldStop
+
+      // Assert
+      expect(result).to.equal('Could not access sufficient Git history. Disable the option \'Shallow fetch\' under the build process phase settings.')
       verify(taskLibWrapper.debug('* CodeMetricsCalculator.shouldStop')).once()
     })
   })

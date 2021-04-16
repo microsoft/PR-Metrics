@@ -75,11 +75,11 @@ export default class CodeMetricsCalculator {
     }
 
     if (!this._gitInvoker.isGitEnlistment) {
-      return this._taskLibWrapper.loc('metrics.codeMetricsCalculator.noAccessToken')
+      return this._taskLibWrapper.loc('metrics.codeMetricsCalculator.noGitEnlistment')
     }
 
     if (!this._gitInvoker.isGitHistoryAvailable) {
-      return this._taskLibWrapper.loc('metrics.codeMetricsCalculator.noAccessToken')
+      return this._taskLibWrapper.loc('metrics.codeMetricsCalculator.noGitHistory')
     }
 
     return null

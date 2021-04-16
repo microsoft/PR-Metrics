@@ -73,6 +73,12 @@
   "loc.messages.metrics.codeMetricsCalculator.noAccessToken": "Could not access the OAuth token. Enable the option 'Allow scripts to access OAuth token' under the build process phase settings.",
   "loc.messages.metrics.codeMetricsCalculator.noAccessToken.comment": "The message to display when terminating as no access token is available.",
 
+  "loc.messages.metrics.codeMetricsCalculator.noGitEnlistment": "No Git enlistment present. Disable the option 'Don't sync sources' under the build process phase settings.",
+  "loc.messages.metrics.codeMetricsCalculator.noGitEnlistment.comment": "The message to display when terminating as no Git enlistment is present.",
+
+  "loc.messages.metrics.codeMetricsCalculator.noGitHistory": "Could not access sufficient Git history. Disable the option 'Shallow fetch' under the build process phase settings.",
+  "loc.messages.metrics.codeMetricsCalculator.noGitHistory.comment": "The message to display when terminating as the system could not access sufficient Git history.",
+
   "loc.messages.metrics.codeMetricsCalculator.noPullRequest": "The build is not running against a pull request.",
   "loc.messages.metrics.codeMetricsCalculator.noPullRequest.comment": "The message to display when skipping the build because it is not running against a pull request.",
 
