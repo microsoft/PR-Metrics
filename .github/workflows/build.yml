@@ -46,10 +46,6 @@ jobs:
         run: npm run test:minify
         working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildTask
 
-      - name: Remove '.nyc_output'
-        run: Remove-Item -Path '.nyc_output' -Recurse -Force
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildTask
-
       - name: Remove '.taskkey'
         run: Remove-Item -Path '.taskkey' -Recurse -Force
         working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildTask
