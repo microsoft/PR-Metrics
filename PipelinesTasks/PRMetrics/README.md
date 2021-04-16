@@ -34,8 +34,8 @@ metrics:
 > | Ignored      |     5   |
 > | **Total**    | **155** |
 
-It will furthermore add a comment to indicate that a review of the file may not
-be necessary.
+It will furthermore add a comment to indicate that a review of the file is
+unnecessary.
 
 > :exclamation: **This file doesn't require review.**
 
