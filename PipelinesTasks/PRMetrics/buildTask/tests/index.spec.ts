@@ -11,7 +11,7 @@ describe('index.ts', (): void => {
   it('should skip when not running as a pull request', function test (done: mocha.Done): void {
     // Arrange
     this.timeout(0)
-    const file: string = path.join(__dirname, 'collateral', 'index.beforeGitChecks.js')
+    const file: string = path.join(__dirname, 'testCollateral', 'index.default.js')
     const task: taskLibMock.MockTestRunner = new taskLibMock.MockTestRunner(file)
 
     // Act
@@ -32,7 +32,7 @@ describe('index.ts', (): void => {
     this.timeout(0)
     process.env.SYSTEM_PULLREQUEST_PULLREQUESTID = '12345'
     process.env.BUILD_REPOSITORY_PROVIDER = 'Other'
-    const file: string = path.join(__dirname, 'collateral', 'index.beforeGitChecks.js')
+    const file: string = path.join(__dirname, 'testCollateral', 'index.default.js')
     const task: taskLibMock.MockTestRunner = new taskLibMock.MockTestRunner(file)
 
     // Act
@@ -55,7 +55,7 @@ describe('index.ts', (): void => {
     this.timeout(0)
     process.env.SYSTEM_PULLREQUEST_PULLREQUESTID = '12345'
     process.env.BUILD_REPOSITORY_PROVIDER = 'TfsGit'
-    const file: string = path.join(__dirname, 'collateral', 'index.beforeGitChecks.js')
+    const file: string = path.join(__dirname, 'testCollateral', 'index.default.js')
     const task: taskLibMock.MockTestRunner = new taskLibMock.MockTestRunner(file)
 
     // Act
@@ -79,7 +79,7 @@ describe('index.ts', (): void => {
     process.env.SYSTEM_PULLREQUEST_PULLREQUESTID = '12345'
     process.env.BUILD_REPOSITORY_PROVIDER = 'TfsGit'
     process.env.SYSTEM_ACCESSTOKEN = 'OAUTH'
-    const file: string = path.join(__dirname, 'collateral', 'index.noGitEnlistment.js')
+    const file: string = path.join(__dirname, 'testCollateral', 'index.noGitEnlistment.js')
     const task: taskLibMock.MockTestRunner = new taskLibMock.MockTestRunner(file)
 
     // Act
@@ -105,7 +105,7 @@ describe('index.ts', (): void => {
     process.env.BUILD_REPOSITORY_PROVIDER = 'TfsGit'
     process.env.SYSTEM_ACCESSTOKEN = 'OAUTH'
     process.env.SYSTEM_PULLREQUEST_TARGETBRANCH = 'refs/heads/develop'
-    const file: string = path.join(__dirname, 'collateral', 'index.noGitHistory.js')
+    const file: string = path.join(__dirname, 'testCollateral', 'index.noGitHistory.js')
     const task: taskLibMock.MockTestRunner = new taskLibMock.MockTestRunner(file)
 
     // Act
@@ -132,7 +132,7 @@ describe('index.ts', (): void => {
     process.env.SYSTEM_ACCESSTOKEN = 'OAUTH'
     process.env.SYSTEM_PULLREQUEST_TARGETBRANCH = 'refs/heads/develop'
     process.env.PRMETRICS_SKIP_APIS = 'true'
-    const file: string = path.join(__dirname, 'collateral', 'index.afterGitChecks.js')
+    const file: string = path.join(__dirname, 'testCollateral', 'index.default.js')
     const task: taskLibMock.MockTestRunner = new taskLibMock.MockTestRunner(file)
 
     // Act
@@ -164,7 +164,7 @@ describe('index.ts', (): void => {
     process.env.BUILD_REPOSITORY_ID = 'RepoID'
     process.env.SYSTEM_TEAMFOUNDATIONCOLLECTIONURI = 'https://dev.azure.com/organization'
 
-    const file: string = path.join(__dirname, 'collateral', 'index.afterGitChecks.js')
+    const file: string = path.join(__dirname, 'testCollateral', 'index.default.js')
     const task: taskLibMock.MockTestRunner = new taskLibMock.MockTestRunner(file)
 
     // Act
