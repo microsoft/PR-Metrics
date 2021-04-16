@@ -689,6 +689,38 @@ describe('azureReposInvoker.ts', function (): void {
       verify(taskLibWrapper.debug('* AzureReposInvoker.initialize()')).once()
       verify(taskLibWrapper.debug('{}')).once()
     })
+
+    it('should call the API for a deleted file', async (): Promise<void> => {
+      // Arrange
+      const expectedCommentThread: GitPullRequestCommentThread = {
+        comments: [{ content: 'Comment Content' }],
+        status: CommentThreadStatus.Active,
+        threadContext: {
+          filePath: '/file.ts',
+          leftFileStart: {
+            line: 1,
+            offset: 1
+          },
+          leftFileEnd: {
+            line: 1,
+            offset: 2
+          }
+        }
+      }
+      when(gitApi.createThread(deepEqual(expectedCommentThread), 'RepoID', 10, 'Project')).thenResolve({})
+      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(taskLibWrapper))
+
+      // Act
+      await azureReposInvoker.createCommentThread('Comment Content', CommentThreadStatus.Active, 'file.ts', true)
+
+      // Assert
+      verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
+      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
+      verify(gitApi.createThread(deepEqual(expectedCommentThread), 'RepoID', 10, 'Project')).once()
+      verify(taskLibWrapper.debug('* AzureReposInvoker.createCommentThread()')).once()
+      verify(taskLibWrapper.debug('* AzureReposInvoker.initialize()')).once()
+      verify(taskLibWrapper.debug('{}')).once()
+    })
   })
 
   describe('setCommentThreadStatus()', (): void => {

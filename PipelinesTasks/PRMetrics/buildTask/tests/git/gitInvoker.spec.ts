@@ -6,6 +6,7 @@ import { expect } from 'chai'
 import { IExecSyncResult } from 'azure-pipelines-task-lib/toolrunner'
 import { instance, mock, verify, when } from 'ts-mockito'
 import * as os from 'os'
+import async from 'async'
 import ExecSyncResult from '../wrappers/execSyncResult'
 import GitInvoker from '../../src/git/gitInvoker'
 import TaskLibWrapper from '../../src/wrappers/taskLibWrapper'
@@ -41,18 +42,26 @@ describe('gitInvoker.ts', (): void => {
   })
 
   describe('isGitEnlistment', (): void => {
-    it('should return true when called from a Git enlistment', (): void => {
-      // Arrange
-      const gitInvoker: GitInvoker = new GitInvoker(instance(taskLibWrapper))
+    async.each(
+      [
+        'true',
+        'true ',
+        `true${os.EOL}`
+      ], (response: string): void => {
+        it(`should return true when called from a Git enlistment returning '${response.replace(/\n/g, '\\n')}'`, (): void => {
+        // Arrange
+          diffExecSyncResult.stdout = response
+          const gitInvoker: GitInvoker = new GitInvoker(instance(taskLibWrapper))
 
-      // Act
-      const result: boolean = gitInvoker.isGitEnlistment
+          // Act
+          const result: boolean = gitInvoker.isGitEnlistment
 
-      // Assert
-      expect(result).to.equal(true)
-      verify(taskLibWrapper.debug('* GitInvoker.isGitEnlistment')).once()
-      verify(taskLibWrapper.debug('* GitInvoker.invokeGit()')).once()
-    })
+          // Assert
+          expect(result).to.equal(true)
+          verify(taskLibWrapper.debug('* GitInvoker.isGitEnlistment')).once()
+          verify(taskLibWrapper.debug('* GitInvoker.invokeGit()')).once()
+        })
+      })
 
     it('should return false when not called from a Git enlistment', (): void => {
       // Arrange

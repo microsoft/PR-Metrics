@@ -33,7 +33,7 @@ export default class GitInvoker {
     this._taskLibWrapper.debug('* GitInvoker.isGitEnlistment')
 
     const result: string = this.invokeGit('rev-parse --is-inside-work-tree')
-    return result.startsWith('true')
+    return result.trim() === 'true'
   }
 
   /**

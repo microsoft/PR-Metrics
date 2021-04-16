@@ -108,6 +108,7 @@ export module InputsDefault {
     'reds',
     'rkt',
     'rktl',
+    'rs',
     's',
     'scala',
     'sce',

@@ -371,6 +371,7 @@ red
 reds
 rkt
 rktl
+rs
 s
 scala
 sce

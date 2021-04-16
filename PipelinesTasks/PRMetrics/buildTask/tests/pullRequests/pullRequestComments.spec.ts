@@ -29,6 +29,38 @@ describe('pullRequestComments.ts', (): void => {
       }],
       id: 1
     }
+  const complexGitPullRequestCommentThreads: GitPullRequestCommentThread[] =
+  [
+    {
+      comments: [
+        {
+          content: `# Metrics for iteration 1${os.EOL}`,
+          id: 10
+        }
+      ],
+      id: 20
+    },
+    {
+      threadContext: {
+        filePath: '/file2.ts'
+      },
+      comments: [
+        {
+          content: '❗ **This file doesn\'t require review.**'
+        }
+      ]
+    },
+    {
+      threadContext: {
+        filePath: '/file5.ts'
+      },
+      comments: [
+        {
+          content: '❗ **This file doesn\'t require review.**'
+        }
+      ]
+    }
+  ]
   let azureReposInvoker: AzureReposInvoker
   let codeMetrics: CodeMetrics
   let inputs: Inputs
@@ -176,39 +208,36 @@ describe('pullRequestComments.ts', (): void => {
         })
       })
 
-    it('should return the expected result when all comment types are present', async (): Promise<void> => {
+    async.each(
+      [
+        [['folder/file1.ts', 'file3.ts'], [{ threadContext: { filePath: '/file2.ts' }, comments: [{ content: '❗ **This file doesn\'t require review.**' }] }]],
+        [['folder/file1.ts', 'file3.ts'], [{ threadContext: { filePath: '/folder/file1.ts' }, comments: [{ content: 'Content' }] }, { threadContext: { filePath: '/file2.ts' }, comments: [{ content: '❗ **This file doesn\'t require review.**' }] }]],
+        [['folder/file1.ts', 'file3.ts'], [{ threadContext: { filePath: '/fileA.ts' }, comments: [{ content: '❗ **This file doesn\'t require review.**' }] }, { threadContext: { filePath: '/file2.ts' }, comments: [{ content: '❗ **This file doesn\'t require review.**' }] }]],
+        [['file3.ts'], [{ threadContext: { filePath: '/folder/file1.ts' }, comments: [{ content: '❗ **This file doesn\'t require review.**' }] }, { threadContext: { filePath: '/file2.ts' }, comments: [{ content: '❗ **This file doesn\'t require review.**' }] }]]
+      ], (data: [string[], GitPullRequestCommentThread[]]): void => {
+        it(`should return the expected result for deleted files not requiring review when the comment is present with payload '${JSON.stringify(data[1])}'`, async (): Promise<void> => {
+          // Arrange
+          when(azureReposInvoker.getCommentThreads()).thenResolve(data[1])
+          when(codeMetrics.deletedFilesNotRequiringReview).thenReturn(['folder/file1.ts', 'file2.ts', 'file3.ts'])
+          const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(inputs), instance(taskLibWrapper))
+
+          // Act
+          const result: PullRequestCommentsData = await pullRequestComments.getCommentData(1)
+
+          // Assert
+          expect(result.isMetricsCommentPresent).to.equal(false)
+          expect(result.metricsCommentThreadId).to.equal(null)
+          expect(result.metricsCommentId).to.equal(null)
+          expect(result.filesNotRequiringReview).to.deep.equal([])
+          expect(result.deletedFilesNotRequiringReview).to.deep.equal(data[0])
+          verify(taskLibWrapper.debug('* PullRequestComments.getCommentData()')).once()
+          verify(taskLibWrapper.debug('* PullRequestComments.getNoReviewRequiredCommentData()')).atLeast(1)
+        })
+      })
+
+    it('should return the expected result when all comment types are present in files not requiring review', async (): Promise<void> => {
       // Arrange
-      when(azureReposInvoker.getCommentThreads()).thenResolve([
-        {
-          comments: [
-            {
-              content: `# Metrics for iteration 1${os.EOL}`,
-              id: 10
-            }
-          ],
-          id: 20
-        },
-        {
-          threadContext: {
-            filePath: '/file2.ts'
-          },
-          comments: [
-            {
-              content: '❗ **This file doesn\'t require review.**'
-            }
-          ]
-        },
-        {
-          threadContext: {
-            filePath: '/file5.ts'
-          },
-          comments: [
-            {
-              content: '❗ **This file doesn\'t require review.**'
-            }
-          ]
-        }
-      ])
+      when(azureReposInvoker.getCommentThreads()).thenResolve(complexGitPullRequestCommentThreads)
       when(codeMetrics.filesNotRequiringReview).thenReturn(['folder/file1.ts', 'file2.ts', 'file3.ts'])
       const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(inputs), instance(taskLibWrapper))
 
@@ -224,6 +253,47 @@ describe('pullRequestComments.ts', (): void => {
       verify(taskLibWrapper.debug('* PullRequestComments.getCommentData()')).once()
       verify(taskLibWrapper.debug('* PullRequestComments.getMetricsCommentData()')).once()
       verify(taskLibWrapper.debug('* PullRequestComments.getNoReviewRequiredCommentData()')).once()
+    })
+
+    it('should return the expected result when all comment types are present in deleted files not requiring review', async (): Promise<void> => {
+      // Arrange
+      when(azureReposInvoker.getCommentThreads()).thenResolve(complexGitPullRequestCommentThreads)
+      when(codeMetrics.deletedFilesNotRequiringReview).thenReturn(['folder/file1.ts', 'file2.ts', 'file3.ts'])
+      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(inputs), instance(taskLibWrapper))
+
+      // Act
+      const result: PullRequestCommentsData = await pullRequestComments.getCommentData(1)
+
+      // Assert
+      expect(result.isMetricsCommentPresent).to.equal(true)
+      expect(result.metricsCommentThreadId).to.equal(20)
+      expect(result.metricsCommentId).to.equal(10)
+      expect(result.filesNotRequiringReview).to.deep.equal([])
+      expect(result.deletedFilesNotRequiringReview).to.deep.equal(['folder/file1.ts', 'file3.ts'])
+      verify(taskLibWrapper.debug('* PullRequestComments.getCommentData()')).once()
+      verify(taskLibWrapper.debug('* PullRequestComments.getMetricsCommentData()')).once()
+      verify(taskLibWrapper.debug('* PullRequestComments.getNoReviewRequiredCommentData()')).once()
+    })
+
+    it('should return the expected result when all comment types are present in both modified and deleted files not requiring review', async (): Promise<void> => {
+      // Arrange
+      when(azureReposInvoker.getCommentThreads()).thenResolve(complexGitPullRequestCommentThreads)
+      when(codeMetrics.filesNotRequiringReview).thenReturn(['folder/file1.ts', 'file2.ts'])
+      when(codeMetrics.deletedFilesNotRequiringReview).thenReturn(['file3.ts', 'file5.ts'])
+      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(inputs), instance(taskLibWrapper))
+
+      // Act
+      const result: PullRequestCommentsData = await pullRequestComments.getCommentData(1)
+
+      // Assert
+      expect(result.isMetricsCommentPresent).to.equal(true)
+      expect(result.metricsCommentThreadId).to.equal(20)
+      expect(result.metricsCommentId).to.equal(10)
+      expect(result.filesNotRequiringReview).to.deep.equal(['folder/file1.ts'])
+      expect(result.deletedFilesNotRequiringReview).to.deep.equal(['file3.ts'])
+      verify(taskLibWrapper.debug('* PullRequestComments.getCommentData()')).once()
+      verify(taskLibWrapper.debug('* PullRequestComments.getMetricsCommentData()')).once()
+      verify(taskLibWrapper.debug('* PullRequestComments.getNoReviewRequiredCommentData()')).twice()
     })
 
     async.each(
