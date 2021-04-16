@@ -39,19 +39,16 @@ jobs:
         working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildTask
 
       - name: Test
-        run: |-
-          Set-Location -Path '${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildTask'
-          npm run test:pipeline
+        run: npm run test:pipeline
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildTask
 
       - name: Test - Minified
-        run: |-
-          Set-Location -Path '${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildTask'
-          npm run test:minify
+        run: npm run test:minify
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildTask
 
       - name: Build
-        run: |-
-          Set-Location -Path '${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildTask'
-          npm run build
+        run: npm run build
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildTask
 
       - name: Remove 'node_modules'
         run: Remove-Item -Path 'node_modules' -Recurse -Force
