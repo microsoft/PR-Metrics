@@ -46,7 +46,7 @@ describe('gitInvoker.ts', (): void => {
       [
         'true',
         'true ',
-        `true${os.EOL}`
+        'true\n'
       ], (response: string): void => {
         it(`should return true when called from a Git enlistment returning '${response.replace(/\n/g, '\\n')}'`, (): void => {
         // Arrange

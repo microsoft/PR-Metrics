@@ -38,12 +38,16 @@ jobs:
         run: npm install
         working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildTask
 
-      - name: Build
-        run: npm run build
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildTask
-
       - name: Test
         run: npm run test:pipeline
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildTask
+
+      - name: Test - Minified
+        run: npm run test:minify
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildTask
+
+      - name: Build
+        run: npm run build
         working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildTask
 
       - name: Remove '.nyc_output'
@@ -52,6 +56,10 @@ jobs:
 
       - name: Remove '.taskkey'
         run: Remove-Item -Path '.taskkey' -Recurse -Force
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildTask
+
+      - name: Remove 'coverage'
+        run: Remove-Item -Path 'coverage' -Recurse
         working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildTask
 
       - name: Remove 'node_modules'
