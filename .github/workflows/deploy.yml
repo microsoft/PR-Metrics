@@ -29,12 +29,12 @@ jobs:
 
       - name: NPM – Install Dependencies
         run: npm install
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/task
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/src/task
 
       - name: Login
         run: tfx login --service-url https://${{ secrets.AZURE_DEVOPS_INSTANCE }}.visualstudio.com/DefaultCollection --token ${{ secrets.AZURE_DEVOPS_ACCESS_TOKEN }} --no-prompt
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/task
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/src/task
 
       - name: NPM – Deploy
         run: npm run deploy
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/task
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/src/task

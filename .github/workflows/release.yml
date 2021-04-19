@@ -32,15 +32,15 @@ jobs:
 
       - name: NPM – Install Dependencies
         run: npm install
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/task
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/src/task
 
       - name: NPM – Release
         run: npm run release
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/task
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/src/task
 
       - name: Publish Release
         run: >-
           tfx extension publish
-          --manifest-globs ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/vss-extension.json
-          --vsix ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/ms-omex.${{ matrix.task }}.vsix
+          --manifest-globs ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/src/task/vss-extension.json
+          --vsix ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/src/task/ms-omex.${{ matrix.task }}.vsix
           --token ${{ secrets.VS_PAT }}

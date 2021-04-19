@@ -36,33 +36,33 @@ jobs:
 
       - name: NPM – Install Dependencies
         run: npm install
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/task
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/src/task
 
       - name: NPM – Lint
         run: npm run lint
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/task
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/src/task
 
       - name: NPM - Clean
         run: npm run clean
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/task
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/src/task
 
       - name: NPM – Build
         run: npm run build
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/task
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/src/task
 
       - name: NPM – Test
         run: npm run test
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/task
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/src/task
 
       - name: NPM – Release
         run: npm run release
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/task
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/src/task
 
       - name: Publish Release
         uses: actions/upload-artifact@v2
         with:
           name: ${{ matrix.task }}
-          path: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/task/*.vsix
+          path: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/src/task/*.vsix
 
   validate:
     name: Validate
@@ -171,7 +171,7 @@ jobs:
       - name: Validate .mocharc.json
         uses: Zingabopp/JsonValidate-Action@v1
         with:
-          json-file: PipelinesTasks/${{ matrix.task }}/task/.mocharc.json
+          json-file: PipelinesTasks/${{ matrix.task }}/src/task/.mocharc.json
           json-schema: .mocharc.schema.json
 
       - name: Validate package.json – Download package.schema.json
@@ -186,7 +186,7 @@ jobs:
       - name: Validate package.json
         uses: Zingabopp/JsonValidate-Action@v1
         with:
-          json-file: PipelinesTasks/${{ matrix.task }}/task/package.json
+          json-file: PipelinesTasks/${{ matrix.task }}/src/task/package.json
           json-schema: package.schema.json
 
       - name: Validate task.json – Download task.schema.json
@@ -201,13 +201,13 @@ jobs:
       - name: Validate task.json
         uses: Zingabopp/JsonValidate-Action@v1
         with:
-          json-file: PipelinesTasks/${{ matrix.task }}/task/task.json
+          json-file: PipelinesTasks/${{ matrix.task }}/src/task/task.json
           json-schema: task.schema.json
 
       - name: Validate task.loc.json
         uses: Zingabopp/JsonValidate-Action@v1
         with:
-          json-file: PipelinesTasks/${{ matrix.task }}/task/task.loc.json
+          json-file: PipelinesTasks/${{ matrix.task }}/src/task/task.loc.json
           json-schema: task.schema.json
 
       - name: Validate tsconfig.json – Download tsconfig.schema.json
@@ -222,13 +222,13 @@ jobs:
       - name: Validate tsconfig.json
         uses: Zingabopp/JsonValidate-Action@v1
         with:
-          json-file: PipelinesTasks/${{ matrix.task }}/task/tsconfig.json
+          json-file: PipelinesTasks/${{ matrix.task }}/src/task/tsconfig.json
           json-schema: tsconfig.schema.json
 
       - name: Validate typedoc.json
         uses: Zingabopp/JsonValidate-Action@v1
         with:
-          json-file: PipelinesTasks/${{ matrix.task }}/task/typedoc.json
+          json-file: PipelinesTasks/${{ matrix.task }}/src/task/typedoc.json
           json-schema: https://typedoc.org/schema.json
 
       - name: Validate resources.resjson – Download resources.resjson.schema.json
@@ -243,5 +243,5 @@ jobs:
       - name: Validate resources.resjson (en-US)
         uses: Zingabopp/JsonValidate-Action@v1
         with:
-          json-file: PipelinesTasks/${{ matrix.task }}/task/Strings/resources.resjson/en-US/resources.resjson
+          json-file: PipelinesTasks/${{ matrix.task }}/src/task/Strings/resources.resjson/en-US/resources.resjson
           json-schema: resources.resjson.schema.json
