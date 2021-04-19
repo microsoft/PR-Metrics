@@ -38,17 +38,25 @@ jobs:
         run: npm install
         working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/task
 
+      - name: Lint
+        run: npm run lint
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/task
+
+      - name: Build – Debug
+        run: npm run build:debug
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/task
+
       - name: Test
         run: npm run test
         working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/task
 
-      - name: Build
-        run: npm run build:release
+      - name: Clean
+        run: npm run clean
         working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/task
 
-      - name: Remove 'build/debug'
-        run: Remove-Item -Path 'build/debug' -Force -Recurse
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}
+      - name: Build – Release
+        run: npm run build:release
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/task
 
       - name: Remove 'task'
         run: Remove-Item -Path 'task' -Force -Recurse

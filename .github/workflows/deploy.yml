@@ -38,20 +38,10 @@ jobs:
       - name: Copy 'LICENSE.txt'
         run: Copy-Item -Path '${{ github.workspace }}/LICENSE.txt' -Destination '${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}'
 
-      - name: Install TFX CLI
-        run: npm install -g tfx-cli
-
-      - name: TFX - Login
+      - name: Login
         run: tfx login --service-url https://${{ secrets.AZURE_DEVOPS_INSTANCE }}.visualstudio.com/DefaultCollection --token ${{ secrets.AZURE_DEVOPS_ACCESS_TOKEN }} --no-prompt
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/task
 
-      - name: TFX - Delete Old Task
-        env:
-          taskId: >-
-            {
-              "PRMetrics": "907d3b28-6b37-4ac7-ac75-9631ee53e512"
-            }
-        run: tfx build tasks delete --task-id ${{ fromJson(env.taskId)[matrix.task] }} --no-prompt
-        continue-on-error: true
-
-      - name: TFX - Upload New Task
-        run: tfx build tasks upload --task-path ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/build/release --no-prompt
+      - name: Deploy
+        run: npm run deploy
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/task

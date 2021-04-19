@@ -6,9 +6,9 @@
   "main": "index.js",
   "scripts": {
     "build:debug": "make-dir ../build/debug && ncp . ../build/debug && cd ../build/debug && npm install && tsc --sourceMap && typedoc",
-    "build:release": "make-dir ../build/release && ncp . ../build/release && cd ../build/release && npm install && tsc && del-cli node_modules tests **/*.ts .mocharc.json .nycrc.json tsconfig.json typedoc.json && npm install --only-prod",
+    "build:release": "make-dir ../build/release && ncp . ../build/release && cd ../build/release && npm install && tsc && del-cli node_modules tests **/*.ts .mocharc.json .nycrc.json tsconfig.json typedoc.json && npm install --only=production",
     "clean": "del-cli --force ../build",
-    "deploy": "npm run build:release && exitzero tfx build tasks delete --task-id 907d3b28-6b37-4ac7-ac75-9631ee53e512 && tfx build tasks upload --task-path ../build/release",
+    "deploy": "npm run build:release && exitzero tfx build tasks delete --task-id 907d3b28-6b37-4ac7-ac75-9631ee53e512 --no-prompt && tfx build tasks upload --task-path ../build/release --no-prompt",
     "lint": "eslint --fix **/*.ts",
     "test": "npm run build:debug && cd ../build/debug && nyc --reporter=text --reporter=text-summary mocha tests/**/*.spec.js --check-leaks --color"
   },
