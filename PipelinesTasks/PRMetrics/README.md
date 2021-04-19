@@ -338,6 +338,7 @@ i
 inc
 java
 js
+jsx
 l
 lgt
 lisp
@@ -397,6 +398,7 @@ stk
 swg
 tcl
 ts
+tsx
 vb
 xpl
 xq
