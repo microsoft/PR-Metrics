@@ -27,21 +27,14 @@ jobs:
         with:
           node-version: 15.x
 
-      - name: Build
-        run: npm run build:release
+      - name: NPM – Install Dependencies
+        run: npm install
         working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/task
-
-      - name: Remove 'task'
-        run: Remove-Item -Path 'task' -Force -Recurse
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}
-
-      - name: Copy 'LICENSE.txt'
-        run: Copy-Item -Path '${{ github.workspace }}/LICENSE.txt' -Destination '${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}'
 
       - name: Login
         run: tfx login --service-url https://${{ secrets.AZURE_DEVOPS_INSTANCE }}.visualstudio.com/DefaultCollection --token ${{ secrets.AZURE_DEVOPS_ACCESS_TOKEN }} --no-prompt
         working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/task
 
-      - name: Deploy
+      - name: NPM – Deploy
         run: npm run deploy
         working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/task

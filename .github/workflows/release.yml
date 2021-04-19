@@ -30,30 +30,13 @@ jobs:
         with:
           node-version: 15.x
 
-      - name: Install Root NPM Dependencies
-        run: npm install
-
-      - name: Install NPM Dependencies
+      - name: NPM – Install Dependencies
         run: npm install
         working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/task
 
-      - name: Build
-        run: npm run build:release
+      - name: NPM – Release
+        run: npm run release
         working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/task
-
-      - name: Remove 'task'
-        run: Remove-Item -Path 'task' -Force -Recurse
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}
-
-      - name: Copy 'LICENSE.txt'
-        run: Copy-Item -Path '${{ github.workspace }}/LICENSE.txt' -Destination '${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}'
-
-      - name: Install TFX CLI
-        run: npm install -g tfx-cli
-
-      - name: Create Release
-        run: tfx extension create --manifest-globs vss-extension.json --output-path ms-omex.${{ matrix.task }}.vsix
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}
 
       - name: Publish Release
         run: >-

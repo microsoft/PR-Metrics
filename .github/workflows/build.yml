@@ -31,51 +31,38 @@ jobs:
         with:
           node-version: 15.x
 
-      - name: Install Root NPM Dependencies
+      - name: NPM - Install Root Dependencies
         run: npm install
 
-      - name: Install NPM Dependencies
+      - name: NPM – Install Dependencies
         run: npm install
         working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/task
 
-      - name: Lint
+      - name: NPM – Lint
         run: npm run lint
         working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/task
 
-      - name: Build – Debug
-        run: npm run build:debug
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/task
-
-      - name: Test
-        run: npm run test
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/task
-
-      - name: Clean
+      - name: NPM - Clean
         run: npm run clean
         working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/task
 
-      - name: Build – Release
-        run: npm run build:release
+      - name: NPM – Build
+        run: npm run build
         working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/task
 
-      - name: Remove 'task'
-        run: Remove-Item -Path 'task' -Force -Recurse
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}
+      - name: NPM – Test
+        run: npm run test
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/task
 
-      - name: Copy 'LICENSE.txt'
-        run: Copy-Item -Path '${{ github.workspace }}/LICENSE.txt' -Destination '${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}'
-
-      - name: Install TFX CLI
-        run: npm install -g tfx-cli
-      - name: Create Release
-        run: tfx extension create --manifest-globs vss-extension.json --output-path ms-omex.${{ matrix.task }}.vsix
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}
+      - name: NPM – Release
+        run: npm run release
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/task
 
       - name: Publish Release
         uses: actions/upload-artifact@v2
         with:
           name: ${{ matrix.task }}
-          path: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/ms-omex.${{ matrix.task }}.vsix
+          path: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/task/*.vsix
 
   validate:
     name: Validate

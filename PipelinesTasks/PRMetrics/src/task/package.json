@@ -5,12 +5,23 @@
   "description": "Augments pull request titles to let reviewers quickly determine PR size and test coverage.",
   "main": "index.js",
   "scripts": {
-    "build:debug": "make-dir ../build/debug && ncp . ../build/debug && cd ../build/debug && npm install && tsc --sourceMap && typedoc",
-    "build:release": "make-dir ../build/release && ncp . ../build/release && cd ../build/release && npm install && tsc && del-cli node_modules tests **/*.ts .mocharc.json .nycrc.json tsconfig.json typedoc.json && npm install --only=production",
-    "clean": "del-cli --force ../build",
-    "deploy": "npm run build:release && exitzero tfx build tasks delete --task-id 907d3b28-6b37-4ac7-ac75-9631ee53e512 --no-prompt && tfx build tasks upload --task-path ../build/release --no-prompt",
+    "build:prepare": "cross-env-shell \"cd .. && mkdirp ../build/$npm_config_dir && ncp . ../build/$npm_config_dir && cd ../build/$npm_config_dir/task && npm install\"",
+    "build:debug": "npm run build:prepare --dir=debug && cd ../../build/debug/task && tsc --sourceMap && typedoc",
+    "build:release": "npm run build:prepare --dir=release && cd ../../build/release/task && tsc && rimraf node_modules tests **/*.ts .mocharc.json .nycrc.json tsconfig.json typedoc.json && npm install --only=production",
+    "build": "npm run build:debug && npm run build:release",
+
+    "clean": "rimraf ../../build",
+
+    "predeploy": "npm run build:release",
+    "deploy": "exitzero tfx build tasks delete --task-id 907d3b28-6b37-4ac7-ac75-9631ee53e512 --no-prompt && tfx build tasks upload --task-path ../../build/release/task --no-prompt",
+
     "lint": "eslint --fix **/*.ts",
-    "test": "npm run build:debug && cd ../build/debug && nyc --reporter=text --reporter=text-summary mocha tests/**/*.spec.js --check-leaks --color"
+
+    "prerelease": "npm run build:release",
+    "release": "tfx extension create --manifest-globs ../../build/release/vss-extension.json --output-path ms-omex.prmetrics.vsix",
+
+    "pretest": "npm run build:debug",
+    "test": "cd ../../build/debug/task && nyc --reporter=text --reporter=text-summary mocha tests/**/*.spec.js --check-leaks --color"
   },
   "repository": {
     "type": "git",
@@ -54,17 +65,16 @@
     "@types/sinon": "^9.0.11",
     "async": "^1.5.2",
     "chai": "^4.3.3",
-    "cpy-cli": "^3.1.1",
-    "del-cli": "^3.0.1",
+    "cross-env": "^7.0.3",
     "eslint": "^7.21.0",
     "exitzero": "^1.0.1",
-    "foreach-cli": "^1.8.1",
     "glob": "^7.1.6",
     "glob-promise": "^4.1.0",
-    "make-dir-cli": "^1.0.0",
+    "mkdirp": "^0.5.5",
     "mocha": "^8.3.1",
     "ncp": "^0.4.2",
     "nyc": "^15.1.0",
+    "rimraf": "^3.0.2",
     "sinon": "^10.0.0",
     "source-map-support": "^0.5.19",
     "tfx-cli": "^0.8.3",
