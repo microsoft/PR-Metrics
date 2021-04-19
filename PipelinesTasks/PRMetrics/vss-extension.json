@@ -66,7 +66,7 @@
   },
   "files": [
     {
-      "path": "buildTask"
+      "path": "build/release"
     },
     {
       "path": "images",
@@ -81,7 +81,7 @@
         "ms.vss-distributed-task.tasks"
       ],
       "properties": {
-        "name": "buildTask"
+        "name": "build/release"
       }
     }
   ]

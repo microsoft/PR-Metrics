@@ -27,50 +27,16 @@ jobs:
         with:
           node-version: 15.x
 
-      - name: Install Root NPM Dependencies
-        run: npm install
-
-      - name: Install NPM Dependencies
-        run: npm install
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildTask
-
       - name: Build
-        run: npm run build
+        run: npm run build:release
         working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildTask
 
-      - name: Remove 'node_modules'
-        run: Remove-Item -Path 'node_modules' -Recurse -Force
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildTask
-
-      - name: Install Production NPM Dependencies
-        run: npm install --only=production
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildTask
-
-      - name: Remove 'tests'
-        run: Remove-Item -Path 'tests' -Recurse
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildTask
-
-      - name: Remove 'tsdocs'
-        run: Remove-Item -Path 'tsdocs' -Recurse -Force
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildTask
-
-      - name: Remove '*.js.map'
-        run: Get-ChildItem -Path '*' -Include '*.js.map' -Recurse | Remove-Item -Force
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildTask
-
-      - name: Remove '*.json'
-        run: Remove-Item -Path '*.json' -Exclude 'task*.json' -Force
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildTask
-
-      - name: Remove '*.ts'
-        run: Get-ChildItem -Path '*' -Include '*.ts' -Recurse | Remove-Item -Force
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildTask
-
-      - name: Copy to Destination
-        run: Copy-Item -Path '${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}' -Destination '${{ github.workspace }}/build/Release/PipelinesTasks/${{ matrix.task }}' -Recurse
+      - name: Remove 'buildTask'
+        run: Remove-Item -Path 'buildTask' -Force
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}
 
       - name: Copy 'LICENSE.txt'
-        run: Copy-Item -Path '${{ github.workspace }}/LICENSE.txt' -Destination '${{ github.workspace }}/build/Release/PipelinesTasks/${{ matrix.task }}'
+        run: Copy-Item -Path '${{ github.workspace }}/LICENSE.txt' -Destination '${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}'
 
       - name: Install TFX CLI
         run: npm install -g tfx-cli
@@ -88,4 +54,4 @@ jobs:
         continue-on-error: true
 
       - name: TFX - Upload New Task
-        run: tfx build tasks upload --task-path ${{ github.workspace }}/build/Release/PipelinesTasks/${{ matrix.task }}/buildTask --no-prompt
+        run: tfx build tasks upload --task-path ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/build/release --no-prompt

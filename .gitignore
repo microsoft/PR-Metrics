@@ -118,7 +118,4 @@ dist
 .pnp.*
 
 # Project-Specific Settings
-tsdocs/
-*.js
-*.js.map
-.taskkey
+build

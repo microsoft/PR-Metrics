@@ -5,13 +5,12 @@
   "description": "Augments pull request titles to let reviewers quickly determine PR size and test coverage.",
   "main": "index.js",
   "scripts": {
-    "build": "tsc && typedoc",
-    "clean": "del-cli .nyc_output .taskkey **/*.js.map **/*.js !node_modules/**/*.js coverage tsdocs",
-    "debug": "ts-node index.ts",
-    "deploy": "tsc && exitzero tfx build tasks delete --task-id 907d3b28-6b37-4ac7-ac75-9631ee53e512 && tfx build tasks upload --task-path . && npm run clean",
+    "build:debug": "make-dir ../build/debug && ncp . ../build/debug && cd ../build/debug && npm install && tsc --sourceMap && typedoc",
+    "build:release": "make-dir ../build/release && ncp . ../build/release && cd ../build/release && npm install && tsc && del-cli node_modules tests **/*.ts .mocharc.json .nycrc.json tsconfig.json typedoc.json && npm install --only-prod",
+    "clean": "del-cli --force ../build",
+    "deploy": "npm run build:release && exitzero tfx build tasks delete --task-id 907d3b28-6b37-4ac7-ac75-9631ee53e512 && tfx build tasks upload --task-path ../build/release",
     "lint": "eslint --fix **/*.ts",
-    "test:pipeline": "tsc && nyc --reporter=text --reporter=text-summary mocha tests/**/*.spec.js --color",
-    "test": "exitzero npm run test:pipeline && npm run clean"
+    "test": "npm run build:debug && cd ../build/debug && nyc --reporter=text --reporter=text-summary mocha tests/**/*.spec.js --check-leaks --color"
   },
   "repository": {
     "type": "git",
@@ -34,6 +33,9 @@
     "url": "https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/issues"
   },
   "homepage": "https://github.com/microsoft/OMEX-Azure-DevOps-Extensions#readme",
+  "engines": {
+    "node": ">=10.23.3"
+  },
   "dependencies": {
     "azure-devops-node-api": "^8.1.1",
     "azure-pipelines-task-lib": "^3.1.0",
@@ -52,13 +54,16 @@
     "@types/sinon": "^9.0.11",
     "async": "^1.5.2",
     "chai": "^4.3.3",
+    "cpy-cli": "^3.1.1",
     "del-cli": "^3.0.1",
     "eslint": "^7.21.0",
     "exitzero": "^1.0.1",
     "foreach-cli": "^1.8.1",
     "glob": "^7.1.6",
     "glob-promise": "^4.1.0",
+    "make-dir-cli": "^1.0.0",
     "mocha": "^8.3.1",
+    "ncp": "^0.4.2",
     "nyc": "^15.1.0",
     "sinon": "^10.0.0",
     "source-map-support": "^0.5.19",
