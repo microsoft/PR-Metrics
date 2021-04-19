@@ -36,22 +36,22 @@ jobs:
 
       - name: Install NPM Dependencies
         run: npm install
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildTask
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/task
 
       - name: Test
         run: npm run test
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildTask
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/task
 
       - name: Build
         run: npm run build:release
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildTask
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/task
 
       - name: Remove 'build/debug'
         run: Remove-Item -Path 'build/debug' -Force
         working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}
 
-      - name: Remove 'buildTask'
-        run: Remove-Item -Path 'buildTask' -Force
+      - name: Remove 'task'
+        run: Remove-Item -Path 'task' -Force
         working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}
 
       - name: Copy 'LICENSE.txt'
@@ -176,7 +176,7 @@ jobs:
       - name: Validate .mocharc.json
         uses: Zingabopp/JsonValidate-Action@v1
         with:
-          json-file: PipelinesTasks/${{ matrix.task }}/buildTask/.mocharc.json
+          json-file: PipelinesTasks/${{ matrix.task }}/task/.mocharc.json
           json-schema: .mocharc.schema.json
 
       - name: Validate package.json – Download package.schema.json
@@ -191,7 +191,7 @@ jobs:
       - name: Validate package.json
         uses: Zingabopp/JsonValidate-Action@v1
         with:
-          json-file: PipelinesTasks/${{ matrix.task }}/buildTask/package.json
+          json-file: PipelinesTasks/${{ matrix.task }}/task/package.json
           json-schema: package.schema.json
 
       - name: Validate task.json – Download task.schema.json
@@ -206,13 +206,13 @@ jobs:
       - name: Validate task.json
         uses: Zingabopp/JsonValidate-Action@v1
         with:
-          json-file: PipelinesTasks/${{ matrix.task }}/buildTask/task.json
+          json-file: PipelinesTasks/${{ matrix.task }}/task/task.json
           json-schema: task.schema.json
 
       - name: Validate task.loc.json
         uses: Zingabopp/JsonValidate-Action@v1
         with:
-          json-file: PipelinesTasks/${{ matrix.task }}/buildTask/task.loc.json
+          json-file: PipelinesTasks/${{ matrix.task }}/task/task.loc.json
           json-schema: task.schema.json
 
       - name: Validate tsconfig.json – Download tsconfig.schema.json
@@ -227,13 +227,13 @@ jobs:
       - name: Validate tsconfig.json
         uses: Zingabopp/JsonValidate-Action@v1
         with:
-          json-file: PipelinesTasks/${{ matrix.task }}/buildTask/tsconfig.json
+          json-file: PipelinesTasks/${{ matrix.task }}/task/tsconfig.json
           json-schema: tsconfig.schema.json
 
       - name: Validate typedoc.json
         uses: Zingabopp/JsonValidate-Action@v1
         with:
-          json-file: PipelinesTasks/${{ matrix.task }}/buildTask/typedoc.json
+          json-file: PipelinesTasks/${{ matrix.task }}/task/typedoc.json
           json-schema: https://typedoc.org/schema.json
 
       - name: Validate resources.resjson – Download resources.resjson.schema.json
@@ -248,5 +248,5 @@ jobs:
       - name: Validate resources.resjson (en-US)
         uses: Zingabopp/JsonValidate-Action@v1
         with:
-          json-file: PipelinesTasks/${{ matrix.task }}/buildTask/Strings/resources.resjson/en-US/resources.resjson
+          json-file: PipelinesTasks/${{ matrix.task }}/task/Strings/resources.resjson/en-US/resources.resjson
           json-schema: resources.resjson.schema.json

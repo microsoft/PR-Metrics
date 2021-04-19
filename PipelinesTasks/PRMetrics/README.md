@@ -83,7 +83,7 @@ To deploy the task:
    You can generate a PAT with at least the "Agent Pools (Read & manage)" scope
    by following the instructions [here][tfxpat]. This will only need to be
    performed the first time you use tfx-cli.
-1. To build and deploy, from within the `buildTask` folder, run
+1. To build and deploy, from within the `task` folder, run
    `npm run deploy`.
 
 ## Configuring
@@ -169,7 +169,7 @@ treated as such. For example, the task should not be used to replace
 comprehensive and thorough code coverage metrics. Instead, the task should
 merely be considered a guideline for influencing optimal PR behavior.
 
-The task can be built using `npm run build` from the `buildTask`
+The task can be built using `npm run build` from the `task`
 folder. `npm run clean` can be used to clean the build outputs.
 
 ## Testing
@@ -178,7 +178,7 @@ This task is tested via unit and integration tests constructed using the
 [Mocha][mocha] test framework, the [Chai][chai] assertion library and the
 [ts-mockito][tsmockito] mocking library. Tests follow the
 [Arrange-Act-Assert pattern][aaa], and they can be run using `npm test` from
-within the `buildTask` folder. This command will output both the test
+within the `task` folder. This command will output both the test
 results and code coverage metrics.
 
 The code coverage is currently extremely high, and a high rate of coverage
@@ -192,7 +192,7 @@ server-based testing.
 
 The code formatting complies with the [ESLint][eslint] "Standard" rules. The
 formatting can be checked and automatically fixed by running `npm run lint`
-from within the `buildTask` folder. [TypeDoc][typedoc] comments are
+from within the `task` folder. [TypeDoc][typedoc] comments are
 present on public methods and are converted to HTML during the `npm run build`
 process. [Dependency injection][depinjection] is used throughout the project to
 facilitate testability.
@@ -412,7 +412,7 @@ y
 [npm]: https://www.npmjs.com/
 [tfxpat]: https://docs.microsoft.com/azure/devops/extend/publish/command-line
 [vssextensionjson]: vss-extension.json
-[taskjson]: buildTask/task.json
+[taskjson]: task/task.json
 [addingtask]: https://docs.microsoft.com/azure/devops/pipelines/customize-pipeline
 [globs]: https://docs.microsoft.com/azure/devops/pipelines/tasks/file-matching-patterns
 [typescript]: https://www.typescriptlang.org/

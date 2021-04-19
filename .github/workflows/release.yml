@@ -35,14 +35,14 @@ jobs:
 
       - name: Install NPM Dependencies
         run: npm install
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildTask
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/task
 
       - name: Build
         run: npm run build:release
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildTask
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/task
 
-      - name: Remove 'buildTask'
-        run: Remove-Item -Path 'buildTask' -Force
+      - name: Remove 'task'
+        run: Remove-Item -Path 'task' -Force
         working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}
 
       - name: Copy 'LICENSE.txt'
