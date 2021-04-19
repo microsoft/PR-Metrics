@@ -34,13 +34,20 @@ jobs:
         run: npm install
         working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/src/task
 
-      - name: NPM – Release
-        run: npm run release
+      - name: NPM - Build
+        run: npm run build:release
         working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/src/task
 
-      - name: Publish Release
+      - name: Install TFX CLI
+        run: npm install -g tfx-cli
+
+      - name: Release – Create
+        run: tfx extension create --manifest-globs vss-extension.json --output-path ../ms-omex.${{ matrix.task }}.vsix
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/build/release
+
+      - name: Release – Publish
         run: >-
           tfx extension publish
-          --manifest-globs ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/src/task/vss-extension.json
-          --vsix ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/src/task/ms-omex.${{ matrix.task }}.vsix
+          --manifest-globs ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/build/release/vss-extension.json
+          --vsix ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/build/ms-omex.${{ matrix.task }}.vsix
           --token ${{ secrets.VS_PAT }}

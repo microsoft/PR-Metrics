@@ -17,9 +17,6 @@
 
     "lint": "eslint --fix **/*.ts",
 
-    "prerelease": "npm run build:release",
-    "release": "tfx extension create --manifest-globs ../../build/release/vss-extension.json --output-path ms-omex.prmetrics.vsix",
-
     "pretest": "npm run build:debug",
     "test": "cd ../../build/debug/task && nyc --reporter=text --reporter=text-summary mocha tests/**/*.spec.js --check-leaks --color"
   },
