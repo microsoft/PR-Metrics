@@ -47,11 +47,11 @@ jobs:
         working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/task
 
       - name: Remove 'build/debug'
-        run: Remove-Item -Path 'build/debug' -Force
+        run: Remove-Item -Path 'build/debug' -Force -Recurse
         working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}
 
       - name: Remove 'task'
-        run: Remove-Item -Path 'task' -Force
+        run: Remove-Item -Path 'task' -Force -Recurse
         working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}
 
       - name: Copy 'LICENSE.txt'
