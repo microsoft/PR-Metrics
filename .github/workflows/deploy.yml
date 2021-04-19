@@ -32,7 +32,7 @@ jobs:
         working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/src/task
 
       - name: Login
-        run: tfx login --service-url https://${{ secrets.AZURE_DEVOPS_INSTANCE }}.visualstudio.com/DefaultCollection --token ${{ secrets.AZURE_DEVOPS_ACCESS_TOKEN }} --no-prompt
+        run: npx tfx login --service-url https://${{ secrets.AZURE_DEVOPS_INSTANCE }}.visualstudio.com/DefaultCollection --token ${{ secrets.AZURE_DEVOPS_ACCESS_TOKEN }} --no-prompt
         working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/src/task
 
       - name: NPM – Deploy
