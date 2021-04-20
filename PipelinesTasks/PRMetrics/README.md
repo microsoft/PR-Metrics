@@ -289,122 +289,227 @@ outputted by default irrespective of the value of the `system.debug` variable.
 
 ## Default Code File Extensions
 
-The default value for the Code File Extensions input outlined
-[above](#inputs) is:
+The default value for the Code File Extensions input outlined [above](#inputs)
+corresponds to the [top 10 languages used on GitHub in 2020][octoverse] and uses
+the language extensions defined in the
+[GitHub language detection logic][githublinguist].
 
-```Text
-ada
-adb
-ads
-asm
-bas
-bb
-bmx
-c
-cbl
-cbp
-cc
-clj
-cls
-cob
-cpp
-cs
-cxx
-d
-dba
-e
-efs
-egt
-el
-f
-f77
-f90
-for
-frm
-frx
-fth
-ftn
-ged
-gm6
-gmd
-gmk
-gml
-go
-h
-hpp
-hs
-hxx
-i
-inc
-java
-js
-jsx
-l
-lgt
-lisp
-m
-m4
-ml
-msqr
-n
-nb
-p
-pas
-php
-php3
-php4
-php5
-phps
-phtml
-piv
-pl
-pl1
-pli
-pm
-pol
-pp
-prg
-pro
-py
-r
-rb
-red
-reds
-rkt
-rktl
-rs
-s
-scala
-sce
-sci
-scm
-sd7
-skb
-skc
-skd
-skf
-skg
-ski
-skk
-skm
-sko
-skp
-skq
-sks
-skt
-skz
-spin
-stk
-swg
-tcl
-ts
-tsx
-vb
-xpl
-xq
-xsl
-y
-```
+### JavaScript
+
+- `.js`
+- `._js`
+- `.bones`
+- `.cjs`
+- `.es`
+- `.es6`
+- `.frag`
+- `.gs`
+- `.jake`
+- `.jsb`
+- `.jscad`
+- `.jsfl`
+- `.jsm`
+- `.jss`
+- `.jsx`
+- `.mjs`
+- `.njs`
+- `.pac`
+- `.sjs`
+- `.ssjs`
+- `.xsjs`
+- `.xsjslib`
+
+#### Ecere Projects
+
+- `.epj`
+
+#### JavaScript+ERB
+
+- `.erb`
+
+### Python
+
+- `.py`
+- `.cgi`
+- `.fcgi`
+- `.gyp`
+- `.gypi`
+- `.lmi`
+- `.py3`
+- `.pyde`
+- `.pyi`
+- `.pyp`
+- `.pyt`
+- `.pyw`
+- `.rpy`
+- `.smk`
+- `.spec`
+- `.tac`
+- `.wsgi`
+- `.xpy`
+
+#### Cython
+
+- `.pyx`
+- `.pxd`
+- `.pxi`
+
+#### Easybuild
+
+- `.eb`
+
+#### NumPy
+
+- `.numpy`
+- `.numpyw`
+- `.numsc`
+
+#### Python traceback
+
+- `.pytb`
+
+### Java
+
+- `.java`
+
+#### Java Server Pages
+
+- `.jsp`
+
+### TypeScript
+
+- `.ts`
+
+#### TSX
+
+- `.tsx`
+
+### C\#
+
+- `.cs`
+- `.cake`
+- `.csx`
+- `.linq`
+
+### PHP
+
+- `.php`
+- `.aw`
+- `.ctp`
+- `.fcgi`
+- `.inc`
+- `.php3`
+- `.php4`
+- `.php5`
+- `.phps`
+- `.phpt`
+
+### C++
+
+- `.cpp`
+- `.c++`
+- `.cc`
+- `.cp`
+- `.cxx`
+- `.h`
+- `.h++`
+- `.hh`
+- `.hpp`
+- `.hxx`
+- `.inc`
+- `.inl`
+- `.ino`
+- `.ipp`
+- `.re`
+- `.tcc`
+- `.tpp`
+
+### C
+
+- `.c`
+- `.cats`
+- `.h`
+- `.idc`
+
+#### C: OpenCL
+
+- `.cl`
+- `.opencl`
+
+#### C: Unified Parallel C
+
+- `.upc`
+
+#### C: X BitMap
+
+- `.xbm`
+
+#### C: X PixMap
+
+- `.xpm`
+- `.pm`
+
+### Shell
+
+- `.sh`
+- `.bash`
+- `.bats`
+- `.cgi`
+- `.command`
+- `.env`
+- `.fcgi`
+- `.ksh`
+- `.tmux`
+- `.tool`
+- `.zsh`
+
+#### Shell: fish
+
+- `.fish`
+
+#### Shell: Gentoo Ebuild
+
+- `.ebuild`
+
+#### Shell: Gentoo Eclass
+
+- `.eclass`
+
+#### Shell: PowerShell
+
+- `.ps1`
+- `.psd1`
+- `.psm1`
+
+#### Shell: Tcsh
+
+- `.tcsh`
+- `.csh`
+
+### Ruby
+
+- `.rb`
+- `.builder`
+- `.eye`
+- `.fcgi`
+- `.gemspec`
+- `.god`
+- `.jbuilder`
+- `.mspec`
+- `.pluginspec`
+- `.podspec`
+- `.prawn`
+- `.rabl`
+- `.rake`
+- `.rbi`
+- `.rbuild`
+- `.rbw`
+- `.rbx`
+- `.ru`
+- `.ruby`
+- `.spec`
+- `.thor`
+- `.watchr`
 
 [azurepipelines]: https://azure.microsoft.com/services/devops/pipelines/
 [azureserver]: https://azure.microsoft.com/services/devops/server/
@@ -427,3 +532,5 @@ y
 [docsbuildtask]: https://docs.microsoft.com/azure/devops/pipelines/create-first-pipeline
 [docsoauth]: https://docs.microsoft.com/azure/devops/pipelines/build/options#allow-scripts-to-access-the-oauth-token
 [docsbranch]: https://docs.microsoft.com/azure/devops/repos/git/branch-policies#build-validation
+[octoverse]: https://octoverse.github.com/
+[githublinguist]: https://github.com/github/linguist/blob/master/lib/linguist/languages.yml

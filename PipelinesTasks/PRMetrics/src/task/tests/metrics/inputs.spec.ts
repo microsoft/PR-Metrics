@@ -827,14 +827,6 @@ describe('inputs.ts', (): void => {
         verify(consoleWrapper.log(settingFileMatchingPatternsResource)).never()
         verify(consoleWrapper.log(settingCodeFileExtensionsResource)).once()
       })
-
-      it('InputsDefault.codeFileExtensions should be sorted', (): void => {
-        // Arrange
-        const sortedCodeFileExtensions: string[] = InputsDefault.codeFileExtensions.sort()
-
-        // Assert
-        expect(sortedCodeFileExtensions).to.deep.equal(InputsDefault.codeFileExtensions)
-      })
     })
   })
 })
