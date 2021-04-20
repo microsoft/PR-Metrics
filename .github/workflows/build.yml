@@ -31,9 +31,6 @@ jobs:
         with:
           node-version: 15.x
 
-      - name: NPM - Install Root Dependencies
-        run: npm install
-
       - name: NPM – Install Dependencies
         run: npm install
         working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/src/task
