@@ -1,4 +1,4 @@
-OMEX Azure DevOps Extensions: PR Metrics
+PR Metrics
 
 Copyright (c) Microsoft Corporation.
 
