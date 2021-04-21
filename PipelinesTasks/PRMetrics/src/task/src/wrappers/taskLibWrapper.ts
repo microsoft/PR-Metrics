@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { IExecSyncOptions, IExecSyncResult } from 'azure-pipelines-task-lib/toolrunner'
+import { IExecOptions } from 'azure-pipelines-task-lib/toolrunner'
 import { singleton } from 'tsyringe'
 import * as taskLib from 'azure-pipelines-task-lib/task'
 
@@ -19,14 +19,14 @@ export default class TaskLibWrapper {
   }
 
   /**
-   * Synchronously executes an external tool.
+   * Asynchronously executes an external tool.
    * @param tool The tool executable to run.
    * @param args The arguments to pass to the tool.
    * @param options The execution options.
-   * @returns The result of the execution.
+   * @returns A promise containing the result of the execution.
    */
-  public execSync (tool: string, args: string | string[], options?: IExecSyncOptions): IExecSyncResult {
-    return taskLib.execSync(tool, args, options)
+  public exec (tool: string, args: string | string[], options?: IExecOptions): Promise<number> {
+    return taskLib.exec(tool, args, options)
   }
 
   /**

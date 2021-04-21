@@ -41,89 +41,89 @@ export default class CodeMetrics {
 
   /**
    * Gets the collection of files not requiring review to which to add a comment.
-   * @returns The collection of files not requiring review.
+   * @returns A promise containing the collection of files not requiring review.
    */
-  public get filesNotRequiringReview (): string[] {
-    this._taskLibWrapper.debug('* CodeMetrics.filesNotRequiringReview')
+  public async getFilesNotRequiringReview (): Promise<string[]> {
+    this._taskLibWrapper.debug('* CodeMetrics.getFilesNotRequiringReview()')
 
-    this.initialize()
+    await this.initialize()
     return this._filesNotRequiringReview
   }
 
   /**
    * Gets the collection of deleted files not requiring review to which to add a comment.
-   * @returns The collection of deleted files not requiring review.
+   * @returns A promise containing the collection of deleted files not requiring review.
    */
-  public get deletedFilesNotRequiringReview (): string[] {
-    this._taskLibWrapper.debug('* CodeMetrics.deletedFilesNotRequiringReview')
+  public async getDeletedFilesNotRequiringReview (): Promise<string[]> {
+    this._taskLibWrapper.debug('* CodeMetrics.getDeletedFilesNotRequiringReview()')
 
-    this.initialize()
+    await this.initialize()
     return this._deletedFilesNotRequiringReview
   }
 
   /**
    * Gets the size of the pull request – XS, S, M, etc.
-   * @returns The size of the pull request.
+   * @returns A promise containing the size of the pull request.
    */
-  public get size (): string {
-    this._taskLibWrapper.debug('* CodeMetrics.size')
+  public async getSize (): Promise<string> {
+    this._taskLibWrapper.debug('* CodeMetrics.getSize()')
 
-    this.initialize()
+    await this.initialize()
     return this._size
   }
 
   /**
    * Gets the size indicator comprising the size and test coverage indicator, which will form part of the title.
-   * @returns The size indicator.
+   * @returns A promise containing the size indicator.
    */
-  public get sizeIndicator (): string {
-    this._taskLibWrapper.debug('* CodeMetrics.sizeIndicator')
+  public async getSizeIndicator (): Promise<string> {
+    this._taskLibWrapper.debug('* CodeMetrics.getSizeIndicator()')
 
-    this.initialize()
+    await this.initialize()
     return this._sizeIndicator
   }
 
   /**
    * Gets the collection of pull request code metrics.
-   * @returns The collection of pull request code metrics.
+   * @returns A promise containing the collection of pull request code metrics.
    */
-  public get metrics (): CodeMetricsData {
-    this._taskLibWrapper.debug('* CodeMetrics.metrics')
+  public async getMetrics (): Promise<CodeMetricsData> {
+    this._taskLibWrapper.debug('* CodeMetrics.getMetrics()')
 
-    this.initialize()
+    await this.initialize()
     return this._metrics
   }
 
   /**
    * Gets a value indicating whether the pull request is small or extra small.
-   * @returns A value indicating whether the pull request is small or extra small.
+   * @returns A promise indicating whether the pull request is small or extra small.
    */
-  public get isSmall (): boolean {
-    this._taskLibWrapper.debug('* CodeMetrics.isSmall')
+  public async isSmall (): Promise<boolean> {
+    this._taskLibWrapper.debug('* CodeMetrics.isSmall()')
 
-    this.initialize()
+    await this.initialize()
     return this._metrics.productCode < (this._inputs.baseSize * this._inputs.growthRate)
   }
 
   /**
    * Gets a value indicating whether the pull request has sufficient test coverage.
-   * @returns A value indicating whether the pull request has sufficient test coverage. If the test coverage is not being checked, the value will be `null`.
+   * @returns A promise indicating whether the pull request has sufficient test coverage. If the test coverage is not being checked, the value will be `null`.
    */
-  public get isSufficientlyTested (): boolean | null {
-    this._taskLibWrapper.debug('* CodeMetrics.isSufficientlyTested')
+  public async isSufficientlyTested (): Promise<boolean | null> {
+    this._taskLibWrapper.debug('* CodeMetrics.isSufficientlyTested()')
 
-    this.initialize()
+    await this.initialize()
     return this._isSufficientlyTested
   }
 
-  private initialize (): void {
+  private async initialize (): Promise<void> {
     this._taskLibWrapper.debug('* CodeMetrics.initialize()')
 
     if (this._isInitialized) {
       return
     }
 
-    const gitDiffSummary: string = this._gitInvoker.getDiffSummary().trim()
+    const gitDiffSummary: string = await this._gitInvoker.getDiffSummary()
     if (!gitDiffSummary) {
       throw Error('The Git diff summary is empty.')
     }

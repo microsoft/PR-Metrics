@@ -1,10 +1,28 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { IExecSyncResult } from 'azure-pipelines-task-lib/toolrunner'
+import { IExecOptions } from 'azure-pipelines-task-lib/toolrunner'
 import { singleton } from 'tsyringe'
 import { Validator } from '../utilities/validator'
+import stream from 'stream'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
+
+export class GitWritableStream extends stream.Writable {
+  private _message: string = ''
+
+  public get message (): string {
+    return this._message.trim()
+  }
+
+  public _write (chunk: any, _: string, callback: (error?: Error | null) => void): void {
+    const currentChunk: string = chunk.toString()
+    if (!currentChunk.startsWith('[command]')) {
+      this._message += currentChunk
+    }
+
+    callback()
+  }
+}
 
 /**
  * A class for invoking Git commands.
@@ -27,33 +45,33 @@ export default class GitInvoker {
 
   /**
    * Gets a value indicating whether the current folder corresponds to a Git enlistment.
-   * @returns A value indicating whether the current folder corresponds to a Git enlistment.
+   * @returns A promise containing a value indicating whether the current folder corresponds to a Git enlistment.
    */
-  public get isGitEnlistment (): boolean {
-    this._taskLibWrapper.debug('* GitInvoker.isGitEnlistment')
+  public async isGitEnlistment (): Promise<boolean> {
+    this._taskLibWrapper.debug('* GitInvoker.isGitEnlistment()')
 
-    const result: string = this.invokeGit('rev-parse --is-inside-work-tree')
-    return result.trim() === 'true'
+    const result: string = await this.invokeGit('rev-parse --is-inside-work-tree')
+    return result === 'true'
   }
 
   /**
    * Gets a value indicating whether sufficient Git history is available to generate the PR metrics.
-   * @returns A value indicating whether sufficient Git history is available to generate the PR metrics.
+   * @returns A promise containing a value indicating whether sufficient Git history is available to generate the PR metrics.
    */
-  public get isGitHistoryAvailable (): boolean {
-    this._taskLibWrapper.debug('* GitInvoker.isGitHistoryAvailable')
+  public async isGitHistoryAvailable (): Promise<boolean> {
+    this._taskLibWrapper.debug('* GitInvoker.isGitHistoryAvailable()')
 
     this.initialize()
-    const result: string = this.invokeGit(`rev-parse --branch origin/${this._targetBranch}...pull/${this._pullRequestId}/merge`)
+    const result: string = await this.invokeGit(`rev-parse --branch origin/${this._targetBranch}...pull/${this._pullRequestId}/merge`)
 
     return !result.startsWith(`fatal: ambiguous argument 'origin/${this._targetBranch}...pull/${this._pullRequestId}/merge': unknown revision or path not in the working tree.`)
   }
 
   /**
    * Gets a diff summary related to the changes in the current branch.
-   * @returns The diff summary.
+   * @returns A promise containing the diff summary.
    */
-  public getDiffSummary (): string {
+  public getDiffSummary (): Promise<string> {
     this._taskLibWrapper.debug('* GitInvoker.getDiffSummary()')
 
     this.initialize()
@@ -91,14 +109,22 @@ export default class GitInvoker {
     return Validator.validate(process.env.SYSTEM_PULLREQUEST_PULLREQUESTID, 'SYSTEM_PULLREQUEST_PULLREQUESTID', 'GitInvoker.getPullRequestId()')
   }
 
-  private invokeGit (parameters: string): string {
+  private async invokeGit (parameters: string): Promise<string> {
     this._taskLibWrapper.debug('* GitInvoker.invokeGit()')
 
-    const result: IExecSyncResult = this._taskLibWrapper.execSync('git', parameters)
-    if (result.code !== 0) {
-      throw result.error
+    const outputStream: GitWritableStream = new GitWritableStream()
+    const errorStream: GitWritableStream = new GitWritableStream()
+    const execOption: IExecOptions = {
+      failOnStdErr: true,
+      outStream: outputStream,
+      errStream: errorStream
     }
 
-    return result.stdout
+    const result: number = await this._taskLibWrapper.exec('git', parameters, execOption)
+    if (result !== 0) {
+      throw Error(errorStream.message)
+    }
+
+    return outputStream.message
   }
 }

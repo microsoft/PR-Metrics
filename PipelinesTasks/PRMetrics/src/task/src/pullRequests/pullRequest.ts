@@ -67,12 +67,12 @@ export default class PullRequest {
   /**
    * Gets the description to which to update the pull request's current title.
    * @param currentTitle The pull request's current title.
-   * @returns The value to which to update the title or `null` if the title is not to be updated.
+   * @returns A promise containing value to which to update the title or `null` if the title is not to be updated.
    */
-  public getUpdatedTitle (currentTitle: string): string | null {
+  public async getUpdatedTitle (currentTitle: string): Promise<string | null> {
     this._taskLibWrapper.debug('* PullRequest.getUpdatedTitle()')
 
-    const sizeIndicator: string = this._codeMetrics.sizeIndicator
+    const sizeIndicator: string = await this._codeMetrics.getSizeIndicator()
     if (currentTitle.startsWith(this._taskLibWrapper.loc('pullRequests.pullRequest.titleFormat', sizeIndicator, ''))) {
       return null
     }

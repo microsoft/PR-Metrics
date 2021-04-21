@@ -19,7 +19,7 @@ async function run (): Promise<void> {
       return
     }
 
-    const terminateMessage: string | null = codeMetricsCalculator.shouldStop
+    const terminateMessage: string | null = await codeMetricsCalculator.shouldStop()
     if (terminateMessage !== null) {
       taskLib.setResult(taskLib.TaskResult.Failed, terminateMessage)
       return

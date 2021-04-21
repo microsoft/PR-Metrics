@@ -19,12 +19,12 @@ import TaskLibWrapper from '../wrappers/taskLibWrapper'
  */
 @injectable()
 export default class CodeMetricsCalculator {
-  private _azureReposInvoker: AzureReposInvoker
-  private _codeMetrics: CodeMetrics
-  private _gitInvoker: GitInvoker
-  private _pullRequest: PullRequest
-  private _pullRequestComments: PullRequestComments
-  private _taskLibWrapper: TaskLibWrapper
+  private readonly _azureReposInvoker: AzureReposInvoker
+  private readonly _codeMetrics: CodeMetrics
+  private readonly _gitInvoker: GitInvoker
+  private readonly _pullRequest: PullRequest
+  private readonly _pullRequestComments: PullRequestComments
+  private readonly _taskLibWrapper: TaskLibWrapper
 
   /**
    * Initializes a new instance of the `CodeMetricsCalculator` class.
@@ -65,20 +65,20 @@ export default class CodeMetricsCalculator {
 
   /**
    * Gets a message if the task should be stopped.
-   * @returns `null` if the task should continue, or a message to be displayed if the task should be stopped.
+   * @returns A promise containing `null` if the task should continue, or a message to be displayed if the task should be stopped.
    */
-  public get shouldStop (): string | null {
-    this._taskLibWrapper.debug('* CodeMetricsCalculator.shouldStop')
+  public async shouldStop (): Promise<string | null> {
+    this._taskLibWrapper.debug('* CodeMetricsCalculator.shouldStop()')
 
     if (!this._azureReposInvoker.isAccessTokenAvailable) {
       return this._taskLibWrapper.loc('metrics.codeMetricsCalculator.noAccessToken')
     }
 
-    if (!this._gitInvoker.isGitEnlistment) {
+    if (!await this._gitInvoker.isGitEnlistment()) {
       return this._taskLibWrapper.loc('metrics.codeMetricsCalculator.noGitEnlistment')
     }
 
-    if (!this._gitInvoker.isGitHistoryAvailable) {
+    if (!await this._gitInvoker.isGitHistoryAvailable()) {
       return this._taskLibWrapper.loc('metrics.codeMetricsCalculator.noGitHistory')
     }
 
@@ -93,7 +93,7 @@ export default class CodeMetricsCalculator {
     this._taskLibWrapper.debug('* CodeMetricsCalculator.updateDetails()')
 
     const details: IPullRequestDetails = await this._azureReposInvoker.getTitleAndDescription()
-    const updatedTitle: string | null = this._pullRequest.getUpdatedTitle(details.title)
+    const updatedTitle: string | null = await this._pullRequest.getUpdatedTitle(details.title)
     const updatedDescription: string | null = this._pullRequest.getUpdatedDescription(details.description)
 
     await this._azureReposInvoker.setTitleAndDescription(updatedTitle, updatedDescription)
@@ -129,8 +129,8 @@ export default class CodeMetricsCalculator {
   private async updateMetricsComment (commentData: PullRequestCommentsData, currentIteration: number): Promise<void> {
     this._taskLibWrapper.debug('* CodeMetricsCalculator.updateMetricsComment()')
 
-    const comment: string = this._pullRequestComments.getMetricsComment(currentIteration)
-    const status: CommentThreadStatus = this._pullRequestComments.getMetricsCommentStatus()
+    const comment: string = await this._pullRequestComments.getMetricsComment(currentIteration)
+    const status: CommentThreadStatus = await this._pullRequestComments.getMetricsCommentStatus()
     if (commentData.metricsCommentThreadId !== null) {
       await this._azureReposInvoker.createComment(comment, commentData.metricsCommentThreadId, commentData.metricsCommentId!)
       await this._azureReposInvoker.setCommentThreadStatus(commentData.metricsCommentThreadId, status)
@@ -142,11 +142,11 @@ export default class CodeMetricsCalculator {
   private async addMetadata (): Promise<void> {
     this._taskLibWrapper.debug('* CodeMetricsCalculator.addMetadata()')
 
-    const metrics: CodeMetricsData = this._codeMetrics.metrics
+    const metrics: CodeMetricsData = await this._codeMetrics.getMetrics()
     const metadata: IPullRequestMetadata[] = [
       {
         key: 'Size',
-        value: this._codeMetrics.size
+        value: await this._codeMetrics.getSize()
       },
       {
         key: 'ProductCode',
@@ -170,10 +170,11 @@ export default class CodeMetricsCalculator {
       }
     ]
 
-    if (this._codeMetrics.isSufficientlyTested !== null) {
+    const isSufficientlyTested: boolean | null = await this._codeMetrics.isSufficientlyTested()
+    if (isSufficientlyTested !== null) {
       metadata.push({
         key: 'TestCoverage',
-        value: this._codeMetrics.isSufficientlyTested
+        value: isSufficientlyTested
       })
     }
 

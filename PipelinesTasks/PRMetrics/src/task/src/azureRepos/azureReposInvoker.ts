@@ -18,8 +18,8 @@ import TaskLibWrapper from '../wrappers/taskLibWrapper'
  */
 @singleton()
 export default class AzureReposInvoker {
-  private _azureDevOpsApiWrapper: AzureDevOpsApiWrapper
-  private _taskLibWrapper: TaskLibWrapper
+  private readonly _azureDevOpsApiWrapper: AzureDevOpsApiWrapper
+  private readonly _taskLibWrapper: TaskLibWrapper
 
   private _project: string = ''
   private _repositoryId: string = ''
@@ -53,7 +53,7 @@ export default class AzureReposInvoker {
   public async getTitleAndDescription (): Promise<IPullRequestDetails> {
     this._taskLibWrapper.debug('* AzureReposInvoker.getTitleAndDescription()')
 
-    const gitApi: IGitApi = await this.initialize()
+    const gitApi: IGitApi = await this.getGitApi()
     const result: GitPullRequest = await gitApi.getPullRequestById(this._pullRequestId, this._project)
     this._taskLibWrapper.debug(JSON.stringify(result))
 
@@ -71,7 +71,7 @@ export default class AzureReposInvoker {
   public async getCurrentIteration (): Promise<number> {
     this._taskLibWrapper.debug('* AzureReposInvoker.getCurrentIteration()')
 
-    const gitApi: IGitApi = await this.initialize()
+    const gitApi: IGitApi = await this.getGitApi()
     const result: GitPullRequestIteration[] = await gitApi.getPullRequestIterations(this._repositoryId, this._pullRequestId, this._project)
     this._taskLibWrapper.debug(JSON.stringify(result))
     if (result.length === 0) {
@@ -88,7 +88,7 @@ export default class AzureReposInvoker {
   public async getCommentThreads (): Promise<GitPullRequestCommentThread[]> {
     this._taskLibWrapper.debug('* AzureReposInvoker.getCommentThreads()')
 
-    const gitApi: IGitApi = await this.initialize()
+    const gitApi: IGitApi = await this.getGitApi()
     const result: GitPullRequestCommentThread[] = await gitApi.getThreads(this._repositoryId, this._pullRequestId, this._project)
     this._taskLibWrapper.debug(JSON.stringify(result))
     return result
@@ -107,7 +107,7 @@ export default class AzureReposInvoker {
       return
     }
 
-    const gitApiPromise: Promise<IGitApi> = this.initialize()
+    const gitApiPromise: Promise<IGitApi> = this.getGitApi()
     const updatedGitPullRequest: GitPullRequest = {}
     if (title !== null) {
       updatedGitPullRequest.title = title
@@ -131,7 +131,7 @@ export default class AzureReposInvoker {
   public async createComment (commentContent: string, commentThreadId: number, parentCommentId: number): Promise<void> {
     this._taskLibWrapper.debug('* AzureReposInvoker.createComment()')
 
-    const gitApiPromise: Promise<IGitApi> = this.initialize()
+    const gitApiPromise: Promise<IGitApi> = this.getGitApi()
     const comment: Comment = {
       content: commentContent,
       parentCommentId: parentCommentId
@@ -152,7 +152,7 @@ export default class AzureReposInvoker {
   public async createCommentThread (commentContent: string, status: CommentThreadStatus, fileName?: string, isFileDeleted?: boolean): Promise<void> {
     this._taskLibWrapper.debug('* AzureReposInvoker.createCommentThread()')
 
-    const gitApiPromise: Promise<IGitApi> = this.initialize()
+    const gitApiPromise: Promise<IGitApi> = this.getGitApi()
     const commentThread: GitPullRequestCommentThread = {
       comments: [{ content: commentContent }],
       status: status
@@ -194,7 +194,7 @@ export default class AzureReposInvoker {
   public async setCommentThreadStatus (commentThreadId: number, status: CommentThreadStatus): Promise<void> {
     this._taskLibWrapper.debug('* AzureReposInvoker.setCommentThreadStatus()')
 
-    const gitApiPromise: Promise<IGitApi> = this.initialize()
+    const gitApiPromise: Promise<IGitApi> = this.getGitApi()
     const commentThread: GitPullRequestCommentThread = {
       status: status
     }
@@ -215,7 +215,7 @@ export default class AzureReposInvoker {
       throw RangeError('The collection of metadata was of length zero.')
     }
 
-    const gitApiPromise: Promise<IGitApi> = this.initialize()
+    const gitApiPromise: Promise<IGitApi> = this.getGitApi()
     const jsonPatchDocumentValues: JsonPatchOperation[] = []
     metadata.forEach((datum: IPullRequestMetadata): void => {
       const operation: JsonPatchOperation = {
@@ -231,8 +231,8 @@ export default class AzureReposInvoker {
     this._taskLibWrapper.debug(JSON.stringify(result))
   }
 
-  private async initialize (): Promise<IGitApi> {
-    this._taskLibWrapper.debug('* AzureReposInvoker.initialize()')
+  private async getGitApi (): Promise<IGitApi> {
+    this._taskLibWrapper.debug('* AzureReposInvoker.getGitApi()')
 
     if (this._gitApi) {
       return this._gitApi

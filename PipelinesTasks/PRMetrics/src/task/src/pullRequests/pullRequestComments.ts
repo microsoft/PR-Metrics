@@ -7,6 +7,7 @@ import { Validator } from '../utilities/validator'
 import * as os from 'os'
 import AzureReposInvoker from '../azureRepos/azureReposInvoker'
 import CodeMetrics from '../metrics/codeMetrics'
+import CodeMetricsData from '../metrics/codeMetricsData'
 import Inputs from '../metrics/inputs'
 import PullRequestCommentsData from './pullRequestCommentsData'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
@@ -53,7 +54,9 @@ export default class PullRequestComments {
   public async getCommentData (currentIteration: number): Promise<PullRequestCommentsData> {
     this._taskLibWrapper.debug('* PullRequestComments.getCommentData()')
 
-    let result: PullRequestCommentsData = new PullRequestCommentsData(this._codeMetrics.filesNotRequiringReview, this._codeMetrics.deletedFilesNotRequiringReview)
+    const filesNotRequiringReview: string[] = await this._codeMetrics.getFilesNotRequiringReview()
+    const deletedFilesNotRequiringReview: string[] = await this._codeMetrics.getDeletedFilesNotRequiringReview()
+    let result: PullRequestCommentsData = new PullRequestCommentsData(filesNotRequiringReview, deletedFilesNotRequiringReview)
 
     const commentThreads: GitPullRequestCommentThread[] = await this._azureReposInvoker.getCommentThreads()
     for (let i: number = 0; i < commentThreads.length; i++) {
@@ -70,13 +73,13 @@ export default class PullRequestComments {
 
         const fileName: string = filePath.substring(1)
 
-        const fileIndex: number = this._codeMetrics.filesNotRequiringReview.indexOf(fileName)
+        const fileIndex: number = filesNotRequiringReview.indexOf(fileName)
         if (fileIndex !== -1) {
           result.filesNotRequiringReview = this.getNoReviewRequiredCommentData(result.filesNotRequiringReview, fileIndex, commentThread, i)
           continue
         }
 
-        const deletedFileIndex: number = this._codeMetrics.deletedFilesNotRequiringReview.indexOf(fileName)
+        const deletedFileIndex: number = deletedFilesNotRequiringReview.indexOf(fileName)
         if (deletedFileIndex !== -1) {
           result.deletedFilesNotRequiringReview = this.getNoReviewRequiredCommentData(result.deletedFilesNotRequiringReview, deletedFileIndex, commentThread, i)
           continue
@@ -90,22 +93,24 @@ export default class PullRequestComments {
   /**
    * Gets the comment to add to the comment thread.
    * @param The number of the current iteration.
-   * @returns The comment to add to the comment thread.
+   * @returns A promise containing the comment to add to the comment thread.
    */
-  public getMetricsComment (currentIteration: number): string {
+  public async getMetricsComment (currentIteration: number): Promise<string> {
     this._taskLibWrapper.debug('* PullRequestComments.getMetricsComment()')
 
+    const metrics: CodeMetricsData = await this._codeMetrics.getMetrics()
+
     let result: string = `${this._taskLibWrapper.loc('pullRequests.pullRequestComments.commentTitle', currentIteration.toLocaleString())}${os.EOL}`
-    result += this.addCommentSizeStatus()
-    result += this.addCommentTestStatus()
+    result += await this.addCommentSizeStatus()
+    result += await this.addCommentTestStatus()
 
     result += `||${this._taskLibWrapper.loc('pullRequests.pullRequestComments.tableLines')}${os.EOL}`
     result += `-|-:${os.EOL}`
-    result += this.addCommentMetrics(this._taskLibWrapper.loc('pullRequests.pullRequestComments.tableProductCode'), this._codeMetrics.metrics.productCode, false)
-    result += this.addCommentMetrics(this._taskLibWrapper.loc('pullRequests.pullRequestComments.tableTestCode'), this._codeMetrics.metrics.testCode, false)
-    result += this.addCommentMetrics(this._taskLibWrapper.loc('pullRequests.pullRequestComments.tableSubtotal'), this._codeMetrics.metrics.subtotal, true)
-    result += this.addCommentMetrics(this._taskLibWrapper.loc('pullRequests.pullRequestComments.tableIgnoredCode'), this._codeMetrics.metrics.ignoredCode, false)
-    result += this.addCommentMetrics(this._taskLibWrapper.loc('pullRequests.pullRequestComments.tableTotal'), this._codeMetrics.metrics.total, true)
+    result += this.addCommentMetrics(this._taskLibWrapper.loc('pullRequests.pullRequestComments.tableProductCode'), metrics.productCode, false)
+    result += this.addCommentMetrics(this._taskLibWrapper.loc('pullRequests.pullRequestComments.tableTestCode'), metrics.testCode, false)
+    result += this.addCommentMetrics(this._taskLibWrapper.loc('pullRequests.pullRequestComments.tableSubtotal'), metrics.subtotal, true)
+    result += this.addCommentMetrics(this._taskLibWrapper.loc('pullRequests.pullRequestComments.tableIgnoredCode'), metrics.ignoredCode, false)
+    result += this.addCommentMetrics(this._taskLibWrapper.loc('pullRequests.pullRequestComments.tableTotal'), metrics.total, true)
 
     result += os.EOL
     result += this._taskLibWrapper.loc('pullRequests.pullRequestComments.commentFooter')
@@ -115,12 +120,12 @@ export default class PullRequestComments {
 
   /**
    * Gets the status to which to update the comment thread.
-   * @returns The status to which to update the comment thread.
+   * @returns A promise containing the status to which to update the comment thread.
    */
-  public getMetricsCommentStatus (): CommentThreadStatus {
+  public async getMetricsCommentStatus (): Promise<CommentThreadStatus> {
     this._taskLibWrapper.debug('* PullRequestComments.getMetricsCommentStatus()')
 
-    if (this._codeMetrics.isSmall && (this._codeMetrics.isSufficientlyTested || this._codeMetrics.isSufficientlyTested === null)) {
+    if (await this._codeMetrics.isSmall() && (this._codeMetrics.isSufficientlyTested || this._codeMetrics.isSufficientlyTested === null)) {
       return CommentThreadStatus.Closed
     }
 
@@ -163,11 +168,11 @@ export default class PullRequestComments {
     return filesNotRequiringReview
   }
 
-  private addCommentSizeStatus (): string {
+  private async addCommentSizeStatus (): Promise<string> {
     this._taskLibWrapper.debug('* PullRequestComments.addCommentSizeStatus()')
 
     let result: string = ''
-    if (this._codeMetrics.isSmall) {
+    if (await this._codeMetrics.isSmall()) {
       result += this._taskLibWrapper.loc('pullRequests.pullRequestComments.smallPullRequestComment')
     } else {
       result += this._taskLibWrapper.loc('pullRequests.pullRequestComments.largePullRequestComment', this._inputs.baseSize.toLocaleString())
@@ -177,12 +182,12 @@ export default class PullRequestComments {
     return result
   }
 
-  private addCommentTestStatus (): string {
+  private async addCommentTestStatus (): Promise<string> {
     this._taskLibWrapper.debug('* PullRequestComments.addCommentTestStatus()')
 
     let result: string = ''
     if (this._codeMetrics.isSufficientlyTested !== null) {
-      if (this._codeMetrics.isSufficientlyTested) {
+      if (await this._codeMetrics.isSufficientlyTested()) {
         result += this._taskLibWrapper.loc('pullRequests.pullRequestComments.testsSufficientComment')
       } else {
         result += this._taskLibWrapper.loc('pullRequests.pullRequestComments.testsInsufficientComment')
