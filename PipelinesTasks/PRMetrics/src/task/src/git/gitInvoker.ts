@@ -95,8 +95,8 @@ export default class GitInvoker {
   private async invokeGit (parameters: string): Promise<string> {
     this._taskLibWrapper.debug('* GitInvoker.invokeGit()')
 
-    const outputStream: GitWritableStream = new GitWritableStream()
-    const errorStream: GitWritableStream = new GitWritableStream()
+    const outputStream: GitWritableStream = new GitWritableStream(this._taskLibWrapper)
+    const errorStream: GitWritableStream = new GitWritableStream(this._taskLibWrapper)
     const execOption: IExecOptions = {
       failOnStdErr: true,
       outStream: outputStream,

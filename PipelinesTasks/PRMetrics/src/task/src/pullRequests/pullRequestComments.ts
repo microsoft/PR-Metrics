@@ -125,8 +125,12 @@ export default class PullRequestComments {
   public async getMetricsCommentStatus (): Promise<CommentThreadStatus> {
     this._taskLibWrapper.debug('* PullRequestComments.getMetricsCommentStatus()')
 
-    if (await this._codeMetrics.isSmall() && (this._codeMetrics.isSufficientlyTested || this._codeMetrics.isSufficientlyTested === null)) {
-      return CommentThreadStatus.Closed
+    if (await this._codeMetrics.isSmall()) {
+      const isSufficientlyTested: boolean | null = await this._codeMetrics.isSufficientlyTested()
+
+      if (isSufficientlyTested || isSufficientlyTested === null) {
+        return CommentThreadStatus.Closed
+      }
     }
 
     return CommentThreadStatus.Active
@@ -186,8 +190,9 @@ export default class PullRequestComments {
     this._taskLibWrapper.debug('* PullRequestComments.addCommentTestStatus()')
 
     let result: string = ''
-    if (this._codeMetrics.isSufficientlyTested !== null) {
-      if (await this._codeMetrics.isSufficientlyTested()) {
+    const isSufficientlyTested: boolean | null = await this._codeMetrics.isSufficientlyTested()
+    if (isSufficientlyTested !== null) {
+      if (isSufficientlyTested) {
         result += this._taskLibWrapper.loc('pullRequests.pullRequestComments.testsSufficientComment')
       } else {
         result += this._taskLibWrapper.loc('pullRequests.pullRequestComments.testsInsufficientComment')

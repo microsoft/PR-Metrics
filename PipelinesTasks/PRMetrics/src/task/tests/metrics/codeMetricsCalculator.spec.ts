@@ -32,8 +32,8 @@ describe('codeMetricsCalculator.ts', (): void => {
     codeMetrics = mock(CodeMetrics)
 
     gitInvoker = mock(GitInvoker)
-    when(gitInvoker.isGitEnlistment).thenReturn(true)
-    when(gitInvoker.isGitHistoryAvailable).thenReturn(true)
+    when(gitInvoker.isGitEnlistment()).thenResolve(true)
+    when(gitInvoker.isGitHistoryAvailable()).thenResolve(true)
 
     pullRequest = mock(PullRequest)
     when(pullRequest.isPullRequest).thenReturn(true)
@@ -89,56 +89,56 @@ describe('codeMetricsCalculator.ts', (): void => {
     })
   })
 
-  describe('shouldStop', (): void => {
-    it('should return null when the task should not terminate', (): void => {
+  describe('shouldStop()', (): void => {
+    it('should return null when the task should not terminate', async (): Promise<void> => {
       // Arrange
       const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(codeMetrics), instance(gitInvoker), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
 
       // Act
-      const result: string | null = codeMetricsCalculator.shouldStop
+      const result: string | null = await codeMetricsCalculator.shouldStop()
 
       // Assert
       expect(result).to.equal(null)
-      verify(taskLibWrapper.debug('* CodeMetricsCalculator.shouldStop')).once()
+      verify(taskLibWrapper.debug('* CodeMetricsCalculator.shouldStop()')).once()
     })
 
-    it('should return the appropriate message when no access token is available', (): void => {
+    it('should return the appropriate message when no access token is available', async (): Promise<void> => {
       // Arrange
       when(azureReposInvoker.isAccessTokenAvailable).thenReturn(false)
       const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(codeMetrics), instance(gitInvoker), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
 
       // Act
-      const result: string | null = codeMetricsCalculator.shouldStop
+      const result: string | null = await codeMetricsCalculator.shouldStop()
 
       // Assert
       expect(result).to.equal('Could not access the OAuth token. Enable \'Allow scripts to access OAuth token\' under the build process phase settings.')
-      verify(taskLibWrapper.debug('* CodeMetricsCalculator.shouldStop')).once()
+      verify(taskLibWrapper.debug('* CodeMetricsCalculator.shouldStop()')).once()
     })
 
-    it('should return the appropriate message when not called from a Git enlistment', (): void => {
+    it('should return the appropriate message when not called from a Git enlistment', async (): Promise<void> => {
       // Arrange
-      when(gitInvoker.isGitEnlistment).thenReturn(false)
+      when(gitInvoker.isGitEnlistment()).thenResolve(false)
       const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(codeMetrics), instance(gitInvoker), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
 
       // Act
-      const result: string | null = codeMetricsCalculator.shouldStop
+      const result: string | null = await codeMetricsCalculator.shouldStop()
 
       // Assert
       expect(result).to.equal('No Git enlistment present. Disable \'Don\'t sync sources\' under the build process phase settings.')
-      verify(taskLibWrapper.debug('* CodeMetricsCalculator.shouldStop')).once()
+      verify(taskLibWrapper.debug('* CodeMetricsCalculator.shouldStop()')).once()
     })
 
-    it('should return the appropriate message when the Git history is unavailable', (): void => {
+    it('should return the appropriate message when the Git history is unavailable', async (): Promise<void> => {
       // Arrange
-      when(gitInvoker.isGitHistoryAvailable).thenReturn(false)
+      when(gitInvoker.isGitHistoryAvailable()).thenResolve(false)
       const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(codeMetrics), instance(gitInvoker), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
 
       // Act
-      const result: string | null = codeMetricsCalculator.shouldStop
+      const result: string | null = await codeMetricsCalculator.shouldStop()
 
       // Assert
       expect(result).to.equal('Could not access sufficient Git history. Disable \'Shallow fetch\' under the build process phase settings.')
-      verify(taskLibWrapper.debug('* CodeMetricsCalculator.shouldStop')).once()
+      verify(taskLibWrapper.debug('* CodeMetricsCalculator.shouldStop()')).once()
     })
   })
 
@@ -146,7 +146,7 @@ describe('codeMetricsCalculator.ts', (): void => {
     it('should perform the expected actions', async (): Promise<void> => {
       // Arrange
       when(azureReposInvoker.getTitleAndDescription()).thenResolve({ title: 'Title', description: 'Description' })
-      when(pullRequest.getUpdatedTitle('Title')).thenReturn('S✔ ◾ TODO')
+      when(pullRequest.getUpdatedTitle('Title')).thenResolve('S✔ ◾ TODO')
       when(pullRequest.getUpdatedDescription('Description')).thenReturn('Description')
       const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(codeMetrics), instance(gitInvoker), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
 
@@ -163,7 +163,7 @@ describe('codeMetricsCalculator.ts', (): void => {
     it('should perform the expected actions when the description is missing', async (): Promise<void> => {
       // Arrange
       when(azureReposInvoker.getTitleAndDescription()).thenResolve({ title: 'Title' })
-      when(pullRequest.getUpdatedTitle('Title')).thenReturn('S✔ ◾ TODO')
+      when(pullRequest.getUpdatedTitle('Title')).thenResolve('S✔ ◾ TODO')
       when(pullRequest.getUpdatedDescription(undefined)).thenReturn('Description')
       const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(azureReposInvoker), instance(codeMetrics), instance(gitInvoker), instance(pullRequest), instance(pullRequestComments), instance(taskLibWrapper))
 
@@ -201,11 +201,11 @@ describe('codeMetricsCalculator.ts', (): void => {
       commentData.metricsCommentThreadId = 1
       commentData.metricsCommentId = 2
       when(pullRequestComments.getCommentData(1)).thenResolve(commentData)
-      when(pullRequestComments.getMetricsComment(1)).thenReturn('Description')
-      when(pullRequestComments.getMetricsCommentStatus()).thenReturn(CommentThreadStatus.Active)
-      when(codeMetrics.metrics).thenReturn(new CodeMetricsData(1, 2, 4))
-      when(codeMetrics.size).thenReturn('S')
-      when(codeMetrics.isSufficientlyTested).thenReturn(true)
+      when(pullRequestComments.getMetricsComment(1)).thenResolve('Description')
+      when(pullRequestComments.getMetricsCommentStatus()).thenResolve(CommentThreadStatus.Active)
+      when(codeMetrics.getMetrics()).thenResolve(new CodeMetricsData(1, 2, 4))
+      when(codeMetrics.getSize()).thenResolve('S')
+      when(codeMetrics.isSufficientlyTested()).thenResolve(true)
       const expectedMetadata: IPullRequestMetadata[] = [
         {
           key: 'Size',
@@ -257,11 +257,11 @@ describe('codeMetricsCalculator.ts', (): void => {
       commentData.metricsCommentThreadId = 1
       commentData.metricsCommentId = 2
       when(pullRequestComments.getCommentData(1)).thenResolve(commentData)
-      when(pullRequestComments.getMetricsComment(1)).thenReturn('Description')
-      when(pullRequestComments.getMetricsCommentStatus()).thenReturn(CommentThreadStatus.Active)
-      when(codeMetrics.metrics).thenReturn(new CodeMetricsData(1, 2, 4))
-      when(codeMetrics.size).thenReturn('S')
-      when(codeMetrics.isSufficientlyTested).thenReturn(null)
+      when(pullRequestComments.getMetricsComment(1)).thenResolve('Description')
+      when(pullRequestComments.getMetricsCommentStatus()).thenResolve(CommentThreadStatus.Active)
+      when(codeMetrics.getMetrics()).thenResolve(new CodeMetricsData(1, 2, 4))
+      when(codeMetrics.getSize()).thenResolve('S')
+      when(codeMetrics.isSufficientlyTested()).thenResolve(null)
       const expectedMetadata: IPullRequestMetadata[] = [
         {
           key: 'Size',
@@ -307,11 +307,11 @@ describe('codeMetricsCalculator.ts', (): void => {
       when(azureReposInvoker.getCurrentIteration()).thenResolve(1)
       const commentData: PullRequestCommentsData = new PullRequestCommentsData([], [])
       when(pullRequestComments.getCommentData(1)).thenResolve(commentData)
-      when(pullRequestComments.getMetricsComment(1)).thenReturn('Description')
-      when(pullRequestComments.getMetricsCommentStatus()).thenReturn(CommentThreadStatus.Active)
-      when(codeMetrics.metrics).thenReturn(new CodeMetricsData(1, 2, 4))
-      when(codeMetrics.size).thenReturn('S')
-      when(codeMetrics.isSufficientlyTested).thenReturn(true)
+      when(pullRequestComments.getMetricsComment(1)).thenResolve('Description')
+      when(pullRequestComments.getMetricsCommentStatus()).thenResolve(CommentThreadStatus.Active)
+      when(codeMetrics.getMetrics()).thenResolve(new CodeMetricsData(1, 2, 4))
+      when(codeMetrics.getSize()).thenResolve('S')
+      when(codeMetrics.isSufficientlyTested()).thenResolve(true)
       const expectedMetadata: IPullRequestMetadata[] = [
         {
           key: 'Size',

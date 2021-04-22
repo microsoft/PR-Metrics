@@ -3,11 +3,23 @@
 
 import stream from 'stream'
 
+import TaskLibWrapper from '../wrappers/taskLibWrapper'
+
 /**
  * A basic stream to which data can be written by the `GitInvoker`.
  */
 export class GitWritableStream extends stream.Writable {
+  private readonly _taskLibWrapper: TaskLibWrapper
   private _message: string = ''
+
+  /**
+   * Initializes a new instance of the `GitWritableStream` class.
+   * @param taskLibWrapper The wrapper around the Azure Pipelines Task Lib.
+   */
+  public constructor (taskLibWrapper: TaskLibWrapper) {
+    super()
+    this._taskLibWrapper = taskLibWrapper
+  }
 
   /**
    * Gets the message written to the stream.
@@ -24,9 +36,12 @@ export class GitWritableStream extends stream.Writable {
    * @param callback The callback to invoke once writing is complete.
    */
   public _write (chunk: any, _: string, callback: (error?: Error | null) => void): void {
-    const currentChunk: string = chunk.toString()
-    if (!currentChunk.startsWith('[command]')) {
-      this._message += currentChunk
+    const messageChunk: string = chunk.toString()
+
+    this._taskLibWrapper.debug(messageChunk)
+
+    if (!messageChunk.startsWith('[command]')) {
+      this._message += messageChunk
     }
 
     callback()

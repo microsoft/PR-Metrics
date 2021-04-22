@@ -15,7 +15,7 @@ describe('pullRequest.ts', (): void => {
 
   beforeEach((): void => {
     codeMetrics = mock(CodeMetrics)
-    when(codeMetrics.sizeIndicator).thenReturn('S✔')
+    when(codeMetrics.getSizeIndicator()).thenResolve('S✔')
 
     taskLibWrapper = mock(TaskLibWrapper)
     when(taskLibWrapper.loc('metrics.codeMetrics.titleSizeIndicatorFormat', '(XS|S|M|L|\\d*XL)', '(✔|⚠️)?')).thenReturn('(XS|S|M|L|\\d*XL)(✔|⚠️)?')
@@ -152,12 +152,12 @@ describe('pullRequest.ts', (): void => {
   })
 
   describe('getUpdatedTitle()', (): void => {
-    it('should return null when the current title is set to the expected title', (): void => {
+    it('should return null when the current title is set to the expected title', async (): Promise<void> => {
       // Arrange
       const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(taskLibWrapper))
 
       // Act
-      const result: string | null = pullRequest.getUpdatedTitle('S✔ ◾ Title')
+      const result: string | null = await pullRequest.getUpdatedTitle('S✔ ◾ Title')
 
       // Assert
       expect(result).to.equal(null)
@@ -174,12 +174,12 @@ describe('pullRequest.ts', (): void => {
         'PS✔ ◾ Title',
         'PS⚠️ ◾ Title'
       ], (currentTitle: string): void => {
-        it(`should prefix the current title '${currentTitle}' when no prefix exists`, (): void => {
+        it(`should prefix the current title '${currentTitle}' when no prefix exists`, async (): Promise<void> => {
           // Arrange
           const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(taskLibWrapper))
 
           // Act
-          const result: string | null = pullRequest.getUpdatedTitle(currentTitle)
+          const result: string | null = await pullRequest.getUpdatedTitle(currentTitle)
 
           // Assert
           expect(result).to.equal(`S✔ ◾ ${currentTitle}`)
@@ -211,13 +211,13 @@ describe('pullRequest.ts', (): void => {
         '20XL⚠️ ◾ Title',
         '20XL ◾ Title'
       ], (currentTitle: string): void => {
-        it(`should update the current title '${currentTitle}' correctly`, (): void => {
+        it(`should update the current title '${currentTitle}' correctly`, async (): Promise<void> => {
           // Arrange
-          when(codeMetrics.sizeIndicator).thenReturn('PREFIX')
+          when(codeMetrics.getSizeIndicator()).thenResolve('PREFIX')
           const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(taskLibWrapper))
 
           // Act
-          const result: string | null = pullRequest.getUpdatedTitle(currentTitle)
+          const result: string | null = await pullRequest.getUpdatedTitle(currentTitle)
 
           // Assert
           expect(result).to.equal('PREFIX ◾ Title')
