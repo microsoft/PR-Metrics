@@ -1,28 +1,11 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+import { GitWritableStream } from './gitWritableStream'
 import { IExecOptions } from 'azure-pipelines-task-lib/toolrunner'
 import { singleton } from 'tsyringe'
 import { Validator } from '../utilities/validator'
-import stream from 'stream'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
-
-export class GitWritableStream extends stream.Writable {
-  private _message: string = ''
-
-  public get message (): string {
-    return this._message.trim()
-  }
-
-  public _write (chunk: any, _: string, callback: (error?: Error | null) => void): void {
-    const currentChunk: string = chunk.toString()
-    if (!currentChunk.startsWith('[command]')) {
-      this._message += currentChunk
-    }
-
-    callback()
-  }
-}
 
 /**
  * A class for invoking Git commands.

@@ -37,7 +37,7 @@ describe('gitInvoker.ts', (): void => {
     delete process.env.SYSTEM_PULLREQUEST_PULLREQUESTID
   })
 
-  describe('isGitEnlistment', (): void => {
+  describe('isGitEnlistment()', (): void => {
     async.each(
       [
         'true',
@@ -103,7 +103,7 @@ describe('gitInvoker.ts', (): void => {
     })
   })
 
-  describe('isGitHistoryAvailable', (): void => {
+  describe('isGitHistoryAvailable()', (): void => {
     it('should return true when the Git history is available', async (): Promise<void> => {
       // Arrange
       const gitInvoker: GitInvoker = new GitInvoker(instance(taskLibWrapper))

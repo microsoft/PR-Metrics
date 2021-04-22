@@ -119,24 +119,24 @@ describe('codeMetrics.ts', (): void => {
       ['0\t0\tfile.ts\n', 'XS', true, new CodeMetricsData(0, 0, 0)],
       ['-\t-\tfile.ts', 'XS', true, new CodeMetricsData(0, 0, 0)]
     ], (data: [string, string, boolean, CodeMetricsData]): void => {
-      it(`with default inputs and git diff '${data[0].replace(/\n/g, '\\n')}', returns '${data[1]}' size and '${data[2]}' test coverage`, (): void => {
+      it(`with default inputs and git diff '${data[0].replace(/\n/g, '\\n')}', returns '${data[1]}' getSize() and '${data[2]}' test coverage`, async (): Promise<void> => {
         // Arrange
-        when(gitInvoker.getDiffSummary()).thenReturn(data[0])
+        when(gitInvoker.getDiffSummary()).thenResolve(data[0])
 
         // Act
         const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(taskLibWrapper))
 
         // Assert
-        expect(codeMetrics.filesNotRequiringReview).to.deep.equal([])
-        expect(codeMetrics.deletedFilesNotRequiringReview).to.deep.equal([])
-        expect(codeMetrics.size).to.equal(data[1])
-        expect(codeMetrics.sizeIndicator).to.equal(`${data[1]}${data[2] ? '✔' : '⚠️'}`)
-        expect(codeMetrics.metrics).to.deep.equal(data[3])
-        expect(codeMetrics.isSmall).to.equal(data[1] === 'XS' || data[1] === 'S')
-        expect(codeMetrics.isSufficientlyTested).to.equal(data[2])
-        verify(taskLibWrapper.debug('* CodeMetrics.filesNotRequiringReview')).once()
-        verify(taskLibWrapper.debug('* CodeMetrics.deletedFilesNotRequiringReview')).once()
-        verify(taskLibWrapper.debug('* CodeMetrics.size')).once()
+        expect(await codeMetrics.getFilesNotRequiringReview()).to.deep.equal([])
+        expect(await codeMetrics.getDeletedFilesNotRequiringReview()).to.deep.equal([])
+        expect(await codeMetrics.getSize()).to.equal(data[1])
+        expect(await codeMetrics.getSizeIndicator()).to.equal(`${data[1]}${data[2] ? '✔' : '⚠️'}`)
+        expect(await codeMetrics.getMetrics()).to.deep.equal(data[3])
+        expect(await codeMetrics.isSmall()).to.equal(data[1] === 'XS' || data[1] === 'S')
+        expect(await codeMetrics.isSufficientlyTested()).to.equal(data[2])
+        verify(taskLibWrapper.debug('* CodeMetrics.getFilesNotRequiringReview()')).once()
+        verify(taskLibWrapper.debug('* CodeMetrics.getDeletedFilesNotRequiringReview()')).once()
+        verify(taskLibWrapper.debug('* CodeMetrics.getSize()')).once()
         verify(taskLibWrapper.debug('* CodeMetrics.initialize()')).times(7)
         verify(taskLibWrapper.debug('* CodeMetrics.initializeMetrics()')).once()
         verify(taskLibWrapper.debug('* CodeMetrics.matchFileExtension()')).times((data[0].match(/\n/g) || []).length + 1 - (data[0].endsWith('\n') ? 1 : 0))
@@ -205,29 +205,29 @@ describe('codeMetrics.ts', (): void => {
       ['0\t0\tfolder/ignored.cs', 'XS', true, new CodeMetricsData(0, 0, 0), [], ['folder/ignored.cs']],
       ['1\t0\tignored.ts\n0\t0\tfolder/ignored.ts', 'XS', true, new CodeMetricsData(0, 0, 1), ['ignored.ts'], ['folder/ignored.ts']]
     ], (data: [string, string, boolean, CodeMetricsData, string[], string[]]): void => {
-      it(`with non-default inputs and git diff '${data[0].replace(/\n/g, '\\n')}', returns '${data[1]}' size and '${data[2]}' test coverage`, (): void => {
+      it(`with non-default inputs and git diff '${data[0].replace(/\n/g, '\\n')}', returns '${data[1]}' getSize() and '${data[2]}' test coverage`, async (): Promise<void> => {
         // Arrange
         when(inputs.baseSize).thenReturn(100)
         when(inputs.growthRate).thenReturn(2.0)
         when(inputs.testFactor).thenReturn(1.0)
         when(inputs.fileMatchingPatterns).thenReturn(['**/*', '!**/ignored.*'])
         when(inputs.codeFileExtensions).thenReturn(new Set<string>(['ts']))
-        when(gitInvoker.getDiffSummary()).thenReturn(data[0])
+        when(gitInvoker.getDiffSummary()).thenResolve(data[0])
 
         // Act
         const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(taskLibWrapper))
 
         // Assert
-        expect(codeMetrics.filesNotRequiringReview).to.deep.equal(data[4])
-        expect(codeMetrics.deletedFilesNotRequiringReview).to.deep.equal(data[5])
-        expect(codeMetrics.size).to.equal(data[1])
-        expect(codeMetrics.sizeIndicator).to.equal(`${data[1]}${data[2] ? '✔' : '⚠️'}`)
-        expect(codeMetrics.metrics).to.deep.equal(data[3])
-        expect(codeMetrics.isSmall).to.equal(data[1] === 'XS' || data[1] === 'S')
-        expect(codeMetrics.isSufficientlyTested).to.equal(data[2])
-        verify(taskLibWrapper.debug('* CodeMetrics.filesNotRequiringReview')).once()
-        verify(taskLibWrapper.debug('* CodeMetrics.deletedFilesNotRequiringReview')).once()
-        verify(taskLibWrapper.debug('* CodeMetrics.size')).once()
+        expect(await codeMetrics.getFilesNotRequiringReview()).to.deep.equal(data[4])
+        expect(await codeMetrics.getDeletedFilesNotRequiringReview()).to.deep.equal(data[5])
+        expect(await codeMetrics.getSize()).to.equal(data[1])
+        expect(await codeMetrics.getSizeIndicator()).to.equal(`${data[1]}${data[2] ? '✔' : '⚠️'}`)
+        expect(await codeMetrics.getMetrics()).to.deep.equal(data[3])
+        expect(await codeMetrics.isSmall()).to.equal(data[1] === 'XS' || data[1] === 'S')
+        expect(await codeMetrics.isSufficientlyTested()).to.equal(data[2])
+        verify(taskLibWrapper.debug('* CodeMetrics.getFilesNotRequiringReview()')).once()
+        verify(taskLibWrapper.debug('* CodeMetrics.getDeletedFilesNotRequiringReview()')).once()
+        verify(taskLibWrapper.debug('* CodeMetrics.getSize()')).once()
         verify(taskLibWrapper.debug('* CodeMetrics.initialize()')).times(7)
         verify(taskLibWrapper.debug('* CodeMetrics.initializeMetrics()')).once()
         verify(taskLibWrapper.debug('* CodeMetrics.matchFileExtension()')).times((data[0].match(/\n/g) || []).length + 1)
@@ -239,25 +239,25 @@ describe('codeMetrics.ts', (): void => {
       })
     })
 
-  it('should return the expected result with test coverage disabled', (): void => {
+  it('should return the expected result with test coverage disabled', async (): Promise<void> => {
     // Arrange
     when(inputs.testFactor).thenReturn(null)
-    when(gitInvoker.getDiffSummary()).thenReturn('1\t0\tfile.ts')
+    when(gitInvoker.getDiffSummary()).thenResolve('1\t0\tfile.ts')
 
     // Act
     const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(taskLibWrapper))
 
     // Assert
-    expect(codeMetrics.filesNotRequiringReview).to.deep.equal([])
-    expect(codeMetrics.deletedFilesNotRequiringReview).to.deep.equal([])
-    expect(codeMetrics.size).to.equal('XS')
-    expect(codeMetrics.sizeIndicator).to.equal('XS')
-    expect(codeMetrics.metrics).to.deep.equal(new CodeMetricsData(1, 0, 0))
-    expect(codeMetrics.isSmall).to.equal(true)
-    expect(codeMetrics.isSufficientlyTested).to.equal(null)
-    verify(taskLibWrapper.debug('* CodeMetrics.filesNotRequiringReview')).once()
-    verify(taskLibWrapper.debug('* CodeMetrics.deletedFilesNotRequiringReview')).once()
-    verify(taskLibWrapper.debug('* CodeMetrics.size')).once()
+    expect(await codeMetrics.getFilesNotRequiringReview()).to.deep.equal([])
+    expect(await codeMetrics.getDeletedFilesNotRequiringReview()).to.deep.equal([])
+    expect(await codeMetrics.getSize()).to.equal('XS')
+    expect(await codeMetrics.getSizeIndicator()).to.equal('XS')
+    expect(await codeMetrics.getMetrics()).to.deep.equal(new CodeMetricsData(1, 0, 0))
+    expect(await codeMetrics.isSmall()).to.equal(true)
+    expect(await codeMetrics.isSufficientlyTested()).to.equal(null)
+    verify(taskLibWrapper.debug('* CodeMetrics.getFilesNotRequiringReview()')).once()
+    verify(taskLibWrapper.debug('* CodeMetrics.getDeletedFilesNotRequiringReview()')).once()
+    verify(taskLibWrapper.debug('* CodeMetrics.getSize()')).once()
     verify(taskLibWrapper.debug('* CodeMetrics.initialize()')).times(7)
     verify(taskLibWrapper.debug('* CodeMetrics.initializeMetrics()')).once()
     verify(taskLibWrapper.debug('* CodeMetrics.matchFileExtension()')).once()
@@ -268,7 +268,7 @@ describe('codeMetrics.ts', (): void => {
     verify(taskLibWrapper.debug('* CodeMetrics.calculateSize()')).once()
   })
 
-  describe('filesNotRequiringReview', (): void => {
+  describe('getFilesNotRequiringReview()', (): void => {
     async.each(
       [
         '',
@@ -277,17 +277,23 @@ describe('codeMetrics.ts', (): void => {
         '\n',
         '\t\n'
       ], (gitDiffSummary: string): void => {
-        it(`should throw when the Git diff summary '${gitDiffSummary}' is empty`, (): void => {
+        it(`should throw when the Git diff summary '${gitDiffSummary}' is empty`, async (): Promise<void> => {
           // Arrange
-          when(gitInvoker.getDiffSummary()).thenReturn(gitDiffSummary)
+          when(gitInvoker.getDiffSummary()).thenResolve(gitDiffSummary)
           const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(taskLibWrapper))
+          let errorThrown: boolean = false
 
-          // Act
-          const func: () => string[] = () => codeMetrics.filesNotRequiringReview
+          try {
+            // Act
+            await codeMetrics.getFilesNotRequiringReview()
+          } catch (error) {
+            // Assert
+            errorThrown = true
+            expect(error.message).to.equal('The Git diff summary is empty.')
+          }
 
-          // Assert
-          expect(func).to.throw('The Git diff summary is empty.')
-          verify(taskLibWrapper.debug('* CodeMetrics.filesNotRequiringReview')).once()
+          expect(errorThrown).to.equal(true)
+          verify(taskLibWrapper.debug('* CodeMetrics.getFilesNotRequiringReview()')).once()
           verify(taskLibWrapper.debug('* CodeMetrics.initialize()')).once()
         })
       })
@@ -303,79 +309,109 @@ describe('codeMetrics.ts', (): void => {
         ['0\t0\tfile1.ts\tfile2.ts', 4],
         ['0\t0\tfile1.ts\tfile2.ts\t', 4]
       ], (data: [string, number]): void => {
-        it(`should throw when the file name in the Git diff summary '${data[0]}' cannot be parsed`, (): void => {
+        it(`should throw when the file name in the Git diff summary '${data[0]}' cannot be parsed`, async (): Promise<void> => {
           // Arrange
-          when(gitInvoker.getDiffSummary()).thenReturn(data[0])
+          when(gitInvoker.getDiffSummary()).thenResolve(data[0])
           const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(taskLibWrapper))
+          let errorThrown: boolean = false
 
-          // Act
-          const func: () => string[] = () => codeMetrics.filesNotRequiringReview
+          try {
+            // Act
+            await codeMetrics.getFilesNotRequiringReview()
+          } catch (error) {
+            // Assert
+            errorThrown = true
+            expect(error.message).to.equal(`The number of elements '${data[1]}' in '${data[0].trim()}' did not match the expected 3.`)
+          }
 
-          // Assert
-          expect(func).to.throw(`The number of elements '${data[1]}' in '${data[0].trim()}' did not match the expected 3.`)
-          verify(taskLibWrapper.debug('* CodeMetrics.filesNotRequiringReview')).once()
+          expect(errorThrown).to.equal(true)
+          verify(taskLibWrapper.debug('* CodeMetrics.getFilesNotRequiringReview()')).once()
           verify(taskLibWrapper.debug('* CodeMetrics.initialize()')).once()
           verify(taskLibWrapper.debug('* CodeMetrics.createFileMetricsMap()')).once()
         })
       })
 
-    it('should throw when the lines added in the Git diff summary cannot be converted', (): void => {
+    it('should throw when the lines added in the Git diff summary cannot be converted', async (): Promise<void> => {
       // Arrange
-      when(gitInvoker.getDiffSummary()).thenReturn('A\t0\tfile.ts')
+      when(gitInvoker.getDiffSummary()).thenResolve('A\t0\tfile.ts')
       const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(taskLibWrapper))
+      let errorThrown: boolean = false
 
-      // Act
-      const func: () => string[] = () => codeMetrics.filesNotRequiringReview
+      try {
+        // Act
+        await codeMetrics.getFilesNotRequiringReview()
+      } catch (error) {
+        // Assert
+        errorThrown = true
+        expect(error.message).to.equal('Could not parse \'A\' from line \'A\t0\tfile.ts\'.')
+      }
 
-      // Assert
-      expect(func).to.throw('Could not parse \'A\' from line \'A\t0\tfile.ts\'.')
-      verify(taskLibWrapper.debug('* CodeMetrics.filesNotRequiringReview')).once()
+      expect(errorThrown).to.equal(true)
+      verify(taskLibWrapper.debug('* CodeMetrics.getFilesNotRequiringReview()')).once()
       verify(taskLibWrapper.debug('* CodeMetrics.initialize()')).once()
       verify(taskLibWrapper.debug('* CodeMetrics.createFileMetricsMap()')).once()
     })
   })
 
-  describe('deletedFilesNotRequiringReview', (): void => {
-    it('should throw when the Git diff summary \'\' is empty', (): void => {
+  describe('getDeletedFilesNotRequiringReview()', (): void => {
+    it('should throw when the Git diff summary \'\' is empty', async (): Promise<void> => {
       // Arrange
-      when(gitInvoker.getDiffSummary()).thenReturn('')
+      when(gitInvoker.getDiffSummary()).thenResolve('')
       const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(taskLibWrapper))
+      let errorThrown: boolean = false
 
-      // Act
-      const func: () => string[] = () => codeMetrics.deletedFilesNotRequiringReview
+      try {
+        // Act
+        await codeMetrics.getDeletedFilesNotRequiringReview()
+      } catch (error) {
+        // Assert
+        errorThrown = true
+        expect(error.message).to.equal('The Git diff summary is empty.')
+      }
 
-      // Assert
-      expect(func).to.throw('The Git diff summary is empty.')
-      verify(taskLibWrapper.debug('* CodeMetrics.deletedFilesNotRequiringReview')).once()
+      expect(errorThrown).to.equal(true)
+      verify(taskLibWrapper.debug('* CodeMetrics.getDeletedFilesNotRequiringReview()')).once()
       verify(taskLibWrapper.debug('* CodeMetrics.initialize()')).once()
     })
 
-    it('should throw when the file name in the Git diff summary \'0\' cannot be parsed', (): void => {
+    it('should throw when the file name in the Git diff summary \'0\' cannot be parsed', async (): Promise<void> => {
       // Arrange
-      when(gitInvoker.getDiffSummary()).thenReturn('0')
+      when(gitInvoker.getDiffSummary()).thenResolve('0')
       const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(taskLibWrapper))
+      let errorThrown: boolean = false
 
-      // Act
-      const func: () => string[] = () => codeMetrics.deletedFilesNotRequiringReview
+      try {
+        // Act
+        await codeMetrics.getDeletedFilesNotRequiringReview()
+      } catch (error) {
+        // Assert
+        errorThrown = true
+        expect(error.message).to.equal('The number of elements \'1\' in \'0\' did not match the expected 3.')
+      }
 
-      // Assert
-      expect(func).to.throw('The number of elements \'1\' in \'0\' did not match the expected 3.')
-      verify(taskLibWrapper.debug('* CodeMetrics.deletedFilesNotRequiringReview')).once()
+      expect(errorThrown).to.equal(true)
+      verify(taskLibWrapper.debug('* CodeMetrics.getDeletedFilesNotRequiringReview()')).once()
       verify(taskLibWrapper.debug('* CodeMetrics.initialize()')).once()
       verify(taskLibWrapper.debug('* CodeMetrics.createFileMetricsMap()')).once()
     })
 
-    it('should throw when the lines added in the Git diff summary cannot be converted', (): void => {
+    it('should throw when the lines added in the Git diff summary cannot be converted', async (): Promise<void> => {
       // Arrange
-      when(gitInvoker.getDiffSummary()).thenReturn('A\t0\tfile.ts')
+      when(gitInvoker.getDiffSummary()).thenResolve('A\t0\tfile.ts')
       const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(taskLibWrapper))
+      let errorThrown: boolean = false
 
-      // Act
-      const func: () => string[] = () => codeMetrics.deletedFilesNotRequiringReview
+      try {
+        // Act
+        await codeMetrics.getDeletedFilesNotRequiringReview()
+      } catch (error) {
+        // Assert
+        errorThrown = true
+        expect(error.message).to.equal('Could not parse \'A\' from line \'A\t0\tfile.ts\'.')
+      }
 
-      // Assert
-      expect(func).to.throw('Could not parse \'A\' from line \'A\t0\tfile.ts\'.')
-      verify(taskLibWrapper.debug('* CodeMetrics.deletedFilesNotRequiringReview')).once()
+      expect(errorThrown).to.equal(true)
+      verify(taskLibWrapper.debug('* CodeMetrics.getDeletedFilesNotRequiringReview()')).once()
       verify(taskLibWrapper.debug('* CodeMetrics.initialize()')).once()
       verify(taskLibWrapper.debug('* CodeMetrics.createFileMetricsMap()')).once()
     })

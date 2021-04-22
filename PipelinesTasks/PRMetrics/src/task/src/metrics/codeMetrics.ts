@@ -123,7 +123,7 @@ export default class CodeMetrics {
       return
     }
 
-    const gitDiffSummary: string = await this._gitInvoker.getDiffSummary()
+    const gitDiffSummary: string = (await this._gitInvoker.getDiffSummary()).trim()
     if (!gitDiffSummary) {
       throw Error('The Git diff summary is empty.')
     }
