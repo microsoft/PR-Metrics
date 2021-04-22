@@ -99,12 +99,12 @@ describe('azureReposInvoker.ts', function (): void {
           } catch (error) {
             // Assert
             errorThrown = true
-            expect(error.message).to.equal(`'SYSTEM_TEAMPROJECT', accessed within 'AzureReposInvoker.initialize()', is invalid, null, or undefined '${variable}'.`)
+            expect(error.message).to.equal(`'SYSTEM_TEAMPROJECT', accessed within 'AzureReposInvoker.getGitApi()', is invalid, null, or undefined '${variable}'.`)
           }
 
           expect(errorThrown).to.equal(true)
           verify(taskLibWrapper.debug('* AzureReposInvoker.getTitleAndDescription()')).once()
-          verify(taskLibWrapper.debug('* AzureReposInvoker.initialize()')).once()
+          verify(taskLibWrapper.debug('* AzureReposInvoker.getGitApi()')).once()
         })
       })
 
@@ -130,12 +130,12 @@ describe('azureReposInvoker.ts', function (): void {
           } catch (error) {
             // Assert
             errorThrown = true
-            expect(error.message).to.equal(`'BUILD_REPOSITORY_ID', accessed within 'AzureReposInvoker.initialize()', is invalid, null, or undefined '${variable}'.`)
+            expect(error.message).to.equal(`'BUILD_REPOSITORY_ID', accessed within 'AzureReposInvoker.getGitApi()', is invalid, null, or undefined '${variable}'.`)
           }
 
           expect(errorThrown).to.equal(true)
           verify(taskLibWrapper.debug('* AzureReposInvoker.getTitleAndDescription()')).once()
-          verify(taskLibWrapper.debug('* AzureReposInvoker.initialize()')).once()
+          verify(taskLibWrapper.debug('* AzureReposInvoker.getGitApi()')).once()
         })
       })
 
@@ -162,12 +162,12 @@ describe('azureReposInvoker.ts', function (): void {
           } catch (error) {
             // Assert
             errorThrown = true
-            expect(error.message).to.equal('\'SYSTEM_PULLREQUEST_PULLREQUESTID\', accessed within \'AzureReposInvoker.initialize()\', is invalid, null, or undefined \'NaN\'.')
+            expect(error.message).to.equal('\'SYSTEM_PULLREQUEST_PULLREQUESTID\', accessed within \'AzureReposInvoker.getGitApi()\', is invalid, null, or undefined \'NaN\'.')
           }
 
           expect(errorThrown).to.equal(true)
           verify(taskLibWrapper.debug('* AzureReposInvoker.getTitleAndDescription()')).once()
-          verify(taskLibWrapper.debug('* AzureReposInvoker.initialize()')).once()
+          verify(taskLibWrapper.debug('* AzureReposInvoker.getGitApi()')).once()
         })
       })
 
@@ -193,12 +193,12 @@ describe('azureReposInvoker.ts', function (): void {
           } catch (error) {
             // Assert
             errorThrown = true
-            expect(error.message).to.equal(`'SYSTEM_ACCESSTOKEN', accessed within 'AzureReposInvoker.initialize()', is invalid, null, or undefined '${variable}'.`)
+            expect(error.message).to.equal(`'SYSTEM_ACCESSTOKEN', accessed within 'AzureReposInvoker.getGitApi()', is invalid, null, or undefined '${variable}'.`)
           }
 
           expect(errorThrown).to.equal(true)
           verify(taskLibWrapper.debug('* AzureReposInvoker.getTitleAndDescription()')).once()
-          verify(taskLibWrapper.debug('* AzureReposInvoker.initialize()')).once()
+          verify(taskLibWrapper.debug('* AzureReposInvoker.getGitApi()')).once()
         })
       })
 
@@ -224,12 +224,12 @@ describe('azureReposInvoker.ts', function (): void {
           } catch (error) {
             // Assert
             errorThrown = true
-            expect(error.message).to.equal(`'SYSTEM_TEAMFOUNDATIONCOLLECTIONURI', accessed within 'AzureReposInvoker.initialize()', is invalid, null, or undefined '${variable}'.`)
+            expect(error.message).to.equal(`'SYSTEM_TEAMFOUNDATIONCOLLECTIONURI', accessed within 'AzureReposInvoker.getGitApi()', is invalid, null, or undefined '${variable}'.`)
           }
 
           expect(errorThrown).to.equal(true)
           verify(taskLibWrapper.debug('* AzureReposInvoker.getTitleAndDescription()')).once()
-          verify(taskLibWrapper.debug('* AzureReposInvoker.initialize()')).once()
+          verify(taskLibWrapper.debug('* AzureReposInvoker.getGitApi()')).once()
           verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
         })
       })
@@ -252,7 +252,7 @@ describe('azureReposInvoker.ts', function (): void {
       verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
       verify(gitApi.getPullRequestById(10, 'Project')).once()
       verify(taskLibWrapper.debug('* AzureReposInvoker.getTitleAndDescription()')).once()
-      verify(taskLibWrapper.debug('* AzureReposInvoker.initialize()')).once()
+      verify(taskLibWrapper.debug('* AzureReposInvoker.getGitApi()')).once()
       verify(taskLibWrapper.debug('{"title":"Title","description":"Description"}')).once()
     })
 
@@ -275,7 +275,7 @@ describe('azureReposInvoker.ts', function (): void {
       verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
       verify(gitApi.getPullRequestById(10, 'Project')).twice()
       verify(taskLibWrapper.debug('* AzureReposInvoker.getTitleAndDescription()')).twice()
-      verify(taskLibWrapper.debug('* AzureReposInvoker.initialize()')).twice()
+      verify(taskLibWrapper.debug('* AzureReposInvoker.getGitApi()')).twice()
       verify(taskLibWrapper.debug('{"title":"Title","description":"Description"}')).twice()
     })
 
@@ -296,7 +296,7 @@ describe('azureReposInvoker.ts', function (): void {
       verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
       verify(gitApi.getPullRequestById(10, 'Project')).once()
       verify(taskLibWrapper.debug('* AzureReposInvoker.getTitleAndDescription()')).once()
-      verify(taskLibWrapper.debug('* AzureReposInvoker.initialize()')).once()
+      verify(taskLibWrapper.debug('* AzureReposInvoker.getGitApi()')).once()
       verify(taskLibWrapper.debug('{"title":"Title"}')).once()
     })
 
@@ -320,7 +320,7 @@ describe('azureReposInvoker.ts', function (): void {
       verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
       verify(gitApi.getPullRequestById(10, 'Project')).once()
       verify(taskLibWrapper.debug('* AzureReposInvoker.getTitleAndDescription()')).once()
-      verify(taskLibWrapper.debug('* AzureReposInvoker.initialize()')).once()
+      verify(taskLibWrapper.debug('* AzureReposInvoker.getGitApi()')).once()
       verify(taskLibWrapper.debug('{}')).once()
     })
   })
@@ -340,7 +340,7 @@ describe('azureReposInvoker.ts', function (): void {
       verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
       verify(gitApi.getPullRequestIterations('RepoID', 10, 'Project')).once()
       verify(taskLibWrapper.debug('* AzureReposInvoker.getCurrentIteration()')).once()
-      verify(taskLibWrapper.debug('* AzureReposInvoker.initialize()')).once()
+      verify(taskLibWrapper.debug('* AzureReposInvoker.getGitApi()')).once()
       verify(taskLibWrapper.debug('[{"id":1}]')).once()
     })
 
@@ -359,7 +359,7 @@ describe('azureReposInvoker.ts', function (): void {
       verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
       verify(gitApi.getPullRequestIterations('RepoID', 10, 'Project')).twice()
       verify(taskLibWrapper.debug('* AzureReposInvoker.getCurrentIteration()')).twice()
-      verify(taskLibWrapper.debug('* AzureReposInvoker.initialize()')).twice()
+      verify(taskLibWrapper.debug('* AzureReposInvoker.getGitApi()')).twice()
       verify(taskLibWrapper.debug('[{"id":1}]')).twice()
     })
 
@@ -377,7 +377,7 @@ describe('azureReposInvoker.ts', function (): void {
       verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
       verify(gitApi.getPullRequestIterations('RepoID', 10, 'Project')).once()
       verify(taskLibWrapper.debug('* AzureReposInvoker.getCurrentIteration()')).once()
-      verify(taskLibWrapper.debug('* AzureReposInvoker.initialize()')).once()
+      verify(taskLibWrapper.debug('* AzureReposInvoker.getGitApi()')).once()
       verify(taskLibWrapper.debug('[{"id":1},{"id":2}]')).once()
     })
 
@@ -401,7 +401,7 @@ describe('azureReposInvoker.ts', function (): void {
       verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
       verify(gitApi.getPullRequestIterations('RepoID', 10, 'Project')).once()
       verify(taskLibWrapper.debug('* AzureReposInvoker.getCurrentIteration()')).once()
-      verify(taskLibWrapper.debug('* AzureReposInvoker.initialize()')).once()
+      verify(taskLibWrapper.debug('* AzureReposInvoker.getGitApi()')).once()
       verify(taskLibWrapper.debug('[]')).once()
     })
 
@@ -425,7 +425,7 @@ describe('azureReposInvoker.ts', function (): void {
       verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
       verify(gitApi.getPullRequestIterations('RepoID', 10, 'Project')).once()
       verify(taskLibWrapper.debug('* AzureReposInvoker.getCurrentIteration()')).once()
-      verify(taskLibWrapper.debug('* AzureReposInvoker.initialize()')).once()
+      verify(taskLibWrapper.debug('* AzureReposInvoker.getGitApi()')).once()
       verify(taskLibWrapper.debug('[{}]')).once()
     })
   })
@@ -445,7 +445,7 @@ describe('azureReposInvoker.ts', function (): void {
       verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
       verify(gitApi.getThreads('RepoID', 10, 'Project')).once()
       verify(taskLibWrapper.debug('* AzureReposInvoker.getCommentThreads()')).once()
-      verify(taskLibWrapper.debug('* AzureReposInvoker.initialize()')).once()
+      verify(taskLibWrapper.debug('* AzureReposInvoker.getGitApi()')).once()
       verify(taskLibWrapper.debug('[{"id":1}]')).once()
     })
 
@@ -464,7 +464,7 @@ describe('azureReposInvoker.ts', function (): void {
       verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
       verify(gitApi.getThreads('RepoID', 10, 'Project')).twice()
       verify(taskLibWrapper.debug('* AzureReposInvoker.getCommentThreads()')).twice()
-      verify(taskLibWrapper.debug('* AzureReposInvoker.initialize()')).twice()
+      verify(taskLibWrapper.debug('* AzureReposInvoker.getGitApi()')).twice()
       verify(taskLibWrapper.debug('[{"id":1}]')).twice()
     })
   })
@@ -482,7 +482,7 @@ describe('azureReposInvoker.ts', function (): void {
       verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).never()
       verify(gitApi.updatePullRequest(anything(), 'RepoID', 10, 'Project')).never()
       verify(taskLibWrapper.debug('* AzureReposInvoker.setTitleAndDescription()')).once()
-      verify(taskLibWrapper.debug('* AzureReposInvoker.initialize()')).never()
+      verify(taskLibWrapper.debug('* AzureReposInvoker.getGitApi()')).never()
     })
 
     it('should call the API when the title is valid', async (): Promise<void> => {
@@ -501,7 +501,7 @@ describe('azureReposInvoker.ts', function (): void {
       verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
       verify(gitApi.updatePullRequest(deepEqual(expectedDetails), 'RepoID', 10, 'Project')).once()
       verify(taskLibWrapper.debug('* AzureReposInvoker.setTitleAndDescription()')).once()
-      verify(taskLibWrapper.debug('* AzureReposInvoker.initialize()')).once()
+      verify(taskLibWrapper.debug('* AzureReposInvoker.getGitApi()')).once()
       verify(taskLibWrapper.debug('{}')).once()
     })
 
@@ -521,7 +521,7 @@ describe('azureReposInvoker.ts', function (): void {
       verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
       verify(gitApi.updatePullRequest(deepEqual(expectedDetails), 'RepoID', 10, 'Project')).once()
       verify(taskLibWrapper.debug('* AzureReposInvoker.setTitleAndDescription()')).once()
-      verify(taskLibWrapper.debug('* AzureReposInvoker.initialize()')).once()
+      verify(taskLibWrapper.debug('* AzureReposInvoker.getGitApi()')).once()
       verify(taskLibWrapper.debug('{}')).once()
     })
 
@@ -542,7 +542,7 @@ describe('azureReposInvoker.ts', function (): void {
       verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
       verify(gitApi.updatePullRequest(deepEqual(expectedDetails), 'RepoID', 10, 'Project')).once()
       verify(taskLibWrapper.debug('* AzureReposInvoker.setTitleAndDescription()')).once()
-      verify(taskLibWrapper.debug('* AzureReposInvoker.initialize()')).once()
+      verify(taskLibWrapper.debug('* AzureReposInvoker.getGitApi()')).once()
       verify(taskLibWrapper.debug('{}')).once()
     })
 
@@ -564,7 +564,7 @@ describe('azureReposInvoker.ts', function (): void {
       verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
       verify(gitApi.updatePullRequest(deepEqual(expectedDetails), 'RepoID', 10, 'Project')).twice()
       verify(taskLibWrapper.debug('* AzureReposInvoker.setTitleAndDescription()')).twice()
-      verify(taskLibWrapper.debug('* AzureReposInvoker.initialize()')).twice()
+      verify(taskLibWrapper.debug('* AzureReposInvoker.getGitApi()')).twice()
       verify(taskLibWrapper.debug('{}')).twice()
     })
   })
@@ -587,7 +587,7 @@ describe('azureReposInvoker.ts', function (): void {
       verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
       verify(gitApi.createComment(deepEqual(expectedComment), 'RepoID', 10, 20, 'Project')).once()
       verify(taskLibWrapper.debug('* AzureReposInvoker.createComment()')).once()
-      verify(taskLibWrapper.debug('* AzureReposInvoker.initialize()')).once()
+      verify(taskLibWrapper.debug('* AzureReposInvoker.getGitApi()')).once()
       verify(taskLibWrapper.debug('{}')).once()
     })
 
@@ -609,7 +609,7 @@ describe('azureReposInvoker.ts', function (): void {
       verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
       verify(gitApi.createComment(deepEqual(expectedComment), 'RepoID', 10, 20, 'Project')).twice()
       verify(taskLibWrapper.debug('* AzureReposInvoker.createComment()')).twice()
-      verify(taskLibWrapper.debug('* AzureReposInvoker.initialize()')).twice()
+      verify(taskLibWrapper.debug('* AzureReposInvoker.getGitApi()')).twice()
       verify(taskLibWrapper.debug('{}')).twice()
     })
   })
@@ -632,7 +632,7 @@ describe('azureReposInvoker.ts', function (): void {
       verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
       verify(gitApi.createThread(deepEqual(expectedCommentThread), 'RepoID', 10, 'Project')).once()
       verify(taskLibWrapper.debug('* AzureReposInvoker.createCommentThread()')).once()
-      verify(taskLibWrapper.debug('* AzureReposInvoker.initialize()')).once()
+      verify(taskLibWrapper.debug('* AzureReposInvoker.getGitApi()')).once()
       verify(taskLibWrapper.debug('{}')).once()
     })
 
@@ -654,7 +654,7 @@ describe('azureReposInvoker.ts', function (): void {
       verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
       verify(gitApi.createThread(deepEqual(expectedCommentThread), 'RepoID', 10, 'Project')).twice()
       verify(taskLibWrapper.debug('* AzureReposInvoker.createCommentThread()')).twice()
-      verify(taskLibWrapper.debug('* AzureReposInvoker.initialize()')).twice()
+      verify(taskLibWrapper.debug('* AzureReposInvoker.getGitApi()')).twice()
       verify(taskLibWrapper.debug('{}')).twice()
     })
 
@@ -686,7 +686,7 @@ describe('azureReposInvoker.ts', function (): void {
       verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
       verify(gitApi.createThread(deepEqual(expectedCommentThread), 'RepoID', 10, 'Project')).once()
       verify(taskLibWrapper.debug('* AzureReposInvoker.createCommentThread()')).once()
-      verify(taskLibWrapper.debug('* AzureReposInvoker.initialize()')).once()
+      verify(taskLibWrapper.debug('* AzureReposInvoker.getGitApi()')).once()
       verify(taskLibWrapper.debug('{}')).once()
     })
 
@@ -718,7 +718,7 @@ describe('azureReposInvoker.ts', function (): void {
       verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
       verify(gitApi.createThread(deepEqual(expectedCommentThread), 'RepoID', 10, 'Project')).once()
       verify(taskLibWrapper.debug('* AzureReposInvoker.createCommentThread()')).once()
-      verify(taskLibWrapper.debug('* AzureReposInvoker.initialize()')).once()
+      verify(taskLibWrapper.debug('* AzureReposInvoker.getGitApi()')).once()
       verify(taskLibWrapper.debug('{}')).once()
     })
   })
@@ -740,7 +740,7 @@ describe('azureReposInvoker.ts', function (): void {
       verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
       verify(gitApi.updateThread(deepEqual(expectedCommentThread), 'RepoID', 10, 20, 'Project')).once()
       verify(taskLibWrapper.debug('* AzureReposInvoker.setCommentThreadStatus()')).once()
-      verify(taskLibWrapper.debug('* AzureReposInvoker.initialize()')).once()
+      verify(taskLibWrapper.debug('* AzureReposInvoker.getGitApi()')).once()
       verify(taskLibWrapper.debug('{}')).once()
     })
 
@@ -761,7 +761,7 @@ describe('azureReposInvoker.ts', function (): void {
       verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
       verify(gitApi.updateThread(deepEqual(expectedCommentThread), 'RepoID', 10, 20, 'Project')).twice()
       verify(taskLibWrapper.debug('* AzureReposInvoker.setCommentThreadStatus()')).twice()
-      verify(taskLibWrapper.debug('* AzureReposInvoker.initialize()')).twice()
+      verify(taskLibWrapper.debug('* AzureReposInvoker.getGitApi()')).twice()
       verify(taskLibWrapper.debug('{}')).twice()
     })
   })
@@ -811,7 +811,7 @@ describe('azureReposInvoker.ts', function (): void {
       verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
       verify(gitApi.updatePullRequestProperties(null, deepEqual(expected), 'RepoID', 10, 'Project')).once()
       verify(taskLibWrapper.debug('* AzureReposInvoker.addMetadata()')).once()
-      verify(taskLibWrapper.debug('* AzureReposInvoker.initialize()')).once()
+      verify(taskLibWrapper.debug('* AzureReposInvoker.getGitApi()')).once()
       verify(taskLibWrapper.debug('{}')).once()
     })
 
@@ -842,7 +842,7 @@ describe('azureReposInvoker.ts', function (): void {
       verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
       verify(gitApi.updatePullRequestProperties(null, deepEqual(expected), 'RepoID', 10, 'Project')).twice()
       verify(taskLibWrapper.debug('* AzureReposInvoker.addMetadata()')).twice()
-      verify(taskLibWrapper.debug('* AzureReposInvoker.initialize()')).twice()
+      verify(taskLibWrapper.debug('* AzureReposInvoker.getGitApi()')).twice()
       verify(taskLibWrapper.debug('{}')).twice()
     })
 
