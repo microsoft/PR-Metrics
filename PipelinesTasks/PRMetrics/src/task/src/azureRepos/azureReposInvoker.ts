@@ -11,15 +11,16 @@ import { WebApi } from 'azure-devops-node-api'
 import AzureDevOpsApiWrapper from '../wrappers/azureDevOpsApiWrapper'
 import IPullRequestDetails from './iPullRequestDetails'
 import IPullRequestMetadata from './iPullRequestMetadata'
-import TaskLibWrapper from '../wrappers/taskLibWrapper'
+import Logger from '../utilities/logger'
 
 /**
- * A class for invoking Azure Repos functionality
+ * A class for invoking Azure Repos functionality.
+ * @remarks This class should not be used in a multithreaded context as it could lead to the initialization logic being invoked repeatedly.
  */
 @singleton()
 export default class AzureReposInvoker {
   private readonly _azureDevOpsApiWrapper: AzureDevOpsApiWrapper
-  private readonly _taskLibWrapper: TaskLibWrapper
+  private readonly _logger: Logger
 
   private _project: string = ''
   private _repositoryId: string = ''
@@ -29,11 +30,11 @@ export default class AzureReposInvoker {
   /**
    * Initializes a new instance of the `AzureReposInvoker` class.
    * @param azureDevOpsApiWrapper The wrapper around the Azure DevOps API.
-   * @param taskLibWrapper The wrapper around the Azure Pipelines Task Lib.
+   * @param logger The logger.
    */
-  public constructor (azureDevOpsApiWrapper: AzureDevOpsApiWrapper, taskLibWrapper: TaskLibWrapper) {
+  public constructor (azureDevOpsApiWrapper: AzureDevOpsApiWrapper, logger: Logger) {
     this._azureDevOpsApiWrapper = azureDevOpsApiWrapper
-    this._taskLibWrapper = taskLibWrapper
+    this._logger = logger
   }
 
   /**
@@ -41,7 +42,7 @@ export default class AzureReposInvoker {
    * @returns A value indicating whether the OAuth access token is available.
    */
   public get isAccessTokenAvailable (): boolean {
-    this._taskLibWrapper.debug('* AzureReposInvoker.isAccessTokenAvailable')
+    this._logger.logDebug('* AzureReposInvoker.isAccessTokenAvailable')
 
     return process.env.SYSTEM_ACCESSTOKEN !== undefined
   }
@@ -51,11 +52,11 @@ export default class AzureReposInvoker {
    * @returns A promise containing the title and description.
    */
   public async getTitleAndDescription (): Promise<IPullRequestDetails> {
-    this._taskLibWrapper.debug('* AzureReposInvoker.getTitleAndDescription()')
+    this._logger.logDebug('* AzureReposInvoker.getTitleAndDescription()')
 
     const gitApi: IGitApi = await this.getGitApi()
     const result: GitPullRequest = await gitApi.getPullRequestById(this._pullRequestId, this._project)
-    this._taskLibWrapper.debug(JSON.stringify(result))
+    this._logger.logDebug(JSON.stringify(result))
 
     const title: string = Validator.validate(result.title, 'title', 'AzureReposInvoker.getTitleAndDescription()')
     return {
@@ -69,11 +70,11 @@ export default class AzureReposInvoker {
    * @returns A promise containing the current iteration.
    */
   public async getCurrentIteration (): Promise<number> {
-    this._taskLibWrapper.debug('* AzureReposInvoker.getCurrentIteration()')
+    this._logger.logDebug('* AzureReposInvoker.getCurrentIteration()')
 
     const gitApi: IGitApi = await this.getGitApi()
     const result: GitPullRequestIteration[] = await gitApi.getPullRequestIterations(this._repositoryId, this._pullRequestId, this._project)
-    this._taskLibWrapper.debug(JSON.stringify(result))
+    this._logger.logDebug(JSON.stringify(result))
     if (result.length === 0) {
       throw RangeError('The collection of pull request iterations was of length zero.')
     }
@@ -86,11 +87,11 @@ export default class AzureReposInvoker {
    * @returns A promise containing the comment threads.
    */
   public async getCommentThreads (): Promise<GitPullRequestCommentThread[]> {
-    this._taskLibWrapper.debug('* AzureReposInvoker.getCommentThreads()')
+    this._logger.logDebug('* AzureReposInvoker.getCommentThreads()')
 
     const gitApi: IGitApi = await this.getGitApi()
     const result: GitPullRequestCommentThread[] = await gitApi.getThreads(this._repositoryId, this._pullRequestId, this._project)
-    this._taskLibWrapper.debug(JSON.stringify(result))
+    this._logger.logDebug(JSON.stringify(result))
     return result
   }
 
@@ -101,7 +102,7 @@ export default class AzureReposInvoker {
    * @returns A promise for awaiting the completion of the method call.
    */
   public async setTitleAndDescription (title: string | null, description: string | null): Promise<void> {
-    this._taskLibWrapper.debug('* AzureReposInvoker.setTitleAndDescription()')
+    this._logger.logDebug('* AzureReposInvoker.setTitleAndDescription()')
 
     if (title === null && description === null) {
       return
@@ -118,7 +119,7 @@ export default class AzureReposInvoker {
     }
 
     const result: GitPullRequest = await (await gitApiPromise).updatePullRequest(updatedGitPullRequest, this._repositoryId, this._pullRequestId, this._project)
-    this._taskLibWrapper.debug(JSON.stringify(result))
+    this._logger.logDebug(JSON.stringify(result))
   }
 
   /**
@@ -129,7 +130,7 @@ export default class AzureReposInvoker {
    * @returns A promise for awaiting the completion of the method call.
    */
   public async createComment (commentContent: string, commentThreadId: number, parentCommentId: number): Promise<void> {
-    this._taskLibWrapper.debug('* AzureReposInvoker.createComment()')
+    this._logger.logDebug('* AzureReposInvoker.createComment()')
 
     const gitApiPromise: Promise<IGitApi> = this.getGitApi()
     const comment: Comment = {
@@ -138,7 +139,7 @@ export default class AzureReposInvoker {
     }
 
     const result: Comment = await (await gitApiPromise).createComment(comment, this._repositoryId, this._pullRequestId, commentThreadId, this._project)
-    this._taskLibWrapper.debug(JSON.stringify(result))
+    this._logger.logDebug(JSON.stringify(result))
   }
 
   /**
@@ -150,7 +151,7 @@ export default class AzureReposInvoker {
    * @returns A promise for awaiting the completion of the method call.
    */
   public async createCommentThread (commentContent: string, status: CommentThreadStatus, fileName?: string, isFileDeleted?: boolean): Promise<void> {
-    this._taskLibWrapper.debug('* AzureReposInvoker.createCommentThread()')
+    this._logger.logDebug('* AzureReposInvoker.createCommentThread()')
 
     const gitApiPromise: Promise<IGitApi> = this.getGitApi()
     const commentThread: GitPullRequestCommentThread = {
@@ -182,7 +183,7 @@ export default class AzureReposInvoker {
     }
 
     const result: GitPullRequestCommentThread = await (await gitApiPromise).createThread(commentThread, this._repositoryId, this._pullRequestId, this._project)
-    this._taskLibWrapper.debug(JSON.stringify(result))
+    this._logger.logDebug(JSON.stringify(result))
   }
 
   /**
@@ -192,7 +193,7 @@ export default class AzureReposInvoker {
    * @returns A promise for awaiting the completion of the method call.
    */
   public async setCommentThreadStatus (commentThreadId: number, status: CommentThreadStatus): Promise<void> {
-    this._taskLibWrapper.debug('* AzureReposInvoker.setCommentThreadStatus()')
+    this._logger.logDebug('* AzureReposInvoker.setCommentThreadStatus()')
 
     const gitApiPromise: Promise<IGitApi> = this.getGitApi()
     const commentThread: GitPullRequestCommentThread = {
@@ -200,7 +201,7 @@ export default class AzureReposInvoker {
     }
 
     const result: GitPullRequestCommentThread = await (await gitApiPromise).updateThread(commentThread, this._repositoryId, this._pullRequestId, commentThreadId, this._project)
-    this._taskLibWrapper.debug(JSON.stringify(result))
+    this._logger.logDebug(JSON.stringify(result))
   }
 
   /**
@@ -209,7 +210,7 @@ export default class AzureReposInvoker {
    * @returns A promise for awaiting the completion of the method call.
    */
   public async addMetadata (metadata: IPullRequestMetadata[]): Promise<void> {
-    this._taskLibWrapper.debug('* AzureReposInvoker.addMetadata()')
+    this._logger.logDebug('* AzureReposInvoker.addMetadata()')
 
     if (metadata.length === 0) {
       throw RangeError('The collection of metadata was of length zero.')
@@ -228,11 +229,11 @@ export default class AzureReposInvoker {
     })
 
     const result: object = await (await gitApiPromise).updatePullRequestProperties(null, jsonPatchDocumentValues, this._repositoryId, this._pullRequestId, this._project)
-    this._taskLibWrapper.debug(JSON.stringify(result))
+    this._logger.logDebug(JSON.stringify(result))
   }
 
   private async getGitApi (): Promise<IGitApi> {
-    this._taskLibWrapper.debug('* AzureReposInvoker.getGitApi()')
+    this._logger.logDebug('* AzureReposInvoker.getGitApi()')
 
     if (this._gitApi) {
       return this._gitApi

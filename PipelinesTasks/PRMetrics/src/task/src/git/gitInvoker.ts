@@ -5,13 +5,16 @@ import { GitWritableStream } from './gitWritableStream'
 import { IExecOptions } from 'azure-pipelines-task-lib/toolrunner'
 import { singleton } from 'tsyringe'
 import { Validator } from '../utilities/validator'
+import Logger from '../utilities/logger'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
 
 /**
  * A class for invoking Git commands.
+ * @remarks This class should not be used in a multithreaded context as it could lead to the initialization logic being invoked repeatedly.
  */
 @singleton()
 export default class GitInvoker {
+  private readonly _logger: Logger
   private readonly _taskLibWrapper: TaskLibWrapper
 
   private _isInitialized: boolean = false
@@ -20,9 +23,11 @@ export default class GitInvoker {
 
   /**
    * Initializes a new instance of the `GitInvoker` class.
+   * @param logger The logger.
    * @param taskLibWrapper The wrapper around the Azure Pipelines Task Lib.
    */
-  public constructor (taskLibWrapper: TaskLibWrapper) {
+  public constructor (logger: Logger, taskLibWrapper: TaskLibWrapper) {
+    this._logger = logger
     this._taskLibWrapper = taskLibWrapper
   }
 
@@ -31,7 +36,7 @@ export default class GitInvoker {
    * @returns A promise containing a value indicating whether the current folder corresponds to a Git enlistment.
    */
   public async isGitEnlistment (): Promise<boolean> {
-    this._taskLibWrapper.debug('* GitInvoker.isGitEnlistment()')
+    this._logger.logDebug('* GitInvoker.isGitEnlistment()')
 
     const result: string = await this.invokeGit('rev-parse --is-inside-work-tree')
     return result.startsWith('true')
@@ -42,7 +47,7 @@ export default class GitInvoker {
    * @returns A promise containing a value indicating whether sufficient Git history is available to generate the PR metrics.
    */
   public async isGitHistoryAvailable (): Promise<boolean> {
-    this._taskLibWrapper.debug('* GitInvoker.isGitHistoryAvailable()')
+    this._logger.logDebug('* GitInvoker.isGitHistoryAvailable()')
 
     this.initialize()
     const result: string = await this.invokeGit(`rev-parse --branch origin/${this._targetBranch}...pull/${this._pullRequestId}/merge`)
@@ -55,14 +60,14 @@ export default class GitInvoker {
    * @returns A promise containing the diff summary.
    */
   public getDiffSummary (): Promise<string> {
-    this._taskLibWrapper.debug('* GitInvoker.getDiffSummary()')
+    this._logger.logDebug('* GitInvoker.getDiffSummary()')
 
     this.initialize()
     return this.invokeGit(`diff --numstat origin/${this._targetBranch}...pull/${this._pullRequestId}/merge`)
   }
 
   private initialize (): void {
-    this._taskLibWrapper.debug('* GitInvoker.initialize()')
+    this._logger.logDebug('* GitInvoker.initialize()')
 
     if (this._isInitialized) {
       return
@@ -74,7 +79,7 @@ export default class GitInvoker {
   }
 
   private getTargetBranch (): string {
-    this._taskLibWrapper.debug('* GitInvoker.getTargetBranch()')
+    this._logger.logDebug('* GitInvoker.getTargetBranch()')
 
     const variable: string = Validator.validate(process.env.SYSTEM_PULLREQUEST_TARGETBRANCH, 'SYSTEM_PULLREQUEST_TARGETBRANCH', 'GitInvoker.getTargetBranch()')
     const expectedStart: string = 'refs/heads/'
@@ -87,16 +92,16 @@ export default class GitInvoker {
   }
 
   private getPullRequestId (): string {
-    this._taskLibWrapper.debug('* GitInvoker.getPullRequestId()')
+    this._logger.logDebug('* GitInvoker.getPullRequestId()')
 
     return Validator.validate(process.env.SYSTEM_PULLREQUEST_PULLREQUESTID, 'SYSTEM_PULLREQUEST_PULLREQUESTID', 'GitInvoker.getPullRequestId()')
   }
 
   private async invokeGit (parameters: string): Promise<string> {
-    this._taskLibWrapper.debug('* GitInvoker.invokeGit()')
+    this._logger.logDebug('* GitInvoker.invokeGit()')
 
-    const outputStream: GitWritableStream = new GitWritableStream(this._taskLibWrapper)
-    const errorStream: GitWritableStream = new GitWritableStream(this._taskLibWrapper)
+    const outputStream: GitWritableStream = new GitWritableStream(this._logger)
+    const errorStream: GitWritableStream = new GitWritableStream(this._logger)
     const execOption: IExecOptions = {
       failOnStdErr: true,
       outStream: outputStream,

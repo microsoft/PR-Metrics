@@ -174,6 +174,7 @@ describe('index.ts', (): void => {
     expect(task.succeeded).to.equal(false)
     expect(task.warningIssues).to.deep.equal([])
     expect(task.errorIssues).to.deep.equal(['Failed request: (401)'])
+    expect(task.stdout.includes('🔁')).to.equal(true)
 
     // Finalization
     delete process.env.SYSTEM_PULLREQUEST_PULLREQUESTID

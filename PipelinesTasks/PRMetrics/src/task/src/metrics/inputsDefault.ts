@@ -9,7 +9,7 @@ export module InputsDefault {
   /**
    * The default base size, which is the maximum number of new lines in a small pull request.
    */
-  export const baseSize: number = 250
+  export const baseSize: number = 200
 
   /**
    * The default growth rate, which is applied to the base size for calculating the size of larger pull requests.
@@ -19,7 +19,7 @@ export module InputsDefault {
   /**
    * The default test factor , which is the number of lines of test code expected for each line of product code.
    */
-  export const testFactor: number = 1.5
+  export const testFactor: number = 1.0
 
   /**
    * The default file matching patterns, which is the set of Azure DevOps file matching patterns specifying the files and folders to include.

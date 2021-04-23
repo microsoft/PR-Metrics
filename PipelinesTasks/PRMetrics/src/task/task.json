@@ -21,7 +21,7 @@
       "name": "BaseSize",
       "label": "Base size",
       "type": "string",
-      "helpMarkDown": "The maximum number of new lines in a small PR. If left blank, a default of '250' will be used."
+      "helpMarkDown": "The maximum number of new lines in a small PR. If left blank, a default of '200' will be used."
     },
     {
       "name": "GrowthRate",
@@ -33,7 +33,7 @@
       "name": "TestFactor",
       "label": "Test factor",
       "type": "string",
-      "helpMarkDown": "The lines of test code expected for each line of product code. This check can be disabled by setting the value to '0'. If left blank, a default of '1.5' will be used."
+      "helpMarkDown": "The lines of test code expected for each line of product code. This check can be disabled by setting the value to '0'. If left blank, a default of '1.0' will be used."
     },
     {
       "name": "FileMatchingPatterns",
@@ -65,7 +65,7 @@
     "metrics.codeMetrics.titleTestsSufficient": "✔",
     "metrics.codeMetricsCalculator.noAccessToken": "Could not access the OAuth token. Enable 'Allow scripts to access OAuth token' under the build process phase settings.",
     "metrics.codeMetricsCalculator.noGitEnlistment": "No Git enlistment present. Disable 'Don't sync sources' under the build process phase settings.",
-    "metrics.codeMetricsCalculator.noGitHistory": "Could not access sufficient Git history. Disable 'Shallow fetch' under the build process phase settings.",
+    "metrics.codeMetricsCalculator.noGitHistory": "Could not access sufficient Git history. Disable 'Shallow fetch' (or set the threshold sufficiently high) under the build process phase settings.",
     "metrics.codeMetricsCalculator.noPullRequest": "The build is not running against a pull request.",
     "metrics.codeMetricsCalculator.unsupportedProvider": "The build is running against a pull request from '%s', which is not a supported provider.",
     "metrics.inputs.adjustingBaseSize": "Adjusting the base size input to '%s'.",

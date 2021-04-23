@@ -30,13 +30,13 @@ task to a new or existing [build definition][build].
 The task parameters are:
 
 - **Base Size:** The maximum number of new lines in a small PR. If left blank,
-  a default of `250` will be used.
+  a default of `200` will be used.
 - **Growth Rate:** The growth rate applied to the base size for calculating the
   size of larger PRs. If left blank, a default of `2.0` will be used. With a
-  base size of `250` and a growth rate of `2.0`, `500` new lines would
-  constitute a medium PR while `1000` new lines would constitute a large PR.
+  base size of `200` and a growth rate of `2.0`, `400` new lines would
+  constitute a medium PR while `800` new lines would constitute a large PR.
 - **Test Factor:** The lines of test code expected for each line of product
-  code. If left blank, a default of `1.5` will be used. This can be set to `0.0`
+  code. If left blank, a default of `1.0` will be used. This can be set to `0.0`
   in order to skip the reporting of whether the test code coverage is
   sufficient.
 - **File Matching Patterns:** [Azure DevOps file matching patterns][globs]

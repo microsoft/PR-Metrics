@@ -6,16 +6,20 @@ import { expect } from 'chai'
 import { instance, mock, verify, when } from 'ts-mockito'
 import async from 'async'
 import CodeMetrics from '../../src/metrics/codeMetrics'
+import Logger from '../../src/utilities/logger'
 import PullRequest from '../../src/pullRequests/pullRequest'
 import TaskLibWrapper from '../../src/wrappers/taskLibWrapper'
 
 describe('pullRequest.ts', (): void => {
   let codeMetrics: CodeMetrics
+  let logger: Logger
   let taskLibWrapper: TaskLibWrapper
 
   beforeEach((): void => {
     codeMetrics = mock(CodeMetrics)
     when(codeMetrics.getSizeIndicator()).thenResolve('S✔')
+
+    logger = mock(Logger)
 
     taskLibWrapper = mock(TaskLibWrapper)
     when(taskLibWrapper.loc('metrics.codeMetrics.titleSizeIndicatorFormat', '(XS|S|M|L|\\d*XL)', '(✔|⚠️)?')).thenReturn('(XS|S|M|L|\\d*XL)(✔|⚠️)?')
@@ -44,14 +48,14 @@ describe('pullRequest.ts', (): void => {
     it('should return true when SYSTEM_PULLREQUEST_PULLREQUESTID is defined', (): void => {
       // Arrange
       process.env.SYSTEM_PULLREQUEST_PULLREQUESTID = 'refs/heads/develop'
-      const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(taskLibWrapper))
+      const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(taskLibWrapper))
 
       // Act
       const result: boolean = pullRequest.isPullRequest
 
       // Assert
       expect(result).to.equal(true)
-      verify(taskLibWrapper.debug('* PullRequest.isPullRequest')).once()
+      verify(logger.logDebug('* PullRequest.isPullRequest')).once()
 
       // Finalization
       delete process.env.SYSTEM_PULLREQUEST_PULLREQUESTID
@@ -60,14 +64,14 @@ describe('pullRequest.ts', (): void => {
     it('should return false when SYSTEM_PULLREQUEST_PULLREQUESTID is not defined', (): void => {
       // Arrange
       delete process.env.SYSTEM_PULLREQUEST_TARGETBRANCH
-      const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(taskLibWrapper))
+      const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(taskLibWrapper))
 
       // Act
       const result: boolean = pullRequest.isPullRequest
 
       // Assert
       expect(result).to.equal(false)
-      verify(taskLibWrapper.debug('* PullRequest.isPullRequest')).once()
+      verify(logger.logDebug('* PullRequest.isPullRequest')).once()
     })
   })
 
@@ -75,27 +79,27 @@ describe('pullRequest.ts', (): void => {
     it('should throw an error when BUILD_REPOSITORY_PROVIDER is undefined', (): void => {
       // Arrange
       delete process.env.BUILD_REPOSITORY_PROVIDER
-      const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(taskLibWrapper))
+      const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(taskLibWrapper))
 
       // Act
       const func: () => boolean | string = () => pullRequest.isSupportedProvider
 
       // Assert
       expect(func).to.throw('\'BUILD_REPOSITORY_PROVIDER\', accessed within \'PullRequest.isSupportedProvider\', is invalid, null, or undefined \'undefined\'.')
-      verify(taskLibWrapper.debug('* PullRequest.isSupportedProvider')).once()
+      verify(logger.logDebug('* PullRequest.isSupportedProvider')).once()
     })
 
     it('should return true when BUILD_REPOSITORY_PROVIDER is set to TfsGit', (): void => {
       // Arrange
       process.env.BUILD_REPOSITORY_PROVIDER = 'TfsGit'
-      const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(taskLibWrapper))
+      const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(taskLibWrapper))
 
       // Act
       const result: boolean | string = pullRequest.isSupportedProvider
 
       // Assert
       expect(result).to.equal(true)
-      verify(taskLibWrapper.debug('* PullRequest.isSupportedProvider')).once()
+      verify(logger.logDebug('* PullRequest.isSupportedProvider')).once()
 
       // Finalization
       delete process.env.BUILD_REPOSITORY_PROVIDER
@@ -104,14 +108,14 @@ describe('pullRequest.ts', (): void => {
     it('should return the provider when BUILD_REPOSITORY_PROVIDER is not set to TfsGit', (): void => {
       // Arrange
       process.env.BUILD_REPOSITORY_PROVIDER = 'Other'
-      const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(taskLibWrapper))
+      const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(taskLibWrapper))
 
       // Act
       const result: boolean | string = pullRequest.isSupportedProvider
 
       // Assert
       expect(result).to.equal('Other')
-      verify(taskLibWrapper.debug('* PullRequest.isSupportedProvider')).once()
+      verify(logger.logDebug('* PullRequest.isSupportedProvider')).once()
 
       // Finalization
       delete process.env.BUILD_REPOSITORY_PROVIDER
@@ -121,14 +125,14 @@ describe('pullRequest.ts', (): void => {
   describe('getUpdatedDescription()', (): void => {
     it('should return null when the current description is set', (): void => {
       // Arrange
-      const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(taskLibWrapper))
+      const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(taskLibWrapper))
 
       // Act
       const result: string | null = pullRequest.getUpdatedDescription('Description')
 
       // Assert
       expect(result).to.equal(null)
-      verify(taskLibWrapper.debug('* PullRequest.getUpdatedDescription()')).once()
+      verify(logger.logDebug('* PullRequest.getUpdatedDescription()')).once()
     })
 
     async.each(
@@ -139,14 +143,14 @@ describe('pullRequest.ts', (): void => {
       ], (currentDescription: string | undefined): void => {
         it(`should return the default description when the current description '${currentDescription}' is empty`, (): void => {
           // Arrange
-          const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(taskLibWrapper))
+          const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(taskLibWrapper))
 
           // Act
           const result: string | null = pullRequest.getUpdatedDescription(currentDescription)
 
           // Assert
           expect(result).to.equal('❌ **Add a description.**')
-          verify(taskLibWrapper.debug('* PullRequest.getUpdatedDescription()')).once()
+          verify(logger.logDebug('* PullRequest.getUpdatedDescription()')).once()
         })
       })
   })
@@ -154,14 +158,14 @@ describe('pullRequest.ts', (): void => {
   describe('getUpdatedTitle()', (): void => {
     it('should return null when the current title is set to the expected title', async (): Promise<void> => {
       // Arrange
-      const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(taskLibWrapper))
+      const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(taskLibWrapper))
 
       // Act
       const result: string | null = await pullRequest.getUpdatedTitle('S✔ ◾ Title')
 
       // Assert
       expect(result).to.equal(null)
-      verify(taskLibWrapper.debug('* PullRequest.getUpdatedTitle()')).once()
+      verify(logger.logDebug('* PullRequest.getUpdatedTitle()')).once()
     })
 
     async.each(
@@ -176,14 +180,14 @@ describe('pullRequest.ts', (): void => {
       ], (currentTitle: string): void => {
         it(`should prefix the current title '${currentTitle}' when no prefix exists`, async (): Promise<void> => {
           // Arrange
-          const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(taskLibWrapper))
+          const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(taskLibWrapper))
 
           // Act
           const result: string | null = await pullRequest.getUpdatedTitle(currentTitle)
 
           // Assert
           expect(result).to.equal(`S✔ ◾ ${currentTitle}`)
-          verify(taskLibWrapper.debug('* PullRequest.getUpdatedTitle()')).once()
+          verify(logger.logDebug('* PullRequest.getUpdatedTitle()')).once()
         })
       })
 
@@ -214,14 +218,14 @@ describe('pullRequest.ts', (): void => {
         it(`should update the current title '${currentTitle}' correctly`, async (): Promise<void> => {
           // Arrange
           when(codeMetrics.getSizeIndicator()).thenResolve('PREFIX')
-          const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(taskLibWrapper))
+          const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(taskLibWrapper))
 
           // Act
           const result: string | null = await pullRequest.getUpdatedTitle(currentTitle)
 
           // Assert
           expect(result).to.equal('PREFIX ◾ Title')
-          verify(taskLibWrapper.debug('* PullRequest.getUpdatedTitle()')).once()
+          verify(logger.logDebug('* PullRequest.getUpdatedTitle()')).once()
         })
       })
   })

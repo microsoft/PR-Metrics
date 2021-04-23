@@ -1,24 +1,24 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+import Logger from '../utilities/logger'
 import stream from 'stream'
-
-import TaskLibWrapper from '../wrappers/taskLibWrapper'
 
 /**
  * A basic stream to which data can be written by the `GitInvoker`.
  */
 export class GitWritableStream extends stream.Writable {
-  private readonly _taskLibWrapper: TaskLibWrapper
+  private readonly _logger: Logger
+
   private _message: string = ''
 
   /**
    * Initializes a new instance of the `GitWritableStream` class.
-   * @param taskLibWrapper The wrapper around the Azure Pipelines Task Lib.
+   * @param logger The logger.
    */
-  public constructor (taskLibWrapper: TaskLibWrapper) {
+  public constructor (logger: Logger) {
     super()
-    this._taskLibWrapper = taskLibWrapper
+    this._logger = logger
   }
 
   /**
@@ -38,7 +38,7 @@ export class GitWritableStream extends stream.Writable {
   public _write (chunk: any, _: string, callback: (error?: Error | null) => void): void {
     const messageChunk: string = chunk.toString()
 
-    this._taskLibWrapper.debug(messageChunk)
+    this._logger.logDebug(messageChunk)
 
     if (!messageChunk.startsWith('[command]')) {
       this._message += messageChunk

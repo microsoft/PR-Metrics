@@ -2,20 +2,24 @@
 // Licensed under the MIT License.
 
 import 'reflect-metadata'
+import { anything, instance, mock, verify, when } from 'ts-mockito'
 import { expect } from 'chai'
 import { IExecOptions } from 'azure-pipelines-task-lib/toolrunner'
-import { anything, instance, mock, verify, when } from 'ts-mockito'
 import * as os from 'os'
 import async from 'async'
 import GitInvoker from '../../src/git/gitInvoker'
+import Logger from '../../src/utilities/logger'
 import TaskLibWrapper from '../../src/wrappers/taskLibWrapper'
 
 describe('gitInvoker.ts', (): void => {
+  let logger: Logger
   let taskLibWrapper: TaskLibWrapper
 
   beforeEach((): void => {
     process.env.SYSTEM_PULLREQUEST_TARGETBRANCH = 'refs/heads/develop'
     process.env.SYSTEM_PULLREQUEST_PULLREQUESTID = '12345'
+
+    logger = mock(Logger)
 
     taskLibWrapper = mock(TaskLibWrapper)
     when(taskLibWrapper.exec('git', 'rev-parse --is-inside-work-tree', anything())).thenCall((_: string, __: string, options: IExecOptions): Promise<number> => {
@@ -50,15 +54,15 @@ describe('gitInvoker.ts', (): void => {
             options.outStream!.write(response)
             return Promise.resolve(0)
           })
-          const gitInvoker: GitInvoker = new GitInvoker(instance(taskLibWrapper))
+          const gitInvoker: GitInvoker = new GitInvoker(instance(logger), instance(taskLibWrapper))
 
           // Act
           const result: boolean = await gitInvoker.isGitEnlistment()
 
           // Assert
           expect(result).to.equal(true)
-          verify(taskLibWrapper.debug('* GitInvoker.isGitEnlistment()')).once()
-          verify(taskLibWrapper.debug('* GitInvoker.invokeGit()')).once()
+          verify(logger.logDebug('* GitInvoker.isGitEnlistment()')).once()
+          verify(logger.logDebug('* GitInvoker.invokeGit()')).once()
         })
       })
 
@@ -68,15 +72,15 @@ describe('gitInvoker.ts', (): void => {
         options.outStream!.write('')
         return Promise.resolve(0)
       })
-      const gitInvoker: GitInvoker = new GitInvoker(instance(taskLibWrapper))
+      const gitInvoker: GitInvoker = new GitInvoker(instance(logger), instance(taskLibWrapper))
 
       // Act
       const result: boolean = await gitInvoker.isGitEnlistment()
 
       // Assert
       expect(result).to.equal(false)
-      verify(taskLibWrapper.debug('* GitInvoker.isGitEnlistment()')).once()
-      verify(taskLibWrapper.debug('* GitInvoker.invokeGit()')).once()
+      verify(logger.logDebug('* GitInvoker.isGitEnlistment()')).once()
+      verify(logger.logDebug('* GitInvoker.invokeGit()')).once()
     })
 
     it('should throw an error when Git invocation fails', async (): Promise<void> => {
@@ -85,7 +89,7 @@ describe('gitInvoker.ts', (): void => {
         options.errStream!.write('Failure')
         return Promise.resolve(1)
       })
-      const gitInvoker: GitInvoker = new GitInvoker(instance(taskLibWrapper))
+      const gitInvoker: GitInvoker = new GitInvoker(instance(logger), instance(taskLibWrapper))
       let errorThrown: boolean = false
 
       try {
@@ -98,26 +102,26 @@ describe('gitInvoker.ts', (): void => {
       }
 
       expect(errorThrown).to.equal(true)
-      verify(taskLibWrapper.debug('* GitInvoker.isGitEnlistment()')).once()
-      verify(taskLibWrapper.debug('* GitInvoker.invokeGit()')).once()
+      verify(logger.logDebug('* GitInvoker.isGitEnlistment()')).once()
+      verify(logger.logDebug('* GitInvoker.invokeGit()')).once()
     })
   })
 
   describe('isGitHistoryAvailable()', (): void => {
     it('should return true when the Git history is available', async (): Promise<void> => {
       // Arrange
-      const gitInvoker: GitInvoker = new GitInvoker(instance(taskLibWrapper))
+      const gitInvoker: GitInvoker = new GitInvoker(instance(logger), instance(taskLibWrapper))
 
       // Act
       const result: boolean = await gitInvoker.isGitHistoryAvailable()
 
       // Assert
       expect(result).to.equal(true)
-      verify(taskLibWrapper.debug('* GitInvoker.isGitHistoryAvailable()')).once()
-      verify(taskLibWrapper.debug('* GitInvoker.initialize()')).once()
-      verify(taskLibWrapper.debug('* GitInvoker.getTargetBranch()')).once()
-      verify(taskLibWrapper.debug('* GitInvoker.getPullRequestId()')).once()
-      verify(taskLibWrapper.debug('* GitInvoker.invokeGit()')).once()
+      verify(logger.logDebug('* GitInvoker.isGitHistoryAvailable()')).once()
+      verify(logger.logDebug('* GitInvoker.initialize()')).once()
+      verify(logger.logDebug('* GitInvoker.getTargetBranch()')).once()
+      verify(logger.logDebug('* GitInvoker.getPullRequestId()')).once()
+      verify(logger.logDebug('* GitInvoker.invokeGit()')).once()
     })
 
     it('should return true when the Git history is unavailable', async (): Promise<void> => {
@@ -126,23 +130,23 @@ describe('gitInvoker.ts', (): void => {
         options.outStream!.write(`fatal: ambiguous argument 'origin/develop...pull/12345/merge': unknown revision or path not in the working tree.${os.EOL}`)
         return Promise.resolve(0)
       })
-      const gitInvoker: GitInvoker = new GitInvoker(instance(taskLibWrapper))
+      const gitInvoker: GitInvoker = new GitInvoker(instance(logger), instance(taskLibWrapper))
 
       // Act
       const result: boolean = await gitInvoker.isGitHistoryAvailable()
 
       // Assert
       expect(result).to.equal(false)
-      verify(taskLibWrapper.debug('* GitInvoker.isGitHistoryAvailable()')).once()
-      verify(taskLibWrapper.debug('* GitInvoker.initialize()')).once()
-      verify(taskLibWrapper.debug('* GitInvoker.getTargetBranch()')).once()
-      verify(taskLibWrapper.debug('* GitInvoker.getPullRequestId()')).once()
-      verify(taskLibWrapper.debug('* GitInvoker.invokeGit()')).once()
+      verify(logger.logDebug('* GitInvoker.isGitHistoryAvailable()')).once()
+      verify(logger.logDebug('* GitInvoker.initialize()')).once()
+      verify(logger.logDebug('* GitInvoker.getTargetBranch()')).once()
+      verify(logger.logDebug('* GitInvoker.getPullRequestId()')).once()
+      verify(logger.logDebug('* GitInvoker.invokeGit()')).once()
     })
 
     it('should return true when the Git history is available and the method is called twice', async (): Promise<void> => {
       // Arrange
-      const gitInvoker: GitInvoker = new GitInvoker(instance(taskLibWrapper))
+      const gitInvoker: GitInvoker = new GitInvoker(instance(logger), instance(taskLibWrapper))
 
       // Act
       const result1: boolean = await gitInvoker.isGitHistoryAvailable()
@@ -151,17 +155,17 @@ describe('gitInvoker.ts', (): void => {
       // Assert
       expect(result1).to.equal(true)
       expect(result2).to.equal(true)
-      verify(taskLibWrapper.debug('* GitInvoker.isGitHistoryAvailable()')).twice()
-      verify(taskLibWrapper.debug('* GitInvoker.initialize()')).twice()
-      verify(taskLibWrapper.debug('* GitInvoker.getTargetBranch()')).once()
-      verify(taskLibWrapper.debug('* GitInvoker.getPullRequestId()')).once()
-      verify(taskLibWrapper.debug('* GitInvoker.invokeGit()')).twice()
+      verify(logger.logDebug('* GitInvoker.isGitHistoryAvailable()')).twice()
+      verify(logger.logDebug('* GitInvoker.initialize()')).twice()
+      verify(logger.logDebug('* GitInvoker.getTargetBranch()')).once()
+      verify(logger.logDebug('* GitInvoker.getPullRequestId()')).once()
+      verify(logger.logDebug('* GitInvoker.invokeGit()')).twice()
     })
 
     it('should throw an error when SYSTEM_PULLREQUEST_TARGETBRANCH is undefined', async (): Promise<void> => {
       // Arrange
       delete process.env.SYSTEM_PULLREQUEST_TARGETBRANCH
-      const gitInvoker: GitInvoker = new GitInvoker(instance(taskLibWrapper))
+      const gitInvoker: GitInvoker = new GitInvoker(instance(logger), instance(taskLibWrapper))
       let errorThrown: boolean = false
 
       try {
@@ -174,15 +178,15 @@ describe('gitInvoker.ts', (): void => {
       }
 
       expect(errorThrown).to.equal(true)
-      verify(taskLibWrapper.debug('* GitInvoker.isGitHistoryAvailable()')).once()
-      verify(taskLibWrapper.debug('* GitInvoker.initialize()')).once()
-      verify(taskLibWrapper.debug('* GitInvoker.getTargetBranch()')).once()
+      verify(logger.logDebug('* GitInvoker.isGitHistoryAvailable()')).once()
+      verify(logger.logDebug('* GitInvoker.initialize()')).once()
+      verify(logger.logDebug('* GitInvoker.getTargetBranch()')).once()
     })
 
     it('should throw an error when SYSTEM_PULLREQUEST_TARGETBRANCH is in an unexpected format', async (): Promise<void> => {
       // Arrange
       process.env.SYSTEM_PULLREQUEST_TARGETBRANCH = 'refs/head/develop'
-      const gitInvoker: GitInvoker = new GitInvoker(instance(taskLibWrapper))
+      const gitInvoker: GitInvoker = new GitInvoker(instance(logger), instance(taskLibWrapper))
       let errorThrown: boolean = false
 
       try {
@@ -195,15 +199,15 @@ describe('gitInvoker.ts', (): void => {
       }
 
       expect(errorThrown).to.equal(true)
-      verify(taskLibWrapper.debug('* GitInvoker.isGitHistoryAvailable()')).once()
-      verify(taskLibWrapper.debug('* GitInvoker.initialize()')).once()
-      verify(taskLibWrapper.debug('* GitInvoker.getTargetBranch()')).once()
+      verify(logger.logDebug('* GitInvoker.isGitHistoryAvailable()')).once()
+      verify(logger.logDebug('* GitInvoker.initialize()')).once()
+      verify(logger.logDebug('* GitInvoker.getTargetBranch()')).once()
     })
 
     it('should throw an error when SYSTEM_PULLREQUEST_PULLREQUESTID is undefined', async (): Promise<void> => {
       // Arrange
       delete process.env.SYSTEM_PULLREQUEST_PULLREQUESTID
-      const gitInvoker: GitInvoker = new GitInvoker(instance(taskLibWrapper))
+      const gitInvoker: GitInvoker = new GitInvoker(instance(logger), instance(taskLibWrapper))
       let errorThrown: boolean = false
 
       try {
@@ -216,10 +220,10 @@ describe('gitInvoker.ts', (): void => {
       }
 
       expect(errorThrown).to.equal(true)
-      verify(taskLibWrapper.debug('* GitInvoker.isGitHistoryAvailable()')).once()
-      verify(taskLibWrapper.debug('* GitInvoker.initialize()')).once()
-      verify(taskLibWrapper.debug('* GitInvoker.getTargetBranch()')).once()
-      verify(taskLibWrapper.debug('* GitInvoker.getPullRequestId()')).once()
+      verify(logger.logDebug('* GitInvoker.isGitHistoryAvailable()')).once()
+      verify(logger.logDebug('* GitInvoker.initialize()')).once()
+      verify(logger.logDebug('* GitInvoker.getTargetBranch()')).once()
+      verify(logger.logDebug('* GitInvoker.getPullRequestId()')).once()
     })
 
     it('should throw an error when Git invocation fails', async (): Promise<void> => {
@@ -228,7 +232,7 @@ describe('gitInvoker.ts', (): void => {
         options.errStream!.write('Failure')
         return Promise.resolve(1)
       })
-      const gitInvoker: GitInvoker = new GitInvoker(instance(taskLibWrapper))
+      const gitInvoker: GitInvoker = new GitInvoker(instance(logger), instance(taskLibWrapper))
       let errorThrown: boolean = false
 
       try {
@@ -241,34 +245,34 @@ describe('gitInvoker.ts', (): void => {
       }
 
       expect(errorThrown).to.equal(true)
-      verify(taskLibWrapper.debug('* GitInvoker.isGitHistoryAvailable()')).once()
-      verify(taskLibWrapper.debug('* GitInvoker.initialize()')).once()
-      verify(taskLibWrapper.debug('* GitInvoker.getTargetBranch()')).once()
-      verify(taskLibWrapper.debug('* GitInvoker.getPullRequestId()')).once()
-      verify(taskLibWrapper.debug('* GitInvoker.invokeGit()')).once()
+      verify(logger.logDebug('* GitInvoker.isGitHistoryAvailable()')).once()
+      verify(logger.logDebug('* GitInvoker.initialize()')).once()
+      verify(logger.logDebug('* GitInvoker.getTargetBranch()')).once()
+      verify(logger.logDebug('* GitInvoker.getPullRequestId()')).once()
+      verify(logger.logDebug('* GitInvoker.invokeGit()')).once()
     })
   })
 
   describe('getDiffSummary()', (): void => {
     it('should return the correct output when no error occurs', async (): Promise<void> => {
       // Arrange
-      const gitInvoker: GitInvoker = new GitInvoker(instance(taskLibWrapper))
+      const gitInvoker: GitInvoker = new GitInvoker(instance(logger), instance(taskLibWrapper))
 
       // Act
       const result: string = await gitInvoker.getDiffSummary()
 
       // Assert
       expect(result).to.equal('1\t2\tFile.txt')
-      verify(taskLibWrapper.debug('* GitInvoker.getDiffSummary()')).once()
-      verify(taskLibWrapper.debug('* GitInvoker.initialize()')).once()
-      verify(taskLibWrapper.debug('* GitInvoker.getTargetBranch()')).once()
-      verify(taskLibWrapper.debug('* GitInvoker.getPullRequestId()')).once()
-      verify(taskLibWrapper.debug('* GitInvoker.invokeGit()')).once()
+      verify(logger.logDebug('* GitInvoker.getDiffSummary()')).once()
+      verify(logger.logDebug('* GitInvoker.initialize()')).once()
+      verify(logger.logDebug('* GitInvoker.getTargetBranch()')).once()
+      verify(logger.logDebug('* GitInvoker.getPullRequestId()')).once()
+      verify(logger.logDebug('* GitInvoker.invokeGit()')).once()
     })
 
     it('should return the correct output when no error occurs and the method is called twice', async (): Promise<void> => {
       // Arrange
-      const gitInvoker: GitInvoker = new GitInvoker(instance(taskLibWrapper))
+      const gitInvoker: GitInvoker = new GitInvoker(instance(logger), instance(taskLibWrapper))
 
       // Act
       await gitInvoker.getDiffSummary()
@@ -276,17 +280,17 @@ describe('gitInvoker.ts', (): void => {
 
       // Assert
       expect(result).to.equal('1\t2\tFile.txt')
-      verify(taskLibWrapper.debug('* GitInvoker.getDiffSummary()')).twice()
-      verify(taskLibWrapper.debug('* GitInvoker.initialize()')).twice()
-      verify(taskLibWrapper.debug('* GitInvoker.getTargetBranch()')).once()
-      verify(taskLibWrapper.debug('* GitInvoker.getPullRequestId()')).once()
-      verify(taskLibWrapper.debug('* GitInvoker.invokeGit()')).twice()
+      verify(logger.logDebug('* GitInvoker.getDiffSummary()')).twice()
+      verify(logger.logDebug('* GitInvoker.initialize()')).twice()
+      verify(logger.logDebug('* GitInvoker.getTargetBranch()')).once()
+      verify(logger.logDebug('* GitInvoker.getPullRequestId()')).once()
+      verify(logger.logDebug('* GitInvoker.invokeGit()')).twice()
     })
 
     it('should throw an error when SYSTEM_PULLREQUEST_TARGETBRANCH is undefined', async (): Promise<void> => {
       // Arrange
       delete process.env.SYSTEM_PULLREQUEST_TARGETBRANCH
-      const gitInvoker: GitInvoker = new GitInvoker(instance(taskLibWrapper))
+      const gitInvoker: GitInvoker = new GitInvoker(instance(logger), instance(taskLibWrapper))
       let errorThrown: boolean = false
 
       try {
@@ -299,15 +303,15 @@ describe('gitInvoker.ts', (): void => {
       }
 
       expect(errorThrown).to.equal(true)
-      verify(taskLibWrapper.debug('* GitInvoker.getDiffSummary()')).once()
-      verify(taskLibWrapper.debug('* GitInvoker.initialize()')).once()
-      verify(taskLibWrapper.debug('* GitInvoker.getTargetBranch()')).once()
+      verify(logger.logDebug('* GitInvoker.getDiffSummary()')).once()
+      verify(logger.logDebug('* GitInvoker.initialize()')).once()
+      verify(logger.logDebug('* GitInvoker.getTargetBranch()')).once()
     })
 
     it('should throw an error when SYSTEM_PULLREQUEST_TARGETBRANCH is in an unexpected format', async (): Promise<void> => {
       // Arrange
       process.env.SYSTEM_PULLREQUEST_TARGETBRANCH = 'refs/head/develop'
-      const gitInvoker: GitInvoker = new GitInvoker(instance(taskLibWrapper))
+      const gitInvoker: GitInvoker = new GitInvoker(instance(logger), instance(taskLibWrapper))
       let errorThrown: boolean = false
 
       try {
@@ -320,15 +324,15 @@ describe('gitInvoker.ts', (): void => {
       }
 
       expect(errorThrown).to.equal(true)
-      verify(taskLibWrapper.debug('* GitInvoker.getDiffSummary()')).once()
-      verify(taskLibWrapper.debug('* GitInvoker.initialize()')).once()
-      verify(taskLibWrapper.debug('* GitInvoker.getTargetBranch()')).once()
+      verify(logger.logDebug('* GitInvoker.getDiffSummary()')).once()
+      verify(logger.logDebug('* GitInvoker.initialize()')).once()
+      verify(logger.logDebug('* GitInvoker.getTargetBranch()')).once()
     })
 
     it('should throw an error when SYSTEM_PULLREQUEST_PULLREQUESTID is undefined', async (): Promise<void> => {
       // Arrange
       delete process.env.SYSTEM_PULLREQUEST_PULLREQUESTID
-      const gitInvoker: GitInvoker = new GitInvoker(instance(taskLibWrapper))
+      const gitInvoker: GitInvoker = new GitInvoker(instance(logger), instance(taskLibWrapper))
       let errorThrown: boolean = false
 
       try {
@@ -341,10 +345,10 @@ describe('gitInvoker.ts', (): void => {
       }
 
       expect(errorThrown).to.equal(true)
-      verify(taskLibWrapper.debug('* GitInvoker.getDiffSummary()')).once()
-      verify(taskLibWrapper.debug('* GitInvoker.initialize()')).once()
-      verify(taskLibWrapper.debug('* GitInvoker.getTargetBranch()')).once()
-      verify(taskLibWrapper.debug('* GitInvoker.getPullRequestId()')).once()
+      verify(logger.logDebug('* GitInvoker.getDiffSummary()')).once()
+      verify(logger.logDebug('* GitInvoker.initialize()')).once()
+      verify(logger.logDebug('* GitInvoker.getTargetBranch()')).once()
+      verify(logger.logDebug('* GitInvoker.getPullRequestId()')).once()
     })
 
     it('should throw an error when Git invocation fails', async (): Promise<void> => {
@@ -353,7 +357,7 @@ describe('gitInvoker.ts', (): void => {
         options.errStream!.write('Failure')
         return Promise.resolve(1)
       })
-      const gitInvoker: GitInvoker = new GitInvoker(instance(taskLibWrapper))
+      const gitInvoker: GitInvoker = new GitInvoker(instance(logger), instance(taskLibWrapper))
       let errorThrown: boolean = false
 
       try {
@@ -366,11 +370,11 @@ describe('gitInvoker.ts', (): void => {
       }
 
       expect(errorThrown).to.equal(true)
-      verify(taskLibWrapper.debug('* GitInvoker.getDiffSummary()')).once()
-      verify(taskLibWrapper.debug('* GitInvoker.initialize()')).once()
-      verify(taskLibWrapper.debug('* GitInvoker.getTargetBranch()')).once()
-      verify(taskLibWrapper.debug('* GitInvoker.getPullRequestId()')).once()
-      verify(taskLibWrapper.debug('* GitInvoker.invokeGit()')).once()
+      verify(logger.logDebug('* GitInvoker.getDiffSummary()')).once()
+      verify(logger.logDebug('* GitInvoker.initialize()')).once()
+      verify(logger.logDebug('* GitInvoker.getTargetBranch()')).once()
+      verify(logger.logDebug('* GitInvoker.getPullRequestId()')).once()
+      verify(logger.logDebug('* GitInvoker.invokeGit()')).once()
     })
   })
 })

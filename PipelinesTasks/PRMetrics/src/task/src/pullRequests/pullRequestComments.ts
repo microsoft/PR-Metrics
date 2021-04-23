@@ -9,6 +9,7 @@ import AzureReposInvoker from '../azureRepos/azureReposInvoker'
 import CodeMetrics from '../metrics/codeMetrics'
 import CodeMetricsData from '../metrics/codeMetricsData'
 import Inputs from '../metrics/inputs'
+import Logger from '../utilities/logger'
 import PullRequestCommentsData from './pullRequestCommentsData'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
 
@@ -20,6 +21,7 @@ export default class PullRequestComments {
   private readonly _azureReposInvoker: AzureReposInvoker
   private readonly _codeMetrics: CodeMetrics
   private readonly _inputs: Inputs
+  private readonly _logger: Logger
   private readonly _taskLibWrapper: TaskLibWrapper
 
   /**
@@ -27,12 +29,14 @@ export default class PullRequestComments {
    * @param azureReposInvoker The Azure Repos invoker logic.
    * @param codeMetrics The code metrics calculation logic.
    * @param inputs The inputs passed to the task.
+   * @param logger The logger.
    * @param taskLibWrapper The wrapper around the Azure Pipelines Task Lib.
    */
-  public constructor (azureReposInvoker: AzureReposInvoker, codeMetrics: CodeMetrics, inputs: Inputs, taskLibWrapper: TaskLibWrapper) {
+  public constructor (azureReposInvoker: AzureReposInvoker, codeMetrics: CodeMetrics, inputs: Inputs, logger: Logger, taskLibWrapper: TaskLibWrapper) {
     this._azureReposInvoker = azureReposInvoker
     this._codeMetrics = codeMetrics
     this._inputs = inputs
+    this._logger = logger
     this._taskLibWrapper = taskLibWrapper
   }
 
@@ -41,7 +45,7 @@ export default class PullRequestComments {
    * @returns The comment to add to files that do not require review.
    */
   public get noReviewRequiredComment (): string {
-    this._taskLibWrapper.debug('* PullRequestComments.noReviewRequiredComment')
+    this._logger.logDebug('* PullRequestComments.noReviewRequiredComment')
 
     return this._taskLibWrapper.loc('pullRequests.pullRequestComments.noReviewRequiredComment')
   }
@@ -52,7 +56,7 @@ export default class PullRequestComments {
    * @returns A promise containing the data used for constructing the comment within the pull request.
    */
   public async getCommentData (currentIteration: number): Promise<PullRequestCommentsData> {
-    this._taskLibWrapper.debug('* PullRequestComments.getCommentData()')
+    this._logger.logDebug('* PullRequestComments.getCommentData()')
 
     const filesNotRequiringReview: string[] = await this._codeMetrics.getFilesNotRequiringReview()
     const deletedFilesNotRequiringReview: string[] = await this._codeMetrics.getDeletedFilesNotRequiringReview()
@@ -96,7 +100,7 @@ export default class PullRequestComments {
    * @returns A promise containing the comment to add to the comment thread.
    */
   public async getMetricsComment (currentIteration: number): Promise<string> {
-    this._taskLibWrapper.debug('* PullRequestComments.getMetricsComment()')
+    this._logger.logDebug('* PullRequestComments.getMetricsComment()')
 
     const metrics: CodeMetricsData = await this._codeMetrics.getMetrics()
 
@@ -123,7 +127,7 @@ export default class PullRequestComments {
    * @returns A promise containing the status to which to update the comment thread.
    */
   public async getMetricsCommentStatus (): Promise<CommentThreadStatus> {
-    this._taskLibWrapper.debug('* PullRequestComments.getMetricsCommentStatus()')
+    this._logger.logDebug('* PullRequestComments.getMetricsCommentStatus()')
 
     if (await this._codeMetrics.isSmall()) {
       const isSufficientlyTested: boolean | null = await this._codeMetrics.isSufficientlyTested()
@@ -137,7 +141,7 @@ export default class PullRequestComments {
   }
 
   private getMetricsCommentData (result: PullRequestCommentsData, currentIteration: number, commentThread: GitPullRequestCommentThread, commentThreadIndex: number): PullRequestCommentsData {
-    this._taskLibWrapper.debug('* PullRequestComments.getMetricsCommentData()')
+    this._logger.logDebug('* PullRequestComments.getMetricsCommentData()')
 
     const comments: Comment[] = Validator.validate(commentThread.comments, `commentThread[${commentThreadIndex}].comments`, 'PullRequestComments.getMetricsCommentData()')
     for (let i: number = 0; i < comments.length; i++) {
@@ -158,7 +162,7 @@ export default class PullRequestComments {
   }
 
   private getNoReviewRequiredCommentData (filesNotRequiringReview: string[], fileNameIndex: number, commentThread: GitPullRequestCommentThread, commentThreadIndex: number): string[] {
-    this._taskLibWrapper.debug('* PullRequestComments.getNoReviewRequiredCommentData()')
+    this._logger.logDebug('* PullRequestComments.getNoReviewRequiredCommentData()')
 
     const comments: Comment[] = Validator.validate(commentThread.comments, `commentThread[${commentThreadIndex}].comments`, 'PullRequestComments.getNoReviewRequiredCommentData()')
     const comment: Comment = Validator.validate(comments[0], `commentThread[${commentThreadIndex}].comments[0]`, 'PullRequestComments.getNoReviewRequiredCommentData()')
@@ -173,7 +177,7 @@ export default class PullRequestComments {
   }
 
   private async addCommentSizeStatus (): Promise<string> {
-    this._taskLibWrapper.debug('* PullRequestComments.addCommentSizeStatus()')
+    this._logger.logDebug('* PullRequestComments.addCommentSizeStatus()')
 
     let result: string = ''
     if (await this._codeMetrics.isSmall()) {
@@ -187,7 +191,7 @@ export default class PullRequestComments {
   }
 
   private async addCommentTestStatus (): Promise<string> {
-    this._taskLibWrapper.debug('* PullRequestComments.addCommentTestStatus()')
+    this._logger.logDebug('* PullRequestComments.addCommentTestStatus()')
 
     let result: string = ''
     const isSufficientlyTested: boolean | null = await this._codeMetrics.isSufficientlyTested()
@@ -205,7 +209,7 @@ export default class PullRequestComments {
   }
 
   private addCommentMetrics (title: string, metric: number, highlight: boolean): string {
-    this._taskLibWrapper.debug('* PullRequestComments.addCommentMetrics()')
+    this._logger.logDebug('* PullRequestComments.addCommentMetrics()')
 
     let surround: string = ''
     if (highlight) {

@@ -4,6 +4,7 @@
 import { injectable } from 'tsyringe'
 import { Validator } from '../utilities/validator'
 import CodeMetrics from '../metrics/codeMetrics'
+import Logger from '../utilities/logger'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
 
 /**
@@ -12,15 +13,18 @@ import TaskLibWrapper from '../wrappers/taskLibWrapper'
 @injectable()
 export default class PullRequest {
   private readonly _codeMetrics: CodeMetrics
+  private readonly _logger: Logger
   private readonly _taskLibWrapper: TaskLibWrapper
 
   /**
    * Initializes a new instance of the `PullRequest` class.
    * @param codeMetrics The code metrics calculation logic.
+   * @param logger The logger.
    * @param taskLibWrapper The wrapper around the Azure Pipelines Task Lib.
    */
-  public constructor (codeMetrics: CodeMetrics, taskLibWrapper: TaskLibWrapper) {
+  public constructor (codeMetrics: CodeMetrics, logger: Logger, taskLibWrapper: TaskLibWrapper) {
     this._codeMetrics = codeMetrics
+    this._logger = logger
     this._taskLibWrapper = taskLibWrapper
   }
 
@@ -29,7 +33,7 @@ export default class PullRequest {
    * @returns A value indicating whether the task is running against a pull request.
    */
   public get isPullRequest (): boolean {
-    this._taskLibWrapper.debug('* PullRequest.isPullRequest')
+    this._logger.logDebug('* PullRequest.isPullRequest')
 
     return process.env.SYSTEM_PULLREQUEST_PULLREQUESTID !== undefined
   }
@@ -39,7 +43,7 @@ export default class PullRequest {
    * @returns `true` if the task is running against a supported pull request provider, or the name of the pull request provider otherwise.
    */
   public get isSupportedProvider (): boolean | string {
-    this._taskLibWrapper.debug('* PullRequest.isSupportedProvider')
+    this._logger.logDebug('* PullRequest.isSupportedProvider')
 
     const variable: string = Validator.validate(process.env.BUILD_REPOSITORY_PROVIDER, 'BUILD_REPOSITORY_PROVIDER', 'PullRequest.isSupportedProvider')
     if (variable === 'TfsGit') {
@@ -55,7 +59,7 @@ export default class PullRequest {
    * @returns The value to which to update the description or `null` if the description is not to be updated.
    */
   public getUpdatedDescription (currentDescription: string | undefined): string | null {
-    this._taskLibWrapper.debug('* PullRequest.getUpdatedDescription()')
+    this._logger.logDebug('* PullRequest.getUpdatedDescription()')
 
     if (currentDescription?.trim()) {
       return null
@@ -70,7 +74,7 @@ export default class PullRequest {
    * @returns A promise containing value to which to update the title or `null` if the title is not to be updated.
    */
   public async getUpdatedTitle (currentTitle: string): Promise<string | null> {
-    this._taskLibWrapper.debug('* PullRequest.getUpdatedTitle()')
+    this._logger.logDebug('* PullRequest.getUpdatedTitle()')
 
     const sizeIndicator: string = await this._codeMetrics.getSizeIndicator()
     if (currentTitle.startsWith(this._taskLibWrapper.loc('pullRequests.pullRequest.titleFormat', sizeIndicator, ''))) {

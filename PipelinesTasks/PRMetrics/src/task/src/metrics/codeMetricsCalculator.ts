@@ -9,6 +9,7 @@ import CodeMetricsData from './codeMetricsData'
 import GitInvoker from '../git/gitInvoker'
 import IPullRequestDetails from '../azureRepos/iPullRequestDetails'
 import IPullRequestMetadata from '../azureRepos/iPullRequestMetadata'
+import Logger from '../utilities/logger'
 import PullRequest from '../pullRequests/pullRequest'
 import PullRequestComments from '../pullRequests/pullRequestComments'
 import PullRequestCommentsData from '../pullRequests/pullRequestCommentsData'
@@ -22,6 +23,7 @@ export default class CodeMetricsCalculator {
   private readonly _azureReposInvoker: AzureReposInvoker
   private readonly _codeMetrics: CodeMetrics
   private readonly _gitInvoker: GitInvoker
+  private readonly _logger: Logger
   private readonly _pullRequest: PullRequest
   private readonly _pullRequestComments: PullRequestComments
   private readonly _taskLibWrapper: TaskLibWrapper
@@ -31,14 +33,16 @@ export default class CodeMetricsCalculator {
    * @param azureReposInvoker The Azure Repos invoker logic.
    * @param codeMetrics The code metrics calculation logic.
    * @param gitInvoker The Git invoker.
+   * @param logger The logger.
    * @param pullRequest The pull request modification logic.
    * @param pullRequestComments The pull request comments modification logic.
    * @param taskLibWrapper The wrapper around the Azure Pipelines Task Lib.
    */
-  public constructor (azureReposInvoker: AzureReposInvoker, codeMetrics: CodeMetrics, gitInvoker: GitInvoker, pullRequest: PullRequest, pullRequestComments: PullRequestComments, taskLibWrapper: TaskLibWrapper) {
+  public constructor (azureReposInvoker: AzureReposInvoker, codeMetrics: CodeMetrics, gitInvoker: GitInvoker, logger: Logger, pullRequest: PullRequest, pullRequestComments: PullRequestComments, taskLibWrapper: TaskLibWrapper) {
     this._azureReposInvoker = azureReposInvoker
     this._codeMetrics = codeMetrics
     this._gitInvoker = gitInvoker
+    this._logger = logger
     this._pullRequest = pullRequest
     this._pullRequestComments = pullRequestComments
     this._taskLibWrapper = taskLibWrapper
@@ -49,7 +53,7 @@ export default class CodeMetricsCalculator {
    * @returns `null` if the task should continue, or a message to be displayed if the task should be skipped.
    */
   public get shouldSkip (): string | null {
-    this._taskLibWrapper.debug('* CodeMetricsCalculator.shouldSkip')
+    this._logger.logDebug('* CodeMetricsCalculator.shouldSkip')
 
     if (!this._pullRequest.isPullRequest) {
       return this._taskLibWrapper.loc('metrics.codeMetricsCalculator.noPullRequest')
@@ -68,7 +72,7 @@ export default class CodeMetricsCalculator {
    * @returns A promise containing `null` if the task should continue, or a message to be displayed if the task should be stopped.
    */
   public async shouldStop (): Promise<string | null> {
-    this._taskLibWrapper.debug('* CodeMetricsCalculator.shouldStop()')
+    this._logger.logDebug('* CodeMetricsCalculator.shouldStop()')
 
     if (!this._azureReposInvoker.isAccessTokenAvailable) {
       return this._taskLibWrapper.loc('metrics.codeMetricsCalculator.noAccessToken')
@@ -90,7 +94,7 @@ export default class CodeMetricsCalculator {
    * @returns A promise for awaiting the completion of the method call.
    */
   public async updateDetails (): Promise<void> {
-    this._taskLibWrapper.debug('* CodeMetricsCalculator.updateDetails()')
+    this._logger.logDebug('* CodeMetricsCalculator.updateDetails()')
 
     const details: IPullRequestDetails = await this._azureReposInvoker.getTitleAndDescription()
     const updatedTitle: string | null = await this._pullRequest.getUpdatedTitle(details.title)
@@ -104,7 +108,7 @@ export default class CodeMetricsCalculator {
    * @returns A promise for awaiting the completion of the method call.
    */
   public async updateComments (): Promise<void> {
-    this._taskLibWrapper.debug('* CodeMetricsCalculator.updateComments()')
+    this._logger.logDebug('* CodeMetricsCalculator.updateComments()')
 
     const promises: Promise<void>[] = []
 
@@ -127,7 +131,7 @@ export default class CodeMetricsCalculator {
   }
 
   private async updateMetricsComment (commentData: PullRequestCommentsData, currentIteration: number): Promise<void> {
-    this._taskLibWrapper.debug('* CodeMetricsCalculator.updateMetricsComment()')
+    this._logger.logDebug('* CodeMetricsCalculator.updateMetricsComment()')
 
     const comment: string = await this._pullRequestComments.getMetricsComment(currentIteration)
     const status: CommentThreadStatus = await this._pullRequestComments.getMetricsCommentStatus()
@@ -140,7 +144,7 @@ export default class CodeMetricsCalculator {
   }
 
   private async addMetadata (): Promise<void> {
-    this._taskLibWrapper.debug('* CodeMetricsCalculator.addMetadata()')
+    this._logger.logDebug('* CodeMetricsCalculator.addMetadata()')
 
     const metrics: CodeMetricsData = await this._codeMetrics.getMetrics()
     const metadata: IPullRequestMetadata[] = [
@@ -182,7 +186,7 @@ export default class CodeMetricsCalculator {
   }
 
   private async updateNoReviewRequiredComment (fileName: string, isFileDeleted: boolean): Promise<void> {
-    this._taskLibWrapper.debug('* CodeMetricsCalculator.updateNoReviewRequiredComment()')
+    this._logger.logDebug('* CodeMetricsCalculator.updateNoReviewRequiredComment()')
 
     const noReviewRequiredComment: string = this._pullRequestComments.noReviewRequiredComment
     await this._azureReposInvoker.createCommentThread(noReviewRequiredComment, CommentThreadStatus.Closed, fileName, isFileDeleted)

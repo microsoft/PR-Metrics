@@ -10,7 +10,7 @@
   "loc.helpMarkDown": "[More information](https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/blob/main/PipelinesTasks/PRMetrics/README.md)",
   "loc.helpMarkDown.comment": "The Markdown-formatted help text of the task.",
 
-  "loc.input.helpMarkDown.baseSize": "The maximum number of new lines in a small PR. If left blank, a default of '250' will be used.",
+  "loc.input.helpMarkDown.baseSize": "The maximum number of new lines in a small PR. If left blank, a default of '200' will be used.",
   "loc.input.helpMarkDown.baseSize.comment": "The Markdown-formatted help text for the 'base size' setting on the Azure Pipelines task properties page.",
 
   "loc.input.helpMarkDown.codeFileExtensions": "Extensions for files containing code so that non-code files can be excluded. If left blank, a default set of file extensions will be used.",
@@ -22,7 +22,7 @@
   "loc.input.helpMarkDown.growthRate": "The growth rate applied to the base size for calculating the size of larger PRs. If left blank, a default of '2.0' will be used.",
   "loc.input.helpMarkDown.growthRate.comment": "The Markdown-formatted help text for the 'growth rate' setting on the Azure Pipelines task properties page.",
 
-  "loc.input.helpMarkDown.testFactor": "The lines of test code expected for each line of product code. This check can be disabled by setting the value to '0'. If left blank, a default of '1.5' will be used.",
+  "loc.input.helpMarkDown.testFactor": "The lines of test code expected for each line of product code. This check can be disabled by setting the value to '0'. If left blank, a default of '1.0' will be used.",
   "loc.input.helpMarkDown.testFactor.comment": "The Markdown-formatted help text for the 'test ratio' setting on the Azure Pipelines task properties page.",
 
   "loc.input.label.baseSize": "Base size",
@@ -76,7 +76,7 @@
   "loc.messages.metrics.codeMetricsCalculator.noGitEnlistment": "No Git enlistment present. Disable 'Don't sync sources' under the build process phase settings.",
   "loc.messages.metrics.codeMetricsCalculator.noGitEnlistment.comment": "The message to display when terminating as no Git enlistment is present.",
 
-  "loc.messages.metrics.codeMetricsCalculator.noGitHistory": "Could not access sufficient Git history. Disable 'Shallow fetch' under the build process phase settings.",
+  "loc.messages.metrics.codeMetricsCalculator.noGitHistory": "Could not access sufficient Git history. Disable 'Shallow fetch' (or set the threshold sufficiently high) under the build process phase settings.",
   "loc.messages.metrics.codeMetricsCalculator.noGitHistory.comment": "The message to display when terminating as the system could not access sufficient Git history.",
 
   "loc.messages.metrics.codeMetricsCalculator.noPullRequest": "The build is not running against a pull request.",

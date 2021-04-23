@@ -8,15 +8,18 @@ import * as taskLib from 'azure-pipelines-task-lib/task'
 import CodeMetricsData from './codeMetricsData'
 import GitInvoker from '../git/gitInvoker'
 import Inputs from './inputs'
+import Logger from '../utilities/logger'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
 
 /**
  * A class for computing metrics for software code in pull requests.
+ * @remarks This class should not be used in a multithreaded context as it could lead to the initialization logic being invoked repeatedly.
  */
 @singleton()
 export default class CodeMetrics {
   private _gitInvoker: GitInvoker
   private _inputs: Inputs
+  private _logger: Logger
   private _taskLibWrapper: TaskLibWrapper
 
   private _isInitialized: boolean = false
@@ -31,11 +34,13 @@ export default class CodeMetrics {
    * Initializes a new instance of the `CodeMetrics` class.
    * @param gitInvoker The Git invoker.
    * @param inputs The inputs passed to the task.
+   * @param logger The logger.
    * @param taskLibWrapper The wrapper around the Azure Pipelines Task Lib.
    */
-  constructor (gitInvoker: GitInvoker, inputs: Inputs, taskLibWrapper: TaskLibWrapper) {
+  constructor (gitInvoker: GitInvoker, inputs: Inputs, logger: Logger, taskLibWrapper: TaskLibWrapper) {
     this._gitInvoker = gitInvoker
     this._inputs = inputs
+    this._logger = logger
     this._taskLibWrapper = taskLibWrapper
   }
 
@@ -44,7 +49,7 @@ export default class CodeMetrics {
    * @returns A promise containing the collection of files not requiring review.
    */
   public async getFilesNotRequiringReview (): Promise<string[]> {
-    this._taskLibWrapper.debug('* CodeMetrics.getFilesNotRequiringReview()')
+    this._logger.logDebug('* CodeMetrics.getFilesNotRequiringReview()')
 
     await this.initialize()
     return this._filesNotRequiringReview
@@ -55,7 +60,7 @@ export default class CodeMetrics {
    * @returns A promise containing the collection of deleted files not requiring review.
    */
   public async getDeletedFilesNotRequiringReview (): Promise<string[]> {
-    this._taskLibWrapper.debug('* CodeMetrics.getDeletedFilesNotRequiringReview()')
+    this._logger.logDebug('* CodeMetrics.getDeletedFilesNotRequiringReview()')
 
     await this.initialize()
     return this._deletedFilesNotRequiringReview
@@ -66,7 +71,7 @@ export default class CodeMetrics {
    * @returns A promise containing the size of the pull request.
    */
   public async getSize (): Promise<string> {
-    this._taskLibWrapper.debug('* CodeMetrics.getSize()')
+    this._logger.logDebug('* CodeMetrics.getSize()')
 
     await this.initialize()
     return this._size
@@ -77,7 +82,7 @@ export default class CodeMetrics {
    * @returns A promise containing the size indicator.
    */
   public async getSizeIndicator (): Promise<string> {
-    this._taskLibWrapper.debug('* CodeMetrics.getSizeIndicator()')
+    this._logger.logDebug('* CodeMetrics.getSizeIndicator()')
 
     await this.initialize()
     return this._sizeIndicator
@@ -88,7 +93,7 @@ export default class CodeMetrics {
    * @returns A promise containing the collection of pull request code metrics.
    */
   public async getMetrics (): Promise<CodeMetricsData> {
-    this._taskLibWrapper.debug('* CodeMetrics.getMetrics()')
+    this._logger.logDebug('* CodeMetrics.getMetrics()')
 
     await this.initialize()
     return this._metrics
@@ -99,7 +104,7 @@ export default class CodeMetrics {
    * @returns A promise indicating whether the pull request is small or extra small.
    */
   public async isSmall (): Promise<boolean> {
-    this._taskLibWrapper.debug('* CodeMetrics.isSmall()')
+    this._logger.logDebug('* CodeMetrics.isSmall()')
 
     await this.initialize()
     return this._metrics.productCode < (this._inputs.baseSize * this._inputs.growthRate)
@@ -110,14 +115,14 @@ export default class CodeMetrics {
    * @returns A promise indicating whether the pull request has sufficient test coverage. If the test coverage is not being checked, the value will be `null`.
    */
   public async isSufficientlyTested (): Promise<boolean | null> {
-    this._taskLibWrapper.debug('* CodeMetrics.isSufficientlyTested()')
+    this._logger.logDebug('* CodeMetrics.isSufficientlyTested()')
 
     await this.initialize()
     return this._isSufficientlyTested
   }
 
   private async initialize (): Promise<void> {
-    this._taskLibWrapper.debug('* CodeMetrics.initialize()')
+    this._logger.logDebug('* CodeMetrics.initialize()')
 
     if (this._isInitialized) {
       return
@@ -135,7 +140,7 @@ export default class CodeMetrics {
   }
 
   private initializeMetrics (gitDiffSummary: string) {
-    this._taskLibWrapper.debug('* CodeMetrics.initializeMetrics()')
+    this._logger.logDebug('* CodeMetrics.initializeMetrics()')
 
     const codeFileMetrics: ICodeFileMetric[] = this.createFileMetricsMap(gitDiffSummary)
 
@@ -161,7 +166,7 @@ export default class CodeMetrics {
   }
 
   private matchFileExtension (fileName: string): boolean {
-    this._taskLibWrapper.debug('* CodeMetrics.matchFileExtension()')
+    this._logger.logDebug('* CodeMetrics.matchFileExtension()')
 
     const fileExtensionIndex: number = fileName.lastIndexOf('.')
     const fileExtension: string = fileName.substring(fileExtensionIndex + 1).toLowerCase()
@@ -169,7 +174,7 @@ export default class CodeMetrics {
   }
 
   private constructMetrics (matches: ICodeFileMetric[], nonMatches: ICodeFileMetric[], nonMatchesToComment: ICodeFileMetric[]): void {
-    this._taskLibWrapper.debug('* CodeMetrics.constructMetrics()')
+    this._logger.logDebug('* CodeMetrics.constructMetrics()')
 
     let productCode: number = 0
     let testCode: number = 0
@@ -200,7 +205,7 @@ export default class CodeMetrics {
   }
 
   private createFileMetricsMap (input: string): ICodeFileMetric[] {
-    this._taskLibWrapper.debug('* CodeMetrics.createFileMetricsMap()')
+    this._logger.logDebug('* CodeMetrics.createFileMetricsMap()')
 
     // Condense file and folder names that were renamed e.g. F{a => i}leT{b => e}st.d{c => l}l".
     const lines: string[] = input.split('\n')
@@ -239,7 +244,7 @@ export default class CodeMetrics {
   }
 
   private initializeIsSufficientlyTested (): void {
-    this._taskLibWrapper.debug('* CodeMetrics.initializeIsSufficientlyTested()')
+    this._logger.logDebug('* CodeMetrics.initializeIsSufficientlyTested()')
 
     if (this._inputs.testFactor === null) {
       this._isSufficientlyTested = null
@@ -249,7 +254,7 @@ export default class CodeMetrics {
   }
 
   private initializeSizeIndicator (): void {
-    this._taskLibWrapper.debug('* CodeMetrics.initializeSizeIndicator()')
+    this._logger.logDebug('* CodeMetrics.initializeSizeIndicator()')
 
     this._size = this.calculateSize()
     let testIndicator: string = ''
@@ -265,7 +270,7 @@ export default class CodeMetrics {
   }
 
   private calculateSize (): string {
-    this._taskLibWrapper.debug('* CodeMetrics.calculateSize()')
+    this._logger.logDebug('* CodeMetrics.calculateSize()')
 
     const indicators: FixedLengthArray<((prefix: string) => string), 5> = [
       (_: string): string => this._taskLibWrapper.loc('metrics.codeMetrics.titleSizeXS'),

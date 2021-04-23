@@ -6,6 +6,7 @@ import { container } from 'tsyringe'
 import * as path from 'path'
 import * as taskLib from 'azure-pipelines-task-lib/task'
 import CodeMetricsCalculator from './src/metrics/codeMetricsCalculator'
+import Logger from './src/utilities/logger'
 
 async function run (): Promise<void> {
   try {
@@ -34,6 +35,9 @@ async function run (): Promise<void> {
 
     taskLib.setResult(taskLib.TaskResult.Succeeded, taskLib.loc('index.succeeded'))
   } catch (error) {
+    const logger: Logger = container.resolve(Logger)
+    logger.replay()
+
     taskLib.setResult(taskLib.TaskResult.Failed, error.message)
   }
 }

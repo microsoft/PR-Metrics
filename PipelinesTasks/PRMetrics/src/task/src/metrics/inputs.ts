@@ -3,15 +3,16 @@
 
 import { InputsDefault } from './inputsDefault'
 import { singleton } from 'tsyringe'
-import ConsoleWrapper from '../wrappers/consoleWrapper'
+import Logger from '../utilities/logger'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
 
 /**
  * A class representing inputs passed to the task.
+ * @remarks This class should not be used in a multithreaded context as it could lead to the initialization logic being invoked repeatedly.
  */
 @singleton()
 export default class Inputs {
-  private _consoleWrapper: ConsoleWrapper
+  private _logger: Logger
   private _taskLibWrapper: TaskLibWrapper
 
   private _isInitialized: boolean = false
@@ -23,11 +24,11 @@ export default class Inputs {
 
   /**
    * Initializes a new instance of the `Inputs` class.
-   * @param consoleWrapper The wrapper around the console.
+   * @param logger The logger.
    * @param taskLibWrapper The wrapper around the Azure Pipelines Task Lib.
    */
-  constructor (consoleWrapper: ConsoleWrapper, taskLibWrapper: TaskLibWrapper) {
-    this._consoleWrapper = consoleWrapper
+  constructor (logger: Logger, taskLibWrapper: TaskLibWrapper) {
+    this._logger = logger
     this._taskLibWrapper = taskLibWrapper
   }
 
@@ -36,7 +37,7 @@ export default class Inputs {
    * @returns The base size input.
    */
   public get baseSize (): number {
-    this._taskLibWrapper.debug('* Inputs.baseSize')
+    this._logger.logDebug('* Inputs.baseSize')
 
     this.initialize()
     return this._baseSize
@@ -47,7 +48,7 @@ export default class Inputs {
    * @returns The growth rate input.
    */
   public get growthRate (): number {
-    this._taskLibWrapper.debug('* Inputs.growthRate')
+    this._logger.logDebug('* Inputs.growthRate')
 
     this.initialize()
     return this._growthRate
@@ -58,7 +59,7 @@ export default class Inputs {
    * @returns The test factor input. If the test coverage is not to be checked, this will be `null`.
    */
   public get testFactor (): number | null {
-    this._taskLibWrapper.debug('* Inputs.testFactor')
+    this._logger.logDebug('* Inputs.testFactor')
 
     this.initialize()
     return this._testFactor
@@ -69,7 +70,7 @@ export default class Inputs {
    * @returns The file matching patterns input.
    */
   public get fileMatchingPatterns (): string[] {
-    this._taskLibWrapper.debug('* Inputs.fileMatchingPatterns')
+    this._logger.logDebug('* Inputs.fileMatchingPatterns')
 
     this.initialize()
     return this._fileMatchingPatterns
@@ -80,14 +81,14 @@ export default class Inputs {
    * @returns The code file extensions input.
    */
   public get codeFileExtensions (): Set<string> {
-    this._taskLibWrapper.debug('* Inputs.codeFileExtensions')
+    this._logger.logDebug('* Inputs.codeFileExtensions')
 
     this.initialize()
     return this._codeFileExtensions
   }
 
   private initialize (): void {
-    this._taskLibWrapper.debug('* Inputs.initialize()')
+    this._logger.logDebug('* Inputs.initialize()')
 
     if (this._isInitialized) {
       return
@@ -112,68 +113,68 @@ export default class Inputs {
   }
 
   private initializeBaseSize (baseSize: string | undefined): void {
-    this._taskLibWrapper.debug('* Inputs.initializeBaseSize()')
+    this._logger.logDebug('* Inputs.initializeBaseSize()')
 
     const convertedValue: number = parseInt(baseSize!)
     if (!isNaN(convertedValue) && convertedValue > 0) {
       this._baseSize = convertedValue
-      this._consoleWrapper.log(this._taskLibWrapper.loc('metrics.inputs.settingBaseSize', this._baseSize.toLocaleString()))
+      this._logger.logInfo(this._taskLibWrapper.loc('metrics.inputs.settingBaseSize', this._baseSize.toLocaleString()))
       return
     }
 
-    this._consoleWrapper.log(this._taskLibWrapper.loc('metrics.inputs.adjustingBaseSize', InputsDefault.baseSize.toLocaleString()))
+    this._logger.logInfo(this._taskLibWrapper.loc('metrics.inputs.adjustingBaseSize', InputsDefault.baseSize.toLocaleString()))
     this._baseSize = InputsDefault.baseSize
   }
 
   private initializeGrowthRate (growthRate: string | undefined): void {
-    this._taskLibWrapper.debug('* Inputs.initializeGrowthRate()')
+    this._logger.logDebug('* Inputs.initializeGrowthRate()')
 
     const convertedValue: number = parseFloat(growthRate!)
     if (!isNaN(convertedValue) && convertedValue > 1.0) {
       this._growthRate = convertedValue
-      this._consoleWrapper.log(this._taskLibWrapper.loc('metrics.inputs.settingGrowthRate', this._growthRate.toLocaleString()))
+      this._logger.logInfo(this._taskLibWrapper.loc('metrics.inputs.settingGrowthRate', this._growthRate.toLocaleString()))
       return
     }
 
-    this._consoleWrapper.log(this._taskLibWrapper.loc('metrics.inputs.adjustingGrowthRate', InputsDefault.growthRate.toLocaleString()))
+    this._logger.logInfo(this._taskLibWrapper.loc('metrics.inputs.adjustingGrowthRate', InputsDefault.growthRate.toLocaleString()))
     this._growthRate = InputsDefault.growthRate
   }
 
   private initializeTestFactor (testFactor: string | undefined): void {
-    this._taskLibWrapper.debug('* Inputs.initializeTestFactor()')
+    this._logger.logDebug('* Inputs.initializeTestFactor()')
 
     const convertedValue: number = parseFloat(testFactor!)
     if (!isNaN(convertedValue) && convertedValue >= 0.0) {
       if (convertedValue === 0.0) {
         this._testFactor = null
-        this._consoleWrapper.log(this._taskLibWrapper.loc('metrics.inputs.disablingTestFactor'))
+        this._logger.logInfo(this._taskLibWrapper.loc('metrics.inputs.disablingTestFactor'))
       } else {
         this._testFactor = convertedValue
-        this._consoleWrapper.log(this._taskLibWrapper.loc('metrics.inputs.settingTestFactor', this._testFactor.toLocaleString()))
+        this._logger.logInfo(this._taskLibWrapper.loc('metrics.inputs.settingTestFactor', this._testFactor.toLocaleString()))
       }
 
       return
     }
 
-    this._consoleWrapper.log(this._taskLibWrapper.loc('metrics.inputs.adjustingTestFactor', InputsDefault.testFactor.toLocaleString()))
+    this._logger.logInfo(this._taskLibWrapper.loc('metrics.inputs.adjustingTestFactor', InputsDefault.testFactor.toLocaleString()))
     this._testFactor = InputsDefault.testFactor
   }
 
   private initializeFileMatchingPatterns (fileMatchingPatterns: string | undefined): void {
-    this._taskLibWrapper.debug('* Inputs.initializeFileMatchingPatterns()')
+    this._logger.logDebug('* Inputs.initializeFileMatchingPatterns()')
 
     if (fileMatchingPatterns?.trim()) {
       this._fileMatchingPatterns = fileMatchingPatterns.split('\n')
-      this._consoleWrapper.log(this._taskLibWrapper.loc('metrics.inputs.settingFileMatchingPatterns', JSON.stringify(this._fileMatchingPatterns)))
+      this._logger.logInfo(this._taskLibWrapper.loc('metrics.inputs.settingFileMatchingPatterns', JSON.stringify(this._fileMatchingPatterns)))
       return
     }
 
-    this._consoleWrapper.log(this._taskLibWrapper.loc('metrics.inputs.adjustingFileMatchingPatterns', JSON.stringify(InputsDefault.fileMatchingPatterns)))
+    this._logger.logInfo(this._taskLibWrapper.loc('metrics.inputs.adjustingFileMatchingPatterns', JSON.stringify(InputsDefault.fileMatchingPatterns)))
     this._fileMatchingPatterns = InputsDefault.fileMatchingPatterns
   }
 
   private initializeCodeFileExtensions (codeFileExtensions: string | undefined): void {
-    this._taskLibWrapper.debug('* Inputs.initializeCodeFileExtensions()')
+    this._logger.logDebug('* Inputs.initializeCodeFileExtensions()')
 
     if (codeFileExtensions?.trim()) {
       const codeFileExtensionsArray: string[] = codeFileExtensions.split('\n')
@@ -186,11 +187,11 @@ export default class Inputs {
 
         this._codeFileExtensions.add(value.toLowerCase())
       })
-      this._consoleWrapper.log(this._taskLibWrapper.loc('metrics.inputs.settingCodeFileExtensions', JSON.stringify(Array.from(this._codeFileExtensions))))
+      this._logger.logInfo(this._taskLibWrapper.loc('metrics.inputs.settingCodeFileExtensions', JSON.stringify(Array.from(this._codeFileExtensions))))
       return
     }
 
-    this._consoleWrapper.log(this._taskLibWrapper.loc('metrics.inputs.adjustingCodeFileExtensions', JSON.stringify(InputsDefault.codeFileExtensions)))
+    this._logger.logInfo(this._taskLibWrapper.loc('metrics.inputs.adjustingCodeFileExtensions', JSON.stringify(InputsDefault.codeFileExtensions)))
     this._codeFileExtensions = new Set<string>(InputsDefault.codeFileExtensions)
   }
 }
