@@ -5,10 +5,11 @@
   "description": "Augments pull request titles to let reviewers quickly determine PR size and test coverage.",
   "main": "index.js",
   "scripts": {
-    "build:debug": "npm run build:prepare --dir=debug && cd ../../build/debug/task && tsc --sourceMap && typedoc",
+    "build:debug": "npm run build:prepare --dir=debug && cd ../../build/debug/task && tsc --sourceMap",
+    "build:docs": "typedoc",
     "build:prepare": "cross-env-shell \"cd .. && mkdirp ../build/$npm_config_dir && ncp . ../build/$npm_config_dir && cd ../build/$npm_config_dir/task && npm install\"",
     "build:release": "npm run build:prepare --dir=release && cd ../../build/release/task && tsc && rimraf node_modules tests **/*.ts .mocharc.json .nycrc.json tsconfig.json typedoc.json && npm install --only=production",
-    "build": "npm run build:debug && npm run build:release",
+    "build": "npm run build:debug && npm run build:release && npm run build:docs",
     "clean": "rimraf ../../build",
     "deploy": "exitzero tfx build tasks delete --task-id 907d3b28-6b37-4ac7-ac75-9631ee53e512 --no-prompt && tfx build tasks upload --task-path ../../build/release/task --no-prompt",
     "lint": "eslint --fix **/*.ts",
@@ -44,13 +45,12 @@
   "dependencies": {
     "azure-devops-node-api": "^8.1.1",
     "azure-pipelines-task-lib": "^3.1.0",
-    "os": "^0.1.1",
-    "path": "^0.12.7",
     "reflect-metadata": "^0.1.13",
     "tsyringe": "^4.5.0"
   },
   "devDependencies": {
     "@istanbuljs/nyc-config-typescript": "^1.0.1",
+    "@tsconfig/node10": "^1.0.7",
     "@types/async": "^3.2.5",
     "@types/chai": "^4.2.15",
     "@types/glob": "^7.1.3",

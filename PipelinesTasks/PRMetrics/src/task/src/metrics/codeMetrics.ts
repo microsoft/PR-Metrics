@@ -1,8 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+import { CodeFileMetric } from './codeFileMetric'
 import { FixedLengthArray } from '../utilities/fixedLengthArray'
-import { ICodeFileMetric } from './iCodeFileMetric'
 import { singleton } from 'tsyringe'
 import * as taskLib from 'azure-pipelines-task-lib/task'
 import CodeMetricsData from './codeMetricsData'
@@ -142,14 +142,14 @@ export default class CodeMetrics {
   private initializeMetrics (gitDiffSummary: string) {
     this._logger.logDebug('* CodeMetrics.initializeMetrics()')
 
-    const codeFileMetrics: ICodeFileMetric[] = this.createFileMetricsMap(gitDiffSummary)
+    const codeFileMetrics: CodeFileMetric[] = this.createFileMetricsMap(gitDiffSummary)
 
-    const matches: ICodeFileMetric[] = []
-    const nonMatches: ICodeFileMetric[] = []
-    const nonMatchesToComment: ICodeFileMetric[] = []
+    const matches: CodeFileMetric[] = []
+    const nonMatches: CodeFileMetric[] = []
+    const nonMatchesToComment: CodeFileMetric[] = []
 
     // Check for glob matches.
-    codeFileMetrics.forEach((codeFileMetric: ICodeFileMetric): void => {
+    codeFileMetrics.forEach((codeFileMetric: CodeFileMetric): void => {
       const isValidFilePattern: boolean = taskLib.match([codeFileMetric.fileName], this._inputs.fileMatchingPatterns).length > 0
       const isValidFileExtension: boolean = this.matchFileExtension(codeFileMetric.fileName)
 
@@ -173,14 +173,14 @@ export default class CodeMetrics {
     return this._inputs.codeFileExtensions.has(fileExtension)
   }
 
-  private constructMetrics (matches: ICodeFileMetric[], nonMatches: ICodeFileMetric[], nonMatchesToComment: ICodeFileMetric[]): void {
+  private constructMetrics (matches: CodeFileMetric[], nonMatches: CodeFileMetric[], nonMatchesToComment: CodeFileMetric[]): void {
     this._logger.logDebug('* CodeMetrics.constructMetrics()')
 
     let productCode: number = 0
     let testCode: number = 0
     let ignoredCode: number = 0
 
-    matches.forEach((entry: ICodeFileMetric): void => {
+    matches.forEach((entry: CodeFileMetric): void => {
       if (/.*test.*/i.test(entry.fileName)) {
         testCode += entry.linesAdded
       } else {
@@ -188,11 +188,11 @@ export default class CodeMetrics {
       }
     })
 
-    nonMatches.forEach((entry: ICodeFileMetric): void => {
+    nonMatches.forEach((entry: CodeFileMetric): void => {
       ignoredCode += entry.linesAdded
     })
 
-    nonMatchesToComment.forEach((entry: ICodeFileMetric): void => {
+    nonMatchesToComment.forEach((entry: CodeFileMetric): void => {
       if (entry.linesAdded > 0) {
         ignoredCode += entry.linesAdded
         this._filesNotRequiringReview.push(entry.fileName)
@@ -204,13 +204,13 @@ export default class CodeMetrics {
     this._metrics = new CodeMetricsData(productCode, testCode, ignoredCode)
   }
 
-  private createFileMetricsMap (input: string): ICodeFileMetric[] {
+  private createFileMetricsMap (input: string): CodeFileMetric[] {
     this._logger.logDebug('* CodeMetrics.createFileMetricsMap()')
 
     // Condense file and folder names that were renamed e.g. F{a => i}leT{b => e}st.d{c => l}l".
     const lines: string[] = input.split('\n')
 
-    const result: ICodeFileMetric[] = []
+    const result: CodeFileMetric[] = []
     lines.forEach((line: string): void => {
       const elements: string[] = line.split('\t')
       if (elements.length !== 3) {

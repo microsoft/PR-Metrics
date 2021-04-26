@@ -4,7 +4,7 @@
 /**
  * An interface representing pull request metadata.
  */
-export default interface IPullRequestMetadata {
+export default interface PullRequestMetadata {
   /**
    * The metadata key.
    */

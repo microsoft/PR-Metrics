@@ -11,11 +11,11 @@ import CodeMetrics from '../../src/metrics/codeMetrics'
 import CodeMetricsCalculator from '../../src/metrics/codeMetricsCalculator'
 import CodeMetricsData from '../../src/metrics/codeMetricsData'
 import GitInvoker from '../../src/git/gitInvoker'
-import IPullRequestMetadata from '../../src/azureRepos/iPullRequestMetadata'
 import Logger from '../../src/utilities/logger'
 import PullRequest from '../../src/pullRequests/pullRequest'
 import PullRequestComments from '../../src/pullRequests/pullRequestComments'
 import PullRequestCommentsData from '../../src/pullRequests/pullRequestCommentsData'
+import PullRequestMetadata from '../../src/azureRepos/pullRequestMetadata'
 import TaskLibWrapper from '../../src/wrappers/taskLibWrapper'
 
 describe('codeMetricsCalculator.ts', (): void => {
@@ -210,7 +210,7 @@ describe('codeMetricsCalculator.ts', (): void => {
       when(codeMetrics.getMetrics()).thenResolve(new CodeMetricsData(1, 2, 4))
       when(codeMetrics.getSize()).thenResolve('S')
       when(codeMetrics.isSufficientlyTested()).thenResolve(true)
-      const expectedMetadata: IPullRequestMetadata[] = [
+      const expectedMetadata: PullRequestMetadata[] = [
         {
           key: 'Size',
           value: 'S'
@@ -266,7 +266,7 @@ describe('codeMetricsCalculator.ts', (): void => {
       when(codeMetrics.getMetrics()).thenResolve(new CodeMetricsData(1, 2, 4))
       when(codeMetrics.getSize()).thenResolve('S')
       when(codeMetrics.isSufficientlyTested()).thenResolve(null)
-      const expectedMetadata: IPullRequestMetadata[] = [
+      const expectedMetadata: PullRequestMetadata[] = [
         {
           key: 'Size',
           value: 'S'
@@ -316,7 +316,7 @@ describe('codeMetricsCalculator.ts', (): void => {
       when(codeMetrics.getMetrics()).thenResolve(new CodeMetricsData(1, 2, 4))
       when(codeMetrics.getSize()).thenResolve('S')
       when(codeMetrics.isSufficientlyTested()).thenResolve(true)
-      const expectedMetadata: IPullRequestMetadata[] = [
+      const expectedMetadata: PullRequestMetadata[] = [
         {
           key: 'Size',
           value: 'S'

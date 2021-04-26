@@ -12,7 +12,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "skipLibCheck": true,
-    "strict": true,
-    "target": "ES6"
-  }
+    "strict": true
+  },
+  "extends": "@tsconfig/node10/tsconfig.json"
 }

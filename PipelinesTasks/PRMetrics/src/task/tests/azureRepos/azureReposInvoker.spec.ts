@@ -13,9 +13,9 @@ import { WebApi } from 'azure-devops-node-api'
 import async from 'async'
 import AzureDevOpsApiWrapper from '../../src/wrappers/azureDevOpsApiWrapper'
 import AzureReposInvoker from '../../src/azureRepos/azureReposInvoker'
-import IPullRequestDetails from '../../src/azureRepos/iPullRequestDetails'
-import IPullRequestMetadata from '../../src/azureRepos/iPullRequestMetadata'
 import Logger from '../../src/utilities/logger'
+import PullRequestDetails from '../../src/azureRepos/pullRequestDetails'
+import PullRequestMetadata from '../../src/azureRepos/pullRequestMetadata'
 
 describe('azureReposInvoker.ts', function (): void {
   let gitApi: IGitApi
@@ -243,7 +243,7 @@ describe('azureReposInvoker.ts', function (): void {
       const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger))
 
       // Act
-      const result: IPullRequestDetails = await azureReposInvoker.getTitleAndDescription()
+      const result: PullRequestDetails = await azureReposInvoker.getTitleAndDescription()
 
       // Assert
       expect(result.title).to.equal('Title')
@@ -266,7 +266,7 @@ describe('azureReposInvoker.ts', function (): void {
 
       // Act
       await azureReposInvoker.getTitleAndDescription()
-      const result: IPullRequestDetails = await azureReposInvoker.getTitleAndDescription()
+      const result: PullRequestDetails = await azureReposInvoker.getTitleAndDescription()
 
       // Assert
       expect(result.title).to.equal('Title')
@@ -287,7 +287,7 @@ describe('azureReposInvoker.ts', function (): void {
       const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger))
 
       // Act
-      const result: IPullRequestDetails = await azureReposInvoker.getTitleAndDescription()
+      const result: PullRequestDetails = await azureReposInvoker.getTitleAndDescription()
 
       // Assert
       expect(result.title).to.equal('Title')
@@ -769,7 +769,7 @@ describe('azureReposInvoker.ts', function (): void {
   describe('addMetadata()', (): void => {
     it('should call the API', async (): Promise<void> => {
       // Arrange
-      const metadata: IPullRequestMetadata[] = [
+      const metadata: PullRequestMetadata[] = [
         {
           key: 'TestString',
           value: 'Test'
@@ -817,7 +817,7 @@ describe('azureReposInvoker.ts', function (): void {
 
     it('should call the API when called multiple times', async (): Promise<void> => {
       // Arrange
-      const metadata: IPullRequestMetadata[] = [
+      const metadata: PullRequestMetadata[] = [
         {
           key: 'TestString',
           value: 'Test'

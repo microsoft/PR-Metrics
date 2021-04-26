@@ -7,12 +7,12 @@ import AzureReposInvoker from '../azureRepos/azureReposInvoker'
 import CodeMetrics from './codeMetrics'
 import CodeMetricsData from './codeMetricsData'
 import GitInvoker from '../git/gitInvoker'
-import IPullRequestDetails from '../azureRepos/iPullRequestDetails'
-import IPullRequestMetadata from '../azureRepos/iPullRequestMetadata'
 import Logger from '../utilities/logger'
 import PullRequest from '../pullRequests/pullRequest'
 import PullRequestComments from '../pullRequests/pullRequestComments'
 import PullRequestCommentsData from '../pullRequests/pullRequestCommentsData'
+import PullRequestDetails from '../azureRepos/pullRequestDetails'
+import PullRequestMetadata from '../azureRepos/pullRequestMetadata'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
 
 /**
@@ -96,7 +96,7 @@ export default class CodeMetricsCalculator {
   public async updateDetails (): Promise<void> {
     this._logger.logDebug('* CodeMetricsCalculator.updateDetails()')
 
-    const details: IPullRequestDetails = await this._azureReposInvoker.getTitleAndDescription()
+    const details: PullRequestDetails = await this._azureReposInvoker.getTitleAndDescription()
     const updatedTitle: string | null = await this._pullRequest.getUpdatedTitle(details.title)
     const updatedDescription: string | null = this._pullRequest.getUpdatedDescription(details.description)
 
@@ -147,7 +147,7 @@ export default class CodeMetricsCalculator {
     this._logger.logDebug('* CodeMetricsCalculator.addMetadata()')
 
     const metrics: CodeMetricsData = await this._codeMetrics.getMetrics()
-    const metadata: IPullRequestMetadata[] = [
+    const metadata: PullRequestMetadata[] = [
       {
         key: 'Size',
         value: await this._codeMetrics.getSize()

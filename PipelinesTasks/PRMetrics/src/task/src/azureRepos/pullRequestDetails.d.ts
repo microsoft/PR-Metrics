@@ -4,7 +4,7 @@
 /**
  * An interface representing pull request details.
  */
-export default interface IPullRequestDetails {
+export default interface PullRequestDetails {
   /**
    * The pull request title.
    */

@@ -9,9 +9,9 @@ import { singleton } from 'tsyringe'
 import { Validator } from '../utilities/validator'
 import { WebApi } from 'azure-devops-node-api'
 import AzureDevOpsApiWrapper from '../wrappers/azureDevOpsApiWrapper'
-import IPullRequestDetails from './iPullRequestDetails'
-import IPullRequestMetadata from './iPullRequestMetadata'
 import Logger from '../utilities/logger'
+import PullRequestDetails from './pullRequestDetails'
+import PullRequestMetadata from './pullRequestMetadata'
 
 /**
  * A class for invoking Azure Repos functionality.
@@ -51,7 +51,7 @@ export default class AzureReposInvoker {
    * Gets the title and description for the current pull request.
    * @returns A promise containing the title and description.
    */
-  public async getTitleAndDescription (): Promise<IPullRequestDetails> {
+  public async getTitleAndDescription (): Promise<PullRequestDetails> {
     this._logger.logDebug('* AzureReposInvoker.getTitleAndDescription()')
 
     const gitApi: IGitApi = await this.getGitApi()
@@ -209,7 +209,7 @@ export default class AzureReposInvoker {
    * @param metadata The metadata to be added.
    * @returns A promise for awaiting the completion of the method call.
    */
-  public async addMetadata (metadata: IPullRequestMetadata[]): Promise<void> {
+  public async addMetadata (metadata: PullRequestMetadata[]): Promise<void> {
     this._logger.logDebug('* AzureReposInvoker.addMetadata()')
 
     if (metadata.length === 0) {
@@ -218,7 +218,7 @@ export default class AzureReposInvoker {
 
     const gitApiPromise: Promise<IGitApi> = this.getGitApi()
     const jsonPatchDocumentValues: JsonPatchOperation[] = []
-    metadata.forEach((datum: IPullRequestMetadata): void => {
+    metadata.forEach((datum: PullRequestMetadata): void => {
       const operation: JsonPatchOperation = {
         op: Operation.Replace,
         path: `/PRMetrics.${datum.key}`,

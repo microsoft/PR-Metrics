@@ -4,7 +4,7 @@
 /**
  * An interface representing a metric related to a code file.
  */
-export interface ICodeFileMetric {
+export interface CodeFileMetric {
   /**
    * The name of the file.
    */
