@@ -5,8 +5,8 @@ import { expect } from 'chai'
 import * as fs from 'fs'
 import * as path from 'path'
 import glob from 'glob-promise'
-import ResourcesJson from './resourcesJson'
-import TaskJson from './taskJson'
+import ResourcesJson from '../jsonTypes/resourcesJson'
+import TaskJson from '../jsonTypes/taskJson'
 
 describe('resources.resjson', (): void => {
   const basePath: string = path.join(__dirname, '..', '..')
