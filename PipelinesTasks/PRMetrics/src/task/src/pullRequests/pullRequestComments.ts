@@ -168,8 +168,7 @@ export default class PullRequestComments {
     const comments: Comment[] = Validator.validate(commentThread.comments, `commentThread[${commentThreadIndex}].comments`, 'PullRequestComments.getNoReviewRequiredCommentData()')
     const comment: Comment = Validator.validate(comments[0], `commentThread[${commentThreadIndex}].comments[0]`, 'PullRequestComments.getNoReviewRequiredCommentData()')
 
-    const content: string = Validator.validate(comment.content, `commentThread[${commentThreadIndex}].comments[0].content`, 'PullRequestComments.getNoReviewRequiredCommentData()')
-    if (content !== this.noReviewRequiredComment) {
+    if (comment.content !== this.noReviewRequiredComment) {
       return filesNotRequiringReview
     }
 
