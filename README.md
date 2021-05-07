@@ -30,7 +30,7 @@ The current set of projects is:
 For instructions on building and testing each project, navigate to the project
 in question and follow the README.md provided.
 
-Test validation and code scanning of all projects will be automatically
+Test validation and static analysis of all projects will be automatically
 performed whenever a PR is opened against the `main` branch. These validations
 must succeed for the PR to be merged.
 

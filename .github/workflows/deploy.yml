@@ -25,67 +25,16 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: 15.x
+          node-version: 16.x
 
-      - name: Install Root NPM Dependencies
+      - name: NPM – Install Dependencies
         run: npm install
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/src/task
 
-      - name: Install NPM Dependencies
-        run: npm install
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask
+      - name: Login
+        run: npx tfx login --service-url https://${{ secrets.AZURE_DEVOPS_INSTANCE }}.visualstudio.com/DefaultCollection --token ${{ secrets.AZURE_DEVOPS_ACCESS_TOKEN }} --no-prompt
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/src/task
 
-      - name: Build
-        run: npm run build
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask
-
-      - name: Remove 'node_modules'
-        run: Remove-Item -Path 'node_modules' -Recurse -Force
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask
-
-      - name: Install Production NPM Dependencies
-        run: npm install --only=production
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask
-
-      - name: Remove 'tests'
-        run: Remove-Item -Path 'tests' -Recurse
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask
-
-      - name: Remove 'tsdocs'
-        run: Remove-Item -Path 'tsdocs' -Recurse -Force
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask
-
-      - name: Remove '*.js.map'
-        run: Get-ChildItem -Path '*' -Include '*.js.map' -Recurse | Remove-Item -Force
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask
-
-      - name: Remove '*.json'
-        run: Remove-Item -Path '*.json' -Exclude 'task*.json' -Force
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask
-
-      - name: Remove '*.ts'
-        run: Get-ChildItem -Path '*' -Include '*.ts' -Recurse | Remove-Item -Force
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask
-
-      - name: Copy to Destination
-        run: Copy-Item -Path '${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}' -Destination '${{ github.workspace }}/build/Release/PipelinesTasks/${{ matrix.task }}' -Recurse
-
-      - name: Copy 'LICENSE.txt'
-        run: Copy-Item -Path '${{ github.workspace }}/LICENSE.txt' -Destination '${{ github.workspace }}/build/Release/PipelinesTasks/${{ matrix.task }}'
-
-      - name: Install TFX CLI
-        run: npm install -g tfx-cli
-
-      - name: TFX - Login
-        run: tfx login --service-url https://${{ secrets.AZURE_DEVOPS_INSTANCE }}.visualstudio.com/DefaultCollection --token ${{ secrets.AZURE_DEVOPS_ACCESS_TOKEN }} --no-prompt
-
-      - name: TFX - Delete Old Task
-        env:
-          taskId: >-
-            {
-              "PRMetrics": "907d3b28-6b37-4ac7-ac75-9631ee53e512"
-            }
-        run: tfx build tasks delete --task-id ${{ fromJson(env.taskId)[matrix.task] }} --no-prompt
-        continue-on-error: true
-
-      - name: TFX - Upload New Task
-        run: tfx build tasks upload --task-path ${{ github.workspace }}/build/Release/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask --no-prompt
+      - name: NPM – Deploy
+        run: npm run deploy
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/src/task

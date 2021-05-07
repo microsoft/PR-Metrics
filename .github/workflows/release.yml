@@ -28,63 +28,26 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: 15.x
+          node-version: 16.x
 
-      - name: Install Root NPM Dependencies
+      - name: NPM – Install Dependencies
         run: npm install
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/src/task
 
-      - name: Install NPM Dependencies
-        run: npm install
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask
-
-      - name: Build
-        run: npm run build
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask
-
-      - name: Remove 'node_modules'
-        run: Remove-Item -Path 'node_modules' -Recurse -Force
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask
-
-      - name: Install Production NPM Dependencies
-        run: npm install --only=production
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask
-
-      - name: Remove 'tests'
-        run: Remove-Item -Path 'tests' -Recurse
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask
-
-      - name: Remove 'tsdocs'
-        run: Remove-Item -Path 'tsdocs' -Recurse -Force
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask
-
-      - name: Remove '*.js.map'
-        run: Get-ChildItem -Path '*' -Include '*.js.map' -Recurse | Remove-Item -Force
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask
-
-      - name: Remove '*.json'
-        run: Remove-Item -Path '*.json' -Exclude 'task*.json' -Force
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask
-
-      - name: Remove '*.ts'
-        run: Get-ChildItem -Path '*' -Include '*.ts' -Recurse | Remove-Item -Force
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask
-
-      - name: Copy to Destination
-        run: Copy-Item -Path '${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}' -Destination '${{ github.workspace }}/build/Release/PipelinesTasks/${{ matrix.task }}' -Recurse
-
-      - name: Copy 'LICENSE.txt'
-        run: Copy-Item -Path '${{ github.workspace }}/LICENSE.txt' -Destination '${{ github.workspace }}/build/Release/PipelinesTasks/${{ matrix.task }}'
+      - name: NPM - Build
+        run: npm run build:release
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/src/task
 
       - name: Install TFX CLI
         run: npm install -g tfx-cli
 
-      - name: Create Release
-        run: tfx extension create --manifest-globs vss-extension.json --output-path ms-omex.${{ matrix.task }}.vsix
-        working-directory: ${{ github.workspace }}/build/Release/PipelinesTasks/${{ matrix.task }}
+      - name: Release – Create
+        run: tfx extension create --manifest-globs vss-extension.json --output-path ../ms-omex.${{ matrix.task }}.vsix
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/build/release
 
-      - name: Publish
+      - name: Release – Publish
         run: >-
           tfx extension publish
-          --manifest-globs ${{ github.workspace }}/build/Release/PipelinesTasks/${{ matrix.task }}/vss-extension.json
-          --vsix ${{ github.workspace }}/build/Release/PipelinesTasks/${{ matrix.task }}/ms-omex.${{ matrix.task }}.vsix
+          --manifest-globs ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/build/release/vss-extension.json
+          --vsix ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/build/ms-omex.${{ matrix.task }}.vsix
           --token ${{ secrets.VS_PAT }}

@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json.schemastore.org/package.json",
+  "name": "prmetrics",
+  "version": "1.1.6",
+  "description": "Augments pull request titles to let reviewers quickly determine PR size and test coverage.",
+  "main": "index.js",
+  "scripts": {
+    "build:debug": "npm run build:prepare --dir=debug && cd ../../build/debug/task && tsc --sourceMap",
+    "build:docs": "typedoc",
+    "build:prepare": "cross-env-shell \"cd .. && mkdirp ../build/$npm_config_dir && ncp . ../build/$npm_config_dir && cd ../build/$npm_config_dir/task && npm install\"",
+    "build:release": "npm run build:prepare --dir=release && cd ../../build/release/task && tsc && rimraf node_modules tests **/*.ts .mocharc.json .nycrc.json tsconfig.json typedoc.json && npm install --only=production",
+    "build": "npm run build:debug && npm run build:release && npm run build:docs",
+    "clean": "rimraf ../../build",
+    "deploy": "exitzero tfx build tasks delete --task-id 907d3b28-6b37-4ac7-ac75-9631ee53e512 --no-prompt && tfx build tasks upload --task-path ../../build/release/task --no-prompt",
+    "lint": "eslint --fix **/*.ts",
+    "predeploy": "npm run build:release",
+    "preinstall": "cd ../../../.. && npm install",
+    "pretest": "npm run build:debug",
+    "test": "cd ../../build/debug/task && nyc --reporter=text --reporter=text-summary mocha tests/**/*.spec.js --check-leaks --color"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/microsoft/OMEX-Azure-DevOps-Extensions.git"
+  },
+  "keywords": [
+    "Extension",
+    "Marketplace",
+    "Continuous Integration",
+    "Continuous Delivery",
+    "Build",
+    "Release",
+    "Azure Pipelines",
+    "Azure DevOps Extensions",
+    "Visual Studio Extensions"
+  ],
+  "author": "Microsoft Corporation",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/issues"
+  },
+  "homepage": "https://github.com/microsoft/OMEX-Azure-DevOps-Extensions#readme",
+  "engines": {
+    "node": ">=10.23.3"
+  },
+  "dependencies": {
+    "azure-devops-node-api": "^10.2.2",
+    "azure-pipelines-task-lib": "^3.1.0",
+    "reflect-metadata": "^0.1.13",
+    "tsyringe": "^4.5.0"
+  },
+  "devDependencies": {
+    "@istanbuljs/nyc-config-typescript": "^1.0.1",
+    "@tsconfig/node10": "^1.0.7",
+    "@types/async": "^3.2.5",
+    "@types/chai": "^4.2.15",
+    "@types/glob": "^7.1.3",
+    "@types/mocha": "^8.2.1",
+    "@types/node": "^10.17.55",
+    "@types/sinon": "^9.0.11",
+    "async": "^1.5.2",
+    "chai": "^4.3.3",
+    "cross-env": "^7.0.3",
+    "eslint": "^7.21.0",
+    "exitzero": "^1.0.1",
+    "glob": "^7.1.6",
+    "glob-promise": "^4.1.0",
+    "mkdirp": "^0.5.5",
+    "mocha": "^8.3.1",
+    "ncp": "^0.4.2",
+    "nyc": "^15.1.0",
+    "rimraf": "^3.0.2",
+    "sinon": "^10.0.0",
+    "source-map-support": "^0.5.19",
+    "tfx-cli": "^0.6.4",
+    "ts-mockito": "^2.6.1",
+    "typedoc": "^0.20.30",
+    "typescript": "^4.2.3"
+  }
+}

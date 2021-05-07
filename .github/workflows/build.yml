@@ -29,77 +29,40 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: 15.x
+          node-version: 16.x
 
-      - name: Install Root NPM Dependencies
+      - name: NPM – Install Dependencies
         run: npm install
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/src/task
 
-      - name: Install NPM Dependencies
-        run: npm install
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask
+      - name: NPM – Test Lint
+        run: npm run lint
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/src/task
 
-      - name: Build
+      - name: NPM - Test Clean
+        run: npm run clean
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/src/task
+
+      - name: NPM – Build
         run: npm run build
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/src/task
 
-      - name: Test
-        run: npm run test:pipeline
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask
-
-      - name: Remove '.nyc_output'
-        run: Remove-Item -Path '.nyc_output' -Recurse -Force
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask
-
-      - name: Remove '.taskkey'
-        run: Remove-Item -Path '.taskkey' -Recurse -Force
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask
-
-      - name: Remove 'node_modules'
-        run: Remove-Item -Path 'node_modules' -Recurse -Force
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask
-
-      - name: Install Production NPM Dependencies
-        run: npm install --only=production
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask
-
-      - name: Remove 'tests'
-        run: Remove-Item -Path 'tests' -Recurse
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask
-
-      - name: Remove 'tsdocs'
-        run: Remove-Item -Path 'tsdocs' -Recurse -Force
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask
-
-      - name: Remove '*.js.map'
-        run: Get-ChildItem -Path '*' -Include '*.js.map' -Recurse | Remove-Item -Force
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask
-
-      - name: Remove '*.json'
-        run: Remove-Item -Path '*.json' -Exclude 'task*.json' -Force
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask
-
-      - name: Remove '*.ts'
-        run: Get-ChildItem -Path '*' -Include '*.ts' -Recurse | Remove-Item -Force
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask
-
-      - name: Copy to Destination
-        run: Copy-Item -Path '${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}' -Destination '${{ github.workspace }}/build/Release/PipelinesTasks/${{ matrix.task }}' -Recurse
-
-      - name: Copy 'LICENSE.txt'
-        run: Copy-Item -Path '${{ github.workspace }}/LICENSE.txt' -Destination '${{ github.workspace }}/build/Release/PipelinesTasks/${{ matrix.task }}'
+      - name: NPM – Test
+        run: npm run test
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/src/task
 
       - name: Install TFX CLI
         run: npm install -g tfx-cli
 
-      - name: Create Release
-        run: tfx extension create --manifest-globs vss-extension.json --output-path ms-omex.${{ matrix.task }}.vsix
-        working-directory: ${{ github.workspace }}/build/Release/PipelinesTasks/${{ matrix.task }}
+      - name: Release – Create
+        run: tfx extension create --manifest-globs vss-extension.json --output-path ../ms-omex.${{ matrix.task }}.vsix
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/build/release
 
-      - name: Upload VSIX
+      - name: Release – Upload
         uses: actions/upload-artifact@v2
         with:
           name: ${{ matrix.task }}
-          path: '**/*.vsix'
+          path: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/build/ms-omex.${{ matrix.task }}.vsix
 
   validate:
     name: Validate
@@ -155,110 +118,6 @@ jobs:
         with:
           sarif_file: reports
 
-  validate-task:
-    name: Validate – Task
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        task: [PRMetrics]
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Validate vss-extension.json
-        uses: Zingabopp/JsonValidate-Action@v1
-        with:
-          json-file: PipelinesTasks/${{ matrix.task }}/vss-extension.json
-          json-schema: https://json.schemastore.org/vss-extension.json
-
-      - name: Validate .mocharc.json – Download .mocharc.schema.json
-        run: Invoke-WebRequest -Uri 'https://json.schemastore.org/mocharc.json' -OutFile '.mocharc.schema.json'
-
-      - name: Validate .mocharc.json – Update .mocharc.schema.json
-        run: |-
-          $FileContent = Get-Content -Path '.mocharc.schema.json' -Raw
-          $FileContent = $FileContent -replace 'draft/2019-09/schema#', 'draft-07/schema'
-          Set-Content -NoNewline -Path '.mocharc.schema.json' -Value $FileContent
-
-      - name: Validate .mocharc.json
-        uses: Zingabopp/JsonValidate-Action@v1
-        with:
-          json-file: PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask/.mocharc.json
-          json-schema: .mocharc.schema.json
-
-      - name: Validate package.json – Download package.schema.json
-        run: Invoke-WebRequest -Uri 'https://json.schemastore.org/package.json' -OutFile 'package.schema.json'
-
-      - name: Validate package.json – Update package.schema.json
-        run: |-
-          $FileContent = Get-Content -Path 'package.schema.json' -Raw
-          $FileContent = $FileContent -replace 'draft-04/schema#', 'draft-07/schema'
-          Set-Content -NoNewline -Path 'package.schema.json' -Value $FileContent
-
-      - name: Validate package.json
-        uses: Zingabopp/JsonValidate-Action@v1
-        with:
-          json-file: PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask/package.json
-          json-schema: package.schema.json
-
-      - name: Validate task.json – Download task.schema.json
-        run: Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/microsoft/azure-pipelines-task-lib/master/tasks.schema.json' -OutFile 'task.schema.json'
-
-      - name: Validate task.json – Update task.schema.json
-        run: |-
-          $FileContent = Get-Content -Path 'task.schema.json' -Raw
-          $FileContent = $FileContent -replace 'draft-04/schema', 'draft-07/schema'
-          Set-Content -NoNewline -Path 'task.schema.json' -Value $FileContent
-
-      - name: Validate task.json
-        uses: Zingabopp/JsonValidate-Action@v1
-        with:
-          json-file: PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask/task.json
-          json-schema: task.schema.json
-
-      - name: Validate task.loc.json
-        uses: Zingabopp/JsonValidate-Action@v1
-        with:
-          json-file: PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask/task.loc.json
-          json-schema: task.schema.json
-
-      - name: Validate tsconfig.json – Download tsconfig.schema.json
-        run: Invoke-WebRequest -Uri 'https://json.schemastore.org/tsconfig.json' -OutFile 'tsconfig.schema.json'
-
-      - name: Validate tsconfig.json – Update tsconfig.schema.json
-        run: |-
-          $FileContent = Get-Content -Path 'tsconfig.schema.json' -Raw
-          $FileContent = $FileContent -replace 'draft-04/schema#', 'draft-07/schema'
-          Set-Content -NoNewline -Path 'tsconfig.schema.json' -Value $FileContent
-
-      - name: Validate tsconfig.json
-        uses: Zingabopp/JsonValidate-Action@v1
-        with:
-          json-file: PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask/tsconfig.json
-          json-schema: tsconfig.schema.json
-
-      - name: Validate typedoc.json
-        uses: Zingabopp/JsonValidate-Action@v1
-        with:
-          json-file: PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask/typedoc.json
-          json-schema: https://typedoc.org/schema.json
-
-      - name: Validate resources.resjson – Download resources.resjson.schema.json
-        run: Invoke-WebRequest -Uri 'https://json.schemastore.org/resjson.json' -OutFile 'resources.resjson.schema.json'
-
-      - name: Validate resources.resjson – Update resources.resjson.schema.json
-        run: |-
-          $FileContent = Get-Content -Path 'resources.resjson.schema.json' -Raw
-          $FileContent = $FileContent -replace 'draft-04/schema#', 'draft-07/schema'
-          Set-Content -NoNewline -Path 'resources.resjson.schema.json' -Value $FileContent
-
-      - name: Validate resources.resjson (en-US)
-        uses: Zingabopp/JsonValidate-Action@v1
-        with:
-          json-file: PipelinesTasks/${{ matrix.task }}/buildAndReleaseTask/Strings/resources.resjson/en-US/resources.resjson
-          json-schema: resources.resjson.schema.json
-
   validate-codeql:
     name: Validate – CodeQL
     runs-on: ubuntu-latest
@@ -273,3 +132,124 @@ jobs:
 
     - name: Analyze
       uses: github/codeql-action/analyze@v1
+
+  validate-linter:
+    name: Validate – Linter
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Super Linter
+        uses: github/super-linter@v3.15.5
+        env:
+          EDITORCONFIG_FILE_NAME: ../../.editorconfig
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MARKDOWN_CONFIG_FILE: ../../.markdownlint.json
+          TYPESCRIPT_ES_CONFIG_FILE: ../../.eslintrc.yml
+
+  validate-task:
+    name: Validate – Task
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        task: [PRMetrics]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Validate vss-extension.json
+        uses: Zingabopp/JsonValidate-Action@v1
+        with:
+          json-file: PipelinesTasks/${{ matrix.task }}/src/vss-extension.json
+          json-schema: https://json.schemastore.org/vss-extension.json
+
+      - name: Validate .mocharc.json – Download .mocharc.schema.json
+        run: Invoke-WebRequest -Uri 'https://json.schemastore.org/mocharc.json' -OutFile '.mocharc.schema.json'
+
+      - name: Validate .mocharc.json – Update .mocharc.schema.json
+        run: |-
+          $FileContent = Get-Content -Path '.mocharc.schema.json' -Raw
+          $FileContent = $FileContent -replace 'draft/2019-09/schema#', 'draft-07/schema'
+          Set-Content -NoNewline -Path '.mocharc.schema.json' -Value $FileContent
+
+      - name: Validate .mocharc.json
+        uses: Zingabopp/JsonValidate-Action@v1
+        with:
+          json-file: PipelinesTasks/${{ matrix.task }}/src/task/.mocharc.json
+          json-schema: .mocharc.schema.json
+
+      - name: Validate package.json – Download package.schema.json
+        run: Invoke-WebRequest -Uri 'https://json.schemastore.org/package.json' -OutFile 'package.schema.json'
+
+      - name: Validate package.json – Update package.schema.json
+        run: |-
+          $FileContent = Get-Content -Path 'package.schema.json' -Raw
+          $FileContent = $FileContent -replace 'draft-04/schema#', 'draft-07/schema'
+          Set-Content -NoNewline -Path 'package.schema.json' -Value $FileContent
+
+      - name: Validate package.json
+        uses: Zingabopp/JsonValidate-Action@v1
+        with:
+          json-file: PipelinesTasks/${{ matrix.task }}/src/task/package.json
+          json-schema: package.schema.json
+
+      - name: Validate task.json – Download task.schema.json
+        run: Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/microsoft/azure-pipelines-task-lib/master/tasks.schema.json' -OutFile 'task.schema.json'
+
+      - name: Validate task.json – Update task.schema.json
+        run: |-
+          $FileContent = Get-Content -Path 'task.schema.json' -Raw
+          $FileContent = $FileContent -replace 'draft-04/schema', 'draft-07/schema'
+          Set-Content -NoNewline -Path 'task.schema.json' -Value $FileContent
+
+      - name: Validate task.json
+        uses: Zingabopp/JsonValidate-Action@v1
+        with:
+          json-file: PipelinesTasks/${{ matrix.task }}/src/task/task.json
+          json-schema: task.schema.json
+
+      - name: Validate task.loc.json
+        uses: Zingabopp/JsonValidate-Action@v1
+        with:
+          json-file: PipelinesTasks/${{ matrix.task }}/src/task/task.loc.json
+          json-schema: task.schema.json
+
+      - name: Validate tsconfig.json – Download tsconfig.schema.json
+        run: Invoke-WebRequest -Uri 'https://json.schemastore.org/tsconfig.json' -OutFile 'tsconfig.schema.json'
+
+      - name: Validate tsconfig.json – Update tsconfig.schema.json
+        run: |-
+          $FileContent = Get-Content -Path 'tsconfig.schema.json' -Raw
+          $FileContent = $FileContent -replace 'draft-04/schema#', 'draft-07/schema'
+          Set-Content -NoNewline -Path 'tsconfig.schema.json' -Value $FileContent
+
+      - name: Validate tsconfig.json
+        uses: Zingabopp/JsonValidate-Action@v1
+        with:
+          json-file: PipelinesTasks/${{ matrix.task }}/src/task/tsconfig.json
+          json-schema: tsconfig.schema.json
+
+      - name: Validate typedoc.json
+        uses: Zingabopp/JsonValidate-Action@v1
+        with:
+          json-file: PipelinesTasks/${{ matrix.task }}/src/task/typedoc.json
+          json-schema: https://typedoc.org/schema.json
+
+      - name: Validate resources.resjson – Download resources.resjson.schema.json
+        run: Invoke-WebRequest -Uri 'https://json.schemastore.org/resjson.json' -OutFile 'resources.resjson.schema.json'
+
+      - name: Validate resources.resjson – Update resources.resjson.schema.json
+        run: |-
+          $FileContent = Get-Content -Path 'resources.resjson.schema.json' -Raw
+          $FileContent = $FileContent -replace 'draft-04/schema#', 'draft-07/schema'
+          Set-Content -NoNewline -Path 'resources.resjson.schema.json' -Value $FileContent
+
+      - name: Validate resources.resjson (en-US)
+        uses: Zingabopp/JsonValidate-Action@v1
+        with:
+          json-file: PipelinesTasks/${{ matrix.task }}/src/task/Strings/resources.resjson/en-US/resources.resjson
+          json-schema: resources.resjson.schema.json

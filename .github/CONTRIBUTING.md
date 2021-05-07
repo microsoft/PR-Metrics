@@ -57,7 +57,7 @@ The following instructions can be used for adding an extension.
 
 Contributions to documentation are always appreciated. Feel free to submit a
 pull request to contribute to any existing documentation file. If you wish to
-add new documentation, please add it to the `doc` folder.
+add new documentation, please add it to the `docs` folder.
 
 ## Communicating with the Team
 
