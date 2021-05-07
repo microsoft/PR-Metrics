@@ -147,15 +147,16 @@ export default class PullRequestComments {
     for (let i: number = 0; i < comments.length; i++) {
       const comment: Comment = comments[i]!
 
-      const content: string = Validator.validate(comment.content, `commentThread[${commentThreadIndex}].comments[${i}].content`, 'PullRequestComments.getMetricsCommentData()')
-      const commentHeaderRegExp: RegExp = new RegExp(`^${this._taskLibWrapper.loc('pullRequests.pullRequestComments.commentTitle', '.+')}`)
-      if (!commentHeaderRegExp.test(content)) {
-        continue
-      }
+      if (comment.content) {
+        const commentHeaderRegExp: RegExp = new RegExp(`^${this._taskLibWrapper.loc('pullRequests.pullRequestComments.commentTitle', '.+')}`)
+        if (!commentHeaderRegExp.test(comment.content)) {
+          continue
+        }
 
-      result.isMetricsCommentPresent = content.startsWith(`${this._taskLibWrapper.loc('pullRequests.pullRequestComments.commentTitle', currentIteration.toLocaleString())}${os.EOL}`)
-      result.metricsCommentThreadId = Validator.validate(commentThread.id, `commentThread[${commentThreadIndex}].id`, 'PullRequestComments.getMetricsCommentData()')
-      result.metricsCommentId = Validator.validate(comment.id, `commentThread[${commentThreadIndex}].comments[${i}].id`, 'PullRequestComments.getMetricsCommentData()')
+        result.isMetricsCommentPresent = comment.content.startsWith(`${this._taskLibWrapper.loc('pullRequests.pullRequestComments.commentTitle', currentIteration.toLocaleString())}${os.EOL}`)
+        result.metricsCommentThreadId = Validator.validate(commentThread.id, `commentThread[${commentThreadIndex}].id`, 'PullRequestComments.getMetricsCommentData()')
+        result.metricsCommentId = Validator.validate(comment.id, `commentThread[${commentThreadIndex}].comments[${i}].id`, 'PullRequestComments.getMetricsCommentData()')
+      }
     }
 
     return result

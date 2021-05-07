@@ -300,28 +300,40 @@ describe('pullRequestComments.ts', (): void => {
       verify(logger.logDebug('* PullRequestComments.getNoReviewRequiredCommentData()')).twice()
     })
 
+    it('should continue when no comment content is present', async (): Promise<void> => {
+      // Arrange
+      when(azureReposInvoker.getCommentThreads()).thenResolve([{ comments: [{}] }])
+      when(codeMetrics.getFilesNotRequiringReview()).thenResolve(['file.ts'])
+      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(inputs), instance(logger), instance(taskLibWrapper))
+
+      // Act
+      const result: PullRequestCommentsData = await pullRequestComments.getCommentData(1)
+
+      // Assert
+      expect(result.isMetricsCommentPresent).to.equal(false)
+      expect(result.metricsCommentThreadId).to.equal(null)
+      expect(result.metricsCommentId).to.equal(null)
+      expect(result.filesNotRequiringReview).to.deep.equal(['file.ts'])
+      verify(logger.logDebug('* PullRequestComments.getCommentData()')).once()
+      verify(logger.logDebug('* PullRequestComments.getMetricsCommentData()')).once()
+    })
+
     async.each(
       [
         ['commentThread[0].comments', 'getMetricsCommentData', [{ }]],
-        ['commentThread[0].comments[0].content', 'getMetricsCommentData', [{ comments: [{}] }]],
         ['commentThread[0].id', 'getMetricsCommentData', [{ comments: [validGitPullRequestCommentThread.comments![0]!, { content: '# Metrics for iteration 1' }] }]],
         ['commentThread[0].comments[0].id', 'getMetricsCommentData', [{ comments: [{ content: '# Metrics for iteration 1' }], id: 1 }]],
-        ['commentThread[0].comments[1].content', 'getMetricsCommentData', [{ comments: [validGitPullRequestCommentThread.comments![0]!, {}], id: 1 }]],
         ['commentThread[0].comments[1].id', 'getMetricsCommentData', [{ comments: [validGitPullRequestCommentThread.comments![0]!, { content: '# Metrics for iteration 1' }], id: 1 }]],
         ['commentThread[0].threadContext.filePath', 'getCommentData', [{ threadContext: {} }]],
         ['commentThread[0].comments', 'getNoReviewRequiredCommentData', [{ threadContext: { filePath: '/file.ts' } }]],
         ['commentThread[0].comments[0]', 'getNoReviewRequiredCommentData', [{ threadContext: { filePath: '/file.ts' }, comments: [] }]],
-        ['commentThread[0].comments[0].content', 'getNoReviewRequiredCommentData', [{ threadContext: { filePath: '/file.ts' }, comments: [{}] }]],
         ['commentThread[1].comments', 'getMetricsCommentData', [validGitPullRequestCommentThread, { }]],
-        ['commentThread[1].comments[0].content', 'getMetricsCommentData', [validGitPullRequestCommentThread, { comments: [{}] }]],
         ['commentThread[1].id', 'getMetricsCommentData', [validGitPullRequestCommentThread, { comments: [{ content: '# Metrics for iteration 1' }] }]],
         ['commentThread[1].comments[0].id', 'getMetricsCommentData', [validGitPullRequestCommentThread, { comments: [{ content: '# Metrics for iteration 1' }], id: 1 }]],
-        ['commentThread[1].comments[1].content', 'getMetricsCommentData', [validGitPullRequestCommentThread, { comments: [validGitPullRequestCommentThread.comments![0]!, {}], id: 1 }]],
         ['commentThread[1].comments[1].id', 'getMetricsCommentData', [validGitPullRequestCommentThread, { comments: [validGitPullRequestCommentThread.comments![0]!, { content: '# Metrics for iteration 1' }], id: 1 }]],
         ['commentThread[1].threadContext.filePath', 'getCommentData', [validGitPullRequestCommentThread, { threadContext: {} }]],
         ['commentThread[1].comments', 'getNoReviewRequiredCommentData', [validGitPullRequestCommentThread, { threadContext: { filePath: '/file.ts' } }]],
-        ['commentThread[1].comments[0]', 'getNoReviewRequiredCommentData', [validGitPullRequestCommentThread, { threadContext: { filePath: '/file.ts' }, comments: [] }]],
-        ['commentThread[1].comments[0].content', 'getNoReviewRequiredCommentData', [validGitPullRequestCommentThread, { threadContext: { filePath: '/file.ts' }, comments: [{}] }]]
+        ['commentThread[1].comments[0]', 'getNoReviewRequiredCommentData', [validGitPullRequestCommentThread, { threadContext: { filePath: '/file.ts' }, comments: [] }]]
       ], (data: [string, string, GitPullRequestCommentThread[]]): void => {
         it(`should throw for field '${data[0]}', accessed within '${data[1]}', when it is missing`, async (): Promise<void> => {
           // Arrange
