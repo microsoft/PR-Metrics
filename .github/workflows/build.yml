@@ -135,7 +135,7 @@ jobs:
           fetch-depth: 0
 
       - name: Super Linter
-        uses: github/super-linter@v3.17.0
+        uses: github/super-linter@v3.17.1
         env:
           EDITORCONFIG_FILE_NAME: ../../.editorconfig
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
