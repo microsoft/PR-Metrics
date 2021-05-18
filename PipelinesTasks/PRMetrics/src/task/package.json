@@ -40,7 +40,7 @@
   },
   "homepage": "https://github.com/microsoft/OMEX-Azure-DevOps-Extensions#readme",
   "engines": {
-    "node": ">=10.23.3"
+    "node": ">=10.24.1"
   },
   "dependencies": {
     "azure-devops-node-api": "^10.2.2",
