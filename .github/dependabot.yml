@@ -6,6 +6,7 @@ version: 2
 updates:
   - package-ecosystem: github-actions
     directory: /
+    open-pull-requests-limit: 0
     schedule:
       interval: monthly
     labels:
@@ -13,6 +14,7 @@ updates:
 
   - package-ecosystem: npm
     directory: /
+    open-pull-requests-limit: 0
     schedule:
       interval: monthly
     labels:
