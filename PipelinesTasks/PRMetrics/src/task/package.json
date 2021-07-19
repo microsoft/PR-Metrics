@@ -45,7 +45,6 @@
   "dependencies": {
     "azure-devops-node-api": "^10.2.2",
     "azure-pipelines-task-lib": "^3.1.0",
-    "octokit": "^1.1.0",
     "reflect-metadata": "^0.1.13",
     "tsyringe": "^4.5.0"
   },
