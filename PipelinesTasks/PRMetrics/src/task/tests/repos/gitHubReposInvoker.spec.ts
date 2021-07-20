@@ -132,7 +132,7 @@ describe('gitHubReposInvoker.ts', function (): void {
 
       try {
         // Act
-        await gitHubReposInvoker.createComment('', 0, 1)
+        await gitHubReposInvoker.createComment('', 0, 0)
       } catch (error) {
         // Assert
         errorThrown = true
@@ -152,7 +152,7 @@ describe('gitHubReposInvoker.ts', function (): void {
 
       try {
         // Act
-        await gitHubReposInvoker.createCommentThread('', CommentThreadStatus.Active)
+        await gitHubReposInvoker.createCommentThread('', CommentThreadStatus.Active, '', false)
       } catch (error) {
         // Assert
         errorThrown = true
