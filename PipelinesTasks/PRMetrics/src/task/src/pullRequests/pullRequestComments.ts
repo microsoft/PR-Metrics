@@ -5,12 +5,12 @@ import { Comment, CommentThreadStatus, GitPullRequestCommentThread } from 'azure
 import { injectable } from 'tsyringe'
 import { Validator } from '../utilities/validator'
 import * as os from 'os'
-import AzureReposInvoker from '../azureRepos/azureReposInvoker'
 import CodeMetrics from '../metrics/codeMetrics'
 import CodeMetricsData from '../metrics/codeMetricsData'
 import Inputs from '../metrics/inputs'
 import Logger from '../utilities/logger'
 import PullRequestCommentsData from './pullRequestCommentsData'
+import ReposInvoker from '../repos/reposInvoker'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
 
 /**
@@ -18,25 +18,25 @@ import TaskLibWrapper from '../wrappers/taskLibWrapper'
  */
 @injectable()
 export default class PullRequestComments {
-  private readonly _azureReposInvoker: AzureReposInvoker
   private readonly _codeMetrics: CodeMetrics
   private readonly _inputs: Inputs
   private readonly _logger: Logger
+  private readonly _reposInvoker: ReposInvoker
   private readonly _taskLibWrapper: TaskLibWrapper
 
   /**
    * Initializes a new instance of the `PullRequestComments` class.
-   * @param azureReposInvoker The Azure Repos invoker logic.
    * @param codeMetrics The code metrics calculation logic.
    * @param inputs The inputs passed to the task.
    * @param logger The logger.
+   * @param reposInvoker The repos invoker logic.
    * @param taskLibWrapper The wrapper around the Azure Pipelines Task Lib.
    */
-  public constructor (azureReposInvoker: AzureReposInvoker, codeMetrics: CodeMetrics, inputs: Inputs, logger: Logger, taskLibWrapper: TaskLibWrapper) {
-    this._azureReposInvoker = azureReposInvoker
+  public constructor (codeMetrics: CodeMetrics, inputs: Inputs, logger: Logger, reposInvoker: ReposInvoker, taskLibWrapper: TaskLibWrapper) {
     this._codeMetrics = codeMetrics
     this._inputs = inputs
     this._logger = logger
+    this._reposInvoker = reposInvoker
     this._taskLibWrapper = taskLibWrapper
   }
 
@@ -62,7 +62,7 @@ export default class PullRequestComments {
     const deletedFilesNotRequiringReview: string[] = await this._codeMetrics.getDeletedFilesNotRequiringReview()
     let result: PullRequestCommentsData = new PullRequestCommentsData(filesNotRequiringReview, deletedFilesNotRequiringReview)
 
-    const commentThreads: GitPullRequestCommentThread[] = await this._azureReposInvoker.getCommentThreads()
+    const commentThreads: GitPullRequestCommentThread[] = await this._reposInvoker.getCommentThreads()
     for (let i: number = 0; i < commentThreads.length; i++) {
       const commentThread: GitPullRequestCommentThread = commentThreads[i]!
       if (!commentThread.threadContext) {

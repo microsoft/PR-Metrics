@@ -9,6 +9,7 @@ import { singleton } from 'tsyringe'
 import { Validator } from '../utilities/validator'
 import { WebApi } from 'azure-devops-node-api'
 import AzureDevOpsApiWrapper from '../wrappers/azureDevOpsApiWrapper'
+import IReposInvoker from './iReposInvoker'
 import Logger from '../utilities/logger'
 import PullRequestDetails from './pullRequestDetails'
 import PullRequestMetadata from './pullRequestMetadata'
@@ -18,7 +19,7 @@ import PullRequestMetadata from './pullRequestMetadata'
  * @remarks This class should not be used in a multithreaded context as it could lead to the initialization logic being invoked repeatedly.
  */
 @singleton()
-export default class AzureReposInvoker {
+export default class AzureReposInvoker implements IReposInvoker {
   private readonly _azureDevOpsApiWrapper: AzureDevOpsApiWrapper
   private readonly _logger: Logger
 
@@ -37,20 +38,18 @@ export default class AzureReposInvoker {
     this._logger = logger
   }
 
-  /**
-   * Gets a value indicating whether the OAuth access token is available to the task.
-   * @returns A value indicating whether the OAuth access token is available.
-   */
+  get isFunctionalityComplete (): boolean {
+    this._logger.logDebug('* AzureReposInvoker.isFunctionalityComplete')
+
+    return true
+  }
+
   public get isAccessTokenAvailable (): boolean {
     this._logger.logDebug('* AzureReposInvoker.isAccessTokenAvailable')
 
     return process.env.SYSTEM_ACCESSTOKEN !== undefined
   }
 
-  /**
-   * Gets the title and description for the current pull request.
-   * @returns A promise containing the title and description.
-   */
   public async getTitleAndDescription (): Promise<PullRequestDetails> {
     this._logger.logDebug('* AzureReposInvoker.getTitleAndDescription()')
 
@@ -65,10 +64,6 @@ export default class AzureReposInvoker {
     }
   }
 
-  /**
-   * Gets the current iteration for the current pull request.
-   * @returns A promise containing the current iteration.
-   */
   public async getCurrentIteration (): Promise<number> {
     this._logger.logDebug('* AzureReposInvoker.getCurrentIteration()')
 
@@ -82,10 +77,6 @@ export default class AzureReposInvoker {
     return Validator.validate(result[result.length - 1]!.id, 'id', 'AzureReposInvoker.getCurrentIteration()')
   }
 
-  /**
-   * Gets all comment threads for the current pull request.
-   * @returns A promise containing the comment threads.
-   */
   public async getCommentThreads (): Promise<GitPullRequestCommentThread[]> {
     this._logger.logDebug('* AzureReposInvoker.getCommentThreads()')
 
@@ -95,12 +86,6 @@ export default class AzureReposInvoker {
     return result
   }
 
-  /**
-   * Updates the title and description for the current pull request.
-   * @param title The new title.
-   * @param description The new description.
-   * @returns A promise for awaiting the completion of the method call.
-   */
   public async setTitleAndDescription (title: string | null, description: string | null): Promise<void> {
     this._logger.logDebug('* AzureReposInvoker.setTitleAndDescription()')
 
@@ -122,13 +107,6 @@ export default class AzureReposInvoker {
     this._logger.logDebug(JSON.stringify(result))
   }
 
-  /**
-   * Creates a new comment within the current pull request.
-   * @param commentContent The text of the new comment.
-   * @param commentThreadId The comment thread ID to which to add the comment.
-   * @param parentCommentId The parent comment ID, after which to add the new comment.
-   * @returns A promise for awaiting the completion of the method call.
-   */
   public async createComment (commentContent: string, commentThreadId: number, parentCommentId: number): Promise<void> {
     this._logger.logDebug('* AzureReposInvoker.createComment()')
 
@@ -142,14 +120,6 @@ export default class AzureReposInvoker {
     this._logger.logDebug(JSON.stringify(result))
   }
 
-  /**
-   * Creates a new comment thread within the current pull request.
-   * @param commentContent The text of the new comment.
-   * @param status The status to which to the set the comment thread.
-   * @param fileName The file to which to add the comment. If this is unspecified, the comment will be created in the global pull request scope.
-   * @param isFileDeleted A value indicating whether the file is being deleted.
-   * @returns A promise for awaiting the completion of the method call.
-   */
   public async createCommentThread (commentContent: string, status: CommentThreadStatus, fileName?: string, isFileDeleted?: boolean): Promise<void> {
     this._logger.logDebug('* AzureReposInvoker.createCommentThread()')
 
@@ -186,12 +156,6 @@ export default class AzureReposInvoker {
     this._logger.logDebug(JSON.stringify(result))
   }
 
-  /**
-   * Updates the status of a comment thread within the current pull request.
-   * @param commentThreadId The comment thread ID to which to add the comment.
-   * @param status The status to which to the set the comment thread.
-   * @returns A promise for awaiting the completion of the method call.
-   */
   public async setCommentThreadStatus (commentThreadId: number, status: CommentThreadStatus): Promise<void> {
     this._logger.logDebug('* AzureReposInvoker.setCommentThreadStatus()')
 
@@ -204,11 +168,6 @@ export default class AzureReposInvoker {
     this._logger.logDebug(JSON.stringify(result))
   }
 
-  /**
-   * Adds metadata to the current pull request.
-   * @param metadata The metadata to be added.
-   * @returns A promise for awaiting the completion of the method call.
-   */
   public async addMetadata (metadata: PullRequestMetadata[]): Promise<void> {
     this._logger.logDebug('* AzureReposInvoker.addMetadata()')
 

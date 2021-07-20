@@ -12,10 +12,10 @@ import { resolvableInstance } from '../testUtilities/resolvableInstance'
 import { WebApi } from 'azure-devops-node-api'
 import async from 'async'
 import AzureDevOpsApiWrapper from '../../src/wrappers/azureDevOpsApiWrapper'
-import AzureReposInvoker from '../../src/azureRepos/azureReposInvoker'
+import AzureReposInvoker from '../../src/repos/azureReposInvoker'
 import Logger from '../../src/utilities/logger'
-import PullRequestDetails from '../../src/azureRepos/pullRequestDetails'
-import PullRequestMetadata from '../../src/azureRepos/pullRequestMetadata'
+import PullRequestDetails from '../../src/repos/pullRequestDetails'
+import PullRequestMetadata from '../../src/repos/pullRequestMetadata'
 
 describe('azureReposInvoker.ts', function (): void {
   let gitApi: IGitApi
@@ -47,6 +47,20 @@ describe('azureReposInvoker.ts', function (): void {
     delete process.env.BUILD_REPOSITORY_ID
     delete process.env.SYSTEM_PULLREQUEST_PULLREQUESTID
     delete process.env.SYSTEM_ACCESSTOKEN
+  })
+
+  describe('isFunctionalityComplete', (): void => {
+    it('should return true', (): void => {
+      // Arrange
+      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger))
+
+      // Act
+      const result: boolean = azureReposInvoker.isFunctionalityComplete
+
+      // Assert
+      expect(result).to.equal(true)
+      verify(logger.logDebug('* AzureReposInvoker.isFunctionalityComplete')).once()
+    })
   })
 
   describe('isAccessTokenAvailable', (): void => {

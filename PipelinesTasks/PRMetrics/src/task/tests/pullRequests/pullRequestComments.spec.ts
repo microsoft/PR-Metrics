@@ -7,7 +7,6 @@ import { expect } from 'chai'
 import { FixedLengthArray } from '../../src/utilities/fixedLengthArray'
 import { instance, mock, verify, when } from 'ts-mockito'
 import async from 'async'
-import AzureReposInvoker from '../../src/azureRepos/azureReposInvoker'
 import CodeMetrics from '../../src/metrics/codeMetrics'
 import CodeMetricsData from '../../src/metrics/codeMetricsData'
 import Inputs from '../../src/metrics/inputs'
@@ -15,6 +14,7 @@ import Logger from '../../src/utilities/logger'
 import os from 'os'
 import PullRequestComments from '../../src/pullRequests/pullRequestComments'
 import PullRequestCommentsData from '../../src/pullRequests/pullRequestCommentsData'
+import ReposInvoker from '../../src/repos/reposInvoker'
 import TaskLibWrapper from '../../src/wrappers/taskLibWrapper'
 
 describe('pullRequestComments.ts', (): void => {
@@ -62,15 +62,15 @@ describe('pullRequestComments.ts', (): void => {
       ]
     }
   ]
-  let azureReposInvoker: AzureReposInvoker
   let codeMetrics: CodeMetrics
   let inputs: Inputs
   let logger: Logger
+  let reposInvoker: ReposInvoker
   let taskLibWrapper: TaskLibWrapper
 
   beforeEach((): void => {
-    azureReposInvoker = mock(AzureReposInvoker)
-    when(azureReposInvoker.getCommentThreads()).thenResolve([validGitPullRequestCommentThread])
+    reposInvoker = mock(ReposInvoker)
+    when(reposInvoker.getCommentThreads()).thenResolve([validGitPullRequestCommentThread])
 
     codeMetrics = mock(CodeMetrics)
     when(codeMetrics.isSmall()).thenResolve(true)
@@ -110,7 +110,7 @@ describe('pullRequestComments.ts', (): void => {
   describe('noReviewRequiredComment', (): void => {
     it('should return the expected result', (): void => {
       // Arrange
-      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(inputs), instance(logger), instance(taskLibWrapper))
+      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(inputs), instance(logger), instance(reposInvoker), instance(taskLibWrapper))
 
       // Act
       const result: string = pullRequestComments.noReviewRequiredComment
@@ -124,7 +124,7 @@ describe('pullRequestComments.ts', (): void => {
   describe('getCommentData()', (): void => {
     it('should return the expected result when no comment is present', async (): Promise<void> => {
       // Arrange
-      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(inputs), instance(logger), instance(taskLibWrapper))
+      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(inputs), instance(logger), instance(reposInvoker), instance(taskLibWrapper))
 
       // Act
       const result: PullRequestCommentsData = await pullRequestComments.getCommentData(1)
@@ -150,8 +150,8 @@ describe('pullRequestComments.ts', (): void => {
       ], (data: [number, GitPullRequestCommentThread[]]): void => {
         it(`should return the expected result when the metrics comment is present with payload '${JSON.stringify(data[1])}'`, async (): Promise<void> => {
           // Arrange
-          when(azureReposInvoker.getCommentThreads()).thenResolve(data[1])
-          const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(inputs), instance(logger), instance(taskLibWrapper))
+          when(reposInvoker.getCommentThreads()).thenResolve(data[1])
+          const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(inputs), instance(logger), instance(reposInvoker), instance(taskLibWrapper))
 
           // Act
           const result: PullRequestCommentsData = await pullRequestComments.getCommentData(data[0])
@@ -169,8 +169,8 @@ describe('pullRequestComments.ts', (): void => {
 
     it('should return the expected result when the metrics comment is present but not for the current payload', async (): Promise<void> => {
       // Arrange
-      when(azureReposInvoker.getCommentThreads()).thenResolve([{ comments: [{ content: `# Metrics for iteration 10${os.EOL}`, id: 10 }], id: 20 }])
-      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(inputs), instance(logger), instance(taskLibWrapper))
+      when(reposInvoker.getCommentThreads()).thenResolve([{ comments: [{ content: `# Metrics for iteration 10${os.EOL}`, id: 10 }], id: 20 }])
+      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(inputs), instance(logger), instance(reposInvoker), instance(taskLibWrapper))
 
       // Act
       const result: PullRequestCommentsData = await pullRequestComments.getCommentData(1)
@@ -194,9 +194,9 @@ describe('pullRequestComments.ts', (): void => {
       ], (data: [string[], GitPullRequestCommentThread[]]): void => {
         it(`should return the expected result for files not requiring review when the comment is present with payload '${JSON.stringify(data[1])}'`, async (): Promise<void> => {
           // Arrange
-          when(azureReposInvoker.getCommentThreads()).thenResolve(data[1])
+          when(reposInvoker.getCommentThreads()).thenResolve(data[1])
           when(codeMetrics.getFilesNotRequiringReview()).thenResolve(['folder/file1.ts', 'file2.ts', 'file3.ts'])
-          const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(inputs), instance(logger), instance(taskLibWrapper))
+          const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(inputs), instance(logger), instance(reposInvoker), instance(taskLibWrapper))
 
           // Act
           const result: PullRequestCommentsData = await pullRequestComments.getCommentData(1)
@@ -221,9 +221,9 @@ describe('pullRequestComments.ts', (): void => {
       ], (data: [string[], GitPullRequestCommentThread[]]): void => {
         it(`should return the expected result for deleted files not requiring review when the comment is present with payload '${JSON.stringify(data[1])}'`, async (): Promise<void> => {
           // Arrange
-          when(azureReposInvoker.getCommentThreads()).thenResolve(data[1])
+          when(reposInvoker.getCommentThreads()).thenResolve(data[1])
           when(codeMetrics.getDeletedFilesNotRequiringReview()).thenResolve(['folder/file1.ts', 'file2.ts', 'file3.ts'])
-          const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(inputs), instance(logger), instance(taskLibWrapper))
+          const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(inputs), instance(logger), instance(reposInvoker), instance(taskLibWrapper))
 
           // Act
           const result: PullRequestCommentsData = await pullRequestComments.getCommentData(1)
@@ -241,9 +241,9 @@ describe('pullRequestComments.ts', (): void => {
 
     it('should return the expected result when all comment types are present in files not requiring review', async (): Promise<void> => {
       // Arrange
-      when(azureReposInvoker.getCommentThreads()).thenResolve(complexGitPullRequestCommentThreads)
+      when(reposInvoker.getCommentThreads()).thenResolve(complexGitPullRequestCommentThreads)
       when(codeMetrics.getFilesNotRequiringReview()).thenResolve(['folder/file1.ts', 'file2.ts', 'file3.ts'])
-      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(inputs), instance(logger), instance(taskLibWrapper))
+      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(inputs), instance(logger), instance(reposInvoker), instance(taskLibWrapper))
 
       // Act
       const result: PullRequestCommentsData = await pullRequestComments.getCommentData(1)
@@ -261,9 +261,9 @@ describe('pullRequestComments.ts', (): void => {
 
     it('should return the expected result when all comment types are present in deleted files not requiring review', async (): Promise<void> => {
       // Arrange
-      when(azureReposInvoker.getCommentThreads()).thenResolve(complexGitPullRequestCommentThreads)
+      when(reposInvoker.getCommentThreads()).thenResolve(complexGitPullRequestCommentThreads)
       when(codeMetrics.getDeletedFilesNotRequiringReview()).thenResolve(['folder/file1.ts', 'file2.ts', 'file3.ts'])
-      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(inputs), instance(logger), instance(taskLibWrapper))
+      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(inputs), instance(logger), instance(reposInvoker), instance(taskLibWrapper))
 
       // Act
       const result: PullRequestCommentsData = await pullRequestComments.getCommentData(1)
@@ -281,10 +281,10 @@ describe('pullRequestComments.ts', (): void => {
 
     it('should return the expected result when all comment types are present in both modified and deleted files not requiring review', async (): Promise<void> => {
       // Arrange
-      when(azureReposInvoker.getCommentThreads()).thenResolve(complexGitPullRequestCommentThreads)
+      when(reposInvoker.getCommentThreads()).thenResolve(complexGitPullRequestCommentThreads)
       when(codeMetrics.getFilesNotRequiringReview()).thenResolve(['folder/file1.ts', 'file2.ts'])
       when(codeMetrics.getDeletedFilesNotRequiringReview()).thenResolve(['file3.ts', 'file5.ts'])
-      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(inputs), instance(logger), instance(taskLibWrapper))
+      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(inputs), instance(logger), instance(reposInvoker), instance(taskLibWrapper))
 
       // Act
       const result: PullRequestCommentsData = await pullRequestComments.getCommentData(1)
@@ -311,9 +311,9 @@ describe('pullRequestComments.ts', (): void => {
       ], (data: [GitPullRequestCommentThread[], number | null, number, number]): void => {
         it(`should continue when no comment content is present in payload '${JSON.stringify(data[0])}'`, async (): Promise<void> => {
           // Arrange
-          when(azureReposInvoker.getCommentThreads()).thenResolve(data[0])
+          when(reposInvoker.getCommentThreads()).thenResolve(data[0])
           when(codeMetrics.getFilesNotRequiringReview()).thenResolve(['file.ts'])
-          const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(inputs), instance(logger), instance(taskLibWrapper))
+          const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(inputs), instance(logger), instance(reposInvoker), instance(taskLibWrapper))
 
           // Act
           const result: PullRequestCommentsData = await pullRequestComments.getCommentData(1)
@@ -348,9 +348,9 @@ describe('pullRequestComments.ts', (): void => {
       ], (data: [string, string, GitPullRequestCommentThread[]]): void => {
         it(`should throw for field '${data[0]}', accessed within '${data[1]}', when it is missing`, async (): Promise<void> => {
           // Arrange
-          when(azureReposInvoker.getCommentThreads()).thenResolve(data[2])
+          when(reposInvoker.getCommentThreads()).thenResolve(data[2])
           when(codeMetrics.getFilesNotRequiringReview()).thenResolve(['file.ts'])
-          const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(inputs), instance(logger), instance(taskLibWrapper))
+          const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(inputs), instance(logger), instance(reposInvoker), instance(taskLibWrapper))
           let errorThrown: boolean = false
 
           try {
@@ -369,8 +369,8 @@ describe('pullRequestComments.ts', (): void => {
 
     it('should throw when the file name is not of the expected length', async (): Promise<void> => {
       // Arrange
-      when(azureReposInvoker.getCommentThreads()).thenResolve([{ threadContext: { filePath: '/' } }])
-      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(inputs), instance(logger), instance(taskLibWrapper))
+      when(reposInvoker.getCommentThreads()).thenResolve([{ threadContext: { filePath: '/' } }])
+      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(inputs), instance(logger), instance(reposInvoker), instance(taskLibWrapper))
       let errorThrown: boolean = false
 
       try {
@@ -399,7 +399,7 @@ describe('pullRequestComments.ts', (): void => {
         it(`should return the expected result for metrics '[${code[0]}, ${code[1]}, ${code[2]}, ${code[3]}, ${code[4]}]'`, async (): Promise<void> => {
           // Arrange
           when(codeMetrics.getMetrics()).thenResolve(new CodeMetricsData(code[0], code[1], code[3]))
-          const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(inputs), instance(logger), instance(taskLibWrapper))
+          const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(inputs), instance(logger), instance(reposInvoker), instance(taskLibWrapper))
 
           // Act
           const result: string = await pullRequestComments.getMetricsComment(1)
@@ -435,7 +435,7 @@ describe('pullRequestComments.ts', (): void => {
           // Arrange
           when(codeMetrics.isSmall()).thenResolve(false)
           when(inputs.baseSize).thenReturn(baseSize)
-          const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(inputs), instance(logger), instance(taskLibWrapper))
+          const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(inputs), instance(logger), instance(reposInvoker), instance(taskLibWrapper))
 
           // Act
           const result: string = await pullRequestComments.getMetricsComment(1)
@@ -471,7 +471,7 @@ describe('pullRequestComments.ts', (): void => {
       ], (iteration: number): void => {
         it(`should return the expected result when the pull request iteration is '${iteration}'`, async (): Promise<void> => {
           // Arrange
-          const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(inputs), instance(logger), instance(taskLibWrapper))
+          const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(inputs), instance(logger), instance(reposInvoker), instance(taskLibWrapper))
 
           // Act
           const result: string = await pullRequestComments.getMetricsComment(iteration)
@@ -500,7 +500,7 @@ describe('pullRequestComments.ts', (): void => {
     it('should return the expected result when the pull request has insufficient test coverage', async (): Promise<void> => {
       // Arrange
       when(codeMetrics.isSufficientlyTested()).thenResolve(false)
-      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(inputs), instance(logger), instance(taskLibWrapper))
+      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(inputs), instance(logger), instance(reposInvoker), instance(taskLibWrapper))
 
       // Act
       const result: string = await pullRequestComments.getMetricsComment(1)
@@ -528,7 +528,7 @@ describe('pullRequestComments.ts', (): void => {
     it('should return the expected result when the pull request does not require a specific level of test coverage', async (): Promise<void> => {
       // Arrange
       when(codeMetrics.isSufficientlyTested()).thenResolve(null)
-      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(inputs), instance(logger), instance(taskLibWrapper))
+      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(inputs), instance(logger), instance(reposInvoker), instance(taskLibWrapper))
 
       // Act
       const result: string = await pullRequestComments.getMetricsComment(1)
@@ -563,7 +563,7 @@ describe('pullRequestComments.ts', (): void => {
           // Arrange
           when(codeMetrics.isSmall()).thenResolve(true)
           when(codeMetrics.isSufficientlyTested()).thenResolve(sufficientlyTested)
-          const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(inputs), instance(logger), instance(taskLibWrapper))
+          const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(inputs), instance(logger), instance(reposInvoker), instance(taskLibWrapper))
 
           // Act
           const result: CommentThreadStatus = await pullRequestComments.getMetricsCommentStatus()
@@ -585,7 +585,7 @@ describe('pullRequestComments.ts', (): void => {
           // Arrange
           when(codeMetrics.isSmall()).thenResolve(codeMetricsSettings[0])
           when(codeMetrics.isSufficientlyTested()).thenResolve(codeMetricsSettings[1])
-          const pullRequestComments: PullRequestComments = new PullRequestComments(instance(azureReposInvoker), instance(codeMetrics), instance(inputs), instance(logger), instance(taskLibWrapper))
+          const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(inputs), instance(logger), instance(reposInvoker), instance(taskLibWrapper))
 
           // Act
           const result: CommentThreadStatus = await pullRequestComments.getMetricsCommentStatus()
