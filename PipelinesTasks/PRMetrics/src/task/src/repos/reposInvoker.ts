@@ -35,7 +35,7 @@ export default class ReposInvoker implements IReposInvoker {
     this._logger = logger
   }
 
-  get isFunctionalityComplete (): boolean {
+  public get isFunctionalityComplete (): boolean {
     this._logger.logDebug('* ReposInvoker.isFunctionalityComplete')
 
     this.initialize()
