@@ -2,15 +2,15 @@
 // Licensed under the MIT License.
 
 import 'reflect-metadata'
+import { CommentThreadStatus, GitPullRequestCommentThread } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import { expect } from 'chai'
 import { instance, mock, verify } from 'ts-mockito'
 import AzureReposInvoker from '../../src/repos/azureReposInvoker'
 import GitHubReposInvoker from '../../src/repos/gitHubReposInvoker'
 import Logger from '../../src/utilities/logger'
-import ReposInvoker from '../../src/repos/reposInvoker'
 import PullRequestDetails from '../../src/repos/pullRequestDetails'
-import { CommentThreadStatus, GitPullRequestCommentThread } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import PullRequestMetadata from '../../src/repos/pullRequestMetadata'
+import ReposInvoker from '../../src/repos/reposInvoker'
 
 describe('reposInvoker.ts', function (): void {
   let azureReposInvoker: AzureReposInvoker
@@ -37,7 +37,7 @@ describe('reposInvoker.ts', function (): void {
       verify(azureReposInvoker.isFunctionalityComplete).once()
       verify(gitHubReposInvoker.isFunctionalityComplete).never()
       verify(logger.logDebug('* ReposInvoker.isFunctionalityComplete')).once()
-      verify(logger.logDebug('* ReposInvoker.initialize()')).once()
+      verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
       expect(result).to.equal(null)
 
       // Finalization
@@ -56,7 +56,7 @@ describe('reposInvoker.ts', function (): void {
       verify(azureReposInvoker.isFunctionalityComplete).never()
       verify(gitHubReposInvoker.isFunctionalityComplete).once()
       verify(logger.logDebug('* ReposInvoker.isFunctionalityComplete')).once()
-      verify(logger.logDebug('* ReposInvoker.initialize()')).once()
+      verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
       expect(result).to.equal(null)
 
       // Finalization
@@ -72,11 +72,11 @@ describe('reposInvoker.ts', function (): void {
       const func: () => boolean = () => reposInvoker.isFunctionalityComplete
 
       // Assert
-      expect(func).to.throw('\'BUILD_REPOSITORY_PROVIDER\', accessed within \'ReposInvoker.initialize\', is invalid, null, or undefined \'undefined\'.')
+      expect(func).to.throw('\'BUILD_REPOSITORY_PROVIDER\', accessed within \'ReposInvoker.getReposInvoker()\', is invalid, null, or undefined \'undefined\'.')
       verify(azureReposInvoker.isFunctionalityComplete).never()
       verify(gitHubReposInvoker.isFunctionalityComplete).never()
       verify(logger.logDebug('* ReposInvoker.isFunctionalityComplete')).once()
-      verify(logger.logDebug('* ReposInvoker.initialize()')).once()
+      verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
     })
 
     it('should throw when the repo type is set to an invalid value', (): void => {
@@ -92,7 +92,7 @@ describe('reposInvoker.ts', function (): void {
       verify(azureReposInvoker.isFunctionalityComplete).never()
       verify(gitHubReposInvoker.isFunctionalityComplete).never()
       verify(logger.logDebug('* ReposInvoker.isFunctionalityComplete')).once()
-      verify(logger.logDebug('* ReposInvoker.initialize()')).once()
+      verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
 
       // Finalization
       delete process.env.BUILD_REPOSITORY_PROVIDER
@@ -112,7 +112,7 @@ describe('reposInvoker.ts', function (): void {
       verify(azureReposInvoker.isAccessTokenAvailable).once()
       verify(gitHubReposInvoker.isAccessTokenAvailable).never()
       verify(logger.logDebug('* ReposInvoker.isAccessTokenAvailable')).once()
-      verify(logger.logDebug('* ReposInvoker.initialize()')).once()
+      verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
       expect(result).to.equal(null)
 
       // Finalization
@@ -131,7 +131,7 @@ describe('reposInvoker.ts', function (): void {
       verify(azureReposInvoker.isAccessTokenAvailable).never()
       verify(gitHubReposInvoker.isAccessTokenAvailable).once()
       verify(logger.logDebug('* ReposInvoker.isAccessTokenAvailable')).once()
-      verify(logger.logDebug('* ReposInvoker.initialize()')).once()
+      verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
       expect(result).to.equal(null)
 
       // Finalization
@@ -147,11 +147,11 @@ describe('reposInvoker.ts', function (): void {
       const func: () => boolean = () => reposInvoker.isAccessTokenAvailable
 
       // Assert
-      expect(func).to.throw('\'BUILD_REPOSITORY_PROVIDER\', accessed within \'ReposInvoker.initialize\', is invalid, null, or undefined \'undefined\'.')
+      expect(func).to.throw('\'BUILD_REPOSITORY_PROVIDER\', accessed within \'ReposInvoker.getReposInvoker()\', is invalid, null, or undefined \'undefined\'.')
       verify(azureReposInvoker.isAccessTokenAvailable).never()
       verify(gitHubReposInvoker.isAccessTokenAvailable).never()
       verify(logger.logDebug('* ReposInvoker.isAccessTokenAvailable')).once()
-      verify(logger.logDebug('* ReposInvoker.initialize()')).once()
+      verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
     })
 
     it('should throw when the repo type is set to an invalid value', (): void => {
@@ -167,7 +167,7 @@ describe('reposInvoker.ts', function (): void {
       verify(azureReposInvoker.isAccessTokenAvailable).never()
       verify(gitHubReposInvoker.isAccessTokenAvailable).never()
       verify(logger.logDebug('* ReposInvoker.isAccessTokenAvailable')).once()
-      verify(logger.logDebug('* ReposInvoker.initialize()')).once()
+      verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
 
       // Finalization
       delete process.env.BUILD_REPOSITORY_PROVIDER
@@ -187,7 +187,7 @@ describe('reposInvoker.ts', function (): void {
       verify(azureReposInvoker.getTitleAndDescription()).once()
       verify(gitHubReposInvoker.getTitleAndDescription()).never()
       verify(logger.logDebug('* ReposInvoker.getTitleAndDescription()')).once()
-      verify(logger.logDebug('* ReposInvoker.initialize()')).once()
+      verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
       expect(result).to.equal(null)
 
       // Finalization
@@ -206,7 +206,7 @@ describe('reposInvoker.ts', function (): void {
       verify(azureReposInvoker.getTitleAndDescription()).never()
       verify(gitHubReposInvoker.getTitleAndDescription()).once()
       verify(logger.logDebug('* ReposInvoker.getTitleAndDescription()')).once()
-      verify(logger.logDebug('* ReposInvoker.initialize()')).once()
+      verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
       expect(result).to.equal(null)
 
       // Finalization
@@ -225,14 +225,14 @@ describe('reposInvoker.ts', function (): void {
       } catch (error) {
         // Assert
         errorThrown = true
-        expect(error.message).to.equal('\'BUILD_REPOSITORY_PROVIDER\', accessed within \'ReposInvoker.initialize\', is invalid, null, or undefined \'undefined\'.')
+        expect(error.message).to.equal('\'BUILD_REPOSITORY_PROVIDER\', accessed within \'ReposInvoker.getReposInvoker()\', is invalid, null, or undefined \'undefined\'.')
       }
 
       expect(errorThrown).to.equal(true)
       verify(azureReposInvoker.getTitleAndDescription()).never()
       verify(gitHubReposInvoker.getTitleAndDescription()).never()
       verify(logger.logDebug('* ReposInvoker.getTitleAndDescription()')).once()
-      verify(logger.logDebug('* ReposInvoker.initialize()')).once()
+      verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
     })
 
     it('should throw when the repo type is set to an invalid value', async (): Promise<void> => {
@@ -254,7 +254,7 @@ describe('reposInvoker.ts', function (): void {
       verify(azureReposInvoker.getTitleAndDescription()).never()
       verify(gitHubReposInvoker.getTitleAndDescription()).never()
       verify(logger.logDebug('* ReposInvoker.getTitleAndDescription()')).once()
-      verify(logger.logDebug('* ReposInvoker.initialize()')).once()
+      verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
 
       // Finalization
       delete process.env.BUILD_REPOSITORY_PROVIDER
@@ -274,7 +274,7 @@ describe('reposInvoker.ts', function (): void {
       verify(azureReposInvoker.getCurrentIteration()).once()
       verify(gitHubReposInvoker.getCurrentIteration()).never()
       verify(logger.logDebug('* ReposInvoker.getCurrentIteration()')).once()
-      verify(logger.logDebug('* ReposInvoker.initialize()')).once()
+      verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
       expect(result).to.equal(null)
 
       // Finalization
@@ -293,7 +293,7 @@ describe('reposInvoker.ts', function (): void {
       verify(azureReposInvoker.getCurrentIteration()).never()
       verify(gitHubReposInvoker.getCurrentIteration()).once()
       verify(logger.logDebug('* ReposInvoker.getCurrentIteration()')).once()
-      verify(logger.logDebug('* ReposInvoker.initialize()')).once()
+      verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
       expect(result).to.equal(null)
 
       // Finalization
@@ -312,14 +312,14 @@ describe('reposInvoker.ts', function (): void {
       } catch (error) {
         // Assert
         errorThrown = true
-        expect(error.message).to.equal('\'BUILD_REPOSITORY_PROVIDER\', accessed within \'ReposInvoker.initialize\', is invalid, null, or undefined \'undefined\'.')
+        expect(error.message).to.equal('\'BUILD_REPOSITORY_PROVIDER\', accessed within \'ReposInvoker.getReposInvoker()\', is invalid, null, or undefined \'undefined\'.')
       }
 
       expect(errorThrown).to.equal(true)
       verify(azureReposInvoker.getCurrentIteration()).never()
       verify(gitHubReposInvoker.getCurrentIteration()).never()
       verify(logger.logDebug('* ReposInvoker.getCurrentIteration()')).once()
-      verify(logger.logDebug('* ReposInvoker.initialize()')).once()
+      verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
     })
 
     it('should throw when the repo type is set to an invalid value', async (): Promise<void> => {
@@ -341,7 +341,7 @@ describe('reposInvoker.ts', function (): void {
       verify(azureReposInvoker.getCurrentIteration()).never()
       verify(gitHubReposInvoker.getCurrentIteration()).never()
       verify(logger.logDebug('* ReposInvoker.getCurrentIteration()')).once()
-      verify(logger.logDebug('* ReposInvoker.initialize()')).once()
+      verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
 
       // Finalization
       delete process.env.BUILD_REPOSITORY_PROVIDER
@@ -361,7 +361,7 @@ describe('reposInvoker.ts', function (): void {
       verify(azureReposInvoker.getCommentThreads()).once()
       verify(gitHubReposInvoker.getCommentThreads()).never()
       verify(logger.logDebug('* ReposInvoker.getCommentThreads()')).once()
-      verify(logger.logDebug('* ReposInvoker.initialize()')).once()
+      verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
       expect(result).to.equal(null)
 
       // Finalization
@@ -380,7 +380,7 @@ describe('reposInvoker.ts', function (): void {
       verify(azureReposInvoker.getCommentThreads()).never()
       verify(gitHubReposInvoker.getCommentThreads()).once()
       verify(logger.logDebug('* ReposInvoker.getCommentThreads()')).once()
-      verify(logger.logDebug('* ReposInvoker.initialize()')).once()
+      verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
       expect(result).to.equal(null)
 
       // Finalization
@@ -399,14 +399,14 @@ describe('reposInvoker.ts', function (): void {
       } catch (error) {
         // Assert
         errorThrown = true
-        expect(error.message).to.equal('\'BUILD_REPOSITORY_PROVIDER\', accessed within \'ReposInvoker.initialize\', is invalid, null, or undefined \'undefined\'.')
+        expect(error.message).to.equal('\'BUILD_REPOSITORY_PROVIDER\', accessed within \'ReposInvoker.getReposInvoker()\', is invalid, null, or undefined \'undefined\'.')
       }
 
       expect(errorThrown).to.equal(true)
       verify(azureReposInvoker.getCommentThreads()).never()
       verify(gitHubReposInvoker.getCommentThreads()).never()
       verify(logger.logDebug('* ReposInvoker.getCommentThreads()')).once()
-      verify(logger.logDebug('* ReposInvoker.initialize()')).once()
+      verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
     })
 
     it('should throw when the repo type is set to an invalid value', async (): Promise<void> => {
@@ -428,7 +428,7 @@ describe('reposInvoker.ts', function (): void {
       verify(azureReposInvoker.getCommentThreads()).never()
       verify(gitHubReposInvoker.getCommentThreads()).never()
       verify(logger.logDebug('* ReposInvoker.getCommentThreads()')).once()
-      verify(logger.logDebug('* ReposInvoker.initialize()')).once()
+      verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
 
       // Finalization
       delete process.env.BUILD_REPOSITORY_PROVIDER
@@ -448,7 +448,7 @@ describe('reposInvoker.ts', function (): void {
       verify(azureReposInvoker.setTitleAndDescription(null, null)).once()
       verify(gitHubReposInvoker.setTitleAndDescription(null, null)).never()
       verify(logger.logDebug('* ReposInvoker.setTitleAndDescription()')).once()
-      verify(logger.logDebug('* ReposInvoker.initialize()')).once()
+      verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
 
       // Finalization
       delete process.env.BUILD_REPOSITORY_PROVIDER
@@ -466,7 +466,7 @@ describe('reposInvoker.ts', function (): void {
       verify(azureReposInvoker.setTitleAndDescription(null, null)).never()
       verify(gitHubReposInvoker.setTitleAndDescription(null, null)).once()
       verify(logger.logDebug('* ReposInvoker.setTitleAndDescription()')).once()
-      verify(logger.logDebug('* ReposInvoker.initialize()')).once()
+      verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
 
       // Finalization
       delete process.env.BUILD_REPOSITORY_PROVIDER
@@ -484,14 +484,14 @@ describe('reposInvoker.ts', function (): void {
       } catch (error) {
         // Assert
         errorThrown = true
-        expect(error.message).to.equal('\'BUILD_REPOSITORY_PROVIDER\', accessed within \'ReposInvoker.initialize\', is invalid, null, or undefined \'undefined\'.')
+        expect(error.message).to.equal('\'BUILD_REPOSITORY_PROVIDER\', accessed within \'ReposInvoker.getReposInvoker()\', is invalid, null, or undefined \'undefined\'.')
       }
 
       expect(errorThrown).to.equal(true)
       verify(azureReposInvoker.setTitleAndDescription(null, null)).never()
       verify(gitHubReposInvoker.setTitleAndDescription(null, null)).never()
       verify(logger.logDebug('* ReposInvoker.setTitleAndDescription()')).once()
-      verify(logger.logDebug('* ReposInvoker.initialize()')).once()
+      verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
     })
 
     it('should throw when the repo type is set to an invalid value', async (): Promise<void> => {
@@ -513,7 +513,7 @@ describe('reposInvoker.ts', function (): void {
       verify(azureReposInvoker.setTitleAndDescription(null, null)).never()
       verify(gitHubReposInvoker.setTitleAndDescription(null, null)).never()
       verify(logger.logDebug('* ReposInvoker.setTitleAndDescription()')).once()
-      verify(logger.logDebug('* ReposInvoker.initialize()')).once()
+      verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
 
       // Finalization
       delete process.env.BUILD_REPOSITORY_PROVIDER
@@ -533,7 +533,7 @@ describe('reposInvoker.ts', function (): void {
       verify(azureReposInvoker.createComment('', 0, 0)).once()
       verify(gitHubReposInvoker.createComment('', 0, 0)).never()
       verify(logger.logDebug('* ReposInvoker.createComment()')).once()
-      verify(logger.logDebug('* ReposInvoker.initialize()')).once()
+      verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
 
       // Finalization
       delete process.env.BUILD_REPOSITORY_PROVIDER
@@ -551,7 +551,7 @@ describe('reposInvoker.ts', function (): void {
       verify(azureReposInvoker.createComment('', 0, 0)).never()
       verify(gitHubReposInvoker.createComment('', 0, 0)).once()
       verify(logger.logDebug('* ReposInvoker.createComment()')).once()
-      verify(logger.logDebug('* ReposInvoker.initialize()')).once()
+      verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
 
       // Finalization
       delete process.env.BUILD_REPOSITORY_PROVIDER
@@ -569,14 +569,14 @@ describe('reposInvoker.ts', function (): void {
       } catch (error) {
         // Assert
         errorThrown = true
-        expect(error.message).to.equal('\'BUILD_REPOSITORY_PROVIDER\', accessed within \'ReposInvoker.initialize\', is invalid, null, or undefined \'undefined\'.')
+        expect(error.message).to.equal('\'BUILD_REPOSITORY_PROVIDER\', accessed within \'ReposInvoker.getReposInvoker()\', is invalid, null, or undefined \'undefined\'.')
       }
 
       expect(errorThrown).to.equal(true)
       verify(azureReposInvoker.createComment('', 0, 0)).never()
       verify(gitHubReposInvoker.createComment('', 0, 0)).never()
       verify(logger.logDebug('* ReposInvoker.createComment()')).once()
-      verify(logger.logDebug('* ReposInvoker.initialize()')).once()
+      verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
     })
 
     it('should throw when the repo type is set to an invalid value', async (): Promise<void> => {
@@ -598,7 +598,7 @@ describe('reposInvoker.ts', function (): void {
       verify(azureReposInvoker.createComment('', 0, 0)).never()
       verify(gitHubReposInvoker.createComment('', 0, 0)).never()
       verify(logger.logDebug('* ReposInvoker.createComment()')).once()
-      verify(logger.logDebug('* ReposInvoker.initialize()')).once()
+      verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
 
       // Finalization
       delete process.env.BUILD_REPOSITORY_PROVIDER
@@ -618,7 +618,7 @@ describe('reposInvoker.ts', function (): void {
       verify(azureReposInvoker.createCommentThread('', CommentThreadStatus.Active, '', false)).once()
       verify(gitHubReposInvoker.createCommentThread('', CommentThreadStatus.Active, '', false)).never()
       verify(logger.logDebug('* ReposInvoker.createCommentThread()')).once()
-      verify(logger.logDebug('* ReposInvoker.initialize()')).once()
+      verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
 
       // Finalization
       delete process.env.BUILD_REPOSITORY_PROVIDER
@@ -636,7 +636,7 @@ describe('reposInvoker.ts', function (): void {
       verify(azureReposInvoker.createCommentThread('', CommentThreadStatus.Active, '', false)).never()
       verify(gitHubReposInvoker.createCommentThread('', CommentThreadStatus.Active, '', false)).once()
       verify(logger.logDebug('* ReposInvoker.createCommentThread()')).once()
-      verify(logger.logDebug('* ReposInvoker.initialize()')).once()
+      verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
 
       // Finalization
       delete process.env.BUILD_REPOSITORY_PROVIDER
@@ -654,14 +654,14 @@ describe('reposInvoker.ts', function (): void {
       } catch (error) {
         // Assert
         errorThrown = true
-        expect(error.message).to.equal('\'BUILD_REPOSITORY_PROVIDER\', accessed within \'ReposInvoker.initialize\', is invalid, null, or undefined \'undefined\'.')
+        expect(error.message).to.equal('\'BUILD_REPOSITORY_PROVIDER\', accessed within \'ReposInvoker.getReposInvoker()\', is invalid, null, or undefined \'undefined\'.')
       }
 
       expect(errorThrown).to.equal(true)
       verify(azureReposInvoker.createCommentThread('', CommentThreadStatus.Active, '', false)).never()
       verify(gitHubReposInvoker.createCommentThread('', CommentThreadStatus.Active, '', false)).never()
       verify(logger.logDebug('* ReposInvoker.createCommentThread()')).once()
-      verify(logger.logDebug('* ReposInvoker.initialize()')).once()
+      verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
     })
 
     it('should throw when the repo type is set to an invalid value', async (): Promise<void> => {
@@ -683,7 +683,7 @@ describe('reposInvoker.ts', function (): void {
       verify(azureReposInvoker.createCommentThread('', CommentThreadStatus.Active, '', false)).never()
       verify(gitHubReposInvoker.createCommentThread('', CommentThreadStatus.Active, '', false)).never()
       verify(logger.logDebug('* ReposInvoker.createCommentThread()')).once()
-      verify(logger.logDebug('* ReposInvoker.initialize()')).once()
+      verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
 
       // Finalization
       delete process.env.BUILD_REPOSITORY_PROVIDER
@@ -703,7 +703,7 @@ describe('reposInvoker.ts', function (): void {
       verify(azureReposInvoker.setCommentThreadStatus(0, CommentThreadStatus.Active)).once()
       verify(gitHubReposInvoker.setCommentThreadStatus(0, CommentThreadStatus.Active)).never()
       verify(logger.logDebug('* ReposInvoker.setCommentThreadStatus()')).once()
-      verify(logger.logDebug('* ReposInvoker.initialize()')).once()
+      verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
 
       // Finalization
       delete process.env.BUILD_REPOSITORY_PROVIDER
@@ -721,7 +721,7 @@ describe('reposInvoker.ts', function (): void {
       verify(azureReposInvoker.setCommentThreadStatus(0, CommentThreadStatus.Active)).never()
       verify(gitHubReposInvoker.setCommentThreadStatus(0, CommentThreadStatus.Active)).once()
       verify(logger.logDebug('* ReposInvoker.setCommentThreadStatus()')).once()
-      verify(logger.logDebug('* ReposInvoker.initialize()')).once()
+      verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
 
       // Finalization
       delete process.env.BUILD_REPOSITORY_PROVIDER
@@ -739,14 +739,14 @@ describe('reposInvoker.ts', function (): void {
       } catch (error) {
         // Assert
         errorThrown = true
-        expect(error.message).to.equal('\'BUILD_REPOSITORY_PROVIDER\', accessed within \'ReposInvoker.initialize\', is invalid, null, or undefined \'undefined\'.')
+        expect(error.message).to.equal('\'BUILD_REPOSITORY_PROVIDER\', accessed within \'ReposInvoker.getReposInvoker()\', is invalid, null, or undefined \'undefined\'.')
       }
 
       expect(errorThrown).to.equal(true)
       verify(azureReposInvoker.setCommentThreadStatus(0, CommentThreadStatus.Active)).never()
       verify(gitHubReposInvoker.setCommentThreadStatus(0, CommentThreadStatus.Active)).never()
       verify(logger.logDebug('* ReposInvoker.setCommentThreadStatus()')).once()
-      verify(logger.logDebug('* ReposInvoker.initialize()')).once()
+      verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
     })
 
     it('should throw when the repo type is set to an invalid value', async (): Promise<void> => {
@@ -768,7 +768,7 @@ describe('reposInvoker.ts', function (): void {
       verify(azureReposInvoker.setCommentThreadStatus(0, CommentThreadStatus.Active)).never()
       verify(gitHubReposInvoker.setCommentThreadStatus(0, CommentThreadStatus.Active)).never()
       verify(logger.logDebug('* ReposInvoker.setCommentThreadStatus()')).once()
-      verify(logger.logDebug('* ReposInvoker.initialize()')).once()
+      verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
 
       // Finalization
       delete process.env.BUILD_REPOSITORY_PROVIDER
@@ -794,7 +794,7 @@ describe('reposInvoker.ts', function (): void {
       verify(azureReposInvoker.addMetadata(metadata)).once()
       verify(gitHubReposInvoker.addMetadata(metadata)).never()
       verify(logger.logDebug('* ReposInvoker.addMetadata()')).once()
-      verify(logger.logDebug('* ReposInvoker.initialize()')).once()
+      verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
 
       // Finalization
       delete process.env.BUILD_REPOSITORY_PROVIDER
@@ -818,7 +818,7 @@ describe('reposInvoker.ts', function (): void {
       verify(azureReposInvoker.addMetadata(metadata)).never()
       verify(gitHubReposInvoker.addMetadata(metadata)).once()
       verify(logger.logDebug('* ReposInvoker.addMetadata()')).once()
-      verify(logger.logDebug('* ReposInvoker.initialize()')).once()
+      verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
 
       // Finalization
       delete process.env.BUILD_REPOSITORY_PROVIDER
@@ -842,14 +842,14 @@ describe('reposInvoker.ts', function (): void {
       } catch (error) {
         // Assert
         errorThrown = true
-        expect(error.message).to.equal('\'BUILD_REPOSITORY_PROVIDER\', accessed within \'ReposInvoker.initialize\', is invalid, null, or undefined \'undefined\'.')
+        expect(error.message).to.equal('\'BUILD_REPOSITORY_PROVIDER\', accessed within \'ReposInvoker.getReposInvoker()\', is invalid, null, or undefined \'undefined\'.')
       }
 
       expect(errorThrown).to.equal(true)
       verify(azureReposInvoker.addMetadata(metadata)).never()
       verify(gitHubReposInvoker.addMetadata(metadata)).never()
       verify(logger.logDebug('* ReposInvoker.addMetadata()')).once()
-      verify(logger.logDebug('* ReposInvoker.initialize()')).once()
+      verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
     })
 
     it('should throw when the repo type is set to an invalid value', async (): Promise<void> => {
@@ -877,7 +877,7 @@ describe('reposInvoker.ts', function (): void {
       verify(azureReposInvoker.addMetadata(metadata)).never()
       verify(gitHubReposInvoker.addMetadata(metadata)).never()
       verify(logger.logDebug('* ReposInvoker.addMetadata()')).once()
-      verify(logger.logDebug('* ReposInvoker.initialize()')).once()
+      verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
 
       // Finalization
       delete process.env.BUILD_REPOSITORY_PROVIDER

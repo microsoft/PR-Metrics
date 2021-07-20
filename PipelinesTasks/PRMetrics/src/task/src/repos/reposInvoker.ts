@@ -3,13 +3,13 @@
 
 import { CommentThreadStatus, GitPullRequestCommentThread } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import { singleton } from 'tsyringe'
+import { Validator } from '../utilities/validator'
 import AzureReposInvoker from './azureReposInvoker'
 import GitHubReposInvoker from './gitHubReposInvoker'
 import IReposInvoker from './iReposInvoker'
 import Logger from '../utilities/logger'
 import PullRequestDetails from './pullRequestDetails'
 import PullRequestMetadata from './pullRequestMetadata'
-import { Validator } from '../utilities/validator'
 
 /**
  * A class for invoking repository functionality with any underlying repository store.
@@ -20,8 +20,7 @@ export default class ReposInvoker implements IReposInvoker {
   private readonly _gitHubReposInvoker: GitHubReposInvoker
   private readonly _logger: Logger
 
-  private _isAzureRepos: boolean = true
-  private _isInitialized: boolean = false
+  private _reposInvoker: IReposInvoker | undefined
 
   /**
    * Initializes a new instance of the `ReposInvoker` class.
@@ -38,132 +37,92 @@ export default class ReposInvoker implements IReposInvoker {
   public get isFunctionalityComplete (): boolean {
     this._logger.logDebug('* ReposInvoker.isFunctionalityComplete')
 
-    this.initialize()
-    if (this._isAzureRepos) {
-      return this._azureReposInvoker.isFunctionalityComplete
-    } else {
-      return this._gitHubReposInvoker.isFunctionalityComplete
-    }
+    const reposInvoker: IReposInvoker = this.getReposInvoker()
+    return reposInvoker.isFunctionalityComplete
   }
 
   public get isAccessTokenAvailable (): boolean {
     this._logger.logDebug('* ReposInvoker.isAccessTokenAvailable')
 
-    this.initialize()
-    if (this._isAzureRepos) {
-      return this._azureReposInvoker.isAccessTokenAvailable
-    } else {
-      return this._gitHubReposInvoker.isAccessTokenAvailable
-    }
+    const reposInvoker: IReposInvoker = this.getReposInvoker()
+    return reposInvoker.isAccessTokenAvailable
   }
 
   public async getTitleAndDescription (): Promise<PullRequestDetails> {
     this._logger.logDebug('* ReposInvoker.getTitleAndDescription()')
 
-    this.initialize()
-    if (this._isAzureRepos) {
-      return this._azureReposInvoker.getTitleAndDescription()
-    } else {
-      return this._gitHubReposInvoker.getTitleAndDescription()
-    }
+    const reposInvoker: IReposInvoker = this.getReposInvoker()
+    return reposInvoker.getTitleAndDescription()
   }
 
   public async getCurrentIteration (): Promise<number> {
     this._logger.logDebug('* ReposInvoker.getCurrentIteration()')
 
-    this.initialize()
-    if (this._isAzureRepos) {
-      return this._azureReposInvoker.getCurrentIteration()
-    } else {
-      return this._gitHubReposInvoker.getCurrentIteration()
-    }
+    const reposInvoker: IReposInvoker = this.getReposInvoker()
+    return reposInvoker.getCurrentIteration()
   }
 
   public async getCommentThreads (): Promise<GitPullRequestCommentThread[]> {
     this._logger.logDebug('* ReposInvoker.getCommentThreads()')
 
-    this.initialize()
-    if (this._isAzureRepos) {
-      return this._azureReposInvoker.getCommentThreads()
-    } else {
-      return this._gitHubReposInvoker.getCommentThreads()
-    }
+    const reposInvoker: IReposInvoker = this.getReposInvoker()
+    return reposInvoker.getCommentThreads()
   }
 
   public async setTitleAndDescription (title: string | null, description: string | null): Promise<void> {
     this._logger.logDebug('* ReposInvoker.setTitleAndDescription()')
 
-    this.initialize()
-    if (this._isAzureRepos) {
-      return this._azureReposInvoker.setTitleAndDescription(title, description)
-    } else {
-      return this._gitHubReposInvoker.setTitleAndDescription(title, description)
-    }
+    const reposInvoker: IReposInvoker = this.getReposInvoker()
+    return reposInvoker.setTitleAndDescription(title, description)
   }
 
   public async createComment (commentContent: string, commentThreadId: number, parentCommentId: number): Promise<void> {
     this._logger.logDebug('* ReposInvoker.createComment()')
 
-    this.initialize()
-    if (this._isAzureRepos) {
-      return this._azureReposInvoker.createComment(commentContent, commentThreadId, parentCommentId)
-    } else {
-      return this._gitHubReposInvoker.createComment(commentContent, commentThreadId, parentCommentId)
-    }
+    const reposInvoker: IReposInvoker = this.getReposInvoker()
+    return reposInvoker.createComment(commentContent, commentThreadId, parentCommentId)
   }
 
   public async createCommentThread (commentContent: string, status: CommentThreadStatus, fileName?: string, isFileDeleted?: boolean): Promise<void> {
     this._logger.logDebug('* ReposInvoker.createCommentThread()')
 
-    this.initialize()
-    if (this._isAzureRepos) {
-      return this._azureReposInvoker.createCommentThread(commentContent, status, fileName, isFileDeleted)
-    } else {
-      return this._gitHubReposInvoker.createCommentThread(commentContent, status, fileName, isFileDeleted)
-    }
+    const reposInvoker: IReposInvoker = this.getReposInvoker()
+    return reposInvoker.createCommentThread(commentContent, status, fileName, isFileDeleted)
   }
 
   public async setCommentThreadStatus (commentThreadId: number, status: CommentThreadStatus): Promise<void> {
     this._logger.logDebug('* ReposInvoker.setCommentThreadStatus()')
 
-    this.initialize()
-    if (this._isAzureRepos) {
-      return this._azureReposInvoker.setCommentThreadStatus(commentThreadId, status)
-    } else {
-      return this._gitHubReposInvoker.setCommentThreadStatus(commentThreadId, status)
-    }
+    const reposInvoker: IReposInvoker = this.getReposInvoker()
+    return reposInvoker.setCommentThreadStatus(commentThreadId, status)
   }
 
   public async addMetadata (metadata: PullRequestMetadata[]): Promise<void> {
     this._logger.logDebug('* ReposInvoker.addMetadata()')
 
-    this.initialize()
-    if (this._isAzureRepos) {
-      return this._azureReposInvoker.addMetadata(metadata)
-    } else {
-      return this._gitHubReposInvoker.addMetadata(metadata)
-    }
+    const reposInvoker: IReposInvoker = this.getReposInvoker()
+    return reposInvoker.addMetadata(metadata)
   }
 
-  private initialize (): void {
-    this._logger.logDebug('* ReposInvoker.initialize()')
+  private getReposInvoker (): IReposInvoker {
+    this._logger.logDebug('* ReposInvoker.getReposInvoker()')
 
-    if (this._isInitialized) {
-      return
+    if (this._reposInvoker) {
+      return this._reposInvoker
     }
 
-    this._isInitialized = true
-
-    const variable: string = Validator.validate(process.env.BUILD_REPOSITORY_PROVIDER, 'BUILD_REPOSITORY_PROVIDER', 'ReposInvoker.initialize')
+    const variable: string = Validator.validate(process.env.BUILD_REPOSITORY_PROVIDER, 'BUILD_REPOSITORY_PROVIDER', 'ReposInvoker.getReposInvoker()')
     switch (variable) {
       case 'TfsGit':
-        this._isAzureRepos = true
+        this._reposInvoker = this._azureReposInvoker
         break
       case 'GitHub':
-        this._isAzureRepos = false
+        this._reposInvoker = this._gitHubReposInvoker
         break
       default:
         throw RangeError(`BUILD_REPOSITORY_PROVIDER '${variable}' is unsupported.`)
     }
+
+    return this._reposInvoker
   }
 }
