@@ -94,7 +94,11 @@ export default class GitInvoker {
   private getPullRequestId (): string {
     this._logger.logDebug('* GitInvoker.getPullRequestId()')
 
-    return Validator.validate(process.env.SYSTEM_PULLREQUEST_PULLREQUESTID, 'SYSTEM_PULLREQUEST_PULLREQUESTID', 'GitInvoker.getPullRequestId()')
+    if (process.env.BUILD_REPOSITORY_PROVIDER === 'GitHub') {
+      return Validator.validate(process.env.SYSTEM_PULLREQUEST_PULLREQUESTNUMBER, 'SYSTEM_PULLREQUEST_PULLREQUESTNUMBER', 'GitInvoker.getPullRequestId()')
+    } else {
+      return Validator.validate(process.env.SYSTEM_PULLREQUEST_PULLREQUESTID, 'SYSTEM_PULLREQUEST_PULLREQUESTID', 'GitInvoker.getPullRequestId()')
+    }
   }
 
   private async invokeGit (parameters: string): Promise<string> {

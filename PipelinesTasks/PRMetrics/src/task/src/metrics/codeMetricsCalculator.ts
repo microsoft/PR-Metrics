@@ -110,6 +110,10 @@ export default class CodeMetricsCalculator {
   public async updateComments (): Promise<void> {
     this._logger.logDebug('* CodeMetricsCalculator.updateComments()')
 
+    if (!this._reposInvoker.isFunctionalityComplete) {
+      return
+    }
+
     const promises: Promise<void>[] = []
 
     const currentIteration: number = await this._reposInvoker.getCurrentIteration()

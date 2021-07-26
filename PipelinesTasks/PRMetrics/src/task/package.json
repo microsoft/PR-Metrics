@@ -44,6 +44,7 @@
   },
   "dependencies": {
     "@octokit/plugin-rest-endpoint-methods": "^5.5.1",
+    "@octokit/types": "^6.21.1",
     "azure-devops-node-api": "^10.2.2",
     "azure-pipelines-task-lib": "^3.1.0",
     "octokit": "^1.1.0",
