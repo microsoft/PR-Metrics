@@ -29,6 +29,7 @@ describe('codeMetricsCalculator.ts', (): void => {
 
   beforeEach((): void => {
     reposInvoker = mock(ReposInvoker)
+    when(reposInvoker.isCommentsFunctionalityAvailable).thenReturn(true)
     when(reposInvoker.isAccessTokenAvailable).thenReturn(true)
 
     codeMetrics = mock(CodeMetrics)
@@ -183,6 +184,19 @@ describe('codeMetricsCalculator.ts', (): void => {
   })
 
   describe('updateComments()', (): void => {
+    it('should terminate when the comments functionality is unavailable', async (): Promise<void> => {
+      // Arrange
+      when(reposInvoker.isCommentsFunctionalityAvailable).thenReturn(false)
+      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(codeMetrics), instance(gitInvoker), instance(logger), instance(pullRequest), instance(pullRequestComments), instance(reposInvoker), instance(taskLibWrapper))
+
+      // Act
+      await codeMetricsCalculator.updateComments()
+
+      // Assert
+      verify(logger.logDebug('* CodeMetricsCalculator.updateComments()')).once()
+      verify(logger.logDebug('Skipping comments functionality as it is unavailable.')).once()
+    })
+
     it('should succeed when no comment updates are necessary', async (): Promise<void> => {
       // Arrange
       when(reposInvoker.getCurrentIteration()).thenResolve(1)
