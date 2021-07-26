@@ -7,6 +7,7 @@ import IReposInvoker from './iReposInvoker'
 import Logger from '../utilities/logger'
 import PullRequestDetails from './pullRequestDetails'
 import PullRequestMetadata from './pullRequestMetadata'
+import { Octokit } from 'octokit'
 
 /**
  * A class for invoking GitHub Repos functionality.
@@ -32,11 +33,19 @@ export default class GitHubReposInvoker implements IReposInvoker {
   public get isAccessTokenAvailable (): boolean {
     this._logger.logDebug('* GitHubReposInvoker.isAccessTokenAvailable')
 
-    throw Error('GitHub functionality not yet implemented.')
+    return true
   }
 
   public async getTitleAndDescription (): Promise<PullRequestDetails> {
     this._logger.logDebug('* GitHubReposInvoker.getTitleAndDescription()')
+
+    const octokit: Octokit = new Octokit({
+      auth: process.env.GITHUB_PAT,
+      userAgent: 'PRMetrics/v1.1.8'
+    })
+
+    const { data: { login } } = await octokit.rest.users.getAuthenticated()
+    console.log('Hello, %s', login)
 
     throw Error('GitHub functionality not yet implemented.')
   }
