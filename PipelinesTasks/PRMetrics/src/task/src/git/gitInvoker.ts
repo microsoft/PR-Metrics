@@ -83,12 +83,12 @@ export default class GitInvoker {
 
     const variable: string = Validator.validate(process.env.SYSTEM_PULLREQUEST_TARGETBRANCH, 'SYSTEM_PULLREQUEST_TARGETBRANCH', 'GitInvoker.getTargetBranch()')
     const expectedStart: string = 'refs/heads/'
-    if (!variable.startsWith(expectedStart)) {
-      throw Error(`Environment variable SYSTEM_PULLREQUEST_TARGETBRANCH '${variable}' in unexpected format.`)
+    if (variable.startsWith(expectedStart)) {
+      const startIndex: number = expectedStart.length
+      return variable.substring(startIndex)
+    } else {
+      return variable
     }
-
-    const startIndex: number = expectedStart.length
-    return variable.substring(startIndex)
   }
 
   private getPullRequestId (): string {
