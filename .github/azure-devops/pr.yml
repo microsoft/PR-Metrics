@@ -9,3 +9,4 @@ pool:
 
 steps:
   - task: prmetrics@1
+    displayName: PR Metrics

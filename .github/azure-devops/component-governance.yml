@@ -12,6 +12,7 @@ pool:
 
 steps:
   - task: ComponentGovernanceComponentDetection@0
+    displayName: Component Governance
     inputs:
       scanType: Register
       verbosity: Verbose
