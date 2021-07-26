@@ -8,6 +8,7 @@ pool:
   vmImage: ubuntu-latest
 
 jobs:
+  name: pr
   displayName: PR Build
   steps:
     - displayName: PR Metrics

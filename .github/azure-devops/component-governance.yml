@@ -11,6 +11,7 @@ pool:
   vmImage: ubuntu-latest
 
 jobs:
+  name: component-governance
   displayName: Component Governance Build
   steps:
     - displayName: Component Governance
