@@ -111,6 +111,7 @@ export default class CodeMetricsCalculator {
     this._logger.logDebug('* CodeMetricsCalculator.updateComments()')
 
     if (!this._reposInvoker.isFunctionalityComplete) {
+      this._logger.logDebug('Skipping comments functionality.')
       return
     }
 

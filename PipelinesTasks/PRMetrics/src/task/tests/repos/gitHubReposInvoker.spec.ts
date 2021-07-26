@@ -2,24 +2,27 @@
 // Licensed under the MIT License.
 
 import 'reflect-metadata'
-import { instance, mock, verify } from 'ts-mockito'
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import { expect } from 'chai'
+import { instance, mock, verify } from 'ts-mockito'
 import GitHubReposInvoker from '../../src/repos/gitHubReposInvoker'
 import Logger from '../../src/utilities/logger'
 import PullRequestMetadata from '../../src/repos/pullRequestMetadata'
+import TaskLibWrapper from '../../src/wrappers/taskLibWrapper'
 
 describe('gitHubReposInvoker.ts', function (): void {
   let logger: Logger
+  let taskLibWrapper: TaskLibWrapper
 
   beforeEach((): void => {
     logger = mock(Logger)
+    taskLibWrapper = mock(TaskLibWrapper)
   })
 
   describe('isFunctionalityComplete', (): void => {
     it('should return false', (): void => {
       // Arrange
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger))
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(taskLibWrapper))
 
       // Act
       const result: boolean = gitHubReposInvoker.isFunctionalityComplete
@@ -33,7 +36,7 @@ describe('gitHubReposInvoker.ts', function (): void {
   describe('isAccessTokenAvailable', (): void => {
     it('should throw an exception', (): void => {
       // Arrange
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger))
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(taskLibWrapper))
 
       // Act
       const func: () => boolean = () => gitHubReposInvoker.isAccessTokenAvailable
@@ -47,7 +50,7 @@ describe('gitHubReposInvoker.ts', function (): void {
   describe('getTitleAndDescription()', (): void => {
     it('should throw an exception', async (): Promise<void> => {
       // Arrange
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger))
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(taskLibWrapper))
       let errorThrown: boolean = false
 
       try {
@@ -67,7 +70,7 @@ describe('gitHubReposInvoker.ts', function (): void {
   describe('getCurrentIteration()', (): void => {
     it('should throw an exception', async (): Promise<void> => {
       // Arrange
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger))
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(taskLibWrapper))
       let errorThrown: boolean = false
 
       try {
@@ -87,7 +90,7 @@ describe('gitHubReposInvoker.ts', function (): void {
   describe('getCommentThreads()', (): void => {
     it('should throw an exception', async (): Promise<void> => {
       // Arrange
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger))
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(taskLibWrapper))
       let errorThrown: boolean = false
 
       try {
@@ -107,7 +110,7 @@ describe('gitHubReposInvoker.ts', function (): void {
   describe('setTitleAndDescription()', (): void => {
     it('should throw an exception', async (): Promise<void> => {
       // Arrange
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger))
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(taskLibWrapper))
       let errorThrown: boolean = false
 
       try {
@@ -127,7 +130,7 @@ describe('gitHubReposInvoker.ts', function (): void {
   describe('createComment()', (): void => {
     it('should throw an exception', async (): Promise<void> => {
       // Arrange
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger))
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(taskLibWrapper))
       let errorThrown: boolean = false
 
       try {
@@ -147,7 +150,7 @@ describe('gitHubReposInvoker.ts', function (): void {
   describe('createCommentThread()', (): void => {
     it('should throw an exception', async (): Promise<void> => {
       // Arrange
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger))
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(taskLibWrapper))
       let errorThrown: boolean = false
 
       try {
@@ -167,7 +170,7 @@ describe('gitHubReposInvoker.ts', function (): void {
   describe('setCommentThreadStatus()', (): void => {
     it('should throw an exception', async (): Promise<void> => {
       // Arrange
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger))
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(taskLibWrapper))
       let errorThrown: boolean = false
 
       try {
@@ -193,7 +196,7 @@ describe('gitHubReposInvoker.ts', function (): void {
           value: ''
         }
       ]
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger))
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(taskLibWrapper))
       let errorThrown: boolean = false
 
       try {

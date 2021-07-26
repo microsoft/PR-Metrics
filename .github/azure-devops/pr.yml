@@ -7,9 +7,9 @@ pr:
 pool:
   vmImage: ubuntu-latest
 
-steps:
-  - task: prmetrics@1
-    displayName: PR Metrics
-    env:
-      SECRET_GITHUB_PAT: $(GITHUB_PAT)
+jobs:
+  displayName: PR Build
+  steps:
+    - displayName: PR Metrics
+      task: prmetrics@1
 

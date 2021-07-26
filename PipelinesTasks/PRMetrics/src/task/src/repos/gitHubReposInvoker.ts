@@ -3,15 +3,16 @@
 
 import { CommentThreadStatus, GitPullRequestCommentThread } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import { Octokit } from 'octokit'
-import { OctokitResponse, RequestParameters } from '@octokit/types'
+import { RequestParameters } from '@octokit/types'
 import { singleton } from 'tsyringe'
 import IReposInvoker from './iReposInvoker'
 import Logger from '../utilities/logger'
 import PullRequestDetails from './pullRequestDetails'
 import PullRequestMetadata from './pullRequestMetadata'
-import PullsUpdatePayload from './gitHubInterfaces/pullsUpdatePayload'
 import PullsGetResponseType from './gitHubInterfaces/pullsGetResponseType'
+import PullsUpdatePayload from './gitHubInterfaces/pullsUpdatePayload'
 import PullsUpdateResponseType from './gitHubInterfaces/pullsUpdateResponseType'
+import TaskLibWrapper from '../wrappers/taskLibWrapper'
 
 /**
  * A class for invoking GitHub Repos functionality.
@@ -19,15 +20,18 @@ import PullsUpdateResponseType from './gitHubInterfaces/pullsUpdateResponseType'
 @singleton()
 export default class GitHubReposInvoker implements IReposInvoker {
   private readonly _logger: Logger
+  private readonly _taskLibWrapper: TaskLibWrapper
 
   private _octokit: Octokit | undefined
 
   /**
    * Initializes a new instance of the `GitHubReposInvoker` class.
    * @param logger The logger.
+   * @param taskLibWrapper The wrapper around the Azure Pipelines Task Lib.
    */
-  public constructor (logger: Logger) {
+  public constructor (logger: Logger, taskLibWrapper: TaskLibWrapper) {
     this._logger = logger
+    this._taskLibWrapper = taskLibWrapper
   }
 
   public get isFunctionalityComplete (): boolean {
@@ -45,10 +49,9 @@ export default class GitHubReposInvoker implements IReposInvoker {
   public async getTitleAndDescription (): Promise<PullRequestDetails> {
     this._logger.logDebug('* GitHubReposInvoker.getTitleAndDescription()')
 
-    const octokit: Octokit = this.getOctokit()
-    const user: OctokitResponse<any> = await octokit.rest.users.getAuthenticated()
-    this._logger.logDebug('User: ' + user.data.login)
-
+    const octokit: Octokit = new Octokit({
+      userAgent: 'PRMetrics/v1.1.8'
+    })
     const result: PullsGetResponseType = await octokit.rest.pulls.get({
       owner: 'microsoft',
       repo: 'OMEX-Azure-DevOps-Extensions',
@@ -74,23 +77,25 @@ export default class GitHubReposInvoker implements IReposInvoker {
     throw Error('GitHub functionality not yet implemented.')
   }
 
-  public async setTitleAndDescription (_: string | null, __: string | null): Promise<void> {
+  public async setTitleAndDescription (title: string | null, description: string | null): Promise<void> {
     this._logger.logDebug('* GitHubReposInvoker.setTitleAndDescription()')
 
     const octokit: Octokit = this.getOctokit()
+    this._logger.logDebug(JSON.stringify(await octokit.request("GET /")))
+
     const payload: RequestParameters & PullsUpdatePayload = {
       owner: 'microsoft',
       repo: 'OMEX-Azure-DevOps-Extensions',
       pull_number: parseInt(process.env.SYSTEM_PULLREQUEST_PULLREQUESTNUMBER!)
     }
 
-    /*if (title !== null) {
+    if (title !== null) {
       payload.title = title
     }
 
     if (description !== null) {
       payload.body = description
-    }*/
+    }
 
     const result: PullsUpdateResponseType = await octokit.rest.pulls.update(payload)
     this._logger.logDebug(JSON.stringify(result))
@@ -127,11 +132,8 @@ export default class GitHubReposInvoker implements IReposInvoker {
       return this._octokit
     }
 
-    this._logger.logDebug('PAT1' + process.env.SECRET_GITHUB_PAT)
-    this._logger.logDebug('PAT2' + process.env.GITHUB_PAT)
-
     this._octokit = new Octokit({
-      auth: process.env.SECRET_GITHUB_PAT,
+      auth: this._taskLibWrapper.getVariable('GitHub.PAT'),
       userAgent: 'PRMetrics/v1.1.8'
     })
 
