@@ -85,22 +85,26 @@ export default class GitHubReposInvoker implements IReposInvoker {
   public async setTitleAndDescription (title: string | null, description: string | null): Promise<void> {
     this._logger.logDebug('* GitHubReposInvoker.setTitleAndDescription()')
 
+    if (title === null && description === null) {
+      return
+    }
+
     this.initialize()
-    const payload: RequestParameters & UpdatePullRequest = {
+    const request: RequestParameters & UpdatePullRequest = {
       owner: this._owner!,
       repo: this._repo!,
       pull_number: this._pullRequestId!
     }
 
     if (title !== null) {
-      payload.title = title
+      request.title = title
     }
 
     if (description !== null) {
-      payload.body = description
+      request.body = description
     }
 
-    const result: UpdatePullResponse = await this._octokitWrapper.updatePull(payload)
+    const result: UpdatePullResponse = await this._octokitWrapper.updatePull(request)
     this._logger.logDebug(JSON.stringify(result))
   }
 

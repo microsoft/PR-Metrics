@@ -688,11 +688,8 @@ describe('gitHubReposInvoker.ts', function (): void {
       await gitHubReposInvoker.setTitleAndDescription(null, null)
 
       // Assert
-      verify(octokitWrapper.initialize(deepEqual({ auth: 'ghp_000000000000000000000000000000000000', userAgent: 'PRMetrics/v1.1.8' }))).once()
-      verify(octokitWrapper.updatePull(deepEqual({ owner: 'microsoft', repo: 'OMEX-Azure-DevOps-Extensions', pull_number: 12345 }))).once()
       verify(logger.logDebug('* GitHubReposInvoker.setTitleAndDescription()')).once()
-      verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
-      verify(logger.logDebug(JSON.stringify(mockPullResponse))).once()
+      verify(logger.logDebug('* GitHubReposInvoker.initialize()')).never()
     })
 
     it('should succeed when the title and description are both set', async (): Promise<void> => {
