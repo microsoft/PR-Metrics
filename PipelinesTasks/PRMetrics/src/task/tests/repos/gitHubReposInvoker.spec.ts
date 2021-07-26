@@ -19,17 +19,17 @@ describe('gitHubReposInvoker.ts', function (): void {
     taskLibWrapper = mock(TaskLibWrapper)
   })
 
-  describe('isFunctionalityComplete', (): void => {
+  describe('isCommentsFunctionalityAvailable', (): void => {
     it('should return false', (): void => {
       // Arrange
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(taskLibWrapper))
 
       // Act
-      const result: boolean = gitHubReposInvoker.isFunctionalityComplete
+      const result: boolean = gitHubReposInvoker.isCommentsFunctionalityAvailable
 
       // Assert
       expect(result).to.equal(false)
-      verify(logger.logDebug('* GitHubReposInvoker.isFunctionalityComplete')).once()
+      verify(logger.logDebug('* GitHubReposInvoker.isCommentsFunctionalityAvailable')).once()
     })
   })
 

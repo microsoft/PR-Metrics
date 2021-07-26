@@ -110,8 +110,8 @@ export default class CodeMetricsCalculator {
   public async updateComments (): Promise<void> {
     this._logger.logDebug('* CodeMetricsCalculator.updateComments()')
 
-    if (!this._reposInvoker.isFunctionalityComplete) {
-      this._logger.logDebug('Skipping comments functionality.')
+    if (!this._reposInvoker.isCommentsFunctionalityAvailable) {
+      this._logger.logDebug('Skipping comments functionality as it is unavailable.')
       return
     }
 

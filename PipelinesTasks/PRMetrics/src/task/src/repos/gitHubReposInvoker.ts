@@ -34,8 +34,8 @@ export default class GitHubReposInvoker implements IReposInvoker {
     this._taskLibWrapper = taskLibWrapper
   }
 
-  public get isFunctionalityComplete (): boolean {
-    this._logger.logDebug('* GitHubReposInvoker.isFunctionalityComplete')
+  public get isCommentsFunctionalityAvailable (): boolean {
+    this._logger.logDebug('* GitHubReposInvoker.isCommentsFunctionalityAvailable')
 
     return false
   }
@@ -49,9 +49,7 @@ export default class GitHubReposInvoker implements IReposInvoker {
   public async getTitleAndDescription (): Promise<PullRequestDetails> {
     this._logger.logDebug('* GitHubReposInvoker.getTitleAndDescription()')
 
-    const octokit: Octokit = new Octokit({
-      userAgent: 'PRMetrics/v1.1.8'
-    })
+    const octokit: Octokit = this.getOctokit()
     const result: PullsGetResponseType = await octokit.rest.pulls.get({
       owner: 'microsoft',
       repo: 'OMEX-Azure-DevOps-Extensions',
@@ -81,8 +79,6 @@ export default class GitHubReposInvoker implements IReposInvoker {
     this._logger.logDebug('* GitHubReposInvoker.setTitleAndDescription()')
 
     const octokit: Octokit = this.getOctokit()
-    this._logger.logDebug(JSON.stringify(await octokit.request("GET /")))
-
     const payload: RequestParameters & PullsUpdatePayload = {
       owner: 'microsoft',
       repo: 'OMEX-Azure-DevOps-Extensions',

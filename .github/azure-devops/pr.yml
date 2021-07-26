@@ -7,7 +7,13 @@ pr:
 pool:
   vmImage: ubuntu-latest
 
-steps:
-  - task: PRMetrics@1
+stages:
+  - stage: PRMetrics
     displayName: PR Metrics
+    jobs:
+      - job: PRMetrics
+        displayName: PR Metrics
+        steps:
+          - task: PRMetrics@1
+            displayName: PR Metrics
 

@@ -38,8 +38,8 @@ export default class AzureReposInvoker implements IReposInvoker {
     this._logger = logger
   }
 
-  public get isFunctionalityComplete (): boolean {
-    this._logger.logDebug('* AzureReposInvoker.isFunctionalityComplete')
+  public get isCommentsFunctionalityAvailable (): boolean {
+    this._logger.logDebug('* AzureReposInvoker.isCommentsFunctionalityAvailable')
 
     return true
   }

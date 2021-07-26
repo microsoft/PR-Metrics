@@ -12,7 +12,7 @@ export default interface IReposInvoker {
   /**
    * Gets a value indicating whether the current repository provides complete functionality.
    */
-  isFunctionalityComplete: boolean
+  isCommentsFunctionalityAvailable: boolean
 
   /**
    * Gets a value indicating whether the OAuth access token is available to the task.

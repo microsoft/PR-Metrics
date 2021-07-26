@@ -24,19 +24,19 @@ describe('reposInvoker.ts', function (): void {
     logger = mock(Logger)
   })
 
-  describe('isFunctionalityComplete', (): void => {
+  describe('isCommentsFunctionalityAvailable', (): void => {
     it('should invoke Azure Repos when called from an appropriate repo', (): void => {
       // Arrange
       process.env.BUILD_REPOSITORY_PROVIDER = 'TfsGit'
       const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
 
       // Act
-      const result: boolean = reposInvoker.isFunctionalityComplete
+      const result: boolean = reposInvoker.isCommentsFunctionalityAvailable
 
       // Assert
-      verify(azureReposInvoker.isFunctionalityComplete).once()
-      verify(gitHubReposInvoker.isFunctionalityComplete).never()
-      verify(logger.logDebug('* ReposInvoker.isFunctionalityComplete')).once()
+      verify(azureReposInvoker.isCommentsFunctionalityAvailable).once()
+      verify(gitHubReposInvoker.isCommentsFunctionalityAvailable).never()
+      verify(logger.logDebug('* ReposInvoker.isCommentsFunctionalityAvailable')).once()
       verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
       expect(result).to.equal(null)
 
@@ -50,12 +50,12 @@ describe('reposInvoker.ts', function (): void {
       const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
 
       // Act
-      const result: boolean = reposInvoker.isFunctionalityComplete
+      const result: boolean = reposInvoker.isCommentsFunctionalityAvailable
 
       // Assert
-      verify(azureReposInvoker.isFunctionalityComplete).never()
-      verify(gitHubReposInvoker.isFunctionalityComplete).once()
-      verify(logger.logDebug('* ReposInvoker.isFunctionalityComplete')).once()
+      verify(azureReposInvoker.isCommentsFunctionalityAvailable).never()
+      verify(gitHubReposInvoker.isCommentsFunctionalityAvailable).once()
+      verify(logger.logDebug('* ReposInvoker.isCommentsFunctionalityAvailable')).once()
       verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
       expect(result).to.equal(null)
 
@@ -69,13 +69,13 @@ describe('reposInvoker.ts', function (): void {
       const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
 
       // Act
-      const func: () => boolean = () => reposInvoker.isFunctionalityComplete
+      const func: () => boolean = () => reposInvoker.isCommentsFunctionalityAvailable
 
       // Assert
       expect(func).to.throw('\'BUILD_REPOSITORY_PROVIDER\', accessed within \'ReposInvoker.getReposInvoker()\', is invalid, null, or undefined \'undefined\'.')
-      verify(azureReposInvoker.isFunctionalityComplete).never()
-      verify(gitHubReposInvoker.isFunctionalityComplete).never()
-      verify(logger.logDebug('* ReposInvoker.isFunctionalityComplete')).once()
+      verify(azureReposInvoker.isCommentsFunctionalityAvailable).never()
+      verify(gitHubReposInvoker.isCommentsFunctionalityAvailable).never()
+      verify(logger.logDebug('* ReposInvoker.isCommentsFunctionalityAvailable')).once()
       verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
     })
 
@@ -85,13 +85,13 @@ describe('reposInvoker.ts', function (): void {
       const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
 
       // Act
-      const func: () => boolean = () => reposInvoker.isFunctionalityComplete
+      const func: () => boolean = () => reposInvoker.isCommentsFunctionalityAvailable
 
       // Assert
       expect(func).to.throw('BUILD_REPOSITORY_PROVIDER \'Other\' is unsupported.')
-      verify(azureReposInvoker.isFunctionalityComplete).never()
-      verify(gitHubReposInvoker.isFunctionalityComplete).never()
-      verify(logger.logDebug('* ReposInvoker.isFunctionalityComplete')).once()
+      verify(azureReposInvoker.isCommentsFunctionalityAvailable).never()
+      verify(gitHubReposInvoker.isCommentsFunctionalityAvailable).never()
+      verify(logger.logDebug('* ReposInvoker.isCommentsFunctionalityAvailable')).once()
       verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
 
       // Finalization

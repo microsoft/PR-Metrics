@@ -49,17 +49,17 @@ describe('azureReposInvoker.ts', function (): void {
     delete process.env.SYSTEM_ACCESSTOKEN
   })
 
-  describe('isFunctionalityComplete', (): void => {
+  describe('isCommentsFunctionalityAvailable', (): void => {
     it('should return true', (): void => {
       // Arrange
       const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger))
 
       // Act
-      const result: boolean = azureReposInvoker.isFunctionalityComplete
+      const result: boolean = azureReposInvoker.isCommentsFunctionalityAvailable
 
       // Assert
       expect(result).to.equal(true)
-      verify(logger.logDebug('* AzureReposInvoker.isFunctionalityComplete')).once()
+      verify(logger.logDebug('* AzureReposInvoker.isCommentsFunctionalityAvailable')).once()
     })
   })
 
