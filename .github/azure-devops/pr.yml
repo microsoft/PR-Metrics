@@ -10,3 +10,6 @@ pool:
 steps:
   - task: prmetrics@1
     displayName: PR Metrics
+    env:
+      SECRET_GITHUB_PAT: $(GITHUB_PAT)
+

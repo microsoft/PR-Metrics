@@ -3,7 +3,7 @@
 
 import { CommentThreadStatus, GitPullRequestCommentThread } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import { Octokit } from 'octokit'
-import { RequestParameters } from '@octokit/types'
+import { OctokitResponse, RequestParameters } from '@octokit/types'
 import { singleton } from 'tsyringe'
 import IReposInvoker from './iReposInvoker'
 import Logger from '../utilities/logger'
@@ -46,6 +46,9 @@ export default class GitHubReposInvoker implements IReposInvoker {
     this._logger.logDebug('* GitHubReposInvoker.getTitleAndDescription()')
 
     const octokit: Octokit = this.getOctokit()
+    const user: OctokitResponse<any> = await octokit.rest.users.getAuthenticated()
+    this._logger.logDebug('User: ' + user.data.login)
+
     const result: PullsGetResponseType = await octokit.rest.pulls.get({
       owner: 'microsoft',
       repo: 'OMEX-Azure-DevOps-Extensions',
@@ -71,7 +74,7 @@ export default class GitHubReposInvoker implements IReposInvoker {
     throw Error('GitHub functionality not yet implemented.')
   }
 
-  public async setTitleAndDescription (title: string | null, description: string | null): Promise<void> {
+  public async setTitleAndDescription (_: string | null, __: string | null): Promise<void> {
     this._logger.logDebug('* GitHubReposInvoker.setTitleAndDescription()')
 
     const octokit: Octokit = this.getOctokit()
@@ -81,13 +84,13 @@ export default class GitHubReposInvoker implements IReposInvoker {
       pull_number: parseInt(process.env.SYSTEM_PULLREQUEST_PULLREQUESTNUMBER!)
     }
 
-    if (title !== null) {
+    /*if (title !== null) {
       payload.title = title
     }
 
     if (description !== null) {
       payload.body = description
-    }
+    }*/
 
     const result: PullsUpdateResponseType = await octokit.rest.pulls.update(payload)
     this._logger.logDebug(JSON.stringify(result))
@@ -124,8 +127,11 @@ export default class GitHubReposInvoker implements IReposInvoker {
       return this._octokit
     }
 
+    this._logger.logDebug('PAT1' + process.env.SECRET_GITHUB_PAT)
+    this._logger.logDebug('PAT2' + process.env.GITHUB_PAT)
+
     this._octokit = new Octokit({
-      auth: process.env.GITHUB_PAT,
+      auth: process.env.SECRET_GITHUB_PAT,
       userAgent: 'PRMetrics/v1.1.8'
     })
 
