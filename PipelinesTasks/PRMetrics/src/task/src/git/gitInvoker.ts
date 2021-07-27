@@ -85,7 +85,7 @@ export default class GitInvoker {
   private getTargetBranch (): string {
     this._logger.logDebug('* GitInvoker.getTargetBranch()')
 
-    const variable: string = Validator.validate(process.env.SYSTEM_PULLREQUEST_TARGETBRANCH, 'SYSTEM_PULLREQUEST_TARGETBRANCH', 'GitInvoker.getTargetBranch()')
+    const variable: string = Validator.validateVariable('SYSTEM_PULLREQUEST_TARGETBRANCH', 'GitInvoker.getTargetBranch()')
     const expectedStart: string = 'refs/heads/'
     if (variable.startsWith(expectedStart)) {
       const startIndex: number = expectedStart.length
@@ -98,11 +98,11 @@ export default class GitInvoker {
   private getPullRequestId (): string {
     this._logger.logDebug('* GitInvoker.getPullRequestId()')
 
-    const variable: string = Validator.validate(process.env.BUILD_REPOSITORY_PROVIDER, 'BUILD_REPOSITORY_PROVIDER', 'GitInvoker.getPullRequestId()')
+    const variable: string = Validator.validateVariable('BUILD_REPOSITORY_PROVIDER', 'GitInvoker.getPullRequestId()')
     if (variable === 'GitHub') {
-      return Validator.validate(process.env.SYSTEM_PULLREQUEST_PULLREQUESTNUMBER, 'SYSTEM_PULLREQUEST_PULLREQUESTNUMBER', 'GitInvoker.getPullRequestId()')
+      return Validator.validateVariable('SYSTEM_PULLREQUEST_PULLREQUESTNUMBER', 'GitInvoker.getPullRequestId()')
     } else {
-      return Validator.validate(process.env.SYSTEM_PULLREQUEST_PULLREQUESTID, 'SYSTEM_PULLREQUEST_PULLREQUESTID', 'GitInvoker.getPullRequestId()')
+      return Validator.validateVariable('SYSTEM_PULLREQUEST_PULLREQUESTID', 'GitInvoker.getPullRequestId()')
     }
   }
 

@@ -89,7 +89,7 @@ export default class ReposInvoker implements IReposInvoker {
       return this._reposInvoker
     }
 
-    const variable: string = Validator.validate(process.env.BUILD_REPOSITORY_PROVIDER, 'BUILD_REPOSITORY_PROVIDER', 'ReposInvoker.getReposInvoker()')
+    const variable: string = Validator.validateVariable('BUILD_REPOSITORY_PROVIDER', 'ReposInvoker.getReposInvoker()')
     switch (variable) {
       case 'TfsGit':
         this._reposInvoker = this._azureReposInvoker

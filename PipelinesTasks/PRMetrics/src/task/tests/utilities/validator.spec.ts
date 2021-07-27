@@ -6,7 +6,47 @@ import { Validator } from '../../src/utilities/validator'
 import async from 'async'
 
 describe('validator.ts', (): void => {
-  describe('validate', (): void => {
+  describe('validateVariable()', (): void => {
+    async.each(
+      [
+        '',
+        undefined
+      ], (value: string | undefined): void => {
+        it(`should throw an error when passed invalid string value '${value}'`, (): void => {
+          // Arrange
+          if (value === undefined) {
+            delete process.env.TEST_VARIABLE
+          } else {
+            process.env.TEST_VARIABLE = value
+          }
+
+          // Act
+          const func: () => void = () => Validator.validateVariable('TEST_VARIABLE', 'string test method name')
+
+          // Assert
+          expect(func).to.throw(`'TEST_VARIABLE', accessed within 'string test method name', is invalid, null, or undefined '${value}'.`)
+
+          // Finalization
+          delete process.env.TEST_VARIABLE
+        })
+      })
+
+    it('should not throw an error when passed a valid string value', (): void => {
+      // Arrange
+      process.env.TEST_VARIABLE = 'value'
+
+      // Act
+      const result: string = Validator.validateVariable('TEST_VARIABLE', 'string test method name')
+
+      // Assert
+      expect(result).to.equal('value')
+
+      // Finalization
+      delete process.env.TEST_VARIABLE
+    })
+  })
+
+  describe('validate()', (): void => {
     async.each(
       [
         0,

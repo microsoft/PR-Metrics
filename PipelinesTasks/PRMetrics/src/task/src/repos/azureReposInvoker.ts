@@ -162,14 +162,14 @@ export default class AzureReposInvoker implements IReposInvoker {
       return this._gitApi
     }
 
-    this._project = Validator.validate(process.env.SYSTEM_TEAMPROJECT, 'SYSTEM_TEAMPROJECT', 'AzureReposInvoker.getGitApi()')
-    this._repositoryId = Validator.validate(process.env.BUILD_REPOSITORY_ID, 'BUILD_REPOSITORY_ID', 'AzureReposInvoker.getGitApi()')
+    this._project = Validator.validateVariable('SYSTEM_TEAMPROJECT', 'AzureReposInvoker.getGitApi()')
+    this._repositoryId = Validator.validateVariable('BUILD_REPOSITORY_ID', 'AzureReposInvoker.getGitApi()')
     this._pullRequestId = Validator.validate(parseInt(process.env.SYSTEM_PULLREQUEST_PULLREQUESTID!), 'SYSTEM_PULLREQUEST_PULLREQUESTID', 'AzureReposInvoker.getGitApi()')
 
-    const accessToken: string = Validator.validate(process.env.SYSTEM_ACCESSTOKEN, 'SYSTEM_ACCESSTOKEN', 'AzureReposInvoker.getGitApi()')
+    const accessToken: string = Validator.validateVariable('SYSTEM_ACCESSTOKEN', 'AzureReposInvoker.getGitApi()')
     const authHandler: IRequestHandler = this._azureDevOpsApiWrapper.getPersonalAccessTokenHandler(accessToken)
 
-    const defaultUrl: string = Validator.validate(process.env.SYSTEM_TEAMFOUNDATIONCOLLECTIONURI, 'SYSTEM_TEAMFOUNDATIONCOLLECTIONURI', 'AzureReposInvoker.getGitApi()')
+    const defaultUrl: string = Validator.validateVariable('SYSTEM_TEAMFOUNDATIONCOLLECTIONURI', 'AzureReposInvoker.getGitApi()')
     const connection: WebApi = this._azureDevOpsApiWrapper.getWebApiInstance(defaultUrl, authHandler)
     this._gitApi = await connection.getGitApi()
 

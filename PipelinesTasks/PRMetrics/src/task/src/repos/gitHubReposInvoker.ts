@@ -132,7 +132,7 @@ export default class GitHubReposInvoker implements IReposInvoker {
       }
     }
 
-    const sourceRepositoryUri: string = Validator.validate(process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI, 'SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI', 'GitHubReposInvoker.initialize()')
+    const sourceRepositoryUri: string = Validator.validateVariable('SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI', 'GitHubReposInvoker.initialize()')
     const expectedEnding: string = '.git'
     const sourceRepositoryUriElements: string[] = sourceRepositoryUri.split('/')
     if (!sourceRepositoryUri.endsWith(expectedEnding) || sourceRepositoryUriElements.length !== 5) {
@@ -148,8 +148,7 @@ export default class GitHubReposInvoker implements IReposInvoker {
 
     this._owner = sourceRepositoryUriElements[3]
     this._repo = sourceRepositoryUriElements[4]!.substring(0, sourceRepositoryUriElements[4]!.length - expectedEnding.length)
-    this._pullRequestId = parseInt(Validator.validate(process.env.SYSTEM_PULLREQUEST_PULLREQUESTNUMBER, 'SYSTEM_PULLREQUEST_PULLREQUESTNUMBER', 'GitHubReposInvoker.initialize()'))
-    Validator.validate(this._pullRequestId, 'this._pullRequestId', 'GitHubReposInvoker.initialize()')
+    this._pullRequestId = Validator.validate(parseInt(process.env.SYSTEM_PULLREQUEST_PULLREQUESTNUMBER!), 'SYSTEM_PULLREQUEST_PULLREQUESTNUMBER', 'GitHubReposInvoker.initialize()')
 
     this._isInitialized = true
   }

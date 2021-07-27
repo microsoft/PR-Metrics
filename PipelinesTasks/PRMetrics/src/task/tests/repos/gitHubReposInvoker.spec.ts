@@ -522,7 +522,9 @@ describe('gitHubReposInvoker.ts', function (): void {
     async.each(
       [
         undefined,
-        ''
+        '',
+        'abc',
+        'abc1'
       ], (variable: string | undefined): void => {
         it(`should throw when SYSTEM_PULLREQUEST_PULLREQUESTNUMBER is set to the invalid value '${variable}'`, async (): Promise<void> => {
           // Arrange
@@ -541,38 +543,7 @@ describe('gitHubReposInvoker.ts', function (): void {
           } catch (error) {
             // Assert
             errorThrown = true
-            expect(error.message).to.equal(`'SYSTEM_PULLREQUEST_PULLREQUESTNUMBER', accessed within 'GitHubReposInvoker.initialize()', is invalid, null, or undefined '${variable}'.`)
-          }
-
-          expect(errorThrown).to.equal(true)
-          verify(logger.logDebug('* GitHubReposInvoker.getTitleAndDescription()')).once()
-          verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
-        })
-      })
-
-    async.each(
-      [
-        'abc',
-        'abc1'
-      ], (variable: string | undefined): void => {
-        it(`should throw when SYSTEM_PULLREQUEST_PULLREQUESTNUMBER is set to the invalid numeric value '${variable}'`, async (): Promise<void> => {
-          // Arrange
-          if (variable === undefined) {
-            delete process.env.SYSTEM_PULLREQUEST_PULLREQUESTNUMBER
-          } else {
-            process.env.SYSTEM_PULLREQUEST_PULLREQUESTNUMBER = variable
-          }
-
-          const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
-          let errorThrown: boolean = false
-
-          try {
-            // Act
-            await gitHubReposInvoker.getTitleAndDescription()
-          } catch (error) {
-            // Assert
-            errorThrown = true
-            expect(error.message).to.equal('\'this._pullRequestId\', accessed within \'GitHubReposInvoker.initialize()\', is invalid, null, or undefined \'NaN\'.')
+            expect(error.message).to.equal('\'SYSTEM_PULLREQUEST_PULLREQUESTNUMBER\', accessed within \'GitHubReposInvoker.initialize()\', is invalid, null, or undefined \'NaN\'.')
           }
 
           expect(errorThrown).to.equal(true)
