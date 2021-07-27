@@ -46,15 +46,15 @@ export default interface IReposInvoker {
    * @param isFileDeleted A value indicating whether the file is being deleted.
    * @returns A promise for awaiting the completion of the method call.
    */
-   createComment (content: string, status: CommentThreadStatus, fileName?: string, isFileDeleted?: boolean): Promise<void>
+  createComment (content: string, status: CommentThreadStatus, fileName?: string, isFileDeleted?: boolean): Promise<void>
 
-   /**
-    * Updates a comment thread within the current pull request.
-    * @param content The content of the comment. If this is `null`, the contents will not be updated.
-    * @param status The status to which to the set the comment thread. If this is `null`, the status will not be updated.
-    * @param commentThreadId The comment thread ID to which to add the comment.
-    * @param parentCommentId The parent comment ID, after which to add the new comment.
-    * @returns A promise for awaiting the completion of the method call.
-    */
-   updateComment (content: string | null, status: CommentThreadStatus | null, commentThreadId: number, commentId: number): Promise<void>
+  /**
+   * Updates a comment thread within the current pull request.
+   * @param content The content of the comment. If this is `null`, the contents will not be updated.
+   * @param status The status to which to the set the comment thread. If this is `null`, the status will not be updated.
+   * @param commentThreadId The comment thread ID to which to add the comment.
+   * @param parentCommentId The parent comment ID, after which to add the new comment.
+   * @returns A promise for awaiting the completion of the method call.
+   */
+  updateComment (content: string | null, status: CommentThreadStatus | null, commentThreadId: number, commentId: number): Promise<void>
 }
