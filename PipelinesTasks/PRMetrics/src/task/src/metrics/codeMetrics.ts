@@ -207,6 +207,12 @@ export default class CodeMetrics {
   private createFileMetricsMap (input: string): CodeFileMetric[] {
     this._logger.logDebug('* CodeMetrics.createFileMetricsMap()')
 
+    // Removing that ending that can be created by test mocks.
+    const endingToRemove: string = '\r\nrc:0\r\nsuccess:true'
+    if (input.endsWith(endingToRemove)) {
+      input = input.substring(0, input.length - endingToRemove.length)
+    }
+
     // Condense file and folder names that were renamed e.g. F{a => i}leT{b => e}st.d{c => l}l".
     const lines: string[] = input.split('\n')
 
@@ -214,7 +220,7 @@ export default class CodeMetrics {
     lines.forEach((line: string): void => {
       const elements: string[] = line.split('\t')
       if (elements.length !== 3) {
-        throw RangeError(`The number of elements '${elements.length}' in '${line}' did not match the expected 3.`)
+        throw RangeError(`The number of elements '${elements.length}' in '${line}' in input '${input}' did not match the expected 3.`)
       }
 
       // Condense file and folder names that were renamed e.g. "F{a => i}leT{b => e}st.d{c => l}l" or "FaleTbst.dcl => FileTest.dll".

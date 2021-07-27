@@ -38,8 +38,12 @@ export default class GitInvoker {
   public async isGitEnlistment (): Promise<boolean> {
     this._logger.logDebug('* GitInvoker.isGitEnlistment()')
 
-    const result: string = await this.invokeGit('rev-parse --is-inside-work-tree')
-    return result.startsWith('true')
+    try {
+      const result: string = await this.invokeGit('rev-parse --is-inside-work-tree')
+      return result.startsWith('true')
+    } catch {
+      return false
+    }
   }
 
   /**

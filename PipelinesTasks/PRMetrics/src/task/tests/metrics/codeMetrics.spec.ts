@@ -330,7 +330,7 @@ describe('codeMetrics.ts', (): void => {
           } catch (error) {
             // Assert
             errorThrown = true
-            expect(error.message).to.equal(`The number of elements '${data[1]}' in '${data[0].trim()}' did not match the expected 3.`)
+            expect(error.message).to.equal(`The number of elements '${data[1]}' in '${data[0].trim()}' in input '${data[0].trim()}' did not match the expected 3.`)
           }
 
           expect(errorThrown).to.equal(true)
@@ -395,7 +395,7 @@ describe('codeMetrics.ts', (): void => {
       } catch (error) {
         // Assert
         errorThrown = true
-        expect(error.message).to.equal('The number of elements \'1\' in \'0\' did not match the expected 3.')
+        expect(error.message).to.equal('The number of elements \'1\' in \'0\' in input \'0\' did not match the expected 3.')
       }
 
       expect(errorThrown).to.equal(true)

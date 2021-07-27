@@ -92,18 +92,12 @@ describe('gitInvoker.ts', (): void => {
         return Promise.resolve(1)
       })
       const gitInvoker: GitInvoker = new GitInvoker(instance(logger), instance(taskLibWrapper))
-      let errorThrown: boolean = false
 
-      try {
-        // Act
-        await gitInvoker.isGitEnlistment()
-      } catch (error) {
-        // Assert
-        errorThrown = true
-        expect(error.message).to.equal('Failure')
-      }
+      // Act
+      const result: boolean = await gitInvoker.isGitEnlistment()
 
-      expect(errorThrown).to.equal(true)
+      // Assert
+      expect(result).to.equal(false)
       verify(logger.logDebug('* GitInvoker.isGitEnlistment()')).once()
       verify(logger.logDebug('* GitInvoker.invokeGit()')).once()
     })

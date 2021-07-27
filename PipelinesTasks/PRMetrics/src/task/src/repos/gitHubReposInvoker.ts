@@ -141,7 +141,7 @@ export default class GitHubReposInvoker implements IReposInvoker {
 
     // Handle GitHub Enterprise and GitHub AE invocations.
     if (sourceRepositoryUriElements[2] !== 'github.com') {
-      options.baseUrl = 'https://{baseUrl}/api/v3'
+      options.baseUrl = `https://${sourceRepositoryUriElements[2]}/api/v3`
     }
 
     this._octokitWrapper.initialize(options)
