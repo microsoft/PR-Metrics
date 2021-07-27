@@ -50,7 +50,8 @@ describe('pullRequestComments.ts', (): void => {
         {
           content: '❗ **This file doesn\'t require review.**'
         }
-      ]
+      ],
+      id: 30
     },
     {
       threadContext: {
@@ -60,7 +61,8 @@ describe('pullRequestComments.ts', (): void => {
         {
           content: '❗ **This file doesn\'t require review.**'
         }
-      ]
+      ],
+      id: 40
     }
   ]
   let codeMetrics: CodeMetrics
@@ -132,7 +134,9 @@ describe('pullRequestComments.ts', (): void => {
       expect(result.metricsCommentContent).to.equal(null)
       expect(result.filesNotRequiringReview).to.deep.equal([])
       expect(result.deletedFilesNotRequiringReview).to.deep.equal([])
+      expect(result.commentThreadsRequiringDeletion).to.deep.equal([])
       verify(logger.logDebug('* PullRequestComments.getCommentData()')).once()
+      verify(logger.logDebug('* PullRequestComments.getFilesRequiringCommentUpdates()')).once()
     })
 
     async.each(
@@ -155,6 +159,7 @@ describe('pullRequestComments.ts', (): void => {
           expect(result.metricsCommentContent).to.equal(`# PR Metrics${os.EOL}`)
           expect(result.filesNotRequiringReview).to.deep.equal([])
           expect(result.deletedFilesNotRequiringReview).to.deep.equal([])
+          expect(result.commentThreadsRequiringDeletion).to.deep.equal([])
           verify(logger.logDebug('* PullRequestComments.getCommentData()')).once()
           verify(logger.logDebug('* PullRequestComments.getMetricsCommentData()')).atLeast(1)
         })
@@ -175,6 +180,7 @@ describe('pullRequestComments.ts', (): void => {
       expect(result.metricsCommentContent).to.equal(`# PR Metrics${os.EOL}`)
       expect(result.filesNotRequiringReview).to.deep.equal([])
       expect(result.deletedFilesNotRequiringReview).to.deep.equal([])
+      expect(result.commentThreadsRequiringDeletion).to.deep.equal([])
       verify(logger.logDebug('* PullRequestComments.getCommentData()')).once()
       verify(logger.logDebug('* PullRequestComments.getMetricsCommentData()')).once()
     })
@@ -183,7 +189,6 @@ describe('pullRequestComments.ts', (): void => {
       [
         [['folder/file1.ts', 'file3.ts'], [{ threadContext: { filePath: '/file2.ts' }, comments: [{ content: '❗ **This file doesn\'t require review.**' }] }]],
         [['folder/file1.ts', 'file3.ts'], [{ threadContext: { filePath: '/folder/file1.ts' }, comments: [{ content: 'Content' }] }, { threadContext: { filePath: '/file2.ts' }, comments: [{ content: '❗ **This file doesn\'t require review.**' }] }]],
-        [['folder/file1.ts', 'file3.ts'], [{ threadContext: { filePath: '/fileA.ts' }, comments: [{ content: '❗ **This file doesn\'t require review.**' }] }, { threadContext: { filePath: '/file2.ts' }, comments: [{ content: '❗ **This file doesn\'t require review.**' }] }]],
         [['file3.ts'], [{ threadContext: { filePath: '/folder/file1.ts' }, comments: [{ content: '❗ **This file doesn\'t require review.**' }] }, { threadContext: { filePath: '/file2.ts' }, comments: [{ content: '❗ **This file doesn\'t require review.**' }] }]]
       ], (data: [string[], GitPullRequestCommentThread[]]): void => {
         it(`should return the expected result for files not requiring review when the comment is present with payload '${JSON.stringify(data[1])}'`, async (): Promise<void> => {
@@ -202,8 +207,9 @@ describe('pullRequestComments.ts', (): void => {
           expect(result.metricsCommentContent).to.equal(null)
           expect(result.filesNotRequiringReview).to.deep.equal(data[0])
           expect(result.deletedFilesNotRequiringReview).to.deep.equal([])
+          expect(result.commentThreadsRequiringDeletion).to.deep.equal([])
           verify(logger.logDebug('* PullRequestComments.getCommentData()')).once()
-          verify(logger.logDebug('* PullRequestComments.getNoReviewRequiredCommentData()')).atLeast(1)
+          verify(logger.logDebug('* PullRequestComments.getFilesRequiringCommentUpdates()')).atLeast(1)
         })
       })
 
@@ -211,7 +217,6 @@ describe('pullRequestComments.ts', (): void => {
       [
         [['folder/file1.ts', 'file3.ts'], [{ threadContext: { filePath: '/file2.ts' }, comments: [{ content: '❗ **This file doesn\'t require review.**' }] }]],
         [['folder/file1.ts', 'file3.ts'], [{ threadContext: { filePath: '/folder/file1.ts' }, comments: [{ content: 'Content' }] }, { threadContext: { filePath: '/file2.ts' }, comments: [{ content: '❗ **This file doesn\'t require review.**' }] }]],
-        [['folder/file1.ts', 'file3.ts'], [{ threadContext: { filePath: '/fileA.ts' }, comments: [{ content: '❗ **This file doesn\'t require review.**' }] }, { threadContext: { filePath: '/file2.ts' }, comments: [{ content: '❗ **This file doesn\'t require review.**' }] }]],
         [['file3.ts'], [{ threadContext: { filePath: '/folder/file1.ts' }, comments: [{ content: '❗ **This file doesn\'t require review.**' }] }, { threadContext: { filePath: '/file2.ts' }, comments: [{ content: '❗ **This file doesn\'t require review.**' }] }]]
       ], (data: [string[], GitPullRequestCommentThread[]]): void => {
         it(`should return the expected result for deleted files not requiring review when the comment is present with payload '${JSON.stringify(data[1])}'`, async (): Promise<void> => {
@@ -230,15 +235,16 @@ describe('pullRequestComments.ts', (): void => {
           expect(result.metricsCommentContent).to.equal(null)
           expect(result.filesNotRequiringReview).to.deep.equal([])
           expect(result.deletedFilesNotRequiringReview).to.deep.equal(data[0])
+          expect(result.commentThreadsRequiringDeletion).to.deep.equal([])
           verify(logger.logDebug('* PullRequestComments.getCommentData()')).once()
-          verify(logger.logDebug('* PullRequestComments.getNoReviewRequiredCommentData()')).atLeast(1)
+          verify(logger.logDebug('* PullRequestComments.getFilesRequiringCommentUpdates()')).atLeast(1)
         })
       })
 
     it('should return the expected result when all comment types are present in files not requiring review', async (): Promise<void> => {
       // Arrange
       when(reposInvoker.getComments()).thenResolve(complexGitPullRequestComments)
-      when(codeMetrics.getFilesNotRequiringReview()).thenResolve(['folder/file1.ts', 'file2.ts', 'file3.ts'])
+      when(codeMetrics.getFilesNotRequiringReview()).thenResolve(['folder/file1.ts', 'file2.ts', 'file5.ts'])
       const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(inputs), instance(logger), instance(reposInvoker), instance(taskLibWrapper))
 
       // Act
@@ -249,17 +255,18 @@ describe('pullRequestComments.ts', (): void => {
       expect(result.metricsCommentId).to.equal(10)
       expect(result.metricsCommentThreadStatus).to.equal(CommentThreadStatus.Active)
       expect(result.metricsCommentContent).to.equal(`# PR Metrics${os.EOL}`)
-      expect(result.filesNotRequiringReview).to.deep.equal(['folder/file1.ts', 'file3.ts'])
+      expect(result.filesNotRequiringReview).to.deep.equal(['folder/file1.ts'])
       expect(result.deletedFilesNotRequiringReview).to.deep.equal([])
+      expect(result.commentThreadsRequiringDeletion).to.deep.equal([])
       verify(logger.logDebug('* PullRequestComments.getCommentData()')).once()
       verify(logger.logDebug('* PullRequestComments.getMetricsCommentData()')).once()
-      verify(logger.logDebug('* PullRequestComments.getNoReviewRequiredCommentData()')).once()
+      verify(logger.logDebug('* PullRequestComments.getFilesRequiringCommentUpdates()')).twice()
     })
 
     it('should return the expected result when all comment types are present in deleted files not requiring review', async (): Promise<void> => {
       // Arrange
       when(reposInvoker.getComments()).thenResolve(complexGitPullRequestComments)
-      when(codeMetrics.getDeletedFilesNotRequiringReview()).thenResolve(['folder/file1.ts', 'file2.ts', 'file3.ts'])
+      when(codeMetrics.getDeletedFilesNotRequiringReview()).thenResolve(['folder/file1.ts', 'file2.ts', 'file5.ts'])
       const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(inputs), instance(logger), instance(reposInvoker), instance(taskLibWrapper))
 
       // Act
@@ -271,10 +278,11 @@ describe('pullRequestComments.ts', (): void => {
       expect(result.metricsCommentThreadStatus).to.equal(CommentThreadStatus.Active)
       expect(result.metricsCommentContent).to.equal(`# PR Metrics${os.EOL}`)
       expect(result.filesNotRequiringReview).to.deep.equal([])
-      expect(result.deletedFilesNotRequiringReview).to.deep.equal(['folder/file1.ts', 'file3.ts'])
+      expect(result.deletedFilesNotRequiringReview).to.deep.equal(['folder/file1.ts'])
+      expect(result.commentThreadsRequiringDeletion).to.deep.equal([])
       verify(logger.logDebug('* PullRequestComments.getCommentData()')).once()
       verify(logger.logDebug('* PullRequestComments.getMetricsCommentData()')).once()
-      verify(logger.logDebug('* PullRequestComments.getNoReviewRequiredCommentData()')).once()
+      verify(logger.logDebug('* PullRequestComments.getFilesRequiringCommentUpdates()')).twice()
     })
 
     it('should return the expected result when all comment types are present in both modified and deleted files not requiring review', async (): Promise<void> => {
@@ -294,20 +302,44 @@ describe('pullRequestComments.ts', (): void => {
       expect(result.metricsCommentContent).to.equal(`# PR Metrics${os.EOL}`)
       expect(result.filesNotRequiringReview).to.deep.equal(['folder/file1.ts'])
       expect(result.deletedFilesNotRequiringReview).to.deep.equal(['file3.ts'])
+      expect(result.commentThreadsRequiringDeletion).to.deep.equal([])
       verify(logger.logDebug('* PullRequestComments.getCommentData()')).once()
       verify(logger.logDebug('* PullRequestComments.getMetricsCommentData()')).once()
-      verify(logger.logDebug('* PullRequestComments.getNoReviewRequiredCommentData()')).twice()
+      verify(logger.logDebug('* PullRequestComments.getFilesRequiringCommentUpdates()')).twice()
+    })
+
+    it('should return the expected result when all comment types are present in both modified and deleted files not requiring review and comments need to be deleted', async (): Promise<void> => {
+      // Arrange
+      when(reposInvoker.getComments()).thenResolve(complexGitPullRequestComments)
+      when(codeMetrics.getFilesNotRequiringReview()).thenResolve(['folder/file1.ts', 'file2.ts'])
+      when(codeMetrics.getDeletedFilesNotRequiringReview()).thenResolve(['file3.ts'])
+      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(inputs), instance(logger), instance(reposInvoker), instance(taskLibWrapper))
+
+      // Act
+      const result: PullRequestCommentsData = await pullRequestComments.getCommentData()
+
+      // Assert
+      expect(result.metricsCommentThreadId).to.equal(20)
+      expect(result.metricsCommentId).to.equal(10)
+      expect(result.metricsCommentThreadStatus).to.equal(CommentThreadStatus.Active)
+      expect(result.metricsCommentContent).to.equal(`# PR Metrics${os.EOL}`)
+      expect(result.filesNotRequiringReview).to.deep.equal(['folder/file1.ts'])
+      expect(result.deletedFilesNotRequiringReview).to.deep.equal(['file3.ts'])
+      expect(result.commentThreadsRequiringDeletion).to.deep.equal([40])
+      verify(logger.logDebug('* PullRequestComments.getCommentData()')).once()
+      verify(logger.logDebug('* PullRequestComments.getMetricsCommentData()')).once()
+      verify(logger.logDebug('* PullRequestComments.getFilesRequiringCommentUpdates()')).twice()
     })
 
     async.each(
       [
-        [[{ comments: [{}] }], null, 1, 0],
-        [[{ comments: [validGitPullRequestComments.comments![0]!, {}], id: 1 }], 1, 1, 0],
-        [[{ threadContext: { filePath: '/file.ts' }, comments: [{}] }], null, 0, 1],
-        [[validGitPullRequestComments, { comments: [{}] }], null, 1, 1],
-        [[validGitPullRequestComments, { comments: [validGitPullRequestComments.comments![0]!, {}], id: 1 }], 1, 1, 1],
-        [[validGitPullRequestComments, { threadContext: { filePath: '/file.ts' }, comments: [{}] }], null, 0, 2]
-      ], (data: [GitPullRequestCommentThread[], number | null, number, number]): void => {
+        [[{ comments: [{}] }], null, 1],
+        [[{ comments: [validGitPullRequestComments.comments![0]!, {}], id: 1 }], 1, 1],
+        [[{ threadContext: { filePath: '/file.ts' }, comments: [{}] }], null, 0],
+        [[validGitPullRequestComments, { comments: [{}] }], null, 1],
+        [[validGitPullRequestComments, { comments: [validGitPullRequestComments.comments![0]!, {}], id: 1 }], 1, 1],
+        [[validGitPullRequestComments, { threadContext: { filePath: '/file.ts' }, comments: [{}] }], null, 0]
+      ], (data: [GitPullRequestCommentThread[], number | null, number]): void => {
         it(`should continue when no comment content is present in payload '${JSON.stringify(data[0])}'`, async (): Promise<void> => {
           // Arrange
           when(reposInvoker.getComments()).thenResolve(data[0])
@@ -323,9 +355,9 @@ describe('pullRequestComments.ts', (): void => {
           expect(result.metricsCommentThreadStatus).to.equal(null)
           expect(result.metricsCommentContent).to.equal(data[1] === null ? null : `# PR Metrics${os.EOL}`)
           expect(result.filesNotRequiringReview).to.deep.equal(['file.ts'])
+          expect(result.commentThreadsRequiringDeletion).to.deep.equal([])
           verify(logger.logDebug('* PullRequestComments.getCommentData()')).once()
           verify(logger.logDebug('* PullRequestComments.getMetricsCommentData()')).times(data[2])
-          verify(logger.logDebug('* PullRequestComments.getNoReviewRequiredCommentData()')).times(data[3])
         })
       })
 
@@ -334,15 +366,16 @@ describe('pullRequestComments.ts', (): void => {
         ['commentThread[0].comments', 'getMetricsCommentData', [{ }]],
         ['commentThread[0].id', 'getMetricsCommentData', [{ comments: [validGitPullRequestComments.comments![0]!, { content: `# PR Metrics${os.EOL}` }] }]],
         ['commentThread[0].comments[0].id', 'getMetricsCommentData', [{ comments: [{ content: `# PR Metrics${os.EOL}` }], id: 1 }]],
-        ['commentThread[0].threadContext.filePath', 'getCommentData', [{ threadContext: {} }]],
-        ['commentThread[0].comments', 'getNoReviewRequiredCommentData', [{ threadContext: { filePath: '/file.ts' } }]],
-        ['commentThread[0].comments[0]', 'getNoReviewRequiredCommentData', [{ threadContext: { filePath: '/file.ts' }, comments: [] }]],
+        ['commentThread[0].threadContext.filePath', 'getFilesRequiringCommentUpdates', [{ threadContext: {} }]],
+        ['commentThread[0].comments', 'getFilesRequiringCommentUpdates', [{ threadContext: { filePath: '/file.ts' } }]],
+        ['commentThread[0].comments[0]', 'getFilesRequiringCommentUpdates', [{ threadContext: { filePath: '/file.ts' }, comments: [] }]],
         ['commentThread[1].comments', 'getMetricsCommentData', [validGitPullRequestComments, { }]],
         ['commentThread[1].id', 'getMetricsCommentData', [validGitPullRequestComments, { comments: [{ content: `# PR Metrics${os.EOL}` }] }]],
         ['commentThread[1].comments[0].id', 'getMetricsCommentData', [validGitPullRequestComments, { comments: [{ content: `# PR Metrics${os.EOL}` }], id: 1 }]],
-        ['commentThread[1].threadContext.filePath', 'getCommentData', [validGitPullRequestComments, { threadContext: {} }]],
-        ['commentThread[1].comments', 'getNoReviewRequiredCommentData', [validGitPullRequestComments, { threadContext: { filePath: '/file.ts' } }]],
-        ['commentThread[1].comments[0]', 'getNoReviewRequiredCommentData', [validGitPullRequestComments, { threadContext: { filePath: '/file.ts' }, comments: [] }]]
+        ['commentThread[1].threadContext.filePath', 'getFilesRequiringCommentUpdates', [validGitPullRequestComments, { threadContext: {} }]],
+        ['commentThread[1].comments', 'getFilesRequiringCommentUpdates', [validGitPullRequestComments, { threadContext: { filePath: '/file.ts' } }]],
+        ['commentThread[1].comments[0]', 'getFilesRequiringCommentUpdates', [validGitPullRequestComments, { threadContext: { filePath: '/file.ts' }, comments: [] }]],
+        ['commentThread[0].id', 'getFilesRequiringCommentUpdates', [{ threadContext: { filePath: '/fileA.ts' }, comments: [{ content: '❗ **This file doesn\'t require review.**' }] }]]
       ], (data: [string, string, GitPullRequestCommentThread[]]): void => {
         it(`should throw for field '${data[0]}', accessed within '${data[1]}', when it is missing`, async (): Promise<void> => {
           // Arrange
@@ -382,6 +415,7 @@ describe('pullRequestComments.ts', (): void => {
 
       expect(errorThrown).to.equal(true)
       verify(logger.logDebug('* PullRequestComments.getCommentData()')).once()
+      verify(logger.logDebug('* PullRequestComments.getFilesRequiringCommentUpdates()')).once()
     })
   })
 

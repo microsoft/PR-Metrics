@@ -69,24 +69,7 @@ export default class PullRequestComments {
         result = this.getMetricsCommentData(result, commentThread, i)
       } else {
         // If the current comment thread is applied to a specified file, check if it already contains a comment related to files that can be ignored.
-        const filePath: string = Validator.validate(commentThread.threadContext.filePath, `commentThread[${i}].threadContext.filePath`, 'PullRequestComments.getCommentData()')
-        if (filePath.length <= 1) {
-          throw RangeError(`'commentThread[${i}].threadContext.filePath' '${filePath}' is of length '${filePath.length}'.`)
-        }
-
-        const fileName: string = filePath.substring(1)
-
-        const fileIndex: number = filesNotRequiringReview.indexOf(fileName)
-        if (fileIndex !== -1) {
-          result.filesNotRequiringReview = this.getNoReviewRequiredCommentData(result.filesNotRequiringReview, fileIndex, commentThread, i)
-          continue
-        }
-
-        const deletedFileIndex: number = deletedFilesNotRequiringReview.indexOf(fileName)
-        if (deletedFileIndex !== -1) {
-          result.deletedFilesNotRequiringReview = this.getNoReviewRequiredCommentData(result.deletedFilesNotRequiringReview, deletedFileIndex, commentThread, i)
-          continue
-        }
+        result = this.getFilesRequiringCommentUpdates(result, commentThread, i)
       }
     }
 
@@ -158,17 +141,41 @@ export default class PullRequestComments {
     return result
   }
 
-  private getNoReviewRequiredCommentData (filesNotRequiringReview: string[], fileNameIndex: number, commentThread: GitPullRequestCommentThread, commentThreadIndex: number): string[] {
-    this._logger.logDebug('* PullRequestComments.getNoReviewRequiredCommentData()')
+  private getFilesRequiringCommentUpdates (
+    result: PullRequestCommentsData,
+    commentThread: GitPullRequestCommentThread,
+    commentThreadIndex: number): PullRequestCommentsData {
+    this._logger.logDebug('* PullRequestComments.getFilesRequiringCommentUpdates()')
 
-    const comments: Comment[] = Validator.validate(commentThread.comments, `commentThread[${commentThreadIndex}].comments`, 'PullRequestComments.getNoReviewRequiredCommentData()')
-    const comment: Comment = Validator.validate(comments[0], `commentThread[${commentThreadIndex}].comments[0]`, 'PullRequestComments.getNoReviewRequiredCommentData()')
-    if (comment.content !== this.noReviewRequiredComment) {
-      return filesNotRequiringReview
+    const filePath: string = Validator.validate(commentThread.threadContext!.filePath, `commentThread[${commentThreadIndex}].threadContext.filePath`, 'PullRequestComments.getFilesRequiringCommentUpdates()')
+    if (filePath.length <= 1) {
+      throw RangeError(`'commentThread[${commentThreadIndex}].threadContext.filePath' '${filePath}' is of length '${filePath.length}'.`)
     }
 
-    filesNotRequiringReview.splice(fileNameIndex, 1)
-    return filesNotRequiringReview
+    const fileName: string = filePath.substring(1)
+
+    const comments: Comment[] = Validator.validate(commentThread.comments, `commentThread[${commentThreadIndex}].comments`, 'PullRequestComments.getFilesRequiringCommentUpdates()')
+    const comment: Comment = Validator.validate(comments[0], `commentThread[${commentThreadIndex}].comments[0]`, 'PullRequestComments.getFilesRequiringCommentUpdates()')
+    if (comment.content !== this.noReviewRequiredComment) {
+      return result
+    }
+
+    const fileIndex: number = result.filesNotRequiringReview.indexOf(fileName)
+    if (fileIndex !== -1) {
+      result.filesNotRequiringReview.splice(fileIndex, 1)
+      return result
+    }
+
+    const deletedFileIndex: number = result.deletedFilesNotRequiringReview.indexOf(fileName)
+    if (deletedFileIndex !== -1) {
+      result.deletedFilesNotRequiringReview.splice(deletedFileIndex, 1)
+      return result
+    }
+
+    console.log(commentThread.id)
+    const commentThreadId: number = Validator.validate(commentThread.id, `commentThread[${commentThreadIndex}].id`, 'PullRequestComments.getFilesRequiringCommentUpdates()')
+    result.commentThreadsRequiringDeletion.push(commentThreadId)
+    return result
   }
 
   private async addCommentSizeStatus (): Promise<string> {

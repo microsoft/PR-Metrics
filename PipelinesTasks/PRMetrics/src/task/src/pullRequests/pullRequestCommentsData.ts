@@ -13,6 +13,7 @@ export default class PullRequestCommentsData {
   private _metricsCommentContent: string | null = null
   private _filesNotRequiringReview: string[] = []
   private _deletedFilesNotRequiringReview: string[] = []
+  private _commentThreadsRequiringDeletion: number[] = []
 
   /**
    * Initializes a new instance of the `PullRequestCommentsData` class.
@@ -118,5 +119,21 @@ export default class PullRequestCommentsData {
    */
   public set deletedFilesNotRequiringReview (value: string[]) {
     this._deletedFilesNotRequiringReview = value
+  }
+
+  /**
+   * Gets the collection of comment threads requiring deletion now that the associated file requires review.
+   * @returns The collection of comment threads requiring deletion.
+   */
+  public get commentThreadsRequiringDeletion (): number[] {
+    return this._commentThreadsRequiringDeletion
+  }
+
+  /**
+   * Set the collection of comment threads requiring deletion now that the associated file requires review.
+   * @param value The collection of comment threads requiring deletion.
+   */
+  public set commentThreadsRequiringDeletion (value: number[]) {
+    this._commentThreadsRequiringDeletion = value
   }
 }
