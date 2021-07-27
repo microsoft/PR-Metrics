@@ -3,7 +3,7 @@
   "manifestVersion": 1,
   "id": "prmetrics",
   "name": "PR Metrics",
-  "version": "1.1.8",
+  "version": "1.2.0",
   "publisher": "ms-omex",
   "description": "Augments pull request titles to let reviewers quickly determine PR size and test coverage.",
   "public": true,
@@ -45,7 +45,7 @@
   },
   "links": {
     "getstarted": {
-      "uri": "https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/blob/main/PipelinesTasks/PRMetrics/README.md"
+      "uri": "https://aka.ms/PRMetrics/README"
     },
     "learn": {
       "uri": "https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/blob/main/README.md"

@@ -1,10 +1,9 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { Comment, CommentPosition, CommentThreadStatus, GitPullRequest, GitPullRequestCommentThread, GitPullRequestIteration } from 'azure-devops-node-api/interfaces/GitInterfaces'
+import { Comment, CommentPosition, CommentThreadStatus, GitPullRequest, GitPullRequestCommentThread } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import { IGitApi } from 'azure-devops-node-api/GitApi'
 import { IRequestHandler } from 'azure-devops-node-api/interfaces/common/VsoBaseInterfaces'
-import { JsonPatchOperation, Operation } from 'azure-devops-node-api/interfaces/common/VSSInterfaces'
 import { singleton } from 'tsyringe'
 import { Validator } from '../utilities/validator'
 import { WebApi } from 'azure-devops-node-api'
@@ -12,7 +11,6 @@ import AzureDevOpsApiWrapper from '../wrappers/azureDevOpsApiWrapper'
 import IReposInvoker from './iReposInvoker'
 import Logger from '../utilities/logger'
 import PullRequestDetails from './pullRequestDetails'
-import PullRequestMetadata from './pullRequestMetadata'
 
 /**
  * A class for invoking Azure Repos functionality.
@@ -64,21 +62,8 @@ export default class AzureReposInvoker implements IReposInvoker {
     }
   }
 
-  public async getCurrentIteration (): Promise<number> {
-    this._logger.logDebug('* AzureReposInvoker.getCurrentIteration()')
-
-    const gitApi: IGitApi = await this.getGitApi()
-    const result: GitPullRequestIteration[] = await gitApi.getPullRequestIterations(this._repositoryId, this._pullRequestId, this._project)
-    this._logger.logDebug(JSON.stringify(result))
-    if (result.length === 0) {
-      throw RangeError('The collection of pull request iterations was of length zero.')
-    }
-
-    return Validator.validate(result[result.length - 1]!.id, 'id', 'AzureReposInvoker.getCurrentIteration()')
-  }
-
-  public async getCommentThreads (): Promise<GitPullRequestCommentThread[]> {
-    this._logger.logDebug('* AzureReposInvoker.getCommentThreads()')
+  public async getComments (): Promise<GitPullRequestCommentThread[]> {
+    this._logger.logDebug('* AzureReposInvoker.getComments()')
 
     const gitApi: IGitApi = await this.getGitApi()
     const result: GitPullRequestCommentThread[] = await gitApi.getThreads(this._repositoryId, this._pullRequestId, this._project)
@@ -107,25 +92,12 @@ export default class AzureReposInvoker implements IReposInvoker {
     this._logger.logDebug(JSON.stringify(result))
   }
 
-  public async createComment (commentContent: string, commentThreadId: number, parentCommentId: number): Promise<void> {
+  public async createComment (content: string, status: CommentThreadStatus, fileName?: string, isFileDeleted?: boolean): Promise<void> {
     this._logger.logDebug('* AzureReposInvoker.createComment()')
 
     const gitApiPromise: Promise<IGitApi> = this.getGitApi()
-    const comment: Comment = {
-      content: commentContent,
-      parentCommentId: parentCommentId
-    }
-
-    const result: Comment = await (await gitApiPromise).createComment(comment, this._repositoryId, this._pullRequestId, commentThreadId, this._project)
-    this._logger.logDebug(JSON.stringify(result))
-  }
-
-  public async createCommentThread (commentContent: string, status: CommentThreadStatus, fileName?: string, isFileDeleted?: boolean): Promise<void> {
-    this._logger.logDebug('* AzureReposInvoker.createCommentThread()')
-
-    const gitApiPromise: Promise<IGitApi> = this.getGitApi()
     const commentThread: GitPullRequestCommentThread = {
-      comments: [{ content: commentContent }],
+      comments: [{ content: content }],
       status: status
     }
 
@@ -156,39 +128,31 @@ export default class AzureReposInvoker implements IReposInvoker {
     this._logger.logDebug(JSON.stringify(result))
   }
 
-  public async setCommentThreadStatus (commentThreadId: number, status: CommentThreadStatus): Promise<void> {
-    this._logger.logDebug('* AzureReposInvoker.setCommentThreadStatus()')
+  public async updateComment (content: string | null, status: CommentThreadStatus | null, commentThreadId: number, commentId: number): Promise<void> {
+    this._logger.logDebug('* AzureReposInvoker.updateComment()')
 
-    const gitApiPromise: Promise<IGitApi> = this.getGitApi()
-    const commentThread: GitPullRequestCommentThread = {
-      status: status
-    }
-
-    const result: GitPullRequestCommentThread = await (await gitApiPromise).updateThread(commentThread, this._repositoryId, this._pullRequestId, commentThreadId, this._project)
-    this._logger.logDebug(JSON.stringify(result))
-  }
-
-  public async addMetadata (metadata: PullRequestMetadata[]): Promise<void> {
-    this._logger.logDebug('* AzureReposInvoker.addMetadata()')
-
-    if (metadata.length === 0) {
-      throw RangeError('The collection of metadata was of length zero.')
+    if (content === null && status === null) {
+      return
     }
 
     const gitApiPromise: Promise<IGitApi> = this.getGitApi()
-    const jsonPatchDocumentValues: JsonPatchOperation[] = []
-    metadata.forEach((datum: PullRequestMetadata): void => {
-      const operation: JsonPatchOperation = {
-        op: Operation.Replace,
-        path: `/PRMetrics.${datum.key}`,
-        value: datum.value.toString()
+    if (content !== null) {
+      const comment: Comment = {
+        content: content
       }
 
-      jsonPatchDocumentValues.push(operation)
-    })
+      const commentResult: Comment = await (await gitApiPromise).updateComment(comment, this._repositoryId, this._pullRequestId, commentThreadId, commentId, this._project)
+      this._logger.logDebug(JSON.stringify(commentResult))
+    }
 
-    const result: object = await (await gitApiPromise).updatePullRequestProperties(null, jsonPatchDocumentValues, this._repositoryId, this._pullRequestId, this._project)
-    this._logger.logDebug(JSON.stringify(result))
+    if (status !== null) {
+      const commentThread: GitPullRequestCommentThread = {
+        status: status
+      }
+
+      const threadResult: GitPullRequestCommentThread = await (await gitApiPromise).updateThread(commentThread, this._repositoryId, this._pullRequestId, commentThreadId, this._project)
+      this._logger.logDebug(JSON.stringify(threadResult))
+    }
   }
 
   private async getGitApi (): Promise<IGitApi> {

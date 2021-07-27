@@ -3,7 +3,6 @@
 
 import { CommentThreadStatus, GitPullRequestCommentThread } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import PullRequestDetails from './pullRequestDetails'
-import PullRequestMetadata from './pullRequestMetadata'
 
 /**
  * An interface for invoking repository functionality with any underlying repository store.
@@ -26,16 +25,10 @@ export default interface IReposInvoker {
   getTitleAndDescription (): Promise<PullRequestDetails>
 
   /**
-   * Gets the current iteration for the current pull request.
-   * @returns A promise containing the current iteration.
+   * Gets all comments for the current pull request.
+   * @returns A promise containing the comments.
    */
-  getCurrentIteration (): Promise<number>
-
-  /**
-   * Gets all comment threads for the current pull request.
-   * @returns A promise containing the comment threads.
-   */
-  getCommentThreads (): Promise<GitPullRequestCommentThread[]>
+  getComments (): Promise<GitPullRequestCommentThread[]>
 
   /**
    * Updates the title and description for the current pull request.
@@ -47,35 +40,21 @@ export default interface IReposInvoker {
 
   /**
    * Creates a new comment within the current pull request.
-   * @param commentContent The text of the new comment.
-   * @param commentThreadId The comment thread ID to which to add the comment.
-   * @param parentCommentId The parent comment ID, after which to add the new comment.
-   * @returns A promise for awaiting the completion of the method call.
-   */
-  createComment (commentContent: string, commentThreadId: number, parentCommentId: number): Promise<void>
-
-  /**
-   * Creates a new comment thread within the current pull request.
-   * @param commentContent The text of the new comment.
+   * @param content The content of the new comment.
    * @param status The status to which to the set the comment thread.
    * @param fileName The file to which to add the comment. If this is unspecified, the comment will be created in the global pull request scope.
    * @param isFileDeleted A value indicating whether the file is being deleted.
    * @returns A promise for awaiting the completion of the method call.
    */
-  createCommentThread (commentContent: string, status: CommentThreadStatus, fileName?: string, isFileDeleted?: boolean): Promise<void>
+   createComment (content: string, status: CommentThreadStatus, fileName?: string, isFileDeleted?: boolean): Promise<void>
 
-  /**
-   * Updates the status of a comment thread within the current pull request.
-   * @param commentThreadId The comment thread ID to which to add the comment.
-   * @param status The status to which to the set the comment thread.
-   * @returns A promise for awaiting the completion of the method call.
-   */
-  setCommentThreadStatus (commentThreadId: number, status: CommentThreadStatus): Promise<void>
-
-  /**
-   * Adds metadata to the current pull request.
-   * @param metadata The metadata to be added.
-   * @returns A promise for awaiting the completion of the method call.
-   */
-  addMetadata (metadata: PullRequestMetadata[]): Promise<void>
+   /**
+    * Updates a comment thread within the current pull request.
+    * @param content The content of the comment. If this is `null`, the contents will not be updated.
+    * @param status The status to which to the set the comment thread. If this is `null`, the status will not be updated.
+    * @param commentThreadId The comment thread ID to which to add the comment.
+    * @param parentCommentId The parent comment ID, after which to add the new comment.
+    * @returns A promise for awaiting the completion of the method call.
+    */
+   updateComment (content: string | null, status: CommentThreadStatus | null, commentThreadId: number, commentId: number): Promise<void>
 }

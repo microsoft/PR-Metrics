@@ -52,22 +52,21 @@ export default class PullRequestComments {
 
   /**
    * Gets the data used for constructing the comment within the pull request.
-   * @param The number of the current iteration.
    * @returns A promise containing the data used for constructing the comment within the pull request.
    */
-  public async getCommentData (currentIteration: number): Promise<PullRequestCommentsData> {
+  public async getCommentData (): Promise<PullRequestCommentsData> {
     this._logger.logDebug('* PullRequestComments.getCommentData()')
 
     const filesNotRequiringReview: string[] = await this._codeMetrics.getFilesNotRequiringReview()
     const deletedFilesNotRequiringReview: string[] = await this._codeMetrics.getDeletedFilesNotRequiringReview()
     let result: PullRequestCommentsData = new PullRequestCommentsData(filesNotRequiringReview, deletedFilesNotRequiringReview)
 
-    const commentThreads: GitPullRequestCommentThread[] = await this._reposInvoker.getCommentThreads()
+    const commentThreads: GitPullRequestCommentThread[] = await this._reposInvoker.getComments()
     for (let i: number = 0; i < commentThreads.length; i++) {
       const commentThread: GitPullRequestCommentThread = commentThreads[i]!
       if (!commentThread.threadContext) {
         // If the current comment thread is not applied to a specified file, check if it is the metrics comment thread.
-        result = this.getMetricsCommentData(result, currentIteration, commentThread, i)
+        result = this.getMetricsCommentData(result, commentThread, i)
       } else {
         // If the current comment thread is applied to a specified file, check if it already contains a comment related to files that can be ignored.
         const filePath: string = Validator.validate(commentThread.threadContext.filePath, `commentThread[${i}].threadContext.filePath`, 'PullRequestComments.getCommentData()')
@@ -96,15 +95,14 @@ export default class PullRequestComments {
 
   /**
    * Gets the comment to add to the comment thread.
-   * @param The number of the current iteration.
    * @returns A promise containing the comment to add to the comment thread.
    */
-  public async getMetricsComment (currentIteration: number): Promise<string> {
+  public async getMetricsComment (): Promise<string> {
     this._logger.logDebug('* PullRequestComments.getMetricsComment()')
 
     const metrics: CodeMetricsData = await this._codeMetrics.getMetrics()
 
-    let result: string = `${this._taskLibWrapper.loc('pullRequests.pullRequestComments.commentTitle', currentIteration.toLocaleString())}${os.EOL}`
+    let result: string = `${this._taskLibWrapper.loc('pullRequests.pullRequestComments.commentTitle')}${os.EOL}`
     result += await this.addCommentSizeStatus()
     result += await this.addCommentTestStatus()
 
@@ -140,25 +138,23 @@ export default class PullRequestComments {
     return CommentThreadStatus.Active
   }
 
-  private getMetricsCommentData (result: PullRequestCommentsData, currentIteration: number, commentThread: GitPullRequestCommentThread, commentThreadIndex: number): PullRequestCommentsData {
+  private getMetricsCommentData (result: PullRequestCommentsData, commentThread: GitPullRequestCommentThread, commentThreadIndex: number): PullRequestCommentsData {
     this._logger.logDebug('* PullRequestComments.getMetricsCommentData()')
 
     const comments: Comment[] = Validator.validate(commentThread.comments, `commentThread[${commentThreadIndex}].comments`, 'PullRequestComments.getMetricsCommentData()')
-    for (let i: number = 0; i < comments.length; i++) {
-      const comment: Comment = comments[i]!
-
-      if (comment.content) {
-        const commentHeaderRegExp: RegExp = new RegExp(`^${this._taskLibWrapper.loc('pullRequests.pullRequestComments.commentTitle', '.+')}`)
-        if (!commentHeaderRegExp.test(comment.content)) {
-          continue
-        }
-
-        result.isMetricsCommentPresent = comment.content.startsWith(`${this._taskLibWrapper.loc('pullRequests.pullRequestComments.commentTitle', currentIteration.toLocaleString())}${os.EOL}`)
-        result.metricsCommentThreadId = Validator.validate(commentThread.id, `commentThread[${commentThreadIndex}].id`, 'PullRequestComments.getMetricsCommentData()')
-        result.metricsCommentId = Validator.validate(comment.id, `commentThread[${commentThreadIndex}].comments[${i}].id`, 'PullRequestComments.getMetricsCommentData()')
-      }
+    const firstComment: Comment = Validator.validate(comments[0], `commentThread[${commentThreadIndex}].comments[0]`, 'PullRequestComments.getMetricsCommentData()')
+    if (!firstComment.content) {
+      return result
     }
 
+    if (!firstComment.content.startsWith(`${this._taskLibWrapper.loc('pullRequests.pullRequestComments.commentTitle')}${os.EOL}`)) {
+      return result
+    }
+
+    result.metricsCommentThreadId = Validator.validate(commentThread.id, `commentThread[${commentThreadIndex}].id`, 'PullRequestComments.getMetricsCommentData()')
+    result.metricsCommentId = Validator.validate(firstComment.id, `commentThread[${commentThreadIndex}].comments[0].id`, 'PullRequestComments.getMetricsCommentData()')
+    result.metricsCommentThreadStatus = commentThread.status ?? null
+    result.metricsCommentContent = firstComment.content
     return result
   }
 

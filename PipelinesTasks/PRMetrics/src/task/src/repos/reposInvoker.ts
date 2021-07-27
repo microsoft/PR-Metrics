@@ -9,7 +9,6 @@ import GitHubReposInvoker from './gitHubReposInvoker'
 import IReposInvoker from './iReposInvoker'
 import Logger from '../utilities/logger'
 import PullRequestDetails from './pullRequestDetails'
-import PullRequestMetadata from './pullRequestMetadata'
 
 /**
  * A class for invoking repository functionality with any underlying repository store.
@@ -55,18 +54,11 @@ export default class ReposInvoker implements IReposInvoker {
     return reposInvoker.getTitleAndDescription()
   }
 
-  public async getCurrentIteration (): Promise<number> {
-    this._logger.logDebug('* ReposInvoker.getCurrentIteration()')
+  public async getComments (): Promise<GitPullRequestCommentThread[]> {
+    this._logger.logDebug('* ReposInvoker.getComments()')
 
     const reposInvoker: IReposInvoker = this.getReposInvoker()
-    return reposInvoker.getCurrentIteration()
-  }
-
-  public async getCommentThreads (): Promise<GitPullRequestCommentThread[]> {
-    this._logger.logDebug('* ReposInvoker.getCommentThreads()')
-
-    const reposInvoker: IReposInvoker = this.getReposInvoker()
-    return reposInvoker.getCommentThreads()
+    return reposInvoker.getComments()
   }
 
   public async setTitleAndDescription (title: string | null, description: string | null): Promise<void> {
@@ -76,32 +68,18 @@ export default class ReposInvoker implements IReposInvoker {
     return reposInvoker.setTitleAndDescription(title, description)
   }
 
-  public async createComment (commentContent: string, commentThreadId: number, parentCommentId: number): Promise<void> {
+  public async createComment (content: string, status: CommentThreadStatus, fileName?: string, isFileDeleted?: boolean): Promise<void> {
     this._logger.logDebug('* ReposInvoker.createComment()')
 
     const reposInvoker: IReposInvoker = this.getReposInvoker()
-    return reposInvoker.createComment(commentContent, commentThreadId, parentCommentId)
+    return reposInvoker.createComment(content, status, fileName, isFileDeleted)
   }
 
-  public async createCommentThread (commentContent: string, status: CommentThreadStatus, fileName?: string, isFileDeleted?: boolean): Promise<void> {
-    this._logger.logDebug('* ReposInvoker.createCommentThread()')
+  public async updateComment (content: string | null, status: CommentThreadStatus | null, commentThreadId: number, commentId: number): Promise<void> {
+    this._logger.logDebug('* ReposInvoker.updateComment()')
 
     const reposInvoker: IReposInvoker = this.getReposInvoker()
-    return reposInvoker.createCommentThread(commentContent, status, fileName, isFileDeleted)
-  }
-
-  public async setCommentThreadStatus (commentThreadId: number, status: CommentThreadStatus): Promise<void> {
-    this._logger.logDebug('* ReposInvoker.setCommentThreadStatus()')
-
-    const reposInvoker: IReposInvoker = this.getReposInvoker()
-    return reposInvoker.setCommentThreadStatus(commentThreadId, status)
-  }
-
-  public async addMetadata (metadata: PullRequestMetadata[]): Promise<void> {
-    this._logger.logDebug('* ReposInvoker.addMetadata()')
-
-    const reposInvoker: IReposInvoker = this.getReposInvoker()
-    return reposInvoker.addMetadata(metadata)
+    return reposInvoker.updateComment(content, status, commentThreadId, commentId)
   }
 
   private getReposInvoker (): IReposInvoker {

@@ -4,7 +4,7 @@
   "name": "PRMetrics",
   "friendlyName": "ms-resource:loc.friendlyName",
   "description": "ms-resource:loc.description",
-  "helpUrl": "https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/blob/main/PipelinesTasks/PRMetrics/README.md",
+  "helpUrl": "https://aka.ms/PRMetrics/README",
   "helpMarkDown": "ms-resource:loc.helpMarkDown",
   "author": "Microsoft Corporation",
   "category": "Azure Pipelines",
@@ -12,8 +12,8 @@
   "minimumAgentVersion": "2.189.0",
   "version": {
     "Major": 1,
-    "Minor": 1,
-    "Patch": 8
+    "Minor": 2,
+    "Patch": 0
   },
   "instanceNameFormat": "ms-resource:loc.instanceNameFormat",
   "inputs": [

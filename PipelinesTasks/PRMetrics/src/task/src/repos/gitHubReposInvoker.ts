@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 import { CommentThreadStatus, GitPullRequestCommentThread } from 'azure-devops-node-api/interfaces/GitInterfaces'
+import { OctokitOptions } from '@octokit/core/dist-types/types'
 import { RequestParameters } from '@octokit/types'
 import { singleton } from 'tsyringe'
 import { Validator } from '../utilities/validator'
@@ -10,7 +11,6 @@ import IReposInvoker from './iReposInvoker'
 import Logger from '../utilities/logger'
 import OctokitWrapper from '../wrappers/octokitWrapper'
 import PullRequestDetails from './pullRequestDetails'
-import PullRequestMetadata from './pullRequestMetadata'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
 import UpdatePullRequest from '../wrappers/octokitInterfaces/updatePullRequest'
 import UpdatePullResponse from '../wrappers/octokitInterfaces/updatePullResponse'
@@ -70,16 +70,10 @@ export default class GitHubReposInvoker implements IReposInvoker {
     }
   }
 
-  public async getCurrentIteration (): Promise<number> {
-    this._logger.logDebug('* GitHubReposInvoker.getCurrentIteration()')
+  public async getComments (): Promise<GitPullRequestCommentThread[]> {
+    this._logger.logDebug('* GitHubReposInvoker.getComments()')
 
-    throw Error('GitHubReposInvoker.getCurrentIteration() not yet implemented.')
-  }
-
-  public async getCommentThreads (): Promise<GitPullRequestCommentThread[]> {
-    this._logger.logDebug('* GitHubReposInvoker.getCommentThreads()')
-
-    throw Error('GitHubReposInvoker.getCommentThreads() not yet implemented.')
+    throw Error('GitHubReposInvoker.getComments() not yet implemented.')
   }
 
   public async setTitleAndDescription (title: string | null, description: string | null): Promise<void> {
@@ -108,28 +102,16 @@ export default class GitHubReposInvoker implements IReposInvoker {
     this._logger.logDebug(JSON.stringify(result))
   }
 
-  public async createComment (_: string, __: number, ___: number): Promise<void> {
+  public async createComment (_: string, __: CommentThreadStatus, ___?: string, ____?: boolean): Promise<void> {
     this._logger.logDebug('* GitHubReposInvoker.createComment()')
 
     throw Error('GitHubReposInvoker.createComment() not yet implemented.')
   }
 
-  public async createCommentThread (_: string, __: CommentThreadStatus, ___?: string, ____?: boolean): Promise<void> {
-    this._logger.logDebug('* GitHubReposInvoker.createCommentThread()')
+  public async updateComment (_: string | null, __: CommentThreadStatus | null, ___: number, ____: number): Promise<void> {
+    this._logger.logDebug('* GitHubReposInvoker.updateComment()')
 
-    throw Error('GitHubReposInvoker.createCommentThread() not yet implemented.')
-  }
-
-  public async setCommentThreadStatus (_: number, __: CommentThreadStatus): Promise<void> {
-    this._logger.logDebug('* GitHubReposInvoker.setCommentThreadStatus()')
-
-    throw Error('GitHubReposInvoker.setCommentThreadStatus() not yet implemented.')
-  }
-
-  public async addMetadata (_: PullRequestMetadata[]): Promise<void> {
-    this._logger.logDebug('* GitHubReposInvoker.addMetadata()')
-
-    throw Error('GitHubReposInvoker.addMetadata() not yet implemented.')
+    throw Error('GitHubReposInvoker.updateComment() not yet implemented.')
   }
 
   private initialize (): void {
@@ -139,17 +121,30 @@ export default class GitHubReposInvoker implements IReposInvoker {
       return
     }
 
-    this._octokitWrapper.initialize({
+    const options: OctokitOptions = {
       auth: Validator.validate(this._taskLibWrapper.getVariable('GitHub.PAT'), 'GitHub.PAT', 'GitHubReposInvoker.initialize()'),
-      userAgent: 'PRMetrics/v1.1.8'
-    })
+      userAgent: 'PRMetrics/v1.2.0',
+      log: {
+        debug: (message: string): void => this._logger.logDebug(`Octokit – ${message}`),
+        info: (message: string): void => this._logger.logInfo(`Octokit – ${message}`),
+        warn: (message: string): void => this._logger.logWarning(`Octokit – ${message}`),
+        error: (message: string): void => this._logger.logError(`Octokit – ${message}`)
+      }
+    }
 
     const sourceRepositoryUri: string = Validator.validate(process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI, 'SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI', 'GitHubReposInvoker.initialize()')
     const expectedEnding: string = '.git'
     const sourceRepositoryUriElements: string[] = sourceRepositoryUri.split('/')
-    if (!sourceRepositoryUri.startsWith('https://github.com/') || !sourceRepositoryUri.endsWith(expectedEnding) || sourceRepositoryUriElements.length !== 5) {
+    if (!sourceRepositoryUri.endsWith(expectedEnding) || sourceRepositoryUriElements.length !== 5) {
       throw Error(`SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI '${sourceRepositoryUri}' is in an unexpected format.`)
     }
+
+    // Handle GitHub Enterprise and GitHub AE invocations.
+    if (sourceRepositoryUriElements[2] !== 'github.com') {
+      options.baseUrl = 'https://{baseUrl}/api/v3'
+    }
+
+    this._octokitWrapper.initialize(options)
 
     this._owner = sourceRepositoryUriElements[3]
     this._repo = sourceRepositoryUriElements[4]!.substring(0, sourceRepositoryUriElements[4]!.length - expectedEnding.length)

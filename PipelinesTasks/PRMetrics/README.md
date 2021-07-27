@@ -4,7 +4,7 @@ PR Metrics is an Azure Pipelines task for adding size and test coverage
 indicators to the start of each Pull Request title.
 
 It can be downloaded from the Visual Studio Marketplace at
-<https://marketplace.visualstudio.com/items?itemName=ms-omex.prmetrics>.
+<https://aka.ms/PRMetrics/Comment>.
 
 For example, a PR with the title "Adding code" could become either:
 
@@ -42,28 +42,6 @@ files is unnecessary.
 If no PR description is provided, the description will be set to:
 
 > :x: **Please add a description.**
-
-The extension will also add properties to the PR, which can be queried by other
-extensions as desired:
-
-- `/PRMetrics.Size`: A string representing the size indicator, e.g. `XS`.
-- `/PRMetrics.TestCoverage`: A Boolean value indicating whether the test
-  coverage is deemed sufficient. If no test coverage is expected (i.e. if the
-  test factor input is set to `0.0`), this property will not be present.
-- `/PRMetrics.ProductCode`: An integer indicating the number of lines of product
-  code added via the PR.
-- `/PRMetrics.TestCode`: An integer indicating the number of lines of test
-  code added via the PR.
-- `/PRMetrics.Subtotal`: An integer indicating the number of lines of product
-  and test code added via the PR. This is the sum of `/PRMetrics.ProductCode`
-  and `/PRMetrics.TestCode`.
-- `/PRMetrics.IgnoredCode`: An integer indicating the number of lines of ignored
-  code added via the PR. This includes files ignored through the use of the code
-  matching patterns input, as well as those files whose extensions resulted in
-  their being ignored.
-- `/PRMetrics.Total`: An integer indicating the total number of lines of code
-  added via the PR. This is the sum of `/PRMetrics.Subtotal` and
-  `/PRMetrics.IgnoredCode`.
 
 This task currently only works for Azure DevOps PRs, but support for PRs on
 other platforms will be added in the future. If run against PRs for other
@@ -523,7 +501,7 @@ the language extensions defined in the
 [vssextensionjson]: vss-extension.json
 [taskjson]: task/task.json
 [addingtask]: https://docs.microsoft.com/azure/devops/pipelines/customize-pipeline
-[globs]: https://docs.microsoft.com/azure/devops/pipelines/tasks/file-matching-patterns
+[globs]: https://aka.ms/PRMetrics/FileMatchingPatterns
 [typescript]: https://www.typescriptlang.org/
 [sdk]: https://github.com/microsoft/azure-pipelines-task-lib
 [mocha]: https://mochajs.org/

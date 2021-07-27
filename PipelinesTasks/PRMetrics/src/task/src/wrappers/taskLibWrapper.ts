@@ -19,6 +19,14 @@ export default class TaskLibWrapper {
   }
 
   /**
+   * Logs an error message.
+   * @param message The message to log.
+   */
+  public error (message: string): void {
+    taskLib.error(message)
+  }
+
+  /**
    * Asynchronously executes an external tool.
    * @param tool The tool executable to run.
    * @param args The arguments to pass to the tool.
@@ -56,5 +64,13 @@ export default class TaskLibWrapper {
    */
   public loc (key: string, ...param: any[]): string {
     return taskLib.loc(key, ...param)
+  }
+
+  /**
+   * Logs a warning message.
+   * @param message The message to log.
+   */
+  public warning (message: string): void {
+    taskLib.warning(message)
   }
 }
