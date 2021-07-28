@@ -1,22 +1,21 @@
 # Manual Testing
 
-Unfortunately, it is not possible to automatically test everything, given that
-as the task runs on the Azure DevOps platform, which the unit tests cannot run
-on. Therefore, it is recommended that you perform the following manual test
-cases whenever significant changes are made. These don't cover all possible
-scenarios, but they should combine with the unit tests to provide a high level
-of coverage.
+Unfortunately, it is not possible to automatically test everything as the task
+runs on the Azure DevOps platform, which the unit tests cannot run on.
+Therefore, it is recommended that you perform the following manual test cases
+whenever significant changes are made. These don't cover all possible scenarios,
+but they complement the unit tests to provide a high level of coverage.
 
 ## Step 1: Setup
 
-1. On your Azure DevOps server, either create a new Git repo or select an empty
-   one.
+1. On the Azure DevOps server to which you have administrator access, either
+   create a new Git repo or select an empty one.
 
    To create a new repo, navigate to your chosen project and select Repos >
    Files from the left-hand navigation. Click the drop down with the repo name
    at the top of the page and select "New Repository". Leave "Add a README"
    checked to create a main branch but do not add a `.gitignore` file.
-1. Copy the contexts of the `step1` subfolder to the root of your repo,
+1. Copy the contents of the `step1` subfolder to the root of your repo,
    preserving the folder tree.
 1. Commit the changes to your repo.
 1. Deploy your local PR Metrics code to the server using:
@@ -30,7 +29,7 @@ of coverage.
    performed the first time you use tfx-cli.
 1. To build and deploy, from within the `src/task` folder, run `npm run deploy`.
 
-## Step 2: Initializing the Pipelines
+## Step 2: Creating the Pipelines
 
 1. Clone the repo locally.
 1. Copy the contents of the `step2` folder to your new repo and commit it to the
@@ -48,7 +47,7 @@ of coverage.
    "Save".
 1. On the subsequent page, it is a good idea to click the "..." and select
    "Rename/Move" to change the pipeline name to something more memorable, as
-   well as to potentially move it to a useful folder.
+   well as to potentially move it to a shared folder.
 1. Repeat the process for the other three pipeline definitions.
 1. On the Azure DevOps server, navigate to Repos > Branches.
 1. Next to the main branch for your repo, click "..." and select "Branch
@@ -66,10 +65,10 @@ of coverage.
    click on it.
 1. Under the pipeline page, click "Run pipeline".
 1. In the right-hand pane, accept the default options and click "Run".
-1. Verify that the pipeline succeeds and that PR Metrics task is skipped, as it
-   is run outside of the context of a PR.
+1. Verify that the pipeline succeeds and that the PR Metrics task is skipped, as
+   it is run outside of the context of a PR.
 
-## Step 4: Performing an Initial Pipeline Test via PR
+## Step 4: Performing an Initial Pipeline Test via a PR
 
 1. In your Git repo, create a new branch, e.g. `step4`.
 1. Copy the files from `step4` to the root folder of your repo.

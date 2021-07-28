@@ -182,10 +182,10 @@ PR to be merged.
 
 ### Manual Test Cases
 
-Unfortunately, it is not possible to automatically test everything, given that
-as the task runs on the Azure DevOps platform, which the unit tests cannot run
-on. Therefore, it is recommended that you perform the manual test cases outlined
-in [here][manualtesting] whenever significant changes are made.
+Unfortunately, it is not possible to automatically test everything as the task
+runs on the Azure DevOps platform, which the unit tests cannot run on.
+Therefore, it is recommended that you perform the following manual test cases
+outlined in [here][manualtesting] whenever significant changes are made.
 
 ## Debugging
 
