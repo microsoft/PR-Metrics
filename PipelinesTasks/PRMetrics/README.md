@@ -43,9 +43,9 @@ If no PR description is provided, the description will be set to:
 
 > :x: **Please add a description.**
 
-This task currently only works for Azure DevOps PRs, but support for PRs on
-other platforms will be added in the future. If run against PRs for other
-platforms now, the task will be skipped.
+The complete functionality is currently only present for Azure DevOps PRs. For
+GitHub, GitHub AE, and GitHub Enterprise PRs, only the title will be updated.
+If run against PRs for other platforms, the task will be skipped.
 
 ## Deploying
 
@@ -65,8 +65,7 @@ To deploy the task:
    You can generate a PAT with at least the "Agent Pools (Read & manage)" scope
    by following the instructions [here][tfxpat]. This will only need to be
    performed the first time you use tfx-cli.
-1. To build and deploy, from within the `src/task` folder, run
-   `npm run deploy`.
+1. To build and deploy, from within the `src/task` folder, run `npm run deploy`.
 
 ## Configuring
 
@@ -183,81 +182,10 @@ PR to be merged.
 
 ### Manual Test Cases
 
-Unfortunately, it is not possible to automatically test everything, particularly
+Unfortunately, it is not possible to automatically test everything, given that
 as the task runs on the Azure DevOps platform, which the unit tests cannot run
-on. Therefore, it is recommended that you perform the following manual test
-cases whenever significant changes are made. These don't cover all possible
-scenarios, but they should combine with the unit tests to provide a high level
-of coverage.
-
-1. Create an [Azure Pipelines build task][docsbuildtask] including PR Metrics.
-   Do not allow [access to the OAuth token][docsoauth]. Run the pipeline against
-   any branch. Ensure that the task is skipped as it is not running against a
-   PR.
-1. Make your build task a [requirement for a custom branch][docsbranch], and
-   create a PR against that branch. In the PR:
-   - create `file.ts` with 10 lines
-   - create `fileTest.cs` with 30 lines
-   - create `file.ignored` with 30 lines
-   - rename an existing file in the repo to `temporary1.ts`
-   - rename an existing file in the repo to `temporary2.ts`, keeping the file
-     in its original folder
-   - add 5 lines to `temporary2.ts`
-   Clear the description. After creating the PR, check the status of the build
-   task. It should fail with an error as the OAuth token cannot be accessed.
-1. Modify the build task definition to provide
-   [access to the OAuth token][docsoauth]. Go back to your PR and click
-   "Re-queue" next to the build failure. This time, the task should succeed. The
-   title should be prefixed with "XS:heavy_check_mark: :black_small_square:",
-   the description should be changed to ":x: Please add a description.", and
-   the metrics comment should be added to the PR with the following details:
-   - :heavy_check_mark: Thanks for keeping your pull request small.
-   - :heavy_check_mark: Thanks for adding tests.
-   - Product code: 16
-   - Test code: 30
-   - Subtotal: 46
-   - Ignored: 30
-   - Total: 76
-   The metrics comment thread should be closed.
-1. Modify the build task definition to change the inputs to the following:
-   - Base size: 2
-   - Growth rate: 2
-   - Test factor: 100
-   - File matching patterns: \*\*/file*
-   - Code file extensions: ts
-   Push a new change to the build, adding 1 more line to `file.ignored`. The
-   build will re-run and you should see the title prefix updated to
-   "L:warning: :black_small_square:". A new comment corresponding to the new
-   iteration will be added to the thread, which should have the following
-   details:
-   - :x: Try to keep pull requests smaller than 2 lines of new product code by
-     following the Single Responsibility Principle (SRP).
-   - :warning: Consider adding additional tests.
-   - Product code: 10
-   - Test code: 0
-   - Subtotal: 10
-   - Ignored: 67
-   - Total: 77
-   The metrics comment thread should be active. `temporary1.ts` and
-   `temporary2.ts` should both include the closed comment
-   ":exclamation: This file doesn't require review."
-1. Modify the build task definition to change the "test factor" input to "0"
-   (not blank). Push a new change to the build, adding 1 more line to
-   `file.ignored`. The build will re-run and you should see the title prefix
-   updated to "L :black_small_square:". A new comment corresponding to the new
-   iteration will be added to the thread, which should have the following
-   details:
-   - :x: Try to keep pull requests smaller than 2 lines of new product code by
-     following the Single Responsibility Principle (SRP).
-   - Product code: 10
-   - Test code: 0
-   - Subtotal: 10
-   - Ignored: 68
-   - Total: 78
-   The metrics comment thread should be active.
-1. Without pushing additional changes, go back to your PR and click "Re-queue"
-   next to the build. The build should succeed but no changes should be made to
-   the PR.
+on. Therefore, it is recommended that you perform the manual test cases outlined
+in [here][manualtesting] whenever significant changes are made.
 
 ## Debugging
 
@@ -511,8 +439,6 @@ the language extensions defined in the
 [eslint]: https://eslint.org/
 [typedoc]: https://typedoc.org/
 [depinjection]: https://wikipedia.org/wiki/Dependency_injection
-[docsbuildtask]: https://docs.microsoft.com/azure/devops/pipelines/create-first-pipeline
-[docsoauth]: https://docs.microsoft.com/azure/devops/pipelines/build/options#allow-scripts-to-access-the-oauth-token
-[docsbranch]: https://docs.microsoft.com/azure/devops/repos/git/branch-policies#build-validation
+[manualtesting]: src/task/tests/manualTests/Instructions.md
 [octoverse]: https://octoverse.github.com/
 [githublinguist]: https://github.com/github/linguist/blob/master/lib/linguist/languages.yml

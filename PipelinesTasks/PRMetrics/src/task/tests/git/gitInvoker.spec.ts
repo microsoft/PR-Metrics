@@ -85,7 +85,7 @@ describe('gitInvoker.ts', (): void => {
       verify(logger.logDebug('* GitInvoker.invokeGit()')).once()
     })
 
-    it('should throw an error when Git invocation fails', async (): Promise<void> => {
+    it('should return false when Git invocation fails', async (): Promise<void> => {
       // Arrange
       when(taskLibWrapper.exec('git', 'rev-parse --is-inside-work-tree', anything())).thenCall((_: string, __: string, options: IExecOptions): Promise<number> => {
         options.errStream!.write('Failure')
@@ -270,25 +270,18 @@ describe('gitInvoker.ts', (): void => {
       delete process.env.BUILD_REPOSITORY_PROVIDER
     })
 
-    it('should throw an error when Git invocation fails', async (): Promise<void> => {
+    it('should return false when Git invocation fails', async (): Promise<void> => {
       // Arrange
       when(taskLibWrapper.exec('git', 'rev-parse --branch origin/develop...pull/12345/merge', anything())).thenCall((_: string, __: string, options: IExecOptions): Promise<number> => {
         options.errStream!.write('Failure')
         return Promise.resolve(1)
       })
       const gitInvoker: GitInvoker = new GitInvoker(instance(logger), instance(taskLibWrapper))
-      let errorThrown: boolean = false
 
-      try {
-        // Act
-        await gitInvoker.isGitHistoryAvailable()
-      } catch (error) {
-        // Assert
-        errorThrown = true
-        expect(error.message).to.equal('Failure')
-      }
+      // Act
+      const result: boolean = await gitInvoker.isGitHistoryAvailable()
 
-      expect(errorThrown).to.equal(true)
+      expect(result).to.equal(false)
       verify(logger.logDebug('* GitInvoker.isGitHistoryAvailable()')).once()
       verify(logger.logDebug('* GitInvoker.initialize()')).once()
       verify(logger.logDebug('* GitInvoker.getTargetBranch()')).once()

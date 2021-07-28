@@ -70,13 +70,13 @@
   "loc.messages.metrics.codeMetrics.titleTestsSufficient": "✔",
   "loc.messages.metrics.codeMetrics.titleTestsSufficient.comment": "The title test coverage prefix for a pull request with sufficient test coverage.",
 
-  "loc.messages.metrics.codeMetricsCalculator.noAccessToken": "Could not access the OAuth token. Enable 'Allow scripts to access OAuth token' under the build process phase settings.",
+  "loc.messages.metrics.codeMetricsCalculator.noAccessToken": "Could not access the OAuth token. Add 'SYSTEM_ACCESSTOKEN' as an environment variable (YAML) or enable 'Allow scripts to access OAuth token' under the build process phase settings (classic).",
   "loc.messages.metrics.codeMetricsCalculator.noAccessToken.comment": "The message to display when terminating as no access token is available.",
 
-  "loc.messages.metrics.codeMetricsCalculator.noGitEnlistment": "No Git enlistment present. Disable 'Don't sync sources' under the build process phase settings.",
+  "loc.messages.metrics.codeMetricsCalculator.noGitEnlistment": "No Git enlistment present. Remove 'checkout: none' (YAML) or disable 'Don't sync sources' under the build process phase settings (classic).",
   "loc.messages.metrics.codeMetricsCalculator.noGitEnlistment.comment": "The message to display when terminating as no Git enlistment is present.",
 
-  "loc.messages.metrics.codeMetricsCalculator.noGitHistory": "Could not access sufficient Git history. Disable 'Shallow fetch' (or set the threshold sufficiently high) under the build process phase settings.",
+  "loc.messages.metrics.codeMetricsCalculator.noGitHistory": "Could not access sufficient Git history. Disable 'fetchDepth' (YAML) or 'Shallow fetch' under the build process phase settings (classic). Or set the threshold sufficiently high.",
   "loc.messages.metrics.codeMetricsCalculator.noGitHistory.comment": "The message to display when terminating as the system could not access sufficient Git history.",
 
   "loc.messages.metrics.codeMetricsCalculator.noPullRequest": "The build is not running against a pull request.",

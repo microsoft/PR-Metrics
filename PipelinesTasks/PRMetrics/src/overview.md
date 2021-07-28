@@ -1,5 +1,7 @@
 This extension provides a build task for updating PR titles with an indicator of
-the PR size and test coverage.
+the PR size and test coverage. It works with Azure DevOps, GitHub, GitHub AE,
+and GitHub Enterprise PRs (although functionality is currently limited for
+GitHub platforms).
 
 It is designed to help software engineers create PRs of an appropriate size,
 with appropriate levels of test coverage. It furthermore helps reviewers
@@ -29,8 +31,10 @@ Or you can use YAML:
 
 ```YAML
 steps:
-- task: ms-omex.prmetrics.prmetrics.PRMetrics@1
-  displayName: 'PR Metrics'
+- task: PRMetrics@1
+  displayName: PR Metrics
+  env:
+    SYSTEM_ACCESSTOKEN: $(System.AccessToken)
   continueOnError: true
 ```
 
@@ -38,8 +42,10 @@ If you wish to modify the inputs, YAML akin the to the following can be used:
 
 ```YAML
 steps:
-- task: ms-omex.prmetrics.prmetrics.PRMetrics@1
-  displayName: 'PR Metrics'
+- task: PRMetrics@1
+  displayName: PR Metrics
+  env:
+    SYSTEM_ACCESSTOKEN: $(System.AccessToken)
   inputs:
     BaseSize: 200
     GrowthRate: 2.0

@@ -1,0 +1,29 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  - name: System.Debug
+    value: true
+
+stages:
+  - stage: PRMetricsManualTestStep6
+    displayName: PR Metrics Manual Test – Step 6
+    jobs:
+      - job: PRMetricsManualTestStep6
+        displayName: PR Metrics Manual Test – Step 6
+        steps:
+          - task: PRMetrics@1
+            displayName: PR Metrics
+            env:
+              SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+            inputs:
+              BaseSize: 2
+              GrowthRate: 2
+              TestFactor: 100
+              FileMatchingPatterns: |
+                **/file*
+                **/pipeline*
+              CodeFileExtensions: ts

@@ -41,9 +41,9 @@ describe('codeMetricsCalculator.ts', (): void => {
     pullRequestComments = mock(PullRequestComments)
 
     taskLibWrapper = mock(TaskLibWrapper)
-    when(taskLibWrapper.loc('metrics.codeMetricsCalculator.noAccessToken')).thenReturn('Could not access the OAuth token. Enable \'Allow scripts to access OAuth token\' under the build process phase settings.')
-    when(taskLibWrapper.loc('metrics.codeMetricsCalculator.noGitEnlistment')).thenReturn('No Git enlistment present. Disable \'Don\'t sync sources\' under the build process phase settings.')
-    when(taskLibWrapper.loc('metrics.codeMetricsCalculator.noGitHistory')).thenReturn('Could not access sufficient Git history. Disable \'Shallow fetch\' under the build process phase settings.')
+    when(taskLibWrapper.loc('metrics.codeMetricsCalculator.noAccessToken')).thenReturn('Could not access the OAuth token. Add \'SYSTEM_ACCESSTOKEN\' as an environment variable (YAML) or enable \'Allow scripts to access OAuth token\' under the build process phase settings (classic).')
+    when(taskLibWrapper.loc('metrics.codeMetricsCalculator.noGitEnlistment')).thenReturn('No Git enlistment present. Remove \'checkout: none\' (YAML) or disable \'Don\'t sync sources\' under the build process phase settings (classic).')
+    when(taskLibWrapper.loc('metrics.codeMetricsCalculator.noGitHistory')).thenReturn('Could not access sufficient Git history. Disable \'fetchDepth\' (YAML) or \'Shallow fetch\' under the build process phase settings (classic). Or set the threshold sufficiently high.')
     when(taskLibWrapper.loc('metrics.codeMetricsCalculator.noPullRequest')).thenReturn('The build is not running against a pull request.')
     when(taskLibWrapper.loc('metrics.codeMetricsCalculator.unsupportedProvider', 'Other')).thenReturn('The build is running against a pull request from \'Other\', which is not a supported provider.')
   })
@@ -110,7 +110,7 @@ describe('codeMetricsCalculator.ts', (): void => {
       const result: string | null = await codeMetricsCalculator.shouldStop()
 
       // Assert
-      expect(result).to.equal('Could not access the OAuth token. Enable \'Allow scripts to access OAuth token\' under the build process phase settings.')
+      expect(result).to.equal('Could not access the OAuth token. Add \'SYSTEM_ACCESSTOKEN\' as an environment variable (YAML) or enable \'Allow scripts to access OAuth token\' under the build process phase settings (classic).')
       verify(logger.logDebug('* CodeMetricsCalculator.shouldStop()')).once()
     })
 
@@ -123,7 +123,7 @@ describe('codeMetricsCalculator.ts', (): void => {
       const result: string | null = await codeMetricsCalculator.shouldStop()
 
       // Assert
-      expect(result).to.equal('No Git enlistment present. Disable \'Don\'t sync sources\' under the build process phase settings.')
+      expect(result).to.equal('No Git enlistment present. Remove \'checkout: none\' (YAML) or disable \'Don\'t sync sources\' under the build process phase settings (classic).')
       verify(logger.logDebug('* CodeMetricsCalculator.shouldStop()')).once()
     })
 
@@ -136,7 +136,7 @@ describe('codeMetricsCalculator.ts', (): void => {
       const result: string | null = await codeMetricsCalculator.shouldStop()
 
       // Assert
-      expect(result).to.equal('Could not access sufficient Git history. Disable \'Shallow fetch\' under the build process phase settings.')
+      expect(result).to.equal('Could not access sufficient Git history. Disable \'fetchDepth\' (YAML) or \'Shallow fetch\' under the build process phase settings (classic). Or set the threshold sufficiently high.')
       verify(logger.logDebug('* CodeMetricsCalculator.shouldStop()')).once()
     })
   })
@@ -145,7 +145,7 @@ describe('codeMetricsCalculator.ts', (): void => {
     it('should perform the expected actions', async (): Promise<void> => {
       // Arrange
       when(reposInvoker.getTitleAndDescription()).thenResolve({ title: 'Title', description: 'Description' })
-      when(pullRequest.getUpdatedTitle('Title')).thenResolve('S✔ ◾ TODO')
+      when(pullRequest.getUpdatedTitle('Title')).thenResolve('S✔ ◾ Title')
       when(pullRequest.getUpdatedDescription('Description')).thenReturn('Description')
       const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(gitInvoker), instance(logger), instance(pullRequest), instance(pullRequestComments), instance(reposInvoker), instance(taskLibWrapper))
 
@@ -156,13 +156,13 @@ describe('codeMetricsCalculator.ts', (): void => {
       verify(logger.logDebug('* CodeMetricsCalculator.updateDetails()')).once()
       verify(pullRequest.getUpdatedTitle('Title')).once()
       verify(pullRequest.getUpdatedDescription('Description')).once()
-      verify(reposInvoker.setTitleAndDescription('S✔ ◾ TODO', 'Description')).once()
+      verify(reposInvoker.setTitleAndDescription('S✔ ◾ Title', 'Description')).once()
     })
 
     it('should perform the expected actions when the description is missing', async (): Promise<void> => {
       // Arrange
       when(reposInvoker.getTitleAndDescription()).thenResolve({ title: 'Title' })
-      when(pullRequest.getUpdatedTitle('Title')).thenResolve('S✔ ◾ TODO')
+      when(pullRequest.getUpdatedTitle('Title')).thenResolve('S✔ ◾ Title')
       when(pullRequest.getUpdatedDescription(undefined)).thenReturn('Description')
       const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(gitInvoker), instance(logger), instance(pullRequest), instance(pullRequestComments), instance(reposInvoker), instance(taskLibWrapper))
 
@@ -173,7 +173,7 @@ describe('codeMetricsCalculator.ts', (): void => {
       verify(logger.logDebug('* CodeMetricsCalculator.updateDetails()')).once()
       verify(pullRequest.getUpdatedTitle('Title')).once()
       verify(pullRequest.getUpdatedDescription(undefined)).once()
-      verify(reposInvoker.setTitleAndDescription('S✔ ◾ TODO', 'Description')).once()
+      verify(reposInvoker.setTitleAndDescription('S✔ ◾ Title', 'Description')).once()
     })
   })
 

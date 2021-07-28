@@ -54,9 +54,13 @@ export default class GitInvoker {
     this._logger.logDebug('* GitInvoker.isGitHistoryAvailable()')
 
     this.initialize()
-    const result: string = await this.invokeGit(`rev-parse --branch origin/${this._targetBranch}...pull/${this._pullRequestId}/merge`)
 
-    return !result.startsWith(`fatal: ambiguous argument 'origin/${this._targetBranch}...pull/${this._pullRequestId}/merge': unknown revision or path not in the working tree.`)
+    try {
+      const result: string = await this.invokeGit(`rev-parse --branch origin/${this._targetBranch}...pull/${this._pullRequestId}/merge`)
+      return !result.startsWith(`fatal: ambiguous argument 'origin/${this._targetBranch}...pull/${this._pullRequestId}/merge': unknown revision or path not in the working tree.`)
+    } catch {
+      return false
+    }
   }
 
   /**
