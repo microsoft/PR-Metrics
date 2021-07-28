@@ -54,7 +54,7 @@
       "uri": "https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/issues"
     },
     "license": {
-      "uri": "https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/blob/main/LICENSE.txt"
+      "uri": "https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/blob/main/PipelinesTasks/PRMetrics/src/LICENSE.txt"
     },
     "support": {
       "uri": "https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/blob/main/.github/SUPPORT.md"
