@@ -209,7 +209,6 @@ describe('codeMetricsCalculator.ts', (): void => {
       // Arrange
       const commentData: PullRequestCommentsData = new PullRequestCommentsData([], [])
       commentData.metricsCommentThreadId = 1
-      commentData.metricsCommentId = 2
       when(pullRequestComments.getCommentData()).thenResolve(commentData)
       when(pullRequestComments.getMetricsComment()).thenResolve('Description')
       when(pullRequestComments.getMetricsCommentStatus()).thenResolve(CommentThreadStatus.Active)
@@ -221,7 +220,7 @@ describe('codeMetricsCalculator.ts', (): void => {
       // Assert
       verify(logger.logDebug('* CodeMetricsCalculator.updateComments()')).once()
       verify(logger.logDebug('* CodeMetricsCalculator.updateMetricsComment()')).once()
-      verify(reposInvoker.updateComment('Description', CommentThreadStatus.Active, 1, 2)).once()
+      verify(reposInvoker.updateComment('Description', CommentThreadStatus.Active, 1)).once()
     })
 
     it('should perform the expected actions when the metrics comment is to be updated and there is no existing thread', async (): Promise<void> => {

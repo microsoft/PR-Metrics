@@ -75,11 +75,11 @@ export default class ReposInvoker implements IReposInvoker {
     return reposInvoker.createComment(content, status, fileName, isFileDeleted)
   }
 
-  public async updateComment (content: string | null, status: CommentThreadStatus | null, commentThreadId: number, commentId: number): Promise<void> {
+  public async updateComment (content: string | null, status: CommentThreadStatus | null, commentThreadId: number): Promise<void> {
     this._logger.logDebug('* ReposInvoker.updateComment()')
 
     const reposInvoker: IReposInvoker = this.getReposInvoker()
-    return reposInvoker.updateComment(content, status, commentThreadId, commentId)
+    return reposInvoker.updateComment(content, status, commentThreadId)
   }
 
   public async deleteCommentThread (commentThreadId: number): Promise<void> {

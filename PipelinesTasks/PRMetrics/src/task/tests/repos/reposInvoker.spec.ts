@@ -524,11 +524,11 @@ describe('reposInvoker.ts', function (): void {
       const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
 
       // Act
-      await reposInvoker.updateComment(null, null, 0, 0)
+      await reposInvoker.updateComment(null, null, 0)
 
       // Assert
-      verify(azureReposInvoker.updateComment(null, null, 0, 0)).once()
-      verify(gitHubReposInvoker.updateComment(null, null, 0, 0)).never()
+      verify(azureReposInvoker.updateComment(null, null, 0)).once()
+      verify(gitHubReposInvoker.updateComment(null, null, 0)).never()
       verify(logger.logDebug('* ReposInvoker.updateComment()')).once()
       verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
 
@@ -542,11 +542,11 @@ describe('reposInvoker.ts', function (): void {
       const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
 
       // Act
-      await reposInvoker.updateComment(null, null, 0, 0)
+      await reposInvoker.updateComment(null, null, 0)
 
       // Assert
-      verify(azureReposInvoker.updateComment(null, null, 0, 0)).never()
-      verify(gitHubReposInvoker.updateComment(null, null, 0, 0)).once()
+      verify(azureReposInvoker.updateComment(null, null, 0)).never()
+      verify(gitHubReposInvoker.updateComment(null, null, 0)).once()
       verify(logger.logDebug('* ReposInvoker.updateComment()')).once()
       verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
 
@@ -562,7 +562,7 @@ describe('reposInvoker.ts', function (): void {
 
       try {
         // Act
-        await reposInvoker.updateComment(null, null, 0, 0)
+        await reposInvoker.updateComment(null, null, 0)
       } catch (error) {
         // Assert
         errorThrown = true
@@ -570,8 +570,8 @@ describe('reposInvoker.ts', function (): void {
       }
 
       expect(errorThrown).to.equal(true)
-      verify(azureReposInvoker.updateComment(null, null, 0, 0)).never()
-      verify(gitHubReposInvoker.updateComment(null, null, 0, 0)).never()
+      verify(azureReposInvoker.updateComment(null, null, 0)).never()
+      verify(gitHubReposInvoker.updateComment(null, null, 0)).never()
       verify(logger.logDebug('* ReposInvoker.updateComment()')).once()
       verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
     })
@@ -584,7 +584,7 @@ describe('reposInvoker.ts', function (): void {
 
       try {
         // Act
-        await reposInvoker.updateComment(null, null, 0, 0)
+        await reposInvoker.updateComment(null, null, 0)
       } catch (error) {
         // Assert
         errorThrown = true
@@ -592,8 +592,8 @@ describe('reposInvoker.ts', function (): void {
       }
 
       expect(errorThrown).to.equal(true)
-      verify(azureReposInvoker.updateComment(null, null, 0, 0)).never()
-      verify(gitHubReposInvoker.updateComment(null, null, 0, 0)).never()
+      verify(azureReposInvoker.updateComment(null, null, 0)).never()
+      verify(gitHubReposInvoker.updateComment(null, null, 0)).never()
       verify(logger.logDebug('* ReposInvoker.updateComment()')).once()
       verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
 

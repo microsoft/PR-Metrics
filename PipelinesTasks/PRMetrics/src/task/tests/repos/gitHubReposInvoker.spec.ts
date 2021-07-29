@@ -817,7 +817,7 @@ describe('gitHubReposInvoker.ts', function (): void {
 
       try {
         // Act
-        await gitHubReposInvoker.updateComment(null, null, 0, 0)
+        await gitHubReposInvoker.updateComment(null, null, 0)
       } catch (error) {
         // Assert
         errorThrown = true

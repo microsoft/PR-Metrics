@@ -135,7 +135,6 @@ export default class PullRequestComments {
     }
 
     result.metricsCommentThreadId = Validator.validate(commentThread.id, `commentThread[${commentThreadIndex}].id`, 'PullRequestComments.getMetricsCommentData()')
-    result.metricsCommentId = Validator.validate(firstComment.id, `commentThread[${commentThreadIndex}].comments[0].id`, 'PullRequestComments.getMetricsCommentData()')
     result.metricsCommentThreadStatus = commentThread.status ?? null
     result.metricsCommentContent = firstComment.content
     return result

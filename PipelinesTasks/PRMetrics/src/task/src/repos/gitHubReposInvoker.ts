@@ -108,7 +108,7 @@ export default class GitHubReposInvoker implements IReposInvoker {
     throw Error('GitHubReposInvoker.createComment() not yet implemented.')
   }
 
-  public async updateComment (_: string | null, __: CommentThreadStatus | null, ___: number, ____: number): Promise<void> {
+  public async updateComment (_: string | null, __: CommentThreadStatus | null, ___: number): Promise<void> {
     this._logger.logDebug('* GitHubReposInvoker.updateComment()')
 
     throw Error('GitHubReposInvoker.updateComment() not yet implemented.')

@@ -128,7 +128,7 @@ export default class AzureReposInvoker implements IReposInvoker {
     this._logger.logDebug(JSON.stringify(result))
   }
 
-  public async updateComment (content: string | null, status: CommentThreadStatus | null, commentThreadId: number, commentId: number): Promise<void> {
+  public async updateComment (content: string | null, status: CommentThreadStatus | null, commentThreadId: number): Promise<void> {
     this._logger.logDebug('* AzureReposInvoker.updateComment()')
 
     if (content === null && status === null) {
@@ -141,7 +141,7 @@ export default class AzureReposInvoker implements IReposInvoker {
         content: content
       }
 
-      const commentResult: Comment = await (await gitApiPromise).updateComment(comment, this._repositoryId, this._pullRequestId, commentThreadId, commentId, this._project)
+      const commentResult: Comment = await (await gitApiPromise).updateComment(comment, this._repositoryId, this._pullRequestId, commentThreadId, 1, this._project)
       this._logger.logDebug(JSON.stringify(commentResult))
     }
 

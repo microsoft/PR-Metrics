@@ -13,7 +13,6 @@ describe('pullRequestCommentsData.ts', (): void => {
 
       // Assert
       expect(result.metricsCommentThreadId).to.equal(null)
-      expect(result.metricsCommentId).to.equal(null)
       expect(result.metricsCommentThreadStatus).to.equal(null)
       expect(result.metricsCommentContent).to.equal(null)
       expect(result.filesNotRequiringReview).to.deep.equal(['file1.ts', 'file2.ts'])
@@ -32,26 +31,6 @@ describe('pullRequestCommentsData.ts', (): void => {
 
       // Assert
       expect(result.metricsCommentThreadId).to.equal(1)
-      expect(result.metricsCommentId).to.equal(null)
-      expect(result.metricsCommentThreadStatus).to.equal(null)
-      expect(result.metricsCommentContent).to.equal(null)
-      expect(result.filesNotRequiringReview).to.deep.equal(['file1.ts', 'file2.ts'])
-      expect(result.deletedFilesNotRequiringReview).to.deep.equal(['file3.ts', 'file4.ts'])
-      expect(result.commentThreadsRequiringDeletion).to.deep.equal([])
-    })
-  })
-
-  describe('metricsCommentId', (): void => {
-    it('should set the correct data', (): void => {
-      // Arrange
-      const result: PullRequestCommentsData = new PullRequestCommentsData(['file1.ts', 'file2.ts'], ['file3.ts', 'file4.ts'])
-
-      // Act
-      result.metricsCommentId = 1
-
-      // Assert
-      expect(result.metricsCommentThreadId).to.equal(null)
-      expect(result.metricsCommentId).to.equal(1)
       expect(result.metricsCommentThreadStatus).to.equal(null)
       expect(result.metricsCommentContent).to.equal(null)
       expect(result.filesNotRequiringReview).to.deep.equal(['file1.ts', 'file2.ts'])
@@ -70,7 +49,6 @@ describe('pullRequestCommentsData.ts', (): void => {
 
       // Assert
       expect(result.metricsCommentThreadId).to.equal(null)
-      expect(result.metricsCommentId).to.equal(null)
       expect(result.metricsCommentThreadStatus).to.equal(CommentThreadStatus.Active)
       expect(result.metricsCommentContent).to.equal(null)
       expect(result.filesNotRequiringReview).to.deep.equal(['file1.ts', 'file2.ts'])
@@ -89,7 +67,6 @@ describe('pullRequestCommentsData.ts', (): void => {
 
       // Assert
       expect(result.metricsCommentThreadId).to.equal(null)
-      expect(result.metricsCommentId).to.equal(null)
       expect(result.metricsCommentThreadStatus).to.equal(null)
       expect(result.metricsCommentContent).to.equal('Content')
       expect(result.filesNotRequiringReview).to.deep.equal(['file1.ts', 'file2.ts'])
@@ -108,7 +85,6 @@ describe('pullRequestCommentsData.ts', (): void => {
 
       // Assert
       expect(result.metricsCommentThreadId).to.equal(null)
-      expect(result.metricsCommentId).to.equal(null)
       expect(result.metricsCommentThreadStatus).to.equal(null)
       expect(result.metricsCommentContent).to.equal(null)
       expect(result.filesNotRequiringReview).to.deep.equal(['file5.ts'])
@@ -127,7 +103,6 @@ describe('pullRequestCommentsData.ts', (): void => {
 
       // Assert
       expect(result.metricsCommentThreadId).to.equal(null)
-      expect(result.metricsCommentId).to.equal(null)
       expect(result.metricsCommentThreadStatus).to.equal(null)
       expect(result.metricsCommentContent).to.equal(null)
       expect(result.filesNotRequiringReview).to.deep.equal(['file1.ts', 'file2.ts'])
@@ -146,7 +121,6 @@ describe('pullRequestCommentsData.ts', (): void => {
 
       // Assert
       expect(result.metricsCommentThreadId).to.equal(null)
-      expect(result.metricsCommentId).to.equal(null)
       expect(result.metricsCommentThreadStatus).to.equal(null)
       expect(result.metricsCommentContent).to.equal(null)
       expect(result.filesNotRequiringReview).to.deep.equal(['file1.ts', 'file2.ts'])

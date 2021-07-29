@@ -93,7 +93,7 @@ describe('pullRequestComments.ts', (): void => {
     logger = mock(Logger)
 
     taskLibWrapper = mock(TaskLibWrapper)
-    when(taskLibWrapper.loc('pullRequests.pullRequestComments.commentFooter')).thenReturn('[Metrics computed by PR Metrics. Add it to your Azure DevOps builds!](https://aka.ms/PRMetrics/Comment)')
+    when(taskLibWrapper.loc('pullRequests.pullRequestComments.commentFooter')).thenReturn('[Metrics computed by PR Metrics. Add it to your Azure DevOps and GitHub PRs!](https://aka.ms/PRMetrics/Comment)')
     when(taskLibWrapper.loc('pullRequests.pullRequestComments.commentTitle')).thenReturn('# PR Metrics')
     when(taskLibWrapper.loc('pullRequests.pullRequestComments.largePullRequestComment', Number(200).toLocaleString())).thenReturn(`❌ **Try to keep pull requests smaller than ${Number(200).toLocaleString()} lines of new product code by following the [Single Responsibility Principle (SRP)](https://aka.ms/PRMetrics/SRP).**`)
     when(taskLibWrapper.loc('pullRequests.pullRequestComments.largePullRequestComment', Number(1000).toLocaleString())).thenReturn(`❌ **Try to keep pull requests smaller than ${Number(1000).toLocaleString()} lines of new product code by following the [Single Responsibility Principle (SRP)](https://aka.ms/PRMetrics/SRP).**`)
@@ -134,7 +134,6 @@ describe('pullRequestComments.ts', (): void => {
 
       // Assert
       expect(result.metricsCommentThreadId).to.equal(null)
-      expect(result.metricsCommentId).to.equal(null)
       expect(result.metricsCommentThreadStatus).to.equal(null)
       expect(result.metricsCommentContent).to.equal(null)
       expect(result.filesNotRequiringReview).to.deep.equal([])
@@ -159,7 +158,6 @@ describe('pullRequestComments.ts', (): void => {
 
           // Assert
           expect(result.metricsCommentThreadId).to.equal(20)
-          expect(result.metricsCommentId).to.equal(10)
           expect(result.metricsCommentThreadStatus).to.equal(null)
           expect(result.metricsCommentContent).to.equal(`# PR Metrics${os.EOL}`)
           expect(result.filesNotRequiringReview).to.deep.equal([])
@@ -180,7 +178,6 @@ describe('pullRequestComments.ts', (): void => {
 
       // Assert
       expect(result.metricsCommentThreadId).to.equal(20)
-      expect(result.metricsCommentId).to.equal(10)
       expect(result.metricsCommentThreadStatus).to.equal(null)
       expect(result.metricsCommentContent).to.equal(`# PR Metrics${os.EOL}`)
       expect(result.filesNotRequiringReview).to.deep.equal([])
@@ -207,7 +204,6 @@ describe('pullRequestComments.ts', (): void => {
 
           // Assert
           expect(result.metricsCommentThreadId).to.equal(null)
-          expect(result.metricsCommentId).to.equal(null)
           expect(result.metricsCommentThreadStatus).to.equal(null)
           expect(result.metricsCommentContent).to.equal(null)
           expect(result.filesNotRequiringReview).to.deep.equal(data[0])
@@ -235,7 +231,6 @@ describe('pullRequestComments.ts', (): void => {
 
           // Assert
           expect(result.metricsCommentThreadId).to.equal(null)
-          expect(result.metricsCommentId).to.equal(null)
           expect(result.metricsCommentThreadStatus).to.equal(null)
           expect(result.metricsCommentContent).to.equal(null)
           expect(result.filesNotRequiringReview).to.deep.equal([])
@@ -257,7 +252,6 @@ describe('pullRequestComments.ts', (): void => {
 
       // Assert
       expect(result.metricsCommentThreadId).to.equal(20)
-      expect(result.metricsCommentId).to.equal(10)
       expect(result.metricsCommentThreadStatus).to.equal(CommentThreadStatus.Active)
       expect(result.metricsCommentContent).to.equal(`# PR Metrics${os.EOL}`)
       expect(result.filesNotRequiringReview).to.deep.equal(['folder/file1.ts'])
@@ -279,7 +273,6 @@ describe('pullRequestComments.ts', (): void => {
 
       // Assert
       expect(result.metricsCommentThreadId).to.equal(20)
-      expect(result.metricsCommentId).to.equal(10)
       expect(result.metricsCommentThreadStatus).to.equal(CommentThreadStatus.Active)
       expect(result.metricsCommentContent).to.equal(`# PR Metrics${os.EOL}`)
       expect(result.filesNotRequiringReview).to.deep.equal([])
@@ -302,7 +295,6 @@ describe('pullRequestComments.ts', (): void => {
 
       // Assert
       expect(result.metricsCommentThreadId).to.equal(20)
-      expect(result.metricsCommentId).to.equal(10)
       expect(result.metricsCommentThreadStatus).to.equal(CommentThreadStatus.Active)
       expect(result.metricsCommentContent).to.equal(`# PR Metrics${os.EOL}`)
       expect(result.filesNotRequiringReview).to.deep.equal(['folder/file1.ts'])
@@ -325,7 +317,6 @@ describe('pullRequestComments.ts', (): void => {
 
       // Assert
       expect(result.metricsCommentThreadId).to.equal(20)
-      expect(result.metricsCommentId).to.equal(10)
       expect(result.metricsCommentThreadStatus).to.equal(CommentThreadStatus.Active)
       expect(result.metricsCommentContent).to.equal(`# PR Metrics${os.EOL}`)
       expect(result.filesNotRequiringReview).to.deep.equal(['folder/file1.ts'])
@@ -356,7 +347,6 @@ describe('pullRequestComments.ts', (): void => {
 
           // Assert
           expect(result.metricsCommentThreadId).to.equal(data[1])
-          expect(result.metricsCommentId).to.equal(data[1])
           expect(result.metricsCommentThreadStatus).to.equal(null)
           expect(result.metricsCommentContent).to.equal(data[1] === null ? null : `# PR Metrics${os.EOL}`)
           expect(result.filesNotRequiringReview).to.deep.equal(['file.ts'])
@@ -370,13 +360,11 @@ describe('pullRequestComments.ts', (): void => {
       [
         ['commentThread[0].comments', 'getMetricsCommentData', [{ }]],
         ['commentThread[0].id', 'getMetricsCommentData', [{ comments: [validGitPullRequestComments.comments![0]!, { content: `# PR Metrics${os.EOL}` }] }]],
-        ['commentThread[0].comments[0].id', 'getMetricsCommentData', [{ comments: [{ content: `# PR Metrics${os.EOL}` }], id: 1 }]],
         ['commentThread[0].threadContext.filePath', 'getFilesRequiringCommentUpdates', [{ threadContext: {} }]],
         ['commentThread[0].comments', 'getFilesRequiringCommentUpdates', [{ threadContext: { filePath: '/file.ts' } }]],
         ['commentThread[0].comments[0]', 'getFilesRequiringCommentUpdates', [{ threadContext: { filePath: '/file.ts' }, comments: [] }]],
         ['commentThread[1].comments', 'getMetricsCommentData', [validGitPullRequestComments, { }]],
         ['commentThread[1].id', 'getMetricsCommentData', [validGitPullRequestComments, { comments: [{ content: `# PR Metrics${os.EOL}` }] }]],
-        ['commentThread[1].comments[0].id', 'getMetricsCommentData', [validGitPullRequestComments, { comments: [{ content: `# PR Metrics${os.EOL}` }], id: 1 }]],
         ['commentThread[1].threadContext.filePath', 'getFilesRequiringCommentUpdates', [validGitPullRequestComments, { threadContext: {} }]],
         ['commentThread[1].comments', 'getFilesRequiringCommentUpdates', [validGitPullRequestComments, { threadContext: { filePath: '/file.ts' } }]],
         ['commentThread[1].comments[0]', 'getFilesRequiringCommentUpdates', [validGitPullRequestComments, { threadContext: { filePath: '/file.ts' }, comments: [] }]],
@@ -455,7 +443,7 @@ describe('pullRequestComments.ts', (): void => {
             `Ignored Code|${code[3].toLocaleString()}${os.EOL}` +
             `**Total**|**${code[4].toLocaleString()}**${os.EOL}` +
             os.EOL +
-            '[Metrics computed by PR Metrics. Add it to your Azure DevOps builds!](https://aka.ms/PRMetrics/Comment)')
+            '[Metrics computed by PR Metrics. Add it to your Azure DevOps and GitHub PRs!](https://aka.ms/PRMetrics/Comment)')
           verify(logger.logDebug('* PullRequestComments.getMetricsComment()')).once()
           verify(logger.logDebug('* PullRequestComments.addCommentSizeStatus()')).once()
           verify(logger.logDebug('* PullRequestComments.addCommentTestStatus()')).once()
@@ -491,7 +479,7 @@ describe('pullRequestComments.ts', (): void => {
             `Ignored Code|${Number(1000).toLocaleString()}${os.EOL}` +
             `**Total**|**${Number(3000).toLocaleString()}**${os.EOL}` +
             os.EOL +
-            '[Metrics computed by PR Metrics. Add it to your Azure DevOps builds!](https://aka.ms/PRMetrics/Comment)')
+            '[Metrics computed by PR Metrics. Add it to your Azure DevOps and GitHub PRs!](https://aka.ms/PRMetrics/Comment)')
           verify(logger.logDebug('* PullRequestComments.getMetricsComment()')).once()
           verify(logger.logDebug('* PullRequestComments.addCommentSizeStatus()')).once()
           verify(logger.logDebug('* PullRequestComments.addCommentTestStatus()')).once()
@@ -520,7 +508,7 @@ describe('pullRequestComments.ts', (): void => {
         `Ignored Code|${Number(1000).toLocaleString()}${os.EOL}` +
         `**Total**|**${Number(3000).toLocaleString()}**${os.EOL}` +
         os.EOL +
-        '[Metrics computed by PR Metrics. Add it to your Azure DevOps builds!](https://aka.ms/PRMetrics/Comment)')
+        '[Metrics computed by PR Metrics. Add it to your Azure DevOps and GitHub PRs!](https://aka.ms/PRMetrics/Comment)')
       verify(logger.logDebug('* PullRequestComments.getMetricsComment()')).once()
       verify(logger.logDebug('* PullRequestComments.addCommentSizeStatus()')).once()
       verify(logger.logDebug('* PullRequestComments.addCommentTestStatus()')).once()
@@ -547,7 +535,7 @@ describe('pullRequestComments.ts', (): void => {
         `Ignored Code|${Number(1000).toLocaleString()}${os.EOL}` +
         `**Total**|**${Number(3000).toLocaleString()}**${os.EOL}` +
         os.EOL +
-        '[Metrics computed by PR Metrics. Add it to your Azure DevOps builds!](https://aka.ms/PRMetrics/Comment)')
+        '[Metrics computed by PR Metrics. Add it to your Azure DevOps and GitHub PRs!](https://aka.ms/PRMetrics/Comment)')
       verify(logger.logDebug('* PullRequestComments.getMetricsComment()')).once()
       verify(logger.logDebug('* PullRequestComments.addCommentSizeStatus()')).once()
       verify(logger.logDebug('* PullRequestComments.addCommentTestStatus()')).once()

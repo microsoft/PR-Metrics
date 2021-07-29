@@ -8,7 +8,6 @@ import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfa
  */
 export default class PullRequestCommentsData {
   private _metricsCommentThreadId: number | null = null
-  private _metricsCommentId: number | null = null
   private _metricsCommentThreadStatus: CommentThreadStatus | null = null
   private _metricsCommentContent: string | null = null
   private _filesNotRequiringReview: string[] = []
@@ -39,22 +38,6 @@ export default class PullRequestCommentsData {
    */
   public set metricsCommentThreadId (value: number | null) {
     this._metricsCommentThreadId = value
-  }
-
-  /**
-   * Gets the ID of the comment in the metrics comment thread.
-   * @returns The ID of the comment in the metrics comment thread.
-   */
-  public get metricsCommentId (): number | null {
-    return this._metricsCommentId
-  }
-
-  /**
-   * Sets the ID of the comment in the metrics comment thread.
-   * @param value The ID of the comment in the metrics comment thread.
-   */
-  public set metricsCommentId (value: number | null) {
-    this._metricsCommentId = value
   }
 
   /**

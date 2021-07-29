@@ -140,8 +140,7 @@ export default class CodeMetricsCalculator {
       await this._reposInvoker.updateComment(
         commentData.metricsCommentContent !== content ? content : null,
         commentData.metricsCommentThreadStatus !== status ? status : null,
-        commentData.metricsCommentThreadId,
-        commentData.metricsCommentId!)
+        commentData.metricsCommentThreadId)
     }
   }
 

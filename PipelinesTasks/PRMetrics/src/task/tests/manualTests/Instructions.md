@@ -64,8 +64,8 @@ complement the unit tests to provide a high level of coverage.
 ## Step 3: Performing an Initial Pipeline Test
 
 1. On the Azure DevOps server, navigate to Pipelines > Pipelines.
-1. Locate the pipeline corresponding to `step2/pipelines/pipeline.yaml` and
-   click on it.
+1. Locate the pipeline corresponding to `pipelines/pipeline.yaml` and click on
+   it.
 1. Under the pipeline page, click "Run pipeline".
 1. In the right-hand pane, accept the default options and click "Run".
 1. Verify that the pipeline succeeds and that the PR Metrics task is skipped, as
@@ -98,21 +98,20 @@ complement the unit tests to provide a high level of coverage.
 1. If everything is set up correctly, you should see the four pipelines you
    added earlier queued to run.
 1. Verify that the pipeline corresponding to
-   `step2/pipelines/pipeline-insufficient-history.yaml` fails with the error
+   `pipelines/pipeline-insufficient-history.yaml` fails with the error
    message "Could not access sufficient Git history. Disable 'fetchDepth' (YAML)
    or 'Shallow fetch' under the build process phase settings (classic). Or set
    the threshold sufficiently high."
+1. Verify that the pipeline corresponding to `pipelines/pipeline-no-auth.yaml`
+   fails with the error message "Could not access the OAuth token. Add
+   'SYSTEM_ACCESSTOKEN' as an environment variable (YAML) or enable 'Allow
+   scripts to access OAuth token' under the build process phase settings
+   (classic)."
 1. Verify that the pipeline corresponding to
-   `step2/pipelines/pipeline-no-auth.yaml` fails with the error message "Could
-   not access the OAuth token. Add 'SYSTEM_ACCESSTOKEN' as an environment
-   variable (YAML) or enable 'Allow scripts to access OAuth token' under the
-   build process phase settings (classic)."
-1. Verify that the pipeline corresponding to
-   `step2/pipelines/pipeline-no-sources.yaml` fails with the error message "No
+   `pipelines/pipeline-no-sources.yaml` fails with the error message "No
    Git enlistment present. Remove 'checkout: none' (YAML) or disable 'Don't sync
    sources' under the build process phase settings (classic)."
-1. Verify that the pipeline corresponding to `step2/pipelines/pipeline.yaml`
-   succeeds.
+1. Verify that the pipeline corresponding to `pipelines/pipeline.yaml` succeeds.
 1. Verify that the title of the PR is prefixed with "XS:heavy_check_mark:
    :black_small_square:".
 1. Verify that the description has been changed to ":x: Please add a
@@ -130,7 +129,7 @@ complement the unit tests to provide a high level of coverage.
 ## Step 5: Retrying
 
 1. On the Azure DevOps server, navigate to your existing PR.
-1. Next to the build corresponding to `step2/pipelines/pipeline.yaml`, click
+1. Next to the build corresponding to `pipelines/pipeline.yaml`, click
    "Re-queue".
 1. Using the timestamp, verify that the metrics comment is not updated.
 1. Verify that no additional comments have been added.
@@ -143,7 +142,7 @@ complement the unit tests to provide a high level of coverage.
 1. On the Azure DevOps server, navigate to your existing PR.
 1. Edit the description to a custom description.
 1. Next to the build, click "Re-queue".
-1. Verify that the pipeline succeeds.
+1. Verify that the pipeline corresponding to `pipelines/pipeline.yaml` succeeds.
 1. Verify that your description is retained.
 1. Verify that the title of the PR is now prefixed with "L:warning:
    :black_small_square:".
@@ -170,7 +169,7 @@ complement the unit tests to provide a high level of coverage.
 1. On the Azure DevOps server, navigate to your existing PR.
 1. Edit the description to a custom description.
 1. Next to the build, click "Re-queue".
-1. Verify that the pipeline succeeds.
+1. Verify that the pipeline corresponding to `pipelines/pipeline.yaml` succeeds.
 1. Verify that your description is retained.
 1. Verify that the title of the PR is now prefixed with
    "L :black_small_square:".
@@ -194,9 +193,11 @@ complement the unit tests to provide a high level of coverage.
 1. Commit the changes to your branch.
 1. On the Azure DevOps server, navigate to your existing PR. The build pipelines
    should be running automatically.
-1. Verify that the pipeline succeeds.
+1. Verify that the pipeline corresponding to `pipelines/pipeline.yaml` succeeds.
 1. Verify that there is no ":exclamation: This file doesn't require review."
-   comment thread associated with either `add.ts` or `linesToAdd.ts`.
+   comment associated with either `add.ts` or `linesToAdd.ts`. Note that your
+   comment will remain for `linesToAdd.ts`, but the automatic comment to which
+   you replied should be deleted.
 1. Verify that your description is retained.
 1. Verify that the title of the PR is still prefixed with
    "L :black_small_square:".
