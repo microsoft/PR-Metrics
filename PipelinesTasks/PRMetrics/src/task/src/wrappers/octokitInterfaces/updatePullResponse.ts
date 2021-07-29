@@ -1,8 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { Octokit } from 'octokit'
 import { GetResponseTypeFromEndpointMethod } from '@octokit/types'
+import { Octokit } from 'octokit'
 
 const octokit: Octokit = new Octokit()
 

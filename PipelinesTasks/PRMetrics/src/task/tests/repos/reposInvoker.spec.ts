@@ -3,8 +3,8 @@
 
 import 'reflect-metadata'
 import { CommentThreadStatus, GitPullRequestCommentThread } from 'azure-devops-node-api/interfaces/GitInterfaces'
-import { instance, mock, verify } from 'ts-mockito'
 import { expect } from 'chai'
+import { instance, mock, verify } from 'ts-mockito'
 import AzureReposInvoker from '../../src/repos/azureReposInvoker'
 import GitHubReposInvoker from '../../src/repos/gitHubReposInvoker'
 import Logger from '../../src/utilities/logger'

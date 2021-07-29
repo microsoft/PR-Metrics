@@ -3,8 +3,8 @@
 
 import 'reflect-metadata'
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
-import { instance, mock, verify, when } from 'ts-mockito'
 import { expect } from 'chai'
+import { instance, mock, verify, when } from 'ts-mockito'
 import async from 'async'
 import CodeMetricsCalculator from '../../src/metrics/codeMetricsCalculator'
 import GitInvoker from '../../src/git/gitInvoker'
