@@ -20,7 +20,7 @@ but they complement the unit tests to provide a high level of coverage.
 1. Commit the changes to your repo.
 1. Deploy your local PR Metrics code to the server using:
 
-   ```bat
+   ```Batchfile
    tfx login --service-url https://<account>.visualstudio.com/DefaultCollection --token <PAT>
    ```
 
@@ -77,7 +77,7 @@ but they complement the unit tests to provide a high level of coverage.
 1. Delete `delete.ts`.
 1. Add the following to the end of `linesToAdd.ts`:
 
-   ```typescript
+   ```TypeScript
    // Added Line
    // Added Line
    // Added Line

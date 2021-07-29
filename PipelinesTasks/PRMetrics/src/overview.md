@@ -59,6 +59,13 @@ steps:
   continueOnError: true
 ```
 
+For GitHub builds, it is not necessary to include:
+
+```YAML
+  env:
+    SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+```
+
 ### Parameters
 
 The task parameters are:
