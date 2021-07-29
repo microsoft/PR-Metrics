@@ -8,7 +8,6 @@ import Logger from '../utilities/logger'
 import PullRequest from '../pullRequests/pullRequest'
 import PullRequestComments from '../pullRequests/pullRequestComments'
 import PullRequestCommentsData from '../pullRequests/pullRequestCommentsData'
-import PullRequestCommentsThread from '../pullRequests/pullRequestCommentsThread'
 import PullRequestDetails from '../repos/pullRequestDetails'
 import ReposInvoker from '../repos/reposInvoker'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
@@ -123,8 +122,8 @@ export default class CodeMetricsCalculator {
       promises.push(this.updateNoReviewRequiredComment(fileName, true))
     })
 
-    commentData.commentThreadsRequiringDeletion.forEach((commentThread: PullRequestCommentsThread): void => {
-      promises.push(this._reposInvoker.deleteCommentThread(commentThread))
+    commentData.commentThreadsRequiringDeletion.forEach((commentThreadId: number): void => {
+      promises.push(this._reposInvoker.deleteCommentThread(commentThreadId))
     })
 
     await Promise.all(promises)

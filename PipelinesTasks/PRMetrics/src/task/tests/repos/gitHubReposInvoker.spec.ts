@@ -11,7 +11,6 @@ import GitHubReposInvoker from '../../src/repos/gitHubReposInvoker'
 import Logger from '../../src/utilities/logger'
 import OctokitLogObject from '../wrappers/octokitLogObject'
 import OctokitWrapper from '../../src/wrappers/octokitWrapper'
-import PullRequestCommentsThread from '../../src/pullRequests/pullRequestCommentsThread'
 import PullRequestDetails from '../../src/repos/pullRequestDetails'
 import TaskLibWrapper from '../../src/wrappers/taskLibWrapper'
 
@@ -833,14 +832,12 @@ describe('gitHubReposInvoker.ts', function (): void {
   describe('deleteCommentThread()', (): void => {
     it('should throw an exception', async (): Promise<void> => {
       // Arrange
-      const commentThread: PullRequestCommentsThread = new PullRequestCommentsThread(20)
-      commentThread.commentIds.push(30)
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
       let errorThrown: boolean = false
 
       try {
         // Act
-        await gitHubReposInvoker.deleteCommentThread(commentThread)
+        await gitHubReposInvoker.deleteCommentThread(20)
       } catch (error) {
         // Assert
         errorThrown = true

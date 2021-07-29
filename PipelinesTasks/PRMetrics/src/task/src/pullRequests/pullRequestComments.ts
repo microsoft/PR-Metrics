@@ -10,7 +10,6 @@ import CodeMetricsData from '../metrics/codeMetricsData'
 import Inputs from '../metrics/inputs'
 import Logger from '../utilities/logger'
 import PullRequestCommentsData from './pullRequestCommentsData'
-import PullRequestCommentsThread from './pullRequestCommentsThread'
 import ReposInvoker from '../repos/reposInvoker'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
 
@@ -174,12 +173,7 @@ export default class PullRequestComments {
     }
 
     const threadId: number = Validator.validate(commentThread.id, `commentThread[${commentThreadIndex}].id`, 'PullRequestComments.getFilesRequiringCommentUpdates()')
-    const commentsRequiringDeletion: PullRequestCommentsThread = new PullRequestCommentsThread(threadId)
-    comments.forEach((value: Comment, i: number): void => {
-      commentsRequiringDeletion.commentIds.push(Validator.validate(value.id, `commentThread[${commentThreadIndex}].comments[${i}].id`, 'PullRequestComments.getFilesRequiringCommentUpdates()'))
-    })
-
-    result.commentThreadsRequiringDeletion.push(commentsRequiringDeletion)
+    result.commentThreadsRequiringDeletion.push(threadId)
     return result
   }
 

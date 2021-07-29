@@ -330,9 +330,7 @@ describe('pullRequestComments.ts', (): void => {
       expect(result.metricsCommentContent).to.equal(`# PR Metrics${os.EOL}`)
       expect(result.filesNotRequiringReview).to.deep.equal(['folder/file1.ts'])
       expect(result.deletedFilesNotRequiringReview).to.deep.equal(['file3.ts'])
-      expect(result.commentThreadsRequiringDeletion.length).to.equal(1)
-      expect(result.commentThreadsRequiringDeletion[0]!.threadId).to.equal(40)
-      expect(result.commentThreadsRequiringDeletion[0]!.commentIds).to.deep.equal([1, 2])
+      expect(result.commentThreadsRequiringDeletion).to.deep.equal([40])
       verify(logger.logDebug('* PullRequestComments.getCommentData()')).once()
       verify(logger.logDebug('* PullRequestComments.getMetricsCommentData()')).once()
       verify(logger.logDebug('* PullRequestComments.getFilesRequiringCommentUpdates()')).twice()
@@ -383,11 +381,7 @@ describe('pullRequestComments.ts', (): void => {
         ['commentThread[1].comments', 'getFilesRequiringCommentUpdates', [validGitPullRequestComments, { threadContext: { filePath: '/file.ts' } }]],
         ['commentThread[1].comments[0]', 'getFilesRequiringCommentUpdates', [validGitPullRequestComments, { threadContext: { filePath: '/file.ts' }, comments: [] }]],
         ['commentThread[0].id', 'getFilesRequiringCommentUpdates', [{ threadContext: { filePath: '/fileA.ts' }, comments: [{ content: '❗ **This file doesn\'t require review.**' }] }]],
-        ['commentThread[0].comments[0].id', 'getFilesRequiringCommentUpdates', [{ threadContext: { filePath: '/fileA.ts' }, comments: [{ content: '❗ **This file doesn\'t require review.**' }], id: 1 }]],
-        ['commentThread[0].comments[1].id', 'getFilesRequiringCommentUpdates', [{ threadContext: { filePath: '/fileA.ts' }, comments: [{ content: '❗ **This file doesn\'t require review.**', id: 2 }, { content: 'Another Comment' }], id: 1 }]],
-        ['commentThread[1].id', 'getFilesRequiringCommentUpdates', [validGitPullRequestComments, { threadContext: { filePath: '/fileA.ts' }, comments: [{ content: '❗ **This file doesn\'t require review.**' }] }]],
-        ['commentThread[1].comments[0].id', 'getFilesRequiringCommentUpdates', [validGitPullRequestComments, { threadContext: { filePath: '/fileA.ts' }, comments: [{ content: '❗ **This file doesn\'t require review.**' }], id: 1 }]],
-        ['commentThread[1].comments[1].id', 'getFilesRequiringCommentUpdates', [validGitPullRequestComments, { threadContext: { filePath: '/fileA.ts' }, comments: [{ content: '❗ **This file doesn\'t require review.**', id: 2 }, { content: 'Another Comment' }], id: 1 }]]
+        ['commentThread[1].id', 'getFilesRequiringCommentUpdates', [validGitPullRequestComments, { threadContext: { filePath: '/fileA.ts' }, comments: [{ content: '❗ **This file doesn\'t require review.**' }] }]]
       ], (data: [string, string, GitPullRequestCommentThread[]]): void => {
         it(`should throw for field '${data[0]}', accessed within '${data[1]}', when it is missing`, async (): Promise<void> => {
           // Arrange

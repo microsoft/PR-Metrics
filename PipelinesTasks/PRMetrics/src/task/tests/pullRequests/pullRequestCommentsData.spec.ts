@@ -4,7 +4,6 @@
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import { expect } from 'chai'
 import PullRequestCommentsData from '../../src/pullRequests/pullRequestCommentsData'
-import PullRequestCommentsThread from '../../src/pullRequests/pullRequestCommentsThread'
 
 describe('pullRequestCommentsData.ts', (): void => {
   describe('constructor()', (): void => {
@@ -140,13 +139,10 @@ describe('pullRequestCommentsData.ts', (): void => {
   describe('commentThreadsRequiringDeletion', (): void => {
     it('should set the correct data', (): void => {
       // Arrange
-      const pullRequestCommentsThread: PullRequestCommentsThread[] = [new PullRequestCommentsThread(1), new PullRequestCommentsThread(4)]
-      pullRequestCommentsThread[0]!.commentIds.push(2, 3)
-      pullRequestCommentsThread[1]!.commentIds.push(5, 6)
       const result: PullRequestCommentsData = new PullRequestCommentsData(['file1.ts', 'file2.ts'], ['file3.ts', 'file4.ts'])
 
       // Act
-      result.commentThreadsRequiringDeletion = pullRequestCommentsThread
+      result.commentThreadsRequiringDeletion = [1, 2]
 
       // Assert
       expect(result.metricsCommentThreadId).to.equal(null)
@@ -155,7 +151,7 @@ describe('pullRequestCommentsData.ts', (): void => {
       expect(result.metricsCommentContent).to.equal(null)
       expect(result.filesNotRequiringReview).to.deep.equal(['file1.ts', 'file2.ts'])
       expect(result.deletedFilesNotRequiringReview).to.deep.equal(['file3.ts', 'file4.ts'])
-      expect(result.commentThreadsRequiringDeletion).to.deep.equal(pullRequestCommentsThread)
+      expect(result.commentThreadsRequiringDeletion).to.deep.equal([1, 2])
     })
   })
 })

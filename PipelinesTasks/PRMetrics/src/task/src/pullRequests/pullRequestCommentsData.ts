@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
-import PullRequestComment from './pullRequestCommentsThread'
 
 /**
  * A class representing data about the pull request comments to be added and updated.
@@ -14,7 +13,7 @@ export default class PullRequestCommentsData {
   private _metricsCommentContent: string | null = null
   private _filesNotRequiringReview: string[] = []
   private _deletedFilesNotRequiringReview: string[] = []
-  private _commentThreadsRequiringDeletion: PullRequestComment[] = []
+  private _commentThreadsRequiringDeletion: number[] = []
 
   /**
    * Initializes a new instance of the `PullRequestCommentsData` class.
@@ -123,18 +122,18 @@ export default class PullRequestCommentsData {
   }
 
   /**
-   * Gets the collection of comment threads requiring deletion now that the associated file requires review.
-   * @returns The collection of comment threads requiring deletion.
+   * Gets the collection of comment thread IDs requiring deletion now that the associated file requires review.
+   * @returns The collection of comment thread IDs requiring deletion.
    */
-  public get commentThreadsRequiringDeletion (): PullRequestComment[] {
+  public get commentThreadsRequiringDeletion (): number[] {
     return this._commentThreadsRequiringDeletion
   }
 
   /**
-   * Set the collection of comment threads requiring deletion now that the associated file requires review.
-   * @param value The collection of comment threads requiring deletion.
+   * Set the collection of comment thread IDs requiring deletion now that the associated file requires review.
+   * @param value The collection of comment thread IDs requiring deletion.
    */
-  public set commentThreadsRequiringDeletion (value: PullRequestComment[]) {
+  public set commentThreadsRequiringDeletion (value: number[]) {
     this._commentThreadsRequiringDeletion = value
   }
 }

@@ -434,7 +434,7 @@ the language extensions defined in the
 [vssextensionjson]: vss-extension.json
 [taskjson]: task/task.json
 [addingtask]: https://docs.microsoft.com/azure/devops/pipelines/customize-pipeline
-[globs]: docs.microsoft.com/azure/devops/pipelines/tasks/file-matching-patterns
+[globs]: https://docs.microsoft.com/azure/devops/pipelines/tasks/file-matching-patterns
 [typescript]: https://www.typescriptlang.org/
 [sdk]: https://github.com/microsoft/azure-pipelines-task-lib
 [mocha]: https://mochajs.org/

@@ -10,7 +10,6 @@ import { WebApi } from 'azure-devops-node-api'
 import AzureDevOpsApiWrapper from '../wrappers/azureDevOpsApiWrapper'
 import IReposInvoker from './iReposInvoker'
 import Logger from '../utilities/logger'
-import PullRequestCommentsThread from '../pullRequests/pullRequestCommentsThread'
 import PullRequestDetails from './pullRequestDetails'
 
 /**
@@ -156,13 +155,11 @@ export default class AzureReposInvoker implements IReposInvoker {
     }
   }
 
-  public async deleteCommentThread (commentThread: PullRequestCommentsThread): Promise<void> {
+  public async deleteCommentThread (commentThreadId: number): Promise<void> {
     this._logger.logDebug('* AzureReposInvoker.deleteCommentThread()')
 
     const gitApiPromise: Promise<IGitApi> = this.getGitApi()
-    await Promise.all(commentThread.commentIds.map(async (commentId: number): Promise<void> => {
-      await (await gitApiPromise).deleteComment(this._repositoryId, this._pullRequestId, commentThread.threadId, commentId, this._project)
-    }))
+    await (await gitApiPromise).deleteComment(this._repositoryId, this._pullRequestId, commentThreadId, 1, this._project)
   }
 
   private async getGitApi (): Promise<IGitApi> {

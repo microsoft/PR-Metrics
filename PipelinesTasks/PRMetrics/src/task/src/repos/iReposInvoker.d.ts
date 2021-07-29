@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 import { CommentThreadStatus, GitPullRequestCommentThread } from 'azure-devops-node-api/interfaces/GitInterfaces'
-import PullRequestCommentsThread from '../pullRequests/pullRequestCommentsThreads'
 import PullRequestDetails from './pullRequestDetails'
 
 /**
@@ -61,8 +60,8 @@ export default interface IReposInvoker {
 
   /**
    * Deletes a comment thread within the current pull request.
-   * @param commentThread The details of the comment thread to be deleted.
+   * @param commentThreadId The ID of the comment thread to be deleted.
    * @returns A promise for awaiting the completion of the method call.
    */
-  deleteCommentThread (commentThread: PullRequestCommentsThread): Promise<void>
+  deleteCommentThread (commentThreadId: number): Promise<void>
 }

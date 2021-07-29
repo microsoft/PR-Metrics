@@ -8,7 +8,6 @@ import AzureReposInvoker from './azureReposInvoker'
 import GitHubReposInvoker from './gitHubReposInvoker'
 import IReposInvoker from './iReposInvoker'
 import Logger from '../utilities/logger'
-import PullRequestCommentsThread from '../pullRequests/pullRequestCommentsThread'
 import PullRequestDetails from './pullRequestDetails'
 
 /**
@@ -83,11 +82,11 @@ export default class ReposInvoker implements IReposInvoker {
     return reposInvoker.updateComment(content, status, commentThreadId, commentId)
   }
 
-  public async deleteCommentThread (commentThread: PullRequestCommentsThread): Promise<void> {
+  public async deleteCommentThread (commentThreadId: number): Promise<void> {
     this._logger.logDebug('* ReposInvoker.deleteCommentThread()')
 
     const reposInvoker: IReposInvoker = this.getReposInvoker()
-    return reposInvoker.deleteCommentThread(commentThread)
+    return reposInvoker.deleteCommentThread(commentThreadId)
   }
 
   private getReposInvoker (): IReposInvoker {

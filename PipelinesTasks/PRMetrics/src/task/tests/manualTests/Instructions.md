@@ -200,14 +200,14 @@ complement the unit tests to provide a high level of coverage.
 1. Verify that your description is retained.
 1. Verify that the title of the PR is still prefixed with
    "L :black_small_square:".
-1. Verify that the metrics comment still has the following details:
+1. Verify that the metrics comment has been updated with the following details:
    - :x: Try to keep pull requests smaller than 2 lines of new product code by
      following the Single Responsibility Principle (SRP).
-   - Product code: 10
+   - Product code: 15
    - Test code: 30
    - Subtotal: 40
-   - Ignored: 62
-   - Total: 102
+   - Ignored: 48
+   - Total: 93
 1. Verify that the aforementioned metrics comment is active.
 
 [tfxcli]: https://github.com/Microsoft/tfs-cli

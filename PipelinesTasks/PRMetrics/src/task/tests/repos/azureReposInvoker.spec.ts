@@ -13,7 +13,6 @@ import async from 'async'
 import AzureDevOpsApiWrapper from '../../src/wrappers/azureDevOpsApiWrapper'
 import AzureReposInvoker from '../../src/repos/azureReposInvoker'
 import Logger from '../../src/utilities/logger'
-import PullRequestCommentsThread from '../../src/pullRequests/pullRequestCommentsThread'
 import PullRequestDetails from '../../src/repos/pullRequestDetails'
 
 describe('azureReposInvoker.ts', function (): void {
@@ -697,57 +696,34 @@ describe('azureReposInvoker.ts', function (): void {
   describe('deleteCommentThread()', (): void => {
     it('should call the API for a single comment', async (): Promise<void> => {
       // Arrange
-      const commentThread: PullRequestCommentsThread = new PullRequestCommentsThread(20)
-      commentThread.commentIds.push(30)
-      when(gitApi.deleteComment('RepoID', 10, 20, 30, 'Project')).thenResolve()
+      when(gitApi.deleteComment('RepoID', 10, 20, 1, 'Project')).thenResolve()
       const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger))
 
       // Act
-      await azureReposInvoker.deleteCommentThread(commentThread)
+      await azureReposInvoker.deleteCommentThread(20)
 
       // Assert
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
       verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
-      verify(gitApi.deleteComment('RepoID', 10, 20, 30, 'Project')).once()
-      verify(logger.logDebug('* AzureReposInvoker.deleteCommentThread()')).once()
-      verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
-    })
-
-    it('should call the API for a single comment', async (): Promise<void> => {
-      // Arrange
-      const commentThread: PullRequestCommentsThread = new PullRequestCommentsThread(20)
-      commentThread.commentIds.push(30, 40, 50)
-      when(gitApi.deleteComment('RepoID', 10, 20, anyNumber(), 'Project')).thenResolve()
-      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger))
-
-      // Act
-      await azureReposInvoker.deleteCommentThread(commentThread)
-
-      // Assert
-      verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
-      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
-      verify(gitApi.deleteComment('RepoID', 10, 20, 30, 'Project')).once()
-      verify(gitApi.deleteComment('RepoID', 10, 20, 40, 'Project')).once()
-      verify(gitApi.deleteComment('RepoID', 10, 20, 50, 'Project')).once()
+      verify(gitApi.deleteComment('RepoID', 10, 20, 1, 'Project')).once()
       verify(logger.logDebug('* AzureReposInvoker.deleteCommentThread()')).once()
       verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
     })
 
     it('should call the API when called multiple times', async (): Promise<void> => {
       // Arrange
-      const commentThread: PullRequestCommentsThread = new PullRequestCommentsThread(20)
-      commentThread.commentIds.push(30)
-      when(gitApi.deleteComment('RepoID', 10, 20, 30, 'Project')).thenResolve()
+      when(gitApi.deleteComment('RepoID', 10, anyNumber(), 1, 'Project')).thenResolve()
       const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger))
 
       // Act
-      await azureReposInvoker.deleteCommentThread(commentThread)
-      await azureReposInvoker.deleteCommentThread(commentThread)
+      await azureReposInvoker.deleteCommentThread(20)
+      await azureReposInvoker.deleteCommentThread(30)
 
       // Assert
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
       verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
-      verify(gitApi.deleteComment('RepoID', 10, 20, 30, 'Project')).twice()
+      verify(gitApi.deleteComment('RepoID', 10, 20, 1, 'Project')).once()
+      verify(gitApi.deleteComment('RepoID', 10, 30, 1, 'Project')).once()
       verify(logger.logDebug('* AzureReposInvoker.deleteCommentThread()')).twice()
       verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).twice()
     })
