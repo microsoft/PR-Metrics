@@ -9,10 +9,11 @@ import async from 'async'
 import GetPullResponse from '../../src/wrappers/octokitInterfaces/getPullResponse'
 import GitHubReposInvoker from '../../src/repos/gitHubReposInvoker'
 import Logger from '../../src/utilities/logger'
+import OctokitLogObject from '../wrappers/octokitLogObject'
 import OctokitWrapper from '../../src/wrappers/octokitWrapper'
+import PullRequestCommentsThread from '../../src/pullRequests/pullRequestCommentsThread'
 import PullRequestDetails from '../../src/repos/pullRequestDetails'
 import TaskLibWrapper from '../../src/wrappers/taskLibWrapper'
-import OctokitLogObject from '../wrappers/octokitLogObject'
 
 describe('gitHubReposInvoker.ts', function (): void {
   let logger: Logger
@@ -826,6 +827,28 @@ describe('gitHubReposInvoker.ts', function (): void {
 
       expect(errorThrown).to.equal(true)
       verify(logger.logDebug('* GitHubReposInvoker.updateComment()')).once()
+    })
+  })
+
+  describe('deleteCommentThread()', (): void => {
+    it('should throw an exception', async (): Promise<void> => {
+      // Arrange
+      const commentThread: PullRequestCommentsThread = new PullRequestCommentsThread(20)
+      commentThread.commentIds.push(30)
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
+      let errorThrown: boolean = false
+
+      try {
+        // Act
+        await gitHubReposInvoker.deleteCommentThread(commentThread)
+      } catch (error) {
+        // Assert
+        errorThrown = true
+        expect(error.message).to.equal('GitHubReposInvoker.deleteCommentThread() not yet implemented.')
+      }
+
+      expect(errorThrown).to.equal(true)
+      verify(logger.logDebug('* GitHubReposInvoker.deleteCommentThread()')).once()
     })
   })
 })

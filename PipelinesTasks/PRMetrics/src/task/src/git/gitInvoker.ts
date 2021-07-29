@@ -39,8 +39,8 @@ export default class GitInvoker {
     this._logger.logDebug('* GitInvoker.isGitEnlistment()')
 
     try {
-      const result: string = await this.invokeGit('rev-parse --is-inside-work-tree')
-      return result.startsWith('true')
+      await this.invokeGit('rev-parse --is-inside-work-tree')
+      return true
     } catch {
       return false
     }
@@ -56,8 +56,8 @@ export default class GitInvoker {
     this.initialize()
 
     try {
-      const result: string = await this.invokeGit(`rev-parse --branch origin/${this._targetBranch}...pull/${this._pullRequestId}/merge`)
-      return !result.startsWith(`fatal: ambiguous argument 'origin/${this._targetBranch}...pull/${this._pullRequestId}/merge': unknown revision or path not in the working tree.`)
+      await this.invokeGit(`rev-parse --branch origin/${this._targetBranch}...pull/${this._pullRequestId}/merge`)
+      return true
     } catch {
       return false
     }

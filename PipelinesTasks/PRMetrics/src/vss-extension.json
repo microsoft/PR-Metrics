@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/vss-extension.json",
   "manifestVersion": 1,
-  "id": "prmetrics",
+  "id": "PRMetrics",
   "name": "PR Metrics",
   "version": "1.2.0",
   "publisher": "ms-omex",
@@ -75,7 +75,7 @@
   ],
   "contributions": [
     {
-      "id": "prmetrics",
+      "id": "PRMetrics",
       "type": "ms.vss-distributed-task.task",
       "targets": [
         "ms.vss-distributed-task.tasks"

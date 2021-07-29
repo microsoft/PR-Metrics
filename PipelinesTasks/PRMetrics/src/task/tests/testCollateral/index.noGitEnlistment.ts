@@ -14,8 +14,8 @@ const mockAnswers: taskLibMockAnswer.TaskLibAnswers = {
   },
   exec: {
     '/git/git rev-parse --is-inside-work-tree': {
-      code: 0,
-      stdout: 'false'
+      code: 1,
+      stderr: 'false'
     }
   },
   which: {

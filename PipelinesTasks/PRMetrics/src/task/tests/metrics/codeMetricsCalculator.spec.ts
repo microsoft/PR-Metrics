@@ -3,7 +3,7 @@
 
 import 'reflect-metadata'
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
-import { instance, mock, verify, when } from 'ts-mockito'
+import { deepEqual, instance, mock, verify, when } from 'ts-mockito'
 import { expect } from 'chai'
 import async from 'async'
 import CodeMetricsCalculator from '../../src/metrics/codeMetricsCalculator'
@@ -12,6 +12,7 @@ import Logger from '../../src/utilities/logger'
 import PullRequest from '../../src/pullRequests/pullRequest'
 import PullRequestComments from '../../src/pullRequests/pullRequestComments'
 import PullRequestCommentsData from '../../src/pullRequests/pullRequestCommentsData'
+import PullRequestCommentsThread from '../../src/pullRequests/pullRequestCommentsThread'
 import ReposInvoker from '../../src/repos/reposInvoker'
 import TaskLibWrapper from '../../src/wrappers/taskLibWrapper'
 
@@ -292,5 +293,25 @@ describe('codeMetricsCalculator.ts', (): void => {
           verify(reposInvoker.createComment('No Review Required', CommentThreadStatus.Closed, 'file2.ts', true)).times(data[2])
         })
       })
+
+    it('should succeed when comments are to be deleted from files ', async (): Promise<void> => {
+      // Arrange
+      const commentThreads1: PullRequestCommentsThread = new PullRequestCommentsThread(20)
+      commentThreads1.commentIds.push(30, 40)
+      const commentThreads2: PullRequestCommentsThread = new PullRequestCommentsThread(50)
+      commentThreads2.commentIds.push(60, 70)
+      const commentData: PullRequestCommentsData = new PullRequestCommentsData([], [])
+      commentData.commentThreadsRequiringDeletion.push(commentThreads1, commentThreads2)
+      when(pullRequestComments.getCommentData()).thenResolve(commentData)
+      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(gitInvoker), instance(logger), instance(pullRequest), instance(pullRequestComments), instance(reposInvoker), instance(taskLibWrapper))
+
+      // Act
+      await codeMetricsCalculator.updateComments()
+
+      // Assert
+      verify(logger.logDebug('* CodeMetricsCalculator.updateComments()')).once()
+      verify(reposInvoker.deleteCommentThread(deepEqual(commentThreads1))).once()
+      verify(reposInvoker.deleteCommentThread(deepEqual(commentThreads2))).once()
+    })
   })
 })

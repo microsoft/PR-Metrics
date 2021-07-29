@@ -207,7 +207,7 @@ export default class CodeMetrics {
   private createFileMetricsMap (input: string): CodeFileMetric[] {
     this._logger.logDebug('* CodeMetrics.createFileMetricsMap()')
 
-    // Removing that ending that can be created by test mocks.
+    // Removing the ending that can be created by test mocks.
     const endingToRemove: string = '\r\nrc:0\r\nsuccess:true'
     if (input.endsWith(endingToRemove)) {
       input = input.substring(0, input.length - endingToRemove.length)

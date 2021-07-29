@@ -71,23 +71,6 @@ describe('gitInvoker.ts', (): void => {
     it('should return false when not called from a Git enlistment', async (): Promise<void> => {
       // Arrange
       when(taskLibWrapper.exec('git', 'rev-parse --is-inside-work-tree', anything())).thenCall((_: string, __: string, options: IExecOptions): Promise<number> => {
-        options.outStream!.write('')
-        return Promise.resolve(0)
-      })
-      const gitInvoker: GitInvoker = new GitInvoker(instance(logger), instance(taskLibWrapper))
-
-      // Act
-      const result: boolean = await gitInvoker.isGitEnlistment()
-
-      // Assert
-      expect(result).to.equal(false)
-      verify(logger.logDebug('* GitInvoker.isGitEnlistment()')).once()
-      verify(logger.logDebug('* GitInvoker.invokeGit()')).once()
-    })
-
-    it('should return false when Git invocation fails', async (): Promise<void> => {
-      // Arrange
-      when(taskLibWrapper.exec('git', 'rev-parse --is-inside-work-tree', anything())).thenCall((_: string, __: string, options: IExecOptions): Promise<number> => {
         options.errStream!.write('Failure')
         return Promise.resolve(1)
       })
@@ -142,11 +125,11 @@ describe('gitInvoker.ts', (): void => {
       delete process.env.SYSTEM_PULLREQUEST_PULLREQUESTNUMBER
     })
 
-    it('should return true when the Git history is unavailable', async (): Promise<void> => {
+    it('should return false when the Git history is unavailable', async (): Promise<void> => {
       // Arrange
       when(taskLibWrapper.exec('git', 'rev-parse --branch origin/develop...pull/12345/merge', anything())).thenCall((_: string, __: string, options: IExecOptions): Promise<number> => {
-        options.outStream!.write(`fatal: ambiguous argument 'origin/develop...pull/12345/merge': unknown revision or path not in the working tree.${os.EOL}`)
-        return Promise.resolve(0)
+        options.errStream!.write(`fatal: ambiguous argument 'origin/develop...pull/12345/merge': unknown revision or path not in the working tree.${os.EOL}`)
+        return Promise.resolve(1)
       })
       const gitInvoker: GitInvoker = new GitInvoker(instance(logger), instance(taskLibWrapper))
 
@@ -268,25 +251,6 @@ describe('gitInvoker.ts', (): void => {
 
       // Finalization
       delete process.env.BUILD_REPOSITORY_PROVIDER
-    })
-
-    it('should return false when Git invocation fails', async (): Promise<void> => {
-      // Arrange
-      when(taskLibWrapper.exec('git', 'rev-parse --branch origin/develop...pull/12345/merge', anything())).thenCall((_: string, __: string, options: IExecOptions): Promise<number> => {
-        options.errStream!.write('Failure')
-        return Promise.resolve(1)
-      })
-      const gitInvoker: GitInvoker = new GitInvoker(instance(logger), instance(taskLibWrapper))
-
-      // Act
-      const result: boolean = await gitInvoker.isGitHistoryAvailable()
-
-      expect(result).to.equal(false)
-      verify(logger.logDebug('* GitInvoker.isGitHistoryAvailable()')).once()
-      verify(logger.logDebug('* GitInvoker.initialize()')).once()
-      verify(logger.logDebug('* GitInvoker.getTargetBranch()')).once()
-      verify(logger.logDebug('* GitInvoker.getPullRequestId()')).once()
-      verify(logger.logDebug('* GitInvoker.invokeGit()')).once()
     })
   })
 

@@ -19,8 +19,8 @@ const mockAnswers: taskLibMockAnswer.TaskLibAnswers = {
       stdout: 'true'
     },
     '/git/git rev-parse --branch origin/develop...pull/12345/merge': {
-      code: 0,
-      stdout: `fatal: ambiguous argument 'origin/develop...pull/12345/merge': unknown revision or path not in the working tree.${os.EOL}`
+      code: 1,
+      stderr: `fatal: ambiguous argument 'origin/develop...pull/12345/merge': unknown revision or path not in the working tree.${os.EOL}`
     }
   },
   which: {

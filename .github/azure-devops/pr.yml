@@ -10,6 +10,10 @@ pr:
 pool:
   vmImage: ubuntu-latest
 
+variables:
+  - name: System.Debug
+    value: true
+
 stages:
   - stage: PRMetrics
     displayName: PR Metrics

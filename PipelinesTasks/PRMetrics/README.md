@@ -4,7 +4,7 @@ PR Metrics is an Azure Pipelines task for adding size and test coverage
 indicators to the start of each Pull Request title.
 
 It can be downloaded from the Visual Studio Marketplace at
-<https://aka.ms/PRMetrics/Comment>.
+<https://aka.ms/PRMetrics>.
 
 For example, a PR with the title "Adding code" could become either:
 
@@ -66,6 +66,9 @@ To deploy the task:
    by following the instructions [here][tfxpat]. This will only need to be
    performed the first time you use tfx-cli.
 1. To build and deploy, from within the `src/task` folder, run `npm run deploy`.
+   Note that the deployment task can intermittently fail to deploy all
+   dependencies, which will be seen when you run the build task. If this occurs,
+   run `npm run deploy` and try again.
 
 ## Configuring
 
@@ -167,7 +170,9 @@ which were only discovered through experience and the unit tests ensure that
 these edge case fixes do not regress. Moreover, validating this extension on the
 server is significantly more time consuming than validating locally.
 
-You can use `npm run deploy` for server-based testing.
+You can use `npm run deploy` for server-based testing. Note that the deployment
+task can intermittently fail to deploy all dependencies, which will be seen when
+you run the build task. If this occurs, run `npm run deploy` and try again.
 
 The code formatting complies with the [ESLint][eslint] "Standard" rules. The
 formatting can be checked and automatically fixed by running `npm run lint`
@@ -182,10 +187,10 @@ PR to be merged.
 
 ### Manual Test Cases
 
-Unfortunately, it is not possible to automatically test everything as the task
-runs on the Azure DevOps platform, which the unit tests cannot run on.
-Therefore, it is recommended that you perform the following manual test cases
-outlined in [here][manualtesting] whenever significant changes are made.
+Unfortunately, it is difficult to automatically test everything as the task runs
+on the Azure DevOps platform, which the unit tests cannot run on. Therefore, it
+is recommended that you perform the following manual test cases outlined in
+[here][manualtesting] whenever significant changes are made.
 
 ## Debugging
 
@@ -429,7 +434,7 @@ the language extensions defined in the
 [vssextensionjson]: vss-extension.json
 [taskjson]: task/task.json
 [addingtask]: https://docs.microsoft.com/azure/devops/pipelines/customize-pipeline
-[globs]: https://aka.ms/PRMetrics/FileMatchingPatterns
+[globs]: docs.microsoft.com/azure/devops/pipelines/tasks/file-matching-patterns
 [typescript]: https://www.typescriptlang.org/
 [sdk]: https://github.com/microsoft/azure-pipelines-task-lib
 [mocha]: https://mochajs.org/

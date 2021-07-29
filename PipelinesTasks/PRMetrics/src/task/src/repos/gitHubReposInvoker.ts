@@ -10,6 +10,7 @@ import GetPullResponse from '../wrappers/octokitInterfaces/getPullResponse'
 import IReposInvoker from './iReposInvoker'
 import Logger from '../utilities/logger'
 import OctokitWrapper from '../wrappers/octokitWrapper'
+import PullRequestCommentsThread from '../pullRequests/pullRequestCommentsThread'
 import PullRequestDetails from './pullRequestDetails'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
 import UpdatePullRequest from '../wrappers/octokitInterfaces/updatePullRequest'
@@ -112,6 +113,12 @@ export default class GitHubReposInvoker implements IReposInvoker {
     this._logger.logDebug('* GitHubReposInvoker.updateComment()')
 
     throw Error('GitHubReposInvoker.updateComment() not yet implemented.')
+  }
+
+  public async deleteCommentThread (_: PullRequestCommentsThread): Promise<void> {
+    this._logger.logDebug('* GitHubReposInvoker.deleteCommentThread()')
+
+    throw Error('GitHubReposInvoker.deleteCommentThread() not yet implemented.')
   }
 
   private initialize (): void {

@@ -3,11 +3,12 @@
 
 import 'reflect-metadata'
 import { CommentThreadStatus, GitPullRequestCommentThread } from 'azure-devops-node-api/interfaces/GitInterfaces'
+import { deepEqual, instance, mock, verify } from 'ts-mockito'
 import { expect } from 'chai'
-import { instance, mock, verify } from 'ts-mockito'
 import AzureReposInvoker from '../../src/repos/azureReposInvoker'
 import GitHubReposInvoker from '../../src/repos/gitHubReposInvoker'
 import Logger from '../../src/utilities/logger'
+import PullRequestCommentsThread from '../../src/pullRequests/pullRequestCommentsThread'
 import PullRequestDetails from '../../src/repos/pullRequestDetails'
 import ReposInvoker from '../../src/repos/reposInvoker'
 
@@ -595,6 +596,99 @@ describe('reposInvoker.ts', function (): void {
       verify(azureReposInvoker.updateComment(null, null, 0, 0)).never()
       verify(gitHubReposInvoker.updateComment(null, null, 0, 0)).never()
       verify(logger.logDebug('* ReposInvoker.updateComment()')).once()
+      verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
+
+      // Finalization
+      delete process.env.BUILD_REPOSITORY_PROVIDER
+    })
+  })
+
+  describe('deleteCommentThread()', (): void => {
+    it('should invoke Azure Repos when called from an appropriate repo', async (): Promise<void> => {
+      // Arrange
+      process.env.BUILD_REPOSITORY_PROVIDER = 'TfsGit'
+      const commentThread: PullRequestCommentsThread = new PullRequestCommentsThread(20)
+      commentThread.commentIds.push(30)
+      const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
+
+      // Act
+      await reposInvoker.deleteCommentThread(commentThread)
+
+      // Assert
+      verify(azureReposInvoker.deleteCommentThread(deepEqual(commentThread))).once()
+      verify(gitHubReposInvoker.deleteCommentThread(deepEqual(commentThread))).never()
+      verify(logger.logDebug('* ReposInvoker.deleteCommentThread()')).once()
+      verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
+
+      // Finalization
+      delete process.env.BUILD_REPOSITORY_PROVIDER
+    })
+
+    it('should invoke GitHub when called from an appropriate repo', async (): Promise<void> => {
+      // Arrange
+      process.env.BUILD_REPOSITORY_PROVIDER = 'GitHub'
+      const commentThread: PullRequestCommentsThread = new PullRequestCommentsThread(20)
+      commentThread.commentIds.push(30)
+      const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
+
+      // Act
+      await reposInvoker.deleteCommentThread(commentThread)
+
+      // Assert
+      verify(azureReposInvoker.deleteCommentThread(deepEqual(commentThread))).never()
+      verify(gitHubReposInvoker.deleteCommentThread(deepEqual(commentThread))).once()
+      verify(logger.logDebug('* ReposInvoker.deleteCommentThread()')).once()
+      verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
+
+      // Finalization
+      delete process.env.BUILD_REPOSITORY_PROVIDER
+    })
+
+    it('should throw when the repo type is not set', async (): Promise<void> => {
+      // Arrange
+      delete process.env.BUILD_REPOSITORY_PROVIDER
+      const commentThread: PullRequestCommentsThread = new PullRequestCommentsThread(20)
+      commentThread.commentIds.push(30)
+      const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
+      let errorThrown: boolean = false
+
+      try {
+        // Act
+        await reposInvoker.deleteCommentThread(commentThread)
+      } catch (error) {
+        // Assert
+        errorThrown = true
+        expect(error.message).to.equal('\'BUILD_REPOSITORY_PROVIDER\', accessed within \'ReposInvoker.getReposInvoker()\', is invalid, null, or undefined \'undefined\'.')
+      }
+
+      expect(errorThrown).to.equal(true)
+      verify(azureReposInvoker.deleteCommentThread(deepEqual(commentThread))).never()
+      verify(gitHubReposInvoker.deleteCommentThread(deepEqual(commentThread))).never()
+      verify(logger.logDebug('* ReposInvoker.deleteCommentThread()')).once()
+      verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
+    })
+
+    it('should throw when the repo type is set to an invalid value', async (): Promise<void> => {
+      // Arrange
+      process.env.BUILD_REPOSITORY_PROVIDER = 'Other'
+      const commentThread: PullRequestCommentsThread = new PullRequestCommentsThread(20)
+      commentThread.commentIds.push(30)
+      const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
+      let errorThrown: boolean = false
+
+      try {
+        // Act
+        await reposInvoker.deleteCommentThread(commentThread)
+      } catch (error) {
+        // Assert
+        errorThrown = true
+        expect(error.message).to.equal('BUILD_REPOSITORY_PROVIDER \'Other\' is unsupported.')
+      }
+
+      expect(errorThrown).to.equal(true)
+      verify(azureReposInvoker.deleteCommentThread(deepEqual(commentThread))).never()
+      verify(gitHubReposInvoker.deleteCommentThread(deepEqual(commentThread))).never()
+      verify(logger.logDebug('* ReposInvoker.deleteCommentThread()')).once()
       verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
 
       // Finalization

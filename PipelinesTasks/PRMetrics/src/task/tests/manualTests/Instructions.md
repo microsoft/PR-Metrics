@@ -1,10 +1,10 @@
 # Manual Testing
 
-Unfortunately, it is not possible to automatically test everything as the task
-runs on the Azure DevOps platform, which the unit tests cannot run on.
-Therefore, it is recommended that you perform the following manual test cases
-whenever significant changes are made. These don't cover all possible scenarios,
-but they complement the unit tests to provide a high level of coverage.
+Unfortunately, it is difficult to automatically test everything as the task runs
+on the Azure DevOps platform, which the unit tests cannot run on. Therefore, it
+is recommended that you perform the following manual test cases whenever
+significant changes are made. These don't cover all possible scenarios, but they
+complement the unit tests to provide a high level of coverage.
 
 ## Step 1: Setup
 
@@ -28,6 +28,9 @@ but they complement the unit tests to provide a high level of coverage.
    by following the instructions [here][tfxpat]. This will only need to be
    performed the first time you use tfx-cli.
 1. To build and deploy, from within the `src/task` folder, run `npm run deploy`.
+   Note that the deployment task can intermittently fail to deploy all
+   dependencies, which will be seen when you run the build task. If this occurs,
+   run `npm run deploy` and try again.
 
 ## Step 2: Creating the Pipelines
 
@@ -75,7 +78,7 @@ but they complement the unit tests to provide a high level of coverage.
 1. Rename `rename.ts` to `temporary.ts` and `initial/rename.ts` to
    `initial/temporary.ts`.
 1. Delete `delete.ts`.
-1. Add the following to the end of `linesToAdd.ts`:
+1. Add the following to the end of `linesToAdd.ts` and `temporary.ts`:
 
    ```TypeScript
    // Added Line
@@ -117,11 +120,11 @@ but they complement the unit tests to provide a high level of coverage.
 1. Verify that a metrics comment has been added with the following details:
    - :heavy_check_mark: Thanks for keeping your pull request small.
    - :heavy_check_mark: Thanks for adding tests.
-   - Product code: 25
+   - Product code: 30
    - Test code: 30
-   - Subtotal: 55
+   - Subtotal: 60
    - Ignored: 30
-   - Total: 85
+   - Total: 90
 1. Verify that the aforementioned metrics comment is closed.
 
 ## Step 5: Retrying
@@ -151,8 +154,8 @@ but they complement the unit tests to provide a high level of coverage.
    - Product code: 10
    - Test code: 30
    - Subtotal: 40
-   - Ignored: 57
-   - Total: 97
+   - Ignored: 62
+   - Total: 102
 1. Verify that the aforementioned metrics comment is active.
 1. Verify that a closed comment with the text ":exclamation: This file doesn't
    require review." has been added to the first character of all `temporary.ts`,
@@ -171,14 +174,40 @@ but they complement the unit tests to provide a high level of coverage.
 1. Verify that your description is retained.
 1. Verify that the title of the PR is now prefixed with
    "L :black_small_square:".
-1. Verify that the metrics comment has been updated with the following details:
+1. Verify that the metrics comment still has with the following details:
    - :x: Try to keep pull requests smaller than 2 lines of new product code by
      following the Single Responsibility Principle (SRP).
    - Product code: 10
    - Test code: 30
    - Subtotal: 40
-   - Ignored: 57
-   - Total: 97
+   - Ignored: 62
+   - Total: 102
+1. Verify that the aforementioned metrics comment is active.
+
+## Step 8: Testing Comment Deletion
+
+1. Reply to the comment ":exclamation: This file doesn't require review." in the
+   file `linesToAdd.ts` with any arbitrary comment.
+1. Copy the contents of `step8` to your repo, choosing to replace the older
+   files with the newer ones.
+1. Delete `add.ts`.
+1. Commit the changes to your branch.
+1. On the Azure DevOps server, navigate to your existing PR. The build pipelines
+   should be running automatically.
+1. Verify that the pipeline succeeds.
+1. Verify that there is no ":exclamation: This file doesn't require review."
+   comment thread associated with either `add.ts` or `linesToAdd.ts`.
+1. Verify that your description is retained.
+1. Verify that the title of the PR is still prefixed with
+   "L :black_small_square:".
+1. Verify that the metrics comment still has the following details:
+   - :x: Try to keep pull requests smaller than 2 lines of new product code by
+     following the Single Responsibility Principle (SRP).
+   - Product code: 10
+   - Test code: 30
+   - Subtotal: 40
+   - Ignored: 62
+   - Total: 102
 1. Verify that the aforementioned metrics comment is active.
 
 [tfxcli]: https://github.com/Microsoft/tfs-cli
