@@ -8,10 +8,11 @@
     "url": "git+https://github.com/microsoft/OMEX-Azure-DevOps-Extensions.git"
   },
   "keywords": [
-    "PowerShell",
     "Azure DevOps",
     "Azure DevOps Extension",
-    "Azure DevOps Pipelines"
+    "Azure Pipelines",
+    "GitHub",
+    "TypeScript"
   ],
   "author": "Microsoft Corporation",
   "license": "MIT",

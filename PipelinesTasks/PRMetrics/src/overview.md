@@ -107,8 +107,9 @@ If you have feedback or encounter errors, please file an issue on
 [GitHub][issues].
 
 [build]: https://docs.microsoft.com/azure/devops/pipelines/create-first-pipeline
-[github]: https://github.com/microsoft/OMEX-Azure-DevOps-Extensions
-[issues]: https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/issues
 [globs]: https://docs.microsoft.com/azure/devops/pipelines/tasks/file-matching-patterns
 [defaultextensions]: https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/blob/main/PipelinesTasks/PRMetrics/README.md#default-code-file-extensions
+[github]: https://github.com/microsoft/OMEX-Azure-DevOps-Extensions
+[privacy]: https://privacy.microsoft.com/privacystatement
 [readme]: https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/blob/main/PipelinesTasks/PRMetrics/README.md
+[issues]: https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/issues
