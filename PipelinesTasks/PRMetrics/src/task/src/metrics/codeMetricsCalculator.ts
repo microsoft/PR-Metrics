@@ -3,16 +3,13 @@
 
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import { injectable } from 'tsyringe'
-import AzureReposInvoker from '../azureRepos/azureReposInvoker'
-import CodeMetrics from './codeMetrics'
-import CodeMetricsData from './codeMetricsData'
 import GitInvoker from '../git/gitInvoker'
 import Logger from '../utilities/logger'
 import PullRequest from '../pullRequests/pullRequest'
 import PullRequestComments from '../pullRequests/pullRequestComments'
 import PullRequestCommentsData from '../pullRequests/pullRequestCommentsData'
-import PullRequestDetails from '../azureRepos/pullRequestDetails'
-import PullRequestMetadata from '../azureRepos/pullRequestMetadata'
+import PullRequestDetails from '../repos/pullRequestDetails'
+import ReposInvoker from '../repos/reposInvoker'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
 
 /**
@@ -20,31 +17,28 @@ import TaskLibWrapper from '../wrappers/taskLibWrapper'
  */
 @injectable()
 export default class CodeMetricsCalculator {
-  private readonly _azureReposInvoker: AzureReposInvoker
-  private readonly _codeMetrics: CodeMetrics
   private readonly _gitInvoker: GitInvoker
   private readonly _logger: Logger
   private readonly _pullRequest: PullRequest
   private readonly _pullRequestComments: PullRequestComments
+  private readonly _reposInvoker: ReposInvoker
   private readonly _taskLibWrapper: TaskLibWrapper
 
   /**
    * Initializes a new instance of the `CodeMetricsCalculator` class.
-   * @param azureReposInvoker The Azure Repos invoker logic.
-   * @param codeMetrics The code metrics calculation logic.
    * @param gitInvoker The Git invoker.
    * @param logger The logger.
    * @param pullRequest The pull request modification logic.
    * @param pullRequestComments The pull request comments modification logic.
+   * @param reposInvoker The repos invoker logic.
    * @param taskLibWrapper The wrapper around the Azure Pipelines Task Lib.
    */
-  public constructor (azureReposInvoker: AzureReposInvoker, codeMetrics: CodeMetrics, gitInvoker: GitInvoker, logger: Logger, pullRequest: PullRequest, pullRequestComments: PullRequestComments, taskLibWrapper: TaskLibWrapper) {
-    this._azureReposInvoker = azureReposInvoker
-    this._codeMetrics = codeMetrics
+  public constructor (gitInvoker: GitInvoker, logger: Logger, pullRequest: PullRequest, pullRequestComments: PullRequestComments, reposInvoker: ReposInvoker, taskLibWrapper: TaskLibWrapper) {
     this._gitInvoker = gitInvoker
     this._logger = logger
     this._pullRequest = pullRequest
     this._pullRequestComments = pullRequestComments
+    this._reposInvoker = reposInvoker
     this._taskLibWrapper = taskLibWrapper
   }
 
@@ -74,7 +68,7 @@ export default class CodeMetricsCalculator {
   public async shouldStop (): Promise<string | null> {
     this._logger.logDebug('* CodeMetricsCalculator.shouldStop()')
 
-    if (!this._azureReposInvoker.isAccessTokenAvailable) {
+    if (!this._reposInvoker.isAccessTokenAvailable) {
       return this._taskLibWrapper.loc('metrics.codeMetricsCalculator.noAccessToken')
     }
 
@@ -96,11 +90,11 @@ export default class CodeMetricsCalculator {
   public async updateDetails (): Promise<void> {
     this._logger.logDebug('* CodeMetricsCalculator.updateDetails()')
 
-    const details: PullRequestDetails = await this._azureReposInvoker.getTitleAndDescription()
+    const details: PullRequestDetails = await this._reposInvoker.getTitleAndDescription()
     const updatedTitle: string | null = await this._pullRequest.getUpdatedTitle(details.title)
     const updatedDescription: string | null = this._pullRequest.getUpdatedDescription(details.description)
 
-    await this._azureReposInvoker.setTitleAndDescription(updatedTitle, updatedDescription)
+    await this._reposInvoker.setTitleAndDescription(updatedTitle, updatedDescription)
   }
 
   /**
@@ -110,14 +104,15 @@ export default class CodeMetricsCalculator {
   public async updateComments (): Promise<void> {
     this._logger.logDebug('* CodeMetricsCalculator.updateComments()')
 
+    if (!this._reposInvoker.isCommentsFunctionalityAvailable) {
+      this._logger.logDebug('Skipping comments functionality as it is unavailable.')
+      return
+    }
+
     const promises: Promise<void>[] = []
 
-    const currentIteration: number = await this._azureReposInvoker.getCurrentIteration()
-    const commentData: PullRequestCommentsData = await this._pullRequestComments.getCommentData(currentIteration)
-    if (!commentData.isMetricsCommentPresent) {
-      promises.push(this.updateMetricsComment(commentData, currentIteration))
-      promises.push(this.addMetadata())
-    }
+    const commentData: PullRequestCommentsData = await this._pullRequestComments.getCommentData()
+    promises.push(this.updateMetricsComment(commentData))
 
     commentData.filesNotRequiringReview.forEach((fileName: string): void => {
       promises.push(this.updateNoReviewRequiredComment(fileName, false))
@@ -127,68 +122,32 @@ export default class CodeMetricsCalculator {
       promises.push(this.updateNoReviewRequiredComment(fileName, true))
     })
 
+    commentData.commentThreadsRequiringDeletion.forEach((commentThreadId: number): void => {
+      promises.push(this._reposInvoker.deleteCommentThread(commentThreadId))
+    })
+
     await Promise.all(promises)
   }
 
-  private async updateMetricsComment (commentData: PullRequestCommentsData, currentIteration: number): Promise<void> {
+  private async updateMetricsComment (commentData: PullRequestCommentsData): Promise<void> {
     this._logger.logDebug('* CodeMetricsCalculator.updateMetricsComment()')
 
-    const comment: string = await this._pullRequestComments.getMetricsComment(currentIteration)
+    const content: string = await this._pullRequestComments.getMetricsComment()
     const status: CommentThreadStatus = await this._pullRequestComments.getMetricsCommentStatus()
-    if (commentData.metricsCommentThreadId !== null) {
-      await this._azureReposInvoker.createComment(comment, commentData.metricsCommentThreadId, commentData.metricsCommentId!)
-      await this._azureReposInvoker.setCommentThreadStatus(commentData.metricsCommentThreadId, status)
+    if (commentData.metricsCommentThreadId === null) {
+      await this._reposInvoker.createComment(content, status)
     } else {
-      await this._azureReposInvoker.createCommentThread(comment, status)
+      await this._reposInvoker.updateComment(
+        commentData.metricsCommentContent !== content ? content : null,
+        commentData.metricsCommentThreadStatus !== status ? status : null,
+        commentData.metricsCommentThreadId)
     }
-  }
-
-  private async addMetadata (): Promise<void> {
-    this._logger.logDebug('* CodeMetricsCalculator.addMetadata()')
-
-    const metrics: CodeMetricsData = await this._codeMetrics.getMetrics()
-    const metadata: PullRequestMetadata[] = [
-      {
-        key: 'Size',
-        value: await this._codeMetrics.getSize()
-      },
-      {
-        key: 'ProductCode',
-        value: metrics.productCode
-      },
-      {
-        key: 'TestCode',
-        value: metrics.testCode
-      },
-      {
-        key: 'Subtotal',
-        value: metrics.subtotal
-      },
-      {
-        key: 'IgnoredCode',
-        value: metrics.ignoredCode
-      },
-      {
-        key: 'Total',
-        value: metrics.total
-      }
-    ]
-
-    const isSufficientlyTested: boolean | null = await this._codeMetrics.isSufficientlyTested()
-    if (isSufficientlyTested !== null) {
-      metadata.push({
-        key: 'TestCoverage',
-        value: isSufficientlyTested
-      })
-    }
-
-    await this._azureReposInvoker.addMetadata(metadata)
   }
 
   private async updateNoReviewRequiredComment (fileName: string, isFileDeleted: boolean): Promise<void> {
     this._logger.logDebug('* CodeMetricsCalculator.updateNoReviewRequiredComment()')
 
     const noReviewRequiredComment: string = this._pullRequestComments.noReviewRequiredComment
-    await this._azureReposInvoker.createCommentThread(noReviewRequiredComment, CommentThreadStatus.Closed, fileName, isFileDeleted)
+    await this._reposInvoker.createComment(noReviewRequiredComment, CommentThreadStatus.Closed, fileName, isFileDeleted)
   }
 }

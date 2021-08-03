@@ -42,14 +42,44 @@ describe('logger.ts', (): void => {
     })
   })
 
+  describe('logWarning()', (): void => {
+    it('should log the message', (): void => {
+      // Arrange
+      const logger: Logger = new Logger(instance(consoleWrapper), instance(taskLibWrapper))
+
+      // Act
+      logger.logWarning('Message')
+
+      // Assert
+      verify(taskLibWrapper.warning('Message')).once()
+    })
+  })
+
+  describe('logError()', (): void => {
+    it('should log the message', (): void => {
+      // Arrange
+      const logger: Logger = new Logger(instance(consoleWrapper), instance(taskLibWrapper))
+
+      // Act
+      logger.logError('Message')
+
+      // Assert
+      verify(taskLibWrapper.error('Message')).once()
+    })
+  })
+
   describe('replay()', (): void => {
     it('should replay all messages', (): void => {
       // Arrange
       const logger: Logger = new Logger(instance(consoleWrapper), instance(taskLibWrapper))
       logger.logDebug('Debug Message 1')
       logger.logInfo('Info Message 1')
+      logger.logWarning('Warning Message 1')
+      logger.logError('Error Message 1')
       logger.logDebug('Debug Message 2')
       logger.logInfo('Info Message 2')
+      logger.logWarning('Warning Message 2')
+      logger.logError('Error Message 2')
 
       // Act
       logger.replay()
@@ -57,12 +87,20 @@ describe('logger.ts', (): void => {
       // Assert
       verify(taskLibWrapper.debug('Debug Message 1')).once()
       verify(consoleWrapper.log('Info Message 1')).once()
+      verify(taskLibWrapper.warning('Warning Message 1')).once()
+      verify(taskLibWrapper.error('Error Message 1')).once()
       verify(taskLibWrapper.debug('Debug Message 2')).once()
       verify(consoleWrapper.log('Info Message 2')).once()
-      verify(consoleWrapper.log('🔁 debug – Debug Message 1')).once()
-      verify(consoleWrapper.log('🔁 info  – Info Message 1')).once()
-      verify(consoleWrapper.log('🔁 debug – Debug Message 2')).once()
-      verify(consoleWrapper.log('🔁 info  – Info Message 2')).once()
+      verify(taskLibWrapper.warning('Warning Message 2')).once()
+      verify(taskLibWrapper.error('Error Message 2')).once()
+      verify(consoleWrapper.log('🔁 debug   – Debug Message 1')).once()
+      verify(consoleWrapper.log('🔁 info    – Info Message 1')).once()
+      verify(consoleWrapper.log('🔁 warning – Warning Message 1')).once()
+      verify(consoleWrapper.log('🔁 error   – Error Message 1')).once()
+      verify(consoleWrapper.log('🔁 debug   – Debug Message 2')).once()
+      verify(consoleWrapper.log('🔁 info    – Info Message 2')).once()
+      verify(consoleWrapper.log('🔁 warning – Warning Message 2')).once()
+      verify(consoleWrapper.log('🔁 error   – Error Message 2')).once()
     })
   })
 })

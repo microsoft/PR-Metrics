@@ -126,9 +126,10 @@ describe('codeMetrics.ts', (): void => {
       ['1\t1\tfa/b => folder/test.ts', 'XS', true, new CodeMetricsData(0, 1, 0)],
       ['1\t1\tf{a => older}/{b => test.ts}', 'XS', true, new CodeMetricsData(0, 1, 0)],
       ['0\t0\tfile.ts\n', 'XS', true, new CodeMetricsData(0, 0, 0)],
-      ['-\t-\tfile.ts', 'XS', true, new CodeMetricsData(0, 0, 0)]
+      ['-\t-\tfile.ts', 'XS', true, new CodeMetricsData(0, 0, 0)],
+      ['0\t0\tfile.ts\r\nrc:0\r\nsuccess:true', 'XS', true, new CodeMetricsData(0, 0, 0)]
     ], (data: [string, string, boolean, CodeMetricsData]): void => {
-      it(`with default inputs and git diff '${data[0].replace(/\n/g, '\\n')}', returns '${data[1]}' size and '${data[2]}' test coverage`, async (): Promise<void> => {
+      it(`with default inputs and git diff '${data[0].replace(/\n/g, '\\n').replace(/\r/g, '\\r')}', returns '${data[1]}' size and '${data[2]}' test coverage`, async (): Promise<void> => {
         // Arrange
         when(gitInvoker.getDiffSummary()).thenResolve(data[0])
 
@@ -148,7 +149,7 @@ describe('codeMetrics.ts', (): void => {
         verify(logger.logDebug('* CodeMetrics.getSize()')).once()
         verify(logger.logDebug('* CodeMetrics.initialize()')).times(7)
         verify(logger.logDebug('* CodeMetrics.initializeMetrics()')).once()
-        verify(logger.logDebug('* CodeMetrics.matchFileExtension()')).times((data[0].match(/\n/g) || []).length + 1 - (data[0].endsWith('\n') ? 1 : 0))
+        verify(logger.logDebug('* CodeMetrics.matchFileExtension()')).times((data[0].replace(/\r\n/g, '').match(/\n/g) || []).length + 1 - (data[0].endsWith('\n') ? 1 : 0))
         verify(logger.logDebug('* CodeMetrics.constructMetrics()')).once()
         verify(logger.logDebug('* CodeMetrics.createFileMetricsMap()')).once()
         verify(logger.logDebug('* CodeMetrics.initializeIsSufficientlyTested()')).once()
@@ -208,11 +209,16 @@ describe('codeMetrics.ts', (): void => {
       ['1\t0\tignored.cs', 'XS', true, new CodeMetricsData(0, 0, 1), ['ignored.cs'], []],
       ['1\t0\tfolder/ignored.ts', 'XS', true, new CodeMetricsData(0, 0, 1), ['folder/ignored.ts'], []],
       ['1\t0\tfolder/ignored.cs', 'XS', true, new CodeMetricsData(0, 0, 1), ['folder/ignored.cs'], []],
-      ['0\t0\tignored.ts', 'XS', true, new CodeMetricsData(0, 0, 0), [], ['ignored.ts']],
-      ['0\t0\tignored.cs', 'XS', true, new CodeMetricsData(0, 0, 0), [], ['ignored.cs']],
-      ['0\t0\tfolder/ignored.ts', 'XS', true, new CodeMetricsData(0, 0, 0), [], ['folder/ignored.ts']],
-      ['0\t0\tfolder/ignored.cs', 'XS', true, new CodeMetricsData(0, 0, 0), [], ['folder/ignored.cs']],
-      ['1\t0\tignored.ts\n0\t0\tfolder/ignored.ts', 'XS', true, new CodeMetricsData(0, 0, 1), ['ignored.ts'], ['folder/ignored.ts']]
+      ['0\t0\tignored.ts', 'XS', true, new CodeMetricsData(0, 0, 0), ['ignored.ts'], []],
+      ['0\t0\tignored.cs', 'XS', true, new CodeMetricsData(0, 0, 0), ['ignored.cs'], []],
+      ['0\t0\tfolder/ignored.ts', 'XS', true, new CodeMetricsData(0, 0, 0), ['folder/ignored.ts'], []],
+      ['0\t0\tfolder/ignored.cs', 'XS', true, new CodeMetricsData(0, 0, 0), ['folder/ignored.cs'], []],
+      ['1\t0\tignored.ts\n0\t0\tfolder/ignored.ts', 'XS', true, new CodeMetricsData(0, 0, 1), ['ignored.ts', 'folder/ignored.ts'], []],
+      ['0\t1\tignored.ts', 'XS', true, new CodeMetricsData(0, 0, 0), [], ['ignored.ts']],
+      ['0\t1\tignored.cs', 'XS', true, new CodeMetricsData(0, 0, 0), [], ['ignored.cs']],
+      ['0\t1\tfolder/ignored.ts', 'XS', true, new CodeMetricsData(0, 0, 0), [], ['folder/ignored.ts']],
+      ['0\t1\tfolder/ignored.cs', 'XS', true, new CodeMetricsData(0, 0, 0), [], ['folder/ignored.cs']],
+      ['1\t0\tignored.ts\n0\t1\tfolder/ignored.ts', 'XS', true, new CodeMetricsData(0, 0, 1), ['ignored.ts'], ['folder/ignored.ts']]
     ], (data: [string, string, boolean, CodeMetricsData, string[], string[]]): void => {
       it(`with non-default inputs and git diff '${data[0].replace(/\n/g, '\\n')}', returns '${data[1]}' size and '${data[2]}' test coverage`, async (): Promise<void> => {
         // Arrange
@@ -330,7 +336,7 @@ describe('codeMetrics.ts', (): void => {
           } catch (error) {
             // Assert
             errorThrown = true
-            expect(error.message).to.equal(`The number of elements '${data[1]}' in '${data[0].trim()}' did not match the expected 3.`)
+            expect(error.message).to.equal(`The number of elements '${data[1]}' in '${data[0].trim()}' in input '${data[0].trim()}' did not match the expected 3.`)
           }
 
           expect(errorThrown).to.equal(true)
@@ -352,7 +358,28 @@ describe('codeMetrics.ts', (): void => {
       } catch (error) {
         // Assert
         errorThrown = true
-        expect(error.message).to.equal('Could not parse \'A\' from line \'A\t0\tfile.ts\'.')
+        expect(error.message).to.equal('Could not parse added lines \'A\' from line \'A\t0\tfile.ts\'.')
+      }
+
+      expect(errorThrown).to.equal(true)
+      verify(logger.logDebug('* CodeMetrics.getFilesNotRequiringReview()')).once()
+      verify(logger.logDebug('* CodeMetrics.initialize()')).once()
+      verify(logger.logDebug('* CodeMetrics.createFileMetricsMap()')).once()
+    })
+
+    it('should throw when the lines deleted in the Git diff summary cannot be converted', async (): Promise<void> => {
+      // Arrange
+      when(gitInvoker.getDiffSummary()).thenResolve('0\tA\tfile.ts')
+      const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(logger), instance(taskLibWrapper))
+      let errorThrown: boolean = false
+
+      try {
+        // Act
+        await codeMetrics.getFilesNotRequiringReview()
+      } catch (error) {
+        // Assert
+        errorThrown = true
+        expect(error.message).to.equal('Could not parse deleted lines \'A\' from line \'0\tA\tfile.ts\'.')
       }
 
       expect(errorThrown).to.equal(true)
@@ -395,7 +422,7 @@ describe('codeMetrics.ts', (): void => {
       } catch (error) {
         // Assert
         errorThrown = true
-        expect(error.message).to.equal('The number of elements \'1\' in \'0\' did not match the expected 3.')
+        expect(error.message).to.equal('The number of elements \'1\' in \'0\' in input \'0\' did not match the expected 3.')
       }
 
       expect(errorThrown).to.equal(true)
@@ -416,7 +443,28 @@ describe('codeMetrics.ts', (): void => {
       } catch (error) {
         // Assert
         errorThrown = true
-        expect(error.message).to.equal('Could not parse \'A\' from line \'A\t0\tfile.ts\'.')
+        expect(error.message).to.equal('Could not parse added lines \'A\' from line \'A\t0\tfile.ts\'.')
+      }
+
+      expect(errorThrown).to.equal(true)
+      verify(logger.logDebug('* CodeMetrics.getDeletedFilesNotRequiringReview()')).once()
+      verify(logger.logDebug('* CodeMetrics.initialize()')).once()
+      verify(logger.logDebug('* CodeMetrics.createFileMetricsMap()')).once()
+    })
+
+    it('should throw when the lines deleted in the Git diff summary cannot be converted', async (): Promise<void> => {
+      // Arrange
+      when(gitInvoker.getDiffSummary()).thenResolve('0\tA\tfile.ts')
+      const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(logger), instance(taskLibWrapper))
+      let errorThrown: boolean = false
+
+      try {
+        // Act
+        await codeMetrics.getDeletedFilesNotRequiringReview()
+      } catch (error) {
+        // Assert
+        errorThrown = true
+        expect(error.message).to.equal('Could not parse deleted lines \'A\' from line \'0\tA\tfile.ts\'.')
       }
 
       expect(errorThrown).to.equal(true)

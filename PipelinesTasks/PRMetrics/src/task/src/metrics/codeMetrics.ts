@@ -193,7 +193,7 @@ export default class CodeMetrics {
     })
 
     nonMatchesToComment.forEach((entry: CodeFileMetric): void => {
-      if (entry.linesAdded > 0) {
+      if (entry.linesAdded > 0 || (entry.linesAdded === 0 && entry.linesDeleted === 0)) {
         ignoredCode += entry.linesAdded
         this._filesNotRequiringReview.push(entry.fileName)
       } else {
@@ -207,6 +207,12 @@ export default class CodeMetrics {
   private createFileMetricsMap (input: string): CodeFileMetric[] {
     this._logger.logDebug('* CodeMetrics.createFileMetricsMap()')
 
+    // Removing the ending that can be created by test mocks.
+    const endingToRemove: string = '\r\nrc:0\r\nsuccess:true'
+    if (input.endsWith(endingToRemove)) {
+      input = input.substring(0, input.length - endingToRemove.length)
+    }
+
     // Condense file and folder names that were renamed e.g. F{a => i}leT{b => e}st.d{c => l}l".
     const lines: string[] = input.split('\n')
 
@@ -214,7 +220,7 @@ export default class CodeMetrics {
     lines.forEach((line: string): void => {
       const elements: string[] = line.split('\t')
       if (elements.length !== 3) {
-        throw RangeError(`The number of elements '${elements.length}' in '${line}' did not match the expected 3.`)
+        throw RangeError(`The number of elements '${elements.length}' in '${line}' in input '${input}' did not match the expected 3.`)
       }
 
       // Condense file and folder names that were renamed e.g. "F{a => i}leT{b => e}st.d{c => l}l" or "FaleTbst.dcl => FileTest.dll".
@@ -222,23 +228,27 @@ export default class CodeMetrics {
         .replace(/{.*? => ([^}]+?)}/g, '$1')
         .replace(/.*? => ([^}]+?)/g, '$1')
 
-      // Parse the number of lines added. For binary files, the lines added will be '-'.
-      let linesAddedNumber: number
-      const linesAddedElement: string = elements[0]!
-      if (linesAddedElement === '-') {
-        linesAddedNumber = 0
-      } else {
-        linesAddedNumber = parseInt(linesAddedElement)
-        if (isNaN(linesAddedNumber)) {
-          throw Error(`Could not parse '${linesAddedElement}' from line '${line}'.`)
-        }
-      }
-
       result.push({
         fileName: fileName,
-        linesAdded: linesAddedNumber
+        linesAdded: this.parseChangedLines(elements[0]!, line, 'added'),
+        linesDeleted: this.parseChangedLines(elements[1]!, line, 'deleted')
       })
     })
+
+    return result
+  }
+
+  private parseChangedLines (element: string, line: string, category: string): number {
+    // Parse the number of lines changed. For binary files, the lines will be '-'.
+    let result: number
+    if (element === '-') {
+      result = 0
+    } else {
+      result = parseInt(element)
+      if (isNaN(result)) {
+        throw Error(`Could not parse ${category} lines '${element}' from line '${line}'.`)
+      }
+    }
 
     return result
   }

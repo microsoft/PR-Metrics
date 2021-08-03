@@ -1,5 +1,7 @@
 This extension provides a build task for updating PR titles with an indicator of
-the PR size and test coverage.
+the PR size and test coverage. It works with Azure DevOps, GitHub, GitHub AE,
+and GitHub Enterprise PRs (although functionality is currently limited for
+GitHub platforms).
 
 It is designed to help software engineers create PRs of an appropriate size,
 with appropriate levels of test coverage. It furthermore helps reviewers
@@ -8,9 +10,9 @@ more efficient time management.
 
 ![PR titles prefixed by size and test indicators](images/titles.png)
 
-It also adds detailed metrics as a comment within the PR, highlights missing PR
-descriptions, indicates files that may not need to be reviewed, and adds hidden
-properties that can be accessed programmatically.
+For Azure DevOps, it also adds detailed metrics as a comment within the PR,
+highlights missing PR descriptions, indicates files that may not need to be
+reviewed, and adds hidden properties that can be accessed programmatically.
 
 ![Metrics comment](images/comment.png)
 
@@ -29,8 +31,10 @@ Or you can use YAML:
 
 ```YAML
 steps:
-- task: ms-omex.prmetrics.prmetrics.PRMetrics@1
-  displayName: 'PR Metrics'
+- task: PRMetrics@1
+  displayName: PR Metrics
+  env:
+    SYSTEM_ACCESSTOKEN: $(System.AccessToken)
   continueOnError: true
 ```
 
@@ -38,8 +42,10 @@ If you wish to modify the inputs, YAML akin the to the following can be used:
 
 ```YAML
 steps:
-- task: ms-omex.prmetrics.prmetrics.PRMetrics@1
-  displayName: 'PR Metrics'
+- task: PRMetrics@1
+  displayName: PR Metrics
+  env:
+    SYSTEM_ACCESSTOKEN: $(System.AccessToken)
   inputs:
     BaseSize: 200
     GrowthRate: 2.0
@@ -51,6 +57,13 @@ steps:
       cs
       ps1
   continueOnError: true
+```
+
+For GitHub builds, it is not necessary to include:
+
+```YAML
+  env:
+    SYSTEM_ACCESSTOKEN: $(System.AccessToken)
 ```
 
 ### Parameters
@@ -94,8 +107,9 @@ If you have feedback or encounter errors, please file an issue on
 [GitHub][issues].
 
 [build]: https://docs.microsoft.com/azure/devops/pipelines/create-first-pipeline
-[github]: https://github.com/microsoft/OMEX-Azure-DevOps-Extensions
-[issues]: https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/issues
 [globs]: https://docs.microsoft.com/azure/devops/pipelines/tasks/file-matching-patterns
 [defaultextensions]: https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/blob/main/PipelinesTasks/PRMetrics/README.md#default-code-file-extensions
+[github]: https://github.com/microsoft/OMEX-Azure-DevOps-Extensions
+[privacy]: https://privacy.microsoft.com/privacystatement
 [readme]: https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/blob/main/PipelinesTasks/PRMetrics/README.md
+[issues]: https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/issues

@@ -19,6 +19,14 @@ export default class TaskLibWrapper {
   }
 
   /**
+   * Logs an error message.
+   * @param message The message to log.
+   */
+  public error (message: string): void {
+    taskLib.error(message)
+  }
+
+  /**
    * Asynchronously executes an external tool.
    * @param tool The tool executable to run.
    * @param args The arguments to pass to the tool.
@@ -40,6 +48,15 @@ export default class TaskLibWrapper {
   }
 
   /**
+   * Gets the value of a variable.
+   * @param name The name of the variable.
+   * @returns The value of the variable or `undefined` if the variable was not set.
+   */
+  public getVariable (name: string): string | undefined {
+    return taskLib.getVariable(name)
+  }
+
+  /**
    * Gets the localized string from the JSON resource file and optionally formats using the additional parameters.
    * @param key The key of the resources string in the resource file.
    * @param param Optional additional parameters for formatting the string.
@@ -47,5 +64,13 @@ export default class TaskLibWrapper {
    */
   public loc (key: string, ...param: any[]): string {
     return taskLib.loc(key, ...param)
+  }
+
+  /**
+   * Logs a warning message.
+   * @param message The message to log.
+   */
+  public warning (message: string): void {
+    taskLib.warning(message)
   }
 }

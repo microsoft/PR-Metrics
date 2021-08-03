@@ -23,7 +23,7 @@ The current set of projects is:
     engineers keep PRs to an appropriate size and add sufficient test coverage,
     while providing insight to reviewers as to how long a PR is likely to take
     to review. **It can be downloaded from the Visual Studio Marketplace at
-    <https://marketplace.visualstudio.com/items?itemName=ms-omex.prmetrics>.**
+    <https://aka.ms/PRMetrics>.**
 
 ## Building & Testing
 

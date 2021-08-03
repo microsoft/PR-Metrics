@@ -1,15 +1,18 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
+
 /**
  * A class representing data about the pull request comments to be added and updated.
  */
 export default class PullRequestCommentsData {
-  private _isMetricsCommentPresent: boolean = false
   private _metricsCommentThreadId: number | null = null
-  private _metricsCommentId: number | null = null
+  private _metricsCommentThreadStatus: CommentThreadStatus | null = null
+  private _metricsCommentContent: string | null = null
   private _filesNotRequiringReview: string[] = []
   private _deletedFilesNotRequiringReview: string[] = []
+  private _commentThreadsRequiringDeletion: number[] = []
 
   /**
    * Initializes a new instance of the `PullRequestCommentsData` class.
@@ -19,22 +22,6 @@ export default class PullRequestCommentsData {
   public constructor (filesNotRequiringReview: string[], deletedFilesNotRequiringReview: string[]) {
     this._filesNotRequiringReview = filesNotRequiringReview
     this._deletedFilesNotRequiringReview = deletedFilesNotRequiringReview
-  }
-
-  /**
-   * Gets a value indicating whether the metrics comment for the current iteration is already present.
-   * @returns A value indicating whether the metrics comment for the current iteration is already present.
-   */
-  public get isMetricsCommentPresent (): boolean {
-    return this._isMetricsCommentPresent
-  }
-
-  /**
-   * Sets a value indicating whether the metrics comment for the current iteration is already present.
-   * @param value A value indicating whether the metrics comment for the current iteration is already present.
-   */
-  public set isMetricsCommentPresent (value: boolean) {
-    this._isMetricsCommentPresent = value
   }
 
   /**
@@ -54,19 +41,35 @@ export default class PullRequestCommentsData {
   }
 
   /**
-   * Gets the ID of the last comment in the metrics comment thread.
-   * @returns The ID of the last comment in the metrics comment thread.
+   * Gets the status of the metrics comment thread.
+   * @returns The status of the metrics comment thread.
    */
-  public get metricsCommentId (): number | null {
-    return this._metricsCommentId
+  public get metricsCommentThreadStatus (): CommentThreadStatus | null {
+    return this._metricsCommentThreadStatus
   }
 
   /**
-   * Sets the ID of the last comment in the metrics comment thread.
-   * @param value The ID of the last comment in the metrics comment thread.
+   * Sets the status of the metrics comment thread.
+   * @param value The status of the metrics comment thread.
    */
-  public set metricsCommentId (value: number | null) {
-    this._metricsCommentId = value
+  public set metricsCommentThreadStatus (value: CommentThreadStatus | null) {
+    this._metricsCommentThreadStatus = value
+  }
+
+  /**
+   * Gets the content of the comment in the metrics comment thread.
+   * @returns The content of the comment in the metrics comment thread.
+   */
+  public get metricsCommentContent (): string | null {
+    return this._metricsCommentContent
+  }
+
+  /**
+   * Sets the content of the comment in the metrics comment thread.
+   * @param value The content of the comment in the metrics comment thread.
+   */
+  public set metricsCommentContent (value: string | null) {
+    this._metricsCommentContent = value
   }
 
   /**
@@ -99,5 +102,21 @@ export default class PullRequestCommentsData {
    */
   public set deletedFilesNotRequiringReview (value: string[]) {
     this._deletedFilesNotRequiringReview = value
+  }
+
+  /**
+   * Gets the collection of comment thread IDs requiring deletion now that the associated file requires review.
+   * @returns The collection of comment thread IDs requiring deletion.
+   */
+  public get commentThreadsRequiringDeletion (): number[] {
+    return this._commentThreadsRequiringDeletion
+  }
+
+  /**
+   * Set the collection of comment thread IDs requiring deletion now that the associated file requires review.
+   * @param value The collection of comment thread IDs requiring deletion.
+   */
+  public set commentThreadsRequiringDeletion (value: number[]) {
+    this._commentThreadsRequiringDeletion = value
   }
 }

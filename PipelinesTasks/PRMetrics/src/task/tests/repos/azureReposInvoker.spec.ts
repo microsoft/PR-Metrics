@@ -2,20 +2,18 @@
 // Licensed under the MIT License.
 
 import 'reflect-metadata'
-import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito'
+import { anyNumber, anything, deepEqual, instance, mock, verify, when } from 'ts-mockito'
 import { Comment, CommentThreadStatus, GitPullRequest, GitPullRequestCommentThread } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import { expect } from 'chai'
 import { IGitApi } from 'azure-devops-node-api/GitApi'
 import { IRequestHandler } from 'azure-devops-node-api/interfaces/common/VsoBaseInterfaces'
-import { JsonPatchDocument, Operation } from 'azure-devops-node-api/interfaces/common/VSSInterfaces'
 import { resolvableInstance } from '../testUtilities/resolvableInstance'
 import { WebApi } from 'azure-devops-node-api'
 import async from 'async'
 import AzureDevOpsApiWrapper from '../../src/wrappers/azureDevOpsApiWrapper'
-import AzureReposInvoker from '../../src/azureRepos/azureReposInvoker'
+import AzureReposInvoker from '../../src/repos/azureReposInvoker'
 import Logger from '../../src/utilities/logger'
-import PullRequestDetails from '../../src/azureRepos/pullRequestDetails'
-import PullRequestMetadata from '../../src/azureRepos/pullRequestMetadata'
+import PullRequestDetails from '../../src/repos/pullRequestDetails'
 
 describe('azureReposInvoker.ts', function (): void {
   let gitApi: IGitApi
@@ -47,6 +45,20 @@ describe('azureReposInvoker.ts', function (): void {
     delete process.env.BUILD_REPOSITORY_ID
     delete process.env.SYSTEM_PULLREQUEST_PULLREQUESTID
     delete process.env.SYSTEM_ACCESSTOKEN
+  })
+
+  describe('isCommentsFunctionalityAvailable', (): void => {
+    it('should return true', (): void => {
+      // Arrange
+      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger))
+
+      // Act
+      const result: boolean = azureReposInvoker.isCommentsFunctionalityAvailable
+
+      // Assert
+      expect(result).to.equal(true)
+      verify(logger.logDebug('* AzureReposInvoker.isCommentsFunctionalityAvailable')).once()
+    })
   })
 
   describe('isAccessTokenAvailable', (): void => {
@@ -325,126 +337,21 @@ describe('azureReposInvoker.ts', function (): void {
     })
   })
 
-  describe('getCurrentIteration()', (): void => {
-    it('should return the iteration when one exists', async (): Promise<void> => {
-      // Act
-      when(gitApi.getPullRequestIterations('RepoID', 10, 'Project')).thenResolve([{ id: 1 }])
-      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger))
-
-      // Act
-      const result: number = await azureReposInvoker.getCurrentIteration()
-
-      // Assert
-      expect(result).to.equal(1)
-      verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
-      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
-      verify(gitApi.getPullRequestIterations('RepoID', 10, 'Project')).once()
-      verify(logger.logDebug('* AzureReposInvoker.getCurrentIteration()')).once()
-      verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
-      verify(logger.logDebug('[{"id":1}]')).once()
-    })
-
-    it('should return the iteration when one exists and called multiple times', async (): Promise<void> => {
-      // Arrange
-      when(gitApi.getPullRequestIterations('RepoID', 10, 'Project')).thenResolve([{ id: 1 }])
-      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger))
-
-      // Act
-      await azureReposInvoker.getCurrentIteration()
-      const result: number = await azureReposInvoker.getCurrentIteration()
-
-      // Assert
-      expect(result).to.equal(1)
-      verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
-      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
-      verify(gitApi.getPullRequestIterations('RepoID', 10, 'Project')).twice()
-      verify(logger.logDebug('* AzureReposInvoker.getCurrentIteration()')).twice()
-      verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).twice()
-      verify(logger.logDebug('[{"id":1}]')).twice()
-    })
-
-    it('should return the last iteration when multiple exist', async (): Promise<void> => {
-      // Act
-      when(gitApi.getPullRequestIterations('RepoID', 10, 'Project')).thenResolve([{ id: 1 }, { id: 2 }])
-      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger))
-
-      // Act
-      const result: number = await azureReposInvoker.getCurrentIteration()
-
-      // Assert
-      expect(result).to.equal(2)
-      verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
-      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
-      verify(gitApi.getPullRequestIterations('RepoID', 10, 'Project')).once()
-      verify(logger.logDebug('* AzureReposInvoker.getCurrentIteration()')).once()
-      verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
-      verify(logger.logDebug('[{"id":1},{"id":2}]')).once()
-    })
-
-    it('should throw when there are no iterations', async (): Promise<void> => {
-      // Arrange
-      when(gitApi.getPullRequestIterations('RepoID', 10, 'Project')).thenResolve([])
-      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger))
-      let errorThrown: boolean = false
-
-      try {
-        // Act
-        await azureReposInvoker.getCurrentIteration()
-      } catch (error) {
-        // Assert
-        errorThrown = true
-        expect(error.message).to.equal('The collection of pull request iterations was of length zero.')
-      }
-
-      expect(errorThrown).to.equal(true)
-      verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
-      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
-      verify(gitApi.getPullRequestIterations('RepoID', 10, 'Project')).once()
-      verify(logger.logDebug('* AzureReposInvoker.getCurrentIteration()')).once()
-      verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
-      verify(logger.logDebug('[]')).once()
-    })
-
-    it('should throw when the iteration is unavailable', async (): Promise<void> => {
-      // Arrange
-      when(gitApi.getPullRequestIterations('RepoID', 10, 'Project')).thenResolve([{}])
-      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger))
-      let errorThrown: boolean = false
-
-      try {
-        // Act
-        await azureReposInvoker.getCurrentIteration()
-      } catch (error) {
-        // Assert
-        errorThrown = true
-        expect(error.message).to.equal('\'id\', accessed within \'AzureReposInvoker.getCurrentIteration()\', is invalid, null, or undefined \'undefined\'.')
-      }
-
-      expect(errorThrown).to.equal(true)
-      verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
-      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
-      verify(gitApi.getPullRequestIterations('RepoID', 10, 'Project')).once()
-      verify(logger.logDebug('* AzureReposInvoker.getCurrentIteration()')).once()
-      verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
-      verify(logger.logDebug('[{}]')).once()
-    })
-  })
-
-  describe('getCommentThreads()', (): void => {
+  describe('getComments()', (): void => {
     it('should return the API result', async (): Promise<void> => {
       // Arrange
       when(gitApi.getThreads('RepoID', 10, 'Project')).thenResolve([{ id: 1 }])
       const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger))
 
       // Act
-      const result: GitPullRequestCommentThread[] = await azureReposInvoker.getCommentThreads()
+      const result: GitPullRequestCommentThread[] = await azureReposInvoker.getComments()
 
       // Assert
       expect(result).to.deep.equal([{ id: 1 }])
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
       verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
       verify(gitApi.getThreads('RepoID', 10, 'Project')).once()
-      verify(logger.logDebug('* AzureReposInvoker.getCommentThreads()')).once()
+      verify(logger.logDebug('* AzureReposInvoker.getComments()')).once()
       verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
       verify(logger.logDebug('[{"id":1}]')).once()
     })
@@ -455,15 +362,15 @@ describe('azureReposInvoker.ts', function (): void {
       const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger))
 
       // Act
-      await azureReposInvoker.getCommentThreads()
-      const result: GitPullRequestCommentThread[] = await azureReposInvoker.getCommentThreads()
+      await azureReposInvoker.getComments()
+      const result: GitPullRequestCommentThread[] = await azureReposInvoker.getComments()
 
       // Assert
       expect(result).to.deep.equal([{ id: 1 }])
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
       verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
       verify(gitApi.getThreads('RepoID', 10, 'Project')).twice()
-      verify(logger.logDebug('* AzureReposInvoker.getCommentThreads()')).twice()
+      verify(logger.logDebug('* AzureReposInvoker.getComments()')).twice()
       verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).twice()
       verify(logger.logDebug('[{"id":1}]')).twice()
     })
@@ -570,97 +477,52 @@ describe('azureReposInvoker.ts', function (): void {
   })
 
   describe('createComment()', (): void => {
-    it('should call the API', async (): Promise<void> => {
-      // Arrange
-      const expectedComment: Comment = {
-        content: 'Comment Content',
-        parentCommentId: 30
-      }
-      when(gitApi.createComment(deepEqual(expectedComment), 'RepoID', 10, 20, 'Project')).thenResolve({})
-      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger))
-
-      // Act
-      await azureReposInvoker.createComment('Comment Content', 20, 30)
-
-      // Assert
-      verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
-      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
-      verify(gitApi.createComment(deepEqual(expectedComment), 'RepoID', 10, 20, 'Project')).once()
-      verify(logger.logDebug('* AzureReposInvoker.createComment()')).once()
-      verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
-      verify(logger.logDebug('{}')).once()
-    })
-
-    it('should call the API when called multiple times', async (): Promise<void> => {
-      // Arrange
-      const expectedComment: Comment = {
-        content: 'Comment Content',
-        parentCommentId: 30
-      }
-      when(gitApi.createComment(deepEqual(expectedComment), 'RepoID', 10, 20, 'Project')).thenResolve({})
-      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger))
-
-      // Act
-      await azureReposInvoker.createComment('Comment Content', 20, 30)
-      await azureReposInvoker.createComment('Comment Content', 20, 30)
-
-      // Assert
-      verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
-      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
-      verify(gitApi.createComment(deepEqual(expectedComment), 'RepoID', 10, 20, 'Project')).twice()
-      verify(logger.logDebug('* AzureReposInvoker.createComment()')).twice()
-      verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).twice()
-      verify(logger.logDebug('{}')).twice()
-    })
-  })
-
-  describe('createCommentThread()', (): void => {
     it('should call the API for no file', async (): Promise<void> => {
       // Arrange
-      const expectedCommentThread: GitPullRequestCommentThread = {
+      const expectedComment: GitPullRequestCommentThread = {
         comments: [{ content: 'Comment Content' }],
         status: CommentThreadStatus.Active
       }
-      when(gitApi.createThread(deepEqual(expectedCommentThread), 'RepoID', 10, 'Project')).thenResolve({})
+      when(gitApi.createThread(deepEqual(expectedComment), 'RepoID', 10, 'Project')).thenResolve({})
       const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger))
 
       // Act
-      await azureReposInvoker.createCommentThread('Comment Content', CommentThreadStatus.Active)
+      await azureReposInvoker.createComment('Comment Content', CommentThreadStatus.Active)
 
       // Assert
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
       verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
-      verify(gitApi.createThread(deepEqual(expectedCommentThread), 'RepoID', 10, 'Project')).once()
-      verify(logger.logDebug('* AzureReposInvoker.createCommentThread()')).once()
+      verify(gitApi.createThread(deepEqual(expectedComment), 'RepoID', 10, 'Project')).once()
+      verify(logger.logDebug('* AzureReposInvoker.createComment()')).once()
       verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
       verify(logger.logDebug('{}')).once()
     })
 
     it('should call the API for no file when called multiple times', async (): Promise<void> => {
       // Arrange
-      const expectedCommentThread: GitPullRequestCommentThread = {
+      const expectedComment: GitPullRequestCommentThread = {
         comments: [{ content: 'Comment Content' }],
         status: CommentThreadStatus.Active
       }
-      when(gitApi.createThread(deepEqual(expectedCommentThread), 'RepoID', 10, 'Project')).thenResolve({})
+      when(gitApi.createThread(deepEqual(expectedComment), 'RepoID', 10, 'Project')).thenResolve({})
       const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger))
 
       // Act
-      await azureReposInvoker.createCommentThread('Comment Content', CommentThreadStatus.Active)
-      await azureReposInvoker.createCommentThread('Comment Content', CommentThreadStatus.Active)
+      await azureReposInvoker.createComment('Comment Content', CommentThreadStatus.Active)
+      await azureReposInvoker.createComment('Comment Content', CommentThreadStatus.Active)
 
       // Assert
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
       verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
-      verify(gitApi.createThread(deepEqual(expectedCommentThread), 'RepoID', 10, 'Project')).twice()
-      verify(logger.logDebug('* AzureReposInvoker.createCommentThread()')).twice()
+      verify(gitApi.createThread(deepEqual(expectedComment), 'RepoID', 10, 'Project')).twice()
+      verify(logger.logDebug('* AzureReposInvoker.createComment()')).twice()
       verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).twice()
       verify(logger.logDebug('{}')).twice()
     })
 
     it('should call the API for a file', async (): Promise<void> => {
       // Arrange
-      const expectedCommentThread: GitPullRequestCommentThread = {
+      const expectedComment: GitPullRequestCommentThread = {
         comments: [{ content: 'Comment Content' }],
         status: CommentThreadStatus.Active,
         threadContext: {
@@ -675,24 +537,24 @@ describe('azureReposInvoker.ts', function (): void {
           }
         }
       }
-      when(gitApi.createThread(deepEqual(expectedCommentThread), 'RepoID', 10, 'Project')).thenResolve({})
+      when(gitApi.createThread(deepEqual(expectedComment), 'RepoID', 10, 'Project')).thenResolve({})
       const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger))
 
       // Act
-      await azureReposInvoker.createCommentThread('Comment Content', CommentThreadStatus.Active, 'file.ts')
+      await azureReposInvoker.createComment('Comment Content', CommentThreadStatus.Active, 'file.ts')
 
       // Assert
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
       verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
-      verify(gitApi.createThread(deepEqual(expectedCommentThread), 'RepoID', 10, 'Project')).once()
-      verify(logger.logDebug('* AzureReposInvoker.createCommentThread()')).once()
+      verify(gitApi.createThread(deepEqual(expectedComment), 'RepoID', 10, 'Project')).once()
+      verify(logger.logDebug('* AzureReposInvoker.createComment()')).once()
       verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
       verify(logger.logDebug('{}')).once()
     })
 
     it('should call the API for a deleted file', async (): Promise<void> => {
       // Arrange
-      const expectedCommentThread: GitPullRequestCommentThread = {
+      const expectedComment: GitPullRequestCommentThread = {
         comments: [{ content: 'Comment Content' }],
         status: CommentThreadStatus.Active,
         threadContext: {
@@ -707,25 +569,29 @@ describe('azureReposInvoker.ts', function (): void {
           }
         }
       }
-      when(gitApi.createThread(deepEqual(expectedCommentThread), 'RepoID', 10, 'Project')).thenResolve({})
+      when(gitApi.createThread(deepEqual(expectedComment), 'RepoID', 10, 'Project')).thenResolve({})
       const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger))
 
       // Act
-      await azureReposInvoker.createCommentThread('Comment Content', CommentThreadStatus.Active, 'file.ts', true)
+      await azureReposInvoker.createComment('Comment Content', CommentThreadStatus.Active, 'file.ts', true)
 
       // Assert
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
       verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
-      verify(gitApi.createThread(deepEqual(expectedCommentThread), 'RepoID', 10, 'Project')).once()
-      verify(logger.logDebug('* AzureReposInvoker.createCommentThread()')).once()
+      verify(gitApi.createThread(deepEqual(expectedComment), 'RepoID', 10, 'Project')).once()
+      verify(logger.logDebug('* AzureReposInvoker.createComment()')).once()
       verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
       verify(logger.logDebug('{}')).once()
     })
   })
 
-  describe('setCommentThreadStatus()', (): void => {
-    it('should call the API', async (): Promise<void> => {
+  describe('updateComment()', (): void => {
+    it('should call the APIs when both the comment content and the thread status are updated', async (): Promise<void> => {
       // Arrange
+      const expectedComment: Comment = {
+        content: 'Content'
+      }
+      when(gitApi.updateComment(deepEqual(expectedComment), 'RepoID', 10, 20, 1, 'Project')).thenResolve({})
       const expectedCommentThread: GitPullRequestCommentThread = {
         status: CommentThreadStatus.Active
       }
@@ -733,134 +599,129 @@ describe('azureReposInvoker.ts', function (): void {
       const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger))
 
       // Act
-      await azureReposInvoker.setCommentThreadStatus(20, CommentThreadStatus.Active)
+      await azureReposInvoker.updateComment('Content', CommentThreadStatus.Active, 20)
 
       // Assert
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
       verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
+      verify(gitApi.updateComment(deepEqual(expectedComment), 'RepoID', 10, 20, 1, 'Project')).once()
       verify(gitApi.updateThread(deepEqual(expectedCommentThread), 'RepoID', 10, 20, 'Project')).once()
-      verify(logger.logDebug('* AzureReposInvoker.setCommentThreadStatus()')).once()
+      verify(logger.logDebug('* AzureReposInvoker.updateComment()')).once()
       verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
-      verify(logger.logDebug('{}')).once()
+      verify(logger.logDebug('{}')).twice()
     })
 
-    it('should call the API when called multiple times', async (): Promise<void> => {
+    it('should call the API when the comment content is updated', async (): Promise<void> => {
       // Arrange
-      const expectedCommentThread: GitPullRequestCommentThread = {
-        status: CommentThreadStatus.Active
+      const expectedComment: Comment = {
+        content: 'Content'
       }
-      when(gitApi.updateThread(deepEqual(expectedCommentThread), 'RepoID', 10, 20, 'Project')).thenResolve({})
+      when(gitApi.updateComment(deepEqual(expectedComment), 'RepoID', 10, 20, 1, 'Project')).thenResolve({})
       const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger))
 
       // Act
-      await azureReposInvoker.setCommentThreadStatus(20, CommentThreadStatus.Active)
-      await azureReposInvoker.setCommentThreadStatus(20, CommentThreadStatus.Active)
+      await azureReposInvoker.updateComment('Content', null, 20)
 
       // Assert
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
       verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
-      verify(gitApi.updateThread(deepEqual(expectedCommentThread), 'RepoID', 10, 20, 'Project')).twice()
-      verify(logger.logDebug('* AzureReposInvoker.setCommentThreadStatus()')).twice()
+      verify(gitApi.updateComment(deepEqual(expectedComment), 'RepoID', 10, 20, 1, 'Project')).once()
+      verify(logger.logDebug('* AzureReposInvoker.updateComment()')).once()
+      verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
+      verify(logger.logDebug('{}')).once()
+    })
+
+    it('should call the API when the thread status is updated', async (): Promise<void> => {
+      // Arrange
+      const expectedComment: GitPullRequestCommentThread = {
+        status: CommentThreadStatus.Active
+      }
+      when(gitApi.updateThread(deepEqual(expectedComment), 'RepoID', 10, 20, 'Project')).thenResolve({})
+      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger))
+
+      // Act
+      await azureReposInvoker.updateComment(null, CommentThreadStatus.Active, 20)
+
+      // Assert
+      verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
+      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
+      verify(gitApi.updateThread(deepEqual(expectedComment), 'RepoID', 10, 20, 'Project')).once()
+      verify(logger.logDebug('* AzureReposInvoker.updateComment()')).once()
+      verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
+      verify(logger.logDebug('{}')).once()
+    })
+
+    it('should call no APIs when neither the comment content nor the thread status are updated', async (): Promise<void> => {
+      // Arrange
+      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger))
+
+      // Act
+      await azureReposInvoker.updateComment(null, null, 20)
+
+      // Assert
+      verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).never()
+      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).never()
+      verify(gitApi.updateComment(anything(), 'RepoID', 10, 20, 1, 'Project')).never()
+      verify(gitApi.updateThread(anything(), 'RepoID', 10, 20, 'Project')).never()
+      verify(logger.logDebug('* AzureReposInvoker.updateComment()')).once()
+      verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).never()
+    })
+
+    it('should call the API when called multiple times', async (): Promise<void> => {
+      // Arrange
+      const expectedComment: Comment = {
+        content: 'Content'
+      }
+      when(gitApi.updateComment(deepEqual(expectedComment), 'RepoID', 10, 20, 1, 'Project')).thenResolve({})
+      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger))
+
+      // Act
+      await azureReposInvoker.updateComment('Content', null, 20)
+      await azureReposInvoker.updateComment('Content', null, 20)
+
+      // Assert
+      verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
+      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
+      verify(gitApi.updateComment(deepEqual(expectedComment), 'RepoID', 10, 20, 1, 'Project')).twice()
+      verify(logger.logDebug('* AzureReposInvoker.updateComment()')).twice()
       verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).twice()
       verify(logger.logDebug('{}')).twice()
     })
   })
 
-  describe('addMetadata()', (): void => {
-    it('should call the API', async (): Promise<void> => {
+  describe('deleteCommentThread()', (): void => {
+    it('should call the API for a single comment', async (): Promise<void> => {
       // Arrange
-      const metadata: PullRequestMetadata[] = [
-        {
-          key: 'TestString',
-          value: 'Test'
-        },
-        {
-          key: 'TestNumber',
-          value: 20
-        },
-        {
-          key: 'TestBoolean',
-          value: true
-        }
-      ]
-      const expected: JsonPatchDocument = [
-        {
-          op: Operation.Replace,
-          path: '/PRMetrics.TestString',
-          value: 'Test'
-        },
-        {
-          op: Operation.Replace,
-          path: '/PRMetrics.TestNumber',
-          value: '20'
-        },
-        {
-          op: Operation.Replace,
-          path: '/PRMetrics.TestBoolean',
-          value: 'true'
-        }
-      ]
-      when(gitApi.updatePullRequestProperties(null, deepEqual(expected), 'RepoID', 10, 'Project')).thenResolve({})
+      when(gitApi.deleteComment('RepoID', 10, 20, 1, 'Project')).thenResolve()
       const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger))
 
       // Act
-      await azureReposInvoker.addMetadata(metadata)
+      await azureReposInvoker.deleteCommentThread(20)
 
       // Assert
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
       verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
-      verify(gitApi.updatePullRequestProperties(null, deepEqual(expected), 'RepoID', 10, 'Project')).once()
-      verify(logger.logDebug('* AzureReposInvoker.addMetadata()')).once()
+      verify(gitApi.deleteComment('RepoID', 10, 20, 1, 'Project')).once()
+      verify(logger.logDebug('* AzureReposInvoker.deleteCommentThread()')).once()
       verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
-      verify(logger.logDebug('{}')).once()
     })
 
     it('should call the API when called multiple times', async (): Promise<void> => {
       // Arrange
-      const metadata: PullRequestMetadata[] = [
-        {
-          key: 'TestString',
-          value: 'Test'
-        }
-      ]
-      const expected: JsonPatchDocument = [
-        {
-          op: Operation.Replace,
-          path: '/PRMetrics.TestString',
-          value: 'Test'
-        }
-      ]
-      when(gitApi.updatePullRequestProperties(null, deepEqual(expected), 'RepoID', 10, 'Project')).thenResolve({})
+      when(gitApi.deleteComment('RepoID', 10, anyNumber(), 1, 'Project')).thenResolve()
       const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger))
 
       // Act
-      await azureReposInvoker.addMetadata(metadata)
-      await azureReposInvoker.addMetadata(metadata)
+      await azureReposInvoker.deleteCommentThread(20)
+      await azureReposInvoker.deleteCommentThread(30)
 
       // Assert
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
       verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
-      verify(gitApi.updatePullRequestProperties(null, deepEqual(expected), 'RepoID', 10, 'Project')).twice()
-      verify(logger.logDebug('* AzureReposInvoker.addMetadata()')).twice()
+      verify(gitApi.deleteComment('RepoID', 10, 20, 1, 'Project')).once()
+      verify(gitApi.deleteComment('RepoID', 10, 30, 1, 'Project')).once()
+      verify(logger.logDebug('* AzureReposInvoker.deleteCommentThread()')).twice()
       verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).twice()
-      verify(logger.logDebug('{}')).twice()
-    })
-
-    it('should throw when the metadata array is empty', async (): Promise<void> => {
-      // Arrange
-      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger))
-      let errorThrown: boolean = false
-
-      try {
-        // Act
-        await azureReposInvoker.addMetadata([])
-      } catch (error) {
-        // Assert
-        errorThrown = true
-        expect(error.message).to.equal('The collection of metadata was of length zero.')
-      }
-
-      expect(errorThrown).to.equal(true)
     })
   })
 })

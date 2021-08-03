@@ -1,0 +1,26 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+
+trigger:
+  - main
+
+pr:
+  - main
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  - name: System.Debug
+    value: true
+
+stages:
+  - stage: PRMetrics
+    displayName: PR Metrics
+    jobs:
+      - job: PRMetrics
+        displayName: PR Metrics
+        steps:
+          - task: PRMetrics@1
+            displayName: PR Metrics
+

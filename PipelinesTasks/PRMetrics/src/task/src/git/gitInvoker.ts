@@ -38,8 +38,12 @@ export default class GitInvoker {
   public async isGitEnlistment (): Promise<boolean> {
     this._logger.logDebug('* GitInvoker.isGitEnlistment()')
 
-    const result: string = await this.invokeGit('rev-parse --is-inside-work-tree')
-    return result.startsWith('true')
+    try {
+      await this.invokeGit('rev-parse --is-inside-work-tree')
+      return true
+    } catch {
+      return false
+    }
   }
 
   /**
@@ -50,9 +54,13 @@ export default class GitInvoker {
     this._logger.logDebug('* GitInvoker.isGitHistoryAvailable()')
 
     this.initialize()
-    const result: string = await this.invokeGit(`rev-parse --branch origin/${this._targetBranch}...pull/${this._pullRequestId}/merge`)
 
-    return !result.startsWith(`fatal: ambiguous argument 'origin/${this._targetBranch}...pull/${this._pullRequestId}/merge': unknown revision or path not in the working tree.`)
+    try {
+      await this.invokeGit(`rev-parse --branch origin/${this._targetBranch}...pull/${this._pullRequestId}/merge`)
+      return true
+    } catch {
+      return false
+    }
   }
 
   /**
@@ -81,20 +89,25 @@ export default class GitInvoker {
   private getTargetBranch (): string {
     this._logger.logDebug('* GitInvoker.getTargetBranch()')
 
-    const variable: string = Validator.validate(process.env.SYSTEM_PULLREQUEST_TARGETBRANCH, 'SYSTEM_PULLREQUEST_TARGETBRANCH', 'GitInvoker.getTargetBranch()')
+    const variable: string = Validator.validateVariable('SYSTEM_PULLREQUEST_TARGETBRANCH', 'GitInvoker.getTargetBranch()')
     const expectedStart: string = 'refs/heads/'
-    if (!variable.startsWith(expectedStart)) {
-      throw Error(`Environment variable SYSTEM_PULLREQUEST_TARGETBRANCH '${variable}' in unexpected format.`)
+    if (variable.startsWith(expectedStart)) {
+      const startIndex: number = expectedStart.length
+      return variable.substring(startIndex)
+    } else {
+      return variable
     }
-
-    const startIndex: number = expectedStart.length
-    return variable.substring(startIndex)
   }
 
   private getPullRequestId (): string {
     this._logger.logDebug('* GitInvoker.getPullRequestId()')
 
-    return Validator.validate(process.env.SYSTEM_PULLREQUEST_PULLREQUESTID, 'SYSTEM_PULLREQUEST_PULLREQUESTID', 'GitInvoker.getPullRequestId()')
+    const variable: string = Validator.validateVariable('BUILD_REPOSITORY_PROVIDER', 'GitInvoker.getPullRequestId()')
+    if (variable === 'GitHub' || variable === 'GitHubEnterprise') {
+      return Validator.validateVariable('SYSTEM_PULLREQUEST_PULLREQUESTNUMBER', 'GitInvoker.getPullRequestId()')
+    } else {
+      return Validator.validateVariable('SYSTEM_PULLREQUEST_PULLREQUESTID', 'GitInvoker.getPullRequestId()')
+    }
   }
 
   private async invokeGit (parameters: string): Promise<string> {

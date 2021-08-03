@@ -30,7 +30,7 @@ export default class Logger {
    * @param message The message to log.
    */
   public logDebug (message: string): void {
-    this._messages.push(`debug – ${message}`)
+    this._messages.push(`debug   – ${message}`)
     this._taskLibWrapper.debug(message)
   }
 
@@ -39,8 +39,26 @@ export default class Logger {
    * @param message The message to log.
    */
   public logInfo (message: string): void {
-    this._messages.push(`info  – ${message}`)
+    this._messages.push(`info    – ${message}`)
     this._consoleWrapper.log(message)
+  }
+
+  /**
+   * Logs a warning message.
+   * @param message The message to log.
+   */
+  public logWarning (message: string): void {
+    this._messages.push(`warning – ${message}`)
+    this._taskLibWrapper.warning(message)
+  }
+
+  /**
+   * Logs an error message.
+   * @param message The message to log.
+   */
+  public logError (message: string): void {
+    this._messages.push(`error   – ${message}`)
+    this._taskLibWrapper.error(message)
   }
 
   /**

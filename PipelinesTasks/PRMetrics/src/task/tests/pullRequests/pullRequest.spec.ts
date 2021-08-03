@@ -89,23 +89,30 @@ describe('pullRequest.ts', (): void => {
       verify(logger.logDebug('* PullRequest.isSupportedProvider')).once()
     })
 
-    it('should return true when BUILD_REPOSITORY_PROVIDER is set to TfsGit', (): void => {
-      // Arrange
-      process.env.BUILD_REPOSITORY_PROVIDER = 'TfsGit'
-      const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(taskLibWrapper))
+    async.each(
+      [
+        'TfsGit',
+        'GitHub',
+        'GitHubEnterprise'
+      ], (provider: string): void => {
+        it(`should return true when BUILD_REPOSITORY_PROVIDER is set to '${provider}'`, (): void => {
+        // Arrange
+          process.env.BUILD_REPOSITORY_PROVIDER = provider
+          const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(taskLibWrapper))
 
-      // Act
-      const result: boolean | string = pullRequest.isSupportedProvider
+          // Act
+          const result: boolean | string = pullRequest.isSupportedProvider
 
-      // Assert
-      expect(result).to.equal(true)
-      verify(logger.logDebug('* PullRequest.isSupportedProvider')).once()
+          // Assert
+          expect(result).to.equal(true)
+          verify(logger.logDebug('* PullRequest.isSupportedProvider')).once()
 
-      // Finalization
-      delete process.env.BUILD_REPOSITORY_PROVIDER
-    })
+          // Finalization
+          delete process.env.BUILD_REPOSITORY_PROVIDER
+        })
+      })
 
-    it('should return the provider when BUILD_REPOSITORY_PROVIDER is not set to TfsGit', (): void => {
+    it('should return the provider when BUILD_REPOSITORY_PROVIDER is not set to TfsGit or GitHub', (): void => {
       // Arrange
       process.env.BUILD_REPOSITORY_PROVIDER = 'Other'
       const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(taskLibWrapper))

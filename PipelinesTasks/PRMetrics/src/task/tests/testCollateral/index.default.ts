@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import * as os from 'os'
 import * as path from 'path'
 import * as taskLibMockAnswer from 'azure-pipelines-task-lib/mock-answer'
 import * as taskLibMockRun from 'azure-pipelines-task-lib/mock-run'
@@ -24,7 +23,7 @@ const mockAnswers: taskLibMockAnswer.TaskLibAnswers = {
     },
     '/git/git diff --numstat origin/develop...pull/12345/merge': {
       code: 0,
-      stdout: `1\t2\tfile.ts${os.EOL}`
+      stdout: '1\t2\tfile.ts'
     }
   },
   which: {
