@@ -10,6 +10,7 @@ import GitHubReposInvoker from '../../src/repos/gitHubReposInvoker'
 import Logger from '../../src/utilities/logger'
 import PullRequestDetails from '../../src/repos/pullRequestDetails'
 import ReposInvoker from '../../src/repos/reposInvoker'
+import async from 'async'
 
 describe('reposInvoker.ts', function (): void {
   let azureReposInvoker: AzureReposInvoker
@@ -43,24 +44,30 @@ describe('reposInvoker.ts', function (): void {
       delete process.env.BUILD_REPOSITORY_PROVIDER
     })
 
-    it('should invoke GitHub when called from an appropriate repo', (): void => {
-      // Arrange
-      process.env.BUILD_REPOSITORY_PROVIDER = 'GitHub'
-      const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
+    async.each(
+      [
+        'GitHub',
+        'GitHubEnterprise'
+      ], (buildRepositoryProvider: string): void => {
+        it(`should invoke GitHub when called from a repo on '${buildRepositoryProvider}'`, (): void => {
+          // Arrange
+          process.env.BUILD_REPOSITORY_PROVIDER = buildRepositoryProvider
+          const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
 
-      // Act
-      const result: boolean = reposInvoker.isCommentsFunctionalityAvailable
+          // Act
+          const result: boolean = reposInvoker.isCommentsFunctionalityAvailable
 
-      // Assert
-      verify(azureReposInvoker.isCommentsFunctionalityAvailable).never()
-      verify(gitHubReposInvoker.isCommentsFunctionalityAvailable).once()
-      verify(logger.logDebug('* ReposInvoker.isCommentsFunctionalityAvailable')).once()
-      verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
-      expect(result).to.equal(null)
+          // Assert
+          verify(azureReposInvoker.isCommentsFunctionalityAvailable).never()
+          verify(gitHubReposInvoker.isCommentsFunctionalityAvailable).once()
+          verify(logger.logDebug('* ReposInvoker.isCommentsFunctionalityAvailable')).once()
+          verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
+          expect(result).to.equal(null)
 
-      // Finalization
-      delete process.env.BUILD_REPOSITORY_PROVIDER
-    })
+          // Finalization
+          delete process.env.BUILD_REPOSITORY_PROVIDER
+        })
+      })
 
     it('should throw when the repo type is not set', (): void => {
       // Arrange
@@ -118,24 +125,30 @@ describe('reposInvoker.ts', function (): void {
       delete process.env.BUILD_REPOSITORY_PROVIDER
     })
 
-    it('should invoke GitHub when called from an appropriate repo', (): void => {
-      // Arrange
-      process.env.BUILD_REPOSITORY_PROVIDER = 'GitHub'
-      const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
+    async.each(
+      [
+        'GitHub',
+        'GitHubEnterprise'
+      ], (buildRepositoryProvider: string): void => {
+        it(`should invoke GitHub when called from a repo on '${buildRepositoryProvider}'`, (): void => {
+          // Arrange
+          process.env.BUILD_REPOSITORY_PROVIDER = buildRepositoryProvider
+          const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
 
-      // Act
-      const result: boolean = reposInvoker.isAccessTokenAvailable
+          // Act
+          const result: boolean = reposInvoker.isAccessTokenAvailable
 
-      // Assert
-      verify(azureReposInvoker.isAccessTokenAvailable).never()
-      verify(gitHubReposInvoker.isAccessTokenAvailable).once()
-      verify(logger.logDebug('* ReposInvoker.isAccessTokenAvailable')).once()
-      verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
-      expect(result).to.equal(null)
+          // Assert
+          verify(azureReposInvoker.isAccessTokenAvailable).never()
+          verify(gitHubReposInvoker.isAccessTokenAvailable).once()
+          verify(logger.logDebug('* ReposInvoker.isAccessTokenAvailable')).once()
+          verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
+          expect(result).to.equal(null)
 
-      // Finalization
-      delete process.env.BUILD_REPOSITORY_PROVIDER
-    })
+          // Finalization
+          delete process.env.BUILD_REPOSITORY_PROVIDER
+        })
+      })
 
     it('should throw when the repo type is not set', (): void => {
       // Arrange
@@ -193,24 +206,30 @@ describe('reposInvoker.ts', function (): void {
       delete process.env.BUILD_REPOSITORY_PROVIDER
     })
 
-    it('should invoke GitHub when called from an appropriate repo', async (): Promise<void> => {
-      // Arrange
-      process.env.BUILD_REPOSITORY_PROVIDER = 'GitHub'
-      const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
+    async.each(
+      [
+        'GitHub',
+        'GitHubEnterprise'
+      ], (buildRepositoryProvider: string): void => {
+        it(`should invoke GitHub when called from a repo on '${buildRepositoryProvider}'`, async (): Promise<void> => {
+          // Arrange
+          process.env.BUILD_REPOSITORY_PROVIDER = buildRepositoryProvider
+          const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
 
-      // Act
-      const result: PullRequestDetails = await reposInvoker.getTitleAndDescription()
+          // Act
+          const result: PullRequestDetails = await reposInvoker.getTitleAndDescription()
 
-      // Assert
-      verify(azureReposInvoker.getTitleAndDescription()).never()
-      verify(gitHubReposInvoker.getTitleAndDescription()).once()
-      verify(logger.logDebug('* ReposInvoker.getTitleAndDescription()')).once()
-      verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
-      expect(result).to.equal(null)
+          // Assert
+          verify(azureReposInvoker.getTitleAndDescription()).never()
+          verify(gitHubReposInvoker.getTitleAndDescription()).once()
+          verify(logger.logDebug('* ReposInvoker.getTitleAndDescription()')).once()
+          verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
+          expect(result).to.equal(null)
 
-      // Finalization
-      delete process.env.BUILD_REPOSITORY_PROVIDER
-    })
+          // Finalization
+          delete process.env.BUILD_REPOSITORY_PROVIDER
+        })
+      })
 
     it('should throw when the repo type is not set', async (): Promise<void> => {
       // Arrange
@@ -280,24 +299,30 @@ describe('reposInvoker.ts', function (): void {
       delete process.env.BUILD_REPOSITORY_PROVIDER
     })
 
-    it('should invoke GitHub when called from an appropriate repo', async (): Promise<void> => {
-      // Arrange
-      process.env.BUILD_REPOSITORY_PROVIDER = 'GitHub'
-      const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
+    async.each(
+      [
+        'GitHub',
+        'GitHubEnterprise'
+      ], (buildRepositoryProvider: string): void => {
+        it(`should invoke GitHub when called from a repo on '${buildRepositoryProvider}'`, async (): Promise<void> => {
+          // Arrange
+          process.env.BUILD_REPOSITORY_PROVIDER = buildRepositoryProvider
+          const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
 
-      // Act
-      const result: GitPullRequestCommentThread[] = await reposInvoker.getComments()
+          // Act
+          const result: GitPullRequestCommentThread[] = await reposInvoker.getComments()
 
-      // Assert
-      verify(azureReposInvoker.getComments()).never()
-      verify(gitHubReposInvoker.getComments()).once()
-      verify(logger.logDebug('* ReposInvoker.getComments()')).once()
-      verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
-      expect(result).to.equal(null)
+          // Assert
+          verify(azureReposInvoker.getComments()).never()
+          verify(gitHubReposInvoker.getComments()).once()
+          verify(logger.logDebug('* ReposInvoker.getComments()')).once()
+          verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
+          expect(result).to.equal(null)
 
-      // Finalization
-      delete process.env.BUILD_REPOSITORY_PROVIDER
-    })
+          // Finalization
+          delete process.env.BUILD_REPOSITORY_PROVIDER
+        })
+      })
 
     it('should throw when the repo type is not set', async (): Promise<void> => {
       // Arrange
@@ -366,23 +391,29 @@ describe('reposInvoker.ts', function (): void {
       delete process.env.BUILD_REPOSITORY_PROVIDER
     })
 
-    it('should invoke GitHub when called from an appropriate repo', async (): Promise<void> => {
-      // Arrange
-      process.env.BUILD_REPOSITORY_PROVIDER = 'GitHub'
-      const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
+    async.each(
+      [
+        'GitHub',
+        'GitHubEnterprise'
+      ], (buildRepositoryProvider: string): void => {
+        it(`should invoke GitHub when called from a repo on '${buildRepositoryProvider}'`, async (): Promise<void> => {
+          // Arrange
+          process.env.BUILD_REPOSITORY_PROVIDER = buildRepositoryProvider
+          const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
 
-      // Act
-      await reposInvoker.setTitleAndDescription(null, null)
+          // Act
+          await reposInvoker.setTitleAndDescription(null, null)
 
-      // Assert
-      verify(azureReposInvoker.setTitleAndDescription(null, null)).never()
-      verify(gitHubReposInvoker.setTitleAndDescription(null, null)).once()
-      verify(logger.logDebug('* ReposInvoker.setTitleAndDescription()')).once()
-      verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
+          // Assert
+          verify(azureReposInvoker.setTitleAndDescription(null, null)).never()
+          verify(gitHubReposInvoker.setTitleAndDescription(null, null)).once()
+          verify(logger.logDebug('* ReposInvoker.setTitleAndDescription()')).once()
+          verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
 
-      // Finalization
-      delete process.env.BUILD_REPOSITORY_PROVIDER
-    })
+          // Finalization
+          delete process.env.BUILD_REPOSITORY_PROVIDER
+        })
+      })
 
     it('should throw when the repo type is not set', async (): Promise<void> => {
       // Arrange
@@ -451,23 +482,29 @@ describe('reposInvoker.ts', function (): void {
       delete process.env.BUILD_REPOSITORY_PROVIDER
     })
 
-    it('should invoke GitHub when called from an appropriate repo', async (): Promise<void> => {
-      // Arrange
-      process.env.BUILD_REPOSITORY_PROVIDER = 'GitHub'
-      const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
+    async.each(
+      [
+        'GitHub',
+        'GitHubEnterprise'
+      ], (buildRepositoryProvider: string): void => {
+        it(`should invoke GitHub when called from a repo on '${buildRepositoryProvider}'`, async (): Promise<void> => {
+          // Arrange
+          process.env.BUILD_REPOSITORY_PROVIDER = buildRepositoryProvider
+          const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
 
-      // Act
-      await reposInvoker.createComment('', CommentThreadStatus.Active, '', false)
+          // Act
+          await reposInvoker.createComment('', CommentThreadStatus.Active, '', false)
 
-      // Assert
-      verify(azureReposInvoker.createComment('', CommentThreadStatus.Active, '', false)).never()
-      verify(gitHubReposInvoker.createComment('', CommentThreadStatus.Active, '', false)).once()
-      verify(logger.logDebug('* ReposInvoker.createComment()')).once()
-      verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
+          // Assert
+          verify(azureReposInvoker.createComment('', CommentThreadStatus.Active, '', false)).never()
+          verify(gitHubReposInvoker.createComment('', CommentThreadStatus.Active, '', false)).once()
+          verify(logger.logDebug('* ReposInvoker.createComment()')).once()
+          verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
 
-      // Finalization
-      delete process.env.BUILD_REPOSITORY_PROVIDER
-    })
+          // Finalization
+          delete process.env.BUILD_REPOSITORY_PROVIDER
+        })
+      })
 
     it('should throw when the repo type is not set', async (): Promise<void> => {
       // Arrange
@@ -536,23 +573,29 @@ describe('reposInvoker.ts', function (): void {
       delete process.env.BUILD_REPOSITORY_PROVIDER
     })
 
-    it('should invoke GitHub when called from an appropriate repo', async (): Promise<void> => {
-      // Arrange
-      process.env.BUILD_REPOSITORY_PROVIDER = 'GitHub'
-      const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
+    async.each(
+      [
+        'GitHub',
+        'GitHubEnterprise'
+      ], (buildRepositoryProvider: string): void => {
+        it(`should invoke GitHub when called from a repo on '${buildRepositoryProvider}'`, async (): Promise<void> => {
+          // Arrange
+          process.env.BUILD_REPOSITORY_PROVIDER = buildRepositoryProvider
+          const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
 
-      // Act
-      await reposInvoker.updateComment(null, null, 0)
+          // Act
+          await reposInvoker.updateComment(null, null, 0)
 
-      // Assert
-      verify(azureReposInvoker.updateComment(null, null, 0)).never()
-      verify(gitHubReposInvoker.updateComment(null, null, 0)).once()
-      verify(logger.logDebug('* ReposInvoker.updateComment()')).once()
-      verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
+          // Assert
+          verify(azureReposInvoker.updateComment(null, null, 0)).never()
+          verify(gitHubReposInvoker.updateComment(null, null, 0)).once()
+          verify(logger.logDebug('* ReposInvoker.updateComment()')).once()
+          verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
 
-      // Finalization
-      delete process.env.BUILD_REPOSITORY_PROVIDER
-    })
+          // Finalization
+          delete process.env.BUILD_REPOSITORY_PROVIDER
+        })
+      })
 
     it('should throw when the repo type is not set', async (): Promise<void> => {
       // Arrange
@@ -621,23 +664,29 @@ describe('reposInvoker.ts', function (): void {
       delete process.env.BUILD_REPOSITORY_PROVIDER
     })
 
-    it('should invoke GitHub when called from an appropriate repo', async (): Promise<void> => {
-      // Arrange
-      process.env.BUILD_REPOSITORY_PROVIDER = 'GitHub'
-      const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
+    async.each(
+      [
+        'GitHub',
+        'GitHubEnterprise'
+      ], (buildRepositoryProvider: string): void => {
+        it(`should invoke GitHub when called from a repo on '${buildRepositoryProvider}'`, async (): Promise<void> => {
+          // Arrange
+          process.env.BUILD_REPOSITORY_PROVIDER = buildRepositoryProvider
+          const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
 
-      // Act
-      await reposInvoker.deleteCommentThread(20)
+          // Act
+          await reposInvoker.deleteCommentThread(20)
 
-      // Assert
-      verify(azureReposInvoker.deleteCommentThread(20)).never()
-      verify(gitHubReposInvoker.deleteCommentThread(20)).once()
-      verify(logger.logDebug('* ReposInvoker.deleteCommentThread()')).once()
-      verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
+          // Assert
+          verify(azureReposInvoker.deleteCommentThread(20)).never()
+          verify(gitHubReposInvoker.deleteCommentThread(20)).once()
+          verify(logger.logDebug('* ReposInvoker.deleteCommentThread()')).once()
+          verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
 
-      // Finalization
-      delete process.env.BUILD_REPOSITORY_PROVIDER
-    })
+          // Finalization
+          delete process.env.BUILD_REPOSITORY_PROVIDER
+        })
+      })
 
     it('should throw when the repo type is not set', async (): Promise<void> => {
       // Arrange

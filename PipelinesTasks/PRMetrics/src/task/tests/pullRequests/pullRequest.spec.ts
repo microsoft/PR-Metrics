@@ -92,7 +92,8 @@ describe('pullRequest.ts', (): void => {
     async.each(
       [
         'TfsGit',
-        'GitHub'
+        'GitHub',
+        'GitHubEnterprise'
       ], (provider: string): void => {
         it(`should return true when BUILD_REPOSITORY_PROVIDER is set to '${provider}'`, (): void => {
         // Arrange

@@ -102,6 +102,7 @@ export default class ReposInvoker implements IReposInvoker {
         this._reposInvoker = this._azureReposInvoker
         break
       case 'GitHub':
+      case 'GitHubEnterprise':
         this._reposInvoker = this._gitHubReposInvoker
         break
       default:

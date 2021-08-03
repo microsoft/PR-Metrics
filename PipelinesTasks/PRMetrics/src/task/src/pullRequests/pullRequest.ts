@@ -46,7 +46,7 @@ export default class PullRequest {
     this._logger.logDebug('* PullRequest.isSupportedProvider')
 
     const variable: string = Validator.validateVariable('BUILD_REPOSITORY_PROVIDER', 'PullRequest.isSupportedProvider')
-    if (variable === 'TfsGit' || variable === 'GitHub') {
+    if (variable === 'TfsGit' || variable === 'GitHub' || variable === 'GitHubEnterprise') {
       return true
     }
 

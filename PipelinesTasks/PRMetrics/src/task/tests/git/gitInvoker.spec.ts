@@ -103,27 +103,33 @@ describe('gitInvoker.ts', (): void => {
       verify(logger.logDebug('* GitInvoker.invokeGit()')).once()
     })
 
-    it('should return true when the Git history is available and the PR is on GitHub', async (): Promise<void> => {
-      // Arrange
-      process.env.BUILD_REPOSITORY_PROVIDER = 'GitHub'
-      process.env.SYSTEM_PULLREQUEST_PULLREQUESTNUMBER = process.env.SYSTEM_PULLREQUEST_PULLREQUESTID
-      delete process.env.SYSTEM_PULLREQUEST_PULLREQUESTID
-      const gitInvoker: GitInvoker = new GitInvoker(instance(logger), instance(taskLibWrapper))
+    async.each(
+      [
+        'GitHub',
+        'GitHubEnterprise'
+      ], (buildRepositoryProvider: string): void => {
+        it(`should return true when the Git history is available and the PR is on '${buildRepositoryProvider}'`, async (): Promise<void> => {
+          // Arrange
+          process.env.BUILD_REPOSITORY_PROVIDER = buildRepositoryProvider
+          process.env.SYSTEM_PULLREQUEST_PULLREQUESTNUMBER = process.env.SYSTEM_PULLREQUEST_PULLREQUESTID
+          delete process.env.SYSTEM_PULLREQUEST_PULLREQUESTID
+          const gitInvoker: GitInvoker = new GitInvoker(instance(logger), instance(taskLibWrapper))
 
-      // Act
-      const result: boolean = await gitInvoker.isGitHistoryAvailable()
+          // Act
+          const result: boolean = await gitInvoker.isGitHistoryAvailable()
 
-      // Assert
-      expect(result).to.equal(true)
-      verify(logger.logDebug('* GitInvoker.isGitHistoryAvailable()')).once()
-      verify(logger.logDebug('* GitInvoker.initialize()')).once()
-      verify(logger.logDebug('* GitInvoker.getTargetBranch()')).once()
-      verify(logger.logDebug('* GitInvoker.getPullRequestId()')).once()
-      verify(logger.logDebug('* GitInvoker.invokeGit()')).once()
+          // Assert
+          expect(result).to.equal(true)
+          verify(logger.logDebug('* GitInvoker.isGitHistoryAvailable()')).once()
+          verify(logger.logDebug('* GitInvoker.initialize()')).once()
+          verify(logger.logDebug('* GitInvoker.getTargetBranch()')).once()
+          verify(logger.logDebug('* GitInvoker.getPullRequestId()')).once()
+          verify(logger.logDebug('* GitInvoker.invokeGit()')).once()
 
-      // Finalization
-      delete process.env.SYSTEM_PULLREQUEST_PULLREQUESTNUMBER
-    })
+          // Finalization
+          delete process.env.SYSTEM_PULLREQUEST_PULLREQUESTNUMBER
+        })
+      })
 
     it('should return false when the Git history is unavailable', async (): Promise<void> => {
       // Arrange
@@ -228,30 +234,36 @@ describe('gitInvoker.ts', (): void => {
       verify(logger.logDebug('* GitInvoker.getPullRequestId()')).once()
     })
 
-    it('should throw an error when the PR is on GitHub and SYSTEM_PULLREQUEST_PULLREQUESTNUMBER is undefined', async (): Promise<void> => {
-      // Arrange
-      process.env.BUILD_REPOSITORY_PROVIDER = 'GitHub'
-      const gitInvoker: GitInvoker = new GitInvoker(instance(logger), instance(taskLibWrapper))
-      let errorThrown: boolean = false
+    async.each(
+      [
+        'GitHub',
+        'GitHubEnterprise'
+      ], (buildRepositoryProvider: string): void => {
+        it(`should throw an error when the PR is on '${buildRepositoryProvider}' and SYSTEM_PULLREQUEST_PULLREQUESTNUMBER is undefined`, async (): Promise<void> => {
+          // Arrange
+          process.env.BUILD_REPOSITORY_PROVIDER = buildRepositoryProvider
+          const gitInvoker: GitInvoker = new GitInvoker(instance(logger), instance(taskLibWrapper))
+          let errorThrown: boolean = false
 
-      try {
-        // Act
-        await gitInvoker.isGitHistoryAvailable()
-      } catch (error) {
-        // Assert
-        errorThrown = true
-        expect(error.message).to.equal('\'SYSTEM_PULLREQUEST_PULLREQUESTNUMBER\', accessed within \'GitInvoker.getPullRequestId()\', is invalid, null, or undefined \'undefined\'.')
-      }
+          try {
+            // Act
+            await gitInvoker.isGitHistoryAvailable()
+          } catch (error) {
+            // Assert
+            errorThrown = true
+            expect(error.message).to.equal('\'SYSTEM_PULLREQUEST_PULLREQUESTNUMBER\', accessed within \'GitInvoker.getPullRequestId()\', is invalid, null, or undefined \'undefined\'.')
+          }
 
-      expect(errorThrown).to.equal(true)
-      verify(logger.logDebug('* GitInvoker.isGitHistoryAvailable()')).once()
-      verify(logger.logDebug('* GitInvoker.initialize()')).once()
-      verify(logger.logDebug('* GitInvoker.getTargetBranch()')).once()
-      verify(logger.logDebug('* GitInvoker.getPullRequestId()')).once()
+          expect(errorThrown).to.equal(true)
+          verify(logger.logDebug('* GitInvoker.isGitHistoryAvailable()')).once()
+          verify(logger.logDebug('* GitInvoker.initialize()')).once()
+          verify(logger.logDebug('* GitInvoker.getTargetBranch()')).once()
+          verify(logger.logDebug('* GitInvoker.getPullRequestId()')).once()
 
-      // Finalization
-      delete process.env.BUILD_REPOSITORY_PROVIDER
-    })
+          // Finalization
+          delete process.env.BUILD_REPOSITORY_PROVIDER
+        })
+      })
   })
 
   describe('getDiffSummary()', (): void => {

@@ -14,7 +14,7 @@ export default interface IReposInvoker {
   isCommentsFunctionalityAvailable: boolean
 
   /**
-   * Gets a value indicating whether the OAuth access token is available to the task.
+   * Gets a value indicating whether the OAuth token can be accessed by the task.
    */
   isAccessTokenAvailable: boolean
 

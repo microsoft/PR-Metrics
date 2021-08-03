@@ -10,9 +10,9 @@ more efficient time management.
 
 ![PR titles prefixed by size and test indicators](images/titles.png)
 
-It also adds detailed metrics as a comment within the PR, highlights missing PR
-descriptions, indicates files that may not need to be reviewed, and adds hidden
-properties that can be accessed programmatically.
+For Azure DevOps, it also adds detailed metrics as a comment within the PR,
+highlights missing PR descriptions, indicates files that may not need to be
+reviewed, and adds hidden properties that can be accessed programmatically.
 
 ![Metrics comment](images/comment.png)
 
