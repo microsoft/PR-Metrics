@@ -129,7 +129,7 @@ export default class GitHubReposInvoker implements IReposInvoker {
 
     const options: OctokitOptions = {
       auth: Validator.validate(this._taskLibWrapper.getVariable('GitHub.PAT'), 'GitHub.PAT', 'GitHubReposInvoker.initialize()'),
-      userAgent: 'PRMetrics/v1.2.0',
+      userAgent: 'PRMetrics/v1.2.1',
       log: {
         debug: (message: string): void => this._logger.logDebug(`Octokit – ${message}`),
         info: (message: string): void => this._logger.logInfo(`Octokit – ${message}`),
@@ -139,9 +139,8 @@ export default class GitHubReposInvoker implements IReposInvoker {
     }
 
     const sourceRepositoryUri: string = Validator.validateVariable('SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI', 'GitHubReposInvoker.initialize()')
-    const expectedEnding: string = '.git'
     const sourceRepositoryUriElements: string[] = sourceRepositoryUri.split('/')
-    if (!sourceRepositoryUri.endsWith(expectedEnding) || sourceRepositoryUriElements.length !== 5) {
+    if (sourceRepositoryUriElements.length !== 5) {
       throw Error(`SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI '${sourceRepositoryUri}' is in an unexpected format.`)
     }
 
@@ -153,7 +152,7 @@ export default class GitHubReposInvoker implements IReposInvoker {
     this._octokitWrapper.initialize(options)
 
     this._owner = sourceRepositoryUriElements[3]
-    this._repo = sourceRepositoryUriElements[4]!.substring(0, sourceRepositoryUriElements[4]!.length - expectedEnding.length)
+    this._repo = sourceRepositoryUriElements[4]
     this._pullRequestId = Validator.validate(parseInt(process.env.SYSTEM_PULLREQUEST_PULLREQUESTNUMBER!), 'SYSTEM_PULLREQUEST_PULLREQUESTNUMBER', 'GitHubReposInvoker.initialize()')
 
     this._isInitialized = true
