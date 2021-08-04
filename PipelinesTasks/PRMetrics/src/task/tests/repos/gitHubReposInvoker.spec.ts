@@ -578,6 +578,33 @@ describe('gitHubReposInvoker.ts', function (): void {
       verify(logger.logDebug(JSON.stringify(mockPullResponse))).once()
     })
 
+    it('should succeed when the inputs are valid and the URL ends with \'.git\'', async (): Promise<void> => {
+      // Arrange
+      process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI = 'https://github.com/microsoft/OMEX-Azure-DevOps-Extensions.git'
+      when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
+        expect(options.auth).to.equal('ghp_000000000000000000000000000000000000')
+        expect(options.userAgent).to.equal('PRMetrics/v1.2.1')
+        expect(options.log).to.not.equal(null)
+        expect(options.log.debug).to.not.equal(null)
+        expect(options.log.info).to.not.equal(null)
+        expect(options.log.warn).to.not.equal(null)
+        expect(options.log.error).to.not.equal(null)
+      })
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
+
+      // Act
+      const result: PullRequestDetails = await gitHubReposInvoker.getTitleAndDescription()
+
+      // Assert
+      expect(result.title).to.equal('Title')
+      expect(result.description).to.equal('Description')
+      verify(octokitWrapper.initialize(anything())).once()
+      verify(octokitWrapper.getPull(deepEqual({ owner: 'microsoft', repo: 'OMEX-Azure-DevOps-Extensions', pull_number: 12345 }))).once()
+      verify(logger.logDebug('* GitHubReposInvoker.getTitleAndDescription()')).once()
+      verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
+      verify(logger.logDebug(JSON.stringify(mockPullResponse))).once()
+    })
+
     it('should succeed when the inputs are valid and GitHub Enterprise is in use', async (): Promise<void> => {
       // Arrange
       process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI = 'https://organization.githubenterprise.com/microsoft/OMEX-Azure-DevOps-Extensions'

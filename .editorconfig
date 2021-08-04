@@ -411,11 +411,14 @@ dotnet_naming_rule.parameters_rule.severity             = warning
 # Project-Specific Settings
 ##########################################
 
-[*.md,LICENSE.txt]
+[*.md]
 indent_size = unset
 
 [*.{copyproj,resjson}]
 indent_size = 2
+
+[LICENSE.txt]
+indent_size = unset
 
 ##########################################
 # License

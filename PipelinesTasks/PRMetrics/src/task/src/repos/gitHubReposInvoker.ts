@@ -152,7 +152,13 @@ export default class GitHubReposInvoker implements IReposInvoker {
     this._octokitWrapper.initialize(options)
 
     this._owner = sourceRepositoryUriElements[3]
+
     this._repo = sourceRepositoryUriElements[4]
+    const gitEnding: string = '.git'
+    if (this._repo!.endsWith(gitEnding)) {
+      this._repo = this._repo!.substring(0, this._repo!.length - gitEnding.length)
+    }
+
     this._pullRequestId = Validator.validate(parseInt(process.env.SYSTEM_PULLREQUEST_PULLREQUESTNUMBER!), 'SYSTEM_PULLREQUEST_PULLREQUESTNUMBER', 'GitHubReposInvoker.initialize()')
 
     this._isInitialized = true
