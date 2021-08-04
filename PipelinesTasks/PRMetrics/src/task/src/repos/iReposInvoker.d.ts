@@ -16,7 +16,7 @@ export default interface IReposInvoker {
   /**
    * Gets a value indicating whether the OAuth token can be accessed by the task.
    */
-  isAccessTokenAvailable: boolean
+  isAccessTokenAvailable: string | null
 
   /**
    * Gets the title and description for the current pull request.

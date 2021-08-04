@@ -68,8 +68,9 @@ export default class CodeMetricsCalculator {
   public async shouldStop (): Promise<string | null> {
     this._logger.logDebug('* CodeMetricsCalculator.shouldStop()')
 
-    if (!this._reposInvoker.isAccessTokenAvailable) {
-      return this._taskLibWrapper.loc('metrics.codeMetricsCalculator.noAccessToken')
+    const accessTokenAvailable: string | null = this._reposInvoker.isAccessTokenAvailable
+    if (accessTokenAvailable !== null) {
+      return accessTokenAvailable
     }
 
     if (!await this._gitInvoker.isGitEnlistment()) {

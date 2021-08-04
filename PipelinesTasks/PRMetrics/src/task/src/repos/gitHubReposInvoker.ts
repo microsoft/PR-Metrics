@@ -47,22 +47,30 @@ export default class GitHubReposInvoker implements IReposInvoker {
     return false
   }
 
-  public get isAccessTokenAvailable (): boolean {
+  public get isAccessTokenAvailable (): string | null {
     this._logger.logDebug('* GitHubReposInvoker.isAccessTokenAvailable')
 
-    return true
+    if (this._taskLibWrapper.getVariable('GitHub.PAT') === undefined) {
+      return this._taskLibWrapper.loc('metrics.codeMetricsCalculator.noGitHubAccessToken')
+    }
+
+    return null
   }
 
   public async getTitleAndDescription (): Promise<PullRequestDetails> {
     this._logger.logDebug('* GitHubReposInvoker.getTitleAndDescription()')
 
     this.initialize()
-    const result: GetPullResponse = await this._octokitWrapper.getPull({
-      owner: this._owner!,
-      repo: this._repo!,
-      pull_number: this._pullRequestId!
+    const result: GetPullResponse = await this.performApiCall(async (): Promise<GetPullResponse> => {
+      const result: GetPullResponse = await this._octokitWrapper.getPull({
+        owner: this._owner!,
+        repo: this._repo!,
+        pull_number: this._pullRequestId!
+      })
+      this._logger.logDebug(JSON.stringify(result))
+
+      return result
     })
-    this._logger.logDebug(JSON.stringify(result))
 
     return {
       title: result.data.title,
@@ -98,8 +106,10 @@ export default class GitHubReposInvoker implements IReposInvoker {
       request.body = description
     }
 
-    const result: UpdatePullResponse = await this._octokitWrapper.updatePull(request)
-    this._logger.logDebug(JSON.stringify(result))
+    await this.performApiCall(async (): Promise<void> => {
+      const result: UpdatePullResponse = await this._octokitWrapper.updatePull(request)
+      this._logger.logDebug(JSON.stringify(result))
+    })
   }
 
   public async createComment (_: string, __: CommentThreadStatus, ___?: string, ____?: boolean): Promise<void> {
@@ -128,7 +138,7 @@ export default class GitHubReposInvoker implements IReposInvoker {
     }
 
     const options: OctokitOptions = {
-      auth: Validator.validate(this._taskLibWrapper.getVariable('GitHub.PAT'), 'GitHub.PAT', 'GitHubReposInvoker.initialize()'),
+      auth: this._taskLibWrapper.getVariable('GitHub.PAT'),
       userAgent: 'PRMetrics/v1.2.1',
       log: {
         debug: (message: string): void => this._logger.logDebug(`Octokit – ${message}`),
@@ -147,6 +157,7 @@ export default class GitHubReposInvoker implements IReposInvoker {
     // Handle GitHub Enterprise and GitHub AE invocations.
     if (sourceRepositoryUriElements[2] !== 'github.com') {
       options.baseUrl = `https://${sourceRepositoryUriElements[2]}/api/v3`
+      this._logger.logDebug(`Using Base URL '${options.baseUrl}'.`)
     }
 
     this._octokitWrapper.initialize(options)
@@ -162,5 +173,18 @@ export default class GitHubReposInvoker implements IReposInvoker {
     this._pullRequestId = Validator.validate(parseInt(process.env.SYSTEM_PULLREQUEST_PULLREQUESTNUMBER!), 'SYSTEM_PULLREQUEST_PULLREQUESTNUMBER', 'GitHubReposInvoker.initialize()')
 
     this._isInitialized = true
+  }
+
+  private async performApiCall<TResponse> (action: () => Promise<TResponse>): Promise<TResponse> {
+    try {
+      return await action()
+    } catch (error) {
+      if (error.name === 'HttpError' && error.message === 'Not Found') {
+        error.internalMessage = error.message
+        error.message = this._taskLibWrapper.loc('metrics.codeMetricsCalculator.insufficientGitHubAccessTokenPermissions')
+      }
+
+      throw error
+    }
   }
 }

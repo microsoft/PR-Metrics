@@ -64,7 +64,7 @@ describe('index.ts', (): void => {
     // Assert
     expect(task.succeeded).to.equal(false)
     expect(task.warningIssues).to.deep.equal([])
-    expect(task.errorIssues).to.deep.equal(['loc_mock_metrics.codeMetricsCalculator.noAccessToken'])
+    expect(task.errorIssues).to.deep.equal(['loc_mock_metrics.codeMetricsCalculator.noAzureReposAccessToken'])
 
     // Finalization
     delete process.env.SYSTEM_PULLREQUEST_PULLREQUESTID
@@ -173,7 +173,10 @@ describe('index.ts', (): void => {
     // Assert
     expect(task.succeeded).to.equal(false)
     expect(task.warningIssues).to.deep.equal([])
-    expect(task.errorIssues).to.deep.equal(['Failed request: (401)'])
+    expect(task.errorIssues.length).to.equal(3)
+    expect(task.errorIssues[0]).to.contain('Error – stack: ')
+    expect(task.errorIssues[1]).to.equal('Error – statusCode: 401')
+    expect(task.errorIssues[2]).to.equal('Failed request: (401)')
     expect(task.stdout.includes('🔁')).to.equal(true)
 
     // Finalization

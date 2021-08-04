@@ -11,6 +11,7 @@ import AzureDevOpsApiWrapper from '../wrappers/azureDevOpsApiWrapper'
 import IReposInvoker from './iReposInvoker'
 import Logger from '../utilities/logger'
 import PullRequestDetails from './pullRequestDetails'
+import TaskLibWrapper from '../wrappers/taskLibWrapper'
 
 /**
  * A class for invoking Azure Repos functionality.
@@ -20,6 +21,7 @@ import PullRequestDetails from './pullRequestDetails'
 export default class AzureReposInvoker implements IReposInvoker {
   private readonly _azureDevOpsApiWrapper: AzureDevOpsApiWrapper
   private readonly _logger: Logger
+  private readonly _taskLibWrapper: TaskLibWrapper
 
   private _project: string = ''
   private _repositoryId: string = ''
@@ -30,10 +32,12 @@ export default class AzureReposInvoker implements IReposInvoker {
    * Initializes a new instance of the `AzureReposInvoker` class.
    * @param azureDevOpsApiWrapper The wrapper around the Azure DevOps API.
    * @param logger The logger.
+   * @param taskLibWrapper The wrapper around the Azure Pipelines Task Lib.
    */
-  public constructor (azureDevOpsApiWrapper: AzureDevOpsApiWrapper, logger: Logger) {
+  public constructor (azureDevOpsApiWrapper: AzureDevOpsApiWrapper, logger: Logger, taskLibWrapper: TaskLibWrapper) {
     this._azureDevOpsApiWrapper = azureDevOpsApiWrapper
     this._logger = logger
+    this._taskLibWrapper = taskLibWrapper
   }
 
   public get isCommentsFunctionalityAvailable (): boolean {
@@ -42,10 +46,14 @@ export default class AzureReposInvoker implements IReposInvoker {
     return true
   }
 
-  public get isAccessTokenAvailable (): boolean {
+  public get isAccessTokenAvailable (): string | null {
     this._logger.logDebug('* AzureReposInvoker.isAccessTokenAvailable')
 
-    return process.env.SYSTEM_ACCESSTOKEN !== undefined
+    if (process.env.SYSTEM_ACCESSTOKEN === undefined) {
+      return this._taskLibWrapper.loc('metrics.codeMetricsCalculator.noAzureReposAccessToken')
+    }
+
+    return null
   }
 
   public async getTitleAndDescription (): Promise<PullRequestDetails> {

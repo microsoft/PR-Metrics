@@ -40,7 +40,7 @@ export default class ReposInvoker implements IReposInvoker {
     return reposInvoker.isCommentsFunctionalityAvailable
   }
 
-  public get isAccessTokenAvailable (): boolean {
+  public get isAccessTokenAvailable (): string | null {
     this._logger.logDebug('* ReposInvoker.isAccessTokenAvailable')
 
     const reposInvoker: IReposInvoker = this.getReposInvoker()
