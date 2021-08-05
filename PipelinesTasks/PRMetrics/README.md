@@ -74,8 +74,13 @@ To deploy the task:
 
 The task can be added to a pipeline as detailed [here][addingtask].
 
-The agent running the task must allow access to the OAuth token. If access is
-unavailable, the task will generate an error.
+For Azure Repos, the agent running the task must allow access to the OAuth
+token. If access is unavailable, the task will generate an error.
+
+For GitHub repos, you will need to create a Personal Access Token (PAT)
+according to the instructions [here][githubpat]. The scope should be 'repos'.
+The resulting PAT should then be added to your repo as a secret with the name
+`GitHub.PAT` using the instructions [here][githubsecret].
 
 It is recommended to run the task as one of the first operations in your build,
 after code check out is complete. Running the task early in the build process
@@ -434,6 +439,8 @@ the language extensions defined in the
 [vssextensionjson]: vss-extension.json
 [taskjson]: task/task.json
 [addingtask]: https://docs.microsoft.com/azure/devops/pipelines/customize-pipeline
+[githubpat]: https://docs.github.com/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token
+[githubsecret]: https://docs.github.com/actions/reference/encrypted-secrets
 [globs]: https://docs.microsoft.com/azure/devops/pipelines/tasks/file-matching-patterns
 [typescript]: https://www.typescriptlang.org/
 [sdk]: https://github.com/microsoft/azure-pipelines-task-lib

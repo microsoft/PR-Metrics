@@ -38,6 +38,13 @@ async function run (): Promise<void> {
     const logger: Logger = container.resolve(Logger)
     logger.replay()
 
+    const properties: string[] = Object.getOwnPropertyNames(error)
+    properties.forEach((property: string): void => {
+      if (property !== 'message') {
+        logger.logError(`${error.name} – ${property}: ${JSON.stringify(error[property])}`)
+      }
+    })
+
     taskLib.setResult(taskLib.TaskResult.Failed, error.message)
   }
 }

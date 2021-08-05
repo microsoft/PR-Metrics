@@ -4,7 +4,7 @@
   "loc.description": "Augments pull request titles to let reviewers quickly determine PR size and test coverage.",
   "loc.description.comment": "The description of the task.",
 
-  "loc.friendlyName": "PR Metrics 1.2.0",
+  "loc.friendlyName": "PR Metrics 1.2.1",
   "loc.friendlyName.comment": "The name of the task.",
 
   "loc.helpMarkDown": "[More information](https://aka.ms/PRMetrics/README)",
@@ -70,14 +70,20 @@
   "loc.messages.metrics.codeMetrics.titleTestsSufficient": "✔",
   "loc.messages.metrics.codeMetrics.titleTestsSufficient.comment": "The title test coverage prefix for a pull request with sufficient test coverage.",
 
-  "loc.messages.metrics.codeMetricsCalculator.noAccessToken": "Could not access the OAuth token. Add 'SYSTEM_ACCESSTOKEN' as an environment variable (YAML) or enable 'Allow scripts to access OAuth token' under the build process phase settings (classic).",
-  "loc.messages.metrics.codeMetricsCalculator.noAccessToken.comment": "The message to display when terminating as no access token is available.",
+  "loc.messages.metrics.codeMetricsCalculator.insufficientGitHubAccessTokenPermissions": "Could not access the resources. Ensure 'GitHub.PAT' has access to 'repos'.",
+  "loc.messages.metrics.codeMetricsCalculator.insufficientGitHubAccessTokenPermissions.comment": "The message to display when terminating the GitHub Personal Access Token (PAT) does not have sufficient access.",
+
+  "loc.messages.metrics.codeMetricsCalculator.noAzureReposAccessToken": "Could not access the OAuth token. Add 'SYSTEM_ACCESSTOKEN' as an environment variable (YAML) or enable 'Allow scripts to access OAuth token' under the build process phase settings (classic).",
+  "loc.messages.metrics.codeMetricsCalculator.noAzureReposAccessToken.comment": "The message to display when terminating as no access token is available.",
 
   "loc.messages.metrics.codeMetricsCalculator.noGitEnlistment": "No Git enlistment present. Remove 'checkout: none' (YAML) or disable 'Don't sync sources' under the build process phase settings (classic).",
   "loc.messages.metrics.codeMetricsCalculator.noGitEnlistment.comment": "The message to display when terminating as no Git enlistment is present.",
 
   "loc.messages.metrics.codeMetricsCalculator.noGitHistory": "Could not access sufficient Git history. Disable 'fetchDepth' (YAML) or 'Shallow fetch' under the build process phase settings (classic). Or set the threshold sufficiently high.",
   "loc.messages.metrics.codeMetricsCalculator.noGitHistory.comment": "The message to display when terminating as the system could not access sufficient Git history.",
+
+  "loc.messages.metrics.codeMetricsCalculator.noGitHubAccessToken": "Could not access the Personal Access Token (PAT). Add 'GitHub.PAT' as a secret environment variable with access to 'repos'.",
+  "loc.messages.metrics.codeMetricsCalculator.noGitHubAccessToken.comment": "The message to display when terminating as no Personal Access Token (PAT) is available.",
 
   "loc.messages.metrics.codeMetricsCalculator.noPullRequest": "The build is not running against a pull request.",
   "loc.messages.metrics.codeMetricsCalculator.noPullRequest.comment": "The message to display when skipping the build because it is not running against a pull request.",

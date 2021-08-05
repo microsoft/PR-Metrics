@@ -26,7 +26,7 @@ describe('codeMetricsCalculator.ts', (): void => {
   beforeEach((): void => {
     reposInvoker = mock(ReposInvoker)
     when(reposInvoker.isCommentsFunctionalityAvailable).thenReturn(true)
-    when(reposInvoker.isAccessTokenAvailable).thenReturn(true)
+    when(reposInvoker.isAccessTokenAvailable).thenReturn(null)
 
     gitInvoker = mock(GitInvoker)
     when(gitInvoker.isGitEnlistment()).thenResolve(true)
@@ -41,7 +41,6 @@ describe('codeMetricsCalculator.ts', (): void => {
     pullRequestComments = mock(PullRequestComments)
 
     taskLibWrapper = mock(TaskLibWrapper)
-    when(taskLibWrapper.loc('metrics.codeMetricsCalculator.noAccessToken')).thenReturn('Could not access the OAuth token. Add \'SYSTEM_ACCESSTOKEN\' as an environment variable (YAML) or enable \'Allow scripts to access OAuth token\' under the build process phase settings (classic).')
     when(taskLibWrapper.loc('metrics.codeMetricsCalculator.noGitEnlistment')).thenReturn('No Git enlistment present. Remove \'checkout: none\' (YAML) or disable \'Don\'t sync sources\' under the build process phase settings (classic).')
     when(taskLibWrapper.loc('metrics.codeMetricsCalculator.noGitHistory')).thenReturn('Could not access sufficient Git history. Disable \'fetchDepth\' (YAML) or \'Shallow fetch\' under the build process phase settings (classic). Or set the threshold sufficiently high.')
     when(taskLibWrapper.loc('metrics.codeMetricsCalculator.noPullRequest')).thenReturn('The build is not running against a pull request.')
@@ -103,14 +102,14 @@ describe('codeMetricsCalculator.ts', (): void => {
 
     it('should return the appropriate message when no access token is available', async (): Promise<void> => {
       // Arrange
-      when(reposInvoker.isAccessTokenAvailable).thenReturn(false)
+      when(reposInvoker.isAccessTokenAvailable).thenReturn('No Access Token')
       const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(gitInvoker), instance(logger), instance(pullRequest), instance(pullRequestComments), instance(reposInvoker), instance(taskLibWrapper))
 
       // Act
       const result: string | null = await codeMetricsCalculator.shouldStop()
 
       // Assert
-      expect(result).to.equal('Could not access the OAuth token. Add \'SYSTEM_ACCESSTOKEN\' as an environment variable (YAML) or enable \'Allow scripts to access OAuth token\' under the build process phase settings (classic).')
+      expect(result).to.equal('No Access Token')
       verify(logger.logDebug('* CodeMetricsCalculator.shouldStop()')).once()
     })
 

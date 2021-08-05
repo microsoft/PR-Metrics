@@ -112,7 +112,7 @@ describe('reposInvoker.ts', function (): void {
       const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
 
       // Act
-      const result: boolean = reposInvoker.isAccessTokenAvailable
+      const result: string | null = reposInvoker.isAccessTokenAvailable
 
       // Assert
       verify(azureReposInvoker.isAccessTokenAvailable).once()
@@ -136,7 +136,7 @@ describe('reposInvoker.ts', function (): void {
           const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
 
           // Act
-          const result: boolean = reposInvoker.isAccessTokenAvailable
+          const result: string | null = reposInvoker.isAccessTokenAvailable
 
           // Assert
           verify(azureReposInvoker.isAccessTokenAvailable).never()
@@ -156,7 +156,7 @@ describe('reposInvoker.ts', function (): void {
       const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
 
       // Act
-      const func: () => boolean = () => reposInvoker.isAccessTokenAvailable
+      const func: () => string | null = () => reposInvoker.isAccessTokenAvailable
 
       // Assert
       expect(func).to.throw('\'BUILD_REPOSITORY_PROVIDER\', accessed within \'ReposInvoker.getReposInvoker()\', is invalid, null, or undefined \'undefined\'.')
@@ -172,7 +172,7 @@ describe('reposInvoker.ts', function (): void {
       const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
 
       // Act
-      const func: () => boolean = () => reposInvoker.isAccessTokenAvailable
+      const func: () => string | null = () => reposInvoker.isAccessTokenAvailable
 
       // Assert
       expect(func).to.throw('BUILD_REPOSITORY_PROVIDER \'Other\' is unsupported.')

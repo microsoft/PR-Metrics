@@ -22,7 +22,7 @@ describe('gitHubReposInvoker.ts', function (): void {
   let mockPullResponse: GetPullResponse
 
   beforeEach((): void => {
-    process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI = 'https://github.com/microsoft/OMEX-Azure-DevOps-Extensions.git'
+    process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI = 'https://github.com/microsoft/OMEX-Azure-DevOps-Extensions'
     process.env.SYSTEM_PULLREQUEST_PULLREQUESTNUMBER = '12345'
 
     mockPullResponse = {
@@ -400,6 +400,8 @@ describe('gitHubReposInvoker.ts', function (): void {
 
     taskLibWrapper = mock(TaskLibWrapper)
     when(taskLibWrapper.getVariable('GitHub.PAT')).thenReturn('ghp_000000000000000000000000000000000000')
+    when(taskLibWrapper.loc('metrics.codeMetricsCalculator.insufficientGitHubAccessTokenPermissions')).thenReturn('Could not access the resources. Ensure \'GitHub.PAT\' has access to \'repos\'.')
+    when(taskLibWrapper.loc('metrics.codeMetricsCalculator.noGitHubAccessToken')).thenReturn('Could not access the Personal Access Token (PAT). Add \'GitHub.PAT\' as a secret environment variable with access to \'repos\'.')
   })
 
   afterEach((): void => {
@@ -422,46 +424,33 @@ describe('gitHubReposInvoker.ts', function (): void {
   })
 
   describe('isAccessTokenAvailable', (): void => {
-    it('should return true', (): void => {
+    it('should return null when the token exists', (): void => {
       // Arrange
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
 
       // Act
-      const result: boolean = gitHubReposInvoker.isAccessTokenAvailable
+      const result: string | null = gitHubReposInvoker.isAccessTokenAvailable
 
       // Assert
-      expect(result).to.equal(true)
+      expect(result).to.equal(null)
+      verify(logger.logDebug('* GitHubReposInvoker.isAccessTokenAvailable')).once()
+    })
+
+    it('should return a string when the token does not exist', (): void => {
+      // Arrange
+      when(taskLibWrapper.getVariable('GitHub.PAT')).thenReturn(undefined)
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
+
+      // Act
+      const result: string | null = gitHubReposInvoker.isAccessTokenAvailable
+
+      // Assert
+      expect(result).to.equal('Could not access the Personal Access Token (PAT). Add \'GitHub.PAT\' as a secret environment variable with access to \'repos\'.')
       verify(logger.logDebug('* GitHubReposInvoker.isAccessTokenAvailable')).once()
     })
   })
 
   describe('getTitleAndDescription()', (): void => {
-    async.each(
-      [
-        undefined,
-        ''
-      ], (variable: string | undefined): void => {
-        it(`should throw when GitHub.PAT is set to the invalid value '${variable}'`, async (): Promise<void> => {
-          // Arrange
-          when(taskLibWrapper.getVariable('GitHub.PAT')).thenReturn(variable)
-          const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
-          let errorThrown: boolean = false
-
-          try {
-            // Act
-            await gitHubReposInvoker.getTitleAndDescription()
-          } catch (error) {
-            // Assert
-            errorThrown = true
-            expect(error.message).to.equal(`'GitHub.PAT', accessed within 'GitHubReposInvoker.initialize()', is invalid, null, or undefined '${variable}'.`)
-          }
-
-          expect(errorThrown).to.equal(true)
-          verify(logger.logDebug('* GitHubReposInvoker.getTitleAndDescription()')).once()
-          verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
-        })
-      })
-
     async.each(
       [
         undefined,
@@ -495,8 +484,8 @@ describe('gitHubReposInvoker.ts', function (): void {
 
     async.each(
       [
-        'https://github.com/microsoft/OMEX-Azure-DevOps-Extensions',
-        'https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/.git'
+        'https://github.com/microsoft',
+        'https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/git'
       ], (variable: string): void => {
         it(`should throw when SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI is set to an invalid URL '${variable}'`, async (): Promise<void> => {
           // Arrange
@@ -556,7 +545,34 @@ describe('gitHubReposInvoker.ts', function (): void {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('ghp_000000000000000000000000000000000000')
-        expect(options.userAgent).to.equal('PRMetrics/v1.2.0')
+        expect(options.userAgent).to.equal('PRMetrics/v1.2.1')
+        expect(options.log).to.not.equal(null)
+        expect(options.log.debug).to.not.equal(null)
+        expect(options.log.info).to.not.equal(null)
+        expect(options.log.warn).to.not.equal(null)
+        expect(options.log.error).to.not.equal(null)
+      })
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
+
+      // Act
+      const result: PullRequestDetails = await gitHubReposInvoker.getTitleAndDescription()
+
+      // Assert
+      expect(result.title).to.equal('Title')
+      expect(result.description).to.equal('Description')
+      verify(octokitWrapper.initialize(anything())).once()
+      verify(octokitWrapper.getPull(deepEqual({ owner: 'microsoft', repo: 'OMEX-Azure-DevOps-Extensions', pull_number: 12345 }))).once()
+      verify(logger.logDebug('* GitHubReposInvoker.getTitleAndDescription()')).once()
+      verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
+      verify(logger.logDebug(JSON.stringify(mockPullResponse))).once()
+    })
+
+    it('should succeed when the inputs are valid and the URL ends with \'.git\'', async (): Promise<void> => {
+      // Arrange
+      process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI = 'https://github.com/microsoft/OMEX-Azure-DevOps-Extensions.git'
+      when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
+        expect(options.auth).to.equal('ghp_000000000000000000000000000000000000')
+        expect(options.userAgent).to.equal('PRMetrics/v1.2.1')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
         expect(options.log.info).to.not.equal(null)
@@ -580,10 +596,10 @@ describe('gitHubReposInvoker.ts', function (): void {
 
     it('should succeed when the inputs are valid and GitHub Enterprise is in use', async (): Promise<void> => {
       // Arrange
-      process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI = 'https://organization.githubenterprise.com/microsoft/OMEX-Azure-DevOps-Extensions.git'
+      process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI = 'https://organization.githubenterprise.com/microsoft/OMEX-Azure-DevOps-Extensions'
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('ghp_000000000000000000000000000000000000')
-        expect(options.userAgent).to.equal('PRMetrics/v1.2.0')
+        expect(options.userAgent).to.equal('PRMetrics/v1.2.1')
         expect(options.baseUrl).to.equal('https://organization.githubenterprise.com/api/v3')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
@@ -603,6 +619,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       verify(octokitWrapper.getPull(deepEqual({ owner: 'microsoft', repo: 'OMEX-Azure-DevOps-Extensions', pull_number: 12345 }))).once()
       verify(logger.logDebug('* GitHubReposInvoker.getTitleAndDescription()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
+      verify(logger.logDebug('Using Base URL \'https://organization.githubenterprise.com/api/v3\'.')).once()
       verify(logger.logDebug(JSON.stringify(mockPullResponse))).once()
     })
 
@@ -610,7 +627,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('ghp_000000000000000000000000000000000000')
-        expect(options.userAgent).to.equal('PRMetrics/v1.2.0')
+        expect(options.userAgent).to.equal('PRMetrics/v1.2.1')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
         expect(options.log.info).to.not.equal(null)
@@ -639,7 +656,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       currentMockPullResponse.data.body = null
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('ghp_000000000000000000000000000000000000')
-        expect(options.userAgent).to.equal('PRMetrics/v1.2.0')
+        expect(options.userAgent).to.equal('PRMetrics/v1.2.1')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
         expect(options.log.info).to.not.equal(null)
@@ -660,6 +677,69 @@ describe('gitHubReposInvoker.ts', function (): void {
       verify(logger.logDebug('* GitHubReposInvoker.getTitleAndDescription()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
       verify(logger.logDebug(JSON.stringify(currentMockPullResponse))).once()
+    })
+
+    it('should throw when the PAT has insufficient access', async (): Promise<void> => {
+      // Arrange
+      when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
+        expect(options.auth).to.equal('ghp_000000000000000000000000000000000000')
+        expect(options.userAgent).to.equal('PRMetrics/v1.2.1')
+        expect(options.log).to.not.equal(null)
+        expect(options.log.debug).to.not.equal(null)
+        expect(options.log.info).to.not.equal(null)
+        expect(options.log.warn).to.not.equal(null)
+        expect(options.log.error).to.not.equal(null)
+      })
+      const error: Error = new Error('Not Found')
+      error.name = 'HttpError'
+      when(octokitWrapper.getPull(anything())).thenThrow(error)
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
+      let errorThrown: boolean = false
+
+      try {
+        // Act
+        await gitHubReposInvoker.getTitleAndDescription()
+      } catch (error) {
+        // Assert
+        errorThrown = true
+        expect(error.message).to.equal('Could not access the resources. Ensure \'GitHub.PAT\' has access to \'repos\'.')
+        expect(error.internalMessage).to.equal('Not Found')
+      }
+
+      expect(errorThrown).to.equal(true)
+      verify(octokitWrapper.initialize(anything())).once()
+      verify(logger.logDebug('* GitHubReposInvoker.getTitleAndDescription()')).once()
+      verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
+    })
+
+    it('should throw an error when an error occurs', async (): Promise<void> => {
+      // Arrange
+      when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
+        expect(options.auth).to.equal('ghp_000000000000000000000000000000000000')
+        expect(options.userAgent).to.equal('PRMetrics/v1.2.1')
+        expect(options.log).to.not.equal(null)
+        expect(options.log.debug).to.not.equal(null)
+        expect(options.log.info).to.not.equal(null)
+        expect(options.log.warn).to.not.equal(null)
+        expect(options.log.error).to.not.equal(null)
+      })
+      when(octokitWrapper.getPull(anything())).thenThrow(Error('Error'))
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
+      let errorThrown: boolean = false
+
+      try {
+        // Act
+        await gitHubReposInvoker.getTitleAndDescription()
+      } catch (error) {
+        // Assert
+        errorThrown = true
+        expect(error.message).to.equal('Error')
+      }
+
+      expect(errorThrown).to.equal(true)
+      verify(octokitWrapper.initialize(anything())).once()
+      verify(logger.logDebug('* GitHubReposInvoker.getTitleAndDescription()')).once()
+      verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
     })
 
     it('should initialize log object correctly', async (): Promise<void> => {
@@ -720,7 +800,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('ghp_000000000000000000000000000000000000')
-        expect(options.userAgent).to.equal('PRMetrics/v1.2.0')
+        expect(options.userAgent).to.equal('PRMetrics/v1.2.1')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
         expect(options.log.info).to.not.equal(null)
@@ -744,7 +824,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('ghp_000000000000000000000000000000000000')
-        expect(options.userAgent).to.equal('PRMetrics/v1.2.0')
+        expect(options.userAgent).to.equal('PRMetrics/v1.2.1')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
         expect(options.log.info).to.not.equal(null)
@@ -768,7 +848,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('ghp_000000000000000000000000000000000000')
-        expect(options.userAgent).to.equal('PRMetrics/v1.2.0')
+        expect(options.userAgent).to.equal('PRMetrics/v1.2.1')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
         expect(options.log.info).to.not.equal(null)
