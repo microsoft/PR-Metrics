@@ -77,7 +77,8 @@ The task can be added to a pipeline as detailed [here][addingtask].
 For Azure Repos, the agent running the task must allow access to the OAuth
 token. If access is unavailable, the task will generate an error. You can
 override the OAuth token by creating a secret Personal Access Token (PAT) with
-the name `PRMetrics.PAT`. This is useful if the scope of the OAuth token has
+the name `PRMetrics.PAT` and the scopes 'Code' > 'Read' and 'Pull Request
+Threads' > 'Read & write'. This is useful if the scope of the OAuth token has
 been limited.
 
 For GitHub repos, you will need to create a PAT according to the instructions
