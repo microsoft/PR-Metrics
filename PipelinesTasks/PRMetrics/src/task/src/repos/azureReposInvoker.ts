@@ -49,7 +49,7 @@ export default class AzureReposInvoker implements IReposInvoker {
   public get isAccessTokenAvailable (): string | null {
     this._logger.logDebug('* AzureReposInvoker.isAccessTokenAvailable')
 
-    if (this._taskLibWrapper.getVariable('PRMetrics.PAT') === undefined && process.env.SYSTEM_ACCESSTOKEN === undefined) {
+    if (process.env.SYSTEM_ACCESSTOKEN === undefined) {
       return this._taskLibWrapper.loc('metrics.codeMetricsCalculator.noAzureReposAccessToken')
     }
 
@@ -181,13 +181,8 @@ export default class AzureReposInvoker implements IReposInvoker {
     this._repositoryId = Validator.validateVariable('BUILD_REPOSITORY_ID', 'AzureReposInvoker.getGitApi()')
     this._pullRequestId = Validator.validate(parseInt(process.env.SYSTEM_PULLREQUEST_PULLREQUESTID!), 'SYSTEM_PULLREQUEST_PULLREQUESTID', 'AzureReposInvoker.getGitApi()')
 
-    let accessToken: string | undefined = this._taskLibWrapper.getVariable('PRMetrics.PAT')
-    if (accessToken === undefined) {
-      accessToken = process.env.SYSTEM_ACCESSTOKEN
-    }
-
-    Validator.validate(accessToken, 'accessToken', 'AzureReposInvoker.getGitApi()')
-    const authHandler: IRequestHandler = this._azureDevOpsApiWrapper.getPersonalAccessTokenHandler(accessToken!)
+    const accessToken: string = Validator.validateVariable('SYSTEM_ACCESSTOKEN', 'AzureReposInvoker.getGitApi()')
+    const authHandler: IRequestHandler = this._azureDevOpsApiWrapper.getPersonalAccessTokenHandler(accessToken)
 
     const defaultUrl: string = Validator.validateVariable('SYSTEM_TEAMFOUNDATIONCOLLECTIONURI', 'AzureReposInvoker.getGitApi()')
     const connection: WebApi = this._azureDevOpsApiWrapper.getWebApiInstance(defaultUrl, authHandler)

@@ -41,8 +41,7 @@ describe('azureReposInvoker.ts', function (): void {
     logger = mock(Logger)
 
     taskLibWrapper = mock(TaskLibWrapper)
-    when(taskLibWrapper.getVariable('PRMetrics.PAT')).thenReturn(undefined)
-    when(taskLibWrapper.loc('metrics.codeMetricsCalculator.noAzureReposAccessToken')).thenReturn('Could not access the OAuth token. Add \'SYSTEM_ACCESSTOKEN\' as an environment variable (YAML) or enable \'Allow scripts to access OAuth token\' under the build process phase settings (classic). Alternatively, add \'PRMetrics.PAT\' as a secret environment variable.')
+    when(taskLibWrapper.loc('metrics.codeMetricsCalculator.noAzureReposAccessToken')).thenReturn('Could not access the OAuth token. Add \'SYSTEM_ACCESSTOKEN\' as an environment variable (YAML) or enable \'Allow scripts to access OAuth token\' under the build process phase settings (classic).')
   })
 
   after(() => {
@@ -68,22 +67,8 @@ describe('azureReposInvoker.ts', function (): void {
   })
 
   describe('isAccessTokenAvailable', (): void => {
-    it('should return null when the token exists as SYSTEM_ACCESSTOKEN', (): void => {
+    it('should return null when the token exists', (): void => {
       // Arrange
-      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger), instance(taskLibWrapper))
-
-      // Act
-      const result: string | null = azureReposInvoker.isAccessTokenAvailable
-
-      // Assert
-      expect(result).to.equal(null)
-      verify(logger.logDebug('* AzureReposInvoker.isAccessTokenAvailable')).once()
-    })
-
-    it('should return null when the token exists as PRMetrics.PAT', (): void => {
-      // Arrange
-      delete process.env.SYSTEM_ACCESSTOKEN
-      when(taskLibWrapper.getVariable('PRMetrics.PAT')).thenReturn('OATH')
       const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger), instance(taskLibWrapper))
 
       // Act
@@ -103,7 +88,7 @@ describe('azureReposInvoker.ts', function (): void {
       const result: string | null = azureReposInvoker.isAccessTokenAvailable
 
       // Assert
-      expect(result).to.equal('Could not access the OAuth token. Add \'SYSTEM_ACCESSTOKEN\' as an environment variable (YAML) or enable \'Allow scripts to access OAuth token\' under the build process phase settings (classic). Alternatively, add \'PRMetrics.PAT\' as a secret environment variable.')
+      expect(result).to.equal('Could not access the OAuth token. Add \'SYSTEM_ACCESSTOKEN\' as an environment variable (YAML) or enable \'Allow scripts to access OAuth token\' under the build process phase settings (classic).')
       verify(logger.logDebug('* AzureReposInvoker.isAccessTokenAvailable')).once()
     })
   })
@@ -208,13 +193,12 @@ describe('azureReposInvoker.ts', function (): void {
         undefined,
         ''
       ], (variable: string | undefined): void => {
-        it(`should throw when SYSTEM_ACCESSTOKEN and PRMetrics.PAT is set to the invalid value '${variable}'`, async (): Promise<void> => {
+        it(`should throw when SYSTEM_ACCESSTOKEN is set to the invalid value '${variable}'`, async (): Promise<void> => {
           // Arrange
           if (variable === undefined) {
             delete process.env.SYSTEM_ACCESSTOKEN
           } else {
             process.env.SYSTEM_ACCESSTOKEN = variable
-            when(taskLibWrapper.getVariable('PRMetrics.PAT')).thenReturn(variable)
           }
 
           const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger), instance(taskLibWrapper))
@@ -226,7 +210,7 @@ describe('azureReposInvoker.ts', function (): void {
           } catch (error) {
             // Assert
             errorThrown = true
-            expect(error.message).to.equal(`'accessToken', accessed within 'AzureReposInvoker.getGitApi()', is invalid, null, or undefined '${variable}'.`)
+            expect(error.message).to.equal(`'SYSTEM_ACCESSTOKEN', accessed within 'AzureReposInvoker.getGitApi()', is invalid, null, or undefined '${variable}'.`)
           }
 
           expect(errorThrown).to.equal(true)
