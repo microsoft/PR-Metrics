@@ -80,7 +80,7 @@ token. If access is unavailable, the task will generate an error.
 For GitHub repos, you will need to create a Personal Access Token (PAT)
 according to the instructions [here][githubpat]. The scope should be 'repos'.
 The resulting PAT should then be added to your repo as a secret with the name
-`GitHub.PAT` using the instructions [here][githubsecret].
+`PRMetrics.PAT` using the instructions [here][githubsecret].
 
 It is recommended to run the task as one of the first operations in your build,
 after code check out is complete. Running the task early in the build process

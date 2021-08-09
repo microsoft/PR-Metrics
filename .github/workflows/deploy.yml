@@ -6,10 +6,6 @@ name: Deploy
 on:
   workflow_dispatch: null
 
-defaults:
-  run:
-    shell: pwsh
-
 jobs:
   deploy:
     name: Deploy
