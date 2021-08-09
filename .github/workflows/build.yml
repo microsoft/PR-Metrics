@@ -35,7 +35,7 @@ jobs:
         run: npm run lint
         working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/src/task
 
-      - name: NPM - Test Clean
+      - name: NPM – Test Clean
         run: npm run clean
         working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/src/task
 

@@ -30,7 +30,7 @@ jobs:
         run: npm install
         working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/src/task
 
-      - name: NPM - Build
+      - name: NPM – Build
         run: npm run build:release
         working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/src/task
 
