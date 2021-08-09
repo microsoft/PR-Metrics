@@ -64,7 +64,7 @@
     "metrics.codeMetrics.titleTestsInsufficient": "⚠️",
     "metrics.codeMetrics.titleTestsSufficient": "✔",
     "metrics.codeMetricsCalculator.insufficientGitHubAccessTokenPermissions": "Could not access the resources. Ensure 'PRMetrics.PAT' has access to 'repos'.",
-    "metrics.codeMetricsCalculator.noAzureReposAccessToken": "Could not access the OAuth token. Add 'SYSTEM_ACCESSTOKEN' as an environment variable (YAML) or enable 'Allow scripts to access OAuth token' under the build process phase settings (classic). Alternatively, add 'AzureRepos.PAT' as a secret environment variable.",
+    "metrics.codeMetricsCalculator.noAzureReposAccessToken": "Could not access the OAuth token. Add 'SYSTEM_ACCESSTOKEN' as an environment variable (YAML) or enable 'Allow scripts to access OAuth token' under the build process phase settings (classic). Alternatively, add 'PRMetrics.PAT' as a secret environment variable.",
     "metrics.codeMetricsCalculator.noGitEnlistment": "No Git enlistment present. Remove 'checkout: none' (YAML) or disable 'Don't sync sources' under the build process phase settings (classic).",
     "metrics.codeMetricsCalculator.noGitHistory": "Could not access sufficient Git history. Disable 'fetchDepth' (YAML) or 'Shallow fetch' under the build process phase settings (classic). Or set the threshold sufficiently high.",
     "metrics.codeMetricsCalculator.noGitHubAccessToken": "Could not access the Personal Access Token (PAT). Add 'PRMetrics.PAT' as a secret environment variable with access to 'repos'.",
