@@ -10,10 +10,6 @@ on:
     branches: [ main ]
   workflow_dispatch: null
 
-defaults:
-  run:
-    shell: pwsh
-
 jobs:
   build:
     name: Build
@@ -84,9 +80,11 @@ jobs:
           use-draft: draft-07
 
       - name: Validate package.json – Download package.schema.json
+        shell: pwsh
         run: Invoke-WebRequest -Uri 'https://json.schemastore.org/package.json' -OutFile 'package.schema.json'
 
       - name: Validate package.json – Update package.schema.json
+        shell: pwsh
         run: |-
           $FileContent = Get-Content -Path 'package.schema.json' -Raw
           $FileContent = $FileContent -replace 'draft-04/schema#', 'draft-07/schema'
@@ -135,7 +133,7 @@ jobs:
           fetch-depth: 0
 
       - name: Super Linter
-        uses: github/super-linter@v4.5.1
+        uses: github/super-linter@v4.6.0
         env:
           EDITORCONFIG_FILE_NAME: ../../.editorconfig
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -160,9 +158,11 @@ jobs:
           json-schema: https://json.schemastore.org/vss-extension.json
 
       - name: Validate .mocharc.json – Download .mocharc.schema.json
+        shell: pwsh
         run: Invoke-WebRequest -Uri 'https://json.schemastore.org/mocharc.json' -OutFile '.mocharc.schema.json'
 
       - name: Validate .mocharc.json – Update .mocharc.schema.json
+        shell: pwsh
         run: |-
           $FileContent = Get-Content -Path '.mocharc.schema.json' -Raw
           $FileContent = $FileContent -replace 'draft/2019-09/schema#', 'draft-07/schema'
@@ -175,9 +175,11 @@ jobs:
           json-schema: .mocharc.schema.json
 
       - name: Validate package.json – Download package.schema.json
+        shell: pwsh
         run: Invoke-WebRequest -Uri 'https://json.schemastore.org/package.json' -OutFile 'package.schema.json'
 
       - name: Validate package.json – Update package.schema.json
+        shell: pwsh
         run: |-
           $FileContent = Get-Content -Path 'package.schema.json' -Raw
           $FileContent = $FileContent -replace 'draft-04/schema#', 'draft-07/schema'
@@ -190,9 +192,11 @@ jobs:
           json-schema: package.schema.json
 
       - name: Validate task.json – Download task.schema.json
+        shell: pwsh
         run: Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/microsoft/azure-pipelines-task-lib/master/tasks.schema.json' -OutFile 'task.schema.json'
 
       - name: Validate task.json – Update task.schema.json
+        shell: pwsh
         run: |-
           $FileContent = Get-Content -Path 'task.schema.json' -Raw
           $FileContent = $FileContent -replace 'draft-04/schema', 'draft-07/schema'
@@ -211,9 +215,11 @@ jobs:
           json-schema: task.schema.json
 
       - name: Validate tsconfig.json – Download tsconfig.schema.json
+        shell: pwsh
         run: Invoke-WebRequest -Uri 'https://json.schemastore.org/tsconfig.json' -OutFile 'tsconfig.schema.json'
 
       - name: Validate tsconfig.json – Update tsconfig.schema.json
+        shell: pwsh
         run: |-
           $FileContent = Get-Content -Path 'tsconfig.schema.json' -Raw
           $FileContent = $FileContent -replace 'draft-04/schema#', 'draft-07/schema'
@@ -232,9 +238,11 @@ jobs:
           json-schema: https://typedoc.org/schema.json
 
       - name: Validate resources.resjson – Download resources.resjson.schema.json
+        shell: pwsh
         run: Invoke-WebRequest -Uri 'https://json.schemastore.org/resjson.json' -OutFile 'resources.resjson.schema.json'
 
       - name: Validate resources.resjson – Update resources.resjson.schema.json
+        shell: pwsh
         run: |-
           $FileContent = Get-Content -Path 'resources.resjson.schema.json' -Raw
           $FileContent = $FileContent -replace 'draft-04/schema#', 'draft-07/schema'
