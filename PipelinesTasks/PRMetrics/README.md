@@ -75,10 +75,11 @@ To deploy the task:
 The task can be added to a pipeline as detailed [here][addingtask].
 
 For Azure Repos, the agent running the task must allow access to the OAuth
-token. If access is unavailable, the task will generate an error. You can
-override the OAuth token by creating a secret Personal Access Token (PAT) with
-the name `PRMetrics.PAT`. This is useful if the scope of the OAuth token has
-been limited.
+token. If access is unavailable, the task will generate an error. Should the
+OAuth token scope have been limited, you may need to create a new Personal
+Access Token (PAT) with scopes 'Code' > 'Read' and 'Pull Request Threads' >
+'Read & write', which you can then map to `System.AccessToken` within the task
+definition.
 
 For GitHub repos, you will need to create a PAT according to the instructions
 [here][githubpat]. The scope should be 'repos'. The resulting PAT should then be
