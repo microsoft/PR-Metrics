@@ -50,7 +50,7 @@ export default class GitHubReposInvoker implements IReposInvoker {
   public get isAccessTokenAvailable (): string | null {
     this._logger.logDebug('* GitHubReposInvoker.isAccessTokenAvailable')
 
-    if (this._taskLibWrapper.getVariable('PRMetrics.PAT') === undefined) {
+    if (process.env.SYSTEM_ACCESSTOKEN === undefined) {
       return this._taskLibWrapper.loc('metrics.codeMetricsCalculator.noGitHubAccessToken')
     }
 
@@ -138,7 +138,7 @@ export default class GitHubReposInvoker implements IReposInvoker {
     }
 
     const options: OctokitOptions = {
-      auth: this._taskLibWrapper.getVariable('PRMetrics.PAT'),
+      auth: process.env.SYSTEM_ACCESSTOKEN,
       userAgent: 'PRMetrics/v1.2.3',
       log: {
         debug: (message: string): void => this._logger.logDebug(`Octokit – ${message}`),

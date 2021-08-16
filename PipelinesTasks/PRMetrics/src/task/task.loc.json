@@ -13,7 +13,7 @@
   "version": {
     "Major": 1,
     "Minor": 2,
-    "Patch": 3
+    "Patch": 4
   },
   "instanceNameFormat": "ms-resource:loc.instanceNameFormat",
   "showEnvironmentVariables": true,
@@ -64,6 +64,7 @@
     "metrics.codeMetrics.titleSizeXS": "ms-resource:loc.messages.metrics.codeMetrics.titleSizeXS",
     "metrics.codeMetrics.titleTestsInsufficient": "ms-resource:loc.messages.metrics.codeMetrics.titleTestsInsufficient",
     "metrics.codeMetrics.titleTestsSufficient": "ms-resource:loc.messages.metrics.codeMetrics.titleTestsSufficient",
+    "metrics.codeMetricsCalculator.insufficientAzureReposAccessTokenPermissions": "ms-resource:loc.messages.metrics.codeMetricsCalculator.insufficientAzureReposAccessTokenPermissions",
     "metrics.codeMetricsCalculator.insufficientGitHubAccessTokenPermissions": "ms-resource:loc.messages.metrics.codeMetricsCalculator.insufficientGitHubAccessTokenPermissions",
     "metrics.codeMetricsCalculator.noAzureReposAccessToken": "ms-resource:loc.messages.metrics.codeMetricsCalculator.noAzureReposAccessToken",
     "metrics.codeMetricsCalculator.noGitEnlistment": "ms-resource:loc.messages.metrics.codeMetricsCalculator.noGitEnlistment",

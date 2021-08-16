@@ -104,7 +104,7 @@ complement the unit tests to provide a high level of coverage.
    the threshold sufficiently high."
 1. Verify that the pipeline corresponding to `pipelines/pipeline-no-auth.yaml`
    fails with the error message "Could not access the OAuth token. Add
-   'SYSTEM_ACCESSTOKEN' as an environment variable (YAML) or enable 'Allow
+   'System.AccessToken' as an environment variable (YAML) or enable 'Allow
    scripts to access OAuth token' under the build process phase settings
    (classic)."
 1. Verify that the pipeline corresponding to

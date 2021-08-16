@@ -41,7 +41,7 @@ describe('azureReposInvoker.ts', function (): void {
     logger = mock(Logger)
 
     taskLibWrapper = mock(TaskLibWrapper)
-    when(taskLibWrapper.loc('metrics.codeMetricsCalculator.noAzureReposAccessToken')).thenReturn('Could not access the OAuth token. Add \'SYSTEM_ACCESSTOKEN\' as an environment variable (YAML) or enable \'Allow scripts to access OAuth token\' under the build process phase settings (classic).')
+    when(taskLibWrapper.loc('metrics.codeMetricsCalculator.noAzureReposAccessToken')).thenReturn('Could not access the OAuth token. Add \'System.AccessToken\' as an environment variable (YAML) or enable \'Allow scripts to access OAuth token\' under the build process phase settings (classic).')
   })
 
   after(() => {
@@ -88,7 +88,7 @@ describe('azureReposInvoker.ts', function (): void {
       const result: string | null = azureReposInvoker.isAccessTokenAvailable
 
       // Assert
-      expect(result).to.equal('Could not access the OAuth token. Add \'SYSTEM_ACCESSTOKEN\' as an environment variable (YAML) or enable \'Allow scripts to access OAuth token\' under the build process phase settings (classic).')
+      expect(result).to.equal('Could not access the OAuth token. Add \'System.AccessToken\' as an environment variable (YAML) or enable \'Allow scripts to access OAuth token\' under the build process phase settings (classic).')
       verify(logger.logDebug('* AzureReposInvoker.isAccessTokenAvailable')).once()
     })
   })
