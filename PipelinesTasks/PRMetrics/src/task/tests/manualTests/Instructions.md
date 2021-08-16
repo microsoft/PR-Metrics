@@ -51,15 +51,29 @@ complement the unit tests to provide a high level of coverage.
 1. On the subsequent page, it is a good idea to click the "..." and select
    "Rename/Move" to change the pipeline name to something more memorable, as
    well as to potentially move it to a shared folder.
-1. Repeat the process for the other three pipeline definitions.
-1. On the Azure DevOps server, navigate to Repos > Branches.
+1. Repeat the process for the other four pipeline definitions.
+1. On the Azure DevOps server, click your profile picture on the top right and
+   select "PErsonal access tokens".
+1. Press "New Token".
+1. In the pane that appears, enter the name "Insufficient Access Token" and
+   leave the Organization and Expiration values at their defaults.
+1. Select "Custom defined" scopes and check only 'Work Items' > 'Read'.
+1. Click "Create" and copy the resulting PAT to the clipboard.
+1. Navigate via Pipelines > Piplines to the pipelines you set up earlier.
+1. Click the vertical "..." next to the pipeline corresponding to
+   `pipeline-insufficient-access.yaml` and select "Edit".
+1. Click "Variables" and in the pane that appears click "+".
+1. Enter the name "InsufficientAccessPAT" and the paste in the value you
+   previously copied to the clipboard. Check "keep this value secret".
+1. Click "OK" followed by "Save".
+1. Now, navigate to Repos > Branches.
 1. Next to the main branch for your repo, click "..." and select "Branch
    policies".
 1. Under the "Build Validation" section, click "+".
 1. For the "Build Pipeline" dropdown, select the first pipeline you added. Copy
    the name of the pipeline to the "Display name" field. Accept all of the other
    defaults and click "Save".
-1. Repeat the process for the other three pipeline definitions.
+1. Repeat the process for the other four pipeline definitions.
 
 ## Step 3: Performing an Initial Pipeline Test
 
@@ -97,6 +111,10 @@ complement the unit tests to provide a high level of coverage.
    "Create".
 1. If everything is set up correctly, you should see the four pipelines you
    added earlier queued to run.
+1. Verify that the pipeline corresponding to
+   `pipelines/pipeline-insufficient-access.yaml` fails with the error
+   message "Could not access the resources. Ensure 'System.AccessToken' has
+   access to 'Code' > 'Read' and 'Pull Request Threads' > 'Read & write'."
 1. Verify that the pipeline corresponding to
    `pipelines/pipeline-insufficient-history.yaml` fails with the error
    message "Could not access sufficient Git history. Disable 'fetchDepth' (YAML)

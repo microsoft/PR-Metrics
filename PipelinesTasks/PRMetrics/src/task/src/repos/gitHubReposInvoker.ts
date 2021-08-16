@@ -139,7 +139,7 @@ export default class GitHubReposInvoker implements IReposInvoker {
 
     const options: OctokitOptions = {
       auth: process.env.SYSTEM_ACCESSTOKEN,
-      userAgent: 'PRMetrics/v1.2.3',
+      userAgent: 'PRMetrics/v1.2.4',
       log: {
         debug: (message: string): void => this._logger.logDebug(`Octokit – ${message}`),
         info: (message: string): void => this._logger.logInfo(`Octokit – ${message}`),
