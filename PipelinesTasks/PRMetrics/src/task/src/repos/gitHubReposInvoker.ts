@@ -179,7 +179,7 @@ export default class GitHubReposInvoker implements IReposInvoker {
     try {
       return await action()
     } catch (error) {
-      if (error.name === 'HttpError' && error.message === 'Not Found') {
+      if (error.status === 401 || error.status === 404) {
         error.internalMessage = error.message
         error.message = this._taskLibWrapper.loc('metrics.codeMetricsCalculator.insufficientGitHubAccessTokenPermissions')
       }

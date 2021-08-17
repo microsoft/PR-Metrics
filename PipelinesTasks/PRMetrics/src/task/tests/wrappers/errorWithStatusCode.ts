@@ -6,6 +6,11 @@
  */
 export default class ErrorWithStatusCode extends Error {
   /**
+   * The error status.
+   */
+  public status: number = 0
+
+  /**
    * The error status code.
    */
   public statusCode: number = 0

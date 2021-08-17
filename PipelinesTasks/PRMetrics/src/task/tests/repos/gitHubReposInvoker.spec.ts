@@ -6,6 +6,7 @@ import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito'
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import { expect } from 'chai'
 import async from 'async'
+import ErrorWithStatusCode from '../wrappers/errorWithStatusCode'
 import GetPullResponse from '../../src/wrappers/octokitInterfaces/getPullResponse'
 import GitHubReposInvoker from '../../src/repos/gitHubReposInvoker'
 import Logger from '../../src/utilities/logger'
@@ -680,38 +681,44 @@ describe('gitHubReposInvoker.ts', function (): void {
       verify(logger.logDebug(JSON.stringify(currentMockPullResponse))).once()
     })
 
-    it('should throw when the PAT has insufficient access', async (): Promise<void> => {
-      // Arrange
-      when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
-        expect(options.auth).to.equal('ghp_000000000000000000000000000000000000')
-        expect(options.userAgent).to.equal('PRMetrics/v1.2.4')
-        expect(options.log).to.not.equal(null)
-        expect(options.log.debug).to.not.equal(null)
-        expect(options.log.info).to.not.equal(null)
-        expect(options.log.warn).to.not.equal(null)
-        expect(options.log.error).to.not.equal(null)
+    async.each(
+      [
+        401,
+        404
+      ], (status: number): void => {
+        it(`should throw when the PAT has insufficient access and the API call returns status '${status}'`, async (): Promise<void> => {
+          // Arrange
+          when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
+            expect(options.auth).to.equal('ghp_000000000000000000000000000000000000')
+            expect(options.userAgent).to.equal('PRMetrics/v1.2.4')
+            expect(options.log).to.not.equal(null)
+            expect(options.log.debug).to.not.equal(null)
+            expect(options.log.info).to.not.equal(null)
+            expect(options.log.warn).to.not.equal(null)
+            expect(options.log.error).to.not.equal(null)
+          })
+          const error: ErrorWithStatusCode = new ErrorWithStatusCode('Test')
+          error.status = status
+          when(octokitWrapper.getPull(anything())).thenThrow(error)
+          const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
+          let errorThrown: boolean = false
+
+          try {
+            // Act
+            await gitHubReposInvoker.getTitleAndDescription()
+          } catch (error) {
+            // Assert
+            errorThrown = true
+            expect(error.message).to.equal('Could not access the resources. Ensure \'System.AccessToken\' has access to \'repos\'.')
+            expect(error.internalMessage).to.equal('Test')
+          }
+
+          expect(errorThrown).to.equal(true)
+          verify(octokitWrapper.initialize(anything())).once()
+          verify(logger.logDebug('* GitHubReposInvoker.getTitleAndDescription()')).once()
+          verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
+        })
       })
-      const error: Error = new Error('Not Found')
-      error.name = 'HttpError'
-      when(octokitWrapper.getPull(anything())).thenThrow(error)
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
-      let errorThrown: boolean = false
-
-      try {
-        // Act
-        await gitHubReposInvoker.getTitleAndDescription()
-      } catch (error) {
-        // Assert
-        errorThrown = true
-        expect(error.message).to.equal('Could not access the resources. Ensure \'System.AccessToken\' has access to \'repos\'.')
-        expect(error.internalMessage).to.equal('Not Found')
-      }
-
-      expect(errorThrown).to.equal(true)
-      verify(octokitWrapper.initialize(anything())).once()
-      verify(logger.logDebug('* GitHubReposInvoker.getTitleAndDescription()')).once()
-      verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
-    })
 
     it('should throw an error when an error occurs', async (): Promise<void> => {
       // Arrange
