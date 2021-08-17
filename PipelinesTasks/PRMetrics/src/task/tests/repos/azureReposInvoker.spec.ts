@@ -12,7 +12,7 @@ import { WebApi } from 'azure-devops-node-api'
 import async from 'async'
 import AzureDevOpsApiWrapper from '../../src/wrappers/azureDevOpsApiWrapper'
 import AzureReposInvoker from '../../src/repos/azureReposInvoker'
-import ErrorWithStatusCode from '../wrappers/errorWithStatusCode'
+import ErrorWithStatus from '../wrappers/errorWithStatus'
 import Logger from '../../src/utilities/logger'
 import PullRequestDetails from '../../src/repos/pullRequestDetails'
 import TaskLibWrapper from '../../src/wrappers/taskLibWrapper'
@@ -256,11 +256,12 @@ describe('azureReposInvoker.ts', function (): void {
     async.each(
       [
         401,
-        403
+        403,
+        404
       ], (statusCode: number): void => {
         it(`should throw when the access token has insufficient access and the API call returns status code '${statusCode}'`, async (): Promise<void> => {
           // Arrange
-          const error: ErrorWithStatusCode = new ErrorWithStatusCode('Test')
+          const error: ErrorWithStatus = new ErrorWithStatus('Test')
           error.statusCode = statusCode
           when(gitApi.getPullRequestById(10, 'Project')).thenThrow(error)
           const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger), instance(taskLibWrapper))
@@ -380,11 +381,12 @@ describe('azureReposInvoker.ts', function (): void {
     async.each(
       [
         401,
-        403
+        403,
+        404
       ], (statusCode: number): void => {
         it(`should throw when the access token has insufficient access and the API call returns status code '${statusCode}'`, async (): Promise<void> => {
           // Arrange
-          const error: ErrorWithStatusCode = new ErrorWithStatusCode('Test')
+          const error: ErrorWithStatus = new ErrorWithStatus('Test')
           error.statusCode = statusCode
           when(gitApi.getThreads('RepoID', 10, 'Project')).thenThrow(error)
           const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger), instance(taskLibWrapper))
@@ -451,11 +453,12 @@ describe('azureReposInvoker.ts', function (): void {
     async.each(
       [
         401,
-        403
+        403,
+        404
       ], (statusCode: number): void => {
         it(`should throw when the access token has insufficient access and the API call returns status code '${statusCode}'`, async (): Promise<void> => {
           // Arrange
-          const error: ErrorWithStatusCode = new ErrorWithStatusCode('Test')
+          const error: ErrorWithStatus = new ErrorWithStatus('Test')
           error.statusCode = statusCode
           when(gitApi.updatePullRequest(anything(), 'RepoID', 10, 'Project')).thenThrow(error)
           const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger), instance(taskLibWrapper))
@@ -583,11 +586,12 @@ describe('azureReposInvoker.ts', function (): void {
     async.each(
       [
         401,
-        403
+        403,
+        404
       ], (statusCode: number): void => {
         it(`should throw when the access token has insufficient access and the API call returns status code '${statusCode}'`, async (): Promise<void> => {
           // Arrange
-          const error: ErrorWithStatusCode = new ErrorWithStatusCode('Test')
+          const error: ErrorWithStatus = new ErrorWithStatus('Test')
           error.statusCode = statusCode
           when(gitApi.createThread(anything(), 'RepoID', 10, 'Project')).thenThrow(error)
           const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger), instance(taskLibWrapper))
@@ -724,11 +728,12 @@ describe('azureReposInvoker.ts', function (): void {
     async.each(
       [
         401,
-        403
+        403,
+        404
       ], (statusCode: number): void => {
         it(`should throw when the access token has insufficient access for the updateComment API and the API call returns status code '${statusCode}'`, async (): Promise<void> => {
           // Arrange
-          const error: ErrorWithStatusCode = new ErrorWithStatusCode('Test')
+          const error: ErrorWithStatus = new ErrorWithStatus('Test')
           error.statusCode = statusCode
           when(gitApi.updateComment(anything(), 'RepoID', 10, 20, 1, 'Project')).thenThrow(error)
           const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger), instance(taskLibWrapper))
@@ -756,12 +761,13 @@ describe('azureReposInvoker.ts', function (): void {
     async.each(
       [
         401,
-        403
-      ], (statusCode: number): void => {
-        it(`should throw when the access token has insufficient access for the updateComment API and the API call returns status code '${statusCode}'`, async (): Promise<void> => {
+        403,
+        404
+      ], (status: number): void => {
+        it(`should throw when the access token has insufficient access for the updateComment API and the API call returns status '${status}'`, async (): Promise<void> => {
           // Arrange
-          const error: ErrorWithStatusCode = new ErrorWithStatusCode('Test')
-          error.statusCode = statusCode
+          const error: ErrorWithStatus = new ErrorWithStatus('Test')
+          error.status = status
           when(gitApi.updateComment(anything(), 'RepoID', 10, 20, 1, 'Project')).thenResolve({})
           when(gitApi.updateThread(anything(), 'RepoID', 10, 20, 'Project')).thenThrow(error)
           const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger), instance(taskLibWrapper))
@@ -895,11 +901,12 @@ describe('azureReposInvoker.ts', function (): void {
     async.each(
       [
         401,
-        403
+        403,
+        404
       ], (statusCode: number): void => {
         it(`should throw when the access token has insufficient access and the API call returns status code '${statusCode}'`, async (): Promise<void> => {
           // Arrange
-          const error: ErrorWithStatusCode = new ErrorWithStatusCode('Test')
+          const error: ErrorWithStatus = new ErrorWithStatus('Test')
           error.statusCode = statusCode
           when(gitApi.deleteComment('RepoID', 10, 20, 1, 'Project')).thenThrow(error)
           const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger), instance(taskLibWrapper))

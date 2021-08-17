@@ -6,8 +6,8 @@ import { OctokitOptions } from '@octokit/core/dist-types/types'
 import { RequestParameters } from '@octokit/types'
 import { singleton } from 'tsyringe'
 import { Validator } from '../utilities/validator'
+import BaseReposInvoker from './baseReposInvoker'
 import GetPullResponse from '../wrappers/octokitInterfaces/getPullResponse'
-import IReposInvoker from './iReposInvoker'
 import Logger from '../utilities/logger'
 import OctokitWrapper from '../wrappers/octokitWrapper'
 import PullRequestDetails from './pullRequestDetails'
@@ -19,7 +19,7 @@ import UpdatePullResponse from '../wrappers/octokitInterfaces/updatePullResponse
  * A class for invoking GitHub Repos functionality.
  */
 @singleton()
-export default class GitHubReposInvoker implements IReposInvoker {
+export default class GitHubReposInvoker extends BaseReposInvoker {
   private readonly _logger: Logger
   private readonly _octokitWrapper: OctokitWrapper
   private readonly _taskLibWrapper: TaskLibWrapper
@@ -36,6 +36,8 @@ export default class GitHubReposInvoker implements IReposInvoker {
    * @param taskLibWrapper The wrapper around the Azure Pipelines Task Lib.
    */
   public constructor (logger: Logger, octokitWrapper: OctokitWrapper, taskLibWrapper: TaskLibWrapper) {
+    super()
+
     this._logger = logger
     this._octokitWrapper = octokitWrapper
     this._taskLibWrapper = taskLibWrapper
@@ -61,7 +63,7 @@ export default class GitHubReposInvoker implements IReposInvoker {
     this._logger.logDebug('* GitHubReposInvoker.getTitleAndDescription()')
 
     this.initialize()
-    const result: GetPullResponse = await this.performApiCall(async (): Promise<GetPullResponse> => {
+    const result: GetPullResponse = await this.invokeApiCall(async (): Promise<GetPullResponse> => {
       const result: GetPullResponse = await this._octokitWrapper.getPull({
         owner: this._owner!,
         repo: this._repo!,
@@ -106,7 +108,7 @@ export default class GitHubReposInvoker implements IReposInvoker {
       request.body = description
     }
 
-    await this.performApiCall(async (): Promise<void> => {
+    await this.invokeApiCall(async (): Promise<void> => {
       const result: UpdatePullResponse = await this._octokitWrapper.updatePull(request)
       this._logger.logDebug(JSON.stringify(result))
     })
@@ -175,16 +177,7 @@ export default class GitHubReposInvoker implements IReposInvoker {
     this._isInitialized = true
   }
 
-  private async performApiCall<TResponse> (action: () => Promise<TResponse>): Promise<TResponse> {
-    try {
-      return await action()
-    } catch (error) {
-      if (error.status === 401 || error.status === 404) {
-        error.internalMessage = error.message
-        error.message = this._taskLibWrapper.loc('metrics.codeMetricsCalculator.insufficientGitHubAccessTokenPermissions')
-      }
-
-      throw error
-    }
+  protected async invokeApiCall<TResponse> (action: () => Promise<TResponse>): Promise<TResponse> {
+    return super.invokeApiCall(action, this._taskLibWrapper.loc('metrics.codeMetricsCalculator.insufficientGitHubAccessTokenPermissions'))
   }
 }

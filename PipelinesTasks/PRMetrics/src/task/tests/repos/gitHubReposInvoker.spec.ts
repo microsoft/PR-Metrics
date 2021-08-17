@@ -6,7 +6,7 @@ import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito'
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import { expect } from 'chai'
 import async from 'async'
-import ErrorWithStatusCode from '../wrappers/errorWithStatusCode'
+import ErrorWithStatus from '../wrappers/errorWithStatus'
 import GetPullResponse from '../../src/wrappers/octokitInterfaces/getPullResponse'
 import GitHubReposInvoker from '../../src/repos/gitHubReposInvoker'
 import Logger from '../../src/utilities/logger'
@@ -684,6 +684,7 @@ describe('gitHubReposInvoker.ts', function (): void {
     async.each(
       [
         401,
+        403,
         404
       ], (status: number): void => {
         it(`should throw when the PAT has insufficient access and the API call returns status '${status}'`, async (): Promise<void> => {
@@ -697,7 +698,7 @@ describe('gitHubReposInvoker.ts', function (): void {
             expect(options.log.warn).to.not.equal(null)
             expect(options.log.error).to.not.equal(null)
           })
-          const error: ErrorWithStatusCode = new ErrorWithStatusCode('Test')
+          const error: ErrorWithStatus = new ErrorWithStatus('Test')
           error.status = status
           when(octokitWrapper.getPull(anything())).thenThrow(error)
           const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
