@@ -36,15 +36,14 @@ async function run (): Promise<void> {
     taskLib.setResult(taskLib.TaskResult.Succeeded, taskLib.loc('index.succeeded'))
   } catch (error) {
     const logger: Logger = container.resolve(Logger)
-    logger.replay()
-
     const properties: string[] = Object.getOwnPropertyNames(error)
     properties.forEach((property: string): void => {
       if (property !== 'message') {
-        logger.logError(`${error.name} – ${property}: ${JSON.stringify(error[property])}`)
+        logger.logInfo(`${error.name} – ${property}: ${JSON.stringify(error[property])}`)
       }
     })
 
+    logger.replay()
     taskLib.setResult(taskLib.TaskResult.Failed, error.message)
   }
 }

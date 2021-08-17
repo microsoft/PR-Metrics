@@ -195,7 +195,7 @@ export default class AzureReposInvoker implements IReposInvoker {
     try {
       return await action()
     } catch (error) {
-      if (error.statusCode === 403) {
+      if (error.statusCode === 401 || error.statusCode === 403) {
         error.internalMessage = error.message
         error.message = this._taskLibWrapper.loc('metrics.codeMetricsCalculator.insufficientAzureReposAccessTokenPermissions')
       }

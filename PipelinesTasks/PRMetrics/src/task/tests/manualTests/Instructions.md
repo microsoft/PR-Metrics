@@ -53,16 +53,16 @@ complement the unit tests to provide a high level of coverage.
    well as to potentially move it to a shared folder.
 1. Repeat the process for the other four pipeline definitions.
 1. On the Azure DevOps server, click your profile picture on the top right and
-   select "PErsonal access tokens".
+   select "Personal access tokens".
 1. Press "New Token".
 1. In the pane that appears, enter the name "Insufficient Access Token" and
    leave the Organization and Expiration values at their defaults.
 1. Select "Custom defined" scopes and check only 'Work Items' > 'Read'.
 1. Click "Create" and copy the resulting PAT to the clipboard.
-1. Navigate via Pipelines > Piplines to the pipelines you set up earlier.
+1. Navigate via Pipelines > Pipelines to the pipelines you set up earlier.
 1. Click the vertical "..." next to the pipeline corresponding to
    `pipeline-insufficient-access.yaml` and select "Edit".
-1. Click "Variables" and in the pane that appears click "+".
+1. Click "Variables" and in the pane that appears click "New Variable".
 1. Enter the name "InsufficientAccessPAT" and the paste in the value you
    previously copied to the clipboard. Check "keep this value secret".
 1. Click "OK" followed by "Save".
