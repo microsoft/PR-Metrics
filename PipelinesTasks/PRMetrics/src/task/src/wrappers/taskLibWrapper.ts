@@ -48,6 +48,15 @@ export default class TaskLibWrapper {
   }
 
   /**
+   * Gets the value of a variable.
+   * @param name The name of the variable.
+   * @returns The value of the variable or `undefined` if the variable was not set.
+   */
+  public getVariable (name: string): string | undefined {
+    return taskLib.getVariable(name)
+  }
+
+  /**
    * Gets the localized string from the JSON resource file and optionally formats using the additional parameters.
    * @param key The key of the resources string in the resource file.
    * @param param Optional additional parameters for formatting the string.
