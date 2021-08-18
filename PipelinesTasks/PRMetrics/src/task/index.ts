@@ -9,7 +9,7 @@ import CodeMetricsCalculator from './src/metrics/codeMetricsCalculator'
 import Logger from './src/utilities/logger'
 
 async function run (): Promise<void> {
-  try {
+  try { // Test
     taskLib.setResourcePath(path.join(__dirname, 'task.json'))
 
     const codeMetricsCalculator: CodeMetricsCalculator = container.resolve(CodeMetricsCalculator)
