@@ -23,4 +23,6 @@ stages:
         steps:
           - task: PRMetrics@1
             displayName: PR Metrics
+            env:
+              SYSTEM_ACCESSTOKEN: $(System.AccessToken)
 

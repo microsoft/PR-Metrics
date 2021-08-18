@@ -12,6 +12,7 @@ import { WebApi } from 'azure-devops-node-api'
 import async from 'async'
 import AzureDevOpsApiWrapper from '../../src/wrappers/azureDevOpsApiWrapper'
 import AzureReposInvoker from '../../src/repos/azureReposInvoker'
+import ErrorWithStatus from '../wrappers/errorWithStatus'
 import Logger from '../../src/utilities/logger'
 import PullRequestDetails from '../../src/repos/pullRequestDetails'
 import TaskLibWrapper from '../../src/wrappers/taskLibWrapper'
@@ -41,7 +42,8 @@ describe('azureReposInvoker.ts', function (): void {
     logger = mock(Logger)
 
     taskLibWrapper = mock(TaskLibWrapper)
-    when(taskLibWrapper.loc('metrics.codeMetricsCalculator.noAzureReposAccessToken')).thenReturn('Could not access the OAuth token. Add \'SYSTEM_ACCESSTOKEN\' as an environment variable (YAML) or enable \'Allow scripts to access OAuth token\' under the build process phase settings (classic).')
+    when(taskLibWrapper.loc('metrics.codeMetricsCalculator.insufficientAzureReposAccessTokenPermissions')).thenReturn('Could not access the resources. Ensure \'System.AccessToken\' has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
+    when(taskLibWrapper.loc('metrics.codeMetricsCalculator.noAzureReposAccessToken')).thenReturn('Could not access the OAuth token. Add \'System.AccessToken\' as an environment variable (YAML) or enable \'Allow scripts to access OAuth token\' under the build process phase settings (classic).')
   })
 
   after(() => {
@@ -88,7 +90,7 @@ describe('azureReposInvoker.ts', function (): void {
       const result: string | null = azureReposInvoker.isAccessTokenAvailable
 
       // Assert
-      expect(result).to.equal('Could not access the OAuth token. Add \'SYSTEM_ACCESSTOKEN\' as an environment variable (YAML) or enable \'Allow scripts to access OAuth token\' under the build process phase settings (classic).')
+      expect(result).to.equal('Could not access the OAuth token. Add \'System.AccessToken\' as an environment variable (YAML) or enable \'Allow scripts to access OAuth token\' under the build process phase settings (classic).')
       verify(logger.logDebug('* AzureReposInvoker.isAccessTokenAvailable')).once()
     })
   })
@@ -251,6 +253,39 @@ describe('azureReposInvoker.ts', function (): void {
         })
       })
 
+    async.each(
+      [
+        401,
+        403,
+        404
+      ], (statusCode: number): void => {
+        it(`should throw when the access token has insufficient access and the API call returns status code '${statusCode}'`, async (): Promise<void> => {
+          // Arrange
+          const error: ErrorWithStatus = new ErrorWithStatus('Test')
+          error.statusCode = statusCode
+          when(gitApi.getPullRequestById(10, 'Project')).thenThrow(error)
+          const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger), instance(taskLibWrapper))
+          let errorThrown: boolean = false
+
+          try {
+            // Act
+            await azureReposInvoker.getTitleAndDescription()
+          } catch (error) {
+            // Assert
+            errorThrown = true
+            expect(error.message).to.equal('Could not access the resources. Ensure \'System.AccessToken\' has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
+            expect(error.internalMessage).to.equal('Test')
+          }
+
+          expect(errorThrown).to.equal(true)
+          verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
+          verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
+          verify(gitApi.getPullRequestById(10, 'Project')).once()
+          verify(logger.logDebug('* AzureReposInvoker.getTitleAndDescription()')).once()
+          verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
+        })
+      })
+
     it('should return the title and description when available', async (): Promise<void> => {
       // Arrange
       when(gitApi.getPullRequestById(10, 'Project')).thenResolve({
@@ -343,6 +378,39 @@ describe('azureReposInvoker.ts', function (): void {
   })
 
   describe('getComments()', (): void => {
+    async.each(
+      [
+        401,
+        403,
+        404
+      ], (statusCode: number): void => {
+        it(`should throw when the access token has insufficient access and the API call returns status code '${statusCode}'`, async (): Promise<void> => {
+          // Arrange
+          const error: ErrorWithStatus = new ErrorWithStatus('Test')
+          error.statusCode = statusCode
+          when(gitApi.getThreads('RepoID', 10, 'Project')).thenThrow(error)
+          const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger), instance(taskLibWrapper))
+          let errorThrown: boolean = false
+
+          try {
+            // Act
+            await azureReposInvoker.getComments()
+          } catch (error) {
+            // Assert
+            errorThrown = true
+            expect(error.message).to.equal('Could not access the resources. Ensure \'System.AccessToken\' has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
+            expect(error.internalMessage).to.equal('Test')
+          }
+
+          expect(errorThrown).to.equal(true)
+          verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
+          verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
+          verify(gitApi.getThreads('RepoID', 10, 'Project')).once()
+          verify(logger.logDebug('* AzureReposInvoker.getComments()')).once()
+          verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
+        })
+      })
+
     it('should return the API result', async (): Promise<void> => {
       // Arrange
       when(gitApi.getThreads('RepoID', 10, 'Project')).thenResolve([{ id: 1 }])
@@ -382,6 +450,39 @@ describe('azureReposInvoker.ts', function (): void {
   })
 
   describe('setTitleAndDescription()', (): void => {
+    async.each(
+      [
+        401,
+        403,
+        404
+      ], (statusCode: number): void => {
+        it(`should throw when the access token has insufficient access and the API call returns status code '${statusCode}'`, async (): Promise<void> => {
+          // Arrange
+          const error: ErrorWithStatus = new ErrorWithStatus('Test')
+          error.statusCode = statusCode
+          when(gitApi.updatePullRequest(anything(), 'RepoID', 10, 'Project')).thenThrow(error)
+          const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger), instance(taskLibWrapper))
+          let errorThrown: boolean = false
+
+          try {
+            // Act
+            await azureReposInvoker.setTitleAndDescription('Title', 'Description')
+          } catch (error) {
+            // Assert
+            errorThrown = true
+            expect(error.message).to.equal('Could not access the resources. Ensure \'System.AccessToken\' has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
+            expect(error.internalMessage).to.equal('Test')
+          }
+
+          expect(errorThrown).to.equal(true)
+          verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
+          verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
+          verify(gitApi.updatePullRequest(anything(), 'RepoID', 10, 'Project')).once()
+          verify(logger.logDebug('* AzureReposInvoker.setTitleAndDescription()')).once()
+          verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
+        })
+      })
+
     it('should not call the API when the title and description are null', async (): Promise<void> => {
       // Arrange
       const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger), instance(taskLibWrapper))
@@ -482,6 +583,39 @@ describe('azureReposInvoker.ts', function (): void {
   })
 
   describe('createComment()', (): void => {
+    async.each(
+      [
+        401,
+        403,
+        404
+      ], (statusCode: number): void => {
+        it(`should throw when the access token has insufficient access and the API call returns status code '${statusCode}'`, async (): Promise<void> => {
+          // Arrange
+          const error: ErrorWithStatus = new ErrorWithStatus('Test')
+          error.statusCode = statusCode
+          when(gitApi.createThread(anything(), 'RepoID', 10, 'Project')).thenThrow(error)
+          const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger), instance(taskLibWrapper))
+          let errorThrown: boolean = false
+
+          try {
+            // Act
+            await azureReposInvoker.createComment('Comment Content', CommentThreadStatus.Active, 'file.ts')
+          } catch (error) {
+            // Assert
+            errorThrown = true
+            expect(error.message).to.equal('Could not access the resources. Ensure \'System.AccessToken\' has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
+            expect(error.internalMessage).to.equal('Test')
+          }
+
+          expect(errorThrown).to.equal(true)
+          verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
+          verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
+          verify(gitApi.createThread(anything(), 'RepoID', 10, 'Project')).once()
+          verify(logger.logDebug('* AzureReposInvoker.createComment()')).once()
+          verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
+        })
+      })
+
     it('should call the API for no file', async (): Promise<void> => {
       // Arrange
       const expectedComment: GitPullRequestCommentThread = {
@@ -591,6 +725,75 @@ describe('azureReposInvoker.ts', function (): void {
   })
 
   describe('updateComment()', (): void => {
+    async.each(
+      [
+        401,
+        403,
+        404
+      ], (statusCode: number): void => {
+        it(`should throw when the access token has insufficient access for the updateComment API and the API call returns status code '${statusCode}'`, async (): Promise<void> => {
+          // Arrange
+          const error: ErrorWithStatus = new ErrorWithStatus('Test')
+          error.statusCode = statusCode
+          when(gitApi.updateComment(anything(), 'RepoID', 10, 20, 1, 'Project')).thenThrow(error)
+          const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger), instance(taskLibWrapper))
+          let errorThrown: boolean = false
+
+          try {
+            // Act
+            await azureReposInvoker.updateComment('Content', CommentThreadStatus.Active, 20)
+          } catch (error) {
+            // Assert
+            errorThrown = true
+            expect(error.message).to.equal('Could not access the resources. Ensure \'System.AccessToken\' has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
+            expect(error.internalMessage).to.equal('Test')
+          }
+
+          expect(errorThrown).to.equal(true)
+          verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
+          verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
+          verify(gitApi.updateComment(anything(), 'RepoID', 10, 20, 1, 'Project')).once()
+          verify(logger.logDebug('* AzureReposInvoker.updateComment()')).once()
+          verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
+        })
+      })
+
+    async.each(
+      [
+        401,
+        403,
+        404
+      ], (status: number): void => {
+        it(`should throw when the access token has insufficient access for the updateComment API and the API call returns status '${status}'`, async (): Promise<void> => {
+          // Arrange
+          const error: ErrorWithStatus = new ErrorWithStatus('Test')
+          error.status = status
+          when(gitApi.updateComment(anything(), 'RepoID', 10, 20, 1, 'Project')).thenResolve({})
+          when(gitApi.updateThread(anything(), 'RepoID', 10, 20, 'Project')).thenThrow(error)
+          const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger), instance(taskLibWrapper))
+          let errorThrown: boolean = false
+
+          try {
+            // Act
+            await azureReposInvoker.updateComment('Content', CommentThreadStatus.Active, 20)
+          } catch (error) {
+            // Assert
+            errorThrown = true
+            expect(error.message).to.equal('Could not access the resources. Ensure \'System.AccessToken\' has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
+            expect(error.internalMessage).to.equal('Test')
+          }
+
+          expect(errorThrown).to.equal(true)
+          verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
+          verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
+          verify(gitApi.updateComment(anything(), 'RepoID', 10, 20, 1, 'Project')).once()
+          verify(gitApi.updateThread(anything(), 'RepoID', 10, 20, 'Project')).once()
+          verify(logger.logDebug('* AzureReposInvoker.updateComment()')).once()
+          verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
+          verify(logger.logDebug('{}')).once()
+        })
+      })
+
     it('should call the APIs when both the comment content and the thread status are updated', async (): Promise<void> => {
       // Arrange
       const expectedComment: Comment = {
@@ -695,6 +898,39 @@ describe('azureReposInvoker.ts', function (): void {
   })
 
   describe('deleteCommentThread()', (): void => {
+    async.each(
+      [
+        401,
+        403,
+        404
+      ], (statusCode: number): void => {
+        it(`should throw when the access token has insufficient access and the API call returns status code '${statusCode}'`, async (): Promise<void> => {
+          // Arrange
+          const error: ErrorWithStatus = new ErrorWithStatus('Test')
+          error.statusCode = statusCode
+          when(gitApi.deleteComment('RepoID', 10, 20, 1, 'Project')).thenThrow(error)
+          const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger), instance(taskLibWrapper))
+          let errorThrown: boolean = false
+
+          try {
+            // Act
+            await azureReposInvoker.deleteCommentThread(20)
+          } catch (error) {
+            // Assert
+            errorThrown = true
+            expect(error.message).to.equal('Could not access the resources. Ensure \'System.AccessToken\' has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
+            expect(error.internalMessage).to.equal('Test')
+          }
+
+          expect(errorThrown).to.equal(true)
+          verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
+          verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
+          verify(gitApi.deleteComment('RepoID', 10, 20, 1, 'Project')).once()
+          verify(logger.logDebug('* AzureReposInvoker.deleteCommentThread()')).once()
+          verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
+        })
+      })
+
     it('should call the API for a single comment', async (): Promise<void> => {
       // Arrange
       when(gitApi.deleteComment('RepoID', 10, 20, 1, 'Project')).thenResolve()

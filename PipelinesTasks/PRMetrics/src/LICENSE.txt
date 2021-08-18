@@ -1368,7 +1368,7 @@ THE SOFTWARE.
 
 ---------------------------------------------------------
 
-@octokit/oauth-app 3.4.0 - MIT
+@octokit/oauth-app 3.5.1 - MIT
 https://github.com/octokit/oauth-app.js#readme
 
 
@@ -1385,7 +1385,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---------------------------------------------------------
 
-@octokit/oauth-authorization-url 4.3.2 - MIT
+@octokit/oauth-authorization-url 4.3.3 - MIT
 https://github.com/octokit/oauth-authorization-url.js#readme
 
 Copyright (c) 2019 Octokit
@@ -1436,7 +1436,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---------------------------------------------------------
 
-@octokit/openapi-types 9.3.0 - MIT
+@octokit/openapi-types 9.4.0 - MIT
 https://github.com/octokit/openapi-types.ts#readme
 
 
@@ -1472,9 +1472,10 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---------------------------------------------------------
 
-@octokit/plugin-rest-endpoint-methods 5.6.0 - MIT
+@octokit/plugin-rest-endpoint-methods 5.7.0 - MIT
 https://github.com/octokit/plugin-rest-endpoint-methods.js#readme
 
+Copyright (c) 2019 Octokit
 
 MIT License Copyright (c) 2019 Octokit contributors
 
@@ -1616,10 +1617,9 @@ THE SOFTWARE.
 
 ---------------------------------------------------------
 
-@octokit/types 6.23.0 - MIT
+@octokit/types 6.24.0 - MIT
 https://github.com/octokit/types.ts#readme
 
-Copyright (c) 2019 Octokit
 
 MIT License Copyright (c) 2019 Octokit contributors
 
@@ -1634,11 +1634,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---------------------------------------------------------
 
-@octokit/webhooks 9.11.0 - MIT
+@octokit/webhooks 9.12.0 - MIT
 https://github.com/octokit/webhooks.js#readme
 
-copyright Sindre Sorhus
-Copyright (c) 2017 Gregor Martynus
 
 Copyright (c) 2017 Gregor Martynus
 
@@ -1685,7 +1683,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---------------------------------------------------------
 
-@octokit/webhooks-types 4.2.0 - MIT
+@octokit/webhooks-types 4.3.0 - MIT
 https://github.com/octokit/webhooks#readme
 
 
@@ -1797,7 +1795,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---------------------------------------------------------
 
-@types/node 8.10.66 - MIT
+@types/node 10.17.60 - MIT
 
 
 Copyright (c) Microsoft Corporation.
@@ -1816,7 +1814,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---------------------------------------------------------
 
-@types/node 10.17.60 - MIT
+@types/node 8.10.66 - MIT
 
 
 Copyright (c) Microsoft Corporation.
@@ -3458,10 +3456,9 @@ SOFTWARE.
 
 ---------------------------------------------------------
 
-octokit 1.2.0 - MIT
+octokit 1.3.0 - MIT
 https://github.com/octokit/octokit.js#readme
 
-Copyright (c) 2018 Octokit
 
 The MIT License
 

@@ -83,8 +83,9 @@ definition.
 
 For GitHub repos, you will need to create a PAT according to the instructions
 [here][githubpat]. The scope should be 'repos'. The resulting PAT should then be
-added to your repo as a secret with the name `PRMetrics.PAT` using the
-instructions [here][githubsecret].
+added to your repo as a secret with the name `System.AccessToken` according to
+the instructions [here][githubsecret] and mapped to `System.AccessToken` within
+the task definition.
 
 It is recommended to run the task as one of the first operations in your build,
 after code check out is complete. Running the task early in the build process
@@ -123,6 +124,8 @@ Therefore, the following YAML definition is recommended:
 steps:
 - task: ms-omex.prmetrics.prmetrics.PRMetrics@1
   displayName: 'PR Metrics'
+  env:
+    SYSTEM_ACCESSTOKEN: $(System.AccessToken)
   continueOnError: true
 ```
 
@@ -132,6 +135,8 @@ If you wish to modify the inputs, YAML akin the to the following can be used:
 steps:
 - task: ms-omex.prmetrics.prmetrics.PRMetrics@1
   displayName: 'PR Metrics'
+  env:
+    SYSTEM_ACCESSTOKEN: $(System.AccessToken)
   inputs:
     BaseSize: 200
     GrowthRate: 2.0
