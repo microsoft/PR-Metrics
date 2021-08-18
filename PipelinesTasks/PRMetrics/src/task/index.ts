@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
+// Licensed under the MIT License. TPDP
 
 import 'reflect-metadata'
 import { container } from 'tsyringe'
