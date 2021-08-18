@@ -23,6 +23,7 @@ describe('gitHubReposInvoker.ts', function (): void {
   let mockPullResponse: GetPullResponse
 
   beforeEach((): void => {
+    process.env.SYSTEM_ACCESSTOKEN = 'ghp_000000000000000000000000000000000000'
     process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI = 'https://github.com/microsoft/OMEX-Azure-DevOps-Extensions'
     process.env.SYSTEM_PULLREQUEST_PULLREQUESTNUMBER = '12345'
 
@@ -400,12 +401,12 @@ describe('gitHubReposInvoker.ts', function (): void {
     when(octokitWrapper.updatePull(anything())).thenResolve(mockPullResponse)
 
     taskLibWrapper = mock(TaskLibWrapper)
-    when(taskLibWrapper.getVariable('System.AccessToken')).thenReturn('ghp_000000000000000000000000000000000000')
     when(taskLibWrapper.loc('metrics.codeMetricsCalculator.insufficientGitHubAccessTokenPermissions')).thenReturn('Could not access the resources. Ensure \'System.AccessToken\' has access to \'repos\'.')
     when(taskLibWrapper.loc('metrics.codeMetricsCalculator.noGitHubAccessToken')).thenReturn('Could not access the Personal Access Token (PAT). Add \'System.AccessToken\' as a secret environment variable with access to \'repos\'.')
   })
 
   afterEach((): void => {
+    delete process.env.SYSTEM_ACCESSTOKEN
     delete process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI
     delete process.env.SYSTEM_PULLREQUEST_PULLREQUESTNUMBER
   })
@@ -439,7 +440,7 @@ describe('gitHubReposInvoker.ts', function (): void {
 
     it('should return a string when the token does not exist', (): void => {
       // Arrange
-      when(taskLibWrapper.getVariable('System.AccessToken')).thenReturn(undefined)
+      delete process.env.SYSTEM_ACCESSTOKEN
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
 
       // Act
@@ -546,7 +547,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('ghp_000000000000000000000000000000000000')
-        expect(options.userAgent).to.equal('PRMetrics/v1.2.5')
+        expect(options.userAgent).to.equal('PRMetrics/v1.2.4')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
         expect(options.log.info).to.not.equal(null)
@@ -573,7 +574,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI = 'https://github.com/microsoft/OMEX-Azure-DevOps-Extensions.git'
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('ghp_000000000000000000000000000000000000')
-        expect(options.userAgent).to.equal('PRMetrics/v1.2.5')
+        expect(options.userAgent).to.equal('PRMetrics/v1.2.4')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
         expect(options.log.info).to.not.equal(null)
@@ -600,7 +601,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI = 'https://organization.githubenterprise.com/microsoft/OMEX-Azure-DevOps-Extensions'
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('ghp_000000000000000000000000000000000000')
-        expect(options.userAgent).to.equal('PRMetrics/v1.2.5')
+        expect(options.userAgent).to.equal('PRMetrics/v1.2.4')
         expect(options.baseUrl).to.equal('https://organization.githubenterprise.com/api/v3')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
@@ -628,7 +629,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('ghp_000000000000000000000000000000000000')
-        expect(options.userAgent).to.equal('PRMetrics/v1.2.5')
+        expect(options.userAgent).to.equal('PRMetrics/v1.2.4')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
         expect(options.log.info).to.not.equal(null)
@@ -657,7 +658,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       currentMockPullResponse.data.body = null
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('ghp_000000000000000000000000000000000000')
-        expect(options.userAgent).to.equal('PRMetrics/v1.2.5')
+        expect(options.userAgent).to.equal('PRMetrics/v1.2.4')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
         expect(options.log.info).to.not.equal(null)
@@ -690,7 +691,7 @@ describe('gitHubReposInvoker.ts', function (): void {
           // Arrange
           when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
             expect(options.auth).to.equal('ghp_000000000000000000000000000000000000')
-            expect(options.userAgent).to.equal('PRMetrics/v1.2.5')
+            expect(options.userAgent).to.equal('PRMetrics/v1.2.4')
             expect(options.log).to.not.equal(null)
             expect(options.log.debug).to.not.equal(null)
             expect(options.log.info).to.not.equal(null)
@@ -724,7 +725,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('ghp_000000000000000000000000000000000000')
-        expect(options.userAgent).to.equal('PRMetrics/v1.2.5')
+        expect(options.userAgent).to.equal('PRMetrics/v1.2.4')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
         expect(options.log.info).to.not.equal(null)
@@ -808,7 +809,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('ghp_000000000000000000000000000000000000')
-        expect(options.userAgent).to.equal('PRMetrics/v1.2.5')
+        expect(options.userAgent).to.equal('PRMetrics/v1.2.4')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
         expect(options.log.info).to.not.equal(null)
@@ -832,7 +833,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('ghp_000000000000000000000000000000000000')
-        expect(options.userAgent).to.equal('PRMetrics/v1.2.5')
+        expect(options.userAgent).to.equal('PRMetrics/v1.2.4')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
         expect(options.log.info).to.not.equal(null)
@@ -856,7 +857,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('ghp_000000000000000000000000000000000000')
-        expect(options.userAgent).to.equal('PRMetrics/v1.2.5')
+        expect(options.userAgent).to.equal('PRMetrics/v1.2.4')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
         expect(options.log.info).to.not.equal(null)
