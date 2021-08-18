@@ -439,7 +439,7 @@ describe('gitHubReposInvoker.ts', function (): void {
     })
 
     it('should return a string when the token does not exist', (): void => {
-      // Arrange#
+      // Arrange
       delete process.env.SYSTEM_ACCESSTOKEN
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
 
