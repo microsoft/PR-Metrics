@@ -13,6 +13,8 @@ pool:
 variables:
   - name: System.Debug
     value: true
+  - name: skipComponentGovernanceDetection
+    value: true
 
 stages:
   - stage: PRMetrics
@@ -26,3 +28,48 @@ stages:
             env:
               SYSTEM_ACCESSTOKEN: $(GITHUB_PAT)
 
+  - stage: Compliance
+    displayName: Compliance
+    jobs:
+      - job: Compliance
+        displayName: Compliance
+        steps:
+          - task: ComponentGovernanceComponentDetection@0
+            inputs:
+              verbosity: Normal
+              alertWarningLevel: Low
+              failOnAlert: true
+
+          - task: AntiMalware@4
+            inputs:
+              InputType: Basic
+              ScanType: FullSystemScan
+              EnableServices: true
+              ForceSignatureUpdate: true
+              SignatureUpdateUsesMMPC: true
+              TreatSignatureUpdateFailureAs: Error
+              SignatureFreshness: UpToDate
+              TreatStaleSignatureAs: Error
+
+          - task: CredScan@3
+
+          - task: ESLint@1
+            inputs:
+              Configuration: recommended
+
+          - task: PoliCheck@2
+            inputs:
+              targetType: F
+              optionsFC: 1
+
+          - task: Semmle@1
+            inputs:
+              language: tsandjs
+
+          - task: PublishSecurityAnalysisLogs@3
+
+          - task: PostAnalysis@2
+            inputs:
+              GdnBreakPolicyMinSev: Note
+              GdnBreakGdnToolGosecSeverity: Default
+              GdnBreakPolicy: M365
