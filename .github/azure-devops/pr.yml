@@ -68,14 +68,11 @@ jobs:
       - task: AntiMalware@4
         displayName: Anti-Malware Scanner
         inputs:
-          InputType: Basic
           ScanType: FullSystemScan
           EnableServices: true
           ForceSignatureUpdate: true
           SignatureUpdateUsesMMPC: true
           TreatSignatureUpdateFailureAs: Error
-          SignatureFreshness: UpToDate
-          TreatStaleSignatureAs: Error
 
       - task: CredScan@3
         displayName: Credential Scanner
