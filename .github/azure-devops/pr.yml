@@ -28,7 +28,7 @@ jobs:
         env:
           SYSTEM_ACCESSTOKEN: $(GITHUB_PAT)
 
-  - job: PRMetrics_Ubuntu
+  - job: PRMetrics_2Ubuntu
     displayName: PR Metrics – Ubuntu
     pool:
       vmImage: ubuntu-latest
