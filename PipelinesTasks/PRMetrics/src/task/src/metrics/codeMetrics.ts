@@ -170,7 +170,10 @@ export default class CodeMetrics {
 
     const fileExtensionIndex: number = fileName.lastIndexOf('.')
     const fileExtension: string = fileName.substring(fileExtensionIndex + 1).toLowerCase()
-    return this._inputs.codeFileExtensions.has(fileExtension)
+    const result: boolean = this._inputs.codeFileExtensions.has(fileExtension)
+
+    this._logger.logDebug(`File name '${fileName}' has extension '${fileExtension}', which is ${result ? 'in' : 'ex'}cluded.`)
+    return result
   }
 
   private constructMetrics (matches: CodeFileMetric[], nonMatches: CodeFileMetric[], nonMatchesToComment: CodeFileMetric[]): void {
