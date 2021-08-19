@@ -182,21 +182,26 @@ export default class CodeMetrics {
 
     matches.forEach((entry: CodeFileMetric): void => {
       if (/.*test.*/i.test(entry.fileName)) {
+        this._logger.logDebug(`Test File: ${entry.fileName} (${entry.linesAdded} lines)`)
         testCode += entry.linesAdded
       } else {
+        this._logger.logDebug(`Product File: ${entry.fileName} (${entry.linesAdded} lines)`)
         productCode += entry.linesAdded
       }
     })
 
     nonMatches.forEach((entry: CodeFileMetric): void => {
+      this._logger.logDebug(`Ignored File: ${entry.fileName} (${entry.linesAdded} lines)`)
       ignoredCode += entry.linesAdded
     })
 
     nonMatchesToComment.forEach((entry: CodeFileMetric): void => {
       if (entry.linesAdded > 0 || (entry.linesAdded === 0 && entry.linesDeleted === 0)) {
+        this._logger.logDebug(`Ignored File: ${entry.fileName} (${entry.linesAdded} lines), comment to be added`)
         ignoredCode += entry.linesAdded
         this._filesNotRequiringReview.push(entry.fileName)
       } else {
+        this._logger.logDebug(`Ignored File: ${entry.fileName} (deleted), comment to be added`)
         this._deletedFilesNotRequiringReview.push(entry.fileName)
       }
     })
