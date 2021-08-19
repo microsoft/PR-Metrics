@@ -20,11 +20,33 @@ stages:
   - stage: PRMetrics
     displayName: PR Metrics
     jobs:
-      - job: PRMetrics
-        displayName: PR Metrics
+      - job: PRMetrics_macOS
+        displayName: PR Metrics (macOS)
+        pool:
+          vmImage: macOS-latest
         steps:
           - task: PRMetrics@1
-            displayName: PR Metrics
+            displayName: PR Metrics (macOS)
+            env:
+              SYSTEM_ACCESSTOKEN: $(GITHUB_PAT)
+
+      - job: PRMetrics_Ubuntu
+        displayName: PR Metrics (Ubuntu)
+        pool:
+          vmImage: ubuntu-latest
+        steps:
+          - task: PRMetrics@1
+            displayName: PR Metrics (Ubuntu)
+            env:
+              SYSTEM_ACCESSTOKEN: $(GITHUB_PAT)
+
+      - job: PRMetrics_Windows
+        displayName: PR Metrics (Windows)
+        pool:
+          vmImage: windows-latest
+        steps:
+          - task: PRMetrics@1
+            displayName: PR Metrics (Windows)
             env:
               SYSTEM_ACCESSTOKEN: $(GITHUB_PAT)
 
@@ -33,6 +55,8 @@ stages:
     jobs:
       - job: Compliance
         displayName: Compliance
+        pool:
+          vmImage: windows-latest
         steps:
           - task: ComponentGovernanceComponentDetection@0
             inputs:
