@@ -11,8 +11,6 @@ pool:
   vmImage: ubuntu-latest
 
 variables:
-  - name: System.Debug
-    value: true
   - name: skipComponentGovernanceDetection
     value: true
 
