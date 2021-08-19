@@ -19,40 +19,40 @@ jobs:
     displayName: PR Metrics – macOS
     pool:
       vmImage: macOS-latest
-      variables:
-        - name: System.Debug
-          value: true
-      steps:
-        - task: PRMetrics@1
-          displayName: PR Metrics
-          env:
-            SYSTEM_ACCESSTOKEN: $(GITHUB_PAT)
+    variables:
+      - name: System.Debug
+        value: true
+    steps:
+      - task: PRMetrics@1
+        displayName: PR Metrics
+        env:
+          SYSTEM_ACCESSTOKEN: $(GITHUB_PAT)
 
   - job: PRMetrics_Ubuntu
     displayName: PR Metrics – Ubuntu
     pool:
       vmImage: ubuntu-latest
-      variables:
-        - name: System.Debug
-          value: true
-      steps:
-        - task: PRMetrics@1
-          displayName: PR Metrics
-          env:
-            SYSTEM_ACCESSTOKEN: $(GITHUB_PAT)
+    variables:
+      - name: System.Debug
+        value: true
+    steps:
+      - task: PRMetrics@1
+        displayName: PR Metrics
+        env:
+          SYSTEM_ACCESSTOKEN: $(GITHUB_PAT)
 
   - job: PRMetrics_Windows
     displayName: PR Metrics – Windows
     pool:
       vmImage: windows-latest
-      variables:
-        - name: System.Debug
-          value: true
-      steps:
-        - task: PRMetrics@1
-          displayName: PR Metrics
-          env:
-            SYSTEM_ACCESSTOKEN: $(GITHUB_PAT)
+    variables:
+      - name: System.Debug
+        value: true
+    steps:
+      - task: PRMetrics@1
+        displayName: PR Metrics
+        env:
+          SYSTEM_ACCESSTOKEN: $(GITHUB_PAT)
 
   - job: Compliance
     displayName: Compliance
