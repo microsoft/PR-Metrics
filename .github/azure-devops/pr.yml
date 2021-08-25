@@ -11,18 +11,94 @@ pool:
   vmImage: ubuntu-latest
 
 variables:
-  - name: System.Debug
+  - name: skipComponentGovernanceDetection
     value: true
 
-stages:
-  - stage: PRMetrics
-    displayName: PR Metrics
-    jobs:
-      - job: PRMetrics
+jobs:
+  - job: PRMetrics_macOS
+    displayName: PR Metrics – macOS
+    pool:
+      vmImage: macOS-latest
+    variables:
+      - name: System.Debug
+        value: true
+    steps:
+      - task: PRMetrics@1
         displayName: PR Metrics
-        steps:
-          - task: PRMetrics@1
-            displayName: PR Metrics
-            env:
-              SYSTEM_ACCESSTOKEN: $(GITHUB_PAT)
+        env:
+          SYSTEM_ACCESSTOKEN: $(GITHUB_PAT)
 
+  - job: PRMetrics_Ubuntu
+    displayName: PR Metrics – Ubuntu
+    pool:
+      vmImage: ubuntu-latest
+    variables:
+      - name: System.Debug
+        value: true
+    steps:
+      - task: PRMetrics@1
+        displayName: PR Metrics
+        env:
+          SYSTEM_ACCESSTOKEN: $(GITHUB_PAT)
+
+  - job: PRMetrics_Windows
+    displayName: PR Metrics – Windows
+    pool:
+      vmImage: windows-latest
+    variables:
+      - name: System.Debug
+        value: true
+    steps:
+      - task: PRMetrics@1
+        displayName: PR Metrics
+        env:
+          SYSTEM_ACCESSTOKEN: $(GITHUB_PAT)
+
+  - job: Compliance
+    displayName: Compliance
+    pool:
+      vmImage: windows-latest
+    steps:
+      - task: ComponentGovernanceComponentDetection@0
+        displayName: Component Detection
+        inputs:
+          alertWarningLevel: Low
+          failOnAlert: true
+
+      - task: AntiMalware@4
+        displayName: Anti-Malware Scanner
+        inputs:
+          ScanType: FullSystemScan
+          EnableServices: true
+          ForceSignatureUpdate: true
+          SignatureUpdateUsesMMPC: true
+          TreatSignatureUpdateFailureAs: Error
+
+      - task: CredScan@3
+        displayName: Credential Scanner
+
+      - task: ESLint@1
+        displayName: ESLint
+        inputs:
+          Configuration: recommended
+
+      - task: PoliCheck@2
+        displayName: PoliCheck
+        inputs:
+          targetType: F
+          optionsFC: 1
+
+      - task: Semmle@1
+        displayName: CodeQL
+        inputs:
+          language: tsandjs
+
+      - task: PublishSecurityAnalysisLogs@3
+        displayName: Guardian – Publish Artifacts
+
+      - task: PostAnalysis@2
+        displayName: Guardian – Perform Analysis
+        inputs:
+          GdnBreakPolicyMinSev: Note
+          GdnBreakGdnToolGosecSeverity: Default
+          GdnBreakPolicy: M365
