@@ -121,6 +121,7 @@ describe('codeMetrics.ts', (): void => {
       ['1\t0\tfolder/test.ts', 'XS', true, new CodeMetricsData(0, 1, 0)],
       ['1\t0\tfolder/Test.ts', 'XS', true, new CodeMetricsData(0, 1, 0)],
       ['1\t0\tfolder/file.spec.ts', 'XS', true, new CodeMetricsData(0, 1, 0)],
+      ['1\t0\tfolder/file.Spec.ts', 'XS', true, new CodeMetricsData(0, 1, 0)],
       ['1\t0\tfolder.spec.ts/file.ts', 'XS', false, new CodeMetricsData(1, 0, 0)],
       ['1\t0\ttest/file.ts', 'XS', true, new CodeMetricsData(0, 1, 0)],
       ['1\t0\ttests/file.ts', 'XS', true, new CodeMetricsData(0, 1, 0)],
