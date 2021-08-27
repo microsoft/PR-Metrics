@@ -10,6 +10,7 @@ import GitInvoker from '../git/gitInvoker'
 import Inputs from './inputs'
 import Logger from '../utilities/logger'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
+import * as path from 'path'
 
 /**
  * A class for computing metrics for software code in pull requests.
@@ -184,7 +185,7 @@ export default class CodeMetrics {
     let ignoredCode: number = 0
 
     matches.forEach((entry: CodeFileMetric): void => {
-      if (/.*test.*/i.test(entry.fileName)) {
+      if (/.*test.*/i.test(entry.fileName) || /.*\.spec\..*/i.test(path.basename(entry.fileName))) {
         this._logger.logDebug(`Test File: ${entry.fileName} (${entry.linesAdded} lines)`)
         testCode += entry.linesAdded
       } else {

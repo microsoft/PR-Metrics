@@ -157,8 +157,9 @@ This task is written in [TypeScript][typescript] using the
 
 It works by querying Git for changes using the command
 `git diff --numstat origin/<target>...pull/<pull_request_id>/merge`. Files with
-`test` in the file or directory name (irrespective of case) are considered test
-files. All other files are considered product code files.
+`test` in the file or directory name or `.spec` in the file name (irrespective
+of case) are considered test files. All other files are considered product code
+files.
 
 Note that this task is designed to give a quick estimate of the size of a change
 and its test coverage. It is not an authoritative metric and should not be

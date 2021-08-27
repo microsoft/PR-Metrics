@@ -1077,7 +1077,7 @@ IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 ---------------------------------------------------------
 
-@octokit/app 12.0.3 - MIT
+@octokit/app 12.0.4 - MIT
 https://github.com/octokit/app.js#readme
 
 Copyright (c) 2018 Octokit
@@ -1436,7 +1436,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---------------------------------------------------------
 
-@octokit/openapi-types 9.4.0 - MIT
+@octokit/openapi-types 9.7.0 - MIT
 https://github.com/octokit/openapi-types.ts#readme
 
 
@@ -1454,7 +1454,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---------------------------------------------------------
 
-@octokit/plugin-paginate-rest 2.15.0 - MIT
+@octokit/plugin-paginate-rest 2.15.1 - MIT
 https://github.com/octokit/plugin-paginate-rest.js#readme
 
 Copyright (c) 2019 Octokit
@@ -1472,7 +1472,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---------------------------------------------------------
 
-@octokit/plugin-rest-endpoint-methods 5.7.0 - MIT
+@octokit/plugin-rest-endpoint-methods 5.8.0 - MIT
 https://github.com/octokit/plugin-rest-endpoint-methods.js#readme
 
 Copyright (c) 2019 Octokit
@@ -1554,9 +1554,10 @@ THE SOFTWARE.
 
 ---------------------------------------------------------
 
-@octokit/request 5.6.0 - MIT
+@octokit/request 5.6.1 - MIT
 https://github.com/octokit/request.js#readme
 
+Copyright (c) 2018 Octokit
 
 The MIT License
 
@@ -1617,9 +1618,10 @@ THE SOFTWARE.
 
 ---------------------------------------------------------
 
-@octokit/types 6.24.0 - MIT
+@octokit/types 6.25.0 - MIT
 https://github.com/octokit/types.ts#readme
 
+Copyright (c) 2019 Octokit
 
 MIT License Copyright (c) 2019 Octokit contributors
 
@@ -1757,7 +1759,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---------------------------------------------------------
 
-@types/jsonwebtoken 8.5.4 - MIT
+@types/jsonwebtoken 8.5.5 - MIT
 https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/jsonwebtoken
 
 Copyright (c) Microsoft Corporation.
@@ -1979,7 +1981,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ---------------------------------------------------------
 
-azure-pipelines-task-lib 3.1.6 - MIT
+azure-pipelines-task-lib 3.1.8 - MIT
 https://github.com/Microsoft/azure-pipelines-task-lib
 
 Copyright 2018
@@ -2754,7 +2756,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---------------------------------------------------------
 
-is-core-module 2.5.0 - MIT
+is-core-module 2.6.0 - MIT
 https://github.com/inspect-js/is-core-module
 
 Copyright (c) 2014 Dave Justice
@@ -3456,9 +3458,10 @@ SOFTWARE.
 
 ---------------------------------------------------------
 
-octokit 1.3.0 - MIT
+octokit 1.4.0 - MIT
 https://github.com/octokit/octokit.js#readme
 
+Copyright (c) 2018 Octokit
 
 The MIT License
 
@@ -4119,7 +4122,7 @@ Copyright (c) 2010, Linden Research, Inc.
 
 ---------------------------------------------------------
 
-typed-rest-client 1.8.4 - MIT
+typed-rest-client 1.8.5 - MIT
 https://github.com/Microsoft/typed-rest-client#readme
 
 
