@@ -9,7 +9,7 @@
   "author": "Microsoft Corporation",
   "category": "Azure Pipelines",
   "visibility": ["Build"],
-  "minimumAgentVersion": "2.190.0",
+  "minimumAgentVersion": "2.192.0",
   "version": {
     "Major": 1,
     "Minor": 2,
