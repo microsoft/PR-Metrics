@@ -23,7 +23,7 @@ describe('gitHubReposInvoker.ts', function (): void {
   let mockPullResponse: GetPullResponse
 
   beforeEach((): void => {
-    process.env.SYSTEM_ACCESSTOKEN = 'ghp_000000000000000000000000000000000000'
+    process.env.SYSTEM_ACCESSTOKEN = 'OAUTH'
     process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI = 'https://github.com/microsoft/OMEX-Azure-DevOps-Extensions'
     process.env.SYSTEM_PULLREQUEST_PULLREQUESTNUMBER = '12345'
 
@@ -546,7 +546,7 @@ describe('gitHubReposInvoker.ts', function (): void {
     it('should succeed when the inputs are valid', async (): Promise<void> => {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
-        expect(options.auth).to.equal('ghp_000000000000000000000000000000000000')
+        expect(options.auth).to.equal('OAUTH')
         expect(options.userAgent).to.equal('PRMetrics/v1.2.6')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
@@ -573,7 +573,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       // Arrange
       process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI = 'https://github.com/microsoft/OMEX-Azure-DevOps-Extensions.git'
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
-        expect(options.auth).to.equal('ghp_000000000000000000000000000000000000')
+        expect(options.auth).to.equal('OAUTH')
         expect(options.userAgent).to.equal('PRMetrics/v1.2.6')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
@@ -600,7 +600,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       // Arrange
       process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI = 'https://organization.githubenterprise.com/microsoft/OMEX-Azure-DevOps-Extensions'
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
-        expect(options.auth).to.equal('ghp_000000000000000000000000000000000000')
+        expect(options.auth).to.equal('OAUTH')
         expect(options.userAgent).to.equal('PRMetrics/v1.2.6')
         expect(options.baseUrl).to.equal('https://organization.githubenterprise.com/api/v3')
         expect(options.log).to.not.equal(null)
@@ -628,7 +628,7 @@ describe('gitHubReposInvoker.ts', function (): void {
     it('should succeed when called twice with the inputs valid', async (): Promise<void> => {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
-        expect(options.auth).to.equal('ghp_000000000000000000000000000000000000')
+        expect(options.auth).to.equal('OAUTH')
         expect(options.userAgent).to.equal('PRMetrics/v1.2.6')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
@@ -657,7 +657,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       const currentMockPullResponse: GetPullResponse = mockPullResponse
       currentMockPullResponse.data.body = null
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
-        expect(options.auth).to.equal('ghp_000000000000000000000000000000000000')
+        expect(options.auth).to.equal('OAUTH')
         expect(options.userAgent).to.equal('PRMetrics/v1.2.6')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
@@ -690,7 +690,7 @@ describe('gitHubReposInvoker.ts', function (): void {
         it(`should throw when the PAT has insufficient access and the API call returns status '${status}'`, async (): Promise<void> => {
           // Arrange
           when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
-            expect(options.auth).to.equal('ghp_000000000000000000000000000000000000')
+            expect(options.auth).to.equal('OAUTH')
             expect(options.userAgent).to.equal('PRMetrics/v1.2.6')
             expect(options.log).to.not.equal(null)
             expect(options.log.debug).to.not.equal(null)
@@ -724,7 +724,7 @@ describe('gitHubReposInvoker.ts', function (): void {
     it('should throw an error when an error occurs', async (): Promise<void> => {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
-        expect(options.auth).to.equal('ghp_000000000000000000000000000000000000')
+        expect(options.auth).to.equal('OAUTH')
         expect(options.userAgent).to.equal('PRMetrics/v1.2.6')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
@@ -808,7 +808,7 @@ describe('gitHubReposInvoker.ts', function (): void {
     it('should succeed when the title and description are both set', async (): Promise<void> => {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
-        expect(options.auth).to.equal('ghp_000000000000000000000000000000000000')
+        expect(options.auth).to.equal('OAUTH')
         expect(options.userAgent).to.equal('PRMetrics/v1.2.6')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
@@ -832,7 +832,7 @@ describe('gitHubReposInvoker.ts', function (): void {
     it('should succeed when the title is set', async (): Promise<void> => {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
-        expect(options.auth).to.equal('ghp_000000000000000000000000000000000000')
+        expect(options.auth).to.equal('OAUTH')
         expect(options.userAgent).to.equal('PRMetrics/v1.2.6')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
@@ -856,7 +856,7 @@ describe('gitHubReposInvoker.ts', function (): void {
     it('should succeed when the description is set', async (): Promise<void> => {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
-        expect(options.auth).to.equal('ghp_000000000000000000000000000000000000')
+        expect(options.auth).to.equal('OAUTH')
         expect(options.userAgent).to.equal('PRMetrics/v1.2.6')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
