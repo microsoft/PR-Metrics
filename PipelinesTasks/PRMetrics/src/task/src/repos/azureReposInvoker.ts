@@ -10,8 +10,10 @@ import { WebApi } from 'azure-devops-node-api'
 import AzureDevOpsApiWrapper from '../wrappers/azureDevOpsApiWrapper'
 import BaseReposInvoker from './baseReposInvoker'
 import Logger from '../utilities/logger'
-import PullRequestDetails from './pullRequestDetails'
+import PullRequestCommentGrouping from './interfaces/pullRequestCommentGrouping'
+import PullRequestDetails from './interfaces/pullRequestDetails'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
+import PullRequestComment from './interfaces/pullRequestComment'
 
 /**
  * A class for invoking Azure Repos functionality.
@@ -72,13 +74,13 @@ export default class AzureReposInvoker extends BaseReposInvoker {
     }
   }
 
-  public async getComments (): Promise<GitPullRequestCommentThread[]> {
+  public async getComments (): Promise<PullRequestCommentGrouping> {
     this._logger.logDebug('* AzureReposInvoker.getComments()')
 
     const gitApiPromise: Promise<IGitApi> = this.getGitApi()
     const result: GitPullRequestCommentThread[] = await this.invokeApiCall(async (): Promise<GitPullRequestCommentThread[]> => await (await gitApiPromise).getThreads(this._repositoryId, this._pullRequestId, this._project))
     this._logger.logDebug(JSON.stringify(result))
-    return result
+    return AzureReposInvoker.convertPullRequestComments(result)
   }
 
   public async setTitleAndDescription (title: string | null, description: string | null): Promise<void> {
@@ -191,6 +193,36 @@ export default class AzureReposInvoker extends BaseReposInvoker {
     this._gitApi = await connection.getGitApi()
 
     return this._gitApi
+  }
+
+  private static convertPullRequestComments(comments: GitPullRequestCommentThread[]): PullRequestCommentGrouping {
+    const result: PullRequestCommentGrouping = new PullRequestCommentGrouping()
+
+    for (let i: number = 0; i < comments.length; i++) {
+      const commentThread: GitPullRequestCommentThread = comments[i]!
+
+      const resultComment: PullRequestComment = new PullRequestComment()
+      resultComment.id = Validator.validate(commentThread.id, `commentThread[${i}].id`, 'PullRequestComments.getMetricsCommentData()')
+      resultComment.status = commentThread.status
+
+      const commentThreadComments: Comment[] = Validator.validate(commentThread.comments, `commentThread[${i}].comments`, 'PullRequestComments.getMetricsCommentData()')
+      const firstComment: Comment = Validator.validate(commentThreadComments[0], `commentThread[${i}].comments[0]`, 'PullRequestComments.getMetricsCommentData()')
+      resultComment.content = firstComment.content
+
+      if (!commentThread.threadContext) {
+        result.pullRequestComments.push(resultComment)
+      } else {
+        const filePath: string = Validator.validate(commentThread.threadContext.filePath, `commentThread[${i}].threadContext.filePath`, 'PullRequestComments.getFilesRequiringCommentUpdates()')
+        if (filePath.length <= 1) {
+          throw RangeError(`'commentThread[${i}].threadContext.filePath' '${filePath}' is of length '${filePath.length}'.`)
+        }
+
+        resultComment.file = filePath.substring(1)
+        result.fileComments.push(resultComment)
+      }
+    }
+
+    return result
   }
 
   protected async invokeApiCall<TResponse> (action: () => Promise<TResponse>): Promise<TResponse> {

@@ -8,7 +8,7 @@ import { instance, mock, verify } from 'ts-mockito'
 import AzureReposInvoker from '../../src/repos/azureReposInvoker'
 import GitHubReposInvoker from '../../src/repos/gitHubReposInvoker'
 import Logger from '../../src/utilities/logger'
-import PullRequestDetails from '../../src/repos/pullRequestDetails'
+import PullRequestDetails from '../../src/repos/interfaces/pullRequestDetails'
 import ReposInvoker from '../../src/repos/reposInvoker'
 import async from 'async'
 

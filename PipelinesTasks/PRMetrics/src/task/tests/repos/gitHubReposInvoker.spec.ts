@@ -12,7 +12,7 @@ import GitHubReposInvoker from '../../src/repos/gitHubReposInvoker'
 import Logger from '../../src/utilities/logger'
 import OctokitLogObject from '../wrappers/octokitLogObject'
 import OctokitWrapper from '../../src/wrappers/octokitWrapper'
-import PullRequestDetails from '../../src/repos/pullRequestDetails'
+import PullRequestDetails from '../../src/repos/interfaces/pullRequestDetails'
 import TaskLibWrapper from '../../src/wrappers/taskLibWrapper'
 
 describe('gitHubReposInvoker.ts', function (): void {

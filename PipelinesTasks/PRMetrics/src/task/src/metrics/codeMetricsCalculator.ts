@@ -8,7 +8,7 @@ import Logger from '../utilities/logger'
 import PullRequest from '../pullRequests/pullRequest'
 import PullRequestComments from '../pullRequests/pullRequestComments'
 import PullRequestCommentsData from '../pullRequests/pullRequestCommentsData'
-import PullRequestDetails from '../repos/pullRequestDetails'
+import PullRequestDetails from '../repos/interfaces/pullRequestDetails'
 import ReposInvoker from '../repos/reposInvoker'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
 

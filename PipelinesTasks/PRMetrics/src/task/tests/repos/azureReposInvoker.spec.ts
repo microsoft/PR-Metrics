@@ -14,7 +14,7 @@ import AzureDevOpsApiWrapper from '../../src/wrappers/azureDevOpsApiWrapper'
 import AzureReposInvoker from '../../src/repos/azureReposInvoker'
 import ErrorWithStatus from '../wrappers/errorWithStatus'
 import Logger from '../../src/utilities/logger'
-import PullRequestDetails from '../../src/repos/pullRequestDetails'
+import PullRequestDetails from '../../src/repos/interfaces/pullRequestDetails'
 import TaskLibWrapper from '../../src/wrappers/taskLibWrapper'
 
 describe('azureReposInvoker.ts', function (): void {

@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { Comment, CommentThreadStatus, GitPullRequestCommentThread } from 'azure-devops-node-api/interfaces/GitInterfaces'
+import { Comment, CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import { injectable } from 'tsyringe'
 import { Validator } from '../utilities/validator'
 import * as os from 'os'
@@ -9,9 +9,11 @@ import CodeMetrics from '../metrics/codeMetrics'
 import CodeMetricsData from '../metrics/codeMetricsData'
 import Inputs from '../metrics/inputs'
 import Logger from '../utilities/logger'
+import PullRequestComment from '../repos/interfaces/pullRequestComment'
 import PullRequestCommentsData from './pullRequestCommentsData'
 import ReposInvoker from '../repos/reposInvoker'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
+import PullRequestCommentGrouping from '../repos/interfaces/pullRequestCommentGrouping'
 
 /**
  * A class for managing pull requests comments.
@@ -61,17 +63,17 @@ export default class PullRequestComments {
     const deletedFilesNotRequiringReview: string[] = await this._codeMetrics.getDeletedFilesNotRequiringReview()
     let result: PullRequestCommentsData = new PullRequestCommentsData(filesNotRequiringReview, deletedFilesNotRequiringReview)
 
-    const commentThreads: GitPullRequestCommentThread[] = await this._reposInvoker.getComments()
-    for (let i: number = 0; i < commentThreads.length; i++) {
-      const commentThread: GitPullRequestCommentThread = commentThreads[i]!
-      if (!commentThread.threadContext) {
-        // If the current comment thread is not applied to a specified file, check if it is the metrics comment thread.
-        result = this.getMetricsCommentData(result, commentThread, i)
-      } else {
-        // If the current comment thread is applied to a specified file, check if it already contains a comment related to files that can be ignored.
-        result = this.getFilesRequiringCommentUpdates(result, commentThread, i)
-      }
-    }
+    const comments: PullRequestCommentGrouping = await this._reposInvoker.getComments()
+
+    // If the current comment thread is not applied to a specified file, check if it is the metrics comment thread.
+    comments.pullRequestComments.forEach((comment: PullRequestComment) => {
+      result = this.getMetricsCommentData(result, comment)
+    })
+
+    // If the current comment thread is not applied to a specified file, check if it is the metrics comment thread.
+    comments.fileComments.forEach((comment: PullRequestComment) => {
+      result = this.getFilesRequiringCommentUpdates(result, comment)
+    })
 
     return result
   }
@@ -121,58 +123,43 @@ export default class PullRequestComments {
     return CommentThreadStatus.Active
   }
 
-  private getMetricsCommentData (result: PullRequestCommentsData, commentThread: GitPullRequestCommentThread, commentThreadIndex: number): PullRequestCommentsData {
+  private getMetricsCommentData (result: PullRequestCommentsData, comment: PullRequestComment): PullRequestCommentsData {
     this._logger.logDebug('* PullRequestComments.getMetricsCommentData()')
 
-    const comments: Comment[] = Validator.validate(commentThread.comments, `commentThread[${commentThreadIndex}].comments`, 'PullRequestComments.getMetricsCommentData()')
-    const firstComment: Comment = Validator.validate(comments[0], `commentThread[${commentThreadIndex}].comments[0]`, 'PullRequestComments.getMetricsCommentData()')
-    if (!firstComment.content) {
+    if (!comment.content) {
       return result
     }
 
-    if (!firstComment.content.startsWith(`${this._taskLibWrapper.loc('pullRequests.pullRequestComments.commentTitle')}${os.EOL}`)) {
+    if (!comment.content.startsWith(`${this._taskLibWrapper.loc('pullRequests.pullRequestComments.commentTitle')}${os.EOL}`)) {
       return result
     }
 
-    result.metricsCommentThreadId = Validator.validate(commentThread.id, `commentThread[${commentThreadIndex}].id`, 'PullRequestComments.getMetricsCommentData()')
-    result.metricsCommentThreadStatus = commentThread.status ?? null
-    result.metricsCommentContent = firstComment.content
+    result.metricsCommentThreadId = comment.id
+    result.metricsCommentThreadStatus = comment.status ?? null
+    result.metricsCommentContent = comment.content
     return result
   }
 
-  private getFilesRequiringCommentUpdates (
-    result: PullRequestCommentsData,
-    commentThread: GitPullRequestCommentThread,
-    commentThreadIndex: number): PullRequestCommentsData {
+  private getFilesRequiringCommentUpdates (result: PullRequestCommentsData, comment: PullRequestComment): PullRequestCommentsData {
     this._logger.logDebug('* PullRequestComments.getFilesRequiringCommentUpdates()')
 
-    const filePath: string = Validator.validate(commentThread.threadContext!.filePath, `commentThread[${commentThreadIndex}].threadContext.filePath`, 'PullRequestComments.getFilesRequiringCommentUpdates()')
-    if (filePath.length <= 1) {
-      throw RangeError(`'commentThread[${commentThreadIndex}].threadContext.filePath' '${filePath}' is of length '${filePath.length}'.`)
-    }
-
-    const fileName: string = filePath.substring(1)
-
-    const comments: Comment[] = Validator.validate(commentThread.comments, `commentThread[${commentThreadIndex}].comments`, 'PullRequestComments.getFilesRequiringCommentUpdates()')
-    const comment: Comment = Validator.validate(comments[0], `commentThread[${commentThreadIndex}].comments[0]`, 'PullRequestComments.getFilesRequiringCommentUpdates()')
     if (comment.content !== this.noReviewRequiredComment) {
       return result
     }
 
-    const fileIndex: number = result.filesNotRequiringReview.indexOf(fileName)
+    const fileIndex: number = result.filesNotRequiringReview.indexOf(comment.file)
     if (fileIndex !== -1) {
       result.filesNotRequiringReview.splice(fileIndex, 1)
       return result
     }
 
-    const deletedFileIndex: number = result.deletedFilesNotRequiringReview.indexOf(fileName)
+    const deletedFileIndex: number = result.deletedFilesNotRequiringReview.indexOf(comment.file)
     if (deletedFileIndex !== -1) {
       result.deletedFilesNotRequiringReview.splice(deletedFileIndex, 1)
       return result
     }
 
-    const threadId: number = Validator.validate(commentThread.id, `commentThread[${commentThreadIndex}].id`, 'PullRequestComments.getFilesRequiringCommentUpdates()')
-    result.commentThreadsRequiringDeletion.push(threadId)
+    result.commentThreadsRequiringDeletion.push(comment.id)
     return result
   }
 

@@ -1,9 +1,10 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { CommentThreadStatus, GitPullRequestCommentThread } from 'azure-devops-node-api/interfaces/GitInterfaces'
+import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import IReposInvoker from './iReposInvoker'
-import PullRequestDetails from './pullRequestDetails'
+import PullRequestCommentGrouping from './interfaces/pullRequestCommentGrouping'
+import PullRequestDetails from './interfaces/pullRequestDetails'
 
 /**
  * A base class for invoking repository functionality.
@@ -15,7 +16,7 @@ export default abstract class BaseReposInvoker implements IReposInvoker {
 
   public abstract getTitleAndDescription(): Promise<PullRequestDetails>
 
-  public abstract getComments(): Promise<GitPullRequestCommentThread[]>
+  public abstract getComments(): Promise<PullRequestCommentGrouping>
 
   public abstract setTitleAndDescription(title: string | null, description: string | null): Promise<void>
 

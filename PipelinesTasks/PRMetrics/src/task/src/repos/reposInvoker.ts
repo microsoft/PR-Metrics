@@ -1,14 +1,15 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { CommentThreadStatus, GitPullRequestCommentThread } from 'azure-devops-node-api/interfaces/GitInterfaces'
+import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import { singleton } from 'tsyringe'
 import { Validator } from '../utilities/validator'
 import AzureReposInvoker from './azureReposInvoker'
 import GitHubReposInvoker from './gitHubReposInvoker'
 import IReposInvoker from './iReposInvoker'
 import Logger from '../utilities/logger'
-import PullRequestDetails from './pullRequestDetails'
+import PullRequestCommentGrouping from './interfaces/pullRequestCommentGrouping'
+import PullRequestDetails from './interfaces/pullRequestDetails'
 
 /**
  * A class for invoking repository functionality with any underlying repository store.
@@ -54,7 +55,7 @@ export default class ReposInvoker implements IReposInvoker {
     return reposInvoker.getTitleAndDescription()
   }
 
-  public async getComments (): Promise<GitPullRequestCommentThread[]> {
+  public async getComments (): Promise<PullRequestCommentGrouping> {
     this._logger.logDebug('* ReposInvoker.getComments()')
 
     const reposInvoker: IReposInvoker = this.getReposInvoker()

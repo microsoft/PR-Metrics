@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { CommentThreadStatus, GitPullRequestCommentThread } from 'azure-devops-node-api/interfaces/GitInterfaces'
+import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import { OctokitOptions } from '@octokit/core/dist-types/types'
 import { RequestParameters } from '@octokit/types'
 import { singleton } from 'tsyringe'
@@ -14,7 +14,8 @@ import GetPullResponse from '../wrappers/octokitInterfaces/getPullResponse'
 import GetReviewCommentsResponse from '../wrappers/octokitInterfaces/getReviewCommentsResponse'
 import Logger from '../utilities/logger'
 import OctokitWrapper from '../wrappers/octokitWrapper'
-import PullRequestDetails from './pullRequestDetails'
+import PullRequestCommentGrouping from './interfaces/pullRequestCommentGrouping'
+import PullRequestDetails from './interfaces/pullRequestDetails'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
 import UpdatePullRequest from '../wrappers/octokitInterfaces/updatePullRequest'
 import UpdatePullResponse from '../wrappers/octokitInterfaces/updatePullResponse'
@@ -84,7 +85,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     }
   }
 
-  public async getComments (): Promise<GitPullRequestCommentThread[]> {
+  public async getComments (): Promise<PullRequestCommentGrouping> {
     this._logger.logDebug('* GitHubReposInvoker.getComments()')
 
     this.initialize()
