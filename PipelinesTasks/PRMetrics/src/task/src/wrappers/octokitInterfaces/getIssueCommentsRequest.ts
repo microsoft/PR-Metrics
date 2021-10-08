@@ -4,12 +4,12 @@
 import BaseRequest from './baseRequest'
 
 /**
- * An interface representing the base payload to send to a GitHub request.
+ * An interface representing the payload to send to get the issue comments for a GitHub pull request review.
  */
-export default interface BasePullRequest extends BaseRequest {
+export default interface GetIssueCommentsRequest extends BaseRequest {
   /**
    * The numeric ID of the pull request.
    */
   // eslint-disable-next-line camelcase
-  pull_number: number
+  issue_number: number
 }

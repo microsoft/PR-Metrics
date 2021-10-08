@@ -6,8 +6,12 @@ import { OctokitOptions } from '@octokit/core/dist-types/types'
 import { RequestParameters } from '@octokit/types'
 import { singleton } from 'tsyringe'
 import { Validator } from '../utilities/validator'
+import BasePullRequest from '../wrappers/octokitInterfaces/basePullRequest'
 import BaseReposInvoker from './baseReposInvoker'
+import GetIssueCommentsRequest from '../wrappers/octokitInterfaces/getIssueCommentsRequest'
+import GetIssueCommentsResponse from '../wrappers/octokitInterfaces/getIssueCommentsResponse'
 import GetPullResponse from '../wrappers/octokitInterfaces/getPullResponse'
+import GetReviewCommentsResponse from '../wrappers/octokitInterfaces/getReviewCommentsResponse'
 import Logger from '../utilities/logger'
 import OctokitWrapper from '../wrappers/octokitWrapper'
 import PullRequestDetails from './pullRequestDetails'
@@ -46,7 +50,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
   public get isCommentsFunctionalityAvailable (): boolean {
     this._logger.logDebug('* GitHubReposInvoker.isCommentsFunctionalityAvailable')
 
-    return false
+    return true
   }
 
   public get isAccessTokenAvailable (): string | null {
@@ -82,6 +86,28 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
 
   public async getComments (): Promise<GitPullRequestCommentThread[]> {
     this._logger.logDebug('* GitHubReposInvoker.getComments()')
+
+    this.initialize()
+    const issueCommentsRequest: RequestParameters & GetIssueCommentsRequest = {
+      owner: this._owner!,
+      repo: this._repo!,
+      issue_number: this._pullRequestId!
+    }
+    const reviewCommentsRequest: RequestParameters & BasePullRequest = {
+      owner: this._owner!,
+      repo: this._repo!,
+      pull_number: this._pullRequestId!
+    }
+
+    await this.invokeApiCall(async (): Promise<void> => {
+      const result: GetIssueCommentsResponse = await this._octokitWrapper.getIssueComments(issueCommentsRequest)
+      this._logger.logDebug(JSON.stringify(result))
+    })
+
+    await this.invokeApiCall(async (): Promise<void> => {
+      const result: GetReviewCommentsResponse = await this._octokitWrapper.getReviewComments(reviewCommentsRequest)
+      this._logger.logDebug(JSON.stringify(result))
+    })
 
     throw Error('GitHubReposInvoker.getComments() not yet implemented.')
   }
