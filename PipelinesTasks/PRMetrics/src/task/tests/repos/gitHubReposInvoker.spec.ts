@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 import 'reflect-metadata'
-import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito'
+import { anyNumber, anyString, anything, instance, mock, verify, when } from 'ts-mockito'
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import { expect } from 'chai'
 import async from 'async'
@@ -397,8 +397,8 @@ describe('gitHubReposInvoker.ts', function (): void {
     logger = mock(Logger)
 
     octokitWrapper = mock(OctokitWrapper)
-    when(octokitWrapper.getPull(anything())).thenResolve(mockPullResponse)
-    when(octokitWrapper.updatePull(anything())).thenResolve(mockPullResponse)
+    when(octokitWrapper.getPull(anyString(), anyString(), anyNumber())).thenResolve(mockPullResponse)
+    when(octokitWrapper.updatePull(anyString(), anyString(), anyNumber(), anyString(), anyString())).thenResolve(mockPullResponse)
 
     taskLibWrapper = mock(TaskLibWrapper)
     when(taskLibWrapper.loc('metrics.codeMetricsCalculator.insufficientGitHubAccessTokenPermissions')).thenReturn('Could not access the resources. Ensure \'System.AccessToken\' has access to \'repos\'.')
@@ -409,20 +409,6 @@ describe('gitHubReposInvoker.ts', function (): void {
     delete process.env.SYSTEM_ACCESSTOKEN
     delete process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI
     delete process.env.SYSTEM_PULLREQUEST_PULLREQUESTNUMBER
-  })
-
-  describe('isCommentsFunctionalityAvailable', (): void => {
-    it('should return false', (): void => {
-      // Arrange
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
-
-      // Act
-      const result: boolean = gitHubReposInvoker.isCommentsFunctionalityAvailable
-
-      // Assert
-      expect(result).to.equal(false)
-      verify(logger.logDebug('* GitHubReposInvoker.isCommentsFunctionalityAvailable')).once()
-    })
   })
 
   describe('isAccessTokenAvailable', (): void => {
@@ -563,7 +549,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       expect(result.title).to.equal('Title')
       expect(result.description).to.equal('Description')
       verify(octokitWrapper.initialize(anything())).once()
-      verify(octokitWrapper.getPull(deepEqual({ owner: 'microsoft', repo: 'OMEX-Azure-DevOps-Extensions', pull_number: 12345 }))).once()
+      verify(octokitWrapper.getPull('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345)).once()
       verify(logger.logDebug('* GitHubReposInvoker.getTitleAndDescription()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
       verify(logger.logDebug(JSON.stringify(mockPullResponse))).once()
@@ -590,7 +576,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       expect(result.title).to.equal('Title')
       expect(result.description).to.equal('Description')
       verify(octokitWrapper.initialize(anything())).once()
-      verify(octokitWrapper.getPull(deepEqual({ owner: 'microsoft', repo: 'OMEX-Azure-DevOps-Extensions', pull_number: 12345 }))).once()
+      verify(octokitWrapper.getPull('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345)).once()
       verify(logger.logDebug('* GitHubReposInvoker.getTitleAndDescription()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
       verify(logger.logDebug(JSON.stringify(mockPullResponse))).once()
@@ -618,7 +604,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       expect(result.title).to.equal('Title')
       expect(result.description).to.equal('Description')
       verify(octokitWrapper.initialize(anything())).once()
-      verify(octokitWrapper.getPull(deepEqual({ owner: 'microsoft', repo: 'OMEX-Azure-DevOps-Extensions', pull_number: 12345 }))).once()
+      verify(octokitWrapper.getPull('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345)).once()
       verify(logger.logDebug('* GitHubReposInvoker.getTitleAndDescription()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
       verify(logger.logDebug('Using Base URL \'https://organization.githubenterprise.com/api/v3\'.')).once()
@@ -646,7 +632,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       expect(result.title).to.equal('Title')
       expect(result.description).to.equal('Description')
       verify(octokitWrapper.initialize(anything())).once()
-      verify(octokitWrapper.getPull(deepEqual({ owner: 'microsoft', repo: 'OMEX-Azure-DevOps-Extensions', pull_number: 12345 }))).twice()
+      verify(octokitWrapper.getPull('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345)).twice()
       verify(logger.logDebug('* GitHubReposInvoker.getTitleAndDescription()')).twice()
       verify(logger.logDebug('* GitHubReposInvoker.initialize()')).twice()
       verify(logger.logDebug(JSON.stringify(mockPullResponse))).twice()
@@ -665,7 +651,7 @@ describe('gitHubReposInvoker.ts', function (): void {
         expect(options.log.warn).to.not.equal(null)
         expect(options.log.error).to.not.equal(null)
       })
-      when(octokitWrapper.getPull(anything())).thenResolve(currentMockPullResponse)
+      when(octokitWrapper.getPull(anyString(), anyString(), anyNumber())).thenResolve(currentMockPullResponse)
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
 
       // Act
@@ -675,7 +661,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       expect(result.title).to.equal('Title')
       expect(result.description).to.equal(undefined)
       verify(octokitWrapper.initialize(anything())).once()
-      verify(octokitWrapper.getPull(deepEqual({ owner: 'microsoft', repo: 'OMEX-Azure-DevOps-Extensions', pull_number: 12345 }))).once()
+      verify(octokitWrapper.getPull('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345)).once()
       verify(logger.logDebug('* GitHubReposInvoker.getTitleAndDescription()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
       verify(logger.logDebug(JSON.stringify(currentMockPullResponse))).once()
@@ -700,7 +686,7 @@ describe('gitHubReposInvoker.ts', function (): void {
           })
           const error: ErrorWithStatus = new ErrorWithStatus('Test')
           error.status = status
-          when(octokitWrapper.getPull(anything())).thenThrow(error)
+          when(octokitWrapper.getPull(anyString(), anyString(), anyNumber())).thenThrow(error)
           const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
           let errorThrown: boolean = false
 
@@ -732,7 +718,7 @@ describe('gitHubReposInvoker.ts', function (): void {
         expect(options.log.warn).to.not.equal(null)
         expect(options.log.error).to.not.equal(null)
       })
-      when(octokitWrapper.getPull(anything())).thenThrow(Error('Error'))
+      when(octokitWrapper.getPull(anyString(), anyString(), anyNumber())).thenThrow(Error('Error'))
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
       let errorThrown: boolean = false
 
@@ -823,7 +809,7 @@ describe('gitHubReposInvoker.ts', function (): void {
 
       // Assert
       verify(octokitWrapper.initialize(anything())).once()
-      verify(octokitWrapper.updatePull(deepEqual({ owner: 'microsoft', repo: 'OMEX-Azure-DevOps-Extensions', pull_number: 12345, title: 'Title', body: 'Description' }))).once()
+      verify(octokitWrapper.updatePull('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345, 'Title', 'Description')).once()
       verify(logger.logDebug('* GitHubReposInvoker.setTitleAndDescription()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
       verify(logger.logDebug(JSON.stringify(mockPullResponse))).once()
@@ -847,7 +833,7 @@ describe('gitHubReposInvoker.ts', function (): void {
 
       // Assert
       verify(octokitWrapper.initialize(anything())).once()
-      verify(octokitWrapper.updatePull(deepEqual({ owner: 'microsoft', repo: 'OMEX-Azure-DevOps-Extensions', pull_number: 12345, title: 'Title' }))).once()
+      verify(octokitWrapper.updatePull('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345, 'Title', undefined)).once()
       verify(logger.logDebug('* GitHubReposInvoker.setTitleAndDescription()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
       verify(logger.logDebug(JSON.stringify(mockPullResponse))).once()
@@ -871,7 +857,7 @@ describe('gitHubReposInvoker.ts', function (): void {
 
       // Assert
       verify(octokitWrapper.initialize(anything())).once()
-      verify(octokitWrapper.updatePull(deepEqual({ owner: 'microsoft', repo: 'OMEX-Azure-DevOps-Extensions', pull_number: 12345, body: 'Description' }))).once()
+      verify(octokitWrapper.updatePull('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345, undefined, 'Description')).once()
       verify(logger.logDebug('* GitHubReposInvoker.setTitleAndDescription()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
       verify(logger.logDebug(JSON.stringify(mockPullResponse))).once()

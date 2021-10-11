@@ -4,43 +4,58 @@
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
 
 /**
- * An interface representing a pull request comment.
+ * A class representing a pull request comment.
  */
 export default class PullRequestComment {
   private _id: number = 0
-  private _status: CommentThreadStatus | undefined
-  private _content: string | undefined
-  private _file: string = ''
+  private _status: CommentThreadStatus = CommentThreadStatus.Unknown
+  private _content: string = ''
 
-  public get id(): number {
+  /**
+   * Gets the ID associated with the comment.
+   * @returns The comment ID.
+   */
+  public get id (): number {
     return this._id
   }
 
-  public set id(value: number) {
+  /**
+   * Sets the ID associated with the comment.
+   * @param value The comment ID.
+   */
+  public set id (value: number) {
     this._id = value
   }
 
-  public get status(): CommentThreadStatus | undefined {
+  /**
+   * Gets the status associated with the comment.
+   * @returns The comment status.
+   */
+  public get status (): CommentThreadStatus {
     return this._status
   }
 
-  public set status(value: CommentThreadStatus | undefined) {
+  /**
+   * Sets the status associated with the comment.
+   * @param value The comment status.
+   */
+  public set status (value: CommentThreadStatus) {
     this._status = value
   }
 
-  public get content(): string | undefined {
+  /**
+   * Gets the content (i.e., the text) associated with the comment.
+   * @returns The comment content.
+   */
+  public get content (): string {
     return this._content
   }
 
-  public set content(value: string | undefined) {
+  /**
+   * Sets the content (i.e., the text) associated with the comment.
+   * @param value The comment content.
+   */
+  public set content (value: string) {
     this._content = value
-  }
-
-  public get file(): string {
-    return this._file
-  }
-
-  public set file(value: string) {
-    this._file = value
   }
 }

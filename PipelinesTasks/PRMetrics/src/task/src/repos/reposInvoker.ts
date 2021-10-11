@@ -34,13 +34,6 @@ export default class ReposInvoker implements IReposInvoker {
     this._logger = logger
   }
 
-  public get isCommentsFunctionalityAvailable (): boolean {
-    this._logger.logDebug('* ReposInvoker.isCommentsFunctionalityAvailable')
-
-    const reposInvoker: IReposInvoker = this.getReposInvoker()
-    return reposInvoker.isCommentsFunctionalityAvailable
-  }
-
   public get isAccessTokenAvailable (): string | null {
     this._logger.logDebug('* ReposInvoker.isAccessTokenAvailable')
 

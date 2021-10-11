@@ -10,8 +10,6 @@ import PullRequestDetails from './interfaces/pullRequestDetails'
  * A base class for invoking repository functionality.
  */
 export default abstract class BaseReposInvoker implements IReposInvoker {
-  public abstract isCommentsFunctionalityAvailable: boolean
-
   public abstract isAccessTokenAvailable: string | null
 
   public abstract getTitleAndDescription(): Promise<PullRequestDetails>

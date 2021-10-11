@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { CommentThreadStatus, GitPullRequestCommentThread } from 'azure-devops-node-api/interfaces/GitInterfaces'
+import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import PullRequestCommentGrouping from './interfaces/pullRequestCommentGrouping'
 import PullRequestDetails from './interfaces/pullRequestDetails'
 
@@ -9,11 +9,6 @@ import PullRequestDetails from './interfaces/pullRequestDetails'
  * An interface for invoking repository functionality with any underlying repository store.
  */
 export default interface IReposInvoker {
-  /**
-   * Gets a value indicating whether the current repository provides complete functionality.
-   */
-  isCommentsFunctionalityAvailable: boolean
-
   /**
    * Gets a value indicating whether the OAuth token can be accessed by the task.
    */
@@ -40,7 +35,8 @@ export default interface IReposInvoker {
   setTitleAndDescription (title: string | null, description: string | null): Promise<void>
 
   /**
-   * Creates a new comment within the current pull request.
+   * Creates a new comment within the current pull request. Note that calling this method asynchronously can cause
+   * problems with the GitHub APIs.
    * @param content The content of the new comment.
    * @param status The status to which to the set the comment thread.
    * @param fileName The file to which to add the comment. If this is unspecified, the comment will be created in the global pull request scope.

@@ -1,19 +1,19 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { Comment, CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
+import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import { injectable } from 'tsyringe'
-import { Validator } from '../utilities/validator'
 import * as os from 'os'
 import CodeMetrics from '../metrics/codeMetrics'
 import CodeMetricsData from '../metrics/codeMetricsData'
+import FileComment from '../repos/interfaces/fileComment'
 import Inputs from '../metrics/inputs'
 import Logger from '../utilities/logger'
 import PullRequestComment from '../repos/interfaces/pullRequestComment'
+import PullRequestCommentGrouping from '../repos/interfaces/pullRequestCommentGrouping'
 import PullRequestCommentsData from './pullRequestCommentsData'
 import ReposInvoker from '../repos/reposInvoker'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
-import PullRequestCommentGrouping from '../repos/interfaces/pullRequestCommentGrouping'
 
 /**
  * A class for managing pull requests comments.
@@ -66,12 +66,12 @@ export default class PullRequestComments {
     const comments: PullRequestCommentGrouping = await this._reposInvoker.getComments()
 
     // If the current comment thread is not applied to a specified file, check if it is the metrics comment thread.
-    comments.pullRequestComments.forEach((comment: PullRequestComment) => {
+    comments.pullRequestComments.forEach((comment: PullRequestComment): void => {
       result = this.getMetricsCommentData(result, comment)
     })
 
     // If the current comment thread is not applied to a specified file, check if it is the metrics comment thread.
-    comments.fileComments.forEach((comment: PullRequestComment) => {
+    comments.fileComments.forEach((comment: FileComment): void => {
       result = this.getFilesRequiringCommentUpdates(result, comment)
     })
 
@@ -140,7 +140,7 @@ export default class PullRequestComments {
     return result
   }
 
-  private getFilesRequiringCommentUpdates (result: PullRequestCommentsData, comment: PullRequestComment): PullRequestCommentsData {
+  private getFilesRequiringCommentUpdates (result: PullRequestCommentsData, comment: FileComment): PullRequestCommentsData {
     this._logger.logDebug('* PullRequestComments.getFilesRequiringCommentUpdates()')
 
     if (comment.content !== this.noReviewRequiredComment) {

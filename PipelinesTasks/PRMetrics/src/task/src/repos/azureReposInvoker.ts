@@ -9,11 +9,11 @@ import { Validator } from '../utilities/validator'
 import { WebApi } from 'azure-devops-node-api'
 import AzureDevOpsApiWrapper from '../wrappers/azureDevOpsApiWrapper'
 import BaseReposInvoker from './baseReposInvoker'
+import FileComment from './interfaces/fileComment'
 import Logger from '../utilities/logger'
 import PullRequestCommentGrouping from './interfaces/pullRequestCommentGrouping'
 import PullRequestDetails from './interfaces/pullRequestDetails'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
-import PullRequestComment from './interfaces/pullRequestComment'
 
 /**
  * A class for invoking Azure Repos functionality.
@@ -42,12 +42,6 @@ export default class AzureReposInvoker extends BaseReposInvoker {
     this._azureDevOpsApiWrapper = azureDevOpsApiWrapper
     this._logger = logger
     this._taskLibWrapper = taskLibWrapper
-  }
-
-  public get isCommentsFunctionalityAvailable (): boolean {
-    this._logger.logDebug('* AzureReposInvoker.isCommentsFunctionalityAvailable')
-
-    return true
   }
 
   public get isAccessTokenAvailable (): string | null {
@@ -195,32 +189,30 @@ export default class AzureReposInvoker extends BaseReposInvoker {
     return this._gitApi
   }
 
-  private static convertPullRequestComments(comments: GitPullRequestCommentThread[]): PullRequestCommentGrouping {
+  private static convertPullRequestComments (comments: GitPullRequestCommentThread[]): PullRequestCommentGrouping {
     const result: PullRequestCommentGrouping = new PullRequestCommentGrouping()
 
-    for (let i: number = 0; i < comments.length; i++) {
-      const commentThread: GitPullRequestCommentThread = comments[i]!
+    comments.forEach((value: GitPullRequestCommentThread, index: number): void => {
+      const resultComment: FileComment = new FileComment()
+      resultComment.id = Validator.validate(value.id, `commentThread[${index}].id`, 'AzureReposInvoker.convertPullRequestComments()')
+      resultComment.status = Validator.validate(value.status, `commentThread[${index}].status`, 'AzureReposInvoker.convertPullRequestComments()')
 
-      const resultComment: PullRequestComment = new PullRequestComment()
-      resultComment.id = Validator.validate(commentThread.id, `commentThread[${i}].id`, 'PullRequestComments.getMetricsCommentData()')
-      resultComment.status = commentThread.status
+      const comments: Comment[] = Validator.validate(value.comments, `commentThread[${index}].comments`, 'AzureReposInvoker.convertPullRequestComments()')
+      const firstComment: Comment = Validator.validate(comments[0], `commentThread[${index}].comments[0]`, 'AzureReposInvoker.convertPullRequestComments()')
+      resultComment.content = Validator.validate(firstComment.content, `commentThread[${index}].comments[0].content`, 'AzureReposInvoker.convertPullRequestComments()')
 
-      const commentThreadComments: Comment[] = Validator.validate(commentThread.comments, `commentThread[${i}].comments`, 'PullRequestComments.getMetricsCommentData()')
-      const firstComment: Comment = Validator.validate(commentThreadComments[0], `commentThread[${i}].comments[0]`, 'PullRequestComments.getMetricsCommentData()')
-      resultComment.content = firstComment.content
-
-      if (!commentThread.threadContext) {
+      if (!value.threadContext) {
         result.pullRequestComments.push(resultComment)
       } else {
-        const filePath: string = Validator.validate(commentThread.threadContext.filePath, `commentThread[${i}].threadContext.filePath`, 'PullRequestComments.getFilesRequiringCommentUpdates()')
+        const filePath: string = Validator.validate(value.threadContext.filePath, `commentThread[${index}].threadContext.filePath`, 'AzureReposInvoker.convertPullRequestComments()')
         if (filePath.length <= 1) {
-          throw RangeError(`'commentThread[${i}].threadContext.filePath' '${filePath}' is of length '${filePath.length}'.`)
+          throw RangeError(`'commentThread[${index}].threadContext.filePath' '${filePath}' is of length '${filePath.length}'.`)
         }
 
         resultComment.file = filePath.substring(1)
         result.fileComments.push(resultComment)
       }
-    }
+    })
 
     return result
   }
