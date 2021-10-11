@@ -131,7 +131,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
         await this.invokeApiCall(async (): Promise<void> => {
           const result: ListCommitsResponse = await this._octokitWrapper.listCommits(this._owner!, this._repo!, this._pullRequestId!)
           this._logger.logDebug(JSON.stringify(result))
-          this._commitId = Validator.validate(result!.data[0]?.sha, 'result.data[0]?.sha', 'GitHubReposInvoker.createComment()')
+          this._commitId = Validator.validate(result.data[0]?.sha, 'result.data[0].sha', 'GitHubReposInvoker.createComment()')
         })
       }
 
@@ -225,17 +225,17 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
       const commentResult: PullRequestComment = new PullRequestComment()
 
       commentResult.id = value.id
-      commentResult.content = Validator.validate(value.body, `pullRequestComments[${index}].content`, 'GitHubReposInvoker.convertPullRequestComments()')
+      commentResult.content = Validator.validate(value.body, `pullRequestComments[${index}].body`, 'GitHubReposInvoker.convertPullRequestComments()')
 
       result.pullRequestComments.push(commentResult)
     })
 
-    fileComments?.data.forEach((value: GetReviewCommentsResponseData, index: number): void => {
+    fileComments?.data.forEach((value: GetReviewCommentsResponseData): void => {
       const commentResult: FileComment = new FileComment()
 
       commentResult.id = value.id
       commentResult.file = value.path
-      commentResult.content = Validator.validate(value.body, `fileComments[${index}].content`, 'GitHubReposInvoker.convertPullRequestComments()')
+      commentResult.content = value.body
 
       result.fileComments.push(commentResult)
     })

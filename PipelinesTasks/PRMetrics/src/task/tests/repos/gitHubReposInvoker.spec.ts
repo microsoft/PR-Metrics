@@ -15,6 +15,9 @@ import OctokitLogObject from '../wrappers/octokitLogObject'
 import OctokitWrapper from '../../src/wrappers/octokitWrapper'
 import PullRequestDetails from '../../src/repos/interfaces/pullRequestDetails'
 import TaskLibWrapper from '../../src/wrappers/taskLibWrapper'
+import PullRequestCommentGrouping from '../../src/repos/interfaces/pullRequestCommentGrouping'
+import GetIssueCommentsResponse from '../../src/wrappers/octokitInterfaces/getIssueCommentsResponse'
+import GetReviewCommentsResponse from '../../src/wrappers/octokitInterfaces/getReviewCommentsResponse'
 
 describe('gitHubReposInvoker.ts', function (): void {
   let logger: Logger
@@ -23,6 +26,8 @@ describe('gitHubReposInvoker.ts', function (): void {
 
   let mockPullResponse: GetPullResponse
   let mockListCommitsResponse: ListCommitsResponse
+  let mockIssueCommentsResponse: GetIssueCommentsResponse
+  let mockReviewCommentsResponse: GetReviewCommentsResponse
 
   beforeEach((): void => {
     process.env.SYSTEM_ACCESSTOKEN = 'OAUTH'
@@ -484,6 +489,132 @@ describe('gitHubReposInvoker.ts', function (): void {
         ]
     }
 
+    mockIssueCommentsResponse = {
+      headers: {},
+      status: 200,
+      url: '',
+      data: [
+        {
+          url: '',
+          html_url: '',
+          issue_url: '',
+          id: 1,
+          node_id: '',
+          user: {
+            login: '',
+            id: 0,
+            node_id: '',
+            avatar_url: '',
+            gravatar_id: '',
+            url: '',
+            html_url: '',
+            followers_url: '',
+            following_url: '',
+            gists_url: '',
+            starred_url: '',
+            subscriptions_url: '',
+            organizations_url: '',
+            repos_url: '',
+            events_url: '',
+            received_events_url: '',
+            type: 'User',
+            site_admin: false
+          },
+          created_at: '',
+          updated_at: '',
+          author_association: 'MEMBER',
+          reactions: {
+            url: '',
+            total_count: 0,
+            '+1': 0,
+            '-1': 0,
+            laugh: 0,
+            hooray: 0,
+            confused: 0,
+            heart: 0,
+            rocket: 0,
+            eyes: 0
+          },
+          performed_via_github_app: null
+        }
+      ]
+    }
+
+    mockReviewCommentsResponse = {
+      headers: {},
+      status: 200,
+      url: '',
+      data: [
+        {
+          url: '',
+          pull_request_review_id: 0,
+          id: 2,
+          node_id: '',
+          diff_hunk: '',
+          path: 'file.ts',
+          position: 1,
+          original_position: 1,
+          commit_id: '',
+          original_commit_id: '',
+          user: {
+            login: '',
+            id: 0,
+            node_id: '',
+            avatar_url: '',
+            gravatar_id: '',
+            url: '',
+            html_url: '',
+            followers_url: '',
+            following_url: '',
+            gists_url: '',
+            starred_url: '',
+            subscriptions_url: '',
+            organizations_url: '',
+            repos_url: '',
+            events_url: '',
+            received_events_url: '',
+            type: '',
+            site_admin: false
+          },
+          body: 'File Content',
+          created_at: '',
+          updated_at: '',
+          html_url: '',
+          pull_request_url: '',
+          author_association: 'MEMBER',
+          _links: {
+            self: {
+              href: ''
+            },
+            html: {
+              href: ''
+            },
+            pull_request: {
+              href: ''
+            }
+          },
+          reactions: {
+            url: '',
+            total_count: 0,
+            '+1': 0,
+            '-1': 0,
+            laugh: 0,
+            hooray: 0,
+            confused: 0,
+            heart: 0,
+            rocket: 0,
+            eyes: 0
+          },
+          start_line: null,
+          original_start_line: null,
+          start_side: null,
+          line: 1,
+          original_line: 1,
+          side: 'LEFT'
+        }
+      ]
+    }
+
     logger = mock(Logger)
 
     octokitWrapper = mock(OctokitWrapper)
@@ -850,8 +981,120 @@ describe('gitHubReposInvoker.ts', function (): void {
   })
 
   describe('getComments()', (): void => {
-    it('should throw an exception', async (): Promise<void> => {
+    it('should return the result when called with a pull request comment', async (): Promise<void> => {
       // Arrange
+      when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
+        expect(options.auth).to.equal('OAUTH')
+        expect(options.userAgent).to.equal('PRMetrics/v1.3.0')
+        expect(options.log).to.not.equal(null)
+        expect(options.log.debug).to.not.equal(null)
+        expect(options.log.info).to.not.equal(null)
+        expect(options.log.warn).to.not.equal(null)
+        expect(options.log.error).to.not.equal(null)
+      })
+      mockIssueCommentsResponse.data[0]!.body = 'PR Content'
+      when(octokitWrapper.getIssueComments(anyString(), anyString(), anyNumber())).thenResolve(mockIssueCommentsResponse)
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
+
+      // Act
+      const result: PullRequestCommentGrouping = await gitHubReposInvoker.getComments()
+
+      // Assert
+      expect(result.pullRequestComments.length).to.equal(1)
+      expect(result.pullRequestComments[0]!.id).to.equal(1)
+      expect(result.pullRequestComments[0]!.status).to.equal(CommentThreadStatus.Unknown)
+      expect(result.pullRequestComments[0]!.content).to.equal('PR Content')
+      expect(result.fileComments.length).to.equal(0)
+      verify(octokitWrapper.initialize(anything())).once()
+      verify(octokitWrapper.getIssueComments('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345)).once()
+      verify(octokitWrapper.getReviewComments('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345)).once()
+      verify(logger.logDebug('* GitHubReposInvoker.getComments()')).once()
+      verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
+      verify(logger.logDebug(JSON.stringify(mockIssueCommentsResponse))).once()
+    })
+
+    it('should return the result when called with a file comment', async (): Promise<void> => {
+      // Arrange
+      when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
+        expect(options.auth).to.equal('OAUTH')
+        expect(options.userAgent).to.equal('PRMetrics/v1.3.0')
+        expect(options.log).to.not.equal(null)
+        expect(options.log.debug).to.not.equal(null)
+        expect(options.log.info).to.not.equal(null)
+        expect(options.log.warn).to.not.equal(null)
+        expect(options.log.error).to.not.equal(null)
+      })
+      when(octokitWrapper.getReviewComments(anyString(), anyString(), anyNumber())).thenResolve(mockReviewCommentsResponse)
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
+
+      // Act
+      const result: PullRequestCommentGrouping = await gitHubReposInvoker.getComments()
+
+      // Assert
+      expect(result.pullRequestComments.length).to.equal(0)
+      expect(result.fileComments.length).to.equal(1)
+      expect(result.fileComments[0]!.id).to.equal(2)
+      expect(result.fileComments[0]!.status).to.equal(CommentThreadStatus.Unknown)
+      expect(result.fileComments[0]!.content).to.equal('File Content')
+      expect(result.fileComments[0]!.file).to.equal('file.ts')
+      verify(octokitWrapper.initialize(anything())).once()
+      verify(octokitWrapper.getIssueComments('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345)).once()
+      verify(octokitWrapper.getReviewComments('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345)).once()
+      verify(logger.logDebug('* GitHubReposInvoker.getComments()')).once()
+      verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
+      verify(logger.logDebug(JSON.stringify(mockReviewCommentsResponse))).once()
+    })
+
+    it('should return the result when called with both a pull request and file comment', async (): Promise<void> => {
+      // Arrange
+      when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
+        expect(options.auth).to.equal('OAUTH')
+        expect(options.userAgent).to.equal('PRMetrics/v1.3.0')
+        expect(options.log).to.not.equal(null)
+        expect(options.log.debug).to.not.equal(null)
+        expect(options.log.info).to.not.equal(null)
+        expect(options.log.warn).to.not.equal(null)
+        expect(options.log.error).to.not.equal(null)
+      })
+      mockIssueCommentsResponse.data[0]!.body = 'PR Content'
+      when(octokitWrapper.getIssueComments(anyString(), anyString(), anyNumber())).thenResolve(mockIssueCommentsResponse)
+      when(octokitWrapper.getReviewComments(anyString(), anyString(), anyNumber())).thenResolve(mockReviewCommentsResponse)
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
+
+      // Act
+      const result: PullRequestCommentGrouping = await gitHubReposInvoker.getComments()
+
+      // Assert
+      expect(result.pullRequestComments.length).to.equal(1)
+      expect(result.pullRequestComments[0]!.id).to.equal(1)
+      expect(result.pullRequestComments[0]!.status).to.equal(CommentThreadStatus.Unknown)
+      expect(result.pullRequestComments[0]!.content).to.equal('PR Content')
+      expect(result.fileComments.length).to.equal(1)
+      expect(result.fileComments[0]!.id).to.equal(2)
+      expect(result.fileComments[0]!.status).to.equal(CommentThreadStatus.Unknown)
+      expect(result.fileComments[0]!.content).to.equal('File Content')
+      expect(result.fileComments[0]!.file).to.equal('file.ts')
+      verify(octokitWrapper.initialize(anything())).once()
+      verify(octokitWrapper.getIssueComments('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345)).once()
+      verify(octokitWrapper.getReviewComments('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345)).once()
+      verify(logger.logDebug('* GitHubReposInvoker.getComments()')).once()
+      verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
+      verify(logger.logDebug(JSON.stringify(mockReviewCommentsResponse))).once()
+      verify(logger.logDebug(JSON.stringify(mockIssueCommentsResponse))).once()
+    })
+
+    it('should return the pull request comment body is not set', async (): Promise<void> => {
+      // Arrange
+      when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
+        expect(options.auth).to.equal('OAUTH')
+        expect(options.userAgent).to.equal('PRMetrics/v1.3.0')
+        expect(options.log).to.not.equal(null)
+        expect(options.log.debug).to.not.equal(null)
+        expect(options.log.info).to.not.equal(null)
+        expect(options.log.warn).to.not.equal(null)
+        expect(options.log.error).to.not.equal(null)
+      })
+      when(octokitWrapper.getIssueComments(anyString(), anyString(), anyNumber())).thenResolve(mockIssueCommentsResponse)
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
       let errorThrown: boolean = false
 
@@ -861,11 +1104,16 @@ describe('gitHubReposInvoker.ts', function (): void {
       } catch (error) {
         // Assert
         errorThrown = true
-        expect(error.message).to.equal('GitHubReposInvoker.getComments() not yet implemented.')
+        expect(error.message).to.equal('\'pullRequestComments[0].body\', accessed within \'GitHubReposInvoker.convertPullRequestComments()\', is invalid, null, or undefined \'undefined\'.')
       }
 
       expect(errorThrown).to.equal(true)
+      verify(octokitWrapper.initialize(anything())).once()
+      verify(octokitWrapper.getIssueComments('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345)).once()
+      verify(octokitWrapper.getReviewComments('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345)).once()
       verify(logger.logDebug('* GitHubReposInvoker.getComments()')).once()
+      verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
+      verify(logger.logDebug(JSON.stringify(mockIssueCommentsResponse))).once()
     })
   })
 
@@ -979,6 +1227,42 @@ describe('gitHubReposInvoker.ts', function (): void {
       verify(logger.logDebug('* GitHubReposInvoker.createComment()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
       verify(logger.logDebug('null')).once()
+    })
+
+    it('should throw when the commit list is empty', async (): Promise<void> => {
+      // Arrange
+      when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
+        expect(options.auth).to.equal('OAUTH')
+        expect(options.userAgent).to.equal('PRMetrics/v1.3.0')
+        expect(options.log).to.not.equal(null)
+        expect(options.log.debug).to.not.equal(null)
+        expect(options.log.info).to.not.equal(null)
+        expect(options.log.warn).to.not.equal(null)
+        expect(options.log.error).to.not.equal(null)
+      })
+      when(octokitWrapper.listCommits(anyString(), anyString(), anyNumber())).thenResolve({
+        headers: {},
+        status: 200,
+        url: '',
+        data: []
+      })
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
+      let errorThrown: boolean = false
+
+      try {
+        // Act
+        await gitHubReposInvoker.createComment('Content', CommentThreadStatus.Unknown, 'file.ts')
+      } catch (error) {
+        // Assert
+        errorThrown = true
+        expect(error.message).to.equal('\'result.data[0].sha\', accessed within \'GitHubReposInvoker.createComment()\', is invalid, null, or undefined \'undefined\'.')
+      }
+
+      expect(errorThrown).to.equal(true)
+      verify(octokitWrapper.initialize(anything())).once()
+      verify(octokitWrapper.listCommits('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345)).once()
+      verify(logger.logDebug('* GitHubReposInvoker.createComment()')).once()
+      verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
     })
 
     it('should succeed when a file name is specified and the method is called twice', async (): Promise<void> => {
