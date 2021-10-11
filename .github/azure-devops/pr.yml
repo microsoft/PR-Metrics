@@ -31,7 +31,6 @@ jobs:
           FileMatchingPatterns: |
             **/*
             !package-lock.json
-            !README.md
 
   - job: PRMetrics_Ubuntu
     displayName: PR Metrics – Ubuntu
@@ -49,7 +48,6 @@ jobs:
           FileMatchingPatterns: |
             **/*
             !package-lock.json
-            !README.md
 
   - job: PRMetrics_Windows
     displayName: PR Metrics – Windows
@@ -67,4 +65,3 @@ jobs:
           FileMatchingPatterns: |
             **/*
             !package-lock.json
-            !README.md
