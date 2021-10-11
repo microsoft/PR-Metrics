@@ -27,10 +27,11 @@ jobs:
         displayName: PR Metrics
         env:
           SYSTEM_ACCESSTOKEN: $(GITHUB_PAT)
-        FileMatchingPatterns: |
-          **/*
-          !package-lock.json
-          !README.md
+        inputs:
+          FileMatchingPatterns: |
+            **/*
+            !package-lock.json
+            !README.md
 
   - job: PRMetrics_Ubuntu
     displayName: PR Metrics – Ubuntu
@@ -44,10 +45,11 @@ jobs:
         displayName: PR Metrics
         env:
           SYSTEM_ACCESSTOKEN: $(GITHUB_PAT)
-        FileMatchingPatterns: |
-          **/*
-          !package-lock.json
-          !README.md
+        inputs:
+          FileMatchingPatterns: |
+            **/*
+            !package-lock.json
+            !README.md
 
   - job: PRMetrics_Windows
     displayName: PR Metrics – Windows
@@ -61,10 +63,11 @@ jobs:
         displayName: PR Metrics
         env:
           SYSTEM_ACCESSTOKEN: $(GITHUB_PAT)
-        FileMatchingPatterns: |
-          **/*
-          !package-lock.json
-          !README.md
+        inputs:
+          FileMatchingPatterns: |
+            **/*
+            !package-lock.json
+            !README.md
 
   - job: Compliance
     displayName: Compliance
