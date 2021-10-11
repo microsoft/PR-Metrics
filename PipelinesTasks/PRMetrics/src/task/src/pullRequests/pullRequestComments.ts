@@ -135,7 +135,7 @@ export default class PullRequestComments {
     }
 
     result.metricsCommentThreadId = comment.id
-    result.metricsCommentThreadStatus = comment.status ?? null
+    result.metricsCommentThreadStatus = comment.status
     result.metricsCommentContent = comment.content
     return result
   }

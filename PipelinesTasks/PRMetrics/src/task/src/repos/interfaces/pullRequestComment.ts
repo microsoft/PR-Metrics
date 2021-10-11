@@ -12,6 +12,18 @@ export default class PullRequestComment {
   private _content: string = ''
 
   /**
+   * Initializes a new instance of the `PullRequestComment` class.
+   * @param id The optional comment ID.
+   * @param status The optional status associated with the comment.
+   * @param content The optional content (i.e., the text) associated with the comment.
+   */
+  public constructor (id?: number, status?: CommentThreadStatus, content?: string) {
+    this._id = id || this._id
+    this._status = status || this._status
+    this._content = content || this._content
+  }
+
+  /**
    * Gets the ID associated with the comment.
    * @returns The comment ID.
    */

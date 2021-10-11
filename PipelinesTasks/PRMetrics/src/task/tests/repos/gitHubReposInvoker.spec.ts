@@ -9,6 +9,7 @@ import async from 'async'
 import ErrorWithStatus from '../wrappers/errorWithStatus'
 import GetPullResponse from '../../src/wrappers/octokitInterfaces/getPullResponse'
 import GitHubReposInvoker from '../../src/repos/gitHubReposInvoker'
+import ListCommitsResponse from '../../src/wrappers/octokitInterfaces/listCommitsResponse'
 import Logger from '../../src/utilities/logger'
 import OctokitLogObject from '../wrappers/octokitLogObject'
 import OctokitWrapper from '../../src/wrappers/octokitWrapper'
@@ -21,6 +22,7 @@ describe('gitHubReposInvoker.ts', function (): void {
   let taskLibWrapper: TaskLibWrapper
 
   let mockPullResponse: GetPullResponse
+  let mockListCommitsResponse: ListCommitsResponse
 
   beforeEach((): void => {
     process.env.SYSTEM_ACCESSTOKEN = 'OAUTH'
@@ -394,11 +396,100 @@ describe('gitHubReposInvoker.ts', function (): void {
       }
     }
 
+    mockListCommitsResponse = {
+      headers: {},
+      status: 200,
+      url: '',
+      data:
+        [
+          {
+            sha: 'sha54321',
+            node_id: '',
+            commit: {
+              author: {
+                name: '',
+                email: '',
+                date: ''
+              },
+              committer: {
+                name: '',
+                email: '',
+                date: ''
+              },
+              message: '',
+              tree: {
+                sha: '',
+                url: ''
+              },
+              url: '',
+              comment_count: 0,
+              verification: {
+                verified: false,
+                reason: '',
+                signature: null,
+                payload: null
+              }
+            },
+            url: '',
+            html_url: '',
+            comments_url: '',
+            author: {
+              login: '',
+              id: 0,
+              node_id: '',
+              avatar_url: '',
+              gravatar_id: '',
+              url: '',
+              html_url: '',
+              followers_url: '',
+              following_url: '',
+              gists_url: '',
+              starred_url: '',
+              subscriptions_url: '',
+              organizations_url: '',
+              repos_url: '',
+              events_url: '',
+              received_events_url: '',
+              type: '',
+              site_admin: false
+            },
+            committer: {
+              login: '',
+              id: 0,
+              node_id: '',
+              avatar_url: '',
+              gravatar_id: '',
+              url: '',
+              html_url: '',
+              followers_url: '',
+              following_url: '',
+              gists_url: '',
+              starred_url: '',
+              subscriptions_url: '',
+              organizations_url: '',
+              repos_url: '',
+              events_url: '',
+              received_events_url: '',
+              type: '',
+              site_admin: false
+            },
+            parents: [
+              {
+                sha: '',
+                url: '',
+                html_url: ''
+              }
+            ]
+          }
+        ]
+    }
+
     logger = mock(Logger)
 
     octokitWrapper = mock(OctokitWrapper)
     when(octokitWrapper.getPull(anyString(), anyString(), anyNumber())).thenResolve(mockPullResponse)
     when(octokitWrapper.updatePull(anyString(), anyString(), anyNumber(), anyString(), anyString())).thenResolve(mockPullResponse)
+    when(octokitWrapper.listCommits(anyString(), anyString(), anyNumber())).thenResolve(mockListCommitsResponse)
 
     taskLibWrapper = mock(TaskLibWrapper)
     when(taskLibWrapper.loc('metrics.codeMetricsCalculator.insufficientGitHubAccessTokenPermissions')).thenReturn('Could not access the resources. Ensure \'System.AccessToken\' has access to \'repos\'.')
@@ -533,7 +624,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('OAUTH')
-        expect(options.userAgent).to.equal('PRMetrics/v1.2.6')
+        expect(options.userAgent).to.equal('PRMetrics/v1.3.0')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
         expect(options.log.info).to.not.equal(null)
@@ -560,7 +651,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI = 'https://github.com/microsoft/OMEX-Azure-DevOps-Extensions.git'
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('OAUTH')
-        expect(options.userAgent).to.equal('PRMetrics/v1.2.6')
+        expect(options.userAgent).to.equal('PRMetrics/v1.3.0')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
         expect(options.log.info).to.not.equal(null)
@@ -587,7 +678,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI = 'https://organization.githubenterprise.com/microsoft/OMEX-Azure-DevOps-Extensions'
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('OAUTH')
-        expect(options.userAgent).to.equal('PRMetrics/v1.2.6')
+        expect(options.userAgent).to.equal('PRMetrics/v1.3.0')
         expect(options.baseUrl).to.equal('https://organization.githubenterprise.com/api/v3')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
@@ -615,7 +706,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('OAUTH')
-        expect(options.userAgent).to.equal('PRMetrics/v1.2.6')
+        expect(options.userAgent).to.equal('PRMetrics/v1.3.0')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
         expect(options.log.info).to.not.equal(null)
@@ -644,7 +735,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       currentMockPullResponse.data.body = null
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('OAUTH')
-        expect(options.userAgent).to.equal('PRMetrics/v1.2.6')
+        expect(options.userAgent).to.equal('PRMetrics/v1.3.0')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
         expect(options.log.info).to.not.equal(null)
@@ -677,7 +768,7 @@ describe('gitHubReposInvoker.ts', function (): void {
           // Arrange
           when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
             expect(options.auth).to.equal('OAUTH')
-            expect(options.userAgent).to.equal('PRMetrics/v1.2.6')
+            expect(options.userAgent).to.equal('PRMetrics/v1.3.0')
             expect(options.log).to.not.equal(null)
             expect(options.log.debug).to.not.equal(null)
             expect(options.log.info).to.not.equal(null)
@@ -711,7 +802,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('OAUTH')
-        expect(options.userAgent).to.equal('PRMetrics/v1.2.6')
+        expect(options.userAgent).to.equal('PRMetrics/v1.3.0')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
         expect(options.log.info).to.not.equal(null)
@@ -795,7 +886,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('OAUTH')
-        expect(options.userAgent).to.equal('PRMetrics/v1.2.6')
+        expect(options.userAgent).to.equal('PRMetrics/v1.3.0')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
         expect(options.log.info).to.not.equal(null)
@@ -819,7 +910,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('OAUTH')
-        expect(options.userAgent).to.equal('PRMetrics/v1.2.6')
+        expect(options.userAgent).to.equal('PRMetrics/v1.3.0')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
         expect(options.log.info).to.not.equal(null)
@@ -836,14 +927,14 @@ describe('gitHubReposInvoker.ts', function (): void {
       verify(octokitWrapper.updatePull('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345, 'Title', undefined)).once()
       verify(logger.logDebug('* GitHubReposInvoker.setTitleAndDescription()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
-      verify(logger.logDebug(JSON.stringify(mockPullResponse))).once()
+      verify(logger.logDebug('null')).once()
     })
 
     it('should succeed when the description is set', async (): Promise<void> => {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('OAUTH')
-        expect(options.userAgent).to.equal('PRMetrics/v1.2.6')
+        expect(options.userAgent).to.equal('PRMetrics/v1.3.0')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
         expect(options.log.info).to.not.equal(null)
@@ -860,67 +951,148 @@ describe('gitHubReposInvoker.ts', function (): void {
       verify(octokitWrapper.updatePull('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345, undefined, 'Description')).once()
       verify(logger.logDebug('* GitHubReposInvoker.setTitleAndDescription()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
-      verify(logger.logDebug(JSON.stringify(mockPullResponse))).once()
+      verify(logger.logDebug('null')).once()
     })
   })
 
   describe('createComment()', (): void => {
-    it('should throw an exception', async (): Promise<void> => {
+    it('should succeed when a file name is specified', async (): Promise<void> => {
       // Arrange
+      when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
+        expect(options.auth).to.equal('OAUTH')
+        expect(options.userAgent).to.equal('PRMetrics/v1.3.0')
+        expect(options.log).to.not.equal(null)
+        expect(options.log.debug).to.not.equal(null)
+        expect(options.log.info).to.not.equal(null)
+        expect(options.log.warn).to.not.equal(null)
+        expect(options.log.error).to.not.equal(null)
+      })
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
-      let errorThrown: boolean = false
 
-      try {
-        // Act
-        await gitHubReposInvoker.createComment('', CommentThreadStatus.Active, '', false)
-      } catch (error) {
-        // Assert
-        errorThrown = true
-        expect(error.message).to.equal('GitHubReposInvoker.createComment() not yet implemented.')
-      }
+      // Act
+      await gitHubReposInvoker.createComment('Content', CommentThreadStatus.Unknown, 'file.ts')
 
-      expect(errorThrown).to.equal(true)
+      // Assert
+      verify(octokitWrapper.initialize(anything())).once()
+      verify(octokitWrapper.listCommits('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345)).once()
+      verify(octokitWrapper.createReviewComment('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345, 'Content', 'file.ts', 'sha54321')).once()
       verify(logger.logDebug('* GitHubReposInvoker.createComment()')).once()
+      verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
+      verify(logger.logDebug('null')).once()
+    })
+
+    it('should succeed when a file name is specified and the method is called twice', async (): Promise<void> => {
+      // Arrange
+      when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
+        expect(options.auth).to.equal('OAUTH')
+        expect(options.userAgent).to.equal('PRMetrics/v1.3.0')
+        expect(options.log).to.not.equal(null)
+        expect(options.log.debug).to.not.equal(null)
+        expect(options.log.info).to.not.equal(null)
+        expect(options.log.warn).to.not.equal(null)
+        expect(options.log.error).to.not.equal(null)
+      })
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
+
+      // Act
+      await gitHubReposInvoker.createComment('Content', CommentThreadStatus.Unknown, 'file.ts')
+      await gitHubReposInvoker.createComment('Content', CommentThreadStatus.Unknown, 'file.ts')
+
+      // Assert
+      verify(octokitWrapper.initialize(anything())).once()
+      verify(octokitWrapper.listCommits('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345)).once()
+      verify(octokitWrapper.createReviewComment('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345, 'Content', 'file.ts', 'sha54321')).twice()
+      verify(logger.logDebug('* GitHubReposInvoker.createComment()')).twice()
+      verify(logger.logDebug('* GitHubReposInvoker.initialize()')).twice()
+      verify(logger.logDebug('null')).twice()
+    })
+
+    it('should succeed when no file name is specified', async (): Promise<void> => {
+      // Arrange
+      when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
+        expect(options.auth).to.equal('OAUTH')
+        expect(options.userAgent).to.equal('PRMetrics/v1.3.0')
+        expect(options.log).to.not.equal(null)
+        expect(options.log.debug).to.not.equal(null)
+        expect(options.log.info).to.not.equal(null)
+        expect(options.log.warn).to.not.equal(null)
+        expect(options.log.error).to.not.equal(null)
+      })
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
+
+      // Act
+      await gitHubReposInvoker.createComment('Content', CommentThreadStatus.Unknown)
+
+      // Assert
+      verify(octokitWrapper.initialize(anything())).once()
+      verify(octokitWrapper.createIssueComment('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345, 'Content')).once()
+      verify(logger.logDebug('* GitHubReposInvoker.createComment()')).once()
+      verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
+      verify(logger.logDebug('null')).once()
     })
   })
 
   describe('updateComment()', (): void => {
-    it('should throw an exception', async (): Promise<void> => {
+    it('should succeed when the content is null', async (): Promise<void> => {
       // Arrange
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
-      let errorThrown: boolean = false
 
-      try {
-        // Act
-        await gitHubReposInvoker.updateComment(null, null, 0)
-      } catch (error) {
-        // Assert
-        errorThrown = true
-        expect(error.message).to.equal('GitHubReposInvoker.updateComment() not yet implemented.')
-      }
+      // Act
+      await gitHubReposInvoker.updateComment(null, null, 54321)
 
-      expect(errorThrown).to.equal(true)
+      // Assert
       verify(logger.logDebug('* GitHubReposInvoker.updateComment()')).once()
+      verify(logger.logDebug('* GitHubReposInvoker.initialize()')).never()
+    })
+
+    it('should succeed when the content is set', async (): Promise<void> => {
+      // Arrange
+      when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
+        expect(options.auth).to.equal('OAUTH')
+        expect(options.userAgent).to.equal('PRMetrics/v1.3.0')
+        expect(options.log).to.not.equal(null)
+        expect(options.log.debug).to.not.equal(null)
+        expect(options.log.info).to.not.equal(null)
+        expect(options.log.warn).to.not.equal(null)
+        expect(options.log.error).to.not.equal(null)
+      })
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
+
+      // Act
+      await gitHubReposInvoker.updateComment('Content', null, 54321)
+
+      // Assert
+      verify(octokitWrapper.initialize(anything())).once()
+      verify(octokitWrapper.updateIssueComment('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345, 54321, 'Content')).once()
+      verify(logger.logDebug('* GitHubReposInvoker.updateComment()')).once()
+      verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
+      verify(logger.logDebug('null')).once()
     })
   })
 
   describe('deleteCommentThread()', (): void => {
-    it('should throw an exception', async (): Promise<void> => {
+    it('should succeed', async (): Promise<void> => {
       // Arrange
+      when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
+        expect(options.auth).to.equal('OAUTH')
+        expect(options.userAgent).to.equal('PRMetrics/v1.3.0')
+        expect(options.log).to.not.equal(null)
+        expect(options.log.debug).to.not.equal(null)
+        expect(options.log.info).to.not.equal(null)
+        expect(options.log.warn).to.not.equal(null)
+        expect(options.log.error).to.not.equal(null)
+      })
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
-      let errorThrown: boolean = false
 
-      try {
-        // Act
-        await gitHubReposInvoker.deleteCommentThread(20)
-      } catch (error) {
-        // Assert
-        errorThrown = true
-        expect(error.message).to.equal('GitHubReposInvoker.deleteCommentThread() not yet implemented.')
-      }
+      // Act
+      await gitHubReposInvoker.deleteCommentThread(54321)
 
-      expect(errorThrown).to.equal(true)
+      // Assert
+      verify(octokitWrapper.initialize(anything())).once()
+      verify(octokitWrapper.deleteReviewComment('microsoft', 'OMEX-Azure-DevOps-Extensions', 54321)).once()
       verify(logger.logDebug('* GitHubReposInvoker.deleteCommentThread()')).once()
+      verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
+      verify(logger.logDebug('null')).once()
     })
   })
 })
