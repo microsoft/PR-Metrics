@@ -11,7 +11,6 @@ import CodeMetrics from '../../src/metrics/codeMetrics'
 import CodeMetricsData from '../../src/metrics/codeMetricsData'
 import Inputs from '../../src/metrics/inputs'
 import Logger from '../../src/utilities/logger'
-import os from 'os'
 import PullRequestComments from '../../src/pullRequests/pullRequestComments'
 import PullRequestCommentsData from '../../src/pullRequests/pullRequestCommentsData'
 import ReposInvoker from '../../src/repos/reposInvoker'
@@ -30,7 +29,7 @@ describe('pullRequestComments.ts', (): void => {
 
   beforeEach((): void => {
     reposInvoker = mock(ReposInvoker)
-    const pullRequestComment: PullRequestCommentData = new PullRequestCommentData(20, `# PR Metrics${os.EOL}`, CommentThreadStatus.Active)
+    const pullRequestComment: PullRequestCommentData = new PullRequestCommentData(20, '# PR Metrics\n', CommentThreadStatus.Active)
     const fileComment1: FileCommentData = new FileCommentData(30, '❗ **This file doesn\'t require review.**', 'file2.ts', CommentThreadStatus.Active)
     const fileComment2: FileCommentData = new FileCommentData(40, '❗ **This file doesn\'t require review.**', 'file5.ts', CommentThreadStatus.Active)
     complexGitPullRequestComments = new CommentData()
@@ -103,8 +102,8 @@ describe('pullRequestComments.ts', (): void => {
 
     async.each(
       [
-        [[new PullRequestCommentData(20, `# PR Metrics${os.EOL}`)]],
-        [[new PullRequestCommentData(20, '# PR Metrics'), new PullRequestCommentData(20, `# PR Metrics${os.EOL}`)]]
+        [[new PullRequestCommentData(20, '# PR Metrics\n')]],
+        [[new PullRequestCommentData(20, '# PR Metrics'), new PullRequestCommentData(20, '# PR Metrics\n')]]
       ], (data: [PullRequestCommentData[]]): void => {
         it('should return the expected result when the metrics comment is present', async (): Promise<void> => {
           // Arrange
@@ -119,7 +118,7 @@ describe('pullRequestComments.ts', (): void => {
           // Assert
           expect(result.metricsCommentThreadId).to.equal(20)
           expect(result.metricsCommentThreadStatus).to.equal(CommentThreadStatus.Unknown)
-          expect(result.metricsCommentContent).to.equal(`# PR Metrics${os.EOL}`)
+          expect(result.metricsCommentContent).to.equal('# PR Metrics\n')
           expect(result.filesNotRequiringReview).to.deep.equal([])
           expect(result.deletedFilesNotRequiringReview).to.deep.equal([])
           expect(result.commentThreadsRequiringDeletion).to.deep.equal([])
@@ -198,7 +197,7 @@ describe('pullRequestComments.ts', (): void => {
       // Assert
       expect(result.metricsCommentThreadId).to.equal(20)
       expect(result.metricsCommentThreadStatus).to.equal(CommentThreadStatus.Active)
-      expect(result.metricsCommentContent).to.equal(`# PR Metrics${os.EOL}`)
+      expect(result.metricsCommentContent).to.equal('# PR Metrics\n')
       expect(result.filesNotRequiringReview).to.deep.equal(['folder/file1.ts'])
       expect(result.deletedFilesNotRequiringReview).to.deep.equal([])
       expect(result.commentThreadsRequiringDeletion).to.deep.equal([])
@@ -219,7 +218,7 @@ describe('pullRequestComments.ts', (): void => {
       // Assert
       expect(result.metricsCommentThreadId).to.equal(20)
       expect(result.metricsCommentThreadStatus).to.equal(CommentThreadStatus.Active)
-      expect(result.metricsCommentContent).to.equal(`# PR Metrics${os.EOL}`)
+      expect(result.metricsCommentContent).to.equal('# PR Metrics\n')
       expect(result.filesNotRequiringReview).to.deep.equal([])
       expect(result.deletedFilesNotRequiringReview).to.deep.equal(['folder/file1.ts'])
       expect(result.commentThreadsRequiringDeletion).to.deep.equal([])
@@ -241,7 +240,7 @@ describe('pullRequestComments.ts', (): void => {
       // Assert
       expect(result.metricsCommentThreadId).to.equal(20)
       expect(result.metricsCommentThreadStatus).to.equal(CommentThreadStatus.Active)
-      expect(result.metricsCommentContent).to.equal(`# PR Metrics${os.EOL}`)
+      expect(result.metricsCommentContent).to.equal('# PR Metrics\n')
       expect(result.filesNotRequiringReview).to.deep.equal(['folder/file1.ts'])
       expect(result.deletedFilesNotRequiringReview).to.deep.equal(['file3.ts'])
       expect(result.commentThreadsRequiringDeletion).to.deep.equal([])
@@ -263,7 +262,7 @@ describe('pullRequestComments.ts', (): void => {
       // Assert
       expect(result.metricsCommentThreadId).to.equal(20)
       expect(result.metricsCommentThreadStatus).to.equal(CommentThreadStatus.Active)
-      expect(result.metricsCommentContent).to.equal(`# PR Metrics${os.EOL}`)
+      expect(result.metricsCommentContent).to.equal('# PR Metrics\n')
       expect(result.filesNotRequiringReview).to.deep.equal(['folder/file1.ts'])
       expect(result.deletedFilesNotRequiringReview).to.deep.equal(['file3.ts'])
       expect(result.commentThreadsRequiringDeletion).to.deep.equal([40])
@@ -316,17 +315,17 @@ describe('pullRequestComments.ts', (): void => {
 
           // Assert
           expect(result).to.equal(
-            `# PR Metrics${os.EOL}` +
-            `✔ **Thanks for keeping your pull request small.**${os.EOL}` +
-            `✔ **Thanks for adding tests.**${os.EOL}` +
-            `||Lines${os.EOL}` +
-            `-|-:${os.EOL}` +
-            `Product Code|${code[0].toLocaleString()}${os.EOL}` +
-            `Test Code|${code[1].toLocaleString()}${os.EOL}` +
-            `**Subtotal**|**${code[2].toLocaleString()}**${os.EOL}` +
-            `Ignored Code|${code[3].toLocaleString()}${os.EOL}` +
-            `**Total**|**${code[4].toLocaleString()}**${os.EOL}` +
-            os.EOL +
+            '# PR Metrics\n' +
+            '✔ **Thanks for keeping your pull request small.**\n' +
+            '✔ **Thanks for adding tests.**\n' +
+            '||Lines\n' +
+            '-|-:\n' +
+            `Product Code|${code[0].toLocaleString()}\n` +
+            `Test Code|${code[1].toLocaleString()}\n` +
+            `**Subtotal**|**${code[2].toLocaleString()}**\n` +
+            `Ignored Code|${code[3].toLocaleString()}\n` +
+            `**Total**|**${code[4].toLocaleString()}**\n` +
+            '\n' +
             '[Metrics computed by PR Metrics. Add it to your Azure DevOps and GitHub PRs!](https://aka.ms/PRMetrics/Comment)')
           verify(logger.logDebug('* PullRequestComments.getMetricsComment()')).once()
           verify(logger.logDebug('* PullRequestComments.addCommentSizeStatus()')).once()
@@ -352,17 +351,17 @@ describe('pullRequestComments.ts', (): void => {
 
           // Assert
           expect(result).to.equal(
-            `# PR Metrics${os.EOL}` +
-            `❌ **Try to keep pull requests smaller than ${baseSize.toLocaleString()} lines of new product code by following the [Single Responsibility Principle (SRP)](https://aka.ms/PRMetrics/SRP).**${os.EOL}` +
-            `✔ **Thanks for adding tests.**${os.EOL}` +
-            `||Lines${os.EOL}` +
-            `-|-:${os.EOL}` +
-            `Product Code|${Number(1000).toLocaleString()}${os.EOL}` +
-            `Test Code|${Number(1000).toLocaleString()}${os.EOL}` +
-            `**Subtotal**|**${Number(2000).toLocaleString()}**${os.EOL}` +
-            `Ignored Code|${Number(1000).toLocaleString()}${os.EOL}` +
-            `**Total**|**${Number(3000).toLocaleString()}**${os.EOL}` +
-            os.EOL +
+            '# PR Metrics\n' +
+            `❌ **Try to keep pull requests smaller than ${baseSize.toLocaleString()} lines of new product code by following the [Single Responsibility Principle (SRP)](https://aka.ms/PRMetrics/SRP).**\n` +
+            '✔ **Thanks for adding tests.**\n' +
+            '||Lines\n' +
+            '-|-:\n' +
+            `Product Code|${Number(1000).toLocaleString()}\n` +
+            `Test Code|${Number(1000).toLocaleString()}\n` +
+            `**Subtotal**|**${Number(2000).toLocaleString()}**\n` +
+            `Ignored Code|${Number(1000).toLocaleString()}\n` +
+            `**Total**|**${Number(3000).toLocaleString()}**\n` +
+            '\n' +
             '[Metrics computed by PR Metrics. Add it to your Azure DevOps and GitHub PRs!](https://aka.ms/PRMetrics/Comment)')
           verify(logger.logDebug('* PullRequestComments.getMetricsComment()')).once()
           verify(logger.logDebug('* PullRequestComments.addCommentSizeStatus()')).once()
@@ -381,17 +380,17 @@ describe('pullRequestComments.ts', (): void => {
 
       // Assert
       expect(result).to.equal(
-        `# PR Metrics${os.EOL}` +
-        `✔ **Thanks for keeping your pull request small.**${os.EOL}` +
-        `⚠️ **Consider adding additional tests.**${os.EOL}` +
-        `||Lines${os.EOL}` +
-        `-|-:${os.EOL}` +
-        `Product Code|${Number(1000).toLocaleString()}${os.EOL}` +
-        `Test Code|${Number(1000).toLocaleString()}${os.EOL}` +
-        `**Subtotal**|**${Number(2000).toLocaleString()}**${os.EOL}` +
-        `Ignored Code|${Number(1000).toLocaleString()}${os.EOL}` +
-        `**Total**|**${Number(3000).toLocaleString()}**${os.EOL}` +
-        os.EOL +
+        '# PR Metrics\n' +
+        '✔ **Thanks for keeping your pull request small.**\n' +
+        '⚠️ **Consider adding additional tests.**\n' +
+        '||Lines\n' +
+        '-|-:\n' +
+        `Product Code|${Number(1000).toLocaleString()}\n` +
+        `Test Code|${Number(1000).toLocaleString()}\n` +
+        `**Subtotal**|**${Number(2000).toLocaleString()}**\n` +
+        `Ignored Code|${Number(1000).toLocaleString()}\n` +
+        `**Total**|**${Number(3000).toLocaleString()}**\n` +
+        '\n' +
         '[Metrics computed by PR Metrics. Add it to your Azure DevOps and GitHub PRs!](https://aka.ms/PRMetrics/Comment)')
       verify(logger.logDebug('* PullRequestComments.getMetricsComment()')).once()
       verify(logger.logDebug('* PullRequestComments.addCommentSizeStatus()')).once()
@@ -409,16 +408,16 @@ describe('pullRequestComments.ts', (): void => {
 
       // Assert
       expect(result).to.equal(
-        `# PR Metrics${os.EOL}` +
-        `✔ **Thanks for keeping your pull request small.**${os.EOL}` +
-        `||Lines${os.EOL}` +
-        `-|-:${os.EOL}` +
-        `Product Code|${Number(1000).toLocaleString()}${os.EOL}` +
-        `Test Code|${Number(1000).toLocaleString()}${os.EOL}` +
-        `**Subtotal**|**${Number(2000).toLocaleString()}**${os.EOL}` +
-        `Ignored Code|${Number(1000).toLocaleString()}${os.EOL}` +
-        `**Total**|**${Number(3000).toLocaleString()}**${os.EOL}` +
-        os.EOL +
+        '# PR Metrics\n' +
+        '✔ **Thanks for keeping your pull request small.**\n' +
+        '||Lines\n' +
+        '-|-:\n' +
+        `Product Code|${Number(1000).toLocaleString()}\n` +
+        `Test Code|${Number(1000).toLocaleString()}\n` +
+        `**Subtotal**|**${Number(2000).toLocaleString()}**\n` +
+        `Ignored Code|${Number(1000).toLocaleString()}\n` +
+        `**Total**|**${Number(3000).toLocaleString()}**\n` +
+        '\n' +
         '[Metrics computed by PR Metrics. Add it to your Azure DevOps and GitHub PRs!](https://aka.ms/PRMetrics/Comment)')
       verify(logger.logDebug('* PullRequestComments.getMetricsComment()')).once()
       verify(logger.logDebug('* PullRequestComments.addCommentSizeStatus()')).once()

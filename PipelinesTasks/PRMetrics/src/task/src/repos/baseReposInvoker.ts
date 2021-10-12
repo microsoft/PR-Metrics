@@ -34,7 +34,7 @@ export default abstract class BaseReposInvoker implements IReposInvoker {
   protected async invokeApiCall<TResponse> (action: () => Promise<TResponse>, accessErrorMessage: string): Promise<TResponse> {
     try {
       return await action()
-    } catch (error) {
+    } catch (error: any) {
       const accessErrorStatusCodes: number[] = [401, 403, 404]
 
       if (accessErrorStatusCodes.includes(error.status ?? error.statusCode)) {

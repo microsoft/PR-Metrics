@@ -102,7 +102,7 @@ describe('azureReposInvoker.ts', function (): void {
           try {
             // Act
             await azureReposInvoker.getTitleAndDescription()
-          } catch (error) {
+          } catch (error: any) {
             // Assert
             errorThrown = true
             expect(error.message).to.equal(`'SYSTEM_TEAMPROJECT', accessed within 'AzureReposInvoker.getGitApi()', is invalid, null, or undefined '${variable}'.`)
@@ -133,7 +133,7 @@ describe('azureReposInvoker.ts', function (): void {
           try {
             // Act
             await azureReposInvoker.getTitleAndDescription()
-          } catch (error) {
+          } catch (error: any) {
             // Assert
             errorThrown = true
             expect(error.message).to.equal(`'BUILD_REPOSITORY_ID', accessed within 'AzureReposInvoker.getGitApi()', is invalid, null, or undefined '${variable}'.`)
@@ -165,7 +165,7 @@ describe('azureReposInvoker.ts', function (): void {
           try {
             // Act
             await azureReposInvoker.getTitleAndDescription()
-          } catch (error) {
+          } catch (error: any) {
             // Assert
             errorThrown = true
             expect(error.message).to.equal('\'SYSTEM_PULLREQUEST_PULLREQUESTID\', accessed within \'AzureReposInvoker.getGitApi()\', is invalid, null, or undefined \'NaN\'.')
@@ -196,7 +196,7 @@ describe('azureReposInvoker.ts', function (): void {
           try {
             // Act
             await azureReposInvoker.getTitleAndDescription()
-          } catch (error) {
+          } catch (error: any) {
             // Assert
             errorThrown = true
             expect(error.message).to.equal(`'SYSTEM_ACCESSTOKEN', accessed within 'AzureReposInvoker.getGitApi()', is invalid, null, or undefined '${variable}'.`)
@@ -227,7 +227,7 @@ describe('azureReposInvoker.ts', function (): void {
           try {
             // Act
             await azureReposInvoker.getTitleAndDescription()
-          } catch (error) {
+          } catch (error: any) {
             // Assert
             errorThrown = true
             expect(error.message).to.equal(`'SYSTEM_TEAMFOUNDATIONCOLLECTIONURI', accessed within 'AzureReposInvoker.getGitApi()', is invalid, null, or undefined '${variable}'.`)
@@ -257,7 +257,7 @@ describe('azureReposInvoker.ts', function (): void {
           try {
             // Act
             await azureReposInvoker.getTitleAndDescription()
-          } catch (error) {
+          } catch (error: any) {
             // Assert
             errorThrown = true
             expect(error.message).to.equal('Could not access the resources. Ensure \'System.AccessToken\' has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
@@ -348,7 +348,7 @@ describe('azureReposInvoker.ts', function (): void {
       try {
         // Act
         await azureReposInvoker.getTitleAndDescription()
-      } catch (error) {
+      } catch (error: any) {
         // Assert
         errorThrown = true
         expect(error.message).to.equal('\'title\', accessed within \'AzureReposInvoker.getTitleAndDescription()\', is invalid, null, or undefined \'undefined\'.')
@@ -382,7 +382,7 @@ describe('azureReposInvoker.ts', function (): void {
           try {
             // Act
             await azureReposInvoker.getComments()
-          } catch (error) {
+          } catch (error: any) {
             // Assert
             errorThrown = true
             expect(error.message).to.equal('Could not access the resources. Ensure \'System.AccessToken\' has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
@@ -505,7 +505,7 @@ describe('azureReposInvoker.ts', function (): void {
       try {
         // Act
         await azureReposInvoker.getComments()
-      } catch (error) {
+      } catch (error: any) {
         // Assert
         errorThrown = true
         expect(error.message).to.equal('\'commentThread[0].id\', accessed within \'AzureReposInvoker.convertPullRequestComments()\', is invalid, null, or undefined \'undefined\'.')
@@ -611,7 +611,7 @@ describe('azureReposInvoker.ts', function (): void {
           try {
             // Act
             await azureReposInvoker.setTitleAndDescription('Title', 'Description')
-          } catch (error) {
+          } catch (error: any) {
             // Assert
             errorThrown = true
             expect(error.message).to.equal('Could not access the resources. Ensure \'System.AccessToken\' has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
@@ -744,7 +744,7 @@ describe('azureReposInvoker.ts', function (): void {
           try {
             // Act
             await azureReposInvoker.createComment('Comment Content', CommentThreadStatus.Active, 'file.ts')
-          } catch (error) {
+          } catch (error: any) {
             // Assert
             errorThrown = true
             expect(error.message).to.equal('Could not access the resources. Ensure \'System.AccessToken\' has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
@@ -886,7 +886,7 @@ describe('azureReposInvoker.ts', function (): void {
           try {
             // Act
             await azureReposInvoker.updateComment(20, 'Content', CommentThreadStatus.Active)
-          } catch (error) {
+          } catch (error: any) {
             // Assert
             errorThrown = true
             expect(error.message).to.equal('Could not access the resources. Ensure \'System.AccessToken\' has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
@@ -920,7 +920,7 @@ describe('azureReposInvoker.ts', function (): void {
           try {
             // Act
             await azureReposInvoker.updateComment(20, 'Content', CommentThreadStatus.Active)
-          } catch (error) {
+          } catch (error: any) {
             // Assert
             errorThrown = true
             expect(error.message).to.equal('Could not access the resources. Ensure \'System.AccessToken\' has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
@@ -1059,7 +1059,7 @@ describe('azureReposInvoker.ts', function (): void {
           try {
             // Act
             await azureReposInvoker.deleteCommentThread(20)
-          } catch (error) {
+          } catch (error: any) {
             // Assert
             errorThrown = true
             expect(error.message).to.equal('Could not access the resources. Ensure \'System.AccessToken\' has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')

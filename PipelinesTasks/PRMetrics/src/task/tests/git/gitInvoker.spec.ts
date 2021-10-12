@@ -5,7 +5,6 @@ import 'reflect-metadata'
 import { anything, instance, mock, verify, when } from 'ts-mockito'
 import { expect } from 'chai'
 import { IExecOptions } from 'azure-pipelines-task-lib/toolrunner'
-import * as os from 'os'
 import async from 'async'
 import GitInvoker from '../../src/git/gitInvoker'
 import Logger from '../../src/utilities/logger'
@@ -134,7 +133,7 @@ describe('gitInvoker.ts', (): void => {
     it('should return false when the Git history is unavailable', async (): Promise<void> => {
       // Arrange
       when(taskLibWrapper.exec('git', 'rev-parse --branch origin/develop...pull/12345/merge', anything())).thenCall((_: string, __: string, options: IExecOptions): Promise<number> => {
-        options.errStream!.write(`fatal: ambiguous argument 'origin/develop...pull/12345/merge': unknown revision or path not in the working tree.${os.EOL}`)
+        options.errStream!.write('fatal: ambiguous argument \'origin/develop...pull/12345/merge\': unknown revision or path not in the working tree.\n')
         return Promise.resolve(1)
       })
       const gitInvoker: GitInvoker = new GitInvoker(instance(logger), instance(taskLibWrapper))
@@ -178,7 +177,7 @@ describe('gitInvoker.ts', (): void => {
       try {
         // Act
         await gitInvoker.isGitHistoryAvailable()
-      } catch (error) {
+      } catch (error: any) {
         // Assert
         errorThrown = true
         expect(error.message).to.equal('\'BUILD_REPOSITORY_PROVIDER\', accessed within \'GitInvoker.getPullRequestId()\', is invalid, null, or undefined \'undefined\'.')
@@ -200,7 +199,7 @@ describe('gitInvoker.ts', (): void => {
       try {
         // Act
         await gitInvoker.isGitHistoryAvailable()
-      } catch (error) {
+      } catch (error: any) {
         // Assert
         errorThrown = true
         expect(error.message).to.equal('\'SYSTEM_PULLREQUEST_TARGETBRANCH\', accessed within \'GitInvoker.getTargetBranch()\', is invalid, null, or undefined \'undefined\'.')
@@ -221,7 +220,7 @@ describe('gitInvoker.ts', (): void => {
       try {
         // Act
         await gitInvoker.isGitHistoryAvailable()
-      } catch (error) {
+      } catch (error: any) {
         // Assert
         errorThrown = true
         expect(error.message).to.equal('\'SYSTEM_PULLREQUEST_PULLREQUESTID\', accessed within \'GitInvoker.getPullRequestId()\', is invalid, null, or undefined \'undefined\'.')
@@ -248,7 +247,7 @@ describe('gitInvoker.ts', (): void => {
           try {
             // Act
             await gitInvoker.isGitHistoryAvailable()
-          } catch (error) {
+          } catch (error: any) {
             // Assert
             errorThrown = true
             expect(error.message).to.equal('\'SYSTEM_PULLREQUEST_PULLREQUESTNUMBER\', accessed within \'GitInvoker.getPullRequestId()\', is invalid, null, or undefined \'undefined\'.')
@@ -326,7 +325,7 @@ describe('gitInvoker.ts', (): void => {
       try {
         // Act
         await gitInvoker.getDiffSummary()
-      } catch (error) {
+      } catch (error: any) {
         // Assert
         errorThrown = true
         expect(error.message).to.equal('\'SYSTEM_PULLREQUEST_TARGETBRANCH\', accessed within \'GitInvoker.getTargetBranch()\', is invalid, null, or undefined \'undefined\'.')
@@ -347,7 +346,7 @@ describe('gitInvoker.ts', (): void => {
       try {
         // Act
         await gitInvoker.getDiffSummary()
-      } catch (error) {
+      } catch (error: any) {
         // Assert
         errorThrown = true
         expect(error.message).to.equal('\'SYSTEM_PULLREQUEST_PULLREQUESTID\', accessed within \'GitInvoker.getPullRequestId()\', is invalid, null, or undefined \'undefined\'.')
@@ -372,7 +371,7 @@ describe('gitInvoker.ts', (): void => {
       try {
         // Act
         await gitInvoker.getDiffSummary()
-      } catch (error) {
+      } catch (error: any) {
         // Assert
         errorThrown = true
         expect(error.message).to.equal('Failure')

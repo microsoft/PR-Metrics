@@ -305,7 +305,7 @@ describe('codeMetrics.ts', (): void => {
           try {
             // Act
             await codeMetrics.getFilesNotRequiringReview()
-          } catch (error) {
+          } catch (error: any) {
             // Assert
             errorThrown = true
             expect(error.message).to.equal('The Git diff summary is empty.')
@@ -337,7 +337,7 @@ describe('codeMetrics.ts', (): void => {
           try {
             // Act
             await codeMetrics.getFilesNotRequiringReview()
-          } catch (error) {
+          } catch (error: any) {
             // Assert
             errorThrown = true
             expect(error.message).to.equal(`The number of elements '${data[1]}' in '${data[0].trim()}' in input '${data[0].trim()}' did not match the expected 3.`)
@@ -359,7 +359,7 @@ describe('codeMetrics.ts', (): void => {
       try {
         // Act
         await codeMetrics.getFilesNotRequiringReview()
-      } catch (error) {
+      } catch (error: any) {
         // Assert
         errorThrown = true
         expect(error.message).to.equal('Could not parse added lines \'A\' from line \'A\t0\tfile.ts\'.')
@@ -380,7 +380,7 @@ describe('codeMetrics.ts', (): void => {
       try {
         // Act
         await codeMetrics.getFilesNotRequiringReview()
-      } catch (error) {
+      } catch (error: any) {
         // Assert
         errorThrown = true
         expect(error.message).to.equal('Could not parse deleted lines \'A\' from line \'0\tA\tfile.ts\'.')
@@ -403,7 +403,7 @@ describe('codeMetrics.ts', (): void => {
       try {
         // Act
         await codeMetrics.getDeletedFilesNotRequiringReview()
-      } catch (error) {
+      } catch (error: any) {
         // Assert
         errorThrown = true
         expect(error.message).to.equal('The Git diff summary is empty.')
@@ -423,7 +423,7 @@ describe('codeMetrics.ts', (): void => {
       try {
         // Act
         await codeMetrics.getDeletedFilesNotRequiringReview()
-      } catch (error) {
+      } catch (error: any) {
         // Assert
         errorThrown = true
         expect(error.message).to.equal('The number of elements \'1\' in \'0\' in input \'0\' did not match the expected 3.')
@@ -444,7 +444,7 @@ describe('codeMetrics.ts', (): void => {
       try {
         // Act
         await codeMetrics.getDeletedFilesNotRequiringReview()
-      } catch (error) {
+      } catch (error: any) {
         // Assert
         errorThrown = true
         expect(error.message).to.equal('Could not parse added lines \'A\' from line \'A\t0\tfile.ts\'.')
@@ -465,7 +465,7 @@ describe('codeMetrics.ts', (): void => {
       try {
         // Act
         await codeMetrics.getDeletedFilesNotRequiringReview()
-      } catch (error) {
+      } catch (error: any) {
         // Assert
         errorThrown = true
         expect(error.message).to.equal('Could not parse deleted lines \'A\' from line \'0\tA\tfile.ts\'.')

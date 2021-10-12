@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import * as os from 'os'
 import * as path from 'path'
 import * as taskLibMockAnswer from 'azure-pipelines-task-lib/mock-answer'
 import * as taskLibMockRun from 'azure-pipelines-task-lib/mock-run'
@@ -20,7 +19,7 @@ const mockAnswers: taskLibMockAnswer.TaskLibAnswers = {
     },
     '/git/git rev-parse --branch origin/develop...pull/12345/merge': {
       code: 1,
-      stderr: `fatal: ambiguous argument 'origin/develop...pull/12345/merge': unknown revision or path not in the working tree.${os.EOL}`
+      stderr: 'fatal: ambiguous argument \'origin/develop...pull/12345/merge\': unknown revision or path not in the working tree.\n'
     }
   },
   which: {

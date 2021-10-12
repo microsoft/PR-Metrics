@@ -57,7 +57,7 @@
     "@types/chai": "^4.2.22",
     "@types/glob": "^7.1.4",
     "@types/mocha": "^9.0.0",
-    "@types/node": "^16.10.3",
+    "@types/node": "^16.10.4",
     "@types/sinon": "^10.0.4",
     "async": "^3.2.1",
     "chai": "^4.3.4",

@@ -92,7 +92,7 @@ describe('gitHubReposInvoker.ts', function (): void {
           try {
             // Act
             await gitHubReposInvoker.getTitleAndDescription()
-          } catch (error) {
+          } catch (error: any) {
             // Assert
             errorThrown = true
             expect(error.message).to.equal(`'SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI', accessed within 'GitHubReposInvoker.initialize()', is invalid, null, or undefined '${variable}'.`)
@@ -118,7 +118,7 @@ describe('gitHubReposInvoker.ts', function (): void {
           try {
             // Act
             await gitHubReposInvoker.getTitleAndDescription()
-          } catch (error) {
+          } catch (error: any) {
             // Assert
             errorThrown = true
             expect(error.message).to.equal(`SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI '${variable}' is in an unexpected format.`)
@@ -151,7 +151,7 @@ describe('gitHubReposInvoker.ts', function (): void {
           try {
             // Act
             await gitHubReposInvoker.getTitleAndDescription()
-          } catch (error) {
+          } catch (error: any) {
             // Assert
             errorThrown = true
             expect(error.message).to.equal('\'SYSTEM_PULLREQUEST_PULLREQUESTNUMBER\', accessed within \'GitHubReposInvoker.initialize()\', is invalid, null, or undefined \'NaN\'.')
@@ -327,7 +327,7 @@ describe('gitHubReposInvoker.ts', function (): void {
           try {
             // Act
             await gitHubReposInvoker.getTitleAndDescription()
-          } catch (error) {
+          } catch (error: any) {
             // Assert
             errorThrown = true
             expect(error.message).to.equal('Could not access the resources. Ensure \'System.AccessToken\' has access to \'repos\'.')
@@ -359,7 +359,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       try {
         // Act
         await gitHubReposInvoker.getTitleAndDescription()
-      } catch (error) {
+      } catch (error: any) {
         // Assert
         errorThrown = true
         expect(error.message).to.equal('Error')
@@ -663,7 +663,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       try {
         // Act
         await gitHubReposInvoker.createComment('Content', CommentThreadStatus.Unknown, 'file.ts')
-      } catch (error) {
+      } catch (error: any) {
         // Assert
         errorThrown = true
         expect(error.message).to.equal('\'result.data[0].sha\', accessed within \'GitHubReposInvoker.createComment()\', is invalid, null, or undefined \'undefined\'.')

@@ -3,7 +3,6 @@
 
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import { injectable } from 'tsyringe'
-import * as os from 'os'
 import CodeMetrics from '../metrics/codeMetrics'
 import CodeMetricsData from '../metrics/codeMetricsData'
 import FileCommentData from '../repos/interfaces/fileCommentData'
@@ -87,19 +86,19 @@ export default class PullRequestComments {
 
     const metrics: CodeMetricsData = await this._codeMetrics.getMetrics()
 
-    let result: string = `${this._taskLibWrapper.loc('pullRequests.pullRequestComments.commentTitle')}${os.EOL}`
+    let result: string = `${this._taskLibWrapper.loc('pullRequests.pullRequestComments.commentTitle')}\n`
     result += await this.addCommentSizeStatus()
     result += await this.addCommentTestStatus()
 
-    result += `||${this._taskLibWrapper.loc('pullRequests.pullRequestComments.tableLines')}${os.EOL}`
-    result += `-|-:${os.EOL}`
+    result += `||${this._taskLibWrapper.loc('pullRequests.pullRequestComments.tableLines')}\n`
+    result += '-|-:\n'
     result += this.addCommentMetrics(this._taskLibWrapper.loc('pullRequests.pullRequestComments.tableProductCode'), metrics.productCode, false)
     result += this.addCommentMetrics(this._taskLibWrapper.loc('pullRequests.pullRequestComments.tableTestCode'), metrics.testCode, false)
     result += this.addCommentMetrics(this._taskLibWrapper.loc('pullRequests.pullRequestComments.tableSubtotal'), metrics.subtotal, true)
     result += this.addCommentMetrics(this._taskLibWrapper.loc('pullRequests.pullRequestComments.tableIgnoredCode'), metrics.ignoredCode, false)
     result += this.addCommentMetrics(this._taskLibWrapper.loc('pullRequests.pullRequestComments.tableTotal'), metrics.total, true)
 
-    result += os.EOL
+    result += '\n'
     result += this._taskLibWrapper.loc('pullRequests.pullRequestComments.commentFooter')
 
     return result
@@ -130,7 +129,7 @@ export default class PullRequestComments {
       return result
     }
 
-    if (!comment.content.startsWith(`${this._taskLibWrapper.loc('pullRequests.pullRequestComments.commentTitle')}${os.EOL}`)) {
+    if (!comment.content.startsWith(`${this._taskLibWrapper.loc('pullRequests.pullRequestComments.commentTitle')}\n`)) {
       return result
     }
 
@@ -173,7 +172,7 @@ export default class PullRequestComments {
       result += this._taskLibWrapper.loc('pullRequests.pullRequestComments.largePullRequestComment', this._inputs.baseSize.toLocaleString())
     }
 
-    result += os.EOL
+    result += '\n'
     return result
   }
 
@@ -189,7 +188,7 @@ export default class PullRequestComments {
         result += this._taskLibWrapper.loc('pullRequests.pullRequestComments.testsInsufficientComment')
       }
 
-      result += os.EOL
+      result += '\n'
     }
 
     return result
@@ -203,6 +202,6 @@ export default class PullRequestComments {
       surround = '**'
     }
 
-    return `${surround}${title}${surround}|${surround}${metric.toLocaleString()}${surround}${os.EOL}`
+    return `${surround}${title}${surround}|${surround}${metric.toLocaleString()}${surround}\n`
   }
 }

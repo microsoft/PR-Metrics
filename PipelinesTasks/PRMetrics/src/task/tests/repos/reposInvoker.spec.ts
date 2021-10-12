@@ -160,7 +160,7 @@ describe('reposInvoker.ts', function (): void {
       try {
         // Act
         await reposInvoker.getTitleAndDescription()
-      } catch (error) {
+      } catch (error: any) {
         // Assert
         errorThrown = true
         expect(error.message).to.equal('\'BUILD_REPOSITORY_PROVIDER\', accessed within \'ReposInvoker.getReposInvoker()\', is invalid, null, or undefined \'undefined\'.')
@@ -182,7 +182,7 @@ describe('reposInvoker.ts', function (): void {
       try {
         // Act
         await reposInvoker.getTitleAndDescription()
-      } catch (error) {
+      } catch (error: any) {
         // Assert
         errorThrown = true
         expect(error.message).to.equal('BUILD_REPOSITORY_PROVIDER \'Other\' is unsupported.')
@@ -253,7 +253,7 @@ describe('reposInvoker.ts', function (): void {
       try {
         // Act
         await reposInvoker.getComments()
-      } catch (error) {
+      } catch (error: any) {
         // Assert
         errorThrown = true
         expect(error.message).to.equal('\'BUILD_REPOSITORY_PROVIDER\', accessed within \'ReposInvoker.getReposInvoker()\', is invalid, null, or undefined \'undefined\'.')
@@ -275,7 +275,7 @@ describe('reposInvoker.ts', function (): void {
       try {
         // Act
         await reposInvoker.getComments()
-      } catch (error) {
+      } catch (error: any) {
         // Assert
         errorThrown = true
         expect(error.message).to.equal('BUILD_REPOSITORY_PROVIDER \'Other\' is unsupported.')
@@ -344,7 +344,7 @@ describe('reposInvoker.ts', function (): void {
       try {
         // Act
         await reposInvoker.setTitleAndDescription(null, null)
-      } catch (error) {
+      } catch (error: any) {
         // Assert
         errorThrown = true
         expect(error.message).to.equal('\'BUILD_REPOSITORY_PROVIDER\', accessed within \'ReposInvoker.getReposInvoker()\', is invalid, null, or undefined \'undefined\'.')
@@ -366,7 +366,7 @@ describe('reposInvoker.ts', function (): void {
       try {
         // Act
         await reposInvoker.setTitleAndDescription(null, null)
-      } catch (error) {
+      } catch (error: any) {
         // Assert
         errorThrown = true
         expect(error.message).to.equal('BUILD_REPOSITORY_PROVIDER \'Other\' is unsupported.')
@@ -435,7 +435,7 @@ describe('reposInvoker.ts', function (): void {
       try {
         // Act
         await reposInvoker.createComment('', CommentThreadStatus.Active, '', false)
-      } catch (error) {
+      } catch (error: any) {
         // Assert
         errorThrown = true
         expect(error.message).to.equal('\'BUILD_REPOSITORY_PROVIDER\', accessed within \'ReposInvoker.getReposInvoker()\', is invalid, null, or undefined \'undefined\'.')
@@ -457,7 +457,7 @@ describe('reposInvoker.ts', function (): void {
       try {
         // Act
         await reposInvoker.createComment('', CommentThreadStatus.Active, '', false)
-      } catch (error) {
+      } catch (error: any) {
         // Assert
         errorThrown = true
         expect(error.message).to.equal('BUILD_REPOSITORY_PROVIDER \'Other\' is unsupported.')
@@ -526,7 +526,7 @@ describe('reposInvoker.ts', function (): void {
       try {
         // Act
         await reposInvoker.updateComment(0, null, null)
-      } catch (error) {
+      } catch (error: any) {
         // Assert
         errorThrown = true
         expect(error.message).to.equal('\'BUILD_REPOSITORY_PROVIDER\', accessed within \'ReposInvoker.getReposInvoker()\', is invalid, null, or undefined \'undefined\'.')
@@ -548,7 +548,7 @@ describe('reposInvoker.ts', function (): void {
       try {
         // Act
         await reposInvoker.updateComment(0, null, null)
-      } catch (error) {
+      } catch (error: any) {
         // Assert
         errorThrown = true
         expect(error.message).to.equal('BUILD_REPOSITORY_PROVIDER \'Other\' is unsupported.')
@@ -617,7 +617,7 @@ describe('reposInvoker.ts', function (): void {
       try {
         // Act
         await reposInvoker.deleteCommentThread(20)
-      } catch (error) {
+      } catch (error: any) {
         // Assert
         errorThrown = true
         expect(error.message).to.equal('\'BUILD_REPOSITORY_PROVIDER\', accessed within \'ReposInvoker.getReposInvoker()\', is invalid, null, or undefined \'undefined\'.')
@@ -639,7 +639,7 @@ describe('reposInvoker.ts', function (): void {
       try {
         // Act
         await reposInvoker.deleteCommentThread(20)
-      } catch (error) {
+      } catch (error: any) {
         // Assert
         errorThrown = true
         expect(error.message).to.equal('BUILD_REPOSITORY_PROVIDER \'Other\' is unsupported.')
