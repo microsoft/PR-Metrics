@@ -15,7 +15,7 @@ describe('fileCommentData.ts', (): void => {
       expect(result.id).to.equal(12345)
       expect(result.content).to.equal('Content')
       expect(result.status).to.equal(CommentThreadStatus.Unknown)
-      expect(result.file).to.equal('file.ts')
+      expect(result.fileName).to.equal('file.ts')
     })
 
     it('should set the correct data when the status is specified', (): void => {
@@ -26,7 +26,7 @@ describe('fileCommentData.ts', (): void => {
       expect(result.id).to.equal(12345)
       expect(result.content).to.equal('Content')
       expect(result.status).to.equal(CommentThreadStatus.Active)
-      expect(result.file).to.equal('file.ts')
+      expect(result.fileName).to.equal('file.ts')
     })
   })
 })

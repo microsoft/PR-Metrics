@@ -8,8 +8,8 @@ import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfa
  */
 export default class PullRequestCommentsData {
   private _metricsCommentThreadId: number | null = null
-  private _metricsCommentThreadStatus: CommentThreadStatus | null = null
   private _metricsCommentContent: string | null = null
+  private _metricsCommentThreadStatus: CommentThreadStatus | null = null
   private _filesNotRequiringReview: string[] = []
   private _deletedFilesNotRequiringReview: string[] = []
   private _commentThreadsRequiringDeletion: number[] = []
@@ -41,22 +41,6 @@ export default class PullRequestCommentsData {
   }
 
   /**
-   * Gets the status of the metrics comment thread.
-   * @returns The status of the metrics comment thread.
-   */
-  public get metricsCommentThreadStatus (): CommentThreadStatus | null {
-    return this._metricsCommentThreadStatus
-  }
-
-  /**
-   * Sets the status of the metrics comment thread.
-   * @param value The status of the metrics comment thread.
-   */
-  public set metricsCommentThreadStatus (value: CommentThreadStatus | null) {
-    this._metricsCommentThreadStatus = value
-  }
-
-  /**
    * Gets the content of the comment in the metrics comment thread.
    * @returns The content of the comment in the metrics comment thread.
    */
@@ -70,6 +54,22 @@ export default class PullRequestCommentsData {
    */
   public set metricsCommentContent (value: string | null) {
     this._metricsCommentContent = value
+  }
+
+  /**
+   * Gets the status of the metrics comment thread.
+   * @returns The status of the metrics comment thread.
+   */
+  public get metricsCommentThreadStatus (): CommentThreadStatus | null {
+    return this._metricsCommentThreadStatus
+  }
+
+  /**
+   * Sets the status of the metrics comment thread.
+   * @param value The status of the metrics comment thread.
+   */
+  public set metricsCommentThreadStatus (value: CommentThreadStatus | null) {
+    this._metricsCommentThreadStatus = value
   }
 
   /**

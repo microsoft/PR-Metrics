@@ -47,12 +47,12 @@ export default interface IReposInvoker {
 
   /**
    * Updates a comment thread within the current pull request.
+   * @param commentThreadId The comment thread ID to which to add the comment.
    * @param content The content of the comment. If this is `null`, the contents will not be updated.
    * @param status The status to which to the set the comment thread. If this is `null`, the status will not be updated.
-   * @param commentThreadId The comment thread ID to which to add the comment.
    * @returns A promise for awaiting the completion of the method call.
    */
-  updateComment (content: string | null, status: CommentThreadStatus | null, commentThreadId: number): Promise<void>
+  updateComment (commentThreadId: number, content: string | null, status: CommentThreadStatus | null): Promise<void>
 
   /**
    * Deletes a comment thread within the current pull request.

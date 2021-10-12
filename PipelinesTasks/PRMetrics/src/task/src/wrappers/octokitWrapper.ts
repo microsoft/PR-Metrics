@@ -184,11 +184,11 @@ export default class OctokitWrapper {
    * @param owner The repo owner.
    * @param repo The repo name.
    * @param pullRequestId The numeric ID of the pull request.
-   * @param commentId The ID of the comment to be updated.
+   * @param commentThreadId The ID of the comment to be updated.
    * @param content The content of the comment.
    * @returns The response from the API call.
    */
-  public async updateIssueComment (owner: string, repo: string, pullRequestId: number, commentId: number, content: string): Promise<UpdateIssueCommentResponse> {
+  public async updateIssueComment (owner: string, repo: string, pullRequestId: number, commentThreadId: number, content: string): Promise<UpdateIssueCommentResponse> {
     if (!this._octokit) {
       throw Error('OctokitWrapper was not initialized prior to calling OctokitWrapper.updateIssueComment().')
     }
@@ -197,7 +197,7 @@ export default class OctokitWrapper {
       owner: owner,
       repo: repo,
       issue_number: pullRequestId,
-      comment_id: commentId,
+      comment_id: commentThreadId,
       body: content
     })
   }
@@ -206,10 +206,10 @@ export default class OctokitWrapper {
    * Deletes a comment associated with a pull request review.
    * @param owner The repo owner.
    * @param repo The repo name.
-   * @param commentId The ID of the comment to be deleted.
+   * @param commentThreadId The ID of the comment to be deleted.
    * @returns The response from the API call.
    */
-  public async deleteReviewComment (owner: string, repo: string, commentId: number): Promise<DeleteReviewCommentResponse> {
+  public async deleteReviewComment (owner: string, repo: string, commentThreadId: number): Promise<DeleteReviewCommentResponse> {
     if (!this._octokit) {
       throw Error('OctokitWrapper was not initialized prior to calling OctokitWrapper.deleteReviewComment().')
     }
@@ -217,7 +217,7 @@ export default class OctokitWrapper {
     return this._octokit.rest.pulls.deleteReviewComment({
       owner: owner,
       repo: repo,
-      comment_id: commentId
+      comment_id: commentThreadId
     })
   }
 }

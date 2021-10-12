@@ -205,7 +205,7 @@ describe('codeMetricsCalculator.ts', (): void => {
       // Assert
       verify(logger.logDebug('* CodeMetricsCalculator.updateComments()')).once()
       verify(logger.logDebug('* CodeMetricsCalculator.updateMetricsComment()')).once()
-      verify(reposInvoker.updateComment('Description', CommentThreadStatus.Active, 1)).once()
+      verify(reposInvoker.updateComment(1, 'Description', CommentThreadStatus.Active)).once()
     })
 
     it('should perform the expected actions when the metrics comment is to be updated and there is no existing thread', async (): Promise<void> => {

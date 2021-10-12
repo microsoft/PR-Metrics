@@ -20,7 +20,7 @@ export default abstract class BaseReposInvoker implements IReposInvoker {
 
   public abstract createComment(content: string, status: CommentThreadStatus, fileName?: string, isFileDeleted?: boolean): Promise<void>
 
-  public abstract updateComment(content: string | null, status: CommentThreadStatus | null, commentThreadId: number): Promise<void>
+  public abstract updateComment(commentThreadId: number, content: string | null, status: CommentThreadStatus | null): Promise<void>
 
   public abstract deleteCommentThread(commentThreadId: number): Promise<void>
 

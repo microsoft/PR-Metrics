@@ -147,7 +147,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     }
   }
 
-  public async updateComment (content: string | null, _: CommentThreadStatus | null, commentThreadId: number): Promise<void> {
+  public async updateComment (commentThreadId: number, content: string | null, _: CommentThreadStatus | null): Promise<void> {
     this._logger.logDebug('* GitHubReposInvoker.updateComment()')
 
     if (content === null) {
@@ -218,7 +218,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     this._isInitialized = true
   }
 
-  private static convertPullRequestComments (pullRequestComments: GetIssueCommentsResponse | undefined, fileComments: GetReviewCommentsResponse | undefined): CommentData {
+  private static convertPullRequestComments (pullRequestComments?: GetIssueCommentsResponse, fileComments?: GetReviewCommentsResponse): CommentData {
     const result: CommentData = new CommentData()
 
     pullRequestComments?.data.forEach((value: GetIssueCommentsResponseData, index: number): void => {

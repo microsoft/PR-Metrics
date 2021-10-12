@@ -135,7 +135,7 @@ export default class AzureReposInvoker extends BaseReposInvoker {
     this._logger.logDebug(JSON.stringify(result))
   }
 
-  public async updateComment (content: string | null, status: CommentThreadStatus | null, commentThreadId: number): Promise<void> {
+  public async updateComment (commentThreadId: number, content: string | null, status: CommentThreadStatus | null): Promise<void> {
     this._logger.logDebug('* AzureReposInvoker.updateComment()')
 
     if (content === null && status === null) {

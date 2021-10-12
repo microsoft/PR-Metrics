@@ -409,8 +409,8 @@ describe('azureReposInvoker.ts', function (): void {
       // Assert
       expect(result.pullRequestComments.length).to.equal(1)
       expect(result.pullRequestComments[0]!.id).to.equal(1)
-      expect(result.pullRequestComments[0]!.status).to.equal(CommentThreadStatus.Active)
       expect(result.pullRequestComments[0]!.content).to.equal('Content')
+      expect(result.pullRequestComments[0]!.status).to.equal(CommentThreadStatus.Active)
       expect(result.fileComments.length).to.equal(0)
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
       verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
@@ -432,9 +432,9 @@ describe('azureReposInvoker.ts', function (): void {
       expect(result.pullRequestComments.length).to.equal(0)
       expect(result.fileComments.length).to.equal(1)
       expect(result.fileComments[0]!.id).to.equal(1)
-      expect(result.fileComments[0]!.status).to.equal(CommentThreadStatus.Active)
       expect(result.fileComments[0]!.content).to.equal('Content')
-      expect(result.fileComments[0]!.file).to.equal('file.ts')
+      expect(result.fileComments[0]!.status).to.equal(CommentThreadStatus.Active)
+      expect(result.fileComments[0]!.fileName).to.equal('file.ts')
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
       verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
       verify(gitApi.getThreads('RepoID', 10, 'Project')).once()
@@ -458,13 +458,13 @@ describe('azureReposInvoker.ts', function (): void {
       // Assert
       expect(result.pullRequestComments.length).to.equal(1)
       expect(result.pullRequestComments[0]!.id).to.equal(1)
-      expect(result.pullRequestComments[0]!.status).to.equal(CommentThreadStatus.Active)
       expect(result.pullRequestComments[0]!.content).to.equal('PR Content')
+      expect(result.pullRequestComments[0]!.status).to.equal(CommentThreadStatus.Active)
       expect(result.fileComments.length).to.equal(1)
       expect(result.fileComments[0]!.id).to.equal(2)
-      expect(result.fileComments[0]!.status).to.equal(CommentThreadStatus.Active)
       expect(result.fileComments[0]!.content).to.equal('File Content')
-      expect(result.fileComments[0]!.file).to.equal('file.ts')
+      expect(result.fileComments[0]!.status).to.equal(CommentThreadStatus.Active)
+      expect(result.fileComments[0]!.fileName).to.equal('file.ts')
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
       verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
       verify(gitApi.getThreads('RepoID', 10, 'Project')).once()
@@ -486,8 +486,8 @@ describe('azureReposInvoker.ts', function (): void {
       expect(result.fileComments.length).to.equal(0)
       expect(result.pullRequestComments.length).to.equal(1)
       expect(result.pullRequestComments[0]!.id).to.equal(1)
-      expect(result.pullRequestComments[0]!.status).to.equal(CommentThreadStatus.Active)
       expect(result.pullRequestComments[0]!.content).to.equal('Content')
+      expect(result.pullRequestComments[0]!.status).to.equal(CommentThreadStatus.Active)
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
       verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
       verify(gitApi.getThreads('RepoID', 10, 'Project')).twice()
@@ -826,7 +826,7 @@ describe('azureReposInvoker.ts', function (): void {
 
           try {
             // Act
-            await azureReposInvoker.updateComment('Content', CommentThreadStatus.Active, 20)
+            await azureReposInvoker.updateComment(20, 'Content', CommentThreadStatus.Active)
           } catch (error) {
             // Assert
             errorThrown = true
@@ -860,7 +860,7 @@ describe('azureReposInvoker.ts', function (): void {
 
           try {
             // Act
-            await azureReposInvoker.updateComment('Content', CommentThreadStatus.Active, 20)
+            await azureReposInvoker.updateComment(20, 'Content', CommentThreadStatus.Active)
           } catch (error) {
             // Assert
             errorThrown = true
@@ -892,7 +892,7 @@ describe('azureReposInvoker.ts', function (): void {
       const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger), instance(taskLibWrapper))
 
       // Act
-      await azureReposInvoker.updateComment('Content', CommentThreadStatus.Active, 20)
+      await azureReposInvoker.updateComment(20, 'Content', CommentThreadStatus.Active)
 
       // Assert
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
@@ -913,7 +913,7 @@ describe('azureReposInvoker.ts', function (): void {
       const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger), instance(taskLibWrapper))
 
       // Act
-      await azureReposInvoker.updateComment('Content', null, 20)
+      await azureReposInvoker.updateComment(20, 'Content', null)
 
       // Assert
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
@@ -933,7 +933,7 @@ describe('azureReposInvoker.ts', function (): void {
       const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger), instance(taskLibWrapper))
 
       // Act
-      await azureReposInvoker.updateComment(null, CommentThreadStatus.Active, 20)
+      await azureReposInvoker.updateComment(20, null, CommentThreadStatus.Active)
 
       // Assert
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
@@ -949,7 +949,7 @@ describe('azureReposInvoker.ts', function (): void {
       const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger), instance(taskLibWrapper))
 
       // Act
-      await azureReposInvoker.updateComment(null, null, 20)
+      await azureReposInvoker.updateComment(20, null, null)
 
       // Assert
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).never()
@@ -969,8 +969,8 @@ describe('azureReposInvoker.ts', function (): void {
       const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger), instance(taskLibWrapper))
 
       // Act
-      await azureReposInvoker.updateComment('Content', null, 20)
-      await azureReposInvoker.updateComment('Content', null, 20)
+      await azureReposInvoker.updateComment(20, 'Content', null)
+      await azureReposInvoker.updateComment(20, 'Content', null)
 
       // Assert
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()

@@ -9,618 +9,30 @@ import async from 'async'
 import ErrorWithStatus from '../wrappers/errorWithStatus'
 import GetPullResponse from '../../src/wrappers/octokitInterfaces/getPullResponse'
 import GitHubReposInvoker from '../../src/repos/gitHubReposInvoker'
-import ListCommitsResponse from '../../src/wrappers/octokitInterfaces/listCommitsResponse'
 import Logger from '../../src/utilities/logger'
 import OctokitLogObject from '../wrappers/octokitLogObject'
 import OctokitWrapper from '../../src/wrappers/octokitWrapper'
 import PullRequestDetails from '../../src/repos/interfaces/pullRequestDetails'
 import TaskLibWrapper from '../../src/wrappers/taskLibWrapper'
 import CommentData from '../../src/repos/interfaces/commentData'
+import GitHubReposInvokerConstants from './gitHubReposInvokerConstants'
 import GetIssueCommentsResponse from '../../src/wrappers/octokitInterfaces/getIssueCommentsResponse'
-import GetReviewCommentsResponse from '../../src/wrappers/octokitInterfaces/getReviewCommentsResponse'
 
 describe('gitHubReposInvoker.ts', function (): void {
   let logger: Logger
   let octokitWrapper: OctokitWrapper
   let taskLibWrapper: TaskLibWrapper
 
-  let mockPullResponse: GetPullResponse
-  let mockListCommitsResponse: ListCommitsResponse
-  let mockIssueCommentsResponse: GetIssueCommentsResponse
-  let mockReviewCommentsResponse: GetReviewCommentsResponse
-
   beforeEach((): void => {
     process.env.SYSTEM_ACCESSTOKEN = 'OAUTH'
     process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI = 'https://github.com/microsoft/OMEX-Azure-DevOps-Extensions'
     process.env.SYSTEM_PULLREQUEST_PULLREQUESTNUMBER = '12345'
-
-    mockPullResponse = {
-      headers: {},
-      status: 200,
-      url: '',
-      data: {
-        title: 'Title',
-        body: 'Description',
-        url: '',
-        id: 0,
-        node_id: '',
-        html_url: '',
-        diff_url: '',
-        patch_url: '',
-        issue_url: '',
-        number: 0,
-        state: 'open',
-        locked: false,
-        user: {
-          login: '',
-          id: 0,
-          node_id: '',
-          avatar_url: '',
-          gravatar_id: '',
-          url: '',
-          html_url: '',
-          followers_url: '',
-          following_url: '',
-          gists_url: '',
-          starred_url: '',
-          subscriptions_url: '',
-          organizations_url: '',
-          repos_url: '',
-          events_url: '',
-          received_events_url: '',
-          type: '',
-          site_admin: false
-        },
-        created_at: '',
-        updated_at: '',
-        closed_at: null,
-        merged_at: null,
-        merge_commit_sha: '',
-        assignee: {
-          login: '',
-          id: 0,
-          node_id: '',
-          avatar_url: '',
-          gravatar_id: '',
-          url: '',
-          html_url: '',
-          followers_url: '',
-          following_url: '',
-          gists_url: '',
-          starred_url: '',
-          subscriptions_url: '',
-          organizations_url: '',
-          repos_url: '',
-          events_url: '',
-          received_events_url: '',
-          type: '',
-          site_admin: false
-        },
-        assignees: [],
-        requested_reviewers: [],
-        requested_teams: [],
-        labels: [],
-        milestone: null,
-        draft: false,
-        commits_url: '',
-        review_comments_url: '',
-        review_comment_url: '',
-        comments_url: '',
-        statuses_url: '',
-        head: {
-          label: '',
-          ref: '',
-          sha: '',
-          user: {
-            login: '',
-            id: 0,
-            node_id: '',
-            avatar_url: '',
-            gravatar_id: '',
-            url: '',
-            html_url: '',
-            followers_url: '',
-            following_url: '',
-            gists_url: '',
-            starred_url: '',
-            subscriptions_url: '',
-            organizations_url: '',
-            repos_url: '',
-            events_url: '',
-            received_events_url: '',
-            type: '',
-            site_admin: false
-          },
-          repo: {
-            id: 0,
-            node_id: '',
-            name: '',
-            full_name: '',
-            private: false,
-            owner: {
-              login: '',
-              id: 0,
-              node_id: '',
-              avatar_url: '',
-              gravatar_id: '',
-              url: '',
-              html_url: '',
-              followers_url: '',
-              following_url: '',
-              gists_url: '',
-              starred_url: '',
-              subscriptions_url: '',
-              organizations_url: '',
-              repos_url: '',
-              events_url: '',
-              received_events_url: '',
-              type: '',
-              site_admin: false
-            },
-            html_url: '',
-            description: '',
-            fork: false,
-            url: '',
-            forks_url: '',
-            keys_url: '',
-            collaborators_url: '',
-            teams_url: '',
-            hooks_url: '',
-            issue_events_url: '',
-            events_url: '',
-            assignees_url: '',
-            branches_url: '',
-            tags_url: '',
-            blobs_url: '',
-            git_tags_url: '',
-            git_refs_url: '',
-            trees_url: '',
-            statuses_url: '',
-            languages_url: '',
-            stargazers_url: '',
-            contributors_url: '',
-            subscribers_url: '',
-            subscription_url: '',
-            commits_url: '',
-            git_commits_url: '',
-            comments_url: '',
-            issue_comment_url: '',
-            contents_url: '',
-            compare_url: '',
-            merges_url: '',
-            archive_url: '',
-            downloads_url: '',
-            issues_url: '',
-            pulls_url: '',
-            milestones_url: '',
-            notifications_url: '',
-            labels_url: '',
-            releases_url: '',
-            deployments_url: '',
-            created_at: '',
-            updated_at: '',
-            pushed_at: '',
-            git_url: '',
-            ssh_url: '',
-            clone_url: '',
-            svn_url: '',
-            homepage: '',
-            size: 0,
-            stargazers_count: 0,
-            watchers_count: 0,
-            language: '',
-            has_issues: true,
-            has_projects: false,
-            has_downloads: true,
-            has_wiki: false,
-            has_pages: false,
-            forks_count: 0,
-            mirror_url: null,
-            archived: false,
-            disabled: false,
-            open_issues_count: 0,
-            license: {
-              key: '',
-              name: '',
-              spdx_id: '',
-              url: null,
-              node_id: ''
-            },
-            forks: 0,
-            open_issues: 0,
-            watchers: 0,
-            default_branch: ''
-          }
-        },
-        base: {
-          label: '',
-          ref: '',
-          sha: '',
-          user: {
-            login: '',
-            id: 0,
-            node_id: '',
-            avatar_url: '',
-            gravatar_id: '',
-            url: '',
-            html_url: '',
-            followers_url: '',
-            following_url: '',
-            gists_url: '',
-            starred_url: '',
-            subscriptions_url: '',
-            organizations_url: '',
-            repos_url: '',
-            events_url: '',
-            received_events_url: '',
-            type: '',
-            site_admin: false
-          },
-          repo: {
-            id: 0,
-            node_id: '',
-            name: '',
-            full_name: '',
-            private: false,
-            owner: {
-              login: '',
-              id: 0,
-              node_id: '',
-              avatar_url: '',
-              gravatar_id: '',
-              url: '',
-              html_url: '',
-              followers_url: '',
-              following_url: '',
-              gists_url: '',
-              starred_url: '',
-              subscriptions_url: '',
-              organizations_url: '',
-              repos_url: '',
-              events_url: '',
-              received_events_url: '',
-              type: '',
-              site_admin: false
-            },
-            html_url: '',
-            description: '',
-            fork: false,
-            url: '',
-            forks_url: '',
-            keys_url: '',
-            collaborators_url: '',
-            teams_url: '',
-            hooks_url: '',
-            issue_events_url: '',
-            events_url: '',
-            assignees_url: '',
-            branches_url: '',
-            tags_url: '',
-            blobs_url: '',
-            git_tags_url: '',
-            git_refs_url: '',
-            trees_url: '',
-            statuses_url: '',
-            languages_url: '',
-            stargazers_url: '',
-            contributors_url: '',
-            subscribers_url: '',
-            subscription_url: '',
-            commits_url: '',
-            git_commits_url: '',
-            comments_url: '',
-            issue_comment_url: '',
-            contents_url: '',
-            compare_url: '',
-            merges_url: '',
-            archive_url: '',
-            downloads_url: '',
-            issues_url: '',
-            pulls_url: '',
-            milestones_url: '',
-            notifications_url: '',
-            labels_url: '',
-            releases_url: '',
-            deployments_url: '',
-            created_at: '',
-            updated_at: '',
-            pushed_at: '',
-            git_url: '',
-            ssh_url: '',
-            clone_url: '',
-            svn_url: '',
-            homepage: '',
-            size: 0,
-            stargazers_count: 0,
-            watchers_count: 0,
-            language: '',
-            has_issues: true,
-            has_projects: false,
-            has_downloads: true,
-            has_wiki: false,
-            has_pages: false,
-            forks_count: 0,
-            mirror_url: null,
-            archived: false,
-            disabled: false,
-            open_issues_count: 0,
-            license: {
-              key: '',
-              name: '',
-              spdx_id: '',
-              url: null,
-              node_id: ''
-            },
-            forks: 0,
-            open_issues: 0,
-            watchers: 0,
-            default_branch: ''
-          }
-        },
-        _links: {
-          self: {
-            href: ''
-          },
-          html: {
-            href: ''
-          },
-          issue: {
-            href: ''
-          },
-          comments: {
-            href: ''
-          },
-          review_comments: {
-            href: ''
-          },
-          review_comment: {
-            href: ''
-          },
-          commits: {
-            href: ''
-          },
-          statuses: {
-            href: ''
-          }
-        },
-        author_association: 'MEMBER',
-        auto_merge: null,
-        active_lock_reason: null,
-        merged: false,
-        mergeable: true,
-        rebaseable: true,
-        mergeable_state: '',
-        merged_by: null,
-        comments: 0,
-        review_comments: 0,
-        maintainer_can_modify: false,
-        commits: 0,
-        additions: 0,
-        deletions: 0,
-        changed_files: 0
-      }
-    }
-
-    mockListCommitsResponse = {
-      headers: {},
-      status: 200,
-      url: '',
-      data:
-        [
-          {
-            sha: 'sha54321',
-            node_id: '',
-            commit: {
-              author: {
-                name: '',
-                email: '',
-                date: ''
-              },
-              committer: {
-                name: '',
-                email: '',
-                date: ''
-              },
-              message: '',
-              tree: {
-                sha: '',
-                url: ''
-              },
-              url: '',
-              comment_count: 0,
-              verification: {
-                verified: false,
-                reason: '',
-                signature: null,
-                payload: null
-              }
-            },
-            url: '',
-            html_url: '',
-            comments_url: '',
-            author: {
-              login: '',
-              id: 0,
-              node_id: '',
-              avatar_url: '',
-              gravatar_id: '',
-              url: '',
-              html_url: '',
-              followers_url: '',
-              following_url: '',
-              gists_url: '',
-              starred_url: '',
-              subscriptions_url: '',
-              organizations_url: '',
-              repos_url: '',
-              events_url: '',
-              received_events_url: '',
-              type: '',
-              site_admin: false
-            },
-            committer: {
-              login: '',
-              id: 0,
-              node_id: '',
-              avatar_url: '',
-              gravatar_id: '',
-              url: '',
-              html_url: '',
-              followers_url: '',
-              following_url: '',
-              gists_url: '',
-              starred_url: '',
-              subscriptions_url: '',
-              organizations_url: '',
-              repos_url: '',
-              events_url: '',
-              received_events_url: '',
-              type: '',
-              site_admin: false
-            },
-            parents: [
-              {
-                sha: '',
-                url: '',
-                html_url: ''
-              }
-            ]
-          }
-        ]
-    }
-
-    mockIssueCommentsResponse = {
-      headers: {},
-      status: 200,
-      url: '',
-      data: [
-        {
-          url: '',
-          html_url: '',
-          issue_url: '',
-          id: 1,
-          node_id: '',
-          user: {
-            login: '',
-            id: 0,
-            node_id: '',
-            avatar_url: '',
-            gravatar_id: '',
-            url: '',
-            html_url: '',
-            followers_url: '',
-            following_url: '',
-            gists_url: '',
-            starred_url: '',
-            subscriptions_url: '',
-            organizations_url: '',
-            repos_url: '',
-            events_url: '',
-            received_events_url: '',
-            type: 'User',
-            site_admin: false
-          },
-          created_at: '',
-          updated_at: '',
-          author_association: 'MEMBER',
-          reactions: {
-            url: '',
-            total_count: 0,
-            '+1': 0,
-            '-1': 0,
-            laugh: 0,
-            hooray: 0,
-            confused: 0,
-            heart: 0,
-            rocket: 0,
-            eyes: 0
-          },
-          performed_via_github_app: null
-        }
-      ]
-    }
-
-    mockReviewCommentsResponse = {
-      headers: {},
-      status: 200,
-      url: '',
-      data: [
-        {
-          url: '',
-          pull_request_review_id: 0,
-          id: 2,
-          node_id: '',
-          diff_hunk: '',
-          path: 'file.ts',
-          position: 1,
-          original_position: 1,
-          commit_id: '',
-          original_commit_id: '',
-          user: {
-            login: '',
-            id: 0,
-            node_id: '',
-            avatar_url: '',
-            gravatar_id: '',
-            url: '',
-            html_url: '',
-            followers_url: '',
-            following_url: '',
-            gists_url: '',
-            starred_url: '',
-            subscriptions_url: '',
-            organizations_url: '',
-            repos_url: '',
-            events_url: '',
-            received_events_url: '',
-            type: '',
-            site_admin: false
-          },
-          body: 'File Content',
-          created_at: '',
-          updated_at: '',
-          html_url: '',
-          pull_request_url: '',
-          author_association: 'MEMBER',
-          _links: {
-            self: {
-              href: ''
-            },
-            html: {
-              href: ''
-            },
-            pull_request: {
-              href: ''
-            }
-          },
-          reactions: {
-            url: '',
-            total_count: 0,
-            '+1': 0,
-            '-1': 0,
-            laugh: 0,
-            hooray: 0,
-            confused: 0,
-            heart: 0,
-            rocket: 0,
-            eyes: 0
-          },
-          start_line: null,
-          original_start_line: null,
-          start_side: null,
-          line: 1,
-          original_line: 1,
-          side: 'LEFT'
-        }
-      ]
-    }
-
     logger = mock(Logger)
 
     octokitWrapper = mock(OctokitWrapper)
-    when(octokitWrapper.getPull(anyString(), anyString(), anyNumber())).thenResolve(mockPullResponse)
-    when(octokitWrapper.updatePull(anyString(), anyString(), anyNumber(), anyString(), anyString())).thenResolve(mockPullResponse)
-    when(octokitWrapper.listCommits(anyString(), anyString(), anyNumber())).thenResolve(mockListCommitsResponse)
+    when(octokitWrapper.getPull(anyString(), anyString(), anyNumber())).thenResolve(GitHubReposInvokerConstants.getPullResponse)
+    when(octokitWrapper.updatePull(anyString(), anyString(), anyNumber(), anyString(), anyString())).thenResolve(GitHubReposInvokerConstants.getPullResponse)
+    when(octokitWrapper.listCommits(anyString(), anyString(), anyNumber())).thenResolve(GitHubReposInvokerConstants.listCommitsResponse)
 
     taskLibWrapper = mock(TaskLibWrapper)
     when(taskLibWrapper.loc('metrics.codeMetricsCalculator.insufficientGitHubAccessTokenPermissions')).thenReturn('Could not access the resources. Ensure \'System.AccessToken\' has access to \'repos\'.')
@@ -774,7 +186,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       verify(octokitWrapper.getPull('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345)).once()
       verify(logger.logDebug('* GitHubReposInvoker.getTitleAndDescription()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
-      verify(logger.logDebug(JSON.stringify(mockPullResponse))).once()
+      verify(logger.logDebug(JSON.stringify(GitHubReposInvokerConstants.getPullResponse))).once()
     })
 
     it('should succeed when the inputs are valid and the URL ends with \'.git\'', async (): Promise<void> => {
@@ -801,7 +213,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       verify(octokitWrapper.getPull('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345)).once()
       verify(logger.logDebug('* GitHubReposInvoker.getTitleAndDescription()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
-      verify(logger.logDebug(JSON.stringify(mockPullResponse))).once()
+      verify(logger.logDebug(JSON.stringify(GitHubReposInvokerConstants.getPullResponse))).once()
     })
 
     it('should succeed when the inputs are valid and GitHub Enterprise is in use', async (): Promise<void> => {
@@ -830,7 +242,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       verify(logger.logDebug('* GitHubReposInvoker.getTitleAndDescription()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
       verify(logger.logDebug('Using Base URL \'https://organization.githubenterprise.com/api/v3\'.')).once()
-      verify(logger.logDebug(JSON.stringify(mockPullResponse))).once()
+      verify(logger.logDebug(JSON.stringify(GitHubReposInvokerConstants.getPullResponse))).once()
     })
 
     it('should succeed when called twice with the inputs valid', async (): Promise<void> => {
@@ -857,12 +269,12 @@ describe('gitHubReposInvoker.ts', function (): void {
       verify(octokitWrapper.getPull('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345)).twice()
       verify(logger.logDebug('* GitHubReposInvoker.getTitleAndDescription()')).twice()
       verify(logger.logDebug('* GitHubReposInvoker.initialize()')).twice()
-      verify(logger.logDebug(JSON.stringify(mockPullResponse))).twice()
+      verify(logger.logDebug(JSON.stringify(GitHubReposInvokerConstants.getPullResponse))).twice()
     })
 
     it('should succeed when the description is null', async (): Promise<void> => {
       // Arrange
-      const currentMockPullResponse: GetPullResponse = mockPullResponse
+      const currentMockPullResponse: GetPullResponse = GitHubReposInvokerConstants.getPullResponse
       currentMockPullResponse.data.body = null
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('OAUTH')
@@ -992,8 +404,9 @@ describe('gitHubReposInvoker.ts', function (): void {
         expect(options.log.warn).to.not.equal(null)
         expect(options.log.error).to.not.equal(null)
       })
-      mockIssueCommentsResponse.data[0]!.body = 'PR Content'
-      when(octokitWrapper.getIssueComments(anyString(), anyString(), anyNumber())).thenResolve(mockIssueCommentsResponse)
+      const response: GetIssueCommentsResponse = GitHubReposInvokerConstants.getIssueCommentsResponse
+      response.data[0]!.body = 'PR Content'
+      when(octokitWrapper.getIssueComments(anyString(), anyString(), anyNumber())).thenResolve(response)
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
 
       // Act
@@ -1002,15 +415,15 @@ describe('gitHubReposInvoker.ts', function (): void {
       // Assert
       expect(result.pullRequestComments.length).to.equal(1)
       expect(result.pullRequestComments[0]!.id).to.equal(1)
-      expect(result.pullRequestComments[0]!.status).to.equal(CommentThreadStatus.Unknown)
       expect(result.pullRequestComments[0]!.content).to.equal('PR Content')
+      expect(result.pullRequestComments[0]!.status).to.equal(CommentThreadStatus.Unknown)
       expect(result.fileComments.length).to.equal(0)
       verify(octokitWrapper.initialize(anything())).once()
       verify(octokitWrapper.getIssueComments('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345)).once()
       verify(octokitWrapper.getReviewComments('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345)).once()
       verify(logger.logDebug('* GitHubReposInvoker.getComments()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
-      verify(logger.logDebug(JSON.stringify(mockIssueCommentsResponse))).once()
+      verify(logger.logDebug(JSON.stringify(response))).once()
     })
 
     it('should return the result when called with a file comment', async (): Promise<void> => {
@@ -1024,7 +437,7 @@ describe('gitHubReposInvoker.ts', function (): void {
         expect(options.log.warn).to.not.equal(null)
         expect(options.log.error).to.not.equal(null)
       })
-      when(octokitWrapper.getReviewComments(anyString(), anyString(), anyNumber())).thenResolve(mockReviewCommentsResponse)
+      when(octokitWrapper.getReviewComments(anyString(), anyString(), anyNumber())).thenResolve(GitHubReposInvokerConstants.getReviewCommentsResponse)
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
 
       // Act
@@ -1034,15 +447,15 @@ describe('gitHubReposInvoker.ts', function (): void {
       expect(result.pullRequestComments.length).to.equal(0)
       expect(result.fileComments.length).to.equal(1)
       expect(result.fileComments[0]!.id).to.equal(2)
-      expect(result.fileComments[0]!.status).to.equal(CommentThreadStatus.Unknown)
       expect(result.fileComments[0]!.content).to.equal('File Content')
-      expect(result.fileComments[0]!.file).to.equal('file.ts')
+      expect(result.fileComments[0]!.status).to.equal(CommentThreadStatus.Unknown)
+      expect(result.fileComments[0]!.fileName).to.equal('file.ts')
       verify(octokitWrapper.initialize(anything())).once()
       verify(octokitWrapper.getIssueComments('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345)).once()
       verify(octokitWrapper.getReviewComments('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345)).once()
       verify(logger.logDebug('* GitHubReposInvoker.getComments()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
-      verify(logger.logDebug(JSON.stringify(mockReviewCommentsResponse))).once()
+      verify(logger.logDebug(JSON.stringify(GitHubReposInvokerConstants.getReviewCommentsResponse))).once()
     })
 
     it('should return the result when called with both a pull request and file comment', async (): Promise<void> => {
@@ -1056,9 +469,10 @@ describe('gitHubReposInvoker.ts', function (): void {
         expect(options.log.warn).to.not.equal(null)
         expect(options.log.error).to.not.equal(null)
       })
-      mockIssueCommentsResponse.data[0]!.body = 'PR Content'
-      when(octokitWrapper.getIssueComments(anyString(), anyString(), anyNumber())).thenResolve(mockIssueCommentsResponse)
-      when(octokitWrapper.getReviewComments(anyString(), anyString(), anyNumber())).thenResolve(mockReviewCommentsResponse)
+      const response: GetIssueCommentsResponse = GitHubReposInvokerConstants.getIssueCommentsResponse
+      response.data[0]!.body = 'PR Content'
+      when(octokitWrapper.getIssueComments(anyString(), anyString(), anyNumber())).thenResolve(response)
+      when(octokitWrapper.getReviewComments(anyString(), anyString(), anyNumber())).thenResolve(GitHubReposInvokerConstants.getReviewCommentsResponse)
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
 
       // Act
@@ -1067,20 +481,20 @@ describe('gitHubReposInvoker.ts', function (): void {
       // Assert
       expect(result.pullRequestComments.length).to.equal(1)
       expect(result.pullRequestComments[0]!.id).to.equal(1)
-      expect(result.pullRequestComments[0]!.status).to.equal(CommentThreadStatus.Unknown)
       expect(result.pullRequestComments[0]!.content).to.equal('PR Content')
+      expect(result.pullRequestComments[0]!.status).to.equal(CommentThreadStatus.Unknown)
       expect(result.fileComments.length).to.equal(1)
       expect(result.fileComments[0]!.id).to.equal(2)
-      expect(result.fileComments[0]!.status).to.equal(CommentThreadStatus.Unknown)
       expect(result.fileComments[0]!.content).to.equal('File Content')
-      expect(result.fileComments[0]!.file).to.equal('file.ts')
+      expect(result.fileComments[0]!.status).to.equal(CommentThreadStatus.Unknown)
+      expect(result.fileComments[0]!.fileName).to.equal('file.ts')
       verify(octokitWrapper.initialize(anything())).once()
       verify(octokitWrapper.getIssueComments('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345)).once()
       verify(octokitWrapper.getReviewComments('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345)).once()
       verify(logger.logDebug('* GitHubReposInvoker.getComments()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
-      verify(logger.logDebug(JSON.stringify(mockReviewCommentsResponse))).once()
-      verify(logger.logDebug(JSON.stringify(mockIssueCommentsResponse))).once()
+      verify(logger.logDebug(JSON.stringify(response))).once()
+      verify(logger.logDebug(JSON.stringify(GitHubReposInvokerConstants.getReviewCommentsResponse))).once()
     })
 
     it('should return the pull request comment body is not set', async (): Promise<void> => {
@@ -1094,7 +508,9 @@ describe('gitHubReposInvoker.ts', function (): void {
         expect(options.log.warn).to.not.equal(null)
         expect(options.log.error).to.not.equal(null)
       })
-      when(octokitWrapper.getIssueComments(anyString(), anyString(), anyNumber())).thenResolve(mockIssueCommentsResponse)
+      const response: GetIssueCommentsResponse = GitHubReposInvokerConstants.getIssueCommentsResponse
+      response.data[0]!.body = undefined
+      when(octokitWrapper.getIssueComments(anyString(), anyString(), anyNumber())).thenResolve(response)
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
       let errorThrown: boolean = false
 
@@ -1113,7 +529,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       verify(octokitWrapper.getReviewComments('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345)).once()
       verify(logger.logDebug('* GitHubReposInvoker.getComments()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
-      verify(logger.logDebug(JSON.stringify(mockIssueCommentsResponse))).once()
+      verify(logger.logDebug(JSON.stringify(response))).once()
     })
   })
 
@@ -1151,7 +567,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       verify(octokitWrapper.updatePull('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345, 'Title', 'Description')).once()
       verify(logger.logDebug('* GitHubReposInvoker.setTitleAndDescription()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
-      verify(logger.logDebug(JSON.stringify(mockPullResponse))).once()
+      verify(logger.logDebug(JSON.stringify(GitHubReposInvokerConstants.getPullResponse))).once()
     })
 
     it('should succeed when the title is set', async (): Promise<void> => {
@@ -1322,7 +738,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
 
       // Act
-      await gitHubReposInvoker.updateComment(null, null, 54321)
+      await gitHubReposInvoker.updateComment(54321, null, null)
 
       // Assert
       verify(logger.logDebug('* GitHubReposInvoker.updateComment()')).once()
@@ -1343,7 +759,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
 
       // Act
-      await gitHubReposInvoker.updateComment('Content', null, 54321)
+      await gitHubReposInvoker.updateComment(54321, 'Content', null)
 
       // Assert
       verify(octokitWrapper.initialize(anything())).once()

@@ -137,9 +137,9 @@ export default class CodeMetricsCalculator {
       await this._reposInvoker.createComment(content, status)
     } else {
       await this._reposInvoker.updateComment(
+        commentData.metricsCommentThreadId,
         commentData.metricsCommentContent !== content ? content : null,
-        commentData.metricsCommentThreadStatus !== status ? status : null,
-        commentData.metricsCommentThreadId)
+        commentData.metricsCommentThreadStatus !== status ? status : null)
     }
   }
 

@@ -9,7 +9,7 @@ import CodeMetricsData from '../metrics/codeMetricsData'
 import FileCommentData from '../repos/interfaces/fileCommentData'
 import Inputs from '../metrics/inputs'
 import Logger from '../utilities/logger'
-import PullRequestCommentData from '../repos/interfaces/pullRequestCommentData'
+import PullRequestComment from '../repos/interfaces/pullRequestCommentData'
 import CommentData from '../repos/interfaces/commentData'
 import PullRequestCommentsData from './pullRequestCommentsData'
 import ReposInvoker from '../repos/reposInvoker'
@@ -66,7 +66,7 @@ export default class PullRequestComments {
     const comments: CommentData = await this._reposInvoker.getComments()
 
     // If the current comment thread is not applied to a specified file, check if it is the metrics comment thread.
-    comments.pullRequestComments.forEach((comment: PullRequestCommentData): void => {
+    comments.pullRequestComments.forEach((comment: PullRequestComment): void => {
       result = this.getMetricsCommentData(result, comment)
     })
 
@@ -123,7 +123,7 @@ export default class PullRequestComments {
     return CommentThreadStatus.Active
   }
 
-  private getMetricsCommentData (result: PullRequestCommentsData, comment: PullRequestCommentData): PullRequestCommentsData {
+  private getMetricsCommentData (result: PullRequestCommentsData, comment: PullRequestComment): PullRequestCommentsData {
     this._logger.logDebug('* PullRequestComments.getMetricsCommentData()')
 
     if (!comment.content) {
@@ -135,8 +135,8 @@ export default class PullRequestComments {
     }
 
     result.metricsCommentThreadId = comment.id
-    result.metricsCommentThreadStatus = comment.status
     result.metricsCommentContent = comment.content
+    result.metricsCommentThreadStatus = comment.status
     return result
   }
 
@@ -147,13 +147,13 @@ export default class PullRequestComments {
       return result
     }
 
-    const fileIndex: number = result.filesNotRequiringReview.indexOf(comment.file)
+    const fileIndex: number = result.filesNotRequiringReview.indexOf(comment.fileName)
     if (fileIndex !== -1) {
       result.filesNotRequiringReview.splice(fileIndex, 1)
       return result
     }
 
-    const deletedFileIndex: number = result.deletedFilesNotRequiringReview.indexOf(comment.file)
+    const deletedFileIndex: number = result.deletedFilesNotRequiringReview.indexOf(comment.fileName)
     if (deletedFileIndex !== -1) {
       result.deletedFilesNotRequiringReview.splice(deletedFileIndex, 1)
       return result
