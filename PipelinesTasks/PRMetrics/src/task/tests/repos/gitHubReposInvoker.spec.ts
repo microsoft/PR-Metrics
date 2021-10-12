@@ -15,7 +15,7 @@ import OctokitLogObject from '../wrappers/octokitLogObject'
 import OctokitWrapper from '../../src/wrappers/octokitWrapper'
 import PullRequestDetails from '../../src/repos/interfaces/pullRequestDetails'
 import TaskLibWrapper from '../../src/wrappers/taskLibWrapper'
-import PullRequestCommentGrouping from '../../src/repos/interfaces/pullRequestCommentGrouping'
+import CommentData from '../../src/repos/interfaces/commentData'
 import GetIssueCommentsResponse from '../../src/wrappers/octokitInterfaces/getIssueCommentsResponse'
 import GetReviewCommentsResponse from '../../src/wrappers/octokitInterfaces/getReviewCommentsResponse'
 
@@ -997,7 +997,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
 
       // Act
-      const result: PullRequestCommentGrouping = await gitHubReposInvoker.getComments()
+      const result: CommentData = await gitHubReposInvoker.getComments()
 
       // Assert
       expect(result.pullRequestComments.length).to.equal(1)
@@ -1028,7 +1028,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
 
       // Act
-      const result: PullRequestCommentGrouping = await gitHubReposInvoker.getComments()
+      const result: CommentData = await gitHubReposInvoker.getComments()
 
       // Assert
       expect(result.pullRequestComments.length).to.equal(0)
@@ -1062,7 +1062,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
 
       // Act
-      const result: PullRequestCommentGrouping = await gitHubReposInvoker.getComments()
+      const result: CommentData = await gitHubReposInvoker.getComments()
 
       // Assert
       expect(result.pullRequestComments.length).to.equal(1)

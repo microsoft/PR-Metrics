@@ -14,7 +14,7 @@ import AzureDevOpsApiWrapper from '../../src/wrappers/azureDevOpsApiWrapper'
 import AzureReposInvoker from '../../src/repos/azureReposInvoker'
 import ErrorWithStatus from '../wrappers/errorWithStatus'
 import Logger from '../../src/utilities/logger'
-import PullRequestCommentGrouping from '../../src/repos/interfaces/pullRequestCommentGrouping'
+import CommentData from '../../src/repos/interfaces/commentData'
 import PullRequestDetails from '../../src/repos/interfaces/pullRequestDetails'
 import TaskLibWrapper from '../../src/wrappers/taskLibWrapper'
 
@@ -404,7 +404,7 @@ describe('azureReposInvoker.ts', function (): void {
       const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger), instance(taskLibWrapper))
 
       // Act
-      const result: PullRequestCommentGrouping = await azureReposInvoker.getComments()
+      const result: CommentData = await azureReposInvoker.getComments()
 
       // Assert
       expect(result.pullRequestComments.length).to.equal(1)
@@ -426,7 +426,7 @@ describe('azureReposInvoker.ts', function (): void {
       const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger), instance(taskLibWrapper))
 
       // Act
-      const result: PullRequestCommentGrouping = await azureReposInvoker.getComments()
+      const result: CommentData = await azureReposInvoker.getComments()
 
       // Assert
       expect(result.pullRequestComments.length).to.equal(0)
@@ -453,7 +453,7 @@ describe('azureReposInvoker.ts', function (): void {
       const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger), instance(taskLibWrapper))
 
       // Act
-      const result: PullRequestCommentGrouping = await azureReposInvoker.getComments()
+      const result: CommentData = await azureReposInvoker.getComments()
 
       // Assert
       expect(result.pullRequestComments.length).to.equal(1)
@@ -480,7 +480,7 @@ describe('azureReposInvoker.ts', function (): void {
 
       // Act
       await azureReposInvoker.getComments()
-      const result: PullRequestCommentGrouping = await azureReposInvoker.getComments()
+      const result: CommentData = await azureReposInvoker.getComments()
 
       // Assert
       expect(result.fileComments.length).to.equal(0)

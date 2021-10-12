@@ -11,15 +11,15 @@ import BaseReposInvoker from './baseReposInvoker'
 import CreateIssueCommentResponse from '../wrappers/octokitInterfaces/createIssueCommentResponse'
 import CreateReviewCommentResponse from '../wrappers/octokitInterfaces/createReviewCommentResponse'
 import DeleteReviewCommentResponse from '../wrappers/octokitInterfaces/deleteReviewCommentResponse'
-import FileComment from './interfaces/fileComment'
+import FileCommentData from './interfaces/fileCommentData'
 import GetIssueCommentsResponse from '../wrappers/octokitInterfaces/getIssueCommentsResponse'
 import GetPullResponse from '../wrappers/octokitInterfaces/getPullResponse'
 import GetReviewCommentsResponse from '../wrappers/octokitInterfaces/getReviewCommentsResponse'
 import ListCommitsResponse from '../wrappers/octokitInterfaces/listCommitsResponse'
 import Logger from '../utilities/logger'
 import OctokitWrapper from '../wrappers/octokitWrapper'
-import PullRequestComment from './interfaces/pullRequestComment'
-import PullRequestCommentGrouping from './interfaces/pullRequestCommentGrouping'
+import PullRequestCommentData from './interfaces/pullRequestCommentData'
+import CommentData from './interfaces/commentData'
 import PullRequestDetails from './interfaces/pullRequestDetails'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
 import UpdateIssueCommentResponse from '../wrappers/octokitInterfaces/updateIssueCommentResponse'
@@ -85,7 +85,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     }
   }
 
-  public async getComments (): Promise<PullRequestCommentGrouping> {
+  public async getComments (): Promise<CommentData> {
     this._logger.logDebug('* GitHubReposInvoker.getComments()')
 
     this.initialize()
@@ -218,26 +218,20 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     this._isInitialized = true
   }
 
-  private static convertPullRequestComments (pullRequestComments: GetIssueCommentsResponse | undefined, fileComments: GetReviewCommentsResponse | undefined): PullRequestCommentGrouping {
-    const result: PullRequestCommentGrouping = new PullRequestCommentGrouping()
+  private static convertPullRequestComments (pullRequestComments: GetIssueCommentsResponse | undefined, fileComments: GetReviewCommentsResponse | undefined): CommentData {
+    const result: CommentData = new CommentData()
 
     pullRequestComments?.data.forEach((value: GetIssueCommentsResponseData, index: number): void => {
-      const commentResult: PullRequestComment = new PullRequestComment()
-
-      commentResult.id = value.id
-      commentResult.content = Validator.validate(value.body, `pullRequestComments[${index}].body`, 'GitHubReposInvoker.convertPullRequestComments()')
-
-      result.pullRequestComments.push(commentResult)
+      const id: number = value.id
+      const content: string = Validator.validate(value.body, `pullRequestComments[${index}].body`, 'GitHubReposInvoker.convertPullRequestComments()')
+      result.pullRequestComments.push(new PullRequestCommentData(id, content))
     })
 
     fileComments?.data.forEach((value: GetReviewCommentsResponseData): void => {
-      const commentResult: FileComment = new FileComment()
-
-      commentResult.id = value.id
-      commentResult.file = value.path
-      commentResult.content = value.body
-
-      result.fileComments.push(commentResult)
+      const id: number = value.id
+      const content: string = value.body
+      const file: string = value.path
+      result.fileComments.push(new FileCommentData(id, content, file))
     })
 
     return result

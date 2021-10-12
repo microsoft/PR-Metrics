@@ -2,15 +2,15 @@
 // Licensed under the MIT License.
 
 import { expect } from 'chai'
-import FileComment from '../../../src/repos/interfaces/fileComment'
-import PullRequestComment from '../../../src/repos/interfaces/pullRequestComment'
-import PullRequestCommentGrouping from '../../../src/repos/interfaces/pullRequestCommentGrouping'
+import FileCommentData from '../../../src/repos/interfaces/fileCommentData'
+import PullRequestCommentData from '../../../src/repos/interfaces/pullRequestCommentData'
+import CommentData from '../../../src/repos/interfaces/commentData'
 
-describe('pullRequestCommentGrouping.ts', (): void => {
+describe('commentData.ts', (): void => {
   describe('constructor()', (): void => {
     it('should set the correct data', (): void => {
       // Act
-      const result: PullRequestCommentGrouping = new PullRequestCommentGrouping()
+      const result: CommentData = new CommentData()
 
       // Assert
       expect(result.pullRequestComments.length).to.equal(0)
@@ -21,10 +21,10 @@ describe('pullRequestCommentGrouping.ts', (): void => {
   describe('pullRequestComments', (): void => {
     it('should set the correct data', (): void => {
       // Arrange
-      const result: PullRequestCommentGrouping = new PullRequestCommentGrouping()
+      const result: CommentData = new CommentData()
 
       // Act
-      result.pullRequestComments.push(new PullRequestComment())
+      result.pullRequestComments.push(new PullRequestCommentData(0, ''))
 
       // Assert
       expect(result.pullRequestComments.length).to.equal(1)
@@ -35,10 +35,10 @@ describe('pullRequestCommentGrouping.ts', (): void => {
   describe('fileComments', (): void => {
     it('should set the correct data', (): void => {
       // Arrange
-      const result: PullRequestCommentGrouping = new PullRequestCommentGrouping()
+      const result: CommentData = new CommentData()
 
       // Act
-      result.fileComments.push(new FileComment())
+      result.fileComments.push(new FileCommentData(0, '', ''))
 
       // Assert
       expect(result.pullRequestComments.length).to.equal(0)

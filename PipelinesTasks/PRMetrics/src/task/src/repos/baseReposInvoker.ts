@@ -3,7 +3,7 @@
 
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import IReposInvoker from './iReposInvoker'
-import PullRequestCommentGrouping from './interfaces/pullRequestCommentGrouping'
+import CommentData from './interfaces/commentData'
 import PullRequestDetails from './interfaces/pullRequestDetails'
 
 /**
@@ -14,7 +14,7 @@ export default abstract class BaseReposInvoker implements IReposInvoker {
 
   public abstract getTitleAndDescription(): Promise<PullRequestDetails>
 
-  public abstract getComments(): Promise<PullRequestCommentGrouping>
+  public abstract getComments(): Promise<CommentData>
 
   public abstract setTitleAndDescription(title: string | null, description: string | null): Promise<void>
 

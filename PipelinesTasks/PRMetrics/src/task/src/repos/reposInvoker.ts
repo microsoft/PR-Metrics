@@ -8,7 +8,7 @@ import AzureReposInvoker from './azureReposInvoker'
 import GitHubReposInvoker from './gitHubReposInvoker'
 import IReposInvoker from './iReposInvoker'
 import Logger from '../utilities/logger'
-import PullRequestCommentGrouping from './interfaces/pullRequestCommentGrouping'
+import CommentData from './interfaces/commentData'
 import PullRequestDetails from './interfaces/pullRequestDetails'
 
 /**
@@ -48,7 +48,7 @@ export default class ReposInvoker implements IReposInvoker {
     return reposInvoker.getTitleAndDescription()
   }
 
-  public async getComments (): Promise<PullRequestCommentGrouping> {
+  public async getComments (): Promise<CommentData> {
     this._logger.logDebug('* ReposInvoker.getComments()')
 
     const reposInvoker: IReposInvoker = this.getReposInvoker()

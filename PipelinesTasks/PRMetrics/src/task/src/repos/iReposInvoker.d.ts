@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
-import PullRequestCommentGrouping from './interfaces/pullRequestCommentGrouping'
+import CommentData from './interfaces/commentData'
 import PullRequestDetails from './interfaces/pullRequestDetails'
 
 /**
@@ -24,7 +24,7 @@ export default interface IReposInvoker {
    * Gets all comments for the current pull request.
    * @returns A promise containing the comments.
    */
-  getComments (): Promise<PullRequestCommentGrouping>
+  getComments (): Promise<CommentData>
 
   /**
    * Updates the title and description for the current pull request.

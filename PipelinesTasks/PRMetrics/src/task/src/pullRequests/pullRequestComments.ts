@@ -6,11 +6,11 @@ import { injectable } from 'tsyringe'
 import * as os from 'os'
 import CodeMetrics from '../metrics/codeMetrics'
 import CodeMetricsData from '../metrics/codeMetricsData'
-import FileComment from '../repos/interfaces/fileComment'
+import FileCommentData from '../repos/interfaces/fileCommentData'
 import Inputs from '../metrics/inputs'
 import Logger from '../utilities/logger'
-import PullRequestComment from '../repos/interfaces/pullRequestComment'
-import PullRequestCommentGrouping from '../repos/interfaces/pullRequestCommentGrouping'
+import PullRequestCommentData from '../repos/interfaces/pullRequestCommentData'
+import CommentData from '../repos/interfaces/commentData'
 import PullRequestCommentsData from './pullRequestCommentsData'
 import ReposInvoker from '../repos/reposInvoker'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
@@ -63,15 +63,15 @@ export default class PullRequestComments {
     const deletedFilesNotRequiringReview: string[] = await this._codeMetrics.getDeletedFilesNotRequiringReview()
     let result: PullRequestCommentsData = new PullRequestCommentsData(filesNotRequiringReview, deletedFilesNotRequiringReview)
 
-    const comments: PullRequestCommentGrouping = await this._reposInvoker.getComments()
+    const comments: CommentData = await this._reposInvoker.getComments()
 
     // If the current comment thread is not applied to a specified file, check if it is the metrics comment thread.
-    comments.pullRequestComments.forEach((comment: PullRequestComment): void => {
+    comments.pullRequestComments.forEach((comment: PullRequestCommentData): void => {
       result = this.getMetricsCommentData(result, comment)
     })
 
     // If the current comment thread is not applied to a specified file, check if it is the metrics comment thread.
-    comments.fileComments.forEach((comment: FileComment): void => {
+    comments.fileComments.forEach((comment: FileCommentData): void => {
       result = this.getFilesRequiringCommentUpdates(result, comment)
     })
 
@@ -123,7 +123,7 @@ export default class PullRequestComments {
     return CommentThreadStatus.Active
   }
 
-  private getMetricsCommentData (result: PullRequestCommentsData, comment: PullRequestComment): PullRequestCommentsData {
+  private getMetricsCommentData (result: PullRequestCommentsData, comment: PullRequestCommentData): PullRequestCommentsData {
     this._logger.logDebug('* PullRequestComments.getMetricsCommentData()')
 
     if (!comment.content) {
@@ -140,7 +140,7 @@ export default class PullRequestComments {
     return result
   }
 
-  private getFilesRequiringCommentUpdates (result: PullRequestCommentsData, comment: FileComment): PullRequestCommentsData {
+  private getFilesRequiringCommentUpdates (result: PullRequestCommentsData, comment: FileCommentData): PullRequestCommentsData {
     this._logger.logDebug('* PullRequestComments.getFilesRequiringCommentUpdates()')
 
     if (comment.content !== this.noReviewRequiredComment) {

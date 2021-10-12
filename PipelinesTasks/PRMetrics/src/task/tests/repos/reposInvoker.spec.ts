@@ -9,7 +9,7 @@ import async from 'async'
 import AzureReposInvoker from '../../src/repos/azureReposInvoker'
 import GitHubReposInvoker from '../../src/repos/gitHubReposInvoker'
 import Logger from '../../src/utilities/logger'
-import PullRequestCommentGrouping from '../../src/repos/interfaces/pullRequestCommentGrouping'
+import CommentData from '../../src/repos/interfaces/commentData'
 import PullRequestDetails from '../../src/repos/interfaces/pullRequestDetails'
 import ReposInvoker from '../../src/repos/reposInvoker'
 
@@ -206,7 +206,7 @@ describe('reposInvoker.ts', function (): void {
       const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
 
       // Act
-      const result: PullRequestCommentGrouping = await reposInvoker.getComments()
+      const result: CommentData = await reposInvoker.getComments()
 
       // Assert
       verify(azureReposInvoker.getComments()).once()
@@ -230,7 +230,7 @@ describe('reposInvoker.ts', function (): void {
           const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
 
           // Act
-          const result: PullRequestCommentGrouping = await reposInvoker.getComments()
+          const result: CommentData = await reposInvoker.getComments()
 
           // Assert
           verify(azureReposInvoker.getComments()).never()

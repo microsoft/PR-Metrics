@@ -9,11 +9,12 @@ import { Validator } from '../utilities/validator'
 import { WebApi } from 'azure-devops-node-api'
 import AzureDevOpsApiWrapper from '../wrappers/azureDevOpsApiWrapper'
 import BaseReposInvoker from './baseReposInvoker'
-import FileComment from './interfaces/fileComment'
+import FileCommentData from './interfaces/fileCommentData'
 import Logger from '../utilities/logger'
-import PullRequestCommentGrouping from './interfaces/pullRequestCommentGrouping'
+import CommentData from './interfaces/commentData'
 import PullRequestDetails from './interfaces/pullRequestDetails'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
+import PullRequestCommentData from './interfaces/pullRequestCommentData'
 
 /**
  * A class for invoking Azure Repos functionality.
@@ -68,7 +69,7 @@ export default class AzureReposInvoker extends BaseReposInvoker {
     }
   }
 
-  public async getComments (): Promise<PullRequestCommentGrouping> {
+  public async getComments (): Promise<CommentData> {
     this._logger.logDebug('* AzureReposInvoker.getComments()')
 
     const gitApiPromise: Promise<IGitApi> = this.getGitApi()
@@ -189,28 +190,26 @@ export default class AzureReposInvoker extends BaseReposInvoker {
     return this._gitApi
   }
 
-  private static convertPullRequestComments (comments: GitPullRequestCommentThread[]): PullRequestCommentGrouping {
-    const result: PullRequestCommentGrouping = new PullRequestCommentGrouping()
+  private static convertPullRequestComments (comments: GitPullRequestCommentThread[]): CommentData {
+    const result: CommentData = new CommentData()
 
     comments.forEach((value: GitPullRequestCommentThread, index: number): void => {
-      const resultComment: FileComment = new FileComment()
-      resultComment.id = Validator.validate(value.id, `commentThread[${index}].id`, 'AzureReposInvoker.convertPullRequestComments()')
-      resultComment.status = Validator.validate(value.status, `commentThread[${index}].status`, 'AzureReposInvoker.convertPullRequestComments()')
-
+      const id: number = Validator.validate(value.id, `commentThread[${index}].id`, 'AzureReposInvoker.convertPullRequestComments()')
       const comments: Comment[] = Validator.validate(value.comments, `commentThread[${index}].comments`, 'AzureReposInvoker.convertPullRequestComments()')
       const firstComment: Comment = Validator.validate(comments[0], `commentThread[${index}].comments[0]`, 'AzureReposInvoker.convertPullRequestComments()')
-      resultComment.content = Validator.validate(firstComment.content, `commentThread[${index}].comments[0].content`, 'AzureReposInvoker.convertPullRequestComments()')
+      const content: string = Validator.validate(firstComment.content, `commentThread[${index}].comments[0].content`, 'AzureReposInvoker.convertPullRequestComments()')
+      const status: CommentThreadStatus = Validator.validate(value.status, `commentThread[${index}].status`, 'AzureReposInvoker.convertPullRequestComments()')
 
       if (!value.threadContext) {
-        result.pullRequestComments.push(resultComment)
+        result.pullRequestComments.push(new PullRequestCommentData(id, content, status))
       } else {
         const filePath: string = Validator.validate(value.threadContext.filePath, `commentThread[${index}].threadContext.filePath`, 'AzureReposInvoker.convertPullRequestComments()')
         if (filePath.length <= 1) {
           throw RangeError(`'commentThread[${index}].threadContext.filePath' '${filePath}' is of length '${filePath.length}'.`)
         }
 
-        resultComment.file = filePath.substring(1)
-        result.fileComments.push(resultComment)
+        const file: string = filePath.substring(1)
+        result.fileComments.push(new FileCommentData(id, content, file, status))
       }
     })
 

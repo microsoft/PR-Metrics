@@ -16,24 +16,12 @@ import PullRequestComments from '../../src/pullRequests/pullRequestComments'
 import PullRequestCommentsData from '../../src/pullRequests/pullRequestCommentsData'
 import ReposInvoker from '../../src/repos/reposInvoker'
 import TaskLibWrapper from '../../src/wrappers/taskLibWrapper'
-import PullRequestCommentGrouping from '../../src/repos/interfaces/pullRequestCommentGrouping'
-import PullRequestComment from '../../src/repos/interfaces/pullRequestComment'
-import FileComment from '../../src/repos/interfaces/fileComment'
+import CommentData from '../../src/repos/interfaces/commentData'
+import PullRequestCommentData from '../../src/repos/interfaces/pullRequestCommentData'
+import FileCommentData from '../../src/repos/interfaces/fileCommentData'
 
 describe('pullRequestComments.ts', (): void => {
-  // const validGitPullRequestComments: GitPullRequestCommentThread =
-  //   {
-  //     threadContext: {
-  //       filePath: '/file.ts'
-  //     },
-  //     comments:
-  //     [{
-  //       content: `# PR Metrics${os.EOL}`,
-  //       id: 1
-  //     }],
-  //     id: 1
-  //   }
-  let complexGitPullRequestComments: PullRequestCommentGrouping
+  let complexGitPullRequestComments: CommentData
   let codeMetrics: CodeMetrics
   let inputs: Inputs
   let logger: Logger
@@ -42,10 +30,10 @@ describe('pullRequestComments.ts', (): void => {
 
   beforeEach((): void => {
     reposInvoker = mock(ReposInvoker)
-    const pullRequestComment: PullRequestComment = new PullRequestComment(20, CommentThreadStatus.Active, `# PR Metrics${os.EOL}`)
-    const fileComment1: FileComment = new FileComment(30, CommentThreadStatus.Active, '❗ **This file doesn\'t require review.**', 'file2.ts')
-    const fileComment2: FileComment = new FileComment(40, CommentThreadStatus.Active, '❗ **This file doesn\'t require review.**', 'file5.ts')
-    complexGitPullRequestComments = new PullRequestCommentGrouping()
+    const pullRequestComment: PullRequestCommentData = new PullRequestCommentData(20, `# PR Metrics${os.EOL}`, CommentThreadStatus.Active)
+    const fileComment1: FileCommentData = new FileCommentData(30, '❗ **This file doesn\'t require review.**', 'file2.ts', CommentThreadStatus.Active)
+    const fileComment2: FileCommentData = new FileCommentData(40, '❗ **This file doesn\'t require review.**', 'file5.ts', CommentThreadStatus.Active)
+    complexGitPullRequestComments = new CommentData()
     complexGitPullRequestComments.pullRequestComments.push(pullRequestComment)
     complexGitPullRequestComments.fileComments.push(fileComment1, fileComment2)
 
@@ -96,7 +84,7 @@ describe('pullRequestComments.ts', (): void => {
   describe('getCommentData()', (): void => {
     it('should return the expected result when no comment is present', async (): Promise<void> => {
       // Arrange
-      const comments: PullRequestCommentGrouping = new PullRequestCommentGrouping()
+      const comments: CommentData = new CommentData()
       when(reposInvoker.getComments()).thenResolve(comments)
       const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(inputs), instance(logger), instance(reposInvoker), instance(taskLibWrapper))
 
@@ -115,12 +103,12 @@ describe('pullRequestComments.ts', (): void => {
 
     async.each(
       [
-        [[new PullRequestComment(20, CommentThreadStatus.Unknown, `# PR Metrics${os.EOL}`)]],
-        [[new PullRequestComment(20, CommentThreadStatus.Unknown, '# PR Metrics'), new PullRequestComment(20, CommentThreadStatus.Unknown, `# PR Metrics${os.EOL}`)]]
-      ], (data: [PullRequestComment[]]): void => {
+        [[new PullRequestCommentData(20, `# PR Metrics${os.EOL}`)]],
+        [[new PullRequestCommentData(20, '# PR Metrics'), new PullRequestCommentData(20, `# PR Metrics${os.EOL}`)]]
+      ], (data: [PullRequestCommentData[]]): void => {
         it('should return the expected result when the metrics comment is present', async (): Promise<void> => {
           // Arrange
-          const comments: PullRequestCommentGrouping = new PullRequestCommentGrouping()
+          const comments: CommentData = new CommentData()
           comments.pullRequestComments.push(...data[0])
           when(reposInvoker.getComments()).thenResolve(comments)
           const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(inputs), instance(logger), instance(reposInvoker), instance(taskLibWrapper))
@@ -142,13 +130,13 @@ describe('pullRequestComments.ts', (): void => {
 
     async.each(
       [
-        [['folder/file1.ts', 'file3.ts'], [new FileComment(20, CommentThreadStatus.Unknown, '❗ **This file doesn\'t require review.**', 'file2.ts')]],
-        [['folder/file1.ts', 'file3.ts'], [new FileComment(20, CommentThreadStatus.Unknown, 'Content', 'folder/file1.ts'), new FileComment(20, CommentThreadStatus.Unknown, '❗ **This file doesn\'t require review.**', 'file2.ts')]],
-        [['file3.ts'], [new FileComment(20, CommentThreadStatus.Unknown, '❗ **This file doesn\'t require review.**', 'folder/file1.ts'), new FileComment(20, CommentThreadStatus.Unknown, '❗ **This file doesn\'t require review.**', 'file2.ts')]]
-      ], (data: [string[], FileComment[]]): void => {
+        [['folder/file1.ts', 'file3.ts'], [new FileCommentData(20, '❗ **This file doesn\'t require review.**', 'file2.ts')]],
+        [['folder/file1.ts', 'file3.ts'], [new FileCommentData(20, 'Content', 'folder/file1.ts'), new FileCommentData(20, '❗ **This file doesn\'t require review.**', 'file2.ts')]],
+        [['file3.ts'], [new FileCommentData(20, '❗ **This file doesn\'t require review.**', 'folder/file1.ts'), new FileCommentData(20, '❗ **This file doesn\'t require review.**', 'file2.ts')]]
+      ], (data: [string[], FileCommentData[]]): void => {
         it(`should return the expected result for files not requiring review when the comment is present with files '${JSON.stringify(data[1])}'`, async (): Promise<void> => {
           // Arrange
-          const comments: PullRequestCommentGrouping = new PullRequestCommentGrouping()
+          const comments: CommentData = new CommentData()
           comments.fileComments.push(...data[1])
           when(reposInvoker.getComments()).thenResolve(comments)
           when(codeMetrics.getFilesNotRequiringReview()).thenResolve(['folder/file1.ts', 'file2.ts', 'file3.ts'])
@@ -171,13 +159,13 @@ describe('pullRequestComments.ts', (): void => {
 
     async.each(
       [
-        [['folder/file1.ts', 'file3.ts'], [new FileComment(0, CommentThreadStatus.Unknown, '❗ **This file doesn\'t require review.**', 'file2.ts')]],
-        [['folder/file1.ts', 'file3.ts'], [new FileComment(0, CommentThreadStatus.Unknown, 'Content', 'folder/file1.ts'), new FileComment(0, CommentThreadStatus.Unknown, '❗ **This file doesn\'t require review.**', 'file2.ts')]],
-        [['file3.ts'], [new FileComment(0, CommentThreadStatus.Unknown, '❗ **This file doesn\'t require review.**', 'folder/file1.ts'), new FileComment(0, CommentThreadStatus.Unknown, '❗ **This file doesn\'t require review.**', 'file2.ts')]]
-      ], (data: [string[], FileComment[]]): void => {
+        [['folder/file1.ts', 'file3.ts'], [new FileCommentData(0, '❗ **This file doesn\'t require review.**', 'file2.ts')]],
+        [['folder/file1.ts', 'file3.ts'], [new FileCommentData(0, 'Content', 'folder/file1.ts'), new FileCommentData(0, '❗ **This file doesn\'t require review.**', 'file2.ts')]],
+        [['file3.ts'], [new FileCommentData(0, '❗ **This file doesn\'t require review.**', 'folder/file1.ts'), new FileCommentData(0, '❗ **This file doesn\'t require review.**', 'file2.ts')]]
+      ], (data: [string[], FileCommentData[]]): void => {
         it(`should return the expected result for deleted files not requiring review when the comment is present with files '${JSON.stringify(data[1])}'`, async (): Promise<void> => {
           // Arrange
-          const comments: PullRequestCommentGrouping = new PullRequestCommentGrouping()
+          const comments: CommentData = new CommentData()
           comments.fileComments.push(...data[1])
           when(reposInvoker.getComments()).thenResolve(comments)
           when(codeMetrics.getDeletedFilesNotRequiringReview()).thenResolve(['folder/file1.ts', 'file2.ts', 'file3.ts'])
@@ -286,9 +274,9 @@ describe('pullRequestComments.ts', (): void => {
 
     it('should continue when no comment content is present', async (): Promise<void> => {
       // Arrange
-      const pullRequestComment: PullRequestComment = new PullRequestComment(0, CommentThreadStatus.Unknown, '')
-      const fileComment: FileComment = new FileComment(0, CommentThreadStatus.Unknown, '', 'file.ts')
-      const comments: PullRequestCommentGrouping = new PullRequestCommentGrouping()
+      const pullRequestComment: PullRequestCommentData = new PullRequestCommentData(0, '')
+      const fileComment: FileCommentData = new FileCommentData(0, '', 'file.ts')
+      const comments: CommentData = new CommentData()
       comments.pullRequestComments.push(pullRequestComment)
       comments.fileComments.push(fileComment)
       when(reposInvoker.getComments()).thenResolve(comments)
