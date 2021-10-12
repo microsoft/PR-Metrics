@@ -195,21 +195,27 @@ export default class AzureReposInvoker extends BaseReposInvoker {
 
     comments.forEach((value: GitPullRequestCommentThread, index: number): void => {
       const id: number = Validator.validate(value.id, `commentThread[${index}].id`, 'AzureReposInvoker.convertPullRequestComments()')
-      const comments: Comment[] = Validator.validate(value.comments, `commentThread[${index}].comments`, 'AzureReposInvoker.convertPullRequestComments()')
-      const firstComment: Comment = Validator.validate(comments[0], `commentThread[${index}].comments[0]`, 'AzureReposInvoker.convertPullRequestComments()')
-      const content: string = Validator.validate(firstComment.content, `commentThread[${index}].comments[0].content`, 'AzureReposInvoker.convertPullRequestComments()')
-      const status: CommentThreadStatus = Validator.validate(value.status, `commentThread[${index}].status`, 'AzureReposInvoker.convertPullRequestComments()')
+      const comments: Comment[] | undefined = value.comments
+      if (!comments) {
+        return
+      }
+
+      const content: string | undefined = comments[0]?.content
+      if (!content) {
+        return
+      }
+
+      const status: CommentThreadStatus = value.status || CommentThreadStatus.Unknown
 
       if (!value.threadContext) {
         result.pullRequestComments.push(new PullRequestCommentData(id, content, status))
       } else {
-        const filePath: string = Validator.validate(value.threadContext.filePath, `commentThread[${index}].threadContext.filePath`, 'AzureReposInvoker.convertPullRequestComments()')
-        if (filePath.length <= 1) {
-          throw RangeError(`'commentThread[${index}].threadContext.filePath' '${filePath}' is of length '${filePath.length}'.`)
+        const fileName: string | undefined = value.threadContext.filePath
+        if (!fileName || fileName.length <= 1) {
+          return
         }
 
-        const file: string = filePath.substring(1)
-        result.fileComments.push(new FileCommentData(id, content, file, status))
+        result.fileComments.push(new FileCommentData(id, content, fileName.substring(1), status))
       }
     })
 

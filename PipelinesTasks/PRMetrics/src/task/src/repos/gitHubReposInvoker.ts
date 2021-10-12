@@ -221,9 +221,13 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
   private static convertPullRequestComments (pullRequestComments?: GetIssueCommentsResponse, fileComments?: GetReviewCommentsResponse): CommentData {
     const result: CommentData = new CommentData()
 
-    pullRequestComments?.data.forEach((value: GetIssueCommentsResponseData, index: number): void => {
+    pullRequestComments?.data.forEach((value: GetIssueCommentsResponseData): void => {
       const id: number = value.id
-      const content: string = Validator.validate(value.body, `pullRequestComments[${index}].body`, 'GitHubReposInvoker.convertPullRequestComments()')
+      const content: string | undefined = value.body
+      if (!content) {
+        return
+      }
+
       result.pullRequestComments.push(new PullRequestCommentData(id, content))
     })
 

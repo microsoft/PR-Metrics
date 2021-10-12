@@ -497,7 +497,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       verify(logger.logDebug(JSON.stringify(GitHubReposInvokerConstants.getReviewCommentsResponse))).once()
     })
 
-    it('should return the pull request comment body is not set', async (): Promise<void> => {
+    it('should skip pull request comments with no body', async (): Promise<void> => {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('OAUTH')
@@ -512,18 +512,13 @@ describe('gitHubReposInvoker.ts', function (): void {
       response.data[0]!.body = undefined
       when(octokitWrapper.getIssueComments(anyString(), anyString(), anyNumber())).thenResolve(response)
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
-      let errorThrown: boolean = false
 
-      try {
-        // Act
-        await gitHubReposInvoker.getComments()
-      } catch (error) {
-        // Assert
-        errorThrown = true
-        expect(error.message).to.equal('\'pullRequestComments[0].body\', accessed within \'GitHubReposInvoker.convertPullRequestComments()\', is invalid, null, or undefined \'undefined\'.')
-      }
+      // Act
+      const result: CommentData = await gitHubReposInvoker.getComments()
 
-      expect(errorThrown).to.equal(true)
+      // Assert
+      expect(result.pullRequestComments.length).to.equal(0)
+      expect(result.fileComments.length).to.equal(0)
       verify(octokitWrapper.initialize(anything())).once()
       verify(octokitWrapper.getIssueComments('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345)).once()
       verify(octokitWrapper.getReviewComments('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345)).once()
