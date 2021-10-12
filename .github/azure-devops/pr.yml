@@ -30,6 +30,7 @@ jobs:
 
   - job: PRMetrics_Ubuntu
     displayName: PR Metrics – Ubuntu
+    dependsOn: PRMetrics_macOS
     pool:
       vmImage: ubuntu-latest
     variables:
@@ -43,6 +44,7 @@ jobs:
 
   - job: PRMetrics_Windows
     displayName: PR Metrics – Windows
+    dependsOn: PRMetrics_Ubuntu
     pool:
       vmImage: windows-latest
     variables:
