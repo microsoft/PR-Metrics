@@ -17,8 +17,7 @@ jobs:
       fail-fast: false
       matrix:
         task: [PRMetrics]
-        os: [macos-latest, ubuntu-latest, windows-latest]
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2.3.4
@@ -36,20 +35,16 @@ jobs:
         run: npm run lint
         working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/src/task
 
+      - name: NPM – Test Clean
+        run: npm run clean
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/src/task
+
       - name: NPM – Build
         run: npm run build
         working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/src/task
 
       - name: NPM – Test
         run: npm run test
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/src/task
-
-      - name: NPM – Clean
-        run: npm run clean
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/src/task
-
-      - name: NPM – Build
-        run: npm run build
         working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/src/task
 
       - name: Install TFX CLI
