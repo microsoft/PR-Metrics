@@ -24,7 +24,10 @@ export module InputsDefault {
   /**
    * The default file matching patterns, which is the set of Azure DevOps file matching patterns specifying the files and folders to include.
    */
-  export const fileMatchingPatterns: string[] = ['**/*']
+  export const fileMatchingPatterns: string[] = [
+    '**/*',
+    '!**/package-lock.json'
+  ]
 
   /**
    * The default code file extensions, which is the set of extensions for files containing code so that non-code files can be excluded.

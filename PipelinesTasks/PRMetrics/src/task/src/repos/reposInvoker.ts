@@ -5,10 +5,10 @@ import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfa
 import { singleton } from 'tsyringe'
 import { Validator } from '../utilities/validator'
 import AzureReposInvoker from './azureReposInvoker'
+import CommentData from './interfaces/commentData'
 import GitHubReposInvoker from './gitHubReposInvoker'
 import IReposInvoker from './iReposInvoker'
 import Logger from '../utilities/logger'
-import CommentData from './interfaces/commentData'
 import PullRequestDetails from './interfaces/pullRequestDetails'
 
 /**

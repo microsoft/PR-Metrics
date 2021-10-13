@@ -2,8 +2,8 @@
 // Licensed under the MIT License.
 
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
-import IReposInvoker from './iReposInvoker'
 import CommentData from './interfaces/commentData'
+import IReposInvoker from './iReposInvoker'
 import PullRequestDetails from './interfaces/pullRequestDetails'
 
 /**

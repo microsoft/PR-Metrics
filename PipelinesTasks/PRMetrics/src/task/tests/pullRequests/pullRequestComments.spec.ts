@@ -9,15 +9,15 @@ import { instance, mock, verify, when } from 'ts-mockito'
 import async from 'async'
 import CodeMetrics from '../../src/metrics/codeMetrics'
 import CodeMetricsData from '../../src/metrics/codeMetricsData'
+import CommentData from '../../src/repos/interfaces/commentData'
+import FileCommentData from '../../src/repos/interfaces/fileCommentData'
 import Inputs from '../../src/metrics/inputs'
 import Logger from '../../src/utilities/logger'
+import PullRequestCommentData from '../../src/repos/interfaces/pullRequestCommentData'
 import PullRequestComments from '../../src/pullRequests/pullRequestComments'
 import PullRequestCommentsData from '../../src/pullRequests/pullRequestCommentsData'
 import ReposInvoker from '../../src/repos/reposInvoker'
 import TaskLibWrapper from '../../src/wrappers/taskLibWrapper'
-import CommentData from '../../src/repos/interfaces/commentData'
-import PullRequestCommentData from '../../src/repos/interfaces/pullRequestCommentData'
-import FileCommentData from '../../src/repos/interfaces/fileCommentData'
 
 describe('pullRequestComments.ts', (): void => {
   let complexGitPullRequestComments: CommentData

@@ -9,12 +9,12 @@ import { Validator } from '../utilities/validator'
 import { WebApi } from 'azure-devops-node-api'
 import AzureDevOpsApiWrapper from '../wrappers/azureDevOpsApiWrapper'
 import BaseReposInvoker from './baseReposInvoker'
+import CommentData from './interfaces/commentData'
 import FileCommentData from './interfaces/fileCommentData'
 import Logger from '../utilities/logger'
-import CommentData from './interfaces/commentData'
+import PullRequestCommentData from './interfaces/pullRequestCommentData'
 import PullRequestDetails from './interfaces/pullRequestDetails'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
-import PullRequestCommentData from './interfaces/pullRequestCommentData'
 
 /**
  * A class for invoking Azure Repos functionality.

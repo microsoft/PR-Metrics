@@ -6,17 +6,17 @@ import { anyNumber, anyString, anything, instance, mock, verify, when } from 'ts
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import { expect } from 'chai'
 import async from 'async'
+import CommentData from '../../src/repos/interfaces/commentData'
 import ErrorWithStatus from '../wrappers/errorWithStatus'
+import GetIssueCommentsResponse from '../../src/wrappers/octokitInterfaces/getIssueCommentsResponse'
 import GetPullResponse from '../../src/wrappers/octokitInterfaces/getPullResponse'
 import GitHubReposInvoker from '../../src/repos/gitHubReposInvoker'
+import GitHubReposInvokerConstants from './gitHubReposInvokerConstants'
 import Logger from '../../src/utilities/logger'
 import OctokitLogObject from '../wrappers/octokitLogObject'
 import OctokitWrapper from '../../src/wrappers/octokitWrapper'
 import PullRequestDetails from '../../src/repos/interfaces/pullRequestDetails'
 import TaskLibWrapper from '../../src/wrappers/taskLibWrapper'
-import CommentData from '../../src/repos/interfaces/commentData'
-import GitHubReposInvokerConstants from './gitHubReposInvokerConstants'
-import GetIssueCommentsResponse from '../../src/wrappers/octokitInterfaces/getIssueCommentsResponse'
 
 describe('gitHubReposInvoker.ts', function (): void {
   let logger: Logger
