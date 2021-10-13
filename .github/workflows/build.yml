@@ -40,12 +40,16 @@ jobs:
         run: npm run build
         working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/src/task
 
+      - name: NPM – Test
+        run: npm run test
+        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/src/task
+
       - name: NPM – Clean
         run: npm run clean
         working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/src/task
 
-      - name: NPM – Test
-        run: npm run test
+      - name: NPM – Build
+        run: npm run build
         working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/src/task
 
       - name: Install TFX CLI
