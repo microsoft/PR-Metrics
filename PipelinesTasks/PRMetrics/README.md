@@ -41,7 +41,7 @@ files is unnecessary.
 
 If no PR description is provided, the description will be set to:
 
-> :x: **Please add a description.**
+> :x: **Add a description.**
 
 The complete functionality is currently only present for Azure DevOps PRs. For
 GitHub, GitHub AE, and GitHub Enterprise PRs, only the title will be updated.

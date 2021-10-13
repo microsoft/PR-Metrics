@@ -133,8 +133,7 @@ complement the unit tests to provide a high level of coverage.
 1. Verify that the pipeline corresponding to `pipelines/pipeline.yaml` succeeds.
 1. Verify that the title of the PR is prefixed with "XS:heavy_check_mark:
    :black_small_square:".
-1. Verify that the description has been changed to ":x: Please add a
-   description.".
+1. Verify that the description has been changed to ":x: Add a description.".
 1. Verify that a metrics comment has been added with the following details:
    - :heavy_check_mark: Thanks for keeping your pull request small.
    - :heavy_check_mark: Thanks for adding tests.
