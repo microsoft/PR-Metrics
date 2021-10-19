@@ -34,7 +34,7 @@ async function run (): Promise<void> {
     }
 
     taskLib.setResult(taskLib.TaskResult.Succeeded, taskLib.loc('index.succeeded'))
-  } catch (error) {
+  } catch (error: any) {
     const logger: Logger = container.resolve(Logger)
     const properties: string[] = Object.getOwnPropertyNames(error)
     properties.forEach((property: string): void => {

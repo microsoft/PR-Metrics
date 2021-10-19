@@ -12,9 +12,10 @@ import { WebApi } from 'azure-devops-node-api'
 import async from 'async'
 import AzureDevOpsApiWrapper from '../../src/wrappers/azureDevOpsApiWrapper'
 import AzureReposInvoker from '../../src/repos/azureReposInvoker'
+import CommentData from '../../src/repos/interfaces/commentData'
 import ErrorWithStatus from '../wrappers/errorWithStatus'
 import Logger from '../../src/utilities/logger'
-import PullRequestDetails from '../../src/repos/pullRequestDetails'
+import PullRequestDetails from '../../src/repos/interfaces/pullRequestDetails'
 import TaskLibWrapper from '../../src/wrappers/taskLibWrapper'
 
 describe('azureReposInvoker.ts', function (): void {
@@ -52,20 +53,6 @@ describe('azureReposInvoker.ts', function (): void {
     delete process.env.BUILD_REPOSITORY_ID
     delete process.env.SYSTEM_PULLREQUEST_PULLREQUESTID
     delete process.env.SYSTEM_ACCESSTOKEN
-  })
-
-  describe('isCommentsFunctionalityAvailable', (): void => {
-    it('should return true', (): void => {
-      // Arrange
-      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger), instance(taskLibWrapper))
-
-      // Act
-      const result: boolean = azureReposInvoker.isCommentsFunctionalityAvailable
-
-      // Assert
-      expect(result).to.equal(true)
-      verify(logger.logDebug('* AzureReposInvoker.isCommentsFunctionalityAvailable')).once()
-    })
   })
 
   describe('isAccessTokenAvailable', (): void => {
@@ -115,7 +102,7 @@ describe('azureReposInvoker.ts', function (): void {
           try {
             // Act
             await azureReposInvoker.getTitleAndDescription()
-          } catch (error) {
+          } catch (error: any) {
             // Assert
             errorThrown = true
             expect(error.message).to.equal(`'SYSTEM_TEAMPROJECT', accessed within 'AzureReposInvoker.getGitApi()', is invalid, null, or undefined '${variable}'.`)
@@ -146,7 +133,7 @@ describe('azureReposInvoker.ts', function (): void {
           try {
             // Act
             await azureReposInvoker.getTitleAndDescription()
-          } catch (error) {
+          } catch (error: any) {
             // Assert
             errorThrown = true
             expect(error.message).to.equal(`'BUILD_REPOSITORY_ID', accessed within 'AzureReposInvoker.getGitApi()', is invalid, null, or undefined '${variable}'.`)
@@ -178,7 +165,7 @@ describe('azureReposInvoker.ts', function (): void {
           try {
             // Act
             await azureReposInvoker.getTitleAndDescription()
-          } catch (error) {
+          } catch (error: any) {
             // Assert
             errorThrown = true
             expect(error.message).to.equal('\'SYSTEM_PULLREQUEST_PULLREQUESTID\', accessed within \'AzureReposInvoker.getGitApi()\', is invalid, null, or undefined \'NaN\'.')
@@ -209,7 +196,7 @@ describe('azureReposInvoker.ts', function (): void {
           try {
             // Act
             await azureReposInvoker.getTitleAndDescription()
-          } catch (error) {
+          } catch (error: any) {
             // Assert
             errorThrown = true
             expect(error.message).to.equal(`'SYSTEM_ACCESSTOKEN', accessed within 'AzureReposInvoker.getGitApi()', is invalid, null, or undefined '${variable}'.`)
@@ -240,7 +227,7 @@ describe('azureReposInvoker.ts', function (): void {
           try {
             // Act
             await azureReposInvoker.getTitleAndDescription()
-          } catch (error) {
+          } catch (error: any) {
             // Assert
             errorThrown = true
             expect(error.message).to.equal(`'SYSTEM_TEAMFOUNDATIONCOLLECTIONURI', accessed within 'AzureReposInvoker.getGitApi()', is invalid, null, or undefined '${variable}'.`)
@@ -270,7 +257,7 @@ describe('azureReposInvoker.ts', function (): void {
           try {
             // Act
             await azureReposInvoker.getTitleAndDescription()
-          } catch (error) {
+          } catch (error: any) {
             // Assert
             errorThrown = true
             expect(error.message).to.equal('Could not access the resources. Ensure \'System.AccessToken\' has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
@@ -361,7 +348,7 @@ describe('azureReposInvoker.ts', function (): void {
       try {
         // Act
         await azureReposInvoker.getTitleAndDescription()
-      } catch (error) {
+      } catch (error: any) {
         // Assert
         errorThrown = true
         expect(error.message).to.equal('\'title\', accessed within \'AzureReposInvoker.getTitleAndDescription()\', is invalid, null, or undefined \'undefined\'.')
@@ -395,7 +382,7 @@ describe('azureReposInvoker.ts', function (): void {
           try {
             // Act
             await azureReposInvoker.getComments()
-          } catch (error) {
+          } catch (error: any) {
             // Assert
             errorThrown = true
             expect(error.message).to.equal('Could not access the resources. Ensure \'System.AccessToken\' has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
@@ -411,42 +398,199 @@ describe('azureReposInvoker.ts', function (): void {
         })
       })
 
-    it('should return the API result', async (): Promise<void> => {
+    it('should return the result when called with a pull request comment', async (): Promise<void> => {
       // Arrange
-      when(gitApi.getThreads('RepoID', 10, 'Project')).thenResolve([{ id: 1 }])
+      when(gitApi.getThreads('RepoID', 10, 'Project')).thenResolve([{ id: 1, status: 1, comments: [{ content: 'Content' }] }])
       const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger), instance(taskLibWrapper))
 
       // Act
-      const result: GitPullRequestCommentThread[] = await azureReposInvoker.getComments()
+      const result: CommentData = await azureReposInvoker.getComments()
 
       // Assert
-      expect(result).to.deep.equal([{ id: 1 }])
+      expect(result.pullRequestComments.length).to.equal(1)
+      expect(result.pullRequestComments[0]!.id).to.equal(1)
+      expect(result.pullRequestComments[0]!.content).to.equal('Content')
+      expect(result.pullRequestComments[0]!.status).to.equal(CommentThreadStatus.Active)
+      expect(result.fileComments.length).to.equal(0)
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
       verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
       verify(gitApi.getThreads('RepoID', 10, 'Project')).once()
       verify(logger.logDebug('* AzureReposInvoker.getComments()')).once()
       verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
-      verify(logger.logDebug('[{"id":1}]')).once()
+      verify(logger.logDebug('[{"id":1,"status":1,"comments":[{"content":"Content"}]}]')).once()
     })
 
-    it('should return the API result when called multiple times', async (): Promise<void> => {
+    it('should return the result when called with a file comment', async (): Promise<void> => {
       // Arrange
-      when(gitApi.getThreads('RepoID', 10, 'Project')).thenResolve([{ id: 1 }])
+      when(gitApi.getThreads('RepoID', 10, 'Project')).thenResolve([{ id: 1, status: 1, comments: [{ content: 'Content' }], threadContext: { filePath: '/file.ts' } }])
+      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger), instance(taskLibWrapper))
+
+      // Act
+      const result: CommentData = await azureReposInvoker.getComments()
+
+      // Assert
+      expect(result.pullRequestComments.length).to.equal(0)
+      expect(result.fileComments.length).to.equal(1)
+      expect(result.fileComments[0]!.id).to.equal(1)
+      expect(result.fileComments[0]!.content).to.equal('Content')
+      expect(result.fileComments[0]!.status).to.equal(CommentThreadStatus.Active)
+      expect(result.fileComments[0]!.fileName).to.equal('file.ts')
+      verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
+      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
+      verify(gitApi.getThreads('RepoID', 10, 'Project')).once()
+      verify(logger.logDebug('* AzureReposInvoker.getComments()')).once()
+      verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
+      verify(logger.logDebug('[{"id":1,"status":1,"comments":[{"content":"Content"}],"threadContext":{"filePath":"/file.ts"}}]')).once()
+    })
+
+    it('should return the result when called with both a pull request and file comment', async (): Promise<void> => {
+      // Arrange
+      when(gitApi.getThreads('RepoID', 10, 'Project')).thenResolve(
+        [
+          { id: 1, status: 1, comments: [{ content: 'PR Content' }] },
+          { id: 2, status: 1, comments: [{ content: 'File Content' }], threadContext: { filePath: '/file.ts' } }
+        ])
+      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger), instance(taskLibWrapper))
+
+      // Act
+      const result: CommentData = await azureReposInvoker.getComments()
+
+      // Assert
+      expect(result.pullRequestComments.length).to.equal(1)
+      expect(result.pullRequestComments[0]!.id).to.equal(1)
+      expect(result.pullRequestComments[0]!.content).to.equal('PR Content')
+      expect(result.pullRequestComments[0]!.status).to.equal(CommentThreadStatus.Active)
+      expect(result.fileComments.length).to.equal(1)
+      expect(result.fileComments[0]!.id).to.equal(2)
+      expect(result.fileComments[0]!.content).to.equal('File Content')
+      expect(result.fileComments[0]!.status).to.equal(CommentThreadStatus.Active)
+      expect(result.fileComments[0]!.fileName).to.equal('file.ts')
+      verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
+      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
+      verify(gitApi.getThreads('RepoID', 10, 'Project')).once()
+      verify(logger.logDebug('* AzureReposInvoker.getComments()')).once()
+      verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
+      verify(logger.logDebug('[{"id":1,"status":1,"comments":[{"content":"PR Content"}]},{"id":2,"status":1,"comments":[{"content":"File Content"}],"threadContext":{"filePath":"/file.ts"}}]')).once()
+    })
+
+    it('should return the result when called multiple times', async (): Promise<void> => {
+      // Arrange
+      when(gitApi.getThreads('RepoID', 10, 'Project')).thenResolve([{ id: 1, status: 1, comments: [{ content: 'Content' }] }])
       const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger), instance(taskLibWrapper))
 
       // Act
       await azureReposInvoker.getComments()
-      const result: GitPullRequestCommentThread[] = await azureReposInvoker.getComments()
+      const result: CommentData = await azureReposInvoker.getComments()
 
       // Assert
-      expect(result).to.deep.equal([{ id: 1 }])
+      expect(result.pullRequestComments.length).to.equal(1)
+      expect(result.pullRequestComments[0]!.id).to.equal(1)
+      expect(result.pullRequestComments[0]!.content).to.equal('Content')
+      expect(result.pullRequestComments[0]!.status).to.equal(CommentThreadStatus.Active)
+      expect(result.fileComments.length).to.equal(0)
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
       verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
       verify(gitApi.getThreads('RepoID', 10, 'Project')).twice()
       verify(logger.logDebug('* AzureReposInvoker.getComments()')).twice()
       verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).twice()
-      verify(logger.logDebug('[{"id":1}]')).twice()
+      verify(logger.logDebug('[{"id":1,"status":1,"comments":[{"content":"Content"}]}]')).twice()
     })
+
+    it('should throw when provided with a payload with no ID', async (): Promise<void> => {
+      // Arrange
+      when(gitApi.getThreads('RepoID', 10, 'Project')).thenResolve([{ status: 1, comments: [{ content: 'Content' }] }])
+      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger), instance(taskLibWrapper))
+      let errorThrown: boolean = false
+
+      try {
+        // Act
+        await azureReposInvoker.getComments()
+      } catch (error: any) {
+        // Assert
+        errorThrown = true
+        expect(error.message).to.equal('\'commentThread[0].id\', accessed within \'AzureReposInvoker.convertPullRequestComments()\', is invalid, null, or undefined \'undefined\'.')
+      }
+
+      expect(errorThrown).to.equal(true)
+      verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
+      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
+      verify(gitApi.getThreads('RepoID', 10, 'Project')).once()
+      verify(logger.logDebug('* AzureReposInvoker.getComments()')).once()
+      verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
+      verify(logger.logDebug('[{"status":1,"comments":[{"content":"Content"}]}]')).once()
+    })
+
+    it('should continue if the payload has no status', async (): Promise<void> => {
+      // Arrange
+      const getThreadsResult: GitPullRequestCommentThread[] = [
+        { id: 1, comments: [{ content: 'PR Content' }] },
+        { id: 2, comments: [{ content: 'File Content' }], threadContext: { filePath: '/file.ts' } }
+      ]
+      when(gitApi.getThreads('RepoID', 10, 'Project')).thenResolve(getThreadsResult)
+      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger), instance(taskLibWrapper))
+
+      // Act
+      const result: CommentData = await azureReposInvoker.getComments()
+
+      // Assert
+      expect(result.pullRequestComments.length).to.equal(1)
+      expect(result.pullRequestComments[0]!.id).to.equal(1)
+      expect(result.pullRequestComments[0]!.content).to.equal('PR Content')
+      expect(result.pullRequestComments[0]!.status).to.equal(CommentThreadStatus.Unknown)
+      expect(result.fileComments.length).to.equal(1)
+      expect(result.fileComments[0]!.id).to.equal(2)
+      expect(result.fileComments[0]!.content).to.equal('File Content')
+      expect(result.fileComments[0]!.status).to.equal(CommentThreadStatus.Unknown)
+      expect(result.fileComments[0]!.fileName).to.equal('file.ts')
+      verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
+      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
+      verify(gitApi.getThreads('RepoID', 10, 'Project')).once()
+      verify(logger.logDebug('* AzureReposInvoker.getComments()')).once()
+      verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
+      verify(logger.logDebug(JSON.stringify(getThreadsResult))).once()
+    })
+
+    async.each(
+      [
+        { id: 1, status: 1 },
+        { id: 1, status: 1, comments: [] },
+        { id: 1, status: 1, comments: [{ }] },
+        { id: 1, status: 1, comments: [{ content: '' }] },
+        { id: 1, status: 1, comments: [{ content: 'Content' }], threadContext: { } },
+        { id: 1, status: 1, comments: [{ content: 'Content' }], threadContext: { filePath: '' } },
+        { id: 1, status: 1, comments: [{ content: 'Content' }], threadContext: { filePath: '/' } }
+      ], (data: GitPullRequestCommentThread): void => {
+        it(`should skip the comment with the malformed payload '${JSON.stringify(data)}'`, async (): Promise<void> => {
+          // Arrange
+          const getThreadsResult: GitPullRequestCommentThread[] = [
+            data,
+            { id: 2, status: 1, comments: [{ content: 'PR Content' }] },
+            { id: 3, status: 1, comments: [{ content: 'File Content' }], threadContext: { filePath: '/file.ts' } }
+          ]
+          when(gitApi.getThreads('RepoID', 10, 'Project')).thenResolve(getThreadsResult)
+          const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger), instance(taskLibWrapper))
+
+          // Act
+          const result: CommentData = await azureReposInvoker.getComments()
+
+          // Assert
+          expect(result.pullRequestComments.length).to.equal(1)
+          expect(result.pullRequestComments[0]!.id).to.equal(2)
+          expect(result.pullRequestComments[0]!.content).to.equal('PR Content')
+          expect(result.pullRequestComments[0]!.status).to.equal(CommentThreadStatus.Active)
+          expect(result.fileComments.length).to.equal(1)
+          expect(result.fileComments[0]!.id).to.equal(3)
+          expect(result.fileComments[0]!.content).to.equal('File Content')
+          expect(result.fileComments[0]!.status).to.equal(CommentThreadStatus.Active)
+          expect(result.fileComments[0]!.fileName).to.equal('file.ts')
+          verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
+          verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
+          verify(gitApi.getThreads('RepoID', 10, 'Project')).once()
+          verify(logger.logDebug('* AzureReposInvoker.getComments()')).once()
+          verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
+          verify(logger.logDebug(JSON.stringify(getThreadsResult))).once()
+        })
+      })
   })
 
   describe('setTitleAndDescription()', (): void => {
@@ -467,7 +611,7 @@ describe('azureReposInvoker.ts', function (): void {
           try {
             // Act
             await azureReposInvoker.setTitleAndDescription('Title', 'Description')
-          } catch (error) {
+          } catch (error: any) {
             // Assert
             errorThrown = true
             expect(error.message).to.equal('Could not access the resources. Ensure \'System.AccessToken\' has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
@@ -600,7 +744,7 @@ describe('azureReposInvoker.ts', function (): void {
           try {
             // Act
             await azureReposInvoker.createComment('Comment Content', CommentThreadStatus.Active, 'file.ts')
-          } catch (error) {
+          } catch (error: any) {
             // Assert
             errorThrown = true
             expect(error.message).to.equal('Could not access the resources. Ensure \'System.AccessToken\' has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
@@ -741,8 +885,8 @@ describe('azureReposInvoker.ts', function (): void {
 
           try {
             // Act
-            await azureReposInvoker.updateComment('Content', CommentThreadStatus.Active, 20)
-          } catch (error) {
+            await azureReposInvoker.updateComment(20, 'Content', CommentThreadStatus.Active)
+          } catch (error: any) {
             // Assert
             errorThrown = true
             expect(error.message).to.equal('Could not access the resources. Ensure \'System.AccessToken\' has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
@@ -775,8 +919,8 @@ describe('azureReposInvoker.ts', function (): void {
 
           try {
             // Act
-            await azureReposInvoker.updateComment('Content', CommentThreadStatus.Active, 20)
-          } catch (error) {
+            await azureReposInvoker.updateComment(20, 'Content', CommentThreadStatus.Active)
+          } catch (error: any) {
             // Assert
             errorThrown = true
             expect(error.message).to.equal('Could not access the resources. Ensure \'System.AccessToken\' has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
@@ -807,7 +951,7 @@ describe('azureReposInvoker.ts', function (): void {
       const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger), instance(taskLibWrapper))
 
       // Act
-      await azureReposInvoker.updateComment('Content', CommentThreadStatus.Active, 20)
+      await azureReposInvoker.updateComment(20, 'Content', CommentThreadStatus.Active)
 
       // Assert
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
@@ -828,7 +972,7 @@ describe('azureReposInvoker.ts', function (): void {
       const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger), instance(taskLibWrapper))
 
       // Act
-      await azureReposInvoker.updateComment('Content', null, 20)
+      await azureReposInvoker.updateComment(20, 'Content', null)
 
       // Assert
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
@@ -848,7 +992,7 @@ describe('azureReposInvoker.ts', function (): void {
       const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger), instance(taskLibWrapper))
 
       // Act
-      await azureReposInvoker.updateComment(null, CommentThreadStatus.Active, 20)
+      await azureReposInvoker.updateComment(20, null, CommentThreadStatus.Active)
 
       // Assert
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
@@ -864,7 +1008,7 @@ describe('azureReposInvoker.ts', function (): void {
       const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger), instance(taskLibWrapper))
 
       // Act
-      await azureReposInvoker.updateComment(null, null, 20)
+      await azureReposInvoker.updateComment(20, null, null)
 
       // Assert
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).never()
@@ -884,8 +1028,8 @@ describe('azureReposInvoker.ts', function (): void {
       const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(logger), instance(taskLibWrapper))
 
       // Act
-      await azureReposInvoker.updateComment('Content', null, 20)
-      await azureReposInvoker.updateComment('Content', null, 20)
+      await azureReposInvoker.updateComment(20, 'Content', null)
+      await azureReposInvoker.updateComment(20, 'Content', null)
 
       // Assert
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
@@ -915,7 +1059,7 @@ describe('azureReposInvoker.ts', function (): void {
           try {
             // Act
             await azureReposInvoker.deleteCommentThread(20)
-          } catch (error) {
+          } catch (error: any) {
             // Assert
             errorThrown = true
             expect(error.message).to.equal('Could not access the resources. Ensure \'System.AccessToken\' has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')

@@ -1,14 +1,15 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { Comment, CommentThreadStatus, GitPullRequestCommentThread } from 'azure-devops-node-api/interfaces/GitInterfaces'
+import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import { injectable } from 'tsyringe'
-import { Validator } from '../utilities/validator'
-import * as os from 'os'
 import CodeMetrics from '../metrics/codeMetrics'
 import CodeMetricsData from '../metrics/codeMetricsData'
+import CommentData from '../repos/interfaces/commentData'
+import FileCommentData from '../repos/interfaces/fileCommentData'
 import Inputs from '../metrics/inputs'
 import Logger from '../utilities/logger'
+import PullRequestComment from '../repos/interfaces/pullRequestCommentData'
 import PullRequestCommentsData from './pullRequestCommentsData'
 import ReposInvoker from '../repos/reposInvoker'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
@@ -61,17 +62,17 @@ export default class PullRequestComments {
     const deletedFilesNotRequiringReview: string[] = await this._codeMetrics.getDeletedFilesNotRequiringReview()
     let result: PullRequestCommentsData = new PullRequestCommentsData(filesNotRequiringReview, deletedFilesNotRequiringReview)
 
-    const commentThreads: GitPullRequestCommentThread[] = await this._reposInvoker.getComments()
-    for (let i: number = 0; i < commentThreads.length; i++) {
-      const commentThread: GitPullRequestCommentThread = commentThreads[i]!
-      if (!commentThread.threadContext) {
-        // If the current comment thread is not applied to a specified file, check if it is the metrics comment thread.
-        result = this.getMetricsCommentData(result, commentThread, i)
-      } else {
-        // If the current comment thread is applied to a specified file, check if it already contains a comment related to files that can be ignored.
-        result = this.getFilesRequiringCommentUpdates(result, commentThread, i)
-      }
-    }
+    const comments: CommentData = await this._reposInvoker.getComments()
+
+    // If the current comment thread is not applied to a specified file, check if it is the metrics comment thread.
+    comments.pullRequestComments.forEach((comment: PullRequestComment): void => {
+      result = this.getMetricsCommentData(result, comment)
+    })
+
+    // If the current comment thread is not applied to a specified file, check if it is the metrics comment thread.
+    comments.fileComments.forEach((comment: FileCommentData): void => {
+      result = this.getFilesRequiringCommentUpdates(result, comment)
+    })
 
     return result
   }
@@ -85,19 +86,19 @@ export default class PullRequestComments {
 
     const metrics: CodeMetricsData = await this._codeMetrics.getMetrics()
 
-    let result: string = `${this._taskLibWrapper.loc('pullRequests.pullRequestComments.commentTitle')}${os.EOL}`
+    let result: string = `${this._taskLibWrapper.loc('pullRequests.pullRequestComments.commentTitle')}\n`
     result += await this.addCommentSizeStatus()
     result += await this.addCommentTestStatus()
 
-    result += `||${this._taskLibWrapper.loc('pullRequests.pullRequestComments.tableLines')}${os.EOL}`
-    result += `-|-:${os.EOL}`
+    result += `||${this._taskLibWrapper.loc('pullRequests.pullRequestComments.tableLines')}\n`
+    result += '-|-:\n'
     result += this.addCommentMetrics(this._taskLibWrapper.loc('pullRequests.pullRequestComments.tableProductCode'), metrics.productCode, false)
     result += this.addCommentMetrics(this._taskLibWrapper.loc('pullRequests.pullRequestComments.tableTestCode'), metrics.testCode, false)
     result += this.addCommentMetrics(this._taskLibWrapper.loc('pullRequests.pullRequestComments.tableSubtotal'), metrics.subtotal, true)
     result += this.addCommentMetrics(this._taskLibWrapper.loc('pullRequests.pullRequestComments.tableIgnoredCode'), metrics.ignoredCode, false)
     result += this.addCommentMetrics(this._taskLibWrapper.loc('pullRequests.pullRequestComments.tableTotal'), metrics.total, true)
 
-    result += os.EOL
+    result += '\n'
     result += this._taskLibWrapper.loc('pullRequests.pullRequestComments.commentFooter')
 
     return result
@@ -121,58 +122,43 @@ export default class PullRequestComments {
     return CommentThreadStatus.Active
   }
 
-  private getMetricsCommentData (result: PullRequestCommentsData, commentThread: GitPullRequestCommentThread, commentThreadIndex: number): PullRequestCommentsData {
+  private getMetricsCommentData (result: PullRequestCommentsData, comment: PullRequestComment): PullRequestCommentsData {
     this._logger.logDebug('* PullRequestComments.getMetricsCommentData()')
 
-    const comments: Comment[] = Validator.validate(commentThread.comments, `commentThread[${commentThreadIndex}].comments`, 'PullRequestComments.getMetricsCommentData()')
-    const firstComment: Comment = Validator.validate(comments[0], `commentThread[${commentThreadIndex}].comments[0]`, 'PullRequestComments.getMetricsCommentData()')
-    if (!firstComment.content) {
+    if (!comment.content) {
       return result
     }
 
-    if (!firstComment.content.startsWith(`${this._taskLibWrapper.loc('pullRequests.pullRequestComments.commentTitle')}${os.EOL}`)) {
+    if (!comment.content.startsWith(`${this._taskLibWrapper.loc('pullRequests.pullRequestComments.commentTitle')}\n`)) {
       return result
     }
 
-    result.metricsCommentThreadId = Validator.validate(commentThread.id, `commentThread[${commentThreadIndex}].id`, 'PullRequestComments.getMetricsCommentData()')
-    result.metricsCommentThreadStatus = commentThread.status ?? null
-    result.metricsCommentContent = firstComment.content
+    result.metricsCommentThreadId = comment.id
+    result.metricsCommentContent = comment.content
+    result.metricsCommentThreadStatus = comment.status
     return result
   }
 
-  private getFilesRequiringCommentUpdates (
-    result: PullRequestCommentsData,
-    commentThread: GitPullRequestCommentThread,
-    commentThreadIndex: number): PullRequestCommentsData {
+  private getFilesRequiringCommentUpdates (result: PullRequestCommentsData, comment: FileCommentData): PullRequestCommentsData {
     this._logger.logDebug('* PullRequestComments.getFilesRequiringCommentUpdates()')
 
-    const filePath: string = Validator.validate(commentThread.threadContext!.filePath, `commentThread[${commentThreadIndex}].threadContext.filePath`, 'PullRequestComments.getFilesRequiringCommentUpdates()')
-    if (filePath.length <= 1) {
-      throw RangeError(`'commentThread[${commentThreadIndex}].threadContext.filePath' '${filePath}' is of length '${filePath.length}'.`)
-    }
-
-    const fileName: string = filePath.substring(1)
-
-    const comments: Comment[] = Validator.validate(commentThread.comments, `commentThread[${commentThreadIndex}].comments`, 'PullRequestComments.getFilesRequiringCommentUpdates()')
-    const comment: Comment = Validator.validate(comments[0], `commentThread[${commentThreadIndex}].comments[0]`, 'PullRequestComments.getFilesRequiringCommentUpdates()')
     if (comment.content !== this.noReviewRequiredComment) {
       return result
     }
 
-    const fileIndex: number = result.filesNotRequiringReview.indexOf(fileName)
+    const fileIndex: number = result.filesNotRequiringReview.indexOf(comment.fileName)
     if (fileIndex !== -1) {
       result.filesNotRequiringReview.splice(fileIndex, 1)
       return result
     }
 
-    const deletedFileIndex: number = result.deletedFilesNotRequiringReview.indexOf(fileName)
+    const deletedFileIndex: number = result.deletedFilesNotRequiringReview.indexOf(comment.fileName)
     if (deletedFileIndex !== -1) {
       result.deletedFilesNotRequiringReview.splice(deletedFileIndex, 1)
       return result
     }
 
-    const threadId: number = Validator.validate(commentThread.id, `commentThread[${commentThreadIndex}].id`, 'PullRequestComments.getFilesRequiringCommentUpdates()')
-    result.commentThreadsRequiringDeletion.push(threadId)
+    result.commentThreadsRequiringDeletion.push(comment.id)
     return result
   }
 
@@ -186,7 +172,7 @@ export default class PullRequestComments {
       result += this._taskLibWrapper.loc('pullRequests.pullRequestComments.largePullRequestComment', this._inputs.baseSize.toLocaleString())
     }
 
-    result += os.EOL
+    result += '\n'
     return result
   }
 
@@ -202,7 +188,7 @@ export default class PullRequestComments {
         result += this._taskLibWrapper.loc('pullRequests.pullRequestComments.testsInsufficientComment')
       }
 
-      result += os.EOL
+      result += '\n'
     }
 
     return result
@@ -216,6 +202,6 @@ export default class PullRequestComments {
       surround = '**'
     }
 
-    return `${surround}${title}${surround}|${surround}${metric.toLocaleString()}${surround}${os.EOL}`
+    return `${surround}${title}${surround}|${surround}${metric.toLocaleString()}${surround}\n`
   }
 }

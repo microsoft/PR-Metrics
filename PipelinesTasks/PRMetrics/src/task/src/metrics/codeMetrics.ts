@@ -4,13 +4,13 @@
 import { CodeFileMetric } from './codeFileMetric'
 import { FixedLengthArray } from '../utilities/fixedLengthArray'
 import { singleton } from 'tsyringe'
+import * as path from 'path'
 import * as taskLib from 'azure-pipelines-task-lib/task'
 import CodeMetricsData from './codeMetricsData'
 import GitInvoker from '../git/gitInvoker'
 import Inputs from './inputs'
 import Logger from '../utilities/logger'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
-import * as path from 'path'
 
 /**
  * A class for computing metrics for software code in pull requests.

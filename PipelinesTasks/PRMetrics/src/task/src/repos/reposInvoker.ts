@@ -1,14 +1,15 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { CommentThreadStatus, GitPullRequestCommentThread } from 'azure-devops-node-api/interfaces/GitInterfaces'
+import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import { singleton } from 'tsyringe'
 import { Validator } from '../utilities/validator'
 import AzureReposInvoker from './azureReposInvoker'
+import CommentData from './interfaces/commentData'
 import GitHubReposInvoker from './gitHubReposInvoker'
 import IReposInvoker from './iReposInvoker'
 import Logger from '../utilities/logger'
-import PullRequestDetails from './pullRequestDetails'
+import PullRequestDetails from './interfaces/pullRequestDetails'
 
 /**
  * A class for invoking repository functionality with any underlying repository store.
@@ -33,13 +34,6 @@ export default class ReposInvoker implements IReposInvoker {
     this._logger = logger
   }
 
-  public get isCommentsFunctionalityAvailable (): boolean {
-    this._logger.logDebug('* ReposInvoker.isCommentsFunctionalityAvailable')
-
-    const reposInvoker: IReposInvoker = this.getReposInvoker()
-    return reposInvoker.isCommentsFunctionalityAvailable
-  }
-
   public get isAccessTokenAvailable (): string | null {
     this._logger.logDebug('* ReposInvoker.isAccessTokenAvailable')
 
@@ -54,7 +48,7 @@ export default class ReposInvoker implements IReposInvoker {
     return reposInvoker.getTitleAndDescription()
   }
 
-  public async getComments (): Promise<GitPullRequestCommentThread[]> {
+  public async getComments (): Promise<CommentData> {
     this._logger.logDebug('* ReposInvoker.getComments()')
 
     const reposInvoker: IReposInvoker = this.getReposInvoker()
@@ -75,11 +69,11 @@ export default class ReposInvoker implements IReposInvoker {
     return reposInvoker.createComment(content, status, fileName, isFileDeleted)
   }
 
-  public async updateComment (content: string | null, status: CommentThreadStatus | null, commentThreadId: number): Promise<void> {
+  public async updateComment (commentThreadId: number, content: string | null, status: CommentThreadStatus | null): Promise<void> {
     this._logger.logDebug('* ReposInvoker.updateComment()')
 
     const reposInvoker: IReposInvoker = this.getReposInvoker()
-    return reposInvoker.updateComment(content, status, commentThreadId)
+    return reposInvoker.updateComment(commentThreadId, content, status)
   }
 
   public async deleteCommentThread (commentThreadId: number): Promise<void> {

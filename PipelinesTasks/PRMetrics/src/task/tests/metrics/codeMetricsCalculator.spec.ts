@@ -25,7 +25,6 @@ describe('codeMetricsCalculator.ts', (): void => {
 
   beforeEach((): void => {
     reposInvoker = mock(ReposInvoker)
-    when(reposInvoker.isCommentsFunctionalityAvailable).thenReturn(true)
     when(reposInvoker.isAccessTokenAvailable).thenReturn(null)
 
     gitInvoker = mock(GitInvoker)
@@ -177,19 +176,6 @@ describe('codeMetricsCalculator.ts', (): void => {
   })
 
   describe('updateComments()', (): void => {
-    it('should terminate when the comments functionality is unavailable', async (): Promise<void> => {
-      // Arrange
-      when(reposInvoker.isCommentsFunctionalityAvailable).thenReturn(false)
-      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(gitInvoker), instance(logger), instance(pullRequest), instance(pullRequestComments), instance(reposInvoker), instance(taskLibWrapper))
-
-      // Act
-      await codeMetricsCalculator.updateComments()
-
-      // Assert
-      verify(logger.logDebug('* CodeMetricsCalculator.updateComments()')).once()
-      verify(logger.logDebug('Skipping comments functionality as it is unavailable.')).once()
-    })
-
     it('should succeed when no comment updates are necessary', async (): Promise<void> => {
       // Arrange
       const commentData: PullRequestCommentsData = new PullRequestCommentsData([], [])
@@ -219,7 +205,7 @@ describe('codeMetricsCalculator.ts', (): void => {
       // Assert
       verify(logger.logDebug('* CodeMetricsCalculator.updateComments()')).once()
       verify(logger.logDebug('* CodeMetricsCalculator.updateMetricsComment()')).once()
-      verify(reposInvoker.updateComment('Description', CommentThreadStatus.Active, 1)).once()
+      verify(reposInvoker.updateComment(1, 'Description', CommentThreadStatus.Active)).once()
     })
 
     it('should perform the expected actions when the metrics comment is to be updated and there is no existing thread', async (): Promise<void> => {

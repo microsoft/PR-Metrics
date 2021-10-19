@@ -1,19 +1,33 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { CommentThreadStatus, GitPullRequestCommentThread } from 'azure-devops-node-api/interfaces/GitInterfaces'
+import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
+import { GetResponseDataTypeFromEndpointMethod } from '@octokit/types'
+import { Octokit } from 'octokit'
 import { OctokitOptions } from '@octokit/core/dist-types/types'
-import { RequestParameters } from '@octokit/types'
 import { singleton } from 'tsyringe'
 import { Validator } from '../utilities/validator'
 import BaseReposInvoker from './baseReposInvoker'
+import CommentData from './interfaces/commentData'
+import CreateIssueCommentResponse from '../wrappers/octokitInterfaces/createIssueCommentResponse'
+import CreateReviewCommentResponse from '../wrappers/octokitInterfaces/createReviewCommentResponse'
+import DeleteReviewCommentResponse from '../wrappers/octokitInterfaces/deleteReviewCommentResponse'
+import FileCommentData from './interfaces/fileCommentData'
+import GetIssueCommentsResponse from '../wrappers/octokitInterfaces/getIssueCommentsResponse'
 import GetPullResponse from '../wrappers/octokitInterfaces/getPullResponse'
+import GetReviewCommentsResponse from '../wrappers/octokitInterfaces/getReviewCommentsResponse'
+import ListCommitsResponse from '../wrappers/octokitInterfaces/listCommitsResponse'
 import Logger from '../utilities/logger'
 import OctokitWrapper from '../wrappers/octokitWrapper'
-import PullRequestDetails from './pullRequestDetails'
+import PullRequestCommentData from './interfaces/pullRequestCommentData'
+import PullRequestDetails from './interfaces/pullRequestDetails'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
-import UpdatePullRequest from '../wrappers/octokitInterfaces/updatePullRequest'
+import UpdateIssueCommentResponse from '../wrappers/octokitInterfaces/updateIssueCommentResponse'
 import UpdatePullResponse from '../wrappers/octokitInterfaces/updatePullResponse'
+
+const octokit: Octokit = new Octokit()
+type GetIssueCommentsResponseData = GetResponseDataTypeFromEndpointMethod<typeof octokit.rest.issues.listComments>[0]
+type GetReviewCommentsResponseData = GetResponseDataTypeFromEndpointMethod<typeof octokit.rest.pulls.listCommentsForReview>[0]
 
 /**
  * A class for invoking GitHub Repos functionality.
@@ -28,6 +42,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
   private _owner: string | undefined
   private _repo: string | undefined
   private _pullRequestId: number | undefined
+  private _commitId: string | undefined
 
   /**
    * Initializes a new instance of the `GitHubReposInvoker` class.
@@ -41,12 +56,6 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     this._logger = logger
     this._octokitWrapper = octokitWrapper
     this._taskLibWrapper = taskLibWrapper
-  }
-
-  public get isCommentsFunctionalityAvailable (): boolean {
-    this._logger.logDebug('* GitHubReposInvoker.isCommentsFunctionalityAvailable')
-
-    return false
   }
 
   public get isAccessTokenAvailable (): string | null {
@@ -64,11 +73,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
 
     this.initialize()
     const result: GetPullResponse = await this.invokeApiCall(async (): Promise<GetPullResponse> => {
-      const result: GetPullResponse = await this._octokitWrapper.getPull({
-        owner: this._owner!,
-        repo: this._repo!,
-        pull_number: this._pullRequestId!
-      })
+      const result: GetPullResponse = await this._octokitWrapper.getPull(this._owner!, this._repo!, this._pullRequestId!)
       this._logger.logDebug(JSON.stringify(result))
 
       return result
@@ -80,10 +85,25 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     }
   }
 
-  public async getComments (): Promise<GitPullRequestCommentThread[]> {
+  public async getComments (): Promise<CommentData> {
     this._logger.logDebug('* GitHubReposInvoker.getComments()')
 
-    throw Error('GitHubReposInvoker.getComments() not yet implemented.')
+    this.initialize()
+
+    let pullRequestComments: GetIssueCommentsResponse | undefined
+    let fileComments: GetReviewCommentsResponse | undefined
+    await Promise.all([
+      this.invokeApiCall(async (): Promise<void> => {
+        pullRequestComments = await this._octokitWrapper.getIssueComments(this._owner!, this._repo!, this._pullRequestId!)
+        this._logger.logDebug(JSON.stringify(pullRequestComments))
+      }),
+      this.invokeApiCall(async (): Promise<void> => {
+        fileComments = await this._octokitWrapper.getReviewComments(this._owner!, this._repo!, this._pullRequestId!)
+        this._logger.logDebug(JSON.stringify(fileComments))
+      })
+    ])
+
+    return GitHubReposInvoker.convertPullRequestComments(pullRequestComments, fileComments)
   }
 
   public async setTitleAndDescription (title: string | null, description: string | null): Promise<void> {
@@ -94,42 +114,63 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     }
 
     this.initialize()
-    const request: RequestParameters & UpdatePullRequest = {
-      owner: this._owner!,
-      repo: this._repo!,
-      pull_number: this._pullRequestId!
-    }
-
-    if (title !== null) {
-      request.title = title
-    }
-
-    if (description !== null) {
-      request.body = description
-    }
 
     await this.invokeApiCall(async (): Promise<void> => {
-      const result: UpdatePullResponse = await this._octokitWrapper.updatePull(request)
+      const result: UpdatePullResponse = await this._octokitWrapper.updatePull(this._owner!, this._repo!, this._pullRequestId!, title === null ? undefined : title, description === null ? undefined : description)
       this._logger.logDebug(JSON.stringify(result))
     })
   }
 
-  public async createComment (_: string, __: CommentThreadStatus, ___?: string, ____?: boolean): Promise<void> {
+  public async createComment (content: string, _: CommentThreadStatus, fileName?: string, __?: boolean): Promise<void> {
     this._logger.logDebug('* GitHubReposInvoker.createComment()')
 
-    throw Error('GitHubReposInvoker.createComment() not yet implemented.')
+    this.initialize()
+
+    if (fileName) {
+      if (!this._commitId) {
+        await this.invokeApiCall(async (): Promise<void> => {
+          const result: ListCommitsResponse = await this._octokitWrapper.listCommits(this._owner!, this._repo!, this._pullRequestId!)
+          this._logger.logDebug(JSON.stringify(result))
+          this._commitId = Validator.validate(result.data[0]?.sha, 'result.data[0].sha', 'GitHubReposInvoker.createComment()')
+        })
+      }
+
+      await this.invokeApiCall(async (): Promise<void> => {
+        const result: CreateReviewCommentResponse = await this._octokitWrapper.createReviewComment(this._owner!, this._repo!, this._pullRequestId!, content, fileName, this._commitId!)
+        this._logger.logDebug(JSON.stringify(result))
+      })
+    } else {
+      await this.invokeApiCall(async (): Promise<void> => {
+        const result: CreateIssueCommentResponse = await this._octokitWrapper.createIssueComment(this._owner!, this._repo!, this._pullRequestId!, content)
+        this._logger.logDebug(JSON.stringify(result))
+      })
+    }
   }
 
-  public async updateComment (_: string | null, __: CommentThreadStatus | null, ___: number): Promise<void> {
+  public async updateComment (commentThreadId: number, content: string | null, _: CommentThreadStatus | null): Promise<void> {
     this._logger.logDebug('* GitHubReposInvoker.updateComment()')
 
-    throw Error('GitHubReposInvoker.updateComment() not yet implemented.')
+    if (content === null) {
+      return
+    }
+
+    this.initialize()
+
+    await this.invokeApiCall(async (): Promise<void> => {
+      const result: UpdateIssueCommentResponse = await this._octokitWrapper.updateIssueComment(this._owner!, this._repo!, this._pullRequestId!, commentThreadId, content)
+      this._logger.logDebug(JSON.stringify(result))
+    })
   }
 
-  public async deleteCommentThread (_: number): Promise<void> {
+  public async deleteCommentThread (commentThreadId: number): Promise<void> {
     this._logger.logDebug('* GitHubReposInvoker.deleteCommentThread()')
 
-    throw Error('GitHubReposInvoker.deleteCommentThread() not yet implemented.')
+    this.initialize()
+
+    await this.invokeApiCall(async (): Promise<void> => {
+      const result: DeleteReviewCommentResponse = await this._octokitWrapper.deleteReviewComment(this._owner!, this._repo!, commentThreadId)
+      this._logger.logDebug(JSON.stringify(result))
+    })
   }
 
   private initialize (): void {
@@ -141,7 +182,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
 
     const options: OctokitOptions = {
       auth: process.env.SYSTEM_ACCESSTOKEN,
-      userAgent: 'PRMetrics/v1.2.6',
+      userAgent: 'PRMetrics/v1.3.0',
       log: {
         debug: (message: string): void => this._logger.logDebug(`Octokit – ${message}`),
         info: (message: string): void => this._logger.logInfo(`Octokit – ${message}`),
@@ -175,6 +216,29 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     this._pullRequestId = Validator.validate(parseInt(process.env.SYSTEM_PULLREQUEST_PULLREQUESTNUMBER!), 'SYSTEM_PULLREQUEST_PULLREQUESTNUMBER', 'GitHubReposInvoker.initialize()')
 
     this._isInitialized = true
+  }
+
+  private static convertPullRequestComments (pullRequestComments?: GetIssueCommentsResponse, fileComments?: GetReviewCommentsResponse): CommentData {
+    const result: CommentData = new CommentData()
+
+    pullRequestComments?.data.forEach((value: GetIssueCommentsResponseData): void => {
+      const id: number = value.id
+      const content: string | undefined = value.body
+      if (!content) {
+        return
+      }
+
+      result.pullRequestComments.push(new PullRequestCommentData(id, content))
+    })
+
+    fileComments?.data.forEach((value: GetReviewCommentsResponseData): void => {
+      const id: number = value.id
+      const content: string = value.body
+      const file: string = value.path
+      result.fileComments.push(new FileCommentData(id, content, file))
+    })
+
+    return result
   }
 
   protected async invokeApiCall<TResponse> (action: () => Promise<TResponse>): Promise<TResponse> {

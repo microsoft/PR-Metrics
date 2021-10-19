@@ -9,8 +9,11 @@ import { Validator } from '../utilities/validator'
 import { WebApi } from 'azure-devops-node-api'
 import AzureDevOpsApiWrapper from '../wrappers/azureDevOpsApiWrapper'
 import BaseReposInvoker from './baseReposInvoker'
+import CommentData from './interfaces/commentData'
+import FileCommentData from './interfaces/fileCommentData'
 import Logger from '../utilities/logger'
-import PullRequestDetails from './pullRequestDetails'
+import PullRequestCommentData from './interfaces/pullRequestCommentData'
+import PullRequestDetails from './interfaces/pullRequestDetails'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
 
 /**
@@ -42,12 +45,6 @@ export default class AzureReposInvoker extends BaseReposInvoker {
     this._taskLibWrapper = taskLibWrapper
   }
 
-  public get isCommentsFunctionalityAvailable (): boolean {
-    this._logger.logDebug('* AzureReposInvoker.isCommentsFunctionalityAvailable')
-
-    return true
-  }
-
   public get isAccessTokenAvailable (): string | null {
     this._logger.logDebug('* AzureReposInvoker.isAccessTokenAvailable')
 
@@ -72,13 +69,13 @@ export default class AzureReposInvoker extends BaseReposInvoker {
     }
   }
 
-  public async getComments (): Promise<GitPullRequestCommentThread[]> {
+  public async getComments (): Promise<CommentData> {
     this._logger.logDebug('* AzureReposInvoker.getComments()')
 
     const gitApiPromise: Promise<IGitApi> = this.getGitApi()
     const result: GitPullRequestCommentThread[] = await this.invokeApiCall(async (): Promise<GitPullRequestCommentThread[]> => await (await gitApiPromise).getThreads(this._repositoryId, this._pullRequestId, this._project))
     this._logger.logDebug(JSON.stringify(result))
-    return result
+    return AzureReposInvoker.convertPullRequestComments(result)
   }
 
   public async setTitleAndDescription (title: string | null, description: string | null): Promise<void> {
@@ -138,7 +135,7 @@ export default class AzureReposInvoker extends BaseReposInvoker {
     this._logger.logDebug(JSON.stringify(result))
   }
 
-  public async updateComment (content: string | null, status: CommentThreadStatus | null, commentThreadId: number): Promise<void> {
+  public async updateComment (commentThreadId: number, content: string | null, status: CommentThreadStatus | null): Promise<void> {
     this._logger.logDebug('* AzureReposInvoker.updateComment()')
 
     if (content === null && status === null) {
@@ -191,6 +188,38 @@ export default class AzureReposInvoker extends BaseReposInvoker {
     this._gitApi = await connection.getGitApi()
 
     return this._gitApi
+  }
+
+  private static convertPullRequestComments (comments: GitPullRequestCommentThread[]): CommentData {
+    const result: CommentData = new CommentData()
+
+    comments.forEach((value: GitPullRequestCommentThread, index: number): void => {
+      const id: number = Validator.validate(value.id, `commentThread[${index}].id`, 'AzureReposInvoker.convertPullRequestComments()')
+      const comments: Comment[] | undefined = value.comments
+      if (!comments) {
+        return
+      }
+
+      const content: string | undefined = comments[0]?.content
+      if (!content) {
+        return
+      }
+
+      const status: CommentThreadStatus = value.status || CommentThreadStatus.Unknown
+
+      if (!value.threadContext) {
+        result.pullRequestComments.push(new PullRequestCommentData(id, content, status))
+      } else {
+        const fileName: string | undefined = value.threadContext.filePath
+        if (!fileName || fileName.length <= 1) {
+          return
+        }
+
+        result.fileComments.push(new FileCommentData(id, content, fileName.substring(1), status))
+      }
+    })
+
+    return result
   }
 
   protected async invokeApiCall<TResponse> (action: () => Promise<TResponse>): Promise<TResponse> {

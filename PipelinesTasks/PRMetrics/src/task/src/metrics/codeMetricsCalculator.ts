@@ -8,7 +8,7 @@ import Logger from '../utilities/logger'
 import PullRequest from '../pullRequests/pullRequest'
 import PullRequestComments from '../pullRequests/pullRequestComments'
 import PullRequestCommentsData from '../pullRequests/pullRequestCommentsData'
-import PullRequestDetails from '../repos/pullRequestDetails'
+import PullRequestDetails from '../repos/interfaces/pullRequestDetails'
 import ReposInvoker from '../repos/reposInvoker'
 import TaskLibWrapper from '../wrappers/taskLibWrapper'
 
@@ -105,29 +105,27 @@ export default class CodeMetricsCalculator {
   public async updateComments (): Promise<void> {
     this._logger.logDebug('* CodeMetricsCalculator.updateComments()')
 
-    if (!this._reposInvoker.isCommentsFunctionalityAvailable) {
-      this._logger.logDebug('Skipping comments functionality as it is unavailable.')
-      return
-    }
-
     const promises: Promise<void>[] = []
 
     const commentData: PullRequestCommentsData = await this._pullRequestComments.getCommentData()
     promises.push(this.updateMetricsComment(commentData))
-
-    commentData.filesNotRequiringReview.forEach((fileName: string): void => {
-      promises.push(this.updateNoReviewRequiredComment(fileName, false))
-    })
-
-    commentData.deletedFilesNotRequiringReview.forEach((fileName: string): void => {
-      promises.push(this.updateNoReviewRequiredComment(fileName, true))
-    })
 
     commentData.commentThreadsRequiringDeletion.forEach((commentThreadId: number): void => {
       promises.push(this._reposInvoker.deleteCommentThread(commentThreadId))
     })
 
     await Promise.all(promises)
+
+    // Comment creation can cause problems when called in parallel on GitHub. Therefore, we must wait after each call
+    // to these APIs before continuing.
+
+    for (const fileName of commentData.filesNotRequiringReview) {
+      await this.updateNoReviewRequiredComment(fileName, false)
+    }
+
+    for (const fileName of commentData.deletedFilesNotRequiringReview) {
+      await this.updateNoReviewRequiredComment(fileName, true)
+    }
   }
 
   private async updateMetricsComment (commentData: PullRequestCommentsData): Promise<void> {
@@ -139,9 +137,9 @@ export default class CodeMetricsCalculator {
       await this._reposInvoker.createComment(content, status)
     } else {
       await this._reposInvoker.updateComment(
+        commentData.metricsCommentThreadId,
         commentData.metricsCommentContent !== content ? content : null,
-        commentData.metricsCommentThreadStatus !== status ? status : null,
-        commentData.metricsCommentThreadId)
+        commentData.metricsCommentThreadStatus !== status ? status : null)
     }
   }
 
