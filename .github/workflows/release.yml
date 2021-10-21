@@ -42,7 +42,7 @@ jobs:
         working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/build/release
 
       - name: Release – Publish
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v2.2.4
         with:
           name: ms-omex.${{ matrix.task }}
           path: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/build/ms-omex.${{ matrix.task }}.vsix
