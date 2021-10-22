@@ -42,8 +42,7 @@ jobs:
         working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/build/release
 
       - name: Release – Publish
-        run: >-
-          tfx extension publish
-          --manifest-globs ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/build/release/vss-extension.json
-          --vsix ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/build/ms-omex.${{ matrix.task }}.vsix
-          --token ${{ secrets.VS_PAT }}
+        uses: actions/upload-artifact@v2.2.4
+        with:
+          name: ms-omex.${{ matrix.task }}
+          path: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/build/ms-omex.${{ matrix.task }}.vsix
