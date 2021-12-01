@@ -9,15 +9,16 @@ complement the unit tests to provide a high level of coverage.
 ## Step 1: Setup
 
 1. On the Azure DevOps server to which you have administrator access, either
-   create a new Git repo or select an empty one.
+   create a new Git repository or select an empty one.
 
-   To create a new repo, navigate to your chosen project and select Repos >
-   Files from the left-hand navigation. Click the drop down with the repo name
-   at the top of the page and select "New Repository". Leave "Add a README"
-   checked to create a main branch but do not add a `.gitignore` file.
-1. Copy the contents of the `step1` subfolder to the root of your repo,
+   To create a new repository, navigate to your chosen project and select Repos
+   > Files from the left-hand navigation. Click the drop down with the
+   repository name at the top of the page and select "New Repository". Leave
+   "Add a README" checked to create a main branch but do not add a `.gitignore`
+   file.
+1. Copy the contents of the `step1` subfolder to the root of your repository,
    preserving the folder tree.
-1. Commit the changes to your repo.
+1. Commit the changes to your repository.
 1. Deploy your local PR Metrics code to the server using:
 
    ```Batchfile
@@ -35,14 +36,14 @@ complement the unit tests to provide a high level of coverage.
 
 ## Step 2: Creating the Pipelines
 
-1. Clone the repo locally.
-1. Copy the contents of the `step2` folder to your new repo and commit it to the
-   server.
+1. Clone the repository locally.
+1. Copy the contents of the `step2` folder to your new repository and commit it
+   to the server.
 1. On the Azure DevOps server, navigate to Pipelines > Pipelines.
 1. Click "New Pipeline".
 1. When prompted as to the location of your code, select "Azure Repos Git".
-1. When prompted to select your repo, select the repo you recently created as
-   part of this test process.
+1. When prompted to select your repository, select the repository you recently
+   created as part of this test process.
 1. When prompted to configure your pipeline, select "Existing Azure Pipelines
    YAML file".
 1. In the right-hand pane that appears, select the first of the pipeline YAML
@@ -68,7 +69,7 @@ complement the unit tests to provide a high level of coverage.
    previously copied to the clipboard. Check "keep this value secret".
 1. Click "OK" followed by "Save".
 1. Now, navigate to Repos > Branches.
-1. Next to the main branch for your repo, click "..." and select "Branch
+1. Next to the main branch for your repository, click "..." and select "Branch
    policies".
 1. Under the "Build Validation" section, click "+".
 1. For the "Build Pipeline" dropdown, select the first pipeline you added. Copy
@@ -88,8 +89,8 @@ complement the unit tests to provide a high level of coverage.
 
 ## Step 4: Performing an Initial Pipeline Test via a PR
 
-1. In your Git repo, create a new branch, e.g. `step4`.
-1. Copy the files from `step4` to the root folder of your repo.
+1. In your Git repository, create a new branch, e.g. `step4`.
+1. Copy the files from `step4` to the root folder of your repository.
 1. Rename `rename.ts` to `temporary.ts` and `initial/rename.ts` to
    `initial/temporary.ts`.
 1. Delete `delete.ts`.
@@ -154,8 +155,8 @@ complement the unit tests to provide a high level of coverage.
 
 ## Step 6: Adding Parameters
 
-1. Copy the contents of `step6` to your repo, choosing to replace the older
-   files with the newer ones.
+1. Copy the contents of `step6` to your repository, choosing to replace the
+   older files with the newer ones.
 1. Commit the changes to your branch.
 1. On the Azure DevOps server, navigate to your existing PR.
 1. Edit the description to a custom description.
@@ -181,8 +182,8 @@ complement the unit tests to provide a high level of coverage.
 
 ## Step 7: Ignoring Test Coverage
 
-1. Copy the contents of `step7` to your repo, choosing to replace the older
-   files with the newer ones.
+1. Copy the contents of `step7` to your repository, choosing to replace the
+   older files with the newer ones.
 1. Commit the changes to your branch.
 1. On the Azure DevOps server, navigate to your existing PR.
 1. Edit the description to a custom description.
@@ -205,8 +206,8 @@ complement the unit tests to provide a high level of coverage.
 
 1. Reply to the comment ":exclamation: This file doesn't require review." in the
    file `linesToAdd.ts` with any arbitrary comment.
-1. Copy the contents of `step8` to your repo, choosing to replace the older
-   files with the newer ones.
+1. Copy the contents of `step8` to your repository, choosing to replace the
+   older files with the newer ones.
 1. Delete `add.ts`.
 1. Commit the changes to your branch.
 1. On the Azure DevOps server, navigate to your existing PR. The build pipelines

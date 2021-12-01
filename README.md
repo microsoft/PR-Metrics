@@ -12,7 +12,7 @@ Additional source code released by the OMEX team can be located at
 ## Projects
 
 This repository layout is structured so that the top level contains a folder
-for each extension type, e.g. Pipeline Task. At the lower level, the repo
+for each extension type, e.g. Pipeline Task. At the lower level, the repository
 contains a folder for each individual extension.
 
 The current set of projects is:
