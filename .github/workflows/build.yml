@@ -23,9 +23,9 @@ jobs:
         uses: actions/checkout@v2.4.0
 
       - name: Install Node.js
-        uses: actions/setup-node@v2.5.0
+        uses: actions/setup-node@v2.5.1
         with:
-          node-version: 16.x
+          node-version: 17.x
 
       - name: NPM – Install Dependencies
         run: npm install
