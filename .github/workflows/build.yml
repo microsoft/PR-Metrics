@@ -141,7 +141,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MARKDOWN_CONFIG_FILE: ../../.markdownlint.json
           TYPESCRIPT_ES_CONFIG_FILE: ../../.eslintrc.yml
-          YAML_CONFIG_FILE: ../../.yamllint.yml
 
   validate-task:
     name: Validate – Task
