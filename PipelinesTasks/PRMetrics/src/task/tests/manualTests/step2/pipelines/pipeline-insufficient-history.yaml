@@ -1,6 +1,8 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT License.
 
+---
+
 trigger: none
 
 pool:
@@ -23,3 +25,5 @@ stages:
             displayName: PR Metrics
             env:
               SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+
+...

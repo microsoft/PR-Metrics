@@ -1,6 +1,8 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT License.
 
+---
+
 version: 2
 
 updates:
@@ -19,3 +21,5 @@ updates:
       interval: monthly
     labels:
       - dependencies
+
+...

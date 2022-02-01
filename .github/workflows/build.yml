@@ -1,6 +1,8 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT License.
 
+---
+
 name: Build
 
 on:
@@ -253,3 +255,5 @@ jobs:
         with:
           json-file: PipelinesTasks/${{ matrix.task }}/src/task/Strings/resources.resjson/en-US/resources.resjson
           json-schema: resources.resjson.schema.json
+
+...

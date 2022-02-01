@@ -1,9 +1,13 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT License.
 
+---
+
 blank_issues_enabled: false
 
 contact_links:
   - name: Support
     url: https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/discussions
     about: Request support
+
+...
