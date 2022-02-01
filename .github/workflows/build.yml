@@ -7,9 +7,9 @@ name: Build
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
   workflow_dispatch: null
 
 jobs:
@@ -114,16 +114,16 @@ jobs:
     name: Validate – CodeQL
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2.4.0
+      - name: Checkout
+        uses: actions/checkout@v2.4.0
 
-    - name: Initialize
-      uses: github/codeql-action/init@v1
-      with:
-        queries: security-and-quality
+      - name: Initialize
+        uses: github/codeql-action/init@v1
+        with:
+          queries: security-and-quality
 
-    - name: Analyze
-      uses: github/codeql-action/analyze@v1
+      - name: Analyze
+        uses: github/codeql-action/analyze@v1
 
   validate-linter:
     name: Validate – Linter
@@ -141,6 +141,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MARKDOWN_CONFIG_FILE: ../../.markdownlint.json
           TYPESCRIPT_ES_CONFIG_FILE: ../../.eslintrc.yml
+          YAML_CONFIG_FILE: ../../.yamllint.yml
 
   validate-task:
     name: Validate – Task

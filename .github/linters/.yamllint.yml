@@ -1,0 +1,11 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+
+---
+
+extends: default
+
+rules:
+  line-length: disable
+
+...
