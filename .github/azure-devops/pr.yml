@@ -1,6 +1,8 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT License.
 
+---
+
 trigger:
   - main
 
@@ -103,3 +105,5 @@ jobs:
           GdnBreakPolicyMinSev: Note
           GdnBreakGdnToolGosecSeverity: Default
           GdnBreakPolicy: M365
+
+...

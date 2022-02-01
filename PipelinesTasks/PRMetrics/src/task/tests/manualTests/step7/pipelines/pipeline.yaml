@@ -1,6 +1,8 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT License.
 
+---
+
 trigger: none
 
 pool:
@@ -29,3 +31,5 @@ stages:
                 **/file*
                 **/pipeline*
               CodeFileExtensions: ts
+
+...

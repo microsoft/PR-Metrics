@@ -1,6 +1,8 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT License.
 
+---
+
 name: Release
 
 on:
@@ -46,3 +48,5 @@ jobs:
         with:
           name: ms-omex.${{ matrix.task }}
           path: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/build/ms-omex.${{ matrix.task }}.vsix
+
+...

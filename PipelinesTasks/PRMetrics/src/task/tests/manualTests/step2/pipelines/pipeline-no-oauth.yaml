@@ -1,6 +1,8 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT License.
 
+---
+
 trigger: none
 
 pool:
@@ -19,3 +21,5 @@ stages:
         steps:
           - task: PRMetrics@1
             displayName: PR Metrics
+
+...

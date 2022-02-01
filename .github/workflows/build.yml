@@ -1,13 +1,15 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT License.
 
+---
+
 name: Build
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
   workflow_dispatch: null
 
 jobs:
@@ -112,16 +114,16 @@ jobs:
     name: Validate – CodeQL
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2.4.0
+      - name: Checkout
+        uses: actions/checkout@v2.4.0
 
-    - name: Initialize
-      uses: github/codeql-action/init@v1
-      with:
-        queries: security-and-quality
+      - name: Initialize
+        uses: github/codeql-action/init@v1
+        with:
+          queries: security-and-quality
 
-    - name: Analyze
-      uses: github/codeql-action/analyze@v1
+      - name: Analyze
+        uses: github/codeql-action/analyze@v1
 
   validate-linter:
     name: Validate – Linter
@@ -253,3 +255,5 @@ jobs:
         with:
           json-file: PipelinesTasks/${{ matrix.task }}/src/task/Strings/resources.resjson/en-US/resources.resjson
           json-schema: resources.resjson.schema.json
+
+...
