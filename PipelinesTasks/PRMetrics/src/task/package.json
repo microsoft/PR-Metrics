@@ -11,7 +11,7 @@
     "build:release": "npm run build:prepare --dir=release && cd ../../build/release/task && tsc && rimraf node_modules tests **/*.ts .mocharc.json .nycrc.json tsconfig.json typedoc.json && npm install --only=production",
     "build": "npm run build:debug && npm run build:release && npm run build:docs",
     "clean": "rimraf ../../build",
-    "deploy:debug": "exitzero tfx build tasks delete --task-id 907d3b28-6b37-4ac7-ac75-9631ee53e512 --no-prompt && tfx build tasks upload --task-path ../../build/debug/task --no-prompt",
+    "deploy:debug": "npm run build:debug && exitzero tfx build tasks delete --task-id 907d3b28-6b37-4ac7-ac75-9631ee53e512 --no-prompt && tfx build tasks upload --task-path ../../build/debug/task --no-prompt",
     "deploy:release": "npm run build:release && exitzero tfx build tasks delete --task-id 907d3b28-6b37-4ac7-ac75-9631ee53e512 --no-prompt && tfx build tasks upload --task-path ../../build/release/task --no-prompt",
     "lint": "eslint --fix **/*.ts",
     "preinstall": "cd ../../../.. && npm install",
