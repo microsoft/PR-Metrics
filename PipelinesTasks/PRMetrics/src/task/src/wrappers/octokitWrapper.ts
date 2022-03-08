@@ -40,7 +40,7 @@ export default class OctokitWrapper {
    * @param pullRequestId The numeric ID of the pull request.
    * @returns The response from the API call.
    */
-  public async getPull(owner: string, repo: string, pullRequestId: number): Promise<GetPullResponse> {
+  public async getPull (owner: string, repo: string, pullRequestId: number): Promise<GetPullResponse> {
     if (!this._octokit) {
       throw Error('OctokitWrapper was not initialized prior to calling OctokitWrapper.getPull().')
     }
@@ -61,7 +61,7 @@ export default class OctokitWrapper {
    * @param description The description of the pull request.
    * @returns The response from the API call.
    */
-  public async updatePull(owner: string, repo: string, pullRequestId: number, title: string | undefined, description: string | undefined): Promise<UpdatePullResponse> {
+  public async updatePull (owner: string, repo: string, pullRequestId: number, title: string | undefined, description: string | undefined): Promise<UpdatePullResponse> {
     if (!this._octokit) {
       throw Error('OctokitWrapper was not initialized prior to calling OctokitWrapper.updatePull().')
     }
