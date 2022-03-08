@@ -140,8 +140,8 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
           const result: CreateReviewCommentResponse = await this._octokitWrapper.createReviewComment(this._owner!, this._repo!, this._pullRequestId!, content, fileName, this._commitId!)
           this._logger.logDebug(JSON.stringify(result))
         } catch (error: any) {
-          // A 422 HttpError may be thrown if the file is the set of file changes are too large for a diff to be displayed.
-          if (error.name === 'HttpError' && error.status === 422) {
+          // A 422 HTTP response may be thrown if the file is the set of file changes are too large for a diff to be displayed.
+          if (error.status === 422) {
             const properties: string[] = Object.getOwnPropertyNames(error)
             properties.forEach((property: string): void => {
               this._logger.logDebug(`${error.name} – ${property}: ${JSON.stringify(error[property])}`)
