@@ -665,9 +665,8 @@ describe('gitHubReposInvoker.ts', function (): void {
       verify(octokitWrapper.createReviewComment('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345, 'Content', 'file.ts', 'sha54321')).once()
       verify(logger.logDebug('* GitHubReposInvoker.createComment()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
-      verify(logger.logDebug('null')).once()
       verify(logger.logDebug('Error – status: 422')).once()
-      verify(logger.logDebug('Error – message: Test')).once()
+      verify(logger.logDebug('Error – message: "Test"')).once()
     })
 
     it('should throw when the commit list is empty', async (): Promise<void> => {
@@ -729,7 +728,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       } catch (error: any) {
         // Assert
         errorThrown = true
-        expect(error.message).to.equal('\'result.data[0].sha\', accessed within \'GitHubReposInvoker.createComment()\', is invalid, null, or undefined \'undefined\'.')
+        expect(error.message).to.equal('Test')
       }
 
       expect(errorThrown).to.equal(true)
