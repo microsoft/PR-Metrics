@@ -11,11 +11,11 @@
   "visibility": [
     "Build"
   ],
-  "minimumAgentVersion": "2.196.2",
+  "minimumAgentVersion": "2.200.2",
   "version": {
     "Major": 1,
     "Minor": 3,
-    "Patch": 0
+    "Patch": 1
   },
   "instanceNameFormat": "ms-resource:loc.instanceNameFormat",
   "showEnvironmentVariables": true,

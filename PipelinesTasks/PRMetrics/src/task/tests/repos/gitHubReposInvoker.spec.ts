@@ -167,7 +167,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('OAUTH')
-        expect(options.userAgent).to.equal('PRMetrics/v1.3.0')
+        expect(options.userAgent).to.equal('PRMetrics/v1.3.1')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
         expect(options.log.info).to.not.equal(null)
@@ -194,7 +194,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI = 'https://github.com/microsoft/OMEX-Azure-DevOps-Extensions.git'
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('OAUTH')
-        expect(options.userAgent).to.equal('PRMetrics/v1.3.0')
+        expect(options.userAgent).to.equal('PRMetrics/v1.3.1')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
         expect(options.log.info).to.not.equal(null)
@@ -221,7 +221,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI = 'https://organization.githubenterprise.com/microsoft/OMEX-Azure-DevOps-Extensions'
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('OAUTH')
-        expect(options.userAgent).to.equal('PRMetrics/v1.3.0')
+        expect(options.userAgent).to.equal('PRMetrics/v1.3.1')
         expect(options.baseUrl).to.equal('https://organization.githubenterprise.com/api/v3')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
@@ -249,7 +249,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('OAUTH')
-        expect(options.userAgent).to.equal('PRMetrics/v1.3.0')
+        expect(options.userAgent).to.equal('PRMetrics/v1.3.1')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
         expect(options.log.info).to.not.equal(null)
@@ -278,7 +278,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       currentMockPullResponse.data.body = null
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('OAUTH')
-        expect(options.userAgent).to.equal('PRMetrics/v1.3.0')
+        expect(options.userAgent).to.equal('PRMetrics/v1.3.1')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
         expect(options.log.info).to.not.equal(null)
@@ -311,7 +311,7 @@ describe('gitHubReposInvoker.ts', function (): void {
           // Arrange
           when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
             expect(options.auth).to.equal('OAUTH')
-            expect(options.userAgent).to.equal('PRMetrics/v1.3.0')
+            expect(options.userAgent).to.equal('PRMetrics/v1.3.1')
             expect(options.log).to.not.equal(null)
             expect(options.log.debug).to.not.equal(null)
             expect(options.log.info).to.not.equal(null)
@@ -345,7 +345,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('OAUTH')
-        expect(options.userAgent).to.equal('PRMetrics/v1.3.0')
+        expect(options.userAgent).to.equal('PRMetrics/v1.3.1')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
         expect(options.log.info).to.not.equal(null)
@@ -397,7 +397,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('OAUTH')
-        expect(options.userAgent).to.equal('PRMetrics/v1.3.0')
+        expect(options.userAgent).to.equal('PRMetrics/v1.3.1')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
         expect(options.log.info).to.not.equal(null)
@@ -430,7 +430,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('OAUTH')
-        expect(options.userAgent).to.equal('PRMetrics/v1.3.0')
+        expect(options.userAgent).to.equal('PRMetrics/v1.3.1')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
         expect(options.log.info).to.not.equal(null)
@@ -462,7 +462,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('OAUTH')
-        expect(options.userAgent).to.equal('PRMetrics/v1.3.0')
+        expect(options.userAgent).to.equal('PRMetrics/v1.3.1')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
         expect(options.log.info).to.not.equal(null)
@@ -501,7 +501,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('OAUTH')
-        expect(options.userAgent).to.equal('PRMetrics/v1.3.0')
+        expect(options.userAgent).to.equal('PRMetrics/v1.3.1')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
         expect(options.log.info).to.not.equal(null)
@@ -545,7 +545,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('OAUTH')
-        expect(options.userAgent).to.equal('PRMetrics/v1.3.0')
+        expect(options.userAgent).to.equal('PRMetrics/v1.3.1')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
         expect(options.log.info).to.not.equal(null)
@@ -569,7 +569,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('OAUTH')
-        expect(options.userAgent).to.equal('PRMetrics/v1.3.0')
+        expect(options.userAgent).to.equal('PRMetrics/v1.3.1')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
         expect(options.log.info).to.not.equal(null)
@@ -593,7 +593,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('OAUTH')
-        expect(options.userAgent).to.equal('PRMetrics/v1.3.0')
+        expect(options.userAgent).to.equal('PRMetrics/v1.3.1')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
         expect(options.log.info).to.not.equal(null)
@@ -619,7 +619,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('OAUTH')
-        expect(options.userAgent).to.equal('PRMetrics/v1.3.0')
+        expect(options.userAgent).to.equal('PRMetrics/v1.3.1')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
         expect(options.log.info).to.not.equal(null)
@@ -646,7 +646,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       error.status = 422
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('OAUTH')
-        expect(options.userAgent).to.equal('PRMetrics/v1.3.0')
+        expect(options.userAgent).to.equal('PRMetrics/v1.3.1')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
         expect(options.log.info).to.not.equal(null)
@@ -674,7 +674,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('OAUTH')
-        expect(options.userAgent).to.equal('PRMetrics/v1.3.0')
+        expect(options.userAgent).to.equal('PRMetrics/v1.3.1')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
         expect(options.log.info).to.not.equal(null)
@@ -712,7 +712,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       error.status = 423
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('OAUTH')
-        expect(options.userAgent).to.equal('PRMetrics/v1.3.0')
+        expect(options.userAgent).to.equal('PRMetrics/v1.3.1')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
         expect(options.log.info).to.not.equal(null)
@@ -744,7 +744,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('OAUTH')
-        expect(options.userAgent).to.equal('PRMetrics/v1.3.0')
+        expect(options.userAgent).to.equal('PRMetrics/v1.3.1')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
         expect(options.log.info).to.not.equal(null)
@@ -770,7 +770,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('OAUTH')
-        expect(options.userAgent).to.equal('PRMetrics/v1.3.0')
+        expect(options.userAgent).to.equal('PRMetrics/v1.3.1')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
         expect(options.log.info).to.not.equal(null)
@@ -808,7 +808,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('OAUTH')
-        expect(options.userAgent).to.equal('PRMetrics/v1.3.0')
+        expect(options.userAgent).to.equal('PRMetrics/v1.3.1')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
         expect(options.log.info).to.not.equal(null)
@@ -834,7 +834,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('OAUTH')
-        expect(options.userAgent).to.equal('PRMetrics/v1.3.0')
+        expect(options.userAgent).to.equal('PRMetrics/v1.3.1')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
         expect(options.log.info).to.not.equal(null)
