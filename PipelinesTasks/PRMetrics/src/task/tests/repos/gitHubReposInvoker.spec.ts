@@ -167,7 +167,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('OAUTH')
-        expect(options.userAgent).to.equal('PRMetrics/v1.3.0')
+        expect(options.userAgent).to.equal('PRMetrics/v1.3.1')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
         expect(options.log.info).to.not.equal(null)
@@ -194,7 +194,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI = 'https://github.com/microsoft/OMEX-Azure-DevOps-Extensions.git'
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('OAUTH')
-        expect(options.userAgent).to.equal('PRMetrics/v1.3.0')
+        expect(options.userAgent).to.equal('PRMetrics/v1.3.1')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
         expect(options.log.info).to.not.equal(null)
@@ -221,7 +221,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI = 'https://organization.githubenterprise.com/microsoft/OMEX-Azure-DevOps-Extensions'
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('OAUTH')
-        expect(options.userAgent).to.equal('PRMetrics/v1.3.0')
+        expect(options.userAgent).to.equal('PRMetrics/v1.3.1')
         expect(options.baseUrl).to.equal('https://organization.githubenterprise.com/api/v3')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
@@ -249,7 +249,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('OAUTH')
-        expect(options.userAgent).to.equal('PRMetrics/v1.3.0')
+        expect(options.userAgent).to.equal('PRMetrics/v1.3.1')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
         expect(options.log.info).to.not.equal(null)
@@ -278,7 +278,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       currentMockPullResponse.data.body = null
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('OAUTH')
-        expect(options.userAgent).to.equal('PRMetrics/v1.3.0')
+        expect(options.userAgent).to.equal('PRMetrics/v1.3.1')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
         expect(options.log.info).to.not.equal(null)
@@ -311,7 +311,7 @@ describe('gitHubReposInvoker.ts', function (): void {
           // Arrange
           when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
             expect(options.auth).to.equal('OAUTH')
-            expect(options.userAgent).to.equal('PRMetrics/v1.3.0')
+            expect(options.userAgent).to.equal('PRMetrics/v1.3.1')
             expect(options.log).to.not.equal(null)
             expect(options.log.debug).to.not.equal(null)
             expect(options.log.info).to.not.equal(null)
@@ -345,7 +345,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('OAUTH')
-        expect(options.userAgent).to.equal('PRMetrics/v1.3.0')
+        expect(options.userAgent).to.equal('PRMetrics/v1.3.1')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
         expect(options.log.info).to.not.equal(null)
@@ -397,7 +397,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('OAUTH')
-        expect(options.userAgent).to.equal('PRMetrics/v1.3.0')
+        expect(options.userAgent).to.equal('PRMetrics/v1.3.1')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
         expect(options.log.info).to.not.equal(null)
@@ -430,7 +430,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('OAUTH')
-        expect(options.userAgent).to.equal('PRMetrics/v1.3.0')
+        expect(options.userAgent).to.equal('PRMetrics/v1.3.1')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
         expect(options.log.info).to.not.equal(null)
@@ -462,7 +462,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('OAUTH')
-        expect(options.userAgent).to.equal('PRMetrics/v1.3.0')
+        expect(options.userAgent).to.equal('PRMetrics/v1.3.1')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
         expect(options.log.info).to.not.equal(null)
@@ -501,7 +501,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('OAUTH')
-        expect(options.userAgent).to.equal('PRMetrics/v1.3.0')
+        expect(options.userAgent).to.equal('PRMetrics/v1.3.1')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
         expect(options.log.info).to.not.equal(null)
@@ -545,7 +545,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('OAUTH')
-        expect(options.userAgent).to.equal('PRMetrics/v1.3.0')
+        expect(options.userAgent).to.equal('PRMetrics/v1.3.1')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
         expect(options.log.info).to.not.equal(null)
@@ -569,7 +569,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('OAUTH')
-        expect(options.userAgent).to.equal('PRMetrics/v1.3.0')
+        expect(options.userAgent).to.equal('PRMetrics/v1.3.1')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
         expect(options.log.info).to.not.equal(null)
@@ -593,7 +593,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('OAUTH')
-        expect(options.userAgent).to.equal('PRMetrics/v1.3.0')
+        expect(options.userAgent).to.equal('PRMetrics/v1.3.1')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
         expect(options.log.info).to.not.equal(null)
@@ -619,7 +619,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('OAUTH')
-        expect(options.userAgent).to.equal('PRMetrics/v1.3.0')
+        expect(options.userAgent).to.equal('PRMetrics/v1.3.1')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
         expect(options.log.info).to.not.equal(null)
@@ -640,11 +640,40 @@ describe('gitHubReposInvoker.ts', function (): void {
       verify(logger.logDebug('null')).once()
     })
 
+    it('should succeed when a file name is specified and a 422 status is returned', async (): Promise<void> => {
+      // Arrange
+      const error: ErrorWithStatus = new ErrorWithStatus('Test')
+      error.status = 422
+      when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
+        expect(options.auth).to.equal('OAUTH')
+        expect(options.userAgent).to.equal('PRMetrics/v1.3.1')
+        expect(options.log).to.not.equal(null)
+        expect(options.log.debug).to.not.equal(null)
+        expect(options.log.info).to.not.equal(null)
+        expect(options.log.warn).to.not.equal(null)
+        expect(options.log.error).to.not.equal(null)
+      })
+      when(octokitWrapper.createReviewComment('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345, 'Content', 'file.ts', 'sha54321')).thenThrow(error)
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
+
+      // Act
+      await gitHubReposInvoker.createComment('Content', CommentThreadStatus.Unknown, 'file.ts')
+
+      // Assert
+      verify(octokitWrapper.initialize(anything())).once()
+      verify(octokitWrapper.listCommits('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345)).once()
+      verify(octokitWrapper.createReviewComment('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345, 'Content', 'file.ts', 'sha54321')).once()
+      verify(logger.logDebug('* GitHubReposInvoker.createComment()')).once()
+      verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
+      verify(logger.logDebug('Error – status: 422')).once()
+      verify(logger.logDebug('Error – message: "Test"')).once()
+    })
+
     it('should throw when the commit list is empty', async (): Promise<void> => {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('OAUTH')
-        expect(options.userAgent).to.equal('PRMetrics/v1.3.0')
+        expect(options.userAgent).to.equal('PRMetrics/v1.3.1')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
         expect(options.log.info).to.not.equal(null)
@@ -676,11 +705,45 @@ describe('gitHubReposInvoker.ts', function (): void {
       verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
     })
 
+    it('should throw when a file name is specified and a non-422 error status is returned', async (): Promise<void> => {
+      // Arrange
+      const error: ErrorWithStatus = new ErrorWithStatus('Test')
+      error.status = 423
+      when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
+        expect(options.auth).to.equal('OAUTH')
+        expect(options.userAgent).to.equal('PRMetrics/v1.3.1')
+        expect(options.log).to.not.equal(null)
+        expect(options.log.debug).to.not.equal(null)
+        expect(options.log.info).to.not.equal(null)
+        expect(options.log.warn).to.not.equal(null)
+        expect(options.log.error).to.not.equal(null)
+      })
+      when(octokitWrapper.createReviewComment('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345, 'Content', 'file.ts', 'sha54321')).thenThrow(error)
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
+      let errorThrown: boolean = false
+
+      try {
+        // Act
+        await gitHubReposInvoker.createComment('Content', CommentThreadStatus.Unknown, 'file.ts')
+      } catch (error: any) {
+        // Assert
+        errorThrown = true
+        expect(error.message).to.equal('Test')
+      }
+
+      expect(errorThrown).to.equal(true)
+      verify(octokitWrapper.initialize(anything())).once()
+      verify(octokitWrapper.listCommits('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345)).once()
+      verify(octokitWrapper.createReviewComment('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345, 'Content', 'file.ts', 'sha54321')).once()
+      verify(logger.logDebug('* GitHubReposInvoker.createComment()')).once()
+      verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
+    })
+
     it('should succeed when a file name is specified and the method is called twice', async (): Promise<void> => {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('OAUTH')
-        expect(options.userAgent).to.equal('PRMetrics/v1.3.0')
+        expect(options.userAgent).to.equal('PRMetrics/v1.3.1')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
         expect(options.log.info).to.not.equal(null)
@@ -706,7 +769,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('OAUTH')
-        expect(options.userAgent).to.equal('PRMetrics/v1.3.0')
+        expect(options.userAgent).to.equal('PRMetrics/v1.3.1')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
         expect(options.log.info).to.not.equal(null)
@@ -744,7 +807,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('OAUTH')
-        expect(options.userAgent).to.equal('PRMetrics/v1.3.0')
+        expect(options.userAgent).to.equal('PRMetrics/v1.3.1')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
         expect(options.log.info).to.not.equal(null)
@@ -770,7 +833,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('OAUTH')
-        expect(options.userAgent).to.equal('PRMetrics/v1.3.0')
+        expect(options.userAgent).to.equal('PRMetrics/v1.3.1')
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
         expect(options.log.info).to.not.equal(null)

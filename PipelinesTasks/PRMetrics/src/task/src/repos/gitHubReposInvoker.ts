@@ -136,8 +136,20 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
       }
 
       await this.invokeApiCall(async (): Promise<void> => {
-        const result: CreateReviewCommentResponse = await this._octokitWrapper.createReviewComment(this._owner!, this._repo!, this._pullRequestId!, content, fileName, this._commitId!)
-        this._logger.logDebug(JSON.stringify(result))
+        try {
+          const result: CreateReviewCommentResponse = await this._octokitWrapper.createReviewComment(this._owner!, this._repo!, this._pullRequestId!, content, fileName, this._commitId!)
+          this._logger.logDebug(JSON.stringify(result))
+        } catch (error: any) {
+          // A 422 HTTP response may be thrown if the file is the set of file changes are too large for a diff to be displayed.
+          if (error.status === 422) {
+            const properties: string[] = Object.getOwnPropertyNames(error)
+            properties.forEach((property: string): void => {
+              this._logger.logDebug(`${error.name} – ${property}: ${JSON.stringify(error[property])}`)
+            })
+          } else {
+            throw error
+          }
+        }
       })
     } else {
       await this.invokeApiCall(async (): Promise<void> => {
@@ -182,7 +194,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
 
     const options: OctokitOptions = {
       auth: process.env.SYSTEM_ACCESSTOKEN,
-      userAgent: 'PRMetrics/v1.3.0',
+      userAgent: 'PRMetrics/v1.3.1',
       log: {
         debug: (message: string): void => this._logger.logDebug(`Octokit – ${message}`),
         info: (message: string): void => this._logger.logInfo(`Octokit – ${message}`),
