@@ -45,6 +45,27 @@ describe('reposInvoker.ts', function (): void {
       delete process.env.BUILD_REPOSITORY_PROVIDER
     })
 
+    it('should invoke Azure Repos when called from an appropriate repo twice', (): void => {
+      // Arrange
+      process.env.BUILD_REPOSITORY_PROVIDER = 'TfsGit'
+      const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
+
+      // Act
+      const result1: string | null = reposInvoker.isAccessTokenAvailable
+      const result2: string | null = reposInvoker.isAccessTokenAvailable
+
+      // Assert
+      verify(azureReposInvoker.isAccessTokenAvailable).twice()
+      verify(gitHubReposInvoker.isAccessTokenAvailable).never()
+      verify(logger.logDebug('* ReposInvoker.isAccessTokenAvailable')).twice()
+      verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).twice()
+      expect(result1).to.equal(null)
+      expect(result2).to.equal(null)
+
+      // Finalization
+      delete process.env.BUILD_REPOSITORY_PROVIDER
+    })
+
     async.each(
       [
         'GitHub',
