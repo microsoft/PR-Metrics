@@ -227,6 +227,12 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
 
     this._pullRequestId = Validator.validate(parseInt(process.env.SYSTEM_PULLREQUEST_PULLREQUESTNUMBER!), 'SYSTEM_PULLREQUEST_PULLREQUESTNUMBER', 'GitHubReposInvoker.initialize()')
 
+    /* const fs = require('fs')
+const ev = JSON.parse(
+  fs.readFileSync(process.env.GITHUB_EVENT_PATH, 'utf8')
+)
+const prNum = ev.pull_request.number */
+
     this._isInitialized = true
   }
 
