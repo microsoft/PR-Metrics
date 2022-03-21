@@ -6,7 +6,7 @@ import { IExecOptions } from 'azure-pipelines-task-lib/toolrunner'
 import { singleton } from 'tsyringe'
 import { Validator } from '../utilities/validator'
 import Logger from '../utilities/logger'
-import TaskLibWrapper from '../wrappers/taskLibWrapper'
+import RunnerInvoker from '../runners/runnerInvoker'
 
 /**
  * A class for invoking Git commands.
@@ -15,7 +15,7 @@ import TaskLibWrapper from '../wrappers/taskLibWrapper'
 @singleton()
 export default class GitInvoker {
   private readonly _logger: Logger
-  private readonly _taskLibWrapper: TaskLibWrapper
+  private readonly _runnerInvoker: RunnerInvoker
 
   private _isInitialized: boolean = false
   private _targetBranch: string = ''
@@ -24,11 +24,11 @@ export default class GitInvoker {
   /**
    * Initializes a new instance of the `GitInvoker` class.
    * @param logger The logger.
-   * @param taskLibWrapper The wrapper around the Azure Pipelines Task Lib.
+   * @param runnerInvoker The runner invoker logic.
    */
-  public constructor (logger: Logger, taskLibWrapper: TaskLibWrapper) {
+  public constructor (logger: Logger, runnerInvoker: RunnerInvoker) {
     this._logger = logger
-    this._taskLibWrapper = taskLibWrapper
+    this._runnerInvoker = runnerInvoker
   }
 
   /**
@@ -121,7 +121,7 @@ export default class GitInvoker {
       errStream: errorStream
     }
 
-    const result: number = await this._taskLibWrapper.exec('git', parameters, execOption)
+    const result: number = await this._runnerInvoker.exec('git', parameters, execOption)
     if (result !== 0) {
       throw Error(errorStream.message)
     }

@@ -8,12 +8,12 @@ import async from 'async'
 import CodeMetrics from '../../src/metrics/codeMetrics'
 import Logger from '../../src/utilities/logger'
 import PullRequest from '../../src/pullRequests/pullRequest'
-import TaskLibWrapper from '../../src/wrappers/taskLibWrapper'
+import RunnerInvoker from '../../src/runners/runnerInvoker'
 
 describe('pullRequest.ts', (): void => {
   let codeMetrics: CodeMetrics
   let logger: Logger
-  let taskLibWrapper: TaskLibWrapper
+  let runnerInvoker: RunnerInvoker
 
   beforeEach((): void => {
     codeMetrics = mock(CodeMetrics)
@@ -21,34 +21,34 @@ describe('pullRequest.ts', (): void => {
 
     logger = mock(Logger)
 
-    taskLibWrapper = mock(TaskLibWrapper)
-    when(taskLibWrapper.loc('metrics.codeMetrics.titleSizeIndicatorFormat', '(XS|S|M|L|\\d*XL)', '(✔|⚠️)?')).thenReturn('(XS|S|M|L|\\d*XL)(✔|⚠️)?')
-    when(taskLibWrapper.loc('metrics.codeMetrics.titleSizeL')).thenReturn('L')
-    when(taskLibWrapper.loc('metrics.codeMetrics.titleSizeM')).thenReturn('M')
-    when(taskLibWrapper.loc('metrics.codeMetrics.titleSizeS')).thenReturn('S')
-    when(taskLibWrapper.loc('metrics.codeMetrics.titleSizeXL', '\\d*')).thenReturn('\\d*XL')
-    when(taskLibWrapper.loc('metrics.codeMetrics.titleSizeXS')).thenReturn('XS')
-    when(taskLibWrapper.loc('metrics.codeMetrics.titleTestsInsufficient')).thenReturn('⚠️')
-    when(taskLibWrapper.loc('metrics.codeMetrics.titleTestsSufficient')).thenReturn('✔')
-    when(taskLibWrapper.loc('pullRequests.pullRequest.addDescription')).thenReturn('❌ **Add a description.**')
-    when(taskLibWrapper.loc('pullRequests.pullRequest.titleFormat', 'S✔', '')).thenReturn('S✔ ◾ ')
-    when(taskLibWrapper.loc('pullRequests.pullRequest.titleFormat', 'PREFIX', '')).thenReturn('PREFIX ◾ ')
-    when(taskLibWrapper.loc('pullRequests.pullRequest.titleFormat', 'S✔', 'Title')).thenReturn('S✔ ◾ Title')
-    when(taskLibWrapper.loc('pullRequests.pullRequest.titleFormat', 'PREFIX', 'Title')).thenReturn('PREFIX ◾ Title')
-    when(taskLibWrapper.loc('pullRequests.pullRequest.titleFormat', 'S✔', 'PREFIX ◾ Title')).thenReturn('S✔ ◾ PREFIX ◾ Title')
-    when(taskLibWrapper.loc('pullRequests.pullRequest.titleFormat', 'S✔', 'PREFIX✔ ◾ Title')).thenReturn('S✔ ◾ PREFIX✔ ◾ Title')
-    when(taskLibWrapper.loc('pullRequests.pullRequest.titleFormat', 'S✔', 'PREFIX⚠️ ◾ Title')).thenReturn('S✔ ◾ PREFIX⚠️ ◾ Title')
-    when(taskLibWrapper.loc('pullRequests.pullRequest.titleFormat', 'S✔', 'PS ◾ Title')).thenReturn('S✔ ◾ PS ◾ Title')
-    when(taskLibWrapper.loc('pullRequests.pullRequest.titleFormat', 'S✔', 'PS✔ ◾ Title')).thenReturn('S✔ ◾ PS✔ ◾ Title')
-    when(taskLibWrapper.loc('pullRequests.pullRequest.titleFormat', 'S✔', 'PS⚠️ ◾ Title')).thenReturn('S✔ ◾ PS⚠️ ◾ Title')
-    when(taskLibWrapper.loc('pullRequests.pullRequest.titleFormat', '(XS|S|M|L|\\d*XL)(✔|⚠️)?', '(.*)')).thenReturn('(XS|S|M|L|\\d*XL)(✔|⚠️)? ◾ (.*)')
+    runnerInvoker = mock(RunnerInvoker)
+    when(runnerInvoker.loc('metrics.codeMetrics.titleSizeIndicatorFormat', '(XS|S|M|L|\\d*XL)', '(✔|⚠️)?')).thenReturn('(XS|S|M|L|\\d*XL)(✔|⚠️)?')
+    when(runnerInvoker.loc('metrics.codeMetrics.titleSizeL')).thenReturn('L')
+    when(runnerInvoker.loc('metrics.codeMetrics.titleSizeM')).thenReturn('M')
+    when(runnerInvoker.loc('metrics.codeMetrics.titleSizeS')).thenReturn('S')
+    when(runnerInvoker.loc('metrics.codeMetrics.titleSizeXL', '\\d*')).thenReturn('\\d*XL')
+    when(runnerInvoker.loc('metrics.codeMetrics.titleSizeXS')).thenReturn('XS')
+    when(runnerInvoker.loc('metrics.codeMetrics.titleTestsInsufficient')).thenReturn('⚠️')
+    when(runnerInvoker.loc('metrics.codeMetrics.titleTestsSufficient')).thenReturn('✔')
+    when(runnerInvoker.loc('pullRequests.pullRequest.addDescription')).thenReturn('❌ **Add a description.**')
+    when(runnerInvoker.loc('pullRequests.pullRequest.titleFormat', 'S✔', '')).thenReturn('S✔ ◾ ')
+    when(runnerInvoker.loc('pullRequests.pullRequest.titleFormat', 'PREFIX', '')).thenReturn('PREFIX ◾ ')
+    when(runnerInvoker.loc('pullRequests.pullRequest.titleFormat', 'S✔', 'Title')).thenReturn('S✔ ◾ Title')
+    when(runnerInvoker.loc('pullRequests.pullRequest.titleFormat', 'PREFIX', 'Title')).thenReturn('PREFIX ◾ Title')
+    when(runnerInvoker.loc('pullRequests.pullRequest.titleFormat', 'S✔', 'PREFIX ◾ Title')).thenReturn('S✔ ◾ PREFIX ◾ Title')
+    when(runnerInvoker.loc('pullRequests.pullRequest.titleFormat', 'S✔', 'PREFIX✔ ◾ Title')).thenReturn('S✔ ◾ PREFIX✔ ◾ Title')
+    when(runnerInvoker.loc('pullRequests.pullRequest.titleFormat', 'S✔', 'PREFIX⚠️ ◾ Title')).thenReturn('S✔ ◾ PREFIX⚠️ ◾ Title')
+    when(runnerInvoker.loc('pullRequests.pullRequest.titleFormat', 'S✔', 'PS ◾ Title')).thenReturn('S✔ ◾ PS ◾ Title')
+    when(runnerInvoker.loc('pullRequests.pullRequest.titleFormat', 'S✔', 'PS✔ ◾ Title')).thenReturn('S✔ ◾ PS✔ ◾ Title')
+    when(runnerInvoker.loc('pullRequests.pullRequest.titleFormat', 'S✔', 'PS⚠️ ◾ Title')).thenReturn('S✔ ◾ PS⚠️ ◾ Title')
+    when(runnerInvoker.loc('pullRequests.pullRequest.titleFormat', '(XS|S|M|L|\\d*XL)(✔|⚠️)?', '(.*)')).thenReturn('(XS|S|M|L|\\d*XL)(✔|⚠️)? ◾ (.*)')
   })
 
   describe('isPullRequest', (): void => {
     it('should return true when SYSTEM_PULLREQUEST_PULLREQUESTID is defined', (): void => {
       // Arrange
       process.env.SYSTEM_PULLREQUEST_PULLREQUESTID = 'refs/heads/develop'
-      const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(taskLibWrapper))
+      const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(runnerInvoker))
 
       // Act
       const result: boolean = pullRequest.isPullRequest
@@ -64,7 +64,7 @@ describe('pullRequest.ts', (): void => {
     it('should return false when SYSTEM_PULLREQUEST_PULLREQUESTID is not defined', (): void => {
       // Arrange
       delete process.env.SYSTEM_PULLREQUEST_TARGETBRANCH
-      const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(taskLibWrapper))
+      const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(runnerInvoker))
 
       // Act
       const result: boolean = pullRequest.isPullRequest
@@ -79,7 +79,7 @@ describe('pullRequest.ts', (): void => {
     it('should throw an error when BUILD_REPOSITORY_PROVIDER is undefined', (): void => {
       // Arrange
       delete process.env.BUILD_REPOSITORY_PROVIDER
-      const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(taskLibWrapper))
+      const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(runnerInvoker))
 
       // Act
       const func: () => boolean | string = () => pullRequest.isSupportedProvider
@@ -98,7 +98,7 @@ describe('pullRequest.ts', (): void => {
         it(`should return true when BUILD_REPOSITORY_PROVIDER is set to '${provider}'`, (): void => {
         // Arrange
           process.env.BUILD_REPOSITORY_PROVIDER = provider
-          const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(taskLibWrapper))
+          const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(runnerInvoker))
 
           // Act
           const result: boolean | string = pullRequest.isSupportedProvider
@@ -115,7 +115,7 @@ describe('pullRequest.ts', (): void => {
     it('should return the provider when BUILD_REPOSITORY_PROVIDER is not set to TfsGit or GitHub', (): void => {
       // Arrange
       process.env.BUILD_REPOSITORY_PROVIDER = 'Other'
-      const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(taskLibWrapper))
+      const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(runnerInvoker))
 
       // Act
       const result: boolean | string = pullRequest.isSupportedProvider
@@ -132,7 +132,7 @@ describe('pullRequest.ts', (): void => {
   describe('getUpdatedDescription()', (): void => {
     it('should return null when the current description is set', (): void => {
       // Arrange
-      const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(taskLibWrapper))
+      const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(runnerInvoker))
 
       // Act
       const result: string | null = pullRequest.getUpdatedDescription('Description')
@@ -150,7 +150,7 @@ describe('pullRequest.ts', (): void => {
       ], (currentDescription: string | undefined): void => {
         it(`should return the default description when the current description '${currentDescription}' is empty`, (): void => {
           // Arrange
-          const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(taskLibWrapper))
+          const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(runnerInvoker))
 
           // Act
           const result: string | null = pullRequest.getUpdatedDescription(currentDescription)
@@ -165,7 +165,7 @@ describe('pullRequest.ts', (): void => {
   describe('getUpdatedTitle()', (): void => {
     it('should return null when the current title is set to the expected title', async (): Promise<void> => {
       // Arrange
-      const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(taskLibWrapper))
+      const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(runnerInvoker))
 
       // Act
       const result: string | null = await pullRequest.getUpdatedTitle('S✔ ◾ Title')
@@ -187,7 +187,7 @@ describe('pullRequest.ts', (): void => {
       ], (currentTitle: string): void => {
         it(`should prefix the current title '${currentTitle}' when no prefix exists`, async (): Promise<void> => {
           // Arrange
-          const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(taskLibWrapper))
+          const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(runnerInvoker))
 
           // Act
           const result: string | null = await pullRequest.getUpdatedTitle(currentTitle)
@@ -225,7 +225,7 @@ describe('pullRequest.ts', (): void => {
         it(`should update the current title '${currentTitle}' correctly`, async (): Promise<void> => {
           // Arrange
           when(codeMetrics.getSizeIndicator()).thenResolve('PREFIX')
-          const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(taskLibWrapper))
+          const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(runnerInvoker))
 
           // Act
           const result: string | null = await pullRequest.getUpdatedTitle(currentTitle)

@@ -3,7 +3,7 @@
 
 import { singleton } from 'tsyringe'
 import ConsoleWrapper from '../wrappers/consoleWrapper'
-import TaskLibWrapper from '../wrappers/taskLibWrapper'
+import RunnerInvoker from '../runners/runnerInvoker'
 
 /**
  * A class for logging messages.
@@ -11,18 +11,18 @@ import TaskLibWrapper from '../wrappers/taskLibWrapper'
 @singleton()
 export default class Logger {
   private readonly _consoleWrapper: ConsoleWrapper
-  private readonly _taskLibWrapper: TaskLibWrapper
+  private readonly _runnerInvoker: RunnerInvoker
 
   private _messages: string[] = []
 
   /**
    * Initializes a new instance of the `Logger` class.
    * @param consoleWrapper The wrapper around the console.
-   * @param taskLibWrapper The wrapper around the Azure Pipelines Task Lib.
+   * @param runnerInvoker The runner invoker logic.
    */
-  public constructor (consoleWrapper: ConsoleWrapper, taskLibWrapper: TaskLibWrapper) {
+  public constructor (consoleWrapper: ConsoleWrapper, runnerInvoker: RunnerInvoker) {
     this._consoleWrapper = consoleWrapper
-    this._taskLibWrapper = taskLibWrapper
+    this._runnerInvoker = runnerInvoker
   }
 
   /**
@@ -31,7 +31,7 @@ export default class Logger {
    */
   public logDebug (message: string): void {
     this._messages.push(`debug   – ${message}`)
-    this._taskLibWrapper.debug(message)
+    this._runnerInvoker.debug(message)
   }
 
   /**
@@ -49,7 +49,7 @@ export default class Logger {
    */
   public logWarning (message: string): void {
     this._messages.push(`warning – ${message}`)
-    this._taskLibWrapper.warning(message)
+    this._runnerInvoker.warning(message)
   }
 
   /**
@@ -58,7 +58,7 @@ export default class Logger {
    */
   public logError (message: string): void {
     this._messages.push(`error   – ${message}`)
-    this._taskLibWrapper.error(message)
+    this._runnerInvoker.error(message)
   }
 
   /**

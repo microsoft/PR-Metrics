@@ -13,7 +13,7 @@ import PullRequest from '../../src/pullRequests/pullRequest'
 import PullRequestComments from '../../src/pullRequests/pullRequestComments'
 import PullRequestCommentsData from '../../src/pullRequests/pullRequestCommentsData'
 import ReposInvoker from '../../src/repos/reposInvoker'
-import TaskLibWrapper from '../../src/wrappers/taskLibWrapper'
+import RunnerInvoker from '../../src/runners/runnerInvoker'
 
 describe('codeMetricsCalculator.ts', (): void => {
   let gitInvoker: GitInvoker
@@ -21,7 +21,7 @@ describe('codeMetricsCalculator.ts', (): void => {
   let pullRequest: PullRequest
   let pullRequestComments: PullRequestComments
   let reposInvoker: ReposInvoker
-  let taskLibWrapper: TaskLibWrapper
+  let runnerInvoker: RunnerInvoker
 
   beforeEach((): void => {
     reposInvoker = mock(ReposInvoker)
@@ -39,17 +39,17 @@ describe('codeMetricsCalculator.ts', (): void => {
 
     pullRequestComments = mock(PullRequestComments)
 
-    taskLibWrapper = mock(TaskLibWrapper)
-    when(taskLibWrapper.loc('metrics.codeMetricsCalculator.noGitEnlistment')).thenReturn('No Git enlistment present. Remove \'checkout: none\' (YAML) or disable \'Don\'t sync sources\' under the build process phase settings (classic).')
-    when(taskLibWrapper.loc('metrics.codeMetricsCalculator.noGitHistory')).thenReturn('Could not access sufficient Git history. Disable \'fetchDepth\' (YAML) or \'Shallow fetch\' under the build process phase settings (classic). Or set the threshold sufficiently high.')
-    when(taskLibWrapper.loc('metrics.codeMetricsCalculator.noPullRequest')).thenReturn('The build is not running against a pull request.')
-    when(taskLibWrapper.loc('metrics.codeMetricsCalculator.unsupportedProvider', 'Other')).thenReturn('The build is running against a pull request from \'Other\', which is not a supported provider.')
+    runnerInvoker = mock(RunnerInvoker)
+    when(runnerInvoker.loc('metrics.codeMetricsCalculator.noGitEnlistment')).thenReturn('No Git enlistment present. Remove \'checkout: none\' (YAML) or disable \'Don\'t sync sources\' under the build process phase settings (classic).')
+    when(runnerInvoker.loc('metrics.codeMetricsCalculator.noGitHistory')).thenReturn('Could not access sufficient Git history. Disable \'fetchDepth\' (YAML) or \'Shallow fetch\' under the build process phase settings (classic). Or set the threshold sufficiently high.')
+    when(runnerInvoker.loc('metrics.codeMetricsCalculator.noPullRequest')).thenReturn('The build is not running against a pull request.')
+    when(runnerInvoker.loc('metrics.codeMetricsCalculator.unsupportedProvider', 'Other')).thenReturn('The build is running against a pull request from \'Other\', which is not a supported provider.')
   })
 
   describe('shouldSkipWithUnsupportedProvider', (): void => {
     it('should return null when the task should not be skipped', (): void => {
       // Arrange
-      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(gitInvoker), instance(logger), instance(pullRequest), instance(pullRequestComments), instance(reposInvoker), instance(taskLibWrapper))
+      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(gitInvoker), instance(logger), instance(pullRequest), instance(pullRequestComments), instance(reposInvoker), instance(runnerInvoker))
 
       // Act
       const result: string | null = codeMetricsCalculator.shouldSkip
@@ -62,7 +62,7 @@ describe('codeMetricsCalculator.ts', (): void => {
     it('should return the appropriate message when not a supported provider', (): void => {
       // Arrange
       when(pullRequest.isPullRequest).thenReturn(false)
-      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(gitInvoker), instance(logger), instance(pullRequest), instance(pullRequestComments), instance(reposInvoker), instance(taskLibWrapper))
+      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(gitInvoker), instance(logger), instance(pullRequest), instance(pullRequestComments), instance(reposInvoker), instance(runnerInvoker))
 
       // Act
       const result: string | null = codeMetricsCalculator.shouldSkip
@@ -75,7 +75,7 @@ describe('codeMetricsCalculator.ts', (): void => {
     it('should return null when the task should not be skipped', (): void => {
       // Arrange
       when(pullRequest.isSupportedProvider).thenReturn('Other')
-      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(gitInvoker), instance(logger), instance(pullRequest), instance(pullRequestComments), instance(reposInvoker), instance(taskLibWrapper))
+      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(gitInvoker), instance(logger), instance(pullRequest), instance(pullRequestComments), instance(reposInvoker), instance(runnerInvoker))
 
       // Act
       const result: string | null = codeMetricsCalculator.shouldSkip
@@ -89,7 +89,7 @@ describe('codeMetricsCalculator.ts', (): void => {
   describe('shouldStop()', (): void => {
     it('should return null when the task should not terminate', async (): Promise<void> => {
       // Arrange
-      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(gitInvoker), instance(logger), instance(pullRequest), instance(pullRequestComments), instance(reposInvoker), instance(taskLibWrapper))
+      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(gitInvoker), instance(logger), instance(pullRequest), instance(pullRequestComments), instance(reposInvoker), instance(runnerInvoker))
 
       // Act
       const result: string | null = await codeMetricsCalculator.shouldStop()
@@ -102,7 +102,7 @@ describe('codeMetricsCalculator.ts', (): void => {
     it('should return the appropriate message when no access token is available', async (): Promise<void> => {
       // Arrange
       when(reposInvoker.isAccessTokenAvailable).thenReturn('No Access Token')
-      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(gitInvoker), instance(logger), instance(pullRequest), instance(pullRequestComments), instance(reposInvoker), instance(taskLibWrapper))
+      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(gitInvoker), instance(logger), instance(pullRequest), instance(pullRequestComments), instance(reposInvoker), instance(runnerInvoker))
 
       // Act
       const result: string | null = await codeMetricsCalculator.shouldStop()
@@ -115,7 +115,7 @@ describe('codeMetricsCalculator.ts', (): void => {
     it('should return the appropriate message when not called from a Git enlistment', async (): Promise<void> => {
       // Arrange
       when(gitInvoker.isGitEnlistment()).thenResolve(false)
-      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(gitInvoker), instance(logger), instance(pullRequest), instance(pullRequestComments), instance(reposInvoker), instance(taskLibWrapper))
+      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(gitInvoker), instance(logger), instance(pullRequest), instance(pullRequestComments), instance(reposInvoker), instance(runnerInvoker))
 
       // Act
       const result: string | null = await codeMetricsCalculator.shouldStop()
@@ -128,7 +128,7 @@ describe('codeMetricsCalculator.ts', (): void => {
     it('should return the appropriate message when the Git history is unavailable', async (): Promise<void> => {
       // Arrange
       when(gitInvoker.isGitHistoryAvailable()).thenResolve(false)
-      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(gitInvoker), instance(logger), instance(pullRequest), instance(pullRequestComments), instance(reposInvoker), instance(taskLibWrapper))
+      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(gitInvoker), instance(logger), instance(pullRequest), instance(pullRequestComments), instance(reposInvoker), instance(runnerInvoker))
 
       // Act
       const result: string | null = await codeMetricsCalculator.shouldStop()
@@ -145,7 +145,7 @@ describe('codeMetricsCalculator.ts', (): void => {
       when(reposInvoker.getTitleAndDescription()).thenResolve({ title: 'Title', description: 'Description' })
       when(pullRequest.getUpdatedTitle('Title')).thenResolve('S✔ ◾ Title')
       when(pullRequest.getUpdatedDescription('Description')).thenReturn('Description')
-      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(gitInvoker), instance(logger), instance(pullRequest), instance(pullRequestComments), instance(reposInvoker), instance(taskLibWrapper))
+      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(gitInvoker), instance(logger), instance(pullRequest), instance(pullRequestComments), instance(reposInvoker), instance(runnerInvoker))
 
       // Act
       await codeMetricsCalculator.updateDetails()
@@ -162,7 +162,7 @@ describe('codeMetricsCalculator.ts', (): void => {
       when(reposInvoker.getTitleAndDescription()).thenResolve({ title: 'Title' })
       when(pullRequest.getUpdatedTitle('Title')).thenResolve('S✔ ◾ Title')
       when(pullRequest.getUpdatedDescription(undefined)).thenReturn('Description')
-      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(gitInvoker), instance(logger), instance(pullRequest), instance(pullRequestComments), instance(reposInvoker), instance(taskLibWrapper))
+      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(gitInvoker), instance(logger), instance(pullRequest), instance(pullRequestComments), instance(reposInvoker), instance(runnerInvoker))
 
       // Act
       await codeMetricsCalculator.updateDetails()
@@ -181,7 +181,7 @@ describe('codeMetricsCalculator.ts', (): void => {
       const commentData: PullRequestCommentsData = new PullRequestCommentsData([], [])
       commentData.metricsCommentThreadId = 1
       when(pullRequestComments.getCommentData()).thenResolve(commentData)
-      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(gitInvoker), instance(logger), instance(pullRequest), instance(pullRequestComments), instance(reposInvoker), instance(taskLibWrapper))
+      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(gitInvoker), instance(logger), instance(pullRequest), instance(pullRequestComments), instance(reposInvoker), instance(runnerInvoker))
 
       // Act
       await codeMetricsCalculator.updateComments()
@@ -197,7 +197,7 @@ describe('codeMetricsCalculator.ts', (): void => {
       when(pullRequestComments.getCommentData()).thenResolve(commentData)
       when(pullRequestComments.getMetricsComment()).thenResolve('Description')
       when(pullRequestComments.getMetricsCommentStatus()).thenResolve(CommentThreadStatus.Active)
-      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(gitInvoker), instance(logger), instance(pullRequest), instance(pullRequestComments), instance(reposInvoker), instance(taskLibWrapper))
+      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(gitInvoker), instance(logger), instance(pullRequest), instance(pullRequestComments), instance(reposInvoker), instance(runnerInvoker))
 
       // Act
       await codeMetricsCalculator.updateComments()
@@ -214,7 +214,7 @@ describe('codeMetricsCalculator.ts', (): void => {
       when(pullRequestComments.getCommentData()).thenResolve(commentData)
       when(pullRequestComments.getMetricsComment()).thenResolve('Description')
       when(pullRequestComments.getMetricsCommentStatus()).thenResolve(CommentThreadStatus.Active)
-      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(gitInvoker), instance(logger), instance(pullRequest), instance(pullRequestComments), instance(reposInvoker), instance(taskLibWrapper))
+      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(gitInvoker), instance(logger), instance(pullRequest), instance(pullRequestComments), instance(reposInvoker), instance(runnerInvoker))
 
       // Act
       await codeMetricsCalculator.updateComments()
@@ -238,7 +238,7 @@ describe('codeMetricsCalculator.ts', (): void => {
           commentData.metricsCommentThreadId = 1
           when(pullRequestComments.getCommentData()).thenResolve(commentData)
           when(pullRequestComments.noReviewRequiredComment).thenReturn('No Review Required')
-          const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(gitInvoker), instance(logger), instance(pullRequest), instance(pullRequestComments), instance(reposInvoker), instance(taskLibWrapper))
+          const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(gitInvoker), instance(logger), instance(pullRequest), instance(pullRequestComments), instance(reposInvoker), instance(runnerInvoker))
 
           // Act
           await codeMetricsCalculator.updateComments()
@@ -264,7 +264,7 @@ describe('codeMetricsCalculator.ts', (): void => {
           commentData.metricsCommentThreadId = 1
           when(pullRequestComments.getCommentData()).thenResolve(commentData)
           when(pullRequestComments.noReviewRequiredComment).thenReturn('No Review Required')
-          const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(gitInvoker), instance(logger), instance(pullRequest), instance(pullRequestComments), instance(reposInvoker), instance(taskLibWrapper))
+          const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(gitInvoker), instance(logger), instance(pullRequest), instance(pullRequestComments), instance(reposInvoker), instance(runnerInvoker))
 
           // Act
           await codeMetricsCalculator.updateComments()
@@ -282,7 +282,7 @@ describe('codeMetricsCalculator.ts', (): void => {
       const commentData: PullRequestCommentsData = new PullRequestCommentsData([], [])
       commentData.commentThreadsRequiringDeletion.push(1, 2)
       when(pullRequestComments.getCommentData()).thenResolve(commentData)
-      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(gitInvoker), instance(logger), instance(pullRequest), instance(pullRequestComments), instance(reposInvoker), instance(taskLibWrapper))
+      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(gitInvoker), instance(logger), instance(pullRequest), instance(pullRequestComments), instance(reposInvoker), instance(runnerInvoker))
 
       // Act
       await codeMetricsCalculator.updateComments()

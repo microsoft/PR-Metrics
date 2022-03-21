@@ -10,7 +10,7 @@ import CodeMetricsData from './codeMetricsData'
 import GitInvoker from '../git/gitInvoker'
 import Inputs from './inputs'
 import Logger from '../utilities/logger'
-import TaskLibWrapper from '../wrappers/taskLibWrapper'
+import RunnerInvoker from '../runners/runnerInvoker'
 
 /**
  * A class for computing metrics for software code in pull requests.
@@ -21,7 +21,7 @@ export default class CodeMetrics {
   private _gitInvoker: GitInvoker
   private _inputs: Inputs
   private _logger: Logger
-  private _taskLibWrapper: TaskLibWrapper
+  private _runnerInvoker: RunnerInvoker
 
   private _isInitialized: boolean = false
   private _filesNotRequiringReview: string[] = []
@@ -36,13 +36,13 @@ export default class CodeMetrics {
    * @param gitInvoker The Git invoker.
    * @param inputs The inputs passed to the task.
    * @param logger The logger.
-   * @param taskLibWrapper The wrapper around the Azure Pipelines Task Lib.
+   * @param runnerInvoker The runner invoker logic.
    */
-  constructor (gitInvoker: GitInvoker, inputs: Inputs, logger: Logger, taskLibWrapper: TaskLibWrapper) {
+  constructor (gitInvoker: GitInvoker, inputs: Inputs, logger: Logger, runnerInvoker: RunnerInvoker) {
     this._gitInvoker = gitInvoker
     this._inputs = inputs
     this._logger = logger
-    this._taskLibWrapper = taskLibWrapper
+    this._runnerInvoker = runnerInvoker
   }
 
   /**
@@ -279,24 +279,24 @@ export default class CodeMetrics {
     let testIndicator: string = ''
     if (this._isSufficientlyTested !== null) {
       if (this._isSufficientlyTested) {
-        testIndicator = this._taskLibWrapper.loc('metrics.codeMetrics.titleTestsSufficient')
+        testIndicator = this._runnerInvoker.loc('metrics.codeMetrics.titleTestsSufficient')
       } else {
-        testIndicator = this._taskLibWrapper.loc('metrics.codeMetrics.titleTestsInsufficient')
+        testIndicator = this._runnerInvoker.loc('metrics.codeMetrics.titleTestsInsufficient')
       }
     }
 
-    this._sizeIndicator = this._taskLibWrapper.loc('metrics.codeMetrics.titleSizeIndicatorFormat', this._size, testIndicator)
+    this._sizeIndicator = this._runnerInvoker.loc('metrics.codeMetrics.titleSizeIndicatorFormat', this._size, testIndicator)
   }
 
   private calculateSize (): string {
     this._logger.logDebug('* CodeMetrics.calculateSize()')
 
     const indicators: FixedLengthArray<((prefix: string) => string), 5> = [
-      (_: string): string => this._taskLibWrapper.loc('metrics.codeMetrics.titleSizeXS'),
-      (_: string): string => this._taskLibWrapper.loc('metrics.codeMetrics.titleSizeS'),
-      (_: string): string => this._taskLibWrapper.loc('metrics.codeMetrics.titleSizeM'),
-      (_: string): string => this._taskLibWrapper.loc('metrics.codeMetrics.titleSizeL'),
-      (prefix: string): string => this._taskLibWrapper.loc('metrics.codeMetrics.titleSizeXL', prefix)
+      (_: string): string => this._runnerInvoker.loc('metrics.codeMetrics.titleSizeXS'),
+      (_: string): string => this._runnerInvoker.loc('metrics.codeMetrics.titleSizeS'),
+      (_: string): string => this._runnerInvoker.loc('metrics.codeMetrics.titleSizeM'),
+      (_: string): string => this._runnerInvoker.loc('metrics.codeMetrics.titleSizeL'),
+      (prefix: string): string => this._runnerInvoker.loc('metrics.codeMetrics.titleSizeXL', prefix)
     ]
 
     // Calculate the smaller size.

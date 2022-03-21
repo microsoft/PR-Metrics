@@ -14,7 +14,7 @@ import FileCommentData from './interfaces/fileCommentData'
 import Logger from '../utilities/logger'
 import PullRequestCommentData from './interfaces/pullRequestCommentData'
 import PullRequestDetails from './interfaces/pullRequestDetails'
-import TaskLibWrapper from '../wrappers/taskLibWrapper'
+import RunnerInvoker from '../runners/runnerInvoker'
 
 /**
  * A class for invoking Azure Repos functionality.
@@ -24,7 +24,7 @@ import TaskLibWrapper from '../wrappers/taskLibWrapper'
 export default class AzureReposInvoker extends BaseReposInvoker {
   private readonly _azureDevOpsApiWrapper: AzureDevOpsApiWrapper
   private readonly _logger: Logger
-  private readonly _taskLibWrapper: TaskLibWrapper
+  private readonly _runnerInvoker: RunnerInvoker
 
   private _project: string = ''
   private _repositoryId: string = ''
@@ -35,21 +35,21 @@ export default class AzureReposInvoker extends BaseReposInvoker {
    * Initializes a new instance of the `AzureReposInvoker` class.
    * @param azureDevOpsApiWrapper The wrapper around the Azure DevOps API.
    * @param logger The logger.
-   * @param taskLibWrapper The wrapper around the Azure Pipelines Task Lib.
+   * @param runnerInvoker The runner invoker logic.
    */
-  public constructor (azureDevOpsApiWrapper: AzureDevOpsApiWrapper, logger: Logger, taskLibWrapper: TaskLibWrapper) {
+  public constructor (azureDevOpsApiWrapper: AzureDevOpsApiWrapper, logger: Logger, runnerInvoker: RunnerInvoker) {
     super()
 
     this._azureDevOpsApiWrapper = azureDevOpsApiWrapper
     this._logger = logger
-    this._taskLibWrapper = taskLibWrapper
+    this._runnerInvoker = runnerInvoker
   }
 
   public get isAccessTokenAvailable (): string | null {
     this._logger.logDebug('* AzureReposInvoker.isAccessTokenAvailable')
 
     if (process.env.SYSTEM_ACCESSTOKEN === undefined) {
-      return this._taskLibWrapper.loc('metrics.codeMetricsCalculator.noAzureReposAccessToken')
+      return this._runnerInvoker.loc('metrics.codeMetricsCalculator.noAzureReposAccessToken')
     }
 
     return null
@@ -223,6 +223,6 @@ export default class AzureReposInvoker extends BaseReposInvoker {
   }
 
   protected async invokeApiCall<TResponse> (action: () => Promise<TResponse>): Promise<TResponse> {
-    return super.invokeApiCall(action, this._taskLibWrapper.loc('metrics.codeMetricsCalculator.insufficientAzureReposAccessTokenPermissions'))
+    return super.invokeApiCall(action, this._runnerInvoker.loc('metrics.codeMetricsCalculator.insufficientAzureReposAccessTokenPermissions'))
   }
 }

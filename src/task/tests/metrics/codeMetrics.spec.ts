@@ -11,13 +11,13 @@ import CodeMetricsData from '../../src/metrics/codeMetricsData'
 import GitInvoker from '../../src/git/gitInvoker'
 import Inputs from '../../src/metrics/inputs'
 import Logger from '../../src/utilities/logger'
-import TaskLibWrapper from '../../src/wrappers/taskLibWrapper'
+import RunnerInvoker from '../../src/runners/runnerInvoker'
 
 describe('codeMetrics.ts', (): void => {
   let gitInvoker: GitInvoker
   let inputs: Inputs
   let logger: Logger
-  let taskLibWrapper: TaskLibWrapper
+  let runnerInvoker: RunnerInvoker
 
   beforeEach((): void => {
     gitInvoker = mock(GitInvoker)
@@ -31,36 +31,36 @@ describe('codeMetrics.ts', (): void => {
 
     logger = mock(Logger)
 
-    taskLibWrapper = mock(TaskLibWrapper)
-    when(taskLibWrapper.loc('metrics.codeMetrics.titleSizeXS')).thenReturn('XS')
-    when(taskLibWrapper.loc('metrics.codeMetrics.titleSizeS')).thenReturn('S')
-    when(taskLibWrapper.loc('metrics.codeMetrics.titleSizeM')).thenReturn('M')
-    when(taskLibWrapper.loc('metrics.codeMetrics.titleSizeL')).thenReturn('L')
-    when(taskLibWrapper.loc('metrics.codeMetrics.titleSizeXL', '')).thenReturn('XL')
-    when(taskLibWrapper.loc('metrics.codeMetrics.titleSizeXL', '2')).thenReturn('2XL')
-    when(taskLibWrapper.loc('metrics.codeMetrics.titleSizeXL', '3')).thenReturn('3XL')
-    when(taskLibWrapper.loc('metrics.codeMetrics.titleSizeXL', '10')).thenReturn('10XL')
-    when(taskLibWrapper.loc('metrics.codeMetrics.titleTestsSufficient')).thenReturn('✔')
-    when(taskLibWrapper.loc('metrics.codeMetrics.titleTestsInsufficient')).thenReturn('⚠️')
-    when(taskLibWrapper.loc('metrics.codeMetrics.titleSizeIndicatorFormat', 'XS', '✔')).thenReturn('XS✔')
-    when(taskLibWrapper.loc('metrics.codeMetrics.titleSizeIndicatorFormat', 'XS', '⚠️')).thenReturn('XS⚠️')
-    when(taskLibWrapper.loc('metrics.codeMetrics.titleSizeIndicatorFormat', 'S', '✔')).thenReturn('S✔')
-    when(taskLibWrapper.loc('metrics.codeMetrics.titleSizeIndicatorFormat', 'S', '⚠️')).thenReturn('S⚠️')
-    when(taskLibWrapper.loc('metrics.codeMetrics.titleSizeIndicatorFormat', 'M', '✔')).thenReturn('M✔')
-    when(taskLibWrapper.loc('metrics.codeMetrics.titleSizeIndicatorFormat', 'M', '⚠️')).thenReturn('M⚠️')
-    when(taskLibWrapper.loc('metrics.codeMetrics.titleSizeIndicatorFormat', 'L', '✔')).thenReturn('L✔')
-    when(taskLibWrapper.loc('metrics.codeMetrics.titleSizeIndicatorFormat', 'L', '⚠️')).thenReturn('L⚠️')
-    when(taskLibWrapper.loc('metrics.codeMetrics.titleSizeIndicatorFormat', 'XL', '✔')).thenReturn('XL✔')
-    when(taskLibWrapper.loc('metrics.codeMetrics.titleSizeIndicatorFormat', 'XL', '⚠️')).thenReturn('XL⚠️')
-    when(taskLibWrapper.loc('metrics.codeMetrics.titleSizeIndicatorFormat', '2XL', '✔')).thenReturn('2XL✔')
-    when(taskLibWrapper.loc('metrics.codeMetrics.titleSizeIndicatorFormat', '2XL', '⚠️')).thenReturn('2XL⚠️')
-    when(taskLibWrapper.loc('metrics.codeMetrics.titleSizeIndicatorFormat', '3XL', '✔')).thenReturn('3XL✔')
-    when(taskLibWrapper.loc('metrics.codeMetrics.titleSizeIndicatorFormat', '3XL', '⚠️')).thenReturn('3XL⚠️')
-    when(taskLibWrapper.loc('metrics.codeMetrics.titleSizeIndicatorFormat', '10XL', '✔')).thenReturn('10XL✔')
-    when(taskLibWrapper.loc('metrics.codeMetrics.titleSizeIndicatorFormat', '10XL', '⚠️')).thenReturn('10XL⚠️')
-    when(taskLibWrapper.loc('metrics.codeMetrics.titleSizeIndicatorFormat', 'XS', '')).thenReturn('XS')
-    when(taskLibWrapper.loc('metrics.codeMetrics.titleSizeIndicatorFormat', 'S', '')).thenReturn('S')
-    when(taskLibWrapper.loc('metrics.codeMetrics.titleSizeIndicatorFormat', 'M', '')).thenReturn('M')
+    runnerInvoker = mock(RunnerInvoker)
+    when(runnerInvoker.loc('metrics.codeMetrics.titleSizeXS')).thenReturn('XS')
+    when(runnerInvoker.loc('metrics.codeMetrics.titleSizeS')).thenReturn('S')
+    when(runnerInvoker.loc('metrics.codeMetrics.titleSizeM')).thenReturn('M')
+    when(runnerInvoker.loc('metrics.codeMetrics.titleSizeL')).thenReturn('L')
+    when(runnerInvoker.loc('metrics.codeMetrics.titleSizeXL', '')).thenReturn('XL')
+    when(runnerInvoker.loc('metrics.codeMetrics.titleSizeXL', '2')).thenReturn('2XL')
+    when(runnerInvoker.loc('metrics.codeMetrics.titleSizeXL', '3')).thenReturn('3XL')
+    when(runnerInvoker.loc('metrics.codeMetrics.titleSizeXL', '10')).thenReturn('10XL')
+    when(runnerInvoker.loc('metrics.codeMetrics.titleTestsSufficient')).thenReturn('✔')
+    when(runnerInvoker.loc('metrics.codeMetrics.titleTestsInsufficient')).thenReturn('⚠️')
+    when(runnerInvoker.loc('metrics.codeMetrics.titleSizeIndicatorFormat', 'XS', '✔')).thenReturn('XS✔')
+    when(runnerInvoker.loc('metrics.codeMetrics.titleSizeIndicatorFormat', 'XS', '⚠️')).thenReturn('XS⚠️')
+    when(runnerInvoker.loc('metrics.codeMetrics.titleSizeIndicatorFormat', 'S', '✔')).thenReturn('S✔')
+    when(runnerInvoker.loc('metrics.codeMetrics.titleSizeIndicatorFormat', 'S', '⚠️')).thenReturn('S⚠️')
+    when(runnerInvoker.loc('metrics.codeMetrics.titleSizeIndicatorFormat', 'M', '✔')).thenReturn('M✔')
+    when(runnerInvoker.loc('metrics.codeMetrics.titleSizeIndicatorFormat', 'M', '⚠️')).thenReturn('M⚠️')
+    when(runnerInvoker.loc('metrics.codeMetrics.titleSizeIndicatorFormat', 'L', '✔')).thenReturn('L✔')
+    when(runnerInvoker.loc('metrics.codeMetrics.titleSizeIndicatorFormat', 'L', '⚠️')).thenReturn('L⚠️')
+    when(runnerInvoker.loc('metrics.codeMetrics.titleSizeIndicatorFormat', 'XL', '✔')).thenReturn('XL✔')
+    when(runnerInvoker.loc('metrics.codeMetrics.titleSizeIndicatorFormat', 'XL', '⚠️')).thenReturn('XL⚠️')
+    when(runnerInvoker.loc('metrics.codeMetrics.titleSizeIndicatorFormat', '2XL', '✔')).thenReturn('2XL✔')
+    when(runnerInvoker.loc('metrics.codeMetrics.titleSizeIndicatorFormat', '2XL', '⚠️')).thenReturn('2XL⚠️')
+    when(runnerInvoker.loc('metrics.codeMetrics.titleSizeIndicatorFormat', '3XL', '✔')).thenReturn('3XL✔')
+    when(runnerInvoker.loc('metrics.codeMetrics.titleSizeIndicatorFormat', '3XL', '⚠️')).thenReturn('3XL⚠️')
+    when(runnerInvoker.loc('metrics.codeMetrics.titleSizeIndicatorFormat', '10XL', '✔')).thenReturn('10XL✔')
+    when(runnerInvoker.loc('metrics.codeMetrics.titleSizeIndicatorFormat', '10XL', '⚠️')).thenReturn('10XL⚠️')
+    when(runnerInvoker.loc('metrics.codeMetrics.titleSizeIndicatorFormat', 'XS', '')).thenReturn('XS')
+    when(runnerInvoker.loc('metrics.codeMetrics.titleSizeIndicatorFormat', 'S', '')).thenReturn('S')
+    when(runnerInvoker.loc('metrics.codeMetrics.titleSizeIndicatorFormat', 'M', '')).thenReturn('M')
   })
 
   async.each(
@@ -138,7 +138,7 @@ describe('codeMetrics.ts', (): void => {
         when(gitInvoker.getDiffSummary()).thenResolve(data[0])
 
         // Act
-        const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(logger), instance(taskLibWrapper))
+        const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(logger), instance(runnerInvoker))
 
         // Assert
         expect(await codeMetrics.getFilesNotRequiringReview()).to.deep.equal([])
@@ -234,7 +234,7 @@ describe('codeMetrics.ts', (): void => {
         when(gitInvoker.getDiffSummary()).thenResolve(data[0])
 
         // Act
-        const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(logger), instance(taskLibWrapper))
+        const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(logger), instance(runnerInvoker))
 
         // Assert
         expect(await codeMetrics.getFilesNotRequiringReview()).to.deep.equal(data[4])
@@ -264,7 +264,7 @@ describe('codeMetrics.ts', (): void => {
     when(gitInvoker.getDiffSummary()).thenResolve('1\t0\tfile.ts')
 
     // Act
-    const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(logger), instance(taskLibWrapper))
+    const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(logger), instance(runnerInvoker))
 
     // Assert
     expect(await codeMetrics.getFilesNotRequiringReview()).to.deep.equal([])
@@ -299,7 +299,7 @@ describe('codeMetrics.ts', (): void => {
         it(`should throw when the Git diff summary '${gitDiffSummary}' is empty`, async (): Promise<void> => {
           // Arrange
           when(gitInvoker.getDiffSummary()).thenResolve(gitDiffSummary)
-          const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(logger), instance(taskLibWrapper))
+          const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(logger), instance(runnerInvoker))
           let errorThrown: boolean = false
 
           try {
@@ -331,7 +331,7 @@ describe('codeMetrics.ts', (): void => {
         it(`should throw when the file name in the Git diff summary '${data[0]}' cannot be parsed`, async (): Promise<void> => {
           // Arrange
           when(gitInvoker.getDiffSummary()).thenResolve(data[0])
-          const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(logger), instance(taskLibWrapper))
+          const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(logger), instance(runnerInvoker))
           let errorThrown: boolean = false
 
           try {
@@ -353,7 +353,7 @@ describe('codeMetrics.ts', (): void => {
     it('should throw when the lines added in the Git diff summary cannot be converted', async (): Promise<void> => {
       // Arrange
       when(gitInvoker.getDiffSummary()).thenResolve('A\t0\tfile.ts')
-      const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(logger), instance(taskLibWrapper))
+      const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(logger), instance(runnerInvoker))
       let errorThrown: boolean = false
 
       try {
@@ -374,7 +374,7 @@ describe('codeMetrics.ts', (): void => {
     it('should throw when the lines deleted in the Git diff summary cannot be converted', async (): Promise<void> => {
       // Arrange
       when(gitInvoker.getDiffSummary()).thenResolve('0\tA\tfile.ts')
-      const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(logger), instance(taskLibWrapper))
+      const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(logger), instance(runnerInvoker))
       let errorThrown: boolean = false
 
       try {
@@ -397,7 +397,7 @@ describe('codeMetrics.ts', (): void => {
     it('should throw when the Git diff summary \'\' is empty', async (): Promise<void> => {
       // Arrange
       when(gitInvoker.getDiffSummary()).thenResolve('')
-      const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(logger), instance(taskLibWrapper))
+      const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(logger), instance(runnerInvoker))
       let errorThrown: boolean = false
 
       try {
@@ -417,7 +417,7 @@ describe('codeMetrics.ts', (): void => {
     it('should throw when the file name in the Git diff summary \'0\' cannot be parsed', async (): Promise<void> => {
       // Arrange
       when(gitInvoker.getDiffSummary()).thenResolve('0')
-      const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(logger), instance(taskLibWrapper))
+      const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(logger), instance(runnerInvoker))
       let errorThrown: boolean = false
 
       try {
@@ -438,7 +438,7 @@ describe('codeMetrics.ts', (): void => {
     it('should throw when the lines added in the Git diff summary cannot be converted', async (): Promise<void> => {
       // Arrange
       when(gitInvoker.getDiffSummary()).thenResolve('A\t0\tfile.ts')
-      const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(logger), instance(taskLibWrapper))
+      const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(logger), instance(runnerInvoker))
       let errorThrown: boolean = false
 
       try {
@@ -459,7 +459,7 @@ describe('codeMetrics.ts', (): void => {
     it('should throw when the lines deleted in the Git diff summary cannot be converted', async (): Promise<void> => {
       // Arrange
       when(gitInvoker.getDiffSummary()).thenResolve('0\tA\tfile.ts')
-      const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(logger), instance(taskLibWrapper))
+      const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(logger), instance(runnerInvoker))
       let errorThrown: boolean = false
 
       try {

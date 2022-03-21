@@ -4,13 +4,13 @@
 import { IExecOptions } from 'azure-pipelines-task-lib/toolrunner'
 import { singleton } from 'tsyringe'
 import * as taskLib from 'azure-pipelines-task-lib/task'
-import IRunner from './iRunner'
+import IRunnerInvoker from './iRunnerInvoker'
 
 /**
  * A wrapper around the Azure Pipelines runner, to facilitate testability.
  */
 @singleton()
-export default class AzurePipelinesRunner implements IRunner {
+export default class AzurePipelinesRunnerInvoker implements IRunnerInvoker {
   public debug (message: string): void {
     taskLib.debug(message)
   }

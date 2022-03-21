@@ -2,29 +2,22 @@
 // Licensed under the MIT License.
 
 import { IExecOptions } from 'azure-pipelines-task-lib/toolrunner'
-import { singleton } from 'tsyringe'
-import * as taskLib from 'azure-pipelines-task-lib/task'
 
 /**
- * A wrapper around the Azure Pipelines Task Lib, to facilitate testability.
+ * An interface for invoking runner functionality with any underlying runner.
  */
-@singleton()
-export default class TaskLibWrapper {
+export default interface IRunnerInvoker {
   /**
    * Logs a debug message.
    * @param message The message to log.
    */
-  public debug (message: string): void {
-    taskLib.debug(message)
-  }
+  debug (message: string): void
 
   /**
    * Logs an error message.
    * @param message The message to log.
    */
-  public error (message: string): void {
-    taskLib.error(message)
-  }
+  error (message: string): void
 
   /**
    * Asynchronously executes an external tool.
@@ -33,9 +26,7 @@ export default class TaskLibWrapper {
    * @param options The execution options.
    * @returns A promise containing the result of the execution.
    */
-  public exec (tool: string, args: string | string[], options?: IExecOptions): Promise<number> {
-    return taskLib.exec(tool, args, options)
-  }
+  exec (tool: string, args: string | string[], options?: IExecOptions): Promise<number>
 
   /**
    * Gets the value of an input. If the input is `required` but nonexistent, this method will throw.
@@ -43,9 +34,7 @@ export default class TaskLibWrapper {
    * @param required A value indicating whether the input is required.
    * @returns The value of the input or `undefined` if the input was not set.
    */
-  public getInput (name: string, required: boolean | undefined): string | undefined {
-    return taskLib.getInput(name, required)
-  }
+  getInput (name: string, required: boolean | undefined): string | undefined
 
   /**
    * Gets the localized string from the JSON resource file and optionally formats using the additional parameters.
@@ -53,15 +42,11 @@ export default class TaskLibWrapper {
    * @param param Optional additional parameters for formatting the string.
    * @returns The localized and formatted string.
    */
-  public loc (key: string, ...param: any[]): string {
-    return taskLib.loc(key, ...param)
-  }
+  loc (key: string, ...param: any[]): string
 
   /**
    * Logs a warning message.
    * @param message The message to log.
    */
-  public warning (message: string): void {
-    taskLib.warning(message)
-  }
+  warning (message: string): void
 }

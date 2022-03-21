@@ -16,12 +16,12 @@ import Logger from '../../src/utilities/logger'
 import OctokitLogObject from '../wrappers/octokitLogObject'
 import OctokitWrapper from '../../src/wrappers/octokitWrapper'
 import PullRequestDetails from '../../src/repos/interfaces/pullRequestDetails'
-import TaskLibWrapper from '../../src/wrappers/taskLibWrapper'
+import RunnerInvoker from '../../src/runners/runnerInvoker'
 
 describe('gitHubReposInvoker.ts', function (): void {
   let logger: Logger
   let octokitWrapper: OctokitWrapper
-  let taskLibWrapper: TaskLibWrapper
+  let runnerInvoker: RunnerInvoker
 
   const expectedUserAgent: string = 'PRMetrics/v1.4.0'
 
@@ -36,9 +36,9 @@ describe('gitHubReposInvoker.ts', function (): void {
     when(octokitWrapper.updatePull(anyString(), anyString(), anyNumber(), anyString(), anyString())).thenResolve(GitHubReposInvokerConstants.getPullResponse)
     when(octokitWrapper.listCommits(anyString(), anyString(), anyNumber())).thenResolve(GitHubReposInvokerConstants.listCommitsResponse)
 
-    taskLibWrapper = mock(TaskLibWrapper)
-    when(taskLibWrapper.loc('metrics.codeMetricsCalculator.insufficientGitHubAccessTokenPermissions')).thenReturn('Could not access the resources. Ensure \'System.AccessToken\' has access to \'repos\'.')
-    when(taskLibWrapper.loc('metrics.codeMetricsCalculator.noGitHubAccessToken')).thenReturn('Could not access the Personal Access Token (PAT). Add \'System.AccessToken\' as a secret environment variable with access to \'repos\'.')
+    runnerInvoker = mock(RunnerInvoker)
+    when(runnerInvoker.loc('metrics.codeMetricsCalculator.insufficientGitHubAccessTokenPermissions')).thenReturn('Could not access the resources. Ensure \'System.AccessToken\' has access to \'repos\'.')
+    when(runnerInvoker.loc('metrics.codeMetricsCalculator.noGitHubAccessToken')).thenReturn('Could not access the Personal Access Token (PAT). Add \'System.AccessToken\' as a secret environment variable with access to \'repos\'.')
   })
 
   afterEach((): void => {
@@ -50,7 +50,7 @@ describe('gitHubReposInvoker.ts', function (): void {
   describe('isAccessTokenAvailable', (): void => {
     it('should return null when the token exists', (): void => {
       // Arrange
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 
       // Act
       const result: string | null = gitHubReposInvoker.isAccessTokenAvailable
@@ -63,7 +63,7 @@ describe('gitHubReposInvoker.ts', function (): void {
     it('should return a string when the token does not exist', (): void => {
       // Arrange
       delete process.env.SYSTEM_ACCESSTOKEN
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 
       // Act
       const result: string | null = gitHubReposInvoker.isAccessTokenAvailable
@@ -88,7 +88,7 @@ describe('gitHubReposInvoker.ts', function (): void {
             process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI = variable
           }
 
-          const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
+          const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(runnerInvoker))
           let errorThrown: boolean = false
 
           try {
@@ -114,7 +114,7 @@ describe('gitHubReposInvoker.ts', function (): void {
         it(`should throw when SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI is set to an invalid URL '${variable}'`, async (): Promise<void> => {
           // Arrange
           process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI = variable
-          const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
+          const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(runnerInvoker))
           let errorThrown: boolean = false
 
           try {
@@ -147,7 +147,7 @@ describe('gitHubReposInvoker.ts', function (): void {
             process.env.SYSTEM_PULLREQUEST_PULLREQUESTNUMBER = variable
           }
 
-          const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
+          const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(runnerInvoker))
           let errorThrown: boolean = false
 
           try {
@@ -176,7 +176,7 @@ describe('gitHubReposInvoker.ts', function (): void {
         expect(options.log.warn).to.not.equal(null)
         expect(options.log.error).to.not.equal(null)
       })
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 
       // Act
       const result: PullRequestDetails = await gitHubReposInvoker.getTitleAndDescription()
@@ -203,7 +203,7 @@ describe('gitHubReposInvoker.ts', function (): void {
         expect(options.log.warn).to.not.equal(null)
         expect(options.log.error).to.not.equal(null)
       })
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 
       // Act
       const result: PullRequestDetails = await gitHubReposInvoker.getTitleAndDescription()
@@ -231,7 +231,7 @@ describe('gitHubReposInvoker.ts', function (): void {
         expect(options.log.warn).to.not.equal(null)
         expect(options.log.error).to.not.equal(null)
       })
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 
       // Act
       const result: PullRequestDetails = await gitHubReposInvoker.getTitleAndDescription()
@@ -258,7 +258,7 @@ describe('gitHubReposInvoker.ts', function (): void {
         expect(options.log.warn).to.not.equal(null)
         expect(options.log.error).to.not.equal(null)
       })
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 
       // Act
       await gitHubReposInvoker.getTitleAndDescription()
@@ -288,7 +288,7 @@ describe('gitHubReposInvoker.ts', function (): void {
         expect(options.log.error).to.not.equal(null)
       })
       when(octokitWrapper.getPull(anyString(), anyString(), anyNumber())).thenResolve(currentMockPullResponse)
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 
       // Act
       const result: PullRequestDetails = await gitHubReposInvoker.getTitleAndDescription()
@@ -323,7 +323,7 @@ describe('gitHubReposInvoker.ts', function (): void {
           const error: ErrorWithStatus = new ErrorWithStatus('Test')
           error.status = status
           when(octokitWrapper.getPull(anyString(), anyString(), anyNumber())).thenThrow(error)
-          const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
+          const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(runnerInvoker))
           let errorThrown: boolean = false
 
           try {
@@ -355,7 +355,7 @@ describe('gitHubReposInvoker.ts', function (): void {
         expect(options.log.error).to.not.equal(null)
       })
       when(octokitWrapper.getPull(anyString(), anyString(), anyNumber())).thenThrow(Error('Error'))
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(runnerInvoker))
       let errorThrown: boolean = false
 
       try {
@@ -377,7 +377,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       // Arrange
       let logObject: OctokitLogObject
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => { logObject = options.log })
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(runnerInvoker))
       await gitHubReposInvoker.getTitleAndDescription()
 
       // Act
@@ -409,7 +409,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       const response: GetIssueCommentsResponse = GitHubReposInvokerConstants.getIssueCommentsResponse
       response.data[0]!.body = 'PR Content'
       when(octokitWrapper.getIssueComments(anyString(), anyString(), anyNumber())).thenResolve(response)
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 
       // Act
       const result: CommentData = await gitHubReposInvoker.getComments()
@@ -440,7 +440,7 @@ describe('gitHubReposInvoker.ts', function (): void {
         expect(options.log.error).to.not.equal(null)
       })
       when(octokitWrapper.getReviewComments(anyString(), anyString(), anyNumber())).thenResolve(GitHubReposInvokerConstants.getReviewCommentsResponse)
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 
       // Act
       const result: CommentData = await gitHubReposInvoker.getComments()
@@ -475,7 +475,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       response.data[0]!.body = 'PR Content'
       when(octokitWrapper.getIssueComments(anyString(), anyString(), anyNumber())).thenResolve(response)
       when(octokitWrapper.getReviewComments(anyString(), anyString(), anyNumber())).thenResolve(GitHubReposInvokerConstants.getReviewCommentsResponse)
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 
       // Act
       const result: CommentData = await gitHubReposInvoker.getComments()
@@ -513,7 +513,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       const response: GetIssueCommentsResponse = GitHubReposInvokerConstants.getIssueCommentsResponse
       response.data[0]!.body = undefined
       when(octokitWrapper.getIssueComments(anyString(), anyString(), anyNumber())).thenResolve(response)
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 
       // Act
       const result: CommentData = await gitHubReposInvoker.getComments()
@@ -533,7 +533,7 @@ describe('gitHubReposInvoker.ts', function (): void {
   describe('setTitleAndDescription()', (): void => {
     it('should succeed when the title and description are both null', async (): Promise<void> => {
       // Arrange
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 
       // Act
       await gitHubReposInvoker.setTitleAndDescription(null, null)
@@ -554,7 +554,7 @@ describe('gitHubReposInvoker.ts', function (): void {
         expect(options.log.warn).to.not.equal(null)
         expect(options.log.error).to.not.equal(null)
       })
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 
       // Act
       await gitHubReposInvoker.setTitleAndDescription('Title', 'Description')
@@ -578,7 +578,7 @@ describe('gitHubReposInvoker.ts', function (): void {
         expect(options.log.warn).to.not.equal(null)
         expect(options.log.error).to.not.equal(null)
       })
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 
       // Act
       await gitHubReposInvoker.setTitleAndDescription('Title', null)
@@ -602,7 +602,7 @@ describe('gitHubReposInvoker.ts', function (): void {
         expect(options.log.warn).to.not.equal(null)
         expect(options.log.error).to.not.equal(null)
       })
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 
       // Act
       await gitHubReposInvoker.setTitleAndDescription(null, 'Description')
@@ -628,7 +628,7 @@ describe('gitHubReposInvoker.ts', function (): void {
         expect(options.log.warn).to.not.equal(null)
         expect(options.log.error).to.not.equal(null)
       })
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 
       // Act
       await gitHubReposInvoker.createComment('Content', CommentThreadStatus.Unknown, 'file.ts')
@@ -656,7 +656,7 @@ describe('gitHubReposInvoker.ts', function (): void {
         expect(options.log.error).to.not.equal(null)
       })
       when(octokitWrapper.createReviewComment('microsoft', 'PR-Metrics', 12345, 'Content', 'file.ts', 'sha54321')).thenThrow(error)
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 
       // Act
       await gitHubReposInvoker.createComment('Content', CommentThreadStatus.Unknown, 'file.ts')
@@ -688,7 +688,7 @@ describe('gitHubReposInvoker.ts', function (): void {
         url: '',
         data: []
       })
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(runnerInvoker))
       let errorThrown: boolean = false
 
       try {
@@ -721,7 +721,7 @@ describe('gitHubReposInvoker.ts', function (): void {
         expect(options.log.error).to.not.equal(null)
       })
       when(octokitWrapper.createReviewComment('microsoft', 'PR-Metrics', 12345, 'Content', 'file.ts', 'sha54321')).thenThrow(error)
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(runnerInvoker))
       let errorThrown: boolean = false
 
       try {
@@ -752,7 +752,7 @@ describe('gitHubReposInvoker.ts', function (): void {
         expect(options.log.warn).to.not.equal(null)
         expect(options.log.error).to.not.equal(null)
       })
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 
       // Act
       await gitHubReposInvoker.createComment('Content', CommentThreadStatus.Unknown, 'file.ts')
@@ -778,7 +778,7 @@ describe('gitHubReposInvoker.ts', function (): void {
         expect(options.log.warn).to.not.equal(null)
         expect(options.log.error).to.not.equal(null)
       })
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 
       // Act
       await gitHubReposInvoker.createComment('Content', CommentThreadStatus.Unknown)
@@ -795,7 +795,7 @@ describe('gitHubReposInvoker.ts', function (): void {
   describe('updateComment()', (): void => {
     it('should succeed when the content is null', async (): Promise<void> => {
       // Arrange
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 
       // Act
       await gitHubReposInvoker.updateComment(54321, null, null)
@@ -816,7 +816,7 @@ describe('gitHubReposInvoker.ts', function (): void {
         expect(options.log.warn).to.not.equal(null)
         expect(options.log.error).to.not.equal(null)
       })
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 
       // Act
       await gitHubReposInvoker.updateComment(54321, 'Content', null)
@@ -842,7 +842,7 @@ describe('gitHubReposInvoker.ts', function (): void {
         expect(options.log.warn).to.not.equal(null)
         expect(options.log.error).to.not.equal(null)
       })
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 
       // Act
       await gitHubReposInvoker.deleteCommentThread(54321)

@@ -10,7 +10,7 @@ import PullRequestComments from '../pullRequests/pullRequestComments'
 import PullRequestCommentsData from '../pullRequests/pullRequestCommentsData'
 import PullRequestDetails from '../repos/interfaces/pullRequestDetails'
 import ReposInvoker from '../repos/reposInvoker'
-import TaskLibWrapper from '../wrappers/taskLibWrapper'
+import RunnerInvoker from '../runners/runnerInvoker'
 
 /**
  * A class for calculating and updating the code metrics within pull requests.
@@ -22,7 +22,7 @@ export default class CodeMetricsCalculator {
   private readonly _pullRequest: PullRequest
   private readonly _pullRequestComments: PullRequestComments
   private readonly _reposInvoker: ReposInvoker
-  private readonly _taskLibWrapper: TaskLibWrapper
+  private readonly _runnerInvoker: RunnerInvoker
 
   /**
    * Initializes a new instance of the `CodeMetricsCalculator` class.
@@ -31,15 +31,15 @@ export default class CodeMetricsCalculator {
    * @param pullRequest The pull request modification logic.
    * @param pullRequestComments The pull request comments modification logic.
    * @param reposInvoker The repos invoker logic.
-   * @param taskLibWrapper The wrapper around the Azure Pipelines Task Lib.
+   * @param runnerInvoker The runner invoker logic.
    */
-  public constructor (gitInvoker: GitInvoker, logger: Logger, pullRequest: PullRequest, pullRequestComments: PullRequestComments, reposInvoker: ReposInvoker, taskLibWrapper: TaskLibWrapper) {
+  public constructor (gitInvoker: GitInvoker, logger: Logger, pullRequest: PullRequest, pullRequestComments: PullRequestComments, reposInvoker: ReposInvoker, runnerInvoker: RunnerInvoker) {
     this._gitInvoker = gitInvoker
     this._logger = logger
     this._pullRequest = pullRequest
     this._pullRequestComments = pullRequestComments
     this._reposInvoker = reposInvoker
-    this._taskLibWrapper = taskLibWrapper
+    this._runnerInvoker = runnerInvoker
   }
 
   /**
@@ -50,12 +50,12 @@ export default class CodeMetricsCalculator {
     this._logger.logDebug('* CodeMetricsCalculator.shouldSkip')
 
     if (!this._pullRequest.isPullRequest) {
-      return this._taskLibWrapper.loc('metrics.codeMetricsCalculator.noPullRequest')
+      return this._runnerInvoker.loc('metrics.codeMetricsCalculator.noPullRequest')
     }
 
     const provider: boolean | string = this._pullRequest.isSupportedProvider
     if (provider !== true) {
-      return this._taskLibWrapper.loc('metrics.codeMetricsCalculator.unsupportedProvider', provider)
+      return this._runnerInvoker.loc('metrics.codeMetricsCalculator.unsupportedProvider', provider)
     }
 
     return null
@@ -74,11 +74,11 @@ export default class CodeMetricsCalculator {
     }
 
     if (!await this._gitInvoker.isGitEnlistment()) {
-      return this._taskLibWrapper.loc('metrics.codeMetricsCalculator.noGitEnlistment')
+      return this._runnerInvoker.loc('metrics.codeMetricsCalculator.noGitEnlistment')
     }
 
     if (!await this._gitInvoker.isGitHistoryAvailable()) {
-      return this._taskLibWrapper.loc('metrics.codeMetricsCalculator.noGitHistory')
+      return this._runnerInvoker.loc('metrics.codeMetricsCalculator.noGitHistory')
     }
 
     return null

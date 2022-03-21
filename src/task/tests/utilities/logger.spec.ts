@@ -5,34 +5,34 @@ import 'reflect-metadata'
 import { instance, mock, verify } from 'ts-mockito'
 import ConsoleWrapper from '../../src/wrappers/consoleWrapper'
 import Logger from '../../src/utilities/logger'
-import TaskLibWrapper from '../../src/wrappers/taskLibWrapper'
+import RunnerInvoker from '../../src/runners/runnerInvoker'
 
 describe('logger.ts', (): void => {
   let consoleWrapper: ConsoleWrapper
-  let taskLibWrapper: TaskLibWrapper
+  let runnerInvoker: RunnerInvoker
 
   beforeEach((): void => {
     consoleWrapper = mock(ConsoleWrapper)
-    taskLibWrapper = mock(TaskLibWrapper)
+    runnerInvoker = mock(RunnerInvoker)
   })
 
   describe('logDebug()', (): void => {
     it('should log the message', (): void => {
       // Arrange
-      const logger: Logger = new Logger(instance(consoleWrapper), instance(taskLibWrapper))
+      const logger: Logger = new Logger(instance(consoleWrapper), instance(runnerInvoker))
 
       // Act
       logger.logDebug('Message')
 
       // Assert
-      verify(taskLibWrapper.debug('Message')).once()
+      verify(runnerInvoker.debug('Message')).once()
     })
   })
 
   describe('logInfo()', (): void => {
     it('should log the message', (): void => {
       // Arrange
-      const logger: Logger = new Logger(instance(consoleWrapper), instance(taskLibWrapper))
+      const logger: Logger = new Logger(instance(consoleWrapper), instance(runnerInvoker))
 
       // Act
       logger.logInfo('Message')
@@ -45,33 +45,33 @@ describe('logger.ts', (): void => {
   describe('logWarning()', (): void => {
     it('should log the message', (): void => {
       // Arrange
-      const logger: Logger = new Logger(instance(consoleWrapper), instance(taskLibWrapper))
+      const logger: Logger = new Logger(instance(consoleWrapper), instance(runnerInvoker))
 
       // Act
       logger.logWarning('Message')
 
       // Assert
-      verify(taskLibWrapper.warning('Message')).once()
+      verify(runnerInvoker.warning('Message')).once()
     })
   })
 
   describe('logError()', (): void => {
     it('should log the message', (): void => {
       // Arrange
-      const logger: Logger = new Logger(instance(consoleWrapper), instance(taskLibWrapper))
+      const logger: Logger = new Logger(instance(consoleWrapper), instance(runnerInvoker))
 
       // Act
       logger.logError('Message')
 
       // Assert
-      verify(taskLibWrapper.error('Message')).once()
+      verify(runnerInvoker.error('Message')).once()
     })
   })
 
   describe('replay()', (): void => {
     it('should replay all messages', (): void => {
       // Arrange
-      const logger: Logger = new Logger(instance(consoleWrapper), instance(taskLibWrapper))
+      const logger: Logger = new Logger(instance(consoleWrapper), instance(runnerInvoker))
       logger.logDebug('Debug Message 1')
       logger.logInfo('Info Message 1')
       logger.logWarning('Warning Message 1')
@@ -85,14 +85,14 @@ describe('logger.ts', (): void => {
       logger.replay()
 
       // Assert
-      verify(taskLibWrapper.debug('Debug Message 1')).once()
+      verify(runnerInvoker.debug('Debug Message 1')).once()
       verify(consoleWrapper.log('Info Message 1')).once()
-      verify(taskLibWrapper.warning('Warning Message 1')).once()
-      verify(taskLibWrapper.error('Error Message 1')).once()
-      verify(taskLibWrapper.debug('Debug Message 2')).once()
+      verify(runnerInvoker.warning('Warning Message 1')).once()
+      verify(runnerInvoker.error('Error Message 1')).once()
+      verify(runnerInvoker.debug('Debug Message 2')).once()
       verify(consoleWrapper.log('Info Message 2')).once()
-      verify(taskLibWrapper.warning('Warning Message 2')).once()
-      verify(taskLibWrapper.error('Error Message 2')).once()
+      verify(runnerInvoker.warning('Warning Message 2')).once()
+      verify(runnerInvoker.error('Error Message 2')).once()
       verify(consoleWrapper.log('🔁 debug   – Debug Message 1')).once()
       verify(consoleWrapper.log('🔁 info    – Info Message 1')).once()
       verify(consoleWrapper.log('🔁 warning – Warning Message 1')).once()

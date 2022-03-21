@@ -17,7 +17,7 @@ import PullRequestCommentData from '../../src/repos/interfaces/pullRequestCommen
 import PullRequestComments from '../../src/pullRequests/pullRequestComments'
 import PullRequestCommentsData from '../../src/pullRequests/pullRequestCommentsData'
 import ReposInvoker from '../../src/repos/reposInvoker'
-import TaskLibWrapper from '../../src/wrappers/taskLibWrapper'
+import RunnerInvoker from '../../src/runners/runnerInvoker'
 
 describe('pullRequestComments.ts', (): void => {
   let complexGitPullRequestComments: CommentData
@@ -25,7 +25,7 @@ describe('pullRequestComments.ts', (): void => {
   let inputs: Inputs
   let logger: Logger
   let reposInvoker: ReposInvoker
-  let taskLibWrapper: TaskLibWrapper
+  let runnerInvoker: RunnerInvoker
 
   beforeEach((): void => {
     reposInvoker = mock(ReposInvoker)
@@ -48,28 +48,28 @@ describe('pullRequestComments.ts', (): void => {
 
     logger = mock(Logger)
 
-    taskLibWrapper = mock(TaskLibWrapper)
-    when(taskLibWrapper.loc('pullRequests.pullRequestComments.commentFooter')).thenReturn('[Metrics computed by PR Metrics. Add it to your Azure DevOps and GitHub PRs!](https://aka.ms/PRMetrics/Comment)')
-    when(taskLibWrapper.loc('pullRequests.pullRequestComments.commentTitle')).thenReturn('# PR Metrics')
-    when(taskLibWrapper.loc('pullRequests.pullRequestComments.largePullRequestComment', Number(200).toLocaleString())).thenReturn(`❌ **Try to keep pull requests smaller than ${Number(200).toLocaleString()} lines of new product code by following the [Single Responsibility Principle (SRP)](https://aka.ms/PRMetrics/SRP).**`)
-    when(taskLibWrapper.loc('pullRequests.pullRequestComments.largePullRequestComment', Number(1000).toLocaleString())).thenReturn(`❌ **Try to keep pull requests smaller than ${Number(1000).toLocaleString()} lines of new product code by following the [Single Responsibility Principle (SRP)](https://aka.ms/PRMetrics/SRP).**`)
-    when(taskLibWrapper.loc('pullRequests.pullRequestComments.largePullRequestComment', Number(1000000).toLocaleString())).thenReturn(`❌ **Try to keep pull requests smaller than ${Number(1000000).toLocaleString()} lines of new product code by following the [Single Responsibility Principle (SRP)](https://aka.ms/PRMetrics/SRP).**`)
-    when(taskLibWrapper.loc('pullRequests.pullRequestComments.noReviewRequiredComment')).thenReturn('❗ **This file doesn\'t require review.**')
-    when(taskLibWrapper.loc('pullRequests.pullRequestComments.smallPullRequestComment')).thenReturn('✔ **Thanks for keeping your pull request small.**')
-    when(taskLibWrapper.loc('pullRequests.pullRequestComments.tableIgnoredCode')).thenReturn('Ignored Code')
-    when(taskLibWrapper.loc('pullRequests.pullRequestComments.tableLines')).thenReturn('Lines')
-    when(taskLibWrapper.loc('pullRequests.pullRequestComments.tableProductCode')).thenReturn('Product Code')
-    when(taskLibWrapper.loc('pullRequests.pullRequestComments.tableSubtotal')).thenReturn('Subtotal')
-    when(taskLibWrapper.loc('pullRequests.pullRequestComments.tableTestCode')).thenReturn('Test Code')
-    when(taskLibWrapper.loc('pullRequests.pullRequestComments.tableTotal')).thenReturn('Total')
-    when(taskLibWrapper.loc('pullRequests.pullRequestComments.testsInsufficientComment')).thenReturn('⚠️ **Consider adding additional tests.**')
-    when(taskLibWrapper.loc('pullRequests.pullRequestComments.testsSufficientComment')).thenReturn('✔ **Thanks for adding tests.**')
+    runnerInvoker = mock(RunnerInvoker)
+    when(runnerInvoker.loc('pullRequests.pullRequestComments.commentFooter')).thenReturn('[Metrics computed by PR Metrics. Add it to your Azure DevOps and GitHub PRs!](https://aka.ms/PRMetrics/Comment)')
+    when(runnerInvoker.loc('pullRequests.pullRequestComments.commentTitle')).thenReturn('# PR Metrics')
+    when(runnerInvoker.loc('pullRequests.pullRequestComments.largePullRequestComment', Number(200).toLocaleString())).thenReturn(`❌ **Try to keep pull requests smaller than ${Number(200).toLocaleString()} lines of new product code by following the [Single Responsibility Principle (SRP)](https://aka.ms/PRMetrics/SRP).**`)
+    when(runnerInvoker.loc('pullRequests.pullRequestComments.largePullRequestComment', Number(1000).toLocaleString())).thenReturn(`❌ **Try to keep pull requests smaller than ${Number(1000).toLocaleString()} lines of new product code by following the [Single Responsibility Principle (SRP)](https://aka.ms/PRMetrics/SRP).**`)
+    when(runnerInvoker.loc('pullRequests.pullRequestComments.largePullRequestComment', Number(1000000).toLocaleString())).thenReturn(`❌ **Try to keep pull requests smaller than ${Number(1000000).toLocaleString()} lines of new product code by following the [Single Responsibility Principle (SRP)](https://aka.ms/PRMetrics/SRP).**`)
+    when(runnerInvoker.loc('pullRequests.pullRequestComments.noReviewRequiredComment')).thenReturn('❗ **This file doesn\'t require review.**')
+    when(runnerInvoker.loc('pullRequests.pullRequestComments.smallPullRequestComment')).thenReturn('✔ **Thanks for keeping your pull request small.**')
+    when(runnerInvoker.loc('pullRequests.pullRequestComments.tableIgnoredCode')).thenReturn('Ignored Code')
+    when(runnerInvoker.loc('pullRequests.pullRequestComments.tableLines')).thenReturn('Lines')
+    when(runnerInvoker.loc('pullRequests.pullRequestComments.tableProductCode')).thenReturn('Product Code')
+    when(runnerInvoker.loc('pullRequests.pullRequestComments.tableSubtotal')).thenReturn('Subtotal')
+    when(runnerInvoker.loc('pullRequests.pullRequestComments.tableTestCode')).thenReturn('Test Code')
+    when(runnerInvoker.loc('pullRequests.pullRequestComments.tableTotal')).thenReturn('Total')
+    when(runnerInvoker.loc('pullRequests.pullRequestComments.testsInsufficientComment')).thenReturn('⚠️ **Consider adding additional tests.**')
+    when(runnerInvoker.loc('pullRequests.pullRequestComments.testsSufficientComment')).thenReturn('✔ **Thanks for adding tests.**')
   })
 
   describe('noReviewRequiredComment', (): void => {
     it('should return the expected result', (): void => {
       // Arrange
-      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(inputs), instance(logger), instance(reposInvoker), instance(taskLibWrapper))
+      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(inputs), instance(logger), instance(reposInvoker), instance(runnerInvoker))
 
       // Act
       const result: string = pullRequestComments.noReviewRequiredComment
@@ -85,7 +85,7 @@ describe('pullRequestComments.ts', (): void => {
       // Arrange
       const comments: CommentData = new CommentData()
       when(reposInvoker.getComments()).thenResolve(comments)
-      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(inputs), instance(logger), instance(reposInvoker), instance(taskLibWrapper))
+      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(inputs), instance(logger), instance(reposInvoker), instance(runnerInvoker))
 
       // Act
       const result: PullRequestCommentsData = await pullRequestComments.getCommentData()
@@ -110,7 +110,7 @@ describe('pullRequestComments.ts', (): void => {
           const comments: CommentData = new CommentData()
           comments.pullRequestComments.push(...data[0])
           when(reposInvoker.getComments()).thenResolve(comments)
-          const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(inputs), instance(logger), instance(reposInvoker), instance(taskLibWrapper))
+          const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(inputs), instance(logger), instance(reposInvoker), instance(runnerInvoker))
 
           // Act
           const result: PullRequestCommentsData = await pullRequestComments.getCommentData()
@@ -139,7 +139,7 @@ describe('pullRequestComments.ts', (): void => {
           comments.fileComments.push(...data[1])
           when(reposInvoker.getComments()).thenResolve(comments)
           when(codeMetrics.getFilesNotRequiringReview()).thenResolve(['folder/file1.ts', 'file2.ts', 'file3.ts'])
-          const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(inputs), instance(logger), instance(reposInvoker), instance(taskLibWrapper))
+          const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(inputs), instance(logger), instance(reposInvoker), instance(runnerInvoker))
 
           // Act
           const result: PullRequestCommentsData = await pullRequestComments.getCommentData()
@@ -168,7 +168,7 @@ describe('pullRequestComments.ts', (): void => {
           comments.fileComments.push(...data[1])
           when(reposInvoker.getComments()).thenResolve(comments)
           when(codeMetrics.getDeletedFilesNotRequiringReview()).thenResolve(['folder/file1.ts', 'file2.ts', 'file3.ts'])
-          const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(inputs), instance(logger), instance(reposInvoker), instance(taskLibWrapper))
+          const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(inputs), instance(logger), instance(reposInvoker), instance(runnerInvoker))
 
           // Act
           const result: PullRequestCommentsData = await pullRequestComments.getCommentData()
@@ -189,7 +189,7 @@ describe('pullRequestComments.ts', (): void => {
       // Arrange
       when(reposInvoker.getComments()).thenResolve(complexGitPullRequestComments)
       when(codeMetrics.getFilesNotRequiringReview()).thenResolve(['folder/file1.ts', 'file2.ts', 'file5.ts'])
-      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(inputs), instance(logger), instance(reposInvoker), instance(taskLibWrapper))
+      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(inputs), instance(logger), instance(reposInvoker), instance(runnerInvoker))
 
       // Act
       const result: PullRequestCommentsData = await pullRequestComments.getCommentData()
@@ -210,7 +210,7 @@ describe('pullRequestComments.ts', (): void => {
       // Arrange
       when(reposInvoker.getComments()).thenResolve(complexGitPullRequestComments)
       when(codeMetrics.getDeletedFilesNotRequiringReview()).thenResolve(['folder/file1.ts', 'file2.ts', 'file5.ts'])
-      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(inputs), instance(logger), instance(reposInvoker), instance(taskLibWrapper))
+      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(inputs), instance(logger), instance(reposInvoker), instance(runnerInvoker))
 
       // Act
       const result: PullRequestCommentsData = await pullRequestComments.getCommentData()
@@ -232,7 +232,7 @@ describe('pullRequestComments.ts', (): void => {
       when(reposInvoker.getComments()).thenResolve(complexGitPullRequestComments)
       when(codeMetrics.getFilesNotRequiringReview()).thenResolve(['folder/file1.ts', 'file2.ts'])
       when(codeMetrics.getDeletedFilesNotRequiringReview()).thenResolve(['file3.ts', 'file5.ts'])
-      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(inputs), instance(logger), instance(reposInvoker), instance(taskLibWrapper))
+      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(inputs), instance(logger), instance(reposInvoker), instance(runnerInvoker))
 
       // Act
       const result: PullRequestCommentsData = await pullRequestComments.getCommentData()
@@ -254,7 +254,7 @@ describe('pullRequestComments.ts', (): void => {
       when(reposInvoker.getComments()).thenResolve(complexGitPullRequestComments)
       when(codeMetrics.getFilesNotRequiringReview()).thenResolve(['folder/file1.ts', 'file2.ts'])
       when(codeMetrics.getDeletedFilesNotRequiringReview()).thenResolve(['file3.ts'])
-      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(inputs), instance(logger), instance(reposInvoker), instance(taskLibWrapper))
+      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(inputs), instance(logger), instance(reposInvoker), instance(runnerInvoker))
 
       // Act
       const result: PullRequestCommentsData = await pullRequestComments.getCommentData()
@@ -280,7 +280,7 @@ describe('pullRequestComments.ts', (): void => {
       comments.fileComments.push(fileComment)
       when(reposInvoker.getComments()).thenResolve(comments)
       when(codeMetrics.getFilesNotRequiringReview()).thenResolve(['file.ts'])
-      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(inputs), instance(logger), instance(reposInvoker), instance(taskLibWrapper))
+      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(inputs), instance(logger), instance(reposInvoker), instance(runnerInvoker))
 
       // Act
       const result: PullRequestCommentsData = await pullRequestComments.getCommentData()
@@ -308,7 +308,7 @@ describe('pullRequestComments.ts', (): void => {
         it(`should return the expected result for metrics '[${code[0]}, ${code[1]}, ${code[2]}, ${code[3]}, ${code[4]}]'`, async (): Promise<void> => {
           // Arrange
           when(codeMetrics.getMetrics()).thenResolve(new CodeMetricsData(code[0], code[1], code[3]))
-          const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(inputs), instance(logger), instance(reposInvoker), instance(taskLibWrapper))
+          const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(inputs), instance(logger), instance(reposInvoker), instance(runnerInvoker))
 
           // Act
           const result: string = await pullRequestComments.getMetricsComment()
@@ -344,7 +344,7 @@ describe('pullRequestComments.ts', (): void => {
           // Arrange
           when(codeMetrics.isSmall()).thenResolve(false)
           when(inputs.baseSize).thenReturn(baseSize)
-          const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(inputs), instance(logger), instance(reposInvoker), instance(taskLibWrapper))
+          const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(inputs), instance(logger), instance(reposInvoker), instance(runnerInvoker))
 
           // Act
           const result: string = await pullRequestComments.getMetricsComment()
@@ -373,7 +373,7 @@ describe('pullRequestComments.ts', (): void => {
     it('should return the expected result when the pull request has insufficient test coverage', async (): Promise<void> => {
       // Arrange
       when(codeMetrics.isSufficientlyTested()).thenResolve(false)
-      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(inputs), instance(logger), instance(reposInvoker), instance(taskLibWrapper))
+      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(inputs), instance(logger), instance(reposInvoker), instance(runnerInvoker))
 
       // Act
       const result: string = await pullRequestComments.getMetricsComment()
@@ -401,7 +401,7 @@ describe('pullRequestComments.ts', (): void => {
     it('should return the expected result when the pull request does not require a specific level of test coverage', async (): Promise<void> => {
       // Arrange
       when(codeMetrics.isSufficientlyTested()).thenResolve(null)
-      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(inputs), instance(logger), instance(reposInvoker), instance(taskLibWrapper))
+      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(inputs), instance(logger), instance(reposInvoker), instance(runnerInvoker))
 
       // Act
       const result: string = await pullRequestComments.getMetricsComment()
@@ -436,7 +436,7 @@ describe('pullRequestComments.ts', (): void => {
           // Arrange
           when(codeMetrics.isSmall()).thenResolve(true)
           when(codeMetrics.isSufficientlyTested()).thenResolve(sufficientlyTested)
-          const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(inputs), instance(logger), instance(reposInvoker), instance(taskLibWrapper))
+          const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(inputs), instance(logger), instance(reposInvoker), instance(runnerInvoker))
 
           // Act
           const result: CommentThreadStatus = await pullRequestComments.getMetricsCommentStatus()
@@ -458,7 +458,7 @@ describe('pullRequestComments.ts', (): void => {
           // Arrange
           when(codeMetrics.isSmall()).thenResolve(codeMetricsSettings[0])
           when(codeMetrics.isSufficientlyTested()).thenResolve(codeMetricsSettings[1])
-          const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(inputs), instance(logger), instance(reposInvoker), instance(taskLibWrapper))
+          const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(inputs), instance(logger), instance(reposInvoker), instance(runnerInvoker))
 
           // Act
           const result: CommentThreadStatus = await pullRequestComments.getMetricsCommentStatus()

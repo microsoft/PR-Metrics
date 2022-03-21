@@ -8,7 +8,7 @@ import { InputsDefault } from '../../src/metrics/inputsDefault'
 import async from 'async'
 import Inputs from '../../src/metrics/inputs'
 import Logger from '../../src/utilities/logger'
-import TaskLibWrapper from '../../src/wrappers/taskLibWrapper'
+import RunnerInvoker from '../../src/runners/runnerInvoker'
 
 describe('inputs.ts', (): void => {
   const adjustingBaseSizeResource: string = `Adjusting the base size input to '${InputsDefault.baseSize}'.`
@@ -24,35 +24,35 @@ describe('inputs.ts', (): void => {
   const settingCodeFileExtensionsResource: string = 'Setting the code file extensions input to \'VALUE\'.'
 
   let logger: Logger
-  let taskLibWrapper: TaskLibWrapper
+  let runnerInvoker: RunnerInvoker
 
   beforeEach((): void => {
     logger = mock(Logger)
 
-    taskLibWrapper = mock(TaskLibWrapper)
-    when(taskLibWrapper.getInput('BaseSize', false)).thenReturn('')
-    when(taskLibWrapper.getInput('GrowthRate', false)).thenReturn('')
-    when(taskLibWrapper.getInput('TestFactor', false)).thenReturn('')
-    when(taskLibWrapper.getInput('FileMatchingPatterns', false)).thenReturn('')
-    when(taskLibWrapper.getInput('CodeFileExtensions', false)).thenReturn('')
-    when(taskLibWrapper.loc('metrics.inputs.adjustingBaseSize', InputsDefault.baseSize.toLocaleString())).thenReturn(adjustingBaseSizeResource)
-    when(taskLibWrapper.loc('metrics.inputs.adjustingGrowthRate', InputsDefault.growthRate.toLocaleString())).thenReturn(adjustingGrowthRateResource)
-    when(taskLibWrapper.loc('metrics.inputs.adjustingTestFactor', InputsDefault.testFactor.toLocaleString())).thenReturn(adjustingTestFactorResource)
-    when(taskLibWrapper.loc('metrics.inputs.adjustingFileMatchingPatterns', JSON.stringify(InputsDefault.fileMatchingPatterns))).thenReturn(adjustingFileMatchingPatternsResource)
-    when(taskLibWrapper.loc('metrics.inputs.adjustingCodeFileExtensions', JSON.stringify(InputsDefault.codeFileExtensions))).thenReturn(adjustingCodeFileExtensionsResource)
-    when(taskLibWrapper.loc('metrics.inputs.disablingTestFactor')).thenReturn(disablingTestFactorResource)
-    when(taskLibWrapper.loc('metrics.inputs.settingBaseSize', anyString())).thenReturn(settingBaseSizeResource)
-    when(taskLibWrapper.loc('metrics.inputs.settingGrowthRate', anyString())).thenReturn(settingGrowthRateResource)
-    when(taskLibWrapper.loc('metrics.inputs.settingTestFactor', anyString())).thenReturn(settingTestFactorResource)
-    when(taskLibWrapper.loc('metrics.inputs.settingFileMatchingPatterns', anyString())).thenReturn(settingFileMatchingPatternsResource)
-    when(taskLibWrapper.loc('metrics.inputs.settingCodeFileExtensions', anyString())).thenReturn(settingCodeFileExtensionsResource)
+    runnerInvoker = mock(RunnerInvoker)
+    when(runnerInvoker.getInput('BaseSize', false)).thenReturn('')
+    when(runnerInvoker.getInput('GrowthRate', false)).thenReturn('')
+    when(runnerInvoker.getInput('TestFactor', false)).thenReturn('')
+    when(runnerInvoker.getInput('FileMatchingPatterns', false)).thenReturn('')
+    when(runnerInvoker.getInput('CodeFileExtensions', false)).thenReturn('')
+    when(runnerInvoker.loc('metrics.inputs.adjustingBaseSize', InputsDefault.baseSize.toLocaleString())).thenReturn(adjustingBaseSizeResource)
+    when(runnerInvoker.loc('metrics.inputs.adjustingGrowthRate', InputsDefault.growthRate.toLocaleString())).thenReturn(adjustingGrowthRateResource)
+    when(runnerInvoker.loc('metrics.inputs.adjustingTestFactor', InputsDefault.testFactor.toLocaleString())).thenReturn(adjustingTestFactorResource)
+    when(runnerInvoker.loc('metrics.inputs.adjustingFileMatchingPatterns', JSON.stringify(InputsDefault.fileMatchingPatterns))).thenReturn(adjustingFileMatchingPatternsResource)
+    when(runnerInvoker.loc('metrics.inputs.adjustingCodeFileExtensions', JSON.stringify(InputsDefault.codeFileExtensions))).thenReturn(adjustingCodeFileExtensionsResource)
+    when(runnerInvoker.loc('metrics.inputs.disablingTestFactor')).thenReturn(disablingTestFactorResource)
+    when(runnerInvoker.loc('metrics.inputs.settingBaseSize', anyString())).thenReturn(settingBaseSizeResource)
+    when(runnerInvoker.loc('metrics.inputs.settingGrowthRate', anyString())).thenReturn(settingGrowthRateResource)
+    when(runnerInvoker.loc('metrics.inputs.settingTestFactor', anyString())).thenReturn(settingTestFactorResource)
+    when(runnerInvoker.loc('metrics.inputs.settingFileMatchingPatterns', anyString())).thenReturn(settingFileMatchingPatternsResource)
+    when(runnerInvoker.loc('metrics.inputs.settingCodeFileExtensions', anyString())).thenReturn(settingCodeFileExtensionsResource)
   })
 
   describe('initialize()', (): void => {
     describe('all inputs', (): void => {
       it('should set all default values when nothing is specified', (): void => {
         // Act
-        const inputs: Inputs = new Inputs(instance(logger), instance(taskLibWrapper))
+        const inputs: Inputs = new Inputs(instance(logger), instance(runnerInvoker))
 
         // Assert
         expect(inputs.baseSize).to.equal(InputsDefault.baseSize)
@@ -86,14 +86,14 @@ describe('inputs.ts', (): void => {
 
       it('should set all input values when all are specified', (): void => {
         // Arrange
-        when(taskLibWrapper.getInput('BaseSize', false)).thenReturn('5.0')
-        when(taskLibWrapper.getInput('GrowthRate', false)).thenReturn('4.4')
-        when(taskLibWrapper.getInput('TestFactor', false)).thenReturn('2.7')
-        when(taskLibWrapper.getInput('FileMatchingPatterns', false)).thenReturn('aa\nbb')
-        when(taskLibWrapper.getInput('CodeFileExtensions', false)).thenReturn('js\nts')
+        when(runnerInvoker.getInput('BaseSize', false)).thenReturn('5.0')
+        when(runnerInvoker.getInput('GrowthRate', false)).thenReturn('4.4')
+        when(runnerInvoker.getInput('TestFactor', false)).thenReturn('2.7')
+        when(runnerInvoker.getInput('FileMatchingPatterns', false)).thenReturn('aa\nbb')
+        when(runnerInvoker.getInput('CodeFileExtensions', false)).thenReturn('js\nts')
 
         // Act
-        const inputs: Inputs = new Inputs(instance(logger), instance(taskLibWrapper))
+        const inputs: Inputs = new Inputs(instance(logger), instance(runnerInvoker))
 
         // Assert
         expect(inputs.baseSize).to.equal(5.0)
@@ -140,10 +140,10 @@ describe('inputs.ts', (): void => {
         ], (baseSize: string | undefined): void => {
           it(`should set the default when the input '${baseSize}' is invalid`, (): void => {
             // Arrange
-            when(taskLibWrapper.getInput('BaseSize', false)).thenReturn(baseSize)
+            when(runnerInvoker.getInput('BaseSize', false)).thenReturn(baseSize)
 
             // Act
-            const inputs: Inputs = new Inputs(instance(logger), instance(taskLibWrapper))
+            const inputs: Inputs = new Inputs(instance(logger), instance(runnerInvoker))
 
             // Assert
             expect(inputs.baseSize).to.equal(InputsDefault.baseSize)
@@ -177,10 +177,10 @@ describe('inputs.ts', (): void => {
         ], (baseSize: string): void => {
           it(`should set the default when the input '${baseSize}' is less than or equal to 0`, (): void => {
             // Arrange
-            when(taskLibWrapper.getInput('BaseSize', false)).thenReturn(baseSize)
+            when(runnerInvoker.getInput('BaseSize', false)).thenReturn(baseSize)
 
             // Act
-            const inputs: Inputs = new Inputs(instance(logger), instance(taskLibWrapper))
+            const inputs: Inputs = new Inputs(instance(logger), instance(runnerInvoker))
 
             // Assert
             expect(inputs.baseSize).to.equal(InputsDefault.baseSize)
@@ -214,10 +214,10 @@ describe('inputs.ts', (): void => {
         ], (baseSize: string): void => {
           it(`should set the converted value when the input '${baseSize}' is greater than 0`, (): void => {
             // Arrange
-            when(taskLibWrapper.getInput('BaseSize', false)).thenReturn(baseSize)
+            when(runnerInvoker.getInput('BaseSize', false)).thenReturn(baseSize)
 
             // Act
-            const inputs: Inputs = new Inputs(instance(logger), instance(taskLibWrapper))
+            const inputs: Inputs = new Inputs(instance(logger), instance(runnerInvoker))
 
             // Assert
             expect(inputs.baseSize).to.equal(parseInt(baseSize))
@@ -257,10 +257,10 @@ describe('inputs.ts', (): void => {
         ], (growthRate: string | undefined): void => {
           it(`should set the default when the input '${growthRate}' is invalid`, (): void => {
             // Arrange
-            when(taskLibWrapper.getInput('GrowthRate', false)).thenReturn(growthRate)
+            when(runnerInvoker.getInput('GrowthRate', false)).thenReturn(growthRate)
 
             // Act
-            const inputs: Inputs = new Inputs(instance(logger), instance(taskLibWrapper))
+            const inputs: Inputs = new Inputs(instance(logger), instance(runnerInvoker))
 
             // Assert
             expect(inputs.growthRate).to.equal(InputsDefault.growthRate)
@@ -297,10 +297,10 @@ describe('inputs.ts', (): void => {
         ], (growthRate: string): void => {
           it(`should set the default when the input '${growthRate}' is less than or equal to 1.0`, (): void => {
             // Arrange
-            when(taskLibWrapper.getInput('GrowthRate', false)).thenReturn(growthRate)
+            when(runnerInvoker.getInput('GrowthRate', false)).thenReturn(growthRate)
 
             // Act
-            const inputs: Inputs = new Inputs(instance(logger), instance(taskLibWrapper))
+            const inputs: Inputs = new Inputs(instance(logger), instance(runnerInvoker))
 
             // Assert
             expect(inputs.growthRate).to.equal(InputsDefault.growthRate)
@@ -338,10 +338,10 @@ describe('inputs.ts', (): void => {
         ], (growthRate: string): void => {
           it(`should set the converted value when the input '${growthRate}' is greater than 1.0`, (): void => {
             // Arrange
-            when(taskLibWrapper.getInput('GrowthRate', false)).thenReturn(growthRate)
+            when(runnerInvoker.getInput('GrowthRate', false)).thenReturn(growthRate)
 
             // Act
-            const inputs: Inputs = new Inputs(instance(logger), instance(taskLibWrapper))
+            const inputs: Inputs = new Inputs(instance(logger), instance(runnerInvoker))
 
             // Assert
             expect(inputs.growthRate).to.equal(parseFloat(growthRate))
@@ -381,10 +381,10 @@ describe('inputs.ts', (): void => {
         ], (testFactor: string | undefined): void => {
           it(`should set the default when the input '${testFactor}' is invalid`, (): void => {
             // Arrange
-            when(taskLibWrapper.getInput('TestFactor', false)).thenReturn(testFactor)
+            when(runnerInvoker.getInput('TestFactor', false)).thenReturn(testFactor)
 
             // Act
-            const inputs: Inputs = new Inputs(instance(logger), instance(taskLibWrapper))
+            const inputs: Inputs = new Inputs(instance(logger), instance(runnerInvoker))
 
             // Assert
             expect(inputs.testFactor).to.equal(InputsDefault.testFactor)
@@ -419,10 +419,10 @@ describe('inputs.ts', (): void => {
         ], (testFactor: string): void => {
           it(`should set the default when the input '${testFactor}' is less than 0.0`, (): void => {
             // Arrange
-            when(taskLibWrapper.getInput('TestFactor', false)).thenReturn(testFactor)
+            when(runnerInvoker.getInput('TestFactor', false)).thenReturn(testFactor)
 
             // Act
-            const inputs: Inputs = new Inputs(instance(logger), instance(taskLibWrapper))
+            const inputs: Inputs = new Inputs(instance(logger), instance(runnerInvoker))
 
             // Assert
             expect(inputs.testFactor).to.equal(InputsDefault.testFactor)
@@ -460,10 +460,10 @@ describe('inputs.ts', (): void => {
         ], (testFactor: string): void => {
           it(`should set the converted value when the input '${testFactor}' is greater than 0.0`, (): void => {
             // Arrange
-            when(taskLibWrapper.getInput('TestFactor', false)).thenReturn(testFactor)
+            when(runnerInvoker.getInput('TestFactor', false)).thenReturn(testFactor)
 
             // Act
-            const inputs: Inputs = new Inputs(instance(logger), instance(taskLibWrapper))
+            const inputs: Inputs = new Inputs(instance(logger), instance(runnerInvoker))
 
             // Assert
             expect(inputs.testFactor).to.equal(parseFloat(testFactor))
@@ -495,10 +495,10 @@ describe('inputs.ts', (): void => {
         ], (testFactor: string): void => {
           it(`should set null when the input '${testFactor}' is equal to 0.0`, (): void => {
             // Arrange
-            when(taskLibWrapper.getInput('TestFactor', false)).thenReturn(testFactor)
+            when(runnerInvoker.getInput('TestFactor', false)).thenReturn(testFactor)
 
             // Act
-            const inputs: Inputs = new Inputs(instance(logger), instance(taskLibWrapper))
+            const inputs: Inputs = new Inputs(instance(logger), instance(runnerInvoker))
 
             // Assert
             expect(inputs.testFactor).to.equal(null)
@@ -535,10 +535,10 @@ describe('inputs.ts', (): void => {
         ], (fileMatchingPatterns: string | undefined): void => {
           it(`should set the default when the input '${fileMatchingPatterns?.replace(/\n/g, '\\n')}' is invalid`, (): void => {
             // Arrange
-            when(taskLibWrapper.getInput('FileMatchingPatterns', false)).thenReturn(fileMatchingPatterns)
+            when(runnerInvoker.getInput('FileMatchingPatterns', false)).thenReturn(fileMatchingPatterns)
 
             // Act
-            const inputs: Inputs = new Inputs(instance(logger), instance(taskLibWrapper))
+            const inputs: Inputs = new Inputs(instance(logger), instance(runnerInvoker))
 
             // Assert
             expect(inputs.fileMatchingPatterns).to.deep.equal(InputsDefault.fileMatchingPatterns)
@@ -571,10 +571,10 @@ describe('inputs.ts', (): void => {
         ], (fileMatchingPatterns: string): void => {
           it(`should not split '${fileMatchingPatterns}'`, (): void => {
             // Arrange
-            when(taskLibWrapper.getInput('FileMatchingPatterns', false)).thenReturn(fileMatchingPatterns)
+            when(runnerInvoker.getInput('FileMatchingPatterns', false)).thenReturn(fileMatchingPatterns)
 
             // Act
-            const inputs: Inputs = new Inputs(instance(logger), instance(taskLibWrapper))
+            const inputs: Inputs = new Inputs(instance(logger), instance(runnerInvoker))
 
             // Assert
             expect(inputs.fileMatchingPatterns).to.deep.equal([fileMatchingPatterns])
@@ -607,10 +607,10 @@ describe('inputs.ts', (): void => {
           it(`should split '${fileMatchingPatterns.replace(/\n/g, '\\n')}' at the newline character`, (): void => {
             // Arrange
             const expectedOutput: string[] = fileMatchingPatterns.split('\n')
-            when(taskLibWrapper.getInput('FileMatchingPatterns', false)).thenReturn(fileMatchingPatterns)
+            when(runnerInvoker.getInput('FileMatchingPatterns', false)).thenReturn(fileMatchingPatterns)
 
             // Act
-            const inputs: Inputs = new Inputs(instance(logger), instance(taskLibWrapper))
+            const inputs: Inputs = new Inputs(instance(logger), instance(runnerInvoker))
 
             // Assert
             expect(inputs.fileMatchingPatterns).to.deep.equal(expectedOutput)
@@ -647,10 +647,10 @@ describe('inputs.ts', (): void => {
         ], (codeFileExtensions: string | undefined): void => {
           it(`should set the default when the input '${codeFileExtensions?.replace(/\n/g, '\\n')}' is invalid`, (): void => {
             // Arrange
-            when(taskLibWrapper.getInput('CodeFileExtensions', false)).thenReturn(codeFileExtensions)
+            when(runnerInvoker.getInput('CodeFileExtensions', false)).thenReturn(codeFileExtensions)
 
             // Act
-            const inputs: Inputs = new Inputs(instance(logger), instance(taskLibWrapper))
+            const inputs: Inputs = new Inputs(instance(logger), instance(runnerInvoker))
 
             // Assert
             expect(inputs.codeFileExtensions).to.deep.equal(new Set<string>(InputsDefault.codeFileExtensions))
@@ -684,10 +684,10 @@ describe('inputs.ts', (): void => {
           it(`should split '${codeFileExtensions.replace(/\n/g, '\\n')}' at the newline character`, (): void => {
             // Arrange
             const expectedResult: Set<string> = new Set<string>(codeFileExtensions.split('\n'))
-            when(taskLibWrapper.getInput('CodeFileExtensions', false)).thenReturn(codeFileExtensions)
+            when(runnerInvoker.getInput('CodeFileExtensions', false)).thenReturn(codeFileExtensions)
 
             // Act
-            const inputs: Inputs = new Inputs(instance(logger), instance(taskLibWrapper))
+            const inputs: Inputs = new Inputs(instance(logger), instance(runnerInvoker))
 
             // Assert
             expect(inputs.codeFileExtensions).to.deep.equal(expectedResult)
@@ -714,10 +714,10 @@ describe('inputs.ts', (): void => {
 
       it('should handle repeated insertion of identical items', (): void => {
         // Arrange
-        when(taskLibWrapper.getInput('CodeFileExtensions', false)).thenReturn('ada\nada')
+        when(runnerInvoker.getInput('CodeFileExtensions', false)).thenReturn('ada\nada')
 
         // Act
-        const inputs: Inputs = new Inputs(instance(logger), instance(taskLibWrapper))
+        const inputs: Inputs = new Inputs(instance(logger), instance(runnerInvoker))
 
         // Assert
         expect(inputs.codeFileExtensions).to.deep.equal(new Set<string>(['ada']))
@@ -743,10 +743,10 @@ describe('inputs.ts', (): void => {
 
       it('should convert extensions to lower case', (): void => {
         // Arrange
-        when(taskLibWrapper.getInput('CodeFileExtensions', false)).thenReturn('ADA\ncS\nTxT')
+        when(runnerInvoker.getInput('CodeFileExtensions', false)).thenReturn('ADA\ncS\nTxT')
 
         // Act
-        const inputs: Inputs = new Inputs(instance(logger), instance(taskLibWrapper))
+        const inputs: Inputs = new Inputs(instance(logger), instance(runnerInvoker))
 
         // Assert
         expect(inputs.codeFileExtensions).to.deep.equal(new Set<string>(['ada', 'cs', 'txt']))
@@ -772,10 +772,10 @@ describe('inputs.ts', (): void => {
 
       it('should remove . and * from extension names', (): void => {
         // Arrange
-        when(taskLibWrapper.getInput('CodeFileExtensions', false)).thenReturn('*.ada\n.txt')
+        when(runnerInvoker.getInput('CodeFileExtensions', false)).thenReturn('*.ada\n.txt')
 
         // Act
-        const inputs: Inputs = new Inputs(instance(logger), instance(taskLibWrapper))
+        const inputs: Inputs = new Inputs(instance(logger), instance(runnerInvoker))
 
         // Assert
         expect(inputs.codeFileExtensions).to.deep.equal(new Set<string>(['ada', 'txt']))
@@ -801,10 +801,10 @@ describe('inputs.ts', (): void => {
 
       it('should convert extensions to lower case', (): void => {
         // Arrange
-        when(taskLibWrapper.getInput('CodeFileExtensions', false)).thenReturn('ADA\ncS\nTxT')
+        when(runnerInvoker.getInput('CodeFileExtensions', false)).thenReturn('ADA\ncS\nTxT')
 
         // Act
-        const inputs: Inputs = new Inputs(instance(logger), instance(taskLibWrapper))
+        const inputs: Inputs = new Inputs(instance(logger), instance(runnerInvoker))
 
         // Assert
         expect(inputs.codeFileExtensions).to.deep.equal(new Set<string>(['ada', 'cs', 'txt']))

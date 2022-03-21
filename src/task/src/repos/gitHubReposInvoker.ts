@@ -21,7 +21,7 @@ import Logger from '../utilities/logger'
 import OctokitWrapper from '../wrappers/octokitWrapper'
 import PullRequestCommentData from './interfaces/pullRequestCommentData'
 import PullRequestDetails from './interfaces/pullRequestDetails'
-import TaskLibWrapper from '../wrappers/taskLibWrapper'
+import RunnerInvoker from '../runners/runnerInvoker'
 import UpdateIssueCommentResponse from '../wrappers/octokitInterfaces/updateIssueCommentResponse'
 import UpdatePullResponse from '../wrappers/octokitInterfaces/updatePullResponse'
 
@@ -36,7 +36,7 @@ type GetReviewCommentsResponseData = GetResponseDataTypeFromEndpointMethod<typeo
 export default class GitHubReposInvoker extends BaseReposInvoker {
   private readonly _logger: Logger
   private readonly _octokitWrapper: OctokitWrapper
-  private readonly _taskLibWrapper: TaskLibWrapper
+  private readonly _runnerInvoker: RunnerInvoker
 
   private _isInitialized: boolean = false
   private _owner: string | undefined
@@ -48,21 +48,21 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
    * Initializes a new instance of the `GitHubReposInvoker` class.
    * @param logger The logger.
    * @param octokitWrapper The wrapper around the Octokit library.
-   * @param taskLibWrapper The wrapper around the Azure Pipelines Task Lib.
+   * @param runnerInvoker The runner invoker functionality.
    */
-  public constructor (logger: Logger, octokitWrapper: OctokitWrapper, taskLibWrapper: TaskLibWrapper) {
+  public constructor (logger: Logger, octokitWrapper: OctokitWrapper, runnerInvoker: RunnerInvoker) {
     super()
 
     this._logger = logger
     this._octokitWrapper = octokitWrapper
-    this._taskLibWrapper = taskLibWrapper
+    this._runnerInvoker = runnerInvoker
   }
 
   public get isAccessTokenAvailable (): string | null {
     this._logger.logDebug('* GitHubReposInvoker.isAccessTokenAvailable')
 
     if (process.env.SYSTEM_ACCESSTOKEN === undefined) {
-      return this._taskLibWrapper.loc('metrics.codeMetricsCalculator.noGitHubAccessToken')
+      return this._runnerInvoker.loc('metrics.codeMetricsCalculator.noGitHubAccessToken')
     }
 
     return null
@@ -254,6 +254,6 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
   }
 
   protected async invokeApiCall<TResponse> (action: () => Promise<TResponse>): Promise<TResponse> {
-    return super.invokeApiCall(action, this._taskLibWrapper.loc('metrics.codeMetricsCalculator.insufficientGitHubAccessTokenPermissions'))
+    return super.invokeApiCall(action, this._runnerInvoker.loc('metrics.codeMetricsCalculator.insufficientGitHubAccessTokenPermissions'))
   }
 }

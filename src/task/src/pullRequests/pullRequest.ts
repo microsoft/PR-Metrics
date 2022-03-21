@@ -5,7 +5,7 @@ import { injectable } from 'tsyringe'
 import { Validator } from '../utilities/validator'
 import CodeMetrics from '../metrics/codeMetrics'
 import Logger from '../utilities/logger'
-import TaskLibWrapper from '../wrappers/taskLibWrapper'
+import RunnerInvoker from '../runners/runnerInvoker'
 
 /**
  * A class for managing pull requests.
@@ -14,18 +14,18 @@ import TaskLibWrapper from '../wrappers/taskLibWrapper'
 export default class PullRequest {
   private readonly _codeMetrics: CodeMetrics
   private readonly _logger: Logger
-  private readonly _taskLibWrapper: TaskLibWrapper
+  private readonly _runnerInvoker: RunnerInvoker
 
   /**
    * Initializes a new instance of the `PullRequest` class.
    * @param codeMetrics The code metrics calculation logic.
    * @param logger The logger.
-   * @param taskLibWrapper The wrapper around the Azure Pipelines Task Lib.
+   * @param runnerInvoker The runner invoker logic.
    */
-  public constructor (codeMetrics: CodeMetrics, logger: Logger, taskLibWrapper: TaskLibWrapper) {
+  public constructor (codeMetrics: CodeMetrics, logger: Logger, runnerInvoker: RunnerInvoker) {
     this._codeMetrics = codeMetrics
     this._logger = logger
-    this._taskLibWrapper = taskLibWrapper
+    this._runnerInvoker = runnerInvoker
   }
 
   /**
@@ -65,7 +65,7 @@ export default class PullRequest {
       return null
     }
 
-    return this._taskLibWrapper.loc('pullRequests.pullRequest.addDescription')
+    return this._runnerInvoker.loc('pullRequests.pullRequest.addDescription')
   }
 
   /**
@@ -77,21 +77,21 @@ export default class PullRequest {
     this._logger.logDebug('* PullRequest.getUpdatedTitle()')
 
     const sizeIndicator: string = await this._codeMetrics.getSizeIndicator()
-    if (currentTitle.startsWith(this._taskLibWrapper.loc('pullRequests.pullRequest.titleFormat', sizeIndicator, ''))) {
+    if (currentTitle.startsWith(this._runnerInvoker.loc('pullRequests.pullRequest.titleFormat', sizeIndicator, ''))) {
       return null
     }
 
     const sizeRegExp: string =
-      `(${this._taskLibWrapper.loc('metrics.codeMetrics.titleSizeXS')}` +
-      `|${this._taskLibWrapper.loc('metrics.codeMetrics.titleSizeS')}` +
-      `|${this._taskLibWrapper.loc('metrics.codeMetrics.titleSizeM')}` +
-      `|${this._taskLibWrapper.loc('metrics.codeMetrics.titleSizeL')}` +
-      `|${this._taskLibWrapper.loc('metrics.codeMetrics.titleSizeXL', '\\d*')})`
+      `(${this._runnerInvoker.loc('metrics.codeMetrics.titleSizeXS')}` +
+      `|${this._runnerInvoker.loc('metrics.codeMetrics.titleSizeS')}` +
+      `|${this._runnerInvoker.loc('metrics.codeMetrics.titleSizeM')}` +
+      `|${this._runnerInvoker.loc('metrics.codeMetrics.titleSizeL')}` +
+      `|${this._runnerInvoker.loc('metrics.codeMetrics.titleSizeXL', '\\d*')})`
     const testsRegExp: string =
-      `(${this._taskLibWrapper.loc('metrics.codeMetrics.titleTestsSufficient')}` +
-      `|${this._taskLibWrapper.loc('metrics.codeMetrics.titleTestsInsufficient')})?`
-    const sizeIndicatorRegExp: string = this._taskLibWrapper.loc('metrics.codeMetrics.titleSizeIndicatorFormat', sizeRegExp, testsRegExp)
-    const completeRegExp: string = `^${this._taskLibWrapper.loc('pullRequests.pullRequest.titleFormat', sizeIndicatorRegExp, '(.*)')}$`
+      `(${this._runnerInvoker.loc('metrics.codeMetrics.titleTestsSufficient')}` +
+      `|${this._runnerInvoker.loc('metrics.codeMetrics.titleTestsInsufficient')})?`
+    const sizeIndicatorRegExp: string = this._runnerInvoker.loc('metrics.codeMetrics.titleSizeIndicatorFormat', sizeRegExp, testsRegExp)
+    const completeRegExp: string = `^${this._runnerInvoker.loc('pullRequests.pullRequest.titleFormat', sizeIndicatorRegExp, '(.*)')}$`
 
     const prefixRegExp: RegExp = new RegExp(completeRegExp, 'u')
     const prefixRegExpMatches: RegExpMatchArray | null = currentTitle.match(prefixRegExp)
@@ -100,6 +100,6 @@ export default class PullRequest {
       originalTitle = prefixRegExpMatches[3]!
     }
 
-    return this._taskLibWrapper.loc('pullRequests.pullRequest.titleFormat', sizeIndicator, originalTitle)
+    return this._runnerInvoker.loc('pullRequests.pullRequest.titleFormat', sizeIndicator, originalTitle)
   }
 }
