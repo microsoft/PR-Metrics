@@ -277,11 +277,10 @@ jobs:
 
       - name: 'Compare Expected & Actual ''dist'' Folders'
         run: |
-          if [ "$(git diff --ignore-space-at-eol dist/ | wc -l)" -gt "0" ]; then
-            echo "Detected uncommitted changes after build. Run 'npm run package' and commit any outstanding changes. Status:"
+          if [ "$(git diff-index --quiet HEAD -- || echo 1)" == "1" ]; then
+            echo "Detected uncommitted changes after build. Run 'npm run package' and commit any outstanding changes. Details:"
             git diff
             exit 1
           fi
-        id: diff
 
 ...
