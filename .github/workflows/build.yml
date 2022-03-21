@@ -58,6 +58,17 @@ jobs:
           name: PRMetrics
           path: ${{ github.workspace }}/build/ms-omex.PRMetrics.vsix
 
+  test-github-action:
+    name: Test GitHub Action
+    runs-on: ubuntu-latest
+    name: A job to say hello
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.4.0
+
+      - name: PR Metrics
+        uses: ./
+
   validate:
     name: Validate
     runs-on: ubuntu-latest
@@ -248,5 +259,39 @@ jobs:
         with:
           json-file: src/task/Strings/resources.resjson/en-US/resources.resjson
           json-schema: resources.resjson.schema.json
+
+  validate-dist:
+    name: 'Validate – ''dist'' Folder'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.4.0
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+
+      - name: NPM – Install Dependencies
+        run: npm ci
+        working-directory: ${{ github.workspace }}/src/task
+
+      - name: NPM – Build
+      - name: Rebuild the dist/ directory
+        run: npm run build:release
+        working-directory: ${{ github.workspace }}/src/task
+
+      - name: NPM – Package
+        run: npm run package
+        working-directory: ${{ github.workspace }}/src/task
+
+      - name: 'Compare Expected & Actual ''dist'' Folders'
+        run: |
+          if [ "$(git diff --ignore-space-at-eol dist/ | wc -l)" -gt "0" ]; then
+            echo "Detected uncommitted changes after build. Run 'npm run package' and commit any outstanding changes. Status:"
+            git diff
+            exit 1
+          fi
+        id: diff
 
 ...
