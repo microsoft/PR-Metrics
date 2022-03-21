@@ -271,15 +271,6 @@ jobs:
         with:
           node-version: 16.x
 
-      - name: NPM – Install Dependencies
-        run: npm ci
-        working-directory: ${{ github.workspace }}/src/task
-
-      - name: NPM – Build
-      - name: Rebuild the dist/ directory
-        run: npm run build:release
-        working-directory: ${{ github.workspace }}/src/task
-
       - name: NPM – Package
         run: npm run package
         working-directory: ${{ github.workspace }}/src/task
