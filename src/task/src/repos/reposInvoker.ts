@@ -90,8 +90,14 @@ export default class ReposInvoker implements IReposInvoker {
       return this._reposInvoker
     }
 
-    const variable: string = Validator.validateVariable('BUILD_REPOSITORY_PROVIDER', 'ReposInvoker.getReposInvoker()')
-    switch (variable) {
+    const isGitHubRunner: string | undefined = process.env.GITHUB_ACTION
+    if (isGitHubRunner) {
+      this._reposInvoker = this._gitHubReposInvoker
+      return this._reposInvoker
+    }
+
+    const repoProvider: string = Validator.validateVariable('BUILD_REPOSITORY_PROVIDER', 'ReposInvoker.getReposInvoker()')
+    switch (repoProvider) {
       case 'TfsGit':
         this._reposInvoker = this._azureReposInvoker
         break
@@ -100,7 +106,7 @@ export default class ReposInvoker implements IReposInvoker {
         this._reposInvoker = this._gitHubReposInvoker
         break
       default:
-        throw RangeError(`BUILD_REPOSITORY_PROVIDER '${variable}' is unsupported.`)
+        throw RangeError(`BUILD_REPOSITORY_PROVIDER '${repoProvider}' is unsupported.`)
     }
 
     return this._reposInvoker

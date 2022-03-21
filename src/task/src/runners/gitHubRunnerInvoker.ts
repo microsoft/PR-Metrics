@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+import { GitWritableStream } from '../git/gitWritableStream'
 import { IExecOptions } from 'azure-pipelines-task-lib/toolrunner'
 import { singleton } from 'tsyringe'
 import * as taskLib from 'azure-pipelines-task-lib/task'
@@ -19,7 +20,13 @@ export default class GitHubRunnerInvoker implements IRunnerInvoker {
     taskLib.error(message)
   }
 
-  public exec (tool: string, args: string | string[], options?: IExecOptions): Promise<number> {
+  public exec (tool: string, args: string | string[], failOnError: boolean, outputStream: GitWritableStream, errorStream: GitWritableStream): Promise<number> {
+    const options: IExecOptions = {
+      failOnStdErr: failOnError,
+      outStream: outputStream,
+      errStream: errorStream
+    }
+
     return taskLib.exec(tool, args, options)
   }
 

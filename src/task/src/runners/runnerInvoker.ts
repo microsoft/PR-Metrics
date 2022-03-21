@@ -1,9 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { IExecOptions } from 'azure-pipelines-task-lib/toolrunner'
+import { GitWritableStream } from '../git/gitWritableStream'
 import { singleton } from 'tsyringe'
-import { Validator } from '../utilities/validator'
 import AzurePipelinesRunnerInvoker from './azurePipelinesRunnerInvoker'
 import GitHubRunnerInvoker from './gitHubRunnerInvoker'
 import IRunnerInvoker from './iRunnerInvoker'
@@ -38,9 +37,9 @@ export default class RunnerInvoker implements IRunnerInvoker {
     runner.error(message)
   }
 
-  public async exec (tool: string, args: string | string[], options?: IExecOptions): Promise<number> {
+  public exec (tool: string, args: string | string[], failOnError: boolean, outputStream: GitWritableStream, errorStream: GitWritableStream): Promise<number> {
     const runner: IRunnerInvoker = this.getRunner()
-    return await runner.exec(tool, args, options)
+    return runner.exec(tool, args, failOnError, outputStream, errorStream)
   }
 
   public getInput (name: string, required: boolean | undefined): string | undefined {
@@ -63,19 +62,8 @@ export default class RunnerInvoker implements IRunnerInvoker {
       return this._runnerInvoker
     }
 
-    const variable: string = Validator.validateVariable('BUILD_REPOSITORY_PROVIDER', 'Runner.getRunner()')
-    switch (variable) {
-      case 'TfsGit':
-        this._runnerInvoker = this._azurePipelinesRunnerInvoker
-        break
-      case 'GitHub':
-      case 'GitHubEnterprise':
-        this._runnerInvoker = this._gitHubRunnerInvoker
-        break
-      default:
-        throw RangeError(`BUILD_REPOSITORY_PROVIDER '${variable}' is unsupported.`)
-    }
-
+    const isGitHubRunner: string | undefined = process.env.GITHUB_ACTION
+    this._runnerInvoker = isGitHubRunner ? this._gitHubRunnerInvoker : this._azurePipelinesRunnerInvoker
     return this._runnerInvoker
   }
 }

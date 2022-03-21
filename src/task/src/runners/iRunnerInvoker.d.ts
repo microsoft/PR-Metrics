@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { IExecOptions } from 'azure-pipelines-task-lib/toolrunner'
+import { GitWritableStream } from '../git/gitWritableStream'
 
 /**
  * An interface for invoking runner functionality with any underlying runner.
@@ -23,10 +23,12 @@ export default interface IRunnerInvoker {
    * Asynchronously executes an external tool.
    * @param tool The tool executable to run.
    * @param args The arguments to pass to the tool.
-   * @param options The execution options.
+   * @param failOnError A value indicating whether the execution should fail when an error is printed.
+   * @param outputStream The stream to which to write output text.
+   * @param errorStream The stream to which to write error text.
    * @returns A promise containing the result of the execution.
    */
-  exec (tool: string, args: string | string[], options?: IExecOptions): Promise<number>
+  exec (tool: string, args: string | string[], failOnError: boolean, outputStream: GitWritableStream, errorStream: GitWritableStream): Promise<number>
 
   /**
    * Gets the value of an input. If the input is `required` but nonexistent, this method will throw.

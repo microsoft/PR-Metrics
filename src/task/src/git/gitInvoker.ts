@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 import { GitWritableStream } from './gitWritableStream'
-import { IExecOptions } from 'azure-pipelines-task-lib/toolrunner'
 import { singleton } from 'tsyringe'
 import { Validator } from '../utilities/validator'
 import Logger from '../utilities/logger'
@@ -115,13 +114,8 @@ export default class GitInvoker {
 
     const outputStream: GitWritableStream = new GitWritableStream(this._logger)
     const errorStream: GitWritableStream = new GitWritableStream(this._logger)
-    const execOption: IExecOptions = {
-      failOnStdErr: true,
-      outStream: outputStream,
-      errStream: errorStream
-    }
+    const result: number = await this._runnerInvoker.exec('git', parameters, true, outputStream, errorStream)
 
-    const result: number = await this._runnerInvoker.exec('git', parameters, execOption)
     if (result !== 0) {
       throw Error(errorStream.message)
     }
