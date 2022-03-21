@@ -23,7 +23,7 @@ describe('gitHubReposInvoker.ts', function (): void {
   let octokitWrapper: OctokitWrapper
   let taskLibWrapper: TaskLibWrapper
 
-  const expectedUserAgent: string = 'PRMetrics/v1.3.1'
+  const expectedUserAgent: string = 'PRMetrics/v1.4.0'
 
   beforeEach((): void => {
     process.env.SYSTEM_ACCESSTOKEN = 'OAUTH'
