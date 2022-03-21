@@ -20,7 +20,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/microsoft/OMEX-Azure-DevOps-Extensions.git"
+    "url": "git+https://github.com/microsoft/PR-Metrics.git"
   },
   "keywords": [
     "Extension",
@@ -36,9 +36,9 @@
   "author": "Microsoft Corporation",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/issues"
+    "url": "https://github.com/microsoft/PR-Metrics/issues"
   },
-  "homepage": "https://github.com/microsoft/OMEX-Azure-DevOps-Extensions#readme",
+  "homepage": "https://github.com/microsoft/PR-Metrics#readme",
   "engines": {
     "node": ">=10.24.1"
   },

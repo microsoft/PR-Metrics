@@ -7,7 +7,7 @@ blank_issues_enabled: false
 
 contact_links:
   - name: Support
-    url: https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/discussions
+    url: https://github.com/microsoft/PR-Metrics/discussions
     about: Request support
 
 ...

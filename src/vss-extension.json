@@ -48,21 +48,21 @@
       "uri": "https://aka.ms/PRMetrics/README"
     },
     "learn": {
-      "uri": "https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/blob/main/README.md"
+      "uri": "https://github.com/microsoft/PR-Metrics/blob/main/README.md"
     },
     "issues": {
-      "uri": "https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/issues"
+      "uri": "https://github.com/microsoft/PR-Metrics/issues"
     },
     "license": {
-      "uri": "https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/blob/main/src/LICENSE.txt"
+      "uri": "https://github.com/microsoft/PR-Metrics/blob/main/src/LICENSE.txt"
     },
     "support": {
-      "uri": "https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/blob/main/.github/SUPPORT.md"
+      "uri": "https://github.com/microsoft/PR-Metrics/blob/main/.github/SUPPORT.md"
     }
   },
   "repository": {
     "type": "git",
-    "uri": "https://github.com/microsoft/OMEX-Azure-DevOps-Extensions"
+    "uri": "https://github.com/microsoft/PR-Metrics"
   },
   "files": [
     {

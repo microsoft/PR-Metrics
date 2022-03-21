@@ -5,7 +5,7 @@
   "description": "Azure DevOps Extensions created by the OMEX team.",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/microsoft/OMEX-Azure-DevOps-Extensions.git"
+    "url": "git+https://github.com/microsoft/PR-Metrics.git"
   },
   "keywords": [
     "Azure DevOps",
@@ -17,9 +17,9 @@
   "author": "Microsoft Corporation",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/issues"
+    "url": "https://github.com/microsoft/PR-Metrics/issues"
   },
-  "homepage": "https://github.com/microsoft/OMEX-Azure-DevOps-Extensions#readme",
+  "homepage": "https://github.com/microsoft/PR-Metrics#readme",
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.14.0",
     "@typescript-eslint/parser": "^5.14.0",

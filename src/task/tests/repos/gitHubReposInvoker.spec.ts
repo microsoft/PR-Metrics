@@ -27,7 +27,7 @@ describe('gitHubReposInvoker.ts', function (): void {
 
   beforeEach((): void => {
     process.env.SYSTEM_ACCESSTOKEN = 'OAUTH'
-    process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI = 'https://github.com/microsoft/OMEX-Azure-DevOps-Extensions'
+    process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI = 'https://github.com/microsoft/PR-Metrics'
     process.env.SYSTEM_PULLREQUEST_PULLREQUESTNUMBER = '12345'
     logger = mock(Logger)
 
@@ -109,7 +109,7 @@ describe('gitHubReposInvoker.ts', function (): void {
     async.each(
       [
         'https://github.com/microsoft',
-        'https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/git'
+        'https://github.com/microsoft/PR-Metrics/git'
       ], (variable: string): void => {
         it(`should throw when SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI is set to an invalid URL '${variable}'`, async (): Promise<void> => {
           // Arrange
@@ -185,7 +185,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       expect(result.title).to.equal('Title')
       expect(result.description).to.equal('Description')
       verify(octokitWrapper.initialize(anything())).once()
-      verify(octokitWrapper.getPull('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345)).once()
+      verify(octokitWrapper.getPull('microsoft', 'PR-Metrics', 12345)).once()
       verify(logger.logDebug('* GitHubReposInvoker.getTitleAndDescription()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
       verify(logger.logDebug(JSON.stringify(GitHubReposInvokerConstants.getPullResponse))).once()
@@ -193,7 +193,7 @@ describe('gitHubReposInvoker.ts', function (): void {
 
     it('should succeed when the inputs are valid and the URL ends with \'.git\'', async (): Promise<void> => {
       // Arrange
-      process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI = 'https://github.com/microsoft/OMEX-Azure-DevOps-Extensions.git'
+      process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI = 'https://github.com/microsoft/PR-Metrics.git'
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('OAUTH')
         expect(options.userAgent).to.equal(expectedUserAgent)
@@ -212,7 +212,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       expect(result.title).to.equal('Title')
       expect(result.description).to.equal('Description')
       verify(octokitWrapper.initialize(anything())).once()
-      verify(octokitWrapper.getPull('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345)).once()
+      verify(octokitWrapper.getPull('microsoft', 'PR-Metrics', 12345)).once()
       verify(logger.logDebug('* GitHubReposInvoker.getTitleAndDescription()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
       verify(logger.logDebug(JSON.stringify(GitHubReposInvokerConstants.getPullResponse))).once()
@@ -220,7 +220,7 @@ describe('gitHubReposInvoker.ts', function (): void {
 
     it('should succeed when the inputs are valid and GitHub Enterprise is in use', async (): Promise<void> => {
       // Arrange
-      process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI = 'https://organization.githubenterprise.com/microsoft/OMEX-Azure-DevOps-Extensions'
+      process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI = 'https://organization.githubenterprise.com/microsoft/PR-Metrics'
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('OAUTH')
         expect(options.userAgent).to.equal(expectedUserAgent)
@@ -240,7 +240,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       expect(result.title).to.equal('Title')
       expect(result.description).to.equal('Description')
       verify(octokitWrapper.initialize(anything())).once()
-      verify(octokitWrapper.getPull('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345)).once()
+      verify(octokitWrapper.getPull('microsoft', 'PR-Metrics', 12345)).once()
       verify(logger.logDebug('* GitHubReposInvoker.getTitleAndDescription()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
       verify(logger.logDebug('Using Base URL \'https://organization.githubenterprise.com/api/v3\'.')).once()
@@ -268,7 +268,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       expect(result.title).to.equal('Title')
       expect(result.description).to.equal('Description')
       verify(octokitWrapper.initialize(anything())).once()
-      verify(octokitWrapper.getPull('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345)).twice()
+      verify(octokitWrapper.getPull('microsoft', 'PR-Metrics', 12345)).twice()
       verify(logger.logDebug('* GitHubReposInvoker.getTitleAndDescription()')).twice()
       verify(logger.logDebug('* GitHubReposInvoker.initialize()')).twice()
       verify(logger.logDebug(JSON.stringify(GitHubReposInvokerConstants.getPullResponse))).twice()
@@ -297,7 +297,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       expect(result.title).to.equal('Title')
       expect(result.description).to.equal(undefined)
       verify(octokitWrapper.initialize(anything())).once()
-      verify(octokitWrapper.getPull('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345)).once()
+      verify(octokitWrapper.getPull('microsoft', 'PR-Metrics', 12345)).once()
       verify(logger.logDebug('* GitHubReposInvoker.getTitleAndDescription()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
       verify(logger.logDebug(JSON.stringify(currentMockPullResponse))).once()
@@ -421,8 +421,8 @@ describe('gitHubReposInvoker.ts', function (): void {
       expect(result.pullRequestComments[0]!.status).to.equal(CommentThreadStatus.Unknown)
       expect(result.fileComments.length).to.equal(0)
       verify(octokitWrapper.initialize(anything())).once()
-      verify(octokitWrapper.getIssueComments('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345)).once()
-      verify(octokitWrapper.getReviewComments('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345)).once()
+      verify(octokitWrapper.getIssueComments('microsoft', 'PR-Metrics', 12345)).once()
+      verify(octokitWrapper.getReviewComments('microsoft', 'PR-Metrics', 12345)).once()
       verify(logger.logDebug('* GitHubReposInvoker.getComments()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
       verify(logger.logDebug(JSON.stringify(response))).once()
@@ -453,8 +453,8 @@ describe('gitHubReposInvoker.ts', function (): void {
       expect(result.fileComments[0]!.status).to.equal(CommentThreadStatus.Unknown)
       expect(result.fileComments[0]!.fileName).to.equal('file.ts')
       verify(octokitWrapper.initialize(anything())).once()
-      verify(octokitWrapper.getIssueComments('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345)).once()
-      verify(octokitWrapper.getReviewComments('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345)).once()
+      verify(octokitWrapper.getIssueComments('microsoft', 'PR-Metrics', 12345)).once()
+      verify(octokitWrapper.getReviewComments('microsoft', 'PR-Metrics', 12345)).once()
       verify(logger.logDebug('* GitHubReposInvoker.getComments()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
       verify(logger.logDebug(JSON.stringify(GitHubReposInvokerConstants.getReviewCommentsResponse))).once()
@@ -491,8 +491,8 @@ describe('gitHubReposInvoker.ts', function (): void {
       expect(result.fileComments[0]!.status).to.equal(CommentThreadStatus.Unknown)
       expect(result.fileComments[0]!.fileName).to.equal('file.ts')
       verify(octokitWrapper.initialize(anything())).once()
-      verify(octokitWrapper.getIssueComments('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345)).once()
-      verify(octokitWrapper.getReviewComments('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345)).once()
+      verify(octokitWrapper.getIssueComments('microsoft', 'PR-Metrics', 12345)).once()
+      verify(octokitWrapper.getReviewComments('microsoft', 'PR-Metrics', 12345)).once()
       verify(logger.logDebug('* GitHubReposInvoker.getComments()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
       verify(logger.logDebug(JSON.stringify(response))).once()
@@ -522,8 +522,8 @@ describe('gitHubReposInvoker.ts', function (): void {
       expect(result.pullRequestComments.length).to.equal(0)
       expect(result.fileComments.length).to.equal(0)
       verify(octokitWrapper.initialize(anything())).once()
-      verify(octokitWrapper.getIssueComments('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345)).once()
-      verify(octokitWrapper.getReviewComments('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345)).once()
+      verify(octokitWrapper.getIssueComments('microsoft', 'PR-Metrics', 12345)).once()
+      verify(octokitWrapper.getReviewComments('microsoft', 'PR-Metrics', 12345)).once()
       verify(logger.logDebug('* GitHubReposInvoker.getComments()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
       verify(logger.logDebug(JSON.stringify(response))).once()
@@ -561,7 +561,7 @@ describe('gitHubReposInvoker.ts', function (): void {
 
       // Assert
       verify(octokitWrapper.initialize(anything())).once()
-      verify(octokitWrapper.updatePull('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345, 'Title', 'Description')).once()
+      verify(octokitWrapper.updatePull('microsoft', 'PR-Metrics', 12345, 'Title', 'Description')).once()
       verify(logger.logDebug('* GitHubReposInvoker.setTitleAndDescription()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
       verify(logger.logDebug(JSON.stringify(GitHubReposInvokerConstants.getPullResponse))).once()
@@ -585,7 +585,7 @@ describe('gitHubReposInvoker.ts', function (): void {
 
       // Assert
       verify(octokitWrapper.initialize(anything())).once()
-      verify(octokitWrapper.updatePull('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345, 'Title', undefined)).once()
+      verify(octokitWrapper.updatePull('microsoft', 'PR-Metrics', 12345, 'Title', undefined)).once()
       verify(logger.logDebug('* GitHubReposInvoker.setTitleAndDescription()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
       verify(logger.logDebug('null')).once()
@@ -609,7 +609,7 @@ describe('gitHubReposInvoker.ts', function (): void {
 
       // Assert
       verify(octokitWrapper.initialize(anything())).once()
-      verify(octokitWrapper.updatePull('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345, undefined, 'Description')).once()
+      verify(octokitWrapper.updatePull('microsoft', 'PR-Metrics', 12345, undefined, 'Description')).once()
       verify(logger.logDebug('* GitHubReposInvoker.setTitleAndDescription()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
       verify(logger.logDebug('null')).once()
@@ -635,8 +635,8 @@ describe('gitHubReposInvoker.ts', function (): void {
 
       // Assert
       verify(octokitWrapper.initialize(anything())).once()
-      verify(octokitWrapper.listCommits('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345)).once()
-      verify(octokitWrapper.createReviewComment('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345, 'Content', 'file.ts', 'sha54321')).once()
+      verify(octokitWrapper.listCommits('microsoft', 'PR-Metrics', 12345)).once()
+      verify(octokitWrapper.createReviewComment('microsoft', 'PR-Metrics', 12345, 'Content', 'file.ts', 'sha54321')).once()
       verify(logger.logDebug('* GitHubReposInvoker.createComment()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
       verify(logger.logDebug('null')).once()
@@ -655,7 +655,7 @@ describe('gitHubReposInvoker.ts', function (): void {
         expect(options.log.warn).to.not.equal(null)
         expect(options.log.error).to.not.equal(null)
       })
-      when(octokitWrapper.createReviewComment('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345, 'Content', 'file.ts', 'sha54321')).thenThrow(error)
+      when(octokitWrapper.createReviewComment('microsoft', 'PR-Metrics', 12345, 'Content', 'file.ts', 'sha54321')).thenThrow(error)
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
 
       // Act
@@ -663,8 +663,8 @@ describe('gitHubReposInvoker.ts', function (): void {
 
       // Assert
       verify(octokitWrapper.initialize(anything())).once()
-      verify(octokitWrapper.listCommits('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345)).once()
-      verify(octokitWrapper.createReviewComment('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345, 'Content', 'file.ts', 'sha54321')).once()
+      verify(octokitWrapper.listCommits('microsoft', 'PR-Metrics', 12345)).once()
+      verify(octokitWrapper.createReviewComment('microsoft', 'PR-Metrics', 12345, 'Content', 'file.ts', 'sha54321')).once()
       verify(logger.logDebug('* GitHubReposInvoker.createComment()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
       verify(logger.logDebug('Error – status: 422')).once()
@@ -702,7 +702,7 @@ describe('gitHubReposInvoker.ts', function (): void {
 
       expect(errorThrown).to.equal(true)
       verify(octokitWrapper.initialize(anything())).once()
-      verify(octokitWrapper.listCommits('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345)).once()
+      verify(octokitWrapper.listCommits('microsoft', 'PR-Metrics', 12345)).once()
       verify(logger.logDebug('* GitHubReposInvoker.createComment()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
     })
@@ -720,7 +720,7 @@ describe('gitHubReposInvoker.ts', function (): void {
         expect(options.log.warn).to.not.equal(null)
         expect(options.log.error).to.not.equal(null)
       })
-      when(octokitWrapper.createReviewComment('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345, 'Content', 'file.ts', 'sha54321')).thenThrow(error)
+      when(octokitWrapper.createReviewComment('microsoft', 'PR-Metrics', 12345, 'Content', 'file.ts', 'sha54321')).thenThrow(error)
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(logger), instance(octokitWrapper), instance(taskLibWrapper))
       let errorThrown: boolean = false
 
@@ -735,8 +735,8 @@ describe('gitHubReposInvoker.ts', function (): void {
 
       expect(errorThrown).to.equal(true)
       verify(octokitWrapper.initialize(anything())).once()
-      verify(octokitWrapper.listCommits('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345)).once()
-      verify(octokitWrapper.createReviewComment('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345, 'Content', 'file.ts', 'sha54321')).once()
+      verify(octokitWrapper.listCommits('microsoft', 'PR-Metrics', 12345)).once()
+      verify(octokitWrapper.createReviewComment('microsoft', 'PR-Metrics', 12345, 'Content', 'file.ts', 'sha54321')).once()
       verify(logger.logDebug('* GitHubReposInvoker.createComment()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
     })
@@ -760,8 +760,8 @@ describe('gitHubReposInvoker.ts', function (): void {
 
       // Assert
       verify(octokitWrapper.initialize(anything())).once()
-      verify(octokitWrapper.listCommits('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345)).once()
-      verify(octokitWrapper.createReviewComment('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345, 'Content', 'file.ts', 'sha54321')).twice()
+      verify(octokitWrapper.listCommits('microsoft', 'PR-Metrics', 12345)).once()
+      verify(octokitWrapper.createReviewComment('microsoft', 'PR-Metrics', 12345, 'Content', 'file.ts', 'sha54321')).twice()
       verify(logger.logDebug('* GitHubReposInvoker.createComment()')).twice()
       verify(logger.logDebug('* GitHubReposInvoker.initialize()')).twice()
       verify(logger.logDebug('null')).twice()
@@ -785,7 +785,7 @@ describe('gitHubReposInvoker.ts', function (): void {
 
       // Assert
       verify(octokitWrapper.initialize(anything())).once()
-      verify(octokitWrapper.createIssueComment('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345, 'Content')).once()
+      verify(octokitWrapper.createIssueComment('microsoft', 'PR-Metrics', 12345, 'Content')).once()
       verify(logger.logDebug('* GitHubReposInvoker.createComment()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
       verify(logger.logDebug('null')).once()
@@ -823,7 +823,7 @@ describe('gitHubReposInvoker.ts', function (): void {
 
       // Assert
       verify(octokitWrapper.initialize(anything())).once()
-      verify(octokitWrapper.updateIssueComment('microsoft', 'OMEX-Azure-DevOps-Extensions', 12345, 54321, 'Content')).once()
+      verify(octokitWrapper.updateIssueComment('microsoft', 'PR-Metrics', 12345, 54321, 'Content')).once()
       verify(logger.logDebug('* GitHubReposInvoker.updateComment()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
       verify(logger.logDebug('null')).once()
@@ -849,7 +849,7 @@ describe('gitHubReposInvoker.ts', function (): void {
 
       // Assert
       verify(octokitWrapper.initialize(anything())).once()
-      verify(octokitWrapper.deleteReviewComment('microsoft', 'OMEX-Azure-DevOps-Extensions', 54321)).once()
+      verify(octokitWrapper.deleteReviewComment('microsoft', 'PR-Metrics', 54321)).once()
       verify(logger.logDebug('* GitHubReposInvoker.deleteCommentThread()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
       verify(logger.logDebug('null')).once()
