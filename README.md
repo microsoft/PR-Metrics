@@ -1,49 +1,500 @@
-# Microsoft OMEX Azure DevOps Extensions
+# PR Metrics
 
-This repository contains source code for
-[Azure DevOps](https://azure.microsoft.com/services/devops/) Extensions created
-by the OMEX team in Microsoft, which is part of the Office organization.
+This repository contains source code for the PR Metrics
+[Azure DevOps][azuredevops] Extensions created by the OMEX team in Microsoft,
+which is part of the Office organization.
 
-The code is released under the [MIT license](LICENSE.txt).
+The code is released under the [MIT license][license].
 
 Additional source code released by the OMEX team can be located at
 <https://github.com/microsoft/Omex>.
 
-## Projects
+## Extension Details
 
-This repository layout is structured so that the top level contains a folder
-for each extension type, e.g. Pipeline Task. At the lower level, the repository
-contains a folder for each individual extension.
+PR Metrics is an Azure Pipelines task for adding size and test coverage
+indicators to the start of each Pull Request title.
 
-The current set of projects is:
+It can be downloaded from the Visual Studio Marketplace at
+<https://aka.ms/PRMetrics>.
 
-- **Pipelines Tasks**
-  - [**PR Metrics:**](PipelinesTasks/PRMetrics/README.md) A task for adding
-    size and test coverage indicators to the titles of PRs. This helps ensure
-    engineers keep PRs to an appropriate size and add sufficient test coverage,
-    while providing insight to reviewers as to how long a PR is likely to take
-    to review. **It can be downloaded from the Visual Studio Marketplace at
-    <https://aka.ms/PRMetrics>.**
+For example, a PR with the title "Adding code" could become either:
 
-## Building & Testing
+- XS:heavy_check_mark: :black_small_square: Adding code
+- L:warning: :black_small_square: Adding code
 
-For instructions on building and testing each project, navigate to the project
-in question and follow the README.md provided.
+The former would indicate an extra small PR with sufficient test coverage,
+whereas the latter would indicate a large PR with insufficient test coverage.
 
-Test validation and static analysis of all projects will be automatically
-performed whenever a PR is opened against the `main` branch. These validations
-must succeed for the PR to be merged.
+This task helps ensure engineers keep PRs to an appropriate size with
+appropriate test coverage, while informing reviewers of the expected time
+commitment for a thorough review of the code.
+
+The task will also add a comment to the PR with a detailed breakdown of the
+metrics:
+
+> **Metrics for iteration 1**
+> :heavy_check_mark: Thanks for keeping your pull request small.
+>
+> :heavy_check_mark: Thanks for adding tests.
+>
+> |              | Lines   |
+> | ------------ | ------: |
+> | Product Code |   100   |
+> | Test Code    |    50   |
+> | **Subtotal** | **150** |
+> | Ignored      |     5   |
+> | **Total**    | **155** |
+
+It will furthermore add a comment to indicate that review of specific excluded
+files is unnecessary.
+
+> :exclamation: **This file doesn't require review.**
+
+If no PR description is provided, the description will be set to:
+
+> :x: **Add a description.**
+
+## Deploying
+
+The task can be used with [Azure Pipelines][azurepipelines].
+
+To deploy the task:
+
+1. Acquire administrator access to the server to which you wish to deploy.
+1. Install [tfx-cli][tfxcli] using [npm][npm] via the command-line
+   `npm install -g tfx-cli`.
+1. Sign in to the server using:
+
+   ```bat
+   tfx login --service-url https://<account>.visualstudio.com/DefaultCollection --token <PAT>
+   ```
+
+   You can generate a PAT with at least the "Agent Pools (Read & manage)" scope
+   by following the instructions [here][tfxpat]. This will only need to be
+   performed the first time you use tfx-cli.
+1. To build and deploy, from within the `src/task` folder, run
+   `npm run deploy:release`. Note that the deployment task can intermittently
+   fail to deploy all dependencies, which will be seen when you run the build
+   task. If this occurs, run `npm run deploy:release` or `npm run deploy:debug`
+   and try again.
+
+## Configuring
+
+The task can be added to a pipeline as detailed [here][addingtask].
+
+For Azure repositories, the agent running the task must allow access to the
+OAuth token. If access is unavailable, the task will generate an error. Should
+the OAuth token scope have been limited, you may need to create a new Personal
+Access Token (PAT) with scopes 'Code' > 'Read' and 'Pull Request Threads' >
+'Read & write', which you can then map to `System.AccessToken` within the task
+definition.
+
+For GitHub repositories, you will need to create a PAT according to the
+instructions [here][githubpat]. The scope should be 'repos'. The resulting PAT
+should then be added to your repository as a secret with the name
+`System.AccessToken` according to the instructions [here][githubsecret] and
+mapped to `System.AccessToken` within the task definition.
+
+It is recommended to run the task as one of the first operations in your build,
+after code check out is complete. Running the task early in the build process
+allows for the title to be updated quickly, avoiding the need for engineers to
+wait a long time for the title update.
+
+### Inputs
+
+The task inputs are:
+
+- **Base Size:** The maximum number of new lines in a small PR. If left blank,
+  a default of `200` will be used.
+- **Growth Rate:** The growth rate applied to the base size for calculating the
+  size of larger PRs. If left blank, a default of `2.0` will be used. With a
+  base size of `200` and a growth rate of `2.0`, `400` new lines would
+  constitute a medium PR while `800` new lines would constitute a large PR.
+- **Test Factor:** The lines of test code expected for each line of product
+  code. If left blank, a default of `1.0` will be used. This can be set to `0.0`
+  in order to skip the reporting of the test code coverage.
+- **File Matching Patterns:** [Azure DevOps file matching patterns][globs]
+  specifying the files and folders to include. Autogenerated files should
+  typically be excluded. Excluded files will contain a comment to inform
+  reviewers that they are unlikely to need to review those files. If left
+  blank, a default of
+
+  ```Text
+  **/*
+  !**/package-lock.json
+  ```
+
+  (all files except `package-lock.json`) will be used.
+- **Code File Extensions:** Extensions for files containing code, so that
+  non-code files can be excluded. If left blank, a default set of file
+  extensions will be used, which are listed at
+  [the end of this document](#default-code-file-extensions).
+
+### YAML
+
+The default input values are expected to be appropriate for most builds.
+Therefore, the following YAML definition is recommended:
+
+```YAML
+steps:
+- task: ms-omex.prmetrics.prmetrics.PRMetrics@1
+  displayName: 'PR Metrics'
+  env:
+    SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+  continueOnError: true
+```
+
+If you wish to modify the inputs, YAML akin the to the following can be used:
+
+```YAML
+steps:
+- task: ms-omex.prmetrics.prmetrics.PRMetrics@1
+  displayName: 'PR Metrics'
+  env:
+    SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+  inputs:
+    BaseSize: 200
+    GrowthRate: 2.0
+    TestFactor: 1.0
+    FileMatchingPatterns: |
+      **/*
+      !Ignore.cs
+    CodeFileExtensions: |
+      cs
+      ps1
+  continueOnError: true
+```
+
+## Implementation
+
+This task is written in [TypeScript][typescript] using the
+[Azure Pipelines Task SDK][sdk].
+
+It works by querying Git for changes using the command
+`git diff --numstat origin/<target>...pull/<pull_request_id>/merge`. Files with
+`test` in the file or directory name or `.spec` in the filename (irrespective
+of case) are considered test files. All other files are considered product code
+files.
+
+Note that this task is designed to give a quick estimate of the size of a change
+and its test coverage. It is not an authoritative metric and should not be
+treated as such. For example, the task should not be used to replace
+comprehensive and thorough code coverage metrics. Instead, the task should
+merely be considered a guideline for influencing optimal PR behavior.
+
+The task can be built using `npm run build` from the `src/task`
+folder. `npm run clean` can be used to clean the build outputs.
+
+## Testing
+
+This task is tested via unit and integration tests constructed using the
+[Mocha][mocha] test framework, the [Chai][chai] assertion library and the
+[ts-mockito][tsmockito] mocking library. Tests follow the
+[Arrange-Act-Assert pattern][aaa], and they can be run using `npm test` from
+within the `src/task` folder. This command will output both the test
+results and code coverage metrics.
+
+The code coverage is currently extremely high, and a high rate of coverage
+should be maintained for all changes. There are a large number of edge cases
+which were only discovered through experience and the unit tests ensure that
+these edge case fixes do not regress. Moreover, validating this extension on the
+server is significantly more time consuming than validating locally.
+
+You can use `npm run deploy:release` or `npm run deploy:debug` for server-based
+testing. Note that the deployment task can intermittently fail to deploy all
+dependencies, which will be seen when you run the build task. If this occurs,
+run `npm run deploy:release` or `npm run deploy:debug` and try again.
+
+The code formatting complies with the [ESLint][eslint] "Standard" rules. The
+formatting can be checked and automatically fixed by running `npm run lint`
+from within the `src/task` folder. [TypeDoc][typedoc] comments are
+present on public methods and are converted to HTML during the `npm run build`
+process. [Dependency injection][depinjection] is used throughout the project to
+facilitate testability.
+
+Test validation and static analysis will be automatically performed whenever a
+PR is opened against the `main` branch. These validations must succeed for the
+PR to be merged.
+
+### Manual Test Cases
+
+Unfortunately, it is difficult to automatically test everything as the task runs
+on the Azure DevOps platform, which the unit tests cannot run on. Therefore, it
+is recommended that you perform the following manual test cases outlined in
+[here][manualtesting] whenever significant changes are made.
+
+## Debugging
+
+To gain greater insight into the cause of failures, you can set the
+`system.debug` variable to `true` for your build pipeline. This will output
+significant additional debugging information, including a full trace of the
+methods called, which can be used for posting bug reports, etc.
+
+If a failure occurs during the task, full debugging information will be
+outputted by default irrespective of the value of the `system.debug` variable.
+
+## Default Code File Extensions
+
+The default value for the Code File Extensions input outlined [above](#inputs)
+corresponds to the [top 10 languages used on GitHub in 2020][octoverse] and uses
+the language extensions defined in the
+[GitHub language detection logic][githublinguist].
+
+### JavaScript
+
+- `js`
+- `_js`
+- `bones`
+- `cjs`
+- `es`
+- `es6`
+- `frag`
+- `gs`
+- `jake`
+- `jsb`
+- `jscad`
+- `jsfl`
+- `jsm`
+- `jss`
+- `jsx`
+- `mjs`
+- `njs`
+- `pac`
+- `sjs`
+- `ssjs`
+- `xsjs`
+- `xsjslib`
+
+#### Ecere Projects
+
+- `epj`
+
+#### JavaScript+ERB
+
+- `erb`
+
+### Python
+
+- `py`
+- `cgi`
+- `fcgi`
+- `gyp`
+- `gypi`
+- `lmi`
+- `py3`
+- `pyde`
+- `pyi`
+- `pyp`
+- `pyt`
+- `pyw`
+- `rpy`
+- `smk`
+- `spec`
+- `tac`
+- `wsgi`
+- `xpy`
+
+#### Cython
+
+- `pyx`
+- `pxd`
+- `pxi`
+
+#### Easybuild
+
+- `eb`
+
+#### NumPy
+
+- `numpy`
+- `numpyw`
+- `numsc`
+
+#### Python traceback
+
+- `pytb`
+
+### Java
+
+- `java`
+
+#### Java Server Pages
+
+- `jsp`
+
+### TypeScript
+
+- `ts`
+
+#### TSX
+
+- `tsx`
+
+### C\#
+
+- `cs`
+- `cake`
+- `csx`
+- `linq`
+
+### PHP
+
+- `php`
+- `aw`
+- `ctp`
+- `fcgi`
+- `inc`
+- `php3`
+- `php4`
+- `php5`
+- `phps`
+- `phpt`
+
+### C++
+
+- `cpp`
+- `c++`
+- `cc`
+- `cp`
+- `cxx`
+- `h`
+- `h++`
+- `hh`
+- `hpp`
+- `hxx`
+- `inc`
+- `inl`
+- `ino`
+- `ipp`
+- `re`
+- `tcc`
+- `tpp`
+
+### C
+
+- `c`
+- `cats`
+- `h`
+- `idc`
+
+#### C: OpenCL
+
+- `cl`
+- `opencl`
+
+#### C: Unified Parallel C
+
+- `upc`
+
+#### C: X BitMap
+
+- `xbm`
+
+#### C: X PixMap
+
+- `xpm`
+- `pm`
+
+### Shell
+
+- `sh`
+- `bash`
+- `bats`
+- `cgi`
+- `command`
+- `env`
+- `fcgi`
+- `ksh`
+- `tmux`
+- `tool`
+- `zsh`
+
+#### Shell: fish
+
+- `fish`
+
+#### Shell: Gentoo Ebuild
+
+- `ebuild`
+
+#### Shell: Gentoo Eclass
+
+- `eclass`
+
+#### Shell: PowerShell
+
+- `ps1`
+- `psd1`
+- `psm1`
+
+#### Shell: Tcsh
+
+- `tcsh`
+- `csh`
+
+### Ruby
+
+- `rb`
+- `builder`
+- `eye`
+- `fcgi`
+- `gemspec`
+- `god`
+- `jbuilder`
+- `mspec`
+- `pluginspec`
+- `podspec`
+- `prawn`
+- `rabl`
+- `rake`
+- `rbi`
+- `rbuild`
+- `rbw`
+- `rbx`
+- `ru`
+- `ruby`
+- `spec`
+- `thor`
+- `watchr`
 
 ## Contributing
 
-Instructions on contributing can be located in
-[CONTRIBUTING.md](.github/CONTRIBUTING.md).
+Instructions on contributing can be located in [CONTRIBUTING.md][contributing].
 
 ## Code of Conduct
 
 This project has adopted the
-[Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
-For more information see the
-[Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
-contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any
-additional questions or comments.
+[Microsoft Open Source Code of Conduct][codeofconduct]. For more information,
+see the[Code of Conduct FAQ][codeofconductfaq] or contact
+[opencode@microsoft.com][opencodeemail] with any additional questions or
+comments.
+
+[azuredevops]: https://azure.microsoft.com/services/devops/
+[license]: LICENSE.txt
+[azurepipelines]: https://azure.microsoft.com/services/devops/pipelines/
+[azureserver]: https://azure.microsoft.com/services/devops/server/
+[tfxcli]: https://github.com/Microsoft/tfs-cli
+[npm]: https://www.npmjs.com/
+[tfxpat]: https://docs.microsoft.com/azure/devops/extend/publish/command-line
+[vssextensionjson]: src/vss-extension.json
+[taskjson]: src/task/task.json
+[addingtask]: https://docs.microsoft.com/azure/devops/pipelines/customize-pipeline
+[githubpat]: https://docs.github.com/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token
+[githubsecret]: https://docs.github.com/actions/reference/encrypted-secrets
+[globs]: https://docs.microsoft.com/azure/devops/pipelines/tasks/file-matching-patterns
+[typescript]: https://www.typescriptlang.org/
+[sdk]: https://github.com/microsoft/azure-pipelines-task-lib
+[mocha]: https://mochajs.org/
+[chai]: https://www.chaijs.com/
+[aaa]: https://automationpanda.com/2020/07/07/arrange-act-assert-a-pattern-for-writing-good-tests/
+[tsmockito]: https://github.com/NagRock/ts-mockito
+[eslint]: https://eslint.org/
+[typedoc]: https://typedoc.org/
+[depinjection]: https://wikipedia.org/wiki/Dependency_injection
+[manualtesting]: src/task/tests/manualTests/Instructions.md
+[octoverse]: https://octoverse.github.com/
+[githublinguist]: https://github.com/github/linguist/blob/master/lib/linguist/languages.yml
+[contributing]: .github/CONTRIBUTING.md
+[codeofconduct]: https://opensource.microsoft.com/codeofconduct/
+[codeofconductfaq]: https://opensource.microsoft.com/codeofconduct/faq/
+[opencodeemail]: mailto:opencode@microsoft.com

@@ -15,10 +15,6 @@ jobs:
   release:
     name: Release
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        task: [PRMetrics]
     steps:
       - name: Checkout
         uses: actions/checkout@v2.4.0
@@ -30,23 +26,23 @@ jobs:
 
       - name: NPM – Install Dependencies
         run: npm install
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/src/task
+        working-directory: ${{ github.workspace }}/src/task
 
       - name: NPM – Build
         run: npm run build:release
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/src/task
+        working-directory: ${{ github.workspace }}/src/task
 
       - name: Install TFX CLI
         run: npm install -g tfx-cli
 
       - name: Release – Create
-        run: tfx extension create --manifest-globs vss-extension.json --output-path ../ms-omex.${{ matrix.task }}.vsix
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/build/release
+        run: tfx extension create --manifest-globs vss-extension.json --output-path ../ms-omex.PRMetrics}.vsix
+        working-directory: ${{ github.workspace }}/build/release
 
       - name: Release – Publish
         uses: actions/upload-artifact@v2.2.4
         with:
-          name: ms-omex.${{ matrix.task }}
-          path: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/build/ms-omex.${{ matrix.task }}.vsix
+          name: ms-omex.PRMetrics
+          path: ${{ github.workspace }}/build/ms-omex.PRMetrics.vsix
 
 ...
