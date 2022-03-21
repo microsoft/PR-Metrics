@@ -38,7 +38,7 @@ export default class GitInvoker {
     this._logger.logDebug('* GitInvoker.isGitEnlistment()')
 
     try {
-      await this.invokeGit('rev-parse --is-inside-work-tree')
+      await this.invokeGit(['rev-parse', '--is-inside-work-tree'])
       return true
     } catch {
       return false
@@ -55,7 +55,7 @@ export default class GitInvoker {
     this.initialize()
 
     try {
-      await this.invokeGit(`rev-parse --branch origin/${this._targetBranch}...pull/${this._pullRequestId}/merge`)
+      await this.invokeGit(['rev-parse', '--branch', `origin/${this._targetBranch}...pull/${this._pullRequestId}/merge`])
       return true
     } catch {
       return false
@@ -70,7 +70,7 @@ export default class GitInvoker {
     this._logger.logDebug('* GitInvoker.getDiffSummary()')
 
     this.initialize()
-    return this.invokeGit(`diff --numstat origin/${this._targetBranch}...pull/${this._pullRequestId}/merge`)
+    return this.invokeGit(['diff', '--numstat', `origin/${this._targetBranch}...pull/${this._pullRequestId}/merge`])
   }
 
   private initialize (): void {
@@ -109,7 +109,7 @@ export default class GitInvoker {
     }
   }
 
-  private async invokeGit (parameters: string): Promise<string> {
+  private async invokeGit (parameters: string[]): Promise<string> {
     this._logger.logDebug('* GitInvoker.invokeGit()')
 
     const outputStream: GitWritableStream = new GitWritableStream(this._logger)

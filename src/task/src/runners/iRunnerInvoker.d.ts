@@ -28,15 +28,14 @@ export default interface IRunnerInvoker {
    * @param errorStream The stream to which to write error text.
    * @returns A promise containing the result of the execution.
    */
-  exec (tool: string, args: string | string[], failOnError: boolean, outputStream: GitWritableStream, errorStream: GitWritableStream): Promise<number>
+  exec (tool: string, args: string[], failOnError: boolean, outputStream: GitWritableStream, errorStream: GitWritableStream): Promise<number>
 
   /**
    * Gets the value of an input. If the input is `required` but nonexistent, this method will throw.
-   * @param name The name of the input.
-   * @param required A value indicating whether the input is required.
+   * @param name The name of the input, with each word stored as a separate element of the array.
    * @returns The value of the input or `undefined` if the input was not set.
    */
-  getInput (name: string, required: boolean | undefined): string | undefined
+  getInput (name: string[]): string | undefined
 
   /**
    * Gets the localized string from the JSON resource file and optionally formats using the additional parameters.

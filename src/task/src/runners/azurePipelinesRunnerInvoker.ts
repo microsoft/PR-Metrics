@@ -20,7 +20,7 @@ export default class AzurePipelinesRunnerInvoker implements IRunnerInvoker {
     taskLib.error(message)
   }
 
-  public exec (tool: string, args: string | string[], failOnError: boolean, outputStream: GitWritableStream, errorStream: GitWritableStream): Promise<number> {
+  public exec (tool: string, args: string[], failOnError: boolean, outputStream: GitWritableStream, errorStream: GitWritableStream): Promise<number> {
     const options: IExecOptions = {
       failOnStdErr: failOnError,
       outStream: outputStream,
@@ -30,8 +30,9 @@ export default class AzurePipelinesRunnerInvoker implements IRunnerInvoker {
     return taskLib.exec(tool, args, options)
   }
 
-  public getInput (name: string, required: boolean | undefined): string | undefined {
-    return taskLib.getInput(name, required)
+  public getInput (name: string[]): string | undefined {
+    const formattedName: string = name.join('')
+    return taskLib.getInput(formattedName)
   }
 
   public loc (key: string, ...param: any[]): string {

@@ -35,7 +35,7 @@ export default class PullRequest {
   public get isPullRequest (): boolean {
     this._logger.logDebug('* PullRequest.isPullRequest')
 
-    return process.env.SYSTEM_PULLREQUEST_PULLREQUESTID !== undefined
+    return process.env.GITHUB_BASE_REF !== undefined && process.env.SYSTEM_PULLREQUEST_PULLREQUESTID !== undefined
   }
 
   /**
@@ -45,6 +45,12 @@ export default class PullRequest {
   public get isSupportedProvider (): boolean | string {
     this._logger.logDebug('* PullRequest.isSupportedProvider')
 
+    // If the action is running on GitHub, the provider is always GitHub and therefore valid.
+    if (process.env.GITHUB_ACTION) {
+      return true
+    }
+
+    // If the action is running on Azure DevOps, check the provider.
     const variable: string = Validator.validateVariable('BUILD_REPOSITORY_PROVIDER', 'PullRequest.isSupportedProvider')
     if (variable === 'TfsGit' || variable === 'GitHub' || variable === 'GitHubEnterprise') {
       return true

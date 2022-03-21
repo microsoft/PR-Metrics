@@ -37,14 +37,14 @@ export default class RunnerInvoker implements IRunnerInvoker {
     runner.error(message)
   }
 
-  public exec (tool: string, args: string | string[], failOnError: boolean, outputStream: GitWritableStream, errorStream: GitWritableStream): Promise<number> {
+  public exec (tool: string, args: string[], failOnError: boolean, outputStream: GitWritableStream, errorStream: GitWritableStream): Promise<number> {
     const runner: IRunnerInvoker = this.getRunner()
     return runner.exec(tool, args, failOnError, outputStream, errorStream)
   }
 
-  public getInput (name: string, required: boolean | undefined): string | undefined {
+  public getInput (name: string[]): string | undefined {
     const runner: IRunnerInvoker = this.getRunner()
-    return runner.getInput(name, required)
+    return runner.getInput(name)
   }
 
   public loc (key: string, ...param: any[]): string {

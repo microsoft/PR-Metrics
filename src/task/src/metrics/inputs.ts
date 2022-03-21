@@ -94,19 +94,19 @@ export default class Inputs {
       return
     }
 
-    const baseSize: string | undefined = this._runnerInvoker.getInput('BaseSize', false)
+    const baseSize: string | undefined = this._runnerInvoker.getInput(['Base', 'Size'])
     this.initializeBaseSize(baseSize)
 
-    const growthRate: string | undefined = this._runnerInvoker.getInput('GrowthRate', false)
+    const growthRate: string | undefined = this._runnerInvoker.getInput(['Growth', 'Rate'])
     this.initializeGrowthRate(growthRate)
 
-    const testFactor: string | undefined = this._runnerInvoker.getInput('TestFactor', false)
+    const testFactor: string | undefined = this._runnerInvoker.getInput(['Test', 'Factor'])
     this.initializeTestFactor(testFactor)
 
-    const fileMatchingPatterns: string | undefined = this._runnerInvoker.getInput('FileMatchingPatterns', false)
+    const fileMatchingPatterns: string | undefined = this._runnerInvoker.getInput(['File', 'Matching', 'Patterns'])
     this.initializeFileMatchingPatterns(fileMatchingPatterns)
 
-    const codeFileExtensions: string | undefined = this._runnerInvoker.getInput('CodeFileExtensions', false)
+    const codeFileExtensions: string | undefined = this._runnerInvoker.getInput(['Code', 'File', 'Extensions'])
     this.initializeCodeFileExtensions(codeFileExtensions)
 
     this._isInitialized = true

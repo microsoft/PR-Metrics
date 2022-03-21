@@ -2,9 +2,10 @@
 // Licensed under the MIT License.
 
 import { GitWritableStream } from '../git/gitWritableStream'
-import { IExecOptions } from 'azure-pipelines-task-lib/toolrunner'
 import { singleton } from 'tsyringe'
 import * as taskLib from 'azure-pipelines-task-lib/task'
+import * as actionsCore from '@actions/core'
+import * as actionsExec from '@actions/exec'
 import IRunnerInvoker from './iRunnerInvoker'
 
 /**
@@ -13,32 +14,34 @@ import IRunnerInvoker from './iRunnerInvoker'
 @singleton()
 export default class GitHubRunnerInvoker implements IRunnerInvoker {
   public debug (message: string): void {
-    taskLib.debug(message)
+    actionsCore.debug(message)
   }
 
   public error (message: string): void {
-    taskLib.error(message)
+    actionsCore.error(message)
   }
 
-  public exec (tool: string, args: string | string[], failOnError: boolean, outputStream: GitWritableStream, errorStream: GitWritableStream): Promise<number> {
-    const options: IExecOptions = {
+  public exec (tool: string, args: string[], failOnError: boolean, outputStream: GitWritableStream, errorStream: GitWritableStream): Promise<number> {
+    const options: actionsExec.ExecOptions = {
       failOnStdErr: failOnError,
       outStream: outputStream,
       errStream: errorStream
     }
 
-    return taskLib.exec(tool, args, options)
+    return actionsExec.exec(tool, args, options)
   }
 
-  public getInput (name: string, required: boolean | undefined): string | undefined {
-    return taskLib.getInput(name, required)
+  public getInput (name: string[]): string | undefined {
+    const formattedName: string = name.join('-').toLowerCase()
+    return actionsCore.getInput(formattedName)
   }
 
   public loc (key: string, ...param: any[]): string {
+    // This method uses the Azure Pipelines implementation as equivalent functionality is not yet available for GitHub Actions.
     return taskLib.loc(key, ...param)
   }
 
   public warning (message: string): void {
-    taskLib.warning(message)
+    actionsCore.warning(message)
   }
 }
