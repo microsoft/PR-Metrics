@@ -25,7 +25,7 @@ export default abstract class BaseRunnerInvoker implements IRunnerInvoker {
 
   public loc (key: string, ...param: any[]): string {
     // This method uses the Azure Pipelines implementation as equivalent functionality is not yet available for GitHub Actions.
-    return taskLib.loc(key, ...param)
+    return taskLib.loc(key, ...param).replace(' []', '')
   }
 
   public abstract setFailed (message: string): void
