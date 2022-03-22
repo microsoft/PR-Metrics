@@ -2,17 +2,16 @@
 // Licensed under the MIT License.
 
 import { GitWritableStream } from './gitWritableStream'
-import { singleton } from 'tsyringe'
+import { injectable } from 'tsyringe'
 import { Validator } from '../utilities/validator'
 import Logger from '../utilities/logger'
-import PullRequest from '../pullRequests/pullRequest'
 import RunnerInvoker from '../runners/runnerInvoker'
 
 /**
  * A class for invoking Git commands.
  * @remarks This class should not be used in a multithreaded context as it could lead to the initialization logic being invoked repeatedly.
  */
-@singleton()
+@injectable()
 export default class GitInvoker {
   private readonly _logger: Logger
   private readonly _runnerInvoker: RunnerInvoker
@@ -29,6 +28,13 @@ export default class GitInvoker {
   public constructor (logger: Logger, runnerInvoker: RunnerInvoker) {
     this._logger = logger
     this._runnerInvoker = runnerInvoker
+  }
+
+  /**
+   * Gets the ID of the pull request.
+   */
+  public static get pullRequestId (): string {
+    return RunnerInvoker.isGitHub ? this.pullRequestIdForGitHub : this.pullRequestIdForAzureDevOps
   }
 
   /**
@@ -82,8 +88,27 @@ export default class GitInvoker {
     }
 
     this._targetBranch = this.getTargetBranch()
-    this._pullRequestId = PullRequest.pullRequestId
+    this._pullRequestId = GitInvoker.pullRequestId
     this._isInitialized = true
+  }
+
+  private static get pullRequestIdForGitHub (): string {
+    const gitHubReference: string = Validator.validateVariable('GITHUB_REF', 'GitInvoker.pullRequestIdForGitHub()')
+    const gitHubReferenceElements: string[] = gitHubReference.split('/')
+    if (gitHubReferenceElements.length !== 4) {
+      throw Error(`GITHUB_REF '${gitHubReference}' is in an unexpected format.`)
+    }
+
+    return gitHubReferenceElements[2]!
+  }
+
+  private static get pullRequestIdForAzureDevOps (): string {
+    const variable: string = Validator.validateVariable('BUILD_REPOSITORY_PROVIDER', 'GitInvoker.pullRequestIdForAzureDevOps()')
+    if (variable === 'GitHub' || variable === 'GitHubEnterprise') {
+      return Validator.validateVariable('SYSTEM_PULLREQUEST_PULLREQUESTNUMBER', 'GitInvoker.pullRequestIdForAzureDevOps()')
+    } else {
+      return Validator.validateVariable('SYSTEM_PULLREQUEST_PULLREQUESTID', 'GitInvoker.pullRequestIdForAzureDevOps()')
+    }
   }
 
   private getTargetBranch (): string {

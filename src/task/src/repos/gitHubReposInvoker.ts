@@ -19,12 +19,12 @@ import GetReviewCommentsResponse from '../wrappers/octokitInterfaces/getReviewCo
 import ListCommitsResponse from '../wrappers/octokitInterfaces/listCommitsResponse'
 import Logger from '../utilities/logger'
 import OctokitWrapper from '../wrappers/octokitWrapper'
-import PullRequest from '../pullRequests/pullRequest'
 import PullRequestCommentData from './interfaces/pullRequestCommentData'
 import PullRequestDetails from './interfaces/pullRequestDetails'
 import RunnerInvoker from '../runners/runnerInvoker'
 import UpdateIssueCommentResponse from '../wrappers/octokitInterfaces/updateIssueCommentResponse'
 import UpdatePullResponse from '../wrappers/octokitInterfaces/updatePullResponse'
+import GitInvoker from '../git/gitInvoker'
 
 const octokit: Octokit = new Octokit()
 type GetIssueCommentsResponseData = GetResponseDataTypeFromEndpointMethod<typeof octokit.rest.issues.listComments>[0]
@@ -212,7 +212,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
 
     this._logger.logDebug(`Using Base URL '${options.baseUrl}'.`)
     this._octokitWrapper.initialize(options)
-    this._pullRequestId = parseInt(PullRequest.pullRequestId)
+    this._pullRequestId = parseInt(GitInvoker.pullRequestId)
     this._isInitialized = true
   }
 

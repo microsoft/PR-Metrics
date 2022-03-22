@@ -12,15 +12,6 @@ import BaseRunnerInvoker from './baseRunnerInvoker'
  */
 @singleton()
 export default class AzurePipelinesRunnerInvoker extends BaseRunnerInvoker {
-  /**
-   * Initializes a new instance of the `AzurePipelinesRunnerInvoker` class.
-   */
-  public constructor () {
-    super()
-
-    console.log('AzDO')
-  }
-
   public debug (message: string): void {
     taskLib.debug(message)
   }

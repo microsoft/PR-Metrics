@@ -29,13 +29,6 @@ export default class PullRequest {
   }
 
   /**
-   * Gets the ID of the pull request.
-   */
-  public static get pullRequestId (): string {
-    return RunnerInvoker.isGitHub ? this.pullRequestIdForGitHub : this.pullRequestIdForAzureDevOps
-  }
-
-  /**
    * Determines whether the task is running against a pull request.
    * @returns A value indicating whether the task is running against a pull request.
    */
@@ -114,24 +107,5 @@ export default class PullRequest {
     }
 
     return this._runnerInvoker.loc('pullRequests.pullRequest.titleFormat', sizeIndicator, originalTitle)
-  }
-
-  private static get pullRequestIdForGitHub (): string {
-    const gitHubReference: string = Validator.validateVariable('GITHUB_REF', 'GitHubReposInvoker.initializeForGitHub()')
-    const gitHubReferenceElements: string[] = gitHubReference.split('/')
-    if (gitHubReferenceElements.length !== 4) {
-      throw Error(`GITHUB_REF '${gitHubReference}' is in an unexpected format.`)
-    }
-
-    return gitHubReferenceElements[2]!
-  }
-
-  private static get pullRequestIdForAzureDevOps (): string {
-    const variable: string = Validator.validateVariable('BUILD_REPOSITORY_PROVIDER', 'GitInvoker.getPullRequestId()')
-    if (variable === 'GitHub' || variable === 'GitHubEnterprise') {
-      return Validator.validateVariable('SYSTEM_PULLREQUEST_PULLREQUESTNUMBER', 'GitInvoker.getPullRequestId()')
-    } else {
-      return Validator.validateVariable('SYSTEM_PULLREQUEST_PULLREQUESTID', 'GitInvoker.getPullRequestId()')
-    }
   }
 }

@@ -12,15 +12,6 @@ import BaseRunnerInvoker from './baseRunnerInvoker'
  */
 @singleton()
 export default class GitHubRunnerInvoker extends BaseRunnerInvoker {
-  /**
-   * Initializes a new instance of the `GitHubRunnerInvoker` class.
-   */
-  public constructor () {
-    super()
-
-    console.log('GH')
-  }
-
   public debug (message: string): void {
     actionsCore.debug(message)
   }
