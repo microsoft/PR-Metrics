@@ -5,11 +5,11 @@ import { CodeFileMetric } from './codeFileMetric'
 import { FixedLengthArray } from '../utilities/fixedLengthArray'
 import { singleton } from 'tsyringe'
 import * as path from 'path'
-import * as taskLib from 'azure-pipelines-task-lib/task'
 import CodeMetricsData from './codeMetricsData'
 import GitInvoker from '../git/gitInvoker'
 import Inputs from './inputs'
 import Logger from '../utilities/logger'
+import minimatch from 'minimatch'
 import RunnerInvoker from '../runners/runnerInvoker'
 
 /**
@@ -22,6 +22,11 @@ export default class CodeMetrics {
   private _inputs: Inputs
   private _logger: Logger
   private _runnerInvoker: RunnerInvoker
+
+  private static readonly _minimatchOptions: minimatch.IOptions = {
+    nobrace: true,
+    dot: true
+  }
 
   private _isInitialized: boolean = false
   private _filesNotRequiringReview: string[] = []
@@ -151,9 +156,15 @@ export default class CodeMetrics {
 
     // Check for glob matches.
     codeFileMetrics.forEach((codeFileMetric: CodeFileMetric): void => {
-      const isValidFilePattern: boolean = taskLib.match([codeFileMetric.fileName], this._inputs.fileMatchingPatterns).length > 0
-      const isValidFileExtension: boolean = this.matchFileExtension(codeFileMetric.fileName)
+      let isValidFilePattern: boolean = false
+      for (let i = 0; i < this._inputs.fileMatchingPatterns.length; i++) {
+        isValidFilePattern = minimatch.match([codeFileMetric.fileName], this._inputs.fileMatchingPatterns[i]!, CodeMetrics._minimatchOptions).length > 0
+        if (isValidFilePattern) {
+          break
+        }
+      }
 
+      const isValidFileExtension: boolean = this.matchFileExtension(codeFileMetric.fileName)
       if (isValidFilePattern && isValidFileExtension) {
         matches.push(codeFileMetric)
       } else if (!isValidFilePattern) {
