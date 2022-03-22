@@ -90,10 +90,12 @@ jobs:
         inputs:
           targetType: F
           optionsFC: 1
+          optionsUEPATH: $(Build.SourcesDirectory)/.github/azure-devops/PoliCheckExclusions.xml
 
       - task: Semmle@1
         displayName: CodeQL
         inputs:
+          sourceCodeDirectory: $(Build.SourcesDirectory)/src
           language: tsandjs
 
       - task: PublishSecurityAnalysisLogs@3
