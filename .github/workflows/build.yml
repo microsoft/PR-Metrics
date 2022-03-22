@@ -134,6 +134,9 @@ jobs:
 
       - name: Analyze
         uses: github/codeql-action/analyze@v1
+        with:
+          paths-ignore:
+            - dist/
 
   validate-linter:
     name: Validate – Linter
