@@ -7,6 +7,7 @@ import { Octokit } from 'octokit'
 import { OctokitOptions } from '@octokit/core/dist-types/types'
 import { singleton } from 'tsyringe'
 import { Validator } from '../utilities/validator'
+import * as actionsGitHub from '@actions/github'
 import BaseReposInvoker from './baseReposInvoker'
 import CommentData from './interfaces/commentData'
 import CreateIssueCommentResponse from '../wrappers/octokitInterfaces/createIssueCommentResponse'
@@ -201,6 +202,11 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
         warn: (message: string): void => this._logger.logWarning(`Octokit – ${message}`),
         error: (message: string): void => this._logger.logError(`Octokit – ${message}`)
       }
+    }
+
+    if (RunnerInvoker.isGitHub) {
+      const octokit = actionsGitHub.getOctokit(process.env.SYSTEM_ACCESSTOKEN, options)
+
     }
 
     const sourceRepositoryUri: string = Validator.validateVariable('SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI', 'GitHubReposInvoker.initialize()')

@@ -67,6 +67,8 @@ jobs:
 
       - name: PR Metrics
         uses: ./
+        env:
+          SYSTEM_ACCESSTOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   validate:
     name: Validate
