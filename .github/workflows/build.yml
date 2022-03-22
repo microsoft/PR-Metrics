@@ -131,7 +131,7 @@ jobs:
         uses: github/codeql-action/init@v1
         with:
           config-file: ../linters/codeql.yml
-          queries: security-and-qualitywith:
+          queries: security-and-quality
 
       - name: Analyze
         uses: github/codeql-action/analyze@v1
