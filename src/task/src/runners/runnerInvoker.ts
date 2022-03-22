@@ -8,7 +8,8 @@ import GitHubRunnerInvoker from './gitHubRunnerInvoker'
 import IRunnerInvoker from './iRunnerInvoker'
 
 /**
- * A wrapper around the runner functionality, to facilitate testability.
+ * A wrapper around the runner functionality, to facilitate testability. This class cannot use logging functionality as
+ * the logger forms part of the runner functionality, and using logging here could result in circular dependencies.
  */
 @singleton()
 export default class RunnerInvoker implements IRunnerInvoker {
@@ -25,6 +26,13 @@ export default class RunnerInvoker implements IRunnerInvoker {
   public constructor (azurePipelinesRunnerInvoker: AzurePipelinesRunnerInvoker, gitHubRunnerInvoker: GitHubRunnerInvoker) {
     this._azurePipelinesRunnerInvoker = azurePipelinesRunnerInvoker
     this._gitHubRunnerInvoker = gitHubRunnerInvoker
+  }
+
+  /**
+   * Gets a value indicating whether a GitHub runner is in use.
+   */
+  public static get isGitHub (): boolean {
+    return process.env.GITHUB_ACTION !== undefined
   }
 
   public debug (message: string): void {
@@ -62,8 +70,7 @@ export default class RunnerInvoker implements IRunnerInvoker {
       return this._runnerInvoker
     }
 
-    const isGitHubRunner: string | undefined = process.env.GITHUB_ACTION
-    this._runnerInvoker = isGitHubRunner ? this._gitHubRunnerInvoker : this._azurePipelinesRunnerInvoker
+    this._runnerInvoker = RunnerInvoker.isGitHub ? this._gitHubRunnerInvoker : this._azurePipelinesRunnerInvoker
     return this._runnerInvoker
   }
 }

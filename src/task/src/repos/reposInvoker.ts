@@ -10,6 +10,7 @@ import GitHubReposInvoker from './gitHubReposInvoker'
 import IReposInvoker from './iReposInvoker'
 import Logger from '../utilities/logger'
 import PullRequestDetails from './interfaces/pullRequestDetails'
+import RunnerInvoker from '../runners/runnerInvoker'
 
 /**
  * A class for invoking repository functionality with any underlying repository store.
@@ -90,8 +91,8 @@ export default class ReposInvoker implements IReposInvoker {
       return this._reposInvoker
     }
 
-    const isGitHubRunner: string | undefined = process.env.GITHUB_ACTION
-    if (isGitHubRunner) {
+    // If a GitHub runner is in use, only GitHub repos are supported.
+    if (RunnerInvoker.isGitHub) {
       this._reposInvoker = this._gitHubReposInvoker
       return this._reposInvoker
     }
