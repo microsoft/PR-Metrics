@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 import { GitWritableStream } from './gitWritableStream'
-import { injectable } from 'tsyringe'
+import { singleton } from 'tsyringe'
 import { Validator } from '../utilities/validator'
 import Logger from '../utilities/logger'
 import RunnerInvoker from '../runners/runnerInvoker'
@@ -11,7 +11,7 @@ import RunnerInvoker from '../runners/runnerInvoker'
  * A class for invoking Git commands.
  * @remarks This class should not be used in a multithreaded context as it could lead to the initialization logic being invoked repeatedly.
  */
-@injectable()
+@singleton()
 export default class GitInvoker {
   private readonly _logger: Logger
   private readonly _runnerInvoker: RunnerInvoker

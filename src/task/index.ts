@@ -3,28 +3,26 @@
 
 import 'reflect-metadata'
 import { container } from 'tsyringe'
-import * as actionsCore from '@actions/core'
-import * as path from 'path'
-import * as taskLib from 'azure-pipelines-task-lib/task'
 import CodeMetricsCalculator from './src/metrics/codeMetricsCalculator'
 import Logger from './src/utilities/logger'
+import RunnerInvoker from './src/runners/runnerInvoker'
 
 async function run (): Promise<void> {
   try {
-    taskLib.setResourcePath(path.join(__dirname, 'task.json'))
+    const runnerInvoker: RunnerInvoker = container.resolve(RunnerInvoker)
+    runnerInvoker.initializeLoc(__dirname)
 
     const codeMetricsCalculator: CodeMetricsCalculator = container.resolve(CodeMetricsCalculator)
 
     const skipMessage: string | null = codeMetricsCalculator.shouldSkip
     if (skipMessage !== null) {
-      taskLib.setResult(taskLib.TaskResult.Skipped, skipMessage)
+      runnerInvoker.setSkipped(skipMessage)
       return
     }
 
     const terminateMessage: string | null = await codeMetricsCalculator.shouldStop()
     if (terminateMessage !== null) {
-      taskLib.setResult(taskLib.TaskResult.Failed, terminateMessage)
-      actionsCore.setFailed(terminateMessage)
+      runnerInvoker.setFailed(terminateMessage)
       return
     }
 
@@ -35,9 +33,10 @@ async function run (): Promise<void> {
       ])
     }
 
-    taskLib.setResult(taskLib.TaskResult.Succeeded, taskLib.loc('index.succeeded'))
+    runnerInvoker.setSucceeded(runnerInvoker.loc('index.succeeded'))
   } catch (error: any) {
     const logger: Logger = container.resolve(Logger)
+    const runnerInvoker: RunnerInvoker = container.resolve(RunnerInvoker)
     const properties: string[] = Object.getOwnPropertyNames(error)
     properties.forEach((property: string): void => {
       if (property !== 'message') {
@@ -46,8 +45,7 @@ async function run (): Promise<void> {
     })
 
     logger.replay()
-    taskLib.setResult(taskLib.TaskResult.Failed, error.message)
-    actionsCore.setFailed(error.message)
+    runnerInvoker.setFailed(error.message)
   }
 }
 

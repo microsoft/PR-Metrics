@@ -35,6 +35,18 @@ export default class AzurePipelinesRunnerInvoker extends BaseRunnerInvoker {
     return taskLib.getInput(formattedName)
   }
 
+  public setFailed (message: string): void {
+    taskLib.setResult(taskLib.TaskResult.Failed, message)
+  }
+
+  public setSkipped (message: string): void {
+    taskLib.setResult(taskLib.TaskResult.Skipped, message)
+  }
+
+  public setSucceeded (message: string): void {
+    taskLib.setResult(taskLib.TaskResult.Succeeded, message)
+  }
+
   public warning (message: string): void {
     taskLib.warning(message)
   }

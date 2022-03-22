@@ -55,9 +55,29 @@ export default class RunnerInvoker implements IRunnerInvoker {
     return runner.getInput(name)
   }
 
+  public initializeLoc (folder: string): void {
+    const runner: IRunnerInvoker = this.getRunner()
+    return runner.initializeLoc(folder)
+  }
+
   public loc (key: string, ...param: any[]): string {
     const runner: IRunnerInvoker = this.getRunner()
     return runner.loc(key, param)
+  }
+
+  public setFailed (message: string): void {
+    const runner: IRunnerInvoker = this.getRunner()
+    return runner.setFailed(message)
+  }
+
+  public setSkipped (message: string): void {
+    const runner: IRunnerInvoker = this.getRunner()
+    return runner.setSkipped(message)
+  }
+
+  public setSucceeded (message: string): void {
+    const runner: IRunnerInvoker = this.getRunner()
+    return runner.setSucceeded(message)
   }
 
   public warning (message: string): void {
