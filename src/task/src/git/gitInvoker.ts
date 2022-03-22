@@ -47,18 +47,11 @@ export default class GitInvoker {
 
     try {
       // await this.invokeGit(['rev-parse', '--is-inside-work-tree'])
-      const outputStream: GitWritableStream = new GitWritableStream(this._logger)
-      const errorStream: GitWritableStream = new GitWritableStream(this._logger)
-      const options: actionsExec.ExecOptions = {
-        failOnStdErr: true,
-        outStream: outputStream,
-        errStream: errorStream
-      }
 
-      const result2: number = await actionsExec.exec('git rev-parse --is-inside-work-tree', [], options)
+      const result2: number = await actionsExec.exec('git rev-parse --is-inside-work-tree')
 
       if (result2 !== 0) {
-        throw Error(errorStream.message)
+        throw Error('Failed with ' + result2)
       }
 
       // return outputStream.message
