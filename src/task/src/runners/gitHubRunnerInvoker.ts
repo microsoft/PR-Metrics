@@ -61,14 +61,13 @@ export default class GitHubRunnerInvoker implements IRunnerInvoker {
     entries.forEach((entry: [string, string]): void => {
       if (entry[0].startsWith(stringPrefix)) {
         this._resources.set(entry[0].substring(stringPrefix.length), entry[1])
-        console.log(entry[0].substring(stringPrefix.length))
       }
     })
   }
 
   public loc (key: string, ...param: any[]): string {
     console.log('key-' + this._resources.get(key))
-    return util.format.apply(this._resources.get(key), param)
+    return util.format(this._resources.get(key), param)
   }
 
   public setFailed (message: string): void {
