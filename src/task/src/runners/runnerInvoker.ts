@@ -62,7 +62,7 @@ export default class RunnerInvoker implements IRunnerInvoker {
 
   public loc (key: string, ...param: any[]): string {
     const runner: IRunnerInvoker = this.getRunner()
-    return runner.loc(key, param)
+    return runner.loc(key, ...param)
   }
 
   public setFailed (message: string): void {
