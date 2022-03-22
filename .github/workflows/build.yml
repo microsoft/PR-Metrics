@@ -130,7 +130,7 @@ jobs:
       - name: Initialize
         uses: github/codeql-action/init@v1
         with:
-          config-file: ../linters/codeql.yml
+          config-file: .github/linters/codeql.yml
           queries: security-and-quality
 
       - name: Analyze
