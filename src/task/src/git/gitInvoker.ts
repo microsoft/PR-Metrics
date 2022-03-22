@@ -6,7 +6,6 @@ import { singleton } from 'tsyringe'
 import { Validator } from '../utilities/validator'
 import Logger from '../utilities/logger'
 import RunnerInvoker from '../runners/runnerInvoker'
-import * as actionsExec from '@actions/exec'
 
 /**
  * A class for invoking Git commands.
@@ -46,15 +45,7 @@ export default class GitInvoker {
     this._logger.logDebug('* GitInvoker.isGitEnlistment()')
 
     try {
-      // await this.invokeGit(['rev-parse', '--is-inside-work-tree'])
-
-      const result2: number = await actionsExec.exec('git rev-parse --is-inside-work-tree')
-
-      if (result2 !== 0) {
-        throw Error('Failed with ' + result2)
-      }
-
-      // return outputStream.message
+      await this.invokeGit(['rev-parse', '--is-inside-work-tree'])
       return true
     } catch {
       return false
@@ -71,13 +62,7 @@ export default class GitInvoker {
     this.initialize()
 
     try {
-      const result2: number = await actionsExec.exec(`git rev-parse --branch origin/${this._targetBranch}...pull/${this._pullRequestId}/merge`)
-
-      if (result2 !== 0) {
-        throw Error('Failed with ' + result2)
-      }
-
-      // return outputStream.message
+      await this.invokeGit(['rev-parse', '--branch', `origin/${this._targetBranch}...pull/${this._pullRequestId}/merge`])
       return true
     } catch {
       return false

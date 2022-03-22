@@ -5,23 +5,36 @@ import { GitWritableStream } from '../git/gitWritableStream'
 import { singleton } from 'tsyringe'
 import * as actionsCore from '@actions/core'
 import * as actionsExec from '@actions/exec'
-import BaseRunnerInvoker from './baseRunnerInvoker'
+import * as fs from 'fs'
+import * as path from 'path'
+import * as util from 'util'
 import ConsoleWrapper from '../wrappers/consoleWrapper'
+import IRunnerInvoker from './iRunnerInvoker'
+
+/**
+ * An interface defining the format of JSON resources (.resjson) files.
+ */
+export interface ResourcesJson {
+  /**
+   * A mapping from a resource name to a resource value.
+   */
+  [name: string]: string
+}
 
 /**
  * A wrapper around the GitHub runner, to facilitate testability.
  */
 @singleton()
-export default class GitHubRunnerInvoker extends BaseRunnerInvoker {
+export default class GitHubRunnerInvoker implements IRunnerInvoker {
   private readonly _consoleWrapper: ConsoleWrapper
+
+  private _resources: Map<string, string> = new Map<string, string>()
 
   /**
    * Initializes a new instance of the `GitHubRunnerInvoker` class.
    * @param consoleWrapper The wrapper around the console.
    */
   public constructor (consoleWrapper: ConsoleWrapper) {
-    super()
-
     this._consoleWrapper = consoleWrapper
   }
 
@@ -46,6 +59,22 @@ export default class GitHubRunnerInvoker extends BaseRunnerInvoker {
   public getInput (name: string[]): string | undefined {
     const formattedName: string = name.join('-').toLowerCase()
     return actionsCore.getInput(formattedName)
+  }
+
+  public initializeLoc (folder: string): void {
+    const resourceData: string = fs.readFileSync(path.join(folder, 'resources.json'), 'utf8')
+    const resources: ResourcesJson = JSON.parse(resourceData) as ResourcesJson
+
+    const entries: [string, string][] = Object.entries(resources)
+    entries.forEach((entry: [string, string]): void => {
+      if (entry[0] !== '$schema' && !entry[0].endsWith('.comment')) {
+        this._resources.set(entry[0].substring(4), entry[1])
+      }
+    })
+  }
+
+  public loc (key: string, ...param: any[]): string {
+    return util.format.apply(this._resources.get(key), param)
   }
 
   public setFailed (message: string): void {

@@ -4,14 +4,15 @@
 import { GitWritableStream } from '../git/gitWritableStream'
 import { IExecOptions } from 'azure-pipelines-task-lib/toolrunner'
 import { singleton } from 'tsyringe'
+import * as path from 'path'
 import * as taskLib from 'azure-pipelines-task-lib/task'
-import BaseRunnerInvoker from './baseRunnerInvoker'
+import IRunnerInvoker from './iRunnerInvoker'
 
 /**
  * A wrapper around the Azure Pipelines runner, to facilitate testability.
  */
 @singleton()
-export default class AzurePipelinesRunnerInvoker extends BaseRunnerInvoker {
+export default class AzurePipelinesRunnerInvoker implements IRunnerInvoker {
   public debug (message: string): void {
     taskLib.debug(message)
   }
@@ -33,6 +34,14 @@ export default class AzurePipelinesRunnerInvoker extends BaseRunnerInvoker {
   public getInput (name: string[]): string | undefined {
     const formattedName: string = name.join('')
     return taskLib.getInput(formattedName)
+  }
+
+  public initializeLoc (folder: string): void {
+    taskLib.setResourcePath(path.join(folder, 'task.json'))
+  }
+
+  public loc (key: string, ...param: any[]): string {
+    return taskLib.loc(key, ...param).replace(' []', '')
   }
 
   public setFailed (message: string): void {
