@@ -41,7 +41,7 @@ export default class AzurePipelinesRunnerInvoker implements IRunnerInvoker {
   }
 
   public loc (key: string, ...param: any[]): string {
-    return taskLib.loc(key, ...param).replace(' []', '')
+    return taskLib.loc(key, ...param)
   }
 
   public setFailed (message: string): void {

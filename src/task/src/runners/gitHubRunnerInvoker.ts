@@ -66,8 +66,11 @@ export default class GitHubRunnerInvoker implements IRunnerInvoker {
   }
 
   public loc (key: string, ...param: any[]): string {
-    console.log('key-' + this._resources.get(key))
-    return util.format(this._resources.get(key), ...param)
+    const result: string = util.format(this._resources.get(key), param)
+    console.log(result)
+    const result2: string = util.format(this._resources.get(key), ...param)
+    console.log('2--' + result2)
+    return result
   }
 
   public setFailed (message: string): void {
