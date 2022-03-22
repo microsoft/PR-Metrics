@@ -66,7 +66,7 @@ export default class GitHubRunnerInvoker implements IRunnerInvoker {
   }
 
   public loc (key: string, ...param: any[]): string {
-    return util.format(this._resources.get(key), param)
+    return util.format(this._resources.get(key), ...param)
   }
 
   public setFailed (message: string): void {
