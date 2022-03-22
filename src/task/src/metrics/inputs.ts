@@ -66,7 +66,7 @@ export default class Inputs {
   }
 
   /**
-   * Gets the file matching patterns input, which is the set of Azure DevOps file matching patterns specifying the files and folders to include.
+   * Gets the file matching patterns input, which is the set of globs specifying the files and folders to include.
    * @returns The file matching patterns input.
    */
   public get fileMatchingPatterns (): string[] {

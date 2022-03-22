@@ -22,7 +22,7 @@ export module InputsDefault {
   export const testFactor: number = 1.0
 
   /**
-   * The default file matching patterns, which is the set of Azure DevOps file matching patterns specifying the files and folders to include.
+   * The default file matching patterns, which is the set of globs specifying the files and folders to include.
    */
   export const fileMatchingPatterns: string[] = [
     '**/*',

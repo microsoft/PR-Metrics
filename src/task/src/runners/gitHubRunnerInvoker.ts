@@ -5,12 +5,9 @@ import { GitWritableStream } from '../git/gitWritableStream'
 import { singleton } from 'tsyringe'
 import * as actionsCore from '@actions/core'
 import * as actionsExec from '@actions/exec'
-import * as fs from 'fs'
-import * as path from 'path'
-import * as util from 'util'
 import ConsoleWrapper from '../wrappers/consoleWrapper'
+import GitHubResources from './gitHubResources'
 import IRunnerInvoker from './iRunnerInvoker'
-import ResourcesJson from '../jsonTypes/resourcesJson'
 
 /**
  * A wrapper around the GitHub runner, to facilitate testability.
@@ -18,15 +15,16 @@ import ResourcesJson from '../jsonTypes/resourcesJson'
 @singleton()
 export default class GitHubRunnerInvoker implements IRunnerInvoker {
   private readonly _consoleWrapper: ConsoleWrapper
-
-  private _resources: Map<string, string> = new Map<string, string>()
+  private readonly _gitHubResources: GitHubResources
 
   /**
    * Initializes a new instance of the `GitHubRunnerInvoker` class.
    * @param consoleWrapper The wrapper around the console.
+   * @param gitHubResources The GitHub resource manager.
    */
-  public constructor (consoleWrapper: ConsoleWrapper) {
+  public constructor (consoleWrapper: ConsoleWrapper, gitHubResources: GitHubResources) {
     this._consoleWrapper = consoleWrapper
+    this._gitHubResources = gitHubResources
   }
 
   public debug (message: string): void {
@@ -53,20 +51,11 @@ export default class GitHubRunnerInvoker implements IRunnerInvoker {
   }
 
   public initializeLoc (folder: string): void {
-    const resourceData: string = fs.readFileSync(path.join(folder, 'resources.resjson'), 'utf8')
-    const resources: ResourcesJson = JSON.parse(resourceData) as ResourcesJson
-
-    const entries: [string, string][] = Object.entries(resources)
-    const stringPrefix: string = 'loc.messages.'
-    entries.forEach((entry: [string, string]): void => {
-      if (entry[0].startsWith(stringPrefix)) {
-        this._resources.set(entry[0].substring(stringPrefix.length), entry[1])
-      }
-    })
+    this._gitHubResources.initialize(folder)
   }
 
   public loc (key: string, ...param: any[]): string {
-    return util.format(this._resources.get(key), ...param)
+    return this._gitHubResources.localize(key, ...param)
   }
 
   public setFailed (message: string): void {

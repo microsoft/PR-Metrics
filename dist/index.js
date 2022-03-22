@@ -96826,6 +96826,72 @@ exports["default"] = AzurePipelinesRunnerInvoker;
 
 /***/ }),
 
+/***/ 5235:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const tsyringe_1 = __nccwpck_require__(1069);
+const fs = __importStar(__nccwpck_require__(7147));
+const path = __importStar(__nccwpck_require__(1017));
+const util = __importStar(__nccwpck_require__(3837));
+let GitHubResources = class GitHubResources {
+    constructor() {
+        this._resources = new Map();
+    }
+    initialize(folder) {
+        const resourceData = fs.readFileSync(path.join(folder, 'resources.resjson'), 'utf8');
+        const resources = JSON.parse(resourceData);
+        const entries = Object.entries(resources);
+        const stringPrefix = 'loc.messages.';
+        entries.forEach((entry) => {
+            if (entry[0].startsWith(stringPrefix)) {
+                this._resources.set(entry[0].substring(stringPrefix.length), entry[1]);
+            }
+        });
+    }
+    localize(key, ...param) {
+        return util.format(this._resources.get(key), ...param);
+    }
+};
+GitHubResources = __decorate([
+    (0, tsyringe_1.singleton)()
+], GitHubResources);
+exports["default"] = GitHubResources;
+
+
+/***/ }),
+
 /***/ 1349:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -96870,14 +96936,12 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const tsyringe_1 = __nccwpck_require__(1069);
 const actionsCore = __importStar(__nccwpck_require__(2186));
 const actionsExec = __importStar(__nccwpck_require__(1514));
-const fs = __importStar(__nccwpck_require__(7147));
-const path = __importStar(__nccwpck_require__(1017));
-const util = __importStar(__nccwpck_require__(3837));
 const consoleWrapper_1 = __importDefault(__nccwpck_require__(7035));
+const gitHubResources_1 = __importDefault(__nccwpck_require__(5235));
 let GitHubRunnerInvoker = class GitHubRunnerInvoker {
-    constructor(consoleWrapper) {
-        this._resources = new Map();
+    constructor(consoleWrapper, gitHubResources) {
         this._consoleWrapper = consoleWrapper;
+        this._gitHubResources = gitHubResources;
     }
     debug(message) {
         actionsCore.debug(message);
@@ -96898,18 +96962,10 @@ let GitHubRunnerInvoker = class GitHubRunnerInvoker {
         return actionsCore.getInput(formattedName);
     }
     initializeLoc(folder) {
-        const resourceData = fs.readFileSync(path.join(folder, 'resources.resjson'), 'utf8');
-        const resources = JSON.parse(resourceData);
-        const entries = Object.entries(resources);
-        const stringPrefix = 'loc.messages.';
-        entries.forEach((entry) => {
-            if (entry[0].startsWith(stringPrefix)) {
-                this._resources.set(entry[0].substring(stringPrefix.length), entry[1]);
-            }
-        });
+        this._gitHubResources.initialize(folder);
     }
     loc(key, ...param) {
-        return util.format(this._resources.get(key), ...param);
+        return this._gitHubResources.localize(key, ...param);
     }
     setFailed(message) {
         actionsCore.setFailed(message);
@@ -96926,7 +96982,7 @@ let GitHubRunnerInvoker = class GitHubRunnerInvoker {
 };
 GitHubRunnerInvoker = __decorate([
     (0, tsyringe_1.singleton)(),
-    __metadata("design:paramtypes", [consoleWrapper_1.default])
+    __metadata("design:paramtypes", [consoleWrapper_1.default, gitHubResources_1.default])
 ], GitHubRunnerInvoker);
 exports["default"] = GitHubRunnerInvoker;
 
