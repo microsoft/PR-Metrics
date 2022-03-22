@@ -10,16 +10,7 @@ import * as path from 'path'
 import * as util from 'util'
 import ConsoleWrapper from '../wrappers/consoleWrapper'
 import IRunnerInvoker from './iRunnerInvoker'
-
-/**
- * An interface defining the format of JSON resources (.resjson) files.
- */
-export interface ResourcesJson {
-  /**
-   * A mapping from a resource name to a resource value.
-   */
-  [name: string]: string
-}
+import ResourcesJson from '../jsonTypes/resourcesJson'
 
 /**
  * A wrapper around the GitHub runner, to facilitate testability.
@@ -62,7 +53,7 @@ export default class GitHubRunnerInvoker implements IRunnerInvoker {
   }
 
   public initializeLoc (folder: string): void {
-    const resourceData: string = fs.readFileSync(path.join(folder, 'resources.json'), 'utf8')
+    const resourceData: string = fs.readFileSync(path.join(folder, 'resources.resjson'), 'utf8')
     const resources: ResourcesJson = JSON.parse(resourceData) as ResourcesJson
 
     const entries: [string, string][] = Object.entries(resources)

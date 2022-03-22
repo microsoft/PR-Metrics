@@ -5,7 +5,7 @@ import { expect } from 'chai'
 import * as fs from 'fs'
 import * as path from 'path'
 import glob from 'glob-promise'
-import ResourcesJson from '../jsonTypes/resourcesJson'
+import ResourcesJson from '../../src/jsonTypes/resourcesJson'
 import TaskJson from '../jsonTypes/taskJson'
 
 describe('resources.resjson', (): void => {
