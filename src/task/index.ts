@@ -3,6 +3,7 @@
 
 import 'reflect-metadata'
 import { container } from 'tsyringe'
+import * as actionsCore from '@actions/core'
 import * as path from 'path'
 import * as taskLib from 'azure-pipelines-task-lib/task'
 import CodeMetricsCalculator from './src/metrics/codeMetricsCalculator'
@@ -23,6 +24,7 @@ async function run (): Promise<void> {
     const terminateMessage: string | null = await codeMetricsCalculator.shouldStop()
     if (terminateMessage !== null) {
       taskLib.setResult(taskLib.TaskResult.Failed, terminateMessage)
+      actionsCore.setFailed(terminateMessage)
       return
     }
 
@@ -45,6 +47,7 @@ async function run (): Promise<void> {
 
     logger.replay()
     taskLib.setResult(taskLib.TaskResult.Failed, error.message)
+    actionsCore.setFailed(error.message)
   }
 }
 
