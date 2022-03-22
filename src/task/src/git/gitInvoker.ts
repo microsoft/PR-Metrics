@@ -71,7 +71,13 @@ export default class GitInvoker {
     this.initialize()
 
     try {
-      await this.invokeGit(['rev-parse', '--branch', `origin/${this._targetBranch}...pull/${this._pullRequestId}/merge`])
+      const result2: number = await actionsExec.exec(`git rev-parse --branch origin/${this._targetBranch}...pull/${this._pullRequestId}/merge`)
+
+      if (result2 !== 0) {
+        throw Error('Failed with ' + result2)
+      }
+
+      // return outputStream.message
       return true
     } catch {
       return false
