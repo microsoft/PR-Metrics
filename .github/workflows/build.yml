@@ -130,13 +130,11 @@ jobs:
       - name: Initialize
         uses: github/codeql-action/init@v1
         with:
-          queries: security-and-quality
+          config-file: ../linters/codeql.yml
+          queries: security-and-qualitywith:
 
       - name: Analyze
         uses: github/codeql-action/analyze@v1
-        with:
-          paths-ignore:
-            - dist/
 
   validate-linter:
     name: Validate – Linter
