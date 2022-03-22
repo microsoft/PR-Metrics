@@ -35,7 +35,9 @@ export default class PullRequest {
   public get isPullRequest (): boolean {
     this._logger.logDebug('* PullRequest.isPullRequest')
 
-    return RunnerInvoker.isGitHub ? process.env.GITHUB_BASE_REF !== null : process.env.SYSTEM_PULLREQUEST_PULLREQUESTID !== undefined
+    return RunnerInvoker.isGitHub
+      ? process.env.GITHUB_BASE_REF !== undefined && process.env.GITHUB_BASE_REF !== null && process.env.GITHUB_BASE_REF !== ''
+      : process.env.SYSTEM_PULLREQUEST_PULLREQUESTID !== undefined
   }
 
   /**
