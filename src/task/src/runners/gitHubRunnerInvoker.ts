@@ -57,16 +57,17 @@ export default class GitHubRunnerInvoker implements IRunnerInvoker {
     const resources: ResourcesJson = JSON.parse(resourceData) as ResourcesJson
 
     const entries: [string, string][] = Object.entries(resources)
+    const stringPrefix: string = 'loc.messages.'
     entries.forEach((entry: [string, string]): void => {
-      if (entry[0] !== '$schema' && !entry[0].endsWith('.comment')) {
-        this._resources.set(entry[0].substring(4), entry[1])
-        console.log(entry[0].substring(4))
+      if (entry[0].startsWith(stringPrefix)) {
+        this._resources.set(entry[0].substring(stringPrefix.length), entry[1])
+        console.log(entry[0].substring(stringPrefix.length))
       }
     })
   }
 
   public loc (key: string, ...param: any[]): string {
-    console.log(this._resources.get(key))
+    console.log('key-' + this._resources.get(key))
     return util.format.apply(this._resources.get(key), param)
   }
 
