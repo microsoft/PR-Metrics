@@ -158,7 +158,7 @@ export default class CodeMetrics {
     codeFileMetrics.forEach((codeFileMetric: CodeFileMetric): void => {
       let isValidFilePattern: boolean = false
       for (let i = 0; i < this._inputs.fileMatchingPatterns.length; i++) {
-        isValidFilePattern = minimatch.match([codeFileMetric.fileName], this._inputs.fileMatchingPatterns[i]!, CodeMetrics._minimatchOptions).length > 0
+        isValidFilePattern = minimatch.match([codeFileMetric.fileName], this._inputs.fileMatchingPatterns[i]!.replace('\\', '/'), CodeMetrics._minimatchOptions).length > 0
         if (isValidFilePattern) {
           break
         }

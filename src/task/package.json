@@ -14,7 +14,7 @@
     "deploy:debug": "npm run build:debug && exitzero tfx build tasks delete --task-id 907d3b28-6b37-4ac7-ac75-9631ee53e512 --no-prompt && tfx build tasks upload --task-path ../../build/debug/task --no-prompt",
     "deploy:release": "npm run build:release && exitzero tfx build tasks delete --task-id 907d3b28-6b37-4ac7-ac75-9631ee53e512 --no-prompt && tfx build tasks upload --task-path ../../build/release/task --no-prompt",
     "lint": "eslint --fix **/*.ts",
-    "package": "npm install && ncc build index.ts --out ../../dist --license ../LICENSE.txt && rimraf ../../dist/package.json && ncp Strings/resources.resjson/en-US/resources.resjson ../../dist/resources.resjson",
+    "package": "npm install && ncc build index.ts --out ../../dist --minify --license ../LICENSE.txt && rimraf ../../dist/package.json && ncp Strings/resources.resjson/en-US/resources.resjson ../../dist/resources.resjson",
     "preinstall": "cd ../.. && npm install",
     "pretest": "npm run build:debug",
     "test": "cd ../../build/debug/task && nyc --reporter=text --reporter=text-summary mocha tests/**/*.spec.js --check-leaks --color"
