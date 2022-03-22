@@ -275,8 +275,8 @@ jobs:
         with:
           node-version: 16.x
 
-      - name: NPM – Package
-        run: npm run package
+      - name: NPM – Build Package
+        run: npm run build:package
         working-directory: ${{ github.workspace }}/src/task
 
       - name: 'Compare Expected & Actual ''dist'' Folders'
