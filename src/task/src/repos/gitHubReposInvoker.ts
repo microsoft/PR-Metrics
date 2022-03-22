@@ -19,6 +19,7 @@ import GetReviewCommentsResponse from '../wrappers/octokitInterfaces/getReviewCo
 import ListCommitsResponse from '../wrappers/octokitInterfaces/listCommitsResponse'
 import Logger from '../utilities/logger'
 import OctokitWrapper from '../wrappers/octokitWrapper'
+import PullRequest from '../pullRequests/pullRequest'
 import PullRequestCommentData from './interfaces/pullRequestCommentData'
 import PullRequestDetails from './interfaces/pullRequestDetails'
 import RunnerInvoker from '../runners/runnerInvoker'
@@ -204,18 +205,19 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     }
 
     if (RunnerInvoker.isGitHub) {
-      return this.initializeForGitHub(options)
+      options.baseUrl = this.initializeForGitHub()
     } else {
-      this.initializeForAzureDevOps(options)
+      options.baseUrl = this.initializeForAzureDevOps()
     }
+
+    this._logger.logDebug(`Using Base URL '${options.baseUrl}'.`)
+    this._octokitWrapper.initialize(options)
+    this._pullRequestId = parseInt(PullRequest.pullRequestId)
+    this._isInitialized = true
   }
 
-  private initializeForGitHub (options: OctokitOptions): void {
-    options.baseUrl = Validator.validateVariable('GITHUB_API_URL', 'GitHubReposInvoker.initializeForGitHub()')
-    this._logger.logDebug(`Using Base URL '${options.baseUrl}'.`)
-
-    this._octokitWrapper.initialize(options)
-
+  private initializeForGitHub (): string {
+    const baseUrl: string = Validator.validateVariable('GITHUB_API_URL', 'GitHubReposInvoker.initializeForGitHub()')
     this._owner = Validator.validateVariable('GITHUB_REPOSITORY_OWNER', 'GitHubReposInvoker.initializeForGitHub()')
 
     const gitHubRepository: string = Validator.validateVariable('GITHUB_REPOSITORY', 'GitHubReposInvoker.initializeForGitHub()')
@@ -225,19 +227,12 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     }
 
     this._repo = gitHubRepositoryElements[1]
-
-    const gitHubReference: string = Validator.validateVariable('GITHUB_REF', 'GitHubReposInvoker.initializeForGitHub()')
-    const gitHubReferenceElements: string[] = gitHubReference.split('/')
-    if (gitHubReferenceElements.length !== 4) {
-      throw Error(`GITHUB_REF '${gitHubReference}' is in an unexpected format.`)
-    }
-
-    this._pullRequestId = parseInt(gitHubReferenceElements[2]!)
-
-    this._isInitialized = true
+    return baseUrl
   }
 
-  private initializeForAzureDevOps (options: OctokitOptions): void {
+  private initializeForAzureDevOps (): string | undefined {
+    let baseUrl: string | undefined
+
     const sourceRepositoryUri: string = Validator.validateVariable('SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI', 'GitHubReposInvoker.initializeForAzureDevOps()')
     const sourceRepositoryUriElements: string[] = sourceRepositoryUri.split('/')
     if (sourceRepositoryUriElements.length !== 5) {
@@ -246,23 +241,17 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
 
     // Handle GitHub Enterprise and GitHub AE invocations.
     if (sourceRepositoryUriElements[2] !== 'github.com') {
-      options.baseUrl = `https://${sourceRepositoryUriElements[2]}/api/v3`
-      this._logger.logDebug(`Using Base URL '${options.baseUrl}'.`)
+      baseUrl = `https://${sourceRepositoryUriElements[2]}/api/v3`
     }
 
-    this._octokitWrapper.initialize(options)
-
     this._owner = sourceRepositoryUriElements[3]
-
     this._repo = sourceRepositoryUriElements[4]
     const gitEnding: string = '.git'
     if (this._repo!.endsWith(gitEnding)) {
       this._repo = this._repo!.substring(0, this._repo!.length - gitEnding.length)
     }
 
-    this._pullRequestId = Validator.validate(parseInt(process.env.SYSTEM_PULLREQUEST_PULLREQUESTNUMBER!), 'SYSTEM_PULLREQUEST_PULLREQUESTNUMBER', 'GitHubReposInvoker.initializeForAzureDevOps()')
-
-    this._isInitialized = true
+    return baseUrl
   }
 
   private static convertPullRequestComments (pullRequestComments?: GetIssueCommentsResponse, fileComments?: GetReviewCommentsResponse): CommentData {

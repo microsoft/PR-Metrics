@@ -5,6 +5,7 @@ import { GitWritableStream } from './gitWritableStream'
 import { singleton } from 'tsyringe'
 import { Validator } from '../utilities/validator'
 import Logger from '../utilities/logger'
+import PullRequest from '../pullRequests/pullRequest'
 import RunnerInvoker from '../runners/runnerInvoker'
 
 /**
@@ -81,12 +82,16 @@ export default class GitInvoker {
     }
 
     this._targetBranch = this.getTargetBranch()
-    this._pullRequestId = this.getPullRequestId()
+    this._pullRequestId = PullRequest.pullRequestId
     this._isInitialized = true
   }
 
   private getTargetBranch (): string {
     this._logger.logDebug('* GitInvoker.getTargetBranch()')
+
+    if (RunnerInvoker.isGitHub) {
+      return Validator.validateVariable('GITHUB_BASE_REF', 'GitInvoker.getTargetBranch()')
+    }
 
     const variable: string = Validator.validateVariable('SYSTEM_PULLREQUEST_TARGETBRANCH', 'GitInvoker.getTargetBranch()')
     const expectedStart: string = 'refs/heads/'
@@ -95,17 +100,6 @@ export default class GitInvoker {
       return variable.substring(startIndex)
     } else {
       return variable
-    }
-  }
-
-  private getPullRequestId (): string {
-    this._logger.logDebug('* GitInvoker.getPullRequestId()')
-
-    const variable: string = Validator.validateVariable('BUILD_REPOSITORY_PROVIDER', 'GitInvoker.getPullRequestId()')
-    if (variable === 'GitHub' || variable === 'GitHubEnterprise') {
-      return Validator.validateVariable('SYSTEM_PULLREQUEST_PULLREQUESTNUMBER', 'GitInvoker.getPullRequestId()')
-    } else {
-      return Validator.validateVariable('SYSTEM_PULLREQUEST_PULLREQUESTID', 'GitInvoker.getPullRequestId()')
     }
   }
 
