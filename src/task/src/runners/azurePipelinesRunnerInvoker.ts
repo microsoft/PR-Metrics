@@ -5,13 +5,13 @@ import { GitWritableStream } from '../git/gitWritableStream'
 import { IExecOptions } from 'azure-pipelines-task-lib/toolrunner'
 import { singleton } from 'tsyringe'
 import * as taskLib from 'azure-pipelines-task-lib/task'
-import IRunnerInvoker from './iRunnerInvoker'
+import BaseRunnerInvoker from './baseRunnerInvoker'
 
 /**
  * A wrapper around the Azure Pipelines runner, to facilitate testability.
  */
 @singleton()
-export default class AzurePipelinesRunnerInvoker implements IRunnerInvoker {
+export default class AzurePipelinesRunnerInvoker extends BaseRunnerInvoker {
   public debug (message: string): void {
     taskLib.debug(message)
   }
@@ -33,10 +33,6 @@ export default class AzurePipelinesRunnerInvoker implements IRunnerInvoker {
   public getInput (name: string[]): string | undefined {
     const formattedName: string = name.join('')
     return taskLib.getInput(formattedName)
-  }
-
-  public loc (key: string, ...param: any[]): string {
-    return taskLib.loc(key, ...param)
   }
 
   public warning (message: string): void {

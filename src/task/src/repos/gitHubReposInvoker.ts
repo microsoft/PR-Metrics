@@ -203,12 +203,42 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
       }
     }
 
-    /* if (RunnerInvoker.isGitHub) {
-      const octokit = actionsGitHub.getOctokit(process.env.SYSTEM_ACCESSTOKEN, options)
+    if (RunnerInvoker.isGitHub) {
+      return this.initializeForGitHub(options)
+    } else {
+      this.initializeForAzureDevOps(options)
+    }
+  }
 
-    } */
+  private initializeForGitHub (options: OctokitOptions): void {
+    options.baseUrl = Validator.validateVariable('GITHUB_API_URL', 'GitHubReposInvoker.initializeForGitHub()')
+    this._logger.logDebug(`Using Base URL '${options.baseUrl}'.`)
 
-    const sourceRepositoryUri: string = Validator.validateVariable('SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI', 'GitHubReposInvoker.initialize()')
+    this._octokitWrapper.initialize(options)
+
+    this._owner = Validator.validateVariable('GITHUB_REPOSITORY_OWNER', 'GitHubReposInvoker.initializeForGitHub()')
+
+    const gitHubRepository: string = Validator.validateVariable('GITHUB_REPOSITORY', 'GitHubReposInvoker.initializeForGitHub()')
+    const gitHubRepositoryElements: string[] = gitHubRepository.split('/')
+    if (gitHubRepositoryElements.length !== 2) {
+      throw Error(`GITHUB_REPOSITORY '${gitHubRepository}' is in an unexpected format.`)
+    }
+
+    this._repo = gitHubRepositoryElements[1]
+
+    const gitHubReference: string = Validator.validateVariable('GITHUB_REF', 'GitHubReposInvoker.initializeForGitHub()')
+    const gitHubReferenceElements: string[] = gitHubReference.split('/')
+    if (gitHubReferenceElements.length !== 4) {
+      throw Error(`GITHUB_REF '${gitHubReference}' is in an unexpected format.`)
+    }
+
+    this._pullRequestId = parseInt(gitHubReferenceElements[2]!)
+
+    this._isInitialized = true
+  }
+
+  private initializeForAzureDevOps (options: OctokitOptions): void {
+    const sourceRepositoryUri: string = Validator.validateVariable('SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI', 'GitHubReposInvoker.initializeForAzureDevOps()')
     const sourceRepositoryUriElements: string[] = sourceRepositoryUri.split('/')
     if (sourceRepositoryUriElements.length !== 5) {
       throw Error(`SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI '${sourceRepositoryUri}' is in an unexpected format.`)
@@ -230,13 +260,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
       this._repo = this._repo!.substring(0, this._repo!.length - gitEnding.length)
     }
 
-    this._pullRequestId = Validator.validate(parseInt(process.env.SYSTEM_PULLREQUEST_PULLREQUESTNUMBER!), 'SYSTEM_PULLREQUEST_PULLREQUESTNUMBER', 'GitHubReposInvoker.initialize()')
-
-    /* const fs = require('fs')
-const ev = JSON.parse(
-  fs.readFileSync(process.env.GITHUB_EVENT_PATH, 'utf8')
-)
-const prNum = ev.pull_request.number */
+    this._pullRequestId = Validator.validate(parseInt(process.env.SYSTEM_PULLREQUEST_PULLREQUESTNUMBER!), 'SYSTEM_PULLREQUEST_PULLREQUESTNUMBER', 'GitHubReposInvoker.initializeForAzureDevOps()')
 
     this._isInitialized = true
   }

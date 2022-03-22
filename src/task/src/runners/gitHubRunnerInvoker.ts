@@ -3,16 +3,15 @@
 
 import { GitWritableStream } from '../git/gitWritableStream'
 import { singleton } from 'tsyringe'
-import * as taskLib from 'azure-pipelines-task-lib/task'
 import * as actionsCore from '@actions/core'
 import * as actionsExec from '@actions/exec'
-import IRunnerInvoker from './iRunnerInvoker'
+import BaseRunnerInvoker from './baseRunnerInvoker'
 
 /**
  * A wrapper around the GitHub runner, to facilitate testability.
  */
 @singleton()
-export default class GitHubRunnerInvoker implements IRunnerInvoker {
+export default class GitHubRunnerInvoker extends BaseRunnerInvoker {
   public debug (message: string): void {
     actionsCore.debug(message)
   }
@@ -34,11 +33,6 @@ export default class GitHubRunnerInvoker implements IRunnerInvoker {
   public getInput (name: string[]): string | undefined {
     const formattedName: string = name.join('-').toLowerCase()
     return actionsCore.getInput(formattedName)
-  }
-
-  public loc (key: string, ...param: any[]): string {
-    // This method uses the Azure Pipelines implementation as equivalent functionality is not yet available for GitHub Actions.
-    return taskLib.loc(key, ...param)
   }
 
   public warning (message: string): void {

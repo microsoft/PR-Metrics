@@ -12,17 +12,17 @@ import PullRequestDetails from './interfaces/pullRequestDetails'
 export default abstract class BaseReposInvoker implements IReposInvoker {
   public abstract isAccessTokenAvailable: string | null
 
-  public abstract getTitleAndDescription(): Promise<PullRequestDetails>
+  public abstract getTitleAndDescription (): Promise<PullRequestDetails>
 
-  public abstract getComments(): Promise<CommentData>
+  public abstract getComments (): Promise<CommentData>
 
-  public abstract setTitleAndDescription(title: string | null, description: string | null): Promise<void>
+  public abstract setTitleAndDescription (title: string | null, description: string | null): Promise<void>
 
-  public abstract createComment(content: string, status: CommentThreadStatus, fileName?: string, isFileDeleted?: boolean): Promise<void>
+  public abstract createComment (content: string, status: CommentThreadStatus, fileName?: string, isFileDeleted?: boolean): Promise<void>
 
-  public abstract updateComment(commentThreadId: number, content: string | null, status: CommentThreadStatus | null): Promise<void>
+  public abstract updateComment (commentThreadId: number, content: string | null, status: CommentThreadStatus | null): Promise<void>
 
-  public abstract deleteCommentThread(commentThreadId: number): Promise<void>
+  public abstract deleteCommentThread (commentThreadId: number): Promise<void>
 
   /**
    * Invokes an API call, augmenting any errors that may be thrown due to insufficient access.
