@@ -2,8 +2,6 @@
   "extends": "@istanbuljs/nyc-config-typescript",
   "exclude": [
     "tests/**/*",
-    "src/runners/azurePipelinesRunnerInvoker.ts",
-    "src/runners/gitHubRunnerInvoker.ts",
     "src/wrappers/**/*"
   ],
   "check-coverage": true,

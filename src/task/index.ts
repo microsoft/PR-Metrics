@@ -10,19 +10,19 @@ import RunnerInvoker from './src/runners/runnerInvoker'
 async function run (): Promise<void> {
   try {
     const runnerInvoker: RunnerInvoker = container.resolve(RunnerInvoker)
-    runnerInvoker.initializeLoc(__dirname)
+    runnerInvoker.locInitialize(__dirname)
 
     const codeMetricsCalculator: CodeMetricsCalculator = container.resolve(CodeMetricsCalculator)
 
     const skipMessage: string | null = codeMetricsCalculator.shouldSkip
     if (skipMessage !== null) {
-      runnerInvoker.setSkipped(skipMessage)
+      runnerInvoker.setStatusSkipped(skipMessage)
       return
     }
 
     const terminateMessage: string | null = await codeMetricsCalculator.shouldStop()
     if (terminateMessage !== null) {
-      runnerInvoker.setFailed(terminateMessage)
+      runnerInvoker.setStatusFailed(terminateMessage)
       return
     }
 
@@ -33,7 +33,7 @@ async function run (): Promise<void> {
       ])
     }
 
-    runnerInvoker.setSucceeded(runnerInvoker.loc('index.succeeded'))
+    runnerInvoker.setStatusSucceeded(runnerInvoker.loc('index.succeeded'))
   } catch (error: any) {
     const logger: Logger = container.resolve(Logger)
     const runnerInvoker: RunnerInvoker = container.resolve(RunnerInvoker)
@@ -45,7 +45,7 @@ async function run (): Promise<void> {
     })
 
     logger.replay()
-    runnerInvoker.setFailed(error.message)
+    runnerInvoker.setStatusFailed(error.message)
   }
 }
 

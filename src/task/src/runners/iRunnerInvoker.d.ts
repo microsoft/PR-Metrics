@@ -8,18 +8,6 @@ import { GitWritableStream } from '../git/gitWritableStream'
  */
 export default interface IRunnerInvoker {
   /**
-   * Logs a debug message.
-   * @param message The message to log.
-   */
-  debug (message: string): void
-
-  /**
-   * Logs an error message.
-   * @param message The message to log.
-   */
-  error (message: string): void
-
-  /**
    * Asynchronously executes an external tool.
    * @param tool The tool executable to run.
    * @param args The arguments to pass to the tool.
@@ -41,7 +29,7 @@ export default interface IRunnerInvoker {
    * Initializes the mechanism for getting localized strings from the JSON resource file.
    * @param folder The folder in which the localized resources are stored.
    */
-  initializeLoc (folder: string): void
+  locInitialize (folder: string): void
 
   /**
    * Gets the localized string from the JSON resource file and optionally formats using the additional parameters.
@@ -52,26 +40,38 @@ export default interface IRunnerInvoker {
   loc(key: string, ...param: any[]): string
 
   /**
-   * Sets the run status to 'failed'.
-   * @param message The message to log as part of the status.
+   * Logs a debug message.
+   * @param message The message to log.
    */
-  setFailed (message: string): void
+  logDebug (message: string): void
 
   /**
-   * Sets the run status to 'skipped'.
-   * @param message The message to log as part of the status.
+   * Logs an error message.
+   * @param message The message to log.
    */
-  setSkipped (message: string): void
-
-  /**
-   * Sets the run status to 'succeeded'.
-   * @param message The message to log as part of the status.
-   */
-  setSucceeded (message: string): void
+  logError (message: string): void
 
   /**
    * Logs a warning message.
    * @param message The message to log.
    */
-  warning (message: string): void
+  logWarning (message: string): void
+
+  /**
+   * Sets the run status to 'failed'.
+   * @param message The message to log as part of the status.
+   */
+  setStatusFailed (message: string): void
+
+  /**
+   * Sets the run status to 'skipped'.
+   * @param message The message to log as part of the status.
+   */
+  setStatusSkipped (message: string): void
+
+  /**
+   * Sets the run status to 'succeeded'.
+   * @param message The message to log as part of the status.
+   */
+  setStatusSucceeded (message: string): void
 }

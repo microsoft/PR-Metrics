@@ -35,6 +35,7 @@ type GetReviewCommentsResponseData = GetResponseDataTypeFromEndpointMethod<typeo
  */
 @singleton()
 export default class GitHubReposInvoker extends BaseReposInvoker {
+  private readonly _gitInvoker: GitInvoker
   private readonly _logger: Logger
   private readonly _octokitWrapper: OctokitWrapper
   private readonly _runnerInvoker: RunnerInvoker
@@ -47,13 +48,15 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
 
   /**
    * Initializes a new instance of the `GitHubReposInvoker` class.
+   * @param gitInvoker The Git invoker.
    * @param logger The logger.
    * @param octokitWrapper The wrapper around the Octokit library.
    * @param runnerInvoker The runner invoker functionality.
    */
-  public constructor (logger: Logger, octokitWrapper: OctokitWrapper, runnerInvoker: RunnerInvoker) {
+  public constructor (gitInvoker: GitInvoker, logger: Logger, octokitWrapper: OctokitWrapper, runnerInvoker: RunnerInvoker) {
     super()
 
+    this._gitInvoker = gitInvoker
     this._logger = logger
     this._octokitWrapper = octokitWrapper
     this._runnerInvoker = runnerInvoker
@@ -212,7 +215,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
 
     this._logger.logDebug(`Using Base URL '${options.baseUrl}'.`)
     this._octokitWrapper.initialize(options)
-    this._pullRequestId = parseInt(GitInvoker.pullRequestId)
+    this._pullRequestId = this._gitInvoker.getPullRequestId()
     this._isInitialized = true
   }
 

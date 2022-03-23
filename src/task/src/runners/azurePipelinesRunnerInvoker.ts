@@ -7,18 +7,21 @@ import { singleton } from 'tsyringe'
 import * as path from 'path'
 import * as taskLib from 'azure-pipelines-task-lib/task'
 import IRunnerInvoker from './iRunnerInvoker'
+import AzurePipelinesRunnerWrapper from '../wrappers/azurePipelinesRunnerWrapper'
 
 /**
- * A wrapper around the Azure Pipelines runner, to facilitate testability.
+ * A class for invoking Azure Pipelines runner functionality.
  */
 @singleton()
 export default class AzurePipelinesRunnerInvoker implements IRunnerInvoker {
-  public debug (message: string): void {
-    taskLib.debug(message)
-  }
+  private readonly _azurePipelinesRunnerWrapper: AzurePipelinesRunnerWrapper
 
-  public error (message: string): void {
-    taskLib.error(message)
+  /**
+   * Initializes a new instance of the `AzurePipelinesRunnerInvoker` class.
+   * @param azurePipelinesRunnerWrapper The wrapper around the Azure Pipelines runner.
+   */
+  public constructor (azurePipelinesRunnerWrapper: AzurePipelinesRunnerWrapper) {
+    this._azurePipelinesRunnerWrapper = azurePipelinesRunnerWrapper
   }
 
   public exec (tool: string, args: string[], failOnError: boolean, outputStream: GitWritableStream, errorStream: GitWritableStream): Promise<number> {
@@ -28,35 +31,43 @@ export default class AzurePipelinesRunnerInvoker implements IRunnerInvoker {
       errStream: errorStream
     }
 
-    return taskLib.exec(tool, args, options)
+    return this._azurePipelinesRunnerWrapper.exec(tool, args, options)
   }
 
   public getInput (name: string[]): string | undefined {
     const formattedName: string = name.join('')
-    return taskLib.getInput(formattedName)
+    return this._azurePipelinesRunnerWrapper.getInput(formattedName)
   }
 
-  public initializeLoc (folder: string): void {
-    taskLib.setResourcePath(path.join(folder, 'task.json'))
+  public locInitialize (folder: string): void {
+    this._azurePipelinesRunnerWrapper.setResourcePath(path.join(folder, 'task.json'))
   }
 
   public loc (key: string, ...param: any[]): string {
-    return taskLib.loc(key, ...param)
+    return this._azurePipelinesRunnerWrapper.loc(key, ...param)
   }
 
-  public setFailed (message: string): void {
-    taskLib.setResult(taskLib.TaskResult.Failed, message)
+  public logDebug (message: string): void {
+    this._azurePipelinesRunnerWrapper.debug(message)
   }
 
-  public setSkipped (message: string): void {
-    taskLib.setResult(taskLib.TaskResult.Skipped, message)
+  public logError (message: string): void {
+    this._azurePipelinesRunnerWrapper.error(message)
   }
 
-  public setSucceeded (message: string): void {
-    taskLib.setResult(taskLib.TaskResult.Succeeded, message)
+  public logWarning (message: string): void {
+    this._azurePipelinesRunnerWrapper.warning(message)
   }
 
-  public warning (message: string): void {
-    taskLib.warning(message)
+  public setStatusFailed (message: string): void {
+    this._azurePipelinesRunnerWrapper.setResult(taskLib.TaskResult.Failed, message)
+  }
+
+  public setStatusSkipped (message: string): void {
+    this._azurePipelinesRunnerWrapper.setResult(taskLib.TaskResult.Skipped, message)
+  }
+
+  public setStatusSucceeded (message: string): void {
+    this._azurePipelinesRunnerWrapper.setResult(taskLib.TaskResult.Succeeded, message)
   }
 }

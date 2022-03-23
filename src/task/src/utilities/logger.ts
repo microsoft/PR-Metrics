@@ -31,7 +31,7 @@ export default class Logger {
    */
   public logDebug (message: string): void {
     this._messages.push(`debug   – ${message}`)
-    this._runnerInvoker.debug(message)
+    this._runnerInvoker.logDebug(message)
   }
 
   /**
@@ -49,7 +49,7 @@ export default class Logger {
    */
   public logWarning (message: string): void {
     this._messages.push(`warning – ${message}`)
-    this._runnerInvoker.warning(message)
+    this._runnerInvoker.logWarning(message)
   }
 
   /**
@@ -58,7 +58,7 @@ export default class Logger {
    */
   public logError (message: string): void {
     this._messages.push(`error   – ${message}`)
-    this._runnerInvoker.error(message)
+    this._runnerInvoker.logError(message)
   }
 
   /**

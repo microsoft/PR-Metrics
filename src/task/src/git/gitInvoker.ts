@@ -32,9 +32,12 @@ export default class GitInvoker {
 
   /**
    * Gets the ID of the pull request.
+   * @returns The ID of the pull request.
    */
-  public static get pullRequestId (): string {
-    return RunnerInvoker.isGitHub ? this.pullRequestIdForGitHub : this.pullRequestIdForAzureDevOps
+  public getPullRequestId (): number {
+    this._logger.logDebug('* GitInvoker.getPullRequestId()')
+
+    return parseInt(this.getPullRequestIdInternal())
   }
 
   /**
@@ -88,12 +91,20 @@ export default class GitInvoker {
     }
 
     this._targetBranch = this.getTargetBranch()
-    this._pullRequestId = GitInvoker.pullRequestId
+    this._pullRequestId = this.getPullRequestIdInternal()
     this._isInitialized = true
   }
 
-  private static get pullRequestIdForGitHub (): string {
-    const gitHubReference: string = Validator.validateVariable('GITHUB_REF', 'GitInvoker.pullRequestIdForGitHub()')
+  private getPullRequestIdInternal (): string {
+    this._logger.logDebug('* GitInvoker.getPullRequestIdInternal()')
+
+    return RunnerInvoker.isGitHub ? this.getPullRequestIdForGitHub() : this.getPullRequestIdForAzureDevOps()
+  }
+
+  private getPullRequestIdForGitHub (): string {
+    this._logger.logDebug('* GitInvoker.getPullRequestIdForGitHub()')
+
+    const gitHubReference: string = Validator.validateVariable('GITHUB_REF', 'GitInvoker.getPullRequestIdForGitHub()')
     const gitHubReferenceElements: string[] = gitHubReference.split('/')
     if (gitHubReferenceElements.length !== 4) {
       throw Error(`GITHUB_REF '${gitHubReference}' is in an unexpected format.`)
@@ -102,12 +113,14 @@ export default class GitInvoker {
     return gitHubReferenceElements[2]!
   }
 
-  private static get pullRequestIdForAzureDevOps (): string {
-    const variable: string = Validator.validateVariable('BUILD_REPOSITORY_PROVIDER', 'GitInvoker.pullRequestIdForAzureDevOps()')
+  private getPullRequestIdForAzureDevOps (): string {
+    this._logger.logDebug('* GitInvoker.getPullRequestIdForAzureDevOps()')
+
+    const variable: string = Validator.validateVariable('BUILD_REPOSITORY_PROVIDER', 'GitInvoker.getPullRequestIdForAzureDevOps()')
     if (variable === 'GitHub' || variable === 'GitHubEnterprise') {
-      return Validator.validateVariable('SYSTEM_PULLREQUEST_PULLREQUESTNUMBER', 'GitInvoker.pullRequestIdForAzureDevOps()')
+      return Validator.validateVariable('SYSTEM_PULLREQUEST_PULLREQUESTNUMBER', 'GitInvoker.getPullRequestIdForAzureDevOps()')
     } else {
-      return Validator.validateVariable('SYSTEM_PULLREQUEST_PULLREQUESTID', 'GitInvoker.pullRequestIdForAzureDevOps()')
+      return Validator.validateVariable('SYSTEM_PULLREQUEST_PULLREQUESTID', 'GitInvoker.getPullRequestIdForAzureDevOps()')
     }
   }
 

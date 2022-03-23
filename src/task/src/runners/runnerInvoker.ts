@@ -35,16 +35,6 @@ export default class RunnerInvoker implements IRunnerInvoker {
     return process.env.GITHUB_ACTION !== undefined
   }
 
-  public debug (message: string): void {
-    const runner: IRunnerInvoker = this.getRunner()
-    runner.debug(message)
-  }
-
-  public error (message: string): void {
-    const runner: IRunnerInvoker = this.getRunner()
-    runner.error(message)
-  }
-
   public exec (tool: string, args: string[], failOnError: boolean, outputStream: GitWritableStream, errorStream: GitWritableStream): Promise<number> {
     const runner: IRunnerInvoker = this.getRunner()
     return runner.exec(tool, args, failOnError, outputStream, errorStream)
@@ -55,9 +45,9 @@ export default class RunnerInvoker implements IRunnerInvoker {
     return runner.getInput(name)
   }
 
-  public initializeLoc (folder: string): void {
+  public locInitialize (folder: string): void {
     const runner: IRunnerInvoker = this.getRunner()
-    return runner.initializeLoc(folder)
+    return runner.locInitialize(folder)
   }
 
   public loc (key: string, ...param: any[]): string {
@@ -65,24 +55,34 @@ export default class RunnerInvoker implements IRunnerInvoker {
     return runner.loc(key, ...param)
   }
 
-  public setFailed (message: string): void {
+  public logDebug (message: string): void {
     const runner: IRunnerInvoker = this.getRunner()
-    return runner.setFailed(message)
+    runner.logDebug(message)
   }
 
-  public setSkipped (message: string): void {
+  public logError (message: string): void {
     const runner: IRunnerInvoker = this.getRunner()
-    return runner.setSkipped(message)
+    runner.logError(message)
   }
 
-  public setSucceeded (message: string): void {
+  public logWarning (message: string): void {
     const runner: IRunnerInvoker = this.getRunner()
-    return runner.setSucceeded(message)
+    runner.logWarning(message)
   }
 
-  public warning (message: string): void {
+  public setStatusFailed (message: string): void {
     const runner: IRunnerInvoker = this.getRunner()
-    runner.warning(message)
+    return runner.setStatusFailed(message)
+  }
+
+  public setStatusSkipped (message: string): void {
+    const runner: IRunnerInvoker = this.getRunner()
+    return runner.setStatusSkipped(message)
+  }
+
+  public setStatusSucceeded (message: string): void {
+    const runner: IRunnerInvoker = this.getRunner()
+    return runner.setStatusSucceeded(message)
   }
 
   private getRunner (): IRunnerInvoker {

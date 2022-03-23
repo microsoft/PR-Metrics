@@ -25,7 +25,7 @@ describe('logger.ts', (): void => {
       logger.logDebug('Message')
 
       // Assert
-      verify(runnerInvoker.debug('Message')).once()
+      verify(runnerInvoker.logDebug('Message')).once()
     })
   })
 
@@ -51,7 +51,7 @@ describe('logger.ts', (): void => {
       logger.logWarning('Message')
 
       // Assert
-      verify(runnerInvoker.warning('Message')).once()
+      verify(runnerInvoker.logWarning('Message')).once()
     })
   })
 
@@ -64,7 +64,7 @@ describe('logger.ts', (): void => {
       logger.logError('Message')
 
       // Assert
-      verify(runnerInvoker.error('Message')).once()
+      verify(runnerInvoker.logError('Message')).once()
     })
   })
 
@@ -85,14 +85,14 @@ describe('logger.ts', (): void => {
       logger.replay()
 
       // Assert
-      verify(runnerInvoker.debug('Debug Message 1')).once()
+      verify(runnerInvoker.logDebug('Debug Message 1')).once()
       verify(consoleWrapper.log('Info Message 1')).once()
-      verify(runnerInvoker.warning('Warning Message 1')).once()
-      verify(runnerInvoker.error('Error Message 1')).once()
-      verify(runnerInvoker.debug('Debug Message 2')).once()
+      verify(runnerInvoker.logWarning('Warning Message 1')).once()
+      verify(runnerInvoker.logError('Error Message 1')).once()
+      verify(runnerInvoker.logDebug('Debug Message 2')).once()
       verify(consoleWrapper.log('Info Message 2')).once()
-      verify(runnerInvoker.warning('Warning Message 2')).once()
-      verify(runnerInvoker.error('Error Message 2')).once()
+      verify(runnerInvoker.logWarning('Warning Message 2')).once()
+      verify(runnerInvoker.logError('Error Message 2')).once()
       verify(consoleWrapper.log('🔁 debug   – Debug Message 1')).once()
       verify(consoleWrapper.log('🔁 info    – Info Message 1')).once()
       verify(consoleWrapper.log('🔁 warning – Warning Message 1')).once()
