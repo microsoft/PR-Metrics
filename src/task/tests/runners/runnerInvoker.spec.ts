@@ -168,12 +168,36 @@ describe('runnerInvoker.ts', function (): void {
       // Finalization
       delete process.env.GITHUB_ACTION
     })
+
+    it('should throw when locInitialize is called twice', (): void => {
+      // Arrange
+      const runnerInvoker: RunnerInvoker = new RunnerInvoker(instance(azurePipelinesRunnerInvoker), instance(gitHubRunnerInvoker))
+
+      // Act
+      runnerInvoker.locInitialize('TEST')
+      const func: () => void = () => runnerInvoker.locInitialize('TEST')
+
+      // Assert
+      expect(func).to.throw('RunnerInvoker.locInitialize must not be called multiple times.')
+    })
   })
 
   describe('loc()', (): void => {
+    it('should throw when locInitialize is not called beforehand', (): void => {
+      // Arrange
+      const runnerInvoker: RunnerInvoker = new RunnerInvoker(instance(azurePipelinesRunnerInvoker), instance(gitHubRunnerInvoker))
+
+      // Act
+      const func: () => void = () => runnerInvoker.loc('TEST')
+
+      // Assert
+      expect(func).to.throw('RunnerInvoker.locInitialize must be called before RunnerInvoker.loc.')
+    })
+
     it('should call the underlying method when running on Azure Pipelines', (): void => {
       // Arrange
       const runnerInvoker: RunnerInvoker = new RunnerInvoker(instance(azurePipelinesRunnerInvoker), instance(gitHubRunnerInvoker))
+      runnerInvoker.locInitialize('TEST')
       when(azurePipelinesRunnerInvoker.loc('TEST')).thenReturn('VALUE')
 
       // Act
@@ -189,6 +213,7 @@ describe('runnerInvoker.ts', function (): void {
       // Arrange
       process.env.GITHUB_ACTION = 'PR-Metrics'
       const runnerInvoker: RunnerInvoker = new RunnerInvoker(instance(azurePipelinesRunnerInvoker), instance(gitHubRunnerInvoker))
+      runnerInvoker.locInitialize('TEST')
       when(gitHubRunnerInvoker.loc('TEST')).thenReturn('VALUE')
 
       // Act

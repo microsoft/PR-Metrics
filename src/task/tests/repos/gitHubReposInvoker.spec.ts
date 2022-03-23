@@ -590,6 +590,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       verify(logger.logDebug('* GitHubReposInvoker.getComments()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.initializeForAzureDevOps()')).once()
+      verify(logger.logDebug('* GitHubReposInvoker.convertPullRequestComments()')).once()
       verify(logger.logDebug(JSON.stringify(response))).once()
     })
 
@@ -623,6 +624,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       verify(logger.logDebug('* GitHubReposInvoker.getComments()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.initializeForAzureDevOps()')).once()
+      verify(logger.logDebug('* GitHubReposInvoker.convertPullRequestComments()')).once()
       verify(logger.logDebug(JSON.stringify(GitHubReposInvokerConstants.getReviewCommentsResponse))).once()
     })
 
@@ -662,6 +664,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       verify(logger.logDebug('* GitHubReposInvoker.getComments()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.initializeForAzureDevOps()')).once()
+      verify(logger.logDebug('* GitHubReposInvoker.convertPullRequestComments()')).once()
       verify(logger.logDebug(JSON.stringify(response))).once()
       verify(logger.logDebug(JSON.stringify(GitHubReposInvokerConstants.getReviewCommentsResponse))).once()
     })
@@ -694,6 +697,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       verify(logger.logDebug('* GitHubReposInvoker.getComments()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.initializeForAzureDevOps()')).once()
+      verify(logger.logDebug('* GitHubReposInvoker.convertPullRequestComments()')).once()
       verify(logger.logDebug(JSON.stringify(response))).once()
     })
   })
@@ -814,36 +818,6 @@ describe('gitHubReposInvoker.ts', function (): void {
       verify(logger.logDebug('null')).once()
     })
 
-    it('should succeed when a file name is specified and a 422 status is returned', async (): Promise<void> => {
-      // Arrange
-      const error: ErrorWithStatus = new ErrorWithStatus('Test')
-      error.status = 422
-      when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
-        expect(options.auth).to.equal('OAUTH')
-        expect(options.userAgent).to.equal(expectedUserAgent)
-        expect(options.log).to.not.equal(null)
-        expect(options.log.debug).to.not.equal(null)
-        expect(options.log.info).to.not.equal(null)
-        expect(options.log.warn).to.not.equal(null)
-        expect(options.log.error).to.not.equal(null)
-      })
-      when(octokitWrapper.createReviewComment('microsoft', 'PR-Metrics', 12345, 'Content', 'file.ts', 'sha54321')).thenThrow(error)
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
-
-      // Act
-      await gitHubReposInvoker.createComment('Content', CommentThreadStatus.Unknown, 'file.ts')
-
-      // Assert
-      verify(octokitWrapper.initialize(anything())).once()
-      verify(octokitWrapper.listCommits('microsoft', 'PR-Metrics', 12345, 1)).once()
-      verify(octokitWrapper.createReviewComment('microsoft', 'PR-Metrics', 12345, 'Content', 'file.ts', 'sha54321')).once()
-      verify(logger.logDebug('* GitHubReposInvoker.createComment()')).once()
-      verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
-      verify(logger.logDebug('* GitHubReposInvoker.initializeForAzureDevOps()')).once()
-      verify(logger.logDebug('Error – status: 422')).once()
-      verify(logger.logDebug('Error – message: "Test"')).once()
-    })
-
     it('should throw when the commit list is empty', async (): Promise<void> => {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
@@ -876,41 +850,6 @@ describe('gitHubReposInvoker.ts', function (): void {
       expect(errorThrown).to.equal(true)
       verify(octokitWrapper.initialize(anything())).once()
       verify(octokitWrapper.listCommits('microsoft', 'PR-Metrics', 12345, 1)).once()
-      verify(logger.logDebug('* GitHubReposInvoker.createComment()')).once()
-      verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
-      verify(logger.logDebug('* GitHubReposInvoker.initializeForAzureDevOps()')).once()
-    })
-
-    it('should throw when a file name is specified and a non-422 error status is returned', async (): Promise<void> => {
-      // Arrange
-      const error: ErrorWithStatus = new ErrorWithStatus('Test')
-      error.status = 423
-      when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
-        expect(options.auth).to.equal('OAUTH')
-        expect(options.userAgent).to.equal(expectedUserAgent)
-        expect(options.log).to.not.equal(null)
-        expect(options.log.debug).to.not.equal(null)
-        expect(options.log.info).to.not.equal(null)
-        expect(options.log.warn).to.not.equal(null)
-        expect(options.log.error).to.not.equal(null)
-      })
-      when(octokitWrapper.createReviewComment('microsoft', 'PR-Metrics', 12345, 'Content', 'file.ts', 'sha54321')).thenThrow(error)
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
-      let errorThrown: boolean = false
-
-      try {
-        // Act
-        await gitHubReposInvoker.createComment('Content', CommentThreadStatus.Unknown, 'file.ts')
-      } catch (error: any) {
-        // Assert
-        errorThrown = true
-        expect(error.message).to.equal('Test')
-      }
-
-      expect(errorThrown).to.equal(true)
-      verify(octokitWrapper.initialize(anything())).once()
-      verify(octokitWrapper.listCommits('microsoft', 'PR-Metrics', 12345, 1)).once()
-      verify(octokitWrapper.createReviewComment('microsoft', 'PR-Metrics', 12345, 'Content', 'file.ts', 'sha54321')).once()
       verify(logger.logDebug('* GitHubReposInvoker.createComment()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.initializeForAzureDevOps()')).once()
