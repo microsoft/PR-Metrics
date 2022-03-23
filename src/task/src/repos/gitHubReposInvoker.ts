@@ -147,9 +147,8 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
           // A 422 HTTP response may be thrown if the file is the set of file changes are too large for a diff to be displayed.
           if (error.status === 422) {
             const properties: string[] = Object.getOwnPropertyNames(error)
-            this._logger.logDebug('Got all names')
-            this._logger.logDebug('Names:' + properties.join(' '))
             properties.forEach((property: string): void => {
+              // Exclude the deprecated properties.
               if (property !== 'code' && property !== 'headers') {
                 this._logger.logDebug(`${error.name} – ${property}: ${JSON.stringify(error[property])}`)
               }
