@@ -103,6 +103,26 @@ describe('gitInvoker.ts', (): void => {
       verify(logger.logDebug('* GitInvoker.invokeGit()')).once()
     })
 
+    it('should return true when the Git history is available and the method is called after retrieving the pull request ID', async (): Promise<void> => {
+      // Arrange
+      const gitInvoker: GitInvoker = new GitInvoker(instance(logger), instance(runnerInvoker))
+
+      // Act
+      const result1: number = gitInvoker.pullRequestId
+      const result2: boolean = await gitInvoker.isGitHistoryAvailable()
+
+      // Assert
+      expect(result1).to.equal(12345)
+      expect(result2).to.equal(true)
+      verify(logger.logDebug('* GitInvoker.pullRequestId')).once()
+      verify(logger.logDebug('* GitInvoker.pullRequestIdForAzurePipelines')).once()
+      verify(logger.logDebug('* GitInvoker.isGitHistoryAvailable()')).once()
+      verify(logger.logDebug('* GitInvoker.initialize()')).once()
+      verify(logger.logDebug('* GitInvoker.targetBranch')).once()
+      verify(logger.logDebug('* GitInvoker.pullRequestIdInternal')).twice()
+      verify(logger.logDebug('* GitInvoker.invokeGit()')).once()
+    })
+
     it('should return true when the Git history is available and the PR is using the GitHub runner', async (): Promise<void> => {
       // Arrange
       process.env.GITHUB_ACTION = 'PR-Metrics'
@@ -278,7 +298,7 @@ describe('gitInvoker.ts', (): void => {
       expect(result1).to.equal(12345)
       expect(result2).to.equal(12345)
       verify(logger.logDebug('* GitInvoker.pullRequestId')).twice()
-      verify(logger.logDebug('* GitInvoker.pullRequestIdInternal')).twice()
+      verify(logger.logDebug('* GitInvoker.pullRequestIdInternal')).once()
       verify(logger.logDebug('* GitInvoker.pullRequestIdForGitHub')).once()
 
       // Finalization

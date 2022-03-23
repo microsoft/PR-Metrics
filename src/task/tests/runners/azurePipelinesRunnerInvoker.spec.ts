@@ -2,7 +2,8 @@
 // Licensed under the MIT License.
 
 import 'reflect-metadata'
-import { deepEqual, instance, mock, verify } from 'ts-mockito'
+import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito'
+import { expect } from 'chai'
 import { GitWritableStream } from '../../src/git/gitWritableStream'
 import { IExecOptions } from 'azure-pipelines-task-lib/toolrunner'
 import * as taskLib from 'azure-pipelines-task-lib/task'
@@ -18,23 +19,25 @@ describe('azurePipelinesRunnerInvoker.ts', function (): void {
   })
 
   describe('exec()', (): void => {
-    it('should call the underlying method', (): void => {
+    it('should call the underlying method', async (): Promise<void> => {
       // Arrange
       const azurePipelinesRunnerInvoker: AzurePipelinesRunnerInvoker = new AzurePipelinesRunnerInvoker(instance(azurePipelinesRunnerWrapper))
       const logger: Logger = mock(Logger)
-      const outputStream: GitWritableStream = new GitWritableStream(logger)
-      const errorStream: GitWritableStream = new GitWritableStream(logger)
+      const outputStream: GitWritableStream = new GitWritableStream(instance(logger))
+      const errorStream: GitWritableStream = new GitWritableStream(instance(logger))
+      when(azurePipelinesRunnerWrapper.exec('TOOL', deepEqual(['Argument 1', 'Argument 2']), anything())).thenResolve(1)
 
       // Act
-      azurePipelinesRunnerInvoker.exec('TOOL', ['Argument 1', 'Argument 2'], true, outputStream, errorStream)
+      const result: number = await azurePipelinesRunnerInvoker.exec('TOOL', ['Argument 1', 'Argument 2'], true, outputStream, errorStream)
 
       // Assert
+      expect(result).to.equal(1)
       const options: IExecOptions = {
         failOnStdErr: true,
         outStream: outputStream,
         errStream: errorStream
       }
-      verify(azurePipelinesRunnerWrapper.exec('TOOL', ['Argument 1', 'Argument 2'], deepEqual(options))).once()
+      verify(azurePipelinesRunnerWrapper.exec('TOOL', deepEqual(['Argument 1', 'Argument 2']), deepEqual(options))).once()
     })
   })
 
@@ -42,11 +45,13 @@ describe('azurePipelinesRunnerInvoker.ts', function (): void {
     it('should call the underlying method', (): void => {
       // Arrange
       const azurePipelinesRunnerInvoker: AzurePipelinesRunnerInvoker = new AzurePipelinesRunnerInvoker(instance(azurePipelinesRunnerWrapper))
+      when(azurePipelinesRunnerWrapper.getInput('TestSuffix')).thenReturn('VALUE')
 
       // Act
-      azurePipelinesRunnerInvoker.getInput(['Test', 'Suffix'])
+      const result: string | undefined = azurePipelinesRunnerInvoker.getInput(['Test', 'Suffix'])
 
       // Assert
+      expect(result).to.equal('VALUE')
       verify(azurePipelinesRunnerWrapper.getInput('TestSuffix')).once()
     })
   })
@@ -68,11 +73,13 @@ describe('azurePipelinesRunnerInvoker.ts', function (): void {
     it('should call the underlying method', (): void => {
       // Arrange
       const azurePipelinesRunnerInvoker: AzurePipelinesRunnerInvoker = new AzurePipelinesRunnerInvoker(instance(azurePipelinesRunnerWrapper))
+      when(azurePipelinesRunnerWrapper.loc('TEST %s %s', 'Parameter 1', 'Parameter 2')).thenReturn('VALUE')
 
       // Act
-      azurePipelinesRunnerInvoker.loc('TEST %s %s', 'Parameter 1', 'Parameter 2')
+      const result: string = azurePipelinesRunnerInvoker.loc('TEST %s %s', 'Parameter 1', 'Parameter 2')
 
       // Assert
+      expect(result).to.equal('VALUE')
       verify(azurePipelinesRunnerWrapper.loc('TEST %s %s', 'Parameter 1', 'Parameter 2')).once()
     })
   })

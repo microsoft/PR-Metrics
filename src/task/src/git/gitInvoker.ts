@@ -18,7 +18,8 @@ export default class GitInvoker {
 
   private _isInitialized: boolean = false
   private _targetBranch: string = ''
-  private _pullRequestId: string = ''
+  private _pullRequestId: number = 0
+  private _pullRequestIdInternal: string = ''
 
   /**
    * Initializes a new instance of the `GitInvoker` class.
@@ -55,7 +56,7 @@ export default class GitInvoker {
     this.initialize()
 
     try {
-      await this.invokeGit(['rev-parse', '--branch', `origin/${this._targetBranch}...pull/${this._pullRequestId}/merge`])
+      await this.invokeGit(['rev-parse', '--branch', `origin/${this._targetBranch}...pull/${this._pullRequestIdInternal}/merge`])
       return true
     } catch {
       return false
@@ -69,7 +70,12 @@ export default class GitInvoker {
   public get pullRequestId (): number {
     this._logger.logDebug('* GitInvoker.pullRequestId')
 
-    return Validator.validate(parseInt(this.pullRequestIdInternal), 'Pull Request ID', 'GitInvoker.pullRequestId')
+    if (this._pullRequestId !== 0) {
+      return this._pullRequestId
+    }
+
+    this._pullRequestId = Validator.validate(parseInt(this.pullRequestIdInternal), 'Pull Request ID', 'GitInvoker.pullRequestId')
+    return this._pullRequestId
   }
 
   /**
@@ -80,7 +86,7 @@ export default class GitInvoker {
     this._logger.logDebug('* GitInvoker.getDiffSummary()')
 
     this.initialize()
-    return this.invokeGit(['diff', '--numstat', `origin/${this._targetBranch}...pull/${this._pullRequestId}/merge`])
+    return this.invokeGit(['diff', '--numstat', `origin/${this._targetBranch}...pull/${this._pullRequestIdInternal}/merge`])
   }
 
   private initialize (): void {
@@ -91,19 +97,19 @@ export default class GitInvoker {
     }
 
     this._targetBranch = this.targetBranch
-    this._pullRequestId = this.pullRequestIdInternal
+    this._pullRequestIdInternal = this.pullRequestIdInternal
     this._isInitialized = true
   }
 
   private get pullRequestIdInternal (): string {
     this._logger.logDebug('* GitInvoker.pullRequestIdInternal')
 
-    if (this._pullRequestId) {
-      return this._pullRequestId
+    if (this._pullRequestIdInternal) {
+      return this._pullRequestIdInternal
     }
 
-    this._pullRequestId = RunnerInvoker.isGitHub ? this.pullRequestIdForGitHub : this.pullRequestIdForAzurePipelines
-    return this._pullRequestId
+    this._pullRequestIdInternal = RunnerInvoker.isGitHub ? this.pullRequestIdForGitHub : this.pullRequestIdForAzurePipelines
+    return this._pullRequestIdInternal
   }
 
   private get pullRequestIdForGitHub (): string {

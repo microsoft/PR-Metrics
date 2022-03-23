@@ -2,15 +2,19 @@
 // Licensed under the MIT License.
 
 import 'reflect-metadata'
-import { deepEqual, instance, mock, verify } from 'ts-mockito'
+import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito'
+import { expect } from 'chai'
 import { GitWritableStream } from '../../src/git/gitWritableStream'
 import * as actionsExec from '@actions/exec'
+import * as path from 'path'
 import ConsoleWrapper from '../../src/wrappers/consoleWrapper'
 import GitHubRunnerInvoker from '../../src/runners/gitHubRunnerInvoker'
 import GitHubRunnerWrapper from '../../src/wrappers/gitHubRunnerWrapper'
 import Logger from '../../src/utilities/logger'
 
 describe('gitHubRunnerInvoker.ts', function (): void {
+  const resourcePath: string = path.join(__dirname, '../../Strings/resources.resjson/en-US/')
+
   let consoleWrapper: ConsoleWrapper
   let gitHubRunnerWrapper: GitHubRunnerWrapper
 
@@ -20,23 +24,25 @@ describe('gitHubRunnerInvoker.ts', function (): void {
   })
 
   describe('exec()', (): void => {
-    it('should call the underlying method', (): void => {
+    it('should call the underlying method', async (): Promise<void> => {
       // Arrange
       const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(instance(consoleWrapper), instance(gitHubRunnerWrapper))
       const logger: Logger = mock(Logger)
-      const outputStream: GitWritableStream = new GitWritableStream(logger)
-      const errorStream: GitWritableStream = new GitWritableStream(logger)
+      const outputStream: GitWritableStream = new GitWritableStream(instance(logger))
+      const errorStream: GitWritableStream = new GitWritableStream(instance(logger))
+      when(gitHubRunnerWrapper.exec('TOOL', deepEqual(['Argument 1', 'Argument 2']), anything())).thenResolve(1)
 
       // Act
-      gitHubRunnerInvoker.exec('TOOL', ['Argument 1', 'Argument 2'], true, outputStream, errorStream)
+      const result: number = await gitHubRunnerInvoker.exec('TOOL', ['Argument 1', 'Argument 2'], true, outputStream, errorStream)
 
       // Assert
+      expect(result).to.equal(1)
       const options: actionsExec.ExecOptions = {
         failOnStdErr: true,
         outStream: outputStream,
         errStream: errorStream
       }
-      verify(gitHubRunnerWrapper.exec('TOOL', ['Argument 1', 'Argument 2'], deepEqual(options))).once()
+      verify(gitHubRunnerWrapper.exec('TOOL', deepEqual(['Argument 1', 'Argument 2']), deepEqual(options))).once()
     })
   })
 
@@ -44,40 +50,55 @@ describe('gitHubRunnerInvoker.ts', function (): void {
     it('should call the underlying method', (): void => {
       // Arrange
       const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(instance(consoleWrapper), instance(gitHubRunnerWrapper))
+      when(gitHubRunnerWrapper.getInput('test-suffix')).thenReturn('VALUE')
 
       // Act
-      gitHubRunnerInvoker.getInput(['Test', 'Suffix'])
+      const result: string | undefined = gitHubRunnerInvoker.getInput(['Test', 'Suffix'])
 
       // Assert
+      expect(result).to.equal('VALUE')
       verify(gitHubRunnerWrapper.getInput('test-suffix')).once()
     })
   })
 
-  // describe('locInitialize()', (): void => {
-  //   it('should call the underlying method', (): void => {
-  //     // Arrange
-  //     const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(instance(consoleWrapper), instance(gitHubRunnerWrapper))
+  describe('locInitialize()', (): void => {
+    it('should succeed', (): void => {
+      // Arrange
+      const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(instance(consoleWrapper), instance(gitHubRunnerWrapper))
 
-  //     // Act
-  //     gitHubRunnerInvoker.locInitialize('/folder1/folder2/')
+      // Act
+      const func: () => void = () => gitHubRunnerInvoker.locInitialize(resourcePath)
 
-  //     // Assert
-  //     verify(gitHubRunnerWrapper.setResourcePath('/folder1/folder2/task.json')).once()
-  //   })
-  // })
+      // Assert
+      expect(func).to.not.throw()
+    })
+  })
 
-  // describe('loc()', (): void => {
-  //   it('should call the underlying method', (): void => {
-  //     // Arrange
-  //     const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(instance(consoleWrapper), instance(gitHubRunnerWrapper))
+  describe('loc()', (): void => {
+    it('should retrieve the correct resource when no placeholders are present', (): void => {
+      // Arrange
+      const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(instance(consoleWrapper), instance(gitHubRunnerWrapper))
+      gitHubRunnerInvoker.locInitialize(resourcePath)
 
-  //     // Act
-  //     gitHubRunnerInvoker.loc('TEST %s %s', 'Parameter 1', 'Parameter 2')
+      // Act
+      const result: string = gitHubRunnerInvoker.loc('metrics.codeMetrics.titleSizeL')
 
-  //     // Assert
-  //     verify(gitHubRunnerWrapper.loc('TEST %s %s', 'Parameter 1', 'Parameter 2')).once()
-  //   })
-  // })
+      // Assert
+      expect(result).to.equal('L')
+    })
+
+    it('should retrieve and format the correct resource when placeholders are present', (): void => {
+      // Arrange
+      const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(instance(consoleWrapper), instance(gitHubRunnerWrapper))
+      gitHubRunnerInvoker.locInitialize(resourcePath)
+
+      // Act
+      const result: string = gitHubRunnerInvoker.loc('metrics.codeMetrics.titleSizeIndicatorFormat', 'Parameter 1', '[Parameter 2]')
+
+      // Assert
+      expect(result).to.equal('Parameter 1[Parameter 2]')
+    })
+  })
 
   describe('logDebug()', (): void => {
     it('should call the underlying method', (): void => {
