@@ -99,11 +99,11 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     await Promise.all([
       this.invokeApiCall(async (): Promise<void> => {
         pullRequestComments = await this._octokitWrapper.getIssueComments(this._owner!, this._repo!, this._pullRequestId!)
-        this._logger.logDebug(JSON.stringify(pullRequestComments))
+        this._logger.logDebug('PullRequestComments:' + JSON.stringify(pullRequestComments))
       }),
       this.invokeApiCall(async (): Promise<void> => {
         fileComments = await this._octokitWrapper.getReviewComments(this._owner!, this._repo!, this._pullRequestId!)
-        this._logger.logDebug(JSON.stringify(fileComments))
+        this._logger.logDebug('FileComments:' + JSON.stringify(fileComments))
       })
     ])
 
