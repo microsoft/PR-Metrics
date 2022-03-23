@@ -164,7 +164,7 @@ export default class Inputs {
     this._logger.logDebug('* Inputs.initializeFileMatchingPatterns()')
 
     if (fileMatchingPatterns?.trim()) {
-      this._fileMatchingPatterns = fileMatchingPatterns.split('\n')
+      this._fileMatchingPatterns = fileMatchingPatterns.replace(/\\/g, '/').split('\n')
       this._logger.logInfo(this._runnerInvoker.loc('metrics.inputs.settingFileMatchingPatterns', JSON.stringify(this._fileMatchingPatterns)))
       return
     }

@@ -45,7 +45,43 @@ describe('pullRequest.ts', (): void => {
   })
 
   describe('isPullRequest', (): void => {
-    it('should return true when SYSTEM_PULLREQUEST_PULLREQUESTID is defined', (): void => {
+    it('should return true when the GitHub runner is being used and GITHUB_BASE_REF is defined', (): void => {
+      // Arrange
+      process.env.GITHUB_ACTION = 'PR-Metrics'
+      process.env.GITHUB_BASE_REF = 'develop'
+      const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(runnerInvoker))
+
+      // Act
+      const result: boolean = pullRequest.isPullRequest
+
+      // Assert
+      expect(result).to.equal(true)
+      verify(logger.logDebug('* PullRequest.isPullRequest')).once()
+
+      // Finalization
+      delete process.env.GITHUB_ACTION
+      delete process.env.GITHUB_BASE_REF
+    })
+
+    it('should return false when the GitHub runner is being used and GITHUB_BASE_REF is the empty string', (): void => {
+      // Arrange
+      process.env.GITHUB_ACTION = 'PR-Metrics'
+      process.env.GITHUB_BASE_REF = ''
+      const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(runnerInvoker))
+
+      // Act
+      const result: boolean = pullRequest.isPullRequest
+
+      // Assert
+      expect(result).to.equal(false)
+      verify(logger.logDebug('* PullRequest.isPullRequest')).once()
+
+      // Finalization
+      delete process.env.GITHUB_ACTION
+      delete process.env.GITHUB_BASE_REF
+    })
+
+    it('should return true when the Azure Pipelines runner is being used and SYSTEM_PULLREQUEST_PULLREQUESTID is defined', (): void => {
       // Arrange
       process.env.SYSTEM_PULLREQUEST_PULLREQUESTID = 'refs/heads/develop'
       const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(runnerInvoker))
@@ -61,7 +97,7 @@ describe('pullRequest.ts', (): void => {
       delete process.env.SYSTEM_PULLREQUEST_PULLREQUESTID
     })
 
-    it('should return false when SYSTEM_PULLREQUEST_PULLREQUESTID is not defined', (): void => {
+    it('should return false when the Azure Pipelines runner is being used and SYSTEM_PULLREQUEST_PULLREQUESTID is not defined', (): void => {
       // Arrange
       delete process.env.SYSTEM_PULLREQUEST_TARGETBRANCH
       const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(runnerInvoker))
@@ -76,7 +112,23 @@ describe('pullRequest.ts', (): void => {
   })
 
   describe('isSupportedProvider', (): void => {
-    it('should throw an error when BUILD_REPOSITORY_PROVIDER is undefined', (): void => {
+    it('should return true when the GitHub runner is being used', (): void => {
+      // Arrange
+      process.env.GITHUB_ACTION = 'PR-Metrics'
+      const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(runnerInvoker))
+
+      // Act
+      const result: boolean | string = pullRequest.isSupportedProvider
+
+      // Assert
+      expect(result).to.equal(true)
+      verify(logger.logDebug('* PullRequest.isSupportedProvider')).once()
+
+      // Finalization
+      delete process.env.GITHUB_ACTION
+    })
+
+    it('should throw an error when the Azure Pipelines runner is being used and BUILD_REPOSITORY_PROVIDER is undefined', (): void => {
       // Arrange
       delete process.env.BUILD_REPOSITORY_PROVIDER
       const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(runnerInvoker))
@@ -95,7 +147,7 @@ describe('pullRequest.ts', (): void => {
         'GitHub',
         'GitHubEnterprise'
       ], (provider: string): void => {
-        it(`should return true when BUILD_REPOSITORY_PROVIDER is set to '${provider}'`, (): void => {
+        it(`should return true when the Azure Pipelines runner is being used and BUILD_REPOSITORY_PROVIDER is set to '${provider}'`, (): void => {
         // Arrange
           process.env.BUILD_REPOSITORY_PROVIDER = provider
           const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(runnerInvoker))
@@ -112,7 +164,7 @@ describe('pullRequest.ts', (): void => {
         })
       })
 
-    it('should return the provider when BUILD_REPOSITORY_PROVIDER is not set to TfsGit or GitHub', (): void => {
+    it('should return the provider when the Azure Pipelines runner is being used and BUILD_REPOSITORY_PROVIDER is not set to TfsGit or GitHub', (): void => {
       // Arrange
       process.env.BUILD_REPOSITORY_PROVIDER = 'Other'
       const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(runnerInvoker))

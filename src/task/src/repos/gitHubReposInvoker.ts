@@ -215,7 +215,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
 
     this._logger.logDebug(`Using Base URL '${options.baseUrl}'.`)
     this._octokitWrapper.initialize(options)
-    this._pullRequestId = this._gitInvoker.getPullRequestId()
+    this._pullRequestId = this._gitInvoker.pullRequestId
     this._isInitialized = true
   }
 

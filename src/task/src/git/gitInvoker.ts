@@ -31,16 +31,6 @@ export default class GitInvoker {
   }
 
   /**
-   * Gets the ID of the pull request.
-   * @returns The ID of the pull request.
-   */
-  public getPullRequestId (): number {
-    this._logger.logDebug('* GitInvoker.getPullRequestId()')
-
-    return parseInt(this.getPullRequestIdInternal())
-  }
-
-  /**
    * Gets a value indicating whether the current folder corresponds to a Git enlistment.
    * @returns A promise containing a value indicating whether the current folder corresponds to a Git enlistment.
    */
@@ -73,6 +63,16 @@ export default class GitInvoker {
   }
 
   /**
+   * Gets the ID of the pull request.
+   * @returns The ID of the pull request.
+   */
+  public get pullRequestId (): number {
+    this._logger.logDebug('* GitInvoker.pullRequestId')
+
+    return Validator.validate(parseInt(this.pullRequestIdInternal), 'Pull Request ID', 'GitInvoker.pullRequestId')
+  }
+
+  /**
    * Gets a diff summary related to the changes in the current branch.
    * @returns A promise containing the diff summary.
    */
@@ -90,21 +90,26 @@ export default class GitInvoker {
       return
     }
 
-    this._targetBranch = this.getTargetBranch()
-    this._pullRequestId = this.getPullRequestIdInternal()
+    this._targetBranch = this.targetBranch
+    this._pullRequestId = this.pullRequestIdInternal
     this._isInitialized = true
   }
 
-  private getPullRequestIdInternal (): string {
-    this._logger.logDebug('* GitInvoker.getPullRequestIdInternal()')
+  private get pullRequestIdInternal (): string {
+    this._logger.logDebug('* GitInvoker.pullRequestIdInternal')
 
-    return RunnerInvoker.isGitHub ? this.getPullRequestIdForGitHub() : this.getPullRequestIdForAzureDevOps()
+    if (this._pullRequestId) {
+      return this._pullRequestId
+    }
+
+    this._pullRequestId = RunnerInvoker.isGitHub ? this.pullRequestIdForGitHub : this.pullRequestIdForAzurePipelines
+    return this._pullRequestId
   }
 
-  private getPullRequestIdForGitHub (): string {
-    this._logger.logDebug('* GitInvoker.getPullRequestIdForGitHub()')
+  private get pullRequestIdForGitHub (): string {
+    this._logger.logDebug('* GitInvoker.pullRequestIdForGitHub')
 
-    const gitHubReference: string = Validator.validateVariable('GITHUB_REF', 'GitInvoker.getPullRequestIdForGitHub()')
+    const gitHubReference: string = Validator.validateVariable('GITHUB_REF', 'GitInvoker.pullRequestIdForGitHub')
     const gitHubReferenceElements: string[] = gitHubReference.split('/')
     if (gitHubReferenceElements.length !== 4) {
       throw Error(`GITHUB_REF '${gitHubReference}' is in an unexpected format.`)
@@ -113,25 +118,25 @@ export default class GitInvoker {
     return gitHubReferenceElements[2]!
   }
 
-  private getPullRequestIdForAzureDevOps (): string {
-    this._logger.logDebug('* GitInvoker.getPullRequestIdForAzureDevOps()')
+  private get pullRequestIdForAzurePipelines (): string {
+    this._logger.logDebug('* GitInvoker.pullRequestIdForAzurePipelines')
 
-    const variable: string = Validator.validateVariable('BUILD_REPOSITORY_PROVIDER', 'GitInvoker.getPullRequestIdForAzureDevOps()')
+    const variable: string = Validator.validateVariable('BUILD_REPOSITORY_PROVIDER', 'GitInvoker.pullRequestIdForAzurePipelines')
     if (variable === 'GitHub' || variable === 'GitHubEnterprise') {
-      return Validator.validateVariable('SYSTEM_PULLREQUEST_PULLREQUESTNUMBER', 'GitInvoker.getPullRequestIdForAzureDevOps()')
+      return Validator.validateVariable('SYSTEM_PULLREQUEST_PULLREQUESTNUMBER', 'GitInvoker.pullRequestIdForAzurePipelines')
     } else {
-      return Validator.validateVariable('SYSTEM_PULLREQUEST_PULLREQUESTID', 'GitInvoker.getPullRequestIdForAzureDevOps()')
+      return Validator.validateVariable('SYSTEM_PULLREQUEST_PULLREQUESTID', 'GitInvoker.pullRequestIdForAzurePipelines')
     }
   }
 
-  private getTargetBranch (): string {
-    this._logger.logDebug('* GitInvoker.getTargetBranch()')
+  private get targetBranch (): string {
+    this._logger.logDebug('* GitInvoker.targetBranch')
 
     if (RunnerInvoker.isGitHub) {
-      return Validator.validateVariable('GITHUB_BASE_REF', 'GitInvoker.getTargetBranch()')
+      return Validator.validateVariable('GITHUB_BASE_REF', 'GitInvoker.targetBranch')
     }
 
-    const variable: string = Validator.validateVariable('SYSTEM_PULLREQUEST_TARGETBRANCH', 'GitInvoker.getTargetBranch()')
+    const variable: string = Validator.validateVariable('SYSTEM_PULLREQUEST_TARGETBRANCH', 'GitInvoker.targetBranch')
     const expectedStart: string = 'refs/heads/'
     if (variable.startsWith(expectedStart)) {
       const startIndex: number = expectedStart.length

@@ -24,7 +24,6 @@ export default class CodeMetrics {
   private _runnerInvoker: RunnerInvoker
 
   private static readonly _minimatchOptions: minimatch.IOptions = {
-    nobrace: true,
     dot: true
   }
 
@@ -157,9 +156,9 @@ export default class CodeMetrics {
     // Check for glob matches.
     codeFileMetrics.forEach((codeFileMetric: CodeFileMetric): void => {
       let isValidFilePattern: boolean = true
-      for (let i = 0; i < this._inputs.fileMatchingPatterns.length; i++) {
-        isValidFilePattern &&= minimatch.match([codeFileMetric.fileName], this._inputs.fileMatchingPatterns[i]!.replace(/\\/g, '/'), CodeMetrics._minimatchOptions).length > 0
-      }
+      this._inputs.fileMatchingPatterns.forEach((fileMatchingPattern: string): void => {
+        isValidFilePattern &&= minimatch.match([codeFileMetric.fileName], fileMatchingPattern, CodeMetrics._minimatchOptions).length > 0
+      })
 
       const isValidFileExtension: boolean = this.matchFileExtension(codeFileMetric.fileName)
       if (isValidFilePattern && isValidFileExtension) {

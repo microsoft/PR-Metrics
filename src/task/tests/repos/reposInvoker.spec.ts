@@ -66,6 +66,25 @@ describe('reposInvoker.ts', function (): void {
       delete process.env.BUILD_REPOSITORY_PROVIDER
     })
 
+    it('should invoke GitHub when called from a GitHub runner', (): void => {
+      // Arrange
+      process.env.GITHUB_ACTION = 'PR-Metrics'
+      const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
+
+      // Act
+      const result: string | null = reposInvoker.isAccessTokenAvailable
+
+      // Assert
+      verify(azureReposInvoker.isAccessTokenAvailable).never()
+      verify(gitHubReposInvoker.isAccessTokenAvailable).once()
+      verify(logger.logDebug('* ReposInvoker.isAccessTokenAvailable')).once()
+      verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
+      expect(result).to.equal(null)
+
+      // Finalization
+      delete process.env.GITHUB_ACTION
+    })
+
     async.each(
       [
         'GitHub',
@@ -145,6 +164,25 @@ describe('reposInvoker.ts', function (): void {
 
       // Finalization
       delete process.env.BUILD_REPOSITORY_PROVIDER
+    })
+
+    it('should invoke GitHub when called from a GitHub runner', async (): Promise<void> => {
+      // Arrange
+      process.env.GITHUB_ACTION = 'PR-Metrics'
+      const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
+
+      // Act
+      const result: PullRequestDetails = await reposInvoker.getTitleAndDescription()
+
+      // Assert
+      verify(azureReposInvoker.getTitleAndDescription()).never()
+      verify(gitHubReposInvoker.getTitleAndDescription()).once()
+      verify(logger.logDebug('* ReposInvoker.getTitleAndDescription()')).once()
+      verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
+      expect(result).to.equal(null)
+
+      // Finalization
+      delete process.env.GITHUB_ACTION
     })
 
     async.each(
@@ -240,6 +278,25 @@ describe('reposInvoker.ts', function (): void {
       delete process.env.BUILD_REPOSITORY_PROVIDER
     })
 
+    it('should invoke GitHub when called from a GitHub runner', async (): Promise<void> => {
+      // Arrange
+      process.env.GITHUB_ACTION = 'PR-Metrics'
+      const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
+
+      // Act
+      const result: CommentData = await reposInvoker.getComments()
+
+      // Assert
+      verify(azureReposInvoker.getComments()).never()
+      verify(gitHubReposInvoker.getComments()).once()
+      verify(logger.logDebug('* ReposInvoker.getComments()')).once()
+      verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
+      expect(result).to.equal(null)
+
+      // Finalization
+      delete process.env.GITHUB_ACTION
+    })
+
     async.each(
       [
         'GitHub',
@@ -330,6 +387,24 @@ describe('reposInvoker.ts', function (): void {
 
       // Finalization
       delete process.env.BUILD_REPOSITORY_PROVIDER
+    })
+
+    it('should invoke GitHub when called from a GitHub runner', async (): Promise<void> => {
+      // Arrange
+      process.env.GITHUB_ACTION = 'PR-Metrics'
+      const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
+
+      // Act
+      await reposInvoker.setTitleAndDescription(null, null)
+
+      // Assert
+      verify(azureReposInvoker.setTitleAndDescription(null, null)).never()
+      verify(gitHubReposInvoker.setTitleAndDescription(null, null)).once()
+      verify(logger.logDebug('* ReposInvoker.setTitleAndDescription()')).once()
+      verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
+
+      // Finalization
+      delete process.env.GITHUB_ACTION
     })
 
     async.each(
@@ -423,6 +498,24 @@ describe('reposInvoker.ts', function (): void {
       delete process.env.BUILD_REPOSITORY_PROVIDER
     })
 
+    it('should invoke GitHub when called from a GitHub runner', async (): Promise<void> => {
+      // Arrange
+      process.env.GITHUB_ACTION = 'PR-Metrics'
+      const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
+
+      // Act
+      await reposInvoker.createComment('', CommentThreadStatus.Active, '', false)
+
+      // Assert
+      verify(azureReposInvoker.createComment('', CommentThreadStatus.Active, '', false)).never()
+      verify(gitHubReposInvoker.createComment('', CommentThreadStatus.Active, '', false)).once()
+      verify(logger.logDebug('* ReposInvoker.createComment()')).once()
+      verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
+
+      // Finalization
+      delete process.env.GITHUB_ACTION
+    })
+
     async.each(
       [
         'GitHub',
@@ -514,6 +607,24 @@ describe('reposInvoker.ts', function (): void {
       delete process.env.BUILD_REPOSITORY_PROVIDER
     })
 
+    it('should invoke GitHub when called from a GitHub runner', async (): Promise<void> => {
+      // Arrange
+      process.env.GITHUB_ACTION = 'PR-Metrics'
+      const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
+
+      // Act
+      await reposInvoker.updateComment(0, null, null)
+
+      // Assert
+      verify(azureReposInvoker.updateComment(0, null, null)).never()
+      verify(gitHubReposInvoker.updateComment(0, null, null)).once()
+      verify(logger.logDebug('* ReposInvoker.updateComment()')).once()
+      verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
+
+      // Finalization
+      delete process.env.GITHUB_ACTION
+    })
+
     async.each(
       [
         'GitHub',
@@ -603,6 +714,24 @@ describe('reposInvoker.ts', function (): void {
 
       // Finalization
       delete process.env.BUILD_REPOSITORY_PROVIDER
+    })
+
+    it('should invoke GitHub when called from a GitHub runner', async (): Promise<void> => {
+      // Arrange
+      process.env.GITHUB_ACTION = 'PR-Metrics'
+      const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
+
+      // Act
+      await reposInvoker.deleteCommentThread(20)
+
+      // Assert
+      verify(azureReposInvoker.deleteCommentThread(20)).never()
+      verify(gitHubReposInvoker.deleteCommentThread(20)).once()
+      verify(logger.logDebug('* ReposInvoker.deleteCommentThread()')).once()
+      verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
+
+      // Finalization
+      delete process.env.GITHUB_ACTION
     })
 
     async.each(

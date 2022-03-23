@@ -19,7 +19,7 @@ export default interface IRunnerInvoker {
   exec (tool: string, args: string[], failOnError: boolean, outputStream: GitWritableStream, errorStream: GitWritableStream): Promise<number>
 
   /**
-   * Gets the value of an input. If the input is `required` but nonexistent, this method will throw.
+   * Gets the value of an input.
    * @param name The name of the input, with each word stored as a separate element of the array.
    * @returns The value of the input or `undefined` if the input was not set.
    */
