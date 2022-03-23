@@ -141,7 +141,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
 
       await this.invokeApiCall(async (): Promise<void> => {
         try {
-          const result: CreateReviewCommentResponse = await this._octokitWrapper.createReviewComment(this._owner!, this._repo!, this._pullRequestId!, content, '/' + fileName, this._commitId!)
+          const result: CreateReviewCommentResponse = await this._octokitWrapper.createReviewComment(this._owner!, this._repo!, this._pullRequestId!, content, fileName, this._commitId!)
           this._logger.logDebug(JSON.stringify(result))
         } catch (error: any) {
           // A 422 HTTP response may be thrown if the file is the set of file changes are too large for a diff to be displayed.

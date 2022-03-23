@@ -48,7 +48,6 @@ export default class GitHubRunnerInvoker implements IRunnerInvoker {
 
   public getInput (name: string[]): string | undefined {
     const formattedName: string = name.join('-').toUpperCase()
-    console.log(formattedName)
 
     // This method redirects to the Azure Pipelines logic as the library will store the input data.
     return this._azurePipelinesRunnerWrapper.getInput(formattedName)
