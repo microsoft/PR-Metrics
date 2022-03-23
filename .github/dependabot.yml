@@ -22,4 +22,12 @@ updates:
     labels:
       - dependencies
 
+  - package-ecosystem: npm
+    directory: /src/task
+    open-pull-requests-limit: 100
+    schedule:
+      interval: monthly
+    labels:
+      - dependencies
+
 ...
