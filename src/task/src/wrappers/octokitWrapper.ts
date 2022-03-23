@@ -176,6 +176,7 @@ export default class OctokitWrapper {
       path: fileName,
       position: 1,
       commit_id: commitId,
+      diff_hunk: '@@ +1,1 @@',
       pull_request_review_thread: {
         path: fileName,
         diff_hunk: '@@ +1,1 @@'
