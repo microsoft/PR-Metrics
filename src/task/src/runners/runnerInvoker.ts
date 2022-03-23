@@ -48,7 +48,7 @@ export default class RunnerInvoker implements IRunnerInvoker {
 
   public locInitialize (folder: string): void {
     if (this._localizationInitialized) {
-      throw new Error('RunnerInvoker.locInitialize must not be called multiple times.')
+      throw Error('RunnerInvoker.locInitialize must not be called multiple times.')
     }
 
     this._localizationInitialized = true
@@ -58,7 +58,7 @@ export default class RunnerInvoker implements IRunnerInvoker {
 
   public loc (key: string, ...param: any[]): string {
     if (!this._localizationInitialized) {
-      throw new Error('RunnerInvoker.locInitialize must be called before RunnerInvoker.loc.')
+      throw Error('RunnerInvoker.locInitialize must be called before RunnerInvoker.loc.')
     }
 
     const runner: IRunnerInvoker = this.getRunner()

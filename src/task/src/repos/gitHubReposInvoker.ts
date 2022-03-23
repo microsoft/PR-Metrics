@@ -16,6 +16,7 @@ import FileCommentData from './interfaces/fileCommentData'
 import GetIssueCommentsResponse from '../wrappers/octokitInterfaces/getIssueCommentsResponse'
 import GetPullResponse from '../wrappers/octokitInterfaces/getPullResponse'
 import GetReviewCommentsResponse from '../wrappers/octokitInterfaces/getReviewCommentsResponse'
+import GitInvoker from '../git/gitInvoker'
 import ListCommitsResponse from '../wrappers/octokitInterfaces/listCommitsResponse'
 import Logger from '../utilities/logger'
 import OctokitWrapper from '../wrappers/octokitWrapper'
@@ -24,7 +25,6 @@ import PullRequestDetails from './interfaces/pullRequestDetails'
 import RunnerInvoker from '../runners/runnerInvoker'
 import UpdateIssueCommentResponse from '../wrappers/octokitInterfaces/updateIssueCommentResponse'
 import UpdatePullResponse from '../wrappers/octokitInterfaces/updatePullResponse'
-import GitInvoker from '../git/gitInvoker'
 
 const octokit: Octokit = new Octokit()
 type GetIssueCommentsResponseData = GetResponseDataTypeFromEndpointMethod<typeof octokit.rest.issues.listComments>[0]
@@ -278,15 +278,16 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
       this._logger.logDebug(JSON.stringify(firstCommits))
     })
 
-    const commitsLink: string = Validator.validate(firstCommits!.headers.link as string, 'firstCommits.headers.link', 'GitHubReposInvoker.getCommitId()')
-    const matches: RegExpMatchArray = Validator.validate(commitsLink.match(/<.+>; rel="next", <.+?page=(.+)>; rel="last"/), 'commitsLink.match', 'GitHubReposInvoker.getCommitId()')
-    const pageString: string = Validator.validate(matches[1], 'matches[1]', 'GitHubReposInvoker.getCommitId()')
-    const page: number = Validator.validate(parseInt(pageString), 'pageString', 'GitHubReposInvoker.getCommitId()')
-
     let result: ListCommitsResponse = firstCommits!
-    if (page !== 1) {
+    if (result.headers.link) {
+      const commitsLink: string = result.headers.link as string
+      const matches: RegExpMatchArray | null = commitsLink.match(/<.+>; rel="next", <.+?page=(\d+)>; rel="last"/)
+      if (!matches) {
+        throw Error(`The regular expression did not match '${commitsLink}'.`)
+      }
+
       await this.invokeApiCall(async (): Promise<void> => {
-        result = await this._octokitWrapper.listCommits(this._owner!, this._repo!, this._pullRequestId!, page)
+        result = await this._octokitWrapper.listCommits(this._owner!, this._repo!, this._pullRequestId!, parseInt(matches[1]!))
         this._logger.logDebug(JSON.stringify(result))
       })
     }

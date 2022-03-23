@@ -815,6 +815,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       verify(logger.logDebug('* GitHubReposInvoker.createComment()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.initializeForAzureDevOps()')).once()
+      verify(logger.logDebug('* GitHubReposInvoker.getCommitId()')).once()
       verify(logger.logDebug('null')).once()
     })
 
@@ -844,7 +845,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       } catch (error: any) {
         // Assert
         errorThrown = true
-        expect(error.message).to.equal('\'result.data[0].sha\', accessed within \'GitHubReposInvoker.createComment()\', is invalid, null, or undefined \'undefined\'.')
+        expect(error.message).to.equal('\'result.data[-1].sha\', accessed within \'GitHubReposInvoker.getCommitId()\', is invalid, null, or undefined \'undefined\'.')
       }
 
       expect(errorThrown).to.equal(true)
@@ -853,6 +854,83 @@ describe('gitHubReposInvoker.ts', function (): void {
       verify(logger.logDebug('* GitHubReposInvoker.createComment()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.initializeForAzureDevOps()')).once()
+      verify(logger.logDebug('* GitHubReposInvoker.getCommitId()')).once()
+    })
+
+    it('should succeed when there are multiple pages of commits', async (): Promise<void> => {
+      // Arrange
+      when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
+        expect(options.auth).to.equal('OAUTH')
+        expect(options.userAgent).to.equal(expectedUserAgent)
+        expect(options.log).to.not.equal(null)
+        expect(options.log.debug).to.not.equal(null)
+        expect(options.log.info).to.not.equal(null)
+        expect(options.log.warn).to.not.equal(null)
+        expect(options.log.error).to.not.equal(null)
+      })
+      when(octokitWrapper.listCommits(anyString(), anyString(), anyNumber(), 1)).thenResolve({
+        headers: {
+          link: '<https://api.github.com/repositories/309438703/pulls/172/commits?page=2>; rel="next", <https://api.github.com/repositories/309438703/pulls/172/commits?page=24>; rel="last"'
+        },
+        status: 200,
+        url: '',
+        data: []
+      })
+      when(octokitWrapper.listCommits(anyString(), anyString(), anyNumber(), 24)).thenResolve(GitHubReposInvokerConstants.listCommitsResponse)
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
+
+      // Act
+      await gitHubReposInvoker.createComment('Content', CommentThreadStatus.Unknown, 'file.ts')
+
+      // Assert
+      verify(octokitWrapper.initialize(anything())).once()
+      verify(octokitWrapper.listCommits('microsoft', 'PR-Metrics', 12345, 1)).once()
+      verify(octokitWrapper.createReviewComment('microsoft', 'PR-Metrics', 12345, 'Content', 'file.ts', 'sha54321')).once()
+      verify(logger.logDebug('* GitHubReposInvoker.createComment()')).once()
+      verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
+      verify(logger.logDebug('* GitHubReposInvoker.initializeForAzureDevOps()')).once()
+      verify(logger.logDebug('* GitHubReposInvoker.getCommitId()')).once()
+      verify(logger.logDebug('null')).once()
+    })
+
+    it('should throw when the link header does not match the expected format', async (): Promise<void> => {
+      // Arrange
+      when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
+        expect(options.auth).to.equal('OAUTH')
+        expect(options.userAgent).to.equal(expectedUserAgent)
+        expect(options.log).to.not.equal(null)
+        expect(options.log.debug).to.not.equal(null)
+        expect(options.log.info).to.not.equal(null)
+        expect(options.log.warn).to.not.equal(null)
+        expect(options.log.error).to.not.equal(null)
+      })
+      when(octokitWrapper.listCommits(anyString(), anyString(), anyNumber(), 1)).thenResolve({
+        headers: {
+          link: 'non-matching'
+        },
+        status: 200,
+        url: '',
+        data: []
+      })
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
+      let errorThrown: boolean = false
+
+      try {
+        // Act
+        await gitHubReposInvoker.createComment('Content', CommentThreadStatus.Unknown, 'file.ts')
+      } catch (error: any) {
+        // Assert
+        errorThrown = true
+        expect(error.message).to.equal('The regular expression did not match \'non-matching\'.')
+      }
+
+      expect(errorThrown).to.equal(true)
+      verify(octokitWrapper.initialize(anything())).once()
+      verify(octokitWrapper.listCommits('microsoft', 'PR-Metrics', 12345, 1)).once()
+      verify(logger.logDebug('* GitHubReposInvoker.createComment()')).once()
+      verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
+      verify(logger.logDebug('* GitHubReposInvoker.initializeForAzureDevOps()')).once()
+      verify(logger.logDebug('* GitHubReposInvoker.getCommitId()')).once()
     })
 
     it('should succeed when a file name is specified and the method is called twice', async (): Promise<void> => {
@@ -879,6 +957,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       verify(logger.logDebug('* GitHubReposInvoker.createComment()')).twice()
       verify(logger.logDebug('* GitHubReposInvoker.initialize()')).twice()
       verify(logger.logDebug('* GitHubReposInvoker.initializeForAzureDevOps()')).once()
+      verify(logger.logDebug('* GitHubReposInvoker.getCommitId()')).once()
       verify(logger.logDebug('null')).twice()
     })
 
