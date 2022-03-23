@@ -94,7 +94,10 @@ export default class Inputs {
       return
     }
 
+    this._logger.logDebug('TODO Base Size')
     const baseSize: string | undefined = this._runnerInvoker.getInput(['Base', 'Size'])
+    this._logger.logDebug(JSON.stringify(this._runnerInvoker))
+    this._logger.logDebug('Got Base Size' + baseSize)
     this.initializeBaseSize(baseSize)
 
     const growthRate: string | undefined = this._runnerInvoker.getInput(['Growth', 'Rate'])
