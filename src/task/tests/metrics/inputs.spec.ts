@@ -126,7 +126,7 @@ describe('inputs.ts', (): void => {
       })
     })
 
-    describe('base size', (): void => {
+    describe('baseSize', (): void => {
       async.each(
         [
           undefined,
@@ -243,7 +243,7 @@ describe('inputs.ts', (): void => {
         })
     })
 
-    describe('growth rate', (): void => {
+    describe('growthRate', (): void => {
       async.each(
         [
           undefined,
@@ -367,7 +367,7 @@ describe('inputs.ts', (): void => {
         })
     })
 
-    describe('test factor', (): void => {
+    describe('testFactor', (): void => {
       async.each(
         [
           undefined,
@@ -524,7 +524,7 @@ describe('inputs.ts', (): void => {
         })
     })
 
-    describe('file matching patterns', (): void => {
+    describe('fileMatchingPatterns', (): void => {
       async.each(
         [
           undefined,
@@ -665,7 +665,7 @@ describe('inputs.ts', (): void => {
       })
     })
 
-    describe('code file extensions', (): void => {
+    describe('codeFileExtensions', (): void => {
       async.each(
         [
           undefined,

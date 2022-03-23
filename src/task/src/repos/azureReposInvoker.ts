@@ -15,6 +15,7 @@ import Logger from '../utilities/logger'
 import PullRequestCommentData from './interfaces/pullRequestCommentData'
 import PullRequestDetails from './interfaces/pullRequestDetails'
 import RunnerInvoker from '../runners/runnerInvoker'
+import GitInvoker from '../git/gitInvoker'
 
 /**
  * A class for invoking Azure Repos functionality.
@@ -23,6 +24,7 @@ import RunnerInvoker from '../runners/runnerInvoker'
 @singleton()
 export default class AzureReposInvoker extends BaseReposInvoker {
   private readonly _azureDevOpsApiWrapper: AzureDevOpsApiWrapper
+  private readonly _gitInvoker: GitInvoker
   private readonly _logger: Logger
   private readonly _runnerInvoker: RunnerInvoker
 
@@ -34,13 +36,15 @@ export default class AzureReposInvoker extends BaseReposInvoker {
   /**
    * Initializes a new instance of the `AzureReposInvoker` class.
    * @param azureDevOpsApiWrapper The wrapper around the Azure DevOps API.
+   * @param gitInvoker The Git invoker.
    * @param logger The logger.
    * @param runnerInvoker The runner invoker logic.
    */
-  public constructor (azureDevOpsApiWrapper: AzureDevOpsApiWrapper, logger: Logger, runnerInvoker: RunnerInvoker) {
+  public constructor (azureDevOpsApiWrapper: AzureDevOpsApiWrapper, gitInvoker: GitInvoker, logger: Logger, runnerInvoker: RunnerInvoker) {
     super()
 
     this._azureDevOpsApiWrapper = azureDevOpsApiWrapper
+    this._gitInvoker = gitInvoker
     this._logger = logger
     this._runnerInvoker = runnerInvoker
   }
@@ -178,7 +182,7 @@ export default class AzureReposInvoker extends BaseReposInvoker {
 
     this._project = Validator.validateVariable('SYSTEM_TEAMPROJECT', 'AzureReposInvoker.getGitApi()')
     this._repositoryId = Validator.validateVariable('BUILD_REPOSITORY_ID', 'AzureReposInvoker.getGitApi()')
-    this._pullRequestId = Validator.validate(parseInt(process.env.SYSTEM_PULLREQUEST_PULLREQUESTID!), 'SYSTEM_PULLREQUEST_PULLREQUESTID', 'AzureReposInvoker.getGitApi()')
+    this._pullRequestId = this._gitInvoker.pullRequestId
 
     const accessToken: string = Validator.validateVariable('SYSTEM_ACCESSTOKEN', 'AzureReposInvoker.getGitApi()')
     const authHandler: IRequestHandler = this._azureDevOpsApiWrapper.getPersonalAccessTokenHandler(accessToken)
