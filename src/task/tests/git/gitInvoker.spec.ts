@@ -88,6 +88,7 @@ describe('gitInvoker.ts', (): void => {
   describe('isGitHistoryAvailable()', (): void => {
     it('should return true when the Git history is available', async (): Promise<void> => {
       // Arrange
+      delete process.env.GITHUB_ACTION
       const gitInvoker: GitInvoker = new GitInvoker(instance(logger), instance(runnerInvoker))
 
       // Act
@@ -105,6 +106,7 @@ describe('gitInvoker.ts', (): void => {
 
     it('should return true when the Git history is available and the method is called after retrieving the pull request ID', async (): Promise<void> => {
       // Arrange
+      delete process.env.GITHUB_ACTION
       const gitInvoker: GitInvoker = new GitInvoker(instance(logger), instance(runnerInvoker))
 
       // Act
