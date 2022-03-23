@@ -99,15 +99,15 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     await Promise.all([
       this.invokeApiCall(async (): Promise<void> => {
         pullRequestComments = await this._octokitWrapper.getIssueComments(this._owner!, this._repo!, this._pullRequestId!)
-        this._logger.logDebug('PullRequestComments:' + JSON.stringify(pullRequestComments))
+        this._logger.logDebug(JSON.stringify(pullRequestComments))
       }),
       this.invokeApiCall(async (): Promise<void> => {
         fileComments = await this._octokitWrapper.getReviewComments(this._owner!, this._repo!, this._pullRequestId!)
-        this._logger.logDebug('FileComments:' + JSON.stringify(fileComments))
+        this._logger.logDebug(JSON.stringify(fileComments))
       })
     ])
 
-    return GitHubReposInvoker.convertPullRequestComments(pullRequestComments, fileComments)
+    return this.convertPullRequestComments(pullRequestComments, fileComments)
   }
 
   public async setTitleAndDescription (title: string | null, description: string | null): Promise<void> {
@@ -244,9 +244,12 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     return baseUrl
   }
 
-  private static convertPullRequestComments (pullRequestComments?: GetIssueCommentsResponse, fileComments?: GetReviewCommentsResponse): CommentData {
+  private convertPullRequestComments (pullRequestComments?: GetIssueCommentsResponse, fileComments?: GetReviewCommentsResponse): CommentData {
+    this._logger.logDebug('* GitHubReposInvoker.convertPullRequestComments()')
+
     const result: CommentData = new CommentData()
 
+    JSON.stringify('Before:' + pullRequestComments?.data)
     pullRequestComments?.data.forEach((value: GetIssueCommentsResponseData): void => {
       const id: number = value.id
       const content: string | undefined = value.body
@@ -256,6 +259,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
 
       result.pullRequestComments.push(new PullRequestCommentData(id, content))
     })
+    JSON.stringify('After:' + result.pullRequestComments)
 
     fileComments?.data.forEach((value: GetReviewCommentsResponseData): void => {
       const id: number = value.id
