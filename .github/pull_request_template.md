@@ -1,10 +1,34 @@
 ## Summary
 
-<!-- Provide a summary of the PR and what it aims to accomplish. -->
+### Motivation
+
+<!-- Provide a summary of the reasons or motivations behind this PR and what it
+     aims to accomplish. -->
+
+### Technical
+
+<!-- Provide a brief technical summary, if appropriate, describing the
+     change. -->
 
 ## Testing
 
-<!-- List the steps you've taken to test your changes. You can include the URL
-     used for testing, edge cases tested, automated tests,
-     screenshots/screencasts and anything else that helps demonstrate that the
-     changes work. -->
+### Test Types
+
+<!-- Place "X" between "[ ]" for the test types you conducted. -->
+
+- [ ] Unit tests
+- [ ] Manual tests
+
+### Unit Test Coverage
+
+<!-- Enter "npm run test" and enter the overall test coverage percentage. -->
+
+### Other Test Details
+
+<!-- List any additional the steps you took to test the changes. Considering
+     including details such as edge cases tested or anything that helps
+     demonstrate that the changes function correctly. -->
+
+## Screenshots
+
+<!-- If relevant, consider adding screenshots of this change. -->
