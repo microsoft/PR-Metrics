@@ -44,6 +44,7 @@ export default class GitHubRunnerInvoker implements IRunnerInvoker {
 
   public getInput (name: string[]): string | undefined {
     const formattedName: string = name.join('-').toLowerCase()
+    console.log(formattedName)
     return this._gitHubRunnerWrapper.getInput(formattedName)
   }
 

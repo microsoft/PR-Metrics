@@ -148,7 +148,9 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
           if (error.status === 422) {
             const properties: string[] = Object.getOwnPropertyNames(error)
             properties.forEach((property: string): void => {
-              this._logger.logDebug(`${error.name} – ${property}: ${JSON.stringify(error[property])}`)
+              if (property !== 'code' && property !== 'headers') {
+                this._logger.logDebug(`${error.name} – ${property}: ${JSON.stringify(error[property])}`)
+              }
             })
           } else {
             throw error
