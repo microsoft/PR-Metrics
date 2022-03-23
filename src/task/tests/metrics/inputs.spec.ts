@@ -663,6 +663,35 @@ describe('inputs.ts', (): void => {
         verify(logger.logInfo(settingFileMatchingPatternsResource)).once()
         verify(logger.logInfo(settingCodeFileExtensionsResource)).never()
       })
+
+      it('should remove trailing new lines', (): void => {
+        // Arrange
+        when(runnerInvoker.getInput(deepEqual(['File', 'Matching', 'Patterns']))).thenReturn('file.js\n')
+
+        // Act
+        const inputs: Inputs = new Inputs(instance(logger), instance(runnerInvoker))
+
+        // Assert
+        expect(inputs.fileMatchingPatterns).to.deep.equal(['file.js'])
+        verify(logger.logDebug('* Inputs.initialize()')).once()
+        verify(logger.logDebug('* Inputs.initializeBaseSize()')).once()
+        verify(logger.logDebug('* Inputs.initializeGrowthRate()')).once()
+        verify(logger.logDebug('* Inputs.initializeTestFactor()')).once()
+        verify(logger.logDebug('* Inputs.initializeFileMatchingPatterns()')).once()
+        verify(logger.logDebug('* Inputs.initializeCodeFileExtensions()')).once()
+        verify(logger.logDebug('* Inputs.fileMatchingPatterns')).once()
+        verify(logger.logInfo(adjustingBaseSizeResource)).once()
+        verify(logger.logInfo(adjustingGrowthRateResource)).once()
+        verify(logger.logInfo(adjustingTestFactorResource)).once()
+        verify(logger.logInfo(adjustingFileMatchingPatternsResource)).never()
+        verify(logger.logInfo(adjustingCodeFileExtensionsResource)).once()
+        verify(logger.logInfo(disablingTestFactorResource)).never()
+        verify(logger.logInfo(settingBaseSizeResource)).never()
+        verify(logger.logInfo(settingGrowthRateResource)).never()
+        verify(logger.logInfo(settingTestFactorResource)).never()
+        verify(logger.logInfo(settingFileMatchingPatternsResource)).once()
+        verify(logger.logInfo(settingCodeFileExtensionsResource)).never()
+      })
     })
 
     describe('codeFileExtensions', (): void => {
@@ -855,6 +884,35 @@ describe('inputs.ts', (): void => {
         verify(logger.logInfo(settingTestFactorResource)).never()
         verify(logger.logInfo(settingFileMatchingPatternsResource)).never()
         verify(logger.logInfo(settingCodeFileExtensionsResource)).once()
+      })
+
+      it('should remove trailing new lines', (): void => {
+        // Arrange
+        when(runnerInvoker.getInput(deepEqual(['Code', 'File', 'Extensions']))).thenReturn('cs\n')
+
+        // Act
+        const inputs: Inputs = new Inputs(instance(logger), instance(runnerInvoker))
+
+        // Assert
+        expect(inputs.codeFileExtensions).to.deep.equal(new Set<string>(['cs']))
+        verify(logger.logDebug('* Inputs.initialize()')).once()
+        verify(logger.logDebug('* Inputs.initializeBaseSize()')).once()
+        verify(logger.logDebug('* Inputs.initializeGrowthRate()')).once()
+        verify(logger.logDebug('* Inputs.initializeTestFactor()')).once()
+        verify(logger.logDebug('* Inputs.initializeFileMatchingPatterns()')).once()
+        verify(logger.logDebug('* Inputs.initializeCodeFileExtensions()')).once()
+        verify(logger.logDebug('* Inputs.fileMatchingPatterns')).once()
+        verify(logger.logInfo(adjustingBaseSizeResource)).once()
+        verify(logger.logInfo(adjustingGrowthRateResource)).once()
+        verify(logger.logInfo(adjustingTestFactorResource)).once()
+        verify(logger.logInfo(adjustingFileMatchingPatternsResource)).never()
+        verify(logger.logInfo(adjustingCodeFileExtensionsResource)).once()
+        verify(logger.logInfo(disablingTestFactorResource)).never()
+        verify(logger.logInfo(settingBaseSizeResource)).never()
+        verify(logger.logInfo(settingGrowthRateResource)).never()
+        verify(logger.logInfo(settingTestFactorResource)).never()
+        verify(logger.logInfo(settingFileMatchingPatternsResource)).once()
+        verify(logger.logInfo(settingCodeFileExtensionsResource)).never()
       })
     })
   })
