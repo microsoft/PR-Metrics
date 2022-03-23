@@ -249,7 +249,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
 
     const result: CommentData = new CommentData()
 
-    JSON.stringify('Before:' + pullRequestComments?.data)
+    console.log('Before:' + JSON.stringify(pullRequestComments?.data))
     pullRequestComments?.data.forEach((value: GetIssueCommentsResponseData): void => {
       const id: number = value.id
       const content: string | undefined = value.body
@@ -259,7 +259,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
 
       result.pullRequestComments.push(new PullRequestCommentData(id, content))
     })
-    JSON.stringify('After:' + result.pullRequestComments)
+    console.log('After:' + JSON.stringify(result.pullRequestComments))
 
     fileComments?.data.forEach((value: GetReviewCommentsResponseData): void => {
       const id: number = value.id
