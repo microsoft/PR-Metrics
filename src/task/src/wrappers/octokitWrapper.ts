@@ -90,8 +90,7 @@ export default class OctokitWrapper {
     return this._octokit.rest.issues.listComments({
       owner: owner,
       repo: repo,
-      issue_number: pullRequestId,
-      page: 3
+      issue_number: pullRequestId
     })
   }
 
