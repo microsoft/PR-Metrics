@@ -90,7 +90,8 @@ export default class OctokitWrapper {
     return this._octokit.rest.issues.listComments({
       owner: owner,
       repo: repo,
-      issue_number: pullRequestId
+      issue_number: pullRequestId,
+      page: 3
     })
   }
 
@@ -175,12 +176,7 @@ export default class OctokitWrapper {
       body: content,
       path: fileName,
       position: 1,
-      commit_id: commitId,
-      diff_hunk: '@@ +1,1 @@',
-      pull_request_review_thread: {
-        path: fileName,
-        diff_hunk: '@@ +1,1 @@'
-      }
+      commit_id: commitId
     })
   }
 

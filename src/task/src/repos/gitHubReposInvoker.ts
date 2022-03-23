@@ -135,7 +135,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
         await this.invokeApiCall(async (): Promise<void> => {
           const result: ListCommitsResponse = await this._octokitWrapper.listCommits(this._owner!, this._repo!, this._pullRequestId!)
           this._logger.logDebug(JSON.stringify(result))
-          this._commitId = Validator.validate(result.data[0]?.sha, 'result.data[0].sha', 'GitHubReposInvoker.createComment()')
+          this._commitId = Validator.validate(result.data[result.data.length - 1]?.sha, 'result.data[0].sha', 'GitHubReposInvoker.createComment()')
         })
       }
 
