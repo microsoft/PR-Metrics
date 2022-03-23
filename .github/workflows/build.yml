@@ -71,6 +71,7 @@ jobs:
         uses: ./
         env:
           SYSTEM_ACCESSTOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ACTIONS_STEP_DEBUG: true
         with:
           base-size: 20
           growth-rate: 1.5
