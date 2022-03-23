@@ -47,15 +47,6 @@ export default class AzurePipelinesRunnerWrapper {
   }
 
   /**
-   * Gets the value of an variable.
-   * @param name The name of the variable.
-   * @returns The value of the variable or `undefined` if the variable was not set.
-   */
-  public getVariable (name: string): string | undefined {
-    return taskLib.getVariable(name)
-  }
-
-  /**
    * Initializes the mechanism for getting localized strings from the JSON resource file by setting the resource path.
    * @param path The path of the file containing the resources.
    */

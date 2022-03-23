@@ -38,15 +38,6 @@ export default class GitHubRunnerWrapper {
   }
 
   /**
-   * Gets the value of an input.
-   * @param name The name of the input.
-   * @returns The value of the input or `undefined` if the input was not set.
-   */
-  public getInput (name: string): string | undefined {
-    return actionsCore.getInput(name)
-  }
-
-  /**
    * Sets the run status to 'failed'.
    * @param message The message to log as part of the status.
    */

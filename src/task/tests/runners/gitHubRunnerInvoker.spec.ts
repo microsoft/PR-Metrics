@@ -53,14 +53,14 @@ describe('gitHubRunnerInvoker.ts', function (): void {
     it('should call the underlying method', (): void => {
       // Arrange
       const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(instance(azurePipelinesRunnerWrapper), instance(consoleWrapper), instance(gitHubRunnerWrapper))
-      when(gitHubRunnerWrapper.getInput('test-suffix')).thenReturn('VALUE')
+      when(azurePipelinesRunnerWrapper.getInput('TEST-SUFFIX')).thenReturn('VALUE')
 
       // Act
       const result: string | undefined = gitHubRunnerInvoker.getInput(['Test', 'Suffix'])
 
       // Assert
       expect(result).to.equal('VALUE')
-      verify(gitHubRunnerWrapper.getInput('test-suffix')).once()
+      verify(azurePipelinesRunnerWrapper.getInput('TEST-SUFFIX')).once()
     })
   })
 
