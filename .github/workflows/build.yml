@@ -72,15 +72,6 @@ jobs:
         env:
           SYSTEM_ACCESSTOKEN: ${{ secrets.GITHUB_TOKEN }}
           ACTIONS_STEP_DEBUG: ${{ secrets.ACTIONS_STEP_DEBUG }}
-        with:
-          base-size: 20
-          growth-rate: 1.5
-          test-factor: 1.2
-          file-matching-patterns: |
-            **/*
-            !**/build.yml
-          code-file-extensions: |
-            *.ts
 
   validate:
     name: Validate
