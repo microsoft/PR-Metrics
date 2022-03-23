@@ -98,6 +98,8 @@ describe('gitInvoker.ts', (): void => {
       verify(logger.logDebug('* GitInvoker.isGitHistoryAvailable()')).once()
       verify(logger.logDebug('* GitInvoker.initialize()')).once()
       verify(logger.logDebug('* GitInvoker.getTargetBranch()')).once()
+      verify(logger.logDebug('* GitInvoker.getPullRequestIdInternal()')).once()
+      verify(logger.logDebug('* GitInvoker.getPullRequestIdForAzureDevOps()')).once()
       verify(logger.logDebug('* GitInvoker.invokeGit()')).once()
     })
 
@@ -121,6 +123,8 @@ describe('gitInvoker.ts', (): void => {
           verify(logger.logDebug('* GitInvoker.isGitHistoryAvailable()')).once()
           verify(logger.logDebug('* GitInvoker.initialize()')).once()
           verify(logger.logDebug('* GitInvoker.getTargetBranch()')).once()
+          verify(logger.logDebug('* GitInvoker.getPullRequestIdInternal()')).once()
+          verify(logger.logDebug('* GitInvoker.getPullRequestIdForAzureDevOps()')).once()
           verify(logger.logDebug('* GitInvoker.invokeGit()')).once()
 
           // Finalization
@@ -144,6 +148,8 @@ describe('gitInvoker.ts', (): void => {
       verify(logger.logDebug('* GitInvoker.isGitHistoryAvailable()')).once()
       verify(logger.logDebug('* GitInvoker.initialize()')).once()
       verify(logger.logDebug('* GitInvoker.getTargetBranch()')).once()
+      verify(logger.logDebug('* GitInvoker.getPullRequestIdInternal()')).once()
+      verify(logger.logDebug('* GitInvoker.getPullRequestIdForAzureDevOps()')).once()
       verify(logger.logDebug('* GitInvoker.invokeGit()')).once()
     })
 
@@ -161,6 +167,8 @@ describe('gitInvoker.ts', (): void => {
       verify(logger.logDebug('* GitInvoker.isGitHistoryAvailable()')).twice()
       verify(logger.logDebug('* GitInvoker.initialize()')).twice()
       verify(logger.logDebug('* GitInvoker.getTargetBranch()')).once()
+      verify(logger.logDebug('* GitInvoker.getPullRequestIdInternal()')).once()
+      verify(logger.logDebug('* GitInvoker.getPullRequestIdForAzureDevOps()')).once()
       verify(logger.logDebug('* GitInvoker.invokeGit()')).twice()
     })
 
@@ -176,7 +184,7 @@ describe('gitInvoker.ts', (): void => {
       } catch (error: any) {
         // Assert
         errorThrown = true
-        expect(error.message).to.equal('\'BUILD_REPOSITORY_PROVIDER\', accessed within \'GitInvoker.pullRequestIdForAzureDevOps()\', is invalid, null, or undefined \'undefined\'.')
+        expect(error.message).to.equal('\'BUILD_REPOSITORY_PROVIDER\', accessed within \'GitInvoker.getPullRequestIdForAzureDevOps()\', is invalid, null, or undefined \'undefined\'.')
       }
 
       expect(errorThrown).to.equal(true)
@@ -218,13 +226,15 @@ describe('gitInvoker.ts', (): void => {
       } catch (error: any) {
         // Assert
         errorThrown = true
-        expect(error.message).to.equal('\'SYSTEM_PULLREQUEST_PULLREQUESTID\', accessed within \'GitInvoker.pullRequestIdForAzureDevOps()\', is invalid, null, or undefined \'undefined\'.')
+        expect(error.message).to.equal('\'SYSTEM_PULLREQUEST_PULLREQUESTID\', accessed within \'GitInvoker.getPullRequestIdForAzureDevOps()\', is invalid, null, or undefined \'undefined\'.')
       }
 
       expect(errorThrown).to.equal(true)
       verify(logger.logDebug('* GitInvoker.isGitHistoryAvailable()')).once()
       verify(logger.logDebug('* GitInvoker.initialize()')).once()
       verify(logger.logDebug('* GitInvoker.getTargetBranch()')).once()
+      verify(logger.logDebug('* GitInvoker.getPullRequestIdInternal()')).once()
+      verify(logger.logDebug('* GitInvoker.getPullRequestIdForAzureDevOps()')).once()
     })
 
     async.each(
@@ -244,13 +254,15 @@ describe('gitInvoker.ts', (): void => {
           } catch (error: any) {
             // Assert
             errorThrown = true
-            expect(error.message).to.equal('\'SYSTEM_PULLREQUEST_PULLREQUESTNUMBER\', accessed within \'GitInvoker.pullRequestIdForAzureDevOps()\', is invalid, null, or undefined \'undefined\'.')
+            expect(error.message).to.equal('\'SYSTEM_PULLREQUEST_PULLREQUESTNUMBER\', accessed within \'GitInvoker.getPullRequestIdForAzureDevOps()\', is invalid, null, or undefined \'undefined\'.')
           }
 
           expect(errorThrown).to.equal(true)
           verify(logger.logDebug('* GitInvoker.isGitHistoryAvailable()')).once()
           verify(logger.logDebug('* GitInvoker.initialize()')).once()
           verify(logger.logDebug('* GitInvoker.getTargetBranch()')).once()
+          verify(logger.logDebug('* GitInvoker.getPullRequestIdInternal()')).once()
+          verify(logger.logDebug('* GitInvoker.getPullRequestIdForAzureDevOps()')).once()
 
           // Finalization
           delete process.env.BUILD_REPOSITORY_PROVIDER
@@ -271,6 +283,8 @@ describe('gitInvoker.ts', (): void => {
       verify(logger.logDebug('* GitInvoker.getDiffSummary()')).once()
       verify(logger.logDebug('* GitInvoker.initialize()')).once()
       verify(logger.logDebug('* GitInvoker.getTargetBranch()')).once()
+      verify(logger.logDebug('* GitInvoker.getPullRequestIdInternal()')).once()
+      verify(logger.logDebug('* GitInvoker.getPullRequestIdForAzureDevOps()')).once()
       verify(logger.logDebug('* GitInvoker.invokeGit()')).once()
     })
 
@@ -287,6 +301,8 @@ describe('gitInvoker.ts', (): void => {
       verify(logger.logDebug('* GitInvoker.getDiffSummary()')).once()
       verify(logger.logDebug('* GitInvoker.initialize()')).once()
       verify(logger.logDebug('* GitInvoker.getTargetBranch()')).once()
+      verify(logger.logDebug('* GitInvoker.getPullRequestIdInternal()')).once()
+      verify(logger.logDebug('* GitInvoker.getPullRequestIdForAzureDevOps()')).once()
       verify(logger.logDebug('* GitInvoker.invokeGit()')).once()
     })
 
@@ -303,6 +319,8 @@ describe('gitInvoker.ts', (): void => {
       verify(logger.logDebug('* GitInvoker.getDiffSummary()')).twice()
       verify(logger.logDebug('* GitInvoker.initialize()')).twice()
       verify(logger.logDebug('* GitInvoker.getTargetBranch()')).once()
+      verify(logger.logDebug('* GitInvoker.getPullRequestIdInternal()')).once()
+      verify(logger.logDebug('* GitInvoker.getPullRequestIdForAzureDevOps()')).once()
       verify(logger.logDebug('* GitInvoker.invokeGit()')).twice()
     })
 
@@ -339,13 +357,15 @@ describe('gitInvoker.ts', (): void => {
       } catch (error: any) {
         // Assert
         errorThrown = true
-        expect(error.message).to.equal('\'SYSTEM_PULLREQUEST_PULLREQUESTID\', accessed within \'GitInvoker.pullRequestIdForAzureDevOps()\', is invalid, null, or undefined \'undefined\'.')
+        expect(error.message).to.equal('\'SYSTEM_PULLREQUEST_PULLREQUESTID\', accessed within \'GitInvoker.getPullRequestIdForAzureDevOps()\', is invalid, null, or undefined \'undefined\'.')
       }
 
       expect(errorThrown).to.equal(true)
       verify(logger.logDebug('* GitInvoker.getDiffSummary()')).once()
       verify(logger.logDebug('* GitInvoker.initialize()')).once()
       verify(logger.logDebug('* GitInvoker.getTargetBranch()')).once()
+      verify(logger.logDebug('* GitInvoker.getPullRequestIdInternal()')).once()
+      verify(logger.logDebug('* GitInvoker.getPullRequestIdForAzureDevOps()')).once()
     })
 
     it('should throw an error when Git invocation fails', async (): Promise<void> => {
@@ -370,6 +390,8 @@ describe('gitInvoker.ts', (): void => {
       verify(logger.logDebug('* GitInvoker.getDiffSummary()')).once()
       verify(logger.logDebug('* GitInvoker.initialize()')).once()
       verify(logger.logDebug('* GitInvoker.getTargetBranch()')).once()
+      verify(logger.logDebug('* GitInvoker.getPullRequestIdInternal()')).once()
+      verify(logger.logDebug('* GitInvoker.getPullRequestIdForAzureDevOps()')).once()
       verify(logger.logDebug('* GitInvoker.invokeGit()')).once()
     })
   })
