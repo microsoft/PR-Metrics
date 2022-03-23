@@ -19,6 +19,30 @@ describe('runnerInvoker.ts', function (): void {
     gitHubRunnerInvoker = mock(GitHubRunnerInvoker)
   })
 
+  describe('isGitHub()', (): void => {
+    it('should return false when running on Azure Pipelines', async (): Promise<void> => {
+      // Act
+      const result: boolean = RunnerInvoker.isGitHub
+
+      // Assert
+      expect(result).to.equal(false)
+    })
+
+    it('should return true when running on GitHub', async (): Promise<void> => {
+      // Arrange
+      process.env.GITHUB_ACTION = 'PR-Metrics'
+
+      // Act
+      const result: boolean = RunnerInvoker.isGitHub
+
+      // Assert
+      expect(result).to.equal(true)
+
+      // Finalization
+      delete process.env.GITHUB_ACTION
+    })
+  })
+
   describe('exec()', (): void => {
     it('should call the underlying method when running on Azure Pipelines', async (): Promise<void> => {
       // Arrange

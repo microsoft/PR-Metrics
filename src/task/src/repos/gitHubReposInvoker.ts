@@ -220,6 +220,8 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
   }
 
   private initializeForGitHub (): string {
+    this._logger.logDebug('* GitHubReposInvoker.initializeForGitHub()')
+
     const baseUrl: string = Validator.validateVariable('GITHUB_API_URL', 'GitHubReposInvoker.initializeForGitHub()')
     this._owner = Validator.validateVariable('GITHUB_REPOSITORY_OWNER', 'GitHubReposInvoker.initializeForGitHub()')
 
@@ -234,7 +236,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
   }
 
   private initializeForAzureDevOps (): string | undefined {
-    let baseUrl: string | undefined
+    this._logger.logDebug('* GitHubReposInvoker.initializeForAzureDevOps()')
 
     const sourceRepositoryUri: string = Validator.validateVariable('SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI', 'GitHubReposInvoker.initializeForAzureDevOps()')
     const sourceRepositoryUriElements: string[] = sourceRepositoryUri.split('/')
@@ -243,6 +245,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     }
 
     // Handle GitHub Enterprise and GitHub AE invocations.
+    let baseUrl: string | undefined
     if (sourceRepositoryUriElements[2] !== 'github.com') {
       baseUrl = `https://${sourceRepositoryUriElements[2]}/api/v3`
     }
