@@ -47,11 +47,20 @@ export default class RunnerInvoker implements IRunnerInvoker {
   }
 
   public locInitialize (folder: string): void {
+    if (this._localizationInitialized) {
+      throw new Error('RunnerInvoker.locInitialize must not be called multiple times.')
+    }
+
+    this._localizationInitialized = true
     const runner: IRunnerInvoker = this.getRunner()
     return runner.locInitialize(folder)
   }
 
   public loc (key: string, ...param: any[]): string {
+    if (!this._localizationInitialized) {
+      throw new Error('RunnerInvoker.locInitialize must be called before RunnerInvoker.loc.')
+    }
+
     const runner: IRunnerInvoker = this.getRunner()
     return runner.loc(key, ...param)
   }

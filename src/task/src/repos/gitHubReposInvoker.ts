@@ -276,10 +276,10 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
       this._logger.logDebug(JSON.stringify(firstCommits))
     })
 
-    const commitsLink: string = Validator.validate(firstCommits!.headers.links as string, 'firstCommits.headers.links', 'GitHubReposInvoker.createComment()')
-    const matches: RegExpMatchArray = Validator.validate(commitsLink.match(/<.+>; rel="next", <.+?page=(.+)>; rel="last"/), 'commitsLink.match', 'GitHubReposInvoker.createComment()')
-    const pageString: string = Validator.validate(matches[1], 'matches[1]', 'GitHubReposInvoker.createComment()')
-    const page: number = Validator.validate(parseInt(pageString), 'pageString', 'GitHubReposInvoker.createComment()')
+    const commitsLink: string = Validator.validate(firstCommits!.headers.link as string, 'firstCommits.headers.link', 'GitHubReposInvoker.getCommitId()')
+    const matches: RegExpMatchArray = Validator.validate(commitsLink.match(/<.+>; rel="next", <.+?page=(.+)>; rel="last"/), 'commitsLink.match', 'GitHubReposInvoker.getCommitId()')
+    const pageString: string = Validator.validate(matches[1], 'matches[1]', 'GitHubReposInvoker.getCommitId()')
+    const page: number = Validator.validate(parseInt(pageString), 'pageString', 'GitHubReposInvoker.getCommitId()')
 
     let result: ListCommitsResponse = firstCommits!
     if (page !== 1) {
@@ -289,7 +289,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
       })
     }
 
-    this._commitId = Validator.validate(result.data[result.data.length - 1]?.sha, `result.data[${result.data.length - 1}].sha`, 'GitHubReposInvoker.createComment()')
+    this._commitId = Validator.validate(result.data[result.data.length - 1]?.sha, `result.data[${result.data.length - 1}].sha`, 'GitHubReposInvoker.getCommitId()')
   }
 
   protected async invokeApiCall<TResponse> (action: () => Promise<TResponse>): Promise<TResponse> {
