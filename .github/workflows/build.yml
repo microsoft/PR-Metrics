@@ -71,6 +71,15 @@ jobs:
         uses: ./
         env:
           SYSTEM_ACCESSTOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          base-size: 20
+          growth-rate: 1.5
+          test-factor: 1.2
+          file-matching-patterns: |
+            **/*
+            !**/build.yml
+          code-file-extensions: |
+            *.ts
 
   validate:
     name: Validate
@@ -265,7 +274,7 @@ jobs:
           json-schema: resources.resjson.schema.json
 
   validate-dist:
-    name: 'Validate – ''dist'' Folder'
+    name: Validate – dist Folder
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -280,7 +289,7 @@ jobs:
         run: npm run build:package
         working-directory: ${{ github.workspace }}/src/task
 
-      - name: 'Compare Expected & Actual ''dist'' Folders'
+      - name: Compare Expected & Actual dist Folders
         run: |
           if [ "$(git diff-index --ignore-cr-at-eol --quiet HEAD -- || echo 1)" == "1" ]; then
             echo "Detected uncommitted changes after build. Run 'npm run package' and commit any outstanding changes. Details:"
