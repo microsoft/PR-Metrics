@@ -84,7 +84,7 @@ describe('gitHubReposInvoker.ts', function (): void {
         undefined,
         ''
       ], (variable: string | undefined): void => {
-        it(`should throw when SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI is set to the invalid value '${variable}'`, async (): Promise<void> => {
+        it(`should throw when SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI is set to the invalid value '${variable}' and the task is running on Azure Pipelines`, async (): Promise<void> => {
           // Arrange
           if (variable === undefined) {
             delete process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI
@@ -116,7 +116,7 @@ describe('gitHubReposInvoker.ts', function (): void {
         'https://github.com/microsoft',
         'https://github.com/microsoft/PR-Metrics/git'
       ], (variable: string): void => {
-        it(`should throw when SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI is set to an invalid URL '${variable}'`, async (): Promise<void> => {
+        it(`should throw when SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI is set to an invalid URL '${variable}' and the task is running on Azure Pipelines`, async (): Promise<void> => {
           // Arrange
           process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI = variable
           const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
@@ -138,7 +138,154 @@ describe('gitHubReposInvoker.ts', function (): void {
         })
       })
 
-    it('should succeed when the inputs are valid', async (): Promise<void> => {
+    async.each(
+      [
+        undefined,
+        ''
+      ], (variable: string | undefined): void => {
+        it(`should throw when GITHUB_API_URL is set to the invalid value '${variable}' and the task is running on GitHub`, async (): Promise<void> => {
+          // Arrange
+          process.env.GITHUB_ACTION = 'PR-Metrics'
+          if (variable === undefined) {
+            delete process.env.GITHUB_API_URL
+          } else {
+            process.env.GITHUB_API_URL = variable
+          }
+
+          const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
+          let errorThrown: boolean = false
+
+          try {
+            // Act
+            await gitHubReposInvoker.getTitleAndDescription()
+          } catch (error: any) {
+            // Assert
+            errorThrown = true
+            expect(error.message).to.equal(`'GITHUB_API_URL', accessed within 'GitHubReposInvoker.initializeForGitHub()', is invalid, null, or undefined '${variable}'.`)
+          }
+
+          expect(errorThrown).to.equal(true)
+          verify(logger.logDebug('* GitHubReposInvoker.getTitleAndDescription()')).once()
+          verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
+          verify(logger.logDebug('* GitHubReposInvoker.initializeForGitHub()')).once()
+
+          // Finalization
+          delete process.env.GITHUB_ACTION
+          delete process.env.GITHUB_API_URL
+        })
+      })
+
+    async.each(
+      [
+        undefined,
+        ''
+      ], (variable: string | undefined): void => {
+        it(`should throw when GITHUB_REPOSITORY_OWNER is set to the invalid value '${variable}' and the task is running on GitHub`, async (): Promise<void> => {
+          // Arrange
+          process.env.GITHUB_ACTION = 'PR-Metrics'
+          process.env.GITHUB_API_URL = 'https://api.github.com'
+          if (variable === undefined) {
+            delete process.env.GITHUB_REPOSITORY_OWNER
+          } else {
+            process.env.GITHUB_REPOSITORY_OWNER = variable
+          }
+
+          const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
+          let errorThrown: boolean = false
+
+          try {
+            // Act
+            await gitHubReposInvoker.getTitleAndDescription()
+          } catch (error: any) {
+            // Assert
+            errorThrown = true
+            expect(error.message).to.equal(`'GITHUB_REPOSITORY_OWNER', accessed within 'GitHubReposInvoker.initializeForGitHub()', is invalid, null, or undefined '${variable}'.`)
+          }
+
+          expect(errorThrown).to.equal(true)
+          verify(logger.logDebug('* GitHubReposInvoker.getTitleAndDescription()')).once()
+          verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
+          verify(logger.logDebug('* GitHubReposInvoker.initializeForGitHub()')).once()
+
+          // Finalization
+          delete process.env.GITHUB_ACTION
+          delete process.env.GITHUB_API_URL
+          delete process.env.GITHUB_REPOSITORY_OWNER
+        })
+      })
+
+    async.each(
+      [
+        undefined,
+        ''
+      ], (variable: string | undefined): void => {
+        it(`should throw when GITHUB_REPOSITORY is set to the invalid value '${variable}' and the task is running on GitHub`, async (): Promise<void> => {
+          // Arrange
+          process.env.GITHUB_ACTION = 'PR-Metrics'
+          process.env.GITHUB_API_URL = 'https://api.github.com'
+          process.env.GITHUB_REPOSITORY_OWNER = 'microsoft'
+          if (variable === undefined) {
+            delete process.env.GITHUB_REPOSITORY
+          } else {
+            process.env.GITHUB_REPOSITORY = variable
+          }
+
+          const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
+          let errorThrown: boolean = false
+
+          try {
+            // Act
+            await gitHubReposInvoker.getTitleAndDescription()
+          } catch (error: any) {
+            // Assert
+            errorThrown = true
+            expect(error.message).to.equal(`'GITHUB_REPOSITORY', accessed within 'GitHubReposInvoker.initializeForGitHub()', is invalid, null, or undefined '${variable}'.`)
+          }
+
+          expect(errorThrown).to.equal(true)
+          verify(logger.logDebug('* GitHubReposInvoker.getTitleAndDescription()')).once()
+          verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
+          verify(logger.logDebug('* GitHubReposInvoker.initializeForGitHub()')).once()
+
+          // Finalization
+          delete process.env.GITHUB_ACTION
+          delete process.env.GITHUB_API_URL
+          delete process.env.GITHUB_REPOSITORY_OWNER
+          delete process.env.GITHUB_REPOSITORY
+        })
+      })
+
+    it('should throw when GITHUB_REPOSITORY is in an incorrect format and the task is running on GitHub', async (): Promise<void> => {
+      // Arrange
+      process.env.GITHUB_ACTION = 'PR-Metrics'
+      process.env.GITHUB_API_URL = 'https://api.github.com'
+      process.env.GITHUB_REPOSITORY_OWNER = 'microsoft'
+      process.env.GITHUB_REPOSITORY = 'microsoft/PR-Metrics/problem'
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
+      let errorThrown: boolean = false
+
+      try {
+        // Act
+        await gitHubReposInvoker.getTitleAndDescription()
+      } catch (error: any) {
+        // Assert
+        errorThrown = true
+        expect(error.message).to.equal('GITHUB_REPOSITORY \'microsoft/PR-Metrics/problem\' is in an unexpected format.')
+      }
+
+      expect(errorThrown).to.equal(true)
+      verify(logger.logDebug('* GitHubReposInvoker.getTitleAndDescription()')).once()
+      verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
+      verify(logger.logDebug('* GitHubReposInvoker.initializeForGitHub()')).once()
+
+      // Finalization
+      delete process.env.GITHUB_ACTION
+      delete process.env.GITHUB_API_URL
+      delete process.env.GITHUB_REPOSITORY_OWNER
+      delete process.env.GITHUB_REPOSITORY
+    })
+
+    it('should succeed when the inputs are valid and the task is running on Azure Pipelines', async (): Promise<void> => {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
         expect(options.auth).to.equal('OAUTH')
@@ -163,6 +310,43 @@ describe('gitHubReposInvoker.ts', function (): void {
       verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.initializeForAzureDevOps()')).once()
       verify(logger.logDebug(JSON.stringify(GitHubReposInvokerConstants.getPullResponse))).once()
+    })
+
+    it('should succeed when the inputs are valid and the task is running on GitHub', async (): Promise<void> => {
+      // Arrange
+      process.env.GITHUB_ACTION = 'PR-Metrics'
+      process.env.GITHUB_API_URL = 'https://api.github.com'
+      process.env.GITHUB_REPOSITORY_OWNER = 'microsoft'
+      process.env.GITHUB_REPOSITORY = 'microsoft/PR-Metrics'
+      when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
+        expect(options.auth).to.equal('OAUTH')
+        expect(options.userAgent).to.equal(expectedUserAgent)
+        expect(options.log).to.not.equal(null)
+        expect(options.log.debug).to.not.equal(null)
+        expect(options.log.info).to.not.equal(null)
+        expect(options.log.warn).to.not.equal(null)
+        expect(options.log.error).to.not.equal(null)
+      })
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
+
+      // Act
+      const result: PullRequestDetails = await gitHubReposInvoker.getTitleAndDescription()
+
+      // Assert
+      expect(result.title).to.equal('Title')
+      expect(result.description).to.equal('Description')
+      verify(octokitWrapper.initialize(anything())).once()
+      verify(octokitWrapper.getPull('microsoft', 'PR-Metrics', 12345)).once()
+      verify(logger.logDebug('* GitHubReposInvoker.getTitleAndDescription()')).once()
+      verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
+      verify(logger.logDebug('* GitHubReposInvoker.initializeForGitHub()')).once()
+      verify(logger.logDebug(JSON.stringify(GitHubReposInvokerConstants.getPullResponse))).once()
+
+      // Finalization
+      delete process.env.GITHUB_ACTION
+      delete process.env.GITHUB_API_URL
+      delete process.env.GITHUB_REPOSITORY_OWNER
+      delete process.env.GITHUB_REPOSITORY
     })
 
     it('should succeed when the inputs are valid and the URL ends with \'.git\'', async (): Promise<void> => {
