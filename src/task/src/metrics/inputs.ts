@@ -170,7 +170,7 @@ export default class Inputs {
     this._logger.logDebug('* Inputs.initializeFileMatchingPatterns()')
 
     if (fileMatchingPatterns?.trim()) {
-      this._fileMatchingPatterns = fileMatchingPatterns.replace(/\\/g, '/').split('\n')
+      this._fileMatchingPatterns = fileMatchingPatterns.replace(/\\/g, '/').replace(/\s\n+$/g, '').split('\n')
       this._logger.logInfo(this._runnerInvoker.loc('metrics.inputs.settingFileMatchingPatterns', JSON.stringify(this._fileMatchingPatterns)))
       return
     }
@@ -183,7 +183,7 @@ export default class Inputs {
     this._logger.logDebug('* Inputs.initializeCodeFileExtensions()')
 
     if (codeFileExtensions?.trim()) {
-      const codeFileExtensionsArray: string[] = codeFileExtensions.split('\n')
+      const codeFileExtensionsArray: string[] = codeFileExtensions.replace(/\s\n+$/g, '').split('\n')
       codeFileExtensionsArray.forEach((value: string): void => {
         if (value.startsWith('*.')) {
           value = value.substring(2)
