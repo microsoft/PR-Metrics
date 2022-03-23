@@ -132,11 +132,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
 
     if (fileName) {
       if (!this._commitId) {
-        await this.invokeApiCall(async (): Promise<void> => {
-          const result: ListCommitsResponse = await this._octokitWrapper.listCommits(this._owner!, this._repo!, this._pullRequestId!)
-          this._logger.logDebug(JSON.stringify(result))
-          this._commitId = Validator.validate(result.data[result.data.length - 1]?.sha, 'result.data[0].sha', 'GitHubReposInvoker.createComment()')
-        })
+        await this.getCommitId()
       }
 
       await this.invokeApiCall(async (): Promise<void> => {
@@ -269,6 +265,31 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     })
 
     return result
+  }
+
+  private async getCommitId (): Promise<void> {
+    this._logger.logDebug('* GitHubReposInvoker.getCommitId()')
+
+    let firstCommits: ListCommitsResponse
+    await this.invokeApiCall(async (): Promise<void> => {
+      firstCommits = await this._octokitWrapper.listCommits(this._owner!, this._repo!, this._pullRequestId!, 1)
+      this._logger.logDebug(JSON.stringify(firstCommits))
+    })
+
+    const commitsLink: string = Validator.validate(firstCommits!.headers.links as string, 'firstCommits.headers.links', 'GitHubReposInvoker.createComment()')
+    const matches: RegExpMatchArray = Validator.validate(commitsLink.match(/<.+>; rel="next", <.+?page=(.+)>; rel="last"/), 'commitsLink.match', 'GitHubReposInvoker.createComment()')
+    const pageString: string = Validator.validate(matches[1], 'matches[1]', 'GitHubReposInvoker.createComment()')
+    const page: number = Validator.validate(parseInt(pageString), 'pageString', 'GitHubReposInvoker.createComment()')
+
+    let result: ListCommitsResponse = firstCommits!
+    if (page !== 1) {
+      await this.invokeApiCall(async (): Promise<void> => {
+        result = await this._octokitWrapper.listCommits(this._owner!, this._repo!, this._pullRequestId!, page)
+        this._logger.logDebug(JSON.stringify(result))
+      })
+    }
+
+    this._commitId = Validator.validate(result.data[result.data.length - 1]?.sha, `result.data[${result.data.length - 1}].sha`, 'GitHubReposInvoker.createComment()')
   }
 
   protected async invokeApiCall<TResponse> (action: () => Promise<TResponse>): Promise<TResponse> {

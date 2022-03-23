@@ -39,7 +39,7 @@ describe('gitHubReposInvoker.ts', function (): void {
     octokitWrapper = mock(OctokitWrapper)
     when(octokitWrapper.getPull(anyString(), anyString(), anyNumber())).thenResolve(GitHubReposInvokerConstants.getPullResponse)
     when(octokitWrapper.updatePull(anyString(), anyString(), anyNumber(), anyString(), anyString())).thenResolve(GitHubReposInvokerConstants.getPullResponse)
-    when(octokitWrapper.listCommits(anyString(), anyString(), anyNumber())).thenResolve(GitHubReposInvokerConstants.listCommitsResponse)
+    when(octokitWrapper.listCommits(anyString(), anyString(), anyNumber(), anyNumber())).thenResolve(GitHubReposInvokerConstants.listCommitsResponse)
 
     runnerInvoker = mock(RunnerInvoker)
     when(runnerInvoker.loc('metrics.codeMetricsCalculator.insufficientGitHubAccessTokenPermissions')).thenReturn('Could not access the resources. Ensure \'System.AccessToken\' has access to \'repos\'.')
@@ -806,7 +806,7 @@ describe('gitHubReposInvoker.ts', function (): void {
 
       // Assert
       verify(octokitWrapper.initialize(anything())).once()
-      verify(octokitWrapper.listCommits('microsoft', 'PR-Metrics', 12345)).once()
+      verify(octokitWrapper.listCommits('microsoft', 'PR-Metrics', 12345, 1)).once()
       verify(octokitWrapper.createReviewComment('microsoft', 'PR-Metrics', 12345, 'Content', 'file.ts', 'sha54321')).once()
       verify(logger.logDebug('* GitHubReposInvoker.createComment()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
@@ -835,7 +835,7 @@ describe('gitHubReposInvoker.ts', function (): void {
 
       // Assert
       verify(octokitWrapper.initialize(anything())).once()
-      verify(octokitWrapper.listCommits('microsoft', 'PR-Metrics', 12345)).once()
+      verify(octokitWrapper.listCommits('microsoft', 'PR-Metrics', 12345, 1)).once()
       verify(octokitWrapper.createReviewComment('microsoft', 'PR-Metrics', 12345, 'Content', 'file.ts', 'sha54321')).once()
       verify(logger.logDebug('* GitHubReposInvoker.createComment()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
@@ -855,7 +855,7 @@ describe('gitHubReposInvoker.ts', function (): void {
         expect(options.log.warn).to.not.equal(null)
         expect(options.log.error).to.not.equal(null)
       })
-      when(octokitWrapper.listCommits(anyString(), anyString(), anyNumber())).thenResolve({
+      when(octokitWrapper.listCommits(anyString(), anyString(), anyNumber(), anyNumber())).thenResolve({
         headers: {},
         status: 200,
         url: '',
@@ -875,7 +875,7 @@ describe('gitHubReposInvoker.ts', function (): void {
 
       expect(errorThrown).to.equal(true)
       verify(octokitWrapper.initialize(anything())).once()
-      verify(octokitWrapper.listCommits('microsoft', 'PR-Metrics', 12345)).once()
+      verify(octokitWrapper.listCommits('microsoft', 'PR-Metrics', 12345, 1)).once()
       verify(logger.logDebug('* GitHubReposInvoker.createComment()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.initializeForAzureDevOps()')).once()
@@ -909,7 +909,7 @@ describe('gitHubReposInvoker.ts', function (): void {
 
       expect(errorThrown).to.equal(true)
       verify(octokitWrapper.initialize(anything())).once()
-      verify(octokitWrapper.listCommits('microsoft', 'PR-Metrics', 12345)).once()
+      verify(octokitWrapper.listCommits('microsoft', 'PR-Metrics', 12345, 1)).once()
       verify(octokitWrapper.createReviewComment('microsoft', 'PR-Metrics', 12345, 'Content', 'file.ts', 'sha54321')).once()
       verify(logger.logDebug('* GitHubReposInvoker.createComment()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
@@ -935,7 +935,7 @@ describe('gitHubReposInvoker.ts', function (): void {
 
       // Assert
       verify(octokitWrapper.initialize(anything())).once()
-      verify(octokitWrapper.listCommits('microsoft', 'PR-Metrics', 12345)).once()
+      verify(octokitWrapper.listCommits('microsoft', 'PR-Metrics', 12345, 1)).once()
       verify(octokitWrapper.createReviewComment('microsoft', 'PR-Metrics', 12345, 'Content', 'file.ts', 'sha54321')).twice()
       verify(logger.logDebug('* GitHubReposInvoker.createComment()')).twice()
       verify(logger.logDebug('* GitHubReposInvoker.initialize()')).twice()

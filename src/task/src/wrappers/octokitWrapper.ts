@@ -140,17 +140,19 @@ export default class OctokitWrapper {
    * @param owner The repo owner.
    * @param repo The repo name.
    * @param pullRequestId The numeric ID of the pull request.
+   * @param page The commit page number.
    * @returns The response from the API call.
    */
-  public async listCommits (owner: string, repo: string, pullRequestId: number): Promise<ListCommitsResponse> {
+  public async listCommits (owner: string, repo: string, pullRequestId: number, page: number): Promise<ListCommitsResponse> {
     if (!this._octokit) {
       throw Error('OctokitWrapper was not initialized prior to calling OctokitWrapper.listCommits().')
     }
 
-    return this._octokit.rest.pulls.listCommits({
+    return await this._octokit.rest.pulls.listCommits({
       owner: owner,
       repo: repo,
-      pull_number: pullRequestId
+      pull_number: pullRequestId,
+      page: page
     })
   }
 
