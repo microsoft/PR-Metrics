@@ -7,6 +7,7 @@ import * as actionsExec from '@actions/exec'
 import * as fs from 'fs'
 import * as path from 'path'
 import * as util from 'util'
+import AzurePipelinesRunnerWrapper from '../wrappers/azurePipelinesRunnerWrapper'
 import ConsoleWrapper from '../wrappers/consoleWrapper'
 import GitHubRunnerWrapper from '../wrappers/gitHubRunnerWrapper'
 import IRunnerInvoker from './iRunnerInvoker'
@@ -17,6 +18,7 @@ import ResourcesJson from '../jsonTypes/resourcesJson'
  */
 @singleton()
 export default class GitHubRunnerInvoker implements IRunnerInvoker {
+  private readonly _azurePipelinesRunnerWrapper: AzurePipelinesRunnerWrapper
   private readonly _consoleWrapper: ConsoleWrapper
   private readonly _gitHubRunnerWrapper: GitHubRunnerWrapper
 
@@ -24,10 +26,12 @@ export default class GitHubRunnerInvoker implements IRunnerInvoker {
 
   /**
    * Initializes a new instance of the `GitHubRunnerInvoker` class.
+   * @param azurePipelinesRunnerWrapper The wrapper around the Azure Pipelines runner.
    * @param consoleWrapper The wrapper around the console.
    * @param gitHubRunnerWrapper The wrapper around the GitHub runner.
    */
-  public constructor (consoleWrapper: ConsoleWrapper, gitHubRunnerWrapper: GitHubRunnerWrapper) {
+  public constructor (azurePipelinesRunnerWrapper: AzurePipelinesRunnerWrapper, consoleWrapper: ConsoleWrapper, gitHubRunnerWrapper: GitHubRunnerWrapper) {
+    this._azurePipelinesRunnerWrapper = azurePipelinesRunnerWrapper
     this._consoleWrapper = consoleWrapper
     this._gitHubRunnerWrapper = gitHubRunnerWrapper
   }
@@ -43,9 +47,11 @@ export default class GitHubRunnerInvoker implements IRunnerInvoker {
   }
 
   public getInput (name: string[]): string | undefined {
-    const formattedName: string = name.join('-').toLowerCase()
+    const formattedName: string = `INPUT_${name.join('-').toUpperCase()}`
     console.log(formattedName)
-    return this._gitHubRunnerWrapper.getInput(formattedName)
+
+    // This method redirects to the Azure Pipelines logic as the library will store the input data.
+    return this._azurePipelinesRunnerWrapper.getVariable(formattedName)
   }
 
   public locInitialize (folder: string): void {

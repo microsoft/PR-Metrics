@@ -7,6 +7,7 @@ import { expect } from 'chai'
 import { GitWritableStream } from '../../src/git/gitWritableStream'
 import * as actionsExec from '@actions/exec'
 import * as path from 'path'
+import AzurePipelinesRunnerWrapper from '../../src/wrappers/azurePipelinesRunnerWrapper'
 import ConsoleWrapper from '../../src/wrappers/consoleWrapper'
 import GitHubRunnerInvoker from '../../src/runners/gitHubRunnerInvoker'
 import GitHubRunnerWrapper from '../../src/wrappers/gitHubRunnerWrapper'
@@ -15,10 +16,12 @@ import Logger from '../../src/utilities/logger'
 describe('gitHubRunnerInvoker.ts', function (): void {
   const resourcePath: string = path.join(__dirname, '../../Strings/resources.resjson/en-US/')
 
+  let azurePipelinesRunnerWrapper: AzurePipelinesRunnerWrapper
   let consoleWrapper: ConsoleWrapper
   let gitHubRunnerWrapper: GitHubRunnerWrapper
 
   beforeEach((): void => {
+    azurePipelinesRunnerWrapper = mock(AzurePipelinesRunnerWrapper)
     consoleWrapper = mock(ConsoleWrapper)
     gitHubRunnerWrapper = mock(GitHubRunnerWrapper)
   })
@@ -26,7 +29,7 @@ describe('gitHubRunnerInvoker.ts', function (): void {
   describe('exec()', (): void => {
     it('should call the underlying method', async (): Promise<void> => {
       // Arrange
-      const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(instance(consoleWrapper), instance(gitHubRunnerWrapper))
+      const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(instance(azurePipelinesRunnerWrapper), instance(consoleWrapper), instance(gitHubRunnerWrapper))
       const logger: Logger = mock(Logger)
       const outputStream: GitWritableStream = new GitWritableStream(instance(logger))
       const errorStream: GitWritableStream = new GitWritableStream(instance(logger))
@@ -49,7 +52,7 @@ describe('gitHubRunnerInvoker.ts', function (): void {
   describe('getInput()', (): void => {
     it('should call the underlying method', (): void => {
       // Arrange
-      const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(instance(consoleWrapper), instance(gitHubRunnerWrapper))
+      const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(instance(azurePipelinesRunnerWrapper), instance(consoleWrapper), instance(gitHubRunnerWrapper))
       when(gitHubRunnerWrapper.getInput('test-suffix')).thenReturn('VALUE')
 
       // Act
@@ -64,7 +67,7 @@ describe('gitHubRunnerInvoker.ts', function (): void {
   describe('locInitialize()', (): void => {
     it('should succeed', (): void => {
       // Arrange
-      const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(instance(consoleWrapper), instance(gitHubRunnerWrapper))
+      const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(instance(azurePipelinesRunnerWrapper), instance(consoleWrapper), instance(gitHubRunnerWrapper))
 
       // Act
       const func: () => void = () => gitHubRunnerInvoker.locInitialize(resourcePath)
@@ -77,7 +80,7 @@ describe('gitHubRunnerInvoker.ts', function (): void {
   describe('loc()', (): void => {
     it('should retrieve the correct resource when no placeholders are present', (): void => {
       // Arrange
-      const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(instance(consoleWrapper), instance(gitHubRunnerWrapper))
+      const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(instance(azurePipelinesRunnerWrapper), instance(consoleWrapper), instance(gitHubRunnerWrapper))
       gitHubRunnerInvoker.locInitialize(resourcePath)
 
       // Act
@@ -89,7 +92,7 @@ describe('gitHubRunnerInvoker.ts', function (): void {
 
     it('should retrieve and format the correct resource when placeholders are present', (): void => {
       // Arrange
-      const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(instance(consoleWrapper), instance(gitHubRunnerWrapper))
+      const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(instance(azurePipelinesRunnerWrapper), instance(consoleWrapper), instance(gitHubRunnerWrapper))
       gitHubRunnerInvoker.locInitialize(resourcePath)
 
       // Act
@@ -103,7 +106,7 @@ describe('gitHubRunnerInvoker.ts', function (): void {
   describe('logDebug()', (): void => {
     it('should call the underlying method', (): void => {
       // Arrange
-      const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(instance(consoleWrapper), instance(gitHubRunnerWrapper))
+      const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(instance(azurePipelinesRunnerWrapper), instance(consoleWrapper), instance(gitHubRunnerWrapper))
 
       // Act
       gitHubRunnerInvoker.logDebug('TEST')
@@ -116,7 +119,7 @@ describe('gitHubRunnerInvoker.ts', function (): void {
   describe('logError()', (): void => {
     it('should call the underlying method', (): void => {
       // Arrange
-      const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(instance(consoleWrapper), instance(gitHubRunnerWrapper))
+      const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(instance(azurePipelinesRunnerWrapper), instance(consoleWrapper), instance(gitHubRunnerWrapper))
 
       // Act
       gitHubRunnerInvoker.logError('TEST')
@@ -129,7 +132,7 @@ describe('gitHubRunnerInvoker.ts', function (): void {
   describe('logWarning()', (): void => {
     it('should call the underlying method', (): void => {
       // Arrange
-      const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(instance(consoleWrapper), instance(gitHubRunnerWrapper))
+      const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(instance(azurePipelinesRunnerWrapper), instance(consoleWrapper), instance(gitHubRunnerWrapper))
 
       // Act
       gitHubRunnerInvoker.logWarning('TEST')
@@ -142,7 +145,7 @@ describe('gitHubRunnerInvoker.ts', function (): void {
   describe('setStatusFailed()', (): void => {
     it('should call the underlying method', (): void => {
       // Arrange
-      const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(instance(consoleWrapper), instance(gitHubRunnerWrapper))
+      const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(instance(azurePipelinesRunnerWrapper), instance(consoleWrapper), instance(gitHubRunnerWrapper))
 
       // Act
       gitHubRunnerInvoker.setStatusFailed('TEST')
@@ -155,7 +158,7 @@ describe('gitHubRunnerInvoker.ts', function (): void {
   describe('setStatusSkipped()', (): void => {
     it('should call the underlying method', (): void => {
       // Arrange
-      const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(instance(consoleWrapper), instance(gitHubRunnerWrapper))
+      const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(instance(azurePipelinesRunnerWrapper), instance(consoleWrapper), instance(gitHubRunnerWrapper))
 
       // Act
       gitHubRunnerInvoker.setStatusSkipped('TEST')
@@ -168,7 +171,7 @@ describe('gitHubRunnerInvoker.ts', function (): void {
   describe('setStatusSucceeded()', (): void => {
     it('should call the underlying method', (): void => {
       // Arrange
-      const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(instance(consoleWrapper), instance(gitHubRunnerWrapper))
+      const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(instance(azurePipelinesRunnerWrapper), instance(consoleWrapper), instance(gitHubRunnerWrapper))
 
       // Act
       gitHubRunnerInvoker.setStatusSucceeded('TEST')
