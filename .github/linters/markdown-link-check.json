@@ -1,7 +1,1 @@
-{
-  "ignorePatterns": [
-    {
-      "pattern": "^https://github.com/microsoft/PR-Metrics"
-    }
-  ]
-}
+{}
