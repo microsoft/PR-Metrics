@@ -27,23 +27,18 @@ jobs:
 
       - name: NPM – Install Dependencies
         run: npm install
-        working-directory: ${{ github.workspace }}/src/task
 
       - name: NPM – Test Lint
         run: npm run lint
-        working-directory: ${{ github.workspace }}/src/task
 
       - name: NPM – Test Clean
         run: npm run clean
-        working-directory: ${{ github.workspace }}/src/task
 
       - name: NPM – Build
         run: npm run build
-        working-directory: ${{ github.workspace }}/src/task
 
       - name: NPM – Test
         run: npm run test
-        working-directory: ${{ github.workspace }}/src/task
 
       - name: Install TFX CLI
         run: npm install -g tfx-cli
@@ -279,7 +274,6 @@ jobs:
 
       - name: NPM – Build Package
         run: npm run build:package
-        working-directory: ${{ github.workspace }}/src/task
 
       - name: Compare Expected & Actual dist Folders
         run: |
