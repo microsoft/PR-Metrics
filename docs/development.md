@@ -7,7 +7,7 @@ facilitate contributions in accordance with
 ## Implementation
 
 This task is written in [TypeScript][typescript] using the
-[Azure Pipelines Task SDK][sdk].
+[Azure Pipelines Task SDK][sdk] and [Octokit][octokit].
 
 It works by querying Git for changes using the command
 `git diff --numstat origin/<target>...pull/<pull_request_id>/merge`. Files with
@@ -23,6 +23,13 @@ merely be considered a guideline for influencing optimal PR behavior.
 
 The task can be built using `npm run build` from the `src/task`
 folder. `npm run clean` can be used to clean the build outputs.
+
+The code formatting complies with the [ESLint][eslint] "Standard" rules. The
+formatting can be checked and automatically fixed by running `npm run lint`
+from within the `src/task` folder. [TypeDoc][typedoc] comments are
+present on public methods and are converted to HTML during the `npm run build`
+process. [Dependency injection][depinjection] is used throughout the project to
+facilitate testability.
 
 ## Deploying to Azure Pipelines
 
@@ -64,13 +71,6 @@ testing. Note that the deployment task can intermittently fail to deploy all
 dependencies, which will be seen when you run the build task. If this occurs,
 run `npm run deploy:release` or `npm run deploy:debug` and try again.
 
-The code formatting complies with the [ESLint][eslint] "Standard" rules. The
-formatting can be checked and automatically fixed by running `npm run lint`
-from within the `src/task` folder. [TypeDoc][typedoc] comments are
-present on public methods and are converted to HTML during the `npm run build`
-process. [Dependency injection][depinjection] is used throughout the project to
-facilitate testability.
-
 Test validation and static analysis will be automatically performed whenever a
 PR is opened against the `main` branch. These validations must succeed for the
 PR to be merged.
@@ -78,9 +78,11 @@ PR to be merged.
 ### Manual Test Cases
 
 Unfortunately, it is difficult to automatically test everything as the task runs
-on the Azure DevOps platform, which the unit tests cannot run on. Therefore, it
-is recommended that you perform the following manual test cases outlined in
-[here][manualtesting] whenever significant changes are made.
+on the Azure DevOps or GitHub platforms, which the unit tests cannot run on.
+Therefore, for Azure DevOps, it is recommended that you perform the following
+manual test cases outlined in [here][manualtesting] whenever significant changes
+are made. Similar instructions can be followed for testing the GitHub
+functionality.
 
 ## Debugging
 
@@ -95,6 +97,7 @@ outputted by default irrespective of the value of the `system.debug` variable.
 [contributing]: ../.github/CONTRIBUTING.md
 [typescript]: https://www.typescriptlang.org/
 [sdk]: https://github.com/microsoft/azure-pipelines-task-lib
+[octokit]: https://github.com/octokit
 [tfxcli]: https://github.com/Microsoft/tfs-cli
 [npm]: https://www.npmjs.com/
 [tfxpat]: https://docs.microsoft.com/azure/devops/extend/publish/command-line
