@@ -17,6 +17,7 @@
     "test": "npm run build:debug && cd build/debug/task && nyc --reporter=text --reporter=text-summary mocha tests/**/*.spec.js --check-leaks --color"
   },
   "repository": {
+    2
     "type": "git",
     "url": "git+https://github.com/microsoft/PR-Metrics.git"
   },
