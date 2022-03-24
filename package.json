@@ -3,6 +3,7 @@
   "name": "prmetrics",
   "version": "1.4.0",
   "description": "Augments pull request titles to let reviewers quickly determine PR size and test coverage.",
+  "main": "dist/index.js",
   "scripts": {
     "build:initialization": "cross-env-shell \"mkdirp build/$npm_config_dir && ncp src build/$npm_config_dir\"",
     "build:debug": "npm run build:initialization --dir=debug && cd build/debug/task && npm install && tsc --sourceMap",
