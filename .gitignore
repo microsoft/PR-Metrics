@@ -132,5 +132,6 @@ out
 .pnp.*
 
 # Project-Specific Settings
-build
+debug
+release
 typedocs

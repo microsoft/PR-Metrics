@@ -278,6 +278,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
       this._logger.logDebug(JSON.stringify(firstCommits))
     })
 
+    // Get the last page of commits so that the last commit can be located.
     let result: ListCommitsResponse = firstCommits!
     if (result.headers.link) {
       const commitsLink: string = result.headers.link as string

@@ -35,12 +35,12 @@ jobs:
 
       - name: Release – Create
         run: tfx extension create --manifest-globs vss-extension.json --output-path ../ms-omex.PRMetrics}.vsix
-        working-directory: ${{ github.workspace }}/build/release
+        working-directory: ${{ github.workspace }}/release
 
       - name: Release – Publish
         uses: actions/upload-artifact@v2.2.4
         with:
           name: ms-omex.PRMetrics
-          path: ${{ github.workspace }}/build/ms-omex.PRMetrics.vsix
+          path: ${{ github.workspace }}/ms-omex.PRMetrics.vsix
 
 ...
