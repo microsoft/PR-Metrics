@@ -91,7 +91,7 @@ out
 
 # Nuxt.js build / generate output
 .nuxt
-dist
+#dist # Required by GitHub Action.
 
 # Gatsby files
 .cache/

@@ -39,7 +39,7 @@ Any update will need to increment the version in the task's `task.json` and
 ## Adding an Extension
 
 If you wish to create a new extension, please discuss this beforehand using
-[GitHub issues](https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/issues).
+[GitHub issues](https://github.com/microsoft/PR-Metrics/issues).
 
 The following instructions can be used for adding an extension.
 
@@ -50,7 +50,7 @@ The following instructions can be used for adding an extension.
    [Microsoft Docs](https://docs.microsoft.com/azure/devops/extend/develop/add-build-task).
 1. Add your custom logic.
 1. Update the
-   [GitHub Actions](https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/tree/main/.github/workflows)
+   [GitHub Actions](https://github.com/microsoft/PR-Metrics/tree/main/.github/workflows)
    to reference your new extension.
 
 ## Documentation
@@ -62,7 +62,7 @@ add new documentation, please add it to the `docs` folder.
 ## Communicating with the Team
 
 The easiest way to communicate with the team is via
-[GitHub issues](https://github.com/microsoft/OMEX-Azure-DevOps-Extensions/issues).
+[GitHub issues](https://github.com/microsoft/PR-Metrics/issues).
 Feel free to file bug reports, feature requests, and suggestions.
 
 ## Useful References
