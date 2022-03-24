@@ -10,7 +10,7 @@
     "build:package": "npm install && ncc build src/task/index.ts --out dist --minify && rimraf dist/package.json && ncp src/task/Strings/resources.resjson/en-US/resources.resjson dist/resources.resjson",
     "build:docs": "typedoc",
     "build": "npm run build:release && npm run build:package && npm run build:docs",
-    "clean": "rimraf build && rimrafdist",
+    "clean": "rimraf build && rimraf dist",
     "deploy": "npm run build:release && exitzero tfx build tasks delete --task-id 907d3b28-6b37-4ac7-ac75-9631ee53e512 --no-prompt && tfx build tasks upload --task-path build/release/task --no-prompt",
     "lint": "eslint --fix **/*.ts",
     "test": "npm run build:debug && cd build/debug/task && nyc --reporter=text --reporter=text-summary mocha tests/**/*.spec.js --check-leaks --color"
