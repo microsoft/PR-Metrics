@@ -190,18 +190,6 @@ jobs:
           json-file: src/task/Strings/resources.resjson/en-US/resources.resjson
           json-schema: resources.resjson.schema.json
 
-      - name: Security Scan – Validate
-        uses: ShiftLeftSecurity/scan-action@v1.3.0
-        env:
-          ENABLE_OSS_RISK: true
-        with:
-          type: credscan,depscan,nodejs,yaml
-
-      - name: Security Scan – Upload Report
-        uses: github/codeql-action/upload-sarif@v1
-        with:
-          sarif_file: reports
-
   validate-codeql:
     name: Validate – CodeQL
     runs-on: ubuntu-latest
