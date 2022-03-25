@@ -6,6 +6,7 @@ import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito'
 import { expect } from 'chai'
 import { GitWritableStream } from '../../src/git/gitWritableStream'
 import { IExecOptions } from 'azure-pipelines-task-lib/toolrunner'
+import * as path from 'path'
 import * as taskLib from 'azure-pipelines-task-lib/task'
 import AzurePipelinesRunnerInvoker from '../../src/runners/azurePipelinesRunnerInvoker'
 import AzurePipelinesRunnerWrapper from '../../src/wrappers/azurePipelinesRunnerWrapper'
@@ -65,7 +66,7 @@ describe('azurePipelinesRunnerInvoker.ts', function (): void {
       azurePipelinesRunnerInvoker.locInitialize('/folder1/folder2/')
 
       // Assert
-      verify(azurePipelinesRunnerWrapper.setResourcePath('/folder1/folder2/task.json')).once()
+      verify(azurePipelinesRunnerWrapper.setResourcePath(path.join('/folder1/folder2/', 'task.json'))).once()
     })
   })
 

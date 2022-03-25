@@ -22,10 +22,6 @@ describe('gitInvoker.ts', (): void => {
     logger = mock(Logger)
 
     runnerInvoker = mock(RunnerInvoker)
-    when(runnerInvoker.exec('git', deepEqual(['rev-parse', '--is-inside-work-tree']), true, anything(), anything())).thenCall((_: string, __: string, ___: boolean, outputStream: GitWritableStream): Promise<number> => {
-      outputStream.write('true')
-      return Promise.resolve(0)
-    })
     when(runnerInvoker.exec('git', deepEqual(['rev-parse', '--branch', 'origin/develop...pull/12345/merge']), true, anything(), anything())).thenCall((_: string, __: string, ___: boolean, outputStream: GitWritableStream): Promise<number> => {
       outputStream.write('7235cb16e5e6ac83e3cbecae66bab557e9e2cee6')
       return Promise.resolve(0)

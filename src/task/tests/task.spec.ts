@@ -61,7 +61,7 @@ describe('task.json', (): void => {
 
   it('should have the same version number as package.json', (): void => {
     // Arrange
-    const packageJsonFile: string = path.join(basePath, 'package.json')
+    const packageJsonFile: string = path.join(basePath, '..', '..', 'package.json')
     const packageJsonFileContents: string = fs.readFileSync(packageJsonFile, 'utf8')
     const packageJson: PackageJson = JSON.parse(packageJsonFileContents) as PackageJson
 
@@ -71,7 +71,7 @@ describe('task.json', (): void => {
 
   it('should have the same version number as package-lock.json', (): void => {
     // Arrange
-    const packageLockJsonFile: string = path.join(basePath, 'package-lock.json')
+    const packageLockJsonFile: string = path.join(basePath, '..', '..', 'package-lock.json')
     const packageLockJsonFileContents: string = fs.readFileSync(packageLockJsonFile, 'utf8')
     const packageLockJson: PackageJson = JSON.parse(packageLockJsonFileContents) as PackageJson
 

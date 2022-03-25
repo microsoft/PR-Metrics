@@ -1,8 +1,8 @@
 {
   "extends": "@istanbuljs/nyc-config-typescript",
   "exclude": [
-    "tests/**/*",
-    "src/wrappers/**/*"
+    "debug/task/tests/**/*",
+    "debug/task/src/wrappers/**/*"
   ],
   "check-coverage": true,
   "statements": 98,
