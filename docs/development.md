@@ -31,6 +31,35 @@ present on public methods and are converted to HTML during the `npm run build`
 process. [Dependency injection][depinjection] is used throughout the project to
 facilitate testability.
 
+## Wrappers
+
+This task has the unique property that it runs under both GitHub Actions and
+Azure Pipelines. A single codebase supports both platforms, allowing
+improvements or bug fixes to be applied everywhere, immediately after each
+release.
+
+In turn, the Azure Pipelines task can run against Azure DevOps or GitHub repos.
+
+This mechanism is facilitated by the aforementioned dependency injection and a
+set of wrappers that abstract the underlying platform. There are two such
+abstractions present:
+
+- [**repos**][reposfolder]: Manages access to the underlying repo functionality.
+  [`reposInvoker.ts`][reposinvoker] decides whether to forward the requests to
+  [`azureReposInvoker.ts`][azurereposinvoker] or
+  [`gitHubReposInvoker.ts`][githubreposinvoker] based on the location of the
+  repo in use.
+- [**runners**][runnersfolder]: Manages access to the runner (or platform) on
+  which the functionality is being executed. [`runnerInvoker.ts`][runnerinvoker]
+  decides whether to forward the requests to
+  [`azurePipelinesRunnerInvoker.ts`][azurepipelinesrunnerinvoker] or
+  [`gitHubRunnerInvoker.ts`][githubrunnerinvoker] based on the platform in use.
+
+These abstractions can potentially be reused for other projects as well,
+although the functionality in these is currently scoped to the requirements of
+this project. Therefore, reuse would likely entail the expansion of the
+interfaces to add additional methods, while retaining the same access pattern.
+
 ## Deploying to Azure Pipelines
 
 1. Acquire administrator access to the server to which you wish to deploy.
@@ -108,4 +137,12 @@ outputted by default irrespective of the value of the `system.debug` variable.
 [eslint]: https://eslint.org/
 [typedoc]: https://typedoc.org/
 [depinjection]: https://wikipedia.org/wiki/Dependency_injection
+[reposfolder]: ../src/task/src/repos/
+[reposinvoker]: ../src/task/src/repos/reposInvoker.ts
+[azurereposinvoker]: ../src/task/src/repos/azureReposInvoker.ts
+[githubreposinvoker]: ../src/task/src/repos/gitHubReposInvoker.ts
+[runnersfolder]: ../src/task/src/runners/
+[runnerinvoker]: ../src/task/src/runners/runnerInvoker.ts
+[azurepipelinesrunnerinvoker]: ../src/task/src/runners/azurePipelinesRunnerInvoker.ts
+[githubrunnerinvoker]: ../src/task/src/runners/gitHubRunnerInvoker.ts
 [manualtesting]: ../src/task/tests/manualTests/Instructions.md
