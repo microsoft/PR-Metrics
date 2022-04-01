@@ -34,7 +34,7 @@ jobs:
         run: npm install -g tfx-cli
 
       - name: Release – Create
-        run: tfx extension create --manifest-globs vss-extension.json --output-path ../ms-omex.PRMetrics}.vsix
+        run: tfx extension create --manifest-globs vss-extension.json --output-path ../ms-omex.PRMetrics.vsix
         working-directory: ${{ github.workspace }}/release
 
       - name: Release – Publish
