@@ -73,8 +73,8 @@ export default class CodeMetricsCalculator {
       return accessTokenAvailable
     }
 
-    if (!await this._gitInvoker.isGitEnlistment()) {
-      return this._runnerInvoker.loc('metrics.codeMetricsCalculator.noGitEnlistment')
+    if (!await this._gitInvoker.isGitRepo()) {
+      return this._runnerInvoker.loc('metrics.codeMetricsCalculator.noGitRepo')
     }
 
     if (!await this._gitInvoker.isGitHistoryAvailable()) {

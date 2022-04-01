@@ -32,11 +32,11 @@ export default class GitInvoker {
   }
 
   /**
-   * Gets a value indicating whether the current folder corresponds to a Git enlistment.
-   * @returns A promise containing a value indicating whether the current folder corresponds to a Git enlistment.
+   * Gets a value indicating whether the current folder corresponds to a Git repo.
+   * @returns A promise containing a value indicating whether the current folder corresponds to a Git repo.
    */
-  public async isGitEnlistment (): Promise<boolean> {
-    this._logger.logDebug('* GitInvoker.isGitEnlistment()')
+  public async isGitRepo (): Promise<boolean> {
+    this._logger.logDebug('* GitInvoker.isGitRepo()')
 
     try {
       await this.invokeGit(['rev-parse', '--is-inside-work-tree'])

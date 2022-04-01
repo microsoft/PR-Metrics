@@ -72,14 +72,14 @@ describe('index.ts', (): void => {
     done()
   })
 
-  it('should fail when called outside of a Git enlistment', function test (done: mocha.Done): void {
+  it('should fail when called outside of a Git repo', function test (done: mocha.Done): void {
     // Arrange
     this.timeout(0)
 
     process.env.SYSTEM_PULLREQUEST_PULLREQUESTID = '12345'
     process.env.BUILD_REPOSITORY_PROVIDER = 'TfsGit'
     process.env.SYSTEM_ACCESSTOKEN = 'OAUTH'
-    const file: string = path.join(__dirname, 'testCollateral', 'index.noGitEnlistment.js')
+    const file: string = path.join(__dirname, 'testCollateral', 'index.noGitRepo.js')
     const task: taskLibMock.MockTestRunner = new taskLibMock.MockTestRunner(file)
 
     // Act
@@ -88,7 +88,7 @@ describe('index.ts', (): void => {
     // Assert
     expect(task.succeeded).to.equal(false)
     expect(task.warningIssues).to.deep.equal([])
-    expect(task.errorIssues).to.deep.equal(['loc_mock_metrics.codeMetricsCalculator.noGitEnlistment'])
+    expect(task.errorIssues).to.deep.equal(['loc_mock_metrics.codeMetricsCalculator.noGitRepo'])
 
     // Finalization
     delete process.env.SYSTEM_PULLREQUEST_PULLREQUESTID

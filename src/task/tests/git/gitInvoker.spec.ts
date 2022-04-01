@@ -23,7 +23,8 @@ describe('gitInvoker.ts', (): void => {
 
     runnerInvoker = mock(RunnerInvoker)
     when(runnerInvoker.exec('git', deepEqual(['rev-parse', '--branch', 'origin/develop...pull/12345/merge']), true, anything(), anything())).thenCall((_: string, __: string, ___: boolean, outputStream: GitWritableStream): Promise<number> => {
-      outputStream.write('7235cb16e5e6ac83e3cbecae66bab557e9e2cee6')
+      const testCommitId: string = '7235cb16e5e6ac83e3cbecae66bab557e9e2cee6'
+      outputStream.write(testCommitId)
       return Promise.resolve(0)
     })
     when(runnerInvoker.exec('git', deepEqual(['diff', '--numstat', 'origin/develop...pull/12345/merge']), true, anything(), anything())).thenCall((_: string, __: string, ___: boolean, outputStream: GitWritableStream): Promise<number> => {
@@ -38,14 +39,14 @@ describe('gitInvoker.ts', (): void => {
     delete process.env.SYSTEM_PULLREQUEST_PULLREQUESTID
   })
 
-  describe('isGitEnlistment()', (): void => {
+  describe('isGitRepo()', (): void => {
     async.each(
       [
         'true',
         'true ',
         'true\n'
       ], (response: string): void => {
-        it(`should return true when called from a Git enlistment returning '${response.replace(/\n/g, '\\n')}'`, async (): Promise<void> => {
+        it(`should return true when called from a Git repo returning '${response.replace(/\n/g, '\\n')}'`, async (): Promise<void> => {
           // Arrange
           when(runnerInvoker.exec('git', deepEqual(['rev-parse', '--is-inside-work-tree']), true, anything(), anything())).thenCall((_: string, __: string, ___: boolean, outputStream: GitWritableStream): Promise<number> => {
             outputStream.write(response)
@@ -54,16 +55,16 @@ describe('gitInvoker.ts', (): void => {
           const gitInvoker: GitInvoker = new GitInvoker(instance(logger), instance(runnerInvoker))
 
           // Act
-          const result: boolean = await gitInvoker.isGitEnlistment()
+          const result: boolean = await gitInvoker.isGitRepo()
 
           // Assert
           expect(result).to.equal(true)
-          verify(logger.logDebug('* GitInvoker.isGitEnlistment()')).once()
+          verify(logger.logDebug('* GitInvoker.isGitRepo()')).once()
           verify(logger.logDebug('* GitInvoker.invokeGit()')).once()
         })
       })
 
-    it('should return false when not called from a Git enlistment', async (): Promise<void> => {
+    it('should return false when not called from a Git repo', async (): Promise<void> => {
       // Arrange
       when(runnerInvoker.exec('git', deepEqual(['rev-parse', '--is-inside-work-tree']), true, anything(), anything())).thenCall((_: string, __: string, ___: boolean, ____: GitWritableStream, errorStream: GitWritableStream): Promise<number> => {
         errorStream.write('Failure')
@@ -72,11 +73,11 @@ describe('gitInvoker.ts', (): void => {
       const gitInvoker: GitInvoker = new GitInvoker(instance(logger), instance(runnerInvoker))
 
       // Act
-      const result: boolean = await gitInvoker.isGitEnlistment()
+      const result: boolean = await gitInvoker.isGitRepo()
 
       // Assert
       expect(result).to.equal(false)
-      verify(logger.logDebug('* GitInvoker.isGitEnlistment()')).once()
+      verify(logger.logDebug('* GitInvoker.isGitRepo()')).once()
       verify(logger.logDebug('* GitInvoker.invokeGit()')).once()
     })
   })

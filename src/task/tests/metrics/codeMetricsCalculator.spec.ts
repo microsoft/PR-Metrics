@@ -28,7 +28,7 @@ describe('codeMetricsCalculator.ts', (): void => {
     when(reposInvoker.isAccessTokenAvailable).thenReturn(null)
 
     gitInvoker = mock(GitInvoker)
-    when(gitInvoker.isGitEnlistment()).thenResolve(true)
+    when(gitInvoker.isGitRepo()).thenResolve(true)
     when(gitInvoker.isGitHistoryAvailable()).thenResolve(true)
 
     logger = mock(Logger)
@@ -40,7 +40,7 @@ describe('codeMetricsCalculator.ts', (): void => {
     pullRequestComments = mock(PullRequestComments)
 
     runnerInvoker = mock(RunnerInvoker)
-    when(runnerInvoker.loc('metrics.codeMetricsCalculator.noGitEnlistment')).thenReturn('No Git enlistment present. Remove \'checkout: none\' (YAML) or disable \'Don\'t sync sources\' under the build process phase settings (classic).')
+    when(runnerInvoker.loc('metrics.codeMetricsCalculator.noGitRepo')).thenReturn('No Git repo present. Remove \'checkout: none\' (YAML) or disable \'Don\'t sync sources\' under the build process phase settings (classic).')
     when(runnerInvoker.loc('metrics.codeMetricsCalculator.noGitHistory')).thenReturn('Could not access sufficient Git history. Disable \'fetchDepth\' (YAML) or \'Shallow fetch\' under the build process phase settings (classic). Or set the threshold sufficiently high.')
     when(runnerInvoker.loc('metrics.codeMetricsCalculator.noPullRequest')).thenReturn('The build is not running against a pull request.')
     when(runnerInvoker.loc('metrics.codeMetricsCalculator.unsupportedProvider', 'Other')).thenReturn('The build is running against a pull request from \'Other\', which is not a supported provider.')
@@ -112,16 +112,16 @@ describe('codeMetricsCalculator.ts', (): void => {
       verify(logger.logDebug('* CodeMetricsCalculator.shouldStop()')).once()
     })
 
-    it('should return the appropriate message when not called from a Git enlistment', async (): Promise<void> => {
+    it('should return the appropriate message when not called from a Git repo', async (): Promise<void> => {
       // Arrange
-      when(gitInvoker.isGitEnlistment()).thenResolve(false)
+      when(gitInvoker.isGitRepo()).thenResolve(false)
       const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(gitInvoker), instance(logger), instance(pullRequest), instance(pullRequestComments), instance(reposInvoker), instance(runnerInvoker))
 
       // Act
       const result: string | null = await codeMetricsCalculator.shouldStop()
 
       // Assert
-      expect(result).to.equal('No Git enlistment present. Remove \'checkout: none\' (YAML) or disable \'Don\'t sync sources\' under the build process phase settings (classic).')
+      expect(result).to.equal('No Git repo present. Remove \'checkout: none\' (YAML) or disable \'Don\'t sync sources\' under the build process phase settings (classic).')
       verify(logger.logDebug('* CodeMetricsCalculator.shouldStop()')).once()
     })
 

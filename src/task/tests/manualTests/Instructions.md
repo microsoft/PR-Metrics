@@ -129,7 +129,7 @@ complement the unit tests to provide a high level of coverage.
    (classic)."
 1. Verify that the pipeline corresponding to
    `pipelines/pipeline-no-sources.yaml` fails with the error message "No
-   Git enlistment present. Remove 'checkout: none' (YAML) or disable 'Don't sync
+   Git repo present. Remove 'checkout: none' (YAML) or disable 'Don't sync
    sources' under the build process phase settings (classic)."
 1. Verify that the pipeline corresponding to `pipelines/pipeline.yaml` succeeds.
 1. Verify that the title of the PR is prefixed with "XS:heavy_check_mark:
