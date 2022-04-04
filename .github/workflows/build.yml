@@ -56,7 +56,6 @@ jobs:
   test-github-action:
     name: Test GitHub Action
     runs-on: ubuntu-latest
-    if: ${{ secrets.GITHUB_TOKEN != '' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -68,6 +67,7 @@ jobs:
         env:
           SYSTEM_ACCESSTOKEN: ${{ secrets.GITHUB_TOKEN }}
           ACTIONS_STEP_DEBUG: ${{ secrets.ACTIONS_STEP_DEBUG }}
+        if: ${{ env.SYSTEM_ACCESSTOKEN != '' }}
 
   validate:
     name: Validate
