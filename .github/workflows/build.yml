@@ -216,6 +216,14 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 17.x
+
+      - name: NPM – Install Dependencies
+        run: npm install
+
       - name: Super Linter
         uses: github/super-linter@v4.9.2
         env:
