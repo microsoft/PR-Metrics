@@ -17,7 +17,7 @@
     "strict": true
   },
   "include": [
-    "**.ts"
+    "**/*.ts"
   ],
   "extends": "../../node_modules/@tsconfig/node10/tsconfig.json"
 }
