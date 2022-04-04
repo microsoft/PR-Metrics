@@ -12,6 +12,8 @@ extends:
 parser: '@typescript-eslint/parser'
 parserOptions:
   ecmaVersion: 2018
+  project:
+    - src/task/tsconfig.json
 plugins:
   - '@typescript-eslint'
 
