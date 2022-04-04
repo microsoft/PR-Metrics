@@ -67,7 +67,7 @@ jobs:
         env:
           SYSTEM_ACCESSTOKEN: ${{ secrets.GITHUB_TOKEN }}
           ACTIONS_STEP_DEBUG: ${{ secrets.ACTIONS_STEP_DEBUG }}
-        if: ${{ env.SYSTEM_ACCESSTOKEN != '' }}
+        if: ${{ env.ACTIONS_STEP_DEBUG != '' }}
 
   validate:
     name: Validate
@@ -77,7 +77,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Validate Markdown Links
-        uses: gaurav-nelson/github-action-markdown-link-check@1.0.13
+        uses: gaurav-nelson/github-action-markdown-link-check@1.0.14
         with:
           config-file: .github/linters/markdown-link-check.json
 
