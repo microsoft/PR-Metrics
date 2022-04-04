@@ -16,5 +16,8 @@
     "skipLibCheck": true,
     "strict": true
   },
+  "include": [
+    "**.ts"
+  ],
   "extends": "../../node_modules/@tsconfig/node10/tsconfig.json"
 }
