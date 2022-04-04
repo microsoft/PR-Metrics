@@ -67,7 +67,7 @@ jobs:
         env:
           SYSTEM_ACCESSTOKEN: ${{ secrets.GITHUB_TOKEN }}
           ACTIONS_STEP_DEBUG: ${{ secrets.ACTIONS_STEP_DEBUG }}
-        if: ${{ env.SYSTEM_ACCESSTOKEN != '' }}
+        if: ${{ env.ACTIONS_STEP_DEBUG != '' }}
 
   validate:
     name: Validate
