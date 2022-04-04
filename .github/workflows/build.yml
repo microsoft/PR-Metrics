@@ -76,7 +76,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Validate Markdown Links2
+      - name: Validate Markdown Links
         uses: gaurav-nelson/github-action-markdown-link-check@1.0.13
         with:
           config-file: .github/linters/markdown-link-check.json
