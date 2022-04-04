@@ -1,0 +1,104 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+  "id": "907d3b28-6b37-4ac7-ac75-9631ee53e512",
+  "name": "PRMetrics",
+  "friendlyName": "ms-resource:loc.friendlyName",
+  "description": "ms-resource:loc.description",
+  "helpUrl": "https://aka.ms/PRMetrics/README",
+  "helpMarkDown": "ms-resource:loc.helpMarkDown",
+  "author": "Microsoft Corporation",
+  "category": "Azure Pipelines",
+  "visibility": [
+    "Build"
+  ],
+  "minimumAgentVersion": "2.200.2",
+  "version": {
+    "Major": 1,
+    "Minor": 4,
+    "Patch": 0
+  },
+  "instanceNameFormat": "ms-resource:loc.instanceNameFormat",
+  "showEnvironmentVariables": true,
+  "inputs": [
+    {
+      "name": "BaseSize",
+      "label": "ms-resource:loc.input.label.baseSize",
+      "type": "string",
+      "helpMarkDown": "ms-resource:loc.input.helpMarkDown.baseSize"
+    },
+    {
+      "name": "GrowthRate",
+      "label": "ms-resource:loc.input.label.growthRate",
+      "type": "string",
+      "helpMarkDown": "ms-resource:loc.input.helpMarkDown.growthRate"
+    },
+    {
+      "name": "TestFactor",
+      "label": "ms-resource:loc.input.label.testFactor",
+      "type": "string",
+      "helpMarkDown": "ms-resource:loc.input.helpMarkDown.testFactor"
+    },
+    {
+      "name": "FileMatchingPatterns",
+      "label": "ms-resource:loc.input.label.fileMatchingPatterns",
+      "type": "multiLine",
+      "helpMarkDown": "ms-resource:loc.input.helpMarkDown.fileMatchingPatterns"
+    },
+    {
+      "name": "CodeFileExtensions",
+      "label": "ms-resource:loc.input.label.codeFileExtensions",
+      "type": "multiLine",
+      "helpMarkDown": "ms-resource:loc.input.helpMarkDown.codeFileExtensions"
+    }
+  ],
+  "execution": {
+    "Node10": {
+      "target": "index.js"
+    }
+  },
+  "messages": {
+    "index.succeeded": "ms-resource:loc.messages.index.succeeded",
+    "metrics.codeMetrics.titleSizeIndicatorFormat": "ms-resource:loc.messages.metrics.codeMetrics.titleSizeIndicatorFormat",
+    "metrics.codeMetrics.titleSizeL": "ms-resource:loc.messages.metrics.codeMetrics.titleSizeL",
+    "metrics.codeMetrics.titleSizeM": "ms-resource:loc.messages.metrics.codeMetrics.titleSizeM",
+    "metrics.codeMetrics.titleSizeS": "ms-resource:loc.messages.metrics.codeMetrics.titleSizeS",
+    "metrics.codeMetrics.titleSizeXL": "ms-resource:loc.messages.metrics.codeMetrics.titleSizeXL",
+    "metrics.codeMetrics.titleSizeXS": "ms-resource:loc.messages.metrics.codeMetrics.titleSizeXS",
+    "metrics.codeMetrics.titleTestsInsufficient": "ms-resource:loc.messages.metrics.codeMetrics.titleTestsInsufficient",
+    "metrics.codeMetrics.titleTestsSufficient": "ms-resource:loc.messages.metrics.codeMetrics.titleTestsSufficient",
+    "metrics.codeMetricsCalculator.insufficientAzureReposAccessTokenPermissions": "ms-resource:loc.messages.metrics.codeMetricsCalculator.insufficientAzureReposAccessTokenPermissions",
+    "metrics.codeMetricsCalculator.insufficientGitHubAccessTokenPermissions": "ms-resource:loc.messages.metrics.codeMetricsCalculator.insufficientGitHubAccessTokenPermissions",
+    "metrics.codeMetricsCalculator.noAzureReposAccessToken": "ms-resource:loc.messages.metrics.codeMetricsCalculator.noAzureReposAccessToken",
+    "metrics.codeMetricsCalculator.noGitHistory": "ms-resource:loc.messages.metrics.codeMetricsCalculator.noGitHistory",
+    "metrics.codeMetricsCalculator.noGitHubAccessToken": "ms-resource:loc.messages.metrics.codeMetricsCalculator.noGitHubAccessToken",
+    "metrics.codeMetricsCalculator.noGitRepo": "ms-resource:loc.messages.metrics.codeMetricsCalculator.noGitRepo",
+    "metrics.codeMetricsCalculator.noPullRequest": "ms-resource:loc.messages.metrics.codeMetricsCalculator.noPullRequest",
+    "metrics.codeMetricsCalculator.unsupportedProvider": "ms-resource:loc.messages.metrics.codeMetricsCalculator.unsupportedProvider",
+    "metrics.inputs.adjustingBaseSize": "ms-resource:loc.messages.metrics.inputs.adjustingBaseSize",
+    "metrics.inputs.adjustingCodeFileExtensions": "ms-resource:loc.messages.metrics.inputs.adjustingCodeFileExtensions",
+    "metrics.inputs.adjustingFileMatchingPatterns": "ms-resource:loc.messages.metrics.inputs.adjustingFileMatchingPatterns",
+    "metrics.inputs.adjustingGrowthRate": "ms-resource:loc.messages.metrics.inputs.adjustingGrowthRate",
+    "metrics.inputs.adjustingTestFactor": "ms-resource:loc.messages.metrics.inputs.adjustingTestFactor",
+    "metrics.inputs.disablingTestFactor": "ms-resource:loc.messages.metrics.inputs.disablingTestFactor",
+    "metrics.inputs.settingBaseSize": "ms-resource:loc.messages.metrics.inputs.settingBaseSize",
+    "metrics.inputs.settingCodeFileExtensions": "ms-resource:loc.messages.metrics.inputs.settingCodeFileExtensions",
+    "metrics.inputs.settingFileMatchingPatterns": "ms-resource:loc.messages.metrics.inputs.settingFileMatchingPatterns",
+    "metrics.inputs.settingGrowthRate": "ms-resource:loc.messages.metrics.inputs.settingGrowthRate",
+    "metrics.inputs.settingTestFactor": "ms-resource:loc.messages.metrics.inputs.settingTestFactor",
+    "pullRequests.pullRequest.addDescription": "ms-resource:loc.messages.pullRequests.pullRequest.addDescription",
+    "pullRequests.pullRequest.titleFormat": "ms-resource:loc.messages.pullRequests.pullRequest.titleFormat",
+    "pullRequests.pullRequestComments.commentFooter": "ms-resource:loc.messages.pullRequests.pullRequestComments.commentFooter",
+    "pullRequests.pullRequestComments.commentTitle": "ms-resource:loc.messages.pullRequests.pullRequestComments.commentTitle",
+    "pullRequests.pullRequestComments.largePullRequestComment": "ms-resource:loc.messages.pullRequests.pullRequestComments.largePullRequestComment",
+    "pullRequests.pullRequestComments.noReviewRequiredComment": "ms-resource:loc.messages.pullRequests.pullRequestComments.noReviewRequiredComment",
+    "pullRequests.pullRequestComments.smallPullRequestComment": "ms-resource:loc.messages.pullRequests.pullRequestComments.smallPullRequestComment",
+    "pullRequests.pullRequestComments.tableIgnoredCode": "ms-resource:loc.messages.pullRequests.pullRequestComments.tableIgnoredCode",
+    "pullRequests.pullRequestComments.tableLines": "ms-resource:loc.messages.pullRequests.pullRequestComments.tableLines",
+    "pullRequests.pullRequestComments.tableProductCode": "ms-resource:loc.messages.pullRequests.pullRequestComments.tableProductCode",
+    "pullRequests.pullRequestComments.tableSubtotal": "ms-resource:loc.messages.pullRequests.pullRequestComments.tableSubtotal",
+    "pullRequests.pullRequestComments.tableTestCode": "ms-resource:loc.messages.pullRequests.pullRequestComments.tableTestCode",
+    "pullRequests.pullRequestComments.tableTotal": "ms-resource:loc.messages.pullRequests.pullRequestComments.tableTotal",
+    "pullRequests.pullRequestComments.testsInsufficientComment": "ms-resource:loc.messages.pullRequests.pullRequestComments.testsInsufficientComment",
+    "pullRequests.pullRequestComments.testsSufficientComment": "ms-resource:loc.messages.pullRequests.pullRequestComments.testsSufficientComment"
+  }
+}

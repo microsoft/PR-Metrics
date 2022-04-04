@@ -15,10 +15,6 @@ on:
 jobs:
   build:
     name: Build
-    strategy:
-      fail-fast: false
-      matrix:
-        task: [PRMetrics]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -31,36 +27,46 @@ jobs:
 
       - name: NPM – Install Dependencies
         run: npm install
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/src/task
 
       - name: NPM – Test Lint
         run: npm run lint
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/src/task
 
       - name: NPM – Test Clean
         run: npm run clean
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/src/task
 
       - name: NPM – Build
         run: npm run build
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/src/task
 
       - name: NPM – Test
         run: npm run test
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/src/task
 
       - name: Install TFX CLI
         run: npm install -g tfx-cli
 
       - name: Release – Create
-        run: tfx extension create --manifest-globs vss-extension.json --output-path ../ms-omex.${{ matrix.task }}.vsix
-        working-directory: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/build/release
+        run: tfx extension create --manifest-globs vss-extension.json --output-path ../ms-omex.PRMetrics.vsix
+        working-directory: ${{ github.workspace }}/release
 
       - name: Release – Upload
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ matrix.task }}
-          path: ${{ github.workspace }}/PipelinesTasks/${{ matrix.task }}/build/ms-omex.${{ matrix.task }}.vsix
+          name: PRMetrics
+          path: ${{ github.workspace }}/ms-omex.PRMetrics.vsix
+
+  test-github-action:
+    name: Test GitHub Action
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.4.0
+        with:
+          fetch-depth: 0
+
+      - name: PR Metrics
+        uses: ./
+        env:
+          SYSTEM_ACCESSTOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ACTIONS_STEP_DEBUG: ${{ secrets.ACTIONS_STEP_DEBUG }}
 
   validate:
     name: Validate
@@ -81,6 +87,29 @@ jobs:
           json-schema: https://raw.githubusercontent.com/DavidAnson/markdownlint/main/schema/markdownlint-config-schema.json
           use-draft: draft-07
 
+      - name: Validate vss-extension.json
+        uses: Zingabopp/JsonValidate-Action@v1
+        with:
+          json-file: src/vss-extension.json
+          json-schema: https://json.schemastore.org/vss-extension.json
+
+      - name: Validate .mocharc.json – Download .mocharc.schema.json
+        shell: pwsh
+        run: Invoke-WebRequest -Uri 'https://json.schemastore.org/mocharc.json' -OutFile '.mocharc.schema.json'
+
+      - name: Validate .mocharc.json – Update .mocharc.schema.json
+        shell: pwsh
+        run: |-
+          $FileContent = Get-Content -Path '.mocharc.schema.json' -Raw
+          $FileContent = $FileContent -replace 'draft/2019-09/schema#', 'draft-07/schema'
+          Set-Content -NoNewline -Path '.mocharc.schema.json' -Value $FileContent
+
+      - name: Validate .mocharc.json
+        uses: Zingabopp/JsonValidate-Action@v1
+        with:
+          json-file: src/task/.mocharc.json
+          json-schema: .mocharc.schema.json
+
       - name: Validate package.json – Download package.schema.json
         shell: pwsh
         run: Invoke-WebRequest -Uri 'https://json.schemastore.org/package.json' -OutFile 'package.schema.json'
@@ -98,17 +127,68 @@ jobs:
           json-file: package.json
           json-schema: package.schema.json
 
-      - name: Security Scan – Validate
-        uses: ShiftLeftSecurity/scan-action@v1.3.0
-        env:
-          ENABLE_OSS_RISK: true
-        with:
-          type: credscan,depscan,nodejs,yaml
+      - name: Validate task.json – Download task.schema.json
+        shell: pwsh
+        run: Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/microsoft/azure-pipelines-task-lib/master/tasks.schema.json' -OutFile 'task.schema.json'
 
-      - name: Security Scan – Upload Report
-        uses: github/codeql-action/upload-sarif@v1
+      - name: Validate task.json – Update task.schema.json
+        shell: pwsh
+        run: |-
+          $FileContent = Get-Content -Path 'task.schema.json' -Raw
+          $FileContent = $FileContent -replace 'draft-04/schema', 'draft-07/schema'
+          Set-Content -NoNewline -Path 'task.schema.json' -Value $FileContent
+
+      - name: Validate task.json
+        uses: Zingabopp/JsonValidate-Action@v1
         with:
-          sarif_file: reports
+          json-file: src/task/task.json
+          json-schema: task.schema.json
+
+      - name: Validate task.loc.json
+        uses: Zingabopp/JsonValidate-Action@v1
+        with:
+          json-file: src/task/task.loc.json
+          json-schema: task.schema.json
+
+      - name: Validate tsconfig.json – Download tsconfig.schema.json
+        shell: pwsh
+        run: Invoke-WebRequest -Uri 'https://json.schemastore.org/tsconfig.json' -OutFile 'tsconfig.schema.json'
+
+      - name: Validate tsconfig.json – Update tsconfig.schema.json
+        shell: pwsh
+        run: |-
+          $FileContent = Get-Content -Path 'tsconfig.schema.json' -Raw
+          $FileContent = $FileContent -replace 'draft-04/schema#', 'draft-07/schema'
+          Set-Content -NoNewline -Path 'tsconfig.schema.json' -Value $FileContent
+
+      - name: Validate tsconfig.json
+        uses: Zingabopp/JsonValidate-Action@v1
+        with:
+          json-file: src/task/tsconfig.json
+          json-schema: tsconfig.schema.json
+
+      - name: Validate typedoc.json
+        uses: Zingabopp/JsonValidate-Action@v1
+        with:
+          json-file: src/task/typedoc.json
+          json-schema: https://typedoc.org/schema.json
+
+      - name: Validate resources.resjson – Download resources.resjson.schema.json
+        shell: pwsh
+        run: Invoke-WebRequest -Uri 'https://json.schemastore.org/resjson.json' -OutFile 'resources.resjson.schema.json'
+
+      - name: Validate resources.resjson – Update resources.resjson.schema.json
+        shell: pwsh
+        run: |-
+          $FileContent = Get-Content -Path 'resources.resjson.schema.json' -Raw
+          $FileContent = $FileContent -replace 'draft-04/schema#', 'draft-07/schema'
+          Set-Content -NoNewline -Path 'resources.resjson.schema.json' -Value $FileContent
+
+      - name: Validate resources.resjson (en-US)
+        uses: Zingabopp/JsonValidate-Action@v1
+        with:
+          json-file: src/task/Strings/resources.resjson/en-US/resources.resjson
+          json-schema: resources.resjson.schema.json
 
   validate-codeql:
     name: Validate – CodeQL
@@ -120,6 +200,7 @@ jobs:
       - name: Initialize
         uses: github/codeql-action/init@v1
         with:
+          config-file: .github/linters/codeql.yml
           queries: security-and-quality
 
       - name: Analyze
@@ -143,118 +224,27 @@ jobs:
           TYPESCRIPT_ES_CONFIG_FILE: ../../.eslintrc.yml
           VALIDATE_TYPESCRIPT_STANDARD: true
 
-  validate-task:
-    name: Validate – Task
+  validate-dist:
+    name: Validate – dist Folder
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        task: [PRMetrics]
     steps:
       - name: Checkout
         uses: actions/checkout@v2.4.0
 
-      - name: Validate vss-extension.json
-        uses: Zingabopp/JsonValidate-Action@v1
+      - name: Install Node.js
+        uses: actions/setup-node@v3
         with:
-          json-file: PipelinesTasks/${{ matrix.task }}/src/vss-extension.json
-          json-schema: https://json.schemastore.org/vss-extension.json
+          node-version: 17.x
 
-      - name: Validate .mocharc.json – Download .mocharc.schema.json
-        shell: pwsh
-        run: Invoke-WebRequest -Uri 'https://json.schemastore.org/mocharc.json' -OutFile '.mocharc.schema.json'
+      - name: NPM – Build Package
+        run: npm run build:package
 
-      - name: Validate .mocharc.json – Update .mocharc.schema.json
-        shell: pwsh
-        run: |-
-          $FileContent = Get-Content -Path '.mocharc.schema.json' -Raw
-          $FileContent = $FileContent -replace 'draft/2019-09/schema#', 'draft-07/schema'
-          Set-Content -NoNewline -Path '.mocharc.schema.json' -Value $FileContent
-
-      - name: Validate .mocharc.json
-        uses: Zingabopp/JsonValidate-Action@v1
-        with:
-          json-file: PipelinesTasks/${{ matrix.task }}/src/task/.mocharc.json
-          json-schema: .mocharc.schema.json
-
-      - name: Validate package.json – Download package.schema.json
-        shell: pwsh
-        run: Invoke-WebRequest -Uri 'https://json.schemastore.org/package.json' -OutFile 'package.schema.json'
-
-      - name: Validate package.json – Update package.schema.json
-        shell: pwsh
-        run: |-
-          $FileContent = Get-Content -Path 'package.schema.json' -Raw
-          $FileContent = $FileContent -replace 'draft-04/schema#', 'draft-07/schema'
-          Set-Content -NoNewline -Path 'package.schema.json' -Value $FileContent
-
-      - name: Validate package.json
-        uses: Zingabopp/JsonValidate-Action@v1
-        with:
-          json-file: PipelinesTasks/${{ matrix.task }}/src/task/package.json
-          json-schema: package.schema.json
-
-      - name: Validate task.json – Download task.schema.json
-        shell: pwsh
-        run: Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/microsoft/azure-pipelines-task-lib/master/tasks.schema.json' -OutFile 'task.schema.json'
-
-      - name: Validate task.json – Update task.schema.json
-        shell: pwsh
-        run: |-
-          $FileContent = Get-Content -Path 'task.schema.json' -Raw
-          $FileContent = $FileContent -replace 'draft-04/schema', 'draft-07/schema'
-          Set-Content -NoNewline -Path 'task.schema.json' -Value $FileContent
-
-      - name: Validate task.json
-        uses: Zingabopp/JsonValidate-Action@v1
-        with:
-          json-file: PipelinesTasks/${{ matrix.task }}/src/task/task.json
-          json-schema: task.schema.json
-
-      - name: Validate task.loc.json
-        uses: Zingabopp/JsonValidate-Action@v1
-        with:
-          json-file: PipelinesTasks/${{ matrix.task }}/src/task/task.loc.json
-          json-schema: task.schema.json
-
-      - name: Validate tsconfig.json – Download tsconfig.schema.json
-        shell: pwsh
-        run: Invoke-WebRequest -Uri 'https://json.schemastore.org/tsconfig.json' -OutFile 'tsconfig.schema.json'
-
-      - name: Validate tsconfig.json – Update tsconfig.schema.json
-        shell: pwsh
-        run: |-
-          $FileContent = Get-Content -Path 'tsconfig.schema.json' -Raw
-          $FileContent = $FileContent -replace 'draft-04/schema#', 'draft-07/schema'
-          Set-Content -NoNewline -Path 'tsconfig.schema.json' -Value $FileContent
-
-      - name: Validate tsconfig.json
-        uses: Zingabopp/JsonValidate-Action@v1
-        with:
-          json-file: PipelinesTasks/${{ matrix.task }}/src/task/tsconfig.json
-          json-schema: tsconfig.schema.json
-
-      - name: Validate typedoc.json
-        uses: Zingabopp/JsonValidate-Action@v1
-        with:
-          json-file: PipelinesTasks/${{ matrix.task }}/src/task/typedoc.json
-          json-schema: https://typedoc.org/schema.json
-
-      - name: Validate resources.resjson – Download resources.resjson.schema.json
-        shell: pwsh
-        run: Invoke-WebRequest -Uri 'https://json.schemastore.org/resjson.json' -OutFile 'resources.resjson.schema.json'
-
-      - name: Validate resources.resjson – Update resources.resjson.schema.json
-        shell: pwsh
-        run: |-
-          $FileContent = Get-Content -Path 'resources.resjson.schema.json' -Raw
-          $FileContent = $FileContent -replace 'draft-04/schema#', 'draft-07/schema'
-          Set-Content -NoNewline -Path 'resources.resjson.schema.json' -Value $FileContent
-
-      - name: Validate resources.resjson (en-US)
-        uses: Zingabopp/JsonValidate-Action@v1
-        with:
-          json-file: PipelinesTasks/${{ matrix.task }}/src/task/Strings/resources.resjson/en-US/resources.resjson
-          json-schema: resources.resjson.schema.json
+      - name: Compare Expected & Actual dist Folders
+        run: |
+          if [ "$(git diff-index --ignore-cr-at-eol --quiet HEAD -- || echo 1)" == "1" ]; then
+            echo "Detected uncommitted changes after build. Run 'npm run package' and commit any outstanding changes. Details:"
+            git diff
+            exit 1
+          fi
 
 ...

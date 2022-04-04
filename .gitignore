@@ -91,7 +91,7 @@ out
 
 # Nuxt.js build / generate output
 .nuxt
-dist
+#dist # Required by GitHub Action.
 
 # Gatsby files
 .cache/
@@ -132,5 +132,6 @@ dist
 .pnp.*
 
 # Project-Specific Settings
-build
+debug
+release
 typedocs
