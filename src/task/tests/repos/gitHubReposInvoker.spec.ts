@@ -113,35 +113,26 @@ describe('gitHubReposInvoker.ts', function (): void {
       })
     }
 
-    {
-      const testCases: string[] = [
-        'https://github.com/microsoft',
-        'https://github.com/microsoft/PR-Metrics/git'
-      ]
+    it('should throw when SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI is set to an invalid URL and the task is running on Azure Pipelines', async (): Promise<void> => {
+      // Arrange
+      process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI = 'https://github.com/microsoft'
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
+      let errorThrown: boolean = false
 
-      testCases.forEach((variable: string): void => {
-        it(`should throw when SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI is set to an invalid URL '${variable}' and the task is running on Azure Pipelines`, async (): Promise<void> => {
-          // Arrange
-          process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI = variable
-          const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
-          let errorThrown: boolean = false
+      try {
+        // Act
+        await gitHubReposInvoker.getTitleAndDescription()
+      } catch (error: any) {
+        // Assert
+        errorThrown = true
+        expect(error.message).to.equal('SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI \'https://github.com/microsoft\' is in an unexpected format.')
+      }
 
-          try {
-            // Act
-            await gitHubReposInvoker.getTitleAndDescription()
-          } catch (error: any) {
-            // Assert
-            errorThrown = true
-            expect(error.message).to.equal(`SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI '${variable}' is in an unexpected format.`)
-          }
-
-          expect(errorThrown).to.equal(true)
-          verify(logger.logDebug('* GitHubReposInvoker.getTitleAndDescription()')).once()
-          verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
-          verify(logger.logDebug('* GitHubReposInvoker.initializeForAzureDevOps()')).once()
-        })
-      })
-    }
+      expect(errorThrown).to.equal(true)
+      verify(logger.logDebug('* GitHubReposInvoker.getTitleAndDescription()')).once()
+      verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
+      verify(logger.logDebug('* GitHubReposInvoker.initializeForAzureDevOps()')).once()
+    })
 
     {
       const testCases: Array<string | undefined> = [
@@ -274,7 +265,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       process.env.GITHUB_ACTION = 'PR-Metrics'
       process.env.GITHUB_API_URL = 'https://api.github.com'
       process.env.GITHUB_REPOSITORY_OWNER = 'microsoft'
-      process.env.GITHUB_REPOSITORY = 'microsoft/PR-Metrics/problem'
+      process.env.GITHUB_REPOSITORY = 'microsoft'
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
       let errorThrown: boolean = false
 
@@ -284,7 +275,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       } catch (error: any) {
         // Assert
         errorThrown = true
-        expect(error.message).to.equal('GITHUB_REPOSITORY \'microsoft/PR-Metrics/problem\' is in an unexpected format.')
+        expect(error.message).to.equal('GITHUB_REPOSITORY \'microsoft\' is in an unexpected format.')
       }
 
       expect(errorThrown).to.equal(true)
@@ -301,7 +292,7 @@ describe('gitHubReposInvoker.ts', function (): void {
 
     it('should succeed when the inputs are valid and the task is running on Azure Pipelines', async (): Promise<void> => {
       // Arrange
-      when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
+      when(octokitWrapper.initialize(anything())).thenCall((options: any): void => {
         expect(options.auth).to.equal('OAUTH')
         expect(options.userAgent).to.equal(expectedUserAgent)
         expect(options.log).to.not.equal(null)
@@ -332,7 +323,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       process.env.GITHUB_API_URL = 'https://api.github.com'
       process.env.GITHUB_REPOSITORY_OWNER = 'microsoft'
       process.env.GITHUB_REPOSITORY = 'microsoft/PR-Metrics'
-      when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
+      when(octokitWrapper.initialize(anything())).thenCall((options: any): void => {
         expect(options.auth).to.equal('OAUTH')
         expect(options.userAgent).to.equal(expectedUserAgent)
         expect(options.log).to.not.equal(null)
@@ -366,7 +357,7 @@ describe('gitHubReposInvoker.ts', function (): void {
     it('should succeed when the inputs are valid and the URL ends with \'.git\'', async (): Promise<void> => {
       // Arrange
       process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI = 'https://github.com/microsoft/PR-Metrics.git'
-      when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
+      when(octokitWrapper.initialize(anything())).thenCall((options: any): void => {
         expect(options.auth).to.equal('OAUTH')
         expect(options.userAgent).to.equal(expectedUserAgent)
         expect(options.log).to.not.equal(null)
@@ -394,7 +385,7 @@ describe('gitHubReposInvoker.ts', function (): void {
     it('should succeed when the inputs are valid and GitHub Enterprise is in use', async (): Promise<void> => {
       // Arrange
       process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI = 'https://organization.githubenterprise.com/microsoft/PR-Metrics'
-      when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
+      when(octokitWrapper.initialize(anything())).thenCall((options: any): void => {
         expect(options.auth).to.equal('OAUTH')
         expect(options.userAgent).to.equal(expectedUserAgent)
         expect(options.baseUrl).to.equal('https://organization.githubenterprise.com/api/v3')
@@ -423,7 +414,7 @@ describe('gitHubReposInvoker.ts', function (): void {
 
     it('should succeed when called twice with the inputs valid', async (): Promise<void> => {
       // Arrange
-      when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
+      when(octokitWrapper.initialize(anything())).thenCall((options: any): void => {
         expect(options.auth).to.equal('OAUTH')
         expect(options.userAgent).to.equal(expectedUserAgent)
         expect(options.log).to.not.equal(null)
@@ -453,7 +444,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       // Arrange
       const currentMockPullResponse: GetPullResponse = GitHubReposInvokerConstants.getPullResponse
       currentMockPullResponse.data.body = null
-      when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
+      when(octokitWrapper.initialize(anything())).thenCall((options: any): void => {
         expect(options.auth).to.equal('OAUTH')
         expect(options.userAgent).to.equal(expectedUserAgent)
         expect(options.log).to.not.equal(null)
@@ -489,7 +480,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       testCases.forEach((status: number): void => {
         it(`should throw when the PAT has insufficient access and the API call returns status '${status}'`, async (): Promise<void> => {
           // Arrange
-          when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
+          when(octokitWrapper.initialize(anything())).thenCall((options: any): void => {
             expect(options.auth).to.equal('OAUTH')
             expect(options.userAgent).to.equal(expectedUserAgent)
             expect(options.log).to.not.equal(null)
@@ -525,7 +516,7 @@ describe('gitHubReposInvoker.ts', function (): void {
 
     it('should throw an error when an error occurs', async (): Promise<void> => {
       // Arrange
-      when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
+      when(octokitWrapper.initialize(anything())).thenCall((options: any): void => {
         expect(options.auth).to.equal('OAUTH')
         expect(options.userAgent).to.equal(expectedUserAgent)
         expect(options.log).to.not.equal(null)
@@ -557,7 +548,7 @@ describe('gitHubReposInvoker.ts', function (): void {
     it('should initialize log object correctly', async (): Promise<void> => {
       // Arrange
       let logObject: OctokitLogObject | undefined
-      when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => { logObject = options.log })
+      when(octokitWrapper.initialize(anything())).thenCall((options: any): void => { logObject = options.log })
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
       await gitHubReposInvoker.getTitleAndDescription()
 
@@ -578,7 +569,7 @@ describe('gitHubReposInvoker.ts', function (): void {
   describe('getComments()', (): void => {
     it('should return the result when called with a pull request comment', async (): Promise<void> => {
       // Arrange
-      when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
+      when(octokitWrapper.initialize(anything())).thenCall((options: any): void => {
         expect(options.auth).to.equal('OAUTH')
         expect(options.userAgent).to.equal(expectedUserAgent)
         expect(options.log).to.not.equal(null)
@@ -613,7 +604,7 @@ describe('gitHubReposInvoker.ts', function (): void {
 
     it('should return the result when called with a file comment', async (): Promise<void> => {
       // Arrange
-      when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
+      when(octokitWrapper.initialize(anything())).thenCall((options: any): void => {
         expect(options.auth).to.equal('OAUTH')
         expect(options.userAgent).to.equal(expectedUserAgent)
         expect(options.log).to.not.equal(null)
@@ -647,7 +638,7 @@ describe('gitHubReposInvoker.ts', function (): void {
 
     it('should return the result when called with both a pull request and file comment', async (): Promise<void> => {
       // Arrange
-      when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
+      when(octokitWrapper.initialize(anything())).thenCall((options: any): void => {
         expect(options.auth).to.equal('OAUTH')
         expect(options.userAgent).to.equal(expectedUserAgent)
         expect(options.log).to.not.equal(null)
@@ -688,7 +679,7 @@ describe('gitHubReposInvoker.ts', function (): void {
 
     it('should skip pull request comments with no body', async (): Promise<void> => {
       // Arrange
-      when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
+      when(octokitWrapper.initialize(anything())).thenCall((options: any): void => {
         expect(options.auth).to.equal('OAUTH')
         expect(options.userAgent).to.equal(expectedUserAgent)
         expect(options.log).to.not.equal(null)
@@ -734,7 +725,7 @@ describe('gitHubReposInvoker.ts', function (): void {
 
     it('should succeed when the title and description are both set', async (): Promise<void> => {
       // Arrange
-      when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
+      when(octokitWrapper.initialize(anything())).thenCall((options: any): void => {
         expect(options.auth).to.equal('OAUTH')
         expect(options.userAgent).to.equal(expectedUserAgent)
         expect(options.log).to.not.equal(null)
@@ -759,7 +750,7 @@ describe('gitHubReposInvoker.ts', function (): void {
 
     it('should succeed when the title is set', async (): Promise<void> => {
       // Arrange
-      when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
+      when(octokitWrapper.initialize(anything())).thenCall((options: any): void => {
         expect(options.auth).to.equal('OAUTH')
         expect(options.userAgent).to.equal(expectedUserAgent)
         expect(options.log).to.not.equal(null)
@@ -784,7 +775,7 @@ describe('gitHubReposInvoker.ts', function (): void {
 
     it('should succeed when the description is set', async (): Promise<void> => {
       // Arrange
-      when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
+      when(octokitWrapper.initialize(anything())).thenCall((options: any): void => {
         expect(options.auth).to.equal('OAUTH')
         expect(options.userAgent).to.equal(expectedUserAgent)
         expect(options.log).to.not.equal(null)
@@ -811,7 +802,7 @@ describe('gitHubReposInvoker.ts', function (): void {
   describe('createComment()', (): void => {
     it('should succeed when a file name is specified', async (): Promise<void> => {
       // Arrange
-      when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
+      when(octokitWrapper.initialize(anything())).thenCall((options: any): void => {
         expect(options.auth).to.equal('OAUTH')
         expect(options.userAgent).to.equal(expectedUserAgent)
         expect(options.log).to.not.equal(null)
@@ -838,7 +829,7 @@ describe('gitHubReposInvoker.ts', function (): void {
 
     it('should throw when the commit list is empty', async (): Promise<void> => {
       // Arrange
-      when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
+      when(octokitWrapper.initialize(anything())).thenCall((options: any): void => {
         expect(options.auth).to.equal('OAUTH')
         expect(options.userAgent).to.equal(expectedUserAgent)
         expect(options.log).to.not.equal(null)
@@ -876,7 +867,7 @@ describe('gitHubReposInvoker.ts', function (): void {
 
     it('should succeed when there are multiple pages of commits', async (): Promise<void> => {
       // Arrange
-      when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
+      when(octokitWrapper.initialize(anything())).thenCall((options: any): void => {
         expect(options.auth).to.equal('OAUTH')
         expect(options.userAgent).to.equal(expectedUserAgent)
         expect(options.log).to.not.equal(null)
@@ -912,7 +903,7 @@ describe('gitHubReposInvoker.ts', function (): void {
 
     it('should throw when the link header does not match the expected format', async (): Promise<void> => {
       // Arrange
-      when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
+      when(octokitWrapper.initialize(anything())).thenCall((options: any): void => {
         expect(options.auth).to.equal('OAUTH')
         expect(options.userAgent).to.equal(expectedUserAgent)
         expect(options.log).to.not.equal(null)
@@ -952,7 +943,7 @@ describe('gitHubReposInvoker.ts', function (): void {
 
     it('should succeed when a file name is specified and the method is called twice', async (): Promise<void> => {
       // Arrange
-      when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
+      when(octokitWrapper.initialize(anything())).thenCall((options: any): void => {
         expect(options.auth).to.equal('OAUTH')
         expect(options.userAgent).to.equal(expectedUserAgent)
         expect(options.log).to.not.equal(null)
@@ -980,7 +971,7 @@ describe('gitHubReposInvoker.ts', function (): void {
 
     it('should succeed when no file name is specified', async (): Promise<void> => {
       // Arrange
-      when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
+      when(octokitWrapper.initialize(anything())).thenCall((options: any): void => {
         expect(options.auth).to.equal('OAUTH')
         expect(options.userAgent).to.equal(expectedUserAgent)
         expect(options.log).to.not.equal(null)
@@ -1020,7 +1011,7 @@ describe('gitHubReposInvoker.ts', function (): void {
 
     it('should succeed when the content is set', async (): Promise<void> => {
       // Arrange
-      when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
+      when(octokitWrapper.initialize(anything())).thenCall((options: any): void => {
         expect(options.auth).to.equal('OAUTH')
         expect(options.userAgent).to.equal(expectedUserAgent)
         expect(options.log).to.not.equal(null)
@@ -1047,7 +1038,7 @@ describe('gitHubReposInvoker.ts', function (): void {
   describe('deleteCommentThread()', (): void => {
     it('should succeed', async (): Promise<void> => {
       // Arrange
-      when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
+      when(octokitWrapper.initialize(anything())).thenCall((options: any): void => {
         expect(options.auth).to.equal('OAUTH')
         expect(options.userAgent).to.equal(expectedUserAgent)
         expect(options.log).to.not.equal(null)

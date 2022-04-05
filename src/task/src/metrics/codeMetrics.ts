@@ -134,7 +134,7 @@ export default class CodeMetrics {
     }
 
     const gitDiffSummary: string = (await this._gitInvoker.getDiffSummary()).trim()
-    if (!gitDiffSummary) {
+    if (gitDiffSummary === '') {
       throw Error('The Git diff summary is empty.')
     }
 
@@ -235,19 +235,19 @@ export default class CodeMetrics {
     const result: CodeFileMetric[] = []
     lines.forEach((line: string): void => {
       const elements: string[] = line.split('\t')
-      if (elements.length !== 3) {
+      if (elements[0] === undefined || elements[1] === undefined || elements[2] === undefined) {
         throw RangeError(`The number of elements '${elements.length}' in '${line}' in input '${input}' did not match the expected 3.`)
       }
 
       // Condense file and folder names that were renamed e.g. "F{a => i}leT{b => e}st.d{c => l}l" or "FaleTbst.dcl => FileTest.dll".
-      const fileName: string = (elements[2] ?? '')
+      const fileName: string = elements[2]
         .replace(/{.*? => ([^}]+?)}/g, '$1')
         .replace(/.*? => ([^}]+?)/g, '$1')
 
       result.push({
         fileName: fileName,
-        linesAdded: this.parseChangedLines(elements[0] ?? '', line, 'added'),
-        linesDeleted: this.parseChangedLines(elements[1] ?? '', line, 'deleted')
+        linesAdded: this.parseChangedLines(elements[0], line, 'added'),
+        linesDeleted: this.parseChangedLines(elements[1], line, 'deleted')
       })
     })
 
@@ -319,12 +319,10 @@ export default class CodeMetrics {
       currentSize *= this._inputs.growthRate
       index++
 
-      if (index < indicators.length) {
-        const indicator: ((prefix: string) => string) | undefined = indicators[index]
-        result = indicator === undefined ? '' : indicator('')
+      if (index === 2 || index === 3 || index === 4) {
+        result = indicators[index]('')
       } else {
-        const indicator: ((prefix: string) => string) | undefined = indicators[indicators.length - 1]
-        result = indicator === undefined ? '' : indicator((index - indicators.length + 2).toLocaleString())
+        result = indicators[4]((index - indicators.length + 2).toLocaleString())
       }
     }
 

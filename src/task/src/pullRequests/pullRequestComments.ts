@@ -114,7 +114,7 @@ export default class PullRequestComments {
     if (await this._codeMetrics.isSmall()) {
       const isSufficientlyTested: boolean | null = await this._codeMetrics.isSufficientlyTested()
 
-      if (isSufficientlyTested ?? isSufficientlyTested === null) {
+      if (isSufficientlyTested ?? true) {
         return CommentThreadStatus.Closed
       }
     }
@@ -124,10 +124,6 @@ export default class PullRequestComments {
 
   private getMetricsCommentData (result: PullRequestCommentsData, comment: PullRequestComment): PullRequestCommentsData {
     this._logger.logDebug('* PullRequestComments.getMetricsCommentData()')
-
-    if (!comment.content) {
-      return result
-    }
 
     if (!comment.content.startsWith(`${this._runnerInvoker.loc('pullRequests.pullRequestComments.commentTitle')}\n`)) {
       return result

@@ -331,14 +331,14 @@ describe('gitInvoker.ts', (): void => {
     it('should throw an error when the GitHub runner is being used and GITHUB_REF is in the incorrect format', (): void => {
       // Arrange
       process.env.GITHUB_ACTION = 'PR-Metrics'
-      process.env.GITHUB_REF = 'refs/pull/12345/merge/12345'
+      process.env.GITHUB_REF = 'refs/pull'
       const gitInvoker: GitInvoker = new GitInvoker(instance(logger), instance(runnerInvoker))
 
       // Act
       const func: () => void = () => gitInvoker.pullRequestId
 
       // Assert
-      expect(func).to.throw('GITHUB_REF \'refs/pull/12345/merge/12345\' is in an unexpected format.')
+      expect(func).to.throw('GITHUB_REF \'refs/pull\' is in an unexpected format.')
       verify(logger.logDebug('* GitInvoker.pullRequestId')).once()
       verify(logger.logDebug('* GitInvoker.pullRequestIdInternal')).once()
       verify(logger.logDebug('* GitInvoker.pullRequestIdForGitHub')).once()

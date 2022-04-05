@@ -3,7 +3,7 @@
 
 import { GitWritableStream } from './gitWritableStream'
 import { singleton } from 'tsyringe'
-import { Validator } from '../utilities/validator'
+import * as Validator from '../utilities/validator'
 import Logger from '../utilities/logger'
 import RunnerInvoker from '../runners/runnerInvoker'
 
@@ -117,11 +117,11 @@ export default class GitInvoker {
 
     const gitHubReference: string = Validator.validateVariable('GITHUB_REF', 'GitInvoker.pullRequestIdForGitHub')
     const gitHubReferenceElements: string[] = gitHubReference.split('/')
-    if (gitHubReferenceElements.length !== 4) {
+    if (gitHubReferenceElements[2] === undefined) {
       throw Error(`GITHUB_REF '${gitHubReference}' is in an unexpected format.`)
     }
 
-    return gitHubReferenceElements[2] ?? ''
+    return gitHubReferenceElements[2]
   }
 
   private get pullRequestIdForAzurePipelines (): string {

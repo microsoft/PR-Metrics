@@ -25,8 +25,8 @@ export default class OctokitWrapper {
    * Initializes a new instance of the `OctokitWrapper` class.
    * @param options The Octokit options including the authentication details.
    */
-  public initialize (options?: OctokitOptions | undefined): void {
-    if (this._octokit != null) {
+  public initialize (options: OctokitOptions): void {
+    if (this._octokit !== undefined) {
       throw Error('OctokitWrapper was already initialized prior to calling OctokitWrapper.initialize().')
     }
 
@@ -41,7 +41,7 @@ export default class OctokitWrapper {
    * @returns The response from the API call.
    */
   public async getPull (owner: string, repo: string, pullRequestId: number): Promise<GetPullResponse> {
-    if (this._octokit == null) {
+    if (this._octokit === undefined) {
       throw Error('OctokitWrapper was not initialized prior to calling OctokitWrapper.getPull().')
     }
 
@@ -62,7 +62,7 @@ export default class OctokitWrapper {
    * @returns The response from the API call.
    */
   public async updatePull (owner: string, repo: string, pullRequestId: number, title: string | undefined, description: string | undefined): Promise<UpdatePullResponse> {
-    if (this._octokit == null) {
+    if (this._octokit === undefined) {
       throw Error('OctokitWrapper was not initialized prior to calling OctokitWrapper.updatePull().')
     }
 
@@ -83,7 +83,7 @@ export default class OctokitWrapper {
    * @returns The response from the API call.
    */
   public async getIssueComments (owner: string, repo: string, pullRequestId: number): Promise<GetIssueCommentsResponse> {
-    if (this._octokit == null) {
+    if (this._octokit === undefined) {
       throw Error('OctokitWrapper was not initialized prior to calling OctokitWrapper.getIssueComments().')
     }
 
@@ -102,7 +102,7 @@ export default class OctokitWrapper {
    * @returns The response from the API call.
    */
   public async getReviewComments (owner: string, repo: string, pullRequestId: number): Promise<GetReviewCommentsResponse> {
-    if (this._octokit == null) {
+    if (this._octokit === undefined) {
       throw Error('OctokitWrapper was not initialized prior to calling OctokitWrapper.getReviewComments().')
     }
 
@@ -122,7 +122,7 @@ export default class OctokitWrapper {
    * @returns The response from the API call.
    */
   public async createIssueComment (owner: string, repo: string, pullRequestId: number, content: string): Promise<CreateIssueCommentResponse> {
-    if (this._octokit == null) {
+    if (this._octokit === undefined) {
       throw Error('OctokitWrapper was not initialized prior to calling OctokitWrapper.createIssueComment().')
     }
 
@@ -143,7 +143,7 @@ export default class OctokitWrapper {
    * @returns The response from the API call.
    */
   public async listCommits (owner: string, repo: string, pullRequestId: number, page: number): Promise<ListCommitsResponse> {
-    if (this._octokit == null) {
+    if (this._octokit === undefined) {
       throw Error('OctokitWrapper was not initialized prior to calling OctokitWrapper.listCommits().')
     }
 
@@ -166,7 +166,7 @@ export default class OctokitWrapper {
    * @returns The response from the API call.
    */
   public async createReviewComment (owner: string, repo: string, pullRequestId: number, content: string, fileName: string, commitId: string): Promise<CreateReviewCommentResponse> {
-    if (this._octokit == null) {
+    if (this._octokit === undefined) {
       throw Error('OctokitWrapper was not initialized prior to calling OctokitWrapper.createReviewComment().')
     }
 
@@ -191,7 +191,7 @@ export default class OctokitWrapper {
    * @returns The response from the API call.
    */
   public async updateIssueComment (owner: string, repo: string, pullRequestId: number, commentThreadId: number, content: string): Promise<UpdateIssueCommentResponse> {
-    if (this._octokit == null) {
+    if (this._octokit === undefined) {
       throw Error('OctokitWrapper was not initialized prior to calling OctokitWrapper.updateIssueComment().')
     }
 
@@ -212,7 +212,7 @@ export default class OctokitWrapper {
    * @returns The response from the API call.
    */
   public async deleteReviewComment (owner: string, repo: string, commentThreadId: number): Promise<DeleteReviewCommentResponse> {
-    if (this._octokit == null) {
+    if (this._octokit === undefined) {
       throw Error('OctokitWrapper was not initialized prior to calling OctokitWrapper.deleteReviewComment().')
     }
 

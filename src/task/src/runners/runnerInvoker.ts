@@ -96,7 +96,7 @@ export default class RunnerInvoker implements IRunnerInvoker {
   }
 
   private getRunner (): IRunnerInvoker {
-    if (this._runnerInvoker != null) {
+    if (this._runnerInvoker !== undefined) {
       return this._runnerInvoker
     }
 

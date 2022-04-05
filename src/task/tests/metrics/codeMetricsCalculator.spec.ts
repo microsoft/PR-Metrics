@@ -159,7 +159,7 @@ describe('codeMetricsCalculator.ts', (): void => {
 
     it('should perform the expected actions when the description is missing', async (): Promise<void> => {
       // Arrange
-      when(reposInvoker.getTitleAndDescription()).thenResolve({ title: 'Title' })
+      when(reposInvoker.getTitleAndDescription()).thenResolve({ title: 'Title', description: undefined })
       when(pullRequest.getUpdatedTitle('Title')).thenResolve('S✔ ◾ Title')
       when(pullRequest.getUpdatedDescription(undefined)).thenReturn('Description')
       const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(gitInvoker), instance(logger), instance(pullRequest), instance(pullRequestComments), instance(reposInvoker), instance(runnerInvoker))

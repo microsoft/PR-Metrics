@@ -4,7 +4,7 @@
 import 'reflect-metadata'
 import { anyString, deepEqual, instance, mock, verify, when } from 'ts-mockito'
 import { expect } from 'chai'
-import { InputsDefault } from '../../src/metrics/inputsDefault'
+import * as InputsDefault from '../../src/metrics/inputsDefault'
 import Inputs from '../../src/metrics/inputs'
 import Logger from '../../src/utilities/logger'
 import RunnerInvoker from '../../src/runners/runnerInvoker'

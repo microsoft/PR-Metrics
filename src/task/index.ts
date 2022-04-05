@@ -40,7 +40,8 @@ async function run (): Promise<void> {
     const properties: string[] = Object.getOwnPropertyNames(error)
     properties.forEach((property: string): void => {
       if (property !== 'message') {
-        logger.logInfo(`${error.name} – ${property}: ${JSON.stringify(error[property].toString())}`)
+        const name: string = error.name
+        logger.logInfo(`${name} – ${property}: ${JSON.stringify(error[property])}`)
       }
     })
 

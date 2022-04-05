@@ -3,8 +3,8 @@
 
 import 'reflect-metadata'
 import { expect } from 'chai'
-import { InputsDefault } from '../../src/metrics/inputsDefault'
 import { instance, mock, verify, when } from 'ts-mockito'
+import * as InputsDefault from '../../src/metrics/inputsDefault'
 import async from 'async'
 import CodeMetrics from '../../src/metrics/codeMetrics'
 import CodeMetricsData from '../../src/metrics/codeMetricsData'
@@ -327,9 +327,7 @@ describe('codeMetrics.ts', (): void => {
         { summary: '0\t0', elements: 2 },
         { summary: '0\t0\t', elements: 2 },
         { summary: '0\tfile.ts', elements: 2 },
-        { summary: '0\tfile.ts\t', elements: 2 },
-        { summary: '0\t0\tfile1.ts\tfile2.ts', elements: 4 },
-        { summary: '0\t0\tfile1.ts\tfile2.ts\t', elements: 4 }
+        { summary: '0\tfile.ts\t', elements: 2 }
       ]
 
       testCases.forEach(({ summary, elements }: { summary: string, elements: number }): void => {

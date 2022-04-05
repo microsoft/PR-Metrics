@@ -1,8 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { InputsDefault } from './inputsDefault'
 import { singleton } from 'tsyringe'
+import * as InputsDefault from './inputsDefault'
 import Logger from '../utilities/logger'
 import RunnerInvoker from '../runners/runnerInvoker'
 
@@ -163,7 +163,7 @@ export default class Inputs {
   private initializeFileMatchingPatterns (fileMatchingPatterns: string | undefined): void {
     this._logger.logDebug('* Inputs.initializeFileMatchingPatterns()')
 
-    if (fileMatchingPatterns?.trim()) {
+    if (fileMatchingPatterns !== undefined && fileMatchingPatterns.trim() !== '') {
       this._fileMatchingPatterns = fileMatchingPatterns.replace(/\\/g, '/').replace(/\n$/g, '').split('\n')
       this._logger.logInfo(this._runnerInvoker.loc('metrics.inputs.settingFileMatchingPatterns', JSON.stringify(this._fileMatchingPatterns)))
       return
@@ -176,7 +176,7 @@ export default class Inputs {
   private initializeCodeFileExtensions (codeFileExtensions: string | undefined): void {
     this._logger.logDebug('* Inputs.initializeCodeFileExtensions()')
 
-    if (codeFileExtensions?.trim()) {
+    if (codeFileExtensions !== undefined && codeFileExtensions.trim() !== '') {
       const codeFileExtensionsArray: string[] = codeFileExtensions.replace(/\n$/g, '').split('\n')
       codeFileExtensionsArray.forEach((value: string): void => {
         if (value.startsWith('*.')) {

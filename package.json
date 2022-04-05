@@ -90,7 +90,8 @@
   },
   "ts-standard": {
     "ignore": [
-      "dist"
+      "dist",
+      "tests"
     ]
   }
 }

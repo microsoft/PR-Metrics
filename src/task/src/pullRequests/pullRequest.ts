@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 import { injectable } from 'tsyringe'
-import { Validator } from '../utilities/validator'
+import * as Validator from '../utilities/validator'
 import CodeMetrics from '../metrics/codeMetrics'
 import Logger from '../utilities/logger'
 import RunnerInvoker from '../runners/runnerInvoker'
@@ -67,7 +67,7 @@ export default class PullRequest {
   public getUpdatedDescription (currentDescription: string | undefined): string | null {
     this._logger.logDebug('* PullRequest.getUpdatedDescription()')
 
-    if (currentDescription?.trim() ?? false) {
+    if (currentDescription !== undefined && currentDescription.trim() !== '') {
       return null
     }
 
@@ -102,8 +102,8 @@ export default class PullRequest {
     const prefixRegExp: RegExp = new RegExp(completeRegExp, 'u')
     const prefixRegExpMatches: RegExpMatchArray | null = currentTitle.match(prefixRegExp)
     let originalTitle: string = currentTitle
-    if (prefixRegExpMatches !== null) {
-      originalTitle = prefixRegExpMatches[3] ?? ''
+    if (prefixRegExpMatches?.[3] !== undefined) {
+      originalTitle = prefixRegExpMatches[3]
     }
 
     return this._runnerInvoker.loc('pullRequests.pullRequest.titleFormat', sizeIndicator, originalTitle)

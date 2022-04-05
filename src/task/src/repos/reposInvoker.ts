@@ -3,7 +3,7 @@
 
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import { singleton } from 'tsyringe'
-import { Validator } from '../utilities/validator'
+import * as Validator from '../utilities/validator'
 import AzureReposInvoker from './azureReposInvoker'
 import CommentData from './interfaces/commentData'
 import GitHubReposInvoker from './gitHubReposInvoker'
@@ -87,7 +87,7 @@ export default class ReposInvoker implements IReposInvoker {
   private getReposInvoker (): IReposInvoker {
     this._logger.logDebug('* ReposInvoker.getReposInvoker()')
 
-    if (this._reposInvoker != null) {
+    if (this._reposInvoker !== undefined) {
       return this._reposInvoker
     }
 
