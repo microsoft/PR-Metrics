@@ -26,7 +26,7 @@ async function run (): Promise<void> {
       return
     }
 
-    if (process.env.PRMETRICS_SKIP_APIS === undefined) {
+    if (process.env.PRMETRICS_SKIP_APIS == null) {
       await Promise.all([
         codeMetricsCalculator.updateDetails(),
         codeMetricsCalculator.updateComments()
@@ -49,4 +49,4 @@ async function run (): Promise<void> {
   }
 }
 
-run()
+run().finally((): void => {})

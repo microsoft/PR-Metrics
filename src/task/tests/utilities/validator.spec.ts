@@ -3,7 +3,6 @@
 
 import { expect } from 'chai'
 import { Validator } from '../../src/utilities/validator'
-import async from 'async'
 
 describe('validator.ts', (): void => {
   describe('validateVariable()', (): void => {
@@ -46,12 +45,14 @@ describe('validator.ts', (): void => {
   })
 
   describe('validateString()', (): void => {
-    async.each(
-      [
+    {
+      const testCases: Array<string | null | undefined> = [
         '',
         null,
         undefined
-      ], (value: string | null | undefined): void => {
+      ]
+
+      testCases.forEach((value: string | null | undefined): void => {
         it(`should throw an error when passed invalid string value '${value}'`, (): void => {
           // Act
           const func: () => void = () => Validator.validateString(value, 'string test', 'string test method name')
@@ -60,6 +61,7 @@ describe('validator.ts', (): void => {
           expect(func).to.throw(`'string test', accessed within 'string test method name', is invalid, null, or undefined '${value}'.`)
         })
       })
+    }
 
     it('should not throw an error when passed a valid string value', (): void => {
       // Act
@@ -71,13 +73,15 @@ describe('validator.ts', (): void => {
   })
 
   describe('validateNumber()', (): void => {
-    async.each(
-      [
+    {
+      const testCases: Array<number | null | undefined> = [
         0,
         NaN,
         null,
         undefined
-      ], (value: number | null | undefined): void => {
+      ]
+
+      testCases.forEach((value: number | null | undefined): void => {
         it(`should throw an error when passed invalid number value '${value}'`, (): void => {
           // Act
           const func: () => void = () => Validator.validateNumber(value, 'number test', 'number test method name')
@@ -86,6 +90,7 @@ describe('validator.ts', (): void => {
           expect(func).to.throw(`'number test', accessed within 'number test method name', is invalid, null, or undefined '${value}'.`)
         })
       })
+    }
 
     it('should not throw an error when passed a valid number value', (): void => {
       // Act

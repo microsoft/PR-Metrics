@@ -5,7 +5,6 @@ import 'reflect-metadata'
 import { anyNumber, anyString, anything, instance, mock, verify, when } from 'ts-mockito'
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import { expect } from 'chai'
-import async from 'async'
 import CommentData from '../../src/repos/interfaces/commentData'
 import ErrorWithStatus from '../wrappers/errorWithStatus'
 import GetIssueCommentsResponse from '../../src/wrappers/octokitInterfaces/getIssueCommentsResponse'
@@ -79,11 +78,13 @@ describe('gitHubReposInvoker.ts', function (): void {
   })
 
   describe('getTitleAndDescription()', (): void => {
-    async.each(
-      [
+    {
+      const testCases: Array<string | undefined> = [
         undefined,
         ''
-      ], (variable: string | undefined): void => {
+      ]
+
+      testCases.forEach((variable: string | undefined): void => {
         it(`should throw when SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI is set to the invalid value '${variable}' and the task is running on Azure Pipelines`, async (): Promise<void> => {
           // Arrange
           if (variable === undefined) {
@@ -110,12 +111,15 @@ describe('gitHubReposInvoker.ts', function (): void {
           verify(logger.logDebug('* GitHubReposInvoker.initializeForAzureDevOps()')).once()
         })
       })
+    }
 
-    async.each(
-      [
+    {
+      const testCases: string[] = [
         'https://github.com/microsoft',
         'https://github.com/microsoft/PR-Metrics/git'
-      ], (variable: string): void => {
+      ]
+
+      testCases.forEach((variable: string): void => {
         it(`should throw when SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI is set to an invalid URL '${variable}' and the task is running on Azure Pipelines`, async (): Promise<void> => {
           // Arrange
           process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI = variable
@@ -137,12 +141,15 @@ describe('gitHubReposInvoker.ts', function (): void {
           verify(logger.logDebug('* GitHubReposInvoker.initializeForAzureDevOps()')).once()
         })
       })
+    }
 
-    async.each(
-      [
+    {
+      const testCases: Array<string | undefined> = [
         undefined,
         ''
-      ], (variable: string | undefined): void => {
+      ]
+
+      testCases.forEach((variable: string | undefined): void => {
         it(`should throw when GITHUB_API_URL is set to the invalid value '${variable}' and the task is running on GitHub`, async (): Promise<void> => {
           // Arrange
           process.env.GITHUB_ACTION = 'PR-Metrics'
@@ -174,12 +181,15 @@ describe('gitHubReposInvoker.ts', function (): void {
           delete process.env.GITHUB_API_URL
         })
       })
+    }
 
-    async.each(
-      [
+    {
+      const testCases: Array<string | undefined> = [
         undefined,
         ''
-      ], (variable: string | undefined): void => {
+      ]
+
+      testCases.forEach((variable: string | undefined): void => {
         it(`should throw when GITHUB_REPOSITORY_OWNER is set to the invalid value '${variable}' and the task is running on GitHub`, async (): Promise<void> => {
           // Arrange
           process.env.GITHUB_ACTION = 'PR-Metrics'
@@ -213,12 +223,15 @@ describe('gitHubReposInvoker.ts', function (): void {
           delete process.env.GITHUB_REPOSITORY_OWNER
         })
       })
+    }
 
-    async.each(
-      [
+    {
+      const testCases: Array<string | undefined> = [
         undefined,
         ''
-      ], (variable: string | undefined): void => {
+      ]
+
+      testCases.forEach((variable: string | undefined): void => {
         it(`should throw when GITHUB_REPOSITORY is set to the invalid value '${variable}' and the task is running on GitHub`, async (): Promise<void> => {
           // Arrange
           process.env.GITHUB_ACTION = 'PR-Metrics'
@@ -254,6 +267,7 @@ describe('gitHubReposInvoker.ts', function (): void {
           delete process.env.GITHUB_REPOSITORY
         })
       })
+    }
 
     it('should throw when GITHUB_REPOSITORY is in an incorrect format and the task is running on GitHub', async (): Promise<void> => {
       // Arrange
@@ -465,12 +479,14 @@ describe('gitHubReposInvoker.ts', function (): void {
       verify(logger.logDebug(JSON.stringify(currentMockPullResponse))).once()
     })
 
-    async.each(
-      [
+    {
+      const testCases: number[] = [
         401,
         403,
         404
-      ], (status: number): void => {
+      ]
+
+      testCases.forEach((status: number): void => {
         it(`should throw when the PAT has insufficient access and the API call returns status '${status}'`, async (): Promise<void> => {
           // Arrange
           when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => {
@@ -505,6 +521,7 @@ describe('gitHubReposInvoker.ts', function (): void {
           verify(logger.logDebug('* GitHubReposInvoker.initializeForAzureDevOps()')).once()
         })
       })
+    }
 
     it('should throw an error when an error occurs', async (): Promise<void> => {
       // Arrange

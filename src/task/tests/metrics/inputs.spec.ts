@@ -5,7 +5,6 @@ import 'reflect-metadata'
 import { anyString, deepEqual, instance, mock, verify, when } from 'ts-mockito'
 import { expect } from 'chai'
 import { InputsDefault } from '../../src/metrics/inputsDefault'
-import async from 'async'
 import Inputs from '../../src/metrics/inputs'
 import Logger from '../../src/utilities/logger'
 import RunnerInvoker from '../../src/runners/runnerInvoker'
@@ -127,54 +126,21 @@ describe('inputs.ts', (): void => {
     })
 
     describe('baseSize', (): void => {
-      [
-        undefined,
-        '',
-        ' ',
-        'abc',
-        '===',
-        '!2',
-        'null',
-        'undefined'
-      ].forEach((baseSize: string | undefined): void => {
-        it(`should set the default when the input '${baseSize}' is invalid`, (): void => {
-          // Arrange
-          when(runnerInvoker.getInput(deepEqual(['Base', 'Size']))).thenReturn(baseSize)
+      {
+        const testCases: Array<string | undefined> = [
+          undefined,
+          '',
+          ' ',
+          'abc',
+          '===',
+          '!2',
+          'null',
+          'undefined'
+        ]
 
-          // Act
-          const inputs: Inputs = new Inputs(instance(logger), instance(runnerInvoker))
-
-          // Assert
-          expect(inputs.baseSize).to.equal(InputsDefault.baseSize)
-          verify(logger.logDebug('* Inputs.initialize()')).once()
-          verify(logger.logDebug('* Inputs.initializeBaseSize()')).once()
-          verify(logger.logDebug('* Inputs.initializeGrowthRate()')).once()
-          verify(logger.logDebug('* Inputs.initializeTestFactor()')).once()
-          verify(logger.logDebug('* Inputs.initializeFileMatchingPatterns()')).once()
-          verify(logger.logDebug('* Inputs.initializeCodeFileExtensions()')).once()
-          verify(logger.logDebug('* Inputs.baseSize')).once()
-          verify(logger.logInfo(adjustingBaseSizeResource)).once()
-          verify(logger.logInfo(adjustingGrowthRateResource)).once()
-          verify(logger.logInfo(adjustingTestFactorResource)).once()
-          verify(logger.logInfo(adjustingFileMatchingPatternsResource)).once()
-          verify(logger.logInfo(adjustingCodeFileExtensionsResource)).once()
-          verify(logger.logInfo(disablingTestFactorResource)).never()
-          verify(logger.logInfo(settingBaseSizeResource)).never()
-          verify(logger.logInfo(settingGrowthRateResource)).never()
-          verify(logger.logInfo(settingTestFactorResource)).never()
-          verify(logger.logInfo(settingFileMatchingPatternsResource)).never()
-          verify(logger.logInfo(settingCodeFileExtensionsResource)).never()
-        })
-      })
-
-        [
-          '0',
-          '-1',
-          '-1000',
-          '-5'
-        ].forEach((baseSize: string): void => {
-          it(`should set the default when the input '${baseSize}' is less than or equal to 0`, (): void => {
-          // Arrange
+        testCases.forEach((baseSize: string | undefined): void => {
+          it(`should set the default when the input '${baseSize}' is invalid`, (): void => {
+            // Arrange
             when(runnerInvoker.getInput(deepEqual(['Base', 'Size']))).thenReturn(baseSize)
 
             // Act
@@ -202,14 +168,57 @@ describe('inputs.ts', (): void => {
             verify(logger.logInfo(settingCodeFileExtensionsResource)).never()
           })
         })
+      }
 
-      async.each(
-        [
+      {
+        const testCases: string[] = [
+          '0',
+          '-1',
+          '-1000',
+          '-5'
+        ]
+
+        testCases.forEach((baseSize: string): void => {
+          it(`should set the default when the input '${baseSize}' is less than or equal to 0`, (): void => {
+            // Arrange
+            when(runnerInvoker.getInput(deepEqual(['Base', 'Size']))).thenReturn(baseSize)
+
+            // Act
+            const inputs: Inputs = new Inputs(instance(logger), instance(runnerInvoker))
+
+            // Assert
+            expect(inputs.baseSize).to.equal(InputsDefault.baseSize)
+            verify(logger.logDebug('* Inputs.initialize()')).once()
+            verify(logger.logDebug('* Inputs.initializeBaseSize()')).once()
+            verify(logger.logDebug('* Inputs.initializeGrowthRate()')).once()
+            verify(logger.logDebug('* Inputs.initializeTestFactor()')).once()
+            verify(logger.logDebug('* Inputs.initializeFileMatchingPatterns()')).once()
+            verify(logger.logDebug('* Inputs.initializeCodeFileExtensions()')).once()
+            verify(logger.logDebug('* Inputs.baseSize')).once()
+            verify(logger.logInfo(adjustingBaseSizeResource)).once()
+            verify(logger.logInfo(adjustingGrowthRateResource)).once()
+            verify(logger.logInfo(adjustingTestFactorResource)).once()
+            verify(logger.logInfo(adjustingFileMatchingPatternsResource)).once()
+            verify(logger.logInfo(adjustingCodeFileExtensionsResource)).once()
+            verify(logger.logInfo(disablingTestFactorResource)).never()
+            verify(logger.logInfo(settingBaseSizeResource)).never()
+            verify(logger.logInfo(settingGrowthRateResource)).never()
+            verify(logger.logInfo(settingTestFactorResource)).never()
+            verify(logger.logInfo(settingFileMatchingPatternsResource)).never()
+            verify(logger.logInfo(settingCodeFileExtensionsResource)).never()
+          })
+        })
+      }
+
+      {
+        const testCases: string[] = [
           '1',
           '5',
           '1000',
           '5.5'
-        ], (baseSize: string): void => {
+        ]
+
+        testCases.forEach((baseSize: string): void => {
           it(`should set the converted value when the input '${baseSize}' is greater than 0`, (): void => {
             // Arrange
             when(runnerInvoker.getInput(deepEqual(['Base', 'Size']))).thenReturn(baseSize)
@@ -239,11 +248,12 @@ describe('inputs.ts', (): void => {
             verify(logger.logInfo(settingCodeFileExtensionsResource)).never()
           })
         })
+      }
     })
 
     describe('growthRate', (): void => {
-      async.each(
-        [
+      {
+        const testCases: Array<string | undefined> = [
           undefined,
           '',
           ' ',
@@ -252,7 +262,9 @@ describe('inputs.ts', (): void => {
           '!2',
           'null',
           'undefined'
-        ], (growthRate: string | undefined): void => {
+        ]
+
+        testCases.forEach((growthRate: string | undefined): void => {
           it(`should set the default when the input '${growthRate}' is invalid`, (): void => {
             // Arrange
             when(runnerInvoker.getInput(deepEqual(['Growth', 'Rate']))).thenReturn(growthRate)
@@ -282,9 +294,10 @@ describe('inputs.ts', (): void => {
             verify(logger.logInfo(settingCodeFileExtensionsResource)).never()
           })
         })
+      }
 
-      async.each(
-        [
+      {
+        const testCases: string[] = [
           '0',
           '0.5',
           '1',
@@ -292,7 +305,9 @@ describe('inputs.ts', (): void => {
           '-1.2',
           '-5',
           '0.9999999999'
-        ], (growthRate: string): void => {
+        ]
+
+        testCases.forEach((growthRate: string): void => {
           it(`should set the default when the input '${growthRate}' is less than or equal to 1.0`, (): void => {
             // Arrange
             when(runnerInvoker.getInput(deepEqual(['Growth', 'Rate']))).thenReturn(growthRate)
@@ -322,9 +337,10 @@ describe('inputs.ts', (): void => {
             verify(logger.logInfo(settingCodeFileExtensionsResource)).never()
           })
         })
+      }
 
-      async.each(
-        [
+      {
+        const testCases: string[] = [
           '5',
           '2.0',
           '1000',
@@ -333,7 +349,9 @@ describe('inputs.ts', (): void => {
           '1.0000000001',
           '1.09',
           '7'
-        ], (growthRate: string): void => {
+        ]
+
+        testCases.forEach((growthRate: string): void => {
           it(`should set the converted value when the input '${growthRate}' is greater than 1.0`, (): void => {
             // Arrange
             when(runnerInvoker.getInput(deepEqual(['Growth', 'Rate']))).thenReturn(growthRate)
@@ -363,11 +381,12 @@ describe('inputs.ts', (): void => {
             verify(logger.logInfo(settingCodeFileExtensionsResource)).never()
           })
         })
+      }
     })
 
     describe('testFactor', (): void => {
-      async.each(
-        [
+      {
+        const testCases: Array<string | undefined> = [
           undefined,
           '',
           ' ',
@@ -376,7 +395,9 @@ describe('inputs.ts', (): void => {
           '!2',
           'null',
           'undefined'
-        ], (testFactor: string | undefined): void => {
+        ]
+
+        testCases.forEach((testFactor: string | undefined): void => {
           it(`should set the default when the input '${testFactor}' is invalid`, (): void => {
             // Arrange
             when(runnerInvoker.getInput(deepEqual(['Test', 'Factor']))).thenReturn(testFactor)
@@ -406,15 +427,18 @@ describe('inputs.ts', (): void => {
             verify(logger.logInfo(settingCodeFileExtensionsResource)).never()
           })
         })
+      }
 
-      async.each(
-        [
+      {
+        const testCases: string[] = [
           '-0.0000009',
           '-2',
           '-1.2',
           '-5',
           '-0.9999999999'
-        ], (testFactor: string): void => {
+        ]
+
+        testCases.forEach((testFactor: string): void => {
           it(`should set the default when the input '${testFactor}' is less than 0.0`, (): void => {
             // Arrange
             when(runnerInvoker.getInput(deepEqual(['Test', 'Factor']))).thenReturn(testFactor)
@@ -444,9 +468,10 @@ describe('inputs.ts', (): void => {
             verify(logger.logInfo(settingCodeFileExtensionsResource)).never()
           })
         })
+      }
 
-      async.each(
-        [
+      {
+        const testCases: string[] = [
           '5',
           '2.0',
           '1000',
@@ -455,7 +480,9 @@ describe('inputs.ts', (): void => {
           '0.000000000000009',
           '0.09',
           '7'
-        ], (testFactor: string): void => {
+        ]
+
+        testCases.forEach((testFactor: string): void => {
           it(`should set the converted value when the input '${testFactor}' is greater than 0.0`, (): void => {
             // Arrange
             when(runnerInvoker.getInput(deepEqual(['Test', 'Factor']))).thenReturn(testFactor)
@@ -485,12 +512,15 @@ describe('inputs.ts', (): void => {
             verify(logger.logInfo(settingCodeFileExtensionsResource)).never()
           })
         })
+      }
 
-      async.each(
-        [
+      {
+        const testCases: string[] = [
           '0',
           '0.0'
-        ], (testFactor: string): void => {
+        ]
+
+        testCases.forEach((testFactor: string): void => {
           it(`should set null when the input '${testFactor}' is equal to 0.0`, (): void => {
             // Arrange
             when(runnerInvoker.getInput(deepEqual(['Test', 'Factor']))).thenReturn(testFactor)
@@ -520,17 +550,20 @@ describe('inputs.ts', (): void => {
             verify(logger.logInfo(settingCodeFileExtensionsResource)).never()
           })
         })
+      }
     })
 
     describe('fileMatchingPatterns', (): void => {
-      async.each(
-        [
+      {
+        const testCases: Array<string | undefined> = [
           undefined,
           '',
           ' ',
           '     ',
           '\n'
-        ], (fileMatchingPatterns: string | undefined): void => {
+        ]
+
+        testCases.forEach((fileMatchingPatterns: string | undefined): void => {
           it(`should set the default when the input '${fileMatchingPatterns?.replace(/\n/g, '\\n')}' is invalid`, (): void => {
             // Arrange
             when(runnerInvoker.getInput(deepEqual(['File', 'Matching', 'Patterns']))).thenReturn(fileMatchingPatterns)
@@ -560,13 +593,16 @@ describe('inputs.ts', (): void => {
             verify(logger.logInfo(settingCodeFileExtensionsResource)).never()
           })
         })
+      }
 
-      async.each(
-        [
+      {
+        const testCases: string[] = [
           'abc',
           'abc def hik',
           '*.ada *.js *ts *.bb *txt'
-        ], (fileMatchingPatterns: string): void => {
+        ]
+
+        testCases.forEach((fileMatchingPatterns: string): void => {
           it(`should not split '${fileMatchingPatterns}'`, (): void => {
             // Arrange
             when(runnerInvoker.getInput(deepEqual(['File', 'Matching', 'Patterns']))).thenReturn(fileMatchingPatterns)
@@ -596,12 +632,15 @@ describe('inputs.ts', (): void => {
             verify(logger.logInfo(settingCodeFileExtensionsResource)).never()
           })
         })
+      }
 
-      async.each(
-        [
+      {
+        const testCases: string[] = [
           '*.ada\n*.js\n*.ts\n*.bb\n*.txt',
           'abc\ndef\nhij'
-        ], (fileMatchingPatterns: string): void => {
+        ]
+
+        testCases.forEach((fileMatchingPatterns: string): void => {
           it(`should split '${fileMatchingPatterns.replace(/\n/g, '\\n')}' at the newline character`, (): void => {
             // Arrange
             const expectedOutput: string[] = fileMatchingPatterns.split('\n')
@@ -632,6 +671,7 @@ describe('inputs.ts', (): void => {
             verify(logger.logInfo(settingCodeFileExtensionsResource)).never()
           })
         })
+      }
 
       it('should replace all \'\\\' with \'/\'', (): void => {
         // Arrange
@@ -693,14 +733,16 @@ describe('inputs.ts', (): void => {
     })
 
     describe('codeFileExtensions', (): void => {
-      async.each(
-        [
+      {
+        const testCases: Array<string | undefined> = [
           undefined,
           '',
           ' ',
           '     ',
           '\n'
-        ], (codeFileExtensions: string | undefined): void => {
+        ]
+
+        testCases.forEach((codeFileExtensions: string | undefined): void => {
           it(`should set the default when the input '${codeFileExtensions?.replace(/\n/g, '\\n')}' is invalid`, (): void => {
             // Arrange
             when(runnerInvoker.getInput(deepEqual(['Code', 'File', 'Extensions']))).thenReturn(codeFileExtensions)
@@ -730,13 +772,16 @@ describe('inputs.ts', (): void => {
             verify(logger.logInfo(settingCodeFileExtensionsResource)).never()
           })
         })
+      }
 
-      async.each(
-        [
+      {
+        const testCases: string[] = [
           'ada\njs\nts\nbb\ntxt',
           'abc\ndef\nhij',
           'ts'
-        ], (codeFileExtensions: string): void => {
+        ]
+
+        testCases.forEach((codeFileExtensions: string): void => {
           it(`should split '${codeFileExtensions.replace(/\n/g, '\\n')}' at the newline character`, (): void => {
             // Arrange
             const expectedResult: Set<string> = new Set<string>(codeFileExtensions.split('\n'))
@@ -767,6 +812,7 @@ describe('inputs.ts', (): void => {
             verify(logger.logInfo(settingCodeFileExtensionsResource)).once()
           })
         })
+      }
 
       it('should handle repeated insertion of identical items', (): void => {
         // Arrange

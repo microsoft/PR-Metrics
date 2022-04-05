@@ -5,7 +5,6 @@ import 'reflect-metadata'
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import { expect } from 'chai'
 import { instance, mock, verify } from 'ts-mockito'
-import async from 'async'
 import AzureReposInvoker from '../../src/repos/azureReposInvoker'
 import CommentData from '../../src/repos/interfaces/commentData'
 import GitHubReposInvoker from '../../src/repos/gitHubReposInvoker'
@@ -85,11 +84,13 @@ describe('reposInvoker.ts', function (): void {
       delete process.env.GITHUB_ACTION
     })
 
-    async.each(
-      [
+    {
+      const testCases: string[] = [
         'GitHub',
         'GitHubEnterprise'
-      ], (buildRepositoryProvider: string): void => {
+      ]
+
+      testCases.forEach((buildRepositoryProvider: string): void => {
         it(`should invoke GitHub when called from a repo on '${buildRepositoryProvider}'`, (): void => {
           // Arrange
           process.env.BUILD_REPOSITORY_PROVIDER = buildRepositoryProvider
@@ -109,6 +110,7 @@ describe('reposInvoker.ts', function (): void {
           delete process.env.BUILD_REPOSITORY_PROVIDER
         })
       })
+    }
 
     it('should throw when the repo type is not set', (): void => {
       // Arrange
@@ -185,11 +187,13 @@ describe('reposInvoker.ts', function (): void {
       delete process.env.GITHUB_ACTION
     })
 
-    async.each(
-      [
+    {
+      const testCases: string[] = [
         'GitHub',
         'GitHubEnterprise'
-      ], (buildRepositoryProvider: string): void => {
+      ]
+
+      testCases.forEach((buildRepositoryProvider: string): void => {
         it(`should invoke GitHub when called from a repo on '${buildRepositoryProvider}'`, async (): Promise<void> => {
           // Arrange
           process.env.BUILD_REPOSITORY_PROVIDER = buildRepositoryProvider
@@ -209,6 +213,7 @@ describe('reposInvoker.ts', function (): void {
           delete process.env.BUILD_REPOSITORY_PROVIDER
         })
       })
+    }
 
     it('should throw when the repo type is not set', async (): Promise<void> => {
       // Arrange
@@ -297,11 +302,13 @@ describe('reposInvoker.ts', function (): void {
       delete process.env.GITHUB_ACTION
     })
 
-    async.each(
-      [
+    {
+      const testCases: string[] = [
         'GitHub',
         'GitHubEnterprise'
-      ], (buildRepositoryProvider: string): void => {
+      ]
+
+      testCases.forEach((buildRepositoryProvider: string): void => {
         it(`should invoke GitHub when called from a repo on '${buildRepositoryProvider}'`, async (): Promise<void> => {
           // Arrange
           process.env.BUILD_REPOSITORY_PROVIDER = buildRepositoryProvider
@@ -321,6 +328,7 @@ describe('reposInvoker.ts', function (): void {
           delete process.env.BUILD_REPOSITORY_PROVIDER
         })
       })
+    }
 
     it('should throw when the repo type is not set', async (): Promise<void> => {
       // Arrange
@@ -407,11 +415,13 @@ describe('reposInvoker.ts', function (): void {
       delete process.env.GITHUB_ACTION
     })
 
-    async.each(
-      [
+    {
+      const testCases: string[] = [
         'GitHub',
         'GitHubEnterprise'
-      ], (buildRepositoryProvider: string): void => {
+      ]
+
+      testCases.forEach((buildRepositoryProvider: string): void => {
         it(`should invoke GitHub when called from a repo on '${buildRepositoryProvider}'`, async (): Promise<void> => {
           // Arrange
           process.env.BUILD_REPOSITORY_PROVIDER = buildRepositoryProvider
@@ -430,6 +440,7 @@ describe('reposInvoker.ts', function (): void {
           delete process.env.BUILD_REPOSITORY_PROVIDER
         })
       })
+    }
 
     it('should throw when the repo type is not set', async (): Promise<void> => {
       // Arrange
@@ -516,11 +527,13 @@ describe('reposInvoker.ts', function (): void {
       delete process.env.GITHUB_ACTION
     })
 
-    async.each(
-      [
+    {
+      const testCases: string[] = [
         'GitHub',
         'GitHubEnterprise'
-      ], (buildRepositoryProvider: string): void => {
+      ]
+
+      testCases.forEach((buildRepositoryProvider: string): void => {
         it(`should invoke GitHub when called from a repo on '${buildRepositoryProvider}'`, async (): Promise<void> => {
           // Arrange
           process.env.BUILD_REPOSITORY_PROVIDER = buildRepositoryProvider
@@ -539,6 +552,7 @@ describe('reposInvoker.ts', function (): void {
           delete process.env.BUILD_REPOSITORY_PROVIDER
         })
       })
+    }
 
     it('should throw when the repo type is not set', async (): Promise<void> => {
       // Arrange
@@ -625,11 +639,13 @@ describe('reposInvoker.ts', function (): void {
       delete process.env.GITHUB_ACTION
     })
 
-    async.each(
-      [
+    {
+      const testCases: string[] = [
         'GitHub',
         'GitHubEnterprise'
-      ], (buildRepositoryProvider: string): void => {
+      ]
+
+      testCases.forEach((buildRepositoryProvider: string): void => {
         it(`should invoke GitHub when called from a repo on '${buildRepositoryProvider}'`, async (): Promise<void> => {
           // Arrange
           process.env.BUILD_REPOSITORY_PROVIDER = buildRepositoryProvider
@@ -648,6 +664,7 @@ describe('reposInvoker.ts', function (): void {
           delete process.env.BUILD_REPOSITORY_PROVIDER
         })
       })
+    }
 
     it('should throw when the repo type is not set', async (): Promise<void> => {
       // Arrange
@@ -734,11 +751,13 @@ describe('reposInvoker.ts', function (): void {
       delete process.env.GITHUB_ACTION
     })
 
-    async.each(
-      [
+    {
+      const testCases: string[] = [
         'GitHub',
         'GitHubEnterprise'
-      ], (buildRepositoryProvider: string): void => {
+      ]
+
+      testCases.forEach((buildRepositoryProvider: string): void => {
         it(`should invoke GitHub when called from a repo on '${buildRepositoryProvider}'`, async (): Promise<void> => {
           // Arrange
           process.env.BUILD_REPOSITORY_PROVIDER = buildRepositoryProvider
@@ -757,6 +776,7 @@ describe('reposInvoker.ts', function (): void {
           delete process.env.BUILD_REPOSITORY_PROVIDER
         })
       })
+    }
 
     it('should throw when the repo type is not set', async (): Promise<void> => {
       // Arrange

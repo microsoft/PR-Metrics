@@ -9,7 +9,6 @@ import { IGitApi } from 'azure-devops-node-api/GitApi'
 import { IRequestHandler } from 'azure-devops-node-api/interfaces/common/VsoBaseInterfaces'
 import { resolvableInstance } from '../testUtilities/resolvableInstance'
 import { WebApi } from 'azure-devops-node-api'
-import async from 'async'
 import AzureDevOpsApiWrapper from '../../src/wrappers/azureDevOpsApiWrapper'
 import AzureReposInvoker from '../../src/repos/azureReposInvoker'
 import CommentData from '../../src/repos/interfaces/commentData'
@@ -86,11 +85,13 @@ describe('azureReposInvoker.ts', function (): void {
   })
 
   describe('getTitleAndDescription()', (): void => {
-    async.each(
-      [
+    {
+      const testCases: Array<string | undefined> = [
         undefined,
         ''
-      ], (variable: string | undefined): void => {
+      ]
+
+      testCases.forEach((variable: string | undefined): void => {
         it(`should throw when SYSTEM_TEAMPROJECT is set to the invalid value '${variable}'`, async (): Promise<void> => {
           // Arrange
           if (variable === undefined) {
@@ -116,12 +117,15 @@ describe('azureReposInvoker.ts', function (): void {
           verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
         })
       })
+    }
 
-    async.each(
-      [
+    {
+      const testCases: Array<string | undefined> = [
         undefined,
         ''
-      ], (variable: string | undefined): void => {
+      ]
+
+      testCases.forEach((variable: string | undefined): void => {
         it(`should throw when BUILD_REPOSITORY_ID is set to the invalid value '${variable}'`, async (): Promise<void> => {
           // Arrange
           if (variable === undefined) {
@@ -147,12 +151,15 @@ describe('azureReposInvoker.ts', function (): void {
           verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
         })
       })
+    }
 
-    async.each(
-      [
+    {
+      const testCases: Array<string | undefined> = [
         undefined,
         ''
-      ], (variable: string | undefined): void => {
+      ]
+
+      testCases.forEach((variable: string | undefined): void => {
         it(`should throw when SYSTEM_ACCESSTOKEN is set to the invalid value '${variable}'`, async (): Promise<void> => {
           // Arrange
           if (variable === undefined) {
@@ -178,12 +185,15 @@ describe('azureReposInvoker.ts', function (): void {
           verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
         })
       })
+    }
 
-    async.each(
-      [
+    {
+      const testCases: Array<string | undefined> = [
         undefined,
         ''
-      ], (variable: string | undefined): void => {
+      ]
+
+      testCases.forEach((variable: string | undefined): void => {
         it(`should throw when SYSTEM_TEAMFOUNDATIONCOLLECTIONURI is set to the invalid value '${variable}'`, async (): Promise<void> => {
           // Arrange
           if (variable === undefined) {
@@ -210,13 +220,16 @@ describe('azureReposInvoker.ts', function (): void {
           verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
         })
       })
+    }
 
-    async.each(
-      [
+    {
+      const testCases: number[] = [
         401,
         403,
         404
-      ], (statusCode: number): void => {
+      ]
+
+      testCases.forEach((statusCode: number): void => {
         it(`should throw when the access token has insufficient access and the API call returns status code '${statusCode}'`, async (): Promise<void> => {
           // Arrange
           const error: ErrorWithStatus = new ErrorWithStatus('Test')
@@ -243,6 +256,7 @@ describe('azureReposInvoker.ts', function (): void {
           verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
         })
       })
+    }
 
     it('should return the title and description when available', async (): Promise<void> => {
       // Arrange
@@ -336,12 +350,14 @@ describe('azureReposInvoker.ts', function (): void {
   })
 
   describe('getComments()', (): void => {
-    async.each(
-      [
+    {
+      const testCases: number[] = [
         401,
         403,
         404
-      ], (statusCode: number): void => {
+      ]
+
+      testCases.forEach((statusCode: number): void => {
         it(`should throw when the access token has insufficient access and the API call returns status code '${statusCode}'`, async (): Promise<void> => {
           // Arrange
           const error: ErrorWithStatus = new ErrorWithStatus('Test')
@@ -368,6 +384,7 @@ describe('azureReposInvoker.ts', function (): void {
           verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
         })
       })
+    }
 
     it('should return the result when called with a pull request comment', async (): Promise<void> => {
       // Arrange
@@ -521,16 +538,18 @@ describe('azureReposInvoker.ts', function (): void {
       verify(logger.logDebug(JSON.stringify(getThreadsResult))).once()
     })
 
-    async.each(
-      [
+    {
+      const testCases: GitPullRequestCommentThread[] = [
         { id: 1, status: 1 },
         { id: 1, status: 1, comments: [] },
-        { id: 1, status: 1, comments: [{ }] },
+        { id: 1, status: 1, comments: [{}] },
         { id: 1, status: 1, comments: [{ content: '' }] },
-        { id: 1, status: 1, comments: [{ content: 'Content' }], threadContext: { } },
+        { id: 1, status: 1, comments: [{ content: 'Content' }], threadContext: {} },
         { id: 1, status: 1, comments: [{ content: 'Content' }], threadContext: { filePath: '' } },
         { id: 1, status: 1, comments: [{ content: 'Content' }], threadContext: { filePath: '/' } }
-      ], (data: GitPullRequestCommentThread): void => {
+      ]
+
+      testCases.forEach((data: GitPullRequestCommentThread): void => {
         it(`should skip the comment with the malformed payload '${JSON.stringify(data)}'`, async (): Promise<void> => {
           // Arrange
           const getThreadsResult: GitPullRequestCommentThread[] = [
@@ -562,15 +581,18 @@ describe('azureReposInvoker.ts', function (): void {
           verify(logger.logDebug(JSON.stringify(getThreadsResult))).once()
         })
       })
+    }
   })
 
   describe('setTitleAndDescription()', (): void => {
-    async.each(
-      [
+    {
+      const testCases: number[] = [
         401,
         403,
         404
-      ], (statusCode: number): void => {
+      ]
+
+      testCases.forEach((statusCode: number): void => {
         it(`should throw when the access token has insufficient access and the API call returns status code '${statusCode}'`, async (): Promise<void> => {
           // Arrange
           const error: ErrorWithStatus = new ErrorWithStatus('Test')
@@ -597,6 +619,7 @@ describe('azureReposInvoker.ts', function (): void {
           verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
         })
       })
+    }
 
     it('should not call the API when the title and description are null', async (): Promise<void> => {
       // Arrange
@@ -698,12 +721,14 @@ describe('azureReposInvoker.ts', function (): void {
   })
 
   describe('createComment()', (): void => {
-    async.each(
-      [
+    {
+      const testCases: number[] = [
         401,
         403,
         404
-      ], (statusCode: number): void => {
+      ]
+
+      testCases.forEach((statusCode: number): void => {
         it(`should throw when the access token has insufficient access and the API call returns status code '${statusCode}'`, async (): Promise<void> => {
           // Arrange
           const error: ErrorWithStatus = new ErrorWithStatus('Test')
@@ -730,6 +755,7 @@ describe('azureReposInvoker.ts', function (): void {
           verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
         })
       })
+    }
 
     it('should call the API for no file', async (): Promise<void> => {
       // Arrange
@@ -840,12 +866,14 @@ describe('azureReposInvoker.ts', function (): void {
   })
 
   describe('updateComment()', (): void => {
-    async.each(
-      [
+    {
+      const testCases: number[] = [
         401,
         403,
         404
-      ], (statusCode: number): void => {
+      ]
+
+      testCases.forEach((statusCode: number): void => {
         it(`should throw when the access token has insufficient access for the updateComment API and the API call returns status code '${statusCode}'`, async (): Promise<void> => {
           // Arrange
           const error: ErrorWithStatus = new ErrorWithStatus('Test')
@@ -872,13 +900,16 @@ describe('azureReposInvoker.ts', function (): void {
           verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
         })
       })
+    }
 
-    async.each(
-      [
+    {
+      const testCases: number[] = [
         401,
         403,
         404
-      ], (status: number): void => {
+      ]
+
+      testCases.forEach((status: number): void => {
         it(`should throw when the access token has insufficient access for the updateComment API and the API call returns status '${status}'`, async (): Promise<void> => {
           // Arrange
           const error: ErrorWithStatus = new ErrorWithStatus('Test')
@@ -908,6 +939,7 @@ describe('azureReposInvoker.ts', function (): void {
           verify(logger.logDebug('{}')).once()
         })
       })
+    }
 
     it('should call the APIs when both the comment content and the thread status are updated', async (): Promise<void> => {
       // Arrange
@@ -1013,12 +1045,14 @@ describe('azureReposInvoker.ts', function (): void {
   })
 
   describe('deleteCommentThread()', (): void => {
-    async.each(
-      [
+    {
+      const testCases: number[] = [
         401,
         403,
         404
-      ], (statusCode: number): void => {
+      ]
+
+      testCases.forEach((statusCode: number): void => {
         it(`should throw when the access token has insufficient access and the API call returns status code '${statusCode}'`, async (): Promise<void> => {
           // Arrange
           const error: ErrorWithStatus = new ErrorWithStatus('Test')
@@ -1045,6 +1079,7 @@ describe('azureReposInvoker.ts', function (): void {
           verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
         })
       })
+    }
 
     it('should call the API for a single comment', async (): Promise<void> => {
       // Arrange

@@ -274,7 +274,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
 
     let firstCommits: ListCommitsResponse
     await this.invokeApiCall(async (): Promise<void> => {
-      firstCommits = await this._octokitWrapper.listCommits(this._owner!, this._repo!, this._pullRequestId!, 1)
+      firstCommits = await this._octokitWrapper.listCommits(this._owner, this._repo, this._pullRequestId, 1)
       this._logger.logDebug(JSON.stringify(firstCommits))
     })
 
@@ -288,7 +288,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
       }
 
       await this.invokeApiCall(async (): Promise<void> => {
-        result = await this._octokitWrapper.listCommits(this._owner!, this._repo!, this._pullRequestId!, parseInt(matches[1]!))
+        result = await this._octokitWrapper.listCommits(this._owner, this._repo, this._pullRequestId, parseInt(matches[1]!))
         this._logger.logDebug(JSON.stringify(result))
       })
     }

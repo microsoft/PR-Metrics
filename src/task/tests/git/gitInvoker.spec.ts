@@ -5,7 +5,6 @@ import 'reflect-metadata'
 import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito'
 import { expect } from 'chai'
 import { GitWritableStream } from '../../src/git/gitWritableStream'
-import async from 'async'
 import GitInvoker from '../../src/git/gitInvoker'
 import Logger from '../../src/utilities/logger'
 import RunnerInvoker from '../../src/runners/runnerInvoker'
@@ -40,12 +39,14 @@ describe('gitInvoker.ts', (): void => {
   })
 
   describe('isGitRepo()', (): void => {
-    async.each(
-      [
+    {
+      const testCases: string[] = [
         'true',
         'true ',
         'true\n'
-      ], (response: string): void => {
+      ]
+
+      testCases.forEach((response: string): void => {
         it(`should return true when called from a Git repo returning '${response.replace(/\n/g, '\\n')}'`, async (): Promise<void> => {
           // Arrange
           when(runnerInvoker.exec('git', deepEqual(['rev-parse', '--is-inside-work-tree']), true, anything(), anything())).thenCall(async (_: string, __: string, ___: boolean, outputStream: GitWritableStream): Promise<number> => {
@@ -63,6 +64,7 @@ describe('gitInvoker.ts', (): void => {
           verify(logger.logDebug('* GitInvoker.invokeGit()')).once()
         })
       })
+    }
 
     it('should return false when not called from a Git repo', async (): Promise<void> => {
       // Arrange
@@ -171,11 +173,13 @@ describe('gitInvoker.ts', (): void => {
       delete process.env.GITHUB_ACTION
     })
 
-    async.each(
-      [
+    {
+      const testCases: string[] = [
         'GitHub',
         'GitHubEnterprise'
-      ], (buildRepositoryProvider: string): void => {
+      ]
+
+      testCases.forEach((buildRepositoryProvider: string): void => {
         it(`should return true when the Git history is available and the PR is on '${buildRepositoryProvider}'`, async (): Promise<void> => {
           // Arrange
           process.env.BUILD_REPOSITORY_PROVIDER = buildRepositoryProvider
@@ -199,6 +203,7 @@ describe('gitInvoker.ts', (): void => {
           delete process.env.SYSTEM_PULLREQUEST_PULLREQUESTNUMBER
         })
       })
+    }
 
     it('should return false when the Git history is unavailable', async (): Promise<void> => {
       // Arrange
@@ -393,11 +398,13 @@ describe('gitInvoker.ts', (): void => {
       verify(logger.logDebug('* GitInvoker.pullRequestIdForAzurePipelines')).once()
     })
 
-    async.each(
-      [
+    {
+      const testCases: string[] = [
         'GitHub',
         'GitHubEnterprise'
-      ], (buildRepositoryProvider: string): void => {
+      ]
+
+      testCases.forEach((buildRepositoryProvider: string): void => {
         it(`should throw an error when the Azure Pipelines runner is being used and the PR is on '${buildRepositoryProvider}' and SYSTEM_PULLREQUEST_PULLREQUESTNUMBER is undefined`, (): void => {
           // Arrange
           process.env.BUILD_REPOSITORY_PROVIDER = buildRepositoryProvider
@@ -416,6 +423,7 @@ describe('gitInvoker.ts', (): void => {
           delete process.env.BUILD_REPOSITORY_PROVIDER
         })
       })
+    }
 
     it('should throw an error when the ID cannot be parsed as an integer', (): void => {
       // Arrange

@@ -297,14 +297,16 @@ describe('pullRequestComments.ts', (): void => {
   })
 
   describe('getMetricsComment()', (): void => {
-    async.each(
-      [
+    {
+      const testCases: Array<FixedLengthArray<number, 5>> = [
         [0, 0, 0, 0, 0],
         [1, 0, 1, 0, 1],
         [1, 1, 2, 1, 3],
         [1000, 1000, 2000, 1000, 3000],
         [1000000, 1000000, 2000000, 1000000, 3000000]
-      ], (code: FixedLengthArray<number, 5>): void => {
+      ]
+
+      testCases.forEach((code: FixedLengthArray<number, 5>): void => {
         it(`should return the expected result for metrics '[${code[0]}, ${code[1]}, ${code[2]}, ${code[3]}, ${code[4]}]'`, async (): Promise<void> => {
           // Arrange
           when(codeMetrics.getMetrics()).thenResolve(new CodeMetricsData(code[0], code[1], code[3]))
@@ -333,13 +335,16 @@ describe('pullRequestComments.ts', (): void => {
           verify(logger.logDebug('* PullRequestComments.addCommentMetrics()')).times(5)
         })
       })
+    }
 
-    async.each(
-      [
+    {
+      const testCases: number[] = [
         200,
         1000,
         1000000
-      ], (baseSize: number): void => {
+      ]
+
+      testCases.forEach((baseSize: number): void => {
         it(`should return the expected result when the pull request is not small and the base size is '${baseSize}'`, async (): Promise<void> => {
           // Arrange
           when(codeMetrics.isSmall()).thenResolve(false)
@@ -369,6 +374,7 @@ describe('pullRequestComments.ts', (): void => {
           verify(logger.logDebug('* PullRequestComments.addCommentMetrics()')).times(5)
         })
       })
+    }
 
     it('should return the expected result when the pull request has insufficient test coverage', async (): Promise<void> => {
       // Arrange
@@ -427,11 +433,13 @@ describe('pullRequestComments.ts', (): void => {
   })
 
   describe('getMetricsCommentStatus()', (): void => {
-    async.each(
-      [
+    {
+      const testCases: Array<boolean | null> = [
         true,
         null
-      ], (sufficientlyTested: boolean | null): void => {
+      ]
+
+      testCases.forEach((sufficientlyTested: boolean | null): void => {
         it(`should return Closed when the pull request is small and has sufficient test coverage '${sufficientlyTested}'`, async (): Promise<void> => {
           // Arrange
           when(codeMetrics.isSmall()).thenResolve(true)
@@ -446,6 +454,7 @@ describe('pullRequestComments.ts', (): void => {
           verify(logger.logDebug('* PullRequestComments.getMetricsCommentStatus()')).once()
         })
       })
+    }
 
     async.each(
       [

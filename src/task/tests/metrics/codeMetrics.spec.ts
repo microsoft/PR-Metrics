@@ -288,14 +288,16 @@ describe('codeMetrics.ts', (): void => {
   })
 
   describe('getFilesNotRequiringReview()', (): void => {
-    async.each(
-      [
+    {
+      const testCases: string[] = [
         '',
         '   ',
         '\t',
         '\n',
         '\t\n'
-      ], (gitDiffSummary: string): void => {
+      ]
+
+      testCases.forEach((gitDiffSummary: string): void => {
         it(`should throw when the Git diff summary '${gitDiffSummary}' is empty`, async (): Promise<void> => {
           // Arrange
           when(gitInvoker.getDiffSummary()).thenResolve(gitDiffSummary)
@@ -316,6 +318,7 @@ describe('codeMetrics.ts', (): void => {
           verify(logger.logDebug('* CodeMetrics.initialize()')).once()
         })
       })
+    }
 
     {
       const testCases: Array<{ summary: string, elements: number }> = [
