@@ -55,7 +55,6 @@
   "devDependencies": {
     "@istanbuljs/nyc-config-typescript": "^1.0.2",
     "@tsconfig/node10": "^1.0.8",
-    "@types/async": "^3.2.12",
     "@types/chai": "^4.3.0",
     "@types/glob": "^7.2.0",
     "@types/mocha": "^9.1.0",
@@ -64,7 +63,6 @@
     "@typescript-eslint/eslint-plugin": "^5.17.0",
     "@typescript-eslint/parser": "^5.17.0",
     "@vercel/ncc": "^0.33.3",
-    "async": "^3.2.3",
     "chai": "^4.3.6",
     "cross-env": "^7.0.3",
     "eslint-config-standard": "^16.0.3",
@@ -90,8 +88,7 @@
   },
   "ts-standard": {
     "ignore": [
-      "dist",
-      "tests"
+      "dist"
     ]
   }
 }

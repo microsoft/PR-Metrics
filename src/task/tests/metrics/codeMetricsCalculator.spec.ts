@@ -5,7 +5,6 @@ import 'reflect-metadata'
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import { expect } from 'chai'
 import { instance, mock, verify, when } from 'ts-mockito'
-import async from 'async'
 import CodeMetricsCalculator from '../../src/metrics/codeMetricsCalculator'
 import GitInvoker from '../../src/git/gitInvoker'
 import Logger from '../../src/utilities/logger'
@@ -225,16 +224,18 @@ describe('codeMetricsCalculator.ts', (): void => {
       verify(reposInvoker.createComment('Description', CommentThreadStatus.Active)).once()
     })
 
-    async.each(
-      [
-        [['file1.ts'], 1, 0],
-        [['file1.ts', 'file2.ts'], 1, 1],
-        [[], 0, 0],
-        [['file1.ts', 'file2.ts'], 1, 1]
-      ], (data: [string[], number, number]): void => {
-        it(`should succeed when comments are to be added to files not requiring review '${JSON.stringify(data[0])}'`, async (): Promise<void> => {
+    {
+      const testCases: Array<{ deletedFiles: string[], file1Comments: number, file2Comments: number }> = [
+        { deletedFiles: ['file1.ts'], file1Comments: 1, file2Comments: 0 },
+        { deletedFiles: ['file1.ts', 'file2.ts'], file1Comments: 1, file2Comments: 1 },
+        { deletedFiles: [], file1Comments: 0, file2Comments: 0 },
+        { deletedFiles: ['file1.ts', 'file2.ts'], file1Comments: 1, file2Comments: 1 }
+      ]
+
+      testCases.forEach(({ deletedFiles, file1Comments, file2Comments }: { deletedFiles: string[], file1Comments: number, file2Comments: number }): void => {
+        it(`should succeed when comments are to be added to files not requiring review '${JSON.stringify(deletedFiles)}'`, async (): Promise<void> => {
           // Arrange
-          const commentData: PullRequestCommentsData = new PullRequestCommentsData(data[0], [])
+          const commentData: PullRequestCommentsData = new PullRequestCommentsData(deletedFiles, [])
           commentData.metricsCommentThreadId = 1
           when(pullRequestComments.getCommentData()).thenResolve(commentData)
           when(pullRequestComments.noReviewRequiredComment).thenReturn('No Review Required')
@@ -245,22 +246,16 @@ describe('codeMetricsCalculator.ts', (): void => {
 
           // Assert
           verify(logger.logDebug('* CodeMetricsCalculator.updateComments()')).once()
-          verify(logger.logDebug('* CodeMetricsCalculator.updateNoReviewRequiredComment()')).times(data[1] + data[2])
-          verify(reposInvoker.createComment('No Review Required', CommentThreadStatus.Closed, 'file1.ts', false)).times(data[1])
-          verify(reposInvoker.createComment('No Review Required', CommentThreadStatus.Closed, 'file2.ts', false)).times(data[2])
+          verify(logger.logDebug('* CodeMetricsCalculator.updateNoReviewRequiredComment()')).times(file1Comments + file2Comments)
+          verify(reposInvoker.createComment('No Review Required', CommentThreadStatus.Closed, 'file1.ts', false)).times(file1Comments)
+          verify(reposInvoker.createComment('No Review Required', CommentThreadStatus.Closed, 'file2.ts', false)).times(file2Comments)
         })
       })
 
-    async.each(
-      [
-        [['file1.ts'], 1, 0],
-        [['file1.ts', 'file2.ts'], 1, 1],
-        [[], 0, 0],
-        [['file1.ts', 'file2.ts'], 1, 1]
-      ], (data: [string[], number, number]): void => {
-        it(`should succeed when comments are to be added to deleted files not requiring review '${JSON.stringify(data[0])}'`, async (): Promise<void> => {
+      testCases.forEach(({ deletedFiles, file1Comments, file2Comments }: { deletedFiles: string[], file1Comments: number, file2Comments: number }): void => {
+        it(`should succeed when comments are to be added to deleted files not requiring review '${JSON.stringify(deletedFiles)}'`, async (): Promise<void> => {
           // Arrange
-          const commentData: PullRequestCommentsData = new PullRequestCommentsData([], data[0])
+          const commentData: PullRequestCommentsData = new PullRequestCommentsData([], deletedFiles)
           commentData.metricsCommentThreadId = 1
           when(pullRequestComments.getCommentData()).thenResolve(commentData)
           when(pullRequestComments.noReviewRequiredComment).thenReturn('No Review Required')
@@ -271,11 +266,12 @@ describe('codeMetricsCalculator.ts', (): void => {
 
           // Assert
           verify(logger.logDebug('* CodeMetricsCalculator.updateComments()')).once()
-          verify(logger.logDebug('* CodeMetricsCalculator.updateNoReviewRequiredComment()')).times(data[1] + data[2])
-          verify(reposInvoker.createComment('No Review Required', CommentThreadStatus.Closed, 'file1.ts', true)).times(data[1])
-          verify(reposInvoker.createComment('No Review Required', CommentThreadStatus.Closed, 'file2.ts', true)).times(data[2])
+          verify(logger.logDebug('* CodeMetricsCalculator.updateNoReviewRequiredComment()')).times(file1Comments + file2Comments)
+          verify(reposInvoker.createComment('No Review Required', CommentThreadStatus.Closed, 'file1.ts', true)).times(file1Comments)
+          verify(reposInvoker.createComment('No Review Required', CommentThreadStatus.Closed, 'file2.ts', true)).times(file2Comments)
         })
       })
+    }
 
     it('should succeed when comments are to be deleted from files ', async (): Promise<void> => {
       // Arrange
