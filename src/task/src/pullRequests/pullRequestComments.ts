@@ -114,7 +114,7 @@ export default class PullRequestComments {
     if (await this._codeMetrics.isSmall()) {
       const isSufficientlyTested: boolean | null = await this._codeMetrics.isSufficientlyTested()
 
-      if (isSufficientlyTested || isSufficientlyTested === null) {
+      if (isSufficientlyTested ?? isSufficientlyTested === null) {
         return CommentThreadStatus.Closed
       }
     }

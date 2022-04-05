@@ -46,48 +46,48 @@ export default class ReposInvoker implements IReposInvoker {
     this._logger.logDebug('* ReposInvoker.getTitleAndDescription()')
 
     const reposInvoker: IReposInvoker = this.getReposInvoker()
-    return reposInvoker.getTitleAndDescription()
+    return await reposInvoker.getTitleAndDescription()
   }
 
   public async getComments (): Promise<CommentData> {
     this._logger.logDebug('* ReposInvoker.getComments()')
 
     const reposInvoker: IReposInvoker = this.getReposInvoker()
-    return reposInvoker.getComments()
+    return await reposInvoker.getComments()
   }
 
   public async setTitleAndDescription (title: string | null, description: string | null): Promise<void> {
     this._logger.logDebug('* ReposInvoker.setTitleAndDescription()')
 
     const reposInvoker: IReposInvoker = this.getReposInvoker()
-    return reposInvoker.setTitleAndDescription(title, description)
+    return await reposInvoker.setTitleAndDescription(title, description)
   }
 
   public async createComment (content: string, status: CommentThreadStatus, fileName?: string, isFileDeleted?: boolean): Promise<void> {
     this._logger.logDebug('* ReposInvoker.createComment()')
 
     const reposInvoker: IReposInvoker = this.getReposInvoker()
-    return reposInvoker.createComment(content, status, fileName, isFileDeleted)
+    return await reposInvoker.createComment(content, status, fileName, isFileDeleted)
   }
 
   public async updateComment (commentThreadId: number, content: string | null, status: CommentThreadStatus | null): Promise<void> {
     this._logger.logDebug('* ReposInvoker.updateComment()')
 
     const reposInvoker: IReposInvoker = this.getReposInvoker()
-    return reposInvoker.updateComment(commentThreadId, content, status)
+    return await reposInvoker.updateComment(commentThreadId, content, status)
   }
 
   public async deleteCommentThread (commentThreadId: number): Promise<void> {
     this._logger.logDebug('* ReposInvoker.deleteCommentThread()')
 
     const reposInvoker: IReposInvoker = this.getReposInvoker()
-    return reposInvoker.deleteCommentThread(commentThreadId)
+    return await reposInvoker.deleteCommentThread(commentThreadId)
   }
 
   private getReposInvoker (): IReposInvoker {
     this._logger.logDebug('* ReposInvoker.getReposInvoker()')
 
-    if (this._reposInvoker) {
+    if (this._reposInvoker != null) {
       return this._reposInvoker
     }
 

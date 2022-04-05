@@ -12,8 +12,8 @@ import RunnerInvoker from '../runners/runnerInvoker'
  */
 @singleton()
 export default class Inputs {
-  private _logger: Logger
-  private _runnerInvoker: RunnerInvoker
+  private readonly _logger: Logger
+  private readonly _runnerInvoker: RunnerInvoker
 
   private _isInitialized: boolean = false
   private _baseSize: number = 0
@@ -115,7 +115,7 @@ export default class Inputs {
   private initializeBaseSize (baseSize: string | undefined): void {
     this._logger.logDebug('* Inputs.initializeBaseSize()')
 
-    const convertedValue: number = parseInt(baseSize!)
+    const convertedValue: number = baseSize === undefined ? NaN : parseInt(baseSize)
     if (!isNaN(convertedValue) && convertedValue > 0) {
       this._baseSize = convertedValue
       this._logger.logInfo(this._runnerInvoker.loc('metrics.inputs.settingBaseSize', this._baseSize.toLocaleString()))
@@ -129,7 +129,7 @@ export default class Inputs {
   private initializeGrowthRate (growthRate: string | undefined): void {
     this._logger.logDebug('* Inputs.initializeGrowthRate()')
 
-    const convertedValue: number = parseFloat(growthRate!)
+    const convertedValue: number = growthRate === undefined ? NaN : parseFloat(growthRate)
     if (!isNaN(convertedValue) && convertedValue > 1.0) {
       this._growthRate = convertedValue
       this._logger.logInfo(this._runnerInvoker.loc('metrics.inputs.settingGrowthRate', this._growthRate.toLocaleString()))
@@ -143,7 +143,7 @@ export default class Inputs {
   private initializeTestFactor (testFactor: string | undefined): void {
     this._logger.logDebug('* Inputs.initializeTestFactor()')
 
-    const convertedValue: number = parseFloat(testFactor!)
+    const convertedValue: number = testFactor === undefined ? NaN : parseFloat(testFactor)
     if (!isNaN(convertedValue) && convertedValue >= 0.0) {
       if (convertedValue === 0.0) {
         this._testFactor = null

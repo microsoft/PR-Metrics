@@ -67,7 +67,7 @@ export default class PullRequest {
   public getUpdatedDescription (currentDescription: string | undefined): string | null {
     this._logger.logDebug('* PullRequest.getUpdatedDescription()')
 
-    if (currentDescription?.trim()) {
+    if (currentDescription?.trim() ?? false) {
       return null
     }
 
@@ -103,7 +103,7 @@ export default class PullRequest {
     const prefixRegExpMatches: RegExpMatchArray | null = currentTitle.match(prefixRegExp)
     let originalTitle: string = currentTitle
     if (prefixRegExpMatches !== null) {
-      originalTitle = prefixRegExpMatches[3]!
+      originalTitle = prefixRegExpMatches[3] ?? ''
     }
 
     return this._runnerInvoker.loc('pullRequests.pullRequest.titleFormat', sizeIndicator, originalTitle)

@@ -18,13 +18,13 @@ export default interface IReposInvoker {
    * Gets the title and description for the current pull request.
    * @returns A promise containing the title and description.
    */
-  getTitleAndDescription (): Promise<PullRequestDetails>
+  getTitleAndDescription: () => Promise<PullRequestDetails>
 
   /**
    * Gets all comments for the current pull request.
    * @returns A promise containing the comments.
    */
-  getComments (): Promise<CommentData>
+  getComments: () => Promise<CommentData>
 
   /**
    * Updates the title and description for the current pull request.
@@ -32,7 +32,7 @@ export default interface IReposInvoker {
    * @param description The new description.
    * @returns A promise for awaiting the completion of the method call.
    */
-  setTitleAndDescription (title: string | null, description: string | null): Promise<void>
+  setTitleAndDescription: (title: string | null, description: string | null) => Promise<void>
 
   /**
    * Creates a new comment within the current pull request. Note that calling this method asynchronously can cause
@@ -43,7 +43,7 @@ export default interface IReposInvoker {
    * @param isFileDeleted A value indicating whether the file is being deleted.
    * @returns A promise for awaiting the completion of the method call.
    */
-  createComment (content: string, status: CommentThreadStatus, fileName?: string, isFileDeleted?: boolean): Promise<void>
+  createComment: (content: string, status: CommentThreadStatus, fileName?: string, isFileDeleted?: boolean) => Promise<void>
 
   /**
    * Updates a comment thread within the current pull request.
@@ -52,12 +52,12 @@ export default interface IReposInvoker {
    * @param status The status to which to the set the comment thread. If this is `null`, the status will not be updated.
    * @returns A promise for awaiting the completion of the method call.
    */
-  updateComment (commentThreadId: number, content: string | null, status: CommentThreadStatus | null): Promise<void>
+  updateComment: (commentThreadId: number, content: string | null, status: CommentThreadStatus | null) => Promise<void>
 
   /**
    * Deletes a comment thread within the current pull request.
    * @param commentThreadId The ID of the comment thread to be deleted.
    * @returns A promise for awaiting the completion of the method call.
    */
-  deleteCommentThread (commentThreadId: number): Promise<void>
+  deleteCommentThread: (commentThreadId: number) => Promise<void>
 }

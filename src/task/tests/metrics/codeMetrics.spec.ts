@@ -133,7 +133,7 @@ describe('codeMetrics.ts', (): void => {
       ['-\t-\tfile.ts', 'XS', true, new CodeMetricsData(0, 0, 0)],
       ['0\t0\tfile.ts\r\nrc:0\r\nsuccess:true', 'XS', true, new CodeMetricsData(0, 0, 0)]
     ], (data: [string, string, boolean, CodeMetricsData]): void => {
-      it(`with default inputs and git diff '${data[0].replace(/\n/g, '\\n').replace(/\r/g, '\\r')}', returns '${data[1]}' size and '${data[2]}' test coverage`, async (): Promise<void> => {
+      it(`with default inputs and git diff '${data[0].replace(/\n/g, '\\n').replace(/\r/g, '\\r')}', returns '${data[1].toString()}' size and '${data[2]}' test coverage`, async (): Promise<void> => {
         // Arrange
         when(gitInvoker.getDiffSummary()).thenResolve(data[0])
 
@@ -153,7 +153,7 @@ describe('codeMetrics.ts', (): void => {
         verify(logger.logDebug('* CodeMetrics.getSize()')).once()
         verify(logger.logDebug('* CodeMetrics.initialize()')).times(7)
         verify(logger.logDebug('* CodeMetrics.initializeMetrics()')).once()
-        verify(logger.logDebug('* CodeMetrics.matchFileExtension()')).times((data[0].replace(/\r\n/g, '').match(/\n/g) || []).length + 1 - (data[0].endsWith('\n') ? 1 : 0))
+        verify(logger.logDebug('* CodeMetrics.matchFileExtension()')).times((data[0].replace(/\r\n/g, '').match(/\n/g) ?? []).length + 1 - (data[0].endsWith('\n') ? 1 : 0))
         verify(logger.logDebug('* CodeMetrics.constructMetrics()')).once()
         verify(logger.logDebug('* CodeMetrics.createFileMetricsMap()')).once()
         verify(logger.logDebug('* CodeMetrics.initializeIsSufficientlyTested()')).once()
@@ -249,7 +249,7 @@ describe('codeMetrics.ts', (): void => {
         verify(logger.logDebug('* CodeMetrics.getSize()')).once()
         verify(logger.logDebug('* CodeMetrics.initialize()')).times(7)
         verify(logger.logDebug('* CodeMetrics.initializeMetrics()')).once()
-        verify(logger.logDebug('* CodeMetrics.matchFileExtension()')).times((data[0].match(/\n/g) || []).length + 1)
+        verify(logger.logDebug('* CodeMetrics.matchFileExtension()')).times((data[0].match(/\n/g) ?? []).length + 1)
         verify(logger.logDebug('* CodeMetrics.constructMetrics()')).once()
         verify(logger.logDebug('* CodeMetrics.createFileMetricsMap()')).once()
         verify(logger.logDebug('* CodeMetrics.initializeIsSufficientlyTested()')).once()
@@ -317,20 +317,22 @@ describe('codeMetrics.ts', (): void => {
         })
       })
 
-    async.each(
-      [
-        ['0', 1],
-        ['0\t', 1],
-        ['0\t0', 2],
-        ['0\t0\t', 2],
-        ['0\tfile.ts', 2],
-        ['0\tfile.ts\t', 2],
-        ['0\t0\tfile1.ts\tfile2.ts', 4],
-        ['0\t0\tfile1.ts\tfile2.ts\t', 4]
-      ], (data: [string, number]): void => {
-        it(`should throw when the file name in the Git diff summary '${data[0]}' cannot be parsed`, async (): Promise<void> => {
+    {
+      const testCases: Array<{ summary: string, elements: number }> = [
+        { summary: '0', elements: 1 },
+        { summary: '0\t', elements: 1 },
+        { summary: '0\t0', elements: 2 },
+        { summary: '0\t0\t', elements: 2 },
+        { summary: '0\tfile.ts', elements: 2 },
+        { summary: '0\tfile.ts\t', elements: 2 },
+        { summary: '0\t0\tfile1.ts\tfile2.ts', elements: 4 },
+        { summary: '0\t0\tfile1.ts\tfile2.ts\t', elements: 4 }
+      ]
+
+      testCases.forEach(({ summary, elements }: { summary: string, elements: number }): void => {
+        it(`should throw when the file name in the Git diff summary '${summary}' cannot be parsed`, async (): Promise<void> => {
           // Arrange
-          when(gitInvoker.getDiffSummary()).thenResolve(data[0])
+          when(gitInvoker.getDiffSummary()).thenResolve(summary)
           const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(logger), instance(runnerInvoker))
           let errorThrown: boolean = false
 
@@ -340,7 +342,7 @@ describe('codeMetrics.ts', (): void => {
           } catch (error: any) {
             // Assert
             errorThrown = true
-            expect(error.message).to.equal(`The number of elements '${data[1]}' in '${data[0].trim()}' in input '${data[0].trim()}' did not match the expected 3.`)
+            expect(error.message).to.equal(`The number of elements '${elements}' in '${summary.trim()}' in input '${summary.trim()}' did not match the expected 3.`)
           }
 
           expect(errorThrown).to.equal(true)
@@ -349,6 +351,7 @@ describe('codeMetrics.ts', (): void => {
           verify(logger.logDebug('* CodeMetrics.createFileMetricsMap()')).once()
         })
       })
+    }
 
     it('should throw when the lines added in the Git diff summary cannot be converted', async (): Promise<void> => {
       // Arrange

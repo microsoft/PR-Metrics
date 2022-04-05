@@ -127,56 +127,54 @@ describe('inputs.ts', (): void => {
     })
 
     describe('baseSize', (): void => {
-      async.each(
-        [
-          undefined,
-          '',
-          ' ',
-          'abc',
-          '===',
-          '!2',
-          'null',
-          'undefined'
-        ], (baseSize: string | undefined): void => {
-          it(`should set the default when the input '${baseSize}' is invalid`, (): void => {
-            // Arrange
-            when(runnerInvoker.getInput(deepEqual(['Base', 'Size']))).thenReturn(baseSize)
+      [
+        undefined,
+        '',
+        ' ',
+        'abc',
+        '===',
+        '!2',
+        'null',
+        'undefined'
+      ].forEach((baseSize: string | undefined): void => {
+        it(`should set the default when the input '${baseSize}' is invalid`, (): void => {
+          // Arrange
+          when(runnerInvoker.getInput(deepEqual(['Base', 'Size']))).thenReturn(baseSize)
 
-            // Act
-            const inputs: Inputs = new Inputs(instance(logger), instance(runnerInvoker))
+          // Act
+          const inputs: Inputs = new Inputs(instance(logger), instance(runnerInvoker))
 
-            // Assert
-            expect(inputs.baseSize).to.equal(InputsDefault.baseSize)
-            verify(logger.logDebug('* Inputs.initialize()')).once()
-            verify(logger.logDebug('* Inputs.initializeBaseSize()')).once()
-            verify(logger.logDebug('* Inputs.initializeGrowthRate()')).once()
-            verify(logger.logDebug('* Inputs.initializeTestFactor()')).once()
-            verify(logger.logDebug('* Inputs.initializeFileMatchingPatterns()')).once()
-            verify(logger.logDebug('* Inputs.initializeCodeFileExtensions()')).once()
-            verify(logger.logDebug('* Inputs.baseSize')).once()
-            verify(logger.logInfo(adjustingBaseSizeResource)).once()
-            verify(logger.logInfo(adjustingGrowthRateResource)).once()
-            verify(logger.logInfo(adjustingTestFactorResource)).once()
-            verify(logger.logInfo(adjustingFileMatchingPatternsResource)).once()
-            verify(logger.logInfo(adjustingCodeFileExtensionsResource)).once()
-            verify(logger.logInfo(disablingTestFactorResource)).never()
-            verify(logger.logInfo(settingBaseSizeResource)).never()
-            verify(logger.logInfo(settingGrowthRateResource)).never()
-            verify(logger.logInfo(settingTestFactorResource)).never()
-            verify(logger.logInfo(settingFileMatchingPatternsResource)).never()
-            verify(logger.logInfo(settingCodeFileExtensionsResource)).never()
-          })
+          // Assert
+          expect(inputs.baseSize).to.equal(InputsDefault.baseSize)
+          verify(logger.logDebug('* Inputs.initialize()')).once()
+          verify(logger.logDebug('* Inputs.initializeBaseSize()')).once()
+          verify(logger.logDebug('* Inputs.initializeGrowthRate()')).once()
+          verify(logger.logDebug('* Inputs.initializeTestFactor()')).once()
+          verify(logger.logDebug('* Inputs.initializeFileMatchingPatterns()')).once()
+          verify(logger.logDebug('* Inputs.initializeCodeFileExtensions()')).once()
+          verify(logger.logDebug('* Inputs.baseSize')).once()
+          verify(logger.logInfo(adjustingBaseSizeResource)).once()
+          verify(logger.logInfo(adjustingGrowthRateResource)).once()
+          verify(logger.logInfo(adjustingTestFactorResource)).once()
+          verify(logger.logInfo(adjustingFileMatchingPatternsResource)).once()
+          verify(logger.logInfo(adjustingCodeFileExtensionsResource)).once()
+          verify(logger.logInfo(disablingTestFactorResource)).never()
+          verify(logger.logInfo(settingBaseSizeResource)).never()
+          verify(logger.logInfo(settingGrowthRateResource)).never()
+          verify(logger.logInfo(settingTestFactorResource)).never()
+          verify(logger.logInfo(settingFileMatchingPatternsResource)).never()
+          verify(logger.logInfo(settingCodeFileExtensionsResource)).never()
         })
+      })
 
-      async.each(
         [
           '0',
           '-1',
           '-1000',
           '-5'
-        ], (baseSize: string): void => {
+        ].forEach((baseSize: string): void => {
           it(`should set the default when the input '${baseSize}' is less than or equal to 0`, (): void => {
-            // Arrange
+          // Arrange
             when(runnerInvoker.getInput(deepEqual(['Base', 'Size']))).thenReturn(baseSize)
 
             // Act

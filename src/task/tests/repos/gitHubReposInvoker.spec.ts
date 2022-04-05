@@ -539,16 +539,16 @@ describe('gitHubReposInvoker.ts', function (): void {
 
     it('should initialize log object correctly', async (): Promise<void> => {
       // Arrange
-      let logObject: OctokitLogObject
+      let logObject: OctokitLogObject | undefined
       when(octokitWrapper.initialize(anything())).thenCall((options?: any | undefined): void => { logObject = options.log })
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
       await gitHubReposInvoker.getTitleAndDescription()
 
       // Act
-      logObject!.debug('Debug Message')
-      logObject!.info('Info Message')
-      logObject!.warn('Warning Message')
-      logObject!.error('Error Message')
+      logObject?.debug('Debug Message')
+      logObject?.info('Info Message')
+      logObject?.warn('Warning Message')
+      logObject?.error('Error Message')
 
       // Assert
       verify(logger.logDebug('Octokit – Debug Message')).once()
@@ -580,9 +580,9 @@ describe('gitHubReposInvoker.ts', function (): void {
 
       // Assert
       expect(result.pullRequestComments.length).to.equal(1)
-      expect(result.pullRequestComments[0]!.id).to.equal(1)
-      expect(result.pullRequestComments[0]!.content).to.equal('PR Content')
-      expect(result.pullRequestComments[0]!.status).to.equal(CommentThreadStatus.Unknown)
+      expect(result.pullRequestComments[0]?.id).to.equal(1)
+      expect(result.pullRequestComments[0]?.content).to.equal('PR Content')
+      expect(result.pullRequestComments[0]?.status).to.equal(CommentThreadStatus.Unknown)
       expect(result.fileComments.length).to.equal(0)
       verify(octokitWrapper.initialize(anything())).once()
       verify(octokitWrapper.getIssueComments('microsoft', 'PR-Metrics', 12345)).once()
@@ -614,10 +614,10 @@ describe('gitHubReposInvoker.ts', function (): void {
       // Assert
       expect(result.pullRequestComments.length).to.equal(0)
       expect(result.fileComments.length).to.equal(1)
-      expect(result.fileComments[0]!.id).to.equal(2)
-      expect(result.fileComments[0]!.content).to.equal('File Content')
-      expect(result.fileComments[0]!.status).to.equal(CommentThreadStatus.Unknown)
-      expect(result.fileComments[0]!.fileName).to.equal('file.ts')
+      expect(result.fileComments[0]?.id).to.equal(2)
+      expect(result.fileComments[0]?.content).to.equal('File Content')
+      expect(result.fileComments[0]?.status).to.equal(CommentThreadStatus.Unknown)
+      expect(result.fileComments[0]?.fileName).to.equal('file.ts')
       verify(octokitWrapper.initialize(anything())).once()
       verify(octokitWrapper.getIssueComments('microsoft', 'PR-Metrics', 12345)).once()
       verify(octokitWrapper.getReviewComments('microsoft', 'PR-Metrics', 12345)).once()
@@ -650,14 +650,14 @@ describe('gitHubReposInvoker.ts', function (): void {
 
       // Assert
       expect(result.pullRequestComments.length).to.equal(1)
-      expect(result.pullRequestComments[0]!.id).to.equal(1)
-      expect(result.pullRequestComments[0]!.content).to.equal('PR Content')
-      expect(result.pullRequestComments[0]!.status).to.equal(CommentThreadStatus.Unknown)
+      expect(result.pullRequestComments[0]?.id).to.equal(1)
+      expect(result.pullRequestComments[0]?.content).to.equal('PR Content')
+      expect(result.pullRequestComments[0]?.status).to.equal(CommentThreadStatus.Unknown)
       expect(result.fileComments.length).to.equal(1)
-      expect(result.fileComments[0]!.id).to.equal(2)
-      expect(result.fileComments[0]!.content).to.equal('File Content')
-      expect(result.fileComments[0]!.status).to.equal(CommentThreadStatus.Unknown)
-      expect(result.fileComments[0]!.fileName).to.equal('file.ts')
+      expect(result.fileComments[0]?.id).to.equal(2)
+      expect(result.fileComments[0]?.content).to.equal('File Content')
+      expect(result.fileComments[0]?.status).to.equal(CommentThreadStatus.Unknown)
+      expect(result.fileComments[0]?.fileName).to.equal('file.ts')
       verify(octokitWrapper.initialize(anything())).once()
       verify(octokitWrapper.getIssueComments('microsoft', 'PR-Metrics', 12345)).once()
       verify(octokitWrapper.getReviewComments('microsoft', 'PR-Metrics', 12345)).once()

@@ -74,7 +74,7 @@ export default class GitInvoker {
       return this._pullRequestId
     }
 
-    this._pullRequestId = Validator.validate(parseInt(this.pullRequestIdInternal), 'Pull Request ID', 'GitInvoker.pullRequestId')
+    this._pullRequestId = Validator.validateNumber(parseInt(this.pullRequestIdInternal), 'Pull Request ID', 'GitInvoker.pullRequestId')
     return this._pullRequestId
   }
 
@@ -82,11 +82,11 @@ export default class GitInvoker {
    * Gets a diff summary related to the changes in the current branch.
    * @returns A promise containing the diff summary.
    */
-  public getDiffSummary (): Promise<string> {
+  public async getDiffSummary (): Promise<string> {
     this._logger.logDebug('* GitInvoker.getDiffSummary()')
 
     this.initialize()
-    return this.invokeGit(['diff', '--numstat', `origin/${this._targetBranch}...pull/${this._pullRequestIdInternal}/merge`])
+    return await this.invokeGit(['diff', '--numstat', `origin/${this._targetBranch}...pull/${this._pullRequestIdInternal}/merge`])
   }
 
   private initialize (): void {
@@ -104,7 +104,7 @@ export default class GitInvoker {
   private get pullRequestIdInternal (): string {
     this._logger.logDebug('* GitInvoker.pullRequestIdInternal')
 
-    if (this._pullRequestIdInternal) {
+    if (this._pullRequestIdInternal !== '') {
       return this._pullRequestIdInternal
     }
 
@@ -121,7 +121,7 @@ export default class GitInvoker {
       throw Error(`GITHUB_REF '${gitHubReference}' is in an unexpected format.`)
     }
 
-    return gitHubReferenceElements[2]!
+    return gitHubReferenceElements[2] ?? ''
   }
 
   private get pullRequestIdForAzurePipelines (): string {

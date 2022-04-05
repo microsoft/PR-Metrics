@@ -18,18 +18,18 @@ import RunnerInvoker from '../runners/runnerInvoker'
  */
 @singleton()
 export default class CodeMetrics {
-  private _gitInvoker: GitInvoker
-  private _inputs: Inputs
-  private _logger: Logger
-  private _runnerInvoker: RunnerInvoker
+  private readonly _gitInvoker: GitInvoker
+  private readonly _inputs: Inputs
+  private readonly _logger: Logger
+  private readonly _runnerInvoker: RunnerInvoker
 
   private static readonly _minimatchOptions: minimatch.IOptions = {
     dot: true
   }
 
   private _isInitialized: boolean = false
-  private _filesNotRequiringReview: string[] = []
-  private _deletedFilesNotRequiringReview: string[] = []
+  private readonly _filesNotRequiringReview: string[] = []
+  private readonly _deletedFilesNotRequiringReview: string[] = []
   private _size: string = ''
   private _sizeIndicator: string = ''
   private _metrics: CodeMetricsData = new CodeMetricsData(0, 0, 0)
@@ -144,7 +144,7 @@ export default class CodeMetrics {
     this.initializeSizeIndicator()
   }
 
-  private initializeMetrics (gitDiffSummary: string) {
+  private initializeMetrics (gitDiffSummary: string): void {
     this._logger.logDebug('* CodeMetrics.initializeMetrics()')
 
     const codeFileMetrics: CodeFileMetric[] = this.createFileMetricsMap(gitDiffSummary)
@@ -240,14 +240,14 @@ export default class CodeMetrics {
       }
 
       // Condense file and folder names that were renamed e.g. "F{a => i}leT{b => e}st.d{c => l}l" or "FaleTbst.dcl => FileTest.dll".
-      const fileName: string = elements[2]!
+      const fileName: string = (elements[2] ?? '')
         .replace(/{.*? => ([^}]+?)}/g, '$1')
         .replace(/.*? => ([^}]+?)/g, '$1')
 
       result.push({
         fileName: fileName,
-        linesAdded: this.parseChangedLines(elements[0]!, line, 'added'),
-        linesDeleted: this.parseChangedLines(elements[1]!, line, 'deleted')
+        linesAdded: this.parseChangedLines(elements[0] ?? '', line, 'added'),
+        linesDeleted: this.parseChangedLines(elements[1] ?? '', line, 'deleted')
       })
     })
 
@@ -320,9 +320,11 @@ export default class CodeMetrics {
       index++
 
       if (index < indicators.length) {
-        result = indicators[index]!('')
+        const indicator: ((prefix: string) => string) | undefined = indicators[index]
+        result = indicator === undefined ? '' : indicator('')
       } else {
-        result = indicators[indicators.length - 1]!((index - indicators.length + 2).toLocaleString())
+        const indicator: ((prefix: string) => string) | undefined = indicators[indicators.length - 1]
+        result = indicator === undefined ? '' : indicator((index - indicators.length + 2).toLocaleString())
       }
     }
 
