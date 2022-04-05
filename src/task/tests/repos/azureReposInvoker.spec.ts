@@ -9,6 +9,7 @@ import { IGitApi } from 'azure-devops-node-api/GitApi'
 import { IRequestHandler } from 'azure-devops-node-api/interfaces/common/VsoBaseInterfaces'
 import { resolvableInstance } from '../testUtilities/resolvableInstance'
 import { WebApi } from 'azure-devops-node-api'
+import * as Converter from '../../src/utilities/converter'
 import AzureDevOpsApiWrapper from '../../src/wrappers/azureDevOpsApiWrapper'
 import AzureReposInvoker from '../../src/repos/azureReposInvoker'
 import CommentData from '../../src/repos/interfaces/commentData'
@@ -92,7 +93,7 @@ describe('azureReposInvoker.ts', function (): void {
       ]
 
       testCases.forEach((variable: string | undefined): void => {
-        it(`should throw when SYSTEM_TEAMPROJECT is set to the invalid value '${variable}'`, async (): Promise<void> => {
+        it(`should throw when SYSTEM_TEAMPROJECT is set to the invalid value '${Converter.toString(variable)}'`, async (): Promise<void> => {
           // Arrange
           if (variable === undefined) {
             delete process.env.SYSTEM_TEAMPROJECT
@@ -109,7 +110,7 @@ describe('azureReposInvoker.ts', function (): void {
           } catch (error: any) {
             // Assert
             errorThrown = true
-            expect(error.message).to.equal(`'SYSTEM_TEAMPROJECT', accessed within 'AzureReposInvoker.getGitApi()', is invalid, null, or undefined '${variable}'.`)
+            expect(error.message).to.equal(`'SYSTEM_TEAMPROJECT', accessed within 'AzureReposInvoker.getGitApi()', is invalid, null, or undefined '${Converter.toString(variable)}'.`)
           }
 
           expect(errorThrown).to.equal(true)
@@ -126,7 +127,7 @@ describe('azureReposInvoker.ts', function (): void {
       ]
 
       testCases.forEach((variable: string | undefined): void => {
-        it(`should throw when BUILD_REPOSITORY_ID is set to the invalid value '${variable}'`, async (): Promise<void> => {
+        it(`should throw when BUILD_REPOSITORY_ID is set to the invalid value '${Converter.toString(variable)}'`, async (): Promise<void> => {
           // Arrange
           if (variable === undefined) {
             delete process.env.BUILD_REPOSITORY_ID
@@ -143,7 +144,7 @@ describe('azureReposInvoker.ts', function (): void {
           } catch (error: any) {
             // Assert
             errorThrown = true
-            expect(error.message).to.equal(`'BUILD_REPOSITORY_ID', accessed within 'AzureReposInvoker.getGitApi()', is invalid, null, or undefined '${variable}'.`)
+            expect(error.message).to.equal(`'BUILD_REPOSITORY_ID', accessed within 'AzureReposInvoker.getGitApi()', is invalid, null, or undefined '${Converter.toString(variable)}'.`)
           }
 
           expect(errorThrown).to.equal(true)
@@ -160,7 +161,7 @@ describe('azureReposInvoker.ts', function (): void {
       ]
 
       testCases.forEach((variable: string | undefined): void => {
-        it(`should throw when SYSTEM_ACCESSTOKEN is set to the invalid value '${variable}'`, async (): Promise<void> => {
+        it(`should throw when SYSTEM_ACCESSTOKEN is set to the invalid value '${Converter.toString(variable)}'`, async (): Promise<void> => {
           // Arrange
           if (variable === undefined) {
             delete process.env.SYSTEM_ACCESSTOKEN
@@ -177,7 +178,7 @@ describe('azureReposInvoker.ts', function (): void {
           } catch (error: any) {
             // Assert
             errorThrown = true
-            expect(error.message).to.equal(`'SYSTEM_ACCESSTOKEN', accessed within 'AzureReposInvoker.getGitApi()', is invalid, null, or undefined '${variable}'.`)
+            expect(error.message).to.equal(`'SYSTEM_ACCESSTOKEN', accessed within 'AzureReposInvoker.getGitApi()', is invalid, null, or undefined '${Converter.toString(variable)}'.`)
           }
 
           expect(errorThrown).to.equal(true)
@@ -194,7 +195,7 @@ describe('azureReposInvoker.ts', function (): void {
       ]
 
       testCases.forEach((variable: string | undefined): void => {
-        it(`should throw when SYSTEM_TEAMFOUNDATIONCOLLECTIONURI is set to the invalid value '${variable}'`, async (): Promise<void> => {
+        it(`should throw when SYSTEM_TEAMFOUNDATIONCOLLECTIONURI is set to the invalid value '${Converter.toString(variable)}'`, async (): Promise<void> => {
           // Arrange
           if (variable === undefined) {
             delete process.env.SYSTEM_TEAMFOUNDATIONCOLLECTIONURI
@@ -211,7 +212,7 @@ describe('azureReposInvoker.ts', function (): void {
           } catch (error: any) {
             // Assert
             errorThrown = true
-            expect(error.message).to.equal(`'SYSTEM_TEAMFOUNDATIONCOLLECTIONURI', accessed within 'AzureReposInvoker.getGitApi()', is invalid, null, or undefined '${variable}'.`)
+            expect(error.message).to.equal(`'SYSTEM_TEAMFOUNDATIONCOLLECTIONURI', accessed within 'AzureReposInvoker.getGitApi()', is invalid, null, or undefined '${Converter.toString(variable)}'.`)
           }
 
           expect(errorThrown).to.equal(true)

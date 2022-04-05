@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 import { expect } from 'chai'
+import * as Converter from '../../src/utilities/converter'
 import * as Validator from '../../src/utilities/validator'
 
 describe('validator.ts', (): void => {
@@ -10,7 +11,7 @@ describe('validator.ts', (): void => {
       '',
       undefined
     ].forEach((value: string | undefined): void => {
-      it(`should throw an error when passed invalid string value '${value}'`, (): void => {
+      it(`should throw an error when passed invalid string value '${Converter.toString(value)}'`, (): void => {
         // Arrange
         if (value === undefined) {
           delete process.env.TEST_VARIABLE
@@ -22,7 +23,7 @@ describe('validator.ts', (): void => {
         const func: () => void = () => Validator.validateVariable('TEST_VARIABLE', 'string test method name')
 
         // Assert
-        expect(func).to.throw(`'TEST_VARIABLE', accessed within 'string test method name', is invalid, null, or undefined '${value}'.`)
+        expect(func).to.throw(`'TEST_VARIABLE', accessed within 'string test method name', is invalid, null, or undefined '${Converter.toString(value)}'.`)
 
         // Finalization
         delete process.env.TEST_VARIABLE
@@ -53,12 +54,12 @@ describe('validator.ts', (): void => {
       ]
 
       testCases.forEach((value: string | null | undefined): void => {
-        it(`should throw an error when passed invalid string value '${value}'`, (): void => {
+        it(`should throw an error when passed invalid string value '${Converter.toString(value)}'`, (): void => {
           // Act
           const func: () => void = () => Validator.validateString(value, 'string test', 'string test method name')
 
           // Assert
-          expect(func).to.throw(`'string test', accessed within 'string test method name', is invalid, null, or undefined '${value}'.`)
+          expect(func).to.throw(`'string test', accessed within 'string test method name', is invalid, null, or undefined '${Converter.toString(value)}'.`)
         })
       })
     }
@@ -82,12 +83,12 @@ describe('validator.ts', (): void => {
       ]
 
       testCases.forEach((value: number | null | undefined): void => {
-        it(`should throw an error when passed invalid number value '${value}'`, (): void => {
+        it(`should throw an error when passed invalid number value '${Converter.toString(value)}'`, (): void => {
           // Act
           const func: () => void = () => Validator.validateNumber(value, 'number test', 'number test method name')
 
           // Assert
-          expect(func).to.throw(`'number test', accessed within 'number test method name', is invalid, null, or undefined '${value}'.`)
+          expect(func).to.throw(`'number test', accessed within 'number test method name', is invalid, null, or undefined '${Converter.toString(value)}'.`)
         })
       })
     }

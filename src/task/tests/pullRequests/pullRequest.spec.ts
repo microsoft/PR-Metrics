@@ -4,6 +4,7 @@
 import 'reflect-metadata'
 import { expect } from 'chai'
 import { instance, mock, verify, when } from 'ts-mockito'
+import * as Converter from '../../src/utilities/converter'
 import CodeMetrics from '../../src/metrics/codeMetrics'
 import Logger from '../../src/utilities/logger'
 import PullRequest from '../../src/pullRequests/pullRequest'
@@ -204,7 +205,7 @@ describe('pullRequest.ts', (): void => {
       ]
 
       testCases.forEach((currentDescription: string | undefined): void => {
-        it(`should return the default description when the current description '${currentDescription}' is empty`, (): void => {
+        it(`should return the default description when the current description '${Converter.toString(currentDescription)}' is empty`, (): void => {
           // Arrange
           const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(runnerInvoker))
 

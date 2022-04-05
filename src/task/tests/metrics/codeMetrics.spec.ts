@@ -134,7 +134,7 @@ describe('codeMetrics.ts', (): void => {
     ]
 
     testCases.forEach(({ git, size, tests, metrics }: { git: string, size: string, tests: boolean, metrics: CodeMetricsData }): void => {
-      it(`with default inputs and git diff '${git.replace(/\n/g, '\\n').replace(/\r/g, '\\r')}', returns '${size}' size and '${tests}' test coverage`, async (): Promise<void> => {
+      it(`with default inputs and git diff '${git.replace(/\n/g, '\\n').replace(/\r/g, '\\r')}', returns '${size}' size and '${tests.toString()}' test coverage`, async (): Promise<void> => {
         // Arrange
         when(gitInvoker.getDiffSummary()).thenResolve(git)
 
@@ -228,7 +228,7 @@ describe('codeMetrics.ts', (): void => {
     ]
 
     testCases.forEach(({ git, size, tests, metrics, files, deletedFiles }: { git: string, size: string, tests: boolean, metrics: CodeMetricsData, files: string[], deletedFiles: string[] }): void => {
-      it(`with non-default inputs and git diff '${git.replace(/\n/g, '\\n')}', returns '${size}' size and '${tests}' test coverage`, async (): Promise<void> => {
+      it(`with non-default inputs and git diff '${git.replace(/\n/g, '\\n')}', returns '${size}' size and '${tests.toString()}' test coverage`, async (): Promise<void> => {
         // Arrange
         when(inputs.baseSize).thenReturn(100)
         when(inputs.growthRate).thenReturn(1.5)

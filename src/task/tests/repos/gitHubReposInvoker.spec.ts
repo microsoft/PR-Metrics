@@ -5,12 +5,13 @@ import 'reflect-metadata'
 import { anyNumber, anyString, anything, instance, mock, verify, when } from 'ts-mockito'
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import { expect } from 'chai'
+import * as Converter from '../../src/utilities/converter'
+import * as GitHubReposInvokerConstants from './gitHubReposInvokerConstants'
 import CommentData from '../../src/repos/interfaces/commentData'
 import ErrorWithStatus from '../wrappers/errorWithStatus'
 import GetIssueCommentsResponse from '../../src/wrappers/octokitInterfaces/getIssueCommentsResponse'
 import GetPullResponse from '../../src/wrappers/octokitInterfaces/getPullResponse'
 import GitHubReposInvoker from '../../src/repos/gitHubReposInvoker'
-import GitHubReposInvokerConstants from './gitHubReposInvokerConstants'
 import GitInvoker from '../../src/git/gitInvoker'
 import Logger from '../../src/utilities/logger'
 import OctokitLogObject from '../wrappers/octokitLogObject'
@@ -85,7 +86,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       ]
 
       testCases.forEach((variable: string | undefined): void => {
-        it(`should throw when SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI is set to the invalid value '${variable}' and the task is running on Azure Pipelines`, async (): Promise<void> => {
+        it(`should throw when SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI is set to the invalid value '${Converter.toString(variable)}' and the task is running on Azure Pipelines`, async (): Promise<void> => {
           // Arrange
           if (variable === undefined) {
             delete process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI
@@ -102,7 +103,7 @@ describe('gitHubReposInvoker.ts', function (): void {
           } catch (error: any) {
             // Assert
             errorThrown = true
-            expect(error.message).to.equal(`'SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI', accessed within 'GitHubReposInvoker.initializeForAzureDevOps()', is invalid, null, or undefined '${variable}'.`)
+            expect(error.message).to.equal(`'SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI', accessed within 'GitHubReposInvoker.initializeForAzureDevOps()', is invalid, null, or undefined '${Converter.toString(variable)}'.`)
           }
 
           expect(errorThrown).to.equal(true)
@@ -141,7 +142,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       ]
 
       testCases.forEach((variable: string | undefined): void => {
-        it(`should throw when GITHUB_API_URL is set to the invalid value '${variable}' and the task is running on GitHub`, async (): Promise<void> => {
+        it(`should throw when GITHUB_API_URL is set to the invalid value '${Converter.toString(variable)}' and the task is running on GitHub`, async (): Promise<void> => {
           // Arrange
           process.env.GITHUB_ACTION = 'PR-Metrics'
           if (variable === undefined) {
@@ -159,7 +160,7 @@ describe('gitHubReposInvoker.ts', function (): void {
           } catch (error: any) {
             // Assert
             errorThrown = true
-            expect(error.message).to.equal(`'GITHUB_API_URL', accessed within 'GitHubReposInvoker.initializeForGitHub()', is invalid, null, or undefined '${variable}'.`)
+            expect(error.message).to.equal(`'GITHUB_API_URL', accessed within 'GitHubReposInvoker.initializeForGitHub()', is invalid, null, or undefined '${Converter.toString(variable)}'.`)
           }
 
           expect(errorThrown).to.equal(true)
@@ -181,7 +182,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       ]
 
       testCases.forEach((variable: string | undefined): void => {
-        it(`should throw when GITHUB_REPOSITORY_OWNER is set to the invalid value '${variable}' and the task is running on GitHub`, async (): Promise<void> => {
+        it(`should throw when GITHUB_REPOSITORY_OWNER is set to the invalid value '${Converter.toString(variable)}' and the task is running on GitHub`, async (): Promise<void> => {
           // Arrange
           process.env.GITHUB_ACTION = 'PR-Metrics'
           process.env.GITHUB_API_URL = 'https://api.github.com'
@@ -200,7 +201,7 @@ describe('gitHubReposInvoker.ts', function (): void {
           } catch (error: any) {
             // Assert
             errorThrown = true
-            expect(error.message).to.equal(`'GITHUB_REPOSITORY_OWNER', accessed within 'GitHubReposInvoker.initializeForGitHub()', is invalid, null, or undefined '${variable}'.`)
+            expect(error.message).to.equal(`'GITHUB_REPOSITORY_OWNER', accessed within 'GitHubReposInvoker.initializeForGitHub()', is invalid, null, or undefined '${Converter.toString(variable)}'.`)
           }
 
           expect(errorThrown).to.equal(true)
@@ -223,7 +224,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       ]
 
       testCases.forEach((variable: string | undefined): void => {
-        it(`should throw when GITHUB_REPOSITORY is set to the invalid value '${variable}' and the task is running on GitHub`, async (): Promise<void> => {
+        it(`should throw when GITHUB_REPOSITORY is set to the invalid value '${Converter.toString(variable)}' and the task is running on GitHub`, async (): Promise<void> => {
           // Arrange
           process.env.GITHUB_ACTION = 'PR-Metrics'
           process.env.GITHUB_API_URL = 'https://api.github.com'
@@ -243,7 +244,7 @@ describe('gitHubReposInvoker.ts', function (): void {
           } catch (error: any) {
             // Assert
             errorThrown = true
-            expect(error.message).to.equal(`'GITHUB_REPOSITORY', accessed within 'GitHubReposInvoker.initializeForGitHub()', is invalid, null, or undefined '${variable}'.`)
+            expect(error.message).to.equal(`'GITHUB_REPOSITORY', accessed within 'GitHubReposInvoker.initializeForGitHub()', is invalid, null, or undefined '${Converter.toString(variable)}'.`)
           }
 
           expect(errorThrown).to.equal(true)
@@ -579,7 +580,11 @@ describe('gitHubReposInvoker.ts', function (): void {
         expect(options.log.error).to.not.equal(null)
       })
       const response: GetIssueCommentsResponse = GitHubReposInvokerConstants.getIssueCommentsResponse
-      response.data[0]!.body = 'PR Content'
+      if (response.data[0] === undefined) {
+        throw Error('response.data[0] is undefined')
+      }
+
+      response.data[0].body = 'PR Content'
       when(octokitWrapper.getIssueComments(anyString(), anyString(), anyNumber())).thenResolve(response)
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 
@@ -648,7 +653,11 @@ describe('gitHubReposInvoker.ts', function (): void {
         expect(options.log.error).to.not.equal(null)
       })
       const response: GetIssueCommentsResponse = GitHubReposInvokerConstants.getIssueCommentsResponse
-      response.data[0]!.body = 'PR Content'
+      if (response.data[0] === undefined) {
+        throw Error('response.data[0] is undefined')
+      }
+
+      response.data[0].body = 'PR Content'
       when(octokitWrapper.getIssueComments(anyString(), anyString(), anyNumber())).thenResolve(response)
       when(octokitWrapper.getReviewComments(anyString(), anyString(), anyNumber())).thenResolve(GitHubReposInvokerConstants.getReviewCommentsResponse)
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
@@ -689,7 +698,11 @@ describe('gitHubReposInvoker.ts', function (): void {
         expect(options.log.error).to.not.equal(null)
       })
       const response: GetIssueCommentsResponse = GitHubReposInvokerConstants.getIssueCommentsResponse
-      response.data[0]!.body = undefined
+      if (response.data[0] === undefined) {
+        throw Error('response.data[0] is undefined')
+      }
+
+      response.data[0].body = undefined
       when(octokitWrapper.getIssueComments(anyString(), anyString(), anyNumber())).thenResolve(response)
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 

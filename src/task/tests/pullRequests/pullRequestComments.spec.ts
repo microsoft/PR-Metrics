@@ -6,6 +6,7 @@ import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfa
 import { expect } from 'chai'
 import { FixedLengthArray } from '../../src/utilities/fixedLengthArray'
 import { instance, mock, verify, when } from 'ts-mockito'
+import * as Converter from '../../src/utilities/converter'
 import CodeMetrics from '../../src/metrics/codeMetrics'
 import CodeMetricsData from '../../src/metrics/codeMetricsData'
 import CommentData from '../../src/repos/interfaces/commentData'
@@ -448,7 +449,7 @@ describe('pullRequestComments.ts', (): void => {
       ]
 
       testCases.forEach((sufficientlyTested: boolean | null): void => {
-        it(`should return Closed when the pull request is small and has sufficient test coverage '${sufficientlyTested}'`, async (): Promise<void> => {
+        it(`should return Closed when the pull request is small and has sufficient test coverage '${Converter.toString(sufficientlyTested)}'`, async (): Promise<void> => {
           // Arrange
           when(codeMetrics.isSmall()).thenResolve(true)
           when(codeMetrics.isSufficientlyTested()).thenResolve(sufficientlyTested)
@@ -473,7 +474,7 @@ describe('pullRequestComments.ts', (): void => {
       ]
 
       testCases.forEach(({ isSmall, isSufficientlyTested }: { isSmall: boolean, isSufficientlyTested: boolean | null }): void => {
-        it(`should return Active when the pull request small status is '${isSmall}' and the sufficient test coverage status is '${isSufficientlyTested}'`, async (): Promise<void> => {
+        it(`should return Active when the pull request small status is '${isSmall.toString()}' and the sufficient test coverage status is '${Converter.toString(isSufficientlyTested)}'`, async (): Promise<void> => {
           // Arrange
           when(codeMetrics.isSmall()).thenResolve(isSmall)
           when(codeMetrics.isSufficientlyTested()).thenResolve(isSufficientlyTested)
