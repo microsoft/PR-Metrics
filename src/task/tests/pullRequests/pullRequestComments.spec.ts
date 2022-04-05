@@ -131,13 +131,27 @@ describe('pullRequestComments.ts', (): void => {
     }
 
     {
-      const testCases: Array<{ filesNotRequiringReview: string[], fileComments: FileCommentData[] }> = [
-        { filesNotRequiringReview: ['folder/file1.ts', 'file3.ts'], fileComments: [new FileCommentData(20, '❗ **This file doesn\'t require review.**', 'file2.ts')] },
-        { filesNotRequiringReview: ['folder/file1.ts', 'file3.ts'], fileComments: [new FileCommentData(20, 'Content', 'folder/file1.ts'), new FileCommentData(20, '❗ **This file doesn\'t require review.**', 'file2.ts')] },
-        { filesNotRequiringReview: ['file3.ts'], fileComments: [new FileCommentData(20, '❗ **This file doesn\'t require review.**', 'folder/file1.ts'), new FileCommentData(20, '❗ **This file doesn\'t require review.**', 'file2.ts')] }
+      interface TestCaseType {
+        filesNotRequiringReview: string[]
+        fileComments: FileCommentData[]
+      }
+
+      const testCases: TestCaseType[] = [
+        {
+          filesNotRequiringReview: ['folder/file1.ts', 'file3.ts'],
+          fileComments: [new FileCommentData(20, '❗ **This file doesn\'t require review.**', 'file2.ts')]
+        },
+        {
+          filesNotRequiringReview: ['folder/file1.ts', 'file3.ts'],
+          fileComments: [new FileCommentData(20, 'Content', 'folder/file1.ts'), new FileCommentData(20, '❗ **This file doesn\'t require review.**', 'file2.ts')]
+        },
+        {
+          filesNotRequiringReview: ['file3.ts'],
+          fileComments: [new FileCommentData(20, '❗ **This file doesn\'t require review.**', 'folder/file1.ts'), new FileCommentData(20, '❗ **This file doesn\'t require review.**', 'file2.ts')]
+        }
       ]
 
-      testCases.forEach(({ filesNotRequiringReview, fileComments }: { filesNotRequiringReview: string[], fileComments: FileCommentData[] }): void => {
+      testCases.forEach(({ filesNotRequiringReview, fileComments }: TestCaseType): void => {
         it(`should return the expected result for files not requiring review when the comment is present with files '${JSON.stringify(fileComments)}'`, async (): Promise<void> => {
           // Arrange
           const comments: CommentData = new CommentData()
@@ -163,13 +177,27 @@ describe('pullRequestComments.ts', (): void => {
     }
 
     {
-      const testCases: Array<{ deletedFilesNotRequiringReview: string[], fileComments: FileCommentData[] }> = [
-        { deletedFilesNotRequiringReview: ['folder/file1.ts', 'file3.ts'], fileComments: [new FileCommentData(0, '❗ **This file doesn\'t require review.**', 'file2.ts')] },
-        { deletedFilesNotRequiringReview: ['folder/file1.ts', 'file3.ts'], fileComments: [new FileCommentData(0, 'Content', 'folder/file1.ts'), new FileCommentData(0, '❗ **This file doesn\'t require review.**', 'file2.ts')] },
-        { deletedFilesNotRequiringReview: ['file3.ts'], fileComments: [new FileCommentData(0, '❗ **This file doesn\'t require review.**', 'folder/file1.ts'), new FileCommentData(0, '❗ **This file doesn\'t require review.**', 'file2.ts')] }
+      interface TestCaseType {
+        deletedFilesNotRequiringReview: string[]
+        fileComments: FileCommentData[]
+      }
+
+      const testCases: TestCaseType[] = [
+        {
+          deletedFilesNotRequiringReview: ['folder/file1.ts', 'file3.ts'],
+          fileComments: [new FileCommentData(0, '❗ **This file doesn\'t require review.**', 'file2.ts')]
+        },
+        {
+          deletedFilesNotRequiringReview: ['folder/file1.ts', 'file3.ts'],
+          fileComments: [new FileCommentData(0, 'Content', 'folder/file1.ts'), new FileCommentData(0, '❗ **This file doesn\'t require review.**', 'file2.ts')]
+        },
+        {
+          deletedFilesNotRequiringReview: ['file3.ts'],
+          fileComments: [new FileCommentData(0, '❗ **This file doesn\'t require review.**', 'folder/file1.ts'), new FileCommentData(0, '❗ **This file doesn\'t require review.**', 'file2.ts')]
+        }
       ]
 
-      testCases.forEach(({ deletedFilesNotRequiringReview, fileComments }: { deletedFilesNotRequiringReview: string[], fileComments: FileCommentData[] }): void => {
+      testCases.forEach(({ deletedFilesNotRequiringReview, fileComments }: TestCaseType): void => {
         it(`should return the expected result for deleted files not requiring review when the comment is present with files '${JSON.stringify(fileComments)}'`, async (): Promise<void> => {
           // Arrange
           const comments: CommentData = new CommentData()
@@ -466,14 +494,31 @@ describe('pullRequestComments.ts', (): void => {
     }
 
     {
-      const testCases: Array<{ isSmall: boolean, isSufficientlyTested: boolean | null }> = [
-        { isSmall: true, isSufficientlyTested: false },
-        { isSmall: false, isSufficientlyTested: true },
-        { isSmall: false, isSufficientlyTested: false },
-        { isSmall: false, isSufficientlyTested: null }
+      interface TestCaseType {
+        isSmall: boolean
+        isSufficientlyTested: boolean | null
+      }
+
+      const testCases: TestCaseType[] = [
+        {
+          isSmall: true,
+          isSufficientlyTested: false
+        },
+        {
+          isSmall: false,
+          isSufficientlyTested: true
+        },
+        {
+          isSmall: false,
+          isSufficientlyTested: false
+        },
+        {
+          isSmall: false,
+          isSufficientlyTested: null
+        }
       ]
 
-      testCases.forEach(({ isSmall, isSufficientlyTested }: { isSmall: boolean, isSufficientlyTested: boolean | null }): void => {
+      testCases.forEach(({ isSmall, isSufficientlyTested }: TestCaseType): void => {
         it(`should return Active when the pull request small status is '${isSmall.toString()}' and the sufficient test coverage status is '${Converter.toString(isSufficientlyTested)}'`, async (): Promise<void> => {
           // Arrange
           when(codeMetrics.isSmall()).thenResolve(isSmall)

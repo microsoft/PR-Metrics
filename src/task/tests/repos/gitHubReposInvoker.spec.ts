@@ -6,6 +6,7 @@ import { anyNumber, anyString, anything, instance, mock, verify, when } from 'ts
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import { expect } from 'chai'
 import * as Converter from '../../src/utilities/converter'
+import * as ExpectExtensions from '../testUtilities/expectExtensions'
 import * as GitHubReposInvokerConstants from './gitHubReposInvokerConstants'
 import CommentData from '../../src/repos/interfaces/commentData'
 import ErrorWithStatus from '../wrappers/errorWithStatus'
@@ -95,18 +96,12 @@ describe('gitHubReposInvoker.ts', function (): void {
           }
 
           const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
-          let errorThrown: boolean = false
 
-          try {
-            // Act
-            await gitHubReposInvoker.getTitleAndDescription()
-          } catch (error: any) {
-            // Assert
-            errorThrown = true
-            expect(error.message).to.equal(`'SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI', accessed within 'GitHubReposInvoker.initializeForAzureDevOps()', is invalid, null, or undefined '${Converter.toString(variable)}'.`)
-          }
+          // Act
+          const func: () => Promise<PullRequestDetails> = async () => await gitHubReposInvoker.getTitleAndDescription()
 
-          expect(errorThrown).to.equal(true)
+          // Assert
+          await ExpectExtensions.toThrowAsync(func, `'SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI', accessed within 'GitHubReposInvoker.initializeForAzureDevOps()', is invalid, null, or undefined '${Converter.toString(variable)}'.`)
           verify(logger.logDebug('* GitHubReposInvoker.getTitleAndDescription()')).once()
           verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
           verify(logger.logDebug('* GitHubReposInvoker.initializeForAzureDevOps()')).once()
@@ -118,18 +113,12 @@ describe('gitHubReposInvoker.ts', function (): void {
       // Arrange
       process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI = 'https://github.com/microsoft'
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
-      let errorThrown: boolean = false
 
-      try {
-        // Act
-        await gitHubReposInvoker.getTitleAndDescription()
-      } catch (error: any) {
-        // Assert
-        errorThrown = true
-        expect(error.message).to.equal('SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI \'https://github.com/microsoft\' is in an unexpected format.')
-      }
+      // Act
+      const func: () => Promise<PullRequestDetails> = async () => await gitHubReposInvoker.getTitleAndDescription()
 
-      expect(errorThrown).to.equal(true)
+      // Assert
+      await ExpectExtensions.toThrowAsync(func, 'SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI \'https://github.com/microsoft\' is in an unexpected format.')
       verify(logger.logDebug('* GitHubReposInvoker.getTitleAndDescription()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.initializeForAzureDevOps()')).once()
@@ -152,18 +141,12 @@ describe('gitHubReposInvoker.ts', function (): void {
           }
 
           const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
-          let errorThrown: boolean = false
 
-          try {
-            // Act
-            await gitHubReposInvoker.getTitleAndDescription()
-          } catch (error: any) {
-            // Assert
-            errorThrown = true
-            expect(error.message).to.equal(`'GITHUB_API_URL', accessed within 'GitHubReposInvoker.initializeForGitHub()', is invalid, null, or undefined '${Converter.toString(variable)}'.`)
-          }
+          // Act
+          const func: () => Promise<PullRequestDetails> = async () => await gitHubReposInvoker.getTitleAndDescription()
 
-          expect(errorThrown).to.equal(true)
+          // Assert
+          await ExpectExtensions.toThrowAsync(func, `'GITHUB_API_URL', accessed within 'GitHubReposInvoker.initializeForGitHub()', is invalid, null, or undefined '${Converter.toString(variable)}'.`)
           verify(logger.logDebug('* GitHubReposInvoker.getTitleAndDescription()')).once()
           verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
           verify(logger.logDebug('* GitHubReposInvoker.initializeForGitHub()')).once()
@@ -193,18 +176,12 @@ describe('gitHubReposInvoker.ts', function (): void {
           }
 
           const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
-          let errorThrown: boolean = false
 
-          try {
-            // Act
-            await gitHubReposInvoker.getTitleAndDescription()
-          } catch (error: any) {
-            // Assert
-            errorThrown = true
-            expect(error.message).to.equal(`'GITHUB_REPOSITORY_OWNER', accessed within 'GitHubReposInvoker.initializeForGitHub()', is invalid, null, or undefined '${Converter.toString(variable)}'.`)
-          }
+          // Act
+          const func: () => Promise<PullRequestDetails> = async () => await gitHubReposInvoker.getTitleAndDescription()
 
-          expect(errorThrown).to.equal(true)
+          // Assert
+          await ExpectExtensions.toThrowAsync(func, `'GITHUB_REPOSITORY_OWNER', accessed within 'GitHubReposInvoker.initializeForGitHub()', is invalid, null, or undefined '${Converter.toString(variable)}'.`)
           verify(logger.logDebug('* GitHubReposInvoker.getTitleAndDescription()')).once()
           verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
           verify(logger.logDebug('* GitHubReposInvoker.initializeForGitHub()')).once()
@@ -236,18 +213,12 @@ describe('gitHubReposInvoker.ts', function (): void {
           }
 
           const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
-          let errorThrown: boolean = false
 
-          try {
-            // Act
-            await gitHubReposInvoker.getTitleAndDescription()
-          } catch (error: any) {
-            // Assert
-            errorThrown = true
-            expect(error.message).to.equal(`'GITHUB_REPOSITORY', accessed within 'GitHubReposInvoker.initializeForGitHub()', is invalid, null, or undefined '${Converter.toString(variable)}'.`)
-          }
+          // Act
+          const func: () => Promise<PullRequestDetails> = async () => await gitHubReposInvoker.getTitleAndDescription()
 
-          expect(errorThrown).to.equal(true)
+          // Assert
+          await ExpectExtensions.toThrowAsync(func, `'GITHUB_REPOSITORY', accessed within 'GitHubReposInvoker.initializeForGitHub()', is invalid, null, or undefined '${Converter.toString(variable)}'.`)
           verify(logger.logDebug('* GitHubReposInvoker.getTitleAndDescription()')).once()
           verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
           verify(logger.logDebug('* GitHubReposInvoker.initializeForGitHub()')).once()
@@ -268,18 +239,12 @@ describe('gitHubReposInvoker.ts', function (): void {
       process.env.GITHUB_REPOSITORY_OWNER = 'microsoft'
       process.env.GITHUB_REPOSITORY = 'microsoft'
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
-      let errorThrown: boolean = false
 
-      try {
-        // Act
-        await gitHubReposInvoker.getTitleAndDescription()
-      } catch (error: any) {
-        // Assert
-        errorThrown = true
-        expect(error.message).to.equal('GITHUB_REPOSITORY \'microsoft\' is in an unexpected format.')
-      }
+      // Act
+      const func: () => Promise<PullRequestDetails> = async () => await gitHubReposInvoker.getTitleAndDescription()
 
-      expect(errorThrown).to.equal(true)
+      // Assert
+      await ExpectExtensions.toThrowAsync(func, 'GITHUB_REPOSITORY \'microsoft\' is in an unexpected format.')
       verify(logger.logDebug('* GitHubReposInvoker.getTitleAndDescription()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.initializeForGitHub()')).once()
@@ -494,19 +459,13 @@ describe('gitHubReposInvoker.ts', function (): void {
           error.status = status
           when(octokitWrapper.getPull(anyString(), anyString(), anyNumber())).thenThrow(error)
           const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
-          let errorThrown: boolean = false
 
-          try {
-            // Act
-            await gitHubReposInvoker.getTitleAndDescription()
-          } catch (error: any) {
-            // Assert
-            errorThrown = true
-            expect(error.message).to.equal('Could not access the resources. Ensure \'System.AccessToken\' has access to \'repos\'.')
-            expect(error.internalMessage).to.equal('Test')
-          }
+          // Act
+          const func: () => Promise<PullRequestDetails> = async () => await gitHubReposInvoker.getTitleAndDescription()
 
-          expect(errorThrown).to.equal(true)
+          // Assert
+          const result: any = await ExpectExtensions.toThrowAsync(func, 'Could not access the resources. Ensure \'System.AccessToken\' has access to \'repos\'.')
+          expect(result.internalMessage).to.equal('Test')
           verify(octokitWrapper.initialize(anything())).once()
           verify(logger.logDebug('* GitHubReposInvoker.getTitleAndDescription()')).once()
           verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
@@ -528,18 +487,12 @@ describe('gitHubReposInvoker.ts', function (): void {
       })
       when(octokitWrapper.getPull(anyString(), anyString(), anyNumber())).thenThrow(Error('Error'))
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
-      let errorThrown: boolean = false
 
-      try {
-        // Act
-        await gitHubReposInvoker.getTitleAndDescription()
-      } catch (error: any) {
-        // Assert
-        errorThrown = true
-        expect(error.message).to.equal('Error')
-      }
+      // Act
+      const func: () => Promise<PullRequestDetails> = async () => await gitHubReposInvoker.getTitleAndDescription()
 
-      expect(errorThrown).to.equal(true)
+      // Assert
+      await ExpectExtensions.toThrowAsync(func, 'Error')
       verify(octokitWrapper.initialize(anything())).once()
       verify(logger.logDebug('* GitHubReposInvoker.getTitleAndDescription()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
@@ -858,18 +811,12 @@ describe('gitHubReposInvoker.ts', function (): void {
         data: []
       })
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
-      let errorThrown: boolean = false
 
-      try {
-        // Act
-        await gitHubReposInvoker.createComment('Content', CommentThreadStatus.Unknown, 'file.ts')
-      } catch (error: any) {
-        // Assert
-        errorThrown = true
-        expect(error.message).to.equal('\'result.data[-1].sha\', accessed within \'GitHubReposInvoker.getCommitId()\', is invalid, null, or undefined \'undefined\'.')
-      }
+      // Act
+      const func: () => Promise<void> = async () => await gitHubReposInvoker.createComment('Content', CommentThreadStatus.Unknown, 'file.ts')
 
-      expect(errorThrown).to.equal(true)
+      // Assert
+      await ExpectExtensions.toThrowAsync(func, '\'result.data[-1].sha\', accessed within \'GitHubReposInvoker.getCommitId()\', is invalid, null, or undefined \'undefined\'.')
       verify(octokitWrapper.initialize(anything())).once()
       verify(octokitWrapper.listCommits('microsoft', 'PR-Metrics', 12345, 1)).once()
       verify(logger.logDebug('* GitHubReposInvoker.createComment()')).once()
@@ -934,18 +881,12 @@ describe('gitHubReposInvoker.ts', function (): void {
         data: []
       })
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
-      let errorThrown: boolean = false
 
-      try {
-        // Act
-        await gitHubReposInvoker.createComment('Content', CommentThreadStatus.Unknown, 'file.ts')
-      } catch (error: any) {
-        // Assert
-        errorThrown = true
-        expect(error.message).to.equal('The regular expression did not match \'non-matching\'.')
-      }
+      // Act
+      const func: () => Promise<void> = async () => await gitHubReposInvoker.createComment('Content', CommentThreadStatus.Unknown, 'file.ts')
 
-      expect(errorThrown).to.equal(true)
+      // Assert
+      await ExpectExtensions.toThrowAsync(func, 'The regular expression did not match \'non-matching\'.')
       verify(octokitWrapper.initialize(anything())).once()
       verify(octokitWrapper.listCommits('microsoft', 'PR-Metrics', 12345, 1)).once()
       verify(logger.logDebug('* GitHubReposInvoker.createComment()')).once()

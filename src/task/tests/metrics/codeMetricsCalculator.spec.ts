@@ -225,14 +225,36 @@ describe('codeMetricsCalculator.ts', (): void => {
     })
 
     {
-      const testCases: Array<{ deletedFiles: string[], file1Comments: number, file2Comments: number }> = [
-        { deletedFiles: ['file1.ts'], file1Comments: 1, file2Comments: 0 },
-        { deletedFiles: ['file1.ts', 'file2.ts'], file1Comments: 1, file2Comments: 1 },
-        { deletedFiles: [], file1Comments: 0, file2Comments: 0 },
-        { deletedFiles: ['file1.ts', 'file2.ts'], file1Comments: 1, file2Comments: 1 }
+      interface TestCaseType {
+        deletedFiles: string[]
+        file1Comments: number
+        file2Comments: number
+      }
+
+      const testCases: TestCaseType[] = [
+        {
+          deletedFiles: ['file1.ts'],
+          file1Comments: 1,
+          file2Comments: 0
+        },
+        {
+          deletedFiles: ['file1.ts', 'file2.ts'],
+          file1Comments: 1,
+          file2Comments: 1
+        },
+        {
+          deletedFiles: [],
+          file1Comments: 0,
+          file2Comments: 0
+        },
+        {
+          deletedFiles: ['file1.ts', 'file2.ts'],
+          file1Comments: 1,
+          file2Comments: 1
+        }
       ]
 
-      testCases.forEach(({ deletedFiles, file1Comments, file2Comments }: { deletedFiles: string[], file1Comments: number, file2Comments: number }): void => {
+      testCases.forEach(({ deletedFiles, file1Comments, file2Comments }: TestCaseType): void => {
         it(`should succeed when comments are to be added to files not requiring review '${JSON.stringify(deletedFiles)}'`, async (): Promise<void> => {
           // Arrange
           const commentData: PullRequestCommentsData = new PullRequestCommentsData(deletedFiles, [])
@@ -252,7 +274,7 @@ describe('codeMetricsCalculator.ts', (): void => {
         })
       })
 
-      testCases.forEach(({ deletedFiles, file1Comments, file2Comments }: { deletedFiles: string[], file1Comments: number, file2Comments: number }): void => {
+      testCases.forEach(({ deletedFiles, file1Comments, file2Comments }: TestCaseType): void => {
         it(`should succeed when comments are to be added to deleted files not requiring review '${JSON.stringify(deletedFiles)}'`, async (): Promise<void> => {
           // Arrange
           const commentData: PullRequestCommentsData = new PullRequestCommentsData([], deletedFiles)
