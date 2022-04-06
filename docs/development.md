@@ -74,11 +74,7 @@ interfaces to add additional methods, while retaining the same access pattern.
    You can generate a PAT with at least the "Agent Pools (Read & manage)" scope
    by following the instructions [here][tfxpat]. This will only need to be
    performed the first time you use tfx-cli.
-1. To build and deploy, from within the `src/task` folder, run
-   `npm run deploy:release`. Note that the deployment task can intermittently
-   fail to deploy all dependencies, which will be seen when you run the build
-   task. If this occurs, run `npm run deploy:release` or `npm run deploy:debug`
-   and try again.
+1. To build and deploy, from within the `src/task` folder, run `npm run deploy`.
 
 ## Testing
 
@@ -95,10 +91,7 @@ which were only discovered through experience and the unit tests ensure that
 these edge case fixes do not regress. Moreover, validating this extension on the
 server is significantly more time consuming than validating locally.
 
-You can use `npm run deploy:release` or `npm run deploy:debug` for server-based
-testing. Note that the deployment task can intermittently fail to deploy all
-dependencies, which will be seen when you run the build task. If this occurs,
-run `npm run deploy:release` or `npm run deploy:debug` and try again.
+You can use `npm run deploy` for server-based testing.
 
 Test validation and static analysis will be automatically performed whenever a
 PR is opened against the `main` branch. These validations must succeed for the

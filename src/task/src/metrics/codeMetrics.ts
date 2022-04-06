@@ -155,9 +155,11 @@ export default class CodeMetrics {
 
     // Check for glob matches.
     codeFileMetrics.forEach((codeFileMetric: CodeFileMetric): void => {
-      let isValidFilePattern: boolean = true
+      let isValidFilePattern: boolean = false
       this._inputs.fileMatchingPatterns.forEach((fileMatchingPattern: string): void => {
-        isValidFilePattern &&= minimatch.match([codeFileMetric.fileName], fileMatchingPattern, CodeMetrics._minimatchOptions).length > 0
+        if (!isValidFilePattern || fileMatchingPattern.startsWith('!')) {
+          isValidFilePattern = minimatch.match([codeFileMetric.fileName], fileMatchingPattern, CodeMetrics._minimatchOptions).length > 0
+        }
       })
 
       const isValidFileExtension: boolean = this.matchFileExtension(codeFileMetric.fileName)

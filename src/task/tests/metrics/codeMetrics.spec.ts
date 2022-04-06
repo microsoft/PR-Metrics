@@ -998,7 +998,7 @@ describe('codeMetrics.ts', (): void => {
         when(inputs.baseSize).thenReturn(100)
         when(inputs.growthRate).thenReturn(1.5)
         when(inputs.testFactor).thenReturn(2.0)
-        when(inputs.fileMatchingPatterns).thenReturn(['**/*', '!**/ignored.*'])
+        when(inputs.fileMatchingPatterns).thenReturn(['**/*', 'other.ts', '!**/ignored.*'])
         when(inputs.codeFileExtensions).thenReturn(new Set<string>(['ts']))
         when(gitInvoker.getDiffSummary()).thenResolve(gitResponse)
 
