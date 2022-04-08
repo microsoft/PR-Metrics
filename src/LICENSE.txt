@@ -1030,6 +1030,33 @@ IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 ---------------------------------------------------------
 
+semver 7.3.5 - ISC
+https://github.com/npm/node-semver#readme
+
+Copyright Isaac Z. Schlueter
+Copyright (c) Isaac Z. Schlueter and Contributors
+
+The ISC License
+
+Copyright (c) Isaac Z. Schlueter and Contributors
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
+IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+
+---------------------------------------------------------
+
+---------------------------------------------------------
+
 universal-user-agent 6.0.0 - ISC
 https://github.com/gr2m/universal-user-agent#readme
 
@@ -1095,6 +1122,96 @@ WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
 IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
+
+---------------------------------------------------------
+
+---------------------------------------------------------
+
+@actions/core 1.6.0 - MIT
+https://github.com/actions/toolkit/tree/main/packages/core
+
+Copyright 2019 GitHub
+
+The MIT License (MIT)
+
+Copyright 2019 GitHub
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+---------------------------------------------------------
+
+---------------------------------------------------------
+
+@actions/exec 1.1.1 - MIT
+https://github.com/actions/toolkit/tree/main/packages/exec
+
+Copyright 2019 GitHub
+Copyright Joyent, Inc. and other Node contributors
+
+The MIT License (MIT)
+
+Copyright 2019 GitHub
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+---------------------------------------------------------
+
+---------------------------------------------------------
+
+@actions/http-client 1.0.11 - MIT
+https://github.com/actions/http-client#readme
+
+Copyright (c) GitHub, Inc.
+
+Actions Http Client for Node.js
+
+Copyright (c) GitHub, Inc.
+
+All rights reserved.
+
+MIT License
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+associated documentation files (the "Software"), to deal in the Software without restriction,
+including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
+and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED *AS IS*, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+---------------------------------------------------------
+
+---------------------------------------------------------
+
+@actions/io 1.1.2 - MIT
+https://github.com/actions/toolkit/tree/main/packages/io
+
+Copyright 2019 GitHub
+
+The MIT License (MIT)
+
+Copyright 2019 GitHub
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ---------------------------------------------------------
 
@@ -1295,7 +1412,7 @@ THE SOFTWARE.
 
 ---------------------------------------------------------
 
-@octokit/core 3.5.1 - MIT
+@octokit/core 3.6.0 - MIT
 https://github.com/octokit/core.js#readme
 
 Copyright (c) 2019 Octokit
@@ -1544,9 +1661,10 @@ SOFTWARE.
 
 ---------------------------------------------------------
 
-@octokit/plugin-throttling 3.5.2 - MIT
+@octokit/plugin-throttling 3.6.2 - MIT
 https://github.com/octokit/plugin-throttling.js#readme
 
+Copyright (c) 2018 Octokit
 
 The MIT License
 
@@ -1657,7 +1775,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---------------------------------------------------------
 
-@octokit/webhooks 9.22.0 - MIT
+@octokit/webhooks 9.23.0 - MIT
 https://github.com/octokit/webhooks.js#readme
 
 copyright Sindre Sorhus
@@ -1708,7 +1826,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---------------------------------------------------------
 
-@octokit/webhooks-types 5.2.0 - MIT
+@octokit/webhooks-types 5.5.1 - MIT
 https://github.com/octokit/webhooks#readme
 
 
@@ -1726,10 +1844,10 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---------------------------------------------------------
 
-@types/aws-lambda 8.10.92 - MIT
+@types/aws-lambda 8.10.93 - MIT
 https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/aws-lambda
 
-Copyright (c) Microsoft Corporation.
+Copyright (c) Microsoft Corporation
 
 MIT License
 
@@ -1858,10 +1976,10 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---------------------------------------------------------
 
-@types/node 17.0.14 - MIT
+@types/node 17.0.23 - MIT
 https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/node
 
-Copyright (c) Microsoft Corporation.
+Copyright (c) Microsoft Corporation
 
 MIT License
 
@@ -1999,21 +2117,9 @@ SOFTWARE.
 
 ---------------------------------------------------------
 
-azure-devops-node-api 11.1.0 - MIT
+azure-devops-node-api 11.1.1 - MIT
 https://github.com/Microsoft/azure-devops-node-api#readme
 
-Copyright (c) Microsoft.
-Copyright (c) 2014 Tyler Kellen
-Copyright (c) 2015 Tyler Kellen
-Copyright (c) Isaac Z. Schlueter
-Copyright (c) 2012 Koichi Kobayashi
-Copyright (c) Microsoft Corporation.
-Copyright (c) Isaac Z. Schlueter and Contributors
-Copyright Joyent, Inc. and other Node contributors.
-Copyright (c) 2012, Artur Adib <arturadib@gmail.com>
-Copyright (c) 2013 Julian Gruber <julian@juliangruber.com>
-Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
-Copyright (c) 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
 
 Visual Studio Team Services Client for Node.js
 
@@ -2042,32 +2148,32 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ---------------------------------------------------------
 
-azure-pipelines-task-lib 3.1.10 - MIT
+azure-pipelines-task-lib 3.2.0 - MIT
 https://github.com/Microsoft/azure-pipelines-task-lib
 
-Copyright 2018
-Copyright 2009-2014
+Copyright 2018 kumavis
 Copyright (c) 2013 Max Ogden
 Copyright (c) 2011 Yahoo! Inc.
 Copyright (c) 2012, Joshua Bell
 Copyright (c) Isaac Z. Schlueter
+Copyright 2009-2014 Contributors
 Copyright (c) 2015 Calvin Metcalf
 Copyright (c) Feross Aboukhadijeh
 Copyright (c) 2014 Forbes Lindesay
-Copyright (c) Microsoft Corporation.
-Copyright (c) 2011-2018 JS Foundation
+Copyright (c) Microsoft Corporation
 Copyright (c) 2010, Linden Research, Inc.
-Copyright 2009-2017 Kristopher Michael Kowal.
+Copyright 2009-2017 Kristopher Michael Kowal
 Copyright (c) Isaac Z. Schlueter and Contributors
 Copyright 2010 James Halliday (mail@substack.net)
 Copyright (c) 2012, Artur Adib <aadib@mozilla.com>
-Copyright Joyent, Inc. and other Node contributors.
+Copyright Joyent, Inc. and other Node contributors
 Copyright Mathias Bynens <https://mathiasbynens.be/>
 Copyright (c) 2013 Julian Gruber <julian@juliangruber.com>
 Copyright (c) 2014 Nathan Rajlich <nathan@tootallnate.net>
-Copyright (c) 2014 Nathan LaFreniere and other contributors.
+Copyright (c) 2014 Nathan LaFreniere and other contributors
 Copyright (c) 2010-2016 Robert Kieffer and other contributors
 Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
+Copyright (c) 2011-2018 JS Foundation and contributors, https://js.foundation
 
 The MIT License (MIT)
 
@@ -2635,8 +2741,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 ---------------------------------------------------------
 
-has-symbols 1.0.2 - MIT
-https://github.com/inspect-js/has-symbols#readme
+has-symbols 1.0.3 - MIT
+https://github.com/ljharb/has-symbols#readme
 
 Copyright (c) 2016 Jordan Harband
 
@@ -3314,41 +3420,44 @@ terms above.
 
 ---------------------------------------------------------
 
-mime-db 1.51.0 - MIT
+mime-db 1.52.0 - MIT
 https://github.com/jshttp/mime-db#readme
 
 Copyright (c) 2014 Jonathan Ong
-Copyright (c) 2014 Jonathan Ong me@jongleberry.com
+Copyright (c) 2015-2022 Douglas Christopher Wilson
+Copyright (c) 2014 Jonathan Ong <me@jongleberry.com>
+Copyright (c) 2015-2022 Douglas Christopher Wilson <doug@somethingdoug.com>
 
+(The MIT License)
 
-The MIT License (MIT)
+Copyright (c) 2014 Jonathan Ong <me@jongleberry.com>
+Copyright (c) 2015-2022 Douglas Christopher Wilson <doug@somethingdoug.com>
 
-Copyright (c) 2014 Jonathan Ong me@jongleberry.com
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+'Software'), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
 
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 ---------------------------------------------------------
 
 ---------------------------------------------------------
 
-mime-types 2.1.34 - MIT
+mime-types 2.1.35 - MIT
 https://github.com/jshttp/mime-types#readme
 
 Copyright (c) 2014 Jonathan Ong
