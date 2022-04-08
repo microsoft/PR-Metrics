@@ -1,8 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { InputsDefault } from './inputsDefault'
 import { singleton } from 'tsyringe'
+import * as InputsDefault from './inputsDefault'
 import Logger from '../utilities/logger'
 import RunnerInvoker from '../runners/runnerInvoker'
 
@@ -12,8 +12,8 @@ import RunnerInvoker from '../runners/runnerInvoker'
  */
 @singleton()
 export default class Inputs {
-  private _logger: Logger
-  private _runnerInvoker: RunnerInvoker
+  private readonly _logger: Logger
+  private readonly _runnerInvoker: RunnerInvoker
 
   private _isInitialized: boolean = false
   private _baseSize: number = 0
@@ -115,7 +115,7 @@ export default class Inputs {
   private initializeBaseSize (baseSize: string | undefined): void {
     this._logger.logDebug('* Inputs.initializeBaseSize()')
 
-    const convertedValue: number = parseInt(baseSize!)
+    const convertedValue: number = baseSize === undefined ? NaN : parseInt(baseSize)
     if (!isNaN(convertedValue) && convertedValue > 0) {
       this._baseSize = convertedValue
       this._logger.logInfo(this._runnerInvoker.loc('metrics.inputs.settingBaseSize', this._baseSize.toLocaleString()))
@@ -129,7 +129,7 @@ export default class Inputs {
   private initializeGrowthRate (growthRate: string | undefined): void {
     this._logger.logDebug('* Inputs.initializeGrowthRate()')
 
-    const convertedValue: number = parseFloat(growthRate!)
+    const convertedValue: number = growthRate === undefined ? NaN : parseFloat(growthRate)
     if (!isNaN(convertedValue) && convertedValue > 1.0) {
       this._growthRate = convertedValue
       this._logger.logInfo(this._runnerInvoker.loc('metrics.inputs.settingGrowthRate', this._growthRate.toLocaleString()))
@@ -143,7 +143,7 @@ export default class Inputs {
   private initializeTestFactor (testFactor: string | undefined): void {
     this._logger.logDebug('* Inputs.initializeTestFactor()')
 
-    const convertedValue: number = parseFloat(testFactor!)
+    const convertedValue: number = testFactor === undefined ? NaN : parseFloat(testFactor)
     if (!isNaN(convertedValue) && convertedValue >= 0.0) {
       if (convertedValue === 0.0) {
         this._testFactor = null
@@ -163,7 +163,7 @@ export default class Inputs {
   private initializeFileMatchingPatterns (fileMatchingPatterns: string | undefined): void {
     this._logger.logDebug('* Inputs.initializeFileMatchingPatterns()')
 
-    if (fileMatchingPatterns?.trim()) {
+    if (fileMatchingPatterns !== undefined && fileMatchingPatterns.trim() !== '') {
       this._fileMatchingPatterns = fileMatchingPatterns.replace(/\\/g, '/').replace(/\n$/g, '').split('\n')
       this._logger.logInfo(this._runnerInvoker.loc('metrics.inputs.settingFileMatchingPatterns', JSON.stringify(this._fileMatchingPatterns)))
       return
@@ -176,7 +176,7 @@ export default class Inputs {
   private initializeCodeFileExtensions (codeFileExtensions: string | undefined): void {
     this._logger.logDebug('* Inputs.initializeCodeFileExtensions()')
 
-    if (codeFileExtensions?.trim()) {
+    if (codeFileExtensions !== undefined && codeFileExtensions.trim() !== '') {
       const codeFileExtensionsArray: string[] = codeFileExtensions.replace(/\n$/g, '').split('\n')
       codeFileExtensionsArray.forEach((value: string): void => {
         if (value.startsWith('*.')) {

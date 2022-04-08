@@ -33,8 +33,8 @@ export default class GitHubRunnerWrapper {
    * @param options The execution options.
    * @returns A promise containing the result of the execution.
    */
-  public exec (tool: string, args: string[], options: actionsExec.ExecOptions): Promise<number> {
-    return actionsExec.exec(tool, args, options)
+  public async exec (tool: string, args: string[], options: actionsExec.ExecOptions): Promise<number> {
+    return await actionsExec.exec(tool, args, options)
   }
 
   /**

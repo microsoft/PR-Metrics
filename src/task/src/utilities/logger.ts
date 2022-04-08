@@ -13,7 +13,7 @@ export default class Logger {
   private readonly _consoleWrapper: ConsoleWrapper
   private readonly _runnerInvoker: RunnerInvoker
 
-  private _messages: string[] = []
+  private readonly _messages: string[] = []
 
   /**
    * Initializes a new instance of the `Logger` class.

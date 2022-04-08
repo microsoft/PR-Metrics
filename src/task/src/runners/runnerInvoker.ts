@@ -36,9 +36,9 @@ export default class RunnerInvoker implements IRunnerInvoker {
     return process.env.GITHUB_ACTION !== undefined
   }
 
-  public exec (tool: string, args: string[], failOnError: boolean, outputStream: GitWritableStream, errorStream: GitWritableStream): Promise<number> {
+  public async exec (tool: string, args: string[], failOnError: boolean, outputStream: GitWritableStream, errorStream: GitWritableStream): Promise<number> {
     const runner: IRunnerInvoker = this.getRunner()
-    return runner.exec(tool, args, failOnError, outputStream, errorStream)
+    return await runner.exec(tool, args, failOnError, outputStream, errorStream)
   }
 
   public getInput (name: string[]): string | undefined {
@@ -96,7 +96,7 @@ export default class RunnerInvoker implements IRunnerInvoker {
   }
 
   private getRunner (): IRunnerInvoker {
-    if (this._runnerInvoker) {
+    if (this._runnerInvoker !== undefined) {
       return this._runnerInvoker
     }
 

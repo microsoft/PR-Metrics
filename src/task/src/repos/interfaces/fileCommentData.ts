@@ -8,7 +8,7 @@ import PullRequestCommentData from './pullRequestCommentData'
  * A class representing a file comment.
  */
 export default class FileCommentData extends PullRequestCommentData {
-  private _fileName: string
+  private readonly _fileName: string
 
   /**
    * Initializes a new instance of the `FileCommentData` class.

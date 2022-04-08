@@ -6,7 +6,7 @@ import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfa
 import { expect } from 'chai'
 import { FixedLengthArray } from '../../src/utilities/fixedLengthArray'
 import { instance, mock, verify, when } from 'ts-mockito'
-import async from 'async'
+import * as Converter from '../../src/utilities/converter'
 import CodeMetrics from '../../src/metrics/codeMetrics'
 import CodeMetricsData from '../../src/metrics/codeMetricsData'
 import CommentData from '../../src/repos/interfaces/commentData'
@@ -100,15 +100,17 @@ describe('pullRequestComments.ts', (): void => {
       verify(logger.logDebug('* PullRequestComments.getCommentData()')).once()
     })
 
-    async.each(
-      [
-        [[new PullRequestCommentData(20, '# PR Metrics\n')]],
-        [[new PullRequestCommentData(20, '# PR Metrics'), new PullRequestCommentData(20, '# PR Metrics\n')]]
-      ], (data: [PullRequestCommentData[]]): void => {
+    {
+      const testCases: PullRequestCommentData[][] = [
+        [new PullRequestCommentData(20, '# PR Metrics\n')],
+        [new PullRequestCommentData(20, '# PR Metrics'), new PullRequestCommentData(20, '# PR Metrics\n')]
+      ]
+
+      testCases.forEach((data: PullRequestCommentData[]): void => {
         it('should return the expected result when the metrics comment is present', async (): Promise<void> => {
           // Arrange
           const comments: CommentData = new CommentData()
-          comments.pullRequestComments.push(...data[0])
+          comments.pullRequestComments.push(...data)
           when(reposInvoker.getComments()).thenResolve(comments)
           const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(inputs), instance(logger), instance(reposInvoker), instance(runnerInvoker))
 
@@ -126,17 +128,34 @@ describe('pullRequestComments.ts', (): void => {
           verify(logger.logDebug('* PullRequestComments.getMetricsCommentData()')).atLeast(1)
         })
       })
+    }
 
-    async.each(
-      [
-        [['folder/file1.ts', 'file3.ts'], [new FileCommentData(20, '❗ **This file doesn\'t require review.**', 'file2.ts')]],
-        [['folder/file1.ts', 'file3.ts'], [new FileCommentData(20, 'Content', 'folder/file1.ts'), new FileCommentData(20, '❗ **This file doesn\'t require review.**', 'file2.ts')]],
-        [['file3.ts'], [new FileCommentData(20, '❗ **This file doesn\'t require review.**', 'folder/file1.ts'), new FileCommentData(20, '❗ **This file doesn\'t require review.**', 'file2.ts')]]
-      ], (data: [string[], FileCommentData[]]): void => {
-        it(`should return the expected result for files not requiring review when the comment is present with files '${JSON.stringify(data[1])}'`, async (): Promise<void> => {
+    {
+      interface TestCaseType {
+        filesNotRequiringReview: string[]
+        fileComments: FileCommentData[]
+      }
+
+      const testCases: TestCaseType[] = [
+        {
+          filesNotRequiringReview: ['folder/file1.ts', 'file3.ts'],
+          fileComments: [new FileCommentData(20, '❗ **This file doesn\'t require review.**', 'file2.ts')]
+        },
+        {
+          filesNotRequiringReview: ['folder/file1.ts', 'file3.ts'],
+          fileComments: [new FileCommentData(20, 'Content', 'folder/file1.ts'), new FileCommentData(20, '❗ **This file doesn\'t require review.**', 'file2.ts')]
+        },
+        {
+          filesNotRequiringReview: ['file3.ts'],
+          fileComments: [new FileCommentData(20, '❗ **This file doesn\'t require review.**', 'folder/file1.ts'), new FileCommentData(20, '❗ **This file doesn\'t require review.**', 'file2.ts')]
+        }
+      ]
+
+      testCases.forEach(({ filesNotRequiringReview, fileComments }: TestCaseType): void => {
+        it(`should return the expected result for files not requiring review when the comment is present with files '${JSON.stringify(fileComments)}'`, async (): Promise<void> => {
           // Arrange
           const comments: CommentData = new CommentData()
-          comments.fileComments.push(...data[1])
+          comments.fileComments.push(...fileComments)
           when(reposInvoker.getComments()).thenResolve(comments)
           when(codeMetrics.getFilesNotRequiringReview()).thenResolve(['folder/file1.ts', 'file2.ts', 'file3.ts'])
           const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(inputs), instance(logger), instance(reposInvoker), instance(runnerInvoker))
@@ -148,24 +167,41 @@ describe('pullRequestComments.ts', (): void => {
           expect(result.metricsCommentThreadId).to.equal(null)
           expect(result.metricsCommentThreadStatus).to.equal(null)
           expect(result.metricsCommentContent).to.equal(null)
-          expect(result.filesNotRequiringReview).to.deep.equal(data[0])
+          expect(result.filesNotRequiringReview).to.deep.equal(filesNotRequiringReview)
           expect(result.deletedFilesNotRequiringReview).to.deep.equal([])
           expect(result.commentThreadsRequiringDeletion).to.deep.equal([])
           verify(logger.logDebug('* PullRequestComments.getCommentData()')).once()
           verify(logger.logDebug('* PullRequestComments.getFilesRequiringCommentUpdates()')).atLeast(1)
         })
       })
+    }
 
-    async.each(
-      [
-        [['folder/file1.ts', 'file3.ts'], [new FileCommentData(0, '❗ **This file doesn\'t require review.**', 'file2.ts')]],
-        [['folder/file1.ts', 'file3.ts'], [new FileCommentData(0, 'Content', 'folder/file1.ts'), new FileCommentData(0, '❗ **This file doesn\'t require review.**', 'file2.ts')]],
-        [['file3.ts'], [new FileCommentData(0, '❗ **This file doesn\'t require review.**', 'folder/file1.ts'), new FileCommentData(0, '❗ **This file doesn\'t require review.**', 'file2.ts')]]
-      ], (data: [string[], FileCommentData[]]): void => {
-        it(`should return the expected result for deleted files not requiring review when the comment is present with files '${JSON.stringify(data[1])}'`, async (): Promise<void> => {
+    {
+      interface TestCaseType {
+        deletedFilesNotRequiringReview: string[]
+        fileComments: FileCommentData[]
+      }
+
+      const testCases: TestCaseType[] = [
+        {
+          deletedFilesNotRequiringReview: ['folder/file1.ts', 'file3.ts'],
+          fileComments: [new FileCommentData(0, '❗ **This file doesn\'t require review.**', 'file2.ts')]
+        },
+        {
+          deletedFilesNotRequiringReview: ['folder/file1.ts', 'file3.ts'],
+          fileComments: [new FileCommentData(0, 'Content', 'folder/file1.ts'), new FileCommentData(0, '❗ **This file doesn\'t require review.**', 'file2.ts')]
+        },
+        {
+          deletedFilesNotRequiringReview: ['file3.ts'],
+          fileComments: [new FileCommentData(0, '❗ **This file doesn\'t require review.**', 'folder/file1.ts'), new FileCommentData(0, '❗ **This file doesn\'t require review.**', 'file2.ts')]
+        }
+      ]
+
+      testCases.forEach(({ deletedFilesNotRequiringReview, fileComments }: TestCaseType): void => {
+        it(`should return the expected result for deleted files not requiring review when the comment is present with files '${JSON.stringify(fileComments)}'`, async (): Promise<void> => {
           // Arrange
           const comments: CommentData = new CommentData()
-          comments.fileComments.push(...data[1])
+          comments.fileComments.push(...fileComments)
           when(reposInvoker.getComments()).thenResolve(comments)
           when(codeMetrics.getDeletedFilesNotRequiringReview()).thenResolve(['folder/file1.ts', 'file2.ts', 'file3.ts'])
           const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(inputs), instance(logger), instance(reposInvoker), instance(runnerInvoker))
@@ -178,12 +214,13 @@ describe('pullRequestComments.ts', (): void => {
           expect(result.metricsCommentThreadStatus).to.equal(null)
           expect(result.metricsCommentContent).to.equal(null)
           expect(result.filesNotRequiringReview).to.deep.equal([])
-          expect(result.deletedFilesNotRequiringReview).to.deep.equal(data[0])
+          expect(result.deletedFilesNotRequiringReview).to.deep.equal(deletedFilesNotRequiringReview)
           expect(result.commentThreadsRequiringDeletion).to.deep.equal([])
           verify(logger.logDebug('* PullRequestComments.getCommentData()')).once()
           verify(logger.logDebug('* PullRequestComments.getFilesRequiringCommentUpdates()')).atLeast(1)
         })
       })
+    }
 
     it('should return the expected result when all comment types are present in files not requiring review', async (): Promise<void> => {
       // Arrange
@@ -297,14 +334,16 @@ describe('pullRequestComments.ts', (): void => {
   })
 
   describe('getMetricsComment()', (): void => {
-    async.each(
-      [
+    {
+      const testCases: Array<FixedLengthArray<number, 5>> = [
         [0, 0, 0, 0, 0],
         [1, 0, 1, 0, 1],
         [1, 1, 2, 1, 3],
         [1000, 1000, 2000, 1000, 3000],
         [1000000, 1000000, 2000000, 1000000, 3000000]
-      ], (code: FixedLengthArray<number, 5>): void => {
+      ]
+
+      testCases.forEach((code: FixedLengthArray<number, 5>): void => {
         it(`should return the expected result for metrics '[${code[0]}, ${code[1]}, ${code[2]}, ${code[3]}, ${code[4]}]'`, async (): Promise<void> => {
           // Arrange
           when(codeMetrics.getMetrics()).thenResolve(new CodeMetricsData(code[0], code[1], code[3]))
@@ -333,13 +372,16 @@ describe('pullRequestComments.ts', (): void => {
           verify(logger.logDebug('* PullRequestComments.addCommentMetrics()')).times(5)
         })
       })
+    }
 
-    async.each(
-      [
+    {
+      const testCases: number[] = [
         200,
         1000,
         1000000
-      ], (baseSize: number): void => {
+      ]
+
+      testCases.forEach((baseSize: number): void => {
         it(`should return the expected result when the pull request is not small and the base size is '${baseSize}'`, async (): Promise<void> => {
           // Arrange
           when(codeMetrics.isSmall()).thenResolve(false)
@@ -369,6 +411,7 @@ describe('pullRequestComments.ts', (): void => {
           verify(logger.logDebug('* PullRequestComments.addCommentMetrics()')).times(5)
         })
       })
+    }
 
     it('should return the expected result when the pull request has insufficient test coverage', async (): Promise<void> => {
       // Arrange
@@ -427,12 +470,14 @@ describe('pullRequestComments.ts', (): void => {
   })
 
   describe('getMetricsCommentStatus()', (): void => {
-    async.each(
-      [
+    {
+      const testCases: Array<boolean | null> = [
         true,
         null
-      ], (sufficientlyTested: boolean | null): void => {
-        it(`should return Closed when the pull request is small and has sufficient test coverage '${sufficientlyTested}'`, async (): Promise<void> => {
+      ]
+
+      testCases.forEach((sufficientlyTested: boolean | null): void => {
+        it(`should return Closed when the pull request is small and has sufficient test coverage '${Converter.toString(sufficientlyTested)}'`, async (): Promise<void> => {
           // Arrange
           when(codeMetrics.isSmall()).thenResolve(true)
           when(codeMetrics.isSufficientlyTested()).thenResolve(sufficientlyTested)
@@ -446,18 +491,38 @@ describe('pullRequestComments.ts', (): void => {
           verify(logger.logDebug('* PullRequestComments.getMetricsCommentStatus()')).once()
         })
       })
+    }
 
-    async.each(
-      [
-        [true, false],
-        [false, true],
-        [false, false],
-        [false, null]
-      ], (codeMetricsSettings: [boolean, boolean | null]): void => {
-        it(`should return Active when the pull request small status is '${codeMetricsSettings[0]}' and the sufficient test coverage status is '${codeMetricsSettings[1]}'`, async (): Promise<void> => {
+    {
+      interface TestCaseType {
+        isSmall: boolean
+        isSufficientlyTested: boolean | null
+      }
+
+      const testCases: TestCaseType[] = [
+        {
+          isSmall: true,
+          isSufficientlyTested: false
+        },
+        {
+          isSmall: false,
+          isSufficientlyTested: true
+        },
+        {
+          isSmall: false,
+          isSufficientlyTested: false
+        },
+        {
+          isSmall: false,
+          isSufficientlyTested: null
+        }
+      ]
+
+      testCases.forEach(({ isSmall, isSufficientlyTested }: TestCaseType): void => {
+        it(`should return Active when the pull request small status is '${isSmall.toString()}' and the sufficient test coverage status is '${Converter.toString(isSufficientlyTested)}'`, async (): Promise<void> => {
           // Arrange
-          when(codeMetrics.isSmall()).thenResolve(codeMetricsSettings[0])
-          when(codeMetrics.isSufficientlyTested()).thenResolve(codeMetricsSettings[1])
+          when(codeMetrics.isSmall()).thenResolve(isSmall)
+          when(codeMetrics.isSufficientlyTested()).thenResolve(isSufficientlyTested)
           const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(inputs), instance(logger), instance(reposInvoker), instance(runnerInvoker))
 
           // Act
@@ -468,5 +533,6 @@ describe('pullRequestComments.ts', (): void => {
           verify(logger.logDebug('* PullRequestComments.getMetricsCommentStatus()')).once()
         })
       })
+    }
   })
 })

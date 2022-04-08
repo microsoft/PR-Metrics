@@ -3,7 +3,7 @@
 
 /**
  * The target object used for resolving an instance of a mock object.
- * @typeParam T The type of the mock object.
+ * @typeParam Type The type of the mock object.
  */
 export default interface ResolvableInstanceTarget<T> {
   /**

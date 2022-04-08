@@ -13,5 +13,5 @@ export default interface PullRequestDetails {
   /**
    * The pull request description.
    */
-  description?: string
+  description: string | undefined
 }

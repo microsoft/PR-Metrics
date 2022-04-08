@@ -36,14 +36,14 @@ export default class GitHubRunnerInvoker implements IRunnerInvoker {
     this._gitHubRunnerWrapper = gitHubRunnerWrapper
   }
 
-  public exec (tool: string, args: string[], failOnError: boolean, outputStream: GitWritableStream, errorStream: GitWritableStream): Promise<number> {
+  public async exec (tool: string, args: string[], failOnError: boolean, outputStream: GitWritableStream, errorStream: GitWritableStream): Promise<number> {
     const options: actionsExec.ExecOptions = {
       failOnStdErr: failOnError,
       outStream: outputStream,
       errStream: errorStream
     }
 
-    return this._gitHubRunnerWrapper.exec(tool, args, options)
+    return await this._gitHubRunnerWrapper.exec(tool, args, options)
   }
 
   public getInput (name: string[]): string | undefined {
@@ -57,7 +57,7 @@ export default class GitHubRunnerInvoker implements IRunnerInvoker {
     const resourceData: string = fs.readFileSync(path.join(folder, 'resources.resjson'), 'utf8')
     const resources: ResourcesJson = JSON.parse(resourceData) as ResourcesJson
 
-    const entries: [string, string][] = Object.entries(resources)
+    const entries: Array<[string, string]> = Object.entries(resources)
     const stringPrefix: string = 'loc.messages.'
     entries.forEach((entry: [string, string]): void => {
       if (entry[0].startsWith(stringPrefix)) {

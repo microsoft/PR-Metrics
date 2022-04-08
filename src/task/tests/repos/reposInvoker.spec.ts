@@ -5,7 +5,7 @@ import 'reflect-metadata'
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import { expect } from 'chai'
 import { instance, mock, verify } from 'ts-mockito'
-import async from 'async'
+import * as ExpectExtensions from '../testUtilities/expectExtensions'
 import AzureReposInvoker from '../../src/repos/azureReposInvoker'
 import CommentData from '../../src/repos/interfaces/commentData'
 import GitHubReposInvoker from '../../src/repos/gitHubReposInvoker'
@@ -85,11 +85,13 @@ describe('reposInvoker.ts', function (): void {
       delete process.env.GITHUB_ACTION
     })
 
-    async.each(
-      [
+    {
+      const testCases: string[] = [
         'GitHub',
         'GitHubEnterprise'
-      ], (buildRepositoryProvider: string): void => {
+      ]
+
+      testCases.forEach((buildRepositoryProvider: string): void => {
         it(`should invoke GitHub when called from a repo on '${buildRepositoryProvider}'`, (): void => {
           // Arrange
           process.env.BUILD_REPOSITORY_PROVIDER = buildRepositoryProvider
@@ -109,6 +111,7 @@ describe('reposInvoker.ts', function (): void {
           delete process.env.BUILD_REPOSITORY_PROVIDER
         })
       })
+    }
 
     it('should throw when the repo type is not set', (): void => {
       // Arrange
@@ -185,11 +188,13 @@ describe('reposInvoker.ts', function (): void {
       delete process.env.GITHUB_ACTION
     })
 
-    async.each(
-      [
+    {
+      const testCases: string[] = [
         'GitHub',
         'GitHubEnterprise'
-      ], (buildRepositoryProvider: string): void => {
+      ]
+
+      testCases.forEach((buildRepositoryProvider: string): void => {
         it(`should invoke GitHub when called from a repo on '${buildRepositoryProvider}'`, async (): Promise<void> => {
           // Arrange
           process.env.BUILD_REPOSITORY_PROVIDER = buildRepositoryProvider
@@ -209,23 +214,18 @@ describe('reposInvoker.ts', function (): void {
           delete process.env.BUILD_REPOSITORY_PROVIDER
         })
       })
+    }
 
     it('should throw when the repo type is not set', async (): Promise<void> => {
       // Arrange
       delete process.env.BUILD_REPOSITORY_PROVIDER
       const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
-      let errorThrown: boolean = false
 
-      try {
-        // Act
-        await reposInvoker.getTitleAndDescription()
-      } catch (error: any) {
-        // Assert
-        errorThrown = true
-        expect(error.message).to.equal('\'BUILD_REPOSITORY_PROVIDER\', accessed within \'ReposInvoker.getReposInvoker()\', is invalid, null, or undefined \'undefined\'.')
-      }
+      // Act
+      const func: () => Promise<PullRequestDetails> = async () => await reposInvoker.getTitleAndDescription()
 
-      expect(errorThrown).to.equal(true)
+      // Assert
+      await ExpectExtensions.toThrowAsync(func, '\'BUILD_REPOSITORY_PROVIDER\', accessed within \'ReposInvoker.getReposInvoker()\', is invalid, null, or undefined \'undefined\'.')
       verify(azureReposInvoker.getTitleAndDescription()).never()
       verify(gitHubReposInvoker.getTitleAndDescription()).never()
       verify(logger.logDebug('* ReposInvoker.getTitleAndDescription()')).once()
@@ -236,18 +236,12 @@ describe('reposInvoker.ts', function (): void {
       // Arrange
       process.env.BUILD_REPOSITORY_PROVIDER = 'Other'
       const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
-      let errorThrown: boolean = false
 
-      try {
-        // Act
-        await reposInvoker.getTitleAndDescription()
-      } catch (error: any) {
-        // Assert
-        errorThrown = true
-        expect(error.message).to.equal('BUILD_REPOSITORY_PROVIDER \'Other\' is unsupported.')
-      }
+      // Act
+      const func: () => Promise<PullRequestDetails> = async () => await reposInvoker.getTitleAndDescription()
 
-      expect(errorThrown).to.equal(true)
+      // Assert
+      await ExpectExtensions.toThrowAsync(func, 'BUILD_REPOSITORY_PROVIDER \'Other\' is unsupported.')
       verify(azureReposInvoker.getTitleAndDescription()).never()
       verify(gitHubReposInvoker.getTitleAndDescription()).never()
       verify(logger.logDebug('* ReposInvoker.getTitleAndDescription()')).once()
@@ -297,11 +291,13 @@ describe('reposInvoker.ts', function (): void {
       delete process.env.GITHUB_ACTION
     })
 
-    async.each(
-      [
+    {
+      const testCases: string[] = [
         'GitHub',
         'GitHubEnterprise'
-      ], (buildRepositoryProvider: string): void => {
+      ]
+
+      testCases.forEach((buildRepositoryProvider: string): void => {
         it(`should invoke GitHub when called from a repo on '${buildRepositoryProvider}'`, async (): Promise<void> => {
           // Arrange
           process.env.BUILD_REPOSITORY_PROVIDER = buildRepositoryProvider
@@ -321,23 +317,18 @@ describe('reposInvoker.ts', function (): void {
           delete process.env.BUILD_REPOSITORY_PROVIDER
         })
       })
+    }
 
     it('should throw when the repo type is not set', async (): Promise<void> => {
       // Arrange
       delete process.env.BUILD_REPOSITORY_PROVIDER
       const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
-      let errorThrown: boolean = false
 
-      try {
-        // Act
-        await reposInvoker.getComments()
-      } catch (error: any) {
-        // Assert
-        errorThrown = true
-        expect(error.message).to.equal('\'BUILD_REPOSITORY_PROVIDER\', accessed within \'ReposInvoker.getReposInvoker()\', is invalid, null, or undefined \'undefined\'.')
-      }
+      // Act
+      const func: () => Promise<CommentData> = async () => await reposInvoker.getComments()
 
-      expect(errorThrown).to.equal(true)
+      // Assert
+      await ExpectExtensions.toThrowAsync(func, '\'BUILD_REPOSITORY_PROVIDER\', accessed within \'ReposInvoker.getReposInvoker()\', is invalid, null, or undefined \'undefined\'.')
       verify(azureReposInvoker.getComments()).never()
       verify(gitHubReposInvoker.getComments()).never()
       verify(logger.logDebug('* ReposInvoker.getComments()')).once()
@@ -348,18 +339,12 @@ describe('reposInvoker.ts', function (): void {
       // Arrange
       process.env.BUILD_REPOSITORY_PROVIDER = 'Other'
       const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
-      let errorThrown: boolean = false
 
-      try {
-        // Act
-        await reposInvoker.getComments()
-      } catch (error: any) {
-        // Assert
-        errorThrown = true
-        expect(error.message).to.equal('BUILD_REPOSITORY_PROVIDER \'Other\' is unsupported.')
-      }
+      // Act
+      const func: () => Promise<CommentData> = async () => await reposInvoker.getComments()
 
-      expect(errorThrown).to.equal(true)
+      // Assert
+      await ExpectExtensions.toThrowAsync(func, 'BUILD_REPOSITORY_PROVIDER \'Other\' is unsupported.')
       verify(azureReposInvoker.getComments()).never()
       verify(gitHubReposInvoker.getComments()).never()
       verify(logger.logDebug('* ReposInvoker.getComments()')).once()
@@ -407,11 +392,13 @@ describe('reposInvoker.ts', function (): void {
       delete process.env.GITHUB_ACTION
     })
 
-    async.each(
-      [
+    {
+      const testCases: string[] = [
         'GitHub',
         'GitHubEnterprise'
-      ], (buildRepositoryProvider: string): void => {
+      ]
+
+      testCases.forEach((buildRepositoryProvider: string): void => {
         it(`should invoke GitHub when called from a repo on '${buildRepositoryProvider}'`, async (): Promise<void> => {
           // Arrange
           process.env.BUILD_REPOSITORY_PROVIDER = buildRepositoryProvider
@@ -430,23 +417,18 @@ describe('reposInvoker.ts', function (): void {
           delete process.env.BUILD_REPOSITORY_PROVIDER
         })
       })
+    }
 
     it('should throw when the repo type is not set', async (): Promise<void> => {
       // Arrange
       delete process.env.BUILD_REPOSITORY_PROVIDER
       const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
-      let errorThrown: boolean = false
 
-      try {
-        // Act
-        await reposInvoker.setTitleAndDescription(null, null)
-      } catch (error: any) {
-        // Assert
-        errorThrown = true
-        expect(error.message).to.equal('\'BUILD_REPOSITORY_PROVIDER\', accessed within \'ReposInvoker.getReposInvoker()\', is invalid, null, or undefined \'undefined\'.')
-      }
+      // Act
+      const func: () => Promise<void> = async () => await reposInvoker.setTitleAndDescription(null, null)
 
-      expect(errorThrown).to.equal(true)
+      // Assert
+      await ExpectExtensions.toThrowAsync(func, '\'BUILD_REPOSITORY_PROVIDER\', accessed within \'ReposInvoker.getReposInvoker()\', is invalid, null, or undefined \'undefined\'.')
       verify(azureReposInvoker.setTitleAndDescription(null, null)).never()
       verify(gitHubReposInvoker.setTitleAndDescription(null, null)).never()
       verify(logger.logDebug('* ReposInvoker.setTitleAndDescription()')).once()
@@ -457,18 +439,12 @@ describe('reposInvoker.ts', function (): void {
       // Arrange
       process.env.BUILD_REPOSITORY_PROVIDER = 'Other'
       const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
-      let errorThrown: boolean = false
 
-      try {
-        // Act
-        await reposInvoker.setTitleAndDescription(null, null)
-      } catch (error: any) {
-        // Assert
-        errorThrown = true
-        expect(error.message).to.equal('BUILD_REPOSITORY_PROVIDER \'Other\' is unsupported.')
-      }
+      // Act
+      const func: () => Promise<void> = async () => await reposInvoker.setTitleAndDescription(null, null)
 
-      expect(errorThrown).to.equal(true)
+      // Assert
+      await ExpectExtensions.toThrowAsync(func, 'BUILD_REPOSITORY_PROVIDER \'Other\' is unsupported.')
       verify(azureReposInvoker.setTitleAndDescription(null, null)).never()
       verify(gitHubReposInvoker.setTitleAndDescription(null, null)).never()
       verify(logger.logDebug('* ReposInvoker.setTitleAndDescription()')).once()
@@ -516,11 +492,13 @@ describe('reposInvoker.ts', function (): void {
       delete process.env.GITHUB_ACTION
     })
 
-    async.each(
-      [
+    {
+      const testCases: string[] = [
         'GitHub',
         'GitHubEnterprise'
-      ], (buildRepositoryProvider: string): void => {
+      ]
+
+      testCases.forEach((buildRepositoryProvider: string): void => {
         it(`should invoke GitHub when called from a repo on '${buildRepositoryProvider}'`, async (): Promise<void> => {
           // Arrange
           process.env.BUILD_REPOSITORY_PROVIDER = buildRepositoryProvider
@@ -539,23 +517,18 @@ describe('reposInvoker.ts', function (): void {
           delete process.env.BUILD_REPOSITORY_PROVIDER
         })
       })
+    }
 
     it('should throw when the repo type is not set', async (): Promise<void> => {
       // Arrange
       delete process.env.BUILD_REPOSITORY_PROVIDER
       const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
-      let errorThrown: boolean = false
 
-      try {
-        // Act
-        await reposInvoker.createComment('', CommentThreadStatus.Active, '', false)
-      } catch (error: any) {
-        // Assert
-        errorThrown = true
-        expect(error.message).to.equal('\'BUILD_REPOSITORY_PROVIDER\', accessed within \'ReposInvoker.getReposInvoker()\', is invalid, null, or undefined \'undefined\'.')
-      }
+      // Act
+      const func: () => Promise<void> = async () => await reposInvoker.createComment('', CommentThreadStatus.Active, '', false)
 
-      expect(errorThrown).to.equal(true)
+      // Assert
+      await ExpectExtensions.toThrowAsync(func, '\'BUILD_REPOSITORY_PROVIDER\', accessed within \'ReposInvoker.getReposInvoker()\', is invalid, null, or undefined \'undefined\'.')
       verify(azureReposInvoker.createComment('', CommentThreadStatus.Active, '', false)).never()
       verify(gitHubReposInvoker.createComment('', CommentThreadStatus.Active, '', false)).never()
       verify(logger.logDebug('* ReposInvoker.createComment()')).once()
@@ -566,18 +539,12 @@ describe('reposInvoker.ts', function (): void {
       // Arrange
       process.env.BUILD_REPOSITORY_PROVIDER = 'Other'
       const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
-      let errorThrown: boolean = false
 
-      try {
-        // Act
-        await reposInvoker.createComment('', CommentThreadStatus.Active, '', false)
-      } catch (error: any) {
-        // Assert
-        errorThrown = true
-        expect(error.message).to.equal('BUILD_REPOSITORY_PROVIDER \'Other\' is unsupported.')
-      }
+      // Act
+      const func: () => Promise<void> = async () => await reposInvoker.createComment('', CommentThreadStatus.Active, '', false)
 
-      expect(errorThrown).to.equal(true)
+      // Assert
+      await ExpectExtensions.toThrowAsync(func, 'BUILD_REPOSITORY_PROVIDER \'Other\' is unsupported.')
       verify(azureReposInvoker.createComment('', CommentThreadStatus.Active, '', false)).never()
       verify(gitHubReposInvoker.createComment('', CommentThreadStatus.Active, '', false)).never()
       verify(logger.logDebug('* ReposInvoker.createComment()')).once()
@@ -625,11 +592,13 @@ describe('reposInvoker.ts', function (): void {
       delete process.env.GITHUB_ACTION
     })
 
-    async.each(
-      [
+    {
+      const testCases: string[] = [
         'GitHub',
         'GitHubEnterprise'
-      ], (buildRepositoryProvider: string): void => {
+      ]
+
+      testCases.forEach((buildRepositoryProvider: string): void => {
         it(`should invoke GitHub when called from a repo on '${buildRepositoryProvider}'`, async (): Promise<void> => {
           // Arrange
           process.env.BUILD_REPOSITORY_PROVIDER = buildRepositoryProvider
@@ -648,23 +617,18 @@ describe('reposInvoker.ts', function (): void {
           delete process.env.BUILD_REPOSITORY_PROVIDER
         })
       })
+    }
 
     it('should throw when the repo type is not set', async (): Promise<void> => {
       // Arrange
       delete process.env.BUILD_REPOSITORY_PROVIDER
       const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
-      let errorThrown: boolean = false
 
-      try {
-        // Act
-        await reposInvoker.updateComment(0, null, null)
-      } catch (error: any) {
-        // Assert
-        errorThrown = true
-        expect(error.message).to.equal('\'BUILD_REPOSITORY_PROVIDER\', accessed within \'ReposInvoker.getReposInvoker()\', is invalid, null, or undefined \'undefined\'.')
-      }
+      // Act
+      const func: () => Promise<void> = async () => await reposInvoker.updateComment(0, null, null)
 
-      expect(errorThrown).to.equal(true)
+      // Assert
+      await ExpectExtensions.toThrowAsync(func, '\'BUILD_REPOSITORY_PROVIDER\', accessed within \'ReposInvoker.getReposInvoker()\', is invalid, null, or undefined \'undefined\'.')
       verify(azureReposInvoker.updateComment(0, null, null)).never()
       verify(gitHubReposInvoker.updateComment(0, null, null)).never()
       verify(logger.logDebug('* ReposInvoker.updateComment()')).once()
@@ -675,18 +639,12 @@ describe('reposInvoker.ts', function (): void {
       // Arrange
       process.env.BUILD_REPOSITORY_PROVIDER = 'Other'
       const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
-      let errorThrown: boolean = false
 
-      try {
-        // Act
-        await reposInvoker.updateComment(0, null, null)
-      } catch (error: any) {
-        // Assert
-        errorThrown = true
-        expect(error.message).to.equal('BUILD_REPOSITORY_PROVIDER \'Other\' is unsupported.')
-      }
+      // Act
+      const func: () => Promise<void> = async () => await reposInvoker.updateComment(0, null, null)
 
-      expect(errorThrown).to.equal(true)
+      // Assert
+      await ExpectExtensions.toThrowAsync(func, 'BUILD_REPOSITORY_PROVIDER \'Other\' is unsupported.')
       verify(azureReposInvoker.updateComment(0, null, null)).never()
       verify(gitHubReposInvoker.updateComment(0, null, null)).never()
       verify(logger.logDebug('* ReposInvoker.updateComment()')).once()
@@ -734,11 +692,13 @@ describe('reposInvoker.ts', function (): void {
       delete process.env.GITHUB_ACTION
     })
 
-    async.each(
-      [
+    {
+      const testCases: string[] = [
         'GitHub',
         'GitHubEnterprise'
-      ], (buildRepositoryProvider: string): void => {
+      ]
+
+      testCases.forEach((buildRepositoryProvider: string): void => {
         it(`should invoke GitHub when called from a repo on '${buildRepositoryProvider}'`, async (): Promise<void> => {
           // Arrange
           process.env.BUILD_REPOSITORY_PROVIDER = buildRepositoryProvider
@@ -757,23 +717,18 @@ describe('reposInvoker.ts', function (): void {
           delete process.env.BUILD_REPOSITORY_PROVIDER
         })
       })
+    }
 
     it('should throw when the repo type is not set', async (): Promise<void> => {
       // Arrange
       delete process.env.BUILD_REPOSITORY_PROVIDER
       const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
-      let errorThrown: boolean = false
 
-      try {
-        // Act
-        await reposInvoker.deleteCommentThread(20)
-      } catch (error: any) {
-        // Assert
-        errorThrown = true
-        expect(error.message).to.equal('\'BUILD_REPOSITORY_PROVIDER\', accessed within \'ReposInvoker.getReposInvoker()\', is invalid, null, or undefined \'undefined\'.')
-      }
+      // Act
+      const func: () => Promise<void> = async () => await reposInvoker.deleteCommentThread(20)
 
-      expect(errorThrown).to.equal(true)
+      // Assert
+      await ExpectExtensions.toThrowAsync(func, '\'BUILD_REPOSITORY_PROVIDER\', accessed within \'ReposInvoker.getReposInvoker()\', is invalid, null, or undefined \'undefined\'.')
       verify(azureReposInvoker.deleteCommentThread(20)).never()
       verify(gitHubReposInvoker.deleteCommentThread(20)).never()
       verify(logger.logDebug('* ReposInvoker.deleteCommentThread()')).once()
@@ -784,18 +739,12 @@ describe('reposInvoker.ts', function (): void {
       // Arrange
       process.env.BUILD_REPOSITORY_PROVIDER = 'Other'
       const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
-      let errorThrown: boolean = false
 
-      try {
-        // Act
-        await reposInvoker.deleteCommentThread(20)
-      } catch (error: any) {
-        // Assert
-        errorThrown = true
-        expect(error.message).to.equal('BUILD_REPOSITORY_PROVIDER \'Other\' is unsupported.')
-      }
+      // Act
+      const func: () => Promise<void> = async () => await reposInvoker.deleteCommentThread(20)
 
-      expect(errorThrown).to.equal(true)
+      // Assert
+      await ExpectExtensions.toThrowAsync(func, 'BUILD_REPOSITORY_PROVIDER \'Other\' is unsupported.')
       verify(azureReposInvoker.deleteCommentThread(20)).never()
       verify(gitHubReposInvoker.deleteCommentThread(20)).never()
       verify(logger.logDebug('* ReposInvoker.deleteCommentThread()')).once()

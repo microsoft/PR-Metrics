@@ -57,7 +57,7 @@ describe('resources.resjson', (): void => {
     it(`should contain the same resources in language '${key}' as in en-US`, (): void => {
       // Arrange
       const keys: string[] = Object.keys(value)
-      const englishKeys: string[] = Object.keys(resources.get('en-US')!)
+      const englishKeys: string[] = Object.keys(resources.get('en-US') ?? '')
 
       // Assert
       expect(keys).to.deep.equal(englishKeys)
@@ -65,14 +65,14 @@ describe('resources.resjson', (): void => {
 
     it(`should have the same number of placeholders in language '${key}' as in en-US`, (): void => {
       // Arrange
-      const entries: [string, string][] = Object.entries(value)
-      const englishEntries: Map<string, string> = new Map<string, string>(Object.entries(resources.get('en-US')!))
+      const entries: Array<[string, string]> = Object.entries(value)
+      const englishEntries: Map<string, string> = new Map<string, string>(Object.entries(resources.get('en-US') ?? ''))
 
       // Assert
       const placeholderRegExp: RegExp = /%s/g
       entries.forEach((entry: [string, string]): void => {
         const placeholders: number = entry[1].match(placeholderRegExp)?.length ?? 0
-        const placeholdersEnglishUS: number = englishEntries.get(entry[0])!.match(placeholderRegExp)?.length ?? 0
+        const placeholdersEnglishUS: number = (englishEntries.get(entry[0]) ?? '').match(placeholderRegExp)?.length ?? 0
         expect(placeholders).equal(placeholdersEnglishUS)
       })
     })
@@ -80,7 +80,7 @@ describe('resources.resjson', (): void => {
 
   it('should have the correct reference ID for all resources in task.loc.json', (): void => {
     // Arrange
-    const keysTaskLocJson: [string, string][] = Object.entries(taskLocJson.messages)
+    const keysTaskLocJson: Array<[string, string]> = Object.entries(taskLocJson.messages)
 
     // Assert
     keysTaskLocJson.forEach((entry: [string, string]): void => {
@@ -90,13 +90,13 @@ describe('resources.resjson', (): void => {
 
   it('should have the same resources references in task.loc.json and in the resources files', (): void => {
     // Arrange
-    const taskJsonResources: RegExpMatchArray = taskLocJsonContents.match(/"ms-resource:.+?"/g)!
+    const taskJsonResources: RegExpMatchArray = taskLocJsonContents.match(/"ms-resource:.+?"/g) ?? []
     const allResources: string[] = []
     taskJsonResources.forEach((taskJsonRegExpMatch: string): void => {
       allResources.push(taskJsonRegExpMatch.substr(13, taskJsonRegExpMatch.length - 14))
     })
     allResources.sort()
-    const englishEntries: [string, string][] = Object.entries(resources.get('en-US')!)
+    const englishEntries: Array<[string, string]> = Object.entries(resources.get('en-US') ?? '')
     const relevantKeys: string[] = []
     englishEntries.forEach((entry: [string, string]): void => {
       if (entry[0] !== schemaEntry && !entry[0].endsWith(commentSuffix)) {
@@ -111,7 +111,7 @@ describe('resources.resjson', (): void => {
   it('should have the same contents in task.json and task.loc.json', (): void => {
     // Arrange
     let fileContents: string = taskLocJsonContents
-    const englishEntries: [string, string][] = Object.entries(resources.get('en-US')!)
+    const englishEntries: Array<[string, string]> = Object.entries(resources.get('en-US') ?? '')
     englishEntries.forEach((entry: [string, string]): void => {
       fileContents = fileContents.replace(`ms-resource:${entry[0]}`, entry[1])
     })
@@ -146,7 +146,7 @@ describe('resources.resjson', (): void => {
         })
       }
     })
-    const englishEntries: [string, string][] = Object.entries(resources.get('en-US')!)
+    const englishEntries: Array<[string, string]> = Object.entries(resources.get('en-US') ?? '')
     const relevantEntries: Map<string, number> = new Map<string, number>()
     const expectedPrefix: string = 'loc.messages.'
     const placeholderRegExp: RegExp = /%s/g
@@ -159,7 +159,7 @@ describe('resources.resjson', (): void => {
     // Act
     expect(Array.from(typeScriptResources.keys()).sort()).to.deep.equal(Array.from(relevantEntries.keys()).sort())
     typeScriptResources.forEach((value: number, key: string): void => {
-      expect(value).to.equal(relevantEntries.get(key)!)
+      expect(value).to.equal(relevantEntries.get(key) ?? '')
     })
   })
 })

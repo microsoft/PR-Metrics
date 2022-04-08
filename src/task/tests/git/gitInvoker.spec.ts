@@ -5,7 +5,7 @@ import 'reflect-metadata'
 import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito'
 import { expect } from 'chai'
 import { GitWritableStream } from '../../src/git/gitWritableStream'
-import async from 'async'
+import * as ExpectExtensions from '../testUtilities/expectExtensions'
 import GitInvoker from '../../src/git/gitInvoker'
 import Logger from '../../src/utilities/logger'
 import RunnerInvoker from '../../src/runners/runnerInvoker'
@@ -22,15 +22,17 @@ describe('gitInvoker.ts', (): void => {
     logger = mock(Logger)
 
     runnerInvoker = mock(RunnerInvoker)
-    when(runnerInvoker.exec('git', deepEqual(['rev-parse', '--branch', 'origin/develop...pull/12345/merge']), true, anything(), anything())).thenCall((_: string, __: string, ___: boolean, outputStream: GitWritableStream): Promise<number> => {
-      const testCommitId: string = '7235cb16e5e6ac83e3cbecae66bab557e9e2cee6'
-      outputStream.write(testCommitId)
-      return Promise.resolve(0)
-    })
-    when(runnerInvoker.exec('git', deepEqual(['diff', '--numstat', 'origin/develop...pull/12345/merge']), true, anything(), anything())).thenCall((_: string, __: string, ___: boolean, outputStream: GitWritableStream): Promise<number> => {
-      outputStream.write('1\t2\tFile.txt')
-      return Promise.resolve(0)
-    })
+    when(runnerInvoker.exec('git', deepEqual(['rev-parse', '--branch', 'origin/develop...pull/12345/merge']), true, anything(), anything())).thenCall(
+      async (_tool: string, _args: string, _failOnError: boolean, outputStream: GitWritableStream): Promise<number> => {
+        const testCommitId: string = '7235cb16e5e6ac83e3cbecae66bab557e9e2cee6'
+        outputStream.write(testCommitId)
+        return await Promise.resolve(0)
+      })
+    when(runnerInvoker.exec('git', deepEqual(['diff', '--numstat', 'origin/develop...pull/12345/merge']), true, anything(), anything())).thenCall(
+      async (_tool: string, _args: string, _failOnError: boolean, outputStream: GitWritableStream): Promise<number> => {
+        outputStream.write('1\t2\tFile.txt')
+        return await Promise.resolve(0)
+      })
   })
 
   afterEach((): void => {
@@ -40,18 +42,21 @@ describe('gitInvoker.ts', (): void => {
   })
 
   describe('isGitRepo()', (): void => {
-    async.each(
-      [
+    {
+      const testCases: string[] = [
         'true',
         'true ',
         'true\n'
-      ], (response: string): void => {
+      ]
+
+      testCases.forEach((response: string): void => {
         it(`should return true when called from a Git repo returning '${response.replace(/\n/g, '\\n')}'`, async (): Promise<void> => {
           // Arrange
-          when(runnerInvoker.exec('git', deepEqual(['rev-parse', '--is-inside-work-tree']), true, anything(), anything())).thenCall((_: string, __: string, ___: boolean, outputStream: GitWritableStream): Promise<number> => {
-            outputStream.write(response)
-            return Promise.resolve(0)
-          })
+          when(runnerInvoker.exec('git', deepEqual(['rev-parse', '--is-inside-work-tree']), true, anything(), anything())).thenCall(
+            async (_tool: string, _args: string, _failOnError: boolean, outputStream: GitWritableStream): Promise<number> => {
+              outputStream.write(response)
+              return await Promise.resolve(0)
+            })
           const gitInvoker: GitInvoker = new GitInvoker(instance(logger), instance(runnerInvoker))
 
           // Act
@@ -63,13 +68,15 @@ describe('gitInvoker.ts', (): void => {
           verify(logger.logDebug('* GitInvoker.invokeGit()')).once()
         })
       })
+    }
 
     it('should return false when not called from a Git repo', async (): Promise<void> => {
       // Arrange
-      when(runnerInvoker.exec('git', deepEqual(['rev-parse', '--is-inside-work-tree']), true, anything(), anything())).thenCall((_: string, __: string, ___: boolean, ____: GitWritableStream, errorStream: GitWritableStream): Promise<number> => {
-        errorStream.write('Failure')
-        return Promise.resolve(1)
-      })
+      when(runnerInvoker.exec('git', deepEqual(['rev-parse', '--is-inside-work-tree']), true, anything(), anything())).thenCall(
+        async (_tool: string, _args: string, _failOnError: boolean, _outputStream: GitWritableStream, errorStream: GitWritableStream): Promise<number> => {
+          errorStream.write('Failure')
+          return await Promise.resolve(1)
+        })
       const gitInvoker: GitInvoker = new GitInvoker(instance(logger), instance(runnerInvoker))
 
       // Act
@@ -151,18 +158,12 @@ describe('gitInvoker.ts', (): void => {
       // Arrange
       process.env.GITHUB_ACTION = 'PR-Metrics'
       const gitInvoker: GitInvoker = new GitInvoker(instance(logger), instance(runnerInvoker))
-      let errorThrown: boolean = false
 
-      try {
-        // Act
-        await gitInvoker.isGitHistoryAvailable()
-      } catch (error: any) {
-        // Assert
-        errorThrown = true
-        expect(error.message).to.equal('\'GITHUB_BASE_REF\', accessed within \'GitInvoker.targetBranch\', is invalid, null, or undefined \'undefined\'.')
-      }
+      // Act
+      const func: () => Promise<boolean> = async () => await gitInvoker.isGitHistoryAvailable()
 
-      expect(errorThrown).to.equal(true)
+      // Assert
+      await ExpectExtensions.toThrowAsync(func, '\'GITHUB_BASE_REF\', accessed within \'GitInvoker.targetBranch\', is invalid, null, or undefined \'undefined\'.')
       verify(logger.logDebug('* GitInvoker.isGitHistoryAvailable()')).once()
       verify(logger.logDebug('* GitInvoker.initialize()')).once()
       verify(logger.logDebug('* GitInvoker.targetBranch')).once()
@@ -171,11 +172,13 @@ describe('gitInvoker.ts', (): void => {
       delete process.env.GITHUB_ACTION
     })
 
-    async.each(
-      [
+    {
+      const testCases: string[] = [
         'GitHub',
         'GitHubEnterprise'
-      ], (buildRepositoryProvider: string): void => {
+      ]
+
+      testCases.forEach((buildRepositoryProvider: string): void => {
         it(`should return true when the Git history is available and the PR is on '${buildRepositoryProvider}'`, async (): Promise<void> => {
           // Arrange
           process.env.BUILD_REPOSITORY_PROVIDER = buildRepositoryProvider
@@ -199,13 +202,15 @@ describe('gitInvoker.ts', (): void => {
           delete process.env.SYSTEM_PULLREQUEST_PULLREQUESTNUMBER
         })
       })
+    }
 
     it('should return false when the Git history is unavailable', async (): Promise<void> => {
       // Arrange
-      when(runnerInvoker.exec('git', deepEqual(['rev-parse', '--branch', 'origin/develop...pull/12345/merge']), true, anything(), anything())).thenCall((_: string, __: string, ___: boolean, ____: GitWritableStream, errorStream: GitWritableStream): Promise<number> => {
-        errorStream.write('fatal: ambiguous argument \'origin/develop...pull/12345/merge\': unknown revision or path not in the working tree.\n')
-        return Promise.resolve(1)
-      })
+      when(runnerInvoker.exec('git', deepEqual(['rev-parse', '--branch', 'origin/develop...pull/12345/merge']), true, anything(), anything())).thenCall(
+        async (_tool: string, _args: string, _failOnError: boolean, _outputStream: GitWritableStream, errorStream: GitWritableStream): Promise<number> => {
+          errorStream.write('fatal: ambiguous argument \'origin/develop...pull/12345/merge\': unknown revision or path not in the working tree.\n')
+          return await Promise.resolve(1)
+        })
       const gitInvoker: GitInvoker = new GitInvoker(instance(logger), instance(runnerInvoker))
 
       // Act
@@ -244,18 +249,12 @@ describe('gitInvoker.ts', (): void => {
       // Arrange
       delete process.env.SYSTEM_PULLREQUEST_TARGETBRANCH
       const gitInvoker: GitInvoker = new GitInvoker(instance(logger), instance(runnerInvoker))
-      let errorThrown: boolean = false
 
-      try {
-        // Act
-        await gitInvoker.isGitHistoryAvailable()
-      } catch (error: any) {
-        // Assert
-        errorThrown = true
-        expect(error.message).to.equal('\'SYSTEM_PULLREQUEST_TARGETBRANCH\', accessed within \'GitInvoker.targetBranch\', is invalid, null, or undefined \'undefined\'.')
-      }
+      // Act
+      const func: () => Promise<boolean> = async () => await gitInvoker.isGitHistoryAvailable()
 
-      expect(errorThrown).to.equal(true)
+      // Assert
+      await ExpectExtensions.toThrowAsync(func, '\'SYSTEM_PULLREQUEST_TARGETBRANCH\', accessed within \'GitInvoker.targetBranch\', is invalid, null, or undefined \'undefined\'.')
       verify(logger.logDebug('* GitInvoker.isGitHistoryAvailable()')).once()
       verify(logger.logDebug('* GitInvoker.initialize()')).once()
       verify(logger.logDebug('* GitInvoker.targetBranch')).once()
@@ -326,14 +325,14 @@ describe('gitInvoker.ts', (): void => {
     it('should throw an error when the GitHub runner is being used and GITHUB_REF is in the incorrect format', (): void => {
       // Arrange
       process.env.GITHUB_ACTION = 'PR-Metrics'
-      process.env.GITHUB_REF = 'refs/pull/12345/merge/12345'
+      process.env.GITHUB_REF = 'refs/pull'
       const gitInvoker: GitInvoker = new GitInvoker(instance(logger), instance(runnerInvoker))
 
       // Act
       const func: () => void = () => gitInvoker.pullRequestId
 
       // Assert
-      expect(func).to.throw('GITHUB_REF \'refs/pull/12345/merge/12345\' is in an unexpected format.')
+      expect(func).to.throw('GITHUB_REF \'refs/pull\' is in an unexpected format.')
       verify(logger.logDebug('* GitInvoker.pullRequestId')).once()
       verify(logger.logDebug('* GitInvoker.pullRequestIdInternal')).once()
       verify(logger.logDebug('* GitInvoker.pullRequestIdForGitHub')).once()
@@ -393,11 +392,13 @@ describe('gitInvoker.ts', (): void => {
       verify(logger.logDebug('* GitInvoker.pullRequestIdForAzurePipelines')).once()
     })
 
-    async.each(
-      [
+    {
+      const testCases: string[] = [
         'GitHub',
         'GitHubEnterprise'
-      ], (buildRepositoryProvider: string): void => {
+      ]
+
+      testCases.forEach((buildRepositoryProvider: string): void => {
         it(`should throw an error when the Azure Pipelines runner is being used and the PR is on '${buildRepositoryProvider}' and SYSTEM_PULLREQUEST_PULLREQUESTNUMBER is undefined`, (): void => {
           // Arrange
           process.env.BUILD_REPOSITORY_PROVIDER = buildRepositoryProvider
@@ -416,6 +417,7 @@ describe('gitInvoker.ts', (): void => {
           delete process.env.BUILD_REPOSITORY_PROVIDER
         })
       })
+    }
 
     it('should throw an error when the ID cannot be parsed as an integer', (): void => {
       // Arrange
@@ -496,18 +498,12 @@ describe('gitInvoker.ts', (): void => {
       // Arrange
       delete process.env.SYSTEM_PULLREQUEST_TARGETBRANCH
       const gitInvoker: GitInvoker = new GitInvoker(instance(logger), instance(runnerInvoker))
-      let errorThrown: boolean = false
 
-      try {
-        // Act
-        await gitInvoker.getDiffSummary()
-      } catch (error: any) {
-        // Assert
-        errorThrown = true
-        expect(error.message).to.equal('\'SYSTEM_PULLREQUEST_TARGETBRANCH\', accessed within \'GitInvoker.targetBranch\', is invalid, null, or undefined \'undefined\'.')
-      }
+      // Act
+      const func: () => Promise<string> = async () => await gitInvoker.getDiffSummary()
 
-      expect(errorThrown).to.equal(true)
+      // Assert
+      await ExpectExtensions.toThrowAsync(func, '\'SYSTEM_PULLREQUEST_TARGETBRANCH\', accessed within \'GitInvoker.targetBranch\', is invalid, null, or undefined \'undefined\'.')
       verify(logger.logDebug('* GitInvoker.getDiffSummary()')).once()
       verify(logger.logDebug('* GitInvoker.initialize()')).once()
       verify(logger.logDebug('* GitInvoker.targetBranch')).once()
@@ -515,23 +511,18 @@ describe('gitInvoker.ts', (): void => {
 
     it('should throw an error when Git invocation fails', async (): Promise<void> => {
       // Arrange
-      when(runnerInvoker.exec('git', deepEqual(['diff', '--numstat', 'origin/develop...pull/12345/merge']), true, anything(), anything())).thenCall((_: string, __: string, ___: boolean, ____: GitWritableStream, errorStream: GitWritableStream): Promise<number> => {
-        errorStream.write('Failure')
-        return Promise.resolve(1)
-      })
+      when(runnerInvoker.exec('git', deepEqual(['diff', '--numstat', 'origin/develop...pull/12345/merge']), true, anything(), anything())).thenCall(
+        async (_tool: string, _args: string, _failOnError: boolean, _outputStream: GitWritableStream, errorStream: GitWritableStream): Promise<number> => {
+          errorStream.write('Failure')
+          return await Promise.resolve(1)
+        })
       const gitInvoker: GitInvoker = new GitInvoker(instance(logger), instance(runnerInvoker))
-      let errorThrown: boolean = false
 
-      try {
-        // Act
-        await gitInvoker.getDiffSummary()
-      } catch (error: any) {
-        // Assert
-        errorThrown = true
-        expect(error.message).to.equal('Failure')
-      }
+      // Act
+      const func: () => Promise<string> = async () => await gitInvoker.getDiffSummary()
 
-      expect(errorThrown).to.equal(true)
+      // Assert
+      await ExpectExtensions.toThrowAsync(func, 'Failure')
       verify(logger.logDebug('* GitInvoker.getDiffSummary()')).once()
       verify(logger.logDebug('* GitInvoker.initialize()')).once()
       verify(logger.logDebug('* GitInvoker.targetBranch')).once()

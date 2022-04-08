@@ -9,7 +9,8 @@ import { IGitApi } from 'azure-devops-node-api/GitApi'
 import { IRequestHandler } from 'azure-devops-node-api/interfaces/common/VsoBaseInterfaces'
 import { resolvableInstance } from '../testUtilities/resolvableInstance'
 import { WebApi } from 'azure-devops-node-api'
-import async from 'async'
+import * as ExpectExtensions from '../testUtilities/expectExtensions'
+import * as Converter from '../../src/utilities/converter'
 import AzureDevOpsApiWrapper from '../../src/wrappers/azureDevOpsApiWrapper'
 import AzureReposInvoker from '../../src/repos/azureReposInvoker'
 import CommentData from '../../src/repos/interfaces/commentData'
@@ -86,12 +87,14 @@ describe('azureReposInvoker.ts', function (): void {
   })
 
   describe('getTitleAndDescription()', (): void => {
-    async.each(
-      [
+    {
+      const testCases: Array<string | undefined> = [
         undefined,
         ''
-      ], (variable: string | undefined): void => {
-        it(`should throw when SYSTEM_TEAMPROJECT is set to the invalid value '${variable}'`, async (): Promise<void> => {
+      ]
+
+      testCases.forEach((variable: string | undefined): void => {
+        it(`should throw when SYSTEM_TEAMPROJECT is set to the invalid value '${Converter.toString(variable)}'`, async (): Promise<void> => {
           // Arrange
           if (variable === undefined) {
             delete process.env.SYSTEM_TEAMPROJECT
@@ -100,29 +103,26 @@ describe('azureReposInvoker.ts', function (): void {
           }
 
           const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker))
-          let errorThrown: boolean = false
 
-          try {
-            // Act
-            await azureReposInvoker.getTitleAndDescription()
-          } catch (error: any) {
-            // Assert
-            errorThrown = true
-            expect(error.message).to.equal(`'SYSTEM_TEAMPROJECT', accessed within 'AzureReposInvoker.getGitApi()', is invalid, null, or undefined '${variable}'.`)
-          }
+          // Act
+          const func: () => Promise<PullRequestDetails> = async () => await azureReposInvoker.getTitleAndDescription()
 
-          expect(errorThrown).to.equal(true)
+          // Assert
+          await ExpectExtensions.toThrowAsync(func, `'SYSTEM_TEAMPROJECT', accessed within 'AzureReposInvoker.getGitApi()', is invalid, null, or undefined '${Converter.toString(variable)}'.`)
           verify(logger.logDebug('* AzureReposInvoker.getTitleAndDescription()')).once()
           verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
         })
       })
+    }
 
-    async.each(
-      [
+    {
+      const testCases: Array<string | undefined> = [
         undefined,
         ''
-      ], (variable: string | undefined): void => {
-        it(`should throw when BUILD_REPOSITORY_ID is set to the invalid value '${variable}'`, async (): Promise<void> => {
+      ]
+
+      testCases.forEach((variable: string | undefined): void => {
+        it(`should throw when BUILD_REPOSITORY_ID is set to the invalid value '${Converter.toString(variable)}'`, async (): Promise<void> => {
           // Arrange
           if (variable === undefined) {
             delete process.env.BUILD_REPOSITORY_ID
@@ -131,29 +131,26 @@ describe('azureReposInvoker.ts', function (): void {
           }
 
           const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker))
-          let errorThrown: boolean = false
 
-          try {
-            // Act
-            await azureReposInvoker.getTitleAndDescription()
-          } catch (error: any) {
-            // Assert
-            errorThrown = true
-            expect(error.message).to.equal(`'BUILD_REPOSITORY_ID', accessed within 'AzureReposInvoker.getGitApi()', is invalid, null, or undefined '${variable}'.`)
-          }
+          // Act
+          const func: () => Promise<PullRequestDetails> = async () => await azureReposInvoker.getTitleAndDescription()
 
-          expect(errorThrown).to.equal(true)
+          // Assert
+          await ExpectExtensions.toThrowAsync(func, `'BUILD_REPOSITORY_ID', accessed within 'AzureReposInvoker.getGitApi()', is invalid, null, or undefined '${Converter.toString(variable)}'.`)
           verify(logger.logDebug('* AzureReposInvoker.getTitleAndDescription()')).once()
           verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
         })
       })
+    }
 
-    async.each(
-      [
+    {
+      const testCases: Array<string | undefined> = [
         undefined,
         ''
-      ], (variable: string | undefined): void => {
-        it(`should throw when SYSTEM_ACCESSTOKEN is set to the invalid value '${variable}'`, async (): Promise<void> => {
+      ]
+
+      testCases.forEach((variable: string | undefined): void => {
+        it(`should throw when SYSTEM_ACCESSTOKEN is set to the invalid value '${Converter.toString(variable)}'`, async (): Promise<void> => {
           // Arrange
           if (variable === undefined) {
             delete process.env.SYSTEM_ACCESSTOKEN
@@ -162,29 +159,26 @@ describe('azureReposInvoker.ts', function (): void {
           }
 
           const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker))
-          let errorThrown: boolean = false
 
-          try {
-            // Act
-            await azureReposInvoker.getTitleAndDescription()
-          } catch (error: any) {
-            // Assert
-            errorThrown = true
-            expect(error.message).to.equal(`'SYSTEM_ACCESSTOKEN', accessed within 'AzureReposInvoker.getGitApi()', is invalid, null, or undefined '${variable}'.`)
-          }
+          // Act
+          const func: () => Promise<PullRequestDetails> = async () => await azureReposInvoker.getTitleAndDescription()
 
-          expect(errorThrown).to.equal(true)
+          // Assert
+          await ExpectExtensions.toThrowAsync(func, `'SYSTEM_ACCESSTOKEN', accessed within 'AzureReposInvoker.getGitApi()', is invalid, null, or undefined '${Converter.toString(variable)}'.`)
           verify(logger.logDebug('* AzureReposInvoker.getTitleAndDescription()')).once()
           verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
         })
       })
+    }
 
-    async.each(
-      [
+    {
+      const testCases: Array<string | undefined> = [
         undefined,
         ''
-      ], (variable: string | undefined): void => {
-        it(`should throw when SYSTEM_TEAMFOUNDATIONCOLLECTIONURI is set to the invalid value '${variable}'`, async (): Promise<void> => {
+      ]
+
+      testCases.forEach((variable: string | undefined): void => {
+        it(`should throw when SYSTEM_TEAMFOUNDATIONCOLLECTIONURI is set to the invalid value '${Converter.toString(variable)}'`, async (): Promise<void> => {
           // Arrange
           if (variable === undefined) {
             delete process.env.SYSTEM_TEAMFOUNDATIONCOLLECTIONURI
@@ -193,49 +187,40 @@ describe('azureReposInvoker.ts', function (): void {
           }
 
           const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker))
-          let errorThrown: boolean = false
 
-          try {
-            // Act
-            await azureReposInvoker.getTitleAndDescription()
-          } catch (error: any) {
-            // Assert
-            errorThrown = true
-            expect(error.message).to.equal(`'SYSTEM_TEAMFOUNDATIONCOLLECTIONURI', accessed within 'AzureReposInvoker.getGitApi()', is invalid, null, or undefined '${variable}'.`)
-          }
+          // Act
+          const func: () => Promise<PullRequestDetails> = async () => await azureReposInvoker.getTitleAndDescription()
 
-          expect(errorThrown).to.equal(true)
+          // Assert
+          await ExpectExtensions.toThrowAsync(func, `'SYSTEM_TEAMFOUNDATIONCOLLECTIONURI', accessed within 'AzureReposInvoker.getGitApi()', is invalid, null, or undefined '${Converter.toString(variable)}'.`)
           verify(logger.logDebug('* AzureReposInvoker.getTitleAndDescription()')).once()
           verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
           verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
         })
       })
+    }
 
-    async.each(
-      [
+    {
+      const testCases: number[] = [
         401,
         403,
         404
-      ], (statusCode: number): void => {
+      ]
+
+      testCases.forEach((statusCode: number): void => {
         it(`should throw when the access token has insufficient access and the API call returns status code '${statusCode}'`, async (): Promise<void> => {
           // Arrange
           const error: ErrorWithStatus = new ErrorWithStatus('Test')
           error.statusCode = statusCode
           when(gitApi.getPullRequestById(10, 'Project')).thenThrow(error)
           const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker))
-          let errorThrown: boolean = false
 
-          try {
-            // Act
-            await azureReposInvoker.getTitleAndDescription()
-          } catch (error: any) {
-            // Assert
-            errorThrown = true
-            expect(error.message).to.equal('Could not access the resources. Ensure \'System.AccessToken\' has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
-            expect(error.internalMessage).to.equal('Test')
-          }
+          // Act
+          const func: () => Promise<PullRequestDetails> = async () => await azureReposInvoker.getTitleAndDescription()
 
-          expect(errorThrown).to.equal(true)
+          // Assert
+          const result: any = await ExpectExtensions.toThrowAsync(func, 'Could not access the resources. Ensure \'System.AccessToken\' has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
+          expect(result.internalMessage).to.equal('Test')
           verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
           verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
           verify(gitApi.getPullRequestById(10, 'Project')).once()
@@ -243,6 +228,7 @@ describe('azureReposInvoker.ts', function (): void {
           verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
         })
       })
+    }
 
     it('should return the title and description when available', async (): Promise<void> => {
       // Arrange
@@ -314,18 +300,12 @@ describe('azureReposInvoker.ts', function (): void {
       // Arrange
       when(gitApi.getPullRequestById(10, 'Project')).thenResolve({})
       const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker))
-      let errorThrown: boolean = false
 
-      try {
-        // Act
-        await azureReposInvoker.getTitleAndDescription()
-      } catch (error: any) {
-        // Assert
-        errorThrown = true
-        expect(error.message).to.equal('\'title\', accessed within \'AzureReposInvoker.getTitleAndDescription()\', is invalid, null, or undefined \'undefined\'.')
-      }
+      // Act
+      const func: () => Promise<PullRequestDetails> = async () => await azureReposInvoker.getTitleAndDescription()
 
-      expect(errorThrown).to.equal(true)
+      // Assert
+      await ExpectExtensions.toThrowAsync(func, '\'title\', accessed within \'AzureReposInvoker.getTitleAndDescription()\', is invalid, null, or undefined \'undefined\'.')
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
       verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
       verify(gitApi.getPullRequestById(10, 'Project')).once()
@@ -336,31 +316,27 @@ describe('azureReposInvoker.ts', function (): void {
   })
 
   describe('getComments()', (): void => {
-    async.each(
-      [
+    {
+      const testCases: number[] = [
         401,
         403,
         404
-      ], (statusCode: number): void => {
+      ]
+
+      testCases.forEach((statusCode: number): void => {
         it(`should throw when the access token has insufficient access and the API call returns status code '${statusCode}'`, async (): Promise<void> => {
           // Arrange
           const error: ErrorWithStatus = new ErrorWithStatus('Test')
           error.statusCode = statusCode
           when(gitApi.getThreads('RepoID', 10, 'Project')).thenThrow(error)
           const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker))
-          let errorThrown: boolean = false
 
-          try {
-            // Act
-            await azureReposInvoker.getComments()
-          } catch (error: any) {
-            // Assert
-            errorThrown = true
-            expect(error.message).to.equal('Could not access the resources. Ensure \'System.AccessToken\' has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
-            expect(error.internalMessage).to.equal('Test')
-          }
+          // Act
+          const func: () => Promise<CommentData> = async () => await azureReposInvoker.getComments()
 
-          expect(errorThrown).to.equal(true)
+          // Assert
+          const result: any = await ExpectExtensions.toThrowAsync(func, 'Could not access the resources. Ensure \'System.AccessToken\' has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
+          expect(result.internalMessage).to.equal('Test')
           verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
           verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
           verify(gitApi.getThreads('RepoID', 10, 'Project')).once()
@@ -368,6 +344,7 @@ describe('azureReposInvoker.ts', function (): void {
           verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
         })
       })
+    }
 
     it('should return the result when called with a pull request comment', async (): Promise<void> => {
       // Arrange
@@ -379,9 +356,9 @@ describe('azureReposInvoker.ts', function (): void {
 
       // Assert
       expect(result.pullRequestComments.length).to.equal(1)
-      expect(result.pullRequestComments[0]!.id).to.equal(1)
-      expect(result.pullRequestComments[0]!.content).to.equal('Content')
-      expect(result.pullRequestComments[0]!.status).to.equal(CommentThreadStatus.Active)
+      expect(result.pullRequestComments[0]?.id).to.equal(1)
+      expect(result.pullRequestComments[0]?.content).to.equal('Content')
+      expect(result.pullRequestComments[0]?.status).to.equal(CommentThreadStatus.Active)
       expect(result.fileComments.length).to.equal(0)
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
       verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
@@ -402,10 +379,10 @@ describe('azureReposInvoker.ts', function (): void {
       // Assert
       expect(result.pullRequestComments.length).to.equal(0)
       expect(result.fileComments.length).to.equal(1)
-      expect(result.fileComments[0]!.id).to.equal(1)
-      expect(result.fileComments[0]!.content).to.equal('Content')
-      expect(result.fileComments[0]!.status).to.equal(CommentThreadStatus.Active)
-      expect(result.fileComments[0]!.fileName).to.equal('file.ts')
+      expect(result.fileComments[0]?.id).to.equal(1)
+      expect(result.fileComments[0]?.content).to.equal('Content')
+      expect(result.fileComments[0]?.status).to.equal(CommentThreadStatus.Active)
+      expect(result.fileComments[0]?.fileName).to.equal('file.ts')
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
       verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
       verify(gitApi.getThreads('RepoID', 10, 'Project')).once()
@@ -428,14 +405,14 @@ describe('azureReposInvoker.ts', function (): void {
 
       // Assert
       expect(result.pullRequestComments.length).to.equal(1)
-      expect(result.pullRequestComments[0]!.id).to.equal(1)
-      expect(result.pullRequestComments[0]!.content).to.equal('PR Content')
-      expect(result.pullRequestComments[0]!.status).to.equal(CommentThreadStatus.Active)
+      expect(result.pullRequestComments[0]?.id).to.equal(1)
+      expect(result.pullRequestComments[0]?.content).to.equal('PR Content')
+      expect(result.pullRequestComments[0]?.status).to.equal(CommentThreadStatus.Active)
       expect(result.fileComments.length).to.equal(1)
-      expect(result.fileComments[0]!.id).to.equal(2)
-      expect(result.fileComments[0]!.content).to.equal('File Content')
-      expect(result.fileComments[0]!.status).to.equal(CommentThreadStatus.Active)
-      expect(result.fileComments[0]!.fileName).to.equal('file.ts')
+      expect(result.fileComments[0]?.id).to.equal(2)
+      expect(result.fileComments[0]?.content).to.equal('File Content')
+      expect(result.fileComments[0]?.status).to.equal(CommentThreadStatus.Active)
+      expect(result.fileComments[0]?.fileName).to.equal('file.ts')
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
       verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
       verify(gitApi.getThreads('RepoID', 10, 'Project')).once()
@@ -455,9 +432,9 @@ describe('azureReposInvoker.ts', function (): void {
 
       // Assert
       expect(result.pullRequestComments.length).to.equal(1)
-      expect(result.pullRequestComments[0]!.id).to.equal(1)
-      expect(result.pullRequestComments[0]!.content).to.equal('Content')
-      expect(result.pullRequestComments[0]!.status).to.equal(CommentThreadStatus.Active)
+      expect(result.pullRequestComments[0]?.id).to.equal(1)
+      expect(result.pullRequestComments[0]?.content).to.equal('Content')
+      expect(result.pullRequestComments[0]?.status).to.equal(CommentThreadStatus.Active)
       expect(result.fileComments.length).to.equal(0)
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
       verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
@@ -471,18 +448,12 @@ describe('azureReposInvoker.ts', function (): void {
       // Arrange
       when(gitApi.getThreads('RepoID', 10, 'Project')).thenResolve([{ status: 1, comments: [{ content: 'Content' }] }])
       const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker))
-      let errorThrown: boolean = false
 
-      try {
-        // Act
-        await azureReposInvoker.getComments()
-      } catch (error: any) {
-        // Assert
-        errorThrown = true
-        expect(error.message).to.equal('\'commentThread[0].id\', accessed within \'AzureReposInvoker.convertPullRequestComments()\', is invalid, null, or undefined \'undefined\'.')
-      }
+      // Act
+      const func: () => Promise<CommentData> = async () => await azureReposInvoker.getComments()
 
-      expect(errorThrown).to.equal(true)
+      // Assert
+      await ExpectExtensions.toThrowAsync(func, '\'commentThread[0].id\', accessed within \'AzureReposInvoker.convertPullRequestComments()\', is invalid, null, or undefined \'undefined\'.')
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
       verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
       verify(gitApi.getThreads('RepoID', 10, 'Project')).once()
@@ -505,14 +476,14 @@ describe('azureReposInvoker.ts', function (): void {
 
       // Assert
       expect(result.pullRequestComments.length).to.equal(1)
-      expect(result.pullRequestComments[0]!.id).to.equal(1)
-      expect(result.pullRequestComments[0]!.content).to.equal('PR Content')
-      expect(result.pullRequestComments[0]!.status).to.equal(CommentThreadStatus.Unknown)
+      expect(result.pullRequestComments[0]?.id).to.equal(1)
+      expect(result.pullRequestComments[0]?.content).to.equal('PR Content')
+      expect(result.pullRequestComments[0]?.status).to.equal(CommentThreadStatus.Unknown)
       expect(result.fileComments.length).to.equal(1)
-      expect(result.fileComments[0]!.id).to.equal(2)
-      expect(result.fileComments[0]!.content).to.equal('File Content')
-      expect(result.fileComments[0]!.status).to.equal(CommentThreadStatus.Unknown)
-      expect(result.fileComments[0]!.fileName).to.equal('file.ts')
+      expect(result.fileComments[0]?.id).to.equal(2)
+      expect(result.fileComments[0]?.content).to.equal('File Content')
+      expect(result.fileComments[0]?.status).to.equal(CommentThreadStatus.Unknown)
+      expect(result.fileComments[0]?.fileName).to.equal('file.ts')
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
       verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
       verify(gitApi.getThreads('RepoID', 10, 'Project')).once()
@@ -521,20 +492,22 @@ describe('azureReposInvoker.ts', function (): void {
       verify(logger.logDebug(JSON.stringify(getThreadsResult))).once()
     })
 
-    async.each(
-      [
+    {
+      const testCases: GitPullRequestCommentThread[] = [
         { id: 1, status: 1 },
         { id: 1, status: 1, comments: [] },
-        { id: 1, status: 1, comments: [{ }] },
+        { id: 1, status: 1, comments: [{}] },
         { id: 1, status: 1, comments: [{ content: '' }] },
-        { id: 1, status: 1, comments: [{ content: 'Content' }], threadContext: { } },
+        { id: 1, status: 1, comments: [{ content: 'Content' }], threadContext: {} },
         { id: 1, status: 1, comments: [{ content: 'Content' }], threadContext: { filePath: '' } },
         { id: 1, status: 1, comments: [{ content: 'Content' }], threadContext: { filePath: '/' } }
-      ], (data: GitPullRequestCommentThread): void => {
-        it(`should skip the comment with the malformed payload '${JSON.stringify(data)}'`, async (): Promise<void> => {
+      ]
+
+      testCases.forEach((commentThread: GitPullRequestCommentThread): void => {
+        it(`should skip the comment with the malformed payload '${JSON.stringify(commentThread)}'`, async (): Promise<void> => {
           // Arrange
           const getThreadsResult: GitPullRequestCommentThread[] = [
-            data,
+            commentThread,
             { id: 2, status: 1, comments: [{ content: 'PR Content' }] },
             { id: 3, status: 1, comments: [{ content: 'File Content' }], threadContext: { filePath: '/file.ts' } }
           ]
@@ -546,14 +519,14 @@ describe('azureReposInvoker.ts', function (): void {
 
           // Assert
           expect(result.pullRequestComments.length).to.equal(1)
-          expect(result.pullRequestComments[0]!.id).to.equal(2)
-          expect(result.pullRequestComments[0]!.content).to.equal('PR Content')
-          expect(result.pullRequestComments[0]!.status).to.equal(CommentThreadStatus.Active)
+          expect(result.pullRequestComments[0]?.id).to.equal(2)
+          expect(result.pullRequestComments[0]?.content).to.equal('PR Content')
+          expect(result.pullRequestComments[0]?.status).to.equal(CommentThreadStatus.Active)
           expect(result.fileComments.length).to.equal(1)
-          expect(result.fileComments[0]!.id).to.equal(3)
-          expect(result.fileComments[0]!.content).to.equal('File Content')
-          expect(result.fileComments[0]!.status).to.equal(CommentThreadStatus.Active)
-          expect(result.fileComments[0]!.fileName).to.equal('file.ts')
+          expect(result.fileComments[0]?.id).to.equal(3)
+          expect(result.fileComments[0]?.content).to.equal('File Content')
+          expect(result.fileComments[0]?.status).to.equal(CommentThreadStatus.Active)
+          expect(result.fileComments[0]?.fileName).to.equal('file.ts')
           verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
           verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
           verify(gitApi.getThreads('RepoID', 10, 'Project')).once()
@@ -562,34 +535,31 @@ describe('azureReposInvoker.ts', function (): void {
           verify(logger.logDebug(JSON.stringify(getThreadsResult))).once()
         })
       })
+    }
   })
 
   describe('setTitleAndDescription()', (): void => {
-    async.each(
-      [
+    {
+      const testCases: number[] = [
         401,
         403,
         404
-      ], (statusCode: number): void => {
+      ]
+
+      testCases.forEach((statusCode: number): void => {
         it(`should throw when the access token has insufficient access and the API call returns status code '${statusCode}'`, async (): Promise<void> => {
           // Arrange
           const error: ErrorWithStatus = new ErrorWithStatus('Test')
           error.statusCode = statusCode
           when(gitApi.updatePullRequest(anything(), 'RepoID', 10, 'Project')).thenThrow(error)
           const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker))
-          let errorThrown: boolean = false
 
-          try {
-            // Act
-            await azureReposInvoker.setTitleAndDescription('Title', 'Description')
-          } catch (error: any) {
-            // Assert
-            errorThrown = true
-            expect(error.message).to.equal('Could not access the resources. Ensure \'System.AccessToken\' has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
-            expect(error.internalMessage).to.equal('Test')
-          }
+          // Act
+          const func: () => Promise<void> = async () => await azureReposInvoker.setTitleAndDescription('Title', 'Description')
 
-          expect(errorThrown).to.equal(true)
+          // Assert
+          const result: any = await ExpectExtensions.toThrowAsync(func, 'Could not access the resources. Ensure \'System.AccessToken\' has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
+          expect(result.internalMessage).to.equal('Test')
           verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
           verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
           verify(gitApi.updatePullRequest(anything(), 'RepoID', 10, 'Project')).once()
@@ -597,6 +567,7 @@ describe('azureReposInvoker.ts', function (): void {
           verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
         })
       })
+    }
 
     it('should not call the API when the title and description are null', async (): Promise<void> => {
       // Arrange
@@ -698,31 +669,27 @@ describe('azureReposInvoker.ts', function (): void {
   })
 
   describe('createComment()', (): void => {
-    async.each(
-      [
+    {
+      const testCases: number[] = [
         401,
         403,
         404
-      ], (statusCode: number): void => {
+      ]
+
+      testCases.forEach((statusCode: number): void => {
         it(`should throw when the access token has insufficient access and the API call returns status code '${statusCode}'`, async (): Promise<void> => {
           // Arrange
           const error: ErrorWithStatus = new ErrorWithStatus('Test')
           error.statusCode = statusCode
           when(gitApi.createThread(anything(), 'RepoID', 10, 'Project')).thenThrow(error)
           const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker))
-          let errorThrown: boolean = false
 
-          try {
-            // Act
-            await azureReposInvoker.createComment('Comment Content', CommentThreadStatus.Active, 'file.ts')
-          } catch (error: any) {
-            // Assert
-            errorThrown = true
-            expect(error.message).to.equal('Could not access the resources. Ensure \'System.AccessToken\' has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
-            expect(error.internalMessage).to.equal('Test')
-          }
+          // Act
+          const func: () => Promise<void> = async () => await azureReposInvoker.createComment('Comment Content', CommentThreadStatus.Active, 'file.ts')
 
-          expect(errorThrown).to.equal(true)
+          // Assert
+          const result: any = await ExpectExtensions.toThrowAsync(func, 'Could not access the resources. Ensure \'System.AccessToken\' has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
+          expect(result.internalMessage).to.equal('Test')
           verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
           verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
           verify(gitApi.createThread(anything(), 'RepoID', 10, 'Project')).once()
@@ -730,6 +697,7 @@ describe('azureReposInvoker.ts', function (): void {
           verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
         })
       })
+    }
 
     it('should call the API for no file', async (): Promise<void> => {
       // Arrange
@@ -840,31 +808,27 @@ describe('azureReposInvoker.ts', function (): void {
   })
 
   describe('updateComment()', (): void => {
-    async.each(
-      [
+    {
+      const testCases: number[] = [
         401,
         403,
         404
-      ], (statusCode: number): void => {
+      ]
+
+      testCases.forEach((statusCode: number): void => {
         it(`should throw when the access token has insufficient access for the updateComment API and the API call returns status code '${statusCode}'`, async (): Promise<void> => {
           // Arrange
           const error: ErrorWithStatus = new ErrorWithStatus('Test')
           error.statusCode = statusCode
           when(gitApi.updateComment(anything(), 'RepoID', 10, 20, 1, 'Project')).thenThrow(error)
           const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker))
-          let errorThrown: boolean = false
 
-          try {
-            // Act
-            await azureReposInvoker.updateComment(20, 'Content', CommentThreadStatus.Active)
-          } catch (error: any) {
-            // Assert
-            errorThrown = true
-            expect(error.message).to.equal('Could not access the resources. Ensure \'System.AccessToken\' has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
-            expect(error.internalMessage).to.equal('Test')
-          }
+          // Act
+          const func: () => Promise<void> = async () => await azureReposInvoker.updateComment(20, 'Content', CommentThreadStatus.Active)
 
-          expect(errorThrown).to.equal(true)
+          // Assert
+          const result: any = await ExpectExtensions.toThrowAsync(func, 'Could not access the resources. Ensure \'System.AccessToken\' has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
+          expect(result.internalMessage).to.equal('Test')
           verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
           verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
           verify(gitApi.updateComment(anything(), 'RepoID', 10, 20, 1, 'Project')).once()
@@ -872,13 +836,16 @@ describe('azureReposInvoker.ts', function (): void {
           verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
         })
       })
+    }
 
-    async.each(
-      [
+    {
+      const testCases: number[] = [
         401,
         403,
         404
-      ], (status: number): void => {
+      ]
+
+      testCases.forEach((status: number): void => {
         it(`should throw when the access token has insufficient access for the updateComment API and the API call returns status '${status}'`, async (): Promise<void> => {
           // Arrange
           const error: ErrorWithStatus = new ErrorWithStatus('Test')
@@ -886,19 +853,13 @@ describe('azureReposInvoker.ts', function (): void {
           when(gitApi.updateComment(anything(), 'RepoID', 10, 20, 1, 'Project')).thenResolve({})
           when(gitApi.updateThread(anything(), 'RepoID', 10, 20, 'Project')).thenThrow(error)
           const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker))
-          let errorThrown: boolean = false
 
-          try {
-            // Act
-            await azureReposInvoker.updateComment(20, 'Content', CommentThreadStatus.Active)
-          } catch (error: any) {
-            // Assert
-            errorThrown = true
-            expect(error.message).to.equal('Could not access the resources. Ensure \'System.AccessToken\' has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
-            expect(error.internalMessage).to.equal('Test')
-          }
+          // Act
+          const func: () => Promise<void> = async () => await azureReposInvoker.updateComment(20, 'Content', CommentThreadStatus.Active)
 
-          expect(errorThrown).to.equal(true)
+          // Assert
+          const result: any = await ExpectExtensions.toThrowAsync(func, 'Could not access the resources. Ensure \'System.AccessToken\' has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
+          expect(result.internalMessage).to.equal('Test')
           verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
           verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
           verify(gitApi.updateComment(anything(), 'RepoID', 10, 20, 1, 'Project')).once()
@@ -908,6 +869,7 @@ describe('azureReposInvoker.ts', function (): void {
           verify(logger.logDebug('{}')).once()
         })
       })
+    }
 
     it('should call the APIs when both the comment content and the thread status are updated', async (): Promise<void> => {
       // Arrange
@@ -1013,31 +975,27 @@ describe('azureReposInvoker.ts', function (): void {
   })
 
   describe('deleteCommentThread()', (): void => {
-    async.each(
-      [
+    {
+      const testCases: number[] = [
         401,
         403,
         404
-      ], (statusCode: number): void => {
+      ]
+
+      testCases.forEach((statusCode: number): void => {
         it(`should throw when the access token has insufficient access and the API call returns status code '${statusCode}'`, async (): Promise<void> => {
           // Arrange
           const error: ErrorWithStatus = new ErrorWithStatus('Test')
           error.statusCode = statusCode
           when(gitApi.deleteComment('RepoID', 10, 20, 1, 'Project')).thenThrow(error)
           const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker))
-          let errorThrown: boolean = false
 
-          try {
-            // Act
-            await azureReposInvoker.deleteCommentThread(20)
-          } catch (error: any) {
-            // Assert
-            errorThrown = true
-            expect(error.message).to.equal('Could not access the resources. Ensure \'System.AccessToken\' has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
-            expect(error.internalMessage).to.equal('Test')
-          }
+          // Act
+          const func: () => Promise<void> = async () => await azureReposInvoker.deleteCommentThread(20)
 
-          expect(errorThrown).to.equal(true)
+          // Assert
+          const result: any = await ExpectExtensions.toThrowAsync(func, 'Could not access the resources. Ensure \'System.AccessToken\' has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
+          expect(result.internalMessage).to.equal('Test')
           verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
           verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
           verify(gitApi.deleteComment('RepoID', 10, 20, 1, 'Project')).once()
@@ -1045,6 +1003,7 @@ describe('azureReposInvoker.ts', function (): void {
           verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
         })
       })
+    }
 
     it('should call the API for a single comment', async (): Promise<void> => {
       // Arrange

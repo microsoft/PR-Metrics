@@ -24,14 +24,14 @@ export default class AzurePipelinesRunnerInvoker implements IRunnerInvoker {
     this._azurePipelinesRunnerWrapper = azurePipelinesRunnerWrapper
   }
 
-  public exec (tool: string, args: string[], failOnError: boolean, outputStream: GitWritableStream, errorStream: GitWritableStream): Promise<number> {
+  public async exec (tool: string, args: string[], failOnError: boolean, outputStream: GitWritableStream, errorStream: GitWritableStream): Promise<number> {
     const options: IExecOptions = {
       failOnStdErr: failOnError,
       outStream: outputStream,
       errStream: errorStream
     }
 
-    return this._azurePipelinesRunnerWrapper.exec(tool, args, options)
+    return await this._azurePipelinesRunnerWrapper.exec(tool, args, options)
   }
 
   public getInput (name: string[]): string | undefined {

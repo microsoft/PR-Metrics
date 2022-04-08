@@ -26,7 +26,7 @@ async function run (): Promise<void> {
       return
     }
 
-    if (!process.env.PRMETRICS_SKIP_APIS) {
+    if (process.env.PRMETRICS_SKIP_APIS === undefined) {
       await Promise.all([
         codeMetricsCalculator.updateDetails(),
         codeMetricsCalculator.updateComments()
@@ -40,7 +40,8 @@ async function run (): Promise<void> {
     const properties: string[] = Object.getOwnPropertyNames(error)
     properties.forEach((property: string): void => {
       if (property !== 'message') {
-        logger.logInfo(`${error.name} – ${property}: ${JSON.stringify(error[property])}`)
+        const name: string = error.name
+        logger.logInfo(`${name} – ${property}: ${JSON.stringify(error[property])}`)
       }
     })
 
@@ -49,4 +50,4 @@ async function run (): Promise<void> {
   }
 }
 
-run()
+run().finally((): void => {})
