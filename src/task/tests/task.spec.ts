@@ -33,7 +33,7 @@ describe('task.json', (): void => {
   resources.forEach((value: ResourcesJson, key: string): void => {
     it(`should have a friendly name including the version number in language '${key}'`, (): void => {
       // Assert
-      expect(value['loc.friendlyName']!.includes(version)).to.equal(true)
+      expect(value['loc.friendlyName']?.includes(version)).to.equal(true)
     })
   })
 

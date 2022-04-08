@@ -216,13 +216,22 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 17.x
+
+      - name: NPM – Install Dependencies
+        run: npm install
+
       - name: Super Linter
-        uses: github/super-linter@v4.9.0
+        uses: github/super-linter@v4.9.2
         env:
           EDITORCONFIG_FILE_NAME: ../../.editorconfig
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MARKDOWN_CONFIG_FILE: ../../.markdownlint.json
           TYPESCRIPT_ES_CONFIG_FILE: ../../.eslintrc.yml
+          TYPESCRIPT_STANDARD_TSCONFIG_FILE: ../../src/task/tsconfig.json
           VALIDATE_TYPESCRIPT_STANDARD: true
 
   validate-dist:

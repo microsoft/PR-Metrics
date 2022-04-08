@@ -105,7 +105,7 @@ export default class CodeMetricsCalculator {
   public async updateComments (): Promise<void> {
     this._logger.logDebug('* CodeMetricsCalculator.updateComments()')
 
-    const promises: Promise<void>[] = []
+    const promises: Array<Promise<void>> = []
 
     const commentData: PullRequestCommentsData = await this._pullRequestComments.getCommentData()
     promises.push(this.updateMetricsComment(commentData))

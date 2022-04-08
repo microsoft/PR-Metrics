@@ -5,17 +5,17 @@ import { Comment, CommentPosition, CommentThreadStatus, GitPullRequest, GitPullR
 import { IGitApi } from 'azure-devops-node-api/GitApi'
 import { IRequestHandler } from 'azure-devops-node-api/interfaces/common/VsoBaseInterfaces'
 import { singleton } from 'tsyringe'
-import { Validator } from '../utilities/validator'
 import { WebApi } from 'azure-devops-node-api'
+import * as Validator from '../utilities/validator'
 import AzureDevOpsApiWrapper from '../wrappers/azureDevOpsApiWrapper'
 import BaseReposInvoker from './baseReposInvoker'
 import CommentData from './interfaces/commentData'
 import FileCommentData from './interfaces/fileCommentData'
+import GitInvoker from '../git/gitInvoker'
 import Logger from '../utilities/logger'
 import PullRequestCommentData from './interfaces/pullRequestCommentData'
 import PullRequestDetails from './interfaces/pullRequestDetails'
 import RunnerInvoker from '../runners/runnerInvoker'
-import GitInvoker from '../git/gitInvoker'
 
 /**
  * A class for invoking Azure Repos functionality.
@@ -66,7 +66,7 @@ export default class AzureReposInvoker extends BaseReposInvoker {
     const result: GitPullRequest = await this.invokeApiCall(async (): Promise<GitPullRequest> => await (await gitApiPromise).getPullRequestById(this._pullRequestId, this._project))
     this._logger.logDebug(JSON.stringify(result))
 
-    const title: string = Validator.validate(result.title, 'title', 'AzureReposInvoker.getTitleAndDescription()')
+    const title: string = Validator.validateString(result.title, 'title', 'AzureReposInvoker.getTitleAndDescription()')
     return {
       title: title,
       description: result.description
@@ -112,7 +112,7 @@ export default class AzureReposInvoker extends BaseReposInvoker {
       status: status
     }
 
-    if (fileName) {
+    if (fileName !== undefined) {
       commentThread.threadContext = {
         filePath: `/${fileName}`
       }
@@ -126,7 +126,7 @@ export default class AzureReposInvoker extends BaseReposInvoker {
         offset: 2
       }
 
-      if (isFileDeleted) {
+      if (isFileDeleted ?? false) {
         commentThread.threadContext.leftFileStart = fileStart
         commentThread.threadContext.leftFileEnd = fileEnd
       } else {
@@ -176,7 +176,7 @@ export default class AzureReposInvoker extends BaseReposInvoker {
   private async getGitApi (): Promise<IGitApi> {
     this._logger.logDebug('* AzureReposInvoker.getGitApi()')
 
-    if (this._gitApi) {
+    if (this._gitApi !== undefined) {
       return this._gitApi
     }
 
@@ -198,24 +198,24 @@ export default class AzureReposInvoker extends BaseReposInvoker {
     const result: CommentData = new CommentData()
 
     comments.forEach((value: GitPullRequestCommentThread, index: number): void => {
-      const id: number = Validator.validate(value.id, `commentThread[${index}].id`, 'AzureReposInvoker.convertPullRequestComments()')
+      const id: number = Validator.validateNumber(value.id, `commentThread[${index}].id`, 'AzureReposInvoker.convertPullRequestComments()')
       const comments: Comment[] | undefined = value.comments
-      if (!comments) {
+      if (comments === undefined) {
         return
       }
 
       const content: string | undefined = comments[0]?.content
-      if (!content) {
+      if (content === undefined || content === '') {
         return
       }
 
-      const status: CommentThreadStatus = value.status || CommentThreadStatus.Unknown
+      const status: CommentThreadStatus = value.status ?? CommentThreadStatus.Unknown
 
-      if (!value.threadContext) {
+      if (value.threadContext === null || value.threadContext === undefined) {
         result.pullRequestComments.push(new PullRequestCommentData(id, content, status))
       } else {
         const fileName: string | undefined = value.threadContext.filePath
-        if (!fileName || fileName.length <= 1) {
+        if (fileName === undefined || fileName.length <= 1) {
           return
         }
 
@@ -226,7 +226,7 @@ export default class AzureReposInvoker extends BaseReposInvoker {
     return result
   }
 
-  protected async invokeApiCall<TResponse> (action: () => Promise<TResponse>): Promise<TResponse> {
-    return super.invokeApiCall(action, this._runnerInvoker.loc('metrics.codeMetricsCalculator.insufficientAzureReposAccessTokenPermissions'))
+  protected async invokeApiCall<Response> (action: () => Promise<Response>): Promise<Response> {
+    return await super.invokeApiCall(action, this._runnerInvoker.loc('metrics.codeMetricsCalculator.insufficientAzureReposAccessTokenPermissions'))
   }
 }

@@ -26,12 +26,12 @@ export default abstract class BaseReposInvoker implements IReposInvoker {
 
   /**
    * Invokes an API call, augmenting any errors that may be thrown due to insufficient access.
-   * @typeParam TResponse The type of the response from the API call.
+   * @typeParam Response The type of the response from the API call.
    * @param action The action defining the API call to invoke.
    * @param accessErrorMessage The error message to insert if a caught error is due to insufficient access.
    * @returns A promise containing the response from the API call.
    */
-  protected async invokeApiCall<TResponse> (action: () => Promise<TResponse>, accessErrorMessage: string): Promise<TResponse> {
+  protected async invokeApiCall<Response> (action: () => Promise<Response>, accessErrorMessage: string): Promise<Response> {
     try {
       return await action()
     } catch (error: any) {

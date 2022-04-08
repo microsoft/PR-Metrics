@@ -33,7 +33,7 @@ export default class AzurePipelinesRunnerWrapper {
    * @param options The execution options.
    * @returns A promise containing the result of the execution.
    */
-  public exec (tool: string, args: string[], options: IExecOptions): Promise<number> {
+  public async exec (tool: string, args: string[], options: IExecOptions): Promise<number> {
     return taskLib.exec(tool, args, options)
   }
 

@@ -28,11 +28,7 @@ complement the unit tests to provide a high level of coverage.
    You can generate a PAT with at least the "Agent Pools (Read & manage)" scope
    by following the instructions [here][tfxpat]. This will only need to be
    performed the first time you use tfx-cli.
-1. To build and deploy, from within the `src/task` folder, run
-   `npm run deploy:release` or `npm run deploy:debug`. Note that the deployment
-   task can intermittently fail to deploy all dependencies, which will be seen
-   when you run the build task. If this occurs, run `npm run deploy:release`
-   or `npm run deploy:debug` and try again.
+1. To build and deploy, from within the `src/task` folder, run `npm run deploy`.
 
 ## Step 2: Creating the Pipelines
 

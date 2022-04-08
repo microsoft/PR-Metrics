@@ -18,18 +18,18 @@ import RunnerInvoker from '../runners/runnerInvoker'
  */
 @singleton()
 export default class CodeMetrics {
-  private _gitInvoker: GitInvoker
-  private _inputs: Inputs
-  private _logger: Logger
-  private _runnerInvoker: RunnerInvoker
+  private readonly _gitInvoker: GitInvoker
+  private readonly _inputs: Inputs
+  private readonly _logger: Logger
+  private readonly _runnerInvoker: RunnerInvoker
 
   private static readonly _minimatchOptions: minimatch.IOptions = {
     dot: true
   }
 
   private _isInitialized: boolean = false
-  private _filesNotRequiringReview: string[] = []
-  private _deletedFilesNotRequiringReview: string[] = []
+  private readonly _filesNotRequiringReview: string[] = []
+  private readonly _deletedFilesNotRequiringReview: string[] = []
   private _size: string = ''
   private _sizeIndicator: string = ''
   private _metrics: CodeMetricsData = new CodeMetricsData(0, 0, 0)
@@ -134,7 +134,7 @@ export default class CodeMetrics {
     }
 
     const gitDiffSummary: string = (await this._gitInvoker.getDiffSummary()).trim()
-    if (!gitDiffSummary) {
+    if (gitDiffSummary === '') {
       throw Error('The Git diff summary is empty.')
     }
 
@@ -144,7 +144,7 @@ export default class CodeMetrics {
     this.initializeSizeIndicator()
   }
 
-  private initializeMetrics (gitDiffSummary: string) {
+  private initializeMetrics (gitDiffSummary: string): void {
     this._logger.logDebug('* CodeMetrics.initializeMetrics()')
 
     const codeFileMetrics: CodeFileMetric[] = this.createFileMetricsMap(gitDiffSummary)
@@ -155,9 +155,11 @@ export default class CodeMetrics {
 
     // Check for glob matches.
     codeFileMetrics.forEach((codeFileMetric: CodeFileMetric): void => {
-      let isValidFilePattern: boolean = true
+      let isValidFilePattern: boolean = false
       this._inputs.fileMatchingPatterns.forEach((fileMatchingPattern: string): void => {
-        isValidFilePattern &&= minimatch.match([codeFileMetric.fileName], fileMatchingPattern, CodeMetrics._minimatchOptions).length > 0
+        if (!isValidFilePattern || fileMatchingPattern.startsWith('!')) {
+          isValidFilePattern = minimatch.match([codeFileMetric.fileName], fileMatchingPattern, CodeMetrics._minimatchOptions).length > 0
+        }
       })
 
       const isValidFileExtension: boolean = this.matchFileExtension(codeFileMetric.fileName)
@@ -235,19 +237,19 @@ export default class CodeMetrics {
     const result: CodeFileMetric[] = []
     lines.forEach((line: string): void => {
       const elements: string[] = line.split('\t')
-      if (elements.length !== 3) {
+      if (elements[0] === undefined || elements[1] === undefined || elements[2] === undefined) {
         throw RangeError(`The number of elements '${elements.length}' in '${line}' in input '${input}' did not match the expected 3.`)
       }
 
       // Condense file and folder names that were renamed e.g. "F{a => i}leT{b => e}st.d{c => l}l" or "FaleTbst.dcl => FileTest.dll".
-      const fileName: string = elements[2]!
+      const fileName: string = elements[2]
         .replace(/{.*? => ([^}]+?)}/g, '$1')
         .replace(/.*? => ([^}]+?)/g, '$1')
 
       result.push({
         fileName: fileName,
-        linesAdded: this.parseChangedLines(elements[0]!, line, 'added'),
-        linesDeleted: this.parseChangedLines(elements[1]!, line, 'deleted')
+        linesAdded: this.parseChangedLines(elements[0], line, 'added'),
+        linesDeleted: this.parseChangedLines(elements[1], line, 'deleted')
       })
     })
 
@@ -319,10 +321,10 @@ export default class CodeMetrics {
       currentSize *= this._inputs.growthRate
       index++
 
-      if (index < indicators.length) {
-        result = indicators[index]!('')
+      if (index === 2 || index === 3 || index === 4) {
+        result = indicators[index]('')
       } else {
-        result = indicators[indicators.length - 1]!((index - indicators.length + 2).toLocaleString())
+        result = indicators[4]((index - indicators.length + 2).toLocaleString())
       }
     }
 

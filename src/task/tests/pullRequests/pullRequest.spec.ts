@@ -4,7 +4,7 @@
 import 'reflect-metadata'
 import { expect } from 'chai'
 import { instance, mock, verify, when } from 'ts-mockito'
-import async from 'async'
+import * as Converter from '../../src/utilities/converter'
 import CodeMetrics from '../../src/metrics/codeMetrics'
 import Logger from '../../src/utilities/logger'
 import PullRequest from '../../src/pullRequests/pullRequest'
@@ -141,14 +141,16 @@ describe('pullRequest.ts', (): void => {
       verify(logger.logDebug('* PullRequest.isSupportedProvider')).once()
     })
 
-    async.each(
-      [
+    {
+      const testCases: string[] = [
         'TfsGit',
         'GitHub',
         'GitHubEnterprise'
-      ], (provider: string): void => {
+      ]
+
+      testCases.forEach((provider: string): void => {
         it(`should return true when the Azure Pipelines runner is being used and BUILD_REPOSITORY_PROVIDER is set to '${provider}'`, (): void => {
-        // Arrange
+          // Arrange
           process.env.BUILD_REPOSITORY_PROVIDER = provider
           const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(runnerInvoker))
 
@@ -163,6 +165,7 @@ describe('pullRequest.ts', (): void => {
           delete process.env.BUILD_REPOSITORY_PROVIDER
         })
       })
+    }
 
     it('should return the provider when the Azure Pipelines runner is being used and BUILD_REPOSITORY_PROVIDER is not set to TfsGit or GitHub', (): void => {
       // Arrange
@@ -194,13 +197,15 @@ describe('pullRequest.ts', (): void => {
       verify(logger.logDebug('* PullRequest.getUpdatedDescription()')).once()
     })
 
-    async.each(
-      [
+    {
+      const testCases: Array<string | undefined> = [
         undefined,
         '',
         ' '
-      ], (currentDescription: string | undefined): void => {
-        it(`should return the default description when the current description '${currentDescription}' is empty`, (): void => {
+      ]
+
+      testCases.forEach((currentDescription: string | undefined): void => {
+        it(`should return the default description when the current description '${Converter.toString(currentDescription)}' is empty`, (): void => {
           // Arrange
           const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(runnerInvoker))
 
@@ -212,6 +217,7 @@ describe('pullRequest.ts', (): void => {
           verify(logger.logDebug('* PullRequest.getUpdatedDescription()')).once()
         })
       })
+    }
   })
 
   describe('getUpdatedTitle()', (): void => {
@@ -227,8 +233,8 @@ describe('pullRequest.ts', (): void => {
       verify(logger.logDebug('* PullRequest.getUpdatedTitle()')).once()
     })
 
-    async.each(
-      [
+    {
+      const testCases: string[] = [
         'Title',
         'PREFIX ◾ Title',
         'PREFIX✔ ◾ Title',
@@ -236,7 +242,9 @@ describe('pullRequest.ts', (): void => {
         'PS ◾ Title',
         'PS✔ ◾ Title',
         'PS⚠️ ◾ Title'
-      ], (currentTitle: string): void => {
+      ]
+
+      testCases.forEach((currentTitle: string): void => {
         it(`should prefix the current title '${currentTitle}' when no prefix exists`, async (): Promise<void> => {
           // Arrange
           const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(runnerInvoker))
@@ -249,9 +257,10 @@ describe('pullRequest.ts', (): void => {
           verify(logger.logDebug('* PullRequest.getUpdatedTitle()')).once()
         })
       })
+    }
 
-    async.each(
-      [
+    {
+      const testCases: string[] = [
         'XS✔ ◾ Title',
         'XS⚠️ ◾ Title',
         'XS ◾ Title',
@@ -273,7 +282,9 @@ describe('pullRequest.ts', (): void => {
         '20XL✔ ◾ Title',
         '20XL⚠️ ◾ Title',
         '20XL ◾ Title'
-      ], (currentTitle: string): void => {
+      ]
+
+      testCases.forEach((currentTitle: string): void => {
         it(`should update the current title '${currentTitle}' correctly`, async (): Promise<void> => {
           // Arrange
           when(codeMetrics.getSizeIndicator()).thenResolve('PREFIX')
@@ -287,5 +298,6 @@ describe('pullRequest.ts', (): void => {
           verify(logger.logDebug('* PullRequest.getUpdatedTitle()')).once()
         })
       })
+    }
   })
 })
