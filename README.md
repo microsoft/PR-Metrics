@@ -100,7 +100,7 @@ Therefore, the following YAML definition is recommended:
 uses: microsoft/PR-Metrics@v1.4.1
 name: PR Metrics
 env:
-  SYSTEM_ACCESSTOKEN: ${{ secrets.GITHUB_TOKEN }}
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 continue-on-error: true
 ```
 
@@ -110,7 +110,7 @@ If you wish to modify the inputs, YAML akin the to the following can be used:
 uses: microsoft/PR-Metrics@v1.4.1
 name: PR Metrics
 env:
-  SYSTEM_ACCESSTOKEN: ${{ secrets.GITHUB_TOKEN }}
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 with:
   base-size: 200
   growth-rate: 2.0
