@@ -3,7 +3,7 @@
 
 ---
 
-name: PR Metrics 1.4.1
+name: PR Metrics
 author: Microsoft DevLabs
 description: Augments pull request titles to let reviewers quickly determine PR size and test coverage
 inputs:
