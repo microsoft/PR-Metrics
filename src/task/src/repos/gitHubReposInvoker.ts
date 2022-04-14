@@ -72,7 +72,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     }
 
     if (this.accessToken === undefined) {
-      RunnerInvoker.isGitHub
+      return RunnerInvoker.isGitHub
         ? this._runnerInvoker.loc('metrics.codeMetricsCalculator.noGitHubAccessTokenGitHub')
         : this._runnerInvoker.loc('metrics.codeMetricsCalculator.noGitHubAccessTokenAzureDevOps')
     }
