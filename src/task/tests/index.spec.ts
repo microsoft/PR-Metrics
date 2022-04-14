@@ -88,7 +88,7 @@ describe('index.ts', (): void => {
     // Assert
     expect(task.succeeded).to.equal(false)
     expect(task.warningIssues).to.deep.equal([])
-    expect(task.errorIssues).to.deep.equal(['loc_mock_metrics.codeMetricsCalculator.noGitRepo'])
+    expect(task.errorIssues).to.deep.equal(['loc_mock_metrics.codeMetricsCalculator.noGitRepoAzureDevOps'])
 
     // Finalization
     delete process.env.SYSTEM_PULLREQUEST_PULLREQUESTID
@@ -114,7 +114,7 @@ describe('index.ts', (): void => {
     // Assert
     expect(task.succeeded).to.equal(false)
     expect(task.warningIssues).to.deep.equal([])
-    expect(task.errorIssues).to.deep.equal(['loc_mock_metrics.codeMetricsCalculator.noGitHistory'])
+    expect(task.errorIssues).to.deep.equal(['loc_mock_metrics.codeMetricsCalculator.noGitHistoryAzureDevOps'])
 
     // Finalization
     delete process.env.SYSTEM_PULLREQUEST_PULLREQUESTID

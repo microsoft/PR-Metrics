@@ -69,7 +69,7 @@
     "metrics.codeMetricsCalculator.insufficientAzureReposAccessTokenPermissions": "Could not access the resources. Ensure 'System.AccessToken' has access to 'Code' > 'Read' and 'Pull Request Threads' > 'Read & write'.",
     "metrics.codeMetricsCalculator.insufficientGitHubAccessTokenPermissions": "Could not access the resources. Ensure 'System.AccessToken' has access to 'repos'.",
     "metrics.codeMetricsCalculator.noAzureReposAccessToken": "Could not access the OAuth token. Add 'System.AccessToken' as an environment variable (YAML) or enable 'Allow scripts to access OAuth token' under the build process phase settings (classic).",
-    "metrics.codeMetricsCalculator.noGitHistoryAzureDevOps": "Could not access sufficient Git history. Disable 'fetchDepth' (YAML) or 'Shallow fetch' under the build process phase settings (classic). Or set the threshold sufficiently high.",
+    "metrics.codeMetricsCalculator.noGitHistoryAzureDevOps": "Could not access sufficient Git history. Disable 'fetchDepth' (YAML) or 'Shallow fetch' under the build process phase settings (classic).",
     "metrics.codeMetricsCalculator.noGitHistoryGitHub": "Could not access sufficient Git history. Add 'fetch-depth: 0' as a parameter to the 'actions/checkout' action.",
     "metrics.codeMetricsCalculator.noGitHubAccessTokenAzureDevOps": "Could not access the Personal Access Token (PAT). Add 'System.AccessToken' as a secret environment variable with access to 'repos'.",
     "metrics.codeMetricsCalculator.noGitHubAccessTokenGitHub": "Could not access the Personal Access Token (PAT). Add 'GITHUB_TOKEN' as a secret environment variable with access to 'repos'.",

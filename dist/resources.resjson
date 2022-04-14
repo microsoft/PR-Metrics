@@ -52,7 +52,7 @@
   "loc.messages.metrics.codeMetricsCalculator.insufficientGitHubAccessTokenPermissions.comment": "The message to display when terminating as the GitHub Personal Access Token (PAT) does not have sufficient access.",
   "loc.messages.metrics.codeMetricsCalculator.noAzureReposAccessToken": "Could not access the OAuth token. Add 'System.AccessToken' as an environment variable (YAML) or enable 'Allow scripts to access OAuth token' under the build process phase settings (classic).",
   "loc.messages.metrics.codeMetricsCalculator.noAzureReposAccessToken.comment": "The message to display when terminating as no access token is available.",
-  "loc.messages.metrics.codeMetricsCalculator.noGitHistory": "Could not access sufficient Git history. Disable 'fetchDepth' (YAML) or 'Shallow fetch' under the build process phase settings (classic). Or set the threshold sufficiently high.",
+  "loc.messages.metrics.codeMetricsCalculator.noGitHistory": "Could not access sufficient Git history. Disable 'fetchDepth' (YAML) or 'Shallow fetch' under the build process phase settings (classic).",
   "loc.messages.metrics.codeMetricsCalculator.noGitHistory.comment": "The message to display when terminating as the system could not access sufficient Git history.",
   "loc.messages.metrics.codeMetricsCalculator.noGitHubAccessToken": "Could not access the Personal Access Token (PAT). Add 'System.AccessToken' as a secret environment variable with access to 'repos'.",
   "loc.messages.metrics.codeMetricsCalculator.noGitHubAccessToken.comment": "The message to display when terminating as no Personal Access Token (PAT) is available.",
