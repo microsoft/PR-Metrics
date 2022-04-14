@@ -4,8 +4,8 @@ PR Metrics is a both a GitHub Action and [Azure DevOps Pipelines][azuredevops]
 task for adding size and test coverage indicators to the start of each Pull
 Request title.
 
-The Azure Pipelines task can be downloaded from the Visual Studio Marketplace at
-<https://aka.ms/PRMetrics>.
+The Azure Pipelines task can be downloaded from the
+[Visual Studio Marketplace][vsmarketplace].
 
 For example, a PR with the title "Adding code" could become either:
 
@@ -146,6 +146,7 @@ see the [Code of Conduct FAQ][codeofconductfaq] or contact
 comments.
 
 [azuredevops]: https://azure.microsoft.com/services/devops/
+[vsmarketplace]: https://aka.ms/PRMetrics/AzureDevOps
 [githubpat]: https://docs.github.com/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token
 [globs]: https://wikipedia.org/wiki/Glob_(programming)
 [defaultcodefileextensions]: docs/default-code-file-extensions.md

@@ -40,7 +40,9 @@ describe('codeMetricsCalculator.ts', (): void => {
 
     runnerInvoker = mock(RunnerInvoker)
     when(runnerInvoker.loc('metrics.codeMetricsCalculator.noGitRepoAzureDevOps')).thenReturn('No Git repo present. Remove \'checkout: none\' (YAML) or disable \'Don\'t sync sources\' under the build process phase settings (classic).')
+    when(runnerInvoker.loc('metrics.codeMetricsCalculator.noGitRepoGitHub')).thenReturn('No Git repo present. Run the \'actions/checkout\' action prior to PR Metrics.')
     when(runnerInvoker.loc('metrics.codeMetricsCalculator.noGitHistoryAzureDevOps')).thenReturn('Could not access sufficient Git history. Disable \'fetchDepth\' (YAML) or \'Shallow fetch\' under the build process phase settings (classic).')
+    when(runnerInvoker.loc('metrics.codeMetricsCalculator.noGitHistoryGitHub')).thenReturn('Could not access sufficient Git history. Add \'fetch-depth: 0\' as a parameter to the \'actions/checkout\' action.')
     when(runnerInvoker.loc('metrics.codeMetricsCalculator.noPullRequest')).thenReturn('The build is not running against a pull request.')
     when(runnerInvoker.loc('metrics.codeMetricsCalculator.unsupportedProvider', 'Other')).thenReturn('The build is running against a pull request from \'Other\', which is not a supported provider.')
   })
@@ -111,7 +113,7 @@ describe('codeMetricsCalculator.ts', (): void => {
       verify(logger.logDebug('* CodeMetricsCalculator.shouldStop()')).once()
     })
 
-    it('should return the appropriate message when not called from a Git repo', async (): Promise<void> => {
+    it('should return the appropriate message when not called from a Git repo on Azure DevOps', async (): Promise<void> => {
       // Arrange
       when(gitInvoker.isGitRepo()).thenResolve(false)
       const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(gitInvoker), instance(logger), instance(pullRequest), instance(pullRequestComments), instance(reposInvoker), instance(runnerInvoker))
@@ -124,7 +126,24 @@ describe('codeMetricsCalculator.ts', (): void => {
       verify(logger.logDebug('* CodeMetricsCalculator.shouldStop()')).once()
     })
 
-    it('should return the appropriate message when the Git history is unavailable', async (): Promise<void> => {
+    it('should return the appropriate message when not called from a Git repo on GitHub', async (): Promise<void> => {
+      // Arrange
+      process.env.GITHUB_ACTION = 'PR-Metrics'
+      when(gitInvoker.isGitRepo()).thenResolve(false)
+      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(gitInvoker), instance(logger), instance(pullRequest), instance(pullRequestComments), instance(reposInvoker), instance(runnerInvoker))
+
+      // Act
+      const result: string | null = await codeMetricsCalculator.shouldStop()
+
+      // Assert
+      expect(result).to.equal('No Git repo present. Run the \'actions/checkout\' action prior to PR Metrics.')
+      verify(logger.logDebug('* CodeMetricsCalculator.shouldStop()')).once()
+
+      // Finalization
+      delete process.env.GITHUB_ACTION
+    })
+
+    it('should return the appropriate message when the Git history is unavailable on Azure DevOps', async (): Promise<void> => {
       // Arrange
       when(gitInvoker.isGitHistoryAvailable()).thenResolve(false)
       const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(gitInvoker), instance(logger), instance(pullRequest), instance(pullRequestComments), instance(reposInvoker), instance(runnerInvoker))
@@ -135,6 +154,23 @@ describe('codeMetricsCalculator.ts', (): void => {
       // Assert
       expect(result).to.equal('Could not access sufficient Git history. Disable \'fetchDepth\' (YAML) or \'Shallow fetch\' under the build process phase settings (classic).')
       verify(logger.logDebug('* CodeMetricsCalculator.shouldStop()')).once()
+    })
+
+    it('should return the appropriate message when the Git history is unavailable on GitHub', async (): Promise<void> => {
+      // Arrange
+      process.env.GITHUB_ACTION = 'PR-Metrics'
+      when(gitInvoker.isGitHistoryAvailable()).thenResolve(false)
+      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(gitInvoker), instance(logger), instance(pullRequest), instance(pullRequestComments), instance(reposInvoker), instance(runnerInvoker))
+
+      // Act
+      const result: string | null = await codeMetricsCalculator.shouldStop()
+
+      // Assert
+      expect(result).to.equal('Could not access sufficient Git history. Add \'fetch-depth: 0\' as a parameter to the \'actions/checkout\' action.')
+      verify(logger.logDebug('* CodeMetricsCalculator.shouldStop()')).once()
+
+      // Finalization
+      delete process.env.GITHUB_ACTION
     })
   })
 

@@ -45,6 +45,7 @@ describe('gitHubReposInvoker.ts', function (): void {
     runnerInvoker = mock(RunnerInvoker)
     when(runnerInvoker.loc('metrics.codeMetricsCalculator.insufficientGitHubAccessTokenPermissions')).thenReturn('Could not access the resources. Ensure \'System.AccessToken\' has access to \'repos\'.')
     when(runnerInvoker.loc('metrics.codeMetricsCalculator.noGitHubAccessTokenAzureDevOps')).thenReturn('Could not access the Personal Access Token (PAT). Add \'System.AccessToken\' as a secret environment variable with access to \'repos\'.')
+    when(runnerInvoker.loc('metrics.codeMetricsCalculator.noGitHubAccessTokenGitHub')).thenReturn('Could not access the Personal Access Token (PAT). Add \'GITHUB_TOKEN\' as a secret environment variable with access to \'repos\'.')
   })
 
   afterEach((): void => {
@@ -53,7 +54,7 @@ describe('gitHubReposInvoker.ts', function (): void {
   })
 
   describe('isAccessTokenAvailable', (): void => {
-    it('should return null when the token exists', (): void => {
+    it('should return null when the token exists on Azure DevOps', (): void => {
       // Arrange
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 
@@ -65,7 +66,25 @@ describe('gitHubReposInvoker.ts', function (): void {
       verify(logger.logDebug('* GitHubReposInvoker.isAccessTokenAvailable')).once()
     })
 
-    it('should return a string when the token does not exist', (): void => {
+    it('should return null when the token exists on GitHub', (): void => {
+      // Arrange
+      process.env.GITHUB_TOKEN = 'OAUTH'
+      process.env.GITHUB_ACTION = 'PR-Metrics'
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
+
+      // Act
+      const result: string | null = gitHubReposInvoker.isAccessTokenAvailable
+
+      // Assert
+      expect(result).to.equal(null)
+      verify(logger.logDebug('* GitHubReposInvoker.isAccessTokenAvailable')).once()
+
+      // Finalization
+      delete process.env.GITHUB_TOKEN
+      delete process.env.GITHUB_ACTION
+    })
+
+    it('should return a string when the token does not exist on Azure DevOps', (): void => {
       // Arrange
       delete process.env.SYSTEM_ACCESSTOKEN
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
@@ -76,6 +95,23 @@ describe('gitHubReposInvoker.ts', function (): void {
       // Assert
       expect(result).to.equal('Could not access the Personal Access Token (PAT). Add \'System.AccessToken\' as a secret environment variable with access to \'repos\'.')
       verify(logger.logDebug('* GitHubReposInvoker.isAccessTokenAvailable')).once()
+    })
+
+    it('should return a string when the token does not exist on GitHub', (): void => {
+      // Arrange
+      process.env.GITHUB_ACTION = 'PR-Metrics'
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
+
+      // Act
+      const result: string | null = gitHubReposInvoker.isAccessTokenAvailable
+
+      // Assert
+      expect(result).to.equal('Could not access the Personal Access Token (PAT). Add \'GITHUB_TOKEN\' as a secret environment variable with access to \'repos\'.')
+      verify(logger.logDebug('* GitHubReposInvoker.isAccessTokenAvailable')).once()
+
+      // Finalization
+      delete process.env.GITHUB_TOKEN
+      delete process.env.GITHUB_ACTION
     })
   })
 
