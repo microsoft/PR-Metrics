@@ -44,7 +44,7 @@ describe('gitHubReposInvoker.ts', function (): void {
 
     runnerInvoker = mock(RunnerInvoker)
     when(runnerInvoker.loc('metrics.codeMetricsCalculator.insufficientGitHubAccessTokenPermissions')).thenReturn('Could not access the resources. Ensure \'System.AccessToken\' has access to \'repos\'.')
-    when(runnerInvoker.loc('metrics.codeMetricsCalculator.noGitHubAccessToken')).thenReturn('Could not access the Personal Access Token (PAT). Add \'System.AccessToken\' as a secret environment variable with access to \'repos\'.')
+    when(runnerInvoker.loc('metrics.codeMetricsCalculator.noGitHubAccessTokenAzureDevOps')).thenReturn('Could not access the Personal Access Token (PAT). Add \'System.AccessToken\' as a secret environment variable with access to \'repos\'.')
   })
 
   afterEach((): void => {
@@ -133,6 +133,8 @@ describe('gitHubReposInvoker.ts', function (): void {
       testCases.forEach((variable: string | undefined): void => {
         it(`should throw when GITHUB_API_URL is set to the invalid value '${Converter.toString(variable)}' and the task is running on GitHub`, async (): Promise<void> => {
           // Arrange
+          delete process.env.SYSTEM_ACCESSTOKEN
+          process.env.GITHUB_TOKEN = 'OAUTH'
           process.env.GITHUB_ACTION = 'PR-Metrics'
           if (variable === undefined) {
             delete process.env.GITHUB_API_URL
@@ -152,6 +154,7 @@ describe('gitHubReposInvoker.ts', function (): void {
           verify(logger.logDebug('* GitHubReposInvoker.initializeForGitHub()')).once()
 
           // Finalization
+          delete process.env.GITHUB_TOKEN
           delete process.env.GITHUB_ACTION
           delete process.env.GITHUB_API_URL
         })
@@ -167,6 +170,8 @@ describe('gitHubReposInvoker.ts', function (): void {
       testCases.forEach((variable: string | undefined): void => {
         it(`should throw when GITHUB_REPOSITORY_OWNER is set to the invalid value '${Converter.toString(variable)}' and the task is running on GitHub`, async (): Promise<void> => {
           // Arrange
+          delete process.env.SYSTEM_ACCESSTOKEN
+          process.env.GITHUB_TOKEN = 'OAUTH'
           process.env.GITHUB_ACTION = 'PR-Metrics'
           process.env.GITHUB_API_URL = 'https://api.github.com'
           if (variable === undefined) {
@@ -187,6 +192,7 @@ describe('gitHubReposInvoker.ts', function (): void {
           verify(logger.logDebug('* GitHubReposInvoker.initializeForGitHub()')).once()
 
           // Finalization
+          delete process.env.GITHUB_TOKEN
           delete process.env.GITHUB_ACTION
           delete process.env.GITHUB_API_URL
           delete process.env.GITHUB_REPOSITORY_OWNER
@@ -203,6 +209,8 @@ describe('gitHubReposInvoker.ts', function (): void {
       testCases.forEach((variable: string | undefined): void => {
         it(`should throw when GITHUB_REPOSITORY is set to the invalid value '${Converter.toString(variable)}' and the task is running on GitHub`, async (): Promise<void> => {
           // Arrange
+          delete process.env.SYSTEM_ACCESSTOKEN
+          process.env.GITHUB_TOKEN = 'OAUTH'
           process.env.GITHUB_ACTION = 'PR-Metrics'
           process.env.GITHUB_API_URL = 'https://api.github.com'
           process.env.GITHUB_REPOSITORY_OWNER = 'microsoft'
@@ -224,6 +232,7 @@ describe('gitHubReposInvoker.ts', function (): void {
           verify(logger.logDebug('* GitHubReposInvoker.initializeForGitHub()')).once()
 
           // Finalization
+          delete process.env.GITHUB_TOKEN
           delete process.env.GITHUB_ACTION
           delete process.env.GITHUB_API_URL
           delete process.env.GITHUB_REPOSITORY_OWNER
@@ -234,6 +243,8 @@ describe('gitHubReposInvoker.ts', function (): void {
 
     it('should throw when GITHUB_REPOSITORY is in an incorrect format and the task is running on GitHub', async (): Promise<void> => {
       // Arrange
+      delete process.env.SYSTEM_ACCESSTOKEN
+      process.env.GITHUB_TOKEN = 'OAUTH'
       process.env.GITHUB_ACTION = 'PR-Metrics'
       process.env.GITHUB_API_URL = 'https://api.github.com'
       process.env.GITHUB_REPOSITORY_OWNER = 'microsoft'
@@ -250,6 +261,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       verify(logger.logDebug('* GitHubReposInvoker.initializeForGitHub()')).once()
 
       // Finalization
+      delete process.env.GITHUB_TOKEN
       delete process.env.GITHUB_ACTION
       delete process.env.GITHUB_API_URL
       delete process.env.GITHUB_REPOSITORY_OWNER
@@ -285,6 +297,8 @@ describe('gitHubReposInvoker.ts', function (): void {
 
     it('should succeed when the inputs are valid and the task is running on GitHub', async (): Promise<void> => {
       // Arrange
+      delete process.env.SYSTEM_ACCESSTOKEN
+      process.env.GITHUB_TOKEN = 'OAUTH'
       process.env.GITHUB_ACTION = 'PR-Metrics'
       process.env.GITHUB_API_URL = 'https://api.github.com'
       process.env.GITHUB_REPOSITORY_OWNER = 'microsoft'
@@ -314,6 +328,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       verify(logger.logDebug(JSON.stringify(GitHubReposInvokerConstants.getPullResponse))).once()
 
       // Finalization
+      delete process.env.GITHUB_TOKEN
       delete process.env.GITHUB_ACTION
       delete process.env.GITHUB_API_URL
       delete process.env.GITHUB_REPOSITORY_OWNER
