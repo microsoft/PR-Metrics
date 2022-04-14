@@ -1,1 +1,10 @@
-{}
+{
+  "ignorePatterns": [
+    {
+      "pattern": "https://docs.github.com/"
+    },
+    {
+      "pattern": "https://aka.ms/PRMetrics/GitHub"
+    }
+  ]
+}
