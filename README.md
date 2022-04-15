@@ -1,4 +1,4 @@
-# PR Metrics
+test# PR Metrics
 
 PR Metrics is a both a GitHub Action and [Azure DevOps/Pipelines][azuredevops]
 task for adding size and test coverage indicators to the start of each Pull
