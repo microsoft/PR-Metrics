@@ -43,7 +43,7 @@ describe('gitHubReposInvoker.ts', function (): void {
     when(octokitWrapper.listCommits(anyString(), anyString(), anyNumber(), anyNumber())).thenResolve(GitHubReposInvokerConstants.listCommitsResponse)
 
     runnerInvoker = mock(RunnerInvoker)
-    when(runnerInvoker.loc('metrics.codeMetricsCalculator.insufficientGitHubAccessTokenPermissions')).thenReturn('Could not access the resources. Ensure \'System.AccessToken\' has access to \'repos\'.')
+    when(runnerInvoker.loc('metrics.codeMetricsCalculator.insufficientGitHubAccessTokenPermissions')).thenReturn('Could not access the resources. Ensure the PR Metrics \'System.AccessToken\' has access to \'repos\'.')
     when(runnerInvoker.loc('metrics.codeMetricsCalculator.noGitHubAccessTokenAzureDevOps')).thenReturn('Could not access the Personal Access Token (PAT). Add \'System.AccessToken\' as a secret environment variable with access to \'repos\'.')
     when(runnerInvoker.loc('metrics.codeMetricsCalculator.noGitHubAccessTokenGitHub')).thenReturn('Could not access the Personal Access Token (PAT). Add \'GITHUB_TOKEN\' as a secret environment variable with access to \'repos\'.')
   })
@@ -515,7 +515,7 @@ describe('gitHubReposInvoker.ts', function (): void {
           const func: () => Promise<PullRequestDetails> = async () => await gitHubReposInvoker.getTitleAndDescription()
 
           // Assert
-          const result: any = await ExpectExtensions.toThrowAsync(func, 'Could not access the resources. Ensure \'System.AccessToken\' has access to \'repos\'.')
+          const result: any = await ExpectExtensions.toThrowAsync(func, 'Could not access the resources. Ensure the PR Metrics \'System.AccessToken\' has access to \'repos\'.')
           expect(result.internalMessage).to.equal('Test')
           verify(octokitWrapper.initialize(anything())).once()
           verify(logger.logDebug('* GitHubReposInvoker.getTitleAndDescription()')).once()

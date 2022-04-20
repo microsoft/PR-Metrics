@@ -111,7 +111,7 @@ complement the unit tests to provide a high level of coverage.
    added earlier queued to run.
 1. Verify that the pipeline corresponding to
    `pipelines/pipeline-insufficient-access.yaml` fails with the error
-   message "Could not access the resources. Ensure 'System.AccessToken' has
+   message "Could not access the resources. Ensure the PR Metrics 'System.AccessToken' has
    access to 'Code' > 'Read' and 'Pull Request Threads' > 'Read & write'."
 1. Verify that the pipeline corresponding to
    `pipelines/pipeline-insufficient-history.yaml` fails with the error

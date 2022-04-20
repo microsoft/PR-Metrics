@@ -48,7 +48,7 @@ describe('azureReposInvoker.ts', function (): void {
     logger = mock(Logger)
 
     runnerInvoker = mock(RunnerInvoker)
-    when(runnerInvoker.loc('metrics.codeMetricsCalculator.insufficientAzureReposAccessTokenPermissions')).thenReturn('Could not access the resources. Ensure \'System.AccessToken\' has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
+    when(runnerInvoker.loc('metrics.codeMetricsCalculator.insufficientAzureReposAccessTokenPermissions')).thenReturn('Could not access the resources. Ensure the PR Metrics \'System.AccessToken\' has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
     when(runnerInvoker.loc('metrics.codeMetricsCalculator.noAzureReposAccessToken')).thenReturn('Could not access the OAuth token. Add \'System.AccessToken\' as an environment variable (YAML) or enable \'Allow scripts to access OAuth token\' under the build process phase settings (classic).')
   })
 
@@ -219,7 +219,7 @@ describe('azureReposInvoker.ts', function (): void {
           const func: () => Promise<PullRequestDetails> = async () => await azureReposInvoker.getTitleAndDescription()
 
           // Assert
-          const result: any = await ExpectExtensions.toThrowAsync(func, 'Could not access the resources. Ensure \'System.AccessToken\' has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
+          const result: any = await ExpectExtensions.toThrowAsync(func, 'Could not access the resources. Ensure the PR Metrics \'System.AccessToken\' has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
           expect(result.internalMessage).to.equal('Test')
           verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
           verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
@@ -335,7 +335,7 @@ describe('azureReposInvoker.ts', function (): void {
           const func: () => Promise<CommentData> = async () => await azureReposInvoker.getComments()
 
           // Assert
-          const result: any = await ExpectExtensions.toThrowAsync(func, 'Could not access the resources. Ensure \'System.AccessToken\' has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
+          const result: any = await ExpectExtensions.toThrowAsync(func, 'Could not access the resources. Ensure the PR Metrics \'System.AccessToken\' has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
           expect(result.internalMessage).to.equal('Test')
           verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
           verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
@@ -558,7 +558,7 @@ describe('azureReposInvoker.ts', function (): void {
           const func: () => Promise<void> = async () => await azureReposInvoker.setTitleAndDescription('Title', 'Description')
 
           // Assert
-          const result: any = await ExpectExtensions.toThrowAsync(func, 'Could not access the resources. Ensure \'System.AccessToken\' has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
+          const result: any = await ExpectExtensions.toThrowAsync(func, 'Could not access the resources. Ensure the PR Metrics \'System.AccessToken\' has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
           expect(result.internalMessage).to.equal('Test')
           verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
           verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
@@ -688,7 +688,7 @@ describe('azureReposInvoker.ts', function (): void {
           const func: () => Promise<void> = async () => await azureReposInvoker.createComment('Comment Content', CommentThreadStatus.Active, 'file.ts')
 
           // Assert
-          const result: any = await ExpectExtensions.toThrowAsync(func, 'Could not access the resources. Ensure \'System.AccessToken\' has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
+          const result: any = await ExpectExtensions.toThrowAsync(func, 'Could not access the resources. Ensure the PR Metrics \'System.AccessToken\' has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
           expect(result.internalMessage).to.equal('Test')
           verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
           verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
@@ -827,7 +827,7 @@ describe('azureReposInvoker.ts', function (): void {
           const func: () => Promise<void> = async () => await azureReposInvoker.updateComment(20, 'Content', CommentThreadStatus.Active)
 
           // Assert
-          const result: any = await ExpectExtensions.toThrowAsync(func, 'Could not access the resources. Ensure \'System.AccessToken\' has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
+          const result: any = await ExpectExtensions.toThrowAsync(func, 'Could not access the resources. Ensure the PR Metrics \'System.AccessToken\' has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
           expect(result.internalMessage).to.equal('Test')
           verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
           verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
@@ -858,7 +858,7 @@ describe('azureReposInvoker.ts', function (): void {
           const func: () => Promise<void> = async () => await azureReposInvoker.updateComment(20, 'Content', CommentThreadStatus.Active)
 
           // Assert
-          const result: any = await ExpectExtensions.toThrowAsync(func, 'Could not access the resources. Ensure \'System.AccessToken\' has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
+          const result: any = await ExpectExtensions.toThrowAsync(func, 'Could not access the resources. Ensure the PR Metrics \'System.AccessToken\' has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
           expect(result.internalMessage).to.equal('Test')
           verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
           verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
@@ -994,7 +994,7 @@ describe('azureReposInvoker.ts', function (): void {
           const func: () => Promise<void> = async () => await azureReposInvoker.deleteCommentThread(20)
 
           // Assert
-          const result: any = await ExpectExtensions.toThrowAsync(func, 'Could not access the resources. Ensure \'System.AccessToken\' has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
+          const result: any = await ExpectExtensions.toThrowAsync(func, 'Could not access the resources. Ensure the PR Metrics \'System.AccessToken\' has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
           expect(result.internalMessage).to.equal('Test')
           verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('OAUTH')).once()
           verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
