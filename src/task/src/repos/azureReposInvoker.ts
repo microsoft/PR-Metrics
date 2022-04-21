@@ -52,7 +52,7 @@ export default class AzureReposInvoker extends BaseReposInvoker {
   public get isAccessTokenAvailable (): string | null {
     this._logger.logDebug('* AzureReposInvoker.isAccessTokenAvailable')
 
-    if (process.env.SYSTEM_ACCESSTOKEN === undefined) {
+    if (process.env.PR_METRICS_ACCESS_TOKEN === undefined) {
       return this._runnerInvoker.loc('metrics.codeMetricsCalculator.noAzureReposAccessToken')
     }
 
@@ -184,7 +184,7 @@ export default class AzureReposInvoker extends BaseReposInvoker {
     this._repositoryId = Validator.validateVariable('BUILD_REPOSITORY_ID', 'AzureReposInvoker.getGitApi()')
     this._pullRequestId = this._gitInvoker.pullRequestId
 
-    const accessToken: string = Validator.validateVariable('SYSTEM_ACCESSTOKEN', 'AzureReposInvoker.getGitApi()')
+    const accessToken: string = Validator.validateVariable('PR_METRICS_ACCESS_TOKEN', 'AzureReposInvoker.getGitApi()')
     const authHandler: IRequestHandler = this._azureDevOpsApiWrapper.getPersonalAccessTokenHandler(accessToken)
 
     const defaultUrl: string = Validator.validateVariable('SYSTEM_TEAMFOUNDATIONCOLLECTIONURI', 'AzureReposInvoker.getGitApi()')

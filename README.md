@@ -46,9 +46,10 @@ If no PR description is provided, the description will be set to:
 
 ## Inputs
 
-You will need to set the environment variable `SYSTEM_ACCESSTOKEN` to a Personal
-Access Token (PAT) with at least the 'repos' scope. Instructions on creating a
-new PAT can be found [here][githubpat].
+You will need to set the environment variable `PR_Metrics_Access_Token` to a
+Personal Access Token (PAT) with at least the 'repos' scope. Instructions on
+creating a new PAT can be found [here][githubpat]. Alternatively, you can use
+the in-built `GITHUB_TOKEN`.
 
 It is also recommended that you set `continue-on-error: true` as a failure
 within the action should not break your pipelines and prevent code development.
@@ -100,7 +101,7 @@ Therefore, the following YAML definition is recommended:
 uses: microsoft/PR-Metrics@v1.4.1
 name: PR Metrics
 env:
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  PR_METRICS_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 continue-on-error: true
 ```
 
@@ -110,7 +111,7 @@ If you wish to modify the inputs, YAML akin the to the following can be used:
 uses: microsoft/PR-Metrics@v1.4.1
 name: PR Metrics
 env:
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  PR_METRICS_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 with:
   base-size: 200
   growth-rate: 2.0

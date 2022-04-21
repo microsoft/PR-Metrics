@@ -66,14 +66,8 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
   public get isAccessTokenAvailable (): string | null {
     this._logger.logDebug('* GitHubReposInvoker.isAccessTokenAvailable')
 
-    if (RunnerInvoker.isGitHub) {
-      if (process.env.GITHUB_TOKEN === undefined) {
-        return this._runnerInvoker.loc('metrics.codeMetricsCalculator.noGitHubAccessTokenGitHub')
-      }
-    } else {
-      if (process.env.SYSTEM_ACCESSTOKEN === undefined) {
-        return this._runnerInvoker.loc('metrics.codeMetricsCalculator.noGitHubAccessTokenAzureDevOps')
-      }
+    if (process.env.PR_METRICS_ACCESS_TOKEN === undefined) {
+      return this._runnerInvoker.loc('metrics.codeMetricsCalculator.noGitHubAccessToken')
     }
 
     return null
@@ -188,7 +182,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     }
 
     const options: OctokitOptions = {
-      auth: RunnerInvoker.isGitHub ? process.env.GITHUB_TOKEN : process.env.SYSTEM_ACCESSTOKEN,
+      auth: process.env.PR_METRICS_ACCESS_TOKEN,
       userAgent: 'PRMetrics/v1.4.1',
       log: {
         debug: (message: string): void => this._logger.logDebug(`Octokit – ${message}`),

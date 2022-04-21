@@ -22,6 +22,6 @@ stages:
           - task: PRMetrics@1
             displayName: PR Metrics
             env:
-              SYSTEM_ACCESSTOKEN: $(InsufficientAccessPAT)
+              PR_METRICS_ACCESS_TOKEN: $(InsufficientAccessPAT)
 
 ...

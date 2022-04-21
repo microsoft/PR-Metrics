@@ -13,11 +13,11 @@ variables:
     value: true
 
 stages:
-  - stage: PRMetricsManualTestStep2NoOAuth
-    displayName: PR Metrics Manual Test – Step 2 – No OAuth
+  - stage: PRMetricsManualTestStep2NoPAT
+    displayName: PR Metrics Manual Test – Step 2 – No PAT
     jobs:
-      - job: PRMetricsManualTestStep2NoOAuth
-        displayName: PR Metrics Manual Test – Step 2 – No OAuth
+      - job: PRMetricsManualTestStep2NoPAT
+        displayName: PR Metrics Manual Test – Step 2 – No PAT
         steps:
           - task: PRMetrics@1
             displayName: PR Metrics

@@ -65,7 +65,7 @@ jobs:
       - name: PR Metrics
         uses: ./
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_METRICS_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ACTIONS_STEP_DEBUG: ${{ secrets.ACTIONS_STEP_DEBUG }}
         if: ${{ env.ACTIONS_STEP_DEBUG != '' }}
 

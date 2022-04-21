@@ -111,7 +111,7 @@ complement the unit tests to provide a high level of coverage.
    added earlier queued to run.
 1. Verify that the pipeline corresponding to
    `pipelines/pipeline-insufficient-access.yaml` fails with the error
-   message "Could not access the resources. Ensure the PR Metrics 'System.AccessToken' has
+   message "Could not access the resources. Ensure the 'PR_Metrics_Access_Token' secret environment variable has
    access to 'Code' > 'Read' and 'Pull Request Threads' > 'Read & write'."
 1. Verify that the pipeline corresponding to
    `pipelines/pipeline-insufficient-history.yaml` fails with the error
@@ -119,9 +119,9 @@ complement the unit tests to provide a high level of coverage.
    or 'Shallow fetch' under the build process phase settings (classic). Or set
    the threshold sufficiently high."
 1. Verify that the pipeline corresponding to `pipelines/pipeline-no-auth.yaml`
-   fails with the error message "Could not access the OAuth token. Add
-   'System.AccessToken' as an environment variable (YAML) or enable 'Allow
-   scripts to access OAuth token' under the build process phase settings
+   fails with the error message "Could not access the Personal Access Token (PAT). Add
+   'PR_Metrics_Access_Token' as an environment variable (YAML) or enable 'Allow
+   scripts to access Personal Access Token (PAT)' under the build process phase settings
    (classic)."
 1. Verify that the pipeline corresponding to
    `pipelines/pipeline-no-sources.yaml` fails with the error message "No
