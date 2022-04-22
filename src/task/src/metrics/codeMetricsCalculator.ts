@@ -74,11 +74,15 @@ export default class CodeMetricsCalculator {
     }
 
     if (!await this._gitInvoker.isGitRepo()) {
-      return this._runnerInvoker.loc('metrics.codeMetricsCalculator.noGitRepo')
+      return RunnerInvoker.isGitHub
+        ? this._runnerInvoker.loc('metrics.codeMetricsCalculator.noGitRepoGitHub')
+        : this._runnerInvoker.loc('metrics.codeMetricsCalculator.noGitRepoAzureDevOps')
     }
 
     if (!await this._gitInvoker.isGitHistoryAvailable()) {
-      return this._runnerInvoker.loc('metrics.codeMetricsCalculator.noGitHistory')
+      return RunnerInvoker.isGitHub
+        ? this._runnerInvoker.loc('metrics.codeMetricsCalculator.noGitHistoryGitHub')
+        : this._runnerInvoker.loc('metrics.codeMetricsCalculator.noGitHistoryAzureDevOps')
     }
 
     return null

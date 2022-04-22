@@ -65,6 +65,14 @@ jobs:
       - name: PR Metrics
         uses: ./
         env:
+          PR_METRICS_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ACTIONS_STEP_DEBUG: ${{ secrets.ACTIONS_STEP_DEBUG }}
+        if: ${{ env.ACTIONS_STEP_DEBUG != '' }}
+
+      # TODO: Remove once System.AccessToken support is removed.
+      - name: PR Metrics with System.AccessToken
+        uses: ./
+        env:
           SYSTEM_ACCESSTOKEN: ${{ secrets.GITHUB_TOKEN }}
           ACTIONS_STEP_DEBUG: ${{ secrets.ACTIONS_STEP_DEBUG }}
         if: ${{ env.ACTIONS_STEP_DEBUG != '' }}

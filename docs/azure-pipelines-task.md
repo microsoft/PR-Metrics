@@ -4,18 +4,25 @@ The task can be added to a pipeline as detailed [here][addingtask].
 
 The Azure Pipelines task can run against Azure or GitHub repositories.
 
-For Azure repositories, the agent running the task must allow access to the
-OAuth token. If access is unavailable, the task will generate an error. Should
-the OAuth token scope have been limited, you may need to create a new Personal
-Access Token (PAT) with scopes 'Code' > 'Read' and 'Pull Request Threads' >
-'Read & write', which you can then map to `System.AccessToken` within the task
-definition.
+For Azure repositories, the task will require access to the PR resources. You
+can try remapping `System.AccessToken` to `PR_Metrics_Access_Token` using
+
+```YAML
+env:
+  PR_METRICS_ACCESS_TOKEN: $(System.AccessToken)
+```
+
+However, the scope of `System.AccessToken` may be limited by your system
+administrator. In this case, you will need to create a new Personal Access
+Token (PAT) with scopes 'Code' > 'Read' and 'Pull Request Threads' > 'Read &
+write', which you can then map to `PR_Metrics_Access_Token`.
 
 For GitHub repositories, you will need to create a PAT according to the
 instructions [here][githubpat]. The scope should be 'repos'. The resulting PAT
 should then be added to your repository as a secret with the name
-`System.AccessToken` according to the instructions [here][githubsecret] and
-mapped to `System.AccessToken` within the task definition.
+`PR_Metrics_Access_Token` according to the instructions [here][githubsecret] and
+mapped to `PR_Metrics_Access_Token` within the task definition. Alternatively,
+you can use the in-built `GITHUB_TOKEN`.
 
 It is recommended to run the task as one of the first operations in your build,
 after code check out is complete. Running the task early in the build process
@@ -32,7 +39,7 @@ steps:
 - task: ms-omex.prmetrics.prmetrics.PRMetrics@1
   displayName: 'PR Metrics'
   env:
-    SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+    PR_METRICS_ACCESS_TOKEN: $(PR_Metrics_Access_Token)
   continueOnError: true
 ```
 
@@ -43,7 +50,7 @@ steps:
 - task: ms-omex.prmetrics.prmetrics.PRMetrics@1
   displayName: 'PR Metrics'
   env:
-    SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+    PR_METRICS_ACCESS_TOKEN: $(PR_Metrics_Access_Token)
   inputs:
     BaseSize: 200
     GrowthRate: 2.0

@@ -10,7 +10,7 @@ import PullRequestDetails from './interfaces/pullRequestDetails'
  */
 export default interface IReposInvoker {
   /**
-   * Gets a value indicating whether the OAuth token can be accessed by the task.
+   * Gets a value indicating whether the Personal Access Token (PAT) can be accessed by the task.
    */
   isAccessTokenAvailable: string | null
 

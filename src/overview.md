@@ -32,7 +32,7 @@ steps:
 - task: PRMetrics@1
   displayName: PR Metrics
   env:
-    SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+    PR_METRICS_ACCESS_TOKEN: $(PR_Metrics_Access_Token)
   continueOnError: true
 ```
 
@@ -43,7 +43,7 @@ steps:
 - task: PRMetrics@1
   displayName: PR Metrics
   env:
-    SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+    PR_METRICS_ACCESS_TOKEN: $(PR_Metrics_Access_Token)
   inputs:
     BaseSize: 200
     GrowthRate: 2.0

@@ -28,7 +28,7 @@ jobs:
       - task: PRMetrics@1
         displayName: PR Metrics
         env:
-          SYSTEM_ACCESSTOKEN: $(GITHUB_PAT)
+          PR_METRICS_ACCESS_TOKEN: $(GITHUB_PAT)
 
   - job: PRMetrics_Ubuntu
     displayName: PR Metrics – Ubuntu
@@ -42,7 +42,7 @@ jobs:
       - task: PRMetrics@1
         displayName: PR Metrics
         env:
-          SYSTEM_ACCESSTOKEN: $(GITHUB_PAT)
+          PR_METRICS_ACCESS_TOKEN: $(GITHUB_PAT)
 
   - job: PRMetrics_Windows
     displayName: PR Metrics – Windows
@@ -56,7 +56,7 @@ jobs:
       - task: PRMetrics@1
         displayName: PR Metrics
         env:
-          SYSTEM_ACCESSTOKEN: $(GITHUB_PAT)
+          PR_METRICS_ACCESS_TOKEN: $(GITHUB_PAT)
 
   - job: Compliance
     displayName: Compliance

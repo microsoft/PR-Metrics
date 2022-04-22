@@ -26,10 +26,10 @@ describe('gitHubReposInvoker.ts', function (): void {
   let octokitWrapper: OctokitWrapper
   let runnerInvoker: RunnerInvoker
 
-  const expectedUserAgent: string = 'PRMetrics/v1.4.0'
+  const expectedUserAgent: string = 'PRMetrics/v1.4.1'
 
   beforeEach((): void => {
-    process.env.SYSTEM_ACCESSTOKEN = 'OAUTH'
+    process.env.PR_METRICS_ACCESS_TOKEN = 'PAT'
     process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI = 'https://github.com/microsoft/PR-Metrics'
 
     gitInvoker = mock(GitInvoker)
@@ -43,17 +43,17 @@ describe('gitHubReposInvoker.ts', function (): void {
     when(octokitWrapper.listCommits(anyString(), anyString(), anyNumber(), anyNumber())).thenResolve(GitHubReposInvokerConstants.listCommitsResponse)
 
     runnerInvoker = mock(RunnerInvoker)
-    when(runnerInvoker.loc('metrics.codeMetricsCalculator.insufficientGitHubAccessTokenPermissions')).thenReturn('Could not access the resources. Ensure \'System.AccessToken\' has access to \'repos\'.')
-    when(runnerInvoker.loc('metrics.codeMetricsCalculator.noGitHubAccessToken')).thenReturn('Could not access the Personal Access Token (PAT). Add \'System.AccessToken\' as a secret environment variable with access to \'repos\'.')
+    when(runnerInvoker.loc('metrics.codeMetricsCalculator.insufficientGitHubAccessTokenPermissions')).thenReturn('Could not access the resources. Ensure the \'PR_Metrics_Access_Token\' secret environment variable has access to \'repos\'.')
+    when(runnerInvoker.loc('metrics.codeMetricsCalculator.noGitHubAccessToken')).thenReturn('Could not access the Personal Access Token (PAT). Add \'PR_Metrics_Access_Token\' as a secret environment variable with access to \'repos\'.')
   })
 
   afterEach((): void => {
-    delete process.env.SYSTEM_ACCESSTOKEN
+    delete process.env.PR_METRICS_ACCESS_TOKEN
     delete process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI
   })
 
   describe('isAccessTokenAvailable', (): void => {
-    it('should return null when the token exists', (): void => {
+    it('should return null when the token exists on Azure DevOps', (): void => {
       // Arrange
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 
@@ -65,16 +65,34 @@ describe('gitHubReposInvoker.ts', function (): void {
       verify(logger.logDebug('* GitHubReposInvoker.isAccessTokenAvailable')).once()
     })
 
-    it('should return a string when the token does not exist', (): void => {
+    it('should return null when the token exists on GitHub', (): void => {
       // Arrange
-      delete process.env.SYSTEM_ACCESSTOKEN
+      process.env.PR_METRICS_ACCESS_TOKEN = 'PAT'
+      process.env.GITHUB_ACTION = 'PR-Metrics'
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 
       // Act
       const result: string | null = gitHubReposInvoker.isAccessTokenAvailable
 
       // Assert
-      expect(result).to.equal('Could not access the Personal Access Token (PAT). Add \'System.AccessToken\' as a secret environment variable with access to \'repos\'.')
+      expect(result).to.equal(null)
+      verify(logger.logDebug('* GitHubReposInvoker.isAccessTokenAvailable')).once()
+
+      // Finalization
+      delete process.env.PR_METRICS_ACCESS_TOKEN
+      delete process.env.GITHUB_ACTION
+    })
+
+    it('should return a string when the token does not exist', (): void => {
+      // Arrange
+      delete process.env.PR_METRICS_ACCESS_TOKEN
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
+
+      // Act
+      const result: string | null = gitHubReposInvoker.isAccessTokenAvailable
+
+      // Assert
+      expect(result).to.equal('Could not access the Personal Access Token (PAT). Add \'PR_Metrics_Access_Token\' as a secret environment variable with access to \'repos\'.')
       verify(logger.logDebug('* GitHubReposInvoker.isAccessTokenAvailable')).once()
     })
   })
@@ -133,6 +151,8 @@ describe('gitHubReposInvoker.ts', function (): void {
       testCases.forEach((variable: string | undefined): void => {
         it(`should throw when GITHUB_API_URL is set to the invalid value '${Converter.toString(variable)}' and the task is running on GitHub`, async (): Promise<void> => {
           // Arrange
+          delete process.env.PR_METRICS_ACCESS_TOKEN
+          process.env.PR_METRICS_ACCESS_TOKEN = 'PAT'
           process.env.GITHUB_ACTION = 'PR-Metrics'
           if (variable === undefined) {
             delete process.env.GITHUB_API_URL
@@ -152,6 +172,7 @@ describe('gitHubReposInvoker.ts', function (): void {
           verify(logger.logDebug('* GitHubReposInvoker.initializeForGitHub()')).once()
 
           // Finalization
+          delete process.env.PR_METRICS_ACCESS_TOKEN
           delete process.env.GITHUB_ACTION
           delete process.env.GITHUB_API_URL
         })
@@ -167,6 +188,8 @@ describe('gitHubReposInvoker.ts', function (): void {
       testCases.forEach((variable: string | undefined): void => {
         it(`should throw when GITHUB_REPOSITORY_OWNER is set to the invalid value '${Converter.toString(variable)}' and the task is running on GitHub`, async (): Promise<void> => {
           // Arrange
+          delete process.env.PR_METRICS_ACCESS_TOKEN
+          process.env.PR_METRICS_ACCESS_TOKEN = 'PAT'
           process.env.GITHUB_ACTION = 'PR-Metrics'
           process.env.GITHUB_API_URL = 'https://api.github.com'
           if (variable === undefined) {
@@ -187,6 +210,7 @@ describe('gitHubReposInvoker.ts', function (): void {
           verify(logger.logDebug('* GitHubReposInvoker.initializeForGitHub()')).once()
 
           // Finalization
+          delete process.env.PR_METRICS_ACCESS_TOKEN
           delete process.env.GITHUB_ACTION
           delete process.env.GITHUB_API_URL
           delete process.env.GITHUB_REPOSITORY_OWNER
@@ -203,6 +227,8 @@ describe('gitHubReposInvoker.ts', function (): void {
       testCases.forEach((variable: string | undefined): void => {
         it(`should throw when GITHUB_REPOSITORY is set to the invalid value '${Converter.toString(variable)}' and the task is running on GitHub`, async (): Promise<void> => {
           // Arrange
+          delete process.env.PR_METRICS_ACCESS_TOKEN
+          process.env.PR_METRICS_ACCESS_TOKEN = 'PAT'
           process.env.GITHUB_ACTION = 'PR-Metrics'
           process.env.GITHUB_API_URL = 'https://api.github.com'
           process.env.GITHUB_REPOSITORY_OWNER = 'microsoft'
@@ -224,6 +250,7 @@ describe('gitHubReposInvoker.ts', function (): void {
           verify(logger.logDebug('* GitHubReposInvoker.initializeForGitHub()')).once()
 
           // Finalization
+          delete process.env.PR_METRICS_ACCESS_TOKEN
           delete process.env.GITHUB_ACTION
           delete process.env.GITHUB_API_URL
           delete process.env.GITHUB_REPOSITORY_OWNER
@@ -234,6 +261,8 @@ describe('gitHubReposInvoker.ts', function (): void {
 
     it('should throw when GITHUB_REPOSITORY is in an incorrect format and the task is running on GitHub', async (): Promise<void> => {
       // Arrange
+      delete process.env.PR_METRICS_ACCESS_TOKEN
+      process.env.PR_METRICS_ACCESS_TOKEN = 'PAT'
       process.env.GITHUB_ACTION = 'PR-Metrics'
       process.env.GITHUB_API_URL = 'https://api.github.com'
       process.env.GITHUB_REPOSITORY_OWNER = 'microsoft'
@@ -250,6 +279,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       verify(logger.logDebug('* GitHubReposInvoker.initializeForGitHub()')).once()
 
       // Finalization
+      delete process.env.PR_METRICS_ACCESS_TOKEN
       delete process.env.GITHUB_ACTION
       delete process.env.GITHUB_API_URL
       delete process.env.GITHUB_REPOSITORY_OWNER
@@ -259,7 +289,7 @@ describe('gitHubReposInvoker.ts', function (): void {
     it('should succeed when the inputs are valid and the task is running on Azure Pipelines', async (): Promise<void> => {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options: any): void => {
-        expect(options.auth).to.equal('OAUTH')
+        expect(options.auth).to.equal('PAT')
         expect(options.userAgent).to.equal(expectedUserAgent)
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
@@ -290,7 +320,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       process.env.GITHUB_REPOSITORY_OWNER = 'microsoft'
       process.env.GITHUB_REPOSITORY = 'microsoft/PR-Metrics'
       when(octokitWrapper.initialize(anything())).thenCall((options: any): void => {
-        expect(options.auth).to.equal('OAUTH')
+        expect(options.auth).to.equal('PAT')
         expect(options.userAgent).to.equal(expectedUserAgent)
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
@@ -324,7 +354,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       // Arrange
       process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI = 'https://github.com/microsoft/PR-Metrics.git'
       when(octokitWrapper.initialize(anything())).thenCall((options: any): void => {
-        expect(options.auth).to.equal('OAUTH')
+        expect(options.auth).to.equal('PAT')
         expect(options.userAgent).to.equal(expectedUserAgent)
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
@@ -352,7 +382,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       // Arrange
       process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI = 'https://organization.githubenterprise.com/microsoft/PR-Metrics'
       when(octokitWrapper.initialize(anything())).thenCall((options: any): void => {
-        expect(options.auth).to.equal('OAUTH')
+        expect(options.auth).to.equal('PAT')
         expect(options.userAgent).to.equal(expectedUserAgent)
         expect(options.baseUrl).to.equal('https://organization.githubenterprise.com/api/v3')
         expect(options.log).to.not.equal(null)
@@ -381,7 +411,7 @@ describe('gitHubReposInvoker.ts', function (): void {
     it('should succeed when called twice with the inputs valid', async (): Promise<void> => {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options: any): void => {
-        expect(options.auth).to.equal('OAUTH')
+        expect(options.auth).to.equal('PAT')
         expect(options.userAgent).to.equal(expectedUserAgent)
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
@@ -411,7 +441,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       const currentMockPullResponse: GetPullResponse = GitHubReposInvokerConstants.getPullResponse
       currentMockPullResponse.data.body = null
       when(octokitWrapper.initialize(anything())).thenCall((options: any): void => {
-        expect(options.auth).to.equal('OAUTH')
+        expect(options.auth).to.equal('PAT')
         expect(options.userAgent).to.equal(expectedUserAgent)
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
@@ -447,7 +477,7 @@ describe('gitHubReposInvoker.ts', function (): void {
         it(`should throw when the PAT has insufficient access and the API call returns status '${status}'`, async (): Promise<void> => {
           // Arrange
           when(octokitWrapper.initialize(anything())).thenCall((options: any): void => {
-            expect(options.auth).to.equal('OAUTH')
+            expect(options.auth).to.equal('PAT')
             expect(options.userAgent).to.equal(expectedUserAgent)
             expect(options.log).to.not.equal(null)
             expect(options.log.debug).to.not.equal(null)
@@ -464,7 +494,7 @@ describe('gitHubReposInvoker.ts', function (): void {
           const func: () => Promise<PullRequestDetails> = async () => await gitHubReposInvoker.getTitleAndDescription()
 
           // Assert
-          const result: any = await ExpectExtensions.toThrowAsync(func, 'Could not access the resources. Ensure \'System.AccessToken\' has access to \'repos\'.')
+          const result: any = await ExpectExtensions.toThrowAsync(func, 'Could not access the resources. Ensure the \'PR_Metrics_Access_Token\' secret environment variable has access to \'repos\'.')
           expect(result.internalMessage).to.equal('Test')
           verify(octokitWrapper.initialize(anything())).once()
           verify(logger.logDebug('* GitHubReposInvoker.getTitleAndDescription()')).once()
@@ -477,7 +507,7 @@ describe('gitHubReposInvoker.ts', function (): void {
     it('should throw an error when an error occurs', async (): Promise<void> => {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options: any): void => {
-        expect(options.auth).to.equal('OAUTH')
+        expect(options.auth).to.equal('PAT')
         expect(options.userAgent).to.equal(expectedUserAgent)
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
@@ -524,7 +554,7 @@ describe('gitHubReposInvoker.ts', function (): void {
     it('should return the result when called with a pull request comment', async (): Promise<void> => {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options: any): void => {
-        expect(options.auth).to.equal('OAUTH')
+        expect(options.auth).to.equal('PAT')
         expect(options.userAgent).to.equal(expectedUserAgent)
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
@@ -563,7 +593,7 @@ describe('gitHubReposInvoker.ts', function (): void {
     it('should return the result when called with a file comment', async (): Promise<void> => {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options: any): void => {
-        expect(options.auth).to.equal('OAUTH')
+        expect(options.auth).to.equal('PAT')
         expect(options.userAgent).to.equal(expectedUserAgent)
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
@@ -597,7 +627,7 @@ describe('gitHubReposInvoker.ts', function (): void {
     it('should return the result when called with both a pull request and file comment', async (): Promise<void> => {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options: any): void => {
-        expect(options.auth).to.equal('OAUTH')
+        expect(options.auth).to.equal('PAT')
         expect(options.userAgent).to.equal(expectedUserAgent)
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
@@ -642,7 +672,7 @@ describe('gitHubReposInvoker.ts', function (): void {
     it('should skip pull request comments with no body', async (): Promise<void> => {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options: any): void => {
-        expect(options.auth).to.equal('OAUTH')
+        expect(options.auth).to.equal('PAT')
         expect(options.userAgent).to.equal(expectedUserAgent)
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
@@ -692,7 +722,7 @@ describe('gitHubReposInvoker.ts', function (): void {
     it('should succeed when the title and description are both set', async (): Promise<void> => {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options: any): void => {
-        expect(options.auth).to.equal('OAUTH')
+        expect(options.auth).to.equal('PAT')
         expect(options.userAgent).to.equal(expectedUserAgent)
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
@@ -717,7 +747,7 @@ describe('gitHubReposInvoker.ts', function (): void {
     it('should succeed when the title is set', async (): Promise<void> => {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options: any): void => {
-        expect(options.auth).to.equal('OAUTH')
+        expect(options.auth).to.equal('PAT')
         expect(options.userAgent).to.equal(expectedUserAgent)
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
@@ -742,7 +772,7 @@ describe('gitHubReposInvoker.ts', function (): void {
     it('should succeed when the description is set', async (): Promise<void> => {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options: any): void => {
-        expect(options.auth).to.equal('OAUTH')
+        expect(options.auth).to.equal('PAT')
         expect(options.userAgent).to.equal(expectedUserAgent)
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
@@ -769,7 +799,7 @@ describe('gitHubReposInvoker.ts', function (): void {
     it('should succeed when a file name is specified', async (): Promise<void> => {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options: any): void => {
-        expect(options.auth).to.equal('OAUTH')
+        expect(options.auth).to.equal('PAT')
         expect(options.userAgent).to.equal(expectedUserAgent)
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
@@ -796,7 +826,7 @@ describe('gitHubReposInvoker.ts', function (): void {
     it('should throw when the commit list is empty', async (): Promise<void> => {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options: any): void => {
-        expect(options.auth).to.equal('OAUTH')
+        expect(options.auth).to.equal('PAT')
         expect(options.userAgent).to.equal(expectedUserAgent)
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
@@ -828,7 +858,7 @@ describe('gitHubReposInvoker.ts', function (): void {
     it('should succeed when there are multiple pages of commits', async (): Promise<void> => {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options: any): void => {
-        expect(options.auth).to.equal('OAUTH')
+        expect(options.auth).to.equal('PAT')
         expect(options.userAgent).to.equal(expectedUserAgent)
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
@@ -864,7 +894,7 @@ describe('gitHubReposInvoker.ts', function (): void {
     it('should throw when the link header does not match the expected format', async (): Promise<void> => {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options: any): void => {
-        expect(options.auth).to.equal('OAUTH')
+        expect(options.auth).to.equal('PAT')
         expect(options.userAgent).to.equal(expectedUserAgent)
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
@@ -898,7 +928,7 @@ describe('gitHubReposInvoker.ts', function (): void {
     it('should succeed when a file name is specified and the method is called twice', async (): Promise<void> => {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options: any): void => {
-        expect(options.auth).to.equal('OAUTH')
+        expect(options.auth).to.equal('PAT')
         expect(options.userAgent).to.equal(expectedUserAgent)
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
@@ -926,7 +956,7 @@ describe('gitHubReposInvoker.ts', function (): void {
     it('should succeed when no file name is specified', async (): Promise<void> => {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options: any): void => {
-        expect(options.auth).to.equal('OAUTH')
+        expect(options.auth).to.equal('PAT')
         expect(options.userAgent).to.equal(expectedUserAgent)
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
@@ -966,7 +996,7 @@ describe('gitHubReposInvoker.ts', function (): void {
     it('should succeed when the content is set', async (): Promise<void> => {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options: any): void => {
-        expect(options.auth).to.equal('OAUTH')
+        expect(options.auth).to.equal('PAT')
         expect(options.userAgent).to.equal(expectedUserAgent)
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)
@@ -993,7 +1023,7 @@ describe('gitHubReposInvoker.ts', function (): void {
     it('should succeed', async (): Promise<void> => {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options: any): void => {
-        expect(options.auth).to.equal('OAUTH')
+        expect(options.auth).to.equal('PAT')
         expect(options.userAgent).to.equal(expectedUserAgent)
         expect(options.log).to.not.equal(null)
         expect(options.log.debug).to.not.equal(null)

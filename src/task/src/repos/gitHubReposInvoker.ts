@@ -66,7 +66,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
   public get isAccessTokenAvailable (): string | null {
     this._logger.logDebug('* GitHubReposInvoker.isAccessTokenAvailable')
 
-    if (process.env.SYSTEM_ACCESSTOKEN === undefined) {
+    if (process.env.PR_METRICS_ACCESS_TOKEN === undefined) {
       return this._runnerInvoker.loc('metrics.codeMetricsCalculator.noGitHubAccessToken')
     }
 
@@ -182,8 +182,8 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     }
 
     const options: OctokitOptions = {
-      auth: process.env.SYSTEM_ACCESSTOKEN,
-      userAgent: 'PRMetrics/v1.4.0',
+      auth: process.env.PR_METRICS_ACCESS_TOKEN,
+      userAgent: 'PRMetrics/v1.4.1',
       log: {
         debug: (message: string): void => this._logger.logDebug(`Octokit – ${message}`),
         info: (message: string): void => this._logger.logInfo(`Octokit – ${message}`),

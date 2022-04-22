@@ -12,6 +12,12 @@ async function run (): Promise<void> {
     const runnerInvoker: RunnerInvoker = container.resolve(RunnerInvoker)
     runnerInvoker.locInitialize(__dirname)
 
+    // TODO: Remove System.AccessToken support after a transition period has elapsed.
+    if (process.env.PR_METRICS_ACCESS_TOKEN === undefined && process.env.SYSTEM_ACCESSTOKEN !== undefined) {
+      runnerInvoker.logWarning(runnerInvoker.loc('metrics.index.remappingToken'))
+      process.env.PR_METRICS_ACCESS_TOKEN = process.env.SYSTEM_ACCESSTOKEN
+    }
+
     const codeMetricsCalculator: CodeMetricsCalculator = container.resolve(CodeMetricsCalculator)
 
     const skipMessage: string | null = codeMetricsCalculator.shouldSkip
