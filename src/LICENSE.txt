@@ -788,7 +788,7 @@ fs.realpath 1.0.0 - ISC
 https://github.com/isaacs/fs.realpath#readme
 
 Copyright (c) Isaac Z. Schlueter and Contributors
-Copyright Joyent, Inc. and other Node contributors.
+Copyright Joyent, Inc. and other Node contributors
 
 The ISC License
 
@@ -1030,7 +1030,7 @@ IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 ---------------------------------------------------------
 
-semver 7.3.5 - ISC
+semver 7.3.7 - ISC
 https://github.com/npm/node-semver#readme
 
 Copyright Isaac Z. Schlueter
@@ -1280,10 +1280,9 @@ THE SOFTWARE.
 
 ---------------------------------------------------------
 
-@octokit/auth-oauth-app 4.3.0 - MIT
+@octokit/auth-oauth-app 4.3.1 - MIT
 https://github.com/octokit/auth-oauth-app.js#readme
 
-Copyright (c) 2019 Octokit
 
 The MIT License
 
@@ -1844,10 +1843,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---------------------------------------------------------
 
-@types/aws-lambda 8.10.93 - MIT
+@types/aws-lambda 8.10.94 - MIT
 https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/aws-lambda
 
-Copyright (c) Microsoft Corporation
 
 MIT License
 
@@ -1976,7 +1974,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---------------------------------------------------------
 
-@types/node 17.0.23 - MIT
+@types/node 17.0.25 - MIT
 https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/node
 
 Copyright (c) Microsoft Corporation
@@ -2506,7 +2504,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 core-util-is 1.0.3 - MIT
 https://github.com/isaacs/core-util-is#readme
 
-Copyright Joyent, Inc. and other Node contributors.
+Copyright Joyent, Inc. and other Node contributors
 
 Copyright Node.js contributors. All rights reserved.
 
@@ -2659,6 +2657,7 @@ THE SOFTWARE.
 get-intrinsic 1.1.1 - MIT
 https://github.com/ljharb/get-intrinsic#readme
 
+Copyright (c) 2020 Jordan Harband
 
 MIT License
 
@@ -2923,7 +2922,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---------------------------------------------------------
 
-is-core-module 2.8.1 - MIT
+is-core-module 2.9.0 - MIT
 https://github.com/inspect-js/is-core-module
 
 Copyright (c) 2014 Dave Justice
@@ -3822,7 +3821,7 @@ IN THE SOFTWARE.
 readable-stream 2.3.7 - MIT
 https://github.com/nodejs/readable-stream#readme
 
-Copyright Joyent, Inc. and other Node contributors.
+Copyright Joyent, Inc. and other Node contributors
 
 Node.js is licensed for use as follows:
 
@@ -4010,7 +4009,7 @@ SOFTWARE.
 string_decoder 1.1.1 - MIT
 https://github.com/nodejs/string_decoder
 
-Copyright Joyent, Inc. and other Node contributors.
+Copyright Joyent, Inc. and other Node contributors
 
 Node.js is licensed for use as follows:
 
