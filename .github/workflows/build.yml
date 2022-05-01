@@ -48,7 +48,7 @@ jobs:
         working-directory: ${{ github.workspace }}/release
 
       - name: Release – Upload
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: PRMetrics
           path: ${{ github.workspace }}/ms-omex.PRMetrics.vsix
