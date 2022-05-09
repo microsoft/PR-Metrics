@@ -119,17 +119,6 @@ jobs:
           json-file: src/task/.mocharc.json
           json-schema: .mocharc.schema.json
 
-      - name: Validate package.json – Download eslintrc.schema.json
-        shell: pwsh
-        run: Invoke-WebRequest -Uri 'https://json.schemastore.org/eslintrc.json' -OutFile 'eslintrc.schema.json'
-
-      - name: Validate package.json – Update eslintrc.schema.json
-        shell: pwsh
-        run: |-
-          $FileContent = Get-Content -Path 'eslintrc.schema.json' -Raw
-          $FileContent = $FileContent -replace 'draft-04/schema#', 'draft-07/schema'
-          Set-Content -NoNewline -Path 'eslintrc.schema.json' -Value $FileContent
-
       - name: Validate package.json – Download package.schema.json
         shell: pwsh
         run: Invoke-WebRequest -Uri 'https://json.schemastore.org/package.json' -OutFile 'package.schema.json'
@@ -139,7 +128,7 @@ jobs:
         run: |-
           $FileContent = Get-Content -Path 'package.schema.json' -Raw
           $FileContent = $FileContent -replace 'draft-04/schema#', 'draft-07/schema'
-          $FileContent = $FileContent -replace 'https://json.schemastore.org/eslintrc.json', 'eslintrc.schema.json'
+          $FileContent = $FileContent -replace '    \"eslintConfig\": \{\n      \"\$ref\": \".*\"\n\    }', ''
           Set-Content -NoNewline -Path 'package.schema.json' -Value $FileContent
 
       - name: Validate package.json
