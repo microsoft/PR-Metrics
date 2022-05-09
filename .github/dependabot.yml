@@ -13,6 +13,7 @@ updates:
       interval: monthly
     labels:
       - dependencies
+      - github-actions
 
   - package-ecosystem: npm
     directory: /
@@ -21,5 +22,6 @@ updates:
       interval: monthly
     labels:
       - dependencies
+      - npm
 
 ...
