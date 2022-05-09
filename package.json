@@ -65,11 +65,11 @@
     "@vercel/ncc": "^0.33.4",
     "chai": "^4.3.6",
     "cross-env": "^7.0.3",
-    "eslint-config-standard": "^16.0.3",
+    "eslint-config-standard": "^17.0.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^5.2.0",
-    "eslint": "^7.32.0",
+    "eslint-plugin-promise": "^6.0.0",
+    "eslint": "^8.15.0",
     "exitzero": "^1.0.1",
     "glob-promise": "^4.2.2",
     "glob": "^7.2.0",
@@ -78,13 +78,13 @@
     "ncp": "^2.0.0",
     "nyc": "^15.1.0",
     "rimraf": "^3.0.2",
-    "sinon": "^13.0.2",
+    "sinon": "^14.0.0",
     "source-map-support": "^0.5.21",
     "tfx-cli": "^0.11.0",
     "ts-mockito": "^2.6.1",
     "ts-standard": "^11.0.0",
     "typedoc": "^0.22.15",
-    "typescript": "^4.6.3"
+    "typescript": "^4.6.4"
   },
   "ts-standard": {
     "ignore": [
