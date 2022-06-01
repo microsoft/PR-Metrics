@@ -68,7 +68,7 @@ export default class AzureReposInvoker extends BaseReposInvoker {
 
     const title: string = Validator.validateString(result.title, 'title', 'AzureReposInvoker.getTitleAndDescription()')
     return {
-      title: title,
+      title,
       description: result.description
     }
   }
@@ -108,8 +108,8 @@ export default class AzureReposInvoker extends BaseReposInvoker {
 
     const gitApiPromise: Promise<IGitApi> = this.getGitApi()
     const commentThread: GitPullRequestCommentThread = {
-      comments: [{ content: content }],
-      status: status
+      comments: [{ content }],
+      status
     }
 
     if (fileName !== undefined) {
@@ -149,7 +149,7 @@ export default class AzureReposInvoker extends BaseReposInvoker {
     const gitApiPromise: Promise<IGitApi> = this.getGitApi()
     if (content !== null) {
       const comment: Comment = {
-        content: content
+        content
       }
 
       const commentResult: Comment = await this.invokeApiCall(async (): Promise<Comment> => await (await gitApiPromise).updateComment(comment, this._repositoryId, this._pullRequestId, commentThreadId, 1, this._project))
@@ -158,7 +158,7 @@ export default class AzureReposInvoker extends BaseReposInvoker {
 
     if (status !== null) {
       const commentThread: GitPullRequestCommentThread = {
-        status: status
+        status
       }
 
       const threadResult: GitPullRequestCommentThread = await this.invokeApiCall(async (): Promise<GitPullRequestCommentThread> => await (await gitApiPromise).updateThread(commentThread, this._repositoryId, this._pullRequestId, commentThreadId, this._project))
