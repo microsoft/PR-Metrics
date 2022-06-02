@@ -247,7 +247,7 @@ export default class CodeMetrics {
         .replace(/.*? => ([^}]+?)/g, '$1')
 
       result.push({
-        fileName: fileName,
+        fileName,
         linesAdded: this.parseChangedLines(elements[0], line, 'added'),
         linesDeleted: this.parseChangedLines(elements[1], line, 'deleted')
       })
