@@ -61,7 +61,7 @@
     "@types/node": "^18.0.1",
     "@types/sinon": "^10.0.12",
     "@typescript-eslint/eslint-plugin": "^5.27.0",
-    "@typescript-eslint/parser": "^5.27.0",
+    "@typescript-eslint/parser": "^5.30.4",
     "@vercel/ncc": "^0.34.0",
     "chai": "^4.3.6",
     "cross-env": "^7.0.3",
