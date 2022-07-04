@@ -80,7 +80,7 @@
     "rimraf": "^3.0.2",
     "sinon": "^14.0.0",
     "source-map-support": "^0.5.21",
-    "tfx-cli": "^0.11.0",
+    "tfx-cli": "^0.12.0",
     "ts-mockito": "^2.6.1",
     "ts-standard": "^11.0.0",
     "typedoc": "^0.22.17",
