@@ -14,12 +14,12 @@ import GetIssueCommentsResponse from '../../src/wrappers/octokitInterfaces/getIs
 import GetPullResponse from '../../src/wrappers/octokitInterfaces/getPullResponse'
 import GitHubReposInvoker from '../../src/repos/gitHubReposInvoker'
 import GitInvoker from '../../src/git/gitInvoker'
+import HttpError from '../testUtilities/httpError'
 import Logger from '../../src/utilities/logger'
 import OctokitLogObject from '../wrappers/octokitLogObject'
 import OctokitWrapper from '../../src/wrappers/octokitWrapper'
 import PullRequestDetails from '../../src/repos/interfaces/pullRequestDetails'
 import RunnerInvoker from '../../src/runners/runnerInvoker'
-import HttpError from '../testUtilities/httpError'
 
 describe('gitHubReposInvoker.ts', function (): void {
   let gitInvoker: GitInvoker

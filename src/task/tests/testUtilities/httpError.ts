@@ -1,8 +1,9 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import 'ts-nameof'
-
+/**
+ * A class representing a HTTP error.
+ */
 export default class HttpError extends Error {
   /**
    * Initializes a new instance of the `HttpError` class.
@@ -19,7 +20,7 @@ export default class HttpError extends Error {
   /**
    * Gets the name of the object type.
    */
-  public name: string = nameof(HttpError)
+  public name: string = 'HttpError'
 
   /**
    * Gets the HTTP status code.
