@@ -42,16 +42,10 @@ async function run (): Promise<void> {
     runnerInvoker.setStatusSucceeded(runnerInvoker.loc('index.succeeded'))
   } catch (error: any) {
     const logger: Logger = container.resolve(Logger)
-    const runnerInvoker: RunnerInvoker = container.resolve(RunnerInvoker)
-    const properties: string[] = Object.getOwnPropertyNames(error)
-    properties.forEach((property: string): void => {
-      if (property !== 'message') {
-        const name: string = error.name
-        logger.logInfo(`${name} – ${property}: ${JSON.stringify(error[property])}`)
-      }
-    })
-
+    logger.logErrorObject(error)
     logger.replay()
+
+    const runnerInvoker: RunnerInvoker = container.resolve(RunnerInvoker)
     runnerInvoker.setStatusFailed(error.message)
   }
 }

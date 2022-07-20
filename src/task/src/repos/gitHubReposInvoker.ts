@@ -143,13 +143,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
         } catch (error: any) {
           if (error.status === 422 && error.message === 'pull_request_review_thread.path diff too large') {
             this._logger.logInfo('GitHub createReviewComment() threw a 422 error related to a large diff. Ignoring as this is expected.')
-            const properties: string[] = Object.getOwnPropertyNames(error)
-            properties.forEach((property: string): void => {
-              if (property !== 'message') {
-                const name: string = error.name
-                this._logger.logInfo(`${name} – ${property}: ${JSON.stringify(error[property])}`)
-              }
-            })
+            this._logger.logErrorObject(error)
           } else {
             throw error
           }
