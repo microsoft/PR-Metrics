@@ -954,7 +954,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       verify(logger.logDebug('null')).twice()
     })
 
-    it('should succeed when a HTTP 422 error occurs', async (): Promise<void> => {
+    it('should succeed when a HTTP 422 error occurs due to having a too large path diff', async (): Promise<void> => {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options: any): void => {
         expect(options.auth).to.equal('PAT')
@@ -966,7 +966,7 @@ describe('gitHubReposInvoker.ts', function (): void {
         expect(options.log.error).to.not.equal(null)
       })
       when(octokitWrapper.createReviewComment('microsoft', 'PR-Metrics', 12345, 'Content', 'file.ts', 'sha54321')).thenCall((): void => {
-        throw new HttpError(422, 'Unprocessable Entity')
+        throw new HttpError(422, 'pull_request_review_thread.path diff too large')
       })
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 
@@ -981,8 +981,49 @@ describe('gitHubReposInvoker.ts', function (): void {
       verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.initializeForAzureDevOps()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.getCommitId()')).once()
-      verify(logger.logDebug('null')).once()
+      verify(logger.logInfo('GitHub createReviewComment() threw a 422 error related to a large diff. Ignoring as this is expected.')).once()
+      verify(logger.logInfo('HttpError – name: "HttpError"')).once()
+      verify(logger.logInfo('HttpError – status: 422')).once()
     })
+
+    {
+      const testCases: Array<HttpError> = [
+        new HttpError(400, 'pull_request_review_thread.path diff too large'),
+        new HttpError(422, 'Unprocessable Entity')
+      ]
+
+      testCases.forEach((error: HttpError): void => {
+        it('should throw when an error occurs that is not a HTTP 422 or is not due to having a too large path diff', async (): Promise<void> => {
+          // Arrange
+          when(octokitWrapper.initialize(anything())).thenCall((options: any): void => {
+            expect(options.auth).to.equal('PAT')
+            expect(options.userAgent).to.equal(expectedUserAgent)
+            expect(options.log).to.not.equal(null)
+            expect(options.log.debug).to.not.equal(null)
+            expect(options.log.info).to.not.equal(null)
+            expect(options.log.warn).to.not.equal(null)
+            expect(options.log.error).to.not.equal(null)
+          })
+          when(octokitWrapper.createReviewComment('microsoft', 'PR-Metrics', 12345, 'Content', 'file.ts', 'sha54321')).thenCall((): void => {
+            throw error
+          })
+          const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
+
+          // Act
+          const func: () => Promise<void> = async () => await gitHubReposInvoker.createComment('Content', CommentThreadStatus.Unknown, 'file.ts')
+
+          // Assert
+          await ExpectExtensions.toThrowAsync(func, error.message)
+          verify(octokitWrapper.initialize(anything())).once()
+          verify(octokitWrapper.listCommits('microsoft', 'PR-Metrics', 12345, 1)).once()
+          verify(octokitWrapper.createReviewComment('microsoft', 'PR-Metrics', 12345, 'Content', 'file.ts', 'sha54321')).once()
+          verify(logger.logDebug('* GitHubReposInvoker.createComment()')).once()
+          verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
+          verify(logger.logDebug('* GitHubReposInvoker.initializeForAzureDevOps()')).once()
+          verify(logger.logDebug('* GitHubReposInvoker.getCommitId()')).once()
+        })
+      })
+    }
 
     it('should succeed when no file name is specified', async (): Promise<void> => {
       // Arrange
