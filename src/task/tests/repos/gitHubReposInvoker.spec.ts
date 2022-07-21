@@ -987,7 +987,7 @@ describe('gitHubReposInvoker.ts', function (): void {
     })
 
     {
-      const testCases: Array<HttpError> = [
+      const testCases: HttpError[] = [
         new HttpError(400, 'pull_request_review_thread.path diff too large'),
         new HttpError(422, 'Unprocessable Entity')
       ]

@@ -69,9 +69,7 @@ export default class Logger {
     const name: string = error.name
     const properties: string[] = Object.getOwnPropertyNames(error)
     properties.forEach((property: string): void => {
-      if (property !== 'message') {
-        this.logInfo(`${name} – ${property}: ${JSON.stringify(error[property])}`)
-      }
+      this.logInfo(`${name} – ${property}: ${JSON.stringify(error[property])}`)
     })
   }
 
