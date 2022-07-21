@@ -965,8 +965,9 @@ describe('gitHubReposInvoker.ts', function (): void {
         expect(options.log.warn).to.not.equal(null)
         expect(options.log.error).to.not.equal(null)
       })
+      const error: HttpError = new HttpError(422, 'pull_request_review_thread.path diff too large')
       when(octokitWrapper.createReviewComment('microsoft', 'PR-Metrics', 12345, 'Content', 'file.ts', 'sha54321')).thenCall((): void => {
-        throw new HttpError(422, 'pull_request_review_thread.path diff too large')
+        throw error
       })
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 
@@ -982,8 +983,7 @@ describe('gitHubReposInvoker.ts', function (): void {
       verify(logger.logDebug('* GitHubReposInvoker.initializeForAzureDevOps()')).once()
       verify(logger.logDebug('* GitHubReposInvoker.getCommitId()')).once()
       verify(logger.logInfo('GitHub createReviewComment() threw a 422 error related to a large diff. Ignoring as this is expected.')).once()
-      verify(logger.logInfo('HttpError – name: "HttpError"')).once()
-      verify(logger.logInfo('HttpError – status: 422')).once()
+      verify(logger.logErrorObject(error)).once()
     })
 
     {
