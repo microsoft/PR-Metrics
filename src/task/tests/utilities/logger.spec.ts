@@ -4,6 +4,7 @@
 import 'reflect-metadata'
 import { instance, mock, verify } from 'ts-mockito'
 import ConsoleWrapper from '../../src/wrappers/consoleWrapper'
+import HttpError from '../testUtilities/httpError'
 import Logger from '../../src/utilities/logger'
 import RunnerInvoker from '../../src/runners/runnerInvoker'
 
@@ -65,6 +66,40 @@ describe('logger.ts', (): void => {
 
       // Assert
       verify(runnerInvoker.logError('Message')).once()
+    })
+  })
+
+  describe('logErrorObject()', (): void => {
+    it('should log all properties of the error object', (): void => {
+      // Arrange
+      const logger: Logger = new Logger(instance(consoleWrapper), instance(runnerInvoker))
+      const error: Error = new Error('Message')
+      error.name = 'Error'
+      error.stack = 'Stack contents'
+
+      // Act
+      logger.logErrorObject(error)
+
+      // Assert
+      verify(consoleWrapper.log('Error – name: "Error"')).once()
+      verify(consoleWrapper.log('Error – message: "Message"')).once()
+      verify(consoleWrapper.log('Error – stack: "Stack contents"')).once()
+    })
+
+    it('should log all properties of a complex error object', (): void => {
+      // Arrange
+      const logger: Logger = new Logger(instance(consoleWrapper), instance(runnerInvoker))
+      const error: HttpError = new HttpError(404, 'Not Found')
+      error.stack = 'Stack contents'
+
+      // Act
+      logger.logErrorObject(error)
+
+      // Assert
+      verify(consoleWrapper.log('HttpError – name: "HttpError"')).once()
+      verify(consoleWrapper.log('HttpError – message: "Not Found"')).once()
+      verify(consoleWrapper.log('HttpError – stack: "Stack contents"')).once()
+      verify(consoleWrapper.log('HttpError – status: 404')).once()
     })
   })
 

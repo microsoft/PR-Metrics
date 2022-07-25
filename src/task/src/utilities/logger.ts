@@ -62,6 +62,18 @@ export default class Logger {
   }
 
   /**
+   * Logs an error object.
+   * @param error The error object to log.
+   */
+  public logErrorObject (error: any): void {
+    const name: string = error.name
+    const properties: string[] = Object.getOwnPropertyNames(error)
+    properties.forEach((property: string): void => {
+      this.logInfo(`${name} – ${property}: ${JSON.stringify(error[property])}`)
+    })
+  }
+
+  /**
    * Replays the messages logged.
    */
   public replay (): void {

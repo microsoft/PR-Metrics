@@ -137,8 +137,17 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
       }
 
       await this.invokeApiCall(async (): Promise<void> => {
-        const result: CreateReviewCommentResponse = await this._octokitWrapper.createReviewComment(this._owner, this._repo, this._pullRequestId, content, fileName, this._commitId)
-        this._logger.logDebug(JSON.stringify(result))
+        try {
+          const result: CreateReviewCommentResponse = await this._octokitWrapper.createReviewComment(this._owner, this._repo, this._pullRequestId, content, fileName, this._commitId)
+          this._logger.logDebug(JSON.stringify(result))
+        } catch (error: any) {
+          if (error.status === 422 && error.message === 'pull_request_review_thread.path diff too large') {
+            this._logger.logInfo('GitHub createReviewComment() threw a 422 error related to a large diff. Ignoring as this is expected.')
+            this._logger.logErrorObject(error)
+          } else {
+            throw error
+          }
+        }
       })
     } else {
       await this.invokeApiCall(async (): Promise<void> => {
@@ -183,7 +192,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
 
     const options: OctokitOptions = {
       auth: process.env.PR_METRICS_ACCESS_TOKEN,
-      userAgent: 'PRMetrics/v1.4.1',
+      userAgent: 'PRMetrics/v1.4.2',
       log: {
         debug: (message: string): void => this._logger.logDebug(`Octokit – ${message}`),
         info: (message: string): void => this._logger.logInfo(`Octokit – ${message}`),
