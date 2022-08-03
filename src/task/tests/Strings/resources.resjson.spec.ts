@@ -4,7 +4,7 @@
 import { expect } from 'chai'
 import * as fs from 'fs'
 import * as path from 'path'
-import glob from 'glob-promise'
+import glob from 'glob'
 import ResourcesJson from '../../src/jsonTypes/resourcesJson'
 import TaskJson from '../jsonTypes/taskJson'
 
@@ -93,7 +93,7 @@ describe('resources.resjson', (): void => {
     const taskJsonResources: RegExpMatchArray = taskLocJsonContents.match(/"ms-resource:.+?"/g) ?? []
     const allResources: string[] = []
     taskJsonResources.forEach((taskJsonRegExpMatch: string): void => {
-      allResources.push(taskJsonRegExpMatch.substr(13, taskJsonRegExpMatch.length - 14))
+      allResources.push(taskJsonRegExpMatch.substring(13, taskJsonRegExpMatch.length - 1))
     })
     allResources.sort()
     const englishEntries: Array<[string, string]> = Object.entries(resources.get('en-US') ?? '')
@@ -122,10 +122,11 @@ describe('resources.resjson', (): void => {
     expect(remainingResources).to.equal(null)
   })
 
-  it('should have the same number of placeholders across the TypeScript code and resources file', async (): Promise<void> => {
+  it('should have the same number of placeholders across the TypeScript code and resources file', (): void => {
     // Arrange
-    const typeScriptFiles1: string[] = await glob(path.join(basePath, '!(node_modules|tests)/**/*.ts'))
-    const typeScriptFiles2: string[] = await glob(path.join(basePath, '*.ts'))
+    const globBasePath: string = basePath.replace(/\\/g, '/') + '/'
+    const typeScriptFiles1: string[] = glob.sync(globBasePath + '!(node_modules|tests)/**/*.ts')
+    const typeScriptFiles2: string[] = glob.sync(globBasePath + '*.ts')
     const typeScriptFiles: string[] = typeScriptFiles1.concat(typeScriptFiles2)
     const typeScriptResources: Map<string, number> = new Map<string, number>()
     const resourceRegExp: RegExp = /loc\('.+?'.*?\)/g

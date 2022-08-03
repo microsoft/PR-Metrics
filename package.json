@@ -13,7 +13,7 @@
     "build": "npm run build:release && npm run build:package && npm run build:docs",
     "clean": "rimraf debug && rimraf release && rimraf dist",
     "deploy": "npm run build:release && exitzero tfx build tasks delete --task-id 907d3b28-6b37-4ac7-ac75-9631ee53e512 --no-prompt && tfx build tasks upload --task-path release/task --no-prompt",
-    "lint": "eslint --fix **/*.ts && ts-standard --fix --project src/task/tsconfig.json",
+    "lint": "eslint --fix **/*.ts",
     "test": "npm run build:debug && cd debug/task && nyc --reporter=text --reporter=text-summary mocha tests/**/*.spec.js --check-leaks --color"
   },
   "repository": {
@@ -44,11 +44,11 @@
   "dependencies": {
     "@actions/core": "^1.9.0",
     "@actions/exec": "^1.1.1",
-    "@octokit/plugin-rest-endpoint-methods": "^5.16.1",
+    "@octokit/plugin-rest-endpoint-methods": "^6.2.0",
     "@octokit/types": "^6.41.0",
     "azure-devops-node-api": "^11.2.0",
     "azure-pipelines-task-lib": "^3.3.1",
-    "octokit": "^1.8.1",
+    "octokit": "^2.0.4",
     "reflect-metadata": "^0.1.13",
     "tsyringe": "^4.7.0"
   },
@@ -65,13 +65,12 @@
     "@vercel/ncc": "^0.34.0",
     "chai": "^4.3.6",
     "cross-env": "^7.0.3",
-    "eslint-config-standard": "^16.0.3",
+    "eslint-config-standard": "^17.0.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^5.2.0",
-    "eslint": "^7.32.0",
+    "eslint-plugin-promise": "^6.0.0",
+    "eslint": "^8.21.0",
     "exitzero": "^1.0.1",
-    "glob-promise": "^5.0.0",
     "glob": "^8.0.3",
     "mkdirp": "^1.0.4",
     "mocha": "^10.0.0",
@@ -82,7 +81,6 @@
     "source-map-support": "^0.5.21",
     "tfx-cli": "^0.12.0",
     "ts-mockito": "^2.6.1",
-    "ts-standard": "^11.0.0",
     "typedoc": "^0.23.10",
     "typescript": "^4.7.4"
   },
