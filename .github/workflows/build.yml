@@ -220,9 +220,11 @@ jobs:
         env:
           EDITORCONFIG_FILE_NAME: ../../.editorconfig
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_CONFIG_FILE: ../../gitleaks.toml
           MARKDOWN_CONFIG_FILE: ../../.markdownlint.json
           TYPESCRIPT_ES_CONFIG_FILE: ../../.eslintrc.yml
           VALIDATE_JAVASCRIPT_STANDARD: false
+          VALIDATE_TYPESCRIPT_STANDARD: false
 
   validate-dist:
     name: Validate – dist Folder

@@ -111,21 +111,22 @@ complement the unit tests to provide a high level of coverage.
    added earlier queued to run.
 1. Verify that the pipeline corresponding to
    `pipelines/pipeline-insufficient-access.yaml` fails with the error
-   message "Could not access the resources. Ensure the 'PR_Metrics_Access_Token' secret environment variable has
-   access to 'Code' > 'Read' and 'Pull Request Threads' > 'Read & write'."
+   message "Could not access the resources. Ensure the 'PR_Metrics_Access_Token'
+   secret environment variable has access to 'Code' > 'Read' and 'Pull Request
+   Threads' > 'Read & write'."
 1. Verify that the pipeline corresponding to
    `pipelines/pipeline-insufficient-history.yaml` fails with the error
    message "Could not access sufficient Git history. Disable 'fetchDepth' (YAML)
    or 'Shallow fetch' under the build process phase settings (classic). Or set
    the threshold sufficiently high."
 1. Verify that the pipeline corresponding to `pipelines/pipeline-no-auth.yaml`
-   fails with the error message "Could not access the Personal Access Token (PAT). Add
-   'PR_Metrics_Access_Token' as an environment variable (YAML) or enable 'Allow
-   scripts to access Personal Access Token (PAT)' under the build process phase settings
-   (classic)."
+   fails with the error message "Could not access the Personal Access Token
+   (PAT). Add 'PR_Metrics_Access_Token' as an environment variable (YAML) or
+   enable 'Allow scripts to access Personal Access Token (PAT)' under the build
+   process phase settings (classic)."
 1. Verify that the pipeline corresponding to
    `pipelines/pipeline-no-sources.yaml` fails with the error message "No
-   Git repo present. Remove 'checkout: none' (YAML) or disable 'Don't sync
+   Git repository present. Remove 'checkout: none' (YAML) or disable 'Don't sync
    sources' under the build process phase settings (classic)."
 1. Verify that the pipeline corresponding to `pipelines/pipeline.yaml` succeeds.
 1. Verify that the title of the PR is prefixed with "XS:heavy_check_mark:

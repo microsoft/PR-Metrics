@@ -35,20 +35,21 @@ facilitate testability.
 
 This task has the unique property that it runs under both GitHub Actions and
 Azure Pipelines. A single codebase supports both platforms, allowing
-improvements or bug fixes to be applied everywhere, immediately after each
+improvements or bugfixes to be applied everywhere, immediately after each
 release.
 
-In turn, the Azure Pipelines task can run against Azure DevOps or GitHub repos.
+In turn, the Azure Pipelines task can run against Azure DevOps or GitHub
+repositories.
 
 This mechanism is facilitated by the aforementioned dependency injection and a
 set of wrappers that abstract the underlying platform. There are two such
 abstractions present:
 
-- [**repos**][reposfolder]: Manages access to the underlying repo functionality.
-  [`reposInvoker.ts`][reposinvoker] decides whether to forward the requests to
-  [`azureReposInvoker.ts`][azurereposinvoker] or
+- [**repos**][reposfolder]: Manages access to the underlying repository
+  functionality. [`reposInvoker.ts`][reposinvoker] decides whether to forward
+  the requests to [`azureReposInvoker.ts`][azurereposinvoker] or
   [`gitHubReposInvoker.ts`][githubreposinvoker] based on the location of the
-  repo in use.
+  repository in use.
 - [**runners**][runnersfolder]: Manages access to the runner (or platform) on
   which the functionality is being executed. [`runnerInvoker.ts`][runnerinvoker]
   decides whether to forward the requests to
