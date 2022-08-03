@@ -6,5 +6,5 @@ useDefault = true
 
 [allowlist]
 paths = [
-  '''dist''',
+    '''dist''',
 ]
