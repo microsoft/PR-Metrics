@@ -416,6 +416,9 @@ dotnet_naming_rule.parameters_rule.severity             = warning
 # Project-Specific Settings
 ##########################################
 
+[dist/*]
+trim_trailing_whitespace = false
+
 [*.md]
 indent_size = unset
 
