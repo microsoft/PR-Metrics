@@ -16,5 +16,5 @@
     "skipLibCheck": true,
     "strict": true
   },
-  "extends": "../../node_modules/@tsconfig/node10/tsconfig.json"
+  "extends": "@tsconfig/node10/tsconfig.json"
 }
