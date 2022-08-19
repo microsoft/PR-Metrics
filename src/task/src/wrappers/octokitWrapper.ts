@@ -176,7 +176,7 @@ export default class OctokitWrapper {
       pull_number: pullRequestId,
       body: content,
       path: fileName,
-      position: 1,
+      line: 1,
       commit_id: commitId
     })
   }
