@@ -26,7 +26,7 @@ complement the unit tests to provide a high level of coverage.
    ```
 
    You can generate a PAT with at least the "Agent Pools (Read & manage)" scope
-   by following the instructions [here][tfxpat]. This will only need to be
+   by following the instructions [here][tfxcli]. This will only need to be
    performed the first time you use tfx-cli.
 1. To build and deploy, from within the `src/task` folder, run `npm run deploy`.
 
@@ -227,3 +227,4 @@ complement the unit tests to provide a high level of coverage.
    - Total: 93
 1. Verify that the aforementioned metrics comment is active.
 
+[tfxcli]: https://github.com/Microsoft/tfs-cli
