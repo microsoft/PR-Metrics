@@ -112,8 +112,8 @@ complement the unit tests to provide a high level of coverage.
 1. Verify that the pipeline corresponding to
    `pipelines/pipeline-insufficient-access.yaml` fails with the error
    message "Could not access the resources. Ensure the 'PR_Metrics_Access_Token'
-   secret environment variable has access to 'Code' > 'Read' and 'Pull Request
-   Threads' > 'Read & write'."
+   secret environment variable has access to 'Code' > 'Read & write' and 'Pull
+   Request Threads' > 'Read & write'."
 1. Verify that the pipeline corresponding to
    `pipelines/pipeline-insufficient-history.yaml` fails with the error
    message "Could not access sufficient Git history. Disable 'fetchDepth' (YAML)
@@ -227,4 +227,3 @@ complement the unit tests to provide a high level of coverage.
    - Total: 93
 1. Verify that the aforementioned metrics comment is active.
 
-[tfxcli]: https://github.com/Microsoft/tfs-cli
