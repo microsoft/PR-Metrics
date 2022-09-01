@@ -69,7 +69,7 @@
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^6.0.0",
-    "eslint": "^8.22.0",
+    "eslint": "^8.23.0",
     "exitzero": "^1.0.1",
     "glob": "^8.0.3",
     "mkdirp": "^1.0.4",
