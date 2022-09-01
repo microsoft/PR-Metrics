@@ -26,7 +26,7 @@ complement the unit tests to provide a high level of coverage.
    ```
 
    You can generate a PAT with at least the "Agent Pools (Read & manage)" scope
-   by following the instructions [here][tfxpat]. This will only need to be
+   by following the instructions [here][tfxcli]. This will only need to be
    performed the first time you use tfx-cli.
 1. To build and deploy, from within the `src/task` folder, run `npm run deploy`.
 
@@ -112,8 +112,8 @@ complement the unit tests to provide a high level of coverage.
 1. Verify that the pipeline corresponding to
    `pipelines/pipeline-insufficient-access.yaml` fails with the error
    message "Could not access the resources. Ensure the 'PR_Metrics_Access_Token'
-   secret environment variable has access to 'Code' > 'Read' and 'Pull Request
-   Threads' > 'Read & write'."
+   secret environment variable has access to 'Code' > 'Read & write' and 'Pull
+   Request Threads' > 'Read & write'."
 1. Verify that the pipeline corresponding to
    `pipelines/pipeline-insufficient-history.yaml` fails with the error
    message "Could not access sufficient Git history. Disable 'fetchDepth' (YAML)

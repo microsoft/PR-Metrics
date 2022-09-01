@@ -14,8 +14,8 @@ env:
 
 However, the scope of `System.AccessToken` may be limited by your system
 administrator. In this case, you will need to create a new Personal Access
-Token (PAT) with scopes 'Code' > 'Read' and 'Pull Request Threads' > 'Read &
-write', which you can then map to `PR_Metrics_Access_Token`.
+Token (PAT) with scopes 'Code' > 'Read & write' and 'Pull Request Threads' >
+'Read & write', which you can then map to `PR_Metrics_Access_Token`.
 
 For GitHub repositories, you will need to create a PAT according to the
 instructions [here][githubpat]. The scope should be 'repos'. The resulting PAT
