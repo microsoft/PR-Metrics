@@ -42,7 +42,7 @@
     "node": ">=10.24.1"
   },
   "dependencies": {
-    "@actions/core": "^1.9.1",
+    "@actions/core": "^1.10.0",
     "@actions/exec": "^1.1.1",
     "@octokit/plugin-rest-endpoint-methods": "6.2.0",
     "@octokit/types": "^7.2.0",
