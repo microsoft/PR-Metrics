@@ -1,5 +1,3 @@
-TODO
-
 # PR Metrics
 
 PR Metrics is a both a GitHub Action and [Azure DevOps Pipelines][azuredevops]
