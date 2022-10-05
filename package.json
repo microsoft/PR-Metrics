@@ -85,6 +85,7 @@
     "typescript": "^4.8.4"
   },
   "overrides": {
+    "@octokit/endpoint": "7.0.1",
     "@octokit/plugin-rest-endpoint-methods": "6.2.0",
     "@octokit/request": "6.0.2"
   },
