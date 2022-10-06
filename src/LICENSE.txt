@@ -65,10 +65,10 @@ PERFORMANCE OF THIS SOFTWARE.
 
 ---------------------------------------------------------
 
-before-after-hook 2.2.2 - Apache-2.0
+before-after-hook 2.2.3 - Apache-2.0
 https://github.com/gr2m/before-after-hook#readme
 
-Copyright 2018 Gregor Martynus and other contributors.
+Copyright 2018 Gregor Martynus and other contributors
 
                                  Apache License
                            Version 2.0, January 2004
@@ -1108,7 +1108,7 @@ IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 ---------------------------------------------------------
 
-semver 7.3.7 - ISC
+semver 7.3.8 - ISC
 https://github.com/npm/node-semver#readme
 
 Copyright Isaac Z. Schlueter
@@ -1205,7 +1205,7 @@ IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 ---------------------------------------------------------
 
-@actions/core 1.9.1 - MIT
+@actions/core 1.10.0 - MIT
 https://github.com/actions/toolkit/tree/main/packages/core
 
 Copyright 2019 GitHub
@@ -1295,7 +1295,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---------------------------------------------------------
 
-@octokit/app 13.0.8 - MIT
+@octokit/app 13.0.9 - MIT
 https://github.com/octokit/app.js#readme
 
 Copyright (c) 2018 Octokit
@@ -1327,7 +1327,7 @@ THE SOFTWARE.
 
 ---------------------------------------------------------
 
-@octokit/auth-app 4.0.5 - MIT
+@octokit/auth-app 4.0.6 - MIT
 https://github.com/octokit/auth-app.js#readme
 
 Copyright (c) 2019 Octokit
@@ -1359,10 +1359,9 @@ THE SOFTWARE.
 
 ---------------------------------------------------------
 
-@octokit/auth-oauth-app 5.0.2 - MIT
+@octokit/auth-oauth-app 5.0.3 - MIT
 https://github.com/octokit/auth-oauth-app.js#readme
 
-Copyright (c) 2019 Octokit
 
 The MIT License
 
@@ -1524,9 +1523,11 @@ THE SOFTWARE.
 
 ---------------------------------------------------------
 
-@octokit/endpoint 7.0.1 - MIT
+@octokit/endpoint 7.0.2 - MIT
 https://github.com/octokit/endpoint.js#readme
 
+Copyright (c) 2018 Octokit
+Copyright (c) 2012-2014, Bram Stein
 
 The MIT License
 
@@ -1558,6 +1559,7 @@ THE SOFTWARE.
 @octokit/graphql 5.0.1 - MIT
 https://github.com/octokit/graphql.js#readme
 
+Copyright (c) 2018 Octokit
 
 The MIT License
 
@@ -1671,9 +1673,10 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---------------------------------------------------------
 
-@octokit/openapi-types 13.6.0 - MIT
+@octokit/openapi-types 13.13.1 - MIT
 https://github.com/octokit/openapi-types.ts#readme
 
+Copyright 2020 Gregor Martynus
 
 Copyright 2020 Gregor Martynus
 
@@ -1687,10 +1690,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---------------------------------------------------------
 
-@octokit/plugin-paginate-rest 4.2.0 - MIT
+@octokit/plugin-paginate-rest 4.3.1 - MIT
 https://github.com/octokit/plugin-paginate-rest.js#readme
 
-Copyright (c) 2019 Octokit
 
 MIT License Copyright (c) 2019 Octokit contributors
 
@@ -1755,7 +1757,7 @@ SOFTWARE.
 
 ---------------------------------------------------------
 
-@octokit/plugin-throttling 4.2.0 - MIT
+@octokit/plugin-throttling 4.3.0 - MIT
 https://github.com/octokit/plugin-throttling.js#readme
 
 Copyright (c) 2018 Octokit
@@ -1869,7 +1871,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---------------------------------------------------------
 
-@octokit/types 7.2.0 - MIT
+@octokit/types 7.5.1 - MIT
 https://github.com/octokit/types.ts#readme
 
 Copyright (c) 2019 Octokit
@@ -1887,7 +1889,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---------------------------------------------------------
 
-@octokit/webhooks 10.1.5 - MIT
+@octokit/webhooks 10.2.0 - MIT
 https://github.com/octokit/webhooks.js#readme
 
 copyright Sindre Sorhus
@@ -1919,7 +1921,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ---------------------------------------------------------
 
-@octokit/webhooks-methods 3.0.0 - MIT
+@octokit/webhooks-methods 3.0.1 - MIT
 https://github.com/octokit/webhooks-methods.js#readme
 
 Copyright (c) 2021 Octokit
@@ -1939,7 +1941,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---------------------------------------------------------
 
-@octokit/webhooks-types 6.3.6 - MIT
+@octokit/webhooks-types 6.4.0 - MIT
 https://github.com/octokit/webhooks#readme
 
 
@@ -1957,7 +1959,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---------------------------------------------------------
 
-@types/aws-lambda 8.10.102 - MIT
+@types/aws-lambda 8.10.106 - MIT
 https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/aws-lambda
 
 Copyright (c) Microsoft Corporation
@@ -1998,7 +2000,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 @types/concat-stream 1.6.1 - MIT
 https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/concat-stream
 
-Copyright (c) Microsoft Corporation.
+Copyright (c) Microsoft Corporation
 
 MIT License
 
@@ -2089,9 +2091,10 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---------------------------------------------------------
 
-@types/node 18.7.14 - MIT
+@types/node 18.8.2 - MIT
 https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/node
 
+Copyright (c) Microsoft Corporation
 
 MIT License
 
@@ -2755,7 +2758,7 @@ fromentries 1.3.2 - MIT
 https://github.com/feross/fromentries
 
 Copyright (c) Feross Aboukhadijeh
-Copyright (c) Feross Aboukhadijeh (http://feross.org).
+Copyright (c) Feross Aboukhadijeh (http://feross.org)
 
 The MIT License (MIT)
 
@@ -2814,7 +2817,7 @@ THE SOFTWARE.
 
 ---------------------------------------------------------
 
-get-intrinsic 1.1.2 - MIT
+get-intrinsic 1.1.3 - MIT
 https://github.com/ljharb/get-intrinsic#readme
 
 Copyright (c) 2020 Jordan Harband
@@ -4549,7 +4552,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ---------------------------------------------------------
 
-underscore 1.13.4 - MIT
+underscore 1.13.6 - MIT
 https://underscorejs.org/
 
 Copyright (c) 2009-2022 Jeremy Ashkenas, Julian Gonggrijp, and DocumentCloud and Investigative Reporters & Editors
