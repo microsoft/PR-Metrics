@@ -403,6 +403,18 @@ describe('codeMetrics.ts', (): void => {
         metrics: new CodeMetricsData(0, 1, 0)
       },
       {
+        gitResponse: '1\t0\tfolder/TEST.ts',
+        sizeIndicator: 'XS',
+        testCoverageIndicator: true,
+        metrics: new CodeMetricsData(0, 1, 0)
+      },
+      {
+        gitResponse: '1\t0\tfolder/DuplicateStorage.ts',
+        sizeIndicator: 'XS',
+        testCoverageIndicator: false,
+        metrics: new CodeMetricsData(1, 0, 0)
+      },
+      {
         gitResponse: '1\t0\tfolder/file.spec.ts',
         sizeIndicator: 'XS',
         testCoverageIndicator: true,
@@ -434,6 +446,12 @@ describe('codeMetrics.ts', (): void => {
       },
       {
         gitResponse: '1\t0\ttests/file.spec.ts',
+        sizeIndicator: 'XS',
+        testCoverageIndicator: true,
+        metrics: new CodeMetricsData(0, 1, 0)
+      },
+      {
+        gitResponse: '1\t0\ttests/file.SPEC.ts',
         sizeIndicator: 'XS',
         testCoverageIndicator: true,
         metrics: new CodeMetricsData(0, 1, 0)
