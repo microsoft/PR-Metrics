@@ -8,7 +8,7 @@ author: Microsoft DevLabs
 description: Augments pull request titles to let reviewers quickly determine PR size and test coverage
 inputs:
   base-size:
-    description: 'Base size: The maximum number of new lines in a small PR. If left blank, a default of ''200'' will be used.'
+    description: 'Base size: The maximum number of new lines in an extra small PR. If left blank, a default of ''200'' will be used.'
     required: false
   growth-rate:
     description: 'Growth rate: The growth rate applied to the base size for calculating the size of larger PRs. If left blank, a default of ''2.0'' will be used.'

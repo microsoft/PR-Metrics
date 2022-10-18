@@ -56,8 +56,8 @@ within the action should not break your pipelines and prevent code development.
 
 ### base-size
 
-The maximum number of new lines in a small PR. If left blank, a default of `200`
-will be used.
+The maximum number of new lines in an extra small PR. If left blank, a default
+of `200` will be used.
 
 ### growth-rate
 

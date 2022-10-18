@@ -61,8 +61,8 @@ steps:
 
 The task parameters are:
 
-- **Base Size:** The maximum number of new lines in a small PR. If left blank,
-  a default of `200` will be used.
+- **Base Size:** The maximum number of new lines in an extra small PR. If left
+  blank, a default of `200` will be used.
 - **Growth Rate:** The growth rate applied to the base size for calculating the
   size of larger PRs. If left blank, a default of `2.0` will be used. With a
   base size of `200` and a growth rate of `2.0`, `400` new lines would

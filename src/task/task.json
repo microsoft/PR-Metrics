@@ -24,7 +24,7 @@
       "name": "BaseSize",
       "label": "Base size",
       "type": "string",
-      "helpMarkDown": "The maximum number of new lines in a small PR. If left blank, a default of '200' will be used."
+      "helpMarkDown": "The maximum number of new lines in an extra small PR. If left blank, a default of '200' will be used."
     },
     {
       "name": "GrowthRate",

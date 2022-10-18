@@ -33,7 +33,7 @@ export default class Inputs {
   }
 
   /**
-   * Gets the base size input, which is the maximum number of new lines in a small pull request.
+   * Gets the base size input, which is the maximum number of new lines in an extra small pull request.
    * @returns The base size input.
    */
   public get baseSize (): number {
