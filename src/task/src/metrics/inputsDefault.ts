@@ -3,7 +3,7 @@
 // Licensed under the MIT License.
 
 /**
-* The default base size, which is the maximum number of new lines in a small pull request.
+* The default base size, which is the maximum number of new lines in an extra small pull request.
 */
 export const baseSize: number = 200
 

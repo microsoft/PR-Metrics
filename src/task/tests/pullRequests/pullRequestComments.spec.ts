@@ -51,9 +51,9 @@ describe('pullRequestComments.ts', (): void => {
     runnerInvoker = mock(RunnerInvoker)
     when(runnerInvoker.loc('pullRequests.pullRequestComments.commentFooter')).thenReturn('[Metrics computed by PR Metrics. Add it to your Azure DevOps and GitHub PRs!](https://aka.ms/PRMetrics/Comment)')
     when(runnerInvoker.loc('pullRequests.pullRequestComments.commentTitle')).thenReturn('# PR Metrics')
-    when(runnerInvoker.loc('pullRequests.pullRequestComments.largePullRequestComment', Number(200).toLocaleString())).thenReturn(`❌ **Try to keep pull requests smaller than ${Number(200).toLocaleString()} lines of new product code by following the [Single Responsibility Principle (SRP)](https://aka.ms/PRMetrics/SRP).**`)
-    when(runnerInvoker.loc('pullRequests.pullRequestComments.largePullRequestComment', Number(1000).toLocaleString())).thenReturn(`❌ **Try to keep pull requests smaller than ${Number(1000).toLocaleString()} lines of new product code by following the [Single Responsibility Principle (SRP)](https://aka.ms/PRMetrics/SRP).**`)
-    when(runnerInvoker.loc('pullRequests.pullRequestComments.largePullRequestComment', Number(1000000).toLocaleString())).thenReturn(`❌ **Try to keep pull requests smaller than ${Number(1000000).toLocaleString()} lines of new product code by following the [Single Responsibility Principle (SRP)](https://aka.ms/PRMetrics/SRP).**`)
+    when(runnerInvoker.loc('pullRequests.pullRequestComments.largePullRequestComment', Number(400).toLocaleString())).thenReturn(`❌ **Try to keep pull requests smaller than ${Number(400).toLocaleString()} lines of new product code by following the [Single Responsibility Principle (SRP)](https://aka.ms/PRMetrics/SRP).**`)
+    when(runnerInvoker.loc('pullRequests.pullRequestComments.largePullRequestComment', Number(2000).toLocaleString())).thenReturn(`❌ **Try to keep pull requests smaller than ${Number(2000).toLocaleString()} lines of new product code by following the [Single Responsibility Principle (SRP)](https://aka.ms/PRMetrics/SRP).**`)
+    when(runnerInvoker.loc('pullRequests.pullRequestComments.largePullRequestComment', Number(2000000).toLocaleString())).thenReturn(`❌ **Try to keep pull requests smaller than ${Number(2000000).toLocaleString()} lines of new product code by following the [Single Responsibility Principle (SRP)](https://aka.ms/PRMetrics/SRP).**`)
     when(runnerInvoker.loc('pullRequests.pullRequestComments.noReviewRequiredComment')).thenReturn('❗ **This file doesn\'t require review.**')
     when(runnerInvoker.loc('pullRequests.pullRequestComments.smallPullRequestComment')).thenReturn('✔ **Thanks for keeping your pull request small.**')
     when(runnerInvoker.loc('pullRequests.pullRequestComments.tableIgnoredCode')).thenReturn('Ignored Code')
@@ -386,6 +386,7 @@ describe('pullRequestComments.ts', (): void => {
           // Arrange
           when(codeMetrics.isSmall()).thenResolve(false)
           when(inputs.baseSize).thenReturn(baseSize)
+          when(inputs.growthRate).thenReturn(2)
           const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(inputs), instance(logger), instance(reposInvoker), instance(runnerInvoker))
 
           // Act
@@ -394,7 +395,7 @@ describe('pullRequestComments.ts', (): void => {
           // Assert
           expect(result).to.equal(
             '# PR Metrics\n' +
-            `❌ **Try to keep pull requests smaller than ${baseSize.toLocaleString()} lines of new product code by following the [Single Responsibility Principle (SRP)](https://aka.ms/PRMetrics/SRP).**\n` +
+            `❌ **Try to keep pull requests smaller than ${(baseSize * 2).toLocaleString()} lines of new product code by following the [Single Responsibility Principle (SRP)](https://aka.ms/PRMetrics/SRP).**\n` +
             '✔ **Thanks for adding tests.**\n' +
             '||Lines\n' +
             '-|-:\n' +

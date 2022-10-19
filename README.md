@@ -56,8 +56,8 @@ within the action should not break your pipelines and prevent code development.
 
 ### base-size
 
-The maximum number of new lines in a small PR. If left blank, a default of `200`
-will be used.
+The maximum number of new lines in an extra small PR. If left blank, a default
+of `200` will be used.
 
 ### growth-rate
 
@@ -98,7 +98,7 @@ The default input values are expected to be appropriate for most builds.
 Therefore, the following YAML definition is recommended:
 
 ```YAML
-uses: microsoft/PR-Metrics@v1.4.5
+uses: microsoft/PR-Metrics@v1.4.6
 name: PR Metrics
 env:
   PR_METRICS_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -108,7 +108,7 @@ continue-on-error: true
 If you wish to modify the inputs, YAML akin the to the following can be used:
 
 ```YAML
-uses: microsoft/PR-Metrics@v1.4.5
+uses: microsoft/PR-Metrics@v1.4.6
 name: PR Metrics
 env:
   PR_METRICS_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}

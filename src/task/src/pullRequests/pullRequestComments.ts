@@ -165,7 +165,7 @@ export default class PullRequestComments {
     if (await this._codeMetrics.isSmall()) {
       result += this._runnerInvoker.loc('pullRequests.pullRequestComments.smallPullRequestComment')
     } else {
-      result += this._runnerInvoker.loc('pullRequests.pullRequestComments.largePullRequestComment', this._inputs.baseSize.toLocaleString())
+      result += this._runnerInvoker.loc('pullRequests.pullRequestComments.largePullRequestComment', (this._inputs.baseSize * this._inputs.growthRate).toLocaleString())
     }
 
     result += '\n'
