@@ -3,7 +3,7 @@
   "manifestVersion": 1,
   "id": "PRMetrics",
   "name": "PR Metrics",
-  "version": "1.4.6",
+  "version": "1.4.7",
   "publisher": "ms-omex",
   "description": "Augments pull request titles to let reviewers quickly determine PR size and test coverage.",
   "public": true,
