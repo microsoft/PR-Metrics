@@ -177,7 +177,7 @@ export default class OctokitWrapper {
       pull_number: pullRequestId
     })
 
-    console.log(test.data.patch_url)
+    console.log('Patch URL:' + test.data.patch_url)
 
     return await this._octokit.rest.pulls.createReviewComment({
       owner,
