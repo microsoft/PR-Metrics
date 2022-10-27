@@ -177,6 +177,7 @@ export default class OctokitWrapper {
       body: content,
       path: fileName,
       position: 1,
+      line: 1, // TODO: This is a hack to get around a bug in the GitHub API.
       commit_id: commitId
     })
   }
