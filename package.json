@@ -44,11 +44,11 @@
   "dependencies": {
     "@actions/core": "^1.10.0",
     "@actions/exec": "^1.1.1",
-    "@octokit/plugin-rest-endpoint-methods": "6.2.0",
+    "@octokit/plugin-rest-endpoint-methods": "6.7.0",
     "@octokit/types": "^8.0.0",
     "azure-devops-node-api": "^11.2.0",
     "azure-pipelines-task-lib": "^3.3.1",
-    "octokit": "^2.0.9",
+    "octokit": "^2.0.10",
     "reflect-metadata": "^0.1.13",
     "tsyringe": "^4.7.0"
   },
@@ -58,10 +58,10 @@
     "@types/chai": "^4.3.3",
     "@types/glob": "^8.0.0",
     "@types/mocha": "^10.0.0",
-    "@types/node": "^18.11.4",
+    "@types/node": "^18.11.7",
     "@types/sinon": "^10.0.13",
-    "@typescript-eslint/eslint-plugin": "^5.40.1",
-    "@typescript-eslint/parser": "^5.40.1",
+    "@typescript-eslint/eslint-plugin": "^5.41.0",
+    "@typescript-eslint/parser": "^5.41.0",
     "@vercel/ncc": "^0.34.0",
     "chai": "^4.3.6",
     "cross-env": "^7.0.3",
@@ -85,9 +85,6 @@
     "typescript": "^4.8.4"
   },
   "overrides": {
-    "@octokit/oauth-app": "4.0.8",
-    "@octokit/plugin-rest-endpoint-methods": "6.2.0",
-    "@octokit/request": "6.0.2",
     "mockery": "^2.1.0"
   },
   "ts-standard": {
