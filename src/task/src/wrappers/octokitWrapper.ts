@@ -177,7 +177,7 @@ export default class OctokitWrapper {
       pull_number: pullRequestId
     })
 
-    throw Error('Patch URL:' + test.data.patch_url)
+    throw Error('Diff URL:' + test.data.diff_url)
 
     // return await this._octokit.rest.pulls.createReviewComment({
     //   owner,
