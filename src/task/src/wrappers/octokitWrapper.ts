@@ -170,13 +170,21 @@ export default class OctokitWrapper {
       throw Error('OctokitWrapper was not initialized prior to calling OctokitWrapper.createReviewComment().')
     }
 
+    // TODO
+    const test = await this._octokit.rest.pulls.get({
+      owner,
+      repo,
+      pull_number: pullRequestId
+    })
+
+    console.log(test.data.patch_url)
+
     return await this._octokit.rest.pulls.createReviewComment({
       owner,
       repo,
       pull_number: pullRequestId,
       body: content,
       path: fileName,
-      position: 1,
       line: 1, // TODO: This is a hack to get around a bug in the GitHub API.
       commit_id: commitId
     })
