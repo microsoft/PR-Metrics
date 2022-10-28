@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { AddedFile, AnyFileChange, ChangedFile, GitDiff } from 'parse-git-diff/build/types'
+import { AddedFile, AnyFileChange, ChangedFile, GitDiff, RenamedFile } from 'parse-git-diff/build/types'
 import { Octokit } from 'octokit'
 import { OctokitOptions } from '@octokit/core/dist-types/types'
 import { singleton } from 'tsyringe'
@@ -180,21 +180,23 @@ export default class OctokitWrapper {
       pull_number: pullRequestId
     })
 
-    const response: AxiosResponse<string, string> = await axios.get(test.data.diff_url)
-    console.log('data:' + response.data)
+    const diffResponse: AxiosResponse<string, string> = await axios.get(test.data.diff_url)
+    const diffParsed: GitDiff = parseGitDiff(diffResponse.data)
+    diffParsed.files.forEach((file: AnyFileChange): void => {
+      if (file.type === 'AddedFile' || file.type === 'ChangedFile') {
+        const fileCasted: AddedFile | ChangedFile = file as AddedFile | ChangedFile
 
-    const diff: GitDiff = parseGitDiff(response.data)
-    diff.files.forEach((file: AnyFileChange): void => {
-      // DeletedFile, RenamedFile?
-      if (file.type === 'ChangedFile' || file.type === 'AddedFile') {
-        const fileCasted: ChangedFile | AddedFile = file as ChangedFile | AddedFile
+        console.log('File Type: ' + fileCasted.type)
+        console.log('File Path: ' + fileCasted.path)
+        console.log('Start Line: ' + fileCasted.chunks[0]?.toFileRange.start)
+        console.log()
+      } else if (file.type === 'RenamedFile') {
+        const fileCasted: RenamedFile = file as RenamedFile
 
-        console.log('no of chunks' + fileCasted.chunks.length) // number of hunks
-        console.log('context lines start ' + fileCasted.chunks[0]?.toFileRange.start) // start hunk added/deleted/context lines
-        console.log('context lines path ' + fileCasted.path) // start hunk added/deleted/context lines
-        console.log('context lines ' + fileCasted.chunks[0]?.changes.length) // hunk added/deleted/context lines
-        // each item in changes is a string
-        console.log('type' + fileCasted.type) // number of deletions in the patch
+        console.log('File Type: ' + fileCasted.type)
+        console.log('File Path: ' + fileCasted.pathAfter)
+        console.log('Start Line: ' + fileCasted.chunks[0]?.toFileRange.start)
+        console.log()
       }
     })
 
