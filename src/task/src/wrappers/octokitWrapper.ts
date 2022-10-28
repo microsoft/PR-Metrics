@@ -184,7 +184,7 @@ export default class OctokitWrapper {
     console.log('data:' + response.data)
 
     const files = parseDiff.parse(response.data)
-    console.log(files.length) // number of patched files
+    console.log('files length' + files.length) // number of patched files
     files.forEach(function (file: any) {
       console.log('no of chunks' + file.chunks.length) // number of hunks
       console.log('context lines ' + file.chunks[0].changes.length) // hunk added/deleted/context lines
