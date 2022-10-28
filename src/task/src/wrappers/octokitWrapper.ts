@@ -185,6 +185,7 @@ export default class OctokitWrapper {
     const diffParsed: GitDiff = parseGitDiff(diffResponse.data)
 
     console.log('File Count: ' + diffParsed.files.length)
+    console.log('File to Match: ' + fileName)
 
     let line: number = -1
     diffParsed.files.forEach((file: AnyFileChange): void => {
