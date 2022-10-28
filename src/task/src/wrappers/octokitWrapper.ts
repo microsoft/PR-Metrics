@@ -182,6 +182,8 @@ export default class OctokitWrapper {
 
     const diffResponse: AxiosResponse<string, string> = await axios.get(test.data.diff_url)
     const diffParsed: GitDiff = parseGitDiff(diffResponse.data)
+
+    console.log('File Count: ' + diffParsed.files.length)
     diffParsed.files.forEach((file: AnyFileChange): void => {
       if (file.type === 'AddedFile' || file.type === 'ChangedFile') {
         const fileCasted: AddedFile | ChangedFile = file as AddedFile | ChangedFile
@@ -197,6 +199,8 @@ export default class OctokitWrapper {
         console.log('File Path: ' + fileCasted.pathAfter)
         console.log('Start Line: ' + fileCasted.chunks[0]?.toFileRange.start)
         console.log()
+      } else {
+        console.log('Unexpected File Type: ' + file.type)
       }
     })
 
