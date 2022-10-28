@@ -177,7 +177,7 @@ export default class OctokitWrapper {
       pull_number: pullRequestId
     })
 
-    const axios = require('axios').default
+    const axios = require('axios')
     const parseDiff = require('parse-diff')
 
     const response = await axios.get(test.data.diff_url)
