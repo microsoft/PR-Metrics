@@ -165,7 +165,7 @@ export default class OctokitWrapper {
    * @param commitId The ID of the commit.
    * @returns The response from the API call.
    */
-  public async createReviewComment (owner: string, repo: string, pullRequestId: number, content: string, fileName: string, commitId: string): Promise<CreateReviewCommentResponse> {
+  public async createReviewComment (owner: string, repo: string, pullRequestId: number, _: string, __: string, ___: string): Promise<CreateReviewCommentResponse> {
     if (this._octokit === undefined) {
       throw Error('OctokitWrapper was not initialized prior to calling OctokitWrapper.createReviewComment().')
     }
@@ -177,34 +177,33 @@ export default class OctokitWrapper {
       pull_number: pullRequestId
     })
 
-    const request = require('request')
+    const axios = require('axios').default
     const parseDiff = require('parse-diff')
-    request.get(test.data.diff_url, function (error: any, response: any, body: string) {
-      if (!error && response.statusCode === 200) {
-        const csv: string = body
-        const files = parseDiff.parse(csv)
-        console.log(files.length) // number of patched files
-        files.forEach(function (file: any) {
-          console.log('no of chunks' + file.chunks.length) // number of hunks
-          console.log('context lines ' + file.chunks[0].changes.length) // hunk added/deleted/context lines
-          // each item in changes is a string
-          console.log('deletions' + file.deletions) // number of deletions in the patch
-          console.log('additions' + file.additions) // number of additions in the patch
-        })
 
-        throw Error('Diff URL:' + test.data.diff_url)
-      }
+    const response = await axios.get(test.data.diff_url)
+    console.log('data:' + response.data)
+
+    const files = parseDiff.parse(response.data)
+    console.log(files.length) // number of patched files
+    files.forEach(function (file: any) {
+      console.log('no of chunks' + file.chunks.length) // number of hunks
+      console.log('context lines ' + file.chunks[0].changes.length) // hunk added/deleted/context lines
+      // each item in changes is a string
+      console.log('deletions' + file.deletions) // number of deletions in the patch
+      console.log('additions' + file.additions) // number of additions in the patch
     })
 
-    return await this._octokit.rest.pulls.createReviewComment({
-      owner,
-      repo,
-      pull_number: pullRequestId,
-      body: content,
-      path: fileName,
-      line: 1, // TODO: This is a hack to get around a bug in the GitHub API.
-      commit_id: commitId
-    })
+    throw Error('Diff URL:' + test.data.diff_url)
+
+    // return await this._octokit.rest.pulls.createReviewComment({
+    //   owner,
+    //   repo,
+    //   pull_number: pullRequestId,
+    //   body: content,
+    //   path: fileName,
+    //   line: 1, // TODO: This is a hack to get around a bug in the GitHub API.
+    //   commit_id: commitId
+    // })
   }
 
   /**
