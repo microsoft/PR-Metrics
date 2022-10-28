@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+import { AddedFile, AnyFileChange, ChangedFile, GitDiff } from 'parse-git-diff/build/types'
 import { Octokit } from 'octokit'
 import { OctokitOptions } from '@octokit/core/dist-types/types'
 import { singleton } from 'tsyringe'
@@ -15,7 +16,6 @@ import ListCommitsResponse from './octokitInterfaces/listCommitsResponse'
 import parseGitDiff from 'parse-git-diff'
 import UpdateIssueCommentResponse from './octokitInterfaces/updateIssueCommentResponse'
 import UpdatePullResponse from './octokitInterfaces/updatePullResponse'
-import { AnyFileChange, GitDiff } from 'parse-git-diff/build/types'
 
 /**
  * A wrapper around the Octokit (GitHub) API, to facilitate testability.
@@ -185,10 +185,17 @@ export default class OctokitWrapper {
 
     const diff: GitDiff = parseGitDiff(response.data)
     diff.files.forEach((file: AnyFileChange): void => {
-      console.log('no of chunks' + file.chunks.length) // number of hunks
-      console.log('context lines ' + file.chunks[0]?.changes.length) // hunk added/deleted/context lines
-      // each item in changes is a string
-      console.log('type' + file.type) // number of deletions in the patch
+      // DeletedFile, RenamedFile?
+      if (file.type === 'ChangedFile' || file.type === 'AddedFile') {
+        const fileCasted: ChangedFile | AddedFile = file as ChangedFile | AddedFile
+
+        console.log('no of chunks' + fileCasted.chunks.length) // number of hunks
+        console.log('context lines start ' + fileCasted.chunks[0]?.toFileRange.start) // start hunk added/deleted/context lines
+        console.log('context lines path ' + fileCasted.path) // start hunk added/deleted/context lines
+        console.log('context lines ' + fileCasted.chunks[0]?.changes.length) // hunk added/deleted/context lines
+        // each item in changes is a string
+        console.log('type' + fileCasted.type) // number of deletions in the patch
+      }
     })
 
     throw Error('Diff URL:' + test.data.diff_url)
