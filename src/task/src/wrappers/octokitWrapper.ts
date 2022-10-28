@@ -4,6 +4,7 @@
 import { Octokit } from 'octokit'
 import { OctokitOptions } from '@octokit/core/dist-types/types'
 import { singleton } from 'tsyringe'
+import axios, { AxiosResponse } from 'axios'
 import CreateIssueCommentResponse from './octokitInterfaces/createIssueCommentResponse'
 import CreateReviewCommentResponse from './octokitInterfaces/createReviewCommentResponse'
 import DeleteReviewCommentResponse from './octokitInterfaces/deleteReviewCommentResponse'
@@ -11,8 +12,10 @@ import GetIssueCommentsResponse from './octokitInterfaces/getIssueCommentsRespon
 import GetPullResponse from './octokitInterfaces/getPullResponse'
 import GetReviewCommentsResponse from './octokitInterfaces/getReviewCommentsResponse'
 import ListCommitsResponse from './octokitInterfaces/listCommitsResponse'
+import parseGitDiff from 'parse-git-diff'
 import UpdateIssueCommentResponse from './octokitInterfaces/updateIssueCommentResponse'
 import UpdatePullResponse from './octokitInterfaces/updatePullResponse'
+import { AnyFileChange, GitDiff } from 'parse-git-diff/build/types'
 
 /**
  * A wrapper around the Octokit (GitHub) API, to facilitate testability.
@@ -171,26 +174,21 @@ export default class OctokitWrapper {
     }
 
     // TODO
-    const test = await this._octokit.rest.pulls.get({
+    const test: any = await this._octokit.rest.pulls.get({
       owner,
       repo,
       pull_number: pullRequestId
     })
 
-    const axios = require('axios')
-    const parseDiff = require('parse-diff')
-
-    const response = await axios.get(test.data.diff_url)
+    const response: AxiosResponse<string, string> = await axios.get(test.data.diff_url)
     console.log('data:' + response.data)
 
-    const files = parseDiff.parse(response.data)
-    console.log('files length' + files.length) // number of patched files
-    files.forEach(function (file: any) {
+    const diff: GitDiff = parseGitDiff(response.data)
+    diff.files.forEach((file: AnyFileChange): void => {
       console.log('no of chunks' + file.chunks.length) // number of hunks
-      console.log('context lines ' + file.chunks[0].changes.length) // hunk added/deleted/context lines
+      console.log('context lines ' + file.chunks[0]?.changes.length) // hunk added/deleted/context lines
       // each item in changes is a string
-      console.log('deletions' + file.deletions) // number of deletions in the patch
-      console.log('additions' + file.additions) // number of additions in the patch
+      console.log('type' + file.type) // number of deletions in the patch
     })
 
     throw Error('Diff URL:' + test.data.diff_url)
