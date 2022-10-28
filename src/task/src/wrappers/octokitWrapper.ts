@@ -168,7 +168,7 @@ export default class OctokitWrapper {
    * @param commitId The ID of the commit.
    * @returns The response from the API call.
    */
-  public async createReviewComment (owner: string, repo: string, pullRequestId: number, _: string, __: string, ___: string): Promise<CreateReviewCommentResponse> {
+  public async createReviewComment (owner: string, repo: string, pullRequestId: number, content: string, fileName: string, commitId: string): Promise<CreateReviewCommentResponse> {
     if (this._octokit === undefined) {
       throw Error('OctokitWrapper was not initialized prior to calling OctokitWrapper.createReviewComment().')
     }
@@ -180,10 +180,13 @@ export default class OctokitWrapper {
       pull_number: pullRequestId
     })
 
-    const diffResponse: AxiosResponse<string, string> = await axios.get('https://patch-diff.githubusercontent.com/raw/microsoft/PR-Metrics/pull/290.diff') // test.data.diff_url)
+    // Note bug where multiple files are not picked up if the first diff is too large. Consider an alternative library.
+    const diffResponse: AxiosResponse<string, string> = await axios.get(test.data.diff_url) // 'https://patch-diff.githubusercontent.com/raw/microsoft/PR-Metrics/pull/290.diff')
     const diffParsed: GitDiff = parseGitDiff(diffResponse.data)
 
     console.log('File Count: ' + diffParsed.files.length)
+
+    let line: number = -1
     diffParsed.files.forEach((file: AnyFileChange): void => {
       if (file.type === 'AddedFile' || file.type === 'ChangedFile') {
         const fileCasted: AddedFile | ChangedFile = file as AddedFile | ChangedFile
@@ -192,6 +195,11 @@ export default class OctokitWrapper {
         console.log('File Path: ' + fileCasted.path)
         console.log('Start Line: ' + fileCasted.chunks[0]?.toFileRange.start)
         console.log()
+
+        if (fileCasted.path === fileName) {
+          console.log('Setting Line Number')
+          line = fileCasted.chunks[0]?.toFileRange.start!
+        }
       } else if (file.type === 'RenamedFile') {
         const fileCasted: RenamedFile = file as RenamedFile
 
@@ -199,22 +207,29 @@ export default class OctokitWrapper {
         console.log('File Path: ' + fileCasted.pathAfter)
         console.log('Start Line: ' + fileCasted.chunks[0]?.toFileRange.start)
         console.log()
+
+        if (fileCasted.pathAfter === fileName) {
+          console.log('Setting Line Number')
+          line = fileCasted.chunks[0]?.toFileRange.start!
+        }
       } else {
         console.log('Unexpected File Type: ' + file.type)
       }
     })
 
-    throw Error('Diff URL:' + test.data.diff_url)
+    if (line === -1) {
+      throw Error('Cannot find line number of file.')
+    }
 
-    // return await this._octokit.rest.pulls.createReviewComment({
-    //   owner,
-    //   repo,
-    //   pull_number: pullRequestId,
-    //   body: content,
-    //   path: fileName,
-    //   line: 1, // TODO: This is a hack to get around a bug in the GitHub API.
-    //   commit_id: commitId
-    // })
+    return await this._octokit.rest.pulls.createReviewComment({
+      owner,
+      repo,
+      pull_number: pullRequestId,
+      body: content,
+      path: fileName,
+      line,
+      commit_id: commitId
+    })
   }
 
   /**
