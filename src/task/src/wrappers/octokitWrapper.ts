@@ -180,7 +180,7 @@ export default class OctokitWrapper {
       pull_number: pullRequestId
     })
 
-    const diffResponse: AxiosResponse<string, string> = await axios.get(test.data.diff_url)
+    const diffResponse: AxiosResponse<string, string> = await axios.get('https://patch-diff.githubusercontent.com/raw/microsoft/PR-Metrics/pull/291.diff') // test.data.diff_url)
     const diffParsed: GitDiff = parseGitDiff(diffResponse.data)
 
     console.log('File Count: ' + diffParsed.files.length)
