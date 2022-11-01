@@ -216,7 +216,7 @@ jobs:
         run: npm install
 
       - name: Super Linter
-        uses: github/super-linter@v4.9.6
+        uses: github/super-linter@v4.9.7
         env:
           EDITORCONFIG_FILE_NAME: ../../.editorconfig
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
