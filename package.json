@@ -48,7 +48,7 @@
     "@octokit/types": "^8.0.0",
     "azure-devops-node-api": "^11.2.0",
     "azure-pipelines-task-lib": "^3.3.1",
-    "octokit": "^2.0.9",
+    "octokit": "^2.0.10",
     "reflect-metadata": "^0.1.13",
     "tsyringe": "^4.7.0"
   },
