@@ -173,65 +173,37 @@ export default class OctokitWrapper {
       throw Error('OctokitWrapper was not initialized prior to calling OctokitWrapper.createReviewComment().')
     }
 
-    // TODO
-    const test: any = await this._octokit.rest.pulls.get({
+    const pullRequestInfo: GetPullResponse = await this._octokit.rest.pulls.get({
       owner,
       repo,
       pull_number: pullRequestId
     })
 
-    // Note bug where multiple files are not picked up if the first diff is too large. Consider an alternative library.
-    const diffResponse: AxiosResponse<string, string> = await axios.get(test.data.diff_url) // 'https://patch-diff.githubusercontent.com/raw/microsoft/PR-Metrics/pull/290.diff')
+    const diffResponse: AxiosResponse<string, string> = await axios.get(pullRequestInfo.data.diff_url)
     const diffResponses: string[] = diffResponse.data.split(/^diff --git/gm)
     const parsableDiffResponses: string[] = []
-    for (let i: number = 1; i < diffResponses.length; i += 1) {
-      // console.log('diffResponse: ' + diffResponses[i])
-      // console.log('previousDiffResponse: ' + diffResponses[i - 1])
-      parsableDiffResponses.push('diff --git' + diffResponses[i]!)
-    }
+    diffResponses.forEach((diffResponse: string): void => {
+      parsableDiffResponses.push('diff --git' + diffResponse)
+    })
 
     let line: number = -1
-    console.log('Iterations: ' + parsableDiffResponses.length)
     for (let i: number = 0; i < parsableDiffResponses.length && line === -1; i++) {
-      console.log('Current Iteration: ' + i)
-      console.log('Current Iteration Contents: ' + parsableDiffResponses[i]!)
-
       const diffParsed: GitDiff = parseGitDiff(parsableDiffResponses[i]!)
-
-      console.log('File Count: ' + diffParsed.files.length)
       if (diffParsed.files.length !== 1) {
-        throw Error('Multiple files were found in the diff.' + i + ' ' + diffParsed.files.length + ' ' + parsableDiffResponses[i]!)
+        throw Error(diffParsed.files.length + ' files were located instead of the expected 1.')
       }
-
-      console.log('File to Match: ' + fileName)
 
       diffParsed.files.forEach((file: AnyFileChange): void => {
         if (file.type === 'AddedFile' || file.type === 'ChangedFile') {
           const fileCasted: AddedFile | ChangedFile = file as AddedFile | ChangedFile
-
-          console.log('File Type: ' + fileCasted.type)
-          console.log('File Path: ' + fileCasted.path)
-          console.log('Start Line: ' + fileCasted.chunks[0]?.toFileRange.start)
-          console.log()
-
           if (fileCasted.path === fileName) {
-            console.log('Setting Line Number')
             line = fileCasted.chunks[0]?.toFileRange.start!
           }
         } else if (file.type === 'RenamedFile') {
           const fileCasted: RenamedFile = file as RenamedFile
-
-          console.log('File Type: ' + fileCasted.type)
-          console.log('File Path: ' + fileCasted.pathAfter)
-          console.log('Start Line: ' + fileCasted.chunks[0]?.toFileRange.start)
-          console.log()
-
           if (fileCasted.pathAfter === fileName) {
-            console.log('Setting Line Number')
             line = fileCasted.chunks[0]?.toFileRange.start!
           }
-        } else {
-          console.log('Unexpected File Type: ' + file.type)
         }
       })
     }
