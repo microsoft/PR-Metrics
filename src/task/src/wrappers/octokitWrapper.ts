@@ -184,10 +184,11 @@ export default class OctokitWrapper {
     const diffResponse: AxiosResponse<string, string> = await axios.get(test.data.diff_url) // 'https://patch-diff.githubusercontent.com/raw/microsoft/PR-Metrics/pull/290.diff')
     const diffResponses: string[] = diffResponse.data.split(/^diff --git/gm)
     const parsableDiffResponses: string[] = []
-    diffResponses.forEach((diffResponse: string): void => {
-      console.log('diffResponse: ' + diffResponse)
-      parsableDiffResponses.push('diff --git' + diffResponse)
-    })
+    for (let i: number = 1; i < diffResponses.length; i += 2) {
+      console.log('diffResponse: ' + diffResponses[i])
+      console.log('previousDiffResponse: ' + diffResponses[i - 1])
+      parsableDiffResponses.push(diffResponses[i - 1]! + diffResponses[i]!)
+    }
 
     let line: number = -1
     console.log('Iterations: ' + parsableDiffResponses.length)
@@ -198,6 +199,10 @@ export default class OctokitWrapper {
       const diffParsed: GitDiff = parseGitDiff(parsableDiffResponses[i]!)
 
       console.log('File Count: ' + diffParsed.files.length)
+      if (diffParsed.files.length !== 1) {
+        throw Error('Multiple files were found in the diff.' + diffParsed.files.length)
+      }
+
       console.log('File to Match: ' + fileName)
 
       diffParsed.files.forEach((file: AnyFileChange): void => {
