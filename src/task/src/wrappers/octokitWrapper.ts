@@ -182,41 +182,53 @@ export default class OctokitWrapper {
 
     // Note bug where multiple files are not picked up if the first diff is too large. Consider an alternative library.
     const diffResponse: AxiosResponse<string, string> = await axios.get(test.data.diff_url) // 'https://patch-diff.githubusercontent.com/raw/microsoft/PR-Metrics/pull/290.diff')
-    const diffParsed: GitDiff = parseGitDiff(diffResponse.data)
-
-    console.log('File Count: ' + diffParsed.files.length)
-    console.log('File to Match: ' + fileName)
+    const diffResponses: string[] = diffResponse.data.split('diff --git')
+    const parsableDiffResponses: string[] = []
+    diffResponses.forEach((diffResponse: string): void => {
+      parsableDiffResponses.push('diff --git' + diffResponse)
+    })
 
     let line: number = -1
-    diffParsed.files.forEach((file: AnyFileChange): void => {
-      if (file.type === 'AddedFile' || file.type === 'ChangedFile') {
-        const fileCasted: AddedFile | ChangedFile = file as AddedFile | ChangedFile
+    console.log('Iterations: ' + parsableDiffResponses.length)
+    for (let i: number = 0; i < parsableDiffResponses.length && line === -1; i++) {
+      console.log('Current Iteration: ' + i)
+      console.log('Current Iteration Contents: ' + parsableDiffResponses[i]!)
 
-        console.log('File Type: ' + fileCasted.type)
-        console.log('File Path: ' + fileCasted.path)
-        console.log('Start Line: ' + fileCasted.chunks[0]?.toFileRange.start)
-        console.log()
+      const diffParsed: GitDiff = parseGitDiff(parsableDiffResponses[i]!)
 
-        if (fileCasted.path === fileName) {
-          console.log('Setting Line Number')
-          line = fileCasted.chunks[0]?.toFileRange.start!
+      console.log('File Count: ' + diffParsed.files.length)
+      console.log('File to Match: ' + fileName)
+
+      diffParsed.files.forEach((file: AnyFileChange): void => {
+        if (file.type === 'AddedFile' || file.type === 'ChangedFile') {
+          const fileCasted: AddedFile | ChangedFile = file as AddedFile | ChangedFile
+
+          console.log('File Type: ' + fileCasted.type)
+          console.log('File Path: ' + fileCasted.path)
+          console.log('Start Line: ' + fileCasted.chunks[0]?.toFileRange.start)
+          console.log()
+
+          if (fileCasted.path === fileName) {
+            console.log('Setting Line Number')
+            line = fileCasted.chunks[0]?.toFileRange.start!
+          }
+        } else if (file.type === 'RenamedFile') {
+          const fileCasted: RenamedFile = file as RenamedFile
+
+          console.log('File Type: ' + fileCasted.type)
+          console.log('File Path: ' + fileCasted.pathAfter)
+          console.log('Start Line: ' + fileCasted.chunks[0]?.toFileRange.start)
+          console.log()
+
+          if (fileCasted.pathAfter === fileName) {
+            console.log('Setting Line Number')
+            line = fileCasted.chunks[0]?.toFileRange.start!
+          }
+        } else {
+          console.log('Unexpected File Type: ' + file.type)
         }
-      } else if (file.type === 'RenamedFile') {
-        const fileCasted: RenamedFile = file as RenamedFile
-
-        console.log('File Type: ' + fileCasted.type)
-        console.log('File Path: ' + fileCasted.pathAfter)
-        console.log('Start Line: ' + fileCasted.chunks[0]?.toFileRange.start)
-        console.log()
-
-        if (fileCasted.pathAfter === fileName) {
-          console.log('Setting Line Number')
-          line = fileCasted.chunks[0]?.toFileRange.start!
-        }
-      } else {
-        console.log('Unexpected File Type: ' + file.type)
-      }
-    })
+      })
+    }
 
     if (line === -1) {
       throw Error('Cannot find line number of file.')
