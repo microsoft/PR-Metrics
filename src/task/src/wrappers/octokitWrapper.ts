@@ -183,18 +183,18 @@ export default class OctokitWrapper {
     // Note bug where multiple files are not picked up if the first diff is too large. Consider an alternative library.
     const diffResponse: AxiosResponse<string, string> = await axios.get(test.data.diff_url) // 'https://patch-diff.githubusercontent.com/raw/microsoft/PR-Metrics/pull/290.diff')
     const diffResponses: string[] = diffResponse.data.split('diff --git')
-    // const parsableDiffResponses: string[] = []
-    // diffResponses.forEach((diffResponse: string): void => {
-    //   parsableDiffResponses.push('diff --git' + diffResponse)
-    // })
+    const parsableDiffResponses: string[] = []
+    diffResponses.forEach((diffResponse: string): void => {
+      parsableDiffResponses.push('diff --git' + diffResponse)
+    })
 
     let line: number = -1
-    console.log('Iterations (after change): ' + diffResponses.length)
-    for (let i: number = 0; i < diffResponses.length && line === -1; i++) {
+    console.log('Iterations: ' + parsableDiffResponses.length)
+    for (let i: number = 0; i < parsableDiffResponses.length && line === -1; i++) {
       console.log('Current Iteration: ' + i)
-      console.log('Current Iteration Contents: ' + diffResponses[i]!)
+      console.log('Current Iteration Contents: ' + parsableDiffResponses[i]!)
 
-      const diffParsed: GitDiff = parseGitDiff(diffResponses[i]!)
+      const diffParsed: GitDiff = parseGitDiff(parsableDiffResponses[i]!)
 
       console.log('File Count: ' + diffParsed.files.length)
       console.log('File to Match: ' + fileName)
