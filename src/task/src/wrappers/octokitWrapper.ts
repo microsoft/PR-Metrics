@@ -200,7 +200,7 @@ export default class OctokitWrapper {
 
       console.log('File Count: ' + diffParsed.files.length)
       if (diffParsed.files.length !== 1) {
-        throw Error('Multiple files were found in the diff.' + diffParsed.files.length)
+        throw Error('Multiple files were found in the diff.' + i + ' ' + diffParsed.files.length + ' ' + parsableDiffResponses[i]!)
       }
 
       console.log('File to Match: ' + fileName)
