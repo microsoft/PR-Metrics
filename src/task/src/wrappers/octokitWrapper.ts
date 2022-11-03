@@ -182,9 +182,10 @@ export default class OctokitWrapper {
 
     // Note bug where multiple files are not picked up if the first diff is too large. Consider an alternative library.
     const diffResponse: AxiosResponse<string, string> = await axios.get(test.data.diff_url) // 'https://patch-diff.githubusercontent.com/raw/microsoft/PR-Metrics/pull/290.diff')
-    const diffResponses: string[] = diffResponse.data.split('diff --git')
+    const diffResponses: string[] = diffResponse.data.split(/^diff --git/gm)
     const parsableDiffResponses: string[] = []
     diffResponses.forEach((diffResponse: string): void => {
+      console.log('diffResponse: ' + diffResponse)
       parsableDiffResponses.push('diff --git' + diffResponse)
     })
 
