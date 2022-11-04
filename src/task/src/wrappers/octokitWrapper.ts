@@ -191,7 +191,7 @@ export default class OctokitWrapper {
     for (let i: number = 0; i < parsableDiffResponses.length && line === -1; i++) {
       const diffParsed: GitDiff = parseGitDiff(parsableDiffResponses[i]!)
       if (diffParsed.files.length !== 1) {
-        throw Error(diffParsed.files.length + ' files were located instead of the expected 1.' + i + ' ' + parsableDiffResponses[i]!)
+        throw Error(diffParsed.files.length + ' files were located instead of the expected 1.')
       }
 
       diffParsed.files.forEach((file: AnyFileChange): void => {
