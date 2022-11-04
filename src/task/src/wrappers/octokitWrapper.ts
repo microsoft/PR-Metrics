@@ -23,6 +23,7 @@ import UpdatePullResponse from './octokitInterfaces/updatePullResponse'
 @singleton()
 export default class OctokitWrapper {
   private _octokit: Octokit | undefined
+  private _firstLineOfFiles: Map<string, number> | undefined
 
   /**
    * Initializes a new instance of the `OctokitWrapper` class.
@@ -173,44 +174,10 @@ export default class OctokitWrapper {
       throw Error('OctokitWrapper was not initialized prior to calling OctokitWrapper.createReviewComment().')
     }
 
-    const pullRequestInfo: GetPullResponse = await this._octokit.rest.pulls.get({
-      owner,
-      repo,
-      pull_number: pullRequestId
-    })
-
-    const diffResponse: AxiosResponse<string, string> = await axios.get(pullRequestInfo.data.diff_url)
-    const diffResponses: string[] = diffResponse.data.split(/^diff --git/gm)
-    const parsableDiffResponses: string[] = []
-
-    for (let i: number = 1; i < diffResponses.length; i++) {
-      parsableDiffResponses.push('diff --git' + diffResponses[i])
-    }
-
-    let line: number = -1
-    for (let i: number = 0; i < parsableDiffResponses.length && line === -1; i++) {
-      const diffParsed: GitDiff = parseGitDiff(parsableDiffResponses[i]!)
-      if (diffParsed.files.length !== 1) {
-        throw Error(diffParsed.files.length + ' files were located instead of the expected 1.')
-      }
-
-      diffParsed.files.forEach((file: AnyFileChange): void => {
-        if (file.type === 'AddedFile' || file.type === 'ChangedFile') {
-          const fileCasted: AddedFile | ChangedFile = file as AddedFile | ChangedFile
-          if (fileCasted.path === fileName) {
-            line = fileCasted.chunks[0]?.toFileRange.start!
-          }
-        } else if (file.type === 'RenamedFile') {
-          const fileCasted: RenamedFile = file as RenamedFile
-          if (fileCasted.pathAfter === fileName) {
-            line = fileCasted.chunks[0]?.toFileRange.start!
-          }
-        }
-      })
-    }
-
-    if (line === -1) {
-      throw Error('Cannot find line number of file.')
+    const lineNumbers: Map<string, number> = await this.getFirstLineOfFiles(this._octokit, owner, repo, pullRequestId)
+    const lineNumber: number | undefined = lineNumbers.get(fileName)
+    if (lineNumber === undefined) {
+      throw Error('Could not find the first line of file ' + fileName + '.')
     }
 
     return await this._octokit.rest.pulls.createReviewComment({
@@ -219,7 +186,7 @@ export default class OctokitWrapper {
       pull_number: pullRequestId,
       body: content,
       path: fileName,
-      line,
+      line: lineNumber,
       commit_id: commitId
     })
   }
@@ -264,5 +231,44 @@ export default class OctokitWrapper {
       repo,
       comment_id: commentThreadId
     })
+  }
+
+  private async getFirstLineOfFiles (octokit: Octokit, owner: string, repo: string, pullRequestId: number): Promise<Map<string, number>> {
+    if (this._firstLineOfFiles !== undefined) {
+      return this._firstLineOfFiles
+    }
+
+    const pullRequestInfo: GetPullResponse = await octokit.rest.pulls.get({
+      owner,
+      repo,
+      pull_number: pullRequestId
+    })
+
+    const diffResponse: AxiosResponse<string, string> = await axios.get(pullRequestInfo.data.diff_url)
+    const diffResponses: string[] = diffResponse.data.split(/^diff --git/gm)
+    const parsableDiffResponses: string[] = []
+    for (let i: number = 1; i < diffResponses.length; i++) {
+      parsableDiffResponses.push('diff --git' + diffResponses[i])
+    }
+
+    const result: Map<string, number> = new Map<string, number>()
+    parsableDiffResponses.forEach((parsableDiffResponse: string): void => {
+      const diffParsed: GitDiff = parseGitDiff(parsableDiffResponse)
+      if (diffParsed.files.length !== 1) {
+        throw Error(diffParsed.files.length + ' files were located instead of the expected 1.')
+      }
+
+      const file: AnyFileChange = diffParsed.files[0]!
+      if (file.type === 'AddedFile' || file.type === 'ChangedFile') {
+        const fileCasted: AddedFile | ChangedFile = file as AddedFile | ChangedFile
+        result.set(fileCasted.path, fileCasted.chunks[0]?.toFileRange.start!)
+      } else if (file.type === 'RenamedFile') {
+        const fileCasted: RenamedFile = file as RenamedFile
+        result.set(fileCasted.pathAfter, fileCasted.chunks[0]?.toFileRange.start!)
+      }
+    })
+
+    this._firstLineOfFiles = result
+    return this._firstLineOfFiles
   }
 }
