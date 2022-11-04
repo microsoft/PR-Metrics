@@ -179,18 +179,13 @@ export default class OctokitWrapper {
       pull_number: pullRequestId
     })
 
-    let empties: string = ''
-
     const diffResponse: AxiosResponse<string, string> = await axios.get(pullRequestInfo.data.diff_url)
     const diffResponses: string[] = diffResponse.data.split(/^diff --git/gm)
     const parsableDiffResponses: string[] = []
-    diffResponses.forEach((diffResponse: string, index: number): void => {
-      if (diffResponse.length === 0) {
-        empties += index + ','
-      } else {
-        parsableDiffResponses.push('diff --git' + diffResponse)
-      }
-    })
+
+    for (let i: number = 1; i < diffResponses.length; i++) {
+      parsableDiffResponses.push('diff --git' + diffResponses[i])
+    }
 
     let line: number = -1
     for (let i: number = 0; i < parsableDiffResponses.length && line === -1; i++) {
@@ -212,10 +207,6 @@ export default class OctokitWrapper {
           }
         }
       })
-    }
-
-    if (empties.length !== 0) {
-      throw Error('Empties: ' + empties)
     }
 
     if (line === -1) {
