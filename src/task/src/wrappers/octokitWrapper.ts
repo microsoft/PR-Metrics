@@ -187,7 +187,7 @@ export default class OctokitWrapper {
       pull_number: pullRequestId,
       body: content,
       path: fileName,
-      line: await this._octokitGitDiffParser.getFirstChangedLine(owner, repo, pullRequestId, fileName),
+      line: await this._octokitGitDiffParser.getFirstChangedLine(this, owner, repo, pullRequestId, fileName),
       commit_id: commitId
     })
   }
