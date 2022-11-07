@@ -10,8 +10,8 @@ import DeleteReviewCommentResponse from './octokitInterfaces/deleteReviewComment
 import GetIssueCommentsResponse from './octokitInterfaces/getIssueCommentsResponse'
 import GetPullResponse from './octokitInterfaces/getPullResponse'
 import GetReviewCommentsResponse from './octokitInterfaces/getReviewCommentsResponse'
-import GitDiffParser from '../git/gitDiffParser'
 import ListCommitsResponse from './octokitInterfaces/listCommitsResponse'
+import OctokitGitDiffParser from '../git/octokitGitDiffParser'
 import UpdateIssueCommentResponse from './octokitInterfaces/updateIssueCommentResponse'
 import UpdatePullResponse from './octokitInterfaces/updatePullResponse'
 
@@ -20,15 +20,16 @@ import UpdatePullResponse from './octokitInterfaces/updatePullResponse'
  */
 @singleton()
 export default class OctokitWrapper {
-  private _gitDiffParser: GitDiffParser
+  private readonly _octokitGitDiffParser: OctokitGitDiffParser
+
   private _octokit: Octokit | undefined
 
   /**
    * Initializes a new instance of the `OctokitWrapper` class.
-   * @param gitDiffParser The parser for Git diffs.
+   * @param octokitGitDiffParser The parser for Git diffs read via Octokit.
    */
-  public constructor (gitDiffParser: GitDiffParser) {
-    this._gitDiffParser = gitDiffParser
+  public constructor (octokitGitDiffParser: OctokitGitDiffParser) {
+    this._octokitGitDiffParser = octokitGitDiffParser
   }
 
   /**
@@ -179,13 +180,14 @@ export default class OctokitWrapper {
     if (this._octokit === undefined) {
       throw Error('OctokitWrapper was not initialized prior to calling OctokitWrapper.createReviewComment().')
     }
+
     return await this._octokit.rest.pulls.createReviewComment({
       owner,
       repo,
       pull_number: pullRequestId,
       body: content,
       path: fileName,
-      line: await this._gitDiffParser.getFirstChangedLine(this._octokit, owner, repo, pullRequestId, fileName),
+      line: await this._octokitGitDiffParser.getFirstChangedLine(owner, repo, pullRequestId, fileName),
       commit_id: commitId
     })
   }

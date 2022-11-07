@@ -3,42 +3,45 @@
 // Licensed under the MIT License.
 
 import { AddedFile, AnyFileChange, ChangedFile, GitDiff, RenamedFile } from 'parse-git-diff/build/types'
-import { Octokit } from 'octokit'
 import { singleton } from 'tsyringe'
 import axios, { AxiosResponse } from 'axios'
 import GetPullResponse from '../wrappers/octokitInterfaces/getPullResponse'
 import Logger from '../utilities/logger'
+import OctokitWrapper from '../wrappers/octokitWrapper'
 import parseGitDiff from 'parse-git-diff'
 
 /**
- * A parser for Git diffs.
+ * A parser for Git diffs read via Octokit.
  */
 @singleton()
-export default class GitDiffParser {
+export default class OctokitGitDiffParser {
   private readonly _logger: Logger
+  private readonly _octokitWrapper: OctokitWrapper
 
   private _firstLineOfFiles: Map<string, number> | undefined
 
   /**
-   * Initializes a new instance of the `GitDiffParser` class.
+   * Initializes a new instance of the `OctokitGitDiffParser` class.
    * @param logger The logger.
+   * @param octokitWrapper The wrapper around the Octokit library.
    */
-  public constructor (logger: Logger) {
+  public constructor (logger: Logger, octokitWrapper: OctokitWrapper) {
     this._logger = logger
+    this._octokitWrapper = octokitWrapper
   }
 
   /**
    * Gets the first changed line of a specific files.
-   * @param octokit The Octokit instance.
    * @param owner The owner of the repository.
    * @param repo The repository.
    * @param pullRequestId The pull request ID.
-   * @param filePath The file path.
+   * @param fileName The file name for which to retrieve the line number.
+   * @returns The first changed line of the specified file.
    */
-  public async getFirstChangedLine (octokit: Octokit, owner: string, repo: string, pullRequestId: number, fileName: string): Promise<number> {
+  public async getFirstChangedLine (owner: string, repo: string, pullRequestId: number, fileName: string): Promise<number> {
     this._logger.logDebug('* GitDiffParser.getFirstChangedLine()')
 
-    const lineNumbers: Map<string, number> = await this.getFirstChangedLines(octokit, owner, repo, pullRequestId)
+    const lineNumbers: Map<string, number> = await this.getFirstChangedLines(owner, repo, pullRequestId)
     const lineNumber: number | undefined = lineNumbers.get(fileName)
     if (lineNumber === undefined) {
       throw Error('Could not find the first line of file ' + fileName + '.')
@@ -47,19 +50,14 @@ export default class GitDiffParser {
     return lineNumber
   }
 
-  private async getFirstChangedLines (octokit: Octokit, owner: string, repo: string, pullRequestId: number): Promise<Map<string, number>> {
+  private async getFirstChangedLines (owner: string, repo: string, pullRequestId: number): Promise<Map<string, number>> {
     this._logger.logDebug('* GitDiffParser.getFirstChangedLines()')
 
     if (this._firstLineOfFiles !== undefined) {
       return this._firstLineOfFiles
     }
 
-    const pullRequestInfo: GetPullResponse = await octokit.rest.pulls.get({
-      owner,
-      repo,
-      pull_number: pullRequestId
-    })
-
+    const pullRequestInfo: GetPullResponse = await this._octokitWrapper.getPull(owner, repo, pullRequestId)
     const diffResponse: AxiosResponse<string, string> = await axios.get(pullRequestInfo.data.diff_url)
     const diffResponses: string[] = diffResponse.data.split(/^diff --git/gm)
     const parsableDiffResponses: string[] = []
