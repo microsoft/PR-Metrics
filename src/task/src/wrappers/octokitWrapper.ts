@@ -176,9 +176,14 @@ export default class OctokitWrapper {
    * @param commitId The ID of the commit.
    * @returns The response from the API call.
    */
-  public async createReviewComment (owner: string, repo: string, pullRequestId: number, content: string, fileName: string, commitId: string): Promise<CreateReviewCommentResponse> {
+  public async createReviewComment (owner: string, repo: string, pullRequestId: number, content: string, fileName: string, commitId: string): Promise<CreateReviewCommentResponse | null> {
     if (this._octokit === undefined) {
       throw Error('OctokitWrapper was not initialized prior to calling OctokitWrapper.createReviewComment().')
+    }
+
+    const lineNumber: number | null = await this._octokitGitDiffParser.getFirstChangedLine(this, owner, repo, pullRequestId, fileName)
+    if (lineNumber === null) {
+      return null
     }
 
     return await this._octokit.rest.pulls.createReviewComment({
@@ -187,7 +192,7 @@ export default class OctokitWrapper {
       pull_number: pullRequestId,
       body: content,
       path: fileName,
-      line: await this._octokitGitDiffParser.getFirstChangedLine(this, owner, repo, pullRequestId, fileName),
+      line: lineNumber,
       commit_id: commitId
     })
   }
