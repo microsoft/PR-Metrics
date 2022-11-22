@@ -7,7 +7,7 @@ import { PullRequestMetrics } from './src/prMetrics'
 
 async function run (): Promise<void> {
   const pullRequestMetrics: PullRequestMetrics = container.resolve(PullRequestMetrics)
-  pullRequestMetrics.run()
+  pullRequestMetrics.run(__dirname)
 }
 
 run().finally((): void => {})

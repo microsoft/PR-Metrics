@@ -6,7 +6,6 @@ import 'reflect-metadata'
 import { singleton } from 'tsyringe'
 import CodeMetricsCalculator from '../src/metrics/codeMetricsCalculator'
 import Logger from '../src/utilities/logger'
-import path from 'path'
 import RunnerInvoker from '../src/runners/runnerInvoker'
 
 /**
@@ -32,10 +31,11 @@ export class PullRequestMetrics {
 
   /**
    * Runs the overall PR Metrics task.
+   * @param directory The root directory containing index.ts.
    */
-  public async run (): Promise<void> {
+  public async run (directory: string): Promise<void> {
     try {
-      this._runnerInvoker.locInitialize(path.join(__dirname, '..'))
+      this._runnerInvoker.locInitialize(directory)
 
       // TODO: Remove System.AccessToken support after a transition period has elapsed.
       if (process.env.PR_METRICS_ACCESS_TOKEN === undefined && process.env.SYSTEM_ACCESSTOKEN !== undefined) {
