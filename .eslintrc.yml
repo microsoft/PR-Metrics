@@ -16,7 +16,7 @@ plugins:
   - '@typescript-eslint'
 overrides:
   - files:
-      - "*.json"
+      - '*.json'
     ignorePatterns:
       - '**/dist'
       - '!**/.*'
