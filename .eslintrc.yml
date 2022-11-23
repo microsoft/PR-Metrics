@@ -14,16 +14,11 @@ parserOptions:
   ecmaVersion: 2018
 plugins:
   - '@typescript-eslint'
-
 overrides:
   - files:
       - "*.json"
     ignorePatterns:
+      - '**/dist'
       - '!**/.*'
-    extends:
-      - plugin:jsonc/recommended-with-json
-    parser: jsonc-eslint-parser
-    parserOptions:
-      jsonSyntax: JSON
 
 ...
