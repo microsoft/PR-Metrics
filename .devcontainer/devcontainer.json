@@ -1,7 +1,9 @@
 {
   "$schema": "https://raw.githubusercontent.com/devcontainers/spec/main/schemas/devContainer.base.schema.json",
   "name": "PR Metrics",
-  "image": "mcr.microsoft.com/devcontainers/typescript-node:18",
+  "imageContainer": {
+    "image": "mcr.microsoft.com/devcontainers/typescript-node:18"
+  },
   "features": {
     "ghcr.io/devcontainers-contrib/features/typescript:1": {}
   },
@@ -16,7 +18,9 @@
         "editor.renderWhitespace": "all",
         "editor.rulers": [
           80
-        ]
+        ],
+        "git.enableSmartCommit": true,
+        "git.autofetch": true
       }
     }
   }
