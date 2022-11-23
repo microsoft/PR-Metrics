@@ -14,11 +14,8 @@ parserOptions:
   ecmaVersion: 2018
 plugins:
   - '@typescript-eslint'
-overrides:
-  - files:
-      - '*.json'
-    ignorePatterns:
-      - '**/dist'
-      - '!**/.*'
+ignorePatterns:
+  - '**/dist/*'
+  - '!**/.*'
 
 ...
