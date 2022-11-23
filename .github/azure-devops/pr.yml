@@ -17,18 +17,18 @@ variables:
     value: true
 
 jobs:
-  - job: PRMetrics_macOS
-    displayName: PR Metrics – macOS
-    pool:
-      vmImage: macOS-latest
-    variables:
-      - name: System.Debug
-        value: true
-    steps:
-      - task: PRMetrics@1
-        displayName: PR Metrics
-        env:
-          PR_METRICS_ACCESS_TOKEN: $(GITHUB_PAT)
+#   - job: PRMetrics_macOS
+#     displayName: PR Metrics – macOS
+#     pool:
+#       vmImage: macOS-latest
+#     variables:
+#       - name: System.Debug
+#         value: true
+#     steps:
+#       - task: PRMetrics@1
+#         displayName: PR Metrics
+#         env:
+#           PR_METRICS_ACCESS_TOKEN: $(GITHUB_PAT)
 
   - job: PRMetrics_Ubuntu
     displayName: PR Metrics – Ubuntu
@@ -62,6 +62,9 @@ jobs:
     displayName: Compliance
     pool:
       vmImage: windows-latest
+    variables:
+      - name: skipComponentGovernanceDetection
+        value: false
     steps:
       - task: ComponentGovernanceComponentDetection@0
         displayName: Component Detection

@@ -67,10 +67,10 @@ export default class OctokitGitDiffParser {
       diffParsed.files.forEach((file: AnyFileChange): void => {
         if (file.type === 'AddedFile' || file.type === 'ChangedFile') {
           const fileCasted: AddedFile | ChangedFile = file as AddedFile | ChangedFile
-          result.set(fileCasted.path, fileCasted.chunks[0]!.toFileRange.start!)
+          result.set(fileCasted.path, fileCasted.chunks[0]!.toFileRange.start)
         } else if (file.type === 'RenamedFile') {
           const fileCasted: RenamedFile = file as RenamedFile
-          result.set(fileCasted.pathAfter, fileCasted.chunks[0]?.toFileRange.start!)
+          result.set(fileCasted.pathAfter, fileCasted.chunks[0]!.toFileRange.start)
         }
       })
     })
