@@ -32,7 +32,7 @@ jobs:
 
   - job: PRMetrics_Ubuntu
     displayName: PR Metrics – Ubuntu
-    dependsOn: PRMetrics_macOS
+#    dependsOn: PRMetrics_macOS
     pool:
       vmImage: ubuntu-latest
     variables:
