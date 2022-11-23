@@ -57,7 +57,6 @@
     }
   },
   "messages": {
-    "index.succeeded": "ms-resource:loc.messages.index.succeeded",
     "metrics.codeMetrics.titleSizeIndicatorFormat": "ms-resource:loc.messages.metrics.codeMetrics.titleSizeIndicatorFormat",
     "metrics.codeMetrics.titleSizeL": "ms-resource:loc.messages.metrics.codeMetrics.titleSizeL",
     "metrics.codeMetrics.titleSizeM": "ms-resource:loc.messages.metrics.codeMetrics.titleSizeM",
@@ -76,7 +75,6 @@
     "metrics.codeMetricsCalculator.noGitRepoGitHub": "ms-resource:loc.messages.metrics.codeMetricsCalculator.noGitRepoGitHub",
     "metrics.codeMetricsCalculator.noPullRequest": "ms-resource:loc.messages.metrics.codeMetricsCalculator.noPullRequest",
     "metrics.codeMetricsCalculator.unsupportedProvider": "ms-resource:loc.messages.metrics.codeMetricsCalculator.unsupportedProvider",
-    "metrics.index.remappingToken": "ms-resource:loc.messages.metrics.index.remappingToken",
     "metrics.inputs.adjustingBaseSize": "ms-resource:loc.messages.metrics.inputs.adjustingBaseSize",
     "metrics.inputs.adjustingCodeFileExtensions": "ms-resource:loc.messages.metrics.inputs.adjustingCodeFileExtensions",
     "metrics.inputs.adjustingFileMatchingPatterns": "ms-resource:loc.messages.metrics.inputs.adjustingFileMatchingPatterns",
@@ -88,6 +86,8 @@
     "metrics.inputs.settingFileMatchingPatterns": "ms-resource:loc.messages.metrics.inputs.settingFileMatchingPatterns",
     "metrics.inputs.settingGrowthRate": "ms-resource:loc.messages.metrics.inputs.settingGrowthRate",
     "metrics.inputs.settingTestFactor": "ms-resource:loc.messages.metrics.inputs.settingTestFactor",
+    "pullRequestMetrics.remappingToken": "ms-resource:loc.messages.pullRequestMetrics.remappingToken",
+    "pullRequestMetrics.succeeded": "ms-resource:loc.messages.pullRequestMetrics.succeeded",
     "pullRequests.pullRequest.addDescription": "ms-resource:loc.messages.pullRequests.pullRequest.addDescription",
     "pullRequests.pullRequest.titleFormat": "ms-resource:loc.messages.pullRequests.pullRequest.titleFormat",
     "pullRequests.pullRequestComments.commentFooter": "ms-resource:loc.messages.pullRequests.pullRequestComments.commentFooter",

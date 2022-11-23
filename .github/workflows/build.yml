@@ -102,23 +102,6 @@ jobs:
           json-file: src/vss-extension.json
           json-schema: https://json.schemastore.org/vss-extension.json
 
-      - name: Validate .mocharc.json – Download .mocharc.schema.json
-        shell: pwsh
-        run: Invoke-WebRequest -Uri 'https://json.schemastore.org/mocharc.json' -OutFile '.mocharc.schema.json'
-
-      - name: Validate .mocharc.json – Update .mocharc.schema.json
-        shell: pwsh
-        run: |-
-          $FileContent = Get-Content -Path '.mocharc.schema.json' -Raw
-          $FileContent = $FileContent -replace 'draft/2019-09/schema#', 'draft-07/schema'
-          Set-Content -NoNewline -Path '.mocharc.schema.json' -Value $FileContent
-
-      - name: Validate .mocharc.json
-        uses: Zingabopp/JsonValidate-Action@v1
-        with:
-          json-file: src/task/.mocharc.json
-          json-schema: .mocharc.schema.json
-
       - name: Validate task.json – Download task.schema.json
         shell: pwsh
         run: Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/microsoft/azure-pipelines-task-lib/master/tasks.schema.json' -OutFile 'task.schema.json'

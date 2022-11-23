@@ -4,15 +4,15 @@
 
 import 'reflect-metadata'
 import { singleton } from 'tsyringe'
-import CodeMetricsCalculator from '../src/metrics/codeMetricsCalculator'
-import Logger from '../src/utilities/logger'
-import RunnerInvoker from '../src/runners/runnerInvoker'
+import CodeMetricsCalculator from './metrics/codeMetricsCalculator'
+import Logger from './utilities/logger'
+import RunnerInvoker from './runners/runnerInvoker'
 
 /**
  * A class for managing the overall PR Metrics task.
  */
 @singleton()
-export class PullRequestMetrics {
+export default class PullRequestMetrics {
   private readonly _codeMetricsCalculator: CodeMetricsCalculator
   private readonly _logger: Logger
   private readonly _runnerInvoker: RunnerInvoker
@@ -31,15 +31,16 @@ export class PullRequestMetrics {
 
   /**
    * Runs the overall PR Metrics task.
-   * @param directory The root directory containing index.ts.
+   * @param folder The root folder containing index.ts.
+   * @returns A promise for awaiting the completion of the method call.
    */
-  public async run (directory: string): Promise<void> {
+  public async run (folder: string): Promise<void> {
     try {
-      this._runnerInvoker.locInitialize(directory)
+      this._runnerInvoker.locInitialize(folder)
 
       // TODO: Remove System.AccessToken support after a transition period has elapsed.
       if (process.env.PR_METRICS_ACCESS_TOKEN === undefined && process.env.SYSTEM_ACCESSTOKEN !== undefined) {
-        this._runnerInvoker.logWarning(this._runnerInvoker.loc('metrics.index.remappingToken'))
+        this._logger.logWarning(this._runnerInvoker.loc('pullRequestMetrics.remappingToken'))
         process.env.PR_METRICS_ACCESS_TOKEN = process.env.SYSTEM_ACCESSTOKEN
       }
 
@@ -55,14 +56,12 @@ export class PullRequestMetrics {
         return
       }
 
-      if (process.env.PRMETRICS_SKIP_APIS === undefined) {
-        await Promise.all([
-          this._codeMetricsCalculator.updateDetails(),
-          this._codeMetricsCalculator.updateComments()
-        ])
-      }
+      await Promise.all([
+        this._codeMetricsCalculator.updateDetails(),
+        this._codeMetricsCalculator.updateComments()
+      ])
 
-      this._runnerInvoker.setStatusSucceeded(this._runnerInvoker.loc('index.succeeded'))
+      this._runnerInvoker.setStatusSucceeded(this._runnerInvoker.loc('pullRequestMetrics.succeeded'))
     } catch (error: any) {
       this._logger.logErrorObject(error)
       this._logger.replay()

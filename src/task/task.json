@@ -57,7 +57,6 @@
     }
   },
   "messages": {
-    "index.succeeded": "PR Metrics succeeded",
     "metrics.codeMetrics.titleSizeIndicatorFormat": "%s%s",
     "metrics.codeMetrics.titleSizeL": "L",
     "metrics.codeMetrics.titleSizeM": "M",
@@ -76,7 +75,6 @@
     "metrics.codeMetricsCalculator.noGitRepoGitHub": "No Git repo present. Run the 'actions/checkout' action prior to PR Metrics.",
     "metrics.codeMetricsCalculator.noPullRequest": "The build is not running against a pull request.",
     "metrics.codeMetricsCalculator.unsupportedProvider": "The build is running against a pull request from '%s', which is not a supported provider.",
-    "metrics.index.remappingToken": "Use of 'System.AccessToken' has been deprecated and will stop working in a future version of PR Metrics. Please switch to 'PR_Metrics_Access_Token' as soon as possible.",
     "metrics.inputs.adjustingBaseSize": "Adjusting the base size input to '%s'.",
     "metrics.inputs.adjustingCodeFileExtensions": "Adjusting the code file extensions input to '%s'.",
     "metrics.inputs.adjustingFileMatchingPatterns": "Adjusting the file matching patterns input to '%s'.",
@@ -88,6 +86,8 @@
     "metrics.inputs.settingFileMatchingPatterns": "Setting the file matching patterns input to '%s'.",
     "metrics.inputs.settingGrowthRate": "Setting the growth rate input to '%s'.",
     "metrics.inputs.settingTestFactor": "Setting the test factor input to '%s'.",
+    "pullRequestMetrics.remappingToken": "Use of 'System.AccessToken' has been deprecated and will stop working in a future version of PR Metrics. Please switch to 'PR_Metrics_Access_Token' as soon as possible.",
+    "pullRequestMetrics.succeeded": "PR Metrics succeeded",
     "pullRequests.pullRequest.addDescription": "❌ **Add a description.**",
     "pullRequests.pullRequest.titleFormat": "%s ◾ %s",
     "pullRequests.pullRequestComments.commentFooter": "[Metrics computed by PR Metrics. Add it to your Azure DevOps and GitHub PRs!](https://aka.ms/PRMetrics/Comment)",
