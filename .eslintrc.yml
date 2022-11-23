@@ -17,5 +17,11 @@ plugins:
 ignorePatterns:
   - '**/dist/*'
   - '!**/.*'
+overrides:
+  - files:
+      - '*.json'
+    ignorePatterns:
+      - '**/dist/*'
+      - '!**/.*'
 
 ...
