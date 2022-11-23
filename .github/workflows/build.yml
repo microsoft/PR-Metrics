@@ -100,7 +100,7 @@ jobs:
         uses: Zingabopp/JsonValidate-Action@v1
         with:
           json-file: .devcontainer/devcontainer.json
-          json-schema: https://raw.githubusercontent.com/devcontainers/spec/main/schemas/devContainer.schema.json
+          json-schema: https://raw.githubusercontent.com/devcontainers/spec/main/schemas/devContainer.base.schema.json
           use-draft: draft-07
 
       - name: Validate vss-extension.json

@@ -1,10 +1,10 @@
 {
-  "$schema": "https://raw.githubusercontent.com/devcontainers/spec/main/schemas/devContainer.schema.json",
-	"name": "PR Metrics",
-	"image": "mcr.microsoft.com/devcontainers/typescript-node:18",
-	"features": {
-		"ghcr.io/devcontainers-contrib/features/typescript:1": {}
-	},
+  "$schema": "https://raw.githubusercontent.com/devcontainers/spec/main/schemas/devContainer.base.schema.json",
+  "name": "PR Metrics",
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:18",
+  "features": {
+    "ghcr.io/devcontainers-contrib/features/typescript:1": {}
+  },
   "customizations": {
     "vscode": {
       "extensions": [
@@ -13,6 +13,7 @@
         "EditorConfig.EditorConfig"
       ],
       "settings": {
+        "editor.renderWhitespace": "all",
         "editor.rulers": [
           80
         ]
