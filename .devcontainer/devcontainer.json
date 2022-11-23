@@ -12,7 +12,8 @@
       "extensions": [
         "christian-kohler.npm-intellisense",
         "DavidAnson.vscode-markdownlint",
-        "EditorConfig.EditorConfig"
+        "EditorConfig.EditorConfig",
+        "streetsidesoftware.code-spell-checker"
       ],
       "settings": {
         "editor.renderWhitespace": "all",
