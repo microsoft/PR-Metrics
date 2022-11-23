@@ -19,7 +19,7 @@ overrides:
   - files:
       - "*.json"
     ignorePatterns:
-      - !**/.*
+      - '!**/.*'
     extends:
       - plugin:jsonc/recommended-with-json
     parser: jsonc-eslint-parser
