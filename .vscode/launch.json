@@ -1,0 +1,53 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "command": "npm run build",
+      "name": "Build",
+      "request": "launch",
+      "type": "node-terminal"
+    },
+    {
+      "command": "npm run build:debug",
+      "name": "Build debug",
+      "request": "launch",
+      "type": "node-terminal"
+    },
+    {
+      "command": "npm run build:docs",
+      "name": "Build docs",
+      "request": "launch",
+      "type": "node-terminal"
+    },
+    {
+      "command": "npm run build:package",
+      "name": "Build package",
+      "request": "launch",
+      "type": "node-terminal"
+    },
+    {
+      "command": "npm run test",
+      "name": "Test",
+      "request": "launch",
+      "type": "node-terminal"
+    },
+    {
+      "command": "npm run clean",
+      "name": "Clean",
+      "request": "launch",
+      "type": "node-terminal"
+    },
+    {
+      "command": "npm run deploy",
+      "name": "Deploy",
+      "request": "launch",
+      "type": "node-terminal"
+    },
+    {
+      "command": "npm run lint",
+      "name": "Lint",
+      "request": "launch",
+      "type": "node-terminal"
+    }
+  ]
+}
