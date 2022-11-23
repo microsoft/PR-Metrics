@@ -15,6 +15,10 @@ parserOptions:
 plugins:
   - '@typescript-eslint'
 ignorePatterns:
-  - !.*
+  - '!.*'
+  - '!**/.*'
+ignore-patterns:
+  - '!.*'
+  - '!**/.*'
 
 ...
