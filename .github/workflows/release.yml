@@ -22,7 +22,7 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 17.x
+          node-version: 19.x
 
       - name: NPM – Install Dependencies
         run: npm install
