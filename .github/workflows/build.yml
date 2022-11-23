@@ -89,6 +89,13 @@ jobs:
         with:
           config-file: .github/linters/markdown-link-check.json
 
+      - name: Validate devcontainer.json
+        uses: Zingabopp/JsonValidate-Action@v1
+        with:
+          json-file: devcontainer.json
+          json-schema: https://raw.githubusercontent.com/devcontainers/spec/main/schemas/devContainer.schema.json
+          use-draft: draft-07
+
       - name: Validate .markdownlint.json
         uses: Zingabopp/JsonValidate-Action@v1
         with:
