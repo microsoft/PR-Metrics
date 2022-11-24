@@ -96,6 +96,23 @@ jobs:
           json-schema: https://raw.githubusercontent.com/DavidAnson/markdownlint/main/schema/markdownlint-config-schema.json
           use-draft: draft-07
 
+      - name: Validate babel.config.json – Download babel.config.schema.json
+        shell: pwsh
+        run: Invoke-WebRequest -Uri 'https://json.schemastore.org/babelrc.json' -OutFile 'babel.config.schema.json'
+
+      - name: Validate babel.config.json – Update babel.config.schema.json
+        shell: pwsh
+        run: |-
+          $FileContent = Get-Content -Path 'babel.config.schema.json' -Raw
+          $FileContent = $FileContent -replace 'draft-04/schema', 'draft-07/schema'
+          Set-Content -NoNewline -Path 'babel.config.schema.json' -Value $FileContent
+
+      - name: Validate babel.config.json
+        uses: Zingabopp/JsonValidate-Action@v1
+        with:
+          json-file: babel.config.json
+          json-schema: babel.config.schema.json
+
       - name: Validate vss-extension.json
         uses: Zingabopp/JsonValidate-Action@v1
         with:

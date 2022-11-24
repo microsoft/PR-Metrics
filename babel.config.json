@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json.schemastore.org/babelrc.json",
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "useBuiltIns": "entry",
+        "corejs": "3.22"
+      }
+    ]
+  ],
+  "plugins": [
+    "babel-plugin-transform-globalthis"
+  ]
+}

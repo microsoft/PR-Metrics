@@ -5,10 +5,11 @@
   "description": "Augments pull request titles to let reviewers quickly determine PR size and test coverage.",
   "main": "dist/index.js",
   "scripts": {
+    "babely": "cd release/task && babel index.js --out-file index2.js",
     "build:initialization": "cross-env-shell \"npm install && mkdirp $npm_config_dir && ncp src $npm_config_dir\"",
     "build:debug": "npm run build:initialization --dir=debug && cd debug/task && tsc --sourceMap",
-    "build:release": "npm run build:initialization --dir=release && cd release/task && tsc && ncc build index.js --out . --minify && rimraf src tests typedocs *.ts package.json tsconfig.json typedoc.json",
-    "build:package": "npm install && ncc build src/task/index.ts --out dist --minify && rimraf dist/package.json && ncp src/task/Strings/resources.resjson/en-US/resources.resjson dist/resources.resjson",
+    "build:release": "npm run build:initialization --dir=release && cd release/task && tsc && ncc build index.js --out . --minify && babel index.js --out-file index.js && rimraf src tests typedocs *.ts package.json tsconfig.json typedoc.json",
+    "build:package": "npm install && ncc build src/task/index.ts --out dist --minify && babel dist/index.js --out-file dist/index.js && rimraf dist/package.json && ncp src/task/Strings/resources.resjson/en-US/resources.resjson dist/resources.resjson",
     "build:docs": "cd src/task && typedoc",
     "build": "npm run build:release && npm run build:package && npm run build:docs",
     "clean": "rimraf debug && rimraf release && rimraf dist",
@@ -55,6 +56,9 @@
     "tsyringe": "^4.7.0"
   },
   "devDependencies": {
+    "@babel/cli": "^7.19.3",
+    "@babel/core": "^7.20.2",
+    "@babel/preset-env": "^7.20.2",
     "@istanbuljs/nyc-config-typescript": "^1.0.2",
     "@tsconfig/node10": "^1.0.9",
     "@types/chai": "^4.3.4",
@@ -64,6 +68,7 @@
     "@typescript-eslint/eslint-plugin": "^5.44.0",
     "@typescript-eslint/parser": "^5.44.0",
     "@vercel/ncc": "^0.34.0",
+    "babel-plugin-transform-globalthis": "^1.0.0",
     "chai": "^4.3.7",
     "cross-env": "^7.0.3",
     "eslint": "^8.28.0",
