@@ -53,7 +53,7 @@
   ],
   "execution": {
     "Node10": {
-      "target": "task.js"
+      "target": "index.js"
     }
   },
   "messages": {

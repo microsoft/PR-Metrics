@@ -422,7 +422,7 @@ trim_trailing_whitespace = false
 [*.md]
 indent_size = unset
 
-[*.{copyproj,resjson}]
+[.babelrc,*.{copyproj,resjson}]
 indent_size = 2
 
 [LICENSE.txt]
