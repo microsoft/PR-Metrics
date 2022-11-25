@@ -79,12 +79,11 @@ interfaces to add additional methods, while retaining the same access pattern.
 
 ## Testing
 
-This task is tested via unit and integration tests constructed using the
-[Mocha][mocha] test framework, the [Chai][chai] assertion library and the
-[ts-mockito][tsmockito] mocking library. Tests follow the
-[Arrange-Act-Assert pattern][aaa], and they can be run using `npm test` from
-within the `src/task` folder. This command will output both the test
-results and code coverage metrics.
+This task is tested via unit tests constructed using the [Mocha][mocha] test
+framework, the [Chai][chai] assertion library and the [ts-mockito][tsmockito]
+mocking library. Tests follow the [Arrange-Act-Assert pattern][aaa], and they
+can be run using `npm test` from within the `src/task` folder. This command will
+output both the test results and code coverage metrics.
 
 The code coverage is currently extremely high, and a high rate of coverage
 should be maintained for all changes. There are a large number of edge cases

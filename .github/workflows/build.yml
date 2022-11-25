@@ -23,7 +23,7 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 17.x
+          node-version: 19.x
 
       - name: NPM – Install Dependencies
         run: npm install
@@ -89,6 +89,23 @@ jobs:
         with:
           config-file: .github/linters/markdown-link-check.json
 
+      - name: Validate .babelrc – Download .babelrc.schema.json
+        shell: pwsh
+        run: Invoke-WebRequest -Uri 'https://json.schemastore.org/babelrc.json' -OutFile '.babelrc.schema.json'
+
+      - name: Validate .babelrc – Update .babelrc.schema.json
+        shell: pwsh
+        run: |-
+          $FileContent = Get-Content -Path '.babelrc.schema.json' -Raw
+          $FileContent = $FileContent -replace 'draft-04/schema', 'draft-07/schema'
+          Set-Content -NoNewline -Path '.babelrc.schema.json' -Value $FileContent
+
+      - name: Validate .babelrc
+        uses: Zingabopp/JsonValidate-Action@v1
+        with:
+          json-file: .babelrc
+          json-schema: .babelrc.schema.json
+
       - name: Validate .markdownlint.json
         uses: Zingabopp/JsonValidate-Action@v1
         with:
@@ -101,23 +118,6 @@ jobs:
         with:
           json-file: src/vss-extension.json
           json-schema: https://json.schemastore.org/vss-extension.json
-
-      - name: Validate .mocharc.json – Download .mocharc.schema.json
-        shell: pwsh
-        run: Invoke-WebRequest -Uri 'https://json.schemastore.org/mocharc.json' -OutFile '.mocharc.schema.json'
-
-      - name: Validate .mocharc.json – Update .mocharc.schema.json
-        shell: pwsh
-        run: |-
-          $FileContent = Get-Content -Path '.mocharc.schema.json' -Raw
-          $FileContent = $FileContent -replace 'draft/2019-09/schema#', 'draft-07/schema'
-          Set-Content -NoNewline -Path '.mocharc.schema.json' -Value $FileContent
-
-      - name: Validate .mocharc.json
-        uses: Zingabopp/JsonValidate-Action@v1
-        with:
-          json-file: src/task/.mocharc.json
-          json-schema: .mocharc.schema.json
 
       - name: Validate task.json – Download task.schema.json
         shell: pwsh
@@ -210,7 +210,7 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 17.x
+          node-version: 19.x
 
       - name: NPM – Install Dependencies
         run: npm install
@@ -236,7 +236,7 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 17.x
+          node-version: 19.x
 
       - name: NPM – Build Package
         run: npm run build:package

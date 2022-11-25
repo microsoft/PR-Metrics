@@ -90,7 +90,7 @@ describe('resources.resjson', (): void => {
 
   it('should have the same resources references in task.loc.json and in the resources files', (): void => {
     // Arrange
-    const taskJsonResources: RegExpMatchArray = taskLocJsonContents.match(/"ms-resource:.+?"/g) ?? []
+    const taskJsonResources: RegExpMatchArray = taskLocJsonContents.match(/"ms-resource:.+?"/g) ?? ['']
     const allResources: string[] = []
     taskJsonResources.forEach((taskJsonRegExpMatch: string): void => {
       allResources.push(taskJsonRegExpMatch.substring(13, taskJsonRegExpMatch.length - 1))

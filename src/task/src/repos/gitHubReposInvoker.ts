@@ -138,7 +138,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
 
       await this.invokeApiCall(async (): Promise<void> => {
         try {
-          const result: CreateReviewCommentResponse = await this._octokitWrapper.createReviewComment(this._owner, this._repo, this._pullRequestId, content, fileName, this._commitId)
+          const result: CreateReviewCommentResponse | null = await this._octokitWrapper.createReviewComment(this._owner, this._repo, this._pullRequestId, content, fileName, this._commitId)
           this._logger.logDebug(JSON.stringify(result))
         } catch (error: any) {
           if (error.status === 422 && error.message === 'pull_request_review_thread.path diff too large') {
