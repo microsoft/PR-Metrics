@@ -69,7 +69,7 @@ jobs:
           ACTIONS_STEP_DEBUG: ${{ secrets.ACTIONS_STEP_DEBUG }}
         if: ${{ env.ACTIONS_STEP_DEBUG != '' }}
 
-      # TODO: Remove once System.AccessToken support is removed.
+      # TODO (#304): Remove once System.AccessToken support is removed.
       - name: PR Metrics with System.AccessToken
         uses: ./
         env:

@@ -49,33 +49,68 @@ export default class OctokitGitDiffParser {
   private async getFirstChangedLines (octokitWrapper: OctokitWrapper, owner: string, repo: string, pullRequestId: number): Promise<Map<string, number>> {
     this._logger.logDebug('* OctokitGitDiffParser.getFirstChangedLines()')
 
+    // If the information has already been retrieved, return the cached response.
     if (this._firstLineOfFiles !== undefined) {
       return this._firstLineOfFiles
     }
 
+    // Otherwise, retrieve and process the diffs.
+    const diffs: string[] = await this.getDiffs(octokitWrapper, owner, repo, pullRequestId)
+    this._firstLineOfFiles = this.processDiffs(diffs)
+    return this._firstLineOfFiles
+  }
+
+  private async getDiffs (octokitWrapper: OctokitWrapper, owner: string, repo: string, pullRequestId: number): Promise<string[]> {
+    this._logger.logDebug('* OctokitGitDiffParser.getDiffs()')
+
+    // Get the PR diff by extracting the URL from the Octokit response and downloading it.
     const pullRequestInfo: GetPullResponse = await octokitWrapper.getPull(owner, repo, pullRequestId)
     const diffResponse: string = await this._axiosWrapper.getUrl(pullRequestInfo.data.diff_url)
+
+    // Split the response so that each file in a diff becomes a separate diff.
     const diffResponses: string[] = diffResponse.split(/^diff --git/gm)
-    const parsableDiffResponses: string[] = []
+
+    // For each diff, reinstate the "diff --git" prefix that was removed by the split. The first diff is excluded as it
+    // will always be the empty string.
+    const result: string[] = []
     for (let i: number = 1; i < diffResponses.length; i++) {
-      parsableDiffResponses.push('diff --git' + diffResponses[i])
+      result.push('diff --git' + diffResponses[i])
     }
 
+    return result
+  }
+
+  private processDiffs (diffs: string[]): Map<string, number> {
+    this._logger.logDebug('* OctokitGitDiffParser.processDiffs()')
+
     const result: Map<string, number> = new Map<string, number>()
-    parsableDiffResponses.forEach((parsableDiffResponse: string): void => {
-      const diffParsed: GitDiff = parseGitDiff(parsableDiffResponse)
+
+    // Process the diff for each file.
+    diffs.forEach((diff: string): void => {
+      const diffParsed: GitDiff = parseGitDiff(diff)
+
+      // Process the diff for a single file.
       diffParsed.files.forEach((file: AnyFileChange): void => {
-        if (file.type === 'AddedFile' || file.type === 'ChangedFile') {
-          const fileCasted: AddedFile | ChangedFile = file as AddedFile | ChangedFile
-          result.set(fileCasted.path, fileCasted.chunks[0]!.toFileRange.start)
-        } else if (file.type === 'RenamedFile') {
-          const fileCasted: RenamedFile = file as RenamedFile
-          result.set(fileCasted.pathAfter, fileCasted.chunks[0]?.toFileRange.start!)
+        switch (file.type) {
+          case 'AddedFile':
+          case 'ChangedFile':
+          {
+            // For an added or changed file, add the file path and the first changed line.
+            const fileCasted: AddedFile | ChangedFile = file as AddedFile | ChangedFile
+            result.set(fileCasted.path, fileCasted.chunks[0]!.toFileRange.start)
+            break
+          }
+          case 'RenamedFile':
+          {
+            // For a renamed file, add the new file path and the first changed line.
+            const fileCasted: RenamedFile = file as RenamedFile
+            result.set(fileCasted.pathAfter, fileCasted.chunks[0]?.toFileRange.start!)
+            break
+          }
         }
       })
     })
 
-    this._firstLineOfFiles = result
-    return this._firstLineOfFiles
+    return result
   }
 }

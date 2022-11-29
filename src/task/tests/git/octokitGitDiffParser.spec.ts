@@ -100,6 +100,8 @@ describe('octokitGitDiffParser.ts', (): void => {
           expect(result).to.equal(lineNumber)
           verify(logger.logDebug('* OctokitGitDiffParser.getFirstChangedLine()')).once()
           verify(logger.logDebug('* OctokitGitDiffParser.getFirstChangedLines()')).once()
+          verify(logger.logDebug('* OctokitGitDiffParser.getDiffs()')).once()
+          verify(logger.logDebug('* OctokitGitDiffParser.processDiffs()')).once()
         })
       })
     }
@@ -127,6 +129,8 @@ describe('octokitGitDiffParser.ts', (): void => {
       expect(result).to.equal(11)
       verify(logger.logDebug('* OctokitGitDiffParser.getFirstChangedLine()')).once()
       verify(logger.logDebug('* OctokitGitDiffParser.getFirstChangedLines()')).once()
+      verify(logger.logDebug('* OctokitGitDiffParser.getDiffs()')).once()
+      verify(logger.logDebug('* OctokitGitDiffParser.processDiffs()')).once()
     })
 
     it('should return the correct line number when considering a renamed file with no changes', async (): Promise<void> => {
@@ -146,6 +150,8 @@ describe('octokitGitDiffParser.ts', (): void => {
       expect(result).to.equal(null)
       verify(logger.logDebug('* OctokitGitDiffParser.getFirstChangedLine()')).once()
       verify(logger.logDebug('* OctokitGitDiffParser.getFirstChangedLines()')).once()
+      verify(logger.logDebug('* OctokitGitDiffParser.getDiffs()')).once()
+      verify(logger.logDebug('* OctokitGitDiffParser.processDiffs()')).once()
     })
 
     it('should return the correct line number when considering an added file', async (): Promise<void> => {
@@ -169,6 +175,8 @@ describe('octokitGitDiffParser.ts', (): void => {
       expect(result).to.equal(1)
       verify(logger.logDebug('* OctokitGitDiffParser.getFirstChangedLine()')).once()
       verify(logger.logDebug('* OctokitGitDiffParser.getFirstChangedLines()')).once()
+      verify(logger.logDebug('* OctokitGitDiffParser.getDiffs()')).once()
+      verify(logger.logDebug('* OctokitGitDiffParser.processDiffs()')).once()
     })
 
     it('should return null when considering a deleted file', async (): Promise<void> => {
@@ -191,6 +199,8 @@ describe('octokitGitDiffParser.ts', (): void => {
       expect(result).to.equal(null)
       verify(logger.logDebug('* OctokitGitDiffParser.getFirstChangedLine()')).once()
       verify(logger.logDebug('* OctokitGitDiffParser.getFirstChangedLines()')).once()
+      verify(logger.logDebug('* OctokitGitDiffParser.getDiffs()')).once()
+      verify(logger.logDebug('* OctokitGitDiffParser.processDiffs()')).once()
     })
 
     it('should return the correct line number when called twice', async (): Promise<void> => {
@@ -215,6 +225,8 @@ describe('octokitGitDiffParser.ts', (): void => {
       expect(result2).to.equal(11)
       verify(logger.logDebug('* OctokitGitDiffParser.getFirstChangedLine()')).twice()
       verify(logger.logDebug('* OctokitGitDiffParser.getFirstChangedLines()')).twice()
+      verify(logger.logDebug('* OctokitGitDiffParser.getDiffs()')).once()
+      verify(logger.logDebug('* OctokitGitDiffParser.processDiffs()')).once()
     })
 
     it('should return null when an unknown file is specified', async (): Promise<void> => {
@@ -237,6 +249,8 @@ describe('octokitGitDiffParser.ts', (): void => {
       expect(result).to.equal(null)
       verify(logger.logDebug('* OctokitGitDiffParser.getFirstChangedLine()')).once()
       verify(logger.logDebug('* OctokitGitDiffParser.getFirstChangedLines()')).once()
+      verify(logger.logDebug('* OctokitGitDiffParser.getDiffs()')).once()
+      verify(logger.logDebug('* OctokitGitDiffParser.processDiffs()')).once()
     })
   })
 })
