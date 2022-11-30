@@ -2,6 +2,7 @@
   "extends": "@istanbuljs/nyc-config-typescript",
   "exclude": [
     "debug/task/tests/**/*",
+    "debug/task/index.ts",
     "debug/task/src/wrappers/**/*"
   ],
   "check-coverage": true,
