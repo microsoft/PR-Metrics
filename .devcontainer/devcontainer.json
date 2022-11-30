@@ -19,6 +19,9 @@
       "settings": {
         "cSpell.caseSensitive": true,
         "cSpell.language": "en-US",
+        "editor.codeActionsOnSave": {
+          "source.fixAll.eslint": true
+        },
         "editor.formatOnPaste": true,
         "editor.formatOnSave": true,
         "editor.formatOnType": true,
