@@ -18,7 +18,6 @@ describe('pullRequestMetrics.ts', (): void => {
     logger = mock(Logger)
 
     runnerInvoker = mock(RunnerInvoker)
-    when(runnerInvoker.loc('pullRequestMetrics.remappingToken')).thenReturn('Use of \'System.AccessToken\' has been deprecated and will stop working in a future version of PR Metrics. Please switch to \'PR_Metrics_Access_Token\' as soon as possible.')
     when(runnerInvoker.loc('pullRequestMetrics.succeeded')).thenReturn('PR Metrics succeeded')
   })
 

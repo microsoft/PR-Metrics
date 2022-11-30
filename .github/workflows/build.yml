@@ -69,14 +69,6 @@ jobs:
           ACTIONS_STEP_DEBUG: ${{ secrets.ACTIONS_STEP_DEBUG }}
         if: ${{ env.ACTIONS_STEP_DEBUG != '' }}
 
-      # TODO (#304): Remove once System.AccessToken support is removed.
-      - name: PR Metrics with System.AccessToken
-        uses: ./
-        env:
-          SYSTEM_ACCESSTOKEN: ${{ secrets.GITHUB_TOKEN }}
-          ACTIONS_STEP_DEBUG: ${{ secrets.ACTIONS_STEP_DEBUG }}
-        if: ${{ env.ACTIONS_STEP_DEBUG != '' }}
-
   validate:
     name: Validate
     runs-on: ubuntu-latest
