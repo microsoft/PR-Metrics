@@ -954,6 +954,34 @@ describe('gitHubReposInvoker.ts', function (): void {
       verify(logger.logDebug('null')).twice()
     })
 
+    it('should succeed when createReviewComment() returns undefined', async (): Promise<void> => {
+      // Arrange
+      when(octokitWrapper.initialize(anything())).thenCall((options: any): void => {
+        expect(options.auth).to.equal('PAT')
+        expect(options.userAgent).to.equal(expectedUserAgent)
+        expect(options.log).to.not.equal(null)
+        expect(options.log.debug).to.not.equal(null)
+        expect(options.log.info).to.not.equal(null)
+        expect(options.log.warn).to.not.equal(null)
+        expect(options.log.error).to.not.equal(null)
+      })
+      when(octokitWrapper.createReviewComment('microsoft', 'PR-Metrics', 12345, 'Content', 'file.ts', 'sha54321')).thenResolve(null)
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
+
+      // Act
+      await gitHubReposInvoker.createComment('Content', CommentThreadStatus.Unknown, 'file.ts')
+
+      // Assert
+      verify(octokitWrapper.initialize(anything())).once()
+      verify(octokitWrapper.listCommits('microsoft', 'PR-Metrics', 12345, 1)).once()
+      verify(octokitWrapper.createReviewComment('microsoft', 'PR-Metrics', 12345, 'Content', 'file.ts', 'sha54321')).once()
+      verify(logger.logDebug('* GitHubReposInvoker.createComment()')).once()
+      verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
+      verify(logger.logDebug('* GitHubReposInvoker.initializeForAzureDevOps()')).once()
+      verify(logger.logDebug('* GitHubReposInvoker.getCommitId()')).once()
+      verify(logger.logDebug('null')).once()
+    })
+
     it('should succeed when a HTTP 422 error occurs due to having a too large path diff', async (): Promise<void> => {
       // Arrange
       when(octokitWrapper.initialize(anything())).thenCall((options: any): void => {

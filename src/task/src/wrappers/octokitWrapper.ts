@@ -11,6 +11,7 @@ import GetIssueCommentsResponse from './octokitInterfaces/getIssueCommentsRespon
 import GetPullResponse from './octokitInterfaces/getPullResponse'
 import GetReviewCommentsResponse from './octokitInterfaces/getReviewCommentsResponse'
 import ListCommitsResponse from './octokitInterfaces/listCommitsResponse'
+import OctokitGitDiffParser from '../git/octokitGitDiffParser'
 import UpdateIssueCommentResponse from './octokitInterfaces/updateIssueCommentResponse'
 import UpdatePullResponse from './octokitInterfaces/updatePullResponse'
 
@@ -19,7 +20,17 @@ import UpdatePullResponse from './octokitInterfaces/updatePullResponse'
  */
 @singleton()
 export default class OctokitWrapper {
+  private readonly _octokitGitDiffParser: OctokitGitDiffParser
+
   private _octokit: Octokit | undefined
+
+  /**
+   * Initializes a new instance of the `OctokitWrapper` class.
+   * @param octokitGitDiffParser The parser for Git diffs read via Octokit.
+   */
+  public constructor (octokitGitDiffParser: OctokitGitDiffParser) {
+    this._octokitGitDiffParser = octokitGitDiffParser
+  }
 
   /**
    * Initializes a new instance of the `OctokitWrapper` class.
@@ -165,9 +176,14 @@ export default class OctokitWrapper {
    * @param commitId The ID of the commit.
    * @returns The response from the API call.
    */
-  public async createReviewComment (owner: string, repo: string, pullRequestId: number, content: string, fileName: string, commitId: string): Promise<CreateReviewCommentResponse> {
+  public async createReviewComment (owner: string, repo: string, pullRequestId: number, content: string, fileName: string, commitId: string): Promise<CreateReviewCommentResponse | null> {
     if (this._octokit === undefined) {
       throw Error('OctokitWrapper was not initialized prior to calling OctokitWrapper.createReviewComment().')
+    }
+
+    const lineNumber: number | null = await this._octokitGitDiffParser.getFirstChangedLine(this, owner, repo, pullRequestId, fileName)
+    if (lineNumber === null) {
+      return null
     }
 
     return await this._octokit.rest.pulls.createReviewComment({
@@ -176,7 +192,7 @@ export default class OctokitWrapper {
       pull_number: pullRequestId,
       body: content,
       path: fileName,
-      position: 1,
+      line: lineNumber,
       commit_id: commitId
     })
   }

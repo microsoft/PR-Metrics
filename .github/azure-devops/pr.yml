@@ -13,8 +13,8 @@ pool:
   vmImage: ubuntu-latest
 
 variables:
-  - name: skipComponentGovernanceDetection
-    value: true
+  - name: tags
+    value: multi-phased
 
 jobs:
   - job: PRMetrics_macOS
@@ -22,6 +22,8 @@ jobs:
     pool:
       vmImage: macOS-latest
     variables:
+      - name: skipComponentGovernanceDetection
+        value: true
       - name: System.Debug
         value: true
     steps:
@@ -36,6 +38,8 @@ jobs:
     pool:
       vmImage: ubuntu-latest
     variables:
+      - name: skipComponentGovernanceDetection
+        value: true
       - name: System.Debug
         value: true
     steps:
@@ -50,6 +54,8 @@ jobs:
     pool:
       vmImage: windows-latest
     variables:
+      - name: skipComponentGovernanceDetection
+        value: true
       - name: System.Debug
         value: true
     steps:
