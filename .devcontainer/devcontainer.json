@@ -12,17 +12,41 @@
       "extensions": [
         "christian-kohler.npm-intellisense",
         "DavidAnson.vscode-markdownlint",
+        "dbaeumer.vscode-eslint",
         "EditorConfig.EditorConfig",
         "streetsidesoftware.code-spell-checker"
       ],
       "settings": {
+        "cSpell.caseSensitive": true,
+        "cSpell.language": "en-US",
+        "editor.formatOnPaste": true,
+        "editor.formatOnSave": true,
+        "editor.formatOnType": true,
+        "editor.inlineSuggest.enabled": true,
+        "editor.quickSuggestions": {
+          "comments": "on",
+          "strings": "on",
+          "other": "on"
+        },
         "editor.renderWhitespace": "all",
         "editor.rulers": [
           80
         ],
+        "eslint.format.enable": true,
+        "eslint.lintTask.enable": true,
+        "files.associations": {
+          "*.resjson": "json"
+        },
+        "files.trimTrailingWhitespace": true,
         "git.autofetch": true,
         "git.confirmSync": false,
-        "git.enableSmartCommit": true
+        "git.enableSmartCommit": true,
+        "[markdown]": {
+          "editor.defaultFormatter": "DavidAnson.vscode-markdownlint"
+        },
+        "[typescript]": {
+          "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+        }
       }
     }
   }
