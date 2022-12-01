@@ -86,7 +86,6 @@
     "metrics.inputs.settingFileMatchingPatterns": "ms-resource:loc.messages.metrics.inputs.settingFileMatchingPatterns",
     "metrics.inputs.settingGrowthRate": "ms-resource:loc.messages.metrics.inputs.settingGrowthRate",
     "metrics.inputs.settingTestFactor": "ms-resource:loc.messages.metrics.inputs.settingTestFactor",
-    "pullRequestMetrics.remappingToken": "ms-resource:loc.messages.pullRequestMetrics.remappingToken",
     "pullRequestMetrics.succeeded": "ms-resource:loc.messages.pullRequestMetrics.succeeded",
     "pullRequests.pullRequest.addDescription": "ms-resource:loc.messages.pullRequests.pullRequest.addDescription",
     "pullRequests.pullRequest.titleFormat": "ms-resource:loc.messages.pullRequests.pullRequest.titleFormat",
