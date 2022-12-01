@@ -86,7 +86,6 @@
     "metrics.inputs.settingFileMatchingPatterns": "Setting the file matching patterns input to '%s'.",
     "metrics.inputs.settingGrowthRate": "Setting the growth rate input to '%s'.",
     "metrics.inputs.settingTestFactor": "Setting the test factor input to '%s'.",
-    "pullRequestMetrics.remappingToken": "Use of 'System.AccessToken' has been deprecated and will stop working in a future version of PR Metrics. Please switch to 'PR_Metrics_Access_Token' as soon as possible.",
     "pullRequestMetrics.succeeded": "PR Metrics succeeded",
     "pullRequests.pullRequest.addDescription": "❌ **Add a description.**",
     "pullRequests.pullRequest.titleFormat": "%s ◾ %s",

@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { expect } from 'chai'
 import { instance, mock, verify, when } from 'ts-mockito'
 import CodeMetricsCalculator from '../src/metrics/codeMetricsCalculator'
 import Logger from '../src/utilities/logger'
@@ -18,7 +17,6 @@ describe('pullRequestMetrics.ts', (): void => {
     logger = mock(Logger)
 
     runnerInvoker = mock(RunnerInvoker)
-    when(runnerInvoker.loc('pullRequestMetrics.remappingToken')).thenReturn('Use of \'System.AccessToken\' has been deprecated and will stop working in a future version of PR Metrics. Please switch to \'PR_Metrics_Access_Token\' as soon as possible.')
     when(runnerInvoker.loc('pullRequestMetrics.succeeded')).thenReturn('PR Metrics succeeded')
   })
 
@@ -61,28 +59,6 @@ describe('pullRequestMetrics.ts', (): void => {
       verify(codeMetricsCalculator.updateDetails()).once()
       verify(codeMetricsCalculator.updateComments()).once()
       verify(runnerInvoker.setStatusSucceeded('PR Metrics succeeded')).once()
-    })
-
-    it('should log a message when PR_METRICS_ACCESS_TOKEN is not set', async (): Promise<void> => {
-      // Arrange
-      delete process.env.PR_METRICS_ACCESS_TOKEN
-      process.env.SYSTEM_ACCESSTOKEN = 'PAT'
-      const pullRequestMetrics: PullRequestMetrics = new PullRequestMetrics(instance(codeMetricsCalculator), instance(logger), instance(runnerInvoker))
-
-      // Act
-      await pullRequestMetrics.run('Folder')
-
-      // Assert
-      verify(runnerInvoker.locInitialize('Folder')).once()
-      verify(logger.logWarning('Use of \'System.AccessToken\' has been deprecated and will stop working in a future version of PR Metrics. Please switch to \'PR_Metrics_Access_Token\' as soon as possible.')).once()
-      verify(codeMetricsCalculator.updateDetails()).once()
-      verify(codeMetricsCalculator.updateComments()).once()
-      verify(runnerInvoker.setStatusSucceeded('PR Metrics succeeded')).once()
-      expect(process.env.PR_METRICS_ACCESS_TOKEN).to.equal('PAT')
-
-      // Finalization
-      delete process.env.SYSTEM_ACCESSTOKEN
-      delete process.env.PR_METRICS_ACCESS_TOKEN
     })
 
     it('should catch and log errors', async (): Promise<void> => {

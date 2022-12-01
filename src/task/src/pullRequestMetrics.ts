@@ -38,12 +38,6 @@ export default class PullRequestMetrics {
     try {
       this._runnerInvoker.locInitialize(folder)
 
-      // TODO (#304): Remove System.AccessToken support after a transition period has elapsed.
-      if (process.env.PR_METRICS_ACCESS_TOKEN === undefined && process.env.SYSTEM_ACCESSTOKEN !== undefined) {
-        this._logger.logWarning(this._runnerInvoker.loc('pullRequestMetrics.remappingToken'))
-        process.env.PR_METRICS_ACCESS_TOKEN = process.env.SYSTEM_ACCESSTOKEN
-      }
-
       const skipMessage: string | null = this._codeMetricsCalculator.shouldSkip
       if (skipMessage !== null) {
         this._runnerInvoker.setStatusSkipped(skipMessage)
