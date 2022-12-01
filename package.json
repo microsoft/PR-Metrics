@@ -48,7 +48,7 @@
     "@octokit/types": "^8.0.0",
     "axios": "^1.2.0",
     "azure-devops-node-api": "^11.2.0",
-    "azure-pipelines-task-lib": "^4.0.2",
+    "azure-pipelines-task-lib": "^4.1.0",
     "octokit": "^2.0.10",
     "parse-git-diff": "^0.0.6",
     "reflect-metadata": "^0.1.13",
