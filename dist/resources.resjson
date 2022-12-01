@@ -86,8 +86,6 @@
   "loc.messages.metrics.inputs.settingGrowthRate.comment": "The message printed when the growth rate input is set to the user-provided value. The placeholder will be replaced by the default value.",
   "loc.messages.metrics.inputs.settingTestFactor": "Setting the test factor input to '%s'.",
   "loc.messages.metrics.inputs.settingTestFactor.comment": "The message printed when the test factor input is set to the user-provided value. The placeholder will be replaced by the default value.",
-  "loc.messages.pullRequestMetrics.remappingToken": "Use of 'System.AccessToken' has been deprecated and will stop working in a future version of PR Metrics. Please switch to 'PR_Metrics_Access_Token' as soon as possible.",
-  "loc.messages.pullRequestMetrics.remappingToken.comment": "The message printed when the PR_Metrics_Access_Token secret environment variable is unavailable.",
   "loc.messages.pullRequestMetrics.succeeded": "PR Metrics succeeded",
   "loc.messages.pullRequestMetrics.succeeded.comment": "The message to display when completing after a successful run.",
   "loc.messages.pullRequests.pullRequest.addDescription": "❌ **Add a description.**",
