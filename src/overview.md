@@ -1,6 +1,6 @@
 This extension provides a build task for updating PR titles with an indicator of
-the PR size and test coverage. It works with Azure DevOps, GitHub, GitHub AE,
-and GitHub Enterprise PRs.
+the PR size and test coverage. It works with Azure DevOps, GitHub, and GitHub
+Enterprise PRs.
 
 It is designed to help software engineers create PRs of an appropriate size,
 with appropriate levels of test coverage. It furthermore helps reviewers
