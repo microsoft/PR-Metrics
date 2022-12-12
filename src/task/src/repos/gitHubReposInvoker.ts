@@ -238,7 +238,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
       throw Error(`SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI '${sourceRepositoryUri}' is in an unexpected format.`)
     }
 
-    // Handle GitHub Enterprise and GitHub AE invocations.
+    // Handle GitHub Enterprise invocations.
     let baseUrl: string | undefined
     if (sourceRepositoryUriElements[2] !== 'github.com') {
       baseUrl = `https://${sourceRepositoryUriElements[2]}/api/v3`
