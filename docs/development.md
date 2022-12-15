@@ -68,7 +68,7 @@ interfaces to add additional methods, while retaining the same access pattern.
    `npm install -g tfx-cli`.
 1. Sign in to the server using:
 
-   ```bat
+   ```Batchfile
    tfx login --service-url https://<account>.visualstudio.com/DefaultCollection --token <PAT>
    ```
 
