@@ -8,9 +8,11 @@ released as soon as possible.
 
 Feature releases are also typically released outside of the quarterly cadence.
 
-## Quarterly Release
+## Quarterly Releases
 
-To create the quarterly release, follow these steps:
+To create the quarterly release, follow the steps below.
+
+### Updating Dependencies
 
 1. Enter
 
@@ -40,9 +42,12 @@ To create the quarterly release, follow these steps:
 1. Ensure all build stages run successfully. Make the appropriate changes if
    this is not the case, and repeat steps 2 to 7.
 1. Once everything is working, commit the changes to the `main` branch.
-1. Wait for the `main` branch build loop to complete successfully.
+1. Wait for the [`main` branch build loop][mainbuild] to complete successfully.
+
+### Updating Version & Licenses
+
 1. Search for all instances of the version number and increment the build
-  element of the number (i.e., the third element) by 1 throughout.
+   element of the number (i.e., the third element) by 1 throughout.
 1. Enter `npm run test` and ensure that all tests pass. If you have not updated
    one or more instances of the version number, the tests will fail.
 1. Update `src/LICENSE.txt` with the automatic license information collated
@@ -57,6 +62,51 @@ To create the quarterly release, follow these steps:
 1. Commit all the changes to a new branch.
 1. Open a PR with the changes.
 1. Commit the changes to the `main` branch.
-1. Wait for the `main` branch build loop to complete successfully.
+1. Wait for the [`main` branch build loop][mainbuild] to complete successfully.
 
+### Creating the Release
+
+1. Open the [Releases][releases] page.
+1. Click "Draft a new release".
+1. Enter the new version number in the format of "vX.X.X" in the "Choose a tag"
+   field, replacing the "X.X.X" with the version number. Click "Create new tag:
+   vX.X.X on publish".
+1. Enter "Release vX.X.X" in the "Release title" field, replacing the "X.X.X"
+   with the version number.
+1. Enter a description of the release in the "Describe this release" field. This
+   should include a bulleted list of the major changes made since the last
+   release.
+1. Enable "Create a discussion for this release" and select category "Releases".
+1. Click "Publish release".
+1. Wait for the [Release build loop][releasebuild] to complete successfully.
+1. Click into the completed build and download the `ms-omex.PRMetrics` artifact.
+1. Extract the .vsix file from the compressed artifact.
+1. Go to the Visual Studio Marketplace page for the
+   [`ms-omex` publisher][marketplace].
+1. Click "..." next "PR Metrics" and click "Update".
+1. Follow the instructions to upload .vsix file.
+1. Click "Upload".
+1. Wait for validation to complete and the new version of the extension to be
+   published.
+
+## Security Updates
+
+If Dependabot opens an out-of-band security fix PR, complete the PR and follow
+the [Updating Version & Licenses](#updating-version--licenses) and
+[Creating the Release](#creating-the-release) steps.
+
+If you need to update a dependency without an automatically created Dependabot
+PR, the easier solution is to follow the process for
+[Quarterly Releases](#quarterly-releases).
+
+## Feature Releases
+
+Feature releases should be completed by following the
+[Updating Version & Licenses](#updating-version--licenses) and
+[Creating the Release](#creating-the-release) steps.
+
+[mainbuild]: https://github.com/microsoft/PR-Metrics/actions/workflows/build.yml
+[marketplace]: https://marketplace.visualstudio.com/manage/publishers/ms-omex
+[releasebuild]: https://github.com/microsoft/PR-Metrics/actions/workflows/release.yml
+[releases]: https://github.com/microsoft/PR-Metrics/releases
 [tfxcli]: https://github.com/Microsoft/tfs-cli
