@@ -2,6 +2,9 @@
   "ignorePatterns": [
     {
       "pattern": "^https://docs.github.com/"
+    },
+    {
+      "pattern": "^https://marketplace.visualstudio.com/manage/publishers/ms-omex$"
     }
   ]
 }
