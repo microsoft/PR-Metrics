@@ -56,7 +56,7 @@ To create the quarterly release, follow the steps below.
    `devDependencies` are excluded.
 
    When updating this file, retain the content to the first line, which is the
-   license for PR Metrics itself. All content following this line should b
+   license for PR Metrics itself. All content following this line should be
    replaced. Note that the ordering of licenses may change. This is expected.
 1. Enter `npm run build:package` to update the contents of the `dist` folder.
 1. Commit all the changes to a new branch.
