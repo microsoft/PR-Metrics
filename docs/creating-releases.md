@@ -8,6 +8,12 @@ released as soon as possible.
 
 Feature releases are also typically released outside of the quarterly cadence.
 
+**Ensure you are using NPM v8 or earlier, which will generate a
+[`package-lock.json`][packagelockjson] file with `lockfileVersion` 2. NPM v9 and
+above use `lockfileVersion` 3, which is currently incompatible with the
+Component Governance tooling. This will prevent updated licenses from being
+generated.**
+
 ## Quarterly Releases
 
 To create the quarterly release, follow the steps below.
@@ -52,14 +58,35 @@ To create the quarterly release, follow the steps below.
    element of the number (i.e., the third element) by 1 throughout.
 1. Enter `npm run test` and ensure that all tests pass. If you have not updated
    one or more instances of the version number, the tests will fail.
-1. Update [`src/LICENSE.txt`][licensetxt] with the automatic license information
-   collated internally within Microsoft. Ensure, when generating this file, that
-   only the `dependencies` from [`package.json`][packagejson] are included and
-   that the `devDependencies` are excluded.
+1. Use the internal Microsoft Component Governance tooling to update
+   [`src/LICENSE.txt`][licensetxt] with the automatically generated license
+   information.
+   1. Use Notice > Configure to ensure that only the `dependencies` from
+      [`package.json`][packagejson] are included and that the `devDependencies`
+      are excluded.
+   1. Use Notice > Download to generate the file. Select Pipeline "PR" and
+      Format "Plain Text". Click "Download".
+   1. Update [`src/LICENSE.txt`][licensetxt], retaining the content to the first
+      horizontal rule, which is the license for PR Metrics itself. All content
+      following this line should be replaced with the downloaded licenses. Note
+      that the ordering of licenses may change.
+   1. If the download dialog includes any notice indicating that license
+      information could not be located at [Clearly Defined][clearlydefined], you
+      will need to add the information to that source. To do this, expand the
+      drop down menu in the dialog to reveal the problematic dependencies. For
+      each dependency:
+      1. Navigate to the Clearly Defined [Harvest page][clearlydefinedharvest].
+      1. In the first search box, select "NpmJS".
+      1. In the second search box, select the dependency name.
+      1. In the "Pick an NPM Version" box, select the appropriate version.
+      1. Click "Harvest".
 
-   When updating this file, retain the content to the first line, which is the
-   license for PR Metrics itself. All content following this line should be
-   replaced. Note that the ordering of licenses may change. This is expected.
+      It is also possible to add all dependencies to the page and click
+      "Harvest" afterwards to harvest all license information simultaneously.
+
+      Wait some time for harvesting to complete and try regenerating the license
+      information at the Component Governance page. Repeat the process until all
+      license information is available.
 1. Enter `npm run build:package` to update the contents of the `dist` folder.
 1. Commit all the changes to a new branch.
 1. Open a PR with the changes.
@@ -108,10 +135,13 @@ Feature releases should be completed by following the
 [Updating Version & Licenses](#updating-version--licenses) and
 [Creating the Release](#creating-the-release) steps.
 
-[licensetxt]: https://github.com/microsoft/PR-Metrics/blob/main/src/LICENSE.txt
+[clearlydefined]: https://clearlydefined.io/
+[clearlydefinedharvest]: https://clearlydefined.io/harvest
+[licensetxt]: ../src/LICENSE.txt
 [mainbuild]: https://github.com/microsoft/PR-Metrics/actions/workflows/build.yml
 [marketplace]: https://marketplace.visualstudio.com/manage/publishers/ms-omex
-[packagejson]: https://github.com/microsoft/PR-Metrics/blob/main/package.json
+[packagejson]: ../package.json
+[packagelockjson]: ../package-lock.json
 [releasebuild]: https://github.com/microsoft/PR-Metrics/actions/workflows/release.yml
 [releases]: https://github.com/microsoft/PR-Metrics/releases
 [tfxcli]: https://github.com/Microsoft/tfs-cli
