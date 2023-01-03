@@ -8,8 +8,8 @@ released as soon as possible.
 
 Feature releases are also typically released outside of the quarterly cadence.
 
-**Ensure you are using NPM v8 or earlier, which will generate a
-[`package-lock.json`][packagelockjson] file with `lockfileVersion` 2. NPM v9 and
+**Ensure you are using npm v8 or earlier, which will generate a
+[`package-lock.json`][packagelockjson] file with `lockfileVersion` 2. npm v9 and
 above use `lockfileVersion` 3, which is currently incompatible with the
 Component Governance tooling. This will prevent updated licenses from being
 generated.**
@@ -28,13 +28,14 @@ To create the quarterly release, follow the steps below.
    npm install -g npm-check-updates
    ncu -u
    npm update
-   npm run build:package
    ```
 
-   This will update all dependencies to the latest versions and update the
-   contents of the `dist` folder.
-1. Enter `npm run test` to ensure that all tests continue to pass. Make the
-   appropriate changes if this is not the case.
+   This will update all dependencies to the latest versions.
+1. Search for all instances of the version number and increment the build
+   element of the number (i.e., the third element) by 1 throughout.
+1. Enter `npm run test` to ensure that all tests pass. If you have not updated
+   one or more instances of the version number, the tests will fail.
+1. Enter `npm run build:package` to update the contents of the `dist` folder.
 1. Enter
 
    ```Batchfile
@@ -49,18 +50,13 @@ To create the quarterly release, follow the steps below.
 1. Open a PR with the changes.
 1. Ensure all build stages run successfully. Make the appropriate changes if
    this is not the case, and repeat steps 2 to 7.
-1. Once everything is working, commit the changes to the `main` branch.
-1. Wait for the [`main` branch build loop][mainbuild] to complete successfully.
-
-### Updating Version & Licenses
-
-1. Search for all instances of the version number and increment the build
-   element of the number (i.e., the third element) by 1 throughout.
-1. Enter `npm run test` and ensure that all tests pass. If you have not updated
-   one or more instances of the version number, the tests will fail.
 1. Use the internal Microsoft Component Governance tooling to update
    [`src/LICENSE.txt`][licensetxt] with the automatically generated license
    information.
+
+   1. At the top of the page, change the `main` branch to `refs/pull/#/merge`,
+      where `#` is the GitHub PR number. **It is very important that this is
+      selected correctly or the wrong license information will be generated.**
    1. Use Notice > Configure to ensure that only the `dependencies` from
       [`package.json`][packagejson] are included and that the `devDependencies`
       are excluded.
@@ -75,10 +71,11 @@ To create the quarterly release, follow the steps below.
       will need to add the information to that source. To do this, expand the
       drop down menu in the dialog to reveal the problematic dependencies. For
       each dependency:
+
       1. Navigate to the Clearly Defined [Harvest page][clearlydefinedharvest].
       1. In the first search box, select "NpmJS".
       1. In the second search box, select the dependency name.
-      1. In the "Pick an NPM Version" box, select the appropriate version.
+      1. In the "Pick an npm version" box, select the appropriate version.
       1. Click "Harvest".
 
       It is also possible to add all dependencies to the page and click
@@ -87,9 +84,8 @@ To create the quarterly release, follow the steps below.
       Wait some time for harvesting to complete and try regenerating the license
       information at the Component Governance page. Repeat the process until all
       license information is available.
-1. Enter `npm run build:package` to update the contents of the `dist` folder.
-1. Commit all the changes to a new branch.
-1. Open a PR with the changes.
+1. Commit all the changes to your branch, updating the PR.
+1. Ensure all build stages continue to run successfully
 1. Commit the changes to the `main` branch.
 1. Wait for the [`main` branch build loop][mainbuild] to complete successfully.
 
@@ -102,9 +98,9 @@ To create the quarterly release, follow the steps below.
    vX.X.X on publish".
 1. Enter "Release vX.X.X" in the "Release title" field, replacing the "X.X.X"
    with the version number.
-1. Enter a description of the release in the "Describe this release" field. This
-   should include a bulleted list of the major changes made since the last
-   release.
+1. Click "Generate release notes".
+1. At the top of the "Describe this release" field, add "## Summary" and a
+   bulleted list of the major changes since the last release.
 1. Enable "Create a discussion for this release" and select category "Releases".
 1. Click "Publish release".
 1. Wait for the [Release build loop][releasebuild] to complete successfully.
@@ -122,18 +118,16 @@ To create the quarterly release, follow the steps below.
 ## Security Updates
 
 If Dependabot opens an out-of-band security fix PR, complete the PR and follow
-the [Updating Version & Licenses](#updating-version--licenses) and
-[Creating the Release](#creating-the-release) steps.
+the [Quarterly Releases](#quarterly-releases) steps.
 
 If you need to update a dependency without an automatically created Dependabot
-PR, the easier solution is to follow the process for
+PR, the easier solution is to immediately follow the process for
 [Quarterly Releases](#quarterly-releases).
 
 ## Feature Releases
 
 Feature releases should be completed by following the
-[Updating Version & Licenses](#updating-version--licenses) and
-[Creating the Release](#creating-the-release) steps.
+[Quarterly Releases](#quarterly-releases) steps.
 
 [clearlydefined]: https://clearlydefined.io/
 [clearlydefinedharvest]: https://clearlydefined.io/harvest
