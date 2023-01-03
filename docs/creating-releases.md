@@ -14,6 +14,8 @@ To create the quarterly release, follow the steps below.
 
 ### Updating Dependencies
 
+1. If possible, you should start by removing any entries within the `overrides`
+   section of [`package.json`][packagejson] that are no longer required.
 1. Enter
 
    ```Batchfile
@@ -50,10 +52,10 @@ To create the quarterly release, follow the steps below.
    element of the number (i.e., the third element) by 1 throughout.
 1. Enter `npm run test` and ensure that all tests pass. If you have not updated
    one or more instances of the version number, the tests will fail.
-1. Update `src/LICENSE.txt` with the automatic license information collated
-   internally within Microsoft. Ensure, when generating this file, that only
-   the `dependencies` from `package.json` are included and that the
-   `devDependencies` are excluded.
+1. Update [`src/LICENSE.txt`][licensetxt] with the automatic license information
+   collated internally within Microsoft. Ensure, when generating this file, that
+   only the `dependencies` from [`package.json`][packagejson] are included and
+   that the `devDependencies` are excluded.
 
    When updating this file, retain the content to the first line, which is the
    license for PR Metrics itself. All content following this line should be
@@ -106,8 +108,10 @@ Feature releases should be completed by following the
 [Updating Version & Licenses](#updating-version--licenses) and
 [Creating the Release](#creating-the-release) steps.
 
+[licensetxt]: https://github.com/microsoft/PR-Metrics/blob/main/src/LICENSE.txt
 [mainbuild]: https://github.com/microsoft/PR-Metrics/actions/workflows/build.yml
 [marketplace]: https://marketplace.visualstudio.com/manage/publishers/ms-omex
+[packagejson]: https://github.com/microsoft/PR-Metrics/blob/main/package.json
 [releasebuild]: https://github.com/microsoft/PR-Metrics/actions/workflows/release.yml
 [releases]: https://github.com/microsoft/PR-Metrics/releases
 [tfxcli]: https://github.com/Microsoft/tfs-cli
