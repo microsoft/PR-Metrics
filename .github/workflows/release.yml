@@ -3,44 +3,113 @@
 
 ---
 
-name: Release
+name: Prepare Release
 
 on:
-  release:
-    types:
-      - created
-  workflow_dispatch: null
+  workflow_dispatch:
+    inputs:
+      major:
+        description: The major element of the version number
+        required: true
+        type: number
+        default: 1
+      minor:
+        description: The minor element of the version number
+        required: true
+        type: number
+      patch:
+        description: The patch element of the version number
+        required: true
+        type: number
 
 jobs:
-  release:
-    name: Release
+  prepare-release:
+    name: Prepare Release
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Install Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 19.x
+      - name: npm – Install NCU
+        run: npm install -g npm-check-updates
 
-      - name: npm – Install Dependencies
-        run: npm install
+      - name: npm – Update Dependencies
+        run: ncu -u
 
-      - name: npm – Build
-        run: npm run build:release
+      - name: npm – Update Transitive Dependencies
+        run: npm run update
 
-      - name: Install TFX CLI
-        run: npm install -g tfx-cli
+      - name: npm – Build Package
+        run: npm run build:package
 
-      - name: Release – Create
-        run: tfx extension create --manifest-globs vss-extension.json --output-path ../ms-omex.PRMetrics.vsix
-        working-directory: ${{ github.workspace }}/release
+      - name: Git – Setup Authentication
+        run: gh auth setup-git
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Release – Publish
-        uses: actions/upload-artifact@v3
-        with:
-          name: ms-omex.PRMetrics
-          path: ${{ github.workspace }}/ms-omex.PRMetrics.vsix
+      - name: Git – Set Name
+        run: git config --global user.name "PR Metrics"
+
+      - name: Git – Set Email
+        run: git config --global user.email "prmetrics@users.noreply.github.com"
+
+      - name: Git – Create Branch
+        run: git checkout -b release/v${{ inputs.major }}.${{ inputs.minor }}.${{ inputs.patch }}
+
+      - name: Git – Add Changed Files
+        run: git add -A
+
+      - name: Git – Commit Changed Files
+        run: git commit -m "Updating dist folder"
+
+      - name: Git – Push Changed Files
+        run: git push --set-upstream release/v${{ inputs.major }}.${{ inputs.minor }}.${{ inputs.patch }}
 
 ...
+
+# # Copyright (c) Microsoft Corporation.
+# # Licensed under the MIT License.
+
+# ---
+
+# name: Release
+
+# on:
+#   release:
+#     types:
+#       - created
+#   workflow_dispatch: null
+
+# jobs:
+#   release:
+#     name: Release
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout
+#         uses: actions/checkout@v3
+
+#       - name: Install Node.js
+#         uses: actions/setup-node@v3
+#         with:
+#           node-version: 19.x
+
+#       - name: npm – Install Dependencies
+#         run: npm install
+
+#       - name: npm – Build
+#         run: npm run build:release
+
+#       - name: Install TFX CLI
+#         run: npm install -g tfx-cli
+
+#       - name: Release – Create
+#         run: tfx extension create --manifest-globs vss-extension.json --output-path ../ms-omex.PRMetrics.vsix
+#         working-directory: ${{ github.workspace }}/release
+
+#       - name: Release – Publish
+#         uses: actions/upload-artifact@v3
+#         with:
+#           name: ms-omex.PRMetrics
+#           path: ${{ github.workspace }}/ms-omex.PRMetrics.vsix
+
+# ...
