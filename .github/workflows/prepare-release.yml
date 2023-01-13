@@ -80,9 +80,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: PR – Enable Auto-Merge
-        run: gh pr merge --auto --delete-branch --squash
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
 ...

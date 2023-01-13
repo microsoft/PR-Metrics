@@ -13,9 +13,27 @@ on:
   workflow_dispatch: null
 
 jobs:
-# TODO: Add linting here too, and remove it from below.
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: npm – Install
+        run: npm install
+
+      - name:
+        run: npx tfx login --service-url https://${{ env.AZDO_ACCOUNT }}.visualstudio.com/DefaultCollection --token ${{ env.AZDO_PAT }}
+        env:
+          AZDO_ACCOUNT: ${{ secrets.AZDO_ACCOUNT }}
+          AZDO_PAT: ${{ secrets.AZDO_PAT }}
+
+      - name: npm – Deploy
+        run: npm run deploy
+
   update-dist:
-    name: Update – dist Folder
+    name: Update dist Folder
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -25,6 +43,9 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 19.x
+
+      - name: npm – Lint
+        run: npm run lint
 
       - name: npm – Build Package
         run: npm run build:package
@@ -66,9 +87,6 @@ jobs:
 
       - name: npm – Install Dependencies
         run: npm install
-
-      - name: npm – Test Lint
-        run: npm run lint
 
       - name: npm – Test Clean
         run: npm run clean
