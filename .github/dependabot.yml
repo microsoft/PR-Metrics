@@ -1,0 +1,20 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+
+---
+
+version: 2
+
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    open-pull-requests-limit: 100
+    schedule:
+      interval: daily
+      time: '00:00'                # yamllint disable-line rule:quoted-strings
+      timezone: Universal
+    labels:
+      - dependencies
+      - github-actions
+
+...
