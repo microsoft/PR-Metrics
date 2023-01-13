@@ -25,19 +25,19 @@ jobs:
         with:
           node-version: 19.x
 
-      - name: NPM – Install Dependencies
+      - name: npm – Install Dependencies
         run: npm install
 
-      - name: NPM – Test Lint
+      - name: npm – Test Lint
         run: npm run lint
 
-      - name: NPM – Test Clean
+      - name: npm – Test Clean
         run: npm run clean
 
-      - name: NPM – Build
+      - name: npm – Build
         run: npm run build
 
-      - name: NPM – Test
+      - name: npm – Test
         run: npm run test
 
       - name: Install TFX CLI
@@ -211,7 +211,7 @@ jobs:
         with:
           node-version: 19.x
 
-      - name: NPM – Install Dependencies
+      - name: npm – Install Dependencies
         run: npm install
 
       - name: Super Linter
@@ -237,15 +237,27 @@ jobs:
         with:
           node-version: 19.x
 
-      - name: NPM – Build Package
+      - name: npm – Build Package
         run: npm run build:package
 
-      - name: Compare Expected & Actual dist Folders
-        run: |
-          if [ "$(git diff-index --ignore-cr-at-eol --quiet HEAD -- || echo 1)" == "1" ]; then
-            echo "Detected uncommitted changes after build. Run 'npm run package' and commit any outstanding changes. Details:"
-            git diff
-            exit 1
-          fi
+      - name: Git – Setup Authentication
+        run: gh auth setup-git
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Git – Set Name
+      - run: git config --global user.name "dependabot"
+
+      - name: Git – Set Email
+      - run: git config --global user.email "dependabot@users.noreply.github.com"
+
+      - name: Git – Add Changed Files
+        run: git add -A
+
+      - name: Git – Commit Changed Files
+        run: git commit -m "Updating dist folder"
+
+      - name: Git – Push Changed Files
+        run: git push
 
 ...
