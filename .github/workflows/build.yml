@@ -13,6 +13,45 @@ on:
   workflow_dispatch: null
 
 jobs:
+# TODO: Add linting here too, and remove it from below.
+  update-dist:
+    name: Update – dist Folder
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 19.x
+
+      - name: npm – Build Package
+        run: npm run build:package
+
+      - name: Git – Setup Authentication
+        run: gh auth setup-git
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Git – Set Name
+        run: git config --global user.name "PR Metrics"
+
+      - name: Git – Set Email
+        run: git config --global user.email "prmetrics@users.noreply.github.com"
+
+      - name: Git – Checkout Branch
+        run: git checkout ${GITHUB_REF#refs/heads/}
+
+      - name: Git – Add Changed Files
+        run: git add -A
+
+      - name: Git – Commit Changed Files
+        run: git commit -m "Updating dist folder"
+
+      - name: Git – Push Changed Files
+        run: git push
+
   build:
     name: Build
     runs-on: ubuntu-latest
@@ -224,40 +263,5 @@ jobs:
           TYPESCRIPT_ES_CONFIG_FILE: ../../.eslintrc.yml
           VALIDATE_JAVASCRIPT_STANDARD: false
           VALIDATE_TYPESCRIPT_STANDARD: false
-
-  validate-dist:
-    name: Validate – dist Folder
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Install Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 19.x
-
-      - name: npm – Build Package
-        run: npm run build:package
-
-      - name: Git – Setup Authentication
-        run: gh auth setup-git
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Git – Set Name
-        run: git config --global user.name "PR Metrics"
-
-      - name: Git – Set Email
-        run: git config --global user.email "prmetrics@users.noreply.github.com"
-
-      - name: Git – Add Changed Files
-        run: git add -A
-
-      - name: Git – Commit Changed Files
-        run: git commit -m "Updating dist folder"
-
-      - name: Git – Push Changed Files
-        run: git push
 
 ...
