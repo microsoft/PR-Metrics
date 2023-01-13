@@ -246,10 +246,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Git – Set Name
-      - run: git config --global user.name "PR Metrics"
+        run: git config --global user.name "PR Metrics"
 
       - name: Git – Set Email
-      - run: git config --global user.email "prmetrics@users.noreply.github.com"
+        run: git config --global user.email "prmetrics@users.noreply.github.com"
 
       - name: Git – Add Changed Files
         run: git add -A
