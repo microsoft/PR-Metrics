@@ -1,0 +1,68 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+
+---
+
+name: Prepare Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      major:
+        description: The major element of the version number
+        required: true
+        type: number
+        default: 1
+      minor:
+        description: The minor element of the version number
+        required: true
+        type: number
+      patch:
+        description: The patch element of the version number
+        required: true
+        type: number
+
+jobs:
+  prepare-release:
+    name: Prepare Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: npm – Install NCU
+        run: npm install -g npm-check-updates
+
+      - name: npm – Update Dependencies
+        run: ncu -u
+
+      - name: npm – Update Transitive Dependencies
+        run: npm run update
+
+      - name: npm – Build Package
+        run: npm run build:package
+
+      - name: Git – Setup Authentication
+        run: gh auth setup-git
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Git – Set Name
+      - run: git config --global user.name "PR Metrics"
+
+      - name: Git – Set Email
+      - run: git config --global user.email "prmetrics@users.noreply.github.com"
+
+      - name: Git – Create Branch
+        run: git checkout -b release/v${{ inputs.major }}.${{ inputs.minor }}.${{ inputs.patch }}
+
+      - name: Git – Add Changed Files
+        run: git add -A
+
+      - name: Git – Commit Changed Files
+        run: git commit -m "Updating dist folder"
+
+      - name: Git – Push Changed Files
+        run: git push --set-upstream release/v${{ inputs.major }}.${{ inputs.minor }}.${{ inputs.patch }}
+
+...
