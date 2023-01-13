@@ -17,8 +17,18 @@ variables:
     value: multi-phased
 
 jobs:
+  - job: Delay
+    displayName: Delay
+    pool: server
+    steps:
+    - task: Delay@1
+      displayName: Wait for Deployment
+      inputs:
+        delayForMinutes: '5'
+
   - job: PRMetrics_macOS
     displayName: PR Metrics – macOS
+    dependsOn: Delay
     pool:
       vmImage: macOS-latest
     variables:
