@@ -77,17 +77,17 @@ jobs:
             --label "release"
             --assignee "${{ github.actor }}"
             --reviewer "${{ github.actor }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: PR – Approve
-        run: gh pr review --approve "$PR_URL"
+        run: gh pr review --approve
         env:
-          PR_URL: ${{ github.event.pull_request.html_url }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: PR – Enable Auto-Merge
-        run: gh pr merge --auto --delete-branch --squash "$PR_URL"
+        run: gh pr merge --auto --delete-branch --squash
         env:
-          PR_URL: ${{ github.event.pull_request.html_url }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 ...
