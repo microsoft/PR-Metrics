@@ -37,7 +37,7 @@ jobs:
         run: ncu -u
 
       - name: npm – Update Transitive Dependencies
-        run: npm run update
+        run: npm update
 
       - name: npm – Build Package
         run: npm run build:package
