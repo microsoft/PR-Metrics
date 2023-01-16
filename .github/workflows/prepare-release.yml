@@ -3,32 +3,10 @@
 
 ---
 
-name: Prepare Release
-
-on:
-  workflow_dispatch:
-    inputs:
-      major:
-        description: The major element of the version number
-        required: true
-        type: number
-        default: 1
-      minor:
-        description: The minor element of the version number
-        required: true
-        type: number
-      patch:
-        description: The patch element of the version number
-        required: true
-        type: number
-
-permissions:
-  contents: write
-  pull-requests: write
 
 jobs:
   prepare-release:
-    name: Prepare Release
+    name: Prepare Release ${{ inputs.major }}.${{ inputs.minor }}.${{ inputs.patch }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -59,7 +37,7 @@ jobs:
         uses: mingjun97/file-regex-replace@v1
         with:
           regex: PR Metrics \d+\.\d+\.\d+
-          replacement: PR Metrics ${{ inputs.major }}.${{ inputs.minor }}.${{ inputs.patch }}
+          replacement: PR Metrics v${{ inputs.major }}.${{ inputs.minor }}.${{ inputs.patch }}
           include: src\/task\.json
 
       - name: Version Number – task.json & task.loc.json
@@ -86,8 +64,8 @@ jobs:
       - name: Version Number – resources.resjson
         uses: mingjun97/file-regex-replace@v1
         with:
-          regex: PR Metrics \d+\.\d+\.\d+
-          replacement: PR Metrics ${{ inputs.major }}.${{ inputs.minor }}.${{ inputs.patch }}
+          regex: PR Metrics v\d+\.\d+\.\d+
+          replacement: PR Metrics v${{ inputs.major }}.${{ inputs.minor }}.${{ inputs.patch }}
           include: src\/task\/Strings\/resources\.resjson\/en-US\/resources\.resjson
 
       - name: Version Number – gitHubReposInvoker.ts & gitHubReposInvoker.spec.ts
