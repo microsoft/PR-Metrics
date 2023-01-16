@@ -37,72 +37,72 @@ jobs:
       - name: Version Name – README.md
         uses: mingjun97/file-regex-replace
         with:
-          regex: 'uses: microsoft\\/PR-Metrics@v\\d+\\.\\d+\.\\d+'
+          regex: 'uses: microsoft\/PR-Metrics@v\d+\.\d+\.\d+'
           replacement: 'uses: microsoft/PR-Metrics@v${{ inputs.major }}.${{ inputs.minor }}.${{ inputs.patch }}'
-          include: README\\.md
+          include: README\.md
 
       - name: Version Name – package.json
         uses: mingjun97/file-regex-replace
         with:
-          regex: '"version": "\\d+\\.\\d+\.\\d+"'
+          regex: '"version": "\d+\.\d+\.\d+"'
           replacement: '"version": "${{ inputs.major }}.${{ inputs.minor }}.${{ inputs.patch }}"'
-          include: package\\.json
+          include: package\.json
 
       - name: Version Name – vss-extension.json
         uses: mingjun97/file-regex-replace
         with:
-          regex: '"version": "\\d+\\.\\d+\.\\d+"'
+          regex: '"version": "\d+\.\d+\.\d+"'
           replacement: '"version": "${{ inputs.major }}.${{ inputs.minor }}.${{ inputs.patch }}"'
-          include: vss-extension\\.json
+          include: vss-extension\.json
 
       - name: Version Name – task.json
         uses: mingjun97/file-regex-replace
         with:
-          regex: '"friendlyName": "PR Metrics \\d+\\.\\d+\\.\\d+"'
+          regex: '"friendlyName": "PR Metrics \d+\.\d+\.\d+"'
           replacement: '"friendlyName": "PR Metrics ${{ inputs.major }}.${{ inputs.minor }}.${{ inputs.patch }}"'
-          include: src\\/task\\.json
+          include: src\/task\.json
 
       - name: Version Name – task.json & task.loc.json
         uses: mingjun97/file-regex-replace
         with:
-          regex: '"Major": \\d+'
+          regex: '"Major": \d+'
           replacement: '"Major": ${{ inputs.major }}'
-          include: src\\/task(\\.loc)?\\.json
+          include: src\/task(\.loc)?\.json
 
       - name: Version Name – task.json & task.loc.json
         uses: mingjun97/file-regex-replace
         with:
-          regex: '"Minor": \\d+'
+          regex: '"Minor": \d+'
           replacement: '"Minor": ${{ inputs.minor }}'
-          include: src\\/task(\\.loc)?\\.json
+          include: src\/task(\.loc)?\.json
 
       - name: Version Name – task.json & task.loc.json
         uses: mingjun97/file-regex-replace
         with:
           regex: '"Patch": \d+'
           replacement: '"Patch": ${{ inputs.patch }}'
-          include: src\\/task(\\.loc)?\\.json
+          include: src\/task(\.loc)?\.json
 
       - name: Version Name – resources.resjson
         uses: mingjun97/file-regex-replace
         with:
-          regex: '"friendlyName": "PR Metrics \\d+\\.\\d+\\.\\d+"'
+          regex: '"friendlyName": "PR Metrics \d+\.\d+\.\d+"'
           replacement: '"friendlyName": "PR Metrics ${{ inputs.major }}.${{ inputs.minor }}.${{ inputs.patch }}"'
-          include: src\\/task\\/Strings\\/resources\\.resjson\\/en-US\\/resources\\.resjson
+          include: src\/task\/Strings\/resources\.resjson\/en-US\/resources\.resjson
 
       - name: Version Name – gitHubReposInvoker.ts
         uses: mingjun97/file-regex-replace
         with:
-          regex: 'userAgent: string = \'PRMetrics\\/v\\d+\\.\\d+\\.\\d+\''
+          regex: 'userAgent: string = ''PRMetrics\/v\d+\.\d+\.\d+'''
           replacement: 'userAgent: string = \'PRMetrics/v${{ inputs.major }}.${{ inputs.minor }}.${{ inputs.patch }}\''
-          include: src\\/task\\/src\\/repos\\/gitHubReposInvoker\\.ts
+          include: src\/task\/src\/repos\/gitHubReposInvoker\.ts
 
       - name: Version Name – gitHubReposInvoker.spec.ts
         uses: mingjun97/file-regex-replace
         with:
-          regex: 'expectedUserAgent: string = \'PRMetrics\\/v\\d+\\.\\d+\\.\\d+\''
+          regex: 'expectedUserAgent: string = ''PRMetrics\/v\d+\.\d+\.\d+'''
           replacement: 'expectedUserAgent: string = \'PRMetrics/v${{ inputs.major }}.${{ inputs.minor }}.${{ inputs.patch }}\''
-          include: src\\/task\\/tests\\/repos\\/gitHubReposInvoker\\.spec\\.ts
+          include: src\/task\/tests\/repos\/gitHubReposInvoker\.spec\.ts
 
       - name: npm – Install NCU
         run: npm install -g npm-check-updates
