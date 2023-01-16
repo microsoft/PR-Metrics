@@ -138,105 +138,17 @@ jobs:
         with:
           config-file: .github/linters/markdown-link-check.json
 
-      - name: Validate .babelrc – Download .babelrc.schema.json
-        shell: pwsh
-        run: Invoke-WebRequest -Uri 'https://json.schemastore.org/babelrc.json' -OutFile '.babelrc.schema.json'
-
-      - name: Validate .babelrc – Update .babelrc.schema.json
-        shell: pwsh
-        run: |-
-          $FileContent = Get-Content -Path '.babelrc.schema.json' -Raw
-          $FileContent = $FileContent -replace 'draft-04/schema', 'draft-07/schema'
-          Set-Content -NoNewline -Path '.babelrc.schema.json' -Value $FileContent
-
-      - name: Validate .babelrc
-        uses: Zingabopp/JsonValidate-Action@v1
+      - name: Validate JSON
+        uses: walbo/validate-json@v1.1.0
         with:
-          json-file: .babelrc
-          json-schema: .babelrc.schema.json
+          files: '**/*.json'
+          print-valid-files: true
 
-      - name: Validate .markdownlint.json
-        uses: Zingabopp/JsonValidate-Action@v1
+      - name: Validate JSON – . files
+        uses: walbo/validate-json@v1.1.0
         with:
-          json-file: .markdownlint.json
-          json-schema: https://raw.githubusercontent.com/DavidAnson/markdownlint/main/schema/markdownlint-config-schema.json
-          use-draft: draft-07
-
-      - name: Validate devcontainer.json
-        uses: Zingabopp/JsonValidate-Action@v1
-        with:
-          json-file: .devcontainer/devcontainer.json
-          json-schema: https://raw.githubusercontent.com/devcontainers/spec/main/schemas/devContainer.base.schema.json
-          use-draft: draft-07
-
-      - name: Validate vss-extension.json
-        uses: Zingabopp/JsonValidate-Action@v1
-        with:
-          json-file: src/vss-extension.json
-          json-schema: https://json.schemastore.org/vss-extension.json
-
-      - name: Validate task.json – Download task.schema.json
-        shell: pwsh
-        run: Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/microsoft/azure-pipelines-task-lib/master/tasks.schema.json' -OutFile 'task.schema.json'
-
-      - name: Validate task.json – Update task.schema.json
-        shell: pwsh
-        run: |-
-          $FileContent = Get-Content -Path 'task.schema.json' -Raw
-          $FileContent = $FileContent -replace 'draft-04/schema', 'draft-07/schema'
-          Set-Content -NoNewline -Path 'task.schema.json' -Value $FileContent
-
-      - name: Validate task.json
-        uses: Zingabopp/JsonValidate-Action@v1
-        with:
-          json-file: src/task/task.json
-          json-schema: task.schema.json
-
-      - name: Validate task.loc.json
-        uses: Zingabopp/JsonValidate-Action@v1
-        with:
-          json-file: src/task/task.loc.json
-          json-schema: task.schema.json
-
-      - name: Validate tsconfig.json – Download tsconfig.schema.json
-        shell: pwsh
-        run: Invoke-WebRequest -Uri 'https://json.schemastore.org/tsconfig.json' -OutFile 'tsconfig.schema.json'
-
-      - name: Validate tsconfig.json – Update tsconfig.schema.json
-        shell: pwsh
-        run: |-
-          $FileContent = Get-Content -Path 'tsconfig.schema.json' -Raw
-          $FileContent = $FileContent -replace 'draft-04/schema#', 'draft-07/schema'
-          Set-Content -NoNewline -Path 'tsconfig.schema.json' -Value $FileContent
-
-      - name: Validate tsconfig.json
-        uses: Zingabopp/JsonValidate-Action@v1
-        with:
-          json-file: src/task/tsconfig.json
-          json-schema: tsconfig.schema.json
-
-      - name: Validate typedoc.json
-        uses: Zingabopp/JsonValidate-Action@v1
-        with:
-          json-file: src/task/typedoc.json
-          json-schema: https://typedoc.org/schema.json
-
-      - name: Validate resources.resjson – Download resources.resjson.schema.json
-        shell: pwsh
-        run: Invoke-WebRequest -Uri 'https://json.schemastore.org/resjson.json' -OutFile 'resources.resjson.schema.json'
-
-      - name: Validate resources.resjson – Update resources.resjson.schema.json
-        shell: pwsh
-        run: |-
-          $FileContent = Get-Content -Path 'resources.resjson.schema.json' -Raw
-          $FileContent = $FileContent -replace 'draft-04/schema#', 'draft-07/schema'
-          Set-Content -NoNewline -Path 'resources.resjson.schema.json' -Value $FileContent
-
-      - name: Validate resources.resjson (en-US)
-        uses: Zingabopp/JsonValidate-Action@v1
-        with:
-          json-file: src/task/Strings/resources.resjson/en-US/resources.resjson
-          json-schema: resources.resjson.schema.json
+          files: .*.json
+          print-valid-files: true
 
   validate-codeql:
     name: Validate – CodeQL
