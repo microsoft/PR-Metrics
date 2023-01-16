@@ -37,8 +37,8 @@ jobs:
       - name: Version Name – README.md
         uses: mingjun97/file-regex-replace
         with:
-          regex: 'uses: microsoft\/PR-Metrics@v\d+\.\d+\.\d+'
-          replacement: 'uses: microsoft/PR-Metrics@v${{ inputs.major }}.${{ inputs.minor }}.${{ inputs.patch }}'
+          regex: PR-Metrics@v\d+\.\d+\.\d+
+          replacement: PR-Metrics@v${{ inputs.major }}.${{ inputs.minor }}.${{ inputs.patch }}
           include: README\.md
 
       - name: Version Name – package.json
@@ -58,8 +58,8 @@ jobs:
       - name: Version Name – task.json
         uses: mingjun97/file-regex-replace
         with:
-          regex: '"friendlyName": "PR Metrics \d+\.\d+\.\d+"'
-          replacement: '"friendlyName": "PR Metrics ${{ inputs.major }}.${{ inputs.minor }}.${{ inputs.patch }}"'
+          regex: PR Metrics \d+\.\d+\.\d+
+          replacement: PR Metrics ${{ inputs.major }}.${{ inputs.minor }}.${{ inputs.patch }}
           include: src\/task\.json
 
       - name: Version Name – task.json & task.loc.json
@@ -86,23 +86,16 @@ jobs:
       - name: Version Name – resources.resjson
         uses: mingjun97/file-regex-replace
         with:
-          regex: '"friendlyName": "PR Metrics \d+\.\d+\.\d+"'
-          replacement: '"friendlyName": "PR Metrics ${{ inputs.major }}.${{ inputs.minor }}.${{ inputs.patch }}"'
+          regex: PR Metrics \d+\.\d+\.\d+
+          replacement: PR Metrics ${{ inputs.major }}.${{ inputs.minor }}.${{ inputs.patch }}
           include: src\/task\/Strings\/resources\.resjson\/en-US\/resources\.resjson
 
-      - name: Version Name – gitHubReposInvoker.ts
+      - name: Version Name – gitHubReposInvoker.ts & gitHubReposInvoker.spec.ts
         uses: mingjun97/file-regex-replace
         with:
-          regex: 'userAgent: string = ''PRMetrics\/v\d+\.\d+\.\d+'''
-          replacement: 'userAgent: string = \'PRMetrics/v${{ inputs.major }}.${{ inputs.minor }}.${{ inputs.patch }}\''
-          include: src\/task\/src\/repos\/gitHubReposInvoker\.ts
-
-      - name: Version Name – gitHubReposInvoker.spec.ts
-        uses: mingjun97/file-regex-replace
-        with:
-          regex: 'expectedUserAgent: string = ''PRMetrics\/v\d+\.\d+\.\d+'''
-          replacement: 'expectedUserAgent: string = \'PRMetrics/v${{ inputs.major }}.${{ inputs.minor }}.${{ inputs.patch }}\''
-          include: src\/task\/tests\/repos\/gitHubReposInvoker\.spec\.ts
+          regex: PRMetrics\/v\d+\.\d+\.\d+
+          replacement: PRMetrics/v${{ inputs.major }}.${{ inputs.minor }}.${{ inputs.patch }}
+          include: src\/task\/(src|tests)\/repos\/gitHubReposInvoker(\.spec)?\.ts
 
       - name: npm – Install NCU
         run: npm install -g npm-check-updates
