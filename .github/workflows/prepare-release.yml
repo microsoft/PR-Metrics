@@ -121,4 +121,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+    # TODO: Add comment about updating the license information
+
 ...
