@@ -44,6 +44,9 @@ jobs:
         with:
           node-version: 19.x
 
+      - name: npm – Install Dependencies
+        run: npm install
+
       - name: npm – Lint
         run: npm run lint
 
