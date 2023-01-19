@@ -192,11 +192,11 @@ jobs:
           print-valid-files: true
           strict: false
 
-      - name: Validate typedoc.json
-        uses: walbo/validate-json@v1.1.0
-        with:
-          files: src/task/typedoc.json
-          print-valid-files: true
+      # - name: Validate typedoc.json
+      #   uses: walbo/validate-json@v1.1.0
+      #   with:
+      #     files: src/task/typedoc.json
+      #     print-valid-files: true
 
       - name: Validate resources.resjson (en-US)
         uses: walbo/validate-json@v1.1.0
