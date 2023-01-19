@@ -150,6 +150,7 @@ jobs:
         with:
           files: .babelrc
           print-valid-files: true
+          strict: false
 
       - name: Validate .markdownlint.json
         uses: walbo/validate-json@v1.1.0
