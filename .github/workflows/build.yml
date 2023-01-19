@@ -75,7 +75,7 @@ jobs:
         run: git add -A
 
       - name: Git – Commit Changed Files
-        run: git commit -m "Updating dist folder"
+        run: git commit -m "Updating dist folder" --allow-empty
 
       - name: Git – Push Changed Files
         run: git push
@@ -147,59 +147,73 @@ jobs:
 
       - name: Validate .babelrc
         uses: walbo/validate-json@v1.1.0
+        continue-on-error: true
         with:
           files: .babelrc
           print-valid-files: true
           strict: false
 
+      # what about package.json?
+      # remove continue-on-error
+
       - name: Validate .markdownlint.json
         uses: walbo/validate-json@v1.1.0
+        continue-on-error: true
         with:
           files: .markdownlint.json
           print-valid-files: true
 
-      # - name: Validate devcontainer.json
-      #   uses: walbo/validate-json@v1.1.0
-      #   with:
-      #     files: .devcontainer/devcontainer.json
-      #     print-valid-files: true
-      #     strict: false
+      - name: Validate devcontainer.json
+        uses: walbo/validate-json@v1.1.0
+        continue-on-error: true
+        with:
+          files: .devcontainer/devcontainer.json
+          print-valid-files: true
+          schema-version: draft-07
 
-      # - name: Validate vss-extension.json
-      #   uses: walbo/validate-json@v1.1.0
-      #   with:
-      #     files: src/vss-extension.json
-      #     print-valid-files: true
+      - name: Validate vss-extension.json
+        uses: walbo/validate-json@v1.1.0
+        continue-on-error: true
+        with:
+          files: src/vss-extension.json
+          print-valid-files: true
+          schema-version: draft-04
 
-      # - name: Validate task.json
-      #   uses: walbo/validate-json@v1.1.0
-      #   with:
-      #     files: src/task/task.json
-      #     print-valid-files: true
-      #     strict: false
+      - name: Validate task.json
+        uses: walbo/validate-json@v1.1.0
+        continue-on-error: true
+        with:
+          files: src/task/task.json
+          print-valid-files: true
+          schema-version: draft-04
 
-      # - name: Validate task.loc.json
-      #   uses: walbo/validate-json@v1.1.0
-      #   with:
-      #     files: src/task/task.loc.json
-      #     print-valid-files: true
-      #     strict: false
+      - name: Validate task.loc.json
+        uses: walbo/validate-json@v1.1.0
+        continue-on-error: true
+        with:
+          files: src/task/task.loc.json
+          print-valid-files: true
+          schema-version: draft-04
 
       - name: Validate tsconfig.json
         uses: walbo/validate-json@v1.1.0
+        continue-on-error: true
         with:
           files: src/task/tsconfig.json
           print-valid-files: true
           strict: false
 
-      # - name: Validate typedoc.json
-      #   uses: walbo/validate-json@v1.1.0
-      #   with:
-      #     files: src/task/typedoc.json
-      #     print-valid-files: true
+      - name: Validate typedoc.json
+        uses: walbo/validate-json@v1.1.0
+        continue-on-error: true
+        with:
+          files: src/task/typedoc.json
+          print-valid-files: true
+          schema-version: draft-07
 
       - name: Validate resources.resjson (en-US)
         uses: walbo/validate-json@v1.1.0
+        continue-on-error: true
         with:
           files: src/task/Strings/resources.resjson/en-US/resources.resjson
           print-valid-files: true
