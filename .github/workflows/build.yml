@@ -163,6 +163,7 @@ jobs:
         with:
           files: .devcontainer/devcontainer.json
           print-valid-files: true
+          strict: false
 
       - name: Validate vss-extension.json
         uses: walbo/validate-json@v1.1.0
