@@ -190,6 +190,7 @@ jobs:
         with:
           files: src/task/tsconfig.json
           print-valid-files: true
+          strict: false
 
       - name: Validate typedoc.json
         uses: walbo/validate-json@v1.1.0
