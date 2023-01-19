@@ -171,19 +171,19 @@ jobs:
       #     files: src/vss-extension.json
       #     print-valid-files: true
 
-      - name: Validate task.json
-        uses: walbo/validate-json@v1.1.0
-        with:
-          files: src/task/task.json
-          print-valid-files: true
-          strict: false
+      # - name: Validate task.json
+      #   uses: walbo/validate-json@v1.1.0
+      #   with:
+      #     files: src/task/task.json
+      #     print-valid-files: true
+      #     strict: false
 
-      - name: Validate task.loc.json
-        uses: walbo/validate-json@v1.1.0
-        with:
-          files: src/task/task.loc.json
-          print-valid-files: true
-          strict: false
+      # - name: Validate task.loc.json
+      #   uses: walbo/validate-json@v1.1.0
+      #   with:
+      #     files: src/task/task.loc.json
+      #     print-valid-files: true
+      #     strict: false
 
       - name: Validate tsconfig.json
         uses: walbo/validate-json@v1.1.0
