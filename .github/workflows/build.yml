@@ -12,6 +12,10 @@ on:
     branches: [main]
   workflow_dispatch: null
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   deploy:
     name: Deploy
@@ -65,7 +69,7 @@ jobs:
         run: git config --global user.email "prmetrics@users.noreply.github.com"
 
       - name: Git – Checkout Branch
-        run: git checkout ${GITHUB_REF#refs/heads/}
+        run: git checkout "${GITHUB_REF#refs/heads/}"
 
       - name: Git – Add Changed Files
         run: git add -A
@@ -141,16 +145,65 @@ jobs:
         with:
           config-file: .github/linters/markdown-link-check.json
 
-      - name: Validate JSON
+      - name: Validate .babelrc
         uses: walbo/validate-json@v1.1.0
         with:
-          files: '**/*.json'
+          files: .babelrc
           print-valid-files: true
 
-      - name: Validate JSON – . files
+      - name: Validate .markdownlint.json
         uses: walbo/validate-json@v1.1.0
         with:
-          files: .*.json
+          files: .markdownlint.json
+          print-valid-files: true
+
+      - name: Validate package.json
+        uses: walbo/validate-json@v1.1.0
+        with:
+          files: package.json
+          print-valid-files: true
+          strict: false
+
+      - name: Validate devcontainer.json
+        uses: walbo/validate-json@v1.1.0
+        with:
+          files: .devcontainer/devcontainer.json
+          print-valid-files: true
+
+      - name: Validate vss-extension.json
+        uses: walbo/validate-json@v1.1.0
+        with:
+          files: src/vss-extension.json
+          print-valid-files: true
+
+      - name: Validate task.json
+        uses: walbo/validate-json@v1.1.0
+        with:
+          files: src/task/task.json
+          print-valid-files: true
+
+      - name: Validate task.loc.json
+        uses: walbo/validate-json@v1.1.0
+        with:
+          files: src/task/task.loc.json
+          print-valid-files: true
+
+      - name: Validate tsconfig.json
+        uses: walbo/validate-json@v1.1.0
+        with:
+          files: src/task/tsconfig.json
+          print-valid-files: true
+
+      - name: Validate typedoc.json
+        uses: walbo/validate-json@v1.1.0
+        with:
+          files: src/task/typedoc.json
+          print-valid-files: true
+
+      - name: Validate resources.resjson (en-US)
+        uses: walbo/validate-json@v1.1.0
+        with:
+          files: src/task/Strings/resources.resjson/en-US/resources.resjson
           print-valid-files: true
 
   validate-codeql:
@@ -196,5 +249,22 @@ jobs:
           TYPESCRIPT_ES_CONFIG_FILE: ../../.eslintrc.yml
           VALIDATE_JAVASCRIPT_STANDARD: false
           VALIDATE_TYPESCRIPT_STANDARD: false
+
+  dependabot:
+    if: ${{ github.actor == 'dependabot[bot]' }}
+    name: Dependabot
+    runs-on: ubuntu-latest
+    steps:
+      - name: Approve
+        run: gh pr review --approve "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Enable Auto-Merge
+        run: gh pr merge --auto --delete-branch --squash "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 ...

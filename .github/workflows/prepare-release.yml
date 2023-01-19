@@ -12,17 +12,17 @@ on:
         default: 1
         description: The major element of the version number
         required: true
-        type: number
+        type: string
       minor:
         default: 4
         description: The minor element of the version number
         required: true
-        type: number
+        type: string
       patch:
         default: 10
         description: The patch element of the version number
         required: true
-        type: number
+        type: string
 
 permissions:
   contents: write
@@ -33,6 +33,18 @@ jobs:
     name: Prepare Release ${{ inputs.major }}.${{ inputs.minor }}.${{ inputs.patch }}
     runs-on: ubuntu-latest
     steps:
+      - name: Validate major
+        shell: pwsh
+        run: [int]::Parse(${{ inputs.major }})
+
+      - name: Validate minor
+        shell: pwsh
+        run: [int]::Parse(${{ inputs.minor }})
+
+      - name: Validate patch
+        shell: pwsh
+        run: [int]::Parse(${{ inputs.patch }})
+
       - name: Checkout
         uses: actions/checkout@v3
 

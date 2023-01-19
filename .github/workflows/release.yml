@@ -9,18 +9,20 @@ on:
   workflow_dispatch:
     inputs:
       major:
+        default: 1
         description: The major element of the version number
         required: true
-        type: number
-        default: 1
+        type: string
       minor:
+        default: 4
         description: The minor element of the version number
         required: true
-        type: number
+        type: string
       patch:
+        default: 10
         description: The patch element of the version number
         required: true
-        type: number
+        type: string
 
 permissions:
   contents: write
@@ -31,6 +33,18 @@ jobs:
     name: Prepare Release ${{ inputs.major }}.${{ inputs.minor }}.${{ inputs.patch }}
     runs-on: ubuntu-latest
     steps:
+      - name: Validate major
+        shell: pwsh
+        run: [int]::Parse(${{ inputs.major }})
+
+      - name: Validate minor
+        shell: pwsh
+        run: [int]::Parse(${{ inputs.minor }})
+
+      - name: Validate patch
+        shell: pwsh
+        run: [int]::Parse(${{ inputs.patch }})
+
       - name: Checkout
         uses: actions/checkout@v3
 
@@ -60,28 +74,28 @@ jobs:
         with:
           regex: PR Metrics \d+\.\d+\.\d+
           replacement: PR Metrics v${{ inputs.major }}.${{ inputs.minor }}.${{ inputs.patch }}
-          include: src\/task\.json
+          include: src\/task\/task\.json
 
-      - name: Version Number – task.json & task.loc.json
+      - name: Version Number – task.json & task.loc.json (major)
         uses: mingjun97/file-regex-replace@v1
         with:
           regex: '"Major": \d+'
           replacement: '"Major": ${{ inputs.major }}'
-          include: src\/task(\.loc)?\.json
+          include: src\/task\/task(\.loc)?\.json
 
-      - name: Version Number – task.json & task.loc.json
+      - name: Version Number – task.json & task.loc.json (minor)
         uses: mingjun97/file-regex-replace@v1
         with:
           regex: '"Minor": \d+'
           replacement: '"Minor": ${{ inputs.minor }}'
-          include: src\/task(\.loc)?\.json
+          include: src\/task\/task(\.loc)?\.json
 
-      - name: Version Number – task.json & task.loc.json
+      - name: Version Number – task.json & task.loc.json (patch)
         uses: mingjun97/file-regex-replace@v1
         with:
           regex: '"Patch": \d+'
           replacement: '"Patch": ${{ inputs.patch }}'
-          include: src\/task(\.loc)?\.json
+          include: src\/task\/task(\.loc)?\.json
 
       - name: Version Number – resources.resjson
         uses: mingjun97/file-regex-replace@v1
@@ -96,6 +110,27 @@ jobs:
           regex: PRMetrics\/v\d+\.\d+\.\d+
           replacement: PRMetrics/v${{ inputs.major }}.${{ inputs.minor }}.${{ inputs.patch }}
           include: src\/task\/(src|tests)\/repos\/gitHubReposInvoker(\.spec)?\.ts
+
+      - name: Version Number – prepare-release.yml (major)
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: '(major:\s+default: )\d+'
+          replacement: $1${{ inputs.major }}
+          include: .github\/workflows\/prepare-release\.yml
+
+      - name: Version Number – prepare-release.yml (minor)
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: '(minor:\s+default: )\d+'
+          replacement: $1${{ inputs.minor }}
+          include: .github\/workflows\/prepare-release\.yml
+
+      - name: Version Number – prepare-release.yml (patch)
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: '(patch:\s+default: )\d+'
+          replacement: $1${{ inputs.patch + 1 }}
+          include: .github\/workflows\/prepare-release\.yml
 
       - name: npm – Install NCU
         run: npm install -g npm-check-updates
@@ -140,6 +175,23 @@ jobs:
           --label "release"
           --assignee "${{ github.actor }}"
           --reviewer "${{ github.actor }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: PR – Get Number
+        uses: jwalton/gh-find-current-pr@v1.3.0
+        id: prGetNumber
+
+      - name: PR – Create Comment
+        uses: bluwy/substitute-string-action@v2.0.1
+        id: prCreateComment
+        with:
+          _input-file: ./.github/workflows/prepare-release-comment.md
+          _format-key: '%%key%%'
+          pr: ${{ steps.prGetNumber.outputs.pr }}
+
+      - name: PR – Comment
+        run: gh pr comment --body "${{ steps.prCreateComment.outputs.result }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
