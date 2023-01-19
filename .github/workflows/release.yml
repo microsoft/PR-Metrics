@@ -35,15 +35,15 @@ jobs:
     steps:
       - name: Validate major
         shell: pwsh
-        run: [int]::Parse(${{ inputs.major }})
+        run: '[int]::Parse(${{ inputs.major }})'
 
       - name: Validate minor
         shell: pwsh
-        run: [int]::Parse(${{ inputs.minor }})
+        run: '[int]::Parse(${{ inputs.minor }})'
 
       - name: Validate patch
         shell: pwsh
-        run: [int]::Parse(${{ inputs.patch }})
+        run: '[int]::Parse(${{ inputs.patch }})'
 
       - name: Checkout
         uses: actions/checkout@v3
