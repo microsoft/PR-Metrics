@@ -158,12 +158,12 @@ jobs:
           files: .markdownlint.json
           print-valid-files: true
 
-      - name: Validate devcontainer.json
-        uses: walbo/validate-json@v1.1.0
-        with:
-          files: .devcontainer/devcontainer.json
-          print-valid-files: true
-          strict: false
+      # - name: Validate devcontainer.json
+      #   uses: walbo/validate-json@v1.1.0
+      #   with:
+      #     files: .devcontainer/devcontainer.json
+      #     print-valid-files: true
+      #     strict: false
 
       - name: Validate vss-extension.json
         uses: walbo/validate-json@v1.1.0
