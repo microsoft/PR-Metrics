@@ -33,6 +33,9 @@ jobs:
     name: Prepare Release ${{ inputs.major }}.${{ inputs.minor }}.${{ inputs.patch }}
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
       - name: Validate major
         shell: pwsh
         run: [int]::Parse(${{ inputs.major }})
@@ -44,9 +47,6 @@ jobs:
       - name: Validate patch
         shell: pwsh
         run: [int]::Parse(${{ inputs.patch }})
-
-      - name: Checkout
-        uses: actions/checkout@v3
 
       - name: Version Number – README.md
         uses: mingjun97/file-regex-replace@v1
