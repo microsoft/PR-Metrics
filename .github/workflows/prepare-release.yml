@@ -38,7 +38,7 @@ jobs:
 
       - name: Validate major
         shell: pwsh
-        run: [int]::Parse(${{ inputs.major }})
+        run: '[int]::Parse(${{ inputs.major }})'
 
       - name: Validate minor
         shell: pwsh
