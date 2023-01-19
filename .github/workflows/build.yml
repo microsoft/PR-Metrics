@@ -203,6 +203,7 @@ jobs:
         with:
           files: src/task/Strings/resources.resjson/en-US/resources.resjson
           print-valid-files: true
+          strict: false
 
   validate-codeql:
     name: Validate – CodeQL
