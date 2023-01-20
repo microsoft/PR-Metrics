@@ -59,9 +59,10 @@ jobs:
 
       - name: Detect Changes
         id: detect-changes
+        shell: pwsh
         run: |
           $ChangesPresent = "$(git diff-index --ignore-cr-at-eol --quiet HEAD -- || echo 1)"
-          Write-Output -InputObject "CHANGES_PRESENT=$ChangesPresent"  >> $Env:GITHUB_OUTPUT
+          Write-Output -InputObject "CHANGES_PRESENT=$ChangesPresent" >> $Env:GITHUB_OUTPUT
 
       - if: ${{ steps.detect-changes.outputs.CHANGES_PRESENT != '1' }}
         name: Git – Setup Authentication
