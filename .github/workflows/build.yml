@@ -178,12 +178,12 @@ jobs:
         shell: pwsh
         run: |-
           $FileContent = Get-Content -Path 'package.schema.json' -Raw
-          $FileContent = $FileContent -replace '\s+".+": {\s+"\$ref": "https:\/\/json\.schemastore\.org\/.+\s+},', './'
+          $FileContent = $FileContent -replace '\s+".+": {\s+"\$ref": "https:\/\/json\.schemastore\.org\/.+\s+},', ''
+          $FileContent = $FileContent -replace '\s+".+": {\s+"\$ref": "https:\/\/json\.schemastore\.org\/.+\s+}', ''
           Set-Content -NoNewline -Path 'package.schema.json' -Value $FileContent
 
       - name: Validate package.json
         uses: walbo/validate-json@v1.1.0
-        continue-on-error: true
         with:
           files: package.json
           print-valid-files: true
