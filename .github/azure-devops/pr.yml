@@ -21,10 +21,10 @@ jobs:
     displayName: Delay
     pool: server
     steps:
-    - task: Delay@1
-      displayName: Wait for Deployment
-      inputs:
-        delayForMinutes: '5'
+      - task: Delay@1
+        displayName: Wait for Deployment
+        inputs:
+          delayForMinutes: '5'
 
   - job: PRMetrics_macOS
     displayName: PR Metrics – macOS
