@@ -111,6 +111,13 @@ jobs:
           replacement: PRMetrics/v${{ inputs.major }}.${{ inputs.minor }}.${{ inputs.patch }}
           include: src\/task\/(src|tests)\/repos\/gitHubReposInvoker(\.spec)?\.ts
 
+      - name: Increment Patch
+        id: increment-patch
+        shell: pwsh
+        run: |
+          $IncrementedPatch = [int]::Parse(${{ inputs.patch }}) + 1
+          Write-Output -InputObject "INCREMENTED_PATCH=$IncrementedPatch" >> $Env:GITHUB_OUTPUT
+
       - name: Version Number – prepare-release.yml (major)
         uses: mingjun97/file-regex-replace@v1
         with:
@@ -129,7 +136,7 @@ jobs:
         uses: mingjun97/file-regex-replace@v1
         with:
           regex: '(patch:\s+default: )\d+'
-          replacement: $1${{ inputs.patch + 1 }}
+          replacement: $1${{ steps.increment-patch.outputs.INCREMENTED_PATCH }}
           include: .github\/workflows\/prepare-release\.yml
 
       - name: npm – Install NCU

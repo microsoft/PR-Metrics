@@ -192,7 +192,7 @@ jobs:
         shell: pwsh
         run: |-
           $FileContent = Get-Content -Path 'devcontainer.schema.json' -Raw
-          $FileContent = $FileContent -replace 'draft/2019-09/schema', 'draft-04/schema'
+          $FileContent = $FileContent -replace 'draft/2019-09/schema', 'draft-04/schema#'
           Set-Content -NoNewline -Path 'devcontainer.schema.json' -Value $FileContent
 
       - name: Validate devcontainer.json
@@ -211,7 +211,7 @@ jobs:
         shell: pwsh
         run: |-
           $FileContent = Get-Content -Path 'vss-extension.schema.json' -Raw
-          $FileContent = $FileContent -replace 'draft-07/schema', 'draft-04/schema'
+          $FileContent = $FileContent -replace 'draft-07/schema#', 'draft-04/schema#'
           Set-Content -NoNewline -Path 'vss-extension.schema.json' -Value $FileContent
 
       - name: Validate vss-extension.json
@@ -220,6 +220,7 @@ jobs:
         with:
           files: src/vss-extension.json
           print-valid-files: true
+          strict: false
           schema: vss-extension.schema.json
 
       - name: Validate task.json – Download task.schema.json
@@ -230,7 +231,7 @@ jobs:
         shell: pwsh
         run: |-
           $FileContent = Get-Content -Path 'task.schema.json' -Raw
-          $FileContent = $FileContent -replace '/^connectedService\\\\:.+$/', '/^connectedService:.+$/'
+          $FileContent = $FileContent.replace('/^connectedService\\:.+$/', '/^connectedService:.+$/')
           Set-Content -NoNewline -Path 'task.schema.json' -Value $FileContent
 
       - name: Validate task.json
@@ -239,7 +240,7 @@ jobs:
         with:
           files: src/task/task.json
           print-valid-files: true
-          schema: task.schema.json
+          schema: task.schema.json #problem
 
       - name: Validate task.loc.json
         uses: walbo/validate-json@v1.1.0
@@ -265,7 +266,7 @@ jobs:
         shell: pwsh
         run: |-
           $FileContent = Get-Content -Path 'typedoc.schema.json' -Raw
-          $FileContent = $FileContent -replace 'draft-07/schema', 'draft-04/schema'
+          $FileContent = $FileContent -replace 'draft-07/schema', 'draft-04/schema#'
           Set-Content -NoNewline -Path 'typedoc.schema.json' -Value $FileContent
 
       - name: Validate typedoc.json
