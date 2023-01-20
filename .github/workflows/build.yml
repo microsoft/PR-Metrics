@@ -162,8 +162,6 @@ jobs:
           print-valid-files: true
           strict: false
 
-      # remove continue-on-error
-
       - name: Validate .markdownlint.json
         uses: walbo/validate-json@v1.1.0
         with:
