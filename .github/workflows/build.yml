@@ -58,35 +58,38 @@ jobs:
         run: npm run build:package
 
       - name: Detect Changes
-        run: '"$(git diff-index --ignore-cr-at-eol --quiet HEAD -- || echo 1)" >> $CHANGES'
+        id: detect-changes
+        run: |
+          $ChangesPresent = "$(git diff-index --ignore-cr-at-eol --quiet HEAD -- || echo 1)"
+          Write-Output -InputObject "CHANGES_PRESENT=$ChangesPresent"  >> $Env:GITHUB_OUTPUT
 
-      - if: ${{ CHANGES != '1' }}
+      - if: ${{ steps.detect-changes.outputs.CHANGES_PRESENT != '1' }}
         name: Git – Setup Authentication
         run: gh auth setup-git
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - if: ${{ CHANGES != '1' }}
+      - if: ${{ steps.detect-changes.outputs.CHANGES_PRESENT != '1' }}
         name: Git – Set Name
         run: git config --global user.name "PR Metrics"
 
-      - if: ${{ CHANGES != '1' }}
+      - if: ${{ steps.detect-changes.outputs.CHANGES_PRESENT != '1' }}
         name: Git – Set Email
         run: git config --global user.email "prmetrics@users.noreply.github.com"
 
-      - if: ${{ CHANGES != '1' }}
+      - if: ${{ steps.detect-changes.outputs.CHANGES_PRESENT != '1' }}
         name: Git – Checkout Branch
         run: git checkout "${GITHUB_REF#refs/heads/}"
 
-      - if: ${{ CHANGES != '1' }}
+      - if: ${{ steps.detect-changes.outputs.CHANGES_PRESENT != '1' }}
         name: Git – Add Changed Files
         run: git add -A
 
-      - if: ${{ CHANGES != '1' }}
+      - if: ${{ steps.detect-changes.outputs.CHANGES_PRESENT != '1' }}
         name: Git – Commit Changed Files
         run: git commit -m "Updating dist folder" --allow-empty
 
-      - if: ${{ CHANGES != '1' }}
+      - if: ${{ steps.detect-changes.outputs.CHANGES_PRESENT != '1' }}
         name: Git – Push Changed Files
         run: git push
 
