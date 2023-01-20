@@ -58,7 +58,7 @@ jobs:
         run: npm run build:package
 
       - name: Detect Changes
-        run: "$(git diff-index --ignore-cr-at-eol --quiet HEAD -- || echo 1)" >> $CHANGES
+        run: '"$(git diff-index --ignore-cr-at-eol --quiet HEAD -- || echo 1)" >> $CHANGES'
 
       - if: ${{ CHANGES != '1' }}
         name: Git – Setup Authentication
