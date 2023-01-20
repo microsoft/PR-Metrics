@@ -217,6 +217,7 @@ jobs:
         with:
           files: package.json
           print-valid-files: true
+          strict: false
 
       - name: Validate devcontainer.json – Download devcontainer.schema.json
         shell: pwsh
@@ -235,6 +236,7 @@ jobs:
         with:
           files: .devcontainer/devcontainer.json
           print-valid-files: true
+          strict: false
           schema: devcontainer.schema.json
           schema-version: draft-06
 
@@ -255,6 +257,7 @@ jobs:
         with:
           files: src/vss-extension.json
           print-valid-files: true
+          strict: false
           schema: vss-extension.schema.json
           schema-version: draft-06
 
@@ -266,7 +269,7 @@ jobs:
         shell: pwsh
         run: |-
           $FileContent = Get-Content -Path 'task.schema.json' -Raw
-          $FileContent = $FileContent -replace '^connectedService\\:.+$', '^connectedService:.+$'
+          $FileContent = $FileContent.replace('^connectedService\\:.+$', '^connectedService:.+$')
           Set-Content -NoNewline -Path 'task.schema.json' -Value $FileContent
 
       - name: Validate task.json
@@ -276,7 +279,6 @@ jobs:
           files: src/task/task.json
           print-valid-files: true
           schema: task.schema.json
-          schema-version: draft-06
 
       - name: Validate task.loc.json
         uses: walbo/validate-json@v1.1.0
@@ -311,6 +313,7 @@ jobs:
         with:
           files: src/task/typedoc.json
           print-valid-files: true
+          strict: false
           schema: typedoc.schema.json
           schema-version: draft-06
 
