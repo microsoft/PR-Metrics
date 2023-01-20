@@ -64,33 +64,33 @@ jobs:
           $ChangesPresent = "$(git diff-index --ignore-cr-at-eol --quiet HEAD -- || echo 1)"
           Write-Output -InputObject "CHANGES_PRESENT=$ChangesPresent" >> $Env:GITHUB_OUTPUT
 
-      - if: ${{ steps.detect-changes.outputs.CHANGES_PRESENT != '1' }}
+      - if: ${{ steps.detect-changes.outputs.CHANGES_PRESENT == '1' }}
         name: Git – Setup Authentication
         run: gh auth setup-git
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - if: ${{ steps.detect-changes.outputs.CHANGES_PRESENT != '1' }}
+      - if: ${{ steps.detect-changes.outputs.CHANGES_PRESENT == '1' }}
         name: Git – Set Name
         run: git config --global user.name "PR Metrics"
 
-      - if: ${{ steps.detect-changes.outputs.CHANGES_PRESENT != '1' }}
+      - if: ${{ steps.detect-changes.outputs.CHANGES_PRESENT == '1' }}
         name: Git – Set Email
         run: git config --global user.email "prmetrics@users.noreply.github.com"
 
-      - if: ${{ steps.detect-changes.outputs.CHANGES_PRESENT != '1' }}
+      - if: ${{ steps.detect-changes.outputs.CHANGES_PRESENT == '1' }}
         name: Git – Checkout Branch
         run: git checkout "${GITHUB_REF#refs/heads/}"
 
-      - if: ${{ steps.detect-changes.outputs.CHANGES_PRESENT != '1' }}
+      - if: ${{ steps.detect-changes.outputs.CHANGES_PRESENT == '1' }}
         name: Git – Add Changed Files
         run: git add -A
 
-      - if: ${{ steps.detect-changes.outputs.CHANGES_PRESENT != '1' }}
+      - if: ${{ steps.detect-changes.outputs.CHANGES_PRESENT == '1' }}
         name: Git – Commit Changed Files
-        run: git commit -m "Updating dist folder" --allow-empty
+        run: git commit -m "Updating dist folder"
 
-      - if: ${{ steps.detect-changes.outputs.CHANGES_PRESENT != '1' }}
+      - if: ${{ steps.detect-changes.outputs.CHANGES_PRESENT == '1' }}
         name: Git – Push Changed Files
         run: git push
 
@@ -167,7 +167,6 @@ jobs:
           print-valid-files: true
           strict: false
 
-      # what about package.json?
       # remove continue-on-error
 
       - name: Validate .markdownlint.json
@@ -183,6 +182,7 @@ jobs:
         with:
           files: package.json
           print-valid-files: true
+          strict: false
 
       - name: Validate devcontainer.json – Download devcontainer.schema.json
         shell: pwsh
@@ -192,7 +192,7 @@ jobs:
         shell: pwsh
         run: |-
           $FileContent = Get-Content -Path 'devcontainer.schema.json' -Raw
-          $FileContent = $FileContent -replace 'draft/2019-09/schema', 'draft-06/schema'
+          $FileContent = $FileContent -replace 'draft/2019-09/schema', 'draft-04/schema'
           Set-Content -NoNewline -Path 'devcontainer.schema.json' -Value $FileContent
 
       - name: Validate devcontainer.json
@@ -211,7 +211,7 @@ jobs:
         shell: pwsh
         run: |-
           $FileContent = Get-Content -Path 'vss-extension.schema.json' -Raw
-          $FileContent = $FileContent -replace 'draft-07/schema', 'draft-06/schema'
+          $FileContent = $FileContent -replace 'draft-07/schema', 'draft-04/schema'
           Set-Content -NoNewline -Path 'vss-extension.schema.json' -Value $FileContent
 
       - name: Validate vss-extension.json
@@ -230,7 +230,7 @@ jobs:
         shell: pwsh
         run: |-
           $FileContent = Get-Content -Path 'task.schema.json' -Raw
-          $FileContent = $FileContent -replace '/^connectedService\\:.+$/', '/^connectedService:.+$/'
+          $FileContent = $FileContent -replace '/^connectedService\\\\:.+$/', '/^connectedService:.+$/'
           Set-Content -NoNewline -Path 'task.schema.json' -Value $FileContent
 
       - name: Validate task.json
@@ -265,7 +265,7 @@ jobs:
         shell: pwsh
         run: |-
           $FileContent = Get-Content -Path 'typedoc.schema.json' -Raw
-          $FileContent = $FileContent -replace 'draft-07/schema', 'draft-06/schema'
+          $FileContent = $FileContent -replace 'draft-07/schema', 'draft-04/schema'
           Set-Content -NoNewline -Path 'typedoc.schema.json' -Value $FileContent
 
       - name: Validate typedoc.json
