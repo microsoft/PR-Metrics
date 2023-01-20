@@ -57,27 +57,37 @@ jobs:
       - name: npm – Build Package
         run: npm run build:package
 
-      - name: Git – Setup Authentication
+      - name: Detect Changes
+        run: "$(git diff-index --ignore-cr-at-eol --quiet HEAD -- || echo 1)" >> $CHANGES
+
+      - if: ${{ CHANGES != '1' }}
+        name: Git – Setup Authentication
         run: gh auth setup-git
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Git – Set Name
+      - if: ${{ CHANGES != '1' }}
+        name: Git – Set Name
         run: git config --global user.name "PR Metrics"
 
-      - name: Git – Set Email
+      - if: ${{ CHANGES != '1' }}
+        name: Git – Set Email
         run: git config --global user.email "prmetrics@users.noreply.github.com"
 
-      - name: Git – Checkout Branch
+      - if: ${{ CHANGES != '1' }}
+        name: Git – Checkout Branch
         run: git checkout "${GITHUB_REF#refs/heads/}"
 
-      - name: Git – Add Changed Files
+      - if: ${{ CHANGES != '1' }}
+        name: Git – Add Changed Files
         run: git add -A
 
-      - name: Git – Commit Changed Files
+      - if: ${{ CHANGES != '1' }}
+        name: Git – Commit Changed Files
         run: git commit -m "Updating dist folder" --allow-empty
 
-      - name: Git – Push Changed Files
+      - if: ${{ CHANGES != '1' }}
+        name: Git – Push Changed Files
         run: git push
 
   build:
@@ -163,13 +173,42 @@ jobs:
           files: .markdownlint.json
           print-valid-files: true
 
+      - name: Validate package.json
+        uses: walbo/validate-json@v1.1.0
+        continue-on-error: true
+        with:
+          files: package.json
+          print-valid-files: true
+
+      - name: Validate devcontainer.json – Download devcontainer.schema.json
+        shell: pwsh
+        run: Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/devcontainers/spec/main/schemas/devContainer.base.schema.json' -OutFile 'devcontainer.schema.json'
+
+      - name: Validate devcontainer.json – Update devcontainer.schema.json
+        shell: pwsh
+        run: |-
+          $FileContent = Get-Content -Path 'devcontainer.schema.json' -Raw
+          $FileContent = $FileContent -replace 'draft/2019-09/schema', 'draft-06/schema'
+          Set-Content -NoNewline -Path 'devcontainer.schema.json' -Value $FileContent
+
       - name: Validate devcontainer.json
         uses: walbo/validate-json@v1.1.0
         continue-on-error: true
         with:
           files: .devcontainer/devcontainer.json
           print-valid-files: true
-          schema-version: draft-07
+          schema: devcontainer.schema.json
+
+      - name: Validate vss-extension.json – Download vss-extension.schema.json
+        shell: pwsh
+        run: Invoke-WebRequest -Uri 'https://json.schemastore.org/vss-extension.json' -OutFile 'vss-extension.schema.json'
+
+      - name: Validate vss-extension.json – Update vss-extension.schema.json
+        shell: pwsh
+        run: |-
+          $FileContent = Get-Content -Path 'vss-extension.schema.json' -Raw
+          $FileContent = $FileContent -replace 'draft-07/schema', 'draft-06/schema'
+          Set-Content -NoNewline -Path 'vss-extension.schema.json' -Value $FileContent
 
       - name: Validate vss-extension.json
         uses: walbo/validate-json@v1.1.0
@@ -177,7 +216,18 @@ jobs:
         with:
           files: src/vss-extension.json
           print-valid-files: true
-          schema-version: draft-04
+          schema: vss-extension.schema.json
+
+      - name: Validate task.json – Download task.schema.json
+        shell: pwsh
+        run: Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/microsoft/azure-pipelines-task-lib/master/tasks.schema.json' -OutFile 'task.schema.json'
+
+      - name: Validate task.json – Update task.schema.json
+        shell: pwsh
+        run: |-
+          $FileContent = Get-Content -Path 'task.schema.json' -Raw
+          $FileContent = $FileContent -replace '/^connectedService\\:.+$/', '/^connectedService:.+$/'
+          Set-Content -NoNewline -Path 'task.schema.json' -Value $FileContent
 
       - name: Validate task.json
         uses: walbo/validate-json@v1.1.0
@@ -185,7 +235,7 @@ jobs:
         with:
           files: src/task/task.json
           print-valid-files: true
-          schema-version: draft-04
+          schema: task.schema.json
 
       - name: Validate task.loc.json
         uses: walbo/validate-json@v1.1.0
@@ -193,7 +243,7 @@ jobs:
         with:
           files: src/task/task.loc.json
           print-valid-files: true
-          schema-version: draft-04
+          schema: task.schema.json
 
       - name: Validate tsconfig.json
         uses: walbo/validate-json@v1.1.0
@@ -203,13 +253,24 @@ jobs:
           print-valid-files: true
           strict: false
 
+      - name: Validate typedoc.json – Download typedoc.schema.json
+        shell: pwsh
+        run: Invoke-WebRequest -Uri 'https://typedoc.org/schema.json' -OutFile 'typedoc.schema.json'
+
+      - name: Validate typedoc.json – Update typedoc.schema.json
+        shell: pwsh
+        run: |-
+          $FileContent = Get-Content -Path 'typedoc.schema.json' -Raw
+          $FileContent = $FileContent -replace 'draft-07/schema', 'draft-06/schema'
+          Set-Content -NoNewline -Path 'typedoc.schema.json' -Value $FileContent
+
       - name: Validate typedoc.json
         uses: walbo/validate-json@v1.1.0
         continue-on-error: true
         with:
           files: src/task/typedoc.json
           print-valid-files: true
-          schema-version: draft-07
+          schema: typedoc.schema.json
 
       - name: Validate resources.resjson (en-US)
         uses: walbo/validate-json@v1.1.0
