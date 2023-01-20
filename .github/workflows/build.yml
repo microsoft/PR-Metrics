@@ -170,30 +170,6 @@ jobs:
           files: .markdownlint.json
           print-valid-files: true
 
-      - name: Validate package.json – Download eslintrc.schema.json
-        shell: pwsh
-        run: Invoke-WebRequest -Uri 'https://json.schemastore.org/eslintrc.json' -OutFile 'eslintrc.json'
-
-      - name: Validate package.json – Download prettierrc.schema.json
-        shell: pwsh
-        run: Invoke-WebRequest -Uri 'https://json.schemastore.org/prettierrc.json' -OutFile 'prettierrc.json'
-
-      - name: Validate package.json – Download stylelintrc.schema.json
-        shell: pwsh
-        run: Invoke-WebRequest -Uri 'https://json.schemastore.org/stylelintrc.json' -OutFile 'stylelintrc.json'
-
-      - name: Validate package.json – Download ava.schema.json
-        shell: pwsh
-        run: Invoke-WebRequest -Uri 'https://json.schemastore.org/ava.json' -OutFile 'ava.json'
-
-      - name: Validate package.json – Download semantic-release.schema.json
-        shell: pwsh
-        run: Invoke-WebRequest -Uri 'https://json.schemastore.org/semantic-release.json' -OutFile 'semantic-release.json'
-
-      - name: Validate package.json – Download jscpd.schema.json
-        shell: pwsh
-        run: Invoke-WebRequest -Uri 'https://json.schemastore.org/jscpd.json' -OutFile 'jscpd.json'
-
       - name: Validate package.json – Download package.schema.json
         shell: pwsh
         run: Invoke-WebRequest -Uri 'https://json.schemastore.org/package.json' -OutFile 'package.schema.json'
@@ -202,7 +178,7 @@ jobs:
         shell: pwsh
         run: |-
           $FileContent = Get-Content -Path 'package.schema.json' -Raw
-          $FileContent = $FileContent -replace 'https://json.schemastore.org/', './'
+          $FileContent = $FileContent -replace '\s+".+": {\s+"\$ref": "https:\/\/json\.schemastore\.org\/.+\s+},', './'
           Set-Content -NoNewline -Path 'package.schema.json' -Value $FileContent
 
       - name: Validate package.json
@@ -227,10 +203,10 @@ jobs:
 
       - name: Validate devcontainer.json
         uses: walbo/validate-json@v1.1.0
-        continue-on-error: true
         with:
           files: .devcontainer/devcontainer.json
           print-valid-files: true
+          strict: false
           schema: devcontainer.schema.json
 
       - name: Validate vss-extension.json – Download vss-extension.schema.json
@@ -246,7 +222,6 @@ jobs:
 
       - name: Validate vss-extension.json
         uses: walbo/validate-json@v1.1.0
-        continue-on-error: true
         with:
           files: src/vss-extension.json
           print-valid-files: true
@@ -266,7 +241,6 @@ jobs:
 
       - name: Validate task.json
         uses: walbo/validate-json@v1.1.0
-        continue-on-error: true
         with:
           files: src/task/task.json
           print-valid-files: true
@@ -274,7 +248,6 @@ jobs:
 
       - name: Validate task.loc.json
         uses: walbo/validate-json@v1.1.0
-        continue-on-error: true
         with:
           files: src/task/task.loc.json
           print-valid-files: true
@@ -282,7 +255,6 @@ jobs:
 
       - name: Validate tsconfig.json
         uses: walbo/validate-json@v1.1.0
-        continue-on-error: true
         with:
           files: src/task/tsconfig.json
           print-valid-files: true
@@ -301,7 +273,6 @@ jobs:
 
       - name: Validate typedoc.json
         uses: walbo/validate-json@v1.1.0
-        continue-on-error: true
         with:
           files: src/task/typedoc.json
           print-valid-files: true
@@ -310,7 +281,6 @@ jobs:
 
       - name: Validate resources.resjson (en-US)
         uses: walbo/validate-json@v1.1.0
-        continue-on-error: true
         with:
           files: src/task/Strings/resources.resjson/en-US/resources.resjson
           print-valid-files: true
