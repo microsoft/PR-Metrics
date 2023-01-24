@@ -204,7 +204,7 @@ jobs:
         uses: DamianReeves/write-file-action@v1.2
         with:
           path: ./.github/workflows/prepare-release-comment.md
-          contents: ${{ steps.prCreateComment.outputs.result }}"
+          contents: ${{ steps.prCreateComment.outputs.result }}
           write-mode: overwrite
 
       - name: PR – Comment
