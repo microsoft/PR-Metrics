@@ -7,9 +7,14 @@ name: Build
 
 on:
   push:
-    branches: [main]
+  schedule:
+    branches:
+      - main
   pull_request:
-    branches: [main]
+    branches:
+      - main
+  schedule:
+    - cron: 0 0 * * 1
   workflow_dispatch: null
 
 jobs:
