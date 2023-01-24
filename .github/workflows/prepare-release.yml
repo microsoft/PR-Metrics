@@ -25,7 +25,6 @@ on:
         type: string
 
 permissions:
-  actions: write
   contents: write
   pull-requests: write
 
@@ -174,6 +173,8 @@ jobs:
 
       - name: Git – Push Changed Files
         run: git push --set-upstream origin release/v${{ inputs.major }}.${{ inputs.minor }}.${{ inputs.patch }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.PREPARE_RELEASE }}
 
       - name: PR – Create
         run: >
