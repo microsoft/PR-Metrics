@@ -186,8 +186,6 @@ jobs:
           --label "release"
           --assignee "${{ github.actor }}"
           --reviewer "${{ github.actor }}"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: PR – Get Number
         uses: jwalton/gh-find-current-pr@v1.3.0
@@ -201,8 +199,15 @@ jobs:
           _format-key: '%%key%%'
           pr: ${{ steps.prGetNumber.outputs.pr }}
 
+      - name: PR – Write Comment to File
+        uses: DamianReeves/write-file-action@v1.2
+        with:
+          path: ./.github/workflows/prepare-release-comment.md
+          contents: ${{ steps.prCreateComment.outputs.result }}"
+          write-mode: overwrite
+
       - name: PR – Comment
-        run: gh pr comment --body "${{ steps.prCreateComment.outputs.result }}"
+        run: gh pr comment --body-file "./.github/workflows/prepare-release-comment.md"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
