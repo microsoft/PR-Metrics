@@ -48,6 +48,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
+          # Token has read-write access to actions and code for this repo only.
           token: ${{ secrets.PREPARE_RELEASE }}
 
       - name: Version Number – README.md
