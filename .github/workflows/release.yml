@@ -197,7 +197,8 @@ jobs:
         with:
           _input-file: ./.github/workflows/prepare-release-comment.md
           _format-key: '%%key%%'
-          pr: ${{ steps.prGetNumber.outputs.pr }}
+        env:
+          INPUT_PR: ${{ steps.prGetNumber.outputs.pr }}
 
       - name: PR – Write Comment to File
         uses: DamianReeves/write-file-action@v1.2
