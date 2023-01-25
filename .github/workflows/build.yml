@@ -74,25 +74,25 @@ jobs:
           Write-Output -InputObject $ChangesPresent
           Write-Output -InputObject "CHANGES_PRESENT=$ChangesPresent" >> $Env:GITHUB_OUTPUT
 
-      - if: ${{ steps.detect-changes.outputs.CHANGES_PRESENT == 'True' }}
+      - if: ${{ steps.detect-changes.outputs.CHANGES_PRESENT == 'False' }}
         name: Git – Setup Authentication
         run: gh auth setup-git
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - if: ${{ steps.detect-changes.outputs.CHANGES_PRESENT == 'True' }}
+      - if: ${{ steps.detect-changes.outputs.CHANGES_PRESENT == 'False' }}
         name: Git – Set Name
         run: git config --global user.name "PR Metrics"
 
-      - if: ${{ steps.detect-changes.outputs.CHANGES_PRESENT == 'True' }}
+      - if: ${{ steps.detect-changes.outputs.CHANGES_PRESENT == 'False' }}
         name: Git – Set Email
         run: git config --global user.email "prmetrics@users.noreply.github.com"
 
-      - if: ${{ steps.detect-changes.outputs.CHANGES_PRESENT == 'True' }}
+      - if: ${{ steps.detect-changes.outputs.CHANGES_PRESENT == 'False' }}
         name: Git – Commit Changed Files
         run: git commit -m "Updating dist folder"
 
-      - if: ${{ steps.detect-changes.outputs.CHANGES_PRESENT == 'True' }}
+      - if: ${{ steps.detect-changes.outputs.CHANGES_PRESENT == 'False' }}
         name: Git – Push Changed Files
         run: git push
 
