@@ -41,7 +41,14 @@ jobs:
     name: Update dist Folder
     runs-on: ubuntu-latest
     permissions:
+      actions: write
+      checks: write
       contents: write
+      id-token: write
+      pull-requests: write
+      repository-projects: write
+      security-events: write
+      statuses: write
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -298,6 +305,13 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       actions: write
+      checks: write
+      contents: write
+      id-token: write
+      pull-requests: write
+      repository-projects: write
+      security-events: write
+      statuses: write
     steps:
       - name: Checkout
         uses: actions/checkout@v3
