@@ -40,7 +40,7 @@ jobs:
   update-dist:
     name: Update dist Folder
     runs-on: ubuntu-latest
-    permissions:
+    permissions: {}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
