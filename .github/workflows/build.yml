@@ -58,13 +58,19 @@ jobs:
       - name: npm – Build Package
         run: npm run build:package
 
+      - name: Git – Checkout Branch
+        run: git checkout "${GITHUB_REF#refs/heads/}"
+
+      - name: Git – Add Changed Files
+        run: git add -A
+
       - name: Detect Changes
         id: detect-changes
         shell: pwsh
         run: |
-          $GitDiffIndex = git diff-index --ignore-cr-at-eol HEAD
-          Write-Output -InputObject $GitDiffIndex
-          $ChangesPresent = $GitDiffIndex.Length -gt 0
+          $GitStatus = git status
+          Write-Output -InputObject $GitStatus
+          $ChangesPresent = $GitStatus.Contains("nothing to commit, working tree clean")
           Write-Output -InputObject $ChangesPresent
           Write-Output -InputObject "CHANGES_PRESENT=$ChangesPresent" >> $Env:GITHUB_OUTPUT
 
@@ -81,14 +87,6 @@ jobs:
       - if: ${{ steps.detect-changes.outputs.CHANGES_PRESENT == 'True' }}
         name: Git – Set Email
         run: git config --global user.email "prmetrics@users.noreply.github.com"
-
-      - if: ${{ steps.detect-changes.outputs.CHANGES_PRESENT == 'True' }}
-        name: Git – Checkout Branch
-        run: git checkout "${GITHUB_REF#refs/heads/}"
-
-      - if: ${{ steps.detect-changes.outputs.CHANGES_PRESENT == 'True' }}
-        name: Git – Add Changed Files
-        run: git add -A
 
       - if: ${{ steps.detect-changes.outputs.CHANGES_PRESENT == 'True' }}
         name: Git – Commit Changed Files
