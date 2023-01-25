@@ -40,7 +40,8 @@ jobs:
   update-dist:
     name: Update dist Folder
     runs-on: ubuntu-latest
-    permissions: {}
+    permissions:
+      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -295,7 +296,8 @@ jobs:
   validate-codeql:
     name: Validate – CodeQL
     runs-on: ubuntu-latest
-    permissions: {}
+    permissions:
+      actions: write
     steps:
       - name: Checkout
         uses: actions/checkout@v3
