@@ -24,14 +24,11 @@ on:
         required: true
         type: string
 
-permissions:
-  contents: write
-  pull-requests: write
-
 jobs:
   prepare-release:
     name: Prepare Release ${{ inputs.major }}.${{ inputs.minor }}.${{ inputs.patch }}
     runs-on: ubuntu-latest
+    permissions: {}
     steps:
       - name: Validate major
         shell: pwsh
