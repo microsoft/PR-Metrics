@@ -28,7 +28,8 @@ jobs:
   prepare-release:
     name: Prepare Release ${{ inputs.major }}.${{ inputs.minor }}.${{ inputs.patch }}
     runs-on: ubuntu-latest
-    permissions: {}
+    permissions:
+      pull-requests: write
     steps:
       - name: Validate major
         shell: pwsh
