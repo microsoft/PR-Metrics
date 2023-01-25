@@ -192,24 +192,29 @@ jobs:
         uses: jwalton/gh-find-current-pr@v1.3.2
         id: prGetNumber
 
-      - name: PR – Create Comment
+      - name: PR – Create Comment 1
         uses: bluwy/substitute-string-action@v2.0.1
         id: prCreateComment
         with:
-          _input-file: ./.github/workflows/prepare-release-comment.md
+          _input-file: ./.github/workflows/prepare-release-comment1.md
           _format-key: '%%key%%'
         env:
           INPUT_PR: ${{ steps.prGetNumber.outputs.pr }}
 
-      - name: PR – Write Comment to File
+      - name: PR – Write Comment 1 to File
         uses: DamianReeves/write-file-action@v1.2
         with:
-          path: ./.github/workflows/prepare-release-comment.md
+          path: ./.github/workflows/prepare-release-comment1.md
           contents: ${{ steps.prCreateComment.outputs.result }}
           write-mode: overwrite
 
-      - name: PR – Comment
-        run: gh pr comment --body-file "./.github/workflows/prepare-release-comment.md"
+      - name: PR – Comment 1
+        run: gh pr comment --body-file "./.github/workflows/prepare-release-comment1.md"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: PR – Comment 2
+        run: gh pr comment --body-file "./.github/workflows/prepare-release-comment2.md"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
