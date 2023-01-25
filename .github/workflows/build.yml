@@ -62,36 +62,37 @@ jobs:
         id: detect-changes
         shell: pwsh
         run: |
-          $ChangesPresent = "$(git diff-index --ignore-cr-at-eol --quiet HEAD -- || echo 1)"
+          $GitDiffIndex = git diff-index --ignore-cr-at-eol HEAD
+          $ChangesPresent = $GitDiffIndex.Length -gt 0
           Write-Output -InputObject "CHANGES_PRESENT=$ChangesPresent" >> $Env:GITHUB_OUTPUT
 
-      - if: ${{ steps.detect-changes.outputs.CHANGES_PRESENT == '1' }}
+      - if: ${{ steps.detect-changes.outputs.CHANGES_PRESENT == 'True' }}
         name: Git – Setup Authentication
         run: gh auth setup-git
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - if: ${{ steps.detect-changes.outputs.CHANGES_PRESENT == '1' }}
+      - if: ${{ steps.detect-changes.outputs.CHANGES_PRESENT == 'True' }}
         name: Git – Set Name
         run: git config --global user.name "PR Metrics"
 
-      - if: ${{ steps.detect-changes.outputs.CHANGES_PRESENT == '1' }}
+      - if: ${{ steps.detect-changes.outputs.CHANGES_PRESENT == 'True' }}
         name: Git – Set Email
         run: git config --global user.email "prmetrics@users.noreply.github.com"
 
-      - if: ${{ steps.detect-changes.outputs.CHANGES_PRESENT == '1' }}
+      - if: ${{ steps.detect-changes.outputs.CHANGES_PRESENT == 'True' }}
         name: Git – Checkout Branch
         run: git checkout "${GITHUB_REF#refs/heads/}"
 
-      - if: ${{ steps.detect-changes.outputs.CHANGES_PRESENT == '1' }}
+      - if: ${{ steps.detect-changes.outputs.CHANGES_PRESENT == 'True' }}
         name: Git – Add Changed Files
         run: git add -A
 
-      - if: ${{ steps.detect-changes.outputs.CHANGES_PRESENT == '1' }}
+      - if: ${{ steps.detect-changes.outputs.CHANGES_PRESENT == 'True' }}
         name: Git – Commit Changed Files
         run: git commit -m "Updating dist folder"
 
-      - if: ${{ steps.detect-changes.outputs.CHANGES_PRESENT == '1' }}
+      - if: ${{ steps.detect-changes.outputs.CHANGES_PRESENT == 'True' }}
         name: Git – Push Changed Files
         run: git push
 
