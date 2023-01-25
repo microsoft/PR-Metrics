@@ -40,6 +40,7 @@ jobs:
   update-dist:
     name: Update dist Folder
     runs-on: ubuntu-latest
+    permissions:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -70,29 +71,29 @@ jobs:
         run: |
           $GitStatus = git status
           Write-Output -InputObject $GitStatus
-          $ChangesPresent = $GitStatus.Contains("nothing to commit, working tree clean")
-          Write-Output -InputObject $ChangesPresent
-          Write-Output -InputObject "CHANGES_PRESENT=$ChangesPresent" >> $Env:GITHUB_OUTPUT
+          $NoChangesPresent = $GitStatus.Contains("nothing to commit, working tree clean")
+          Write-Output -InputObject $NoChangesPresent
+          Write-Output -InputObject "NO_CHANGES_PRESENT=$NoChangesPresent" >> $Env:GITHUB_OUTPUT
 
-      - if: ${{ steps.detect-changes.outputs.CHANGES_PRESENT == 'False' }}
+      - if: ${{ steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
         name: Git – Setup Authentication
         run: gh auth setup-git
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - if: ${{ steps.detect-changes.outputs.CHANGES_PRESENT == 'False' }}
+      - if: ${{ steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
         name: Git – Set Name
         run: git config --global user.name "PR Metrics"
 
-      - if: ${{ steps.detect-changes.outputs.CHANGES_PRESENT == 'False' }}
+      - if: ${{ steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
         name: Git – Set Email
         run: git config --global user.email "prmetrics@users.noreply.github.com"
 
-      - if: ${{ steps.detect-changes.outputs.CHANGES_PRESENT == 'False' }}
+      - if: ${{ steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
         name: Git – Commit Changed Files
         run: git commit -m "Updating dist folder"
 
-      - if: ${{ steps.detect-changes.outputs.CHANGES_PRESENT == 'False' }}
+      - if: ${{ steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
         name: Git – Push Changed Files
         run: git push
 
