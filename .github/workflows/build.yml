@@ -40,6 +40,8 @@ jobs:
   update-dist:
     name: Update dist Folder
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -63,7 +65,9 @@ jobs:
         shell: pwsh
         run: |
           $GitDiffIndex = git diff-index --ignore-cr-at-eol HEAD
+          Write-Output -InputObject $GitDiffIndex
           $ChangesPresent = $GitDiffIndex.Length -gt 0
+          Write-Output -InputObject $ChangesPresent
           Write-Output -InputObject "CHANGES_PRESENT=$ChangesPresent" >> $Env:GITHUB_OUTPUT
 
       - if: ${{ steps.detect-changes.outputs.CHANGES_PRESENT == 'True' }}
