@@ -189,7 +189,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: PR – Get Number
-        uses: jwalton/gh-find-current-pr@v1.3.0
+        uses: jwalton/gh-find-current-pr@v1.3.2
         id: prGetNumber
 
       - name: PR – Create Comment
