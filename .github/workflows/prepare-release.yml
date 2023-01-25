@@ -24,14 +24,12 @@ on:
         required: true
         type: string
 
-permissions:
-  contents: write
-  pull-requests: write
-
 jobs:
   prepare-release:
     name: Prepare Release ${{ inputs.major }}.${{ inputs.minor }}.${{ inputs.patch }}
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
     steps:
       - name: Validate major
         shell: pwsh
@@ -48,7 +46,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          # Token has read-write access to actions and code for this repo only.
+          # Fine-grained personal access token (PAT) with the following permissions for microsoft/PR-Metrics:
+          # - Read access to metadata
+          # - Read and Write access to actions and code (aka content)
           token: ${{ secrets.PREPARE_RELEASE }}
 
       - name: Version Number – README.md

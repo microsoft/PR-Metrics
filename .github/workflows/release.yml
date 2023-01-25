@@ -46,7 +46,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          # Token has read-write access to Actions and Contents for this repo only.
+          # Fine-grained personal access token (PAT) with the following permissions for microsoft/PR-Metrics:
+          # - Read access to metadata
+          # - Read and Write access to actions and code (aka content)
           token: ${{ secrets.PREPARE_RELEASE }}
 
       - name: Version Number – README.md
@@ -230,6 +232,7 @@ jobs:
 #   release:
 #     name: Release
 #     runs-on: ubuntu-latest
+#     permissions: {}
 #     steps:
 #       - name: Checkout
 #         uses: actions/checkout@v3
