@@ -101,13 +101,13 @@ jobs:
       #   run: gpg -K
       #   shell: bash
 
-      # - if: ${{ steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
-      #   name: Git – Set Name
-      #   run: git config --global user.name "PR Metrics"
+      - if: ${{ steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
+        name: Git – Set Name
+        run: git config --global user.name "PR Metrics"
 
-      # - if: ${{ steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
-      #   name: Git – Set Email
-      #   run: git config --global user.email "prmetrics@users.noreply.github.com"
+      - if: ${{ steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
+        name: Git – Set Email
+        run: git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
       - if: ${{ steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
         name: Git – Commit Changed Files
