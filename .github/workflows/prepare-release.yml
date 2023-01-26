@@ -172,7 +172,8 @@ jobs:
         id: git-gpg-authentication
         uses: crazy-max/ghaction-import-gpg@v5.2.0
         with:
-          # GPG Private Key is for name "PR Metrics" and email "prmetrics@users.noreply.github.com". Created as per
+          # GPG Private Key must have a valid email address and be added to the GitHub account associated with
+          # that email address. Created as per
           # https://docs.github.com/authentication/managing-commit-signature-verification/generating-a-new-gpg-key.
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
           passphrase: ${{ secrets.GPG_PASSPHRASE }}
