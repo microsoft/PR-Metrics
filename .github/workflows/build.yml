@@ -62,7 +62,7 @@ jobs:
         run: npm run build:package
 
       - name: Git – Checkout Branch
-        run: git checkout "${GITHUB_REF#refs/heads/}"
+        run: git checkout "$GITHUB_HEAD_REF"
 
       - name: Git – Add Changed Files
         run: git add -A
