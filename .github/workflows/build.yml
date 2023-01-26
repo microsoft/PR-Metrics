@@ -97,9 +97,8 @@ jobs:
           git_user_signingkey: true
 
       - name: List keys
-          run: |
-            gpg -K
-          shell: bash
+        run: gpg -K
+        shell: bash
 
       # - if: ${{ steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
       #   name: Git – Set Name
