@@ -14,7 +14,6 @@ on:
       - main
   schedule:
     - cron: 0 0 * * 1
-  workflow_dispatch: null
 
 jobs:
   deploy:
@@ -45,6 +44,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       - name: Install Node.js
         uses: actions/setup-node@v3
@@ -134,7 +135,8 @@ jobs:
     name: Test GitHub Action
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      pull-requests: write
+      statuses: write
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -337,11 +339,11 @@ jobs:
           VALIDATE_TYPESCRIPT_STANDARD: false
 
   dependabot:
-    #TODO: Add back line below after finishing tests.
-    #if: ${{ github.actor == 'dependabot[bot]' }}
+    if: ${{ github.actor == 'dependabot[bot]' }}
     name: Dependabot
     runs-on: ubuntu-latest
     permissions:
+      contents: write
       pull-requests: write
     steps:
       - name: Approve

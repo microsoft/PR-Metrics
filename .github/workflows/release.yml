@@ -6,6 +6,9 @@
 name: Prepare Release
 
 on:
+  schedule:
+    # Run every quarter.
+    - cron: 0 0 1 */3 *
   workflow_dispatch:
     inputs:
       major:
@@ -161,7 +164,7 @@ jobs:
         run: npm update
 
       - name: npm – Build Package
-        run: npm run build:package
+        run: npm run build:Package
 
       - name: Git – Set Name
         run: git config --global user.name "github-actions[bot]"
