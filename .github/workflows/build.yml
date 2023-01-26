@@ -38,7 +38,7 @@ jobs:
         run: npm run deploy
 
   update-code:
-    name: update-code
+    name: Update Code
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -133,7 +133,8 @@ jobs:
   test-github-action:
     name: Test GitHub Action
     runs-on: ubuntu-latest
-    permissions: {}
+    permissions:
+      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -340,7 +341,8 @@ jobs:
     #if: ${{ github.actor == 'dependabot[bot]' }}
     name: Dependabot
     runs-on: ubuntu-latest
-    permissions: {}
+    permissions:
+      pull-requests: write
     steps:
       - name: Approve
         run: gh pr review --approve "$PR_URL"

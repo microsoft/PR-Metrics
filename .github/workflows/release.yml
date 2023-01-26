@@ -84,7 +84,7 @@ jobs:
       - name: Version Number – task.json
         uses: mingjun97/file-regex-replace@v1
         with:
-          regex: PR Metrics \d+\.\d+\.\d+
+          regex: PR Metrics v\d+\.\d+\.\d+
           replacement: PR Metrics v${{ env.version }}
           include: src\/task\/task\.json
 
@@ -180,11 +180,6 @@ jobs:
 
       - name: Git – Push Changed Files
         run: git push --set-upstream origin release/v${{ env.version }}
-
-      - name: PR – Setup Authentication
-        run: gh auth setup-git
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: PR – Create
         run: >
