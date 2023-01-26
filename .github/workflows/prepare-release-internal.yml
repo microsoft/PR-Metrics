@@ -78,7 +78,7 @@ jobs:
       - name: Version Number – task.json
         uses: mingjun97/file-regex-replace@v1
         with:
-          regex: PR Metrics \d+\.\d+\.\d+
+          regex: PR Metrics v\d+\.\d+\.\d+
           replacement: PR Metrics v${{ env.version }}
           include: src\/task\/task\.json
 
@@ -149,21 +149,21 @@ jobs:
         uses: mingjun97/file-regex-replace@v1
         with:
           regex: inputs\.major \|\| \d+
-          replacement: inputs\.major \|\| ${{ inputs.major }}
+          replacement: inputs.major || ${{ inputs.major }}
           include: .github\/workflows\/prepare-release\.yml
 
       - name: Version Number – prepare-release.yml (minor passthrough)
         uses: mingjun97/file-regex-replace@v1
         with:
           regex: inputs\.minor \|\| \d+
-          replacement: inputs\.minor \|\| ${{ inputs.minor }}
+          replacement: inputs.minor || ${{ inputs.minor }}
           include: .github\/workflows\/prepare-release\.yml
 
       - name: Version Number – prepare-release.yml (patch passthrough)
         uses: mingjun97/file-regex-replace@v1
         with:
           regex: inputs\.patch \|\| \d+
-          replacement: inputs\.patch \|\| ${{ steps.increment-patch.outputs.INCREMENTED_PATCH }}
+          replacement: inputs.patch || ${{ steps.increment-patch.outputs.INCREMENTED_PATCH }}
           include: .github\/workflows\/prepare-release\.yml
 
       - name: npm – Install NCU
