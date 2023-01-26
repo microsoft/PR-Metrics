@@ -29,8 +29,6 @@ on:
 
 jobs:
   prepare-release:
-    name: Prepare Release
-    runs-on: ubuntu-latest
     uses: ./.github/workflows/prepare-release-internal.yml
     secrets: inherit
     with:
