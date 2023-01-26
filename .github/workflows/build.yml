@@ -76,11 +76,15 @@ jobs:
           Write-Output -InputObject $NoChangesPresent
           Write-Output -InputObject "NO_CHANGES_PRESENT=$NoChangesPresent" >> $Env:GITHUB_OUTPUT
 
-      - if: ${{ steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
-        name: Git – Setup Authentication
-        run: gh auth setup-git
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # - if: ${{ steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
+      #   name: Git – Setup Authentication
+      #   run: gh auth setup-git
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Configure GPG Key
+      run: |
+        export GPG_TTY=$(tty)
 
       - uses: chainguard-dev/actions/setup-gitsign@main
       - shell: bash
