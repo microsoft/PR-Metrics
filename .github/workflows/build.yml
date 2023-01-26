@@ -111,10 +111,14 @@ jobs:
       - if: ${{ steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
         name: Git – Commit Changed Files
         run: git commit -m "Updating dist folder"
+        env:
+          GITHUB_TOKEN: ${{ secrets.PREPARE_RELEASE_PR_CREATE }}
 
       - if: ${{ steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
         name: Git – Push Changed Files
         run: git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.PREPARE_RELEASE_PR_CREATE }}
 
   build:
     name: Build
