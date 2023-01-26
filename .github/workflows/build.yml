@@ -97,6 +97,9 @@ jobs:
           git_config_global: true
           git_user_signingkey: true
 
+      - name: List
+        run: gpg -K
+
       # - if: ${{ steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
       #   name: Git – Set Name
       #   run: git config --global user.name "${{ steps.git-gpg-authentication.outputs.name }}"
