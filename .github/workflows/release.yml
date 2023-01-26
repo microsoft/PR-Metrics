@@ -29,9 +29,9 @@ on:
 
 jobs:
   prepare-release:
-    name: Prepare Release ${{ inputs.major }}.${{ inputs.minor }}.${{ inputs.patch }}
+    name: Prepare Release
     runs-on: ubuntu-latest
-    uses: ./.github/workflows/support/prepare-release.yml
+    uses: ./.github/workflows/prepare-release-internal.yml
     secrets: inherit
     with:
       major: ${{ inputs.major || 1 }}

@@ -3,7 +3,7 @@
 
 ---
 
-name: Prepare Release
+name: Prepare Release (Internal)
 
 on:
   workflow_call:
