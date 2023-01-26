@@ -45,6 +45,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          # Fine-grained Personal Access Token (PAT) with the following permissions for microsoft/PR-Metrics:
+          # - Read access to Metadata
+          # - Read and Write access to Actions and Code (aka Contents)
+          token: ${{ secrets.PREPARE_RELEASE_CHECKOUT }}
 
       - name: Install Node.js
         uses: actions/setup-node@v3
