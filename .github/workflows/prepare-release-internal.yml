@@ -124,25 +124,46 @@ jobs:
           $IncrementedPatch = [int]::Parse(${{ inputs.patch }}) + 1
           Write-Output -InputObject "INCREMENTED_PATCH=$IncrementedPatch" >> $Env:GITHUB_OUTPUT
 
-      - name: Version Number – prepare-release.yml (major)
+      - name: Version Number – prepare-release.yml (major input)
         uses: mingjun97/file-regex-replace@v1
         with:
           regex: '(major:\s+default: )\d+'
           replacement: $1${{ inputs.major }}
           include: .github\/workflows\/prepare-release\.yml
 
-      - name: Version Number – prepare-release.yml (minor)
+      - name: Version Number – prepare-release.yml (minor input)
         uses: mingjun97/file-regex-replace@v1
         with:
           regex: '(minor:\s+default: )\d+'
           replacement: $1${{ inputs.minor }}
           include: .github\/workflows\/prepare-release\.yml
 
-      - name: Version Number – prepare-release.yml (patch)
+      - name: Version Number – prepare-release.yml (patch input)
         uses: mingjun97/file-regex-replace@v1
         with:
           regex: '(patch:\s+default: )\d+'
           replacement: $1${{ steps.increment-patch.outputs.INCREMENTED_PATCH }}
+          include: .github\/workflows\/prepare-release\.yml
+
+      - name: Version Number – prepare-release.yml (major passthrough)
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: inputs\.major \|\| \d+
+          replacement: inputs\.major \|\| ${{ inputs.major }}
+          include: .github\/workflows\/prepare-release\.yml
+
+      - name: Version Number – prepare-release.yml (minor passthrough)
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: inputs\.minor \|\| \d+
+          replacement: inputs\.minor \|\| ${{ inputs.minor }}
+          include: .github\/workflows\/prepare-release\.yml
+
+      - name: Version Number – prepare-release.yml (patch passthrough)
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: inputs\.patch \|\| \d+
+          replacement: inputs\.patch \|\| ${{ steps.increment-patch.outputs.INCREMENTED_PATCH }}
           include: .github\/workflows\/prepare-release\.yml
 
       - name: npm – Install NCU
