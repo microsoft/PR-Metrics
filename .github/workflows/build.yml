@@ -109,7 +109,7 @@ jobs:
         name: Git – Commit Changed Files
         run: git commit -m "Updating dist folder"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.TEST_TOKEN }}
           GIT_AUTHOR_NAME: ${{ steps.git-gpg-authentication.outputs.name }}
           GIT_AUTHOR_EMAIL: ${{ steps.git-gpg-authentication.outputs.email }}
           GIT_COMMITTER_NAME: ${{ steps.git-gpg-authentication.outputs.name }}
