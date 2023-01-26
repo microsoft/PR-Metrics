@@ -134,8 +134,6 @@ jobs:
     name: Test GitHub Action
     runs-on: ubuntu-latest
     permissions:
-      actions: write
-      contents: write
       pull-requests: write
       statuses: write
     steps:
@@ -345,9 +343,6 @@ jobs:
     name: Dependabot
     runs-on: ubuntu-latest
     permissions:
-      actions: write
-      contents: write
-      pull-requests: write
       statuses: write
     steps:
       - name: Approve
