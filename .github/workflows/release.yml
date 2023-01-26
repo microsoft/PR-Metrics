@@ -164,7 +164,7 @@ jobs:
         run: npm update
 
       - name: npm – Build Package
-        run: npm run build:Package
+        run: npm run build:package
 
       - name: Git – Set Name
         run: git config --global user.name "github-actions[bot]"
