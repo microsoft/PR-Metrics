@@ -45,6 +45,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          # Fine-grained Personal Access Token (PAT) with the following permissions for microsoft/PR-Metrics:
+          # - Read access to Metadata
+          # - Read and Write access to Actions and Code (aka Contents)
+          token: ${{ secrets.PREPARE_RELEASE_CHECKOUT }}
 
       - name: Install Node.js
         uses: actions/setup-node@v3
@@ -80,7 +85,7 @@ jobs:
         name: Git – Setup Authentication
         run: gh auth setup-git
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PREPARE_RELEASE_CHECKOUT }}
 
       - if: ${{ steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
         name: Git – GPG Authentication
@@ -110,15 +115,11 @@ jobs:
 
       - if: ${{ steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
         name: Git – Commit Changed Files
-        run: git commit -m "Updating dist folder"
-        env:
-          GITHUB_TOKEN: ${{ secrets.PREPARE_RELEASE_PR_CREATE }}
+        run: git commit -m "Fixing linting and updating dist folder"
 
       - if: ${{ steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
         name: Git – Push Changed Files
         run: git push
-        env:
-          GITHUB_TOKEN: ${{ secrets.PREPARE_RELEASE_PR_CREATE }}
 
   build:
     name: Build
