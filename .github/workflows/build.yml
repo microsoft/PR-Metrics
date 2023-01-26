@@ -80,7 +80,7 @@ jobs:
         name: Git – Setup Authentication
         run: gh auth setup-git
         env:
-          GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # - if: ${{ steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
       #   name: Git – GPG Authentication
