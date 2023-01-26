@@ -4,6 +4,7 @@
 
 Before completing this PR, the license information **must** be updated.
 
+1. Wait for the entire PR build to complete.
 1. Use the internal Microsoft Component Governance tooling to update [`src/LICENSE.txt`][licensetxt] with the automatically generated license information.
 
    1. At the top of the page, change the `main` branch to `refs/pull/%%pr%%/merge`. **It is very important that this is selected correctly or the wrong license information will be generated.**

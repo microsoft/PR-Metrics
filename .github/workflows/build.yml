@@ -342,7 +342,8 @@ jobs:
           VALIDATE_TYPESCRIPT_STANDARD: false
 
   dependabot:
-    if: ${{ github.actor == 'dependabot[bot]' }}
+    #TODO: Add back line below after finishing tests.
+    #if: ${{ github.actor == 'dependabot[bot]' }}
     name: Dependabot
     runs-on: ubuntu-latest
     permissions: {}

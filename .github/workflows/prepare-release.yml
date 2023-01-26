@@ -49,9 +49,9 @@ jobs:
         uses: actions/checkout@v3
         with:
           # Fine-grained personal access token (PAT) with the following permissions for microsoft/PR-Metrics:
-          # - Read access to metadata
-          # - Read and Write access to actions and code (aka content)
-          token: ${{ secrets.PREPARE_RELEASE }}
+          # - Read access to Metadata
+          # - Read and Write access to Actions and Code (aka Contents)
+          token: ${{ secrets.PREPARE_RELEASE_CHECKOUT }}
 
       - name: Version Number – README.md
         uses: mingjun97/file-regex-replace@v1
@@ -195,7 +195,10 @@ jobs:
           --assignee "${{ github.actor }}"
           --reviewer "${{ github.actor }}"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Fine-grained personal access token (PAT) with the following permissions for microsoft/PR-Metrics:
+          # - Read access to metadata
+          # - Read and Write access to actions and code (aka content)
+          GITHUB_TOKEN: ${{ secrets.PREPARE_RELEASE_PR_CREATE }}
 
       - name: PR – Get Number
         uses: jwalton/gh-find-current-pr@v1.3.2
