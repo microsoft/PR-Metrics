@@ -195,7 +195,10 @@ jobs:
           --assignee "${{ github.actor }}"
           --reviewer "${{ github.actor }}"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Fine-grained Personal Access Token (PAT) with the following permissions for microsoft/PR-Metrics:
+          # - Read access to Metadata
+          # - Read and Write access to Pull Requests
+          GITHUB_TOKEN: ${{ secrets.PREPARE_RELEASE_PR_CREATE }}
 
       - name: PR – Get Number
         uses: jwalton/gh-find-current-pr@v1.3.2
