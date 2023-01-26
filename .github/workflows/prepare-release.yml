@@ -48,7 +48,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          # Fine-grained personal access token (PAT) with the following permissions for microsoft/PR-Metrics:
+          # Fine-grained Personal Access Token (PAT) with the following permissions for microsoft/PR-Metrics:
           # - Read access to Metadata
           # - Read and Write access to Actions and Code (aka Contents)
           token: ${{ secrets.PREPARE_RELEASE_CHECKOUT }}
@@ -176,9 +176,9 @@ jobs:
           # https://docs.github.com/authentication/managing-commit-signature-verification/generating-a-new-gpg-key.
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
           passphrase: ${{ secrets.GPG_PASSPHRASE }}
+          git_commit_gpgsign: true
           git_config_global: true
           git_user_signingkey: true
-          git_commit_gpgsign: true
 
       - name: Git – Set Name
         run: git config --global user.name "${{ steps.git-gpg-authentication.outputs.name }}"
@@ -207,9 +207,9 @@ jobs:
           --assignee "${{ github.actor }}"
           --reviewer "${{ github.actor }}"
         env:
-          # Fine-grained personal access token (PAT) with the following permissions for microsoft/PR-Metrics:
-          # - Read access to metadata
-          # - Read and Write access to actions and code (aka content)
+          # Fine-grained Personal Access Token (PAT) with the following permissions for microsoft/PR-Metrics:
+          # - Read access to Metadata
+          # - Read and Write access to Pull Requests
           GITHUB_TOKEN: ${{ secrets.PREPARE_RELEASE_PR_CREATE }}
 
       - name: PR – Get Number
