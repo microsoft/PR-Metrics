@@ -37,8 +37,8 @@ jobs:
       - name: npm – Deploy
         run: npm run deploy
 
-  fix-lint-update-dist:
-    name: Fixing linting & Updating dist
+  update-code:
+    name: update-code
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -76,15 +76,9 @@ jobs:
           Write-Output -InputObject $NoChangesPresent
           Write-Output -InputObject "NO_CHANGES_PRESENT=$NoChangesPresent" >> $Env:GITHUB_OUTPUT
 
-      # - if: ${{ steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
-      #   name: Git – Setup Authentication
-      #   run: gh auth setup-git
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - if: ${{ steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
         name: Git – Set Name
-        run: git config --global user.name "PR Metrics"
+        run: git config --global user.name "github-actions[bot]"
 
       - if: ${{ steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
         name: Git – Set Email
