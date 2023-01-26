@@ -82,9 +82,9 @@ jobs:
       #   env:
       #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Configure GPG Key
-      run: |
-        export GPG_TTY=$(tty)
+      - name: Configure GPG Key
+        run: |
+          export GPG_TTY=$(tty)
 
       - uses: chainguard-dev/actions/setup-gitsign@main
       - shell: bash
