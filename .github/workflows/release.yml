@@ -164,10 +164,10 @@ jobs:
         run: npm run build:package
 
       - name: Git – Set Name
-        run: git config --global user.name "${{ steps.git-gpg-authentication.outputs.name }}"
+        run: git config --global user.name "github-actions[bot]"
 
       - name: Git – Set Email
-        run: git config --global user.email "${{ steps.git-gpg-authentication.outputs.email }}"
+        run: git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
       - name: Git – Create Branch
         run: git checkout -b release/v${{ env.version }}
