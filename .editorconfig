@@ -431,6 +431,9 @@ indent_size = 2
 [LICENSE.txt]
 indent_size = unset
 
+[.github/workflows/support/release-trigger.txt]
+insert_final_newline = false
+
 ##########################################
 # License
 ##########################################
