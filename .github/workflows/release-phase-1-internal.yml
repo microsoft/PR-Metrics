@@ -52,22 +52,22 @@ jobs:
         run: |
           $FilePath = 'README.md'
           $FileContents = Get-Content -Path $FilePath
-          $NewContents = $FileContents -replace 'PR-Metrics@v\d+\.\d+\.\d+', 'PR-Metrics@v${{ env.version }}'
-          Set-Content -Path $FilePath -Value $NewContents
+          $FileContents = $FileContents -replace 'PR-Metrics@v\d+\.\d+\.\d+', 'PR-Metrics@v${{ env.version }}'
+          Set-Content -Path $FilePath -Value $FileContents
 
       - name: Version Number – package.json
         run: |
           $FilePath = 'package.json'
           $FileContents = Get-Content -Path $FilePath
-          $NewContents = $FileContents -replace '"version": "\d+\.\d+\.\d+"', '"version": "${{ env.version }}"'
-          Set-Content -Path $FilePath -Value $NewContents
+          $FileContents = $FileContents -replace '"version": "\d+\.\d+\.\d+"', '"version": "${{ env.version }}"'
+          Set-Content -Path $FilePath -Value $FileContents
 
       - name: Version Number – vss-extension.json
         run: |
           $FilePath = 'src/vss-extension.json'
           $FileContents = Get-Content -Path $FilePath
-          $NewContents = $FileContents -replace '"version": "\d+\.\d+\.\d+"', '"version": "${{ env.version }}"'
-          Set-Content -Path $FilePath -Value $NewContents
+          $FileContents = $FileContents -replace '"version": "\d+\.\d+\.\d+"', '"version": "${{ env.version }}"'
+          Set-Content -Path $FilePath -Value $FileContents
 
       - name: Version Number – release-trigger.txt
         run: Set-Content -Path '.github/workflows/support/release-trigger.txt' -Value ${{ env.version }}
@@ -76,41 +76,41 @@ jobs:
         run: |
           $FilePath = 'src/task/task.json'
           $FileContents = Get-Content -Path $FilePath
-          $NewContents = $FileContents -replace 'PR Metrics v\d+\.\d+\.\d+', 'PR Metrics v${{ env.version }}'
-          $NewContents = $FileContents -replace '"Major": \d+', '"Major": ${{ inputs.major }}'
-          $NewContents = $FileContents -replace '"Minor": \d+', '"Minor": ${{ inputs.minor }}'
-          $NewContents = $FileContents -replace '"Patch": \d+', '"Patch": ${{ inputs.patch }}'
-          Set-Content -Path $FilePath -Value $NewContents
+          $FileContents = $FileContents -replace 'PR Metrics v\d+\.\d+\.\d+', 'PR Metrics v${{ env.version }}'
+          $FileContents = $FileContents -replace '"Major": \d+', '"Major": ${{ inputs.major }}'
+          $FileContents = $FileContents -replace '"Minor": \d+', '"Minor": ${{ inputs.minor }}'
+          $FileContents = $FileContents -replace '"Patch": \d+', '"Patch": ${{ inputs.patch }}'
+          Set-Content -Path $FilePath -Value $FileContents
 
       - name: Version Number – task.loc.json
         run: |
           $FilePath = 'src/task/task.loc.json'
           $FileContents = Get-Content -Path $FilePath
-          $NewContents = $FileContents -replace '"Major": \d+', '"Major": ${{ inputs.major }}'
-          $NewContents = $FileContents -replace '"Minor": \d+', '"Minor": ${{ inputs.minor }}'
-          $NewContents = $FileContents -replace '"Patch": \d+', '"Patch": ${{ inputs.patch }}'
-          Set-Content -Path $FilePath -Value $NewContents
+          $FileContents = $FileContents -replace '"Major": \d+', '"Major": ${{ inputs.major }}'
+          $FileContents = $FileContents -replace '"Minor": \d+', '"Minor": ${{ inputs.minor }}'
+          $FileContents = $FileContents -replace '"Patch": \d+', '"Patch": ${{ inputs.patch }}'
+          Set-Content -Path $FilePath -Value $FileContents
 
       - name: Version Number – resources.resjson
         run: |
           $FilePath = 'src/task/Strings/resources.resjson/en-US/resources.resjson'
           $FileContents = Get-Content -Path $FilePath
-          $NewContents = $FileContents -replace 'PR Metrics v\d+\.\d+\.\d+', 'PR Metrics v${{ env.version }}'
-          Set-Content -Path $FilePath -Value $NewContents
+          $FileContents = $FileContents -replace 'PR Metrics v\d+\.\d+\.\d+', 'PR Metrics v${{ env.version }}'
+          Set-Content -Path $FilePath -Value $FileContents
 
       - name: Version Number – gitHubReposInvoker.ts
         run: |
           $FilePath = 'src/task/src/repos/gitHubReposInvoker.ts'
           $FileContents = Get-Content -Path $FilePath
-          $NewContents = $FileContents -replace 'PRMetrics\/v\d+\.\d+\.\d+', 'PRMetrics/v${{ env.version }}'
-          Set-Content -Path $FilePath -Value $NewContents
+          $FileContents = $FileContents -replace 'PRMetrics\/v\d+\.\d+\.\d+', 'PRMetrics/v${{ env.version }}'
+          Set-Content -Path $FilePath -Value $FileContents
 
       - name: Version Number – gitHubReposInvoker.spec.ts
         run: |
           $FilePath = 'src/task/tests/repos/gitHubReposInvoker.spec.ts'
           $FileContents = Get-Content -Path $FilePath
-          $NewContents = $FileContents -replace 'PRMetrics\/v\d+\.\d+\.\d+', 'PRMetrics/v${{ env.version }}'
-          Set-Content -Path $FilePath -Value $NewContents
+          $FileContents = $FileContents -replace 'PRMetrics\/v\d+\.\d+\.\d+', 'PRMetrics/v${{ env.version }}'
+          Set-Content -Path $FilePath -Value $FileContents
 
       - name: Increment Patch
         id: increment-patch
@@ -122,13 +122,13 @@ jobs:
         run: |
           $FilePath = '.github/workflows/release-phase-1.yml'
           $FileContents = Get-Content -Path $FilePath
-          $NewContents = $FileContents -replace '(major:\s+default: )\d+', '$1${{ inputs.major }}'
-          $NewContents = $FileContents -replace '(minor:\s+default: )\d+', '$1${{ inputs.minor }}'
-          $NewContents = $FileContents -replace '(patch:\s+default: )', '$1${{ steps.increment-patch.outputs.INCREMENTED_PATCH }}'
-          $NewContents = $FileContents -replace 'inputs\.major \|\| \d+', 'inputs.major || ${{ inputs.major }}'
-          $NewContents = $FileContents -replace 'inputs\.minor \|\| \d+', 'inputs.minor || ${{ inputs.minor }}'
-          $NewContents = $FileContents -replace 'inputs\.patch \|\| \d+', 'inputs.patch || ${{ steps.increment-patch.outputs.INCREMENTED_PATCH }}'
-          Set-Content -Path $FilePath -Value $NewContents
+          $FileContents = $FileContents -replace '(major:\s+default: )\d+', '$1${{ inputs.major }}'
+          $FileContents = $FileContents -replace '(minor:\s+default: )\d+', '$1${{ inputs.minor }}'
+          $FileContents = $FileContents -replace '(patch:\s+default: )', '$1${{ steps.increment-patch.outputs.INCREMENTED_PATCH }}'
+          $FileContents = $FileContents -replace 'inputs\.major \|\| \d+', 'inputs.major || ${{ inputs.major }}'
+          $FileContents = $FileContents -replace 'inputs\.minor \|\| \d+', 'inputs.minor || ${{ inputs.minor }}'
+          $FileContents = $FileContents -replace 'inputs\.patch \|\| \d+', 'inputs.patch || ${{ steps.increment-patch.outputs.INCREMENTED_PATCH }}'
+          Set-Content -Path $FilePath -Value $FileContents
 
       - name: npm – Install NCU
         run: npm install -g npm-check-updates
