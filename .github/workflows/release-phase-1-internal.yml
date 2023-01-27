@@ -118,9 +118,9 @@ jobs:
           $IncrementedPatch = [int]::Parse(${{ inputs.patch }}) + 1
           Write-Output -InputObject "INCREMENTED_PATCH=$IncrementedPatch" >> $Env:GITHUB_OUTPUT
 
-      - name: Version Number – prepare-release.yml
+      - name: Version Number – release-phase-1.yml
         run: |
-          $FilePath = '.github/workflows/prepare-release.yml'
+          $FilePath = '.github/workflows/release-phase-1.yml'
           $FileContents = Get-Content -Path $FilePath
           $NewContents = $FileContents -replace '(major:\s+default: )\d+', '$1${{ inputs.major }}'
           $NewContents = $FileContents -replace '(minor:\s+default: )\d+', '$1${{ inputs.minor }}'
