@@ -199,12 +199,12 @@ jobs:
           write-mode: overwrite
 
       - name: PR – Comment 1
-        run: gh pr review --comment --body-file "./.github/workflows/support/release-phase-1-comment1.md"
+        run: gh pr comment --body-file "./.github/workflows/support/release-phase-1-comment1.md"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: PR – Comment 2
-        run: gh pr review --comment --body-file "./.github/workflows/support/release-phase-1-comment2.md"
+        run: gh pr comment --body-file "./.github/workflows/support/release-phase-1-comment2.md"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
