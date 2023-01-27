@@ -28,10 +28,8 @@ jobs:
         run: npm install
 
       - name:
-        run: npx tfx login --service-url https://${{ env.AZDO_ACCOUNT }}.visualstudio.com/DefaultCollection --token ${{ env.AZDO_PAT }}
-        env:
-          AZDO_ACCOUNT: ${{ secrets.AZDO_ACCOUNT }}
-          AZDO_PAT: ${{ secrets.AZDO_PAT }}
+        # Azure DevOps Personal Access Token (PAT) with the Agent Pools (Read & manage) permission.
+        run: npx tfx login --service-url https://${{ secrets.AZDO_ACCOUNT }}.visualstudio.com/DefaultCollection --token ${{ secrets.AZDO_PAT }}
 
       - name: npm – Deploy
         run: npm run deploy

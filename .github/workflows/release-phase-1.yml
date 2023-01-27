@@ -3,7 +3,7 @@
 
 ---
 
-name: Prepare Release
+name: Release – Phase 1
 
 on:
   schedule:
@@ -28,8 +28,8 @@ on:
         type: string
 
 jobs:
-  prepare-release:
-    uses: ./.github/workflows/prepare-release-internal.yml
+  release:
+    uses: ./.github/workflows/release-phase-1-internal.yml
     secrets: inherit
     with:
       major: ${{ inputs.major || 1 }}

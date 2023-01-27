@@ -3,7 +3,7 @@
 
 ---
 
-name: Prepare Release (Internal)
+name: Release – Phase 1 (Internal)
 
 on:
   workflow_call:
@@ -19,8 +19,8 @@ on:
         type: string
 
 jobs:
-  prepare-release:
-    name: Prepare Release ${{ inputs.major }}.${{ inputs.minor }}.${{ inputs.patch }}
+  release:
+    name: Release ${{ inputs.major }}.${{ inputs.minor }}.${{ inputs.patch }}
     runs-on: ubuntu-latest
     env:
       version: ${{ inputs.major }}.${{ inputs.minor }}.${{ inputs.patch }}
@@ -48,74 +48,77 @@ jobs:
           token: ${{ secrets.PREPARE_RELEASE_CHECKOUT }}
 
       - name: Version Number – README.md
-        uses: mingjun97/file-regex-replace@v1
-        with:
-          regex: PR-Metrics@v\d+\.\d+\.\d+
-          replacement: PR-Metrics@v${{ env.version }}
-          include: README\.md
+        shell: pwsh
+        run: |
+          $FilePath = 'README.md'
+          $FileContents = Get-Content -Path $FilePath
+          $NewContents = $FileContents -replace 'PR-Metrics@v\d+\.\d+\.\d+', 'PR-Metrics@v${{ env.version }}'
+          Set-Content -Path $FilePath -Value $NewContents
 
       - name: Version Number – package.json
-        uses: mingjun97/file-regex-replace@v1
-        with:
-          regex: '"version": "\d+\.\d+\.\d+"'
-          replacement: '"version": "${{ env.version }}"'
-          include: package\.json
+        shell: pwsh
+        run: |
+          $FilePath = 'package.json'
+          $FileContents = Get-Content -Path $FilePath
+          $NewContents = $FileContents -replace '"version": "\d+\.\d+\.\d+"', '"version": "${{ env.version }}"'
+          Set-Content -Path $FilePath -Value $NewContents
 
       - name: Version Number – vss-extension.json
-        uses: mingjun97/file-regex-replace@v1
-        with:
-          regex: '"version": "\d+\.\d+\.\d+"'
-          replacement: '"version": "${{ env.version }}"'
-          include: vss-extension\.json
+        shell: pwsh
+        run: |
+          $FilePath = 'vss-extension.json'
+          $FileContents = Get-Content -Path $FilePath
+          $NewContents = $FileContents -replace '"version": "\d+\.\d+\.\d+"', '"version": "${{ env.version }}"'
+          Set-Content -Path $FilePath -Value $NewContents
 
       - name: Version Number – release-trigger.txt
-        uses: DamianReeves/write-file-action@v1.2
-        with:
-          path: ./.github/workflows/support/release-trigger.txt
-          contents: ${{ env.version }}
-          write-mode: overwrite
+        shell: pwsh
+        run: Set-Content -Path '.github/workflows/support/release-trigger.txt' -Value ${{ env.version }}
 
       - name: Version Number – task.json
-        uses: mingjun97/file-regex-replace@v1
-        with:
-          regex: PR Metrics v\d+\.\d+\.\d+
-          replacement: PR Metrics v${{ env.version }}
-          include: src\/task\/task\.json
+        shell: pwsh
+        run: |
+          $FilePath = 'src/task/task.json'
+          $FileContents = Get-Content -Path $FilePath
+          $NewContents = $FileContents -replace 'PR Metrics v\d+\.\d+\.\d+', 'PR Metrics v${{ env.version }}'
+          $NewContents = $FileContents -replace '"Major": \d+', '"Major": ${{ inputs.major }}'
+          $NewContents = $FileContents -replace '"Minor": \d+', '"Minor": ${{ inputs.minor }}'
+          $NewContents = $FileContents -replace '"Patch": \d+', '"Patch": ${{ inputs.patch }}'
+          Set-Content -Path $FilePath -Value $NewContents
 
-      - name: Version Number – task.json & task.loc.json (major)
-        uses: mingjun97/file-regex-replace@v1
-        with:
-          regex: '"Major": \d+'
-          replacement: '"Major": ${{ inputs.major }}'
-          include: src\/task\/task(\.loc)?\.json
-
-      - name: Version Number – task.json & task.loc.json (minor)
-        uses: mingjun97/file-regex-replace@v1
-        with:
-          regex: '"Minor": \d+'
-          replacement: '"Minor": ${{ inputs.minor }}'
-          include: src\/task\/task(\.loc)?\.json
-
-      - name: Version Number – task.json & task.loc.json (patch)
-        uses: mingjun97/file-regex-replace@v1
-        with:
-          regex: '"Patch": \d+'
-          replacement: '"Patch": ${{ inputs.patch }}'
-          include: src\/task\/task(\.loc)?\.json
+      - name: Version Number – task.loc.json
+        shell: pwsh
+        run: |
+          $FilePath = 'src/task/task.loc.json'
+          $FileContents = Get-Content -Path $FilePath
+          $NewContents = $FileContents -replace '"Major": \d+', '"Major": ${{ inputs.major }}'
+          $NewContents = $FileContents -replace '"Minor": \d+', '"Minor": ${{ inputs.minor }}'
+          $NewContents = $FileContents -replace '"Patch": \d+', '"Patch": ${{ inputs.patch }}'
+          Set-Content -Path $FilePath -Value $NewContents
 
       - name: Version Number – resources.resjson
-        uses: mingjun97/file-regex-replace@v1
-        with:
-          regex: PR Metrics v\d+\.\d+\.\d+
-          replacement: PR Metrics v${{ env.version }}
-          include: src\/task\/Strings\/resources\.resjson\/en-US\/resources\.resjson
+        shell: pwsh
+        run: |
+          $FilePath = 'src/task/Strings/resources.resjson/en-US/resources.resjson'
+          $FileContents = Get-Content -Path $FilePath
+          $NewContents = $FileContents -replace 'PR Metrics v\d+\.\d+\.\d+', 'PR Metrics v${{ env.version }}'
+          Set-Content -Path $FilePath -Value $NewContents
 
-      - name: Version Number – gitHubReposInvoker.ts & gitHubReposInvoker.spec.ts
-        uses: mingjun97/file-regex-replace@v1
-        with:
-          regex: PRMetrics\/v\d+\.\d+\.\d+
-          replacement: PRMetrics/v${{ env.version }}
-          include: src\/task\/(src|tests)\/repos\/gitHubReposInvoker(\.spec)?\.ts
+      - name: Version Number – gitHubReposInvoker.ts
+        shell: pwsh
+        run: |
+          $FilePath = 'src/task/src/repos/gitHubReposInvoker.ts'
+          $FileContents = Get-Content -Path $FilePath
+          $NewContents = $FileContents -replace 'PRMetrics\/v\d+\.\d+\.\d+', 'PRMetrics/v${{ env.version }}'
+          Set-Content -Path $FilePath -Value $NewContents
+
+      - name: Version Number – gitHubReposInvoker.spec.ts
+        shell: pwsh
+        run: |
+          $FilePath = 'src/task/tests/repos/gitHubReposInvoker.spec.ts'
+          $FileContents = Get-Content -Path $FilePath
+          $NewContents = $FileContents -replace 'PRMetrics\/v\d+\.\d+\.\d+', 'PRMetrics/v${{ env.version }}'
+          Set-Content -Path $FilePath -Value $NewContents
 
       - name: Increment Patch
         id: increment-patch
@@ -124,47 +127,18 @@ jobs:
           $IncrementedPatch = [int]::Parse(${{ inputs.patch }}) + 1
           Write-Output -InputObject "INCREMENTED_PATCH=$IncrementedPatch" >> $Env:GITHUB_OUTPUT
 
-      - name: Version Number – prepare-release.yml (major input)
-        uses: mingjun97/file-regex-replace@v1
-        with:
-          regex: '(major:\s+default: )\d+'
-          replacement: $1${{ inputs.major }}
-          include: .github\/workflows\/prepare-release\.yml
-
-      - name: Version Number – prepare-release.yml (minor input)
-        uses: mingjun97/file-regex-replace@v1
-        with:
-          regex: '(minor:\s+default: )\d+'
-          replacement: $1${{ inputs.minor }}
-          include: .github\/workflows\/prepare-release\.yml
-
-      - name: Version Number – prepare-release.yml (patch input)
-        uses: mingjun97/file-regex-replace@v1
-        with:
-          regex: '(patch:\s+default: )\d+'
-          replacement: $1${{ steps.increment-patch.outputs.INCREMENTED_PATCH }}
-          include: .github\/workflows\/prepare-release\.yml
-
-      - name: Version Number – prepare-release.yml (major passthrough)
-        uses: mingjun97/file-regex-replace@v1
-        with:
-          regex: inputs\.major \|\| \d+
-          replacement: inputs.major || ${{ inputs.major }}
-          include: .github\/workflows\/prepare-release\.yml
-
-      - name: Version Number – prepare-release.yml (minor passthrough)
-        uses: mingjun97/file-regex-replace@v1
-        with:
-          regex: inputs\.minor \|\| \d+
-          replacement: inputs.minor || ${{ inputs.minor }}
-          include: .github\/workflows\/prepare-release\.yml
-
-      - name: Version Number – prepare-release.yml (patch passthrough)
-        uses: mingjun97/file-regex-replace@v1
-        with:
-          regex: inputs\.patch \|\| \d+
-          replacement: inputs.patch || ${{ steps.increment-patch.outputs.INCREMENTED_PATCH }}
-          include: .github\/workflows\/prepare-release\.yml
+      - name: Version Number – prepare-release.yml
+        shell: pwsh
+        run: |
+          $FilePath = '.github/workflows/prepare-release.yml'
+          $FileContents = Get-Content -Path $FilePath
+          $NewContents = $FileContents -replace '(major:\s+default: )\d+', '$1${{ inputs.major }}'
+          $NewContents = $FileContents -replace '(minor:\s+default: )\d+', '$1${{ inputs.minor }}'
+          $NewContents = $FileContents -replace '(patch:\s+default: )', '$1${{ steps.increment-patch.outputs.INCREMENTED_PATCH }}'
+          $NewContents = $FileContents -replace 'inputs\.major \|\| \d+', 'inputs.major || ${{ inputs.major }}'
+          $NewContents = $FileContents -replace 'inputs\.minor \|\| \d+', 'inputs.minor || ${{ inputs.minor }}'
+          $NewContents = $FileContents -replace 'inputs\.patch \|\| \d+', 'inputs.patch || ${{ steps.increment-patch.outputs.INCREMENTED_PATCH }}'
+          Set-Content -Path $FilePath -Value $NewContents
 
       - name: npm – Install NCU
         run: npm install -g npm-check-updates
