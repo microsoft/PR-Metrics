@@ -64,7 +64,7 @@ jobs:
 
       - name: Version Number – vss-extension.json
         run: |
-          $FilePath = 'vss-extension.json'
+          $FilePath = 'src/vss-extension.json'
           $FileContents = Get-Content -Path $FilePath
           $NewContents = $FileContents -replace '"version": "\d+\.\d+\.\d+"', '"version": "${{ env.version }}"'
           Set-Content -Path $FilePath -Value $NewContents
