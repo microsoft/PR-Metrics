@@ -18,6 +18,10 @@ on:
         required: true
         type: string
 
+defaults:
+  run:
+    shell: pwsh
+
 jobs:
   release:
     name: Release ${{ inputs.major }}.${{ inputs.minor }}.${{ inputs.patch }}
@@ -28,15 +32,12 @@ jobs:
       pull-requests: write
     steps:
       - name: Validate major
-        shell: pwsh
         run: '[int]::Parse(${{ inputs.major }})'
 
       - name: Validate minor
-        shell: pwsh
         run: '[int]::Parse(${{ inputs.minor }})'
 
       - name: Validate patch
-        shell: pwsh
         run: '[int]::Parse(${{ inputs.patch }})'
 
       - name: Checkout
@@ -48,7 +49,6 @@ jobs:
           token: ${{ secrets.PREPARE_RELEASE_CHECKOUT }}
 
       - name: Version Number – README.md
-        shell: pwsh
         run: |
           $FilePath = 'README.md'
           $FileContents = Get-Content -Path $FilePath
@@ -56,7 +56,6 @@ jobs:
           Set-Content -Path $FilePath -Value $NewContents
 
       - name: Version Number – package.json
-        shell: pwsh
         run: |
           $FilePath = 'package.json'
           $FileContents = Get-Content -Path $FilePath
@@ -64,7 +63,6 @@ jobs:
           Set-Content -Path $FilePath -Value $NewContents
 
       - name: Version Number – vss-extension.json
-        shell: pwsh
         run: |
           $FilePath = 'vss-extension.json'
           $FileContents = Get-Content -Path $FilePath
@@ -72,11 +70,9 @@ jobs:
           Set-Content -Path $FilePath -Value $NewContents
 
       - name: Version Number – release-trigger.txt
-        shell: pwsh
         run: Set-Content -Path '.github/workflows/support/release-trigger.txt' -Value ${{ env.version }}
 
       - name: Version Number – task.json
-        shell: pwsh
         run: |
           $FilePath = 'src/task/task.json'
           $FileContents = Get-Content -Path $FilePath
@@ -87,7 +83,6 @@ jobs:
           Set-Content -Path $FilePath -Value $NewContents
 
       - name: Version Number – task.loc.json
-        shell: pwsh
         run: |
           $FilePath = 'src/task/task.loc.json'
           $FileContents = Get-Content -Path $FilePath
@@ -97,7 +92,6 @@ jobs:
           Set-Content -Path $FilePath -Value $NewContents
 
       - name: Version Number – resources.resjson
-        shell: pwsh
         run: |
           $FilePath = 'src/task/Strings/resources.resjson/en-US/resources.resjson'
           $FileContents = Get-Content -Path $FilePath
@@ -105,7 +99,6 @@ jobs:
           Set-Content -Path $FilePath -Value $NewContents
 
       - name: Version Number – gitHubReposInvoker.ts
-        shell: pwsh
         run: |
           $FilePath = 'src/task/src/repos/gitHubReposInvoker.ts'
           $FileContents = Get-Content -Path $FilePath
@@ -113,7 +106,6 @@ jobs:
           Set-Content -Path $FilePath -Value $NewContents
 
       - name: Version Number – gitHubReposInvoker.spec.ts
-        shell: pwsh
         run: |
           $FilePath = 'src/task/tests/repos/gitHubReposInvoker.spec.ts'
           $FileContents = Get-Content -Path $FilePath
@@ -122,13 +114,11 @@ jobs:
 
       - name: Increment Patch
         id: increment-patch
-        shell: pwsh
         run: |
           $IncrementedPatch = [int]::Parse(${{ inputs.patch }}) + 1
           Write-Output -InputObject "INCREMENTED_PATCH=$IncrementedPatch" >> $Env:GITHUB_OUTPUT
 
       - name: Version Number – prepare-release.yml
-        shell: pwsh
         run: |
           $FilePath = '.github/workflows/prepare-release.yml'
           $FileContents = Get-Content -Path $FilePath
@@ -196,7 +186,7 @@ jobs:
         uses: bluwy/substitute-string-action@v2.0.1
         id: prCreateComment
         with:
-          _input-file: ./.github/workflows/support/prepare-release-comment1.md
+          _input-file: ./.github/workflows/support/release-phase-1-comment1.md
           _format-key: '%%key%%'
         env:
           INPUT_PR: ${{ steps.prGetNumber.outputs.pr }}
@@ -204,17 +194,17 @@ jobs:
       - name: PR – Write Comment 1 to File
         uses: DamianReeves/write-file-action@v1.2
         with:
-          path: ./.github/workflows/support/prepare-release-comment1.md
+          path: ./.github/workflows/support/release-phase-1-comment1.md
           contents: ${{ steps.prCreateComment.outputs.result }}
           write-mode: overwrite
 
       - name: PR – Comment 1
-        run: gh pr comment --body-file "./.github/workflows/support/prepare-release-comment1.md"
+        run: gh pr comment --body-file "./.github/workflows/support/release-phase-1-comment1.md"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: PR – Comment 2
-        run: gh pr comment --body-file "./.github/workflows/support/prepare-release-comment2.md"
+        run: gh pr comment --body-file "./.github/workflows/support/release-phase-1-comment2.md"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

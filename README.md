@@ -130,6 +130,19 @@ continue-on-error: true
 Instructions on using the action within Azure Pipelines can be found
 [here][azurepipelinestask].
 
+## Permissions
+
+This Action requires the following permissions on the GitHub integration token:
+
+```YAML
+permissions:
+  pull-requests: write
+  statuses: write
+```
+
+[GitHub token permissions][github-token-pemissions] can be set for an individual
+job, workflow, or for Actions as a whole.
+
 ## Contributing
 
 Instructions on contributing can be located in [CONTRIBUTING.md][contributing].
@@ -154,6 +167,7 @@ comments.
 [globs]: https://wikipedia.org/wiki/Glob_(programming)
 [defaultcodefileextensions]: docs/default-code-file-extensions.md
 [azurepipelinestask]: docs/azure-pipelines-task.md
+[github-token-pemissions]: https://docs.github.com/actions/security-guides/automatic-token-authentication#permissions-for-the-github_token
 [contributing]: .github/CONTRIBUTING.md
 [license]: LICENSE.txt
 [codeofconduct]: https://opensource.microsoft.com/codeofconduct/

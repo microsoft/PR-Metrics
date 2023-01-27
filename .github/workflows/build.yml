@@ -15,6 +15,10 @@ on:
   schedule:
     - cron: 0 0 * * 1
 
+defaults:
+  run:
+    shell: pwsh
+
 jobs:
   deploy:
     name: Deploy
@@ -67,7 +71,6 @@ jobs:
 
       - name: Detect Changes
         id: detect-changes
-        shell: pwsh
         run: |
           $GitStatus = git status
           Write-Output -InputObject $GitStatus
@@ -175,11 +178,9 @@ jobs:
           print-valid-files: true
 
       - name: Validate package.json – Download package.schema.json
-        shell: pwsh
         run: Invoke-WebRequest -Uri 'https://json.schemastore.org/package.json' -OutFile 'package.schema.json'
 
       - name: Validate package.json – Update package.schema.json
-        shell: pwsh
         run: |-
           $FileContent = Get-Content -Path 'package.schema.json' -Raw
           $FileContent = $FileContent -replace ',\s+".+": {\s+"\$ref": "https:\/\/json\.schemastore\.org\/.+\s+}', ''
@@ -194,11 +195,9 @@ jobs:
           schema: package.schema.json
 
       - name: Validate devcontainer.json – Download devcontainer.schema.json
-        shell: pwsh
         run: Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/microsoft/vscode/main/extensions/configuration-editing/schemas/devContainer.codespaces.schema.json' -OutFile 'devcontainer.schema.json'
 
       - name: Validate devcontainer.json – Update devcontainer.schema.json
-        shell: pwsh
         run: |-
           $FileContent = Get-Content -Path 'devcontainer.schema.json' -Raw
           $FileContent = $FileContent -replace 'http://json-schema.org/draft-07/schema#', 'http://json-schema.org/draft-04/schema#'
@@ -213,11 +212,9 @@ jobs:
           schema: devcontainer.schema.json
 
       - name: Validate vss-extension.json – Download vss-extension.schema.json
-        shell: pwsh
         run: Invoke-WebRequest -Uri 'https://json.schemastore.org/vss-extension.json' -OutFile 'vss-extension.schema.json'
 
       - name: Validate vss-extension.json – Update vss-extension.schema.json
-        shell: pwsh
         run: |-
           $FileContent = Get-Content -Path 'vss-extension.schema.json' -Raw
           $FileContent = $FileContent -replace 'http://json-schema.org/draft-07/schema#', 'http://json-schema.org/draft-04/schema#'
@@ -232,11 +229,9 @@ jobs:
           schema: vss-extension.schema.json
 
       - name: Validate task.json – Download task.schema.json
-        shell: pwsh
         run: Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/microsoft/azure-pipelines-task-lib/master/tasks.schema.json' -OutFile 'task.schema.json'
 
       - name: Validate task.json – Update task.schema.json
-        shell: pwsh
         run: |-
           $FileContent = Get-Content -Path 'task.schema.json' -Raw
           $FileContent = $FileContent.replace('^connectedService\\:.+$', '^connectedService:.+$')
@@ -264,11 +259,9 @@ jobs:
           strict: false
 
       - name: Validate typedoc.json – Download typedoc.schema.json
-        shell: pwsh
         run: Invoke-WebRequest -Uri 'https://typedoc.org/schema.json' -OutFile 'typedoc.schema.json'
 
       - name: Validate typedoc.json – Update typedoc.schema.json
-        shell: pwsh
         run: |-
           $FileContent = Get-Content -Path 'typedoc.schema.json' -Raw
           $FileContent = $FileContent -replace 'https://json-schema.org/draft-07/schema', 'http://json-schema.org/draft-04/schema#'

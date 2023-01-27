@@ -3,6 +3,8 @@
 
 ---
 
+# TODO: Rename this file to release-phase-2.yml when testing is complete.
+
 name: Release - Phase 2
 
 on:
@@ -11,13 +13,20 @@ on:
       - main
     paths:
       - .github/workflows/support/release-trigger.txt
+  # TODO: Remove line below when testing is complete.
   workflow_dispatch: null
+
+defaults:
+  run:
+    shell: pwsh
 
 jobs:
   release:
     name: Release
     runs-on: ubuntu-latest
-    permissions: {}
+    permissions:
+      contents: write
+      discussions: write
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -45,5 +54,20 @@ jobs:
         with:
           name: ms-omex.PRMetrics
           path: ${{ github.workspace }}/ms-omex.PRMetrics.vsix
+
+      - name: Get Version
+        id: version
+        run: |
+          $Version = Get-Content -Path '.github/workflows/support/release-trigger.txt'
+          Write-Output -InputObject "VERSION=v$Version" >> $Env:GITHUB_OUTPUT
+
+      - name: GitHub Release
+        uses: softprops/action-gh-release@v0.1.15
+        with:
+          discussion_category_name: Releases
+          files: ${{ github.workspace }}/ms-omex.PRMetrics.vsix
+          generate_realease_notes: true
+          tag_name: Release v${{ steps.version.outputs.VERSION }}
+          tag: v${{ steps.version.outputs.VERSION }}
 
 ...
