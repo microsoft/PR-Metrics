@@ -15,10 +15,6 @@ on:
   schedule:
     - cron: 0 0 * * 1
 
-defaults:
-  run:
-    shell: pwsh
-
 jobs:
   deploy:
     name: Deploy
@@ -29,13 +25,16 @@ jobs:
         uses: actions/checkout@v3
 
       - name: npm – Install
+        shell: pwsh
         run: npm install
 
       - name:
+        shell: pwsh
         # Azure DevOps Personal Access Token (PAT) with the Agent Pools (Read & manage) permission.
         run: npx tfx login --service-url https://${{ secrets.AZDO_ACCOUNT }}.visualstudio.com/DefaultCollection --token ${{ secrets.AZDO_PAT }}
 
       - name: npm – Deploy
+        shell: pwsh
         run: npm run deploy
 
   update-code:
@@ -55,23 +54,29 @@ jobs:
           node-version: 19.x
 
       - name: npm – Install Dependencies
+        shell: pwsh
         run: npm install
 
       - name: npm – Lint
+        shell: pwsh
         run: npm run lint
 
       - name: npm – Build Package
+        shell: pwsh
         run: npm run build:package
 
       - name: Git – Checkout Branch
+        shell: pwsh
         run: git checkout "$GITHUB_HEAD_REF"
 
       - name: Git – Add Changed Files
+        shell: pwsh
         run: git add -A
 
       - name: Detect Changes
         id: detect-changes
-        run: |
+        shell: pwsh
+        run: |-
           $GitStatus = git status
           Write-Output -InputObject $GitStatus
           $NoChangesPresent = $GitStatus.Contains("nothing to commit, working tree clean")
@@ -80,18 +85,22 @@ jobs:
 
       - if: ${{ steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
         name: Git – Set Name
+        shell: pwsh
         run: git config --global user.name "github-actions[bot]"
 
       - if: ${{ steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
         name: Git – Set Email
+        shell: pwsh
         run: git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
       - if: ${{ steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
         name: Git – Commit Changed Files
+        shell: pwsh
         run: git commit -m "Fixing linting; Updating dist folder"
 
       - if: ${{ steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
         name: Git – Push Changed Files
+        shell: pwsh
         run: git push
 
   build:
@@ -108,21 +117,27 @@ jobs:
           node-version: 19.x
 
       - name: npm – Install Dependencies
+        shell: pwsh
         run: npm install
 
       - name: npm – Test Clean
+        shell: pwsh
         run: npm run clean
 
       - name: npm – Build
+        shell: pwsh
         run: npm run build
 
       - name: npm – Test
+        shell: pwsh
         run: npm run test
 
       - name: Install TFX CLI
+        shell: pwsh
         run: npm install -g tfx-cli
 
       - name: Release – Create
+        shell: pwsh
         run: tfx extension create --manifest-globs vss-extension.json --output-path ../ms-omex.PRMetrics.vsix
         working-directory: ${{ github.workspace }}/release
 
@@ -178,9 +193,11 @@ jobs:
           print-valid-files: true
 
       - name: Validate package.json – Download package.schema.json
+        shell: pwsh
         run: Invoke-WebRequest -Uri 'https://json.schemastore.org/package.json' -OutFile 'package.schema.json'
 
       - name: Validate package.json – Update package.schema.json
+        shell: pwsh
         run: |-
           $FileContent = Get-Content -Path 'package.schema.json' -Raw
           $FileContent = $FileContent -replace ',\s+".+": {\s+"\$ref": "https:\/\/json\.schemastore\.org\/.+\s+}', ''
@@ -195,9 +212,11 @@ jobs:
           schema: package.schema.json
 
       - name: Validate devcontainer.json – Download devcontainer.schema.json
+        shell: pwsh
         run: Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/microsoft/vscode/main/extensions/configuration-editing/schemas/devContainer.codespaces.schema.json' -OutFile 'devcontainer.schema.json'
 
       - name: Validate devcontainer.json – Update devcontainer.schema.json
+        shell: pwsh
         run: |-
           $FileContent = Get-Content -Path 'devcontainer.schema.json' -Raw
           $FileContent = $FileContent -replace 'http://json-schema.org/draft-07/schema#', 'http://json-schema.org/draft-04/schema#'
@@ -212,9 +231,11 @@ jobs:
           schema: devcontainer.schema.json
 
       - name: Validate vss-extension.json – Download vss-extension.schema.json
+        shell: pwsh
         run: Invoke-WebRequest -Uri 'https://json.schemastore.org/vss-extension.json' -OutFile 'vss-extension.schema.json'
 
       - name: Validate vss-extension.json – Update vss-extension.schema.json
+        shell: pwsh
         run: |-
           $FileContent = Get-Content -Path 'vss-extension.schema.json' -Raw
           $FileContent = $FileContent -replace 'http://json-schema.org/draft-07/schema#', 'http://json-schema.org/draft-04/schema#'
@@ -229,9 +250,11 @@ jobs:
           schema: vss-extension.schema.json
 
       - name: Validate task.json – Download task.schema.json
+        shell: pwsh
         run: Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/microsoft/azure-pipelines-task-lib/master/tasks.schema.json' -OutFile 'task.schema.json'
 
       - name: Validate task.json – Update task.schema.json
+        shell: pwsh
         run: |-
           $FileContent = Get-Content -Path 'task.schema.json' -Raw
           $FileContent = $FileContent.replace('^connectedService\\:.+$', '^connectedService:.+$')
@@ -259,9 +282,11 @@ jobs:
           strict: false
 
       - name: Validate typedoc.json – Download typedoc.schema.json
+        shell: pwsh
         run: Invoke-WebRequest -Uri 'https://typedoc.org/schema.json' -OutFile 'typedoc.schema.json'
 
       - name: Validate typedoc.json – Update typedoc.schema.json
+        shell: pwsh
         run: |-
           $FileContent = Get-Content -Path 'typedoc.schema.json' -Raw
           $FileContent = $FileContent -replace 'https://json-schema.org/draft-07/schema', 'http://json-schema.org/draft-04/schema#'
@@ -316,6 +341,7 @@ jobs:
           node-version: 19.x
 
       - name: npm – Install Dependencies
+        shell: pwsh
         run: npm install
 
       - name: Super Linter
@@ -330,7 +356,8 @@ jobs:
           VALIDATE_TYPESCRIPT_STANDARD: false
 
   dependabot:
-    if: ${{ github.actor == 'dependabot[bot]' }}
+    #TODO
+    #if: ${{ github.actor == 'dependabot[bot]' }}
     name: Dependabot
     runs-on: ubuntu-latest
     permissions:
@@ -338,15 +365,15 @@ jobs:
       pull-requests: write
     steps:
       - name: Approve
-        run: gh pr review --approve "$PR_URL"
+        shell: pwsh
+        run: gh pr review --approve "${{ github.event.pull_request.html_url }}"
         env:
-          PR_URL: ${{ github.event.pull_request.html_url }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Enable Auto-Merge
-        run: gh pr merge --auto --delete-branch --squash "$PR_URL"
+        shell: pwsh
+        run: gh pr merge --auto --delete-branch --squash "${{ github.event.pull_request.html_url }}"
         env:
-          PR_URL: ${{ github.event.pull_request.html_url }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 ...

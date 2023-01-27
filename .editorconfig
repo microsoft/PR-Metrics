@@ -432,7 +432,7 @@ indent_size = 2
 indent_size = unset
 
 [.github/workflows/support/release-trigger.txt]
-insert_final_newline = false
+insert_final_newline = unset
 
 ##########################################
 # License

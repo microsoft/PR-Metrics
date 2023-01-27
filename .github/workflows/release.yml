@@ -57,10 +57,6 @@ jobs:
 #   # TODO: Remove line below when testing is complete.
 #   workflow_dispatch: null
 
-# defaults:
-#   run:
-#     shell: pwsh
-
 # jobs:
 #   release:
 #     name: Release
@@ -78,15 +74,19 @@ jobs:
 #           node-version: 19.x
 
 #       - name: npm – Install Dependencies
+#         shell: pwsh
 #         run: npm install
 
 #       - name: npm – Build
+#         shell: pwsh
 #         run: npm run build:release
 
 #       - name: Install TFX CLI
+#         shell: pwsh
 #         run: npm install -g tfx-cli
 
 #       - name: Release – Create
+#         shell: pwsh
 #         run: tfx extension create --manifest-globs vss-extension.json --output-path ../ms-omex.PRMetrics.vsix
 #         working-directory: ${{ github.workspace }}/release
 
@@ -98,7 +98,8 @@ jobs:
 
 #       - name: Get Version
 #         id: version
-#         run: |
+#         shell: pwsh
+#         run: |-
 #           $Version = Get-Content -Path '.github/workflows/support/release-trigger.txt'
 #           Write-Output -InputObject "VERSION=v$Version" >> $Env:GITHUB_OUTPUT
 
