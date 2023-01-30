@@ -45,11 +45,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          ref: $GITHUB_HEAD_REF
+          ref: ${{ env.GITHUB_HEAD_REF }}
           # Fine-grained Personal Access Token (PAT) with the following permissions for microsoft/PR-Metrics:
           # - Read access to Metadata
           # - Read and Write access to Code (aka Contents)
           token: ${{ secrets.BUILD_UPDATE_CODE_CHECKOUT }}
+        env:
+          GITHUB_HEAD_REF: ${{ env.GITHUB_HEAD_REF }}
 
       - name: Install Node.js
         uses: actions/setup-node@v3
