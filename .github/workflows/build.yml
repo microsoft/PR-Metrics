@@ -100,7 +100,7 @@ jobs:
       - if: ${{ steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
         name: Git – Commit Changed Files
         shell: pwsh
-        run: git commit -m "Fixing linting; Updating dist folder"
+        run: git commit -m "Fixing linting, Updating dist folder"
 
       - if: ${{ steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
         name: Git – Push Changed Files
