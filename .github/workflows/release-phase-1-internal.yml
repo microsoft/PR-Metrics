@@ -120,7 +120,7 @@ jobs:
           $FileContents = $FileContents -replace 'PRMetrics\/v\d+\.\d+\.\d+', 'PRMetrics/v${{ env.version }}'
           Set-Content -Path $FilePath -Value $FileContents
 
-      - name: Increment Patch
+      - name: Version Number – Increment Patch
         id: increment-patch
         shell: pwsh
         run: |-
@@ -139,6 +139,17 @@ jobs:
           $FileContents = $FileContents -replace 'inputs\.minor \|\| \d+', 'inputs.minor || ${{ inputs.minor }}'
           $FileContents = $FileContents -replace 'inputs\.patch \|\| \d+', 'inputs.patch || ${{ steps.increment-patch.outputs.INCREMENTED_PATCH }}'
           Set-Content -Path $FilePath -Value $FileContents
+
+      - name: Update LICENSE.txt
+        shell: pwsh
+        run: |-
+            $FilePath = 'src/LICENSE.txt'
+            $FileContents = Get-Content -Path $FilePath
+            $Index = [Array]::IndexOf($FileContents, ($FileContents | Where-Object { $_ -match 'NOTICES AND INFORMATION' }))
+            if ($Index -ne -1) {
+              $FileContents = $FileContents[0..$Index]
+            }
+            Set-Content -Path $FilePath -Value $FileContents
 
       - name: npm – Install NCU
         shell: pwsh

@@ -10,7 +10,7 @@ Before completing this PR, the license information **must** be updated.
    1. At the top of the page, change the `main` branch to `refs/pull/%%pr%%/merge`. **It is very important that this is selected correctly or the wrong license information will be generated.**
    1. Use Notice > Configure to ensure that only the `dependencies` from [`package.json`][packagejson] are included and that the `devDependencies` are excluded.
    1. Use Notice > Download to generate the file. Select Pipeline "PR" and Format "Plain Text". Click "Download".
-   1. Update [`src/LICENSE.txt`][licensetxt], retaining the content to the first horizontal rule, which is the license for PR Metrics itself. All content following this line should be replaced with the downloaded licenses. Note that the ordering of licenses may change.
+   1. Add the downloaded content to the end of [`src/LICENSE.txt`][licensetxt]. Note that the ordering of licenses may change.
    1. If the download dialog includes any notice indicating that license information could not be located at [Clearly Defined][clearlydefined], you will need to add the information to that source. To do this, expand the drop down menu in the dialog to reveal the problematic dependencies. For each dependency:
 
       1. Navigate to the Clearly Defined [Harvest page][clearlydefinedharvest].
