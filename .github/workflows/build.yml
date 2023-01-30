@@ -45,13 +45,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          ref: ${{ env.GITHUB_HEAD_REF }}
-          # Fine-grained Personal Access Token (PAT) with the following permissions for microsoft/PR-Metrics:
-          # - Read access to Metadata
-          # - Read and Write access to Code (aka Contents)
-          token: ${{ secrets.BUILD_UPDATE_CODE_CHECKOUT }}
-        env:
-          GITHUB_HEAD_REF: ${{ env.GITHUB_HEAD_REF }}
+          fetch-depth: 0
 
       - name: Install Node.js
         uses: actions/setup-node@v3
@@ -70,12 +64,6 @@ jobs:
         shell: pwsh
         run: npm run build:package
 
-      - name: Git – Setup Authentication
-        shell: pwsh
-        run: gh auth setup-git
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Git – Add Changed Files
         shell: pwsh
         run: git add -A
@@ -89,6 +77,16 @@ jobs:
           $NoChangesPresent = $GitStatus.Contains("nothing to commit, working tree clean")
           Write-Output -InputObject $NoChangesPresent
           Write-Output -InputObject "NO_CHANGES_PRESENT=$NoChangesPresent" >> $Env:GITHUB_OUTPUT
+
+      - if: ${{ steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
+        name: Git – Checkout Branch
+        shell: pwsh
+        run: git checkout "$GITHUB_HEAD_REF"
+        env:
+          # Fine-grained Personal Access Token (PAT) with the following permissions for microsoft/PR-Metrics:
+          # - Read access to Metadata
+          # - Read and Write access to Code (aka Contents)
+          GITHUB_TOKEN: ${{ secrets.BUILD_UPDATE_CODE_CHECKOUT }}
 
       - if: ${{ steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
         name: Git – Set Name
