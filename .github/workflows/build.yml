@@ -40,13 +40,17 @@ jobs:
   update-code:
     name: Update Code
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
+    permissions: {}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
+        with:
+          # Fine-grained Personal Access Token (PAT) with the following permissions for microsoft/PR-Metrics:
+          # - Read access to Metadata
+          # - Read and Write access to Code (aka Contents)
+          token: ${{ secrets.BUILD_UPDATE_CODE_CHECKOUT }}
 
       - name: Install Node.js
         uses: actions/setup-node@v3

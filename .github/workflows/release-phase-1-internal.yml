@@ -146,9 +146,8 @@ jobs:
             $FilePath = 'src/LICENSE.txt'
             $FileContents = Get-Content -Path $FilePath
             $Index = [Array]::IndexOf($FileContents, ($FileContents | Where-Object { $_ -match 'NOTICES AND INFORMATION' }))
-            if ($Index -ne -1) {
-              $FileContents = $FileContents[0..$Index]
-            }
+            $Index -= 1
+            $FileContents = $FileContents[0..$Index]
             Set-Content -Path $FilePath -Value $FileContents
 
       - name: npm – Install NCU
