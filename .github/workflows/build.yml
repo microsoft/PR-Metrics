@@ -46,7 +46,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0
+          #fetch-depth: 0
+          ref: ${{ github.HEAD_REF }}
+          token: ${{ secrets.BUILD_UPDATE_CODE_CHECKOUT }}
 
       - name: Install Node.js
         uses: actions/setup-node@v3
@@ -79,10 +81,10 @@ jobs:
           Write-Output -InputObject $NoChangesPresent
           Write-Output -InputObject "NO_CHANGES_PRESENT=$NoChangesPresent" >> $Env:GITHUB_OUTPUT
 
-      - if: ${{ steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
-        name: Git – Checkout Branch
-        shell: pwsh
-        run: git checkout "${{ github.HEAD_REF }}"
+      # - if: ${{ steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
+      #   name: Git – Checkout Branch
+      #   shell: pwsh
+      #   run: git checkout "${{ github.HEAD_REF }}"
 
       - if: ${{ steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
         name: Git – Set Name
