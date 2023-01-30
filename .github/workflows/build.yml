@@ -40,7 +40,8 @@ jobs:
   update-code:
     name: Update Code
     runs-on: ubuntu-latest
-    permissions: {}
+    permissions:
+      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -81,14 +82,7 @@ jobs:
       - if: ${{ steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
         name: Git – Checkout Branch
         shell: pwsh
-        run: |-
-          Write-Output ${{ github.HEAD_REF }}
-          git checkout "${{ github.HEAD_REF }}"
-        env:
-          # Fine-grained Personal Access Token (PAT) with the following permissions for microsoft/PR-Metrics:
-          # - Read access to Metadata
-          # - Read and Write access to Code (aka Contents)
-          GITHUB_TOKEN: ${{ secrets.BUILD_UPDATE_CODE_CHECKOUT }}
+        run: git checkout "${{ github.HEAD_REF }}"
 
       - if: ${{ steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
         name: Git – Set Name
