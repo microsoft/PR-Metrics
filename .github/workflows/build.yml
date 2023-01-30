@@ -82,8 +82,8 @@ jobs:
         name: Git – Checkout Branch
         shell: pwsh
         run: |-
-          Write-Output $GITHUB_HEAD_REF
-          git checkout "$GITHUB_HEAD_REF"
+          Write-Output ${{ github.HEAD_REF }}
+          git checkout "${{ github.HEAD_REF }}"
         env:
           # Fine-grained Personal Access Token (PAT) with the following permissions for microsoft/PR-Metrics:
           # - Read access to Metadata
