@@ -6,7 +6,7 @@ import { container } from 'tsyringe'
 import PullRequestMetrics from './src/pullRequestMetrics'
 
 async function run (): Promise<void> {
-  const pullRequestMetrics: PullRequestMetrics = container.resolve(PullRequestMetrics)
+  let pullRequestMetrics: PullRequestMetrics = container.resolve(PullRequestMetrics)
   pullRequestMetrics.run(__dirname)
 }
 
