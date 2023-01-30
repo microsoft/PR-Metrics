@@ -34,7 +34,7 @@ describe('azureReposInvoker.ts', function (): void {
     process.env.PR_METRICS_ACCESS_TOKEN = 'PAT'
 
     gitApi = mock<IGitApi>()
-    let requestHandler: IRequestHandler = mock<IRequestHandler>()
+    const requestHandler: IRequestHandler = mock<IRequestHandler>()
     const webApi: WebApi = mock(WebApi)
     when(webApi.getGitApi()).thenResolve(resolvableInstance(gitApi))
 
