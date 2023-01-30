@@ -23,7 +23,7 @@ describe('pullRequestMetrics.ts', (): void => {
   describe('run()', (): void => {
     it('should skip when receiving a skip flag', async (): Promise<void> => {
       // Arrange
-      const pullRequestMetrics: PullRequestMetrics = new PullRequestMetrics(instance(codeMetricsCalculator), instance(logger), instance(runnerInvoker))
+      let pullRequestMetrics: PullRequestMetrics = new PullRequestMetrics(instance(codeMetricsCalculator), instance(logger), instance(runnerInvoker))
       when(codeMetricsCalculator.shouldSkip).thenReturn('Skip')
 
       // Act
