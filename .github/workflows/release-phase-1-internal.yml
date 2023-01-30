@@ -45,7 +45,7 @@ jobs:
           # Fine-grained Personal Access Token (PAT) with the following permissions for microsoft/PR-Metrics:
           # - Read access to Metadata
           # - Read and Write access to Actions and Code (aka Contents)
-          token: ${{ secrets.PREPARE_RELEASE_CHECKOUT }}
+          token: ${{ secrets.RELEASE_PHASE_1_CHECKOUT }}
 
       - name: Version Number – README.md
         shell: pwsh
@@ -208,7 +208,7 @@ jobs:
         env:
           # Classic Personal Access Token (PAT) with the "public_repo" permission for microsoft. Fine-grained PATs will
           # not work due to GitHub CLI's dependence on GraphQL.
-          GITHUB_TOKEN: ${{ secrets.PREPARE_RELEASE_PR_CREATE }}
+          GITHUB_TOKEN: ${{ secrets.RELEASE_PHASE_1_PR_CREATE }}
 
       - name: PR – Get Number
         uses: jwalton/gh-find-current-pr@v1.3.2

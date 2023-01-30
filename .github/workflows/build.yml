@@ -40,18 +40,14 @@ jobs:
   update-code:
     name: Update Code
     runs-on: ubuntu-latest
-    permissions: {}
+    permissions:
+      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          ref: ${{ env.GITHUB_HEAD_REF }}
-          # Fine-grained Personal Access Token (PAT) with the following permissions for microsoft/PR-Metrics:
-          # - Read access to Metadata
-          # - Read and Write access to Code (aka Contents)
+          ref: ${{ github.HEAD_REF }}
           token: ${{ secrets.BUILD_UPDATE_CODE_CHECKOUT }}
-        env:
-          GITHUB_HEAD_REF: ${{ env.GITHUB_HEAD_REF }}
 
       - name: Install Node.js
         uses: actions/setup-node@v3
@@ -69,12 +65,6 @@ jobs:
       - name: npm – Build Package
         shell: pwsh
         run: npm run build:package
-
-      - name: Git – Setup Authentication
-        shell: pwsh
-        run: gh auth setup-git
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Git – Add Changed Files
         shell: pwsh
