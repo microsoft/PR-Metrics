@@ -45,11 +45,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0
-        with:
-          # Fine-grained Personal Access Token (PAT) with the following permissions for microsoft/PR-Metrics:
-          # - Read access to Metadata
-          # - Read and Write access to Code (aka Contents)
+          ref: $GITHUB_HEAD_REF
           token: ${{ secrets.BUILD_UPDATE_CODE_CHECKOUT }}
 
       - name: Install Node.js
@@ -69,9 +65,11 @@ jobs:
         shell: pwsh
         run: npm run build:package
 
-      - name: Git – Checkout Branch
+      - name: Git – Setup Authentication
         shell: pwsh
-        run: git checkout "$GITHUB_HEAD_REF"
+        run: gh auth setup-git
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Git – Add Changed Files
         shell: pwsh
