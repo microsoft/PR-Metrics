@@ -207,6 +207,10 @@ jobs:
           --label "release"
           --assignee "${{ github.actor }}"
           --reviewer "${{ github.actor }}"
+        env:
+          # Classic Personal Access Token (PAT) with the "repo" permission for microsoft. Fine-grained PATs will
+          # not work due to GitHub CLI's dependence on GraphQL.
+          GITHUB_TOKEN: ${{ secrets.RELEASE_PHASE_1_PR_CREATE }}
 
       - name: PR – Get Number
         uses: jwalton/gh-find-current-pr@v1.3.2
