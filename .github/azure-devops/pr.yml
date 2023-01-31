@@ -40,6 +40,7 @@ jobs:
       - task: PRMetrics@1
         displayName: PR Metrics
         env:
+          # Azure DevOps Personal Access Token (PAT) with the Agent Pools (Read & Manage) permission.
           PR_METRICS_ACCESS_TOKEN: $(GITHUB_PAT)
 
   - job: PRMetrics_Ubuntu
@@ -56,6 +57,7 @@ jobs:
       - task: PRMetrics@1
         displayName: PR Metrics
         env:
+          # Azure DevOps Personal Access Token (PAT) with the Agent Pools (Read & Manage) permission.
           PR_METRICS_ACCESS_TOKEN: $(GITHUB_PAT)
 
   - job: PRMetrics_Windows
@@ -72,6 +74,7 @@ jobs:
       - task: PRMetrics@1
         displayName: PR Metrics
         env:
+          # Azure DevOps Personal Access Token (PAT) with the Agent Pools (Read & Manage) permission.
           PR_METRICS_ACCESS_TOKEN: $(GITHUB_PAT)
 
   - job: Compliance

@@ -1,0 +1,73 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+
+---
+
+name: Release - Phase 2
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/support/release-trigger.txt
+  # TODO: Remove line below when testing is complete.
+  workflow_dispatch: null
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      discussions: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 19.x
+
+      - name: npm – Install Dependencies
+        shell: pwsh
+        run: npm install
+
+      - name: npm – Build
+        shell: pwsh
+        run: npm run build:release
+
+      - name: Install TFX CLI
+        shell: pwsh
+        run: npm install -g tfx-cli
+
+      - name: Release – Create
+        shell: pwsh
+        run: tfx extension create --manifest-globs vss-extension.json --output-path ../ms-omex.PRMetrics.vsix
+        working-directory: ${{ github.workspace }}/release
+
+      - name: Release – Publish
+        uses: actions/upload-artifact@v3
+        with:
+          name: ms-omex.PRMetrics
+          path: ${{ github.workspace }}/ms-omex.PRMetrics.vsix
+
+      - name: Get Version
+        id: version
+        shell: pwsh
+        run: |-
+          $Version = Get-Content -Path '.github/workflows/support/release-trigger.txt'
+          Write-Output -InputObject "VERSION=v$Version" >> $Env:GITHUB_OUTPUT
+
+      - name: GitHub Release
+        uses: softprops/action-gh-release@v0.1.15
+        with:
+          draft: true # TODO: Remove
+          discussion_category_name: Releases
+          files: ${{ github.workspace }}/ms-omex.PRMetrics.vsix
+          generate_realease_notes: true
+          tag_name: TEST Release v${{ steps.version.outputs.VERSION }}
+          tag: test-v${{ steps.version.outputs.VERSION }}
+
+...

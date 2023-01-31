@@ -160,8 +160,6 @@ jobs:
         uses: ./
         env:
           PR_METRICS_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          ACTIONS_STEP_DEBUG: ${{ secrets.ACTIONS_STEP_DEBUG }}
-        if: ${{ env.ACTIONS_STEP_DEBUG != '' }}
 
   validate:
     name: Validate
