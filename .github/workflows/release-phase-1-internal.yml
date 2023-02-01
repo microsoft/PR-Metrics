@@ -170,9 +170,7 @@ jobs:
         shell: pwsh
         run: gh auth setup-git
         env:
-          # Classic Personal Access Token (PAT) with the "repo" permission for microsoft. Fine-grained PATs will
-          # not work due to GitHub CLI's dependence on GraphQL.
-          GITHUB_TOKEN: ${{ secrets.RELEASE_PHASE_1_PR_CREATE }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Git – Set Name
         shell: pwsh
