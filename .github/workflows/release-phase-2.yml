@@ -64,7 +64,7 @@ jobs:
           discussion_category_name: Releases
           files: ${{ github.workspace }}/ms-omex.PRMetrics.vsix
           generate_release_notes: true
-          name: TEST Release ${{ steps.version.outputs.VERSION }}
-          tag_name: test-${{ steps.version.outputs.VERSION }}
+          name: Release ${{ steps.version.outputs.VERSION }}
+          tag_name: ${{ steps.version.outputs.VERSION }}
 
 ...
