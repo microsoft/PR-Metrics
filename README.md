@@ -49,9 +49,21 @@ If no PR description is provided, the description will be set to:
 ## Inputs
 
 You will need to set the environment variable `PR_Metrics_Access_Token` to a
-Personal Access Token (PAT) with at least the 'repos' scope. Instructions on
-creating a new PAT can be found [here][githubpat]. Alternatively, you can use
-the in-built `GITHUB_TOKEN`.
+Personal Access Token (PAT) with at least the 'repos' scope. If you are using a
+Fine-Grained PAT, it will need at least Read and Write access to pull requests.
+Instructions on creating a new PAT can be found [here][githubpat].
+Alternatively, you can use the in-built `GITHUB_TOKEN`.
+
+If using `GITHUB_TOKEN`, the following permissions are required:
+
+```YAML
+permissions:
+  pull-requests: write
+  statuses: write
+```
+
+[GitHub token permissions][github-token-pemissions] can be set for an individual
+job, workflow, or for Actions as a whole.
 
 It is also recommended that you set `continue-on-error: true` as a failure
 within the action should not break your pipelines and prevent code development.
@@ -129,19 +141,6 @@ continue-on-error: true
 
 Instructions on using the action within Azure Pipelines can be found
 [here][azurepipelinestask].
-
-## Permissions
-
-This Action requires the following permissions on the GitHub integration token:
-
-```YAML
-permissions:
-  pull-requests: write
-  statuses: write
-```
-
-[GitHub token permissions][github-token-pemissions] can be set for an individual
-job, workflow, or for Actions as a whole.
 
 ## Contributing
 

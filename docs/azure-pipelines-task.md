@@ -18,8 +18,9 @@ Token (PAT) with scopes 'Code' > 'Read & write' and 'Pull Request Threads' >
 'Read & write', which you can then map to `PR_Metrics_Access_Token`.
 
 For GitHub repositories, you will need to create a PAT according to the
-instructions [here][githubpat]. The scope should be 'repos'. The resulting PAT
-should then be added to your repository as a secret with the name
+instructions [here][githubpat]. The scope should be 'repos'. If you are using a
+Fine-Grained PAT, it will need Read and Write access to pull requests. The
+resulting PAT should then be added to your repository as a secret with the name
 `PR_Metrics_Access_Token` according to the instructions [here][githubsecret] and
 mapped to `PR_Metrics_Access_Token` within the task definition. Alternatively,
 you can use the in-built `GITHUB_TOKEN`.
