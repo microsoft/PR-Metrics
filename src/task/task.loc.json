@@ -39,6 +39,12 @@
       "helpMarkDown": "ms-resource:loc.input.helpMarkDown.testFactor"
     },
     {
+      "name": "AlwaysCloseComments",
+      "label": "ms-resource:loc.input.label.alwaysCloseComments",
+      "type": "string",
+      "helpMarkDown": "ms-resource:loc.input.helpMarkDown.alwaysCloseComments"
+    },
+    {
       "name": "FileMatchingPatterns",
       "label": "ms-resource:loc.input.label.fileMatchingPatterns",
       "type": "multiLine",
@@ -75,12 +81,14 @@
     "metrics.codeMetricsCalculator.noGitRepoGitHub": "ms-resource:loc.messages.metrics.codeMetricsCalculator.noGitRepoGitHub",
     "metrics.codeMetricsCalculator.noPullRequest": "ms-resource:loc.messages.metrics.codeMetricsCalculator.noPullRequest",
     "metrics.codeMetricsCalculator.unsupportedProvider": "ms-resource:loc.messages.metrics.codeMetricsCalculator.unsupportedProvider",
+    "metrics.inputs.adjustingAlwaysCloseComments": "ms-resource:loc.messages.metrics.inputs.adjustingAlwaysCloseComments",
     "metrics.inputs.adjustingBaseSize": "ms-resource:loc.messages.metrics.inputs.adjustingBaseSize",
     "metrics.inputs.adjustingCodeFileExtensions": "ms-resource:loc.messages.metrics.inputs.adjustingCodeFileExtensions",
     "metrics.inputs.adjustingFileMatchingPatterns": "ms-resource:loc.messages.metrics.inputs.adjustingFileMatchingPatterns",
     "metrics.inputs.adjustingGrowthRate": "ms-resource:loc.messages.metrics.inputs.adjustingGrowthRate",
     "metrics.inputs.adjustingTestFactor": "ms-resource:loc.messages.metrics.inputs.adjustingTestFactor",
     "metrics.inputs.disablingTestFactor": "ms-resource:loc.messages.metrics.inputs.disablingTestFactor",
+    "metrics.inputs.settingAlwaysCloseComments": "ms-resource:loc.messages.metrics.inputs.settingAlwaysCloseComments",
     "metrics.inputs.settingBaseSize": "ms-resource:loc.messages.metrics.inputs.settingBaseSize",
     "metrics.inputs.settingCodeFileExtensions": "ms-resource:loc.messages.metrics.inputs.settingCodeFileExtensions",
     "metrics.inputs.settingFileMatchingPatterns": "ms-resource:loc.messages.metrics.inputs.settingFileMatchingPatterns",

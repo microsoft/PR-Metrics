@@ -68,6 +68,13 @@ If left blank, a default of `2.0` will be used. With a base size of `200` and a
 growth rate of `2.0`, `400` new lines would constitute a medium PR while `800`
 new lines would constitute a large PR.
 
+### always-close-comments
+
+By default, comments are open if they require further attention, such as when
+a smaller PR or increased test coverage is suggested. If this input is set to
+`true`, all comments will be closed, to stop them preventing automatic closure
+of the PR.
+
 ### test-factor
 
 The lines of test code expected for each line of product code. If left blank, a
@@ -118,6 +125,7 @@ with:
   base-size: 200
   growth-rate: 2.0
   test-factor: 1.0
+  always-close-comments: false
   file-matching-patterns: |
     **/*
     !Ignore.cs
