@@ -1,0 +1,245 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+
+---
+
+name: Release – Phase 1 (Internal)
+
+on:
+  workflow_call:
+    inputs:
+      major:
+        required: true
+        type: string
+      minor:
+        required: true
+        type: string
+      patch:
+        required: true
+        type: string
+
+jobs:
+  release:
+    name: Release ${{ inputs.major }}.${{ inputs.minor }}.${{ inputs.patch }}
+    runs-on: ubuntu-latest
+    env:
+      version: ${{ inputs.major }}.${{ inputs.minor }}.${{ inputs.patch }}
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Validate major
+        shell: pwsh
+        run: '[int]::Parse(${{ inputs.major }})'
+
+      - name: Validate minor
+        shell: pwsh
+        run: '[int]::Parse(${{ inputs.minor }})'
+
+      - name: Validate patch
+        shell: pwsh
+        run: '[int]::Parse(${{ inputs.patch }})'
+
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          # Fine-grained Personal Access Token (PAT) with the following permissions for microsoft/PR-Metrics:
+          # - Read access to Metadata
+          # - Read and Write access to Actions and Code (aka Contents)
+          token: ${{ secrets.RELEASE_PHASE_1_CHECKOUT }}
+
+      - name: Version Number – README.md
+        shell: pwsh
+        run: |-
+          $FilePath = 'README.md'
+          $FileContents = Get-Content -Path $FilePath
+          $FileContents = $FileContents -replace 'PR-Metrics@v\d+\.\d+\.\d+', 'PR-Metrics@v${{ env.version }}'
+          Set-Content -Path $FilePath -Value $FileContents
+
+      - name: Version Number – package.json
+        shell: pwsh
+        run: |-
+          $FilePath = 'package.json'
+          $FileContents = Get-Content -Path $FilePath
+          $FileContents = $FileContents -replace '"version": "\d+\.\d+\.\d+"', '"version": "${{ env.version }}"'
+          Set-Content -Path $FilePath -Value $FileContents
+
+      - name: Version Number – vss-extension.json
+        shell: pwsh
+        run: |-
+          $FilePath = 'src/vss-extension.json'
+          $FileContents = Get-Content -Path $FilePath
+          $FileContents = $FileContents -replace '"version": "\d+\.\d+\.\d+"', '"version": "${{ env.version }}"'
+          Set-Content -Path $FilePath -Value $FileContents
+
+      - name: Version Number – release-trigger.txt
+        shell: pwsh
+        run: Set-Content -Path '.github/workflows/support/release-trigger.txt' -Value ${{ env.version }}
+
+      - name: Version Number – task.json
+        shell: pwsh
+        run: |-
+          $FilePath = 'src/task/task.json'
+          $FileContents = Get-Content -Path $FilePath
+          $FileContents = $FileContents -replace 'PR Metrics v\d+\.\d+\.\d+', 'PR Metrics v${{ env.version }}'
+          $FileContents = $FileContents -replace '"Major": \d+', '"Major": ${{ inputs.major }}'
+          $FileContents = $FileContents -replace '"Minor": \d+', '"Minor": ${{ inputs.minor }}'
+          $FileContents = $FileContents -replace '"Patch": \d+', '"Patch": ${{ inputs.patch }}'
+          Set-Content -Path $FilePath -Value $FileContents
+
+      - name: Version Number – task.loc.json
+        shell: pwsh
+        run: |-
+          $FilePath = 'src/task/task.loc.json'
+          $FileContents = Get-Content -Path $FilePath
+          $FileContents = $FileContents -replace '"Major": \d+', '"Major": ${{ inputs.major }}'
+          $FileContents = $FileContents -replace '"Minor": \d+', '"Minor": ${{ inputs.minor }}'
+          $FileContents = $FileContents -replace '"Patch": \d+', '"Patch": ${{ inputs.patch }}'
+          Set-Content -Path $FilePath -Value $FileContents
+
+      - name: Version Number – resources.resjson
+        shell: pwsh
+        run: |-
+          $FilePath = 'src/task/Strings/resources.resjson/en-US/resources.resjson'
+          $FileContents = Get-Content -Path $FilePath
+          $FileContents = $FileContents -replace 'PR Metrics v\d+\.\d+\.\d+', 'PR Metrics v${{ env.version }}'
+          Set-Content -Path $FilePath -Value $FileContents
+
+      - name: Version Number – gitHubReposInvoker.ts
+        shell: pwsh
+        run: |-
+          $FilePath = 'src/task/src/repos/gitHubReposInvoker.ts'
+          $FileContents = Get-Content -Path $FilePath
+          $FileContents = $FileContents -replace 'PRMetrics\/v\d+\.\d+\.\d+', 'PRMetrics/v${{ env.version }}'
+          Set-Content -Path $FilePath -Value $FileContents
+
+      - name: Version Number – gitHubReposInvoker.spec.ts
+        shell: pwsh
+        run: |-
+          $FilePath = 'src/task/tests/repos/gitHubReposInvoker.spec.ts'
+          $FileContents = Get-Content -Path $FilePath
+          $FileContents = $FileContents -replace 'PRMetrics\/v\d+\.\d+\.\d+', 'PRMetrics/v${{ env.version }}'
+          Set-Content -Path $FilePath -Value $FileContents
+
+      - name: Version Number – Increment Patch
+        id: increment-patch
+        shell: pwsh
+        run: |-
+          $IncrementedPatch = [int]::Parse(${{ inputs.patch }}) + 1
+          Write-Output -InputObject "INCREMENTED_PATCH=$IncrementedPatch" >> $Env:GITHUB_OUTPUT
+
+      - name: Version Number – release-phase-1.yml
+        shell: pwsh
+        run: |-
+          $FilePath = '.github/workflows/release-phase-1.yml'
+          $FileContents = Get-Content -Path $FilePath
+          $FileContents = $FileContents -replace '(major:\s+default: )\d+', '$1${{ inputs.major }}'
+          $FileContents = $FileContents -replace '(minor:\s+default: )\d+', '$1${{ inputs.minor }}'
+          $FileContents = $FileContents -replace '(patch:\s+default: )', '$1${{ steps.increment-patch.outputs.INCREMENTED_PATCH }}'
+          $FileContents = $FileContents -replace 'inputs\.major \|\| \d+', 'inputs.major || ${{ inputs.major }}'
+          $FileContents = $FileContents -replace 'inputs\.minor \|\| \d+', 'inputs.minor || ${{ inputs.minor }}'
+          $FileContents = $FileContents -replace 'inputs\.patch \|\| \d+', 'inputs.patch || ${{ steps.increment-patch.outputs.INCREMENTED_PATCH }}'
+          Set-Content -Path $FilePath -Value $FileContents
+
+      - name: Update LICENSE.txt
+        shell: pwsh
+        run: |-
+            $FilePath = 'src/LICENSE.txt'
+            $FileContents = Get-Content -Path $FilePath
+            $Index = [Array]::IndexOf($FileContents, ($FileContents | Where-Object { $_ -match 'NOTICES AND INFORMATION' }))
+            $Index -= 1
+            $FileContents = $FileContents[0..$Index]
+            Set-Content -Path $FilePath -Value $FileContents
+
+      - name: npm – Install NCU
+        shell: pwsh
+        run: npm install -g npm-check-updates
+
+      - name: npm – Update Dependencies
+        shell: pwsh
+        run: ncu -u
+
+      - name: npm – Update Transitive Dependencies
+        shell: pwsh
+        run: npm update
+
+      - name: npm – Build Package
+        shell: pwsh
+        run: npm run build:package
+
+      - name: Git – Setup Authentication
+        shell: pwsh
+        run: gh auth setup-git
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Git – Set Name
+        shell: pwsh
+        run: git config --global user.name "github-actions[bot]"
+
+      - name: Git – Set Email
+        shell: pwsh
+        run: git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Git – Create Branch
+        shell: pwsh
+        run: git checkout -b release/v${{ env.version }}
+
+      - name: Git – Add Changed Files
+        shell: pwsh
+        run: git add -A
+
+      - name: Git – Commit Changed Files
+        shell: pwsh
+        run: git commit -m "Updating dist folder"
+
+      - name: Git – Push Changed Files
+        shell: pwsh
+        run: git push --set-upstream origin release/v${{ env.version }}
+
+      - name: PR – Create
+        shell: pwsh
+        run: >-
+          gh pr create
+          --title "[Autogenerated] Release v${{ env.version }}"
+          --body "Autogenerated release for PR Metrics v${{ env.version }}."
+          --label "release"
+          --assignee "${{ github.actor }}"
+          --reviewer "${{ github.actor }}"
+        env:
+          # Classic Personal Access Token (PAT) with the "repo" permission for microsoft. Fine-grained PATs will
+          # not work due to GitHub CLI's dependence on GraphQL.
+          GITHUB_TOKEN: ${{ secrets.RELEASE_PHASE_1_PR_CREATE }}
+
+      - name: PR – Get Number
+        uses: jwalton/gh-find-current-pr@v1.3.2
+        id: prGetNumber
+
+      - name: PR – Create Comment 1
+        uses: bluwy/substitute-string-action@v2.0.1
+        id: prCreateComment
+        with:
+          _input-file: ./.github/workflows/support/release-phase-1-comment1.md
+          _format-key: '%%key%%'
+        env:
+          INPUT_PR: ${{ steps.prGetNumber.outputs.pr }}
+
+      - name: PR – Write Comment 1 to File
+        uses: DamianReeves/write-file-action@v1.2
+        with:
+          path: ./.github/workflows/support/release-phase-1-comment1.md
+          contents: ${{ steps.prCreateComment.outputs.result }}
+          write-mode: overwrite
+
+      - name: PR – Comment 1
+        shell: pwsh
+        run: gh pr comment --body-file "./.github/workflows/support/release-phase-1-comment1.md"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: PR – Comment 2
+        shell: pwsh
+        run: gh pr comment --body-file "./.github/workflows/support/release-phase-1-comment2.md"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+...

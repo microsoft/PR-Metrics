@@ -1,0 +1,39 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+
+---
+
+name: Release – Phase 1
+
+on:
+  schedule:
+    # Run every quarter.
+    - cron: 0 0 1 */3 *
+  workflow_dispatch:
+    inputs:
+      major:
+        default: 1
+        description: The major element of the version number
+        required: true
+        type: string
+      minor:
+        default: 4
+        description: The minor element of the version number
+        required: true
+        type: string
+      patch:
+        default: 10
+        description: The patch element of the version number
+        required: true
+        type: string
+
+jobs:
+  release:
+    uses: ./.github/workflows/release-phase-1-internal.yml
+    secrets: inherit
+    with:
+      major: ${{ inputs.major || 1 }}
+      minor: ${{ inputs.minor || 4 }}
+      patch: ${{ inputs.patch || 10 }}
+
+...
