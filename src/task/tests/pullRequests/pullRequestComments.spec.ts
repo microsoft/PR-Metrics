@@ -471,6 +471,19 @@ describe('pullRequestComments.ts', (): void => {
   })
 
   describe('getMetricsCommentStatus()', (): void => {
+    it('should return Closed when the always-close-comments mode is enabled', async (): Promise<void> => {
+      // Arrange
+      when(inputs.alwaysCloseComments).thenReturn(true)
+      const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(inputs), instance(logger), instance(reposInvoker), instance(runnerInvoker))
+
+      // Act
+      const result: CommentThreadStatus = await pullRequestComments.getMetricsCommentStatus()
+
+      // Assert
+      expect(result).to.equal(CommentThreadStatus.Closed)
+      verify(logger.logDebug('* PullRequestComments.getMetricsCommentStatus()')).once()
+    })
+
     {
       const testCases: Array<boolean | null> = [
         true,
