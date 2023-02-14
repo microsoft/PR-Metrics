@@ -39,10 +39,10 @@
       "helpMarkDown": "ms-resource:loc.input.helpMarkDown.testFactor"
     },
     {
-      "name": "AlwaysCloseComments",
-      "label": "ms-resource:loc.input.label.alwaysCloseComments",
+      "name": "AlwaysCloseComment",
+      "label": "ms-resource:loc.input.label.alwaysCloseComment",
       "type": "string",
-      "helpMarkDown": "ms-resource:loc.input.helpMarkDown.alwaysCloseComments"
+      "helpMarkDown": "ms-resource:loc.input.helpMarkDown.alwaysCloseComment"
     },
     {
       "name": "FileMatchingPatterns",
@@ -81,14 +81,14 @@
     "metrics.codeMetricsCalculator.noGitRepoGitHub": "ms-resource:loc.messages.metrics.codeMetricsCalculator.noGitRepoGitHub",
     "metrics.codeMetricsCalculator.noPullRequest": "ms-resource:loc.messages.metrics.codeMetricsCalculator.noPullRequest",
     "metrics.codeMetricsCalculator.unsupportedProvider": "ms-resource:loc.messages.metrics.codeMetricsCalculator.unsupportedProvider",
-    "metrics.inputs.adjustingAlwaysCloseComments": "ms-resource:loc.messages.metrics.inputs.adjustingAlwaysCloseComments",
+    "metrics.inputs.adjustingAlwaysCloseComment": "ms-resource:loc.messages.metrics.inputs.adjustingAlwaysCloseComment",
     "metrics.inputs.adjustingBaseSize": "ms-resource:loc.messages.metrics.inputs.adjustingBaseSize",
     "metrics.inputs.adjustingCodeFileExtensions": "ms-resource:loc.messages.metrics.inputs.adjustingCodeFileExtensions",
     "metrics.inputs.adjustingFileMatchingPatterns": "ms-resource:loc.messages.metrics.inputs.adjustingFileMatchingPatterns",
     "metrics.inputs.adjustingGrowthRate": "ms-resource:loc.messages.metrics.inputs.adjustingGrowthRate",
     "metrics.inputs.adjustingTestFactor": "ms-resource:loc.messages.metrics.inputs.adjustingTestFactor",
     "metrics.inputs.disablingTestFactor": "ms-resource:loc.messages.metrics.inputs.disablingTestFactor",
-    "metrics.inputs.settingAlwaysCloseComments": "ms-resource:loc.messages.metrics.inputs.settingAlwaysCloseComments",
+    "metrics.inputs.settingAlwaysCloseComment": "ms-resource:loc.messages.metrics.inputs.settingAlwaysCloseComment",
     "metrics.inputs.settingBaseSize": "ms-resource:loc.messages.metrics.inputs.settingBaseSize",
     "metrics.inputs.settingCodeFileExtensions": "ms-resource:loc.messages.metrics.inputs.settingCodeFileExtensions",
     "metrics.inputs.settingFileMatchingPatterns": "ms-resource:loc.messages.metrics.inputs.settingFileMatchingPatterns",

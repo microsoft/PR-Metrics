@@ -39,10 +39,10 @@
       "helpMarkDown": "The lines of test code expected for each line of product code. This check can be disabled by setting the value to '0'. If left blank, a default of '1.0' will be used."
     },
     {
-      "name": "AlwaysCloseComments",
-      "label": "Always close comments?",
+      "name": "AlwaysCloseComment",
+      "label": "Always close comment?",
       "type": "string",
-      "helpMarkDown": "If set to 'true', comments will be always closed instead of left open when requiring attention."
+      "helpMarkDown": "If set to 'true', the size and test comment will be always closed instead of left open when requiring attention."
     },
     {
       "name": "FileMatchingPatterns",
@@ -81,14 +81,14 @@
     "metrics.codeMetricsCalculator.noGitRepoGitHub": "No Git repo present. Run the 'actions/checkout' action prior to PR Metrics.",
     "metrics.codeMetricsCalculator.noPullRequest": "The build is not running against a pull request.",
     "metrics.codeMetricsCalculator.unsupportedProvider": "The build is running against a pull request from '%s', which is not a supported provider.",
-    "metrics.inputs.adjustingAlwaysCloseComments": "Adjusting the always-close-comments mode input to 'false'.",
+    "metrics.inputs.adjustingAlwaysCloseComment": "Adjusting the always-close-comment mode input to 'false'.",
     "metrics.inputs.adjustingBaseSize": "Adjusting the base size input to '%s'.",
     "metrics.inputs.adjustingCodeFileExtensions": "Adjusting the code file extensions input to '%s'.",
     "metrics.inputs.adjustingFileMatchingPatterns": "Adjusting the file matching patterns input to '%s'.",
     "metrics.inputs.adjustingGrowthRate": "Adjusting the growth rate input to '%s'.",
     "metrics.inputs.adjustingTestFactor": "Adjusting the test factor input to '%s'.",
     "metrics.inputs.disablingTestFactor": "Disabling the test factor validation.",
-    "metrics.inputs.settingAlwaysCloseComments": "Setting the always-close-comments mode input to 'true'.",
+    "metrics.inputs.settingAlwaysCloseComment": "Setting the always-close-comment mode input to 'true'.",
     "metrics.inputs.settingBaseSize": "Setting the base size input to '%s'.",
     "metrics.inputs.settingCodeFileExtensions": "Setting the code file extensions input to '%s'.",
     "metrics.inputs.settingFileMatchingPatterns": "Setting the file matching patterns input to '%s'.",

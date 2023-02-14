@@ -55,6 +55,7 @@ steps:
     BaseSize: 200
     GrowthRate: 2.0
     TestFactor: 1.0
+    AlwaysCloseComment: true
     FileMatchingPatterns: |
       **/*
       !Ignore.cs
@@ -63,6 +64,16 @@ steps:
       ps1
   continueOnError: true
 ```
+
+## Always Close Comment
+
+The `AlwaysCloseComment` option is not available for GitHub PRs as the main size
+and test comment there cannot be open by default.
+
+By default in Azure DevOps, the comment is left open if it requires further
+attention, such as when a smaller PR or increased test coverage is suggested. If
+this input is set to `true`, the comment will be closed, to prevent it blocking
+automatic closure of the PR.
 
 [addingtask]: https://docs.microsoft.com/azure/devops/pipelines/customize-pipeline
 [githubpat]: https://docs.github.com/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token

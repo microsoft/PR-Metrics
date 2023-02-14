@@ -18,10 +18,9 @@ export const growthRate: number = 2.0
 export const testFactor: number = 1.0
 
 /**
- * The default value for always close comments, which is a value indicating whether comments should be closed, instead
- * of left open when requiring attention.
+ * The default value for always close the size and test comment, instead of leaving it open when requiring attention.
  */
-export const alwaysCloseComments: boolean = false
+export const alwaysCloseComment: boolean = false
 
 /**
  * The default file matching patterns, which is the set of globs specifying the files and folders to include.

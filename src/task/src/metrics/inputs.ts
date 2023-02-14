@@ -19,7 +19,7 @@ export default class Inputs {
   private _baseSize: number = 0
   private _growthRate: number = 0
   private _testFactor: number | null = 0
-  private _alwaysCloseComments: boolean = false
+  private _alwaysCloseComment: boolean = false
   private _fileMatchingPatterns: string[] = []
   private _codeFileExtensions: Set<string> = new Set<string>()
 
@@ -67,15 +67,15 @@ export default class Inputs {
   }
 
   /**
-   * Gets the value indicating whether to always close comments, which is a value indicating whether comments should be
-   * closed, instead of left open when requiring attention.
-   * @returns The value indicating whether to always close comments.
+   * Gets the value indicating whether to always close the size and test comment, instead of leaving it open when
+   * requiring attention.
+   * @returns The value indicating whether to always close the comment.
    */
-  public get alwaysCloseComments (): boolean {
-    this._logger.logDebug('* Inputs.alwaysCloseComments')
+  public get alwaysCloseComment (): boolean {
+    this._logger.logDebug('* Inputs.alwaysCloseComment')
 
     this.initialize()
-    return this._alwaysCloseComments
+    return this._alwaysCloseComment
   }
 
   /**
@@ -116,8 +116,8 @@ export default class Inputs {
     const testFactor: string | undefined = this._runnerInvoker.getInput(['Test', 'Factor'])
     this.initializeTestFactor(testFactor)
 
-    const alwaysCloseComments: string | undefined = this._runnerInvoker.getInput(['Always', 'Close', 'Comments'])
-    this.initializeAlwaysCloseComments(alwaysCloseComments)
+    const alwaysCloseComment: string | undefined = this._runnerInvoker.getInput(['Always', 'Close', 'Comment'])
+    this.initializeAlwaysCloseComment(alwaysCloseComment)
 
     const fileMatchingPatterns: string | undefined = this._runnerInvoker.getInput(['File', 'Matching', 'Patterns'])
     this.initializeFileMatchingPatterns(fileMatchingPatterns)
@@ -176,18 +176,18 @@ export default class Inputs {
     this._testFactor = InputsDefault.testFactor
   }
 
-  private initializeAlwaysCloseComments (alwaysCloseComments: string | undefined): void {
-    this._logger.logDebug('* Inputs.initializeAlwaysCloseComments()')
+  private initializeAlwaysCloseComment (alwaysCloseComment: string | undefined): void {
+    this._logger.logDebug('* Inputs.initializeAlwaysCloseComment()')
 
-    const convertedValue: boolean | undefined = alwaysCloseComments?.toLowerCase() === 'true'
+    const convertedValue: boolean | undefined = alwaysCloseComment?.toLowerCase() === 'true'
     if (convertedValue) {
-      this._alwaysCloseComments = convertedValue
-      this._logger.logInfo(this._runnerInvoker.loc('metrics.inputs.settingAlwaysCloseComments'))
+      this._alwaysCloseComment = convertedValue
+      this._logger.logInfo(this._runnerInvoker.loc('metrics.inputs.settingAlwaysCloseComment'))
       return
     }
 
-    this._logger.logInfo(this._runnerInvoker.loc('metrics.inputs.adjustingAlwaysCloseComments'))
-    this._alwaysCloseComments = InputsDefault.alwaysCloseComments
+    this._logger.logInfo(this._runnerInvoker.loc('metrics.inputs.adjustingAlwaysCloseComment'))
+    this._alwaysCloseComment = InputsDefault.alwaysCloseComment
   }
 
   private initializeFileMatchingPatterns (fileMatchingPatterns: string | undefined): void {
