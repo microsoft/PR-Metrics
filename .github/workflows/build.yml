@@ -28,12 +28,12 @@ jobs:
         shell: pwsh
         run: npm install
 
-      - name:
+      - name: Azure DevOps - Sign-in
         shell: pwsh
         # Azure DevOps Personal Access Token (PAT) with the Agent Pools (Read & manage) permission.
         run: npx tfx login --service-url https://${{ secrets.AZDO_ACCOUNT }}.visualstudio.com/DefaultCollection --token ${{ secrets.AZDO_PAT }}
 
-      - name: npm – Deploy
+      - name: Azure DevOps – Deploy
         shell: pwsh
         run: npm run deploy
 
@@ -358,12 +358,6 @@ jobs:
       contents: write
       pull-requests: write
     steps:
-      - name: Approve
-        shell: pwsh
-        run: gh pr review --approve "${{ github.event.pull_request.html_url }}"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Enable Auto-Merge
         shell: pwsh
         run: gh pr merge --auto --delete-branch --squash "${{ github.event.pull_request.html_url }}"

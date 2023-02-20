@@ -19,6 +19,7 @@ export default class Inputs {
   private _baseSize: number = 0
   private _growthRate: number = 0
   private _testFactor: number | null = 0
+  private _alwaysCloseComment: boolean = false
   private _fileMatchingPatterns: string[] = []
   private _codeFileExtensions: Set<string> = new Set<string>()
 
@@ -66,6 +67,18 @@ export default class Inputs {
   }
 
   /**
+   * Gets the value indicating whether to always close the size and test comment, instead of leaving it open when
+   * requiring attention.
+   * @returns The value indicating whether to always close the comment.
+   */
+  public get alwaysCloseComment (): boolean {
+    this._logger.logDebug('* Inputs.alwaysCloseComment')
+
+    this.initialize()
+    return this._alwaysCloseComment
+  }
+
+  /**
    * Gets the file matching patterns input, which is the set of globs specifying the files and folders to include.
    * @returns The file matching patterns input.
    */
@@ -102,6 +115,9 @@ export default class Inputs {
 
     const testFactor: string | undefined = this._runnerInvoker.getInput(['Test', 'Factor'])
     this.initializeTestFactor(testFactor)
+
+    const alwaysCloseComment: string | undefined = this._runnerInvoker.getInput(['Always', 'Close', 'Comment'])
+    this.initializeAlwaysCloseComment(alwaysCloseComment)
 
     const fileMatchingPatterns: string | undefined = this._runnerInvoker.getInput(['File', 'Matching', 'Patterns'])
     this.initializeFileMatchingPatterns(fileMatchingPatterns)
@@ -158,6 +174,20 @@ export default class Inputs {
 
     this._logger.logInfo(this._runnerInvoker.loc('metrics.inputs.adjustingTestFactor', InputsDefault.testFactor.toLocaleString()))
     this._testFactor = InputsDefault.testFactor
+  }
+
+  private initializeAlwaysCloseComment (alwaysCloseComment: string | undefined): void {
+    this._logger.logDebug('* Inputs.initializeAlwaysCloseComment()')
+
+    const convertedValue: boolean | undefined = alwaysCloseComment?.toLowerCase() === 'true'
+    if (convertedValue) {
+      this._alwaysCloseComment = convertedValue
+      this._logger.logInfo(this._runnerInvoker.loc('metrics.inputs.settingAlwaysCloseComment'))
+      return
+    }
+
+    this._logger.logInfo(this._runnerInvoker.loc('metrics.inputs.adjustingAlwaysCloseComment'))
+    this._alwaysCloseComment = InputsDefault.alwaysCloseComment
   }
 
   private initializeFileMatchingPatterns (fileMatchingPatterns: string | undefined): void {

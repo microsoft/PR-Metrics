@@ -111,6 +111,10 @@ export default class PullRequestComments {
   public async getMetricsCommentStatus (): Promise<CommentThreadStatus> {
     this._logger.logDebug('* PullRequestComments.getMetricsCommentStatus()')
 
+    if (this._inputs.alwaysCloseComment) {
+      return CommentThreadStatus.Closed
+    }
+
     if (await this._codeMetrics.isSmall()) {
       const isSufficientlyTested: boolean | null = await this._codeMetrics.isSufficientlyTested()
 

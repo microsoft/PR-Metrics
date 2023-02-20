@@ -3,34 +3,39 @@
 // Licensed under the MIT License.
 
 /**
-* The default base size, which is the maximum number of new lines in an extra small pull request.
-*/
+ * The default base size, which is the maximum number of new lines in an extra small pull request.
+ */
 export const baseSize: number = 200
 
 /**
-* The default growth rate, which is applied to the base size for calculating the size of larger pull requests.
-*/
+ * The default growth rate, which is applied to the base size for calculating the size of larger pull requests.
+ */
 export const growthRate: number = 2.0
 
 /**
-* The default test factor , which is the number of lines of test code expected for each line of product code.
-*/
+ * The default test factor, which is the number of lines of test code expected for each line of product code.
+ */
 export const testFactor: number = 1.0
 
 /**
-* The default file matching patterns, which is the set of globs specifying the files and folders to include.
-*/
+ * The default value for always close the size and test comment, instead of leaving it open when requiring attention.
+ */
+export const alwaysCloseComment: boolean = false
+
+/**
+ * The default file matching patterns, which is the set of globs specifying the files and folders to include.
+ */
 export const fileMatchingPatterns: string[] = [
   '**/*',
   '!**/package-lock.json'
 ]
 
 /**
-* The default code file extensions, which is the set of extensions for files containing code so that non-code files can be excluded.
-* @remarks This corresponds to the top 10 languages used on GitHub in 2020 (https://octoverse.github.com/) and uses
-* the language extensions defined in the GitHub language detection logic
-* (https://github.com/github/linguist/blob/master/lib/linguist/languages.yml).
-*/
+ * The default code file extensions, which is the set of extensions for files containing code so that non-code files can be excluded.
+ * @remarks This corresponds to the top 10 languages used on GitHub in 2020 (https://octoverse.github.com/) and uses
+ * the language extensions defined in the GitHub language detection logic
+ * (https://github.com/github/linguist/blob/master/lib/linguist/languages.yml).
+ */
 export const codeFileExtensions: string[] = [
   // JavaScript
   'js',
