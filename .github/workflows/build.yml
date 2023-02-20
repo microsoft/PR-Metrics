@@ -7,15 +7,103 @@ name: Build
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
   pull_request:
-    branches: [main]
-  workflow_dispatch: null
+    branches:
+      - main
+  schedule:
+    - cron: 0 0 * * 1
 
 jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: npm – Install
+        shell: pwsh
+        run: npm install
+
+      - name:
+        shell: pwsh
+        # Azure DevOps Personal Access Token (PAT) with the Agent Pools (Read & manage) permission.
+        run: npx tfx login --service-url https://${{ secrets.AZDO_ACCOUNT }}.visualstudio.com/DefaultCollection --token ${{ secrets.AZDO_PAT }}
+
+      - name: npm – Deploy
+        shell: pwsh
+        run: npm run deploy
+
+  update-code:
+    name: Update Code
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.HEAD_REF }}
+          token: ${{ secrets.BUILD_UPDATE_CODE_CHECKOUT }}
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 19.x
+
+      - name: npm – Install Dependencies
+        shell: pwsh
+        run: npm install
+
+      - name: npm – Lint
+        shell: pwsh
+        run: npm run lint
+
+      - name: npm – Build Package
+        shell: pwsh
+        run: npm run build:package
+
+      - name: Git – Add Changed Files
+        shell: pwsh
+        run: git add -A
+
+      - name: Detect Changes
+        id: detect-changes
+        shell: pwsh
+        run: |-
+          $GitStatus = git status
+          Write-Output -InputObject $GitStatus
+          $NoChangesPresent = $GitStatus.Contains("nothing to commit, working tree clean")
+          Write-Output -InputObject $NoChangesPresent
+          Write-Output -InputObject "NO_CHANGES_PRESENT=$NoChangesPresent" >> $Env:GITHUB_OUTPUT
+
+      - if: ${{ steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
+        name: Git – Set Name
+        shell: pwsh
+        run: git config --global user.name "github-actions[bot]"
+
+      - if: ${{ steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
+        name: Git – Set Email
+        shell: pwsh
+        run: git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - if: ${{ steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
+        name: Git – Commit Changed Files
+        shell: pwsh
+        run: git commit -m "Fixing linting, Updating dist folder"
+
+      - if: ${{ steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
+        name: Git – Push Changed Files
+        shell: pwsh
+        run: git push
+
   build:
     name: Build
     runs-on: ubuntu-latest
+    permissions: {}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -25,25 +113,28 @@ jobs:
         with:
           node-version: 19.x
 
-      - name: NPM – Install Dependencies
+      - name: npm – Install Dependencies
+        shell: pwsh
         run: npm install
 
-      - name: NPM – Test Lint
-        run: npm run lint
-
-      - name: NPM – Test Clean
+      - name: npm – Test Clean
+        shell: pwsh
         run: npm run clean
 
-      - name: NPM – Build
+      - name: npm – Build
+        shell: pwsh
         run: npm run build
 
-      - name: NPM – Test
+      - name: npm – Test
+        shell: pwsh
         run: npm run test
 
       - name: Install TFX CLI
+        shell: pwsh
         run: npm install -g tfx-cli
 
       - name: Release – Create
+        shell: pwsh
         run: tfx extension create --manifest-globs vss-extension.json --output-path ../ms-omex.PRMetrics.vsix
         working-directory: ${{ github.workspace }}/release
 
@@ -56,6 +147,9 @@ jobs:
   test-github-action:
     name: Test GitHub Action
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      statuses: write
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -66,12 +160,11 @@ jobs:
         uses: ./
         env:
           PR_METRICS_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          ACTIONS_STEP_DEBUG: ${{ secrets.ACTIONS_STEP_DEBUG }}
-        if: ${{ env.ACTIONS_STEP_DEBUG != '' }}
 
   validate:
     name: Validate
     runs-on: ubuntu-latest
+    permissions: {}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -81,42 +174,75 @@ jobs:
         with:
           config-file: .github/linters/markdown-link-check.json
 
-      - name: Validate .babelrc – Download .babelrc.schema.json
-        shell: pwsh
-        run: Invoke-WebRequest -Uri 'https://json.schemastore.org/babelrc.json' -OutFile '.babelrc.schema.json'
-
-      - name: Validate .babelrc – Update .babelrc.schema.json
-        shell: pwsh
-        run: |-
-          $FileContent = Get-Content -Path '.babelrc.schema.json' -Raw
-          $FileContent = $FileContent -replace 'draft-04/schema', 'draft-07/schema'
-          Set-Content -NoNewline -Path '.babelrc.schema.json' -Value $FileContent
-
       - name: Validate .babelrc
-        uses: Zingabopp/JsonValidate-Action@v1
+        uses: walbo/validate-json@v1.1.0
         with:
-          json-file: .babelrc
-          json-schema: .babelrc.schema.json
+          files: .babelrc
+          print-valid-files: true
+          strict: false
 
       - name: Validate .markdownlint.json
-        uses: Zingabopp/JsonValidate-Action@v1
+        uses: walbo/validate-json@v1.1.0
         with:
-          json-file: .markdownlint.json
-          json-schema: https://raw.githubusercontent.com/DavidAnson/markdownlint/main/schema/markdownlint-config-schema.json
-          use-draft: draft-07
+          files: .markdownlint.json
+          print-valid-files: true
+
+      - name: Validate package.json – Download package.schema.json
+        shell: pwsh
+        run: Invoke-WebRequest -Uri 'https://json.schemastore.org/package.json' -OutFile 'package.schema.json'
+
+      - name: Validate package.json – Update package.schema.json
+        shell: pwsh
+        run: |-
+          $FileContent = Get-Content -Path 'package.schema.json' -Raw
+          $FileContent = $FileContent -replace ',\s+".+": {\s+"\$ref": "https:\/\/json\.schemastore\.org\/.+\s+}', ''
+          Set-Content -NoNewline -Path 'package.schema.json' -Value $FileContent
+
+      - name: Validate package.json
+        uses: walbo/validate-json@v1.1.0
+        with:
+          files: package.json
+          print-valid-files: true
+          strict: false
+          schema: package.schema.json
+
+      - name: Validate devcontainer.json – Download devcontainer.schema.json
+        shell: pwsh
+        run: Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/microsoft/vscode/main/extensions/configuration-editing/schemas/devContainer.codespaces.schema.json' -OutFile 'devcontainer.schema.json'
+
+      - name: Validate devcontainer.json – Update devcontainer.schema.json
+        shell: pwsh
+        run: |-
+          $FileContent = Get-Content -Path 'devcontainer.schema.json' -Raw
+          $FileContent = $FileContent -replace 'http://json-schema.org/draft-07/schema#', 'http://json-schema.org/draft-04/schema#'
+          Set-Content -NoNewline -Path 'devcontainer.schema.json' -Value $FileContent
 
       - name: Validate devcontainer.json
-        uses: Zingabopp/JsonValidate-Action@v1
+        uses: walbo/validate-json@v1.1.0
         with:
-          json-file: .devcontainer/devcontainer.json
-          json-schema: https://raw.githubusercontent.com/devcontainers/spec/main/schemas/devContainer.base.schema.json
-          use-draft: draft-07
+          files: .devcontainer/devcontainer.json
+          print-valid-files: true
+          strict: false
+          schema: devcontainer.schema.json
+
+      - name: Validate vss-extension.json – Download vss-extension.schema.json
+        shell: pwsh
+        run: Invoke-WebRequest -Uri 'https://json.schemastore.org/vss-extension.json' -OutFile 'vss-extension.schema.json'
+
+      - name: Validate vss-extension.json – Update vss-extension.schema.json
+        shell: pwsh
+        run: |-
+          $FileContent = Get-Content -Path 'vss-extension.schema.json' -Raw
+          $FileContent = $FileContent -replace 'http://json-schema.org/draft-07/schema#', 'http://json-schema.org/draft-04/schema#'
+          Set-Content -NoNewline -Path 'vss-extension.schema.json' -Value $FileContent
 
       - name: Validate vss-extension.json
-        uses: Zingabopp/JsonValidate-Action@v1
+        uses: walbo/validate-json@v1.1.0
         with:
-          json-file: src/vss-extension.json
-          json-schema: https://json.schemastore.org/vss-extension.json
+          files: src/vss-extension.json
+          print-valid-files: true
+          strict: false
+          schema: vss-extension.schema.json
 
       - name: Validate task.json – Download task.schema.json
         shell: pwsh
@@ -126,64 +252,61 @@ jobs:
         shell: pwsh
         run: |-
           $FileContent = Get-Content -Path 'task.schema.json' -Raw
-          $FileContent = $FileContent -replace 'draft-04/schema', 'draft-07/schema'
+          $FileContent = $FileContent.replace('^connectedService\\:.+$', '^connectedService:.+$')
           Set-Content -NoNewline -Path 'task.schema.json' -Value $FileContent
 
       - name: Validate task.json
-        uses: Zingabopp/JsonValidate-Action@v1
+        uses: walbo/validate-json@v1.1.0
         with:
-          json-file: src/task/task.json
-          json-schema: task.schema.json
+          files: src/task/task.json
+          print-valid-files: true
+          schema: task.schema.json
 
       - name: Validate task.loc.json
-        uses: Zingabopp/JsonValidate-Action@v1
+        uses: walbo/validate-json@v1.1.0
         with:
-          json-file: src/task/task.loc.json
-          json-schema: task.schema.json
-
-      - name: Validate tsconfig.json – Download tsconfig.schema.json
-        shell: pwsh
-        run: Invoke-WebRequest -Uri 'https://json.schemastore.org/tsconfig.json' -OutFile 'tsconfig.schema.json'
-
-      - name: Validate tsconfig.json – Update tsconfig.schema.json
-        shell: pwsh
-        run: |-
-          $FileContent = Get-Content -Path 'tsconfig.schema.json' -Raw
-          $FileContent = $FileContent -replace 'draft-04/schema#', 'draft-07/schema'
-          Set-Content -NoNewline -Path 'tsconfig.schema.json' -Value $FileContent
+          files: src/task/task.loc.json
+          print-valid-files: true
+          schema: task.schema.json
 
       - name: Validate tsconfig.json
-        uses: Zingabopp/JsonValidate-Action@v1
+        uses: walbo/validate-json@v1.1.0
         with:
-          json-file: src/task/tsconfig.json
-          json-schema: tsconfig.schema.json
+          files: src/task/tsconfig.json
+          print-valid-files: true
+          strict: false
 
-      - name: Validate typedoc.json
-        uses: Zingabopp/JsonValidate-Action@v1
-        with:
-          json-file: src/task/typedoc.json
-          json-schema: https://typedoc.org/schema.json
-
-      - name: Validate resources.resjson – Download resources.resjson.schema.json
+      - name: Validate typedoc.json – Download typedoc.schema.json
         shell: pwsh
-        run: Invoke-WebRequest -Uri 'https://json.schemastore.org/resjson.json' -OutFile 'resources.resjson.schema.json'
+        run: Invoke-WebRequest -Uri 'https://typedoc.org/schema.json' -OutFile 'typedoc.schema.json'
 
-      - name: Validate resources.resjson – Update resources.resjson.schema.json
+      - name: Validate typedoc.json – Update typedoc.schema.json
         shell: pwsh
         run: |-
-          $FileContent = Get-Content -Path 'resources.resjson.schema.json' -Raw
-          $FileContent = $FileContent -replace 'draft-04/schema#', 'draft-07/schema'
-          Set-Content -NoNewline -Path 'resources.resjson.schema.json' -Value $FileContent
+          $FileContent = Get-Content -Path 'typedoc.schema.json' -Raw
+          $FileContent = $FileContent -replace 'https://json-schema.org/draft-07/schema', 'http://json-schema.org/draft-04/schema#'
+          Set-Content -NoNewline -Path 'typedoc.schema.json' -Value $FileContent
+
+      - name: Validate typedoc.json
+        uses: walbo/validate-json@v1.1.0
+        with:
+          files: src/task/typedoc.json
+          print-valid-files: true
+          strict: false
+          schema: typedoc.schema.json
 
       - name: Validate resources.resjson (en-US)
-        uses: Zingabopp/JsonValidate-Action@v1
+        uses: walbo/validate-json@v1.1.0
         with:
-          json-file: src/task/Strings/resources.resjson/en-US/resources.resjson
-          json-schema: resources.resjson.schema.json
+          files: src/task/Strings/resources.resjson/en-US/resources.resjson
+          print-valid-files: true
+          strict: false
 
   validate-codeql:
     name: Validate – CodeQL
     runs-on: ubuntu-latest
+    permissions:
+      security-events: write
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -200,6 +323,7 @@ jobs:
   validate-linter:
     name: Validate – Linter
     runs-on: ubuntu-latest
+    permissions: {}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -211,7 +335,8 @@ jobs:
         with:
           node-version: 19.x
 
-      - name: NPM – Install Dependencies
+      - name: npm – Install Dependencies
+        shell: pwsh
         run: npm install
 
       - name: Super Linter
@@ -219,33 +344,30 @@ jobs:
         env:
           EDITORCONFIG_FILE_NAME: ../../.editorconfig
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITLEAKS_CONFIG_FILE: ../linters/gitleaks.toml
+          GITLEAKS_CONFIG_FILE: gitleaks.toml
           MARKDOWN_CONFIG_FILE: ../../.markdownlint.json
           TYPESCRIPT_ES_CONFIG_FILE: ../../.eslintrc.yml
           VALIDATE_JAVASCRIPT_STANDARD: false
           VALIDATE_TYPESCRIPT_STANDARD: false
 
-  validate-dist:
-    name: Validate – dist Folder
+  dependabot:
+    if: ${{ github.actor == 'dependabot[bot]' }}
+    name: Dependabot
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+      - name: Approve
+        shell: pwsh
+        run: gh pr review --approve "${{ github.event.pull_request.html_url }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Install Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 19.x
-
-      - name: NPM – Build Package
-        run: npm run build:package
-
-      - name: Compare Expected & Actual dist Folders
-        run: |
-          if [ "$(git diff-index --ignore-cr-at-eol --quiet HEAD -- || echo 1)" == "1" ]; then
-            echo "Detected uncommitted changes after build. Run 'npm run package' and commit any outstanding changes. Details:"
-            git diff
-            exit 1
-          fi
+      - name: Enable Auto-Merge
+        shell: pwsh
+        run: gh pr merge --auto --delete-branch --squash "${{ github.event.pull_request.html_url }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 ...
