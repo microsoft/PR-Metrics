@@ -8,7 +8,7 @@ version: 2
 updates:
   - package-ecosystem: github-actions
     directory: /
-    open-pull-requests-limit: 100
+    open-pull-requests-limit: 100s
     schedule:
       interval: daily
       time: '00:00'                # yamllint disable-line rule:quoted-strings
