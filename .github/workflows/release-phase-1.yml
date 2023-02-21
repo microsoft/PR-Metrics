@@ -29,7 +29,7 @@ on:
 
 jobs:
   release:
-    uses: ./.github/workflows/support/release-phase-1-internal.yml
+    uses: ./.github/workflows/release-phase-1-internal.yml
     secrets: inherit
     with:
       major: ${{ inputs.major || 1 }}
