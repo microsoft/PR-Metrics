@@ -25,7 +25,6 @@ jobs:
     env:
       version: ${{ inputs.major }}.${{ inputs.minor }}.${{ inputs.patch }}
     permissions:
-      actions: write
       pull-requests: write
     steps:
       - name: Validate major
@@ -45,7 +44,7 @@ jobs:
         with:
           # Fine-grained Personal Access Token (PAT) with the following permissions for microsoft/PR-Metrics:
           # - Read access to Metadata
-          # - Read and Write access to Actions and Code (aka Contents)
+          # - Read and Write access to Actions, Code (aka Contents), and Workflows
           token: ${{ secrets.RELEASE_PHASE_1_CHECKOUT }}
 
       - name: Version Number – README.md
