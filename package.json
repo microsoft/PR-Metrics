@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/package.json",
   "name": "prmetrics",
-  "version": "1.4.9",
+  "version": "1.5.0",
   "description": "Augments pull request titles to let reviewers quickly determine PR size and test coverage.",
   "main": "dist/index.js",
   "scripts": {
@@ -55,8 +55,8 @@
     "tsyringe": "^4.7.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.20.7",
-    "@babel/core": "^7.20.12",
+    "@babel/cli": "^7.21.0",
+    "@babel/core": "^7.21.0",
     "@babel/preset-env": "^7.20.2",
     "@istanbuljs/nyc-config-typescript": "^1.0.2",
     "@tsconfig/node10": "^1.0.9",
@@ -64,8 +64,8 @@
     "@types/glob": "^8.0.1",
     "@types/mocha": "^10.0.1",
     "@types/node": "^18.14.0",
-    "@typescript-eslint/eslint-plugin": "^5.52.0",
-    "@typescript-eslint/parser": "^5.52.0",
+    "@typescript-eslint/eslint-plugin": "^5.53.0",
+    "@typescript-eslint/parser": "^5.53.0",
     "@vercel/ncc": "^0.36.1",
     "babel-plugin-transform-globalthis": "^1.0.0",
     "chai": "^4.3.7",
