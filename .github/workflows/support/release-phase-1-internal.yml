@@ -25,6 +25,7 @@ jobs:
     env:
       version: ${{ inputs.major }}.${{ inputs.minor }}.${{ inputs.patch }}
     permissions:
+      actions: write
       pull-requests: write
     steps:
       - name: Validate major
