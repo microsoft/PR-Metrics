@@ -174,10 +174,10 @@ jobs:
         with:
           config-file: .github/linters/markdown-link-check.json
 
-      - name: Validate .babelrc
+      - name: Validate babel.config.json
         uses: walbo/validate-json@v1.1.0
         with:
-          files: .babelrc
+          files: babel.config.json
           print-valid-files: true
           strict: false
 
