@@ -29,19 +29,15 @@ jobs:
           node-version: 19.x
 
       - name: npm – Install Dependencies
-        shell: pwsh
         run: npm install
 
       - name: npm – Build
-        shell: pwsh
         run: npm run build:release
 
       - name: Install TFX CLI
-        shell: pwsh
         run: npm install -g tfx-cli
 
       - name: Release – Create
-        shell: pwsh
         run: tfx extension create --manifest-globs vss-extension.json --output-path ../ms-omex.PRMetrics.vsix
         working-directory: ${{ github.workspace }}/release
 
