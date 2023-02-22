@@ -33,7 +33,7 @@ jobs:
     secrets: inherit
     with:
       major: ${{ inputs.major || 1 }}
-      minor: ${{ inputs.minor || 4 }}
-      patch: ${{ inputs.patch || 10 }}
+      minor: ${{ inputs.minor || 5 }}
+      patch: ${{ inputs.patch || 1 }}
 
 ...
