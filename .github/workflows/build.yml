@@ -29,13 +29,14 @@ jobs:
 
       - name: Azure DevOps - Sign-in
         # Azure DevOps Personal Access Token (PAT) with the Agent Pools (Read & manage) permission.
-        run:  |-
+        run: |-
           npm install -g tfx-cli
           npx tfx login --service-url https://${{ secrets.AZDO_ACCOUNT }}.visualstudio.com/DefaultCollection --token ${{ secrets.AZDO_PAT }}
         working-directory: ${{ github.workspace }}
 
       - name: Azure DevOps – Deploy
         run: npm run deploy
+        working-directory: ${{ github.workspace }}
 
   update-code:
     name: Update Code
