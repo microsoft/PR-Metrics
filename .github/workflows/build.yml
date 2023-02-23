@@ -36,16 +36,16 @@ jobs:
 
       - name: Azure DevOps - Sign-in
         # Azure DevOps Personal Access Token (PAT) with the Agent Pools (Read & manage) permission.
-        run: npx tfx login --service-url https://${{ secrets.AZDO_ACCOUNT }}.visualstudio.com/DefaultCollection --token ${{ secrets.AZDO_PAT }}
+        run: npx tfx-cli login --service-url https://${{ secrets.AZDO_ACCOUNT }}.visualstudio.com/DefaultCollection --token ${{ secrets.AZDO_PAT }}
         working-directory: ${{ github.workspace }}
 
       - name: Azure DevOps – Delete Task
-        run: tfx-cli build tasks delete --task-id 907d3b28-6b37-4ac7-ac75-9631ee53e512 --no-prompt
+        run: npx tfx-cli build tasks delete --task-id 907d3b28-6b37-4ac7-ac75-9631ee53e512 --no-prompt
         continue-on-error: true
         working-directory: ${{ github.workspace }}
 
       - name: Azure DevOps – Deploy
-        run: tfx-cli build tasks upload --task-path release/task --no-prompt
+        run: npx tfx-cli build tasks upload --task-path release/task --no-prompt
         working-directory: ${{ github.workspace }}
 
   update-code:
