@@ -19,7 +19,7 @@ jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
-    #permissions: {}
+    permissions: {}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -29,9 +29,7 @@ jobs:
 
       - name: Azure DevOps - Sign-in
         # Azure DevOps Personal Access Token (PAT) with the Agent Pools (Read & manage) permission.
-        run:  |-
-          npm install -g tfx-cli
-          npx tfx-cli login --service-url https://${{ secrets.AZDO_ACCOUNT }}.visualstudio.com/DefaultCollection --token ${{ secrets.AZDO_PAT }}
+        run: npx tfx-cli login --service-url https://${{ secrets.AZDO_ACCOUNT }}.visualstudio.com/DefaultCollection --token ${{ secrets.AZDO_PAT }}
 
       - name: Azure DevOps – Deploy
         run: npm run deploy
@@ -117,9 +115,7 @@ jobs:
         run: npm run test
 
       - name: Release – Create
-        run: |-
-          npm install -g tfx-cli
-          npx tfx-cli extension create --manifest-globs vss-extension.json --output-path ../ms-omex.PRMetrics.vsix
+        run: npx tfx-cli extension create --manifest-globs vss-extension.json --output-path ../ms-omex.PRMetrics.vsix
         working-directory: ${{ github.workspace }}/release
 
       - name: Release – Upload
