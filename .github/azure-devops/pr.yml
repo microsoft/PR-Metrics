@@ -85,9 +85,7 @@ jobs:
       - task: ComponentGovernanceComponentDetection@0
         displayName: Component Detection
         inputs:
-          alertWarningLevel: Low
           failOnAlert: true
-          scanType: Register
 
       - task: AntiMalware@4
         displayName: Anti-Malware Scanner
