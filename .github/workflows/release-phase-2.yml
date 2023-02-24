@@ -34,11 +34,12 @@ jobs:
       - name: npm – Build
         run: npm run build:release
 
-      - name: Install TFX CLI
+      - name: Release – Install TFX CLI
         run: npm install -g tfx-cli
+        working-directory: ${{ github.workspace }}/release
 
       - name: Release – Create
-        run: tfx extension create --manifest-globs vss-extension.json --output-path ../ms-omex.PRMetrics.vsix
+        run: npx tfx-cli extension create --manifest-globs vss-extension.json --output-path ../ms-omex.PRMetrics.vsix
         working-directory: ${{ github.workspace }}/release
 
       - name: Release – Publish
