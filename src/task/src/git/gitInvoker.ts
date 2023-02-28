@@ -86,7 +86,7 @@ export default class GitInvoker {
     this._logger.logDebug('* GitInvoker.getDiffSummary()')
 
     this.initialize()
-    return await this.invokeGit(['diff', '--numstat', `origin/${this._targetBranch}...pull/${this._pullRequestIdInternal}/merge`])
+    return await this.invokeGit(['diff', '--numstat', '--ignore-all-space', `origin/${this._targetBranch}...pull/${this._pullRequestIdInternal}/merge`])
   }
 
   private initialize (): void {
