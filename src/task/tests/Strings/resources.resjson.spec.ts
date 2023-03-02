@@ -2,9 +2,9 @@
 // Licensed under the MIT License.
 
 import { expect } from 'chai'
+import { globSync } from 'glob'
 import * as fs from 'fs'
 import * as path from 'path'
-import glob from 'glob'
 import ResourcesJson from '../../src/jsonTypes/resourcesJson'
 import TaskJson from '../jsonTypes/taskJson'
 
@@ -125,8 +125,8 @@ describe('resources.resjson', (): void => {
   it('should have the same number of placeholders across the TypeScript code and resources file', (): void => {
     // Arrange
     const globBasePath: string = basePath.replace(/\\/g, '/') + '/'
-    const typeScriptFiles1: string[] = glob.sync(globBasePath + '!(node_modules|tests)/**/*.ts')
-    const typeScriptFiles2: string[] = glob.sync(globBasePath + '*.ts')
+    const typeScriptFiles1: string[] = globSync(globBasePath + '!(node_modules|tests)/**/*.ts')
+    const typeScriptFiles2: string[] = globSync(globBasePath + '*.ts')
     const typeScriptFiles: string[] = typeScriptFiles1.concat(typeScriptFiles2)
     const typeScriptResources: Map<string, number> = new Map<string, number>()
     const resourceRegExp: RegExp = /loc\('.+?'.*?\)/g
