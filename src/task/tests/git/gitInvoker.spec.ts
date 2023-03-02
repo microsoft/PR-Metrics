@@ -28,7 +28,7 @@ describe('gitInvoker.ts', (): void => {
         outputStream.write(testCommitId)
         return await Promise.resolve(0)
       })
-    when(runnerInvoker.exec('git', deepEqual(['diff', '--numstat', 'origin/develop...pull/12345/merge']), true, anything(), anything())).thenCall(
+    when(runnerInvoker.exec('git', deepEqual(['diff', '--numstat', '--ignore-all-space', 'origin/develop...pull/12345/merge']), true, anything(), anything())).thenCall(
       async (_tool: string, _args: string, _failOnError: boolean, outputStream: GitWritableStream): Promise<number> => {
         outputStream.write('1\t2\tFile.txt')
         return await Promise.resolve(0)
@@ -511,7 +511,7 @@ describe('gitInvoker.ts', (): void => {
 
     it('should throw an error when Git invocation fails', async (): Promise<void> => {
       // Arrange
-      when(runnerInvoker.exec('git', deepEqual(['diff', '--numstat', 'origin/develop...pull/12345/merge']), true, anything(), anything())).thenCall(
+      when(runnerInvoker.exec('git', deepEqual(['diff', '--numstat', '--ignore-all-space', 'origin/develop...pull/12345/merge']), true, anything(), anything())).thenCall(
         async (_tool: string, _args: string, _failOnError: boolean, _outputStream: GitWritableStream, errorStream: GitWritableStream): Promise<number> => {
           errorStream.write('Failure')
           return await Promise.resolve(1)
