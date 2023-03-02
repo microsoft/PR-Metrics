@@ -102,7 +102,6 @@ default of
 
 ### code-file-extensions
 
-a
 Extensions for files containing code, so that non-code files can be excluded. If
 left blank, a default set of file extensions will be used, which are listed
 [here][defaultcodefileextensions].
