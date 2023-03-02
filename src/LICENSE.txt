@@ -1975,6 +1975,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 @octokit/webhooks-methods 3.0.2 - MIT
 https://github.com/octokit/webhooks-methods.js#readme
 
+Copyright (c) 2021 Octokit
 
 MIT License
 
