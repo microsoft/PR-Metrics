@@ -64,4 +64,12 @@ jobs:
           name: Release ${{ steps.version.outputs.VERSION }}
           tag_name: ${{ steps.version.outputs.VERSION }}
 
+      - name: Publish Release
+        uses: HaaLeo/publish-vscode-extension@v1
+        with:
+          # Fine-grained Azure DevOps Personal Access Token (PAT) with the Manage access to Marketplace permission.
+          pat: ${{ secrets.RELEASE_PHASE_2_PUBLISH_RELEASE }}
+          registryUrl: https://marketplace.visualstudio.com
+          extensionFile: ${{ github.workspace }}/ms-omex.PRMetrics.vsix
+
 ...
