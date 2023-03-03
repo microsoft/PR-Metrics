@@ -12,6 +12,9 @@ on:
     paths:
       - .github/workflows/support/release-trigger.txt
 
+permissions:
+  contents: read
+
 jobs:
   release:
     name: Release
@@ -21,10 +24,10 @@ jobs:
       discussions: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3.3.0
 
       - name: Install Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3.6.0
         with:
           node-version: 19.x
 
@@ -43,7 +46,7 @@ jobs:
         working-directory: ${{ github.workspace }}/release
 
       - name: Release – Publish
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
         with:
           name: ms-omex.PRMetrics
           path: ${{ github.workspace }}/ms-omex.PRMetrics.vsix
@@ -56,7 +59,7 @@ jobs:
           Write-Output -InputObject "VERSION=v$Version" >> $Env:GITHUB_OUTPUT
 
       - name: GitHub Release
-        uses: softprops/action-gh-release@v0.1.15
+        uses: softprops/action-gh-release@de2c0eb89ae2a093876385947365aca7b0e5f844 # v0.1.15
         with:
           discussion_category_name: Releases
           files: ${{ github.workspace }}/ms-omex.PRMetrics.vsix
@@ -65,7 +68,7 @@ jobs:
           tag_name: ${{ steps.version.outputs.VERSION }}
 
       - name: Publish Release
-        uses: HaaLeo/publish-vscode-extension@v1
+        uses: HaaLeo/publish-vscode-extension@c1a0486c5a3eed24e8c21d4e37889a7c4c60c443 # v1.2.0
         with:
           # Fine-grained Azure DevOps Personal Access Token (PAT) with the Manage access to Marketplace permission.
           pat: ${{ secrets.RELEASE_PHASE_2_PUBLISH_RELEASE }}

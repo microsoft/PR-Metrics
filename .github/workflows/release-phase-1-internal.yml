@@ -18,6 +18,9 @@ on:
         required: true
         type: string
 
+permissions:
+  contents: read
+
 jobs:
   release:
     name: Release ${{ inputs.major }}.${{ inputs.minor }}.${{ inputs.patch }}
@@ -40,7 +43,7 @@ jobs:
         run: '[int]::Parse(${{ inputs.patch }})'
 
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3.3.0
         with:
           # Fine-grained Personal Access Token (PAT) with the following permissions for microsoft/PR-Metrics:
           # - Read access to Metadata
@@ -199,11 +202,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.RELEASE_PHASE_1_PR_CREATE }}
 
       - name: PR – Get Number
-        uses: jwalton/gh-find-current-pr@v1.3.2
+        uses: jwalton/gh-find-current-pr@7ada613939e2a233c83a1320679446fa1c6bdcb9 # v1.3.2
         id: prGetNumber
 
       - name: PR – Create Comment 1
-        uses: bluwy/substitute-string-action@v2.0.1
+        uses: bluwy/substitute-string-action@e960a2ca5cfbb2174acafb8be90b7c16218f8dae # v2.0.1
         id: prCreateComment
         with:
           _input-file: ./.github/workflows/support/release-phase-1-comment1.md
@@ -212,7 +215,7 @@ jobs:
           INPUT_PR: ${{ steps.prGetNumber.outputs.pr }}
 
       - name: PR – Write Comment 1 to File
-        uses: DamianReeves/write-file-action@v1.2
+        uses: DamianReeves/write-file-action@0a7fcbe1960c53fc08fe789fa4850d24885f4d84 # v1.2
         with:
           path: ./.github/workflows/support/release-phase-1-comment1.md
           contents: ${{ steps.prCreateComment.outputs.result }}
