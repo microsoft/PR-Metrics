@@ -25,17 +25,28 @@ jobs:
         uses: actions/checkout@v3
 
       - name: npm – Install
-        shell: pwsh
         run: npm install
 
+      - name: npm – Build Release
+        run: npm run build:release
+
+      - name: Azure DevOps - Install TFX CLI
+        run: npm install -g tfx-cli
+        working-directory: ${{ github.workspace }}
+
       - name: Azure DevOps - Sign-in
-        shell: pwsh
         # Azure DevOps Personal Access Token (PAT) with the Agent Pools (Read & manage) permission.
-        run: npx tfx login --service-url https://${{ secrets.AZDO_ACCOUNT }}.visualstudio.com/DefaultCollection --token ${{ secrets.AZDO_PAT }}
+        run: npx tfx-cli login --service-url https://${{ secrets.AZDO_ACCOUNT }}.visualstudio.com/DefaultCollection --token ${{ secrets.AZDO_PAT }}
+        working-directory: ${{ github.workspace }}
+
+      - name: Azure DevOps – Delete Task
+        run: npx tfx-cli build tasks delete --task-id 907d3b28-6b37-4ac7-ac75-9631ee53e512 --no-prompt
+        continue-on-error: true
+        working-directory: ${{ github.workspace }}
 
       - name: Azure DevOps – Deploy
-        shell: pwsh
-        run: npm run deploy
+        run: npx tfx-cli build tasks upload --task-path release/task --no-prompt
+        working-directory: ${{ github.workspace }}
 
   update-code:
     name: Update Code
@@ -55,19 +66,15 @@ jobs:
           node-version: 19.x
 
       - name: npm – Install Dependencies
-        shell: pwsh
         run: npm install
 
       - name: npm – Lint
-        shell: pwsh
         run: npm run lint
 
       - name: npm – Build Package
-        shell: pwsh
         run: npm run build:package
 
       - name: Git – Add Changed Files
-        shell: pwsh
         run: git add -A
 
       - name: Detect Changes
@@ -82,22 +89,18 @@ jobs:
 
       - if: ${{ steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
         name: Git – Set Name
-        shell: pwsh
         run: git config --global user.name "github-actions[bot]"
 
       - if: ${{ steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
         name: Git – Set Email
-        shell: pwsh
         run: git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
       - if: ${{ steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
         name: Git – Commit Changed Files
-        shell: pwsh
         run: git commit -m "Fixing linting, Updating dist folder"
 
       - if: ${{ steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
         name: Git – Push Changed Files
-        shell: pwsh
         run: git push
 
   build:
@@ -114,28 +117,23 @@ jobs:
           node-version: 19.x
 
       - name: npm – Install Dependencies
-        shell: pwsh
         run: npm install
 
       - name: npm – Test Clean
-        shell: pwsh
         run: npm run clean
 
       - name: npm – Build
-        shell: pwsh
         run: npm run build
 
       - name: npm – Test
-        shell: pwsh
         run: npm run test
 
-      - name: Install TFX CLI
-        shell: pwsh
+      - name: Release - Install TFX CLI
         run: npm install -g tfx-cli
+        working-directory: ${{ github.workspace }}/release
 
       - name: Release – Create
-        shell: pwsh
-        run: tfx extension create --manifest-globs vss-extension.json --output-path ../ms-omex.PRMetrics.vsix
+        run: npx tfx-cli extension create --manifest-globs vss-extension.json --output-path ../ms-omex.PRMetrics.vsix
         working-directory: ${{ github.workspace }}/release
 
       - name: Release – Upload
@@ -174,10 +172,10 @@ jobs:
         with:
           config-file: .github/linters/markdown-link-check.json
 
-      - name: Validate .babelrc
+      - name: Validate babel.config.json
         uses: walbo/validate-json@v1.1.0
         with:
-          files: .babelrc
+          files: babel.config.json
           print-valid-files: true
           strict: false
 
@@ -336,7 +334,6 @@ jobs:
           node-version: 19.x
 
       - name: npm – Install Dependencies
-        shell: pwsh
         run: npm install
 
       - name: Super Linter
@@ -359,7 +356,6 @@ jobs:
       pull-requests: write
     steps:
       - name: Enable Auto-Merge
-        shell: pwsh
         run: gh pr merge --auto --delete-branch --squash "${{ github.event.pull_request.html_url }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

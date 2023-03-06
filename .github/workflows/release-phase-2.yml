@@ -3,7 +3,7 @@
 
 ---
 
-name: Release - Phase 2
+name: Release – Phase 2
 
 on:
   push:
@@ -29,20 +29,17 @@ jobs:
           node-version: 19.x
 
       - name: npm – Install Dependencies
-        shell: pwsh
         run: npm install
 
       - name: npm – Build
-        shell: pwsh
         run: npm run build:release
 
-      - name: Install TFX CLI
-        shell: pwsh
+      - name: Release – Install TFX CLI
         run: npm install -g tfx-cli
+        working-directory: ${{ github.workspace }}/release
 
       - name: Release – Create
-        shell: pwsh
-        run: tfx extension create --manifest-globs vss-extension.json --output-path ../ms-omex.PRMetrics.vsix
+        run: npx tfx-cli extension create --manifest-globs vss-extension.json --output-path ../ms-omex.PRMetrics.vsix
         working-directory: ${{ github.workspace }}/release
 
       - name: Release – Publish
@@ -66,5 +63,13 @@ jobs:
           generate_release_notes: true
           name: Release ${{ steps.version.outputs.VERSION }}
           tag_name: ${{ steps.version.outputs.VERSION }}
+
+      - name: Publish Release
+        uses: HaaLeo/publish-vscode-extension@v1
+        with:
+          # Fine-grained Azure DevOps Personal Access Token (PAT) with the Manage access to Marketplace permission.
+          pat: ${{ secrets.RELEASE_PHASE_2_PUBLISH_RELEASE }}
+          registryUrl: https://marketplace.visualstudio.com
+          extensionFile: ${{ github.workspace }}/ms-omex.PRMetrics.vsix
 
 ...

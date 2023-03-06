@@ -4,6 +4,8 @@
 
 Before completing this PR, the license information **must** be updated.
 
+Note that if `lockfileVersion` is set to `3` (rather than `2`) in [`package-lock.json`][packagelockjson], the license information may not be correctly generated. In this case, you will need to change `lockfileVersion` to `2` and rerun the build.
+
 1. Wait for the entire PR build to complete.
 1. Use the internal Microsoft Component Governance tooling to update [`src/LICENSE.txt`][licensetxt] with the automatically generated license information.
 
@@ -29,3 +31,4 @@ Before completing this PR, the license information **must** be updated.
 [clearlydefinedharvest]: https://clearlydefined.io/harvest
 [licensetxt]: https://github.com/microsoft/PR-Metrics/blob/main/src/LICENSE.txt
 [packagejson]: https://github.com/microsoft/PR-Metrics/blob/main/package.json
+[packagelockjson]: https://github.com/microsoft/PR-Metrics/blob/main/package-lock.json

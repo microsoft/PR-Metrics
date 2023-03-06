@@ -424,9 +424,6 @@ trim_trailing_whitespace = false
 [*.md]
 indent_size = unset
 
-[.babelrc]
-indent_size = 2
-
 [*.{copyproj,resjson}]
 indent_size = 2
 

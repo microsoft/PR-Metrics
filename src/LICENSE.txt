@@ -871,7 +871,7 @@ https://creativecommons.org/licenses/by-sa/4.0/
 
 ---------------------------------------------------------
 
-glob 8.0.3 - ISC
+glob 8.1.0 - ISC
 https://github.com/isaacs/node-glob#readme
 
 Copyright (c) 2009-2022 Isaac Z. Schlueter and Contributors
@@ -1054,13 +1054,14 @@ IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 ---------------------------------------------------------
 
-minimatch 5.1.2 - ISC
+minimatch 5.1.6 - ISC
 https://github.com/isaacs/minimatch#readme
 
+Copyright (c) 2011-2023 Isaac Z. Schlueter and Contributors
 
 The ISC License
 
-Copyright (c) 2011-2022 Isaac Z. Schlueter and Contributors
+Copyright (c) 2011-2023 Isaac Z. Schlueter and Contributors
 
 Permission to use, copy, modify, and/or distribute this software for any
 purpose with or without fee is hereby granted, provided that the above
@@ -1374,7 +1375,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---------------------------------------------------------
 
-@octokit/app 13.1.0 - MIT
+@octokit/app 13.1.2 - MIT
 https://github.com/octokit/app.js#readme
 
 Copyright (c) 2018 Octokit
@@ -1406,9 +1407,10 @@ THE SOFTWARE.
 
 ---------------------------------------------------------
 
-@octokit/auth-app 4.0.7 - MIT
+@octokit/auth-app 4.0.9 - MIT
 https://github.com/octokit/auth-app.js#readme
 
+Copyright (c) 2019 Octokit
 
 The MIT License
 
@@ -1437,9 +1439,10 @@ THE SOFTWARE.
 
 ---------------------------------------------------------
 
-@octokit/auth-oauth-app 5.0.4 - MIT
+@octokit/auth-oauth-app 5.0.5 - MIT
 https://github.com/octokit/auth-oauth-app.js#readme
 
+Copyright (c) 2019 Octokit
 
 The MIT License
 
@@ -1468,9 +1471,10 @@ THE SOFTWARE.
 
 ---------------------------------------------------------
 
-@octokit/auth-oauth-device 4.0.3 - MIT
+@octokit/auth-oauth-device 4.0.4 - MIT
 https://github.com/octokit/auth-oauth-device.js#readme
 
+Copyright (c) 2021 Octokit
 
 MIT License
 
@@ -1487,9 +1491,10 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---------------------------------------------------------
 
-@octokit/auth-oauth-user 2.0.4 - MIT
+@octokit/auth-oauth-user 2.1.1 - MIT
 https://github.com/octokit/auth-oauth-user.js#readme
 
+Copyright (c) 2021 Octokit
 
 MIT License
 
@@ -1506,7 +1511,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---------------------------------------------------------
 
-@octokit/auth-token 3.0.2 - MIT
+@octokit/auth-token 3.0.3 - MIT
 https://github.com/octokit/auth-token.js#readme
 
 Copyright (c) 2019 Octokit
@@ -1538,9 +1543,10 @@ THE SOFTWARE.
 
 ---------------------------------------------------------
 
-@octokit/auth-unauthenticated 3.0.3 - MIT
+@octokit/auth-unauthenticated 3.0.4 - MIT
 https://github.com/octokit/auth-unauthenticated.js#readme
 
+Copyright (c) 2020 Octokit
 
 The MIT License
 
@@ -1569,7 +1575,7 @@ THE SOFTWARE.
 
 ---------------------------------------------------------
 
-@octokit/core 4.1.0 - MIT
+@octokit/core 4.2.0 - MIT
 https://github.com/octokit/core.js#readme
 
 Copyright (c) 2019 Octokit
@@ -1601,7 +1607,7 @@ THE SOFTWARE.
 
 ---------------------------------------------------------
 
-@octokit/endpoint 7.0.3 - MIT
+@octokit/endpoint 7.0.5 - MIT
 https://github.com/octokit/endpoint.js#readme
 
 Copyright (c) 2018 Octokit
@@ -1634,7 +1640,7 @@ THE SOFTWARE.
 
 ---------------------------------------------------------
 
-@octokit/graphql 5.0.4 - MIT
+@octokit/graphql 5.0.5 - MIT
 https://github.com/octokit/graphql.js#readme
 
 Copyright (c) 2018 Octokit
@@ -1716,9 +1722,10 @@ THE SOFTWARE.
 
 ---------------------------------------------------------
 
-@octokit/oauth-methods 2.0.4 - MIT
+@octokit/oauth-methods 2.0.5 - MIT
 https://github.com/octokit/oauth-methods.js#readme
 
+Copyright (c) 2021 Octokit
 
 MIT License
 
@@ -1735,7 +1742,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---------------------------------------------------------
 
-@octokit/openapi-types 14.0.0 - MIT
+@octokit/openapi-types 16.0.0 - MIT
 https://github.com/octokit/openapi-types.ts#readme
 
 Copyright 2020 Gregor Martynus
@@ -1752,7 +1759,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---------------------------------------------------------
 
-@octokit/plugin-paginate-rest 5.0.1 - MIT
+@octokit/plugin-paginate-rest 6.0.0 - MIT
 https://github.com/octokit/plugin-paginate-rest.js#readme
 
 Copyright (c) 2019 Octokit
@@ -1770,7 +1777,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---------------------------------------------------------
 
-@octokit/plugin-rest-endpoint-methods 6.7.0 - MIT
+@octokit/plugin-rest-endpoint-methods 7.0.1 - MIT
 https://github.com/octokit/plugin-rest-endpoint-methods.js#readme
 
 Copyright (c) 2019 Octokit
@@ -1788,7 +1795,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---------------------------------------------------------
 
-@octokit/plugin-retry 4.0.3 - MIT
+@octokit/plugin-retry 4.1.2 - MIT
 https://github.com/octokit/plugin-retry.js#readme
 
 
@@ -1819,7 +1826,7 @@ SOFTWARE.
 
 ---------------------------------------------------------
 
-@octokit/plugin-throttling 4.3.2 - MIT
+@octokit/plugin-throttling 5.0.1 - MIT
 https://github.com/octokit/plugin-throttling.js#readme
 
 Copyright (c) 2018 Octokit
@@ -1851,7 +1858,7 @@ THE SOFTWARE.
 
 ---------------------------------------------------------
 
-@octokit/request 6.2.2 - MIT
+@octokit/request 6.2.3 - MIT
 https://github.com/octokit/request.js#readme
 
 Copyright (c) 2018 Octokit
@@ -1883,7 +1890,7 @@ THE SOFTWARE.
 
 ---------------------------------------------------------
 
-@octokit/request-error 3.0.2 - MIT
+@octokit/request-error 3.0.3 - MIT
 https://github.com/octokit/request-error.js#readme
 
 Copyright (c) 2019 Octokit
@@ -1915,7 +1922,7 @@ THE SOFTWARE.
 
 ---------------------------------------------------------
 
-@octokit/types 8.0.0 - MIT
+@octokit/types 9.0.0 - MIT
 https://github.com/octokit/types.ts#readme
 
 Copyright (c) 2019 Octokit
@@ -1933,7 +1940,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---------------------------------------------------------
 
-@octokit/webhooks 10.4.0 - MIT
+@octokit/webhooks 10.7.0 - MIT
 https://github.com/octokit/webhooks.js#readme
 
 copyright Sindre Sorhus
@@ -1965,7 +1972,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ---------------------------------------------------------
 
-@octokit/webhooks-methods 3.0.1 - MIT
+@octokit/webhooks-methods 3.0.2 - MIT
 https://github.com/octokit/webhooks-methods.js#readme
 
 Copyright (c) 2021 Octokit
@@ -1985,7 +1992,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---------------------------------------------------------
 
-@octokit/webhooks-types 6.7.0 - MIT
+@octokit/webhooks-types 6.10.0 - MIT
 https://github.com/octokit/webhooks#readme
 
 
@@ -2003,7 +2010,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---------------------------------------------------------
 
-@types/aws-lambda 8.10.109 - MIT
+@types/aws-lambda 8.10.110 - MIT
 https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/aws-lambda
 
 Copyright (c) Microsoft Corporation
@@ -2078,7 +2085,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---------------------------------------------------------
 
-@types/jsonwebtoken 8.5.9 - MIT
+@types/jsonwebtoken 9.0.1 - MIT
 https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/jsonwebtoken
 
 Copyright (c) Microsoft Corporation
@@ -2135,7 +2142,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---------------------------------------------------------
 
-@types/node 18.11.18 - MIT
+@types/node 18.14.0 - MIT
 https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/node
 
 Copyright (c) Microsoft Corporation
@@ -2277,10 +2284,10 @@ SOFTWARE.
 
 ---------------------------------------------------------
 
-axios 1.2.2 - MIT
+axios 1.3.3 - MIT
 https://axios-http.com/
 
-Copyright (c) 2022 Matt Zabriskie and contributors
+Copyright (c) 2023 Matt Zabriskie and contributors
 Copyright (c) 2014-present Matt Zabriskie & Collaborators
 
 # Copyright (c) 2014-present Matt Zabriskie & Collaborators
@@ -2296,7 +2303,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---------------------------------------------------------
 
-azure-devops-node-api 11.2.0 - MIT
+azure-devops-node-api 12.0.0 - MIT
 https://github.com/Microsoft/azure-devops-node-api#readme
 
 Copyright (c) Microsoft
@@ -2339,7 +2346,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ---------------------------------------------------------
 
-azure-pipelines-task-lib 4.1.0 - MIT
+azure-pipelines-task-lib 4.2.0 - MIT
 https://github.com/Microsoft/azure-pipelines-task-lib
 
 Copyright 2018 kumavis
@@ -2939,7 +2946,7 @@ THE SOFTWARE.
 
 ---------------------------------------------------------
 
-get-intrinsic 1.1.3 - MIT
+get-intrinsic 1.2.0 - MIT
 https://github.com/ljharb/get-intrinsic#readme
 
 Copyright (c) 2020 Jordan Harband
@@ -3543,7 +3550,7 @@ SOFTWARE.
 
 ---------------------------------------------------------
 
-node-fetch 2.6.7 - MIT
+node-fetch 2.6.9 - MIT
 https://github.com/bitinn/node-fetch
 
 Copyright (c) 2016 David Frank
@@ -3576,7 +3583,7 @@ SOFTWARE.
 
 ---------------------------------------------------------
 
-object-inspect 1.12.2 - MIT
+object-inspect 1.12.3 - MIT
 https://github.com/inspect-js/object-inspect
 
 Copyright (c) 2013 James Halliday
@@ -3608,14 +3615,14 @@ SOFTWARE.
 
 ---------------------------------------------------------
 
-octokit 2.0.10 - MIT
+octokit 2.0.14 - MIT
 https://github.com/octokit/octokit.js#readme
 
-Copyright (c) 2018 Octokit
+Copyright (c) 2023 Octokit
 
 The MIT License
 
-Copyright (c) 2018 Octokit contributors
+Copyright (c) 2023 Octokit contributors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -3640,7 +3647,7 @@ THE SOFTWARE.
 
 ---------------------------------------------------------
 
-parse-git-diff 0.0.6 - MIT
+parse-git-diff 0.0.7 - MIT
 https://github.com/yeonjuan/parse-git-diff#readme
 
 Copyright (c) 2021 YeonJuan
@@ -4501,7 +4508,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 ---------------------------------------------------------
 
-universal-github-app-jwt 1.1.0 - MIT
+universal-github-app-jwt 1.1.1 - MIT
 https://github.com/gr2m/universal-github-app-jwt#readme
 
 Copyright (c) 2019 Gregor Martynus
