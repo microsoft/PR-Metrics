@@ -12,8 +12,7 @@ on:
     paths:
       - .github/workflows/support/release-trigger.txt
 
-permissions:
-  contents: read
+permissions: {}
 
 jobs:
   release:
@@ -78,7 +77,7 @@ jobs:
           extensionFile: ${{ github.workspace }}/ms-omex.PRMetrics.vsix
 
       - name: Publish Release
-        uses: HaaLeo/publish-vscode-extension@v1
+        uses: HaaLeo/publish-vscode-extension@c1a0486c5a3eed24e8c21d4e37889a7c4c60c443 # v1.2.0
         with:
           # Fine-grained Azure DevOps Personal Access Token (PAT) with the Manage access to Marketplace permission.
           pat: ${{ secrets.RELEASE_PHASE_2_PUBLISH_RELEASE }}
