@@ -71,6 +71,9 @@
     {
       "path": "images",
       "addressable": true
+    },
+    {
+      "path": "extension"
     }
   ],
   "contributions": [

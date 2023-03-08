@@ -27,6 +27,8 @@ on:
         required: true
         type: string
 
+permissions: {}
+
 jobs:
   release:
     uses: ./.github/workflows/release-phase-1-internal.yml
