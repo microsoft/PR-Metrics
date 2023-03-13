@@ -10,7 +10,7 @@ updates:
     directory: /
     open-pull-requests-limit: 100
     schedule:
-      interval: daily
+      interval: monthly
       time: '00:00'                # yamllint disable-line rule:quoted-strings
       timezone: Universal
     labels:
