@@ -27,12 +27,13 @@ on:
         required: true
         type: string
 
-permissions: {}
+permissions: read-all
 
 jobs:
   release:
     uses: ./.github/workflows/release-phase-1-internal.yml
     secrets: inherit
+    permissions: read-all
     with:
       major: ${{ inputs.major || 1 }}
       minor: ${{ inputs.minor || 5 }}
