@@ -18,7 +18,7 @@ on:
         required: true
         type: string
 
-permissions: read-all
+permissions: {}
 
 jobs:
   release:
