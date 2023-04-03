@@ -20,6 +20,8 @@ stages:
         displayName: PR Metrics Manual Test – Step 2 – No Sources
         steps:
           - checkout: none
+            displayName: Checkout
+
           - task: PRMetrics@1
             displayName: PR Metrics
             env:

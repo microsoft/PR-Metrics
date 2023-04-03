@@ -19,6 +19,10 @@ stages:
       - job: PRMetricsManualTestStep2InsufficientAccess
         displayName: PR Metrics Manual Test – Step 2 – Insufficient Access
         steps:
+          - checkout: self
+            displayName: Checkout
+            fetchDepth: 0
+
           - task: PRMetrics@1
             displayName: PR Metrics
             env:

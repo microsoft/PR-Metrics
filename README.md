@@ -112,7 +112,7 @@ The default input values are expected to be appropriate for most builds.
 Therefore, the following YAML definition is recommended:
 
 ```YAML
-uses: microsoft/PR-Metrics@v1.5.0
+uses: microsoft/PR-Metrics@v1.5.1
 name: PR Metrics
 env:
   PR_METRICS_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -122,7 +122,7 @@ continue-on-error: true
 If you wish to modify the inputs, YAML akin the to the following can be used:
 
 ```YAML
-uses: microsoft/PR-Metrics@v1.5.0
+uses: microsoft/PR-Metrics@v1.5.1
 name: PR Metrics
 env:
   PR_METRICS_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -141,6 +141,21 @@ continue-on-error: true
 
 Instructions on using the action within Azure Pipelines can be found
 [here][azurepipelinestask].
+
+## Troubleshooting
+
+If you are using Azure DevOps and see a notification that insufficient Git
+history is available, this may be resulting from
+[a change in the September 2022 Azure DevOps sprint 209 update][azuredevops209].
+Pipelines created after this release will have shallow fetch set by default,
+unlike in earlier releases. This issue can be resolved by adding the following
+as the first step in your pipeline jobs:
+
+```YAML
+- checkout: self
+  displayName: Checkout
+  fetchDepth: 0
+```
 
 ## Contributing
 
@@ -161,6 +176,7 @@ see the [Code of Conduct FAQ][codeofconductfaq] or contact
 comments.
 
 [azuredevops]: https://azure.microsoft.com/services/devops/
+[azuredevops209]: https://learn.microsoft.com/azure/devops/pipelines/yaml-schema/steps-checkout#shallow-fetch
 [vsmarketplace]: https://aka.ms/PRMetrics/AzureDevOps
 [githubpat]: https://docs.github.com/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token
 [globs]: https://wikipedia.org/wiki/Glob_(programming)

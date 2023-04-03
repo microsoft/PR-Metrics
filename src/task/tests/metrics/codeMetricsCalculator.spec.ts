@@ -41,7 +41,7 @@ describe('codeMetricsCalculator.ts', (): void => {
     runnerInvoker = mock(RunnerInvoker)
     when(runnerInvoker.loc('metrics.codeMetricsCalculator.noGitRepoAzureDevOps')).thenReturn('No Git repo present. Remove \'checkout: none\' (YAML) or disable \'Don\'t sync sources\' under the build process phase settings (classic).')
     when(runnerInvoker.loc('metrics.codeMetricsCalculator.noGitRepoGitHub')).thenReturn('No Git repo present. Run the \'actions/checkout\' action prior to PR Metrics.')
-    when(runnerInvoker.loc('metrics.codeMetricsCalculator.noGitHistoryAzureDevOps')).thenReturn('Could not access sufficient Git history. Disable \'fetchDepth\' (YAML) or \'Shallow fetch\' under the build process phase settings (classic).')
+    when(runnerInvoker.loc('metrics.codeMetricsCalculator.noGitHistoryAzureDevOps')).thenReturn('Could not access sufficient Git history. Set \'fetchDepth: 0\' as a parameter to the \'checkout\' task (YAML) or disable \'Shallow fetch\' under the build process phase settings (classic).')
     when(runnerInvoker.loc('metrics.codeMetricsCalculator.noGitHistoryGitHub')).thenReturn('Could not access sufficient Git history. Add \'fetch-depth: 0\' as a parameter to the \'actions/checkout\' action.')
     when(runnerInvoker.loc('metrics.codeMetricsCalculator.noPullRequest')).thenReturn('The build is not running against a pull request.')
     when(runnerInvoker.loc('metrics.codeMetricsCalculator.unsupportedProvider', 'Other')).thenReturn('The build is running against a pull request from \'Other\', which is not a supported provider.')
@@ -152,7 +152,7 @@ describe('codeMetricsCalculator.ts', (): void => {
       const result: string | null = await codeMetricsCalculator.shouldStop()
 
       // Assert
-      expect(result).to.equal('Could not access sufficient Git history. Disable \'fetchDepth\' (YAML) or \'Shallow fetch\' under the build process phase settings (classic).')
+      expect(result).to.equal('Could not access sufficient Git history. Set \'fetchDepth: 0\' as a parameter to the \'checkout\' task (YAML) or disable \'Shallow fetch\' under the build process phase settings (classic).')
       verify(logger.logDebug('* CodeMetricsCalculator.shouldStop()')).once()
     })
 
