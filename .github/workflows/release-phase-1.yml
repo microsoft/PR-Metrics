@@ -38,6 +38,6 @@ jobs:
     with:
       major: ${{ inputs.major || 1 }}
       minor: ${{ inputs.minor || 5 }}
-      patch: ${{ inputs.patch || 1 }}
+      patch: ${{ inputs.patch || 2 }}
 
 ...
