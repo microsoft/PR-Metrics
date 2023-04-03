@@ -22,7 +22,7 @@ stages:
           - checkout: self
             displayName: Checkout
             fetchDepth: 1
-            
+
           - task: PRMetrics@1
             displayName: PR Metrics
             env:
