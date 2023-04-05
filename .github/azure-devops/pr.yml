@@ -37,6 +37,10 @@ jobs:
       - name: System.Debug
         value: true
     steps:
+      - checkout: self
+        displayName: Checkout
+        fetchDepth: 0
+
       - task: PRMetrics@1
         displayName: PR Metrics
         env:
@@ -54,6 +58,10 @@ jobs:
       - name: System.Debug
         value: true
     steps:
+      - checkout: self
+        displayName: Checkout
+        fetchDepth: 0
+
       - task: PRMetrics@1
         displayName: PR Metrics
         env:
@@ -71,6 +79,10 @@ jobs:
       - name: System.Debug
         value: true
     steps:
+      - checkout: self
+        displayName: Checkout
+        fetchDepth: 0
+
       - task: PRMetrics@1
         displayName: PR Metrics
         env:

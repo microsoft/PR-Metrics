@@ -20,7 +20,9 @@ stages:
         displayName: PR Metrics Manual Test – Step 2 – Insufficient History
         steps:
           - checkout: self
+            displayName: Checkout
             fetchDepth: 1
+
           - task: PRMetrics@1
             displayName: PR Metrics
             env:

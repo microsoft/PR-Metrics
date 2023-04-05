@@ -19,6 +19,10 @@ stages:
       - job: PRMetricsManualTestStep6
         displayName: PR Metrics Manual Test – Step 6
         steps:
+          - checkout: self
+            displayName: Checkout
+            fetchDepth: 0
+
           - task: PRMetrics@1
             displayName: PR Metrics
             env:

@@ -22,7 +22,7 @@ on:
         required: true
         type: string
       patch:
-        default: 1
+        default: 2
         description: The patch element of the version number
         required: true
         type: string
@@ -33,10 +33,11 @@ jobs:
   release:
     uses: ./.github/workflows/release-phase-1-internal.yml
     secrets: inherit
-    permissions: {}
+    permissions:
+      pull-requests: write
     with:
       major: ${{ inputs.major || 1 }}
       minor: ${{ inputs.minor || 5 }}
-      patch: ${{ inputs.patch || 1 }}
+      patch: ${{ inputs.patch || 2 }}
 
 ...
