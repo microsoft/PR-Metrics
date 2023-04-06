@@ -1044,6 +1044,39 @@ describe('codeMetrics.ts', (): void => {
         verify(logger.logDebug('* CodeMetrics.calculateSize()')).once()
       })
     })
+
+    it('with multiple ignore patterns returns correct result', async (): Promise<void> => {
+      // Arrange
+      when(inputs.baseSize).thenReturn(100)
+      when(inputs.growthRate).thenReturn(1.5)
+      when(inputs.testFactor).thenReturn(2.0)
+      when(inputs.fileMatchingPatterns).thenReturn(['**/*', '!**/ignored1.ts', '!**/ignored2.ts'])
+      when(inputs.codeFileExtensions).thenReturn(new Set<string>(['ts']))
+      when(gitInvoker.getDiffSummary()).thenResolve('1\t1\tfile.ts\n1\t1\tignored1.ts\n1\t1\tignored2.ts')
+
+      // Act
+      const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(logger), instance(runnerInvoker))
+
+      // Assert
+      expect(await codeMetrics.getFilesNotRequiringReview()).to.deep.equal(['ignored1.ts', 'ignored2.ts'])
+      expect(await codeMetrics.getDeletedFilesNotRequiringReview()).to.deep.equal([])
+      expect(await codeMetrics.getSize()).to.equal('XS')
+      expect(await codeMetrics.getSizeIndicator()).to.equal('XS⚠️')
+      expect(await codeMetrics.getMetrics()).to.deep.equal(new CodeMetricsData(1, 0, 2))
+      expect(await codeMetrics.isSmall()).to.equal(true)
+      expect(await codeMetrics.isSufficientlyTested()).to.equal(false)
+      verify(logger.logDebug('* CodeMetrics.getFilesNotRequiringReview()')).once()
+      verify(logger.logDebug('* CodeMetrics.getDeletedFilesNotRequiringReview()')).once()
+      verify(logger.logDebug('* CodeMetrics.getSize()')).once()
+      verify(logger.logDebug('* CodeMetrics.initialize()')).times(7)
+      verify(logger.logDebug('* CodeMetrics.initializeMetrics()')).once()
+      verify(logger.logDebug('* CodeMetrics.matchFileExtension()')).times(3)
+      verify(logger.logDebug('* CodeMetrics.constructMetrics()')).once()
+      verify(logger.logDebug('* CodeMetrics.createFileMetricsMap()')).once()
+      verify(logger.logDebug('* CodeMetrics.initializeIsSufficientlyTested()')).once()
+      verify(logger.logDebug('* CodeMetrics.initializeSizeIndicator()')).once()
+      verify(logger.logDebug('* CodeMetrics.calculateSize()')).once()
+    })
   }
 
   it('should return the expected result with test coverage disabled', async (): Promise<void> => {
