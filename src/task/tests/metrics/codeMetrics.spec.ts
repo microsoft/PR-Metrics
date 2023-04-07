@@ -69,6 +69,7 @@ describe('codeMetrics.ts', (): void => {
       sizeIndicator: string
       testCoverageIndicator: boolean
       metrics: CodeMetricsData
+      globChecks: number
     }
 
     const testCases: TestCaseType[] = [
@@ -76,425 +77,495 @@ describe('codeMetrics.ts', (): void => {
         gitResponse: '0\t0\tfile.ts',
         sizeIndicator: 'XS',
         testCoverageIndicator: true,
-        metrics: new CodeMetricsData(0, 0, 0)
+        metrics: new CodeMetricsData(0, 0, 0),
+        globChecks: 2
       },
       {
         gitResponse: '1\t0\tfile.ts',
         sizeIndicator: 'XS',
         testCoverageIndicator: false,
-        metrics: new CodeMetricsData(1, 0, 0)
+        metrics: new CodeMetricsData(1, 0, 0),
+        globChecks: 2
       },
       {
         gitResponse: '1\t0\tfile.ts\n1\t0\ttest.ts',
         sizeIndicator: 'XS',
         testCoverageIndicator: true,
-        metrics: new CodeMetricsData(1, 1, 0)
+        metrics: new CodeMetricsData(1, 1, 0),
+        globChecks: 4
       },
       {
         gitResponse: '199\t0\tfile.ts',
         sizeIndicator: 'XS',
         testCoverageIndicator: false,
-        metrics: new CodeMetricsData(199, 0, 0)
+        metrics: new CodeMetricsData(199, 0, 0),
+        globChecks: 2
       },
       {
         gitResponse: '199\t0\tfile.ts\n198\t0\ttest.ts',
         sizeIndicator: 'XS',
         testCoverageIndicator: false,
-        metrics: new CodeMetricsData(199, 198, 0)
+        metrics: new CodeMetricsData(199, 198, 0),
+        globChecks: 4
       },
       {
         gitResponse: '199\t0\tfile.ts\n199\t0\ttest.ts',
         sizeIndicator: 'XS',
         testCoverageIndicator: true,
-        metrics: new CodeMetricsData(199, 199, 0)
+        metrics: new CodeMetricsData(199, 199, 0),
+        globChecks: 4
       },
       {
         gitResponse: '200\t0\tfile.ts',
         sizeIndicator: 'S',
         testCoverageIndicator: false,
-        metrics: new CodeMetricsData(200, 0, 0)
+        metrics: new CodeMetricsData(200, 0, 0),
+        globChecks: 2
       },
       {
         gitResponse: '200\t0\tfile.ts\n199\t0\ttest.ts',
         sizeIndicator: 'S',
         testCoverageIndicator: false,
-        metrics: new CodeMetricsData(200, 199, 0)
+        metrics: new CodeMetricsData(200, 199, 0),
+        globChecks: 4
       },
       {
         gitResponse: '200\t0\tfile.ts\n200\t0\ttest.ts',
         sizeIndicator: 'S',
         testCoverageIndicator: true,
-        metrics: new CodeMetricsData(200, 200, 0)
+        metrics: new CodeMetricsData(200, 200, 0),
+        globChecks: 4
       },
       {
         gitResponse: '399\t0\tfile.ts',
         sizeIndicator: 'S',
         testCoverageIndicator: false,
-        metrics: new CodeMetricsData(399, 0, 0)
+        metrics: new CodeMetricsData(399, 0, 0),
+        globChecks: 2
       },
       {
         gitResponse: '399\t0\tfile.ts\n398\t0\ttest.ts',
         sizeIndicator: 'S',
         testCoverageIndicator: false,
-        metrics: new CodeMetricsData(399, 398, 0)
+        metrics: new CodeMetricsData(399, 398, 0),
+        globChecks: 4
       },
       {
         gitResponse: '399\t0\tfile.ts\n399\t0\ttest.ts',
         sizeIndicator: 'S',
         testCoverageIndicator: true,
-        metrics: new CodeMetricsData(399, 399, 0)
+        metrics: new CodeMetricsData(399, 399, 0),
+        globChecks: 4
       },
       {
         gitResponse: '400\t0\tfile.ts',
         sizeIndicator: 'M',
         testCoverageIndicator: false,
-        metrics: new CodeMetricsData(400, 0, 0)
+        metrics: new CodeMetricsData(400, 0, 0),
+        globChecks: 2
       },
       {
         gitResponse: '400\t0\tfile.ts\n399\t0\ttest.ts',
         sizeIndicator: 'M',
         testCoverageIndicator: false,
-        metrics: new CodeMetricsData(400, 399, 0)
+        metrics: new CodeMetricsData(400, 399, 0),
+        globChecks: 4
       },
       {
         gitResponse: '400\t0\tfile.ts\n400\t0\ttest.ts',
         sizeIndicator: 'M',
         testCoverageIndicator: true,
-        metrics: new CodeMetricsData(400, 400, 0)
+        metrics: new CodeMetricsData(400, 400, 0),
+        globChecks: 4
       },
       {
         gitResponse: '799\t0\tfile.ts',
         sizeIndicator: 'M',
         testCoverageIndicator: false,
-        metrics: new CodeMetricsData(799, 0, 0)
+        metrics: new CodeMetricsData(799, 0, 0),
+        globChecks: 2
       },
       {
         gitResponse: '799\t0\tfile.ts\n798\t0\ttest.ts',
         sizeIndicator: 'M',
         testCoverageIndicator: false,
-        metrics: new CodeMetricsData(799, 798, 0)
+        metrics: new CodeMetricsData(799, 798, 0),
+        globChecks: 4
       },
       {
         gitResponse: '799\t0\tfile.ts\n799\t0\ttest.ts',
         sizeIndicator: 'M',
         testCoverageIndicator: true,
-        metrics: new CodeMetricsData(799, 799, 0)
+        metrics: new CodeMetricsData(799, 799, 0),
+        globChecks: 4
       },
       {
         gitResponse: '800\t0\tfile.ts',
         sizeIndicator: 'L',
         testCoverageIndicator: false,
-        metrics: new CodeMetricsData(800, 0, 0)
+        metrics: new CodeMetricsData(800, 0, 0),
+        globChecks: 2
       },
       {
         gitResponse: '800\t0\tfile.ts\n799\t0\ttest.ts',
         sizeIndicator: 'L',
         testCoverageIndicator: false,
-        metrics: new CodeMetricsData(800, 799, 0)
+        metrics: new CodeMetricsData(800, 799, 0),
+        globChecks: 4
       },
       {
         gitResponse: '800\t0\tfile.ts\n800\t0\ttest.ts',
         sizeIndicator: 'L',
         testCoverageIndicator: true,
-        metrics: new CodeMetricsData(800, 800, 0)
+        metrics: new CodeMetricsData(800, 800, 0),
+        globChecks: 4
       },
       {
         gitResponse: '1599\t0\tfile.ts',
         sizeIndicator: 'L',
         testCoverageIndicator: false,
-        metrics: new CodeMetricsData(1599, 0, 0)
+        metrics: new CodeMetricsData(1599, 0, 0),
+        globChecks: 2
       },
       {
         gitResponse: '1599\t0\tfile.ts\n1598\t0\ttest.ts',
         sizeIndicator: 'L',
         testCoverageIndicator: false,
-        metrics: new CodeMetricsData(1599, 1598, 0)
+        metrics: new CodeMetricsData(1599, 1598, 0),
+        globChecks: 4
       },
       {
         gitResponse: '1599\t0\tfile.ts\n1599\t0\ttest.ts',
         sizeIndicator: 'L',
         testCoverageIndicator: true,
-        metrics: new CodeMetricsData(1599, 1599, 0)
+        metrics: new CodeMetricsData(1599, 1599, 0),
+        globChecks: 4
       },
       {
         gitResponse: '1600\t0\tfile.ts',
         sizeIndicator: 'XL',
         testCoverageIndicator: false,
-        metrics: new CodeMetricsData(1600, 0, 0)
+        metrics: new CodeMetricsData(1600, 0, 0),
+        globChecks: 2
       },
       {
         gitResponse: '1600\t0\tfile.ts\n1599\t0\ttest.ts',
         sizeIndicator: 'XL',
         testCoverageIndicator: false,
-        metrics: new CodeMetricsData(1600, 1599, 0)
+        metrics: new CodeMetricsData(1600, 1599, 0),
+        globChecks: 4
       },
       {
         gitResponse: '1600\t0\tfile.ts\n1600\t0\ttest.ts',
         sizeIndicator: 'XL',
         testCoverageIndicator: true,
-        metrics: new CodeMetricsData(1600, 1600, 0)
+        metrics: new CodeMetricsData(1600, 1600, 0),
+        globChecks: 4
       },
       {
         gitResponse: '3199\t0\tfile.ts',
         sizeIndicator: 'XL',
         testCoverageIndicator: false,
-        metrics: new CodeMetricsData(3199, 0, 0)
+        metrics: new CodeMetricsData(3199, 0, 0),
+        globChecks: 2
       },
       {
         gitResponse: '3199\t0\tfile.ts\n3198\t0\ttest.ts',
         sizeIndicator: 'XL',
         testCoverageIndicator: false,
-        metrics: new CodeMetricsData(3199, 3198, 0)
+        metrics: new CodeMetricsData(3199, 3198, 0),
+        globChecks: 4
       },
       {
         gitResponse: '3199\t0\tfile.ts\n3199\t0\ttest.ts',
         sizeIndicator: 'XL',
         testCoverageIndicator: true,
-        metrics: new CodeMetricsData(3199, 3199, 0)
+        metrics: new CodeMetricsData(3199, 3199, 0),
+        globChecks: 4
       },
       {
         gitResponse: '3200\t0\tfile.ts',
         sizeIndicator: '2XL',
         testCoverageIndicator: false,
-        metrics: new CodeMetricsData(3200, 0, 0)
+        metrics: new CodeMetricsData(3200, 0, 0),
+        globChecks: 2
       },
       {
         gitResponse: '3200\t0\tfile.ts\n3199\t0\ttest.ts',
         sizeIndicator: '2XL',
         testCoverageIndicator: false,
-        metrics: new CodeMetricsData(3200, 3199, 0)
+        metrics: new CodeMetricsData(3200, 3199, 0),
+        globChecks: 4
       },
       {
         gitResponse: '3200\t0\tfile.ts\n3200\t0\ttest.ts',
         sizeIndicator: '2XL',
         testCoverageIndicator: true,
-        metrics: new CodeMetricsData(3200, 3200, 0)
+        metrics: new CodeMetricsData(3200, 3200, 0),
+        globChecks: 4
       },
       {
         gitResponse: '6399\t0\tfile.ts',
         sizeIndicator: '2XL',
         testCoverageIndicator: false,
-        metrics: new CodeMetricsData(6399, 0, 0)
+        metrics: new CodeMetricsData(6399, 0, 0),
+        globChecks: 2
       },
       {
         gitResponse: '6399\t0\tfile.ts\n6398\t0\ttest.ts',
         sizeIndicator: '2XL',
         testCoverageIndicator: false,
-        metrics: new CodeMetricsData(6399, 6398, 0)
+        metrics: new CodeMetricsData(6399, 6398, 0),
+        globChecks: 4
       },
       {
         gitResponse: '6399\t0\tfile.ts\n6399\t0\ttest.ts',
         sizeIndicator: '2XL',
         testCoverageIndicator: true,
-        metrics: new CodeMetricsData(6399, 6399, 0)
+        metrics: new CodeMetricsData(6399, 6399, 0),
+        globChecks: 4
       },
       {
         gitResponse: '6400\t0\tfile.ts',
         sizeIndicator: '3XL',
         testCoverageIndicator: false,
-        metrics: new CodeMetricsData(6400, 0, 0)
+        metrics: new CodeMetricsData(6400, 0, 0),
+        globChecks: 2
       },
       {
         gitResponse: '6400\t0\tfile.ts\n6399\t0\ttest.ts',
         sizeIndicator: '3XL',
         testCoverageIndicator: false,
-        metrics: new CodeMetricsData(6400, 6399, 0)
+        metrics: new CodeMetricsData(6400, 6399, 0),
+        globChecks: 4
       },
       {
         gitResponse: '6400\t0\tfile.ts\n6400\t0\ttest.ts',
         sizeIndicator: '3XL',
         testCoverageIndicator: true,
-        metrics: new CodeMetricsData(6400, 6400, 0)
+        metrics: new CodeMetricsData(6400, 6400, 0),
+        globChecks: 4
       },
       {
         gitResponse: '819200\t0\tfile.ts',
         sizeIndicator: '10XL',
         testCoverageIndicator: false,
-        metrics: new CodeMetricsData(819200, 0, 0)
+        metrics: new CodeMetricsData(819200, 0, 0),
+        globChecks: 2
       },
       {
         gitResponse: '819200\t0\tfile.ts\n819199\t0\ttest.ts',
         sizeIndicator: '10XL',
         testCoverageIndicator: false,
-        metrics: new CodeMetricsData(819200, 819199, 0)
+        metrics: new CodeMetricsData(819200, 819199, 0),
+        globChecks: 4
       },
       {
         gitResponse: '819200\t0\tfile.ts\n819200\t0\ttest.ts',
         sizeIndicator: '10XL',
         testCoverageIndicator: true,
-        metrics: new CodeMetricsData(819200, 819200, 0)
+        metrics: new CodeMetricsData(819200, 819200, 0),
+        globChecks: 4
       },
       {
         gitResponse: '1\t0\tfile.TS',
         sizeIndicator: 'XS',
         testCoverageIndicator: false,
-        metrics: new CodeMetricsData(1, 0, 0)
+        metrics: new CodeMetricsData(1, 0, 0),
+        globChecks: 2
       },
       {
         gitResponse: '0\t1\tfile.ts',
         sizeIndicator: 'XS',
         testCoverageIndicator: true,
-        metrics: new CodeMetricsData(0, 0, 0)
+        metrics: new CodeMetricsData(0, 0, 0),
+        globChecks: 2
       },
       {
         gitResponse: '1\t0\tfile.ignored',
         sizeIndicator: 'XS',
         testCoverageIndicator: true,
-        metrics: new CodeMetricsData(0, 0, 1)
+        metrics: new CodeMetricsData(0, 0, 1),
+        globChecks: 2
       },
       {
         gitResponse: '1\t0\tfile',
         sizeIndicator: 'XS',
         testCoverageIndicator: true,
-        metrics: new CodeMetricsData(0, 0, 1)
+        metrics: new CodeMetricsData(0, 0, 1),
+        globChecks: 2
       },
       {
         gitResponse: '1\t0\tfile.ts.ignored',
         sizeIndicator: 'XS',
         testCoverageIndicator: true,
-        metrics: new CodeMetricsData(0, 0, 1)
+        metrics: new CodeMetricsData(0, 0, 1),
+        globChecks: 2
       },
       {
         gitResponse: '1\t0\tfile.ignored.ts',
         sizeIndicator: 'XS',
         testCoverageIndicator: false,
-        metrics: new CodeMetricsData(1, 0, 0)
+        metrics: new CodeMetricsData(1, 0, 0),
+        globChecks: 2
       },
       {
         gitResponse: '1\t0\ttest.ignored',
         sizeIndicator: 'XS',
         testCoverageIndicator: true,
-        metrics: new CodeMetricsData(0, 0, 1)
+        metrics: new CodeMetricsData(0, 0, 1),
+        globChecks: 2
       },
       {
         gitResponse: '1\t0\ttasb.cc => test.ts',
         sizeIndicator: 'XS',
         testCoverageIndicator: true,
-        metrics: new CodeMetricsData(0, 1, 0)
+        metrics: new CodeMetricsData(0, 1, 0),
+        globChecks: 2
       },
       {
         gitResponse: '1\t0\tt{a => e}s{b => t}.t{c => s}',
         sizeIndicator: 'XS',
         testCoverageIndicator: true,
-        metrics: new CodeMetricsData(0, 1, 0)
+        metrics: new CodeMetricsData(0, 1, 0),
+        globChecks: 2
       },
       {
         gitResponse: '1\t0\tt{a => est.ts}',
         sizeIndicator: 'XS',
         testCoverageIndicator: true,
-        metrics: new CodeMetricsData(0, 1, 0)
+        metrics: new CodeMetricsData(0, 1, 0),
+        globChecks: 2
       },
       {
         gitResponse: '1\t0\t{a => test.ts}',
         sizeIndicator: 'XS',
         testCoverageIndicator: true,
-        metrics: new CodeMetricsData(0, 1, 0)
+        metrics: new CodeMetricsData(0, 1, 0),
+        globChecks: 2
       },
       {
         gitResponse: '1\t0\tfolder/test.ts',
         sizeIndicator: 'XS',
         testCoverageIndicator: true,
-        metrics: new CodeMetricsData(0, 1, 0)
+        metrics: new CodeMetricsData(0, 1, 0),
+        globChecks: 2
       },
       {
         gitResponse: '1\t0\tfolder/Test.ts',
         sizeIndicator: 'XS',
         testCoverageIndicator: true,
-        metrics: new CodeMetricsData(0, 1, 0)
+        metrics: new CodeMetricsData(0, 1, 0),
+        globChecks: 2
       },
       {
         gitResponse: '1\t0\tfolder/TEST.ts',
         sizeIndicator: 'XS',
         testCoverageIndicator: true,
-        metrics: new CodeMetricsData(0, 1, 0)
+        metrics: new CodeMetricsData(0, 1, 0),
+        globChecks: 2
       },
       {
         gitResponse: '1\t0\tfolder/DuplicateStorage.ts',
         sizeIndicator: 'XS',
         testCoverageIndicator: false,
-        metrics: new CodeMetricsData(1, 0, 0)
+        metrics: new CodeMetricsData(1, 0, 0),
+        globChecks: 2
       },
       {
         gitResponse: '1\t0\tfolder/file.spec.ts',
         sizeIndicator: 'XS',
         testCoverageIndicator: true,
-        metrics: new CodeMetricsData(0, 1, 0)
+        metrics: new CodeMetricsData(0, 1, 0),
+        globChecks: 2
       },
       {
         gitResponse: '1\t0\tfolder/file.Spec.ts',
         sizeIndicator: 'XS',
         testCoverageIndicator: true,
-        metrics: new CodeMetricsData(0, 1, 0)
+        metrics: new CodeMetricsData(0, 1, 0),
+        globChecks: 2
       },
       {
         gitResponse: '1\t0\tfolder.spec.ts/file.ts',
         sizeIndicator: 'XS',
         testCoverageIndicator: false,
-        metrics: new CodeMetricsData(1, 0, 0)
+        metrics: new CodeMetricsData(1, 0, 0),
+        globChecks: 2
       },
       {
         gitResponse: '1\t0\ttest/file.ts',
         sizeIndicator: 'XS',
         testCoverageIndicator: true,
-        metrics: new CodeMetricsData(0, 1, 0)
+        metrics: new CodeMetricsData(0, 1, 0),
+        globChecks: 2
       },
       {
         gitResponse: '1\t0\ttests/file.ts',
         sizeIndicator: 'XS',
         testCoverageIndicator: true,
-        metrics: new CodeMetricsData(0, 1, 0)
+        metrics: new CodeMetricsData(0, 1, 0),
+        globChecks: 2
       },
       {
         gitResponse: '1\t0\ttests/file.spec.ts',
         sizeIndicator: 'XS',
         testCoverageIndicator: true,
-        metrics: new CodeMetricsData(0, 1, 0)
+        metrics: new CodeMetricsData(0, 1, 0),
+        globChecks: 2
       },
       {
         gitResponse: '1\t0\ttests/file.SPEC.ts',
         sizeIndicator: 'XS',
         testCoverageIndicator: true,
-        metrics: new CodeMetricsData(0, 1, 0)
+        metrics: new CodeMetricsData(0, 1, 0),
+        globChecks: 2
       },
       {
         gitResponse: '1\t0\tfolder/tests/file.ts',
         sizeIndicator: 'XS',
         testCoverageIndicator: true,
-        metrics: new CodeMetricsData(0, 1, 0)
+        metrics: new CodeMetricsData(0, 1, 0),
+        globChecks: 2
       },
       {
         gitResponse: '1\t1\tfa/b => folder/test.ts',
         sizeIndicator: 'XS',
         testCoverageIndicator: true,
-        metrics: new CodeMetricsData(0, 1, 0)
+        metrics: new CodeMetricsData(0, 1, 0),
+        globChecks: 2
       },
       {
         gitResponse: '1\t1\tf{a => older}/{b => test.ts}',
         sizeIndicator: 'XS',
         testCoverageIndicator: true,
-        metrics: new CodeMetricsData(0, 1, 0)
+        metrics: new CodeMetricsData(0, 1, 0),
+        globChecks: 2
       },
       {
         gitResponse: '0\t0\tfile.ts\n',
         sizeIndicator: 'XS',
         testCoverageIndicator: true,
-        metrics: new CodeMetricsData(0, 0, 0)
+        metrics: new CodeMetricsData(0, 0, 0),
+        globChecks: 2
       },
       {
         gitResponse: '-\t-\tfile.ts',
         sizeIndicator: 'XS',
         testCoverageIndicator: true,
-        metrics: new CodeMetricsData(0, 0, 0)
+        metrics: new CodeMetricsData(0, 0, 0),
+        globChecks: 2
       },
       {
         gitResponse: '0\t0\tfile.ts\r\nrc:0\r\nsuccess:true',
         sizeIndicator: 'XS',
         testCoverageIndicator: true,
-        metrics: new CodeMetricsData(0, 0, 0)
+        metrics: new CodeMetricsData(0, 0, 0),
+        globChecks: 2
       }
     ]
 
-    testCases.forEach(({ gitResponse, sizeIndicator, testCoverageIndicator, metrics }: TestCaseType): void => {
+    testCases.forEach(({ gitResponse, sizeIndicator, testCoverageIndicator, metrics, globChecks }: TestCaseType): void => {
       it(`with default inputs and git diff '${gitResponse.replace(/\n/g, '\\n').replace(/\r/g, '\\r')}', returns '${sizeIndicator}' size and '${testCoverageIndicator.toString()}' test coverage`, async (): Promise<void> => {
         // Arrange
         when(gitInvoker.getDiffSummary()).thenResolve(gitResponse)
@@ -515,6 +586,7 @@ describe('codeMetrics.ts', (): void => {
         verify(logger.logDebug('* CodeMetrics.getSize()')).once()
         verify(logger.logDebug('* CodeMetrics.initialize()')).times(7)
         verify(logger.logDebug('* CodeMetrics.initializeMetrics()')).once()
+        verify(logger.logDebug('* CodeMetrics.performGlobCheck()')).times(globChecks)
         verify(logger.logDebug('* CodeMetrics.matchFileExtension()')).times((gitResponse.replace(/\r\n/g, '').match(/\n/g) ?? []).length + 1 - (gitResponse.endsWith('\n') ? 1 : 0))
         verify(logger.logDebug('* CodeMetrics.constructMetrics()')).once()
         verify(logger.logDebug('* CodeMetrics.createFileMetricsMap()')).once()
@@ -533,6 +605,7 @@ describe('codeMetrics.ts', (): void => {
       metrics: CodeMetricsData
       filesNotRequiringReview: string[]
       deletedFilesNotRequiringReview: string[]
+      globChecks: number
     }
 
     const testCases: TestCaseType[] = [
@@ -542,7 +615,8 @@ describe('codeMetrics.ts', (): void => {
         testCoverageIndicator: true,
         metrics: new CodeMetricsData(0, 0, 0),
         filesNotRequiringReview: [],
-        deletedFilesNotRequiringReview: []
+        deletedFilesNotRequiringReview: [],
+        globChecks: 2
       },
       {
         gitResponse: '1\t0\tfile.ts',
@@ -550,7 +624,8 @@ describe('codeMetrics.ts', (): void => {
         testCoverageIndicator: false,
         metrics: new CodeMetricsData(1, 0, 0),
         filesNotRequiringReview: [],
-        deletedFilesNotRequiringReview: []
+        deletedFilesNotRequiringReview: [],
+        globChecks: 2
       },
       {
         gitResponse: '1\t0\tfile.ts\n1\t0\ttest.ts',
@@ -558,7 +633,8 @@ describe('codeMetrics.ts', (): void => {
         testCoverageIndicator: false,
         metrics: new CodeMetricsData(1, 1, 0),
         filesNotRequiringReview: [],
-        deletedFilesNotRequiringReview: []
+        deletedFilesNotRequiringReview: [],
+        globChecks: 4
       },
       {
         gitResponse: '1\t0\tfile.ts\n2\t0\ttest.ts',
@@ -566,7 +642,8 @@ describe('codeMetrics.ts', (): void => {
         testCoverageIndicator: true,
         metrics: new CodeMetricsData(1, 2, 0),
         filesNotRequiringReview: [],
-        deletedFilesNotRequiringReview: []
+        deletedFilesNotRequiringReview: [],
+        globChecks: 4
       },
       {
         gitResponse: '99\t0\tfile.ts',
@@ -574,7 +651,8 @@ describe('codeMetrics.ts', (): void => {
         testCoverageIndicator: false,
         metrics: new CodeMetricsData(99, 0, 0),
         filesNotRequiringReview: [],
-        deletedFilesNotRequiringReview: []
+        deletedFilesNotRequiringReview: [],
+        globChecks: 2
       },
       {
         gitResponse: '99\t0\tfile.ts\n197\t0\ttest.ts',
@@ -582,7 +660,8 @@ describe('codeMetrics.ts', (): void => {
         testCoverageIndicator: false,
         metrics: new CodeMetricsData(99, 197, 0),
         filesNotRequiringReview: [],
-        deletedFilesNotRequiringReview: []
+        deletedFilesNotRequiringReview: [],
+        globChecks: 4
       },
       {
         gitResponse: '99\t0\tfile.ts\n198\t0\ttest.ts',
@@ -590,7 +669,8 @@ describe('codeMetrics.ts', (): void => {
         testCoverageIndicator: true,
         metrics: new CodeMetricsData(99, 198, 0),
         filesNotRequiringReview: [],
-        deletedFilesNotRequiringReview: []
+        deletedFilesNotRequiringReview: [],
+        globChecks: 4
       },
       {
         gitResponse: '100\t0\tfile.ts',
@@ -598,7 +678,8 @@ describe('codeMetrics.ts', (): void => {
         testCoverageIndicator: false,
         metrics: new CodeMetricsData(100, 0, 0),
         filesNotRequiringReview: [],
-        deletedFilesNotRequiringReview: []
+        deletedFilesNotRequiringReview: [],
+        globChecks: 2
       },
       {
         gitResponse: '100\t0\tfile.ts\n199\t0\ttest.ts',
@@ -606,7 +687,8 @@ describe('codeMetrics.ts', (): void => {
         testCoverageIndicator: false,
         metrics: new CodeMetricsData(100, 199, 0),
         filesNotRequiringReview: [],
-        deletedFilesNotRequiringReview: []
+        deletedFilesNotRequiringReview: [],
+        globChecks: 4
       },
       {
         gitResponse: '100\t0\tfile.ts\n200\t0\ttest.ts',
@@ -614,7 +696,8 @@ describe('codeMetrics.ts', (): void => {
         testCoverageIndicator: true,
         metrics: new CodeMetricsData(100, 200, 0),
         filesNotRequiringReview: [],
-        deletedFilesNotRequiringReview: []
+        deletedFilesNotRequiringReview: [],
+        globChecks: 4
       },
       {
         gitResponse: '149\t0\tfile.ts',
@@ -622,7 +705,8 @@ describe('codeMetrics.ts', (): void => {
         testCoverageIndicator: false,
         metrics: new CodeMetricsData(149, 0, 0),
         filesNotRequiringReview: [],
-        deletedFilesNotRequiringReview: []
+        deletedFilesNotRequiringReview: [],
+        globChecks: 2
       },
       {
         gitResponse: '149\t0\tfile.ts\n297\t0\ttest.ts',
@@ -630,7 +714,8 @@ describe('codeMetrics.ts', (): void => {
         testCoverageIndicator: false,
         metrics: new CodeMetricsData(149, 297, 0),
         filesNotRequiringReview: [],
-        deletedFilesNotRequiringReview: []
+        deletedFilesNotRequiringReview: [],
+        globChecks: 4
       },
       {
         gitResponse: '149\t0\tfile.ts\n298\t0\ttest.ts',
@@ -638,7 +723,8 @@ describe('codeMetrics.ts', (): void => {
         testCoverageIndicator: true,
         metrics: new CodeMetricsData(149, 298, 0),
         filesNotRequiringReview: [],
-        deletedFilesNotRequiringReview: []
+        deletedFilesNotRequiringReview: [],
+        globChecks: 4
       },
       {
         gitResponse: '150\t0\tfile.ts',
@@ -646,7 +732,8 @@ describe('codeMetrics.ts', (): void => {
         testCoverageIndicator: false,
         metrics: new CodeMetricsData(150, 0, 0),
         filesNotRequiringReview: [],
-        deletedFilesNotRequiringReview: []
+        deletedFilesNotRequiringReview: [],
+        globChecks: 2
       },
       {
         gitResponse: '150\t0\tfile.ts\n299\t0\ttest.ts',
@@ -654,7 +741,8 @@ describe('codeMetrics.ts', (): void => {
         testCoverageIndicator: false,
         metrics: new CodeMetricsData(150, 299, 0),
         filesNotRequiringReview: [],
-        deletedFilesNotRequiringReview: []
+        deletedFilesNotRequiringReview: [],
+        globChecks: 4
       },
       {
         gitResponse: '150\t0\tfile.ts\n300\t0\ttest.ts',
@@ -662,7 +750,8 @@ describe('codeMetrics.ts', (): void => {
         testCoverageIndicator: true,
         metrics: new CodeMetricsData(150, 300, 0),
         filesNotRequiringReview: [],
-        deletedFilesNotRequiringReview: []
+        deletedFilesNotRequiringReview: [],
+        globChecks: 4
       },
       {
         gitResponse: '224\t0\tfile.ts',
@@ -670,7 +759,8 @@ describe('codeMetrics.ts', (): void => {
         testCoverageIndicator: false,
         metrics: new CodeMetricsData(224, 0, 0),
         filesNotRequiringReview: [],
-        deletedFilesNotRequiringReview: []
+        deletedFilesNotRequiringReview: [],
+        globChecks: 2
       },
       {
         gitResponse: '224\t0\tfile.ts\n447\t0\ttest.ts',
@@ -678,7 +768,8 @@ describe('codeMetrics.ts', (): void => {
         testCoverageIndicator: false,
         metrics: new CodeMetricsData(224, 447, 0),
         filesNotRequiringReview: [],
-        deletedFilesNotRequiringReview: []
+        deletedFilesNotRequiringReview: [],
+        globChecks: 4
       },
       {
         gitResponse: '224\t0\tfile.ts\n448\t0\ttest.ts',
@@ -686,7 +777,8 @@ describe('codeMetrics.ts', (): void => {
         testCoverageIndicator: true,
         metrics: new CodeMetricsData(224, 448, 0),
         filesNotRequiringReview: [],
-        deletedFilesNotRequiringReview: []
+        deletedFilesNotRequiringReview: [],
+        globChecks: 4
       },
       {
         gitResponse: '225\t0\tfile.ts',
@@ -694,7 +786,8 @@ describe('codeMetrics.ts', (): void => {
         testCoverageIndicator: false,
         metrics: new CodeMetricsData(225, 0, 0),
         filesNotRequiringReview: [],
-        deletedFilesNotRequiringReview: []
+        deletedFilesNotRequiringReview: [],
+        globChecks: 2
       },
       {
         gitResponse: '225\t0\tfile.ts\n449\t0\ttest.ts',
@@ -702,7 +795,8 @@ describe('codeMetrics.ts', (): void => {
         testCoverageIndicator: false,
         metrics: new CodeMetricsData(225, 449, 0),
         filesNotRequiringReview: [],
-        deletedFilesNotRequiringReview: []
+        deletedFilesNotRequiringReview: [],
+        globChecks: 4
       },
       {
         gitResponse: '225\t0\tfile.ts\n450\t0\ttest.ts',
@@ -710,7 +804,8 @@ describe('codeMetrics.ts', (): void => {
         testCoverageIndicator: true,
         metrics: new CodeMetricsData(225, 450, 0),
         filesNotRequiringReview: [],
-        deletedFilesNotRequiringReview: []
+        deletedFilesNotRequiringReview: [],
+        globChecks: 4
       },
       {
         gitResponse: '337\t0\tfile.ts',
@@ -718,7 +813,8 @@ describe('codeMetrics.ts', (): void => {
         testCoverageIndicator: false,
         metrics: new CodeMetricsData(337, 0, 0),
         filesNotRequiringReview: [],
-        deletedFilesNotRequiringReview: []
+        deletedFilesNotRequiringReview: [],
+        globChecks: 2
       },
       {
         gitResponse: '337\t0\tfile.ts\n673\t0\ttest.ts',
@@ -726,7 +822,8 @@ describe('codeMetrics.ts', (): void => {
         testCoverageIndicator: false,
         metrics: new CodeMetricsData(337, 673, 0),
         filesNotRequiringReview: [],
-        deletedFilesNotRequiringReview: []
+        deletedFilesNotRequiringReview: [],
+        globChecks: 4
       },
       {
         gitResponse: '337\t0\tfile.ts\n674\t0\ttest.ts',
@@ -734,7 +831,8 @@ describe('codeMetrics.ts', (): void => {
         testCoverageIndicator: true,
         metrics: new CodeMetricsData(337, 674, 0),
         filesNotRequiringReview: [],
-        deletedFilesNotRequiringReview: []
+        deletedFilesNotRequiringReview: [],
+        globChecks: 4
       },
       {
         gitResponse: '338\t0\tfile.ts',
@@ -742,7 +840,8 @@ describe('codeMetrics.ts', (): void => {
         testCoverageIndicator: false,
         metrics: new CodeMetricsData(338, 0, 0),
         filesNotRequiringReview: [],
-        deletedFilesNotRequiringReview: []
+        deletedFilesNotRequiringReview: [],
+        globChecks: 2
       },
       {
         gitResponse: '338\t0\tfile.ts\n675\t0\ttest.ts',
@@ -750,7 +849,8 @@ describe('codeMetrics.ts', (): void => {
         testCoverageIndicator: false,
         metrics: new CodeMetricsData(338, 675, 0),
         filesNotRequiringReview: [],
-        deletedFilesNotRequiringReview: []
+        deletedFilesNotRequiringReview: [],
+        globChecks: 4
       },
       {
         gitResponse: '338\t0\tfile.ts\n676\t0\ttest.ts',
@@ -758,7 +858,8 @@ describe('codeMetrics.ts', (): void => {
         testCoverageIndicator: true,
         metrics: new CodeMetricsData(338, 676, 0),
         filesNotRequiringReview: [],
-        deletedFilesNotRequiringReview: []
+        deletedFilesNotRequiringReview: [],
+        globChecks: 4
       },
       {
         gitResponse: '506\t0\tfile.ts',
@@ -766,7 +867,8 @@ describe('codeMetrics.ts', (): void => {
         testCoverageIndicator: false,
         metrics: new CodeMetricsData(506, 0, 0),
         filesNotRequiringReview: [],
-        deletedFilesNotRequiringReview: []
+        deletedFilesNotRequiringReview: [],
+        globChecks: 2
       },
       {
         gitResponse: '506\t0\tfile.ts\n1011\t0\ttest.ts',
@@ -774,7 +876,8 @@ describe('codeMetrics.ts', (): void => {
         testCoverageIndicator: false,
         metrics: new CodeMetricsData(506, 1011, 0),
         filesNotRequiringReview: [],
-        deletedFilesNotRequiringReview: []
+        deletedFilesNotRequiringReview: [],
+        globChecks: 4
       },
       {
         gitResponse: '506\t0\tfile.ts\n1012\t0\ttest.ts',
@@ -782,7 +885,8 @@ describe('codeMetrics.ts', (): void => {
         testCoverageIndicator: true,
         metrics: new CodeMetricsData(506, 1012, 0),
         filesNotRequiringReview: [],
-        deletedFilesNotRequiringReview: []
+        deletedFilesNotRequiringReview: [],
+        globChecks: 4
       },
       {
         gitResponse: '507\t0\tfile.ts',
@@ -790,7 +894,8 @@ describe('codeMetrics.ts', (): void => {
         testCoverageIndicator: false,
         metrics: new CodeMetricsData(507, 0, 0),
         filesNotRequiringReview: [],
-        deletedFilesNotRequiringReview: []
+        deletedFilesNotRequiringReview: [],
+        globChecks: 2
       },
       {
         gitResponse: '507\t0\tfile.ts\n1013\t0\ttest.ts',
@@ -798,7 +903,8 @@ describe('codeMetrics.ts', (): void => {
         testCoverageIndicator: false,
         metrics: new CodeMetricsData(507, 1013, 0),
         filesNotRequiringReview: [],
-        deletedFilesNotRequiringReview: []
+        deletedFilesNotRequiringReview: [],
+        globChecks: 4
       },
       {
         gitResponse: '507\t0\tfile.ts\n1014\t0\ttest.ts',
@@ -806,7 +912,8 @@ describe('codeMetrics.ts', (): void => {
         testCoverageIndicator: true,
         metrics: new CodeMetricsData(507, 1014, 0),
         filesNotRequiringReview: [],
-        deletedFilesNotRequiringReview: []
+        deletedFilesNotRequiringReview: [],
+        globChecks: 4
       },
       {
         gitResponse: '759\t0\tfile.ts',
@@ -814,7 +921,8 @@ describe('codeMetrics.ts', (): void => {
         testCoverageIndicator: false,
         metrics: new CodeMetricsData(759, 0, 0),
         filesNotRequiringReview: [],
-        deletedFilesNotRequiringReview: []
+        deletedFilesNotRequiringReview: [],
+        globChecks: 2
       },
       {
         gitResponse: '759\t0\tfile.ts\n1517\t0\ttest.ts',
@@ -822,7 +930,8 @@ describe('codeMetrics.ts', (): void => {
         testCoverageIndicator: false,
         metrics: new CodeMetricsData(759, 1517, 0),
         filesNotRequiringReview: [],
-        deletedFilesNotRequiringReview: []
+        deletedFilesNotRequiringReview: [],
+        globChecks: 4
       },
       {
         gitResponse: '759\t0\tfile.ts\n1518\t0\ttest.ts',
@@ -830,7 +939,8 @@ describe('codeMetrics.ts', (): void => {
         testCoverageIndicator: true,
         metrics: new CodeMetricsData(759, 1518, 0),
         filesNotRequiringReview: [],
-        deletedFilesNotRequiringReview: []
+        deletedFilesNotRequiringReview: [],
+        globChecks: 4
       },
       {
         gitResponse: '760\t0\tfile.ts',
@@ -838,7 +948,8 @@ describe('codeMetrics.ts', (): void => {
         testCoverageIndicator: false,
         metrics: new CodeMetricsData(760, 0, 0),
         filesNotRequiringReview: [],
-        deletedFilesNotRequiringReview: []
+        deletedFilesNotRequiringReview: [],
+        globChecks: 2
       },
       {
         gitResponse: '760\t0\tfile.ts\n1519\t0\ttest.ts',
@@ -846,7 +957,8 @@ describe('codeMetrics.ts', (): void => {
         testCoverageIndicator: false,
         metrics: new CodeMetricsData(760, 1519, 0),
         filesNotRequiringReview: [],
-        deletedFilesNotRequiringReview: []
+        deletedFilesNotRequiringReview: [],
+        globChecks: 4
       },
       {
         gitResponse: '760\t0\tfile.ts\n1520\t0\ttest.ts',
@@ -854,7 +966,8 @@ describe('codeMetrics.ts', (): void => {
         testCoverageIndicator: true,
         metrics: new CodeMetricsData(760, 1520, 0),
         filesNotRequiringReview: [],
-        deletedFilesNotRequiringReview: []
+        deletedFilesNotRequiringReview: [],
+        globChecks: 4
       },
       {
         gitResponse: '1\t0\tfile.cs',
@@ -862,7 +975,8 @@ describe('codeMetrics.ts', (): void => {
         testCoverageIndicator: true,
         metrics: new CodeMetricsData(0, 0, 1),
         filesNotRequiringReview: [],
-        deletedFilesNotRequiringReview: []
+        deletedFilesNotRequiringReview: [],
+        globChecks: 2
       },
       {
         gitResponse: '1\t0\ttest.cs',
@@ -870,7 +984,8 @@ describe('codeMetrics.ts', (): void => {
         testCoverageIndicator: true,
         metrics: new CodeMetricsData(0, 0, 1),
         filesNotRequiringReview: [],
-        deletedFilesNotRequiringReview: []
+        deletedFilesNotRequiringReview: [],
+        globChecks: 2
       },
       {
         gitResponse: '1\t0\tfile.tst',
@@ -878,7 +993,8 @@ describe('codeMetrics.ts', (): void => {
         testCoverageIndicator: true,
         metrics: new CodeMetricsData(0, 0, 1),
         filesNotRequiringReview: [],
-        deletedFilesNotRequiringReview: []
+        deletedFilesNotRequiringReview: [],
+        globChecks: 2
       },
       {
         gitResponse: '1\t0\tfile.tts',
@@ -886,7 +1002,8 @@ describe('codeMetrics.ts', (): void => {
         testCoverageIndicator: true,
         metrics: new CodeMetricsData(0, 0, 1),
         filesNotRequiringReview: [],
-        deletedFilesNotRequiringReview: []
+        deletedFilesNotRequiringReview: [],
+        globChecks: 2
       },
       {
         gitResponse: '1\t0\tfilets',
@@ -894,7 +1011,8 @@ describe('codeMetrics.ts', (): void => {
         testCoverageIndicator: true,
         metrics: new CodeMetricsData(0, 0, 1),
         filesNotRequiringReview: [],
-        deletedFilesNotRequiringReview: []
+        deletedFilesNotRequiringReview: [],
+        globChecks: 2
       },
       {
         gitResponse: '1\t0\tignored.ts',
@@ -902,7 +1020,8 @@ describe('codeMetrics.ts', (): void => {
         testCoverageIndicator: true,
         metrics: new CodeMetricsData(0, 0, 1),
         filesNotRequiringReview: ['ignored.ts'],
-        deletedFilesNotRequiringReview: []
+        deletedFilesNotRequiringReview: [],
+        globChecks: 2
       },
       {
         gitResponse: '1\t0\tignored.cs',
@@ -910,7 +1029,8 @@ describe('codeMetrics.ts', (): void => {
         testCoverageIndicator: true,
         metrics: new CodeMetricsData(0, 0, 1),
         filesNotRequiringReview: ['ignored.cs'],
-        deletedFilesNotRequiringReview: []
+        deletedFilesNotRequiringReview: [],
+        globChecks: 2
       },
       {
         gitResponse: '1\t0\tfolder/ignored.ts',
@@ -918,7 +1038,8 @@ describe('codeMetrics.ts', (): void => {
         testCoverageIndicator: true,
         metrics: new CodeMetricsData(0, 0, 1),
         filesNotRequiringReview: ['folder/ignored.ts'],
-        deletedFilesNotRequiringReview: []
+        deletedFilesNotRequiringReview: [],
+        globChecks: 2
       },
       {
         gitResponse: '1\t0\tfolder/ignored.cs',
@@ -926,7 +1047,8 @@ describe('codeMetrics.ts', (): void => {
         testCoverageIndicator: true,
         metrics: new CodeMetricsData(0, 0, 1),
         filesNotRequiringReview: ['folder/ignored.cs'],
-        deletedFilesNotRequiringReview: []
+        deletedFilesNotRequiringReview: [],
+        globChecks: 2
       },
       {
         gitResponse: '0\t0\tignored.ts',
@@ -934,7 +1056,8 @@ describe('codeMetrics.ts', (): void => {
         testCoverageIndicator: true,
         metrics: new CodeMetricsData(0, 0, 0),
         filesNotRequiringReview: ['ignored.ts'],
-        deletedFilesNotRequiringReview: []
+        deletedFilesNotRequiringReview: [],
+        globChecks: 2
       },
       {
         gitResponse: '0\t0\tignored.cs',
@@ -942,7 +1065,8 @@ describe('codeMetrics.ts', (): void => {
         testCoverageIndicator: true,
         metrics: new CodeMetricsData(0, 0, 0),
         filesNotRequiringReview: ['ignored.cs'],
-        deletedFilesNotRequiringReview: []
+        deletedFilesNotRequiringReview: [],
+        globChecks: 2
       },
       {
         gitResponse: '0\t0\tfolder/ignored.ts',
@@ -950,7 +1074,8 @@ describe('codeMetrics.ts', (): void => {
         testCoverageIndicator: true,
         metrics: new CodeMetricsData(0, 0, 0),
         filesNotRequiringReview: ['folder/ignored.ts'],
-        deletedFilesNotRequiringReview: []
+        deletedFilesNotRequiringReview: [],
+        globChecks: 2
       },
       {
         gitResponse: '0\t0\tfolder/ignored.cs',
@@ -958,7 +1083,8 @@ describe('codeMetrics.ts', (): void => {
         testCoverageIndicator: true,
         metrics: new CodeMetricsData(0, 0, 0),
         filesNotRequiringReview: ['folder/ignored.cs'],
-        deletedFilesNotRequiringReview: []
+        deletedFilesNotRequiringReview: [],
+        globChecks: 2
       },
       {
         gitResponse: '1\t0\tignored.ts\n0\t0\tfolder/ignored.ts',
@@ -966,7 +1092,8 @@ describe('codeMetrics.ts', (): void => {
         testCoverageIndicator: true,
         metrics: new CodeMetricsData(0, 0, 1),
         filesNotRequiringReview: ['ignored.ts', 'folder/ignored.ts'],
-        deletedFilesNotRequiringReview: []
+        deletedFilesNotRequiringReview: [],
+        globChecks: 4
       },
       {
         gitResponse: '0\t1\tignored.ts',
@@ -974,7 +1101,8 @@ describe('codeMetrics.ts', (): void => {
         testCoverageIndicator: true,
         metrics: new CodeMetricsData(0, 0, 0),
         filesNotRequiringReview: [],
-        deletedFilesNotRequiringReview: ['ignored.ts']
+        deletedFilesNotRequiringReview: ['ignored.ts'],
+        globChecks: 2
       },
       {
         gitResponse: '0\t1\tignored.cs',
@@ -982,7 +1110,8 @@ describe('codeMetrics.ts', (): void => {
         testCoverageIndicator: true,
         metrics: new CodeMetricsData(0, 0, 0),
         filesNotRequiringReview: [],
-        deletedFilesNotRequiringReview: ['ignored.cs']
+        deletedFilesNotRequiringReview: ['ignored.cs'],
+        globChecks: 2
       },
       {
         gitResponse: '0\t1\tfolder/ignored.ts',
@@ -990,7 +1119,8 @@ describe('codeMetrics.ts', (): void => {
         testCoverageIndicator: true,
         metrics: new CodeMetricsData(0, 0, 0),
         filesNotRequiringReview: [],
-        deletedFilesNotRequiringReview: ['folder/ignored.ts']
+        deletedFilesNotRequiringReview: ['folder/ignored.ts'],
+        globChecks: 2
       },
       {
         gitResponse: '0\t1\tfolder/ignored.cs',
@@ -998,7 +1128,8 @@ describe('codeMetrics.ts', (): void => {
         testCoverageIndicator: true,
         metrics: new CodeMetricsData(0, 0, 0),
         filesNotRequiringReview: [],
-        deletedFilesNotRequiringReview: ['folder/ignored.cs']
+        deletedFilesNotRequiringReview: ['folder/ignored.cs'],
+        globChecks: 2
       },
       {
         gitResponse: '1\t0\tignored.ts\n0\t1\tfolder/ignored.ts',
@@ -1006,11 +1137,12 @@ describe('codeMetrics.ts', (): void => {
         testCoverageIndicator: true,
         metrics: new CodeMetricsData(0, 0, 1),
         filesNotRequiringReview: ['ignored.ts'],
-        deletedFilesNotRequiringReview: ['folder/ignored.ts']
+        deletedFilesNotRequiringReview: ['folder/ignored.ts'],
+        globChecks: 4
       }
     ]
 
-    testCases.forEach(({ gitResponse, sizeIndicator, testCoverageIndicator, metrics, filesNotRequiringReview, deletedFilesNotRequiringReview }: TestCaseType): void => {
+    testCases.forEach(({ gitResponse, sizeIndicator, testCoverageIndicator, metrics, filesNotRequiringReview, deletedFilesNotRequiringReview, globChecks }: TestCaseType): void => {
       it(`with non-default inputs and git diff '${gitResponse.replace(/\n/g, '\\n')}', returns '${sizeIndicator}' size and '${testCoverageIndicator.toString()}' test coverage`, async (): Promise<void> => {
         // Arrange
         when(inputs.baseSize).thenReturn(100)
@@ -1036,6 +1168,7 @@ describe('codeMetrics.ts', (): void => {
         verify(logger.logDebug('* CodeMetrics.getSize()')).once()
         verify(logger.logDebug('* CodeMetrics.initialize()')).times(7)
         verify(logger.logDebug('* CodeMetrics.initializeMetrics()')).once()
+        verify(logger.logDebug('* CodeMetrics.performGlobCheck()')).times(globChecks)
         verify(logger.logDebug('* CodeMetrics.matchFileExtension()')).times((gitResponse.match(/\n/g) ?? []).length + 1)
         verify(logger.logDebug('* CodeMetrics.constructMetrics()')).once()
         verify(logger.logDebug('* CodeMetrics.createFileMetricsMap()')).once()
@@ -1047,13 +1180,27 @@ describe('codeMetrics.ts', (): void => {
   }
 
   {
-    const testCases: string[] = [
-      '2\t2\tfile.ts\n1\t1\tignored1.ts\n1\t1\tignored2.ts',
-      '1\t1\tfile1.ts\n1\t1\tignored1.ts\n1\t1\tignored2.ts\n1\t1\tfile2.ts',
-      '1\t1\tfile1.ts\n1\t1\tignored1.ts\n1\t1\tfile2.ts\n1\t1\tignored2.ts'
+    interface TestCaseType {
+      gitResponse: string
+      globChecks: number
+    }
+
+    const testCases: TestCaseType[] = [
+      {
+        gitResponse: '2\t2\tfile.ts\n1\t1\tignored1.ts\n1\t1\tignored2.ts',
+        globChecks: 8
+      },
+      {
+        gitResponse: '1\t1\tfile1.ts\n1\t1\tignored1.ts\n1\t1\tignored2.ts\n1\t1\tfile2.ts',
+        globChecks: 11
+      },
+      {
+        gitResponse: '1\t1\tfile1.ts\n1\t1\tignored1.ts\n1\t1\tfile2.ts\n1\t1\tignored2.ts',
+        globChecks: 11
+      }
     ]
 
-    testCases.forEach((gitResponse: string): void => {
+    testCases.forEach(({ gitResponse, globChecks }: TestCaseType): void => {
       it(`with multiple ignore patterns and git diff '${gitResponse}' ignores the appropriate files`, async (): Promise<void> => {
         // Arrange
         when(inputs.baseSize).thenReturn(100)
@@ -1079,6 +1226,7 @@ describe('codeMetrics.ts', (): void => {
         verify(logger.logDebug('* CodeMetrics.getSize()')).once()
         verify(logger.logDebug('* CodeMetrics.initialize()')).times(7)
         verify(logger.logDebug('* CodeMetrics.initializeMetrics()')).once()
+        verify(logger.logDebug('* CodeMetrics.performGlobCheck()')).times(globChecks)
         verify(logger.logDebug('* CodeMetrics.matchFileExtension()')).times((gitResponse.match(/\n/g) ?? []).length + 1)
         verify(logger.logDebug('* CodeMetrics.constructMetrics()')).once()
         verify(logger.logDebug('* CodeMetrics.createFileMetricsMap()')).once()
@@ -1088,6 +1236,40 @@ describe('codeMetrics.ts', (): void => {
       })
     })
   }
+
+  it('with double exclusion ignore patterns ignores the appropriate files', async (): Promise<void> => {
+    // Arrange
+    when(inputs.baseSize).thenReturn(100)
+    when(inputs.growthRate).thenReturn(1.5)
+    when(inputs.testFactor).thenReturn(2.0)
+    when(inputs.fileMatchingPatterns).thenReturn(['**/*', '!**/ignored*.ts', '!!**/ignored2.ts'])
+    when(inputs.codeFileExtensions).thenReturn(new Set<string>(['ts']))
+    when(gitInvoker.getDiffSummary()).thenResolve('1\t1\tfile.ts\n1\t1\tignored1.ts\n1\t1\tignored2.ts\n1\t1\tignored3.ts')
+
+    // Act
+    const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(logger), instance(runnerInvoker))
+
+    // Assert
+    expect(await codeMetrics.getFilesNotRequiringReview()).to.deep.equal(['ignored1.ts', 'ignored3.ts'])
+    expect(await codeMetrics.getDeletedFilesNotRequiringReview()).to.deep.equal([])
+    expect(await codeMetrics.getSize()).to.equal('XS')
+    expect(await codeMetrics.getSizeIndicator()).to.equal('XS⚠️')
+    expect(await codeMetrics.getMetrics()).to.deep.equal(new CodeMetricsData(2, 0, 2))
+    expect(await codeMetrics.isSmall()).to.equal(true)
+    expect(await codeMetrics.isSufficientlyTested()).to.equal(false)
+    verify(logger.logDebug('* CodeMetrics.getFilesNotRequiringReview()')).once()
+    verify(logger.logDebug('* CodeMetrics.getDeletedFilesNotRequiringReview()')).once()
+    verify(logger.logDebug('* CodeMetrics.getSize()')).once()
+    verify(logger.logDebug('* CodeMetrics.initialize()')).times(7)
+    verify(logger.logDebug('* CodeMetrics.initializeMetrics()')).once()
+    verify(logger.logDebug('* CodeMetrics.performGlobCheck()')).times(11)
+    verify(logger.logDebug('* CodeMetrics.matchFileExtension()')).times(4)
+    verify(logger.logDebug('* CodeMetrics.constructMetrics()')).once()
+    verify(logger.logDebug('* CodeMetrics.createFileMetricsMap()')).once()
+    verify(logger.logDebug('* CodeMetrics.initializeIsSufficientlyTested()')).once()
+    verify(logger.logDebug('* CodeMetrics.initializeSizeIndicator()')).once()
+    verify(logger.logDebug('* CodeMetrics.calculateSize()')).once()
+  })
 
   it('should return the expected result with test coverage disabled', async (): Promise<void> => {
     // Arrange
@@ -1110,6 +1292,7 @@ describe('codeMetrics.ts', (): void => {
     verify(logger.logDebug('* CodeMetrics.getSize()')).once()
     verify(logger.logDebug('* CodeMetrics.initialize()')).times(7)
     verify(logger.logDebug('* CodeMetrics.initializeMetrics()')).once()
+    verify(logger.logDebug('* CodeMetrics.performGlobCheck()')).times(2)
     verify(logger.logDebug('* CodeMetrics.matchFileExtension()')).once()
     verify(logger.logDebug('* CodeMetrics.constructMetrics()')).once()
     verify(logger.logDebug('* CodeMetrics.createFileMetricsMap()')).once()
