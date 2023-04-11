@@ -155,10 +155,13 @@ export default class CodeMetrics {
 
     // Check for glob matches.
     codeFileMetrics.forEach((codeFileMetric: CodeFileMetric): void => {
-      let isValidFilePattern: boolean = false
+      let isValidFilePattern: boolean | null = null
       this._inputs.fileMatchingPatterns.forEach((fileMatchingPattern: string): void => {
-        if (!isValidFilePattern || fileMatchingPattern.startsWith('!')) {
-          isValidFilePattern = minimatch.match([codeFileMetric.fileName], fileMatchingPattern, CodeMetrics._minimatchOptions).length > 0
+        if (fileMatchingPattern.startsWith('!!')) {
+          // Support double exclusions, i.e., those glob elements starting with !!.
+          isValidFilePattern = isValidFilePattern || this.performGlobCheck(codeFileMetric.fileName, fileMatchingPattern)
+        } else if (isValidFilePattern === null || (isValidFilePattern && fileMatchingPattern.startsWith('!'))) {
+          isValidFilePattern = this.performGlobCheck(codeFileMetric.fileName, fileMatchingPattern)
         }
       })
 
@@ -173,6 +176,12 @@ export default class CodeMetrics {
     })
 
     this.constructMetrics(matches, nonMatches, nonMatchesToComment)
+  }
+
+  private performGlobCheck (fileName: string, fileMatchingPattern: string): boolean {
+    this._logger.logDebug('* CodeMetrics.performGlobCheck()')
+
+    return minimatch.match([fileName], fileMatchingPattern, CodeMetrics._minimatchOptions).length > 0
   }
 
   private matchFileExtension (fileName: string): boolean {
