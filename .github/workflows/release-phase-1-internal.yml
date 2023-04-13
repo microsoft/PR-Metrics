@@ -204,29 +204,24 @@ jobs:
         uses: jwalton/gh-find-current-pr@7ada613939e2a233c83a1320679446fa1c6bdcb9  # v1.3.2
         id: prGetNumber
 
-      - name: PR – Create Comment 1
+      - name: PR – Create Comment
         uses: bluwy/substitute-string-action@e960a2ca5cfbb2174acafb8be90b7c16218f8dae  # v2.0.1
         id: prCreateComment
         with:
-          _input-file: ./.github/workflows/support/release-phase-1-comment1.md
+          _input-file: ./.github/workflows/support/release-phase-1-comment.md
           _format-key: '%%key%%'
         env:
           INPUT_PR: ${{ steps.prGetNumber.outputs.pr }}
 
-      - name: PR – Write Comment 1 to File
+      - name: PR – Write Comment to File
         uses: DamianReeves/write-file-action@0a7fcbe1960c53fc08fe789fa4850d24885f4d84  # v1.2
         with:
-          path: ./.github/workflows/support/release-phase-1-comment1.md
+          path: ./.github/workflows/support/release-phase-1-comment.md
           contents: ${{ steps.prCreateComment.outputs.result }}
           write-mode: overwrite
 
-      - name: PR – Comment 1
-        run: gh pr comment --body-file "./.github/workflows/support/release-phase-1-comment1.md"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: PR – Comment 2
-        run: gh pr comment --body-file "./.github/workflows/support/release-phase-1-comment2.md"
+      - name: PR – Comment
+        run: gh pr comment --body-file "./.github/workflows/support/release-phase-1-comment.md"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
