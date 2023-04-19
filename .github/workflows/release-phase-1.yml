@@ -32,7 +32,7 @@ permissions: {}
 jobs:
   release:
     uses: ./.github/workflows/release-phase-1-internal.yml
-    secrets: inherit
+    secrets: inherita
     permissions:
       pull-requests: write
     with:
