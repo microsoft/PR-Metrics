@@ -134,9 +134,9 @@ jobs:
         run: |-
           $FilePath = '.github/workflows/release-phase-1.yml'
           $FileContents = Get-Content -Raw $FilePath
-          $FileContents = $FileContents -replace "(?<Yaml>major:\s+default: )'\d+'", '${Yaml}\'${{ inputs.major }}\''
-          $FileContents = $FileContents -replace "(?<Yaml>minor:\s+default: )'\d+'", '${Yaml}\'${{ inputs.minor }}\''
-          $FileContents = $FileContents -replace "(?<Yaml>patch:\s+default: )'\d+'", '${Yaml}\'${{ steps.increment-patch.outputs.INCREMENTED_PATCH }}\''
+          $FileContents = $FileContents -replace '(?<Yaml>major:\s+default: )''\d+''', '${Yaml}''${{ inputs.major }}'''
+          $FileContents = $FileContents -replace '(?<Yaml>minor:\s+default: )''\d+''', '${Yaml}''${{ inputs.minor }}'''
+          $FileContents = $FileContents -replace '(?<Yaml>patch:\s+default: )''\d+''', '${Yaml}''${{ steps.increment-patch.outputs.INCREMENTED_PATCH }}'''
           $FileContents = $FileContents -replace 'inputs\.major \|\| \d+', 'inputs.major || ${{ inputs.major }}'
           $FileContents = $FileContents -replace 'inputs\.minor \|\| \d+', 'inputs.minor || ${{ inputs.minor }}'
           $FileContents = $FileContents -replace 'inputs\.patch \|\| \d+', 'inputs.patch || ${{ steps.increment-patch.outputs.INCREMENTED_PATCH }}'
