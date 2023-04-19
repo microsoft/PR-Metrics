@@ -200,6 +200,11 @@ jobs:
           # not work due to GitHub CLI's dependence on GraphQL.
           GITHUB_TOKEN: ${{ secrets.RELEASE_PHASE_1_PR_CREATE }}
 
+      - name: PR – Sleep for PR Creation
+        uses: juliangruber/sleep-action@0ec9cf4f8d053aae56e4b402438184a31c6e87d3  # v2.0.0
+        with:
+          time: 1m
+
       - name: PR – Get Number
         uses: jwalton/gh-find-current-pr@7ada613939e2a233c83a1320679446fa1c6bdcb9  # v1.3.2
         id: prGetNumber
