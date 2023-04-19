@@ -12,17 +12,17 @@ on:
   workflow_dispatch:
     inputs:
       major:
-        default: 1
+        default: '1'
         description: The major element of the version number
         required: true
         type: string
       minor:
-        default: 5
+        default: '5'
         description: The minor element of the version number
         required: true
         type: string
       patch:
-        default: 32
+        default: '3'
         description: The patch element of the version number
         required: true
         type: string
