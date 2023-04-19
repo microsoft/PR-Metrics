@@ -140,7 +140,7 @@ jobs:
           $FileContents = $FileContents -replace 'inputs\.major \|\| \d+', 'inputs.major || ${{ inputs.major }}'
           $FileContents = $FileContents -replace 'inputs\.minor \|\| \d+', 'inputs.minor || ${{ inputs.minor }}'
           $FileContents = $FileContents -replace 'inputs\.patch \|\| \d+', 'inputs.patch || ${{ steps.increment-patch.outputs.INCREMENTED_PATCH }}'
-          Set-Content -Path $FilePath -Value $FileContents
+          Set-Content -Path $FilePath -Value $FileContents.Substring(0, $FileContents.Length - 1)
 
       - name: Update LICENSE.txt
         shell: pwsh
@@ -151,6 +151,11 @@ jobs:
             $Index -= 1
             $FileContents = $FileContents[0..$Index]
             Set-Content -Path $FilePath -Value $FileContents
+
+      - name: npm – Install Node
+        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c ## v3.6.0
+        with:
+          node-version: 16.10.0  # The latest version with NPMv7, which is required to maintain a package-lock.json lockfileVersion of 2.
 
       - name: npm – Install NCU
         run: npm install -g npm-check-updates
