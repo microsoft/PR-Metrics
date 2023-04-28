@@ -6,9 +6,25 @@ troubleshoot the issue.
 You should try all these steps before opening an issue. If you do open an issue,
 please include the output of all the steps you tried.
 
+## Check Pipeline Creation Date
+
+First, check the pipeline creation date. If you are using Azure DevOps and see a
+notification that insufficient Git history is available, this may be resulting
+from
+[a change in the September 2022 Azure DevOps sprint 209 update][azuredevops209].
+Pipelines created after this release will have shallow fetch set by default,
+unlike in earlier releases. This issue can be resolved by adding the following
+as the first step in your pipeline jobs:
+
+```YAML
+- checkout: self
+  displayName: Checkout
+  fetchDepth: 0
+```
+
 ## Checking Git Output
 
-First, run the following Git command as part of your build pipeline.
+Next, run the following Git command as part of your build pipeline.
 
 ```Batchfile
 git diff --numstat --ignore-all-space origin/<target>...pull/<pull_request_id>/merge
@@ -54,5 +70,6 @@ env:
 
 More information can be located [here][github].
 
+[azuredevops209]: https://learn.microsoft.com/azure/devops/pipelines/yaml-schema/steps-checkout#shallow-fetch
 [azurepipelines]: https://learn.microsoft.com/azure/devops/pipelines/troubleshooting/review-logs
 [github]: https://docs.github.com/actions/monitoring-and-troubleshooting-workflows/enabling-debug-logging

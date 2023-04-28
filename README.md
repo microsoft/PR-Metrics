@@ -144,18 +144,8 @@ Instructions on using the action within Azure Pipelines can be found
 
 ## Troubleshooting
 
-If you are using Azure DevOps and see a notification that insufficient Git
-history is available, this may be resulting from
-[a change in the September 2022 Azure DevOps sprint 209 update][azuredevops209].
-Pipelines created after this release will have shallow fetch set by default,
-unlike in earlier releases. This issue can be resolved by adding the following
-as the first step in your pipeline jobs:
-
-```YAML
-- checkout: self
-  displayName: Checkout
-  fetchDepth: 0
-```
+A set of steps for troubleshooting any issues encountered can be found
+[here][troubleshooting].
 
 ## Contributing
 
@@ -176,7 +166,6 @@ see the [Code of Conduct FAQ][codeofconductfaq] or contact
 comments.
 
 [azuredevops]: https://azure.microsoft.com/services/devops/
-[azuredevops209]: https://learn.microsoft.com/azure/devops/pipelines/yaml-schema/steps-checkout#shallow-fetch
 [vsmarketplace]: https://aka.ms/PRMetrics/AzureDevOps
 [githubpat]: https://docs.github.com/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token
 [globs]: https://wikipedia.org/wiki/Glob_(programming)
@@ -188,3 +177,4 @@ comments.
 [codeofconduct]: https://opensource.microsoft.com/codeofconduct/
 [codeofconductfaq]: https://opensource.microsoft.com/codeofconduct/faq/
 [opencodeemail]: mailto:opencode@microsoft.com
+[troubleshooting]: docs/troubleshooting.md
