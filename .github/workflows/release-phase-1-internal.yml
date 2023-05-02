@@ -134,13 +134,13 @@ jobs:
         run: |-
           $FilePath = '.github/workflows/release-phase-1.yml'
           $FileContents = Get-Content -Raw $FilePath
-          $FileContents = $FileContents -replace '(?<Yaml>major:\s+default: )\d+', '${Yaml}${{ inputs.major }}'
-          $FileContents = $FileContents -replace '(?<Yaml>minor:\s+default: )\d+', '${Yaml}${{ inputs.minor }}'
-          $FileContents = $FileContents -replace '(?<Yaml>patch:\s+default: )', '${Yaml}${{ steps.increment-patch.outputs.INCREMENTED_PATCH }}'
+          $FileContents = $FileContents -replace '(?<Yaml>major:\s+default: )''\d+''', '${Yaml}''${{ inputs.major }}'''
+          $FileContents = $FileContents -replace '(?<Yaml>minor:\s+default: )''\d+''', '${Yaml}''${{ inputs.minor }}'''
+          $FileContents = $FileContents -replace '(?<Yaml>patch:\s+default: )''\d+''', '${Yaml}''${{ steps.increment-patch.outputs.INCREMENTED_PATCH }}'''
           $FileContents = $FileContents -replace 'inputs\.major \|\| \d+', 'inputs.major || ${{ inputs.major }}'
           $FileContents = $FileContents -replace 'inputs\.minor \|\| \d+', 'inputs.minor || ${{ inputs.minor }}'
           $FileContents = $FileContents -replace 'inputs\.patch \|\| \d+', 'inputs.patch || ${{ steps.increment-patch.outputs.INCREMENTED_PATCH }}'
-          Set-Content -Path $FilePath -Value $FileContents
+          Set-Content -Path $FilePath -Value $FileContents.Substring(0, $FileContents.Length - 1)  # Remove the trailing newline.
 
       - name: Update LICENSE.txt
         shell: pwsh
@@ -151,6 +151,11 @@ jobs:
             $Index -= 1
             $FileContents = $FileContents[0..$Index]
             Set-Content -Path $FilePath -Value $FileContents
+
+      - name: npm – Install Node
+        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c ## v3.6.0
+        with:
+          node-version: 16.10.0  # The latest version with NPMv7, which is required to maintain a package-lock.json lockfileVersion of 2.
 
       - name: npm – Install NCU
         run: npm install -g npm-check-updates
@@ -200,33 +205,33 @@ jobs:
           # not work due to GitHub CLI's dependence on GraphQL.
           GITHUB_TOKEN: ${{ secrets.RELEASE_PHASE_1_PR_CREATE }}
 
+      - name: PR – Sleep for PR Creation
+        uses: juliangruber/sleep-action@0ec9cf4f8d053aae56e4b402438184a31c6e87d3  # v2.0.0
+        with:
+          time: 1m
+
       - name: PR – Get Number
         uses: jwalton/gh-find-current-pr@7ada613939e2a233c83a1320679446fa1c6bdcb9  # v1.3.2
         id: prGetNumber
 
-      - name: PR – Create Comment 1
+      - name: PR – Create Comment
         uses: bluwy/substitute-string-action@e960a2ca5cfbb2174acafb8be90b7c16218f8dae  # v2.0.1
         id: prCreateComment
         with:
-          _input-file: ./.github/workflows/support/release-phase-1-comment1.md
+          _input-file: ./.github/workflows/support/release-phase-1-comment.md
           _format-key: '%%key%%'
         env:
           INPUT_PR: ${{ steps.prGetNumber.outputs.pr }}
 
-      - name: PR – Write Comment 1 to File
+      - name: PR – Write Comment to File
         uses: DamianReeves/write-file-action@0a7fcbe1960c53fc08fe789fa4850d24885f4d84  # v1.2
         with:
-          path: ./.github/workflows/support/release-phase-1-comment1.md
+          path: ./.github/workflows/support/release-phase-1-comment.md
           contents: ${{ steps.prCreateComment.outputs.result }}
           write-mode: overwrite
 
-      - name: PR – Comment 1
-        run: gh pr comment --body-file "./.github/workflows/support/release-phase-1-comment1.md"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: PR – Comment 2
-        run: gh pr comment --body-file "./.github/workflows/support/release-phase-1-comment2.md"
+      - name: PR – Comment
+        run: gh pr comment --body-file "./.github/workflows/support/release-phase-1-comment.md"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
