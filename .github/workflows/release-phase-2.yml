@@ -69,7 +69,7 @@ jobs:
           token: ${{ secrets.RELEASE_PHASE_2_GITHUB_RELEASE }}
 
       - name: Publish Release
-        uses: HaaLeo/publish-vscode-extension@c1a0486c5a3eed24e8c21d4e37889a7c4c60c443  # v1.2.0
+        uses: HaaLeo/publish-vscode-extension@a7981039f3dd0bd407a71c10b11f3cb79cb249d4  # v1.3.0
         with:
           # Fine-grained Azure DevOps Personal Access Token (PAT) with the Manage access to Marketplace permission.
           pat: ${{ secrets.RELEASE_PHASE_2_PUBLISH_RELEASE }}

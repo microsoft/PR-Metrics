@@ -15,6 +15,12 @@ labels: bug
 
 <!-- List the steps you performed before encountering the issue. -->
 
+## Troubleshooting Undertaken
+
+<!-- Please follow the instructions at
+     https://github.com/microsoft/PR-Metrics/blob/main/docs/troubleshooting.md
+     and include the results. In particular, include debug logs if possible. -->
+
 ## Additional Information
 
 <!-- Provide any additional information you believe may be relevant including
