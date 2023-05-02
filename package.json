@@ -88,6 +88,9 @@
     "typedoc": "^0.24.6",
     "typescript": "^5.0.4"
   },
+  "overrides": {
+    "mockery": "^2.1.0"
+  },
   "ts-standard": {
     "ignore": [
       "dist"
