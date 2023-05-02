@@ -140,7 +140,7 @@ jobs:
           $FileContents = $FileContents -replace 'inputs\.major \|\| \d+', 'inputs.major || ${{ inputs.major }}'
           $FileContents = $FileContents -replace 'inputs\.minor \|\| \d+', 'inputs.minor || ${{ inputs.minor }}'
           $FileContents = $FileContents -replace 'inputs\.patch \|\| \d+', 'inputs.patch || ${{ steps.increment-patch.outputs.INCREMENTED_PATCH }}'
-          Set-Content -Path $FilePath -Value $FileContents.Substring(0, $FileContents.Length - 1)
+          Set-Content -Path $FilePath -Value $FileContents
 
       - name: Update LICENSE.txt
         shell: pwsh
