@@ -19,7 +19,7 @@ labels: bug
 
 <!-- Please follow the instructions at
      https://github.com/microsoft/PR-Metrics/blob/main/docs/troubleshooting.md
-     and include the results. -->
+     and include the results. In particular, include debug logs if possible. -->
 
 ## Additional Information
 
