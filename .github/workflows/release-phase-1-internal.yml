@@ -157,11 +157,11 @@ jobs:
         with:
           node-version: 16.10.0  # The latest version with NPMv7, which is required to maintain a package-lock.json lockfileVersion of 2.
 
-      - name: npm – Install NCU
-        run: npm install -g npm-check-updates
+#      - name: npm – Install NCU
+#        run: npm install -g npm-check-updates
 
-      - name: npm – Update Dependencies
-        run: ncu -u
+#      - name: npm – Update Dependencies
+#        run: ncu -u
 
       - name: npm – Update Transitive Dependencies
         run: npm update
