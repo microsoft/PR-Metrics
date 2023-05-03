@@ -29,7 +29,7 @@ import UpdatePullResponse from '../wrappers/octokitInterfaces/updatePullResponse
 
 const octokit: Octokit = new Octokit()
 type GetIssueCommentsResponseData = GetResponseDataTypeFromEndpointMethod<typeof octokit.rest.issues.listComments>[0]
-type GetReviewCommentsResponseData = GetResponseDataTypeFromEndpointMethod<typeof octokit.rest.pulls.listCommentsForReview>[0]
+type GetReviewCommentsResponseData = GetResponseDataTypeFromEndpointMethod<typeof octokit.rest.pulls.listReviewComments>[0]
 
 /**
  * A class for invoking GitHub Repos functionality.
