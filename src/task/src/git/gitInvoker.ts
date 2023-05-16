@@ -74,7 +74,7 @@ export default class GitInvoker {
       return this._pullRequestId
     }
 
-    this._pullRequestId = Validator.validateNumber(parseInt(this.pullRequestIdInternal), 'Pull Request ID', 'GitInvoker.pullRequestId')
+    this._pullRequestId = parseInt(this.pullRequestIdInternal)
     return this._pullRequestId
   }
 

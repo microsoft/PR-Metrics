@@ -53,6 +53,12 @@ export default class CodeMetricsCalculator {
       return this._runnerInvoker.loc('metrics.codeMetricsCalculator.noPullRequest')
     }
 
+    if (Number.isNaN(this._gitInvoker.pullRequestId)) {
+      return RunnerInvoker.isGitHub
+        ? 'Problem GitHub'
+        : 'Problem AzDO'
+    }
+
     const provider: boolean | string = this._pullRequest.isSupportedProvider
     if (provider !== true) {
       return this._runnerInvoker.loc('metrics.codeMetricsCalculator.unsupportedProvider', provider)
