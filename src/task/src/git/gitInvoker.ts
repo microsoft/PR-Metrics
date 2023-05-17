@@ -47,6 +47,16 @@ export default class GitInvoker {
   }
 
   /**
+   * Gets a value indicating whether the pull request ID is available.
+   * @returns A value indicating whether the pull request ID is available.
+   */
+  public isPullRequestIdAvailable (): boolean {
+    this._logger.logDebug('* GitInvoker.isPullRequestIdAvailable()')
+
+    return !isNaN(parseInt(this.pullRequestIdInternal))
+  }
+
+  /**
    * Gets a value indicating whether sufficient Git history is available to generate the PR metrics.
    * @returns A promise containing a value indicating whether sufficient Git history is available to generate the PR metrics.
    */
@@ -115,23 +125,46 @@ export default class GitInvoker {
   private get pullRequestIdForGitHub (): string {
     this._logger.logDebug('* GitInvoker.pullRequestIdForGitHub')
 
-    const gitHubReference: string = Validator.validateVariable('GITHUB_REF', 'GitInvoker.pullRequestIdForGitHub')
-    const gitHubReferenceElements: string[] = gitHubReference.split('/')
-    if (gitHubReferenceElements[2] === undefined) {
-      throw Error(`GITHUB_REF '${gitHubReference}' is in an unexpected format.`)
+    const gitHubReference: string | undefined = process.env.GITHUB_REF
+    if (!gitHubReference) {
+      this._logger.logWarning('\'GITHUB_REF\' is undefined.')
+      return ''
     }
 
-    return gitHubReferenceElements[2]
+    const gitHubReferenceElements: string[] = gitHubReference.split('/')
+    if (gitHubReferenceElements.length < 3) {
+      this._logger.logWarning(`'GITHUB_REF' is in an incorrect format '${gitHubReference}'.`)
+      return ''
+    }
+
+    return gitHubReferenceElements[2]!
   }
 
   private get pullRequestIdForAzurePipelines (): string {
     this._logger.logDebug('* GitInvoker.pullRequestIdForAzurePipelines')
 
-    const variable: string = Validator.validateVariable('BUILD_REPOSITORY_PROVIDER', 'GitInvoker.pullRequestIdForAzurePipelines')
+    const variable: string | undefined = process.env.BUILD_REPOSITORY_PROVIDER
+    if (!variable) {
+      this._logger.logWarning('\'BUILD_REPOSITORY_PROVIDER\' is undefined.')
+      return ''
+    }
+
     if (variable === 'GitHub' || variable === 'GitHubEnterprise') {
-      return Validator.validateVariable('SYSTEM_PULLREQUEST_PULLREQUESTNUMBER', 'GitInvoker.pullRequestIdForAzurePipelines')
+      const result: string | undefined = process.env.SYSTEM_PULLREQUEST_PULLREQUESTNUMBER
+      if (!result) {
+        this._logger.logWarning('\'SYSTEM_PULLREQUEST_PULLREQUESTNUMBER\' is undefined.')
+        return ''
+      }
+
+      return result
     } else {
-      return Validator.validateVariable('SYSTEM_PULLREQUEST_PULLREQUESTID', 'GitInvoker.pullRequestIdForAzurePipelines')
+      const result: string | undefined = process.env.SYSTEM_PULLREQUEST_PULLREQUESTID
+      if (!result) {
+        this._logger.logWarning('\'SYSTEM_PULLREQUEST_PULLREQUESTID\' is undefined.')
+        return ''
+      }
+
+      return result
     }
   }
 

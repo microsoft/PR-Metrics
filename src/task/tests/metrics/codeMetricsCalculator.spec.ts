@@ -28,6 +28,7 @@ describe('codeMetricsCalculator.ts', (): void => {
 
     gitInvoker = mock(GitInvoker)
     when(gitInvoker.isGitRepo()).thenResolve(true)
+    when(gitInvoker.isPullRequestIdAvailable()).thenReturn(true)
     when(gitInvoker.isGitHistoryAvailable()).thenResolve(true)
 
     logger = mock(Logger)
@@ -43,6 +44,8 @@ describe('codeMetricsCalculator.ts', (): void => {
     when(runnerInvoker.loc('metrics.codeMetricsCalculator.noGitRepoGitHub')).thenReturn('No Git repo present. Run the \'actions/checkout\' action prior to PR Metrics.')
     when(runnerInvoker.loc('metrics.codeMetricsCalculator.noGitHistoryAzureDevOps')).thenReturn('Could not access sufficient Git history. Set \'fetchDepth: 0\' as a parameter to the \'checkout\' task (YAML) or disable \'Shallow fetch\' under the build process phase settings (classic).')
     when(runnerInvoker.loc('metrics.codeMetricsCalculator.noGitHistoryGitHub')).thenReturn('Could not access sufficient Git history. Add \'fetch-depth: 0\' as a parameter to the \'actions/checkout\' action.')
+    when(runnerInvoker.loc('metrics.codeMetricsCalculator.noPullRequestIdAzureDevOps')).thenReturn('Could not determine the Pull Request ID.')
+    when(runnerInvoker.loc('metrics.codeMetricsCalculator.noPullRequestIdGitHub')).thenReturn('Could not determine the Pull Request ID. Ensure \'pull_request\' is the pipeline trigger.')
     when(runnerInvoker.loc('metrics.codeMetricsCalculator.noPullRequest')).thenReturn('The build is not running against a pull request.')
     when(runnerInvoker.loc('metrics.codeMetricsCalculator.unsupportedProvider', 'Other')).thenReturn('The build is running against a pull request from \'Other\', which is not a supported provider.')
   })
@@ -137,6 +140,36 @@ describe('codeMetricsCalculator.ts', (): void => {
 
       // Assert
       expect(result).to.equal('No Git repo present. Run the \'actions/checkout\' action prior to PR Metrics.')
+      verify(logger.logDebug('* CodeMetricsCalculator.shouldStop()')).once()
+
+      // Finalization
+      delete process.env.GITHUB_ACTION
+    })
+
+    it('should return the appropriate message when the pull request ID is not available on Azure DevOps', async (): Promise<void> => {
+      // Arrange
+      when(gitInvoker.isPullRequestIdAvailable()).thenReturn(false)
+      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(gitInvoker), instance(logger), instance(pullRequest), instance(pullRequestComments), instance(reposInvoker), instance(runnerInvoker))
+
+      // Act
+      const result: string | null = await codeMetricsCalculator.shouldStop()
+
+      // Assert
+      expect(result).to.equal('Could not determine the Pull Request ID.')
+      verify(logger.logDebug('* CodeMetricsCalculator.shouldStop()')).once()
+    })
+
+    it('should return the appropriate message when the pull request ID is not available on GitHub', async (): Promise<void> => {
+      // Arrange
+      process.env.GITHUB_ACTION = 'PR-Metrics'
+      when(gitInvoker.isPullRequestIdAvailable()).thenReturn(false)
+      const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(gitInvoker), instance(logger), instance(pullRequest), instance(pullRequestComments), instance(reposInvoker), instance(runnerInvoker))
+
+      // Act
+      const result: string | null = await codeMetricsCalculator.shouldStop()
+
+      // Assert
+      expect(result).to.equal('Could not determine the Pull Request ID. Ensure \'pull_request\' is the pipeline trigger.')
       verify(logger.logDebug('* CodeMetricsCalculator.shouldStop()')).once()
 
       // Finalization

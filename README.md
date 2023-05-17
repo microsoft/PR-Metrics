@@ -139,6 +139,11 @@ with:
 continue-on-error: true
 ```
 
+**`pull_request` must be used as the pipeline trigger to ensure that sufficient
+information, including the Pull Request ID, is available to PR Metrics.
+`pull_request_target` will not work as insufficient information is available
+when using this trigger.**
+
 Instructions on using the action within Azure Pipelines can be found
 [here][azurepipelinestask].
 

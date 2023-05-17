@@ -80,6 +80,8 @@
     "metrics.codeMetricsCalculator.noGitRepoAzureDevOps": "ms-resource:loc.messages.metrics.codeMetricsCalculator.noGitRepoAzureDevOps",
     "metrics.codeMetricsCalculator.noGitRepoGitHub": "ms-resource:loc.messages.metrics.codeMetricsCalculator.noGitRepoGitHub",
     "metrics.codeMetricsCalculator.noPullRequest": "ms-resource:loc.messages.metrics.codeMetricsCalculator.noPullRequest",
+    "metrics.codeMetricsCalculator.noPullRequestIdAzureDevOps": "ms-resource:loc.messages.metrics.codeMetricsCalculator.noPullRequestIdAzureDevOps",
+    "metrics.codeMetricsCalculator.noPullRequestIdGitHub": "ms-resource:loc.messages.metrics.codeMetricsCalculator.noPullRequestIdGitHub",
     "metrics.codeMetricsCalculator.unsupportedProvider": "ms-resource:loc.messages.metrics.codeMetricsCalculator.unsupportedProvider",
     "metrics.inputs.adjustingAlwaysCloseComment": "ms-resource:loc.messages.metrics.inputs.adjustingAlwaysCloseComment",
     "metrics.inputs.adjustingBaseSize": "ms-resource:loc.messages.metrics.inputs.adjustingBaseSize",

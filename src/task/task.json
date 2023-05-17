@@ -80,6 +80,8 @@
     "metrics.codeMetricsCalculator.noGitRepoAzureDevOps": "No Git repo present. Remove 'checkout: none' (YAML) or disable 'Don't sync sources' under the build process phase settings (classic).",
     "metrics.codeMetricsCalculator.noGitRepoGitHub": "No Git repo present. Run the 'actions/checkout' action prior to PR Metrics.",
     "metrics.codeMetricsCalculator.noPullRequest": "The build is not running against a pull request.",
+    "metrics.codeMetricsCalculator.noPullRequestIdAzureDevOps": "Could not determine the Pull Request ID.",
+    "metrics.codeMetricsCalculator.noPullRequestIdGitHub": "Could not determine the Pull Request ID. Ensure 'pull_request' is the pipeline trigger.",
     "metrics.codeMetricsCalculator.unsupportedProvider": "The build is running against a pull request from '%s', which is not a supported provider.",
     "metrics.inputs.adjustingAlwaysCloseComment": "Adjusting the always-close-comment mode input to 'false'.",
     "metrics.inputs.adjustingBaseSize": "Adjusting the base size input to '%s'.",
