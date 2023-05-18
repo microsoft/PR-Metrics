@@ -2,7 +2,7 @@
 # Licensed under the MIT License.
 
 ---
-a
+
 env:
   es2017: true
   mocha: true
