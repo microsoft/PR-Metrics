@@ -23,7 +23,7 @@ permissions: {}
 jobs:
   release:
     name: Release ${{ inputs.major }}.${{ inputs.minor }}.${{ inputs.patch }}
-    runs-on: ubuntu-latest1
+    runs-on: ubuntu-latest
     env:
       version: ${{ inputs.major }}.${{ inputs.minor }}.${{ inputs.patch }}
     permissions:
