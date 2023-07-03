@@ -419,6 +419,7 @@ dotnet_naming_rule.parameters_rule.severity             = warning
 ##########################################
 
 [dist/*]
+indent_size = unset
 trim_trailing_whitespace = false
 
 [*.md]
