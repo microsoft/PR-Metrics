@@ -342,6 +342,7 @@ jobs:
         uses: github/super-linter@45fc0d88288beee4701c62761281edfee85655d7  # v5.0.0
         env:
           EDITORCONFIG_FILE_NAME: ../../.editorconfig
+          FILTER_REGEX_EXCLUDE: .*dist/.*
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITLEAKS_CONFIG_FILE: gitleaks.toml
           MARKDOWN_CONFIG_FILE: ../../.markdownlint.json
