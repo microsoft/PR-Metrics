@@ -1,9 +1,9 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+import * as azureDevOpsApi from 'azure-devops-node-api'
 import { IRequestHandler } from 'azure-devops-node-api/interfaces/common/VsoBaseInterfaces'
 import { singleton } from 'tsyringe'
-import * as azureDevOpsApi from 'azure-devops-node-api'
 
 /**
  * A wrapper around the Azure DevOps API, to facilitate testability.

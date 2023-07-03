@@ -1,17 +1,17 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { GitWritableStream } from '../git/gitWritableStream'
-import { singleton } from 'tsyringe'
 import * as actionsExec from '@actions/exec'
 import * as fs from 'fs'
 import * as path from 'path'
+import { singleton } from 'tsyringe'
 import * as util from 'util'
+import { GitWritableStream } from '../git/gitWritableStream'
+import ResourcesJson from '../jsonTypes/resourcesJson'
 import AzurePipelinesRunnerWrapper from '../wrappers/azurePipelinesRunnerWrapper'
 import ConsoleWrapper from '../wrappers/consoleWrapper'
 import GitHubRunnerWrapper from '../wrappers/gitHubRunnerWrapper'
 import IRunnerInvoker from './iRunnerInvoker'
-import ResourcesJson from '../jsonTypes/resourcesJson'
 
 /**
  * A class for invoking GitHub runner functionality.

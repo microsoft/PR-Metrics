@@ -1,31 +1,31 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
-import { GetResponseDataTypeFromEndpointMethod } from '@octokit/types'
-import { Octokit } from 'octokit'
 import { OctokitOptions } from '@octokit/core/dist-types/types'
+import { GetResponseDataTypeFromEndpointMethod } from '@octokit/types'
+import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
+import { Octokit } from 'octokit'
 import { singleton } from 'tsyringe'
+import GitInvoker from '../git/gitInvoker'
+import RunnerInvoker from '../runners/runnerInvoker'
 import * as Converter from '../utilities/converter'
+import Logger from '../utilities/logger'
 import * as Validator from '../utilities/validator'
-import BaseReposInvoker from './baseReposInvoker'
-import CommentData from './interfaces/commentData'
 import CreateIssueCommentResponse from '../wrappers/octokitInterfaces/createIssueCommentResponse'
 import CreateReviewCommentResponse from '../wrappers/octokitInterfaces/createReviewCommentResponse'
 import DeleteReviewCommentResponse from '../wrappers/octokitInterfaces/deleteReviewCommentResponse'
-import FileCommentData from './interfaces/fileCommentData'
 import GetIssueCommentsResponse from '../wrappers/octokitInterfaces/getIssueCommentsResponse'
 import GetPullResponse from '../wrappers/octokitInterfaces/getPullResponse'
 import GetReviewCommentsResponse from '../wrappers/octokitInterfaces/getReviewCommentsResponse'
-import GitInvoker from '../git/gitInvoker'
 import ListCommitsResponse from '../wrappers/octokitInterfaces/listCommitsResponse'
-import Logger from '../utilities/logger'
-import OctokitWrapper from '../wrappers/octokitWrapper'
-import PullRequestCommentData from './interfaces/pullRequestCommentData'
-import PullRequestDetails from './interfaces/pullRequestDetails'
-import RunnerInvoker from '../runners/runnerInvoker'
 import UpdateIssueCommentResponse from '../wrappers/octokitInterfaces/updateIssueCommentResponse'
 import UpdatePullResponse from '../wrappers/octokitInterfaces/updatePullResponse'
+import OctokitWrapper from '../wrappers/octokitWrapper'
+import BaseReposInvoker from './baseReposInvoker'
+import CommentData from './interfaces/commentData'
+import FileCommentData from './interfaces/fileCommentData'
+import PullRequestCommentData from './interfaces/pullRequestCommentData'
+import PullRequestDetails from './interfaces/pullRequestDetails'
 
 const octokit: Octokit = new Octokit()
 type GetIssueCommentsResponseData = GetResponseDataTypeFromEndpointMethod<typeof octokit.rest.issues.listComments>[0]
@@ -192,7 +192,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
 
     const options: OctokitOptions = {
       auth: process.env.PR_METRICS_ACCESS_TOKEN,
-      userAgent: 'PRMetrics/v1.5.3',
+      userAgent: 'PRMetrics/v1.5.4',
       log: {
         debug: (message: string): void => this._logger.logDebug(`Octokit – ${message}`),
         info: (message: string): void => this._logger.logInfo(`Octokit – ${message}`),

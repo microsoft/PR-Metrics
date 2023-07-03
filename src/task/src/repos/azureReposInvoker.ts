@@ -1,21 +1,21 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { Comment, CommentPosition, CommentThreadStatus, GitPullRequest, GitPullRequestCommentThread } from 'azure-devops-node-api/interfaces/GitInterfaces'
+import { WebApi } from 'azure-devops-node-api'
 import { IGitApi } from 'azure-devops-node-api/GitApi'
+import { Comment, CommentPosition, CommentThreadStatus, GitPullRequest, GitPullRequestCommentThread } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import { IRequestHandler } from 'azure-devops-node-api/interfaces/common/VsoBaseInterfaces'
 import { singleton } from 'tsyringe'
-import { WebApi } from 'azure-devops-node-api'
+import GitInvoker from '../git/gitInvoker'
+import RunnerInvoker from '../runners/runnerInvoker'
+import Logger from '../utilities/logger'
 import * as Validator from '../utilities/validator'
 import AzureDevOpsApiWrapper from '../wrappers/azureDevOpsApiWrapper'
 import BaseReposInvoker from './baseReposInvoker'
 import CommentData from './interfaces/commentData'
 import FileCommentData from './interfaces/fileCommentData'
-import GitInvoker from '../git/gitInvoker'
-import Logger from '../utilities/logger'
 import PullRequestCommentData from './interfaces/pullRequestCommentData'
 import PullRequestDetails from './interfaces/pullRequestDetails'
-import RunnerInvoker from '../runners/runnerInvoker'
 
 /**
  * A class for invoking Azure Repos functionality.

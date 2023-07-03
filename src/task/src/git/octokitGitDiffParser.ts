@@ -1,14 +1,12 @@
-
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { AddedFile, AnyFileChange, ChangedFile, GitDiff, RenamedFile } from 'parse-git-diff/build/types'
 import { singleton } from 'tsyringe'
+import parseGitDiff, { AddedFile, AnyFileChange, ChangedFile, GitDiff, RenamedFile } from '../../../../node_modules/parse-git-diff/build/cjs'
+import Logger from '../utilities/logger'
 import AxiosWrapper from '../wrappers/axiosWrapper'
 import GetPullResponse from '../wrappers/octokitInterfaces/getPullResponse'
-import Logger from '../utilities/logger'
 import OctokitWrapper from '../wrappers/octokitWrapper'
-import parseGitDiff from 'parse-git-diff'
 
 /**
  * A parser for Git diffs read via Octokit.

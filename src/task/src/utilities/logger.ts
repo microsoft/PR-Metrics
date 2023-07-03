@@ -2,8 +2,8 @@
 // Licensed under the MIT License.
 
 import { singleton } from 'tsyringe'
-import ConsoleWrapper from '../wrappers/consoleWrapper'
 import RunnerInvoker from '../runners/runnerInvoker'
+import ConsoleWrapper from '../wrappers/consoleWrapper'
 
 /**
  * A class for logging messages.

@@ -1,9 +1,9 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+import * as taskLib from 'azure-pipelines-task-lib/task'
 import { IExecOptions } from 'azure-pipelines-task-lib/toolrunner'
 import { singleton } from 'tsyringe'
-import * as taskLib from 'azure-pipelines-task-lib/task'
 
 /**
  * A wrapper around the Azure Pipelines runner, to facilitate testability.

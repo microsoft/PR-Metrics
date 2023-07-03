@@ -1,8 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { GitWritableStream } from '../git/gitWritableStream'
 import { singleton } from 'tsyringe'
+import { GitWritableStream } from '../git/gitWritableStream'
 import AzurePipelinesRunnerInvoker from './azurePipelinesRunnerInvoker'
 import GitHubRunnerInvoker from './gitHubRunnerInvoker'
 import IRunnerInvoker from './iRunnerInvoker'

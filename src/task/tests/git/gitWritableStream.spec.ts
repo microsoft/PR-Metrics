@@ -1,10 +1,10 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import 'reflect-metadata'
 import { expect } from 'chai'
-import { GitWritableStream } from '../../src/git/gitWritableStream'
+import 'reflect-metadata'
 import { instance, mock, verify } from 'ts-mockito'
+import { GitWritableStream } from '../../src/git/gitWritableStream'
 import Logger from '../../src/utilities/logger'
 
 describe('gitWritableStream.ts', (): void => {

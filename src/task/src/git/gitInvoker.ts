@@ -1,11 +1,11 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { GitWritableStream } from './gitWritableStream'
 import { singleton } from 'tsyringe'
-import * as Validator from '../utilities/validator'
-import Logger from '../utilities/logger'
 import RunnerInvoker from '../runners/runnerInvoker'
+import Logger from '../utilities/logger'
+import * as Validator from '../utilities/validator'
+import { GitWritableStream } from './gitWritableStream'
 
 /**
  * A class for invoking Git commands.

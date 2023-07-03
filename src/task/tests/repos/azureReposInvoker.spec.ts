@@ -1,24 +1,24 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+import { WebApi } from 'azure-devops-node-api'
+import { IGitApi } from 'azure-devops-node-api/GitApi'
+import { Comment, CommentThreadStatus, GitPullRequest, GitPullRequestCommentThread } from 'azure-devops-node-api/interfaces/GitInterfaces'
+import { IRequestHandler } from 'azure-devops-node-api/interfaces/common/VsoBaseInterfaces'
+import { expect } from 'chai'
 import 'reflect-metadata'
 import { anyNumber, anything, deepEqual, instance, mock, verify, when } from 'ts-mockito'
-import { Comment, CommentThreadStatus, GitPullRequest, GitPullRequestCommentThread } from 'azure-devops-node-api/interfaces/GitInterfaces'
-import { expect } from 'chai'
-import { IGitApi } from 'azure-devops-node-api/GitApi'
-import { IRequestHandler } from 'azure-devops-node-api/interfaces/common/VsoBaseInterfaces'
-import { resolvableInstance } from '../testUtilities/resolvableInstance'
-import { WebApi } from 'azure-devops-node-api'
-import * as ExpectExtensions from '../testUtilities/expectExtensions'
-import * as Converter from '../../src/utilities/converter'
-import AzureDevOpsApiWrapper from '../../src/wrappers/azureDevOpsApiWrapper'
+import GitInvoker from '../../src/git/gitInvoker'
 import AzureReposInvoker from '../../src/repos/azureReposInvoker'
 import CommentData from '../../src/repos/interfaces/commentData'
-import ErrorWithStatus from '../wrappers/errorWithStatus'
-import GitInvoker from '../../src/git/gitInvoker'
-import Logger from '../../src/utilities/logger'
 import PullRequestDetails from '../../src/repos/interfaces/pullRequestDetails'
 import RunnerInvoker from '../../src/runners/runnerInvoker'
+import * as Converter from '../../src/utilities/converter'
+import Logger from '../../src/utilities/logger'
+import AzureDevOpsApiWrapper from '../../src/wrappers/azureDevOpsApiWrapper'
+import * as ExpectExtensions from '../testUtilities/expectExtensions'
+import { resolvableInstance } from '../testUtilities/resolvableInstance'
+import ErrorWithStatus from '../wrappers/errorWithStatus'
 
 describe('azureReposInvoker.ts', function (): void {
   let gitApi: IGitApi

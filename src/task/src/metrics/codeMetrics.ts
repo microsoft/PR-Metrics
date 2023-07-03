@@ -1,16 +1,16 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { CodeFileMetric } from './codeFileMetric'
-import { FixedLengthArray } from '../utilities/fixedLengthArray'
-import { singleton } from 'tsyringe'
-import * as path from 'path'
-import CodeMetricsData from './codeMetricsData'
-import GitInvoker from '../git/gitInvoker'
-import Inputs from './inputs'
-import Logger from '../utilities/logger'
 import minimatch from 'minimatch'
+import * as path from 'path'
+import { singleton } from 'tsyringe'
+import GitInvoker from '../git/gitInvoker'
 import RunnerInvoker from '../runners/runnerInvoker'
+import { FixedLengthArray } from '../utilities/fixedLengthArray'
+import Logger from '../utilities/logger'
+import { CodeFileMetric } from './codeFileMetric'
+import CodeMetricsData from './codeMetricsData'
+import Inputs from './inputs'
 
 /**
  * A class for computing metrics for software code in pull requests.

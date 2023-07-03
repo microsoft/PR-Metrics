@@ -3,14 +3,14 @@
 
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import { singleton } from 'tsyringe'
+import RunnerInvoker from '../runners/runnerInvoker'
+import Logger from '../utilities/logger'
 import * as Validator from '../utilities/validator'
 import AzureReposInvoker from './azureReposInvoker'
-import CommentData from './interfaces/commentData'
 import GitHubReposInvoker from './gitHubReposInvoker'
 import IReposInvoker from './iReposInvoker'
-import Logger from '../utilities/logger'
+import CommentData from './interfaces/commentData'
 import PullRequestDetails from './interfaces/pullRequestDetails'
-import RunnerInvoker from '../runners/runnerInvoker'
 
 /**
  * A class for invoking repository functionality with any underlying repository store.

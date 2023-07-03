@@ -1,17 +1,17 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import 'reflect-metadata'
 import { expect } from 'chai'
+import 'reflect-metadata'
 import { instance, mock, verify, when } from 'ts-mockito'
-import * as ExpectExtensions from '../testUtilities/expectExtensions'
-import * as InputsDefault from '../../src/metrics/inputsDefault'
+import GitInvoker from '../../src/git/gitInvoker'
 import CodeMetrics from '../../src/metrics/codeMetrics'
 import CodeMetricsData from '../../src/metrics/codeMetricsData'
-import GitInvoker from '../../src/git/gitInvoker'
 import Inputs from '../../src/metrics/inputs'
-import Logger from '../../src/utilities/logger'
+import * as InputsDefault from '../../src/metrics/inputsDefault'
 import RunnerInvoker from '../../src/runners/runnerInvoker'
+import Logger from '../../src/utilities/logger'
+import * as ExpectExtensions from '../testUtilities/expectExtensions'
 
 describe('codeMetrics.ts', (): void => {
   let gitInvoker: GitInvoker

@@ -1,8 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import Logger from '../utilities/logger'
 import stream from 'stream'
+import Logger from '../utilities/logger'
 
 /**
  * A basic stream to which data can be written by the `GitInvoker`.

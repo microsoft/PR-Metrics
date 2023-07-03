@@ -5,14 +5,14 @@ import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfa
 import { injectable } from 'tsyringe'
 import CodeMetrics from '../metrics/codeMetrics'
 import CodeMetricsData from '../metrics/codeMetricsData'
+import Inputs from '../metrics/inputs'
 import CommentData from '../repos/interfaces/commentData'
 import FileCommentData from '../repos/interfaces/fileCommentData'
-import Inputs from '../metrics/inputs'
-import Logger from '../utilities/logger'
 import PullRequestComment from '../repos/interfaces/pullRequestCommentData'
-import PullRequestCommentsData from './pullRequestCommentsData'
 import ReposInvoker from '../repos/reposInvoker'
 import RunnerInvoker from '../runners/runnerInvoker'
+import Logger from '../utilities/logger'
+import PullRequestCommentsData from './pullRequestCommentsData'
 
 /**
  * A class for managing pull requests comments.

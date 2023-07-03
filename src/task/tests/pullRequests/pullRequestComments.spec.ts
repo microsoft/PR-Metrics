@@ -1,23 +1,23 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import 'reflect-metadata'
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import { expect } from 'chai'
-import { FixedLengthArray } from '../../src/utilities/fixedLengthArray'
+import 'reflect-metadata'
 import { instance, mock, verify, when } from 'ts-mockito'
-import * as Converter from '../../src/utilities/converter'
 import CodeMetrics from '../../src/metrics/codeMetrics'
 import CodeMetricsData from '../../src/metrics/codeMetricsData'
-import CommentData from '../../src/repos/interfaces/commentData'
-import FileCommentData from '../../src/repos/interfaces/fileCommentData'
 import Inputs from '../../src/metrics/inputs'
-import Logger from '../../src/utilities/logger'
-import PullRequestCommentData from '../../src/repos/interfaces/pullRequestCommentData'
 import PullRequestComments from '../../src/pullRequests/pullRequestComments'
 import PullRequestCommentsData from '../../src/pullRequests/pullRequestCommentsData'
+import CommentData from '../../src/repos/interfaces/commentData'
+import FileCommentData from '../../src/repos/interfaces/fileCommentData'
+import PullRequestCommentData from '../../src/repos/interfaces/pullRequestCommentData'
 import ReposInvoker from '../../src/repos/reposInvoker'
 import RunnerInvoker from '../../src/runners/runnerInvoker'
+import * as Converter from '../../src/utilities/converter'
+import { FixedLengthArray } from '../../src/utilities/fixedLengthArray'
+import Logger from '../../src/utilities/logger'
 
 describe('pullRequestComments.ts', (): void => {
   let complexGitPullRequestComments: CommentData

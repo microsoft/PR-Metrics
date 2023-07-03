@@ -1,14 +1,14 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+import { expect } from 'chai'
 import 'reflect-metadata'
 import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito'
-import { expect } from 'chai'
-import { GitWritableStream } from '../../src/git/gitWritableStream'
-import * as ExpectExtensions from '../testUtilities/expectExtensions'
 import GitInvoker from '../../src/git/gitInvoker'
-import Logger from '../../src/utilities/logger'
+import { GitWritableStream } from '../../src/git/gitWritableStream'
 import RunnerInvoker from '../../src/runners/runnerInvoker'
+import Logger from '../../src/utilities/logger'
+import * as ExpectExtensions from '../testUtilities/expectExtensions'
 
 describe('gitInvoker.ts', (): void => {
   let logger: Logger

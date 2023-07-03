@@ -1,17 +1,17 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+import * as actionsExec from '@actions/exec'
+import { expect } from 'chai'
+import * as path from 'path'
 import 'reflect-metadata'
 import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito'
-import { expect } from 'chai'
 import { GitWritableStream } from '../../src/git/gitWritableStream'
-import * as actionsExec from '@actions/exec'
-import * as path from 'path'
+import GitHubRunnerInvoker from '../../src/runners/gitHubRunnerInvoker'
+import Logger from '../../src/utilities/logger'
 import AzurePipelinesRunnerWrapper from '../../src/wrappers/azurePipelinesRunnerWrapper'
 import ConsoleWrapper from '../../src/wrappers/consoleWrapper'
-import GitHubRunnerInvoker from '../../src/runners/gitHubRunnerInvoker'
 import GitHubRunnerWrapper from '../../src/wrappers/gitHubRunnerWrapper'
-import Logger from '../../src/utilities/logger'
 
 describe('gitHubRunnerInvoker.ts', function (): void {
   const resourcePath: string = path.join(__dirname, '../../Strings/resources.resjson/en-US/')

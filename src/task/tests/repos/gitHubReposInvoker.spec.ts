@@ -1,25 +1,25 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import 'reflect-metadata'
-import { anyNumber, anyString, anything, instance, mock, verify, when } from 'ts-mockito'
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import { expect } from 'chai'
-import * as Converter from '../../src/utilities/converter'
-import * as ExpectExtensions from '../testUtilities/expectExtensions'
-import * as GitHubReposInvokerConstants from './gitHubReposInvokerConstants'
-import CommentData from '../../src/repos/interfaces/commentData'
-import ErrorWithStatus from '../wrappers/errorWithStatus'
-import GetIssueCommentsResponse from '../../src/wrappers/octokitInterfaces/getIssueCommentsResponse'
-import GetPullResponse from '../../src/wrappers/octokitInterfaces/getPullResponse'
-import GitHubReposInvoker from '../../src/repos/gitHubReposInvoker'
+import 'reflect-metadata'
+import { anyNumber, anyString, anything, instance, mock, verify, when } from 'ts-mockito'
 import GitInvoker from '../../src/git/gitInvoker'
-import HttpError from '../testUtilities/httpError'
-import Logger from '../../src/utilities/logger'
-import OctokitLogObject from '../wrappers/octokitLogObject'
-import OctokitWrapper from '../../src/wrappers/octokitWrapper'
+import GitHubReposInvoker from '../../src/repos/gitHubReposInvoker'
+import CommentData from '../../src/repos/interfaces/commentData'
 import PullRequestDetails from '../../src/repos/interfaces/pullRequestDetails'
 import RunnerInvoker from '../../src/runners/runnerInvoker'
+import * as Converter from '../../src/utilities/converter'
+import Logger from '../../src/utilities/logger'
+import GetIssueCommentsResponse from '../../src/wrappers/octokitInterfaces/getIssueCommentsResponse'
+import GetPullResponse from '../../src/wrappers/octokitInterfaces/getPullResponse'
+import OctokitWrapper from '../../src/wrappers/octokitWrapper'
+import * as ExpectExtensions from '../testUtilities/expectExtensions'
+import HttpError from '../testUtilities/httpError'
+import ErrorWithStatus from '../wrappers/errorWithStatus'
+import OctokitLogObject from '../wrappers/octokitLogObject'
+import * as GitHubReposInvokerConstants from './gitHubReposInvokerConstants'
 
 describe('gitHubReposInvoker.ts', function (): void {
   let gitInvoker: GitInvoker
@@ -27,7 +27,7 @@ describe('gitHubReposInvoker.ts', function (): void {
   let octokitWrapper: OctokitWrapper
   let runnerInvoker: RunnerInvoker
 
-  const expectedUserAgent: string = 'PRMetrics/v1.5.3'
+  const expectedUserAgent: string = 'PRMetrics/v1.5.4'
 
   beforeEach((): void => {
     process.env.PR_METRICS_ACCESS_TOKEN = 'PAT'
