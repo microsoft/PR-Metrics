@@ -4,13 +4,13 @@
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import { injectable } from 'tsyringe'
 import GitInvoker from '../git/gitInvoker'
-import Logger from '../utilities/logger'
 import PullRequest from '../pullRequests/pullRequest'
 import PullRequestComments from '../pullRequests/pullRequestComments'
 import PullRequestCommentsData from '../pullRequests/pullRequestCommentsData'
 import PullRequestDetails from '../repos/interfaces/pullRequestDetails'
 import ReposInvoker from '../repos/reposInvoker'
 import RunnerInvoker from '../runners/runnerInvoker'
+import Logger from '../utilities/logger'
 
 /**
  * A class for calculating and updating the code metrics within pull requests.

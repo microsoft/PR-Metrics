@@ -1,8 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { singleton } from 'tsyringe'
 import axios, { AxiosResponse } from 'axios'
+import { singleton } from 'tsyringe'
 
 /**
  * A wrapper around Axios, to facilitate testability.

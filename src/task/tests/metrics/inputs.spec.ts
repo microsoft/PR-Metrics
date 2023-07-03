@@ -1,14 +1,14 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+import { expect } from 'chai'
 import 'reflect-metadata'
 import { anyString, deepEqual, instance, mock, verify, when } from 'ts-mockito'
-import { expect } from 'chai'
-import * as Converter from '../../src/utilities/converter'
-import * as InputsDefault from '../../src/metrics/inputsDefault'
 import Inputs from '../../src/metrics/inputs'
-import Logger from '../../src/utilities/logger'
+import * as InputsDefault from '../../src/metrics/inputsDefault'
 import RunnerInvoker from '../../src/runners/runnerInvoker'
+import * as Converter from '../../src/utilities/converter'
+import Logger from '../../src/utilities/logger'
 
 describe('inputs.ts', (): void => {
   const adjustingAlwaysCloseComment: string = 'Adjusting the always-close-comment mode input to \'false\'.'

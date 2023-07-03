@@ -1,14 +1,14 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+import { expect } from 'chai'
 import 'reflect-metadata'
 import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito'
-import { expect } from 'chai'
 import { GitWritableStream } from '../../src/git/gitWritableStream'
 import AzurePipelinesRunnerInvoker from '../../src/runners/azurePipelinesRunnerInvoker'
 import GitHubRunnerInvoker from '../../src/runners/gitHubRunnerInvoker'
-import Logger from '../../src/utilities/logger'
 import RunnerInvoker from '../../src/runners/runnerInvoker'
+import Logger from '../../src/utilities/logger'
 
 describe('runnerInvoker.ts', function (): void {
   let azurePipelinesRunnerInvoker: AzurePipelinesRunnerInvoker

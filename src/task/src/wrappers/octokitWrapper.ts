@@ -1,9 +1,10 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { Octokit } from 'octokit'
 import { OctokitOptions } from '@octokit/core/dist-types/types'
+import { Octokit } from 'octokit'
 import { singleton } from 'tsyringe'
+import OctokitGitDiffParser from '../git/octokitGitDiffParser'
 import CreateIssueCommentResponse from './octokitInterfaces/createIssueCommentResponse'
 import CreateReviewCommentResponse from './octokitInterfaces/createReviewCommentResponse'
 import DeleteReviewCommentResponse from './octokitInterfaces/deleteReviewCommentResponse'
@@ -11,7 +12,6 @@ import GetIssueCommentsResponse from './octokitInterfaces/getIssueCommentsRespon
 import GetPullResponse from './octokitInterfaces/getPullResponse'
 import GetReviewCommentsResponse from './octokitInterfaces/getReviewCommentsResponse'
 import ListCommitsResponse from './octokitInterfaces/listCommitsResponse'
-import OctokitGitDiffParser from '../git/octokitGitDiffParser'
 import UpdateIssueCommentResponse from './octokitInterfaces/updateIssueCommentResponse'
 import UpdatePullResponse from './octokitInterfaces/updatePullResponse'
 

@@ -1,14 +1,14 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import 'reflect-metadata'
 import { expect } from 'chai'
+import 'reflect-metadata'
 import { instance, mock, verify, when } from 'ts-mockito'
-import AxiosWrapper from '../../src/wrappers/axiosWrapper'
-import Logger from '../../src/utilities/logger'
 import OctokitGitDiffParser from '../../src/git/octokitGitDiffParser'
-import OctokitWrapper from '../../src/wrappers/octokitWrapper'
+import Logger from '../../src/utilities/logger'
+import AxiosWrapper from '../../src/wrappers/axiosWrapper'
 import GetPullResponse from '../../src/wrappers/octokitInterfaces/getPullResponse'
+import OctokitWrapper from '../../src/wrappers/octokitWrapper'
 
 describe('octokitGitDiffParser.ts', (): void => {
   let axiosWrapper: AxiosWrapper

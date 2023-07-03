@@ -2,8 +2,8 @@
 // Licensed under the MIT License.
 
 import { expect } from 'chai'
-import { globSync } from 'glob'
 import * as fs from 'fs'
+import { globSync } from 'glob'
 import * as path from 'path'
 import ResourcesJson from '../../src/jsonTypes/resourcesJson'
 import TaskJson from '../jsonTypes/taskJson'

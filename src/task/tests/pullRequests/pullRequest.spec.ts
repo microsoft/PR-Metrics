@@ -1,14 +1,14 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import 'reflect-metadata'
 import { expect } from 'chai'
+import 'reflect-metadata'
 import { instance, mock, verify, when } from 'ts-mockito'
-import * as Converter from '../../src/utilities/converter'
 import CodeMetrics from '../../src/metrics/codeMetrics'
-import Logger from '../../src/utilities/logger'
 import PullRequest from '../../src/pullRequests/pullRequest'
 import RunnerInvoker from '../../src/runners/runnerInvoker'
+import * as Converter from '../../src/utilities/converter'
+import Logger from '../../src/utilities/logger'
 
 describe('pullRequest.ts', (): void => {
   let codeMetrics: CodeMetrics

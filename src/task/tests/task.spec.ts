@@ -4,8 +4,8 @@
 import { expect } from 'chai'
 import * as fs from 'fs'
 import * as path from 'path'
-import PackageJson from './jsonTypes/packageJson'
 import ResourcesJson from '../src/jsonTypes/resourcesJson'
+import PackageJson from './jsonTypes/packageJson'
 import TaskJson from './jsonTypes/taskJson'
 import VssExtensionJson from './jsonTypes/vssExtensionJson'
 

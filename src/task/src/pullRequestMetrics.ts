@@ -1,12 +1,11 @@
-
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 import 'reflect-metadata'
 import { singleton } from 'tsyringe'
 import CodeMetricsCalculator from './metrics/codeMetricsCalculator'
-import Logger from './utilities/logger'
 import RunnerInvoker from './runners/runnerInvoker'
+import Logger from './utilities/logger'
 
 /**
  * A class for managing the overall PR Metrics task.

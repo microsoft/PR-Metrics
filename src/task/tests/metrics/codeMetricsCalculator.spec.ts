@@ -1,18 +1,18 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import 'reflect-metadata'
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import { expect } from 'chai'
+import 'reflect-metadata'
 import { instance, mock, verify, when } from 'ts-mockito'
-import CodeMetricsCalculator from '../../src/metrics/codeMetricsCalculator'
 import GitInvoker from '../../src/git/gitInvoker'
-import Logger from '../../src/utilities/logger'
+import CodeMetricsCalculator from '../../src/metrics/codeMetricsCalculator'
 import PullRequest from '../../src/pullRequests/pullRequest'
 import PullRequestComments from '../../src/pullRequests/pullRequestComments'
 import PullRequestCommentsData from '../../src/pullRequests/pullRequestCommentsData'
 import ReposInvoker from '../../src/repos/reposInvoker'
 import RunnerInvoker from '../../src/runners/runnerInvoker'
+import Logger from '../../src/utilities/logger'
 
 describe('codeMetricsCalculator.ts', (): void => {
   let gitInvoker: GitInvoker
