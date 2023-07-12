@@ -5,127 +5,128 @@
 
 stages:
   - stage: Build
+    displayName: Build
     jobs:
-    - job: Delay
-      displayName: Delay
-      pool: server
-      steps:
-        - task: Delay@1
-          displayName: Wait for Deployment
-          inputs:
-            delayForMinutes: '5'
+      - job: Delay
+        displayName: Delay
+        pool: server
+        steps:
+          - task: Delay@1
+            displayName: Wait for Deployment
+            inputs:
+              delayForMinutes: '5'
 
-    - job: PRMetrics_macOS
-      displayName: PR Metrics – macOS
-      dependsOn: Delay
-      pool:
-        vmImage: macOS-latest
-      variables:
-        - name: skipComponentGovernanceDetection
-          value: true
-        - name: System.Debug
-          value: true
-      steps:
-        - checkout: self
-          displayName: Checkout
-          fetchDepth: 0
+      - job: PRMetrics_macOS
+        displayName: PR Metrics – macOS
+        dependsOn: Delay
+        pool:
+          vmImage: macOS-latest
+        variables:
+          - name: skipComponentGovernanceDetection
+            value: true
+          - name: System.Debug
+            value: true
+        steps:
+          - checkout: self
+            displayName: Checkout
+            fetchDepth: 0
 
-        - task: PRMetrics@1
-          displayName: PR Metrics
-          env:
-            # Azure DevOps Personal Access Token (PAT) with the Agent Pools (Read & Manage) permission.
-            PR_METRICS_ACCESS_TOKEN: $(GITHUB_PAT)
+          - task: PRMetrics@1
+            displayName: PR Metrics
+            env:
+              # Azure DevOps Personal Access Token (PAT) with the Agent Pools (Read & Manage) permission.
+              PR_METRICS_ACCESS_TOKEN: $(GITHUB_PAT)
 
-    - job: PRMetrics_Ubuntu
-      displayName: PR Metrics – Ubuntu
-      dependsOn: PRMetrics_macOS
-      pool:
-        vmImage: ubuntu-latest
-      variables:
-        - name: skipComponentGovernanceDetection
-          value: true
-        - name: System.Debug
-          value: true
-      steps:
-        - checkout: self
-          displayName: Checkout
-          fetchDepth: 0
+      - job: PRMetrics_Ubuntu
+        displayName: PR Metrics – Ubuntu
+        dependsOn: PRMetrics_macOS
+        pool:
+          vmImage: ubuntu-latest
+        variables:
+          - name: skipComponentGovernanceDetection
+            value: true
+          - name: System.Debug
+            value: true
+        steps:
+          - checkout: self
+            displayName: Checkout
+            fetchDepth: 0
 
-        - task: PRMetrics@1
-          displayName: PR Metrics
-          env:
-            # Azure DevOps Personal Access Token (PAT) with the Agent Pools (Read & Manage) permission.
-            PR_METRICS_ACCESS_TOKEN: $(GITHUB_PAT)
+          - task: PRMetrics@1
+            displayName: PR Metrics
+            env:
+              # Azure DevOps Personal Access Token (PAT) with the Agent Pools (Read & Manage) permission.
+              PR_METRICS_ACCESS_TOKEN: $(GITHUB_PAT)
 
-    - job: PRMetrics_Windows
-      displayName: PR Metrics – Windows
-      dependsOn: PRMetrics_Ubuntu
-      pool:
-        vmImage: windows-latest
-      variables:
-        - name: skipComponentGovernanceDetection
-          value: true
-        - name: System.Debug
-          value: true
-      steps:
-        - checkout: self
-          displayName: Checkout
-          fetchDepth: 0
+      - job: PRMetrics_Windows
+        displayName: PR Metrics – Windows
+        dependsOn: PRMetrics_Ubuntu
+        pool:
+          vmImage: windows-latest
+        variables:
+          - name: skipComponentGovernanceDetection
+            value: true
+          - name: System.Debug
+            value: true
+        steps:
+          - checkout: self
+            displayName: Checkout
+            fetchDepth: 0
 
-        - task: PRMetrics@1
-          displayName: PR Metrics
-          env:
-            # Azure DevOps Personal Access Token (PAT) with the Agent Pools (Read & Manage) permission.
-            PR_METRICS_ACCESS_TOKEN: $(GITHUB_PAT)
+          - task: PRMetrics@1
+            displayName: PR Metrics
+            env:
+              # Azure DevOps Personal Access Token (PAT) with the Agent Pools (Read & Manage) permission.
+              PR_METRICS_ACCESS_TOKEN: $(GITHUB_PAT)
 
-    - job: Compliance
-      displayName: Compliance
-      pool:
-        vmImage: windows-latest
-      steps:
-        - task: ComponentGovernanceComponentDetection@0
-          displayName: Component Detection
-          inputs:
-            failOnAlert: true
+      - job: Compliance
+        displayName: Compliance
+        pool:
+          vmImage: windows-latest
+        steps:
+          - task: ComponentGovernanceComponentDetection@0
+            displayName: Component Detection
+            inputs:
+              failOnAlert: true
 
-        - task: AntiMalware@4
-          displayName: Anti-Malware Scanner
-          inputs:
-            ScanType: FullSystemScan
-            EnableServices: true
-            ForceSignatureUpdate: true
-            SignatureUpdateUsesMMPC: true
-            TreatSignatureUpdateFailureAs: Error
+          - task: AntiMalware@4
+            displayName: Anti-Malware Scanner
+            inputs:
+              ScanType: FullSystemScan
+              EnableServices: true
+              ForceSignatureUpdate: true
+              SignatureUpdateUsesMMPC: true
+              TreatSignatureUpdateFailureAs: Error
 
-        - task: CredScan@3
-          displayName: Credential Scanner
+          - task: CredScan@3
+            displayName: Credential Scanner
 
-        - task: ESLint@1
-          displayName: ESLint
-          inputs:
-            Configuration: recommended
+          - task: ESLint@1
+            displayName: ESLint
+            inputs:
+              Configuration: recommended
 
-        - task: PoliCheck@2
-          displayName: PoliCheck
-          inputs:
-            targetType: F
-            optionsFC: 1
-            optionsUEPATH: $(Build.SourcesDirectory)/.github/azure-devops/PoliCheckExclusions.xml
+          - task: PoliCheck@2
+            displayName: PoliCheck
+            inputs:
+              targetType: F
+              optionsFC: 1
+              optionsUEPATH: $(Build.SourcesDirectory)/.github/azure-devops/PoliCheckExclusions.xml
 
-        - task: Semmle@1
-          displayName: CodeQL
-          inputs:
-            sourceCodeDirectory: $(Build.SourcesDirectory)/src
-            language: tsandjs
+          - task: Semmle@1
+            displayName: CodeQL
+            inputs:
+              sourceCodeDirectory: $(Build.SourcesDirectory)/src
+              language: tsandjs
 
-        - task: PublishSecurityAnalysisLogs@3
-          displayName: Guardian – Publish Artifacts
+          - task: PublishSecurityAnalysisLogs@3
+            displayName: Guardian – Publish Artifacts
 
-        - task: PostAnalysis@2
-          displayName: Guardian – Perform Analysis
-          inputs:
-            GdnBreakPolicyMinSev: Note
-            GdnBreakGdnToolGosecSeverity: Default
-            GdnBreakPolicy: M365
+          - task: PostAnalysis@2
+            displayName: Guardian – Perform Analysis
+            inputs:
+              GdnBreakPolicyMinSev: Note
+              GdnBreakGdnToolGosecSeverity: Default
+              GdnBreakPolicy: M365
 
 ...

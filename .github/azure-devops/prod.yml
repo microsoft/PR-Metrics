@@ -15,22 +15,21 @@ variables:
   - name: tags
     value: production, multi-phased
 
-pool:
-  vmImage: ubuntu-latest
-
 stages:
   - stage: Checks
+    displayName: Checks
     jobs:
-    - job: Checks
-      variables:
-        - name: skipComponentGovernanceDetection
-          value: true
-      steps:
-        - checkout: none
-          displayName: Checkout
+      - job: Checks
+        pool: server
+        variables:
+          - name: skipComponentGovernanceDetection
+            value: true
+        steps:
+          - checkout: none
+            displayName: Checkout
 
-        - script: exit 1
-          displayName: Terminate on PR
-          condition: ne(variables['Build.SourceBranchName'], 'main')
+          - script: exit 1
+            displayName: Terminate on PR
+            condition: ne(variables['Build.SourceBranchName'], 'main')
 
   - template: template.yml
