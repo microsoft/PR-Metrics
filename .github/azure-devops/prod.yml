@@ -9,7 +9,7 @@ trigger:
     include:
       - main
 
-pr: none
+pr: none2
 
 variables:
   - name: tags
