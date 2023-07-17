@@ -142,6 +142,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
           const result: CreateReviewCommentResponse | null = await this._octokitWrapper.createReviewComment(this._owner, this._repo, this._pullRequestId, content, fileName, this._commitId)
           this._logger.logDebug(JSON.stringify(result))
         } catch (error: any) {
+          this._logger.logInfo('Reaching here means that GitHub createReviewComment() threw an error.')
           if (error.status === 422 && error.message.includes('pull_request_review_thread.path diff too large')) {
             this._logger.logInfo('GitHub createReviewComment() threw a 422 error related to a large diff. Ignoring as this is expected.')
             this._logger.logErrorObject(error)
