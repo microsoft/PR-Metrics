@@ -6,7 +6,7 @@ import { GetResponseDataTypeFromEndpointMethod } from '@octokit/types'
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import { Octokit } from 'octokit'
 import { singleton } from 'tsyringe'
-import { Agent, RequestInfo, RequestInit, fetch as undiciFetch } from 'undici'
+import { fetch } from 'undici'
 import GitInvoker from '../git/gitInvoker'
 import RunnerInvoker from '../runners/runnerInvoker'
 import * as Converter from '../utilities/converter'
@@ -152,12 +152,8 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
       })
     } else {
       await this.invokeApiCall(async (): Promise<void> => {
-        try {
-          const result: CreateIssueCommentResponse = await this._octokitWrapper.createIssueComment(this._owner, this._repo, this._pullRequestId, content)
-          this._logger.logDebug(JSON.stringify(result))
-        } catch (error: any) {
-          this._logger.logInfo('Error occurred with in createIssueComment')
-        }
+        const result: CreateIssueCommentResponse = await this._octokitWrapper.createIssueComment(this._owner, this._repo, this._pullRequestId, content)
+        this._logger.logDebug(JSON.stringify(result))
       })
     }
   }
@@ -195,22 +191,11 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
       return
     }
 
-    const testFetch = (url: RequestInfo, options: RequestInit) => {
-      return undiciFetch(url, {
-        ...options,
-        dispatcher: new Agent({
-          maxResponseSize: -1,
-          keepAliveTimeout: 10,
-          keepAliveMaxTimeout: 10
-        })
-      })
-    }
-
     const options: OctokitOptions = {
       auth: process.env.PR_METRICS_ACCESS_TOKEN,
       userAgent: 'PRMetrics/v1.5.5',
       request: {
-        fetch: testFetch
+        fetch
       },
       log: {
         debug: (message: string): void => this._logger.logDebug(`Octokit – ${message}`),
