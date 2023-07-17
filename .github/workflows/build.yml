@@ -160,6 +160,11 @@ jobs:
         uses: ./
         env:
           PR_METRICS_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          file-matching-patterns: |
+            **/*
+            !dist/*
+            !package-lock.json
 
   validate:
     name: Validate
