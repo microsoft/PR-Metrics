@@ -195,6 +195,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
       return undiciFetch(url, {
         ...options,
         dispatcher: new Agent({
+          maxResponseSize: -1,
           keepAliveTimeout: 10,
           keepAliveMaxTimeout: 10
         })
