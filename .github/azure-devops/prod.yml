@@ -20,7 +20,8 @@ stages:
     displayName: Checks
     jobs:
       - job: Checks
-        pool: server
+        pool:
+          vmImage: ubuntu-latest
         variables:
           - name: skipComponentGovernanceDetection
             value: true
