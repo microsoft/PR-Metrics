@@ -36,6 +36,11 @@ stages:
             env:
               # Azure DevOps Personal Access Token (PAT) with the Agent Pools (Read & Manage) permission.
               PR_METRICS_ACCESS_TOKEN: $(GITHUB_PAT)
+            with:
+              file-matching-patterns: |
+                **/*
+                !dist/*
+                !package-lock.json
 
       - job: PRMetrics_Ubuntu
         displayName: PR Metrics – Ubuntu
@@ -57,6 +62,11 @@ stages:
             env:
               # Azure DevOps Personal Access Token (PAT) with the Agent Pools (Read & Manage) permission.
               PR_METRICS_ACCESS_TOKEN: $(GITHUB_PAT)
+            with:
+              file-matching-patterns: |
+                **/*
+                !dist/*
+                !package-lock.json
 
       - job: PRMetrics_Windows
         displayName: PR Metrics – Windows
@@ -78,6 +88,11 @@ stages:
             env:
               # Azure DevOps Personal Access Token (PAT) with the Agent Pools (Read & Manage) permission.
               PR_METRICS_ACCESS_TOKEN: $(GITHUB_PAT)
+            with:
+              file-matching-patterns: |
+                **/*
+                !dist/*
+                !package-lock.json
 
       - job: Compliance
         displayName: Compliance

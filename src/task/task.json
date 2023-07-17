@@ -2,7 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
   "id": "907d3b28-6b37-4ac7-ac75-9631ee53e512",
   "name": "PRMetrics",
-  "friendlyName": "PR Metrics v1.5.4",
+  "friendlyName": "PR Metrics v1.5.5",
   "description": "Augments pull request titles to let reviewers quickly determine PR size and test coverage.",
   "helpUrl": "https://aka.ms/PRMetrics/README",
   "helpMarkDown": "[More information](https://aka.ms/PRMetrics/README)",
@@ -15,7 +15,7 @@
   "version": {
     "Major": 1,
     "Minor": 5,
-    "Patch": 4
+    "Patch": 5
   },
   "instanceNameFormat": "PR Metrics",
   "showEnvironmentVariables": true,
