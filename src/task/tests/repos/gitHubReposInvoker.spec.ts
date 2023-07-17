@@ -993,7 +993,7 @@ describe('gitHubReposInvoker.ts', function (): void {
         expect(options.log.warn).to.not.equal(null)
         expect(options.log.error).to.not.equal(null)
       })
-      const error: HttpError = new HttpError(422, 'pull_request_review_thread.path diff too large')
+      const error: HttpError = new HttpError(422, 'Validation Failed: {"resource":"PullRequestReviewComment","code":"custom","field":"pull_request_review_thread.path","message":"pull_request_review_thread.path diff too large"}, {"resource":"PullRequestReviewComment","code":"missing_field","field":"pull_request_review_thread.diff_hunk"}')
       when(octokitWrapper.createReviewComment('microsoft', 'PR-Metrics', 12345, 'Content', 'file.ts', 'sha54321')).thenCall((): void => {
         throw error
       })
@@ -1016,7 +1016,7 @@ describe('gitHubReposInvoker.ts', function (): void {
 
     {
       const testCases: HttpError[] = [
-        new HttpError(400, 'pull_request_review_thread.path diff too large'),
+        new HttpError(400, 'Validation Failed: {"resource":"PullRequestReviewComment","code":"custom","field":"pull_request_review_thread.path","message":"pull_request_review_thread.path diff too large"}, {"resource":"PullRequestReviewComment","code":"missing_field","field":"pull_request_review_thread.diff_hunk"}'),
         new HttpError(422, 'Unprocessable Entity')
       ]
 
