@@ -65,7 +65,6 @@
     "@tsconfig/node10": "^1.0.9",
     "@types/chai": "^4.3.5",
     "@types/glob": "^8.1.0",
-    "@types/isomorphic-fetch": "^0.0.36",
     "@types/mocha": "^10.0.1",
     "@types/node": "^20.4.2",
     "@typescript-eslint/eslint-plugin": "^6.1.0",
