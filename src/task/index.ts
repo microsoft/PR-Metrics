@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+import 'isomorphic-fetch'
 import 'reflect-metadata'
 import { container } from 'tsyringe'
 import PullRequestMetrics from './src/pullRequestMetrics'

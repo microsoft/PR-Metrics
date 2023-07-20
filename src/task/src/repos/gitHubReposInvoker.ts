@@ -27,8 +27,6 @@ import FileCommentData from './interfaces/fileCommentData'
 import PullRequestCommentData from './interfaces/pullRequestCommentData'
 import PullRequestDetails from './interfaces/pullRequestDetails'
 
-require('isomorphic-fetch')
-
 const octokit: Octokit = new Octokit()
 type GetIssueCommentsResponseData = GetResponseDataTypeFromEndpointMethod<typeof octokit.rest.issues.listComments>[0]
 type GetReviewCommentsResponseData = GetResponseDataTypeFromEndpointMethod<typeof octokit.rest.pulls.listReviewComments>[0]

@@ -54,8 +54,7 @@
     "octokit": "^3.0.0",
     "parse-git-diff": "^0.0.10",
     "reflect-metadata": "^0.1.13",
-    "tsyringe": "^4.8.0",
-    "undici": "^5.22.1"
+    "tsyringe": "^4.8.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.22.9",
@@ -65,10 +64,11 @@
     "@tsconfig/node10": "^1.0.9",
     "@types/chai": "^4.3.5",
     "@types/glob": "^8.1.0",
+    "@types/isomorphic-fetch": "^0.0.36",
     "@types/mocha": "^10.0.1",
     "@types/node": "^20.4.2",
-    "@typescript-eslint/eslint-plugin": "^6.0.0",
-    "@typescript-eslint/parser": "^6.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.1.0",
+    "@typescript-eslint/parser": "^6.1.0",
     "@vercel/ncc": "^0.36.1",
     "babel-plugin-transform-globalthis": "^1.0.0",
     "chai": "^4.3.7",
