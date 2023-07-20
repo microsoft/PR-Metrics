@@ -4,6 +4,7 @@
 import { OctokitOptions } from '@octokit/core/dist-types/types'
 import { GetResponseDataTypeFromEndpointMethod } from '@octokit/types'
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
+import 'isomorphic-fetch'
 import { Octokit } from 'octokit'
 import { singleton } from 'tsyringe'
 import GitInvoker from '../git/gitInvoker'
