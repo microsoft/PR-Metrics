@@ -4,7 +4,6 @@
 import { OctokitOptions } from '@octokit/core/dist-types/types'
 import { GetResponseDataTypeFromEndpointMethod } from '@octokit/types'
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
-import 'isomorphic-fetch'
 import { Octokit } from 'octokit'
 import { singleton } from 'tsyringe'
 import GitInvoker from '../git/gitInvoker'
@@ -27,6 +26,8 @@ import CommentData from './interfaces/commentData'
 import FileCommentData from './interfaces/fileCommentData'
 import PullRequestCommentData from './interfaces/pullRequestCommentData'
 import PullRequestDetails from './interfaces/pullRequestDetails'
+
+require('isomorphic-fetch')
 
 const octokit: Octokit = new Octokit()
 type GetIssueCommentsResponseData = GetResponseDataTypeFromEndpointMethod<typeof octokit.rest.issues.listComments>[0]
