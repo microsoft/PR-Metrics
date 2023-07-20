@@ -8,8 +8,5 @@
   "plugins": [
     "babel-plugin-transform-globalthis"
   ],
-  "compact": true,
-  "transformIgnorePatterns": [
-    "node_modules/(?!(data-uri-to-buffer|formdata-polyfill|fetch-blob|node-fetch)/)"
-  ]
+  "compact": true
 }

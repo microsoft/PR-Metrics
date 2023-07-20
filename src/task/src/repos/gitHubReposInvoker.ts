@@ -27,23 +27,7 @@ import FileCommentData from './interfaces/fileCommentData'
 import PullRequestCommentData from './interfaces/pullRequestCommentData'
 import PullRequestDetails from './interfaces/pullRequestDetails'
 
-import fetch, {
-  Headers,
-  Request,
-  Response
-} from 'node-fetch'
-
-// @ts-ignore
-if (!globalThis.fetch) {
-  // @ts-ignore
-  globalThis.fetch = fetch
-  // @ts-ignore
-  globalThis.Headers = Headers
-  // @ts-ignore
-  globalThis.Request = Request
-  // @ts-ignore
-  globalThis.Response = Response
-}
+require('isomorphic-fetch')
 
 const octokit: Octokit = new Octokit()
 type GetIssueCommentsResponseData = GetResponseDataTypeFromEndpointMethod<typeof octokit.rest.issues.listComments>[0]
