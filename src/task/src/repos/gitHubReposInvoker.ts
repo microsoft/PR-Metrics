@@ -6,7 +6,6 @@ import { GetResponseDataTypeFromEndpointMethod } from '@octokit/types'
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import { Octokit } from 'octokit'
 import { singleton } from 'tsyringe'
-import { Agent, fetch as undiciFetch } from 'undici'
 import GitInvoker from '../git/gitInvoker'
 import RunnerInvoker from '../runners/runnerInvoker'
 import * as Converter from '../utilities/converter'
@@ -31,17 +30,6 @@ import PullRequestDetails from './interfaces/pullRequestDetails'
 const octokit: Octokit = new Octokit()
 type GetIssueCommentsResponseData = GetResponseDataTypeFromEndpointMethod<typeof octokit.rest.issues.listComments>[0]
 type GetReviewCommentsResponseData = GetResponseDataTypeFromEndpointMethod<typeof octokit.rest.pulls.listReviewComments>[0]
-
-/** @type {typeof import("undici").fetch} */
-const myFetch = (url: any, options: any) => {
-  return undiciFetch(url, {
-    ...options,
-    dispatcher: new Agent({
-      keepAliveTimeout: 10,
-      keepAliveMaxTimeout: 10
-    })
-  })
-}
 
 /**
  * A class for invoking GitHub Repos functionality.
@@ -205,9 +193,6 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     const options: OctokitOptions = {
       auth: process.env.PR_METRICS_ACCESS_TOKEN,
       userAgent: 'PRMetrics/v1.5.5',
-      request: {
-        fetch: myFetch
-      },
       log: {
         debug: (message: string): void => this._logger.logDebug(`Octokit – ${message}`),
         info: (message: string): void => this._logger.logInfo(`Octokit – ${message}`),
