@@ -4,9 +4,9 @@
 import { OctokitOptions } from '@octokit/core/dist-types/types'
 import { GetResponseDataTypeFromEndpointMethod } from '@octokit/types'
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
+import 'isomorphic-fetch'
 import { Octokit } from 'octokit'
 import { singleton } from 'tsyringe'
-import { fetch } from 'undici'
 import GitInvoker from '../git/gitInvoker'
 import RunnerInvoker from '../runners/runnerInvoker'
 import * as Converter from '../utilities/converter'
@@ -194,9 +194,6 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     const options: OctokitOptions = {
       auth: process.env.PR_METRICS_ACCESS_TOKEN,
       userAgent: 'PRMetrics/v1.5.5',
-      request: {
-        fetch
-      },
       log: {
         debug: (message: string): void => this._logger.logDebug(`Octokit – ${message}`),
         info: (message: string): void => this._logger.logInfo(`Octokit – ${message}`),
