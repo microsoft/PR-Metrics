@@ -153,7 +153,7 @@ jobs:
             Set-Content -Path $FilePath -Value $FileContents
 
       - name: npm – Install Node
-        uses: actions/setup-node@e33196f7422957bea03ed53f6fbb155025ffc7b8 ## v3.7.0
+        uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d ## v3.8.1
         with:
           node-version: 16.10.0  # The latest version with NPMv7, which is required to maintain a package-lock.json lockfileVersion of 2.
 
