@@ -318,13 +318,13 @@ jobs:
         uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744  # v3.6.0
 
       - name: Initialize
-        uses: github/codeql-action/init@00e563ead9f72a8461b24876bee2d0c2e8bd2ee8  # v2.21.5
+        uses: github/codeql-action/init@ddccb873888234080b77e9bc2d4764d5ccaaccf9  # v2.21.9
         with:
           config-file: .github/linters/codeql.yml
           queries: security-and-quality
 
       - name: Analyze
-        uses: github/codeql-action/analyze@00e563ead9f72a8461b24876bee2d0c2e8bd2ee8  # v2.21.5
+        uses: github/codeql-action/analyze@ddccb873888234080b77e9bc2d4764d5ccaaccf9  # v2.21.9
 
   validate-linter:
     name: Validate – Linter
