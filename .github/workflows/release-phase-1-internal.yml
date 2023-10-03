@@ -160,11 +160,11 @@ jobs:
       - name: npm – Install NCU
         run: npm install -g npm-check-updates
 
-      #- name: npm – Update Dependencies
-      #  run: ncu -u
+      - name: npm – Update Dependencies
+        run: ncu -u
 
-      #- name: npm – Update Transitive Dependencies
-      #  run: npm update
+      - name: npm – Update Transitive Dependencies
+        run: npm update
 
       - name: npm – Build Package
         run: npm run build:package
@@ -180,8 +180,8 @@ jobs:
       - name: Git – Set Email
         run: git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-      #- name: Git – Create Branch
-      #  run: git checkout -b release/v${{ env.version }}
+      - name: Git – Create Branch
+        run: git checkout -b release/v${{ env.version }}
 
       - name: Git – Add Changed Files
         run: git add -A
