@@ -27,7 +27,7 @@ describe('gitHubReposInvoker.ts', function (): void {
   let octokitWrapper: OctokitWrapper
   let runnerInvoker: RunnerInvoker
 
-  const expectedUserAgent: string = 'PRMetrics/v1.5.6'
+  const expectedUserAgent: string = 'PRMetrics/v1.5.7'
 
   beforeEach((): void => {
     process.env.PR_METRICS_ACCESS_TOKEN = 'PAT'
