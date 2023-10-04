@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 import { singleton } from 'tsyringe'
-import parseGitDiff, { AddedFile, AnyFileChange, ChangedFile, GitDiff, RenamedFile } from '../../../../node_modules/parse-git-diff/build/cjs'
+import parseGitDiff, { AddedFile, AnyFileChange, ChangedFile, Chunk, GitDiff, RenamedFile } from 'parse-git-diff'
 import Logger from '../utilities/logger'
 import AxiosWrapper from '../wrappers/axiosWrapper'
 import GetPullResponse from '../wrappers/octokitInterfaces/getPullResponse'
@@ -95,14 +95,14 @@ export default class OctokitGitDiffParser {
           {
             // For an added or changed file, add the file path and the first changed line.
             const fileCasted: AddedFile | ChangedFile = file as AddedFile | ChangedFile
-            result.set(fileCasted.path, fileCasted.chunks[0]!.toFileRange.start)
+            result.set(fileCasted.path, (fileCasted.chunks[0] as Chunk)!.toFileRange.start)
             break
           }
           case 'RenamedFile':
           {
             // For a renamed file, add the new file path and the first changed line.
             const fileCasted: RenamedFile = file as RenamedFile
-            result.set(fileCasted.pathAfter, fileCasted.chunks[0]?.toFileRange.start!)
+            result.set(fileCasted.pathAfter, (fileCasted.chunks[0] as Chunk)?.toFileRange.start!)
             break
           }
         }

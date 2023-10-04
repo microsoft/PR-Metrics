@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PoliCheckExclusions>
-    <Exclusion Type="FileName">PACKAGE-LOCK.JSON</Exclusion>
-    <Exclusion Type="FolderPathStart">\DIST\</Exclusion>
+    <Exclusion Type="FileName">LICENSE.txt|PACKAGE-LOCK.JSON</Exclusion>
+    <Exclusion Type="FolderPathStart">\DIST\</Exclusion><PoliCheckExclusions>
+    </PoliCheckExclusions>
 </PoliCheckExclusions>
