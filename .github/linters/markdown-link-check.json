@@ -1,6 +1,9 @@
 {
   "ignorePatterns": [
     {
+      "pattern": "^https://aka.ms/opensource/security/"
+    },
+    {
       "pattern": "^https://docs.github.com/"
     },
     {
