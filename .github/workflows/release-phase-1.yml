@@ -22,7 +22,7 @@ on:
         required: true
         type: string
       patch:
-        default: '8'
+        default: '9'
         description: The patch element of the version number
         required: true
         type: string
@@ -38,6 +38,6 @@ jobs:
     with:
       major: ${{ inputs.major || 1 }}
       minor: ${{ inputs.minor || 5 }}
-      patch: ${{ inputs.patch || 8 }}
+      patch: ${{ inputs.patch || 9 }}
 
 ...
