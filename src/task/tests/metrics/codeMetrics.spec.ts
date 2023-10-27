@@ -616,7 +616,7 @@ describe('codeMetrics.ts', (): void => {
         metrics: new CodeMetricsData(0, 0, 0),
         filesNotRequiringReview: [],
         deletedFilesNotRequiringReview: [],
-        globChecks: 2
+        globChecks: 3
       },
       {
         gitResponse: '1\t0\tfile.ts',
@@ -625,7 +625,7 @@ describe('codeMetrics.ts', (): void => {
         metrics: new CodeMetricsData(1, 0, 0),
         filesNotRequiringReview: [],
         deletedFilesNotRequiringReview: [],
-        globChecks: 2
+        globChecks: 3
       },
       {
         gitResponse: '1\t0\tfile.ts\n1\t0\ttest.ts',
@@ -634,7 +634,7 @@ describe('codeMetrics.ts', (): void => {
         metrics: new CodeMetricsData(1, 1, 0),
         filesNotRequiringReview: [],
         deletedFilesNotRequiringReview: [],
-        globChecks: 4
+        globChecks: 6
       },
       {
         gitResponse: '1\t0\tfile.ts\n2\t0\ttest.ts',
@@ -643,7 +643,7 @@ describe('codeMetrics.ts', (): void => {
         metrics: new CodeMetricsData(1, 2, 0),
         filesNotRequiringReview: [],
         deletedFilesNotRequiringReview: [],
-        globChecks: 4
+        globChecks: 6
       },
       {
         gitResponse: '99\t0\tfile.ts',
@@ -652,7 +652,7 @@ describe('codeMetrics.ts', (): void => {
         metrics: new CodeMetricsData(99, 0, 0),
         filesNotRequiringReview: [],
         deletedFilesNotRequiringReview: [],
-        globChecks: 2
+        globChecks: 3
       },
       {
         gitResponse: '99\t0\tfile.ts\n197\t0\ttest.ts',
@@ -661,7 +661,7 @@ describe('codeMetrics.ts', (): void => {
         metrics: new CodeMetricsData(99, 197, 0),
         filesNotRequiringReview: [],
         deletedFilesNotRequiringReview: [],
-        globChecks: 4
+        globChecks: 6
       },
       {
         gitResponse: '99\t0\tfile.ts\n198\t0\ttest.ts',
@@ -670,7 +670,7 @@ describe('codeMetrics.ts', (): void => {
         metrics: new CodeMetricsData(99, 198, 0),
         filesNotRequiringReview: [],
         deletedFilesNotRequiringReview: [],
-        globChecks: 4
+        globChecks: 6
       },
       {
         gitResponse: '100\t0\tfile.ts',
@@ -679,7 +679,7 @@ describe('codeMetrics.ts', (): void => {
         metrics: new CodeMetricsData(100, 0, 0),
         filesNotRequiringReview: [],
         deletedFilesNotRequiringReview: [],
-        globChecks: 2
+        globChecks: 3
       },
       {
         gitResponse: '100\t0\tfile.ts\n199\t0\ttest.ts',
@@ -688,7 +688,7 @@ describe('codeMetrics.ts', (): void => {
         metrics: new CodeMetricsData(100, 199, 0),
         filesNotRequiringReview: [],
         deletedFilesNotRequiringReview: [],
-        globChecks: 4
+        globChecks: 6
       },
       {
         gitResponse: '100\t0\tfile.ts\n200\t0\ttest.ts',
@@ -697,7 +697,7 @@ describe('codeMetrics.ts', (): void => {
         metrics: new CodeMetricsData(100, 200, 0),
         filesNotRequiringReview: [],
         deletedFilesNotRequiringReview: [],
-        globChecks: 4
+        globChecks: 6
       },
       {
         gitResponse: '149\t0\tfile.ts',
@@ -706,7 +706,7 @@ describe('codeMetrics.ts', (): void => {
         metrics: new CodeMetricsData(149, 0, 0),
         filesNotRequiringReview: [],
         deletedFilesNotRequiringReview: [],
-        globChecks: 2
+        globChecks: 3
       },
       {
         gitResponse: '149\t0\tfile.ts\n297\t0\ttest.ts',
@@ -715,7 +715,7 @@ describe('codeMetrics.ts', (): void => {
         metrics: new CodeMetricsData(149, 297, 0),
         filesNotRequiringReview: [],
         deletedFilesNotRequiringReview: [],
-        globChecks: 4
+        globChecks: 6
       },
       {
         gitResponse: '149\t0\tfile.ts\n298\t0\ttest.ts',
@@ -724,7 +724,7 @@ describe('codeMetrics.ts', (): void => {
         metrics: new CodeMetricsData(149, 298, 0),
         filesNotRequiringReview: [],
         deletedFilesNotRequiringReview: [],
-        globChecks: 4
+        globChecks: 6
       },
       {
         gitResponse: '150\t0\tfile.ts',
@@ -733,7 +733,7 @@ describe('codeMetrics.ts', (): void => {
         metrics: new CodeMetricsData(150, 0, 0),
         filesNotRequiringReview: [],
         deletedFilesNotRequiringReview: [],
-        globChecks: 2
+        globChecks: 3
       },
       {
         gitResponse: '150\t0\tfile.ts\n299\t0\ttest.ts',
@@ -742,7 +742,7 @@ describe('codeMetrics.ts', (): void => {
         metrics: new CodeMetricsData(150, 299, 0),
         filesNotRequiringReview: [],
         deletedFilesNotRequiringReview: [],
-        globChecks: 4
+        globChecks: 6
       },
       {
         gitResponse: '150\t0\tfile.ts\n300\t0\ttest.ts',
@@ -751,7 +751,7 @@ describe('codeMetrics.ts', (): void => {
         metrics: new CodeMetricsData(150, 300, 0),
         filesNotRequiringReview: [],
         deletedFilesNotRequiringReview: [],
-        globChecks: 4
+        globChecks: 6
       },
       {
         gitResponse: '224\t0\tfile.ts',
@@ -760,7 +760,7 @@ describe('codeMetrics.ts', (): void => {
         metrics: new CodeMetricsData(224, 0, 0),
         filesNotRequiringReview: [],
         deletedFilesNotRequiringReview: [],
-        globChecks: 2
+        globChecks: 3
       },
       {
         gitResponse: '224\t0\tfile.ts\n447\t0\ttest.ts',
@@ -769,7 +769,7 @@ describe('codeMetrics.ts', (): void => {
         metrics: new CodeMetricsData(224, 447, 0),
         filesNotRequiringReview: [],
         deletedFilesNotRequiringReview: [],
-        globChecks: 4
+        globChecks: 6
       },
       {
         gitResponse: '224\t0\tfile.ts\n448\t0\ttest.ts',
@@ -778,7 +778,7 @@ describe('codeMetrics.ts', (): void => {
         metrics: new CodeMetricsData(224, 448, 0),
         filesNotRequiringReview: [],
         deletedFilesNotRequiringReview: [],
-        globChecks: 4
+        globChecks: 6
       },
       {
         gitResponse: '225\t0\tfile.ts',
@@ -787,7 +787,7 @@ describe('codeMetrics.ts', (): void => {
         metrics: new CodeMetricsData(225, 0, 0),
         filesNotRequiringReview: [],
         deletedFilesNotRequiringReview: [],
-        globChecks: 2
+        globChecks: 3
       },
       {
         gitResponse: '225\t0\tfile.ts\n449\t0\ttest.ts',
@@ -796,7 +796,7 @@ describe('codeMetrics.ts', (): void => {
         metrics: new CodeMetricsData(225, 449, 0),
         filesNotRequiringReview: [],
         deletedFilesNotRequiringReview: [],
-        globChecks: 4
+        globChecks: 6
       },
       {
         gitResponse: '225\t0\tfile.ts\n450\t0\ttest.ts',
@@ -805,7 +805,7 @@ describe('codeMetrics.ts', (): void => {
         metrics: new CodeMetricsData(225, 450, 0),
         filesNotRequiringReview: [],
         deletedFilesNotRequiringReview: [],
-        globChecks: 4
+        globChecks: 6
       },
       {
         gitResponse: '337\t0\tfile.ts',
@@ -814,7 +814,7 @@ describe('codeMetrics.ts', (): void => {
         metrics: new CodeMetricsData(337, 0, 0),
         filesNotRequiringReview: [],
         deletedFilesNotRequiringReview: [],
-        globChecks: 2
+        globChecks: 3
       },
       {
         gitResponse: '337\t0\tfile.ts\n673\t0\ttest.ts',
@@ -823,7 +823,7 @@ describe('codeMetrics.ts', (): void => {
         metrics: new CodeMetricsData(337, 673, 0),
         filesNotRequiringReview: [],
         deletedFilesNotRequiringReview: [],
-        globChecks: 4
+        globChecks: 6
       },
       {
         gitResponse: '337\t0\tfile.ts\n674\t0\ttest.ts',
@@ -832,7 +832,7 @@ describe('codeMetrics.ts', (): void => {
         metrics: new CodeMetricsData(337, 674, 0),
         filesNotRequiringReview: [],
         deletedFilesNotRequiringReview: [],
-        globChecks: 4
+        globChecks: 6
       },
       {
         gitResponse: '338\t0\tfile.ts',
@@ -841,7 +841,7 @@ describe('codeMetrics.ts', (): void => {
         metrics: new CodeMetricsData(338, 0, 0),
         filesNotRequiringReview: [],
         deletedFilesNotRequiringReview: [],
-        globChecks: 2
+        globChecks: 3
       },
       {
         gitResponse: '338\t0\tfile.ts\n675\t0\ttest.ts',
@@ -850,7 +850,7 @@ describe('codeMetrics.ts', (): void => {
         metrics: new CodeMetricsData(338, 675, 0),
         filesNotRequiringReview: [],
         deletedFilesNotRequiringReview: [],
-        globChecks: 4
+        globChecks: 6
       },
       {
         gitResponse: '338\t0\tfile.ts\n676\t0\ttest.ts',
@@ -859,7 +859,7 @@ describe('codeMetrics.ts', (): void => {
         metrics: new CodeMetricsData(338, 676, 0),
         filesNotRequiringReview: [],
         deletedFilesNotRequiringReview: [],
-        globChecks: 4
+        globChecks: 6
       },
       {
         gitResponse: '506\t0\tfile.ts',
@@ -868,7 +868,7 @@ describe('codeMetrics.ts', (): void => {
         metrics: new CodeMetricsData(506, 0, 0),
         filesNotRequiringReview: [],
         deletedFilesNotRequiringReview: [],
-        globChecks: 2
+        globChecks: 3
       },
       {
         gitResponse: '506\t0\tfile.ts\n1011\t0\ttest.ts',
@@ -877,7 +877,7 @@ describe('codeMetrics.ts', (): void => {
         metrics: new CodeMetricsData(506, 1011, 0),
         filesNotRequiringReview: [],
         deletedFilesNotRequiringReview: [],
-        globChecks: 4
+        globChecks: 6
       },
       {
         gitResponse: '506\t0\tfile.ts\n1012\t0\ttest.ts',
@@ -886,7 +886,7 @@ describe('codeMetrics.ts', (): void => {
         metrics: new CodeMetricsData(506, 1012, 0),
         filesNotRequiringReview: [],
         deletedFilesNotRequiringReview: [],
-        globChecks: 4
+        globChecks: 6
       },
       {
         gitResponse: '507\t0\tfile.ts',
@@ -895,7 +895,7 @@ describe('codeMetrics.ts', (): void => {
         metrics: new CodeMetricsData(507, 0, 0),
         filesNotRequiringReview: [],
         deletedFilesNotRequiringReview: [],
-        globChecks: 2
+        globChecks: 3
       },
       {
         gitResponse: '507\t0\tfile.ts\n1013\t0\ttest.ts',
@@ -904,7 +904,7 @@ describe('codeMetrics.ts', (): void => {
         metrics: new CodeMetricsData(507, 1013, 0),
         filesNotRequiringReview: [],
         deletedFilesNotRequiringReview: [],
-        globChecks: 4
+        globChecks: 6
       },
       {
         gitResponse: '507\t0\tfile.ts\n1014\t0\ttest.ts',
@@ -913,7 +913,7 @@ describe('codeMetrics.ts', (): void => {
         metrics: new CodeMetricsData(507, 1014, 0),
         filesNotRequiringReview: [],
         deletedFilesNotRequiringReview: [],
-        globChecks: 4
+        globChecks: 6
       },
       {
         gitResponse: '759\t0\tfile.ts',
@@ -922,7 +922,7 @@ describe('codeMetrics.ts', (): void => {
         metrics: new CodeMetricsData(759, 0, 0),
         filesNotRequiringReview: [],
         deletedFilesNotRequiringReview: [],
-        globChecks: 2
+        globChecks: 3
       },
       {
         gitResponse: '759\t0\tfile.ts\n1517\t0\ttest.ts',
@@ -931,7 +931,7 @@ describe('codeMetrics.ts', (): void => {
         metrics: new CodeMetricsData(759, 1517, 0),
         filesNotRequiringReview: [],
         deletedFilesNotRequiringReview: [],
-        globChecks: 4
+        globChecks: 6
       },
       {
         gitResponse: '759\t0\tfile.ts\n1518\t0\ttest.ts',
@@ -940,7 +940,7 @@ describe('codeMetrics.ts', (): void => {
         metrics: new CodeMetricsData(759, 1518, 0),
         filesNotRequiringReview: [],
         deletedFilesNotRequiringReview: [],
-        globChecks: 4
+        globChecks: 6
       },
       {
         gitResponse: '760\t0\tfile.ts',
@@ -949,7 +949,7 @@ describe('codeMetrics.ts', (): void => {
         metrics: new CodeMetricsData(760, 0, 0),
         filesNotRequiringReview: [],
         deletedFilesNotRequiringReview: [],
-        globChecks: 2
+        globChecks: 3
       },
       {
         gitResponse: '760\t0\tfile.ts\n1519\t0\ttest.ts',
@@ -958,7 +958,7 @@ describe('codeMetrics.ts', (): void => {
         metrics: new CodeMetricsData(760, 1519, 0),
         filesNotRequiringReview: [],
         deletedFilesNotRequiringReview: [],
-        globChecks: 4
+        globChecks: 6
       },
       {
         gitResponse: '760\t0\tfile.ts\n1520\t0\ttest.ts',
@@ -967,7 +967,7 @@ describe('codeMetrics.ts', (): void => {
         metrics: new CodeMetricsData(760, 1520, 0),
         filesNotRequiringReview: [],
         deletedFilesNotRequiringReview: [],
-        globChecks: 4
+        globChecks: 6
       },
       {
         gitResponse: '1\t0\tfile.cs',
@@ -976,7 +976,7 @@ describe('codeMetrics.ts', (): void => {
         metrics: new CodeMetricsData(0, 0, 1),
         filesNotRequiringReview: [],
         deletedFilesNotRequiringReview: [],
-        globChecks: 2
+        globChecks: 3
       },
       {
         gitResponse: '1\t0\ttest.cs',
@@ -985,7 +985,7 @@ describe('codeMetrics.ts', (): void => {
         metrics: new CodeMetricsData(0, 0, 1),
         filesNotRequiringReview: [],
         deletedFilesNotRequiringReview: [],
-        globChecks: 2
+        globChecks: 3
       },
       {
         gitResponse: '1\t0\tfile.tst',
@@ -994,7 +994,7 @@ describe('codeMetrics.ts', (): void => {
         metrics: new CodeMetricsData(0, 0, 1),
         filesNotRequiringReview: [],
         deletedFilesNotRequiringReview: [],
-        globChecks: 2
+        globChecks: 3
       },
       {
         gitResponse: '1\t0\tfile.tts',
@@ -1003,7 +1003,7 @@ describe('codeMetrics.ts', (): void => {
         metrics: new CodeMetricsData(0, 0, 1),
         filesNotRequiringReview: [],
         deletedFilesNotRequiringReview: [],
-        globChecks: 2
+        globChecks: 3
       },
       {
         gitResponse: '1\t0\tfilets',
@@ -1012,7 +1012,7 @@ describe('codeMetrics.ts', (): void => {
         metrics: new CodeMetricsData(0, 0, 1),
         filesNotRequiringReview: [],
         deletedFilesNotRequiringReview: [],
-        globChecks: 2
+        globChecks: 3
       },
       {
         gitResponse: '1\t0\tignored.ts',
@@ -1021,7 +1021,7 @@ describe('codeMetrics.ts', (): void => {
         metrics: new CodeMetricsData(0, 0, 1),
         filesNotRequiringReview: ['ignored.ts'],
         deletedFilesNotRequiringReview: [],
-        globChecks: 2
+        globChecks: 3
       },
       {
         gitResponse: '1\t0\tignored.cs',
@@ -1030,7 +1030,7 @@ describe('codeMetrics.ts', (): void => {
         metrics: new CodeMetricsData(0, 0, 1),
         filesNotRequiringReview: ['ignored.cs'],
         deletedFilesNotRequiringReview: [],
-        globChecks: 2
+        globChecks: 3
       },
       {
         gitResponse: '1\t0\tfolder/ignored.ts',
@@ -1039,7 +1039,7 @@ describe('codeMetrics.ts', (): void => {
         metrics: new CodeMetricsData(0, 0, 1),
         filesNotRequiringReview: ['folder/ignored.ts'],
         deletedFilesNotRequiringReview: [],
-        globChecks: 2
+        globChecks: 3
       },
       {
         gitResponse: '1\t0\tfolder/ignored.cs',
@@ -1048,7 +1048,7 @@ describe('codeMetrics.ts', (): void => {
         metrics: new CodeMetricsData(0, 0, 1),
         filesNotRequiringReview: ['folder/ignored.cs'],
         deletedFilesNotRequiringReview: [],
-        globChecks: 2
+        globChecks: 3
       },
       {
         gitResponse: '0\t0\tignored.ts',
@@ -1057,7 +1057,7 @@ describe('codeMetrics.ts', (): void => {
         metrics: new CodeMetricsData(0, 0, 0),
         filesNotRequiringReview: ['ignored.ts'],
         deletedFilesNotRequiringReview: [],
-        globChecks: 2
+        globChecks: 3
       },
       {
         gitResponse: '0\t0\tignored.cs',
@@ -1066,7 +1066,7 @@ describe('codeMetrics.ts', (): void => {
         metrics: new CodeMetricsData(0, 0, 0),
         filesNotRequiringReview: ['ignored.cs'],
         deletedFilesNotRequiringReview: [],
-        globChecks: 2
+        globChecks: 3
       },
       {
         gitResponse: '0\t0\tfolder/ignored.ts',
@@ -1075,7 +1075,7 @@ describe('codeMetrics.ts', (): void => {
         metrics: new CodeMetricsData(0, 0, 0),
         filesNotRequiringReview: ['folder/ignored.ts'],
         deletedFilesNotRequiringReview: [],
-        globChecks: 2
+        globChecks: 3
       },
       {
         gitResponse: '0\t0\tfolder/ignored.cs',
@@ -1084,7 +1084,7 @@ describe('codeMetrics.ts', (): void => {
         metrics: new CodeMetricsData(0, 0, 0),
         filesNotRequiringReview: ['folder/ignored.cs'],
         deletedFilesNotRequiringReview: [],
-        globChecks: 2
+        globChecks: 3
       },
       {
         gitResponse: '1\t0\tignored.ts\n0\t0\tfolder/ignored.ts',
@@ -1093,7 +1093,7 @@ describe('codeMetrics.ts', (): void => {
         metrics: new CodeMetricsData(0, 0, 1),
         filesNotRequiringReview: ['ignored.ts', 'folder/ignored.ts'],
         deletedFilesNotRequiringReview: [],
-        globChecks: 4
+        globChecks: 6
       },
       {
         gitResponse: '0\t1\tignored.ts',
@@ -1102,7 +1102,7 @@ describe('codeMetrics.ts', (): void => {
         metrics: new CodeMetricsData(0, 0, 0),
         filesNotRequiringReview: [],
         deletedFilesNotRequiringReview: ['ignored.ts'],
-        globChecks: 2
+        globChecks: 3
       },
       {
         gitResponse: '0\t1\tignored.cs',
@@ -1111,7 +1111,7 @@ describe('codeMetrics.ts', (): void => {
         metrics: new CodeMetricsData(0, 0, 0),
         filesNotRequiringReview: [],
         deletedFilesNotRequiringReview: ['ignored.cs'],
-        globChecks: 2
+        globChecks: 3
       },
       {
         gitResponse: '0\t1\tfolder/ignored.ts',
@@ -1120,7 +1120,7 @@ describe('codeMetrics.ts', (): void => {
         metrics: new CodeMetricsData(0, 0, 0),
         filesNotRequiringReview: [],
         deletedFilesNotRequiringReview: ['folder/ignored.ts'],
-        globChecks: 2
+        globChecks: 3
       },
       {
         gitResponse: '0\t1\tfolder/ignored.cs',
@@ -1129,7 +1129,7 @@ describe('codeMetrics.ts', (): void => {
         metrics: new CodeMetricsData(0, 0, 0),
         filesNotRequiringReview: [],
         deletedFilesNotRequiringReview: ['folder/ignored.cs'],
-        globChecks: 2
+        globChecks: 3
       },
       {
         gitResponse: '1\t0\tignored.ts\n0\t1\tfolder/ignored.ts',
@@ -1138,7 +1138,7 @@ describe('codeMetrics.ts', (): void => {
         metrics: new CodeMetricsData(0, 0, 1),
         filesNotRequiringReview: ['ignored.ts'],
         deletedFilesNotRequiringReview: ['folder/ignored.ts'],
-        globChecks: 4
+        globChecks: 6
       }
     ]
 
@@ -1188,15 +1188,15 @@ describe('codeMetrics.ts', (): void => {
     const testCases: TestCaseType[] = [
       {
         gitResponse: '2\t2\tfile.ts\n1\t1\tignored1.ts\n1\t1\tignored2.ts',
-        globChecks: 8
+        globChecks: 9
       },
       {
         gitResponse: '1\t1\tfile1.ts\n1\t1\tignored1.ts\n1\t1\tignored2.ts\n1\t1\tfile2.ts',
-        globChecks: 11
+        globChecks: 12
       },
       {
         gitResponse: '1\t1\tfile1.ts\n1\t1\tignored1.ts\n1\t1\tfile2.ts\n1\t1\tignored2.ts',
-        globChecks: 11
+        globChecks: 12
       }
     ]
 
@@ -1236,6 +1236,40 @@ describe('codeMetrics.ts', (): void => {
       })
     })
   }
+
+  it('with custom include pattern, includes the relevant files', async (): Promise<void> => {
+    // Arrange
+    when(inputs.baseSize).thenReturn(100)
+    when(inputs.growthRate).thenReturn(1.5)
+    when(inputs.testFactor).thenReturn(2.0)
+    when(inputs.fileMatchingPatterns).thenReturn(['src/*.ts', '__test__/*.ts'])
+    when(inputs.codeFileExtensions).thenReturn(new Set<string>(['ts']))
+    when(gitInvoker.getDiffSummary()).thenResolve('1\t1\tfile.ts\n1\t1\tsrc/file.ts\n1\t1\t__test__/file.test.ts')
+
+    // Act
+    const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(logger), instance(runnerInvoker))
+
+    // Assert
+    expect(await codeMetrics.getFilesNotRequiringReview()).to.deep.equal(['file.ts'])
+    expect(await codeMetrics.getDeletedFilesNotRequiringReview()).to.deep.equal([])
+    expect(await codeMetrics.getSize()).to.equal('XS')
+    expect(await codeMetrics.getSizeIndicator()).to.equal('XS⚠️')
+    expect(await codeMetrics.getMetrics()).to.deep.equal(new CodeMetricsData(1, 1, 1))
+    expect(await codeMetrics.isSmall()).to.equal(true)
+    expect(await codeMetrics.isSufficientlyTested()).to.equal(false)
+    verify(logger.logDebug('* CodeMetrics.getFilesNotRequiringReview()')).once()
+    verify(logger.logDebug('* CodeMetrics.getDeletedFilesNotRequiringReview()')).once()
+    verify(logger.logDebug('* CodeMetrics.getSize()')).once()
+    verify(logger.logDebug('* CodeMetrics.initialize()')).times(7)
+    verify(logger.logDebug('* CodeMetrics.initializeMetrics()')).once()
+    verify(logger.logDebug('* CodeMetrics.performGlobCheck()')).times(6)
+    verify(logger.logDebug('* CodeMetrics.matchFileExtension()')).times(3)
+    verify(logger.logDebug('* CodeMetrics.constructMetrics()')).once()
+    verify(logger.logDebug('* CodeMetrics.createFileMetricsMap()')).once()
+    verify(logger.logDebug('* CodeMetrics.initializeIsSufficientlyTested()')).once()
+    verify(logger.logDebug('* CodeMetrics.initializeSizeIndicator()')).once()
+    verify(logger.logDebug('* CodeMetrics.calculateSize()')).once()
+  })
 
   it('with double exclusion ignore patterns ignores the appropriate files', async (): Promise<void> => {
     // Arrange
