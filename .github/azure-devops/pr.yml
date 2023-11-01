@@ -14,5 +14,14 @@ variables:
   - name: tags
     value: multi-phased
 
-stages:
-  - template: template.yml
+resources:
+  repositories:
+  - repository: OfficePipelineTemplates
+    type: git
+    name: OE/OfficePipelineTemplates
+    ref: refs/heads/main
+
+extends:
+  template: v1/Office.Unofficial.PipelineTemplate.yml@OfficePipelineTemplates
+  stages:
+    - template: template.yml

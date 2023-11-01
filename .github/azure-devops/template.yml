@@ -20,7 +20,9 @@ stages:
         displayName: PR Metrics – macOS
         dependsOn: Delay
         pool:
-          vmImage: macOS-latest
+          os: macOS
+          image: macos-latest
+          name: Azure-Pipelines-1ESPT-ExDShared
         variables:
           - name: skipComponentGovernanceDetection
             value: true
@@ -46,7 +48,9 @@ stages:
         displayName: PR Metrics – Ubuntu
         dependsOn: PRMetrics_macOS
         pool:
-          vmImage: ubuntu-latest
+          os: linux
+          image: ubuntu-latest
+          name: Azure-Pipelines-1ESPT-ExDShared
         variables:
           - name: skipComponentGovernanceDetection
             value: true
@@ -72,7 +76,9 @@ stages:
         displayName: PR Metrics – Windows
         dependsOn: PRMetrics_Ubuntu
         pool:
-          vmImage: windows-latest
+          os: windows
+          image: windows-latest
+          name: Azure-Pipelines-1ESPT-ExDShared
         variables:
           - name: skipComponentGovernanceDetection
             value: true
@@ -97,7 +103,9 @@ stages:
       - job: Compliance
         displayName: Compliance
         pool:
-          vmImage: windows-latest
+          os: windows
+          image: windows-latest
+          name: Azure-Pipelines-1ESPT-ExDShared
         steps:
           - task: ComponentGovernanceComponentDetection@0
             displayName: Component Detection
