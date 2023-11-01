@@ -22,12 +22,18 @@ resources:
     ref: refs/heads/main
 
 extends:
-  template: v1/Office.Unofficial.PipelineTemplate.yml@OfficePipelineTemplates
+  template: v1/Office.Official.PipelineTemplate.yml@OfficePipelineTemplates
   parameters:
     sdl:
       sourceAnalysisPool:
         name: Azure-Pipelines-1ESPT-ExDShared
         os: windows
         image: windows-latest
+      eslint:
+        environmentsEs2017: true
+        environmentsMocha: true
+        environmentsNode: true
+        parser: '@typescript-eslint/parser'
+        parserOptions: ecmaVersion:2018
     stages:
       - template: template.yml
