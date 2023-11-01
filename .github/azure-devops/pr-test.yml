@@ -1,0 +1,22 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+
+---
+
+trigger: none
+
+pr:
+  branches:
+    include:
+      - main
+
+variables:
+  - name: tags
+    value: multi-phased
+
+stages:
+  - template: template.yml
+    parameters:
+      pool-name: Azure Pipelines
+
+...

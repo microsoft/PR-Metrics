@@ -3,6 +3,11 @@
 
 ---
 
+parameters:
+  - name: pool-name
+    type: string
+    default: Azure-Pipelines-1ESPT-ExDShared
+
 stages:
   - stage: Build
     displayName: Build
@@ -48,7 +53,7 @@ stages:
         displayName: PR Metrics – Ubuntu
         dependsOn: PRMetrics_macOS
         pool:
-          name: Azure-Pipelines-1ESPT-ExDShared
+          name: $(parameters.pool-name)
           os: linux
           image: ubuntu-latest
         variables:
@@ -76,7 +81,7 @@ stages:
         displayName: PR Metrics – Windows
         dependsOn: PRMetrics_Ubuntu
         pool:
-          name: Azure-Pipelines-1ESPT-ExDShared
+          name: $(parameters.pool-name)
           os: windows
           image: windows-latest
         variables:
