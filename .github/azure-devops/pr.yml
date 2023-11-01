@@ -14,5 +14,30 @@ variables:
   - name: tags
     value: multi-phased
 
-stages:
-  - template: template.yml
+resources:
+  repositories:
+    - repository: OfficePipelineTemplates
+      type: git
+      name: OE/OfficePipelineTemplates
+      ref: refs/heads/main
+
+extends:
+  template: v1/Office.Unofficial.PipelineTemplate.yml@OfficePipelineTemplates
+  parameters:
+    sdl:
+      sourceAnalysisPool:
+        name: Azure-Pipelines-1ESPT-ExDShared
+        os: windows
+        image: windows-latest
+      eslint:
+        environmentsEs2017: true
+        environmentsMocha: true
+        environmentsNode: true
+        parser: '@typescript-eslint/parser'
+        parserOptions: ecmaVersion:2018
+        enableExclusions: true
+        exclusionPatterns: '*.js'
+    stages:
+      - template: template.yml
+
+...

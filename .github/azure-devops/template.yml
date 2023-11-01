@@ -3,6 +3,11 @@
 
 ---
 
+parameters:
+  - name: testInstance
+    type: boolean
+    default: false
+
 stages:
   - stage: Build
     displayName: Build
@@ -20,7 +25,12 @@ stages:
         displayName: PR Metrics – macOS
         dependsOn: Delay
         pool:
-          vmImage: macOS-latest
+          ${{ if parameters.testInstance }}:
+            vmImage: macOS-latest
+          ${{ else }}:
+            name: Azure Pipelines
+            os: macOS
+            image: macos-latest
         variables:
           - name: skipComponentGovernanceDetection
             value: true
@@ -46,7 +56,12 @@ stages:
         displayName: PR Metrics – Ubuntu
         dependsOn: PRMetrics_macOS
         pool:
-          vmImage: ubuntu-latest
+          ${{ if parameters.testInstance }}:
+            vmImage: ubuntu-latest
+          ${{ else }}:
+            name: Azure-Pipelines-1ESPT-ExDShared
+            os: linux
+            image: ubuntu-latest
         variables:
           - name: skipComponentGovernanceDetection
             value: true
@@ -72,7 +87,12 @@ stages:
         displayName: PR Metrics – Windows
         dependsOn: PRMetrics_Ubuntu
         pool:
-          vmImage: windows-latest
+          ${{ if parameters.testInstance }}:
+            vmImage: windows-latest
+          ${{ else }}:
+            name: Azure-Pipelines-1ESPT-ExDShared
+            os: windows
+            image: windows-latest
         variables:
           - name: skipComponentGovernanceDetection
             value: true
@@ -93,55 +113,5 @@ stages:
                 **/*
                 !dist/*
                 !package-lock.json
-
-      - job: Compliance
-        displayName: Compliance
-        pool:
-          vmImage: windows-latest
-        steps:
-          - task: ComponentGovernanceComponentDetection@0
-            displayName: Component Detection
-            inputs:
-              failOnAlert: true
-
-          - task: AntiMalware@4
-            displayName: Anti-Malware Scanner
-            inputs:
-              ScanType: FullSystemScan
-              EnableServices: true
-              ForceSignatureUpdate: true
-              SignatureUpdateUsesMMPC: true
-              TreatSignatureUpdateFailureAs: Error
-
-          - task: CredScan@3
-            displayName: Credential Scanner
-
-          - task: ESLint@1
-            displayName: ESLint
-            inputs:
-              Configuration: recommended
-
-          - task: PoliCheck@2
-            displayName: PoliCheck
-            inputs:
-              targetType: F
-              optionsFC: 1
-              optionsUEPATH: $(Build.SourcesDirectory)/.github/azure-devops/PoliCheckExclusions.xml
-
-          - task: Semmle@1
-            displayName: CodeQL
-            inputs:
-              sourceCodeDirectory: $(Build.SourcesDirectory)/src
-              language: tsandjs
-
-          - task: PublishSecurityAnalysisLogs@3
-            displayName: Guardian – Publish Artifacts
-
-          - task: PostAnalysis@2
-            displayName: Guardian – Perform Analysis
-            inputs:
-              GdnBreakPolicyMinSev: Note
-              GdnBreakGdnToolGosecSeverity: Default
-              GdnBreakPolicy: M365
 
 ...
