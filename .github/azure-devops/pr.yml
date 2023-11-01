@@ -16,10 +16,10 @@ variables:
 
 resources:
   repositories:
-  - repository: OfficePipelineTemplates
-    type: git
-    name: OE/OfficePipelineTemplates
-    ref: refs/heads/main
+    - repository: OfficePipelineTemplates
+      type: git
+      name: OE/OfficePipelineTemplates
+      ref: refs/heads/main
 
 extends:
   template: v1/Office.Unofficial.PipelineTemplate.yml@OfficePipelineTemplates
