@@ -35,5 +35,6 @@ extends:
         environmentsNode: true
         parser: '@typescript-eslint/parser'
         parserOptions: ecmaVersion:2018
+        exclusionsFilePath: '$(Build.SourcesDirectory)/dist'
     stages:
       - template: template.yml
