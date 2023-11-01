@@ -3,11 +3,6 @@
 
 ---
 
-parameters:
-  - name: pool-name
-    type: string
-    default: Azure-Pipelines-1ESPT-ExDShared
-
 stages:
   - stage: Build
     displayName: Build
@@ -25,9 +20,7 @@ stages:
         displayName: PR Metrics – macOS
         dependsOn: Delay
         pool:
-          name: Azure Pipelines
-          os: macOS
-          image: macos-latest
+          vmImage: macOS-latest
         variables:
           - name: skipComponentGovernanceDetection
             value: true
@@ -53,7 +46,7 @@ stages:
         displayName: PR Metrics – Ubuntu
         dependsOn: PRMetrics_macOS
         pool:
-          name: $(parameters.pool-name)
+          name: Azure-Pipelines-1ESPT-ExDShared
           os: linux
           image: ubuntu-latest
         variables:
@@ -81,7 +74,7 @@ stages:
         displayName: PR Metrics – Windows
         dependsOn: PRMetrics_Ubuntu
         pool:
-          name: $(parameters.pool-name)
+          name: Azure-Pipelines-1ESPT-ExDShared
           os: windows
           image: windows-latest
         variables:

@@ -16,7 +16,5 @@ variables:
 
 stages:
   - template: template.yml
-    parameters:
-      pool-name: Azure Pipelines
 
 ...
