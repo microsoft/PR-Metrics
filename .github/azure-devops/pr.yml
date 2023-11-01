@@ -22,7 +22,7 @@ resources:
     ref: refs/heads/main
 
 extends:
-  template: v1/Office.Official.PipelineTemplate.yml@OfficePipelineTemplates
+  template: v1/Office.Unofficial.PipelineTemplate.yml@OfficePipelineTemplates
   parameters:
     sdl:
       sourceAnalysisPool:
