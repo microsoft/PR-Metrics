@@ -20,7 +20,7 @@ stages:
         displayName: PR Metrics – macOS
         dependsOn: Delay
         pool:
-          name: Azure-Pipelines-1ESPT-ExDShared
+          name: Azure Pipelines
           os: macOS
           image: macos-latest
         variables:
