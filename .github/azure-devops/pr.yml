@@ -36,6 +36,6 @@ extends:
         parser: '@typescript-eslint/parser'
         parserOptions: ecmaVersion:2018
         enableExclusions: true
-        exclusionsFilePath: '$(Build.SourcesDirectory)/dist'
+        exclusionPatterns: '*.js'
     stages:
       - template: template.yml
