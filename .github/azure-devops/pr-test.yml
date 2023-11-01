@@ -16,5 +16,7 @@ variables:
 
 stages:
   - template: template.yml
+    parameters:
+      testInstance: true
 
 ...
