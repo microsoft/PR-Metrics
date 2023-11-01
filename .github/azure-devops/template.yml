@@ -20,9 +20,9 @@ stages:
         displayName: PR Metrics – macOS
         dependsOn: Delay
         pool:
+          name: Azure-Pipelines-1ESPT-ExDShared
           os: macOS
           image: macos-latest
-          name: Azure-Pipelines-1ESPT-ExDShared
         variables:
           - name: skipComponentGovernanceDetection
             value: true
@@ -48,9 +48,9 @@ stages:
         displayName: PR Metrics – Ubuntu
         dependsOn: PRMetrics_macOS
         pool:
+          name: Azure-Pipelines-1ESPT-ExDShared
           os: linux
           image: ubuntu-latest
-          name: Azure-Pipelines-1ESPT-ExDShared
         variables:
           - name: skipComponentGovernanceDetection
             value: true
@@ -76,9 +76,9 @@ stages:
         displayName: PR Metrics – Windows
         dependsOn: PRMetrics_Ubuntu
         pool:
+          name: Azure-Pipelines-1ESPT-ExDShared
           os: windows
           image: windows-latest
-          name: Azure-Pipelines-1ESPT-ExDShared
         variables:
           - name: skipComponentGovernanceDetection
             value: true
@@ -99,57 +99,5 @@ stages:
                 **/*
                 !dist/*
                 !package-lock.json
-
-      - job: Compliance
-        displayName: Compliance
-        pool:
-          os: windows
-          image: windows-latest
-          name: Azure-Pipelines-1ESPT-ExDShared
-        steps:
-          - task: ComponentGovernanceComponentDetection@0
-            displayName: Component Detection
-            inputs:
-              failOnAlert: true
-
-          - task: AntiMalware@4
-            displayName: Anti-Malware Scanner
-            inputs:
-              ScanType: FullSystemScan
-              EnableServices: true
-              ForceSignatureUpdate: true
-              SignatureUpdateUsesMMPC: true
-              TreatSignatureUpdateFailureAs: Error
-
-          - task: CredScan@3
-            displayName: Credential Scanner
-
-          - task: ESLint@1
-            displayName: ESLint
-            inputs:
-              Configuration: recommended
-
-          - task: PoliCheck@2
-            displayName: PoliCheck
-            inputs:
-              targetType: F
-              optionsFC: 1
-              optionsUEPATH: $(Build.SourcesDirectory)/.github/azure-devops/PoliCheckExclusions.xml
-
-          - task: Semmle@1
-            displayName: CodeQL
-            inputs:
-              sourceCodeDirectory: $(Build.SourcesDirectory)/src
-              language: tsandjs
-
-          - task: PublishSecurityAnalysisLogs@3
-            displayName: Guardian – Publish Artifacts
-
-          - task: PostAnalysis@2
-            displayName: Guardian – Perform Analysis
-            inputs:
-              GdnBreakPolicyMinSev: Note
-              GdnBreakGdnToolGosecSeverity: Default
-              GdnBreakPolicy: M365
 
 ...

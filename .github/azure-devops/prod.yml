@@ -15,22 +15,47 @@ variables:
   - name: tags
     value: production, multi-phased
 
-stages:
-  - stage: Checks
-    displayName: Checks
-    jobs:
-      - job: Checks
-        pool:
-          vmImage: ubuntu-latest
-        variables:
-          - name: skipComponentGovernanceDetection
-            value: true
-        steps:
-          - checkout: none
-            displayName: Checkout
+resources:
+  repositories:
+  - repository: OfficePipelineTemplates
+    type: git
+    name: OE/OfficePipelineTemplates
+    ref: refs/heads/main
 
-          - script: exit 1
-            displayName: Terminate on PR
-            condition: ne(variables['Build.SourceBranchName'], 'main')
+extends:
+  template: v1/Office.Official.PipelineTemplate.yml@OfficePipelineTemplates
+  parameters:
+    sdl:
+      sourceAnalysisPool:
+        name: Azure-Pipelines-1ESPT-ExDShared
+        os: windows
+        image: windows-latest
+      eslint:
+        environmentsEs2017: true
+        environmentsMocha: true
+        environmentsNode: true
+        parser: '@typescript-eslint/parser'
+        parserOptions: ecmaVersion:2018
+        enableExclusions: true
+        exclusionPatterns: '*.js'
+    stages:
+      - stage: Checks
+        displayName: Checks
+        jobs:
+          - job: Checks
+            pool:
+              name: Azure-Pipelines-1ESPT-ExDShared
+              os: linux
+              image: ubuntu-latest
+            variables:
+              - name: skipComponentGovernanceDetection
+                value: true
+            steps:
+              - checkout: none
+                displayName: Checkout
 
-  - template: template.yml
+              - script: exit 1
+                displayName: Terminate on PR
+                condition: ne(variables['Build.SourceBranchName'], 'main')
+
+      - template: template.yml
