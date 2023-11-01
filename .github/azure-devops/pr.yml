@@ -23,5 +23,6 @@ resources:
 
 extends:
   template: v1/Office.Unofficial.PipelineTemplate.yml@OfficePipelineTemplates
-  stages:
-    - template: template.yml
+  parameters:
+    stages:
+      - template: template.yml
