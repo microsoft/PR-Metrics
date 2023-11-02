@@ -30,6 +30,8 @@ extends:
         name: Azure-Pipelines-1ESPT-ExDShared
         os: windows
         image: windows-latest
+      credscan:
+        suppressionsFile: $(Build.SourcesDirectory)\.github\azure-devops\CredScanSuppressions.json
       eslint:
         environmentsEs2017: true
         environmentsMocha: true

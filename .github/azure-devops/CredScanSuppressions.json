@@ -1,0 +1,9 @@
+{
+  "tool": "Credential Scanner",
+  "suppressions": [
+    {
+      "hash": "BLCOsUjFMDMIRVkA0Pr09Mw0rkfUJmTGNGadmYYeAK8=",
+      "_justification": "Incorrectly identified secret within minified JSON."
+    }
+  ]
+}
