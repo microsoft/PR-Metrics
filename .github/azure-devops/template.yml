@@ -114,4 +114,31 @@ stages:
                 !dist/*
                 !package-lock.json
 
+      - job: Validation
+        displayName: Validation
+        pool:
+          ${{ if parameters.testInstance }}:
+            vmImage: windows-latest
+          ${{ else }}:
+            name: Azure-Pipelines-1ESPT-ExDShared
+            os: windows
+            image: windows-latest
+        steps:
+          - task: PoliCheck@2
+            displayName: PoliCheck
+            inputs:
+              targetType: F
+              optionsFC: 1
+              optionsUEPATH: $(Build.SourcesDirectory)/.github/azure-devops/PoliCheckExclusions.xml
+
+          - task: PublishSecurityAnalysisLogs@3
+            displayName: Guardian – Publish Artifacts
+
+          - task: PostAnalysis@2
+            displayName: Guardian – Perform Analysis
+            inputs:
+              GdnBreakPolicyMinSev: Note
+              GdnBreakGdnToolGosecSeverity: Default
+              GdnBreakPolicy: M365
+
 ...
