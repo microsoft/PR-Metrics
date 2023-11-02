@@ -49,9 +49,6 @@ extends:
               name: Azure-Pipelines-1ESPT-ExDShared
               os: linux
               image: ubuntu-latest
-            variables:
-              - name: skipComponentGovernanceDetection
-                value: true
             steps:
               - checkout: none
                 displayName: Checkout
