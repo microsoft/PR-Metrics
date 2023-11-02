@@ -32,8 +32,6 @@ stages:
             os: macOS
             image: macos-latest
         variables:
-          - name: skipComponentGovernanceDetection
-            value: true
           - name: System.Debug
             value: true
         steps:
@@ -63,8 +61,6 @@ stages:
             os: linux
             image: ubuntu-latest
         variables:
-          - name: skipComponentGovernanceDetection
-            value: true
           - name: System.Debug
             value: true
         steps:
@@ -94,8 +90,6 @@ stages:
             os: windows
             image: windows-latest
         variables:
-          - name: skipComponentGovernanceDetection
-            value: true
           - name: System.Debug
             value: true
         steps:
