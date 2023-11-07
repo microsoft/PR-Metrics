@@ -203,7 +203,7 @@ export default class PullRequestComments {
     }
 
     let metricString = metric.toLocaleString();
-    if (metricString = '0') {
+    if (metricString === '0') {
       metricString = '-';
     }
 
