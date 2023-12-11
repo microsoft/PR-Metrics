@@ -187,11 +187,23 @@ jobs:
           print-valid-files: true
           strict: false
 
+      - name: Validate .markdownlint.json – Download .markdownlint.schema.json
+        shell: pwsh
+        run: Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/DavidAnson/markdownlint/main/schema/markdownlint-config-schema.json' -OutFile '.markdownlint.schema.json'
+
+      - name: Validate .markdownlint.json – Update .markdownlint.schema.json
+        shell: pwsh
+        run: |-
+          $FileContent = Get-Content -Path '.markdownlint.schema.json' -Raw
+          $FileContent = $FileContent -replace 'http://json-schema.org/draft-07/schema#', 'http://json-schema.org/draft-04/schema#'
+          Set-Content -NoNewline -Path '.markdownlint.schema.json' -Value $FileContent
+
       - name: Validate .markdownlint.json
         uses: walbo/validate-json@1c24a27a740a698944ff5b697cb8010a72c55c6b  # v1.1.0
         with:
           files: .markdownlint.json
           print-valid-files: true
+          schema: .markdownlint.schema.json
 
       - name: Validate package.json – Download package.schema.json
         shell: pwsh
