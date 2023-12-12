@@ -330,7 +330,7 @@ describe('pullRequestComments.ts', (): void => {
       expect(result.commentThreadsRequiringDeletion).to.deep.equal([])
       verify(logger.logDebug('* PullRequestComments.getCommentData()')).once()
       verify(logger.logDebug('* PullRequestComments.getMetricsCommentData()')).once()
-    })
+    })a
   })
 
   describe('getMetricsComment()', (): void => {
