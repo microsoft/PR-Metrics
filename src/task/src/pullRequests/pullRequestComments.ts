@@ -202,9 +202,9 @@ export default class PullRequestComments {
       surround = '**'
     }
 
-    let metricString = metric.toLocaleString();
+    let metricString = metric.toLocaleString()
     if (metricString === '0') {
-      metricString = '-';
+      metricString = '-'
     }
 
     return `${surround}${title}${surround}|${surround}${metricString}${surround}\n`
