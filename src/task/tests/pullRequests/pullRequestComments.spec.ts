@@ -359,11 +359,11 @@ describe('pullRequestComments.ts', (): void => {
             '✔ **Thanks for adding tests.**\n' +
             '||Lines\n' +
             '-|-:\n' +
-            `Product Code|${code[0].toLocaleString()}\n` +
-            `Test Code|${code[1].toLocaleString()}\n` +
-            `**Subtotal**|**${code[2].toLocaleString()}**\n` +
-            `Ignored Code|${code[3].toLocaleString()}\n` +
-            `**Total**|**${code[4].toLocaleString()}**\n` +
+            `Product Code|${code[0].toLocaleString() === '0' ? '-' : code[0].toLocaleString()}\n` +
+            `Test Code|${code[1].toLocaleString() === '0' ? '-' : code[1].toLocaleString()}\n` +
+            `**Subtotal**|**${code[2].toLocaleString() === '0' ? '-' : code[2].toLocaleString()}**\n` +
+            `Ignored Code|${code[3].toLocaleString() === '0' ? '-' : code[3].toLocaleString()}\n` +
+            `**Total**|**${code[4].toLocaleString() === '0' ? '-' : code[4].toLocaleString()}**\n` +
             '\n' +
             '[Metrics computed by PR Metrics. Add it to your Azure DevOps and GitHub PRs!](https://aka.ms/PRMetrics/Comment)')
           verify(logger.logDebug('* PullRequestComments.getMetricsComment()')).once()
