@@ -4,11 +4,11 @@
 import { expect } from 'chai'
 import 'reflect-metadata'
 import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito'
-import { GitWritableStream } from '../../src/git/gitWritableStream'
-import AzurePipelinesRunnerInvoker from '../../src/runners/azurePipelinesRunnerInvoker'
-import GitHubRunnerInvoker from '../../src/runners/gitHubRunnerInvoker'
-import RunnerInvoker from '../../src/runners/runnerInvoker'
-import Logger from '../../src/utilities/logger'
+import { GitWritableStream } from '../../src/git/gitWritableStream.js'
+import AzurePipelinesRunnerInvoker from '../../src/runners/azurePipelinesRunnerInvoker.js'
+import GitHubRunnerInvoker from '../../src/runners/gitHubRunnerInvoker.js'
+import RunnerInvoker from '../../src/runners/runnerInvoker.js'
+import Logger from '../../src/utilities/logger.js'
 
 describe('runnerInvoker.ts', function (): void {
   let azurePipelinesRunnerInvoker: AzurePipelinesRunnerInvoker

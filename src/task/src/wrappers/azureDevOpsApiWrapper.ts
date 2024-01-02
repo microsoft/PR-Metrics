@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 import * as azureDevOpsApi from 'azure-devops-node-api'
-import { IRequestHandler } from 'azure-devops-node-api/interfaces/common/VsoBaseInterfaces'
+import { IRequestHandler } from 'azure-devops-node-api/interfaces/common/VsoBaseInterfaces.js'
 import { singleton } from 'tsyringe'
 
 /**

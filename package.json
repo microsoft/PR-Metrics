@@ -93,5 +93,6 @@
     "ignore": [
       "dist"
     ]
-  }
+  },
+  "type": "module"
 }

@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import * as Converter from './converter'
+import * as Converter from './converter.js'
 
 /**
 * Validates that an environment variable is not invalid or `undefined` and throws an `TypeError` if this condition is not met.

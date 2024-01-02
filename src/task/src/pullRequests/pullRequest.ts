@@ -2,10 +2,10 @@
 // Licensed under the MIT License.
 
 import { injectable } from 'tsyringe'
-import CodeMetrics from '../metrics/codeMetrics'
-import RunnerInvoker from '../runners/runnerInvoker'
-import Logger from '../utilities/logger'
-import * as Validator from '../utilities/validator'
+import CodeMetrics from '../metrics/codeMetrics.js'
+import RunnerInvoker from '../runners/runnerInvoker.js'
+import Logger from '../utilities/logger.js'
+import * as Validator from '../utilities/validator.js'
 
 /**
  * A class for managing pull requests.

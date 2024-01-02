@@ -2,9 +2,9 @@
 // Licensed under the MIT License.
 
 import { singleton } from 'tsyringe'
-import RunnerInvoker from '../runners/runnerInvoker'
-import Logger from '../utilities/logger'
-import * as InputsDefault from './inputsDefault'
+import RunnerInvoker from '../runners/runnerInvoker.js'
+import Logger from '../utilities/logger.js'
+import * as InputsDefault from './inputsDefault.js'
 
 /**
  * A class representing inputs passed to the task.

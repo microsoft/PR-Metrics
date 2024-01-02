@@ -2,10 +2,10 @@
 // Licensed under the MIT License.
 
 import { instance, mock, verify, when } from 'ts-mockito'
-import CodeMetricsCalculator from '../src/metrics/codeMetricsCalculator'
-import PullRequestMetrics from '../src/pullRequestMetrics'
-import RunnerInvoker from '../src/runners/runnerInvoker'
-import Logger from '../src/utilities/logger'
+import CodeMetricsCalculator from '../src/metrics/codeMetricsCalculator.js'
+import PullRequestMetrics from '../src/pullRequestMetrics.js'
+import RunnerInvoker from '../src/runners/runnerInvoker.js'
+import Logger from '../src/utilities/logger.js'
 
 describe('pullRequestMetrics.ts', (): void => {
   let codeMetricsCalculator: CodeMetricsCalculator

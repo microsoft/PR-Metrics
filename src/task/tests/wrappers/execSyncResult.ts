@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { IExecSyncResult } from 'azure-pipelines-task-lib/toolrunner'
+import { IExecSyncResult } from 'azure-pipelines-task-lib/toolrunner.js'
 
 /**
  * A wrapper around `IExecSyncResult`, to facilitate testability.

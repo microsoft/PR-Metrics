@@ -4,11 +4,11 @@
 import { expect } from 'chai'
 import 'reflect-metadata'
 import { anyString, deepEqual, instance, mock, verify, when } from 'ts-mockito'
-import Inputs from '../../src/metrics/inputs'
-import * as InputsDefault from '../../src/metrics/inputsDefault'
-import RunnerInvoker from '../../src/runners/runnerInvoker'
-import * as Converter from '../../src/utilities/converter'
-import Logger from '../../src/utilities/logger'
+import Inputs from '../../src/metrics/inputs.js'
+import * as InputsDefault from '../../src/metrics/inputsDefault.js'
+import RunnerInvoker from '../../src/runners/runnerInvoker.js'
+import * as Converter from '../../src/utilities/converter.js'
+import Logger from '../../src/utilities/logger.js'
 
 describe('inputs.ts', (): void => {
   const adjustingAlwaysCloseComment: string = 'Adjusting the always-close-comment mode input to \'false\'.'

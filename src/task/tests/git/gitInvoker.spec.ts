@@ -4,11 +4,11 @@
 import { expect } from 'chai'
 import 'reflect-metadata'
 import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito'
-import GitInvoker from '../../src/git/gitInvoker'
-import { GitWritableStream } from '../../src/git/gitWritableStream'
-import RunnerInvoker from '../../src/runners/runnerInvoker'
-import Logger from '../../src/utilities/logger'
-import * as ExpectExtensions from '../testUtilities/expectExtensions'
+import GitInvoker from '../../src/git/gitInvoker.js'
+import { GitWritableStream } from '../../src/git/gitWritableStream.js'
+import RunnerInvoker from '../../src/runners/runnerInvoker.js'
+import Logger from '../../src/utilities/logger.js'
+import * as ExpectExtensions from '../testUtilities/expectExtensions.js'
 
 describe('gitInvoker.ts', (): void => {
   let logger: Logger

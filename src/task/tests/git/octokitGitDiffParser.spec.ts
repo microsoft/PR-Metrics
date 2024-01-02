@@ -4,11 +4,11 @@
 import { expect } from 'chai'
 import 'reflect-metadata'
 import { instance, mock, verify, when } from 'ts-mockito'
-import OctokitGitDiffParser from '../../src/git/octokitGitDiffParser'
-import Logger from '../../src/utilities/logger'
-import AxiosWrapper from '../../src/wrappers/axiosWrapper'
-import GetPullResponse from '../../src/wrappers/octokitInterfaces/getPullResponse'
-import OctokitWrapper from '../../src/wrappers/octokitWrapper'
+import OctokitGitDiffParser from '../../src/git/octokitGitDiffParser.js'
+import Logger from '../../src/utilities/logger.js'
+import AxiosWrapper from '../../src/wrappers/axiosWrapper.js'
+import GetPullResponse from '../../src/wrappers/octokitInterfaces/getPullResponse.js'
+import OctokitWrapper from '../../src/wrappers/octokitWrapper.js'
 
 describe('octokitGitDiffParser.ts', (): void => {
   let axiosWrapper: AxiosWrapper

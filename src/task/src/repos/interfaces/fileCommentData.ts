@@ -1,8 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
-import PullRequestCommentData from './pullRequestCommentData'
+import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces.js'
+import PullRequestCommentData from './pullRequestCommentData.js'
 
 /**
  * A class representing a file comment.

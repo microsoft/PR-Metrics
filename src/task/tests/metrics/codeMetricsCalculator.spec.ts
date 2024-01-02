@@ -1,18 +1,18 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
+import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces.js'
 import { expect } from 'chai'
 import 'reflect-metadata'
 import { instance, mock, verify, when } from 'ts-mockito'
-import GitInvoker from '../../src/git/gitInvoker'
-import CodeMetricsCalculator from '../../src/metrics/codeMetricsCalculator'
-import PullRequest from '../../src/pullRequests/pullRequest'
-import PullRequestComments from '../../src/pullRequests/pullRequestComments'
-import PullRequestCommentsData from '../../src/pullRequests/pullRequestCommentsData'
-import ReposInvoker from '../../src/repos/reposInvoker'
-import RunnerInvoker from '../../src/runners/runnerInvoker'
-import Logger from '../../src/utilities/logger'
+import GitInvoker from '../../src/git/gitInvoker.js'
+import CodeMetricsCalculator from '../../src/metrics/codeMetricsCalculator.js'
+import PullRequest from '../../src/pullRequests/pullRequest.js'
+import PullRequestComments from '../../src/pullRequests/pullRequestComments.js'
+import PullRequestCommentsData from '../../src/pullRequests/pullRequestCommentsData.js'
+import ReposInvoker from '../../src/repos/reposInvoker.js'
+import RunnerInvoker from '../../src/runners/runnerInvoker.js'
+import Logger from '../../src/utilities/logger.js'
 
 describe('codeMetricsCalculator.ts', (): void => {
   let gitInvoker: GitInvoker

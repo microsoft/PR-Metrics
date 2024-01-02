@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
+import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces.js'
 
 /**
  * A class representing a pull request comment.

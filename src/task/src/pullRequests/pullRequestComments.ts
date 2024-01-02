@@ -1,18 +1,18 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
+import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces.js'
 import { injectable } from 'tsyringe'
-import CodeMetrics from '../metrics/codeMetrics'
-import CodeMetricsData from '../metrics/codeMetricsData'
-import Inputs from '../metrics/inputs'
-import CommentData from '../repos/interfaces/commentData'
-import FileCommentData from '../repos/interfaces/fileCommentData'
-import PullRequestComment from '../repos/interfaces/pullRequestCommentData'
-import ReposInvoker from '../repos/reposInvoker'
-import RunnerInvoker from '../runners/runnerInvoker'
-import Logger from '../utilities/logger'
-import PullRequestCommentsData from './pullRequestCommentsData'
+import CodeMetrics from '../metrics/codeMetrics.js'
+import CodeMetricsData from '../metrics/codeMetricsData.js'
+import Inputs from '../metrics/inputs.js'
+import CommentData from '../repos/interfaces/commentData.js'
+import FileCommentData from '../repos/interfaces/fileCommentData.js'
+import PullRequestComment from '../repos/interfaces/pullRequestCommentData.js'
+import ReposInvoker from '../repos/reposInvoker.js'
+import RunnerInvoker from '../runners/runnerInvoker.js'
+import Logger from '../utilities/logger.js'
+import PullRequestCommentsData from './pullRequestCommentsData.js'
 
 /**
  * A class for managing pull requests comments.

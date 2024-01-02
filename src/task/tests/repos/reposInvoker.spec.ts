@@ -1,17 +1,17 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
+import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces.js'
 import { expect } from 'chai'
 import 'reflect-metadata'
 import { instance, mock, verify } from 'ts-mockito'
-import AzureReposInvoker from '../../src/repos/azureReposInvoker'
-import GitHubReposInvoker from '../../src/repos/gitHubReposInvoker'
-import CommentData from '../../src/repos/interfaces/commentData'
-import PullRequestDetails from '../../src/repos/interfaces/pullRequestDetails'
-import ReposInvoker from '../../src/repos/reposInvoker'
-import Logger from '../../src/utilities/logger'
-import * as ExpectExtensions from '../testUtilities/expectExtensions'
+import AzureReposInvoker from '../../src/repos/azureReposInvoker.js'
+import GitHubReposInvoker from '../../src/repos/gitHubReposInvoker.js'
+import CommentData from '../../src/repos/interfaces/commentData.js'
+import PullRequestDetails from '../../src/repos/interfaces/pullRequestDetails.js'
+import ReposInvoker from '../../src/repos/reposInvoker.js'
+import Logger from '../../src/utilities/logger.js'
+import * as ExpectExtensions from '../testUtilities/expectExtensions.js'
 
 describe('reposInvoker.ts', function (): void {
   let azureReposInvoker: AzureReposInvoker

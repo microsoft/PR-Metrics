@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 import { expect } from 'chai'
-import * as Converter from '../../src/utilities/converter'
+import * as Converter from '../../src/utilities/converter.js'
 
 describe('converter.ts', (): void => {
   describe('toString()', (): void => {

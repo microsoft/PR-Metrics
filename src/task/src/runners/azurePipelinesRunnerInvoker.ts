@@ -1,13 +1,13 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import * as taskLib from 'azure-pipelines-task-lib/task'
-import { IExecOptions } from 'azure-pipelines-task-lib/toolrunner'
+import * as taskLib from 'azure-pipelines-task-lib/task.js'
+import { IExecOptions } from 'azure-pipelines-task-lib/toolrunner.js'
 import * as path from 'path'
 import { singleton } from 'tsyringe'
-import { GitWritableStream } from '../git/gitWritableStream'
-import AzurePipelinesRunnerWrapper from '../wrappers/azurePipelinesRunnerWrapper'
-import IRunnerInvoker from './iRunnerInvoker'
+import { GitWritableStream } from '../git/gitWritableStream.js'
+import AzurePipelinesRunnerWrapper from '../wrappers/azurePipelinesRunnerWrapper.js'
+import IRunnerInvoker from './iRunnerInvoker.js'
 
 /**
  * A class for invoking Azure Pipelines runner functionality.

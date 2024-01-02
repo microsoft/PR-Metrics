@@ -1,16 +1,16 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import * as taskLib from 'azure-pipelines-task-lib/task'
-import { IExecOptions } from 'azure-pipelines-task-lib/toolrunner'
+import * as taskLib from 'azure-pipelines-task-lib/task.js'
+import { IExecOptions } from 'azure-pipelines-task-lib/toolrunner.js'
 import { expect } from 'chai'
 import * as path from 'path'
 import 'reflect-metadata'
 import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito'
-import { GitWritableStream } from '../../src/git/gitWritableStream'
-import AzurePipelinesRunnerInvoker from '../../src/runners/azurePipelinesRunnerInvoker'
-import Logger from '../../src/utilities/logger'
-import AzurePipelinesRunnerWrapper from '../../src/wrappers/azurePipelinesRunnerWrapper'
+import { GitWritableStream } from '../../src/git/gitWritableStream.js'
+import AzurePipelinesRunnerInvoker from '../../src/runners/azurePipelinesRunnerInvoker.js'
+import Logger from '../../src/utilities/logger.js'
+import AzurePipelinesRunnerWrapper from '../../src/wrappers/azurePipelinesRunnerWrapper.js'
 
 describe('azurePipelinesRunnerInvoker.ts', function (): void {
   let azurePipelinesRunnerWrapper: AzurePipelinesRunnerWrapper

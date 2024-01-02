@@ -1,8 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import * as taskLib from 'azure-pipelines-task-lib/task'
-import { IExecOptions } from 'azure-pipelines-task-lib/toolrunner'
+import * as taskLib from 'azure-pipelines-task-lib/task.js'
+import { IExecOptions } from 'azure-pipelines-task-lib/toolrunner.js'
 import { singleton } from 'tsyringe'
 
 /**

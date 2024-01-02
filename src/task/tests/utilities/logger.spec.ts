@@ -3,10 +3,10 @@
 
 import 'reflect-metadata'
 import { instance, mock, verify } from 'ts-mockito'
-import RunnerInvoker from '../../src/runners/runnerInvoker'
-import Logger from '../../src/utilities/logger'
-import ConsoleWrapper from '../../src/wrappers/consoleWrapper'
-import HttpError from '../testUtilities/httpError'
+import RunnerInvoker from '../../src/runners/runnerInvoker.js'
+import Logger from '../../src/utilities/logger.js'
+import ConsoleWrapper from '../../src/wrappers/consoleWrapper.js'
+import HttpError from '../testUtilities/httpError.js'
 
 describe('logger.ts', (): void => {
   let consoleWrapper: ConsoleWrapper

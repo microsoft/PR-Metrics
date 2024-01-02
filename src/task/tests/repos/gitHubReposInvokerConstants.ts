@@ -1,10 +1,10 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import GetIssueCommentsResponse from '../../src/wrappers/octokitInterfaces/getIssueCommentsResponse'
-import GetPullResponse from '../../src/wrappers/octokitInterfaces/getPullResponse'
-import GetReviewCommentsResponse from '../../src/wrappers/octokitInterfaces/getReviewCommentsResponse'
-import ListCommitsResponse from '../../src/wrappers/octokitInterfaces/listCommitsResponse'
+import GetIssueCommentsResponse from '../../src/wrappers/octokitInterfaces/getIssueCommentsResponse.js'
+import GetPullResponse from '../../src/wrappers/octokitInterfaces/getPullResponse.js'
+import GetReviewCommentsResponse from '../../src/wrappers/octokitInterfaces/getReviewCommentsResponse.js'
+import ListCommitsResponse from '../../src/wrappers/octokitInterfaces/listCommitsResponse.js'
 
 /**
  * A mock response for the Octokit API call to get the pull request details.

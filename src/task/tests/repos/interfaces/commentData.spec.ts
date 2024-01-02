@@ -2,9 +2,9 @@
 // Licensed under the MIT License.
 
 import { expect } from 'chai'
-import CommentData from '../../../src/repos/interfaces/commentData'
-import FileCommentData from '../../../src/repos/interfaces/fileCommentData'
-import PullRequestCommentData from '../../../src/repos/interfaces/pullRequestCommentData'
+import CommentData from '../../../src/repos/interfaces/commentData.js'
+import FileCommentData from '../../../src/repos/interfaces/fileCommentData.js'
+import PullRequestCommentData from '../../../src/repos/interfaces/pullRequestCommentData.js'
 
 describe('commentData.ts', (): void => {
   describe('constructor()', (): void => {

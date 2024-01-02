@@ -3,7 +3,7 @@
 
 import 'reflect-metadata'
 import { container } from 'tsyringe'
-import PullRequestMetrics from './src/pullRequestMetrics'
+import PullRequestMetrics from './src/pullRequestMetrics.js'
 
 async function run (): Promise<void> {
   const pullRequestMetrics: PullRequestMetrics = container.resolve(PullRequestMetrics)

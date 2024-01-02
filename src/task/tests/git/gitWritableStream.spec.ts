@@ -4,8 +4,8 @@
 import { expect } from 'chai'
 import 'reflect-metadata'
 import { instance, mock, verify } from 'ts-mockito'
-import { GitWritableStream } from '../../src/git/gitWritableStream'
-import Logger from '../../src/utilities/logger'
+import { GitWritableStream } from '../../src/git/gitWritableStream.js'
+import Logger from '../../src/utilities/logger.js'
 
 describe('gitWritableStream.ts', (): void => {
   let logger: Logger

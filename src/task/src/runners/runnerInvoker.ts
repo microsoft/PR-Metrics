@@ -2,10 +2,10 @@
 // Licensed under the MIT License.
 
 import { singleton } from 'tsyringe'
-import { GitWritableStream } from '../git/gitWritableStream'
-import AzurePipelinesRunnerInvoker from './azurePipelinesRunnerInvoker'
-import GitHubRunnerInvoker from './gitHubRunnerInvoker'
-import IRunnerInvoker from './iRunnerInvoker'
+import { GitWritableStream } from '../git/gitWritableStream.js'
+import AzurePipelinesRunnerInvoker from './azurePipelinesRunnerInvoker.js'
+import GitHubRunnerInvoker from './gitHubRunnerInvoker.js'
+import IRunnerInvoker from './iRunnerInvoker.js'
 
 /**
  * A wrapper around the runner functionality, to facilitate testability. This class cannot use logging functionality as

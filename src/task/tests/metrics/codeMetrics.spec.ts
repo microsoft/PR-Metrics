@@ -4,14 +4,14 @@
 import { expect } from 'chai'
 import 'reflect-metadata'
 import { instance, mock, verify, when } from 'ts-mockito'
-import GitInvoker from '../../src/git/gitInvoker'
-import CodeMetrics from '../../src/metrics/codeMetrics'
-import CodeMetricsData from '../../src/metrics/codeMetricsData'
-import Inputs from '../../src/metrics/inputs'
-import * as InputsDefault from '../../src/metrics/inputsDefault'
-import RunnerInvoker from '../../src/runners/runnerInvoker'
-import Logger from '../../src/utilities/logger'
-import * as ExpectExtensions from '../testUtilities/expectExtensions'
+import GitInvoker from '../../src/git/gitInvoker.js'
+import CodeMetrics from '../../src/metrics/codeMetrics.js'
+import CodeMetricsData from '../../src/metrics/codeMetricsData.js'
+import Inputs from '../../src/metrics/inputs.js'
+import * as InputsDefault from '../../src/metrics/inputsDefault.js'
+import RunnerInvoker from '../../src/runners/runnerInvoker.js'
+import Logger from '../../src/utilities/logger.js'
+import * as ExpectExtensions from '../testUtilities/expectExtensions.js'
 
 describe('codeMetrics.ts', (): void => {
   let gitInvoker: GitInvoker

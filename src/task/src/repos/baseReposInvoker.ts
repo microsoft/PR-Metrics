@@ -1,10 +1,10 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
-import IReposInvoker from './iReposInvoker'
-import CommentData from './interfaces/commentData'
-import PullRequestDetails from './interfaces/pullRequestDetails'
+import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces.js'
+import IReposInvoker from './iReposInvoker.js'
+import CommentData from './interfaces/commentData.js'
+import PullRequestDetails from './interfaces/pullRequestDetails.js'
 
 /**
  * A base class for invoking repository functionality.

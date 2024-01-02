@@ -4,13 +4,13 @@
 import * as minimatch from 'minimatch'
 import * as path from 'path'
 import { singleton } from 'tsyringe'
-import GitInvoker from '../git/gitInvoker'
-import RunnerInvoker from '../runners/runnerInvoker'
-import { FixedLengthArray } from '../utilities/fixedLengthArray'
-import Logger from '../utilities/logger'
-import { CodeFileMetric } from './codeFileMetric'
-import CodeMetricsData from './codeMetricsData'
-import Inputs from './inputs'
+import GitInvoker from '../git/gitInvoker.js'
+import RunnerInvoker from '../runners/runnerInvoker.js'
+import { FixedLengthArray } from '../utilities/fixedLengthArray.js'
+import Logger from '../utilities/logger.js'
+import { CodeFileMetric } from './codeFileMetric.js'
+import CodeMetricsData from './codeMetricsData.js'
+import Inputs from './inputs.js'
 
 /**
  * A class for computing metrics for software code in pull requests.

@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 import { expect } from 'chai'
-import CodeMetricsData from '../../src/metrics/codeMetricsData'
+import CodeMetricsData from '../../src/metrics/codeMetricsData.js'
 
 describe('codeMetricsData.ts', (): void => {
   describe('constructor()', (): void => {

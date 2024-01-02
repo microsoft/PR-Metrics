@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 import { instance } from 'ts-mockito'
-import ResolvableInstanceTarget from './resolvableInstanceTarget'
+import ResolvableInstanceTarget from './resolvableInstanceTarget.js'
 
 /**
  * Gets a resolvable instance of the specified mock object.

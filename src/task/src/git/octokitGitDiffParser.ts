@@ -3,10 +3,10 @@
 
 import { singleton } from 'tsyringe'
 import parseGitDiff, { AddedFile, AnyFileChange, ChangedFile, Chunk, GitDiff, RenamedFile } from 'parse-git-diff'
-import Logger from '../utilities/logger'
-import AxiosWrapper from '../wrappers/axiosWrapper'
-import GetPullResponse from '../wrappers/octokitInterfaces/getPullResponse'
-import OctokitWrapper from '../wrappers/octokitWrapper'
+import Logger from '../utilities/logger.js'
+import AxiosWrapper from '../wrappers/axiosWrapper.js'
+import GetPullResponse from '../wrappers/octokitInterfaces/getPullResponse.js'
+import OctokitWrapper from '../wrappers/octokitWrapper.js'
 
 /**
  * A parser for Git diffs read via Octokit.

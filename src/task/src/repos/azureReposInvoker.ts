@@ -2,20 +2,20 @@
 // Licensed under the MIT License.
 
 import { WebApi } from 'azure-devops-node-api'
-import { IGitApi } from 'azure-devops-node-api/GitApi'
-import { Comment, CommentPosition, CommentThreadStatus, GitPullRequest, GitPullRequestCommentThread } from 'azure-devops-node-api/interfaces/GitInterfaces'
-import { IRequestHandler } from 'azure-devops-node-api/interfaces/common/VsoBaseInterfaces'
+import { IGitApi } from 'azure-devops-node-api/GitApi.js'
+import { Comment, CommentPosition, CommentThreadStatus, GitPullRequest, GitPullRequestCommentThread } from 'azure-devops-node-api/interfaces/GitInterfaces.js'
+import { IRequestHandler } from 'azure-devops-node-api/interfaces/common/VsoBaseInterfaces.js'
 import { singleton } from 'tsyringe'
-import GitInvoker from '../git/gitInvoker'
-import RunnerInvoker from '../runners/runnerInvoker'
-import Logger from '../utilities/logger'
-import * as Validator from '../utilities/validator'
-import AzureDevOpsApiWrapper from '../wrappers/azureDevOpsApiWrapper'
-import BaseReposInvoker from './baseReposInvoker'
-import CommentData from './interfaces/commentData'
-import FileCommentData from './interfaces/fileCommentData'
-import PullRequestCommentData from './interfaces/pullRequestCommentData'
-import PullRequestDetails from './interfaces/pullRequestDetails'
+import GitInvoker from '../git/gitInvoker.js'
+import RunnerInvoker from '../runners/runnerInvoker.js'
+import Logger from '../utilities/logger.js'
+import * as Validator from '../utilities/validator.js'
+import AzureDevOpsApiWrapper from '../wrappers/azureDevOpsApiWrapper.js'
+import BaseReposInvoker from './baseReposInvoker.js'
+import CommentData from './interfaces/commentData.js'
+import FileCommentData from './interfaces/fileCommentData.js'
+import PullRequestCommentData from './interfaces/pullRequestCommentData.js'
+import PullRequestDetails from './interfaces/pullRequestDetails.js'
 
 /**
  * A class for invoking Azure Repos functionality.

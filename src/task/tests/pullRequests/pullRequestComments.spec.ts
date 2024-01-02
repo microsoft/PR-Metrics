@@ -1,23 +1,23 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
+import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces.js'
 import { expect } from 'chai'
 import 'reflect-metadata'
 import { instance, mock, verify, when } from 'ts-mockito'
-import CodeMetrics from '../../src/metrics/codeMetrics'
-import CodeMetricsData from '../../src/metrics/codeMetricsData'
-import Inputs from '../../src/metrics/inputs'
-import PullRequestComments from '../../src/pullRequests/pullRequestComments'
-import PullRequestCommentsData from '../../src/pullRequests/pullRequestCommentsData'
-import CommentData from '../../src/repos/interfaces/commentData'
-import FileCommentData from '../../src/repos/interfaces/fileCommentData'
-import PullRequestCommentData from '../../src/repos/interfaces/pullRequestCommentData'
-import ReposInvoker from '../../src/repos/reposInvoker'
-import RunnerInvoker from '../../src/runners/runnerInvoker'
-import * as Converter from '../../src/utilities/converter'
-import { FixedLengthArray } from '../../src/utilities/fixedLengthArray'
-import Logger from '../../src/utilities/logger'
+import CodeMetrics from '../../src/metrics/codeMetrics.js'
+import CodeMetricsData from '../../src/metrics/codeMetricsData.js'
+import Inputs from '../../src/metrics/inputs.js'
+import PullRequestComments from '../../src/pullRequests/pullRequestComments.js'
+import PullRequestCommentsData from '../../src/pullRequests/pullRequestCommentsData.js'
+import CommentData from '../../src/repos/interfaces/commentData.js'
+import FileCommentData from '../../src/repos/interfaces/fileCommentData.js'
+import PullRequestCommentData from '../../src/repos/interfaces/pullRequestCommentData.js'
+import ReposInvoker from '../../src/repos/reposInvoker.js'
+import RunnerInvoker from '../../src/runners/runnerInvoker.js'
+import * as Converter from '../../src/utilities/converter.js'
+import { FixedLengthArray } from '../../src/utilities/fixedLengthArray.js'
+import Logger from '../../src/utilities/logger.js'
 
 describe('pullRequestComments.ts', (): void => {
   let complexGitPullRequestComments: CommentData

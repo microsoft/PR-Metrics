@@ -1,19 +1,19 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { OctokitOptions } from '@octokit/core/dist-types/types'
+import { OctokitOptions } from '@octokit/core/dist-types/types.js'
 import { Octokit } from 'octokit'
 import { singleton } from 'tsyringe'
-import OctokitGitDiffParser from '../git/octokitGitDiffParser'
-import CreateIssueCommentResponse from './octokitInterfaces/createIssueCommentResponse'
-import CreateReviewCommentResponse from './octokitInterfaces/createReviewCommentResponse'
-import DeleteReviewCommentResponse from './octokitInterfaces/deleteReviewCommentResponse'
-import GetIssueCommentsResponse from './octokitInterfaces/getIssueCommentsResponse'
-import GetPullResponse from './octokitInterfaces/getPullResponse'
-import GetReviewCommentsResponse from './octokitInterfaces/getReviewCommentsResponse'
-import ListCommitsResponse from './octokitInterfaces/listCommitsResponse'
-import UpdateIssueCommentResponse from './octokitInterfaces/updateIssueCommentResponse'
-import UpdatePullResponse from './octokitInterfaces/updatePullResponse'
+import OctokitGitDiffParser from '../git/octokitGitDiffParser.js'
+import CreateIssueCommentResponse from './octokitInterfaces/createIssueCommentResponse.js'
+import CreateReviewCommentResponse from './octokitInterfaces/createReviewCommentResponse.js'
+import DeleteReviewCommentResponse from './octokitInterfaces/deleteReviewCommentResponse.js'
+import GetIssueCommentsResponse from './octokitInterfaces/getIssueCommentsResponse.js'
+import GetPullResponse from './octokitInterfaces/getPullResponse.js'
+import GetReviewCommentsResponse from './octokitInterfaces/getReviewCommentsResponse.js'
+import ListCommitsResponse from './octokitInterfaces/listCommitsResponse.js'
+import UpdateIssueCommentResponse from './octokitInterfaces/updateIssueCommentResponse.js'
+import UpdatePullResponse from './octokitInterfaces/updatePullResponse.js'
 
 /**
  * A wrapper around the Octokit (GitHub) API, to facilitate testability.

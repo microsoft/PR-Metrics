@@ -2,10 +2,10 @@
 // Licensed under the MIT License.
 
 import { singleton } from 'tsyringe'
-import RunnerInvoker from '../runners/runnerInvoker'
-import Logger from '../utilities/logger'
-import * as Validator from '../utilities/validator'
-import { GitWritableStream } from './gitWritableStream'
+import RunnerInvoker from '../runners/runnerInvoker.js'
+import Logger from '../utilities/logger.js'
+import * as Validator from '../utilities/validator.js'
+import { GitWritableStream } from './gitWritableStream.js'
 
 /**
  * A class for invoking Git commands.

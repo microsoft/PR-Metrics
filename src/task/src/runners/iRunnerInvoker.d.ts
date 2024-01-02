@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { GitWritableStream } from '../git/gitWritableStream'
+import { GitWritableStream } from '../git/gitWritableStream.js'
 
 /**
  * An interface for invoking runner functionality with any underlying runner.

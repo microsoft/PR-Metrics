@@ -1,9 +1,9 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
+import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces.js'
 import { expect } from 'chai'
-import PullRequestCommentsData from '../../src/pullRequests/pullRequestCommentsData'
+import PullRequestCommentsData from '../../src/pullRequests/pullRequestCommentsData.js'
 
 describe('pullRequestCommentsData.ts', (): void => {
   describe('constructor()', (): void => {
