@@ -152,23 +152,6 @@ jobs:
             $FileContents = $FileContents[0..$Index]
             Set-Content -Path $FilePath -Value $FileContents
 
-      - name: npm – Install Node.js
-        uses: actions/setup-node@b39b52d1213e96004bfcb1c61a8a6fa8ab84f3e8 # v4.0.1
-        with:
-          node-version: 16.10.0  # The latest version with NPMv7, which is required to maintain a package-lock.json lockfileVersion of 2.
-
-      - name: npm – Install NCU
-        run: npm install -g npm-check-updates
-
-      - name: npm – Update Dependencies
-        run: ncu -u
-
-      - name: npm – Update Transitive Dependencies
-        run: npm update
-
-      - name: npm – Build Package
-        run: npm run build:package
-
       - name: Git – Setup Authentication
         run: gh auth setup-git
         env:
@@ -187,7 +170,7 @@ jobs:
         run: git add -A
 
       - name: Git – Commit Changed Files
-        run: git commit -m "Updating dist folder"
+        run: git commit -m "Updating version number"
 
       - name: Git – Push Changed Files
         run: git push --set-upstream origin release/v${{ env.version }}
@@ -209,5 +192,31 @@ jobs:
         run: gh pr comment --body-file "./.github/workflows/support/release-phase-1-comment.md"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: npm – Install Node.js
+        uses: actions/setup-node@b39b52d1213e96004bfcb1c61a8a6fa8ab84f3e8 # v4.0.1
+        with:
+          node-version: 16.10.0  # The latest version with NPMv7, which is required to maintain a package-lock.json lockfileVersion of 2.
+
+      - name: npm – Install NCU
+        run: npm install -g npm-check-updates
+
+      - name: npm – Update Dependencies
+        run: ncu -u
+
+      - name: npm – Update Transitive Dependencies
+        run: npm update
+
+      - name: npm – Build Package
+        run: npm run build:package
+
+      - name: Git – Add Changed Files
+        run: git add -A
+
+      - name: Git – Commit Changed Files
+        run: git commit -m "Updating dist folder"
+
+      - name: Git – Push Changed Files
+        run: git push --set-upstream origin release/v${{ env.version }}
 
 ...
