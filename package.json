@@ -15,7 +15,7 @@
     "clean": "rimraf debug && rimraf release",
     "deploy": "npm run build:release && exitzero tfx build tasks delete --task-id 907d3b28-6b37-4ac7-ac75-9631ee53e512 --no-prompt && tfx build tasks upload --task-path release/task --no-prompt",
     "lint": "eslint --fix **/*.ts",
-    "test": "npm run build:debug && cd debug/task && nyc --reporter=text --reporter=text-summary mocha tests/**/*.spec.js --check-leaks --color"
+    "test": "npm run build:debug && cd debug/task && c8 --reporter=text --reporter=text-summary mocha tests/**/*.spec.js"
   },
   "repository": {
     "type": "git",
@@ -60,8 +60,7 @@
     "@babel/cli": "7.23.4",
     "@babel/core": "7.23.7",
     "@babel/preset-env": "7.23.7",
-    "@istanbuljs/nyc-config-typescript": "1.0.2",
-    "@tsconfig/node10": "1.0.9",
+    "@tsconfig/node20": "20.1.2",
     "@types/chai": "4.3.11",
     "@types/glob": "8.1.0",
     "@types/isomorphic-fetch": "0.0.39",
@@ -71,7 +70,8 @@
     "@typescript-eslint/parser": "6.17.0",
     "@vercel/ncc": "0.38.1",
     "babel-plugin-transform-globalthis": "1.0.0",
-    "chai": "4.3.10",
+    "c8": "8.0.1",
+    "chai": "5.0.0",
     "cross-env": "7.0.3",
     "eslint": "8.56.0",
     "eslint-config-standard": "17.1.0",
@@ -83,15 +83,11 @@
     "mkdirp": "3.0.1",
     "mocha": "10.2.0",
     "ncp": "2.0.0",
-    "nyc": "15.1.0",
     "source-map-support": "0.5.21",
     "tfx-cli": "0.16.0",
     "ts-mockito": "2.6.1",
     "typedoc": "0.25.6",
     "typescript": "5.3.3"
-  },
-  "overrides": {
-    "xml2js": "0.5.0"
   },
   "ts-standard": {
     "ignore": [
