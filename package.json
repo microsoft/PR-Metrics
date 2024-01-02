@@ -71,7 +71,7 @@
     "@vercel/ncc": "0.38.1",
     "babel-plugin-transform-globalthis": "1.0.0",
     "c8": "8.0.1",
-    "chai": "5.0.0",
+    "chai": "4.3.10",
     "cross-env": "7.0.3",
     "eslint": "8.56.0",
     "eslint-config-standard": "17.1.0",
