@@ -13,6 +13,12 @@ import AzurePipelinesRunnerWrapper from '../../src/wrappers/azurePipelinesRunner
 import ConsoleWrapper from '../../src/wrappers/consoleWrapper.js'
 import GitHubRunnerWrapper from '../../src/wrappers/gitHubRunnerWrapper.js'
 
+import { fileURLToPath } from 'url'
+import { dirname } from 'path'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+
 describe('gitHubRunnerInvoker.ts', function (): void {
   const resourcePath: string = path.join(__dirname, '../../Strings/resources.resjson/en-US/')
 

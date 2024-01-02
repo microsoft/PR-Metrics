@@ -9,6 +9,12 @@ import PackageJson from './jsonTypes/packageJson.js'
 import TaskJson from './jsonTypes/taskJson.js'
 import VssExtensionJson from './jsonTypes/vssExtensionJson.js'
 
+import { fileURLToPath } from 'url'
+import { dirname } from 'path'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+
 describe('task.json', (): void => {
   const basePath: string = path.join(__dirname, '..')
   const taskJsonFile: string = path.join(basePath, 'task.json')

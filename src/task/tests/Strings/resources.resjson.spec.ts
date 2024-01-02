@@ -8,6 +8,12 @@ import * as path from 'path'
 import ResourcesJson from '../../src/jsonTypes/resourcesJson.js'
 import TaskJson from '../jsonTypes/taskJson.js'
 
+import { fileURLToPath } from 'url'
+import { dirname } from 'path'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+
 describe('resources.resjson', (): void => {
   const basePath: string = path.join(__dirname, '..', '..')
 
