@@ -118,6 +118,9 @@ stages:
             os: windows
             image: windows-latest
         steps:
+          - task: ComponentGovernanceComponentDetection@0
+            displayName: Component Detection
+
           - task: PoliCheck@2
             displayName: PoliCheck
             inputs:
