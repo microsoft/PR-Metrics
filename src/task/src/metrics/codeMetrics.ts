@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import minimatch from 'minimatch'
+import * as minimatch from 'minimatch'
 import * as path from 'path'
 import { singleton } from 'tsyringe'
 import GitInvoker from '../git/gitInvoker'
@@ -23,7 +23,7 @@ export default class CodeMetrics {
   private readonly _logger: Logger
   private readonly _runnerInvoker: RunnerInvoker
 
-  private static readonly _minimatchOptions: minimatch.IOptions = {
+  private static readonly _minimatchOptions: minimatch.MinimatchOptions = {
     dot: true
   }
 
