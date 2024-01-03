@@ -8,7 +8,9 @@
     "noUncheckedIndexedAccess": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "removeComments": true
+    "removeComments": true,
+    "module": "node16",
+    "moduleResolution": "node16"
   },
   "extends": "@tsconfig/node16/tsconfig.json"
 }
