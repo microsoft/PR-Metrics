@@ -6,7 +6,7 @@
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
     "module": "ESNext",
-    "moduleResolution": "node",
+    "moduleResolution": "Node10",
     "noFallthroughCasesInSwitch": true,
     "noImplicitReturns": true,
     "noUncheckedIndexedAccess": true,
@@ -15,6 +15,5 @@
     "removeComments": true,
     "skipLibCheck": true,
     "strict": true
-  },
-  "extends": "@tsconfig/node10/tsconfig.json"
+  }
 }

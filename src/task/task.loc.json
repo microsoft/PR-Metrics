@@ -11,7 +11,7 @@
   "visibility": [
     "Build"
   ],
-  "minimumAgentVersion": "2.181.2",
+  "minimumAgentVersion": "3.232.1",
   "version": {
     "Major": 1,
     "Minor": 5,
