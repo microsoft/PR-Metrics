@@ -11,7 +11,8 @@ import ResourcesJson from '../../src/jsonTypes/resourcesJson.js'
 import TaskJson from '../jsonTypes/taskJson.js'
 
 describe('resources.resjson', (): void => {
-  const basePath: string = path.join(dirname(fileURLToPath(import.meta.url)), '..', '..')
+  const workingPath: string = typeof __dirname !== 'undefined' ? __dirname : dirname(fileURLToPath(import.meta.url))
+  const basePath: string = path.join(workingPath, '..', '..')
 
   const languagesPath: string = path.join(basePath, 'Strings', 'resources.resjson')
   const languages: string[] = fs.readdirSync(languagesPath)

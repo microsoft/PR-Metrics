@@ -6,7 +6,6 @@ import { singleton } from 'tsyringe'
 /**
  * A wrapper around the console, to facilitate testability.
  */
-
 @singleton()
 export default class ConsoleWrapper {
   /**

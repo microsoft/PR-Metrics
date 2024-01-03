@@ -12,7 +12,8 @@ import TaskJson from './jsonTypes/taskJson.js'
 import VssExtensionJson from './jsonTypes/vssExtensionJson.js'
 
 describe('task.json', (): void => {
-  const basePath: string = path.join(dirname(fileURLToPath(import.meta.url)), '..')
+  const workingPath: string = typeof __dirname !== 'undefined' ? __dirname : dirname(fileURLToPath(import.meta.url))
+  const basePath: string = path.join(workingPath, '..')
   const taskJsonFile: string = path.join(basePath, 'task.json')
   const taskJsonContents: string = fs.readFileSync(taskJsonFile, 'utf8')
   const taskJson: TaskJson = JSON.parse(taskJsonContents) as TaskJson

@@ -8,8 +8,9 @@ import { fileURLToPath } from 'url'
 import PullRequestMetrics from './src/pullRequestMetrics.js'
 
 async function run (): Promise<void> {
+  const workingPath: string = typeof __dirname !== 'undefined' ? __dirname : dirname(fileURLToPath(import.meta.url))
   const pullRequestMetrics: PullRequestMetrics = container.resolve(PullRequestMetrics)
-  pullRequestMetrics.run(dirname(fileURLToPath(import.meta.url)))
+  pullRequestMetrics.run(workingPath)
 }
 
 run().finally((): void => {})

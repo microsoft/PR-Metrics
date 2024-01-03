@@ -16,7 +16,8 @@ import ConsoleWrapper from '../../src/wrappers/consoleWrapper.js'
 import GitHubRunnerWrapper from '../../src/wrappers/gitHubRunnerWrapper.js'
 
 describe('gitHubRunnerInvoker.ts', function (): void {
-  const resourcePath: string = path.join(dirname(fileURLToPath(import.meta.url)), '../../Strings/resources.resjson/en-US/')
+  const workingPath: string = typeof __dirname !== 'undefined' ? __dirname : dirname(fileURLToPath(import.meta.url))
+  const resourcePath: string = path.join(workingPath, '../../Strings/resources.resjson/en-US/')
 
   let azurePipelinesRunnerWrapper: AzurePipelinesRunnerWrapper
   let consoleWrapper: ConsoleWrapper
