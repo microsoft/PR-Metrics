@@ -10,7 +10,11 @@
     "noUnusedParameters": true,
     "removeComments": true,
     "module": "node16",
-    "moduleResolution": "node16"
+    "moduleResolution": "node16",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
   },
   "extends": "@tsconfig/node16/tsconfig.json"
 }
