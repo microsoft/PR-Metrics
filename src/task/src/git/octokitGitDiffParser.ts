@@ -8,6 +8,8 @@ import AxiosWrapper from '../wrappers/axiosWrapper.js'
 import GetPullResponse from '../wrappers/octokitInterfaces/getPullResponse.js'
 import OctokitWrapper from '../wrappers/octokitWrapper.js'
 
+type parseGitDiffType = (diff: string) => GitDiff
+
 /**
  * A parser for Git diffs read via Octokit.
  */
@@ -85,7 +87,7 @@ export default class OctokitGitDiffParser {
 
     // Process the diff for each file.
     diffs.forEach((diff: string): void => {
-      const diffParsed: GitDiff = parseGitDiff(diff)
+      const diffParsed: GitDiff = (parseGitDiff as unknown as parseGitDiffType)(diff)
 
       // Process the diff for a single file.
       diffParsed.files.forEach((file: AnyFileChange): void => {
