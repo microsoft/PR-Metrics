@@ -2,9 +2,8 @@
 // Licensed under the MIT License.
 
 import * as actionsExec from '@actions/exec'
-import { dirname } from 'path'
+import filedirname from 'filedirname'
 import { expect } from 'chai'
-import { fileURLToPath } from 'url'
 import * as path from 'path'
 import 'reflect-metadata'
 import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito'
@@ -16,8 +15,7 @@ import ConsoleWrapper from '../../src/wrappers/consoleWrapper.js'
 import GitHubRunnerWrapper from '../../src/wrappers/gitHubRunnerWrapper.js'
 
 describe('gitHubRunnerInvoker.ts', function (): void {
-  const workingPath: string = typeof __dirname !== 'undefined' ? __dirname : dirname(fileURLToPath(import.meta.url))
-  const resourcePath: string = path.join(workingPath, '../../Strings/resources.resjson/en-US/')
+  const resourcePath: string = path.join(filedirname()[1], '../../Strings/resources.resjson/en-US/')
 
   let azurePipelinesRunnerWrapper: AzurePipelinesRunnerWrapper
   let consoleWrapper: ConsoleWrapper

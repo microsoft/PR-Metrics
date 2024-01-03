@@ -3,14 +3,12 @@
 
 import 'reflect-metadata'
 import { container } from 'tsyringe'
-import { dirname } from 'path'
-import { fileURLToPath } from 'url'
+import filedirname from 'filedirname'
 import PullRequestMetrics from './src/pullRequestMetrics.js'
 
 async function run (): Promise<void> {
-  const workingPath: string = typeof __dirname !== 'undefined' ? __dirname : dirname(fileURLToPath(import.meta.url))
   const pullRequestMetrics: PullRequestMetrics = container.resolve(PullRequestMetrics)
-  pullRequestMetrics.run(workingPath)
+  pullRequestMetrics.run(filedirname()[1])
 }
 
 run().finally((): void => {})

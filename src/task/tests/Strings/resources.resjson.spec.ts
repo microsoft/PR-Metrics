@@ -1,9 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { dirname } from 'path'
 import { expect } from 'chai'
-import { fileURLToPath } from 'url'
+import filedirname from 'filedirname'
 import * as fs from 'fs'
 import { globSync } from 'glob'
 import * as path from 'path'
@@ -11,8 +10,7 @@ import ResourcesJson from '../../src/jsonTypes/resourcesJson.js'
 import TaskJson from '../jsonTypes/taskJson.js'
 
 describe('resources.resjson', (): void => {
-  const workingPath: string = typeof __dirname !== 'undefined' ? __dirname : dirname(fileURLToPath(import.meta.url))
-  const basePath: string = path.join(workingPath, '..', '..')
+  const basePath: string = path.join(filedirname()[1], '..', '..')
 
   const languagesPath: string = path.join(basePath, 'Strings', 'resources.resjson')
   const languages: string[] = fs.readdirSync(languagesPath)

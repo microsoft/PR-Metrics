@@ -1,9 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { dirname } from 'path'
 import { expect } from 'chai'
-import { fileURLToPath } from 'url'
+import filedirname from 'filedirname'
 import * as fs from 'fs'
 import * as path from 'path'
 import ResourcesJson from '../src/jsonTypes/resourcesJson.js'
@@ -12,8 +11,7 @@ import TaskJson from './jsonTypes/taskJson.js'
 import VssExtensionJson from './jsonTypes/vssExtensionJson.js'
 
 describe('task.json', (): void => {
-  const workingPath: string = typeof __dirname !== 'undefined' ? __dirname : dirname(fileURLToPath(import.meta.url))
-  const basePath: string = path.join(workingPath, '..')
+  const basePath: string = path.join(filedirname()[1], '..')
   const taskJsonFile: string = path.join(basePath, 'task.json')
   const taskJsonContents: string = fs.readFileSync(taskJsonFile, 'utf8')
   const taskJson: TaskJson = JSON.parse(taskJsonContents) as TaskJson
