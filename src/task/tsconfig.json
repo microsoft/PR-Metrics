@@ -9,12 +9,16 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "removeComments": true,
+
+    "lib": ["es2021"],
     "module": "node16",
-    "moduleResolution": "node16",
+    "target": "es2021",
+
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "node16"
   },
   "extends": "@tsconfig/node16/tsconfig.json"
 }
