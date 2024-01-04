@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { expect } from 'chai'
+import assert from 'node:assert/strict'
 import 'reflect-metadata'
 import { instance, mock, verify, when } from 'ts-mockito'
 import CodeMetrics from '../../src/metrics/codeMetrics'
@@ -55,7 +55,7 @@ describe('pullRequest.ts', (): void => {
       const result: boolean = pullRequest.isPullRequest
 
       // Assert
-      expect(result).to.equal(true)
+      assert.equal(result, true)
       verify(logger.logDebug('* PullRequest.isPullRequest')).once()
 
       // Finalization
@@ -73,7 +73,7 @@ describe('pullRequest.ts', (): void => {
       const result: boolean = pullRequest.isPullRequest
 
       // Assert
-      expect(result).to.equal(false)
+      assert.equal(result, false)
       verify(logger.logDebug('* PullRequest.isPullRequest')).once()
 
       // Finalization
@@ -90,7 +90,7 @@ describe('pullRequest.ts', (): void => {
       const result: boolean = pullRequest.isPullRequest
 
       // Assert
-      expect(result).to.equal(true)
+      assert.equal(result, true)
       verify(logger.logDebug('* PullRequest.isPullRequest')).once()
 
       // Finalization
@@ -106,7 +106,7 @@ describe('pullRequest.ts', (): void => {
       const result: boolean = pullRequest.isPullRequest
 
       // Assert
-      expect(result).to.equal(false)
+      assert.equal(result, false)
       verify(logger.logDebug('* PullRequest.isPullRequest')).once()
     })
   })
@@ -121,7 +121,7 @@ describe('pullRequest.ts', (): void => {
       const result: boolean | string = pullRequest.isSupportedProvider
 
       // Assert
-      expect(result).to.equal(true)
+      assert.equal(result, true)
       verify(logger.logDebug('* PullRequest.isSupportedProvider')).once()
 
       // Finalization
@@ -137,7 +137,7 @@ describe('pullRequest.ts', (): void => {
       const func: () => boolean | string = () => pullRequest.isSupportedProvider
 
       // Assert
-      expect(func).to.throw('\'BUILD_REPOSITORY_PROVIDER\', accessed within \'PullRequest.isSupportedProvider\', is invalid, null, or undefined \'undefined\'.')
+      assert.throws(func, TypeError('\'BUILD_REPOSITORY_PROVIDER\', accessed within \'PullRequest.isSupportedProvider\', is invalid, null, or undefined \'undefined\'.'))
       verify(logger.logDebug('* PullRequest.isSupportedProvider')).once()
     })
 
@@ -158,7 +158,7 @@ describe('pullRequest.ts', (): void => {
           const result: boolean | string = pullRequest.isSupportedProvider
 
           // Assert
-          expect(result).to.equal(true)
+          assert.equal(result, true)
           verify(logger.logDebug('* PullRequest.isSupportedProvider')).once()
 
           // Finalization
@@ -176,7 +176,7 @@ describe('pullRequest.ts', (): void => {
       const result: boolean | string = pullRequest.isSupportedProvider
 
       // Assert
-      expect(result).to.equal('Other')
+      assert.equal(result, 'Other')
       verify(logger.logDebug('* PullRequest.isSupportedProvider')).once()
 
       // Finalization
@@ -193,7 +193,7 @@ describe('pullRequest.ts', (): void => {
       const result: string | null = pullRequest.getUpdatedDescription('Description')
 
       // Assert
-      expect(result).to.equal(null)
+      assert.equal(result, null)
       verify(logger.logDebug('* PullRequest.getUpdatedDescription()')).once()
     })
 
@@ -213,7 +213,7 @@ describe('pullRequest.ts', (): void => {
           const result: string | null = pullRequest.getUpdatedDescription(currentDescription)
 
           // Assert
-          expect(result).to.equal('❌ **Add a description.**')
+          assert.equal(result, '❌ **Add a description.**')
           verify(logger.logDebug('* PullRequest.getUpdatedDescription()')).once()
         })
       })
@@ -229,7 +229,7 @@ describe('pullRequest.ts', (): void => {
       const result: string | null = await pullRequest.getUpdatedTitle('S✔ ◾ Title')
 
       // Assert
-      expect(result).to.equal(null)
+      assert.equal(result, null)
       verify(logger.logDebug('* PullRequest.getUpdatedTitle()')).once()
     })
 
@@ -253,7 +253,7 @@ describe('pullRequest.ts', (): void => {
           const result: string | null = await pullRequest.getUpdatedTitle(currentTitle)
 
           // Assert
-          expect(result).to.equal(`S✔ ◾ ${currentTitle}`)
+          assert.equal(result, `S✔ ◾ ${currentTitle}`)
           verify(logger.logDebug('* PullRequest.getUpdatedTitle()')).once()
         })
       })
@@ -294,7 +294,7 @@ describe('pullRequest.ts', (): void => {
           const result: string | null = await pullRequest.getUpdatedTitle(currentTitle)
 
           // Assert
-          expect(result).to.equal('PREFIX ◾ Title')
+          assert.equal(result, 'PREFIX ◾ Title')
           verify(logger.logDebug('* PullRequest.getUpdatedTitle()')).once()
         })
       })

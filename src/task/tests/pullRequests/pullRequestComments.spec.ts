@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
-import { expect } from 'chai'
+import assert from 'node:assert/strict'
 import 'reflect-metadata'
 import { instance, mock, verify, when } from 'ts-mockito'
 import CodeMetrics from '../../src/metrics/codeMetrics'
@@ -75,7 +75,7 @@ describe('pullRequestComments.ts', (): void => {
       const result: string = pullRequestComments.noReviewRequiredComment
 
       // Assert
-      expect(result).to.equal('❗ **This file doesn\'t require review.**')
+      assert.equal(result, '❗ **This file doesn\'t require review.**')
       verify(logger.logDebug('* PullRequestComments.noReviewRequiredComment')).once()
     })
   })
@@ -91,12 +91,12 @@ describe('pullRequestComments.ts', (): void => {
       const result: PullRequestCommentsData = await pullRequestComments.getCommentData()
 
       // Assert
-      expect(result.metricsCommentThreadId).to.equal(null)
-      expect(result.metricsCommentThreadStatus).to.equal(null)
-      expect(result.metricsCommentContent).to.equal(null)
-      expect(result.filesNotRequiringReview).to.deep.equal([])
-      expect(result.deletedFilesNotRequiringReview).to.deep.equal([])
-      expect(result.commentThreadsRequiringDeletion).to.deep.equal([])
+      assert.equal(result.metricsCommentThreadId, null)
+      assert.equal(result.metricsCommentThreadStatus, null)
+      assert.equal(result.metricsCommentContent, null)
+      assert.deepEqual(result.filesNotRequiringReview, [])
+      assert.deepEqual(result.deletedFilesNotRequiringReview, [])
+      assert.deepEqual(result.commentThreadsRequiringDeletion, [])
       verify(logger.logDebug('* PullRequestComments.getCommentData()')).once()
     })
 
@@ -118,12 +118,12 @@ describe('pullRequestComments.ts', (): void => {
           const result: PullRequestCommentsData = await pullRequestComments.getCommentData()
 
           // Assert
-          expect(result.metricsCommentThreadId).to.equal(20)
-          expect(result.metricsCommentThreadStatus).to.equal(CommentThreadStatus.Unknown)
-          expect(result.metricsCommentContent).to.equal('# PR Metrics\n')
-          expect(result.filesNotRequiringReview).to.deep.equal([])
-          expect(result.deletedFilesNotRequiringReview).to.deep.equal([])
-          expect(result.commentThreadsRequiringDeletion).to.deep.equal([])
+          assert.equal(result.metricsCommentThreadId, 20)
+          assert.equal(result.metricsCommentThreadStatus, CommentThreadStatus.Unknown)
+          assert.equal(result.metricsCommentContent, '# PR Metrics\n')
+          assert.deepEqual(result.filesNotRequiringReview, [])
+          assert.deepEqual(result.deletedFilesNotRequiringReview, [])
+          assert.deepEqual(result.commentThreadsRequiringDeletion, [])
           verify(logger.logDebug('* PullRequestComments.getCommentData()')).once()
           verify(logger.logDebug('* PullRequestComments.getMetricsCommentData()')).atLeast(1)
         })
@@ -164,12 +164,12 @@ describe('pullRequestComments.ts', (): void => {
           const result: PullRequestCommentsData = await pullRequestComments.getCommentData()
 
           // Assert
-          expect(result.metricsCommentThreadId).to.equal(null)
-          expect(result.metricsCommentThreadStatus).to.equal(null)
-          expect(result.metricsCommentContent).to.equal(null)
-          expect(result.filesNotRequiringReview).to.deep.equal(filesNotRequiringReview)
-          expect(result.deletedFilesNotRequiringReview).to.deep.equal([])
-          expect(result.commentThreadsRequiringDeletion).to.deep.equal([])
+          assert.equal(result.metricsCommentThreadId, null)
+          assert.equal(result.metricsCommentThreadStatus, null)
+          assert.equal(result.metricsCommentContent, null)
+          assert.deepEqual(result.filesNotRequiringReview, filesNotRequiringReview)
+          assert.deepEqual(result.deletedFilesNotRequiringReview, [])
+          assert.deepEqual(result.commentThreadsRequiringDeletion, [])
           verify(logger.logDebug('* PullRequestComments.getCommentData()')).once()
           verify(logger.logDebug('* PullRequestComments.getFilesRequiringCommentUpdates()')).atLeast(1)
         })
@@ -210,12 +210,12 @@ describe('pullRequestComments.ts', (): void => {
           const result: PullRequestCommentsData = await pullRequestComments.getCommentData()
 
           // Assert
-          expect(result.metricsCommentThreadId).to.equal(null)
-          expect(result.metricsCommentThreadStatus).to.equal(null)
-          expect(result.metricsCommentContent).to.equal(null)
-          expect(result.filesNotRequiringReview).to.deep.equal([])
-          expect(result.deletedFilesNotRequiringReview).to.deep.equal(deletedFilesNotRequiringReview)
-          expect(result.commentThreadsRequiringDeletion).to.deep.equal([])
+          assert.equal(result.metricsCommentThreadId, null)
+          assert.equal(result.metricsCommentThreadStatus, null)
+          assert.equal(result.metricsCommentContent, null)
+          assert.deepEqual(result.filesNotRequiringReview, [])
+          assert.deepEqual(result.deletedFilesNotRequiringReview, deletedFilesNotRequiringReview)
+          assert.deepEqual(result.commentThreadsRequiringDeletion, [])
           verify(logger.logDebug('* PullRequestComments.getCommentData()')).once()
           verify(logger.logDebug('* PullRequestComments.getFilesRequiringCommentUpdates()')).atLeast(1)
         })
@@ -232,12 +232,12 @@ describe('pullRequestComments.ts', (): void => {
       const result: PullRequestCommentsData = await pullRequestComments.getCommentData()
 
       // Assert
-      expect(result.metricsCommentThreadId).to.equal(20)
-      expect(result.metricsCommentThreadStatus).to.equal(CommentThreadStatus.Active)
-      expect(result.metricsCommentContent).to.equal('# PR Metrics\n')
-      expect(result.filesNotRequiringReview).to.deep.equal(['folder/file1.ts'])
-      expect(result.deletedFilesNotRequiringReview).to.deep.equal([])
-      expect(result.commentThreadsRequiringDeletion).to.deep.equal([])
+      assert.equal(result.metricsCommentThreadId, 20)
+      assert.equal(result.metricsCommentThreadStatus, CommentThreadStatus.Active)
+      assert.equal(result.metricsCommentContent, '# PR Metrics\n')
+      assert.deepEqual(result.filesNotRequiringReview, ['folder/file1.ts'])
+      assert.deepEqual(result.deletedFilesNotRequiringReview, [])
+      assert.deepEqual(result.commentThreadsRequiringDeletion, [])
       verify(logger.logDebug('* PullRequestComments.getCommentData()')).once()
       verify(logger.logDebug('* PullRequestComments.getMetricsCommentData()')).once()
       verify(logger.logDebug('* PullRequestComments.getFilesRequiringCommentUpdates()')).twice()
@@ -253,12 +253,12 @@ describe('pullRequestComments.ts', (): void => {
       const result: PullRequestCommentsData = await pullRequestComments.getCommentData()
 
       // Assert
-      expect(result.metricsCommentThreadId).to.equal(20)
-      expect(result.metricsCommentThreadStatus).to.equal(CommentThreadStatus.Active)
-      expect(result.metricsCommentContent).to.equal('# PR Metrics\n')
-      expect(result.filesNotRequiringReview).to.deep.equal([])
-      expect(result.deletedFilesNotRequiringReview).to.deep.equal(['folder/file1.ts'])
-      expect(result.commentThreadsRequiringDeletion).to.deep.equal([])
+      assert.equal(result.metricsCommentThreadId, 20)
+      assert.equal(result.metricsCommentThreadStatus, CommentThreadStatus.Active)
+      assert.equal(result.metricsCommentContent, '# PR Metrics\n')
+      assert.deepEqual(result.filesNotRequiringReview, [])
+      assert.deepEqual(result.deletedFilesNotRequiringReview, ['folder/file1.ts'])
+      assert.deepEqual(result.commentThreadsRequiringDeletion, [])
       verify(logger.logDebug('* PullRequestComments.getCommentData()')).once()
       verify(logger.logDebug('* PullRequestComments.getMetricsCommentData()')).once()
       verify(logger.logDebug('* PullRequestComments.getFilesRequiringCommentUpdates()')).twice()
@@ -275,12 +275,12 @@ describe('pullRequestComments.ts', (): void => {
       const result: PullRequestCommentsData = await pullRequestComments.getCommentData()
 
       // Assert
-      expect(result.metricsCommentThreadId).to.equal(20)
-      expect(result.metricsCommentThreadStatus).to.equal(CommentThreadStatus.Active)
-      expect(result.metricsCommentContent).to.equal('# PR Metrics\n')
-      expect(result.filesNotRequiringReview).to.deep.equal(['folder/file1.ts'])
-      expect(result.deletedFilesNotRequiringReview).to.deep.equal(['file3.ts'])
-      expect(result.commentThreadsRequiringDeletion).to.deep.equal([])
+      assert.equal(result.metricsCommentThreadId, 20)
+      assert.equal(result.metricsCommentThreadStatus, CommentThreadStatus.Active)
+      assert.equal(result.metricsCommentContent, '# PR Metrics\n')
+      assert.deepEqual(result.filesNotRequiringReview, ['folder/file1.ts'])
+      assert.deepEqual(result.deletedFilesNotRequiringReview, ['file3.ts'])
+      assert.deepEqual(result.commentThreadsRequiringDeletion, [])
       verify(logger.logDebug('* PullRequestComments.getCommentData()')).once()
       verify(logger.logDebug('* PullRequestComments.getMetricsCommentData()')).once()
       verify(logger.logDebug('* PullRequestComments.getFilesRequiringCommentUpdates()')).twice()
@@ -297,12 +297,12 @@ describe('pullRequestComments.ts', (): void => {
       const result: PullRequestCommentsData = await pullRequestComments.getCommentData()
 
       // Assert
-      expect(result.metricsCommentThreadId).to.equal(20)
-      expect(result.metricsCommentThreadStatus).to.equal(CommentThreadStatus.Active)
-      expect(result.metricsCommentContent).to.equal('# PR Metrics\n')
-      expect(result.filesNotRequiringReview).to.deep.equal(['folder/file1.ts'])
-      expect(result.deletedFilesNotRequiringReview).to.deep.equal(['file3.ts'])
-      expect(result.commentThreadsRequiringDeletion).to.deep.equal([40])
+      assert.equal(result.metricsCommentThreadId, 20)
+      assert.equal(result.metricsCommentThreadStatus, CommentThreadStatus.Active)
+      assert.equal(result.metricsCommentContent, '# PR Metrics\n')
+      assert.deepEqual(result.filesNotRequiringReview, ['folder/file1.ts'])
+      assert.deepEqual(result.deletedFilesNotRequiringReview, ['file3.ts'])
+      assert.deepEqual(result.commentThreadsRequiringDeletion, [40])
       verify(logger.logDebug('* PullRequestComments.getCommentData()')).once()
       verify(logger.logDebug('* PullRequestComments.getMetricsCommentData()')).once()
       verify(logger.logDebug('* PullRequestComments.getFilesRequiringCommentUpdates()')).twice()
@@ -323,11 +323,11 @@ describe('pullRequestComments.ts', (): void => {
       const result: PullRequestCommentsData = await pullRequestComments.getCommentData()
 
       // Assert
-      expect(result.metricsCommentThreadId).to.equal(null)
-      expect(result.metricsCommentThreadStatus).to.equal(null)
-      expect(result.metricsCommentContent).to.equal(null)
-      expect(result.filesNotRequiringReview).to.deep.equal(['file.ts'])
-      expect(result.commentThreadsRequiringDeletion).to.deep.equal([])
+      assert.equal(result.metricsCommentThreadId, null)
+      assert.equal(result.metricsCommentThreadStatus, null)
+      assert.equal(result.metricsCommentContent, null)
+      assert.deepEqual(result.filesNotRequiringReview, ['file.ts'])
+      assert.deepEqual(result.commentThreadsRequiringDeletion, [])
       verify(logger.logDebug('* PullRequestComments.getCommentData()')).once()
       verify(logger.logDebug('* PullRequestComments.getMetricsCommentData()')).once()
     })
@@ -353,7 +353,7 @@ describe('pullRequestComments.ts', (): void => {
           const result: string = await pullRequestComments.getMetricsComment()
 
           // Assert
-          expect(result).to.equal(
+          assert.equal(result,
             '# PR Metrics\n' +
             '✔ **Thanks for keeping your pull request small.**\n' +
             '✔ **Thanks for adding tests.**\n' +
@@ -393,7 +393,7 @@ describe('pullRequestComments.ts', (): void => {
           const result: string = await pullRequestComments.getMetricsComment()
 
           // Assert
-          expect(result).to.equal(
+          assert.equal(result,
             '# PR Metrics\n' +
             `❌ **Try to keep pull requests smaller than ${(baseSize * 2).toLocaleString()} lines of new product code by following the [Single Responsibility Principle (SRP)](https://aka.ms/PRMetrics/SRP).**\n` +
             '✔ **Thanks for adding tests.**\n' +
@@ -423,7 +423,7 @@ describe('pullRequestComments.ts', (): void => {
       const result: string = await pullRequestComments.getMetricsComment()
 
       // Assert
-      expect(result).to.equal(
+      assert.equal(result,
         '# PR Metrics\n' +
         '✔ **Thanks for keeping your pull request small.**\n' +
         '⚠️ **Consider adding additional tests.**\n' +
@@ -451,7 +451,7 @@ describe('pullRequestComments.ts', (): void => {
       const result: string = await pullRequestComments.getMetricsComment()
 
       // Assert
-      expect(result).to.equal(
+      assert.equal(result,
         '# PR Metrics\n' +
         '✔ **Thanks for keeping your pull request small.**\n' +
         '||Lines\n' +
@@ -480,7 +480,7 @@ describe('pullRequestComments.ts', (): void => {
       const result: CommentThreadStatus = await pullRequestComments.getMetricsCommentStatus()
 
       // Assert
-      expect(result).to.equal(CommentThreadStatus.Closed)
+      assert.equal(result, CommentThreadStatus.Closed)
       verify(logger.logDebug('* PullRequestComments.getMetricsCommentStatus()')).once()
     })
 
@@ -501,7 +501,7 @@ describe('pullRequestComments.ts', (): void => {
           const result: CommentThreadStatus = await pullRequestComments.getMetricsCommentStatus()
 
           // Assert
-          expect(result).to.equal(CommentThreadStatus.Closed)
+          assert.equal(result, CommentThreadStatus.Closed)
           verify(logger.logDebug('* PullRequestComments.getMetricsCommentStatus()')).once()
         })
       })
@@ -543,7 +543,7 @@ describe('pullRequestComments.ts', (): void => {
           const result: CommentThreadStatus = await pullRequestComments.getMetricsCommentStatus()
 
           // Assert
-          expect(result).to.equal(CommentThreadStatus.Active)
+          assert.equal(result, CommentThreadStatus.Active)
           verify(logger.logDebug('* PullRequestComments.getMetricsCommentStatus()')).once()
         })
       })

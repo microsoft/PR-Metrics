@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { expect } from 'chai'
+import assert from 'node:assert/strict'
 import 'reflect-metadata'
 import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito'
 import { GitWritableStream } from '../../src/git/gitWritableStream'
@@ -25,7 +25,7 @@ describe('runnerInvoker.ts', function (): void {
       const result: boolean = RunnerInvoker.isGitHub
 
       // Assert
-      expect(result).to.equal(false)
+      assert.equal(result, false)
     })
 
     it('should return true when running on GitHub', async (): Promise<void> => {
@@ -36,7 +36,7 @@ describe('runnerInvoker.ts', function (): void {
       const result: boolean = RunnerInvoker.isGitHub
 
       // Assert
-      expect(result).to.equal(true)
+      assert.equal(result, true)
 
       // Finalization
       delete process.env.GITHUB_ACTION
@@ -56,7 +56,7 @@ describe('runnerInvoker.ts', function (): void {
       const result: number = await runnerInvoker.exec('TOOL', ['Argument 1', 'Argument 2'], true, outputStream, errorStream)
 
       // Assert
-      expect(result).to.equal(1)
+      assert.equal(result, 1)
       verify(azurePipelinesRunnerInvoker.exec('TOOL', deepEqual(['Argument 1', 'Argument 2']), true, outputStream, errorStream)).once()
       verify(gitHubRunnerInvoker.exec('TOOL', deepEqual(['Argument 1', 'Argument 2']), true, outputStream, errorStream)).never()
     })
@@ -74,7 +74,7 @@ describe('runnerInvoker.ts', function (): void {
       const result: number = await runnerInvoker.exec('TOOL', ['Argument 1', 'Argument 2'], true, outputStream, errorStream)
 
       // Assert
-      expect(result).to.equal(1)
+      assert.equal(result, 1)
       verify(azurePipelinesRunnerInvoker.exec('TOOL', deepEqual(['Argument 1', 'Argument 2']), true, outputStream, errorStream)).never()
       verify(gitHubRunnerInvoker.exec('TOOL', deepEqual(['Argument 1', 'Argument 2']), true, outputStream, errorStream)).once()
 
@@ -96,8 +96,8 @@ describe('runnerInvoker.ts', function (): void {
       const result2: number = await runnerInvoker.exec('TOOL', ['Argument 1', 'Argument 2'], true, outputStream, errorStream)
 
       // Assert
-      expect(result1).to.equal(1)
-      expect(result2).to.equal(1)
+      assert.equal(result1, 1)
+      assert.equal(result2, 1)
       verify(azurePipelinesRunnerInvoker.exec('TOOL', deepEqual(['Argument 1', 'Argument 2']), true, outputStream, errorStream)).never()
       verify(gitHubRunnerInvoker.exec('TOOL', deepEqual(['Argument 1', 'Argument 2']), true, outputStream, errorStream)).twice()
 
@@ -116,7 +116,7 @@ describe('runnerInvoker.ts', function (): void {
       const result: string | undefined = runnerInvoker.getInput(['Test', 'Suffix'])
 
       // Assert
-      expect(result).to.equal('VALUE')
+      assert.equal(result, 'VALUE')
       verify(azurePipelinesRunnerInvoker.getInput(deepEqual(['Test', 'Suffix']))).once()
       verify(gitHubRunnerInvoker.getInput(deepEqual(['Test', 'Suffix']))).never()
     })
@@ -131,7 +131,7 @@ describe('runnerInvoker.ts', function (): void {
       const result: string | undefined = runnerInvoker.getInput(['Test', 'Suffix'])
 
       // Assert
-      expect(result).to.equal('VALUE')
+      assert.equal(result, 'VALUE')
       verify(azurePipelinesRunnerInvoker.getInput(deepEqual(['Test', 'Suffix']))).never()
       verify(gitHubRunnerInvoker.getInput(deepEqual(['Test', 'Suffix']))).once()
 
@@ -178,7 +178,7 @@ describe('runnerInvoker.ts', function (): void {
       const func: () => void = () => runnerInvoker.locInitialize('TEST')
 
       // Assert
-      expect(func).to.throw('RunnerInvoker.locInitialize must not be called multiple times.')
+      assert.throws(func, Error('RunnerInvoker.locInitialize must not be called multiple times.'))
     })
   })
 
@@ -191,7 +191,7 @@ describe('runnerInvoker.ts', function (): void {
       const func: () => void = () => runnerInvoker.loc('TEST')
 
       // Assert
-      expect(func).to.throw('RunnerInvoker.locInitialize must be called before RunnerInvoker.loc.')
+      assert.throws(func, Error('RunnerInvoker.locInitialize must be called before RunnerInvoker.loc.'))
     })
 
     it('should call the underlying method when running on Azure Pipelines', (): void => {
@@ -204,7 +204,7 @@ describe('runnerInvoker.ts', function (): void {
       const result: string = runnerInvoker.loc('TEST')
 
       // Assert
-      expect(result).to.equal('VALUE')
+      assert.equal(result, 'VALUE')
       verify(azurePipelinesRunnerInvoker.loc('TEST')).once()
       verify(gitHubRunnerInvoker.loc('TEST')).never()
     })
@@ -220,7 +220,7 @@ describe('runnerInvoker.ts', function (): void {
       const result: string = runnerInvoker.loc('TEST')
 
       // Assert
-      expect(result).to.equal('VALUE')
+      assert.equal(result, 'VALUE')
       verify(azurePipelinesRunnerInvoker.loc('TEST')).never()
       verify(gitHubRunnerInvoker.loc('TEST')).once()
 

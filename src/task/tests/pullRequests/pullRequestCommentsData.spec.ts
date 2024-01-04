@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
-import { expect } from 'chai'
+import assert from 'node:assert/strict'
 import PullRequestCommentsData from '../../src/pullRequests/pullRequestCommentsData'
 
 describe('pullRequestCommentsData.ts', (): void => {
@@ -12,12 +12,12 @@ describe('pullRequestCommentsData.ts', (): void => {
       const result: PullRequestCommentsData = new PullRequestCommentsData(['file1.ts', 'file2.ts'], ['file3.ts', 'file4.ts'])
 
       // Assert
-      expect(result.metricsCommentThreadId).to.equal(null)
-      expect(result.metricsCommentContent).to.equal(null)
-      expect(result.metricsCommentThreadStatus).to.equal(null)
-      expect(result.filesNotRequiringReview).to.deep.equal(['file1.ts', 'file2.ts'])
-      expect(result.deletedFilesNotRequiringReview).to.deep.equal(['file3.ts', 'file4.ts'])
-      expect(result.commentThreadsRequiringDeletion).to.deep.equal([])
+      assert.equal(result.metricsCommentThreadId, null)
+      assert.equal(result.metricsCommentContent, null)
+      assert.equal(result.metricsCommentThreadStatus, null)
+      assert.deepEqual(result.filesNotRequiringReview, ['file1.ts', 'file2.ts'])
+      assert.deepEqual(result.deletedFilesNotRequiringReview, ['file3.ts', 'file4.ts'])
+      assert.deepEqual(result.commentThreadsRequiringDeletion, [])
     })
   })
 
@@ -30,12 +30,12 @@ describe('pullRequestCommentsData.ts', (): void => {
       result.metricsCommentThreadId = 1
 
       // Assert
-      expect(result.metricsCommentThreadId).to.equal(1)
-      expect(result.metricsCommentContent).to.equal(null)
-      expect(result.metricsCommentThreadStatus).to.equal(null)
-      expect(result.filesNotRequiringReview).to.deep.equal(['file1.ts', 'file2.ts'])
-      expect(result.deletedFilesNotRequiringReview).to.deep.equal(['file3.ts', 'file4.ts'])
-      expect(result.commentThreadsRequiringDeletion).to.deep.equal([])
+      assert.equal(result.metricsCommentThreadId, 1)
+      assert.equal(result.metricsCommentContent, null)
+      assert.equal(result.metricsCommentThreadStatus, null)
+      assert.deepEqual(result.filesNotRequiringReview, ['file1.ts', 'file2.ts'])
+      assert.deepEqual(result.deletedFilesNotRequiringReview, ['file3.ts', 'file4.ts'])
+      assert.deepEqual(result.commentThreadsRequiringDeletion, [])
     })
   })
 
@@ -48,12 +48,12 @@ describe('pullRequestCommentsData.ts', (): void => {
       result.metricsCommentContent = 'Content'
 
       // Assert
-      expect(result.metricsCommentThreadId).to.equal(null)
-      expect(result.metricsCommentContent).to.equal('Content')
-      expect(result.metricsCommentThreadStatus).to.equal(null)
-      expect(result.filesNotRequiringReview).to.deep.equal(['file1.ts', 'file2.ts'])
-      expect(result.deletedFilesNotRequiringReview).to.deep.equal(['file3.ts', 'file4.ts'])
-      expect(result.commentThreadsRequiringDeletion).to.deep.equal([])
+      assert.equal(result.metricsCommentThreadId, null)
+      assert.equal(result.metricsCommentContent, 'Content')
+      assert.equal(result.metricsCommentThreadStatus, null)
+      assert.deepEqual(result.filesNotRequiringReview, ['file1.ts', 'file2.ts'])
+      assert.deepEqual(result.deletedFilesNotRequiringReview, ['file3.ts', 'file4.ts'])
+      assert.deepEqual(result.commentThreadsRequiringDeletion, [])
     })
   })
 
@@ -66,12 +66,12 @@ describe('pullRequestCommentsData.ts', (): void => {
       result.metricsCommentThreadStatus = CommentThreadStatus.Active
 
       // Assert
-      expect(result.metricsCommentThreadId).to.equal(null)
-      expect(result.metricsCommentContent).to.equal(null)
-      expect(result.metricsCommentThreadStatus).to.equal(CommentThreadStatus.Active)
-      expect(result.filesNotRequiringReview).to.deep.equal(['file1.ts', 'file2.ts'])
-      expect(result.deletedFilesNotRequiringReview).to.deep.equal(['file3.ts', 'file4.ts'])
-      expect(result.commentThreadsRequiringDeletion).to.deep.equal([])
+      assert.equal(result.metricsCommentThreadId, null)
+      assert.equal(result.metricsCommentContent, null)
+      assert.equal(result.metricsCommentThreadStatus, CommentThreadStatus.Active)
+      assert.deepEqual(result.filesNotRequiringReview, ['file1.ts', 'file2.ts'])
+      assert.deepEqual(result.deletedFilesNotRequiringReview, ['file3.ts', 'file4.ts'])
+      assert.deepEqual(result.commentThreadsRequiringDeletion, [])
     })
   })
 
@@ -84,12 +84,12 @@ describe('pullRequestCommentsData.ts', (): void => {
       result.filesNotRequiringReview = ['file5.ts']
 
       // Assert
-      expect(result.metricsCommentThreadId).to.equal(null)
-      expect(result.metricsCommentContent).to.equal(null)
-      expect(result.metricsCommentThreadStatus).to.equal(null)
-      expect(result.filesNotRequiringReview).to.deep.equal(['file5.ts'])
-      expect(result.deletedFilesNotRequiringReview).to.deep.equal(['file3.ts', 'file4.ts'])
-      expect(result.commentThreadsRequiringDeletion).to.deep.equal([])
+      assert.equal(result.metricsCommentThreadId, null)
+      assert.equal(result.metricsCommentContent, null)
+      assert.equal(result.metricsCommentThreadStatus, null)
+      assert.deepEqual(result.filesNotRequiringReview, ['file5.ts'])
+      assert.deepEqual(result.deletedFilesNotRequiringReview, ['file3.ts', 'file4.ts'])
+      assert.deepEqual(result.commentThreadsRequiringDeletion, [])
     })
   })
 
@@ -102,12 +102,12 @@ describe('pullRequestCommentsData.ts', (): void => {
       result.deletedFilesNotRequiringReview = ['file5.ts']
 
       // Assert
-      expect(result.metricsCommentThreadId).to.equal(null)
-      expect(result.metricsCommentContent).to.equal(null)
-      expect(result.metricsCommentThreadStatus).to.equal(null)
-      expect(result.filesNotRequiringReview).to.deep.equal(['file1.ts', 'file2.ts'])
-      expect(result.deletedFilesNotRequiringReview).to.deep.equal(['file5.ts'])
-      expect(result.commentThreadsRequiringDeletion).to.deep.equal([])
+      assert.equal(result.metricsCommentThreadId, null)
+      assert.equal(result.metricsCommentContent, null)
+      assert.equal(result.metricsCommentThreadStatus, null)
+      assert.deepEqual(result.filesNotRequiringReview, ['file1.ts', 'file2.ts'])
+      assert.deepEqual(result.deletedFilesNotRequiringReview, ['file5.ts'])
+      assert.deepEqual(result.commentThreadsRequiringDeletion, [])
     })
   })
 
@@ -120,12 +120,12 @@ describe('pullRequestCommentsData.ts', (): void => {
       result.commentThreadsRequiringDeletion = [1, 2]
 
       // Assert
-      expect(result.metricsCommentThreadId).to.equal(null)
-      expect(result.metricsCommentContent).to.equal(null)
-      expect(result.metricsCommentThreadStatus).to.equal(null)
-      expect(result.filesNotRequiringReview).to.deep.equal(['file1.ts', 'file2.ts'])
-      expect(result.deletedFilesNotRequiringReview).to.deep.equal(['file3.ts', 'file4.ts'])
-      expect(result.commentThreadsRequiringDeletion).to.deep.equal([1, 2])
+      assert.equal(result.metricsCommentThreadId, null)
+      assert.equal(result.metricsCommentContent, null)
+      assert.equal(result.metricsCommentThreadStatus, null)
+      assert.deepEqual(result.filesNotRequiringReview, ['file1.ts', 'file2.ts'])
+      assert.deepEqual(result.deletedFilesNotRequiringReview, ['file3.ts', 'file4.ts'])
+      assert.deepEqual(result.commentThreadsRequiringDeletion, [1, 2])
     })
   })
 })

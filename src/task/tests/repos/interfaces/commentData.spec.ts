@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { expect } from 'chai'
+import assert from 'node:assert/strict'
 import CommentData from '../../../src/repos/interfaces/commentData'
 import FileCommentData from '../../../src/repos/interfaces/fileCommentData'
 import PullRequestCommentData from '../../../src/repos/interfaces/pullRequestCommentData'
@@ -13,8 +13,8 @@ describe('commentData.ts', (): void => {
       const result: CommentData = new CommentData()
 
       // Assert
-      expect(result.pullRequestComments.length).to.equal(0)
-      expect(result.fileComments.length).to.equal(0)
+      assert.equal(result.pullRequestComments.length, 0)
+      assert.equal(result.fileComments.length, 0)
     })
   })
 
@@ -27,8 +27,8 @@ describe('commentData.ts', (): void => {
       result.pullRequestComments.push(new PullRequestCommentData(0, ''))
 
       // Assert
-      expect(result.pullRequestComments.length).to.equal(1)
-      expect(result.fileComments.length).to.equal(0)
+      assert.equal(result.pullRequestComments.length, 1)
+      assert.equal(result.fileComments.length, 0)
     })
   })
 
@@ -41,8 +41,8 @@ describe('commentData.ts', (): void => {
       result.fileComments.push(new FileCommentData(0, '', ''))
 
       // Assert
-      expect(result.pullRequestComments.length).to.equal(0)
-      expect(result.fileComments.length).to.equal(1)
+      assert.equal(result.pullRequestComments.length, 0)
+      assert.equal(result.fileComments.length, 1)
     })
   })
 })

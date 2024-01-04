@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
-import { expect } from 'chai'
+import assert from 'node:assert/strict'
 import 'reflect-metadata'
 import { instance, mock, verify } from 'ts-mockito'
 import AzureReposInvoker from '../../src/repos/azureReposInvoker'
@@ -39,7 +39,7 @@ describe('reposInvoker.ts', function (): void {
       verify(gitHubReposInvoker.isAccessTokenAvailable).never()
       verify(logger.logDebug('* ReposInvoker.isAccessTokenAvailable')).once()
       verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
-      expect(result).to.equal(null)
+      assert.equal(result, null)
 
       // Finalization
       delete process.env.BUILD_REPOSITORY_PROVIDER
@@ -59,8 +59,8 @@ describe('reposInvoker.ts', function (): void {
       verify(gitHubReposInvoker.isAccessTokenAvailable).never()
       verify(logger.logDebug('* ReposInvoker.isAccessTokenAvailable')).twice()
       verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).twice()
-      expect(result1).to.equal(null)
-      expect(result2).to.equal(null)
+      assert.equal(result1, null)
+      assert.equal(result2, null)
 
       // Finalization
       delete process.env.BUILD_REPOSITORY_PROVIDER
@@ -79,7 +79,7 @@ describe('reposInvoker.ts', function (): void {
       verify(gitHubReposInvoker.isAccessTokenAvailable).once()
       verify(logger.logDebug('* ReposInvoker.isAccessTokenAvailable')).once()
       verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
-      expect(result).to.equal(null)
+      assert.equal(result, null)
 
       // Finalization
       delete process.env.GITHUB_ACTION
@@ -105,7 +105,7 @@ describe('reposInvoker.ts', function (): void {
           verify(gitHubReposInvoker.isAccessTokenAvailable).once()
           verify(logger.logDebug('* ReposInvoker.isAccessTokenAvailable')).once()
           verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
-          expect(result).to.equal(null)
+          assert.equal(result, null)
 
           // Finalization
           delete process.env.BUILD_REPOSITORY_PROVIDER
@@ -122,7 +122,7 @@ describe('reposInvoker.ts', function (): void {
       const func: () => string | null = () => reposInvoker.isAccessTokenAvailable
 
       // Assert
-      expect(func).to.throw('\'BUILD_REPOSITORY_PROVIDER\', accessed within \'ReposInvoker.getReposInvoker()\', is invalid, null, or undefined \'undefined\'.')
+      assert.throws(func, TypeError('\'BUILD_REPOSITORY_PROVIDER\', accessed within \'ReposInvoker.getReposInvoker()\', is invalid, null, or undefined \'undefined\'.'))
       verify(azureReposInvoker.isAccessTokenAvailable).never()
       verify(gitHubReposInvoker.isAccessTokenAvailable).never()
       verify(logger.logDebug('* ReposInvoker.isAccessTokenAvailable')).once()
@@ -138,7 +138,7 @@ describe('reposInvoker.ts', function (): void {
       const func: () => string | null = () => reposInvoker.isAccessTokenAvailable
 
       // Assert
-      expect(func).to.throw('BUILD_REPOSITORY_PROVIDER \'Other\' is unsupported.')
+      assert.throws(func, RangeError('BUILD_REPOSITORY_PROVIDER \'Other\' is unsupported.'))
       verify(azureReposInvoker.isAccessTokenAvailable).never()
       verify(gitHubReposInvoker.isAccessTokenAvailable).never()
       verify(logger.logDebug('* ReposInvoker.isAccessTokenAvailable')).once()
@@ -163,7 +163,7 @@ describe('reposInvoker.ts', function (): void {
       verify(gitHubReposInvoker.getTitleAndDescription()).never()
       verify(logger.logDebug('* ReposInvoker.getTitleAndDescription()')).once()
       verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
-      expect(result).to.equal(null)
+      assert.equal(result, null)
 
       // Finalization
       delete process.env.BUILD_REPOSITORY_PROVIDER
@@ -182,7 +182,7 @@ describe('reposInvoker.ts', function (): void {
       verify(gitHubReposInvoker.getTitleAndDescription()).once()
       verify(logger.logDebug('* ReposInvoker.getTitleAndDescription()')).once()
       verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
-      expect(result).to.equal(null)
+      assert.equal(result, null)
 
       // Finalization
       delete process.env.GITHUB_ACTION
@@ -208,7 +208,7 @@ describe('reposInvoker.ts', function (): void {
           verify(gitHubReposInvoker.getTitleAndDescription()).once()
           verify(logger.logDebug('* ReposInvoker.getTitleAndDescription()')).once()
           verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
-          expect(result).to.equal(null)
+          assert.equal(result, null)
 
           // Finalization
           delete process.env.BUILD_REPOSITORY_PROVIDER
@@ -266,7 +266,7 @@ describe('reposInvoker.ts', function (): void {
       verify(gitHubReposInvoker.getComments()).never()
       verify(logger.logDebug('* ReposInvoker.getComments()')).once()
       verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
-      expect(result).to.equal(null)
+      assert.equal(result, null)
 
       // Finalization
       delete process.env.BUILD_REPOSITORY_PROVIDER
@@ -285,7 +285,7 @@ describe('reposInvoker.ts', function (): void {
       verify(gitHubReposInvoker.getComments()).once()
       verify(logger.logDebug('* ReposInvoker.getComments()')).once()
       verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
-      expect(result).to.equal(null)
+      assert.equal(result, null)
 
       // Finalization
       delete process.env.GITHUB_ACTION
@@ -311,7 +311,7 @@ describe('reposInvoker.ts', function (): void {
           verify(gitHubReposInvoker.getComments()).once()
           verify(logger.logDebug('* ReposInvoker.getComments()')).once()
           verify(logger.logDebug('* ReposInvoker.getReposInvoker()')).once()
-          expect(result).to.equal(null)
+          assert.equal(result, null)
 
           // Finalization
           delete process.env.BUILD_REPOSITORY_PROVIDER

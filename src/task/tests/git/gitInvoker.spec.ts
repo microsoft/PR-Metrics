@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { expect } from 'chai'
+import assert from 'node:assert/strict'
 import 'reflect-metadata'
 import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito'
 import GitInvoker from '../../src/git/gitInvoker'
@@ -63,7 +63,7 @@ describe('gitInvoker.ts', (): void => {
           const result: boolean = await gitInvoker.isGitRepo()
 
           // Assert
-          expect(result).to.equal(true)
+          assert.equal(result, true)
           verify(logger.logDebug('* GitInvoker.isGitRepo()')).once()
           verify(logger.logDebug('* GitInvoker.invokeGit()')).once()
         })
@@ -83,7 +83,7 @@ describe('gitInvoker.ts', (): void => {
       const result: boolean = await gitInvoker.isGitRepo()
 
       // Assert
-      expect(result).to.equal(false)
+      assert.equal(result, false)
       verify(logger.logDebug('* GitInvoker.isGitRepo()')).once()
       verify(logger.logDebug('* GitInvoker.invokeGit()')).once()
     })
@@ -100,7 +100,7 @@ describe('gitInvoker.ts', (): void => {
       const result: boolean = gitInvoker.isPullRequestIdAvailable()
 
       // Assert
-      expect(result).to.equal(true)
+      assert.equal(result, true)
       verify(logger.logDebug('* GitInvoker.isPullRequestIdAvailable()')).once()
       verify(logger.logDebug('* GitInvoker.pullRequestIdInternal')).once()
       verify(logger.logDebug('* GitInvoker.pullRequestIdForGitHub')).once()
@@ -119,7 +119,7 @@ describe('gitInvoker.ts', (): void => {
       const result: boolean = gitInvoker.isPullRequestIdAvailable()
 
       // Assert
-      expect(result).to.equal(false)
+      assert.equal(result, false)
       verify(logger.logWarning('\'GITHUB_REF\' is undefined.')).once()
       verify(logger.logDebug('* GitInvoker.isPullRequestIdAvailable()')).once()
       verify(logger.logDebug('* GitInvoker.pullRequestIdInternal')).once()
@@ -139,7 +139,7 @@ describe('gitInvoker.ts', (): void => {
       const result: boolean = gitInvoker.isPullRequestIdAvailable()
 
       // Assert
-      expect(result).to.equal(false)
+      assert.equal(result, false)
       verify(logger.logWarning('\'GITHUB_REF\' is in an incorrect format \'refs/pull\'.')).once()
       verify(logger.logDebug('* GitInvoker.isPullRequestIdAvailable()')).once()
       verify(logger.logDebug('* GitInvoker.pullRequestIdInternal')).once()
@@ -160,7 +160,7 @@ describe('gitInvoker.ts', (): void => {
       const result: boolean = gitInvoker.isPullRequestIdAvailable()
 
       // Assert
-      expect(result).to.equal(true)
+      assert.equal(result, true)
       verify(logger.logDebug('* GitInvoker.isPullRequestIdAvailable()')).once()
       verify(logger.logDebug('* GitInvoker.pullRequestIdInternal')).once()
       verify(logger.logDebug('* GitInvoker.pullRequestIdForGitHub')).once()
@@ -179,7 +179,7 @@ describe('gitInvoker.ts', (): void => {
       const result: boolean = gitInvoker.isPullRequestIdAvailable()
 
       // Assert
-      expect(result).to.equal(false)
+      assert.equal(result, false)
       verify(logger.logWarning('\'BUILD_REPOSITORY_PROVIDER\' is undefined.')).once()
       verify(logger.logDebug('* GitInvoker.isPullRequestIdAvailable()')).once()
       verify(logger.logDebug('* GitInvoker.pullRequestIdInternal')).once()
@@ -195,7 +195,7 @@ describe('gitInvoker.ts', (): void => {
       const result: boolean = gitInvoker.isPullRequestIdAvailable()
 
       // Assert
-      expect(result).to.equal(false)
+      assert.equal(result, false)
       verify(logger.logWarning('\'SYSTEM_PULLREQUEST_PULLREQUESTID\' is undefined.')).once()
       verify(logger.logDebug('* GitInvoker.isPullRequestIdAvailable()')).once()
       verify(logger.logDebug('* GitInvoker.pullRequestIdInternal')).once()
@@ -218,7 +218,7 @@ describe('gitInvoker.ts', (): void => {
           const result: boolean = gitInvoker.isPullRequestIdAvailable()
 
           // Assert
-          expect(result).to.equal(false)
+          assert.equal(result, false)
           verify(logger.logWarning('\'SYSTEM_PULLREQUEST_PULLREQUESTNUMBER\' is undefined.')).once()
           verify(logger.logDebug('* GitInvoker.isPullRequestIdAvailable()')).once()
           verify(logger.logDebug('* GitInvoker.pullRequestIdInternal')).once()
@@ -240,7 +240,7 @@ describe('gitInvoker.ts', (): void => {
       const result: boolean = gitInvoker.isPullRequestIdAvailable()
 
       // Assert
-      expect(result).to.equal(false)
+      assert.equal(result, false)
       verify(logger.logDebug('* GitInvoker.isPullRequestIdAvailable()')).once()
       verify(logger.logDebug('* GitInvoker.pullRequestIdInternal')).once()
       verify(logger.logDebug('* GitInvoker.pullRequestIdForGitHub')).once()
@@ -261,7 +261,7 @@ describe('gitInvoker.ts', (): void => {
       const result: boolean = await gitInvoker.isGitHistoryAvailable()
 
       // Assert
-      expect(result).to.equal(true)
+      assert.equal(result, true)
       verify(logger.logDebug('* GitInvoker.isGitHistoryAvailable()')).once()
       verify(logger.logDebug('* GitInvoker.initialize()')).once()
       verify(logger.logDebug('* GitInvoker.targetBranch')).once()
@@ -280,8 +280,8 @@ describe('gitInvoker.ts', (): void => {
       const result2: boolean = await gitInvoker.isGitHistoryAvailable()
 
       // Assert
-      expect(result1).to.equal(12345)
-      expect(result2).to.equal(true)
+      assert.equal(result1, 12345)
+      assert.equal(result2, true)
       verify(logger.logDebug('* GitInvoker.pullRequestId')).once()
       verify(logger.logDebug('* GitInvoker.pullRequestIdForAzurePipelines')).once()
       verify(logger.logDebug('* GitInvoker.isGitHistoryAvailable()')).once()
@@ -302,7 +302,7 @@ describe('gitInvoker.ts', (): void => {
       const result: boolean = await gitInvoker.isGitHistoryAvailable()
 
       // Assert
-      expect(result).to.equal(true)
+      assert.equal(result, true)
       verify(logger.logDebug('* GitInvoker.isGitHistoryAvailable()')).once()
       verify(logger.logDebug('* GitInvoker.initialize()')).once()
       verify(logger.logDebug('* GitInvoker.targetBranch')).once()
@@ -352,7 +352,7 @@ describe('gitInvoker.ts', (): void => {
           const result: boolean = await gitInvoker.isGitHistoryAvailable()
 
           // Assert
-          expect(result).to.equal(true)
+          assert.equal(result, true)
           verify(logger.logDebug('* GitInvoker.isGitHistoryAvailable()')).once()
           verify(logger.logDebug('* GitInvoker.initialize()')).once()
           verify(logger.logDebug('* GitInvoker.targetBranch')).once()
@@ -379,7 +379,7 @@ describe('gitInvoker.ts', (): void => {
       const result: boolean = await gitInvoker.isGitHistoryAvailable()
 
       // Assert
-      expect(result).to.equal(false)
+      assert.equal(result, false)
       verify(logger.logDebug('* GitInvoker.isGitHistoryAvailable()')).once()
       verify(logger.logDebug('* GitInvoker.initialize()')).once()
       verify(logger.logDebug('* GitInvoker.targetBranch')).once()
@@ -397,8 +397,8 @@ describe('gitInvoker.ts', (): void => {
       const result2: boolean = await gitInvoker.isGitHistoryAvailable()
 
       // Assert
-      expect(result1).to.equal(true)
-      expect(result2).to.equal(true)
+      assert.equal(result1, true)
+      assert.equal(result2, true)
       verify(logger.logDebug('* GitInvoker.isGitHistoryAvailable()')).twice()
       verify(logger.logDebug('* GitInvoker.initialize()')).twice()
       verify(logger.logDebug('* GitInvoker.targetBranch')).once()
@@ -434,7 +434,7 @@ describe('gitInvoker.ts', (): void => {
       const result: number = gitInvoker.pullRequestId
 
       // Assert
-      expect(result).to.equal(12345)
+      assert.equal(result, 12345)
       verify(logger.logDebug('* GitInvoker.pullRequestId')).once()
       verify(logger.logDebug('* GitInvoker.pullRequestIdInternal')).once()
       verify(logger.logDebug('* GitInvoker.pullRequestIdForGitHub')).once()
@@ -455,8 +455,8 @@ describe('gitInvoker.ts', (): void => {
       const result2: number = gitInvoker.pullRequestId
 
       // Assert
-      expect(result1).to.equal(12345)
-      expect(result2).to.equal(12345)
+      assert.equal(result1, 12345)
+      assert.equal(result2, 12345)
       verify(logger.logDebug('* GitInvoker.pullRequestId')).twice()
       verify(logger.logDebug('* GitInvoker.pullRequestIdInternal')).once()
       verify(logger.logDebug('* GitInvoker.pullRequestIdForGitHub')).once()
@@ -475,7 +475,7 @@ describe('gitInvoker.ts', (): void => {
       const func: () => void = () => gitInvoker.pullRequestId
 
       // Assert
-      expect(func).to.throw('\'Pull Request ID\', accessed within \'GitInvoker.pullRequestId\', is invalid, null, or undefined \'NaN\'.')
+      assert.throws(func, TypeError('\'Pull Request ID\', accessed within \'GitInvoker.pullRequestId\', is invalid, null, or undefined \'NaN\'.'))
       verify(logger.logWarning('\'GITHUB_REF\' is undefined.')).once()
       verify(logger.logDebug('* GitInvoker.pullRequestId')).once()
       verify(logger.logDebug('* GitInvoker.pullRequestIdInternal')).once()
@@ -495,7 +495,7 @@ describe('gitInvoker.ts', (): void => {
       const func: () => void = () => gitInvoker.pullRequestId
 
       // Assert
-      expect(func).to.throw('\'Pull Request ID\', accessed within \'GitInvoker.pullRequestId\', is invalid, null, or undefined \'NaN\'.')
+      assert.throws(func, TypeError('\'Pull Request ID\', accessed within \'GitInvoker.pullRequestId\', is invalid, null, or undefined \'NaN\'.'))
       verify(logger.logWarning('\'GITHUB_REF\' is in an incorrect format \'refs/pull\'.')).once()
       verify(logger.logDebug('* GitInvoker.pullRequestId')).once()
       verify(logger.logDebug('* GitInvoker.pullRequestIdInternal')).once()
@@ -516,7 +516,7 @@ describe('gitInvoker.ts', (): void => {
       const result: number = gitInvoker.pullRequestId
 
       // Assert
-      expect(result).to.equal(12345)
+      assert.equal(result, 12345)
       verify(logger.logDebug('* GitInvoker.pullRequestId')).once()
       verify(logger.logDebug('* GitInvoker.pullRequestIdInternal')).once()
       verify(logger.logDebug('* GitInvoker.pullRequestIdForGitHub')).once()
@@ -535,7 +535,7 @@ describe('gitInvoker.ts', (): void => {
       const func: () => void = () => gitInvoker.pullRequestId
 
       // Assert
-      expect(func).to.throw('\'Pull Request ID\', accessed within \'GitInvoker.pullRequestId\', is invalid, null, or undefined \'NaN\'.')
+      assert.throws(func, TypeError('\'Pull Request ID\', accessed within \'GitInvoker.pullRequestId\', is invalid, null, or undefined \'NaN\'.'))
       verify(logger.logWarning('\'BUILD_REPOSITORY_PROVIDER\' is undefined.')).once()
       verify(logger.logDebug('* GitInvoker.pullRequestId')).once()
       verify(logger.logDebug('* GitInvoker.pullRequestIdInternal')).once()
@@ -551,7 +551,7 @@ describe('gitInvoker.ts', (): void => {
       const func: () => void = () => gitInvoker.pullRequestId
 
       // Assert
-      expect(func).to.throw('\'Pull Request ID\', accessed within \'GitInvoker.pullRequestId\', is invalid, null, or undefined \'NaN\'.')
+      assert.throws(func, TypeError('\'Pull Request ID\', accessed within \'GitInvoker.pullRequestId\', is invalid, null, or undefined \'NaN\'.'))
       verify(logger.logWarning('\'SYSTEM_PULLREQUEST_PULLREQUESTID\' is undefined.')).once()
       verify(logger.logDebug('* GitInvoker.pullRequestId')).once()
       verify(logger.logDebug('* GitInvoker.pullRequestIdInternal')).once()
@@ -574,7 +574,7 @@ describe('gitInvoker.ts', (): void => {
           const func: () => void = () => gitInvoker.pullRequestId
 
           // Assert
-          expect(func).to.throw('\'Pull Request ID\', accessed within \'GitInvoker.pullRequestId\', is invalid, null, or undefined \'NaN\'.')
+          assert.throws(func, TypeError('\'Pull Request ID\', accessed within \'GitInvoker.pullRequestId\', is invalid, null, or undefined \'NaN\'.'))
           verify(logger.logWarning('\'SYSTEM_PULLREQUEST_PULLREQUESTNUMBER\' is undefined.')).once()
           verify(logger.logDebug('* GitInvoker.pullRequestId')).once()
           verify(logger.logDebug('* GitInvoker.pullRequestIdInternal')).once()
@@ -596,7 +596,7 @@ describe('gitInvoker.ts', (): void => {
       const func: () => void = () => gitInvoker.pullRequestId
 
       // Assert
-      expect(func).to.throw('\'Pull Request ID\', accessed within \'GitInvoker.pullRequestId\', is invalid, null, or undefined \'NaN\'.')
+      assert.throws(func, TypeError('\'Pull Request ID\', accessed within \'GitInvoker.pullRequestId\', is invalid, null, or undefined \'NaN\'.'))
       verify(logger.logDebug('* GitInvoker.pullRequestId')).once()
       verify(logger.logDebug('* GitInvoker.pullRequestIdInternal')).once()
       verify(logger.logDebug('* GitInvoker.pullRequestIdForGitHub')).once()
@@ -616,7 +616,7 @@ describe('gitInvoker.ts', (): void => {
       const result: string = await gitInvoker.getDiffSummary()
 
       // Assert
-      expect(result).to.equal('1\t2\tFile.txt')
+      assert.equal(result, '1\t2\tFile.txt')
       verify(logger.logDebug('* GitInvoker.getDiffSummary()')).once()
       verify(logger.logDebug('* GitInvoker.initialize()')).once()
       verify(logger.logDebug('* GitInvoker.targetBranch')).once()
@@ -634,7 +634,7 @@ describe('gitInvoker.ts', (): void => {
       const result: string = await gitInvoker.getDiffSummary()
 
       // Assert
-      expect(result).to.equal('1\t2\tFile.txt')
+      assert.equal(result, '1\t2\tFile.txt')
       verify(logger.logDebug('* GitInvoker.getDiffSummary()')).once()
       verify(logger.logDebug('* GitInvoker.initialize()')).once()
       verify(logger.logDebug('* GitInvoker.targetBranch')).once()
@@ -652,7 +652,7 @@ describe('gitInvoker.ts', (): void => {
       const result: string = await gitInvoker.getDiffSummary()
 
       // Assert
-      expect(result).to.equal('1\t2\tFile.txt')
+      assert.equal(result, '1\t2\tFile.txt')
       verify(logger.logDebug('* GitInvoker.getDiffSummary()')).twice()
       verify(logger.logDebug('* GitInvoker.initialize()')).twice()
       verify(logger.logDebug('* GitInvoker.targetBranch')).once()

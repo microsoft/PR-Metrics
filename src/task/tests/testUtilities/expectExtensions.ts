@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { expect } from 'chai'
+import assert from 'node:assert/strict'
 
 /**
  * Verifies that the asynchronous function call throws an error with the expected message.
@@ -17,7 +17,7 @@ export const toThrowAsync = async (func: any, errorMessage: string): Promise<any
     error = err
   }
 
-  expect(error).to.be.an('Error')
-  expect(error.message).to.equal(errorMessage)
+  assert(error instanceof Error)
+  assert.equal(error.message, errorMessage)
   return error
 }

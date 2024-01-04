@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
-import { expect } from 'chai'
+import assert from 'node:assert/strict'
 import FileCommentData from '../../../src/repos/interfaces/fileCommentData'
 
 describe('fileCommentData.ts', (): void => {
@@ -12,10 +12,10 @@ describe('fileCommentData.ts', (): void => {
       const result: FileCommentData = new FileCommentData(12345, 'Content', 'file.ts')
 
       // Assert
-      expect(result.id).to.equal(12345)
-      expect(result.content).to.equal('Content')
-      expect(result.status).to.equal(CommentThreadStatus.Unknown)
-      expect(result.fileName).to.equal('file.ts')
+      assert.equal(result.id, 12345)
+      assert.equal(result.content, 'Content')
+      assert.equal(result.status, CommentThreadStatus.Unknown)
+      assert.equal(result.fileName, 'file.ts')
     })
 
     it('should set the correct data when the status is specified', (): void => {
@@ -23,10 +23,10 @@ describe('fileCommentData.ts', (): void => {
       const result: FileCommentData = new FileCommentData(12345, 'Content', 'file.ts', CommentThreadStatus.Active)
 
       // Assert
-      expect(result.id).to.equal(12345)
-      expect(result.content).to.equal('Content')
-      expect(result.status).to.equal(CommentThreadStatus.Active)
-      expect(result.fileName).to.equal('file.ts')
+      assert.equal(result.id, 12345)
+      assert.equal(result.content, 'Content')
+      assert.equal(result.status, CommentThreadStatus.Active)
+      assert.equal(result.fileName, 'file.ts')
     })
   })
 })

@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { expect } from 'chai'
+import assert from 'node:assert/strict'
 import CodeMetricsData from '../../src/metrics/codeMetricsData'
 
 describe('codeMetricsData.ts', (): void => {
@@ -11,7 +11,7 @@ describe('codeMetricsData.ts', (): void => {
       const func: () => CodeMetricsData = () => new CodeMetricsData(-1, 0, 0)
 
       // Assert
-      expect(func).to.throw('Product code \'-1\' must be >= 0.')
+      assert.throws(func, RangeError('Product code \'-1\' must be >= 0.'))
     })
 
     it('should throw when the test code is less than zero', (): void => {
@@ -19,7 +19,7 @@ describe('codeMetricsData.ts', (): void => {
       const func: () => CodeMetricsData = () => new CodeMetricsData(0, -1, 0)
 
       // Assert
-      expect(func).to.throw('Test code \'-1\' must be >= 0.')
+      assert.throws(func, RangeError('Test code \'-1\' must be >= 0.'))
     })
 
     it('should throw when the ignored code is less than zero', (): void => {
@@ -27,7 +27,7 @@ describe('codeMetricsData.ts', (): void => {
       const func: () => CodeMetricsData = () => new CodeMetricsData(0, 0, -1)
 
       // Assert
-      expect(func).to.throw('Ignored code \'-1\' must be >= 0.')
+      assert.throws(func, RangeError('Ignored code \'-1\' must be >= 0.'))
     })
   })
 
@@ -44,11 +44,11 @@ describe('codeMetricsData.ts', (): void => {
       const total: number = codeMetricsData.total
 
       // Assert
-      expect(productCode).to.equal(1)
-      expect(testCode).to.equal(2)
-      expect(subtotal).to.equal(3)
-      expect(ignoredCode).to.equal(4)
-      expect(total).to.equal(7)
+      assert.equal(productCode, 1)
+      assert.equal(testCode, 2)
+      assert.equal(subtotal, 3)
+      assert.equal(ignoredCode, 4)
+      assert.equal(total, 7)
     })
   })
 })

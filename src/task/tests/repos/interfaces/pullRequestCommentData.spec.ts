@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
-import { expect } from 'chai'
+import assert from 'node:assert/strict'
 import PullRequestCommentData from '../../../src/repos/interfaces/pullRequestCommentData'
 
 describe('pullRequestCommentData.ts', (): void => {
@@ -13,9 +13,9 @@ describe('pullRequestCommentData.ts', (): void => {
         const result: PullRequestCommentData = new PullRequestCommentData(12345, 'Content')
 
         // Assert
-        expect(result.id).to.equal(12345)
-        expect(result.content).to.equal('Content')
-        expect(result.status).to.equal(CommentThreadStatus.Unknown)
+        assert.equal(result.id, 12345)
+        assert.equal(result.content, 'Content')
+        assert.equal(result.status, CommentThreadStatus.Unknown)
       })
 
       it('should set the correct data when the status is specified', (): void => {
@@ -23,9 +23,9 @@ describe('pullRequestCommentData.ts', (): void => {
         const result: PullRequestCommentData = new PullRequestCommentData(12345, 'Content', CommentThreadStatus.Active)
 
         // Assert
-        expect(result.id).to.equal(12345)
-        expect(result.content).to.equal('Content')
-        expect(result.status).to.equal(CommentThreadStatus.Active)
+        assert.equal(result.id, 12345)
+        assert.equal(result.content, 'Content')
+        assert.equal(result.status, CommentThreadStatus.Active)
       })
     })
   })

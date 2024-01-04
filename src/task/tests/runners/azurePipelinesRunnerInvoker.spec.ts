@@ -3,7 +3,7 @@
 
 import * as taskLib from 'azure-pipelines-task-lib/task'
 import { IExecOptions } from 'azure-pipelines-task-lib/toolrunner'
-import { expect } from 'chai'
+import assert from 'node:assert/strict'
 import * as path from 'path'
 import 'reflect-metadata'
 import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito'
@@ -32,7 +32,7 @@ describe('azurePipelinesRunnerInvoker.ts', function (): void {
       const result: number = await azurePipelinesRunnerInvoker.exec('TOOL', ['Argument 1', 'Argument 2'], true, outputStream, errorStream)
 
       // Assert
-      expect(result).to.equal(1)
+      assert.equal(result, 1)
       const options: IExecOptions = {
         failOnStdErr: true,
         outStream: outputStream,
@@ -52,7 +52,7 @@ describe('azurePipelinesRunnerInvoker.ts', function (): void {
       const result: string | undefined = azurePipelinesRunnerInvoker.getInput(['Test', 'Suffix'])
 
       // Assert
-      expect(result).to.equal('VALUE')
+      assert.equal(result, 'VALUE')
       verify(azurePipelinesRunnerWrapper.getInput('TestSuffix')).once()
     })
   })
@@ -80,7 +80,7 @@ describe('azurePipelinesRunnerInvoker.ts', function (): void {
       const result: string = azurePipelinesRunnerInvoker.loc('TEST %s %s', 'Parameter 1', 'Parameter 2')
 
       // Assert
-      expect(result).to.equal('VALUE')
+      assert.equal(result, 'VALUE')
       verify(azurePipelinesRunnerWrapper.loc('TEST %s %s', 'Parameter 1', 'Parameter 2')).once()
     })
   })
