@@ -61,7 +61,6 @@
     "@babel/core": "7.23.7",
     "@babel/preset-env": "7.23.7",
     "@tsconfig/node10": "1.0.9",
-    "@types/chai": "4.3.11",
     "@types/glob": "8.1.0",
     "@types/isomorphic-fetch": "0.0.39",
     "@types/mocha": "10.0.6",
