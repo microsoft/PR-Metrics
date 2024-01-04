@@ -8,7 +8,7 @@ import GitInvoker from '../../src/git/gitInvoker'
 import { GitWritableStream } from '../../src/git/gitWritableStream'
 import RunnerInvoker from '../../src/runners/runnerInvoker'
 import Logger from '../../src/utilities/logger'
-import * as ExpectExtensions from '../testUtilities/expectExtensions'
+import * as AssertExtensions from '../testUtilities/assertExtensions'
 
 describe('gitInvoker.ts', (): void => {
   let logger: Logger
@@ -325,7 +325,7 @@ describe('gitInvoker.ts', (): void => {
       const func: () => Promise<boolean> = async () => await gitInvoker.isGitHistoryAvailable()
 
       // Assert
-      await ExpectExtensions.toThrowAsync(func, '\'GITHUB_BASE_REF\', accessed within \'GitInvoker.targetBranch\', is invalid, null, or undefined \'undefined\'.')
+      await AssertExtensions.toThrowAsync(func, '\'GITHUB_BASE_REF\', accessed within \'GitInvoker.targetBranch\', is invalid, null, or undefined \'undefined\'.')
       verify(logger.logDebug('* GitInvoker.isGitHistoryAvailable()')).once()
       verify(logger.logDebug('* GitInvoker.initialize()')).once()
       verify(logger.logDebug('* GitInvoker.targetBranch')).once()
@@ -416,7 +416,7 @@ describe('gitInvoker.ts', (): void => {
       const func: () => Promise<boolean> = async () => await gitInvoker.isGitHistoryAvailable()
 
       // Assert
-      await ExpectExtensions.toThrowAsync(func, '\'SYSTEM_PULLREQUEST_TARGETBRANCH\', accessed within \'GitInvoker.targetBranch\', is invalid, null, or undefined \'undefined\'.')
+      await AssertExtensions.toThrowAsync(func, '\'SYSTEM_PULLREQUEST_TARGETBRANCH\', accessed within \'GitInvoker.targetBranch\', is invalid, null, or undefined \'undefined\'.')
       verify(logger.logDebug('* GitInvoker.isGitHistoryAvailable()')).once()
       verify(logger.logDebug('* GitInvoker.initialize()')).once()
       verify(logger.logDebug('* GitInvoker.targetBranch')).once()
@@ -670,7 +670,7 @@ describe('gitInvoker.ts', (): void => {
       const func: () => Promise<string> = async () => await gitInvoker.getDiffSummary()
 
       // Assert
-      await ExpectExtensions.toThrowAsync(func, '\'SYSTEM_PULLREQUEST_TARGETBRANCH\', accessed within \'GitInvoker.targetBranch\', is invalid, null, or undefined \'undefined\'.')
+      await AssertExtensions.toThrowAsync(func, '\'SYSTEM_PULLREQUEST_TARGETBRANCH\', accessed within \'GitInvoker.targetBranch\', is invalid, null, or undefined \'undefined\'.')
       verify(logger.logDebug('* GitInvoker.getDiffSummary()')).once()
       verify(logger.logDebug('* GitInvoker.initialize()')).once()
       verify(logger.logDebug('* GitInvoker.targetBranch')).once()
@@ -689,7 +689,7 @@ describe('gitInvoker.ts', (): void => {
       const func: () => Promise<string> = async () => await gitInvoker.getDiffSummary()
 
       // Assert
-      await ExpectExtensions.toThrowAsync(func, 'Failure')
+      await AssertExtensions.toThrowAsync(func, 'Failure')
       verify(logger.logDebug('* GitInvoker.getDiffSummary()')).once()
       verify(logger.logDebug('* GitInvoker.initialize()')).once()
       verify(logger.logDebug('* GitInvoker.targetBranch')).once()

@@ -11,7 +11,7 @@ import CommentData from '../../src/repos/interfaces/commentData'
 import PullRequestDetails from '../../src/repos/interfaces/pullRequestDetails'
 import ReposInvoker from '../../src/repos/reposInvoker'
 import Logger from '../../src/utilities/logger'
-import * as ExpectExtensions from '../testUtilities/expectExtensions'
+import * as AssertExtensions from '../testUtilities/assertExtensions'
 
 describe('reposInvoker.ts', function (): void {
   let azureReposInvoker: AzureReposInvoker
@@ -225,7 +225,7 @@ describe('reposInvoker.ts', function (): void {
       const func: () => Promise<PullRequestDetails> = async () => await reposInvoker.getTitleAndDescription()
 
       // Assert
-      await ExpectExtensions.toThrowAsync(func, '\'BUILD_REPOSITORY_PROVIDER\', accessed within \'ReposInvoker.getReposInvoker()\', is invalid, null, or undefined \'undefined\'.')
+      await AssertExtensions.toThrowAsync(func, '\'BUILD_REPOSITORY_PROVIDER\', accessed within \'ReposInvoker.getReposInvoker()\', is invalid, null, or undefined \'undefined\'.')
       verify(azureReposInvoker.getTitleAndDescription()).never()
       verify(gitHubReposInvoker.getTitleAndDescription()).never()
       verify(logger.logDebug('* ReposInvoker.getTitleAndDescription()')).once()
@@ -241,7 +241,7 @@ describe('reposInvoker.ts', function (): void {
       const func: () => Promise<PullRequestDetails> = async () => await reposInvoker.getTitleAndDescription()
 
       // Assert
-      await ExpectExtensions.toThrowAsync(func, 'BUILD_REPOSITORY_PROVIDER \'Other\' is unsupported.')
+      await AssertExtensions.toThrowAsync(func, 'BUILD_REPOSITORY_PROVIDER \'Other\' is unsupported.')
       verify(azureReposInvoker.getTitleAndDescription()).never()
       verify(gitHubReposInvoker.getTitleAndDescription()).never()
       verify(logger.logDebug('* ReposInvoker.getTitleAndDescription()')).once()
@@ -328,7 +328,7 @@ describe('reposInvoker.ts', function (): void {
       const func: () => Promise<CommentData> = async () => await reposInvoker.getComments()
 
       // Assert
-      await ExpectExtensions.toThrowAsync(func, '\'BUILD_REPOSITORY_PROVIDER\', accessed within \'ReposInvoker.getReposInvoker()\', is invalid, null, or undefined \'undefined\'.')
+      await AssertExtensions.toThrowAsync(func, '\'BUILD_REPOSITORY_PROVIDER\', accessed within \'ReposInvoker.getReposInvoker()\', is invalid, null, or undefined \'undefined\'.')
       verify(azureReposInvoker.getComments()).never()
       verify(gitHubReposInvoker.getComments()).never()
       verify(logger.logDebug('* ReposInvoker.getComments()')).once()
@@ -344,7 +344,7 @@ describe('reposInvoker.ts', function (): void {
       const func: () => Promise<CommentData> = async () => await reposInvoker.getComments()
 
       // Assert
-      await ExpectExtensions.toThrowAsync(func, 'BUILD_REPOSITORY_PROVIDER \'Other\' is unsupported.')
+      await AssertExtensions.toThrowAsync(func, 'BUILD_REPOSITORY_PROVIDER \'Other\' is unsupported.')
       verify(azureReposInvoker.getComments()).never()
       verify(gitHubReposInvoker.getComments()).never()
       verify(logger.logDebug('* ReposInvoker.getComments()')).once()
@@ -428,7 +428,7 @@ describe('reposInvoker.ts', function (): void {
       const func: () => Promise<void> = async () => await reposInvoker.setTitleAndDescription(null, null)
 
       // Assert
-      await ExpectExtensions.toThrowAsync(func, '\'BUILD_REPOSITORY_PROVIDER\', accessed within \'ReposInvoker.getReposInvoker()\', is invalid, null, or undefined \'undefined\'.')
+      await AssertExtensions.toThrowAsync(func, '\'BUILD_REPOSITORY_PROVIDER\', accessed within \'ReposInvoker.getReposInvoker()\', is invalid, null, or undefined \'undefined\'.')
       verify(azureReposInvoker.setTitleAndDescription(null, null)).never()
       verify(gitHubReposInvoker.setTitleAndDescription(null, null)).never()
       verify(logger.logDebug('* ReposInvoker.setTitleAndDescription()')).once()
@@ -444,7 +444,7 @@ describe('reposInvoker.ts', function (): void {
       const func: () => Promise<void> = async () => await reposInvoker.setTitleAndDescription(null, null)
 
       // Assert
-      await ExpectExtensions.toThrowAsync(func, 'BUILD_REPOSITORY_PROVIDER \'Other\' is unsupported.')
+      await AssertExtensions.toThrowAsync(func, 'BUILD_REPOSITORY_PROVIDER \'Other\' is unsupported.')
       verify(azureReposInvoker.setTitleAndDescription(null, null)).never()
       verify(gitHubReposInvoker.setTitleAndDescription(null, null)).never()
       verify(logger.logDebug('* ReposInvoker.setTitleAndDescription()')).once()
@@ -528,7 +528,7 @@ describe('reposInvoker.ts', function (): void {
       const func: () => Promise<void> = async () => await reposInvoker.createComment('', CommentThreadStatus.Active, '', false)
 
       // Assert
-      await ExpectExtensions.toThrowAsync(func, '\'BUILD_REPOSITORY_PROVIDER\', accessed within \'ReposInvoker.getReposInvoker()\', is invalid, null, or undefined \'undefined\'.')
+      await AssertExtensions.toThrowAsync(func, '\'BUILD_REPOSITORY_PROVIDER\', accessed within \'ReposInvoker.getReposInvoker()\', is invalid, null, or undefined \'undefined\'.')
       verify(azureReposInvoker.createComment('', CommentThreadStatus.Active, '', false)).never()
       verify(gitHubReposInvoker.createComment('', CommentThreadStatus.Active, '', false)).never()
       verify(logger.logDebug('* ReposInvoker.createComment()')).once()
@@ -544,7 +544,7 @@ describe('reposInvoker.ts', function (): void {
       const func: () => Promise<void> = async () => await reposInvoker.createComment('', CommentThreadStatus.Active, '', false)
 
       // Assert
-      await ExpectExtensions.toThrowAsync(func, 'BUILD_REPOSITORY_PROVIDER \'Other\' is unsupported.')
+      await AssertExtensions.toThrowAsync(func, 'BUILD_REPOSITORY_PROVIDER \'Other\' is unsupported.')
       verify(azureReposInvoker.createComment('', CommentThreadStatus.Active, '', false)).never()
       verify(gitHubReposInvoker.createComment('', CommentThreadStatus.Active, '', false)).never()
       verify(logger.logDebug('* ReposInvoker.createComment()')).once()
@@ -628,7 +628,7 @@ describe('reposInvoker.ts', function (): void {
       const func: () => Promise<void> = async () => await reposInvoker.updateComment(0, null, null)
 
       // Assert
-      await ExpectExtensions.toThrowAsync(func, '\'BUILD_REPOSITORY_PROVIDER\', accessed within \'ReposInvoker.getReposInvoker()\', is invalid, null, or undefined \'undefined\'.')
+      await AssertExtensions.toThrowAsync(func, '\'BUILD_REPOSITORY_PROVIDER\', accessed within \'ReposInvoker.getReposInvoker()\', is invalid, null, or undefined \'undefined\'.')
       verify(azureReposInvoker.updateComment(0, null, null)).never()
       verify(gitHubReposInvoker.updateComment(0, null, null)).never()
       verify(logger.logDebug('* ReposInvoker.updateComment()')).once()
@@ -644,7 +644,7 @@ describe('reposInvoker.ts', function (): void {
       const func: () => Promise<void> = async () => await reposInvoker.updateComment(0, null, null)
 
       // Assert
-      await ExpectExtensions.toThrowAsync(func, 'BUILD_REPOSITORY_PROVIDER \'Other\' is unsupported.')
+      await AssertExtensions.toThrowAsync(func, 'BUILD_REPOSITORY_PROVIDER \'Other\' is unsupported.')
       verify(azureReposInvoker.updateComment(0, null, null)).never()
       verify(gitHubReposInvoker.updateComment(0, null, null)).never()
       verify(logger.logDebug('* ReposInvoker.updateComment()')).once()
@@ -728,7 +728,7 @@ describe('reposInvoker.ts', function (): void {
       const func: () => Promise<void> = async () => await reposInvoker.deleteCommentThread(20)
 
       // Assert
-      await ExpectExtensions.toThrowAsync(func, '\'BUILD_REPOSITORY_PROVIDER\', accessed within \'ReposInvoker.getReposInvoker()\', is invalid, null, or undefined \'undefined\'.')
+      await AssertExtensions.toThrowAsync(func, '\'BUILD_REPOSITORY_PROVIDER\', accessed within \'ReposInvoker.getReposInvoker()\', is invalid, null, or undefined \'undefined\'.')
       verify(azureReposInvoker.deleteCommentThread(20)).never()
       verify(gitHubReposInvoker.deleteCommentThread(20)).never()
       verify(logger.logDebug('* ReposInvoker.deleteCommentThread()')).once()
@@ -744,7 +744,7 @@ describe('reposInvoker.ts', function (): void {
       const func: () => Promise<void> = async () => await reposInvoker.deleteCommentThread(20)
 
       // Assert
-      await ExpectExtensions.toThrowAsync(func, 'BUILD_REPOSITORY_PROVIDER \'Other\' is unsupported.')
+      await AssertExtensions.toThrowAsync(func, 'BUILD_REPOSITORY_PROVIDER \'Other\' is unsupported.')
       verify(azureReposInvoker.deleteCommentThread(20)).never()
       verify(gitHubReposInvoker.deleteCommentThread(20)).never()
       verify(logger.logDebug('* ReposInvoker.deleteCommentThread()')).once()

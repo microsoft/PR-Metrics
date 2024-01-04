@@ -4,7 +4,7 @@
 import assert from 'node:assert/strict'
 
 /**
- * Verifies that the asynchronous function call throws an error with the expected message.
+ * Asserts that the asynchronous function call throws an error with the expected message.
  * @param func The function call to test.
  * @param errorMessage The expected error message.
  * @returns The error object.

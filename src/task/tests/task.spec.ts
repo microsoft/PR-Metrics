@@ -1,8 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import assert from 'node:assert/strict'
 import * as fs from 'fs'
+import assert from 'node:assert/strict'
 import * as path from 'path'
 import ResourcesJson from '../src/jsonTypes/resourcesJson'
 import PackageJson from './jsonTypes/packageJson'

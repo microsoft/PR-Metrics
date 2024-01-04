@@ -11,7 +11,7 @@ import Inputs from '../../src/metrics/inputs'
 import * as InputsDefault from '../../src/metrics/inputsDefault'
 import RunnerInvoker from '../../src/runners/runnerInvoker'
 import Logger from '../../src/utilities/logger'
-import * as ExpectExtensions from '../testUtilities/expectExtensions'
+import * as AssertExtensions from '../testUtilities/assertExtensions'
 
 describe('codeMetrics.ts', (): void => {
   let gitInvoker: GitInvoker
@@ -1355,7 +1355,7 @@ describe('codeMetrics.ts', (): void => {
           const func: () => Promise<string[]> = async () => await codeMetrics.getFilesNotRequiringReview()
 
           // Assert
-          await ExpectExtensions.toThrowAsync(func, 'The Git diff summary is empty.')
+          await AssertExtensions.toThrowAsync(func, 'The Git diff summary is empty.')
           verify(logger.logDebug('* CodeMetrics.getFilesNotRequiringReview()')).once()
           verify(logger.logDebug('* CodeMetrics.initialize()')).once()
         })
@@ -1405,7 +1405,7 @@ describe('codeMetrics.ts', (): void => {
           const func: () => Promise<string[]> = async () => await codeMetrics.getFilesNotRequiringReview()
 
           // Assert
-          await ExpectExtensions.toThrowAsync(func, `The number of elements '${elements}' in '${summary.trim()}' in input '${summary.trim()}' did not match the expected 3.`)
+          await AssertExtensions.toThrowAsync(func, `The number of elements '${elements}' in '${summary.trim()}' in input '${summary.trim()}' did not match the expected 3.`)
           verify(logger.logDebug('* CodeMetrics.getFilesNotRequiringReview()')).once()
           verify(logger.logDebug('* CodeMetrics.initialize()')).once()
           verify(logger.logDebug('* CodeMetrics.createFileMetricsMap()')).once()
@@ -1422,7 +1422,7 @@ describe('codeMetrics.ts', (): void => {
       const func: () => Promise<string[]> = async () => await codeMetrics.getFilesNotRequiringReview()
 
       // Assert
-      await ExpectExtensions.toThrowAsync(func, 'Could not parse added lines \'A\' from line \'A\t0\tfile.ts\'.')
+      await AssertExtensions.toThrowAsync(func, 'Could not parse added lines \'A\' from line \'A\t0\tfile.ts\'.')
       verify(logger.logDebug('* CodeMetrics.getFilesNotRequiringReview()')).once()
       verify(logger.logDebug('* CodeMetrics.initialize()')).once()
       verify(logger.logDebug('* CodeMetrics.createFileMetricsMap()')).once()
@@ -1437,7 +1437,7 @@ describe('codeMetrics.ts', (): void => {
       const func: () => Promise<string[]> = async () => await codeMetrics.getFilesNotRequiringReview()
 
       // Assert
-      await ExpectExtensions.toThrowAsync(func, 'Could not parse deleted lines \'A\' from line \'0\tA\tfile.ts\'.')
+      await AssertExtensions.toThrowAsync(func, 'Could not parse deleted lines \'A\' from line \'0\tA\tfile.ts\'.')
       verify(logger.logDebug('* CodeMetrics.getFilesNotRequiringReview()')).once()
       verify(logger.logDebug('* CodeMetrics.initialize()')).once()
       verify(logger.logDebug('* CodeMetrics.createFileMetricsMap()')).once()
@@ -1454,7 +1454,7 @@ describe('codeMetrics.ts', (): void => {
       const func: () => Promise<string[]> = async () => await codeMetrics.getDeletedFilesNotRequiringReview()
 
       // Assert
-      await ExpectExtensions.toThrowAsync(func, 'The Git diff summary is empty.')
+      await AssertExtensions.toThrowAsync(func, 'The Git diff summary is empty.')
       verify(logger.logDebug('* CodeMetrics.getDeletedFilesNotRequiringReview()')).once()
       verify(logger.logDebug('* CodeMetrics.initialize()')).once()
     })
@@ -1468,7 +1468,7 @@ describe('codeMetrics.ts', (): void => {
       const func: () => Promise<string[]> = async () => await codeMetrics.getDeletedFilesNotRequiringReview()
 
       // Assert
-      await ExpectExtensions.toThrowAsync(func, 'The number of elements \'1\' in \'0\' in input \'0\' did not match the expected 3.')
+      await AssertExtensions.toThrowAsync(func, 'The number of elements \'1\' in \'0\' in input \'0\' did not match the expected 3.')
       verify(logger.logDebug('* CodeMetrics.getDeletedFilesNotRequiringReview()')).once()
       verify(logger.logDebug('* CodeMetrics.initialize()')).once()
       verify(logger.logDebug('* CodeMetrics.createFileMetricsMap()')).once()
@@ -1483,7 +1483,7 @@ describe('codeMetrics.ts', (): void => {
       const func: () => Promise<string[]> = async () => await codeMetrics.getDeletedFilesNotRequiringReview()
 
       // Assert
-      await ExpectExtensions.toThrowAsync(func, 'Could not parse added lines \'A\' from line \'A\t0\tfile.ts\'.')
+      await AssertExtensions.toThrowAsync(func, 'Could not parse added lines \'A\' from line \'A\t0\tfile.ts\'.')
       verify(logger.logDebug('* CodeMetrics.getDeletedFilesNotRequiringReview()')).once()
       verify(logger.logDebug('* CodeMetrics.initialize()')).once()
       verify(logger.logDebug('* CodeMetrics.createFileMetricsMap()')).once()
@@ -1498,7 +1498,7 @@ describe('codeMetrics.ts', (): void => {
       const func: () => Promise<string[]> = async () => await codeMetrics.getDeletedFilesNotRequiringReview()
 
       // Assert
-      await ExpectExtensions.toThrowAsync(func, 'Could not parse deleted lines \'A\' from line \'0\tA\tfile.ts\'.')
+      await AssertExtensions.toThrowAsync(func, 'Could not parse deleted lines \'A\' from line \'0\tA\tfile.ts\'.')
       verify(logger.logDebug('* CodeMetrics.getDeletedFilesNotRequiringReview()')).once()
       verify(logger.logDebug('* CodeMetrics.initialize()')).once()
       verify(logger.logDebug('* CodeMetrics.createFileMetricsMap()')).once()
