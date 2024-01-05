@@ -29,11 +29,10 @@ insulate the top-level code from the need to manage API differences.
 ## Building the Code
 
 Further issues arise during the building of the code. The GitHub runner uses
-relatively recent versions of Node.js, with plans
-[to migrate from Node.js v12 to Node.js v16 by Summer 2023][nodejsmigration].
-The Azure DevOps runner currently only uses Node.js v10.24.1. v10 does not
-support all recent ECMAScript features, which creates a problem for some
-dependencies.
+relatively recent versions of Node.js, with
+[Node.js v16 is use since July 2023][nodejsmigration]. The in-built Azure DevOps
+runner only uses Node.js v10.24.1. v10 does not support all recent ECMAScript
+features, which creates a problem for some dependencies.
 
 In particular, the [`@octokit/oauth-app`][octokitoauthapp] package, which is an
 indirect dependency of the Octokit APIs, uses ECMAScript constructs that will
@@ -64,6 +63,6 @@ more modern and code sizes smaller.
 
 [babel]: https://babeljs.io/
 [ncc]: https://www.npmjs.com/package/@vercel/ncc
-[nodejsmigration]: https://github.blog/changelog/2022-09-22-github-actions-all-actions-will-begin-running-on-node16-instead-of-node12/
+[nodejsmigration]: https://github.blog/changelog/2023-07-17-github-actions-removal-of-node12-from-the-actions-runner/
 [octokitgitdiffparser]: ../src/task/src/git/octokitGitDiffParser.ts
 [octokitoauthapp]: https://www.npmjs.com/package/@octokit/oauth-app

@@ -1957,7 +1957,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---------------------------------------------------------
 
-@types/aws-lambda 8.10.130 - MIT
+@types/aws-lambda 8.10.131 - MIT
 https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/aws-lambda
 
 Copyright (c) Microsoft Corporation
@@ -2017,6 +2017,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 @types/node 20.10.6 - MIT
 https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/node
 
+Copyright (c) Microsoft Corporation
 
 MIT License
 
@@ -2135,10 +2136,10 @@ SOFTWARE.
 
 ---------------------------------------------------------
 
-axios 1.6.3 - MIT
+axios 1.6.4 - MIT
 https://axios-http.com/
 
-Copyright (c) 2023 Matt Zabriskie and contributors
+Copyright (c) 2024 Matt Zabriskie and contributors
 Copyright (c) 2014-present Matt Zabriskie & Collaborators
 
 # Copyright (c) 2014-present Matt Zabriskie & Collaborators
@@ -4341,7 +4342,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---------------------------------------------------------
 
-universal-github-app-jwt 1.1.1 - MIT
+universal-github-app-jwt 1.1.2 - MIT
 https://github.com/gr2m/universal-github-app-jwt#readme
 
 Copyright (c) 2019 Gregor Martynus
