@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { expect } from 'chai'
+import assert from 'node:assert/strict'
 import 'reflect-metadata'
 import { anyString, deepEqual, instance, mock, verify, when } from 'ts-mockito'
 import Inputs from '../../src/metrics/inputs'
@@ -60,12 +60,12 @@ describe('inputs.ts', (): void => {
         const inputs: Inputs = new Inputs(instance(logger), instance(runnerInvoker))
 
         // Assert
-        expect(inputs.baseSize).to.equal(InputsDefault.baseSize)
-        expect(inputs.growthRate).to.equal(InputsDefault.growthRate)
-        expect(inputs.testFactor).to.equal(InputsDefault.testFactor)
-        expect(inputs.alwaysCloseComment).to.equal(InputsDefault.alwaysCloseComment)
-        expect(inputs.fileMatchingPatterns).to.deep.equal(InputsDefault.fileMatchingPatterns)
-        expect(inputs.codeFileExtensions).to.deep.equal(new Set<string>(InputsDefault.codeFileExtensions))
+        assert.equal(inputs.baseSize, InputsDefault.baseSize)
+        assert.equal(inputs.growthRate, InputsDefault.growthRate)
+        assert.equal(inputs.testFactor, InputsDefault.testFactor)
+        assert.equal(inputs.alwaysCloseComment, InputsDefault.alwaysCloseComment)
+        assert.deepEqual(inputs.fileMatchingPatterns, InputsDefault.fileMatchingPatterns)
+        assert.deepEqual(inputs.codeFileExtensions, new Set<string>(InputsDefault.codeFileExtensions))
         verify(logger.logDebug('* Inputs.initialize()')).times(6)
         verify(logger.logDebug('* Inputs.initializeBaseSize()')).once()
         verify(logger.logDebug('* Inputs.initializeGrowthRate()')).once()
@@ -107,12 +107,12 @@ describe('inputs.ts', (): void => {
         const inputs: Inputs = new Inputs(instance(logger), instance(runnerInvoker))
 
         // Assert
-        expect(inputs.baseSize).to.equal(5.0)
-        expect(inputs.growthRate).to.equal(4.4)
-        expect(inputs.testFactor).to.equal(2.7)
-        expect(inputs.alwaysCloseComment).to.deep.equal(true)
-        expect(inputs.fileMatchingPatterns).to.deep.equal(['aa', 'bb'])
-        expect(inputs.codeFileExtensions).to.deep.equal(new Set<string>(['js', 'ts']))
+        assert.equal(inputs.baseSize, 5.0)
+        assert.equal(inputs.growthRate, 4.4)
+        assert.equal(inputs.testFactor, 2.7)
+        assert.deepEqual(inputs.alwaysCloseComment, true)
+        assert.deepEqual(inputs.fileMatchingPatterns, ['aa', 'bb'])
+        assert.deepEqual(inputs.codeFileExtensions, new Set<string>(['js', 'ts']))
         verify(logger.logDebug('* Inputs.initialize()')).times(6)
         verify(logger.logDebug('* Inputs.initializeBaseSize()')).once()
         verify(logger.logDebug('* Inputs.initializeGrowthRate()')).once()
@@ -164,7 +164,7 @@ describe('inputs.ts', (): void => {
             const inputs: Inputs = new Inputs(instance(logger), instance(runnerInvoker))
 
             // Assert
-            expect(inputs.baseSize).to.equal(InputsDefault.baseSize)
+            assert.equal(inputs.baseSize, InputsDefault.baseSize)
             verify(logger.logDebug('* Inputs.initialize()')).once()
             verify(logger.logDebug('* Inputs.initializeBaseSize()')).once()
             verify(logger.logDebug('* Inputs.initializeGrowthRate()')).once()
@@ -207,7 +207,7 @@ describe('inputs.ts', (): void => {
             const inputs: Inputs = new Inputs(instance(logger), instance(runnerInvoker))
 
             // Assert
-            expect(inputs.baseSize).to.equal(InputsDefault.baseSize)
+            assert.equal(inputs.baseSize, InputsDefault.baseSize)
             verify(logger.logDebug('* Inputs.initialize()')).once()
             verify(logger.logDebug('* Inputs.initializeBaseSize()')).once()
             verify(logger.logDebug('* Inputs.initializeGrowthRate()')).once()
@@ -250,7 +250,7 @@ describe('inputs.ts', (): void => {
             const inputs: Inputs = new Inputs(instance(logger), instance(runnerInvoker))
 
             // Assert
-            expect(inputs.baseSize).to.equal(parseInt(baseSize))
+            assert.equal(inputs.baseSize, parseInt(baseSize))
             verify(logger.logDebug('* Inputs.initialize()')).once()
             verify(logger.logDebug('* Inputs.initializeBaseSize()')).once()
             verify(logger.logDebug('* Inputs.initializeGrowthRate()')).once()
@@ -299,7 +299,7 @@ describe('inputs.ts', (): void => {
             const inputs: Inputs = new Inputs(instance(logger), instance(runnerInvoker))
 
             // Assert
-            expect(inputs.growthRate).to.equal(InputsDefault.growthRate)
+            assert.equal(inputs.growthRate, InputsDefault.growthRate)
             verify(logger.logDebug('* Inputs.initialize()')).once()
             verify(logger.logDebug('* Inputs.initializeBaseSize()')).once()
             verify(logger.logDebug('* Inputs.initializeGrowthRate()')).once()
@@ -345,7 +345,7 @@ describe('inputs.ts', (): void => {
             const inputs: Inputs = new Inputs(instance(logger), instance(runnerInvoker))
 
             // Assert
-            expect(inputs.growthRate).to.equal(InputsDefault.growthRate)
+            assert.equal(inputs.growthRate, InputsDefault.growthRate)
             verify(logger.logDebug('* Inputs.initialize()')).once()
             verify(logger.logDebug('* Inputs.initializeBaseSize()')).once()
             verify(logger.logDebug('* Inputs.initializeGrowthRate()')).once()
@@ -392,7 +392,7 @@ describe('inputs.ts', (): void => {
             const inputs: Inputs = new Inputs(instance(logger), instance(runnerInvoker))
 
             // Assert
-            expect(inputs.growthRate).to.equal(parseFloat(growthRate))
+            assert.equal(inputs.growthRate, parseFloat(growthRate))
             verify(logger.logDebug('* Inputs.initialize()')).once()
             verify(logger.logDebug('* Inputs.initializeBaseSize()')).once()
             verify(logger.logDebug('* Inputs.initializeGrowthRate()')).once()
@@ -441,7 +441,7 @@ describe('inputs.ts', (): void => {
             const inputs: Inputs = new Inputs(instance(logger), instance(runnerInvoker))
 
             // Assert
-            expect(inputs.testFactor).to.equal(InputsDefault.testFactor)
+            assert.equal(inputs.testFactor, InputsDefault.testFactor)
             verify(logger.logDebug('* Inputs.initialize()')).once()
             verify(logger.logDebug('* Inputs.initializeBaseSize()')).once()
             verify(logger.logDebug('* Inputs.initializeGrowthRate()')).once()
@@ -485,7 +485,7 @@ describe('inputs.ts', (): void => {
             const inputs: Inputs = new Inputs(instance(logger), instance(runnerInvoker))
 
             // Assert
-            expect(inputs.testFactor).to.equal(InputsDefault.testFactor)
+            assert.equal(inputs.testFactor, InputsDefault.testFactor)
             verify(logger.logDebug('* Inputs.initialize()')).once()
             verify(logger.logDebug('* Inputs.initializeBaseSize()')).once()
             verify(logger.logDebug('* Inputs.initializeGrowthRate()')).once()
@@ -532,7 +532,7 @@ describe('inputs.ts', (): void => {
             const inputs: Inputs = new Inputs(instance(logger), instance(runnerInvoker))
 
             // Assert
-            expect(inputs.testFactor).to.equal(parseFloat(testFactor))
+            assert.equal(inputs.testFactor, parseFloat(testFactor))
             verify(logger.logDebug('* Inputs.initialize()')).once()
             verify(logger.logDebug('* Inputs.initializeBaseSize()')).once()
             verify(logger.logDebug('* Inputs.initializeGrowthRate()')).once()
@@ -573,7 +573,7 @@ describe('inputs.ts', (): void => {
             const inputs: Inputs = new Inputs(instance(logger), instance(runnerInvoker))
 
             // Assert
-            expect(inputs.testFactor).to.equal(null)
+            assert.equal(inputs.testFactor, null)
             verify(logger.logDebug('* Inputs.initialize()')).once()
             verify(logger.logDebug('* Inputs.initializeBaseSize()')).once()
             verify(logger.logDebug('* Inputs.initializeGrowthRate()')).once()
@@ -624,7 +624,7 @@ describe('inputs.ts', (): void => {
             const inputs: Inputs = new Inputs(instance(logger), instance(runnerInvoker))
 
             // Assert
-            expect(inputs.alwaysCloseComment).to.equal(InputsDefault.alwaysCloseComment)
+            assert.equal(inputs.alwaysCloseComment, InputsDefault.alwaysCloseComment)
             verify(logger.logDebug('* Inputs.initialize()')).once()
             verify(logger.logDebug('* Inputs.initializeBaseSize()')).once()
             verify(logger.logDebug('* Inputs.initializeGrowthRate()')).once()
@@ -667,7 +667,7 @@ describe('inputs.ts', (): void => {
             const inputs: Inputs = new Inputs(instance(logger), instance(runnerInvoker))
 
             // Assert
-            expect(inputs.alwaysCloseComment).to.equal(true)
+            assert.equal(inputs.alwaysCloseComment, true)
             verify(logger.logDebug('* Inputs.initialize()')).once()
             verify(logger.logDebug('* Inputs.initializeBaseSize()')).once()
             verify(logger.logDebug('* Inputs.initializeGrowthRate()')).once()
@@ -713,7 +713,7 @@ describe('inputs.ts', (): void => {
             const inputs: Inputs = new Inputs(instance(logger), instance(runnerInvoker))
 
             // Assert
-            expect(inputs.fileMatchingPatterns).to.deep.equal(InputsDefault.fileMatchingPatterns)
+            assert.deepEqual(inputs.fileMatchingPatterns, InputsDefault.fileMatchingPatterns)
             verify(logger.logDebug('* Inputs.initialize()')).once()
             verify(logger.logDebug('* Inputs.initializeBaseSize()')).once()
             verify(logger.logDebug('* Inputs.initializeGrowthRate()')).once()
@@ -755,7 +755,7 @@ describe('inputs.ts', (): void => {
             const inputs: Inputs = new Inputs(instance(logger), instance(runnerInvoker))
 
             // Assert
-            expect(inputs.fileMatchingPatterns).to.deep.equal([fileMatchingPatterns])
+            assert.deepEqual(inputs.fileMatchingPatterns, [fileMatchingPatterns])
             verify(logger.logDebug('* Inputs.initialize()')).once()
             verify(logger.logDebug('* Inputs.initializeBaseSize()')).once()
             verify(logger.logDebug('* Inputs.initializeGrowthRate()')).once()
@@ -797,7 +797,7 @@ describe('inputs.ts', (): void => {
             const inputs: Inputs = new Inputs(instance(logger), instance(runnerInvoker))
 
             // Assert
-            expect(inputs.fileMatchingPatterns).to.deep.equal(expectedOutput)
+            assert.deepEqual(inputs.fileMatchingPatterns, expectedOutput)
             verify(logger.logDebug('* Inputs.initialize()')).once()
             verify(logger.logDebug('* Inputs.initializeBaseSize()')).once()
             verify(logger.logDebug('* Inputs.initializeGrowthRate()')).once()
@@ -831,7 +831,7 @@ describe('inputs.ts', (): void => {
         const inputs: Inputs = new Inputs(instance(logger), instance(runnerInvoker))
 
         // Assert
-        expect(inputs.fileMatchingPatterns).to.deep.equal(['folder1/file.js', 'folder2/*.js'])
+        assert.deepEqual(inputs.fileMatchingPatterns, ['folder1/file.js', 'folder2/*.js'])
         verify(logger.logDebug('* Inputs.initialize()')).once()
         verify(logger.logDebug('* Inputs.initializeBaseSize()')).once()
         verify(logger.logDebug('* Inputs.initializeGrowthRate()')).once()
@@ -863,7 +863,7 @@ describe('inputs.ts', (): void => {
         const inputs: Inputs = new Inputs(instance(logger), instance(runnerInvoker))
 
         // Assert
-        expect(inputs.fileMatchingPatterns).to.deep.equal(['file.js'])
+        assert.deepEqual(inputs.fileMatchingPatterns, ['file.js'])
         verify(logger.logDebug('* Inputs.initialize()')).once()
         verify(logger.logDebug('* Inputs.initializeBaseSize()')).once()
         verify(logger.logDebug('* Inputs.initializeGrowthRate()')).once()
@@ -907,7 +907,7 @@ describe('inputs.ts', (): void => {
             const inputs: Inputs = new Inputs(instance(logger), instance(runnerInvoker))
 
             // Assert
-            expect(inputs.codeFileExtensions).to.deep.equal(new Set<string>(InputsDefault.codeFileExtensions))
+            assert.deepEqual(inputs.codeFileExtensions, new Set<string>(InputsDefault.codeFileExtensions))
             verify(logger.logDebug('* Inputs.initialize()')).once()
             verify(logger.logDebug('* Inputs.initializeBaseSize()')).once()
             verify(logger.logDebug('* Inputs.initializeGrowthRate()')).once()
@@ -950,7 +950,7 @@ describe('inputs.ts', (): void => {
             const inputs: Inputs = new Inputs(instance(logger), instance(runnerInvoker))
 
             // Assert
-            expect(inputs.codeFileExtensions).to.deep.equal(expectedResult)
+            assert.deepEqual(inputs.codeFileExtensions, expectedResult)
             verify(logger.logDebug('* Inputs.initialize()')).once()
             verify(logger.logDebug('* Inputs.initializeBaseSize()')).once()
             verify(logger.logDebug('* Inputs.initializeGrowthRate()')).once()
@@ -984,7 +984,7 @@ describe('inputs.ts', (): void => {
         const inputs: Inputs = new Inputs(instance(logger), instance(runnerInvoker))
 
         // Assert
-        expect(inputs.codeFileExtensions).to.deep.equal(new Set<string>(['ada']))
+        assert.deepEqual(inputs.codeFileExtensions, new Set<string>(['ada']))
         verify(logger.logDebug('* Inputs.initialize()')).once()
         verify(logger.logDebug('* Inputs.initializeBaseSize()')).once()
         verify(logger.logDebug('* Inputs.initializeGrowthRate()')).once()
@@ -1016,7 +1016,7 @@ describe('inputs.ts', (): void => {
         const inputs: Inputs = new Inputs(instance(logger), instance(runnerInvoker))
 
         // Assert
-        expect(inputs.codeFileExtensions).to.deep.equal(new Set<string>(['ada', 'cs', 'txt']))
+        assert.deepEqual(inputs.codeFileExtensions, new Set<string>(['ada', 'cs', 'txt']))
         verify(logger.logDebug('* Inputs.initialize()')).once()
         verify(logger.logDebug('* Inputs.initializeBaseSize()')).once()
         verify(logger.logDebug('* Inputs.initializeGrowthRate()')).once()
@@ -1048,7 +1048,7 @@ describe('inputs.ts', (): void => {
         const inputs: Inputs = new Inputs(instance(logger), instance(runnerInvoker))
 
         // Assert
-        expect(inputs.codeFileExtensions).to.deep.equal(new Set<string>(['ada', 'txt']))
+        assert.deepEqual(inputs.codeFileExtensions, new Set<string>(['ada', 'txt']))
         verify(logger.logDebug('* Inputs.initialize()')).once()
         verify(logger.logDebug('* Inputs.initializeBaseSize()')).once()
         verify(logger.logDebug('* Inputs.initializeGrowthRate()')).once()
@@ -1080,7 +1080,7 @@ describe('inputs.ts', (): void => {
         const inputs: Inputs = new Inputs(instance(logger), instance(runnerInvoker))
 
         // Assert
-        expect(inputs.codeFileExtensions).to.deep.equal(new Set<string>(['ada', 'cs', 'txt']))
+        assert.deepEqual(inputs.codeFileExtensions, new Set<string>(['ada', 'cs', 'txt']))
         verify(logger.logDebug('* Inputs.initialize()')).once()
         verify(logger.logDebug('* Inputs.initializeBaseSize()')).once()
         verify(logger.logDebug('* Inputs.initializeGrowthRate()')).once()
@@ -1112,7 +1112,7 @@ describe('inputs.ts', (): void => {
         const inputs: Inputs = new Inputs(instance(logger), instance(runnerInvoker))
 
         // Assert
-        expect(inputs.codeFileExtensions).to.deep.equal(new Set<string>(['ada', 'cs', 'txt']))
+        assert.deepEqual(inputs.codeFileExtensions, new Set<string>(['ada', 'cs', 'txt']))
         verify(logger.logDebug('* Inputs.initialize()')).once()
         verify(logger.logDebug('* Inputs.initializeBaseSize()')).once()
         verify(logger.logDebug('* Inputs.initializeGrowthRate()')).once()

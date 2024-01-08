@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { expect } from 'chai'
+import assert from 'node:assert/strict'
 import * as Converter from '../../src/utilities/converter'
 import * as Validator from '../../src/utilities/validator'
 
@@ -23,7 +23,7 @@ describe('validator.ts', (): void => {
         const func: () => void = () => Validator.validateVariable('TEST_VARIABLE', 'string test method name')
 
         // Assert
-        expect(func).to.throw(`'TEST_VARIABLE', accessed within 'string test method name', is invalid, null, or undefined '${Converter.toString(value)}'.`)
+        assert.throws(func, TypeError(`'TEST_VARIABLE', accessed within 'string test method name', is invalid, null, or undefined '${Converter.toString(value)}'.`))
 
         // Finalization
         delete process.env.TEST_VARIABLE
@@ -38,7 +38,7 @@ describe('validator.ts', (): void => {
       const result: string = Validator.validateVariable('TEST_VARIABLE', 'string test method name')
 
       // Assert
-      expect(result).to.equal('value')
+      assert.equal(result, 'value')
 
       // Finalization
       delete process.env.TEST_VARIABLE
@@ -59,7 +59,7 @@ describe('validator.ts', (): void => {
           const func: () => void = () => Validator.validateString(value, 'string test', 'string test method name')
 
           // Assert
-          expect(func).to.throw(`'string test', accessed within 'string test method name', is invalid, null, or undefined '${Converter.toString(value)}'.`)
+          assert.throws(func, TypeError(`'string test', accessed within 'string test method name', is invalid, null, or undefined '${Converter.toString(value)}'.`))
         })
       })
     }
@@ -69,7 +69,7 @@ describe('validator.ts', (): void => {
       const result: string = Validator.validateString('value', 'string test', 'string test method name')
 
       // Assert
-      expect(result).to.equal('value')
+      assert.equal(result, 'value')
     })
   })
 
@@ -88,7 +88,7 @@ describe('validator.ts', (): void => {
           const func: () => void = () => Validator.validateNumber(value, 'number test', 'number test method name')
 
           // Assert
-          expect(func).to.throw(`'number test', accessed within 'number test method name', is invalid, null, or undefined '${Converter.toString(value)}'.`)
+          assert.throws(func, TypeError(`'number test', accessed within 'number test method name', is invalid, null, or undefined '${Converter.toString(value)}'.`))
         })
       })
     }
@@ -98,7 +98,7 @@ describe('validator.ts', (): void => {
       const result: number = Validator.validateNumber(1, 'number test', 'number test method name')
 
       // Assert
-      expect(result).to.equal(1)
+      assert.equal(result, 1)
     })
   })
 })

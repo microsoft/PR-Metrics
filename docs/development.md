@@ -80,10 +80,10 @@ interfaces to add additional methods, while retaining the same access pattern.
 ## Testing
 
 This task is tested via unit tests constructed using the [Mocha][mocha] test
-framework, the [Chai][chai] assertion library and the [ts-mockito][tsmockito]
-mocking library. Tests follow the [Arrange-Act-Assert pattern][aaa], and they
-can be run using `npm test` from within the `src/task` folder. This command will
-output both the test results and code coverage metrics.
+framework and the [ts-mockito][tsmockito] mocking library. Tests follow the
+[Arrange-Act-Assert pattern][aaa], and they can be run using `npm test` from
+within the `src/task` folder. This command will output both the test results and
+code coverage metrics.
 
 The code coverage is currently extremely high, and a high rate of coverage
 should be maintained for all changes. There are a large number of edge cases
@@ -124,7 +124,6 @@ outputted by default irrespective of the value of the `system.debug` variable.
 [npm]: https://www.npmjs.com/
 [tfxpat]: https://docs.microsoft.com/azure/devops/extend/publish/command-line
 [mocha]: https://mochajs.org/
-[chai]: https://www.chaijs.com/
 [tsmockito]: https://github.com/NagRock/ts-mockito
 [aaa]: https://automationpanda.com/2020/07/07/arrange-act-assert-a-pattern-for-writing-good-tests/
 [eslint]: https://eslint.org/

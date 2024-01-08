@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { expect } from 'chai'
+import assert from 'node:assert/strict'
 import 'reflect-metadata'
 import { instance, mock, verify, when } from 'ts-mockito'
 import GitInvoker from '../../src/git/gitInvoker'
@@ -11,7 +11,7 @@ import Inputs from '../../src/metrics/inputs'
 import * as InputsDefault from '../../src/metrics/inputsDefault'
 import RunnerInvoker from '../../src/runners/runnerInvoker'
 import Logger from '../../src/utilities/logger'
-import * as ExpectExtensions from '../testUtilities/expectExtensions'
+import * as AssertExtensions from '../testUtilities/assertExtensions'
 
 describe('codeMetrics.ts', (): void => {
   let gitInvoker: GitInvoker
@@ -574,13 +574,13 @@ describe('codeMetrics.ts', (): void => {
         const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(logger), instance(runnerInvoker))
 
         // Assert
-        expect(await codeMetrics.getFilesNotRequiringReview()).to.deep.equal([])
-        expect(await codeMetrics.getDeletedFilesNotRequiringReview()).to.deep.equal([])
-        expect(await codeMetrics.getSize()).to.equal(sizeIndicator)
-        expect(await codeMetrics.getSizeIndicator()).to.equal(`${sizeIndicator}${testCoverageIndicator ? '✔' : '⚠️'}`)
-        expect(await codeMetrics.getMetrics()).to.deep.equal(metrics)
-        expect(await codeMetrics.isSmall()).to.equal(sizeIndicator === 'XS' || sizeIndicator === 'S')
-        expect(await codeMetrics.isSufficientlyTested()).to.equal(testCoverageIndicator)
+        assert.deepEqual(await codeMetrics.getFilesNotRequiringReview(), [])
+        assert.deepEqual(await codeMetrics.getDeletedFilesNotRequiringReview(), [])
+        assert.equal(await codeMetrics.getSize(), sizeIndicator)
+        assert.equal(await codeMetrics.getSizeIndicator(), `${sizeIndicator}${testCoverageIndicator ? '✔' : '⚠️'}`)
+        assert.deepEqual(await codeMetrics.getMetrics(), metrics)
+        assert.equal(await codeMetrics.isSmall(), sizeIndicator === 'XS' || sizeIndicator === 'S')
+        assert.equal(await codeMetrics.isSufficientlyTested(), testCoverageIndicator)
         verify(logger.logDebug('* CodeMetrics.getFilesNotRequiringReview()')).once()
         verify(logger.logDebug('* CodeMetrics.getDeletedFilesNotRequiringReview()')).once()
         verify(logger.logDebug('* CodeMetrics.getSize()')).once()
@@ -1156,13 +1156,13 @@ describe('codeMetrics.ts', (): void => {
         const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(logger), instance(runnerInvoker))
 
         // Assert
-        expect(await codeMetrics.getFilesNotRequiringReview()).to.deep.equal(filesNotRequiringReview)
-        expect(await codeMetrics.getDeletedFilesNotRequiringReview()).to.deep.equal(deletedFilesNotRequiringReview)
-        expect(await codeMetrics.getSize()).to.equal(sizeIndicator)
-        expect(await codeMetrics.getSizeIndicator()).to.equal(`${sizeIndicator}${testCoverageIndicator ? '✔' : '⚠️'}`)
-        expect(await codeMetrics.getMetrics()).to.deep.equal(metrics)
-        expect(await codeMetrics.isSmall()).to.equal(sizeIndicator === 'XS' || sizeIndicator === 'S')
-        expect(await codeMetrics.isSufficientlyTested()).to.equal(testCoverageIndicator)
+        assert.deepEqual(await codeMetrics.getFilesNotRequiringReview(), filesNotRequiringReview)
+        assert.deepEqual(await codeMetrics.getDeletedFilesNotRequiringReview(), deletedFilesNotRequiringReview)
+        assert.equal(await codeMetrics.getSize(), sizeIndicator)
+        assert.equal(await codeMetrics.getSizeIndicator(), `${sizeIndicator}${testCoverageIndicator ? '✔' : '⚠️'}`)
+        assert.deepEqual(await codeMetrics.getMetrics(), metrics)
+        assert.equal(await codeMetrics.isSmall(), sizeIndicator === 'XS' || sizeIndicator === 'S')
+        assert.equal(await codeMetrics.isSufficientlyTested(), testCoverageIndicator)
         verify(logger.logDebug('* CodeMetrics.getFilesNotRequiringReview()')).once()
         verify(logger.logDebug('* CodeMetrics.getDeletedFilesNotRequiringReview()')).once()
         verify(logger.logDebug('* CodeMetrics.getSize()')).once()
@@ -1214,13 +1214,13 @@ describe('codeMetrics.ts', (): void => {
         const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(logger), instance(runnerInvoker))
 
         // Assert
-        expect(await codeMetrics.getFilesNotRequiringReview()).to.deep.equal(['ignored1.ts', 'ignored2.ts'])
-        expect(await codeMetrics.getDeletedFilesNotRequiringReview()).to.deep.equal([])
-        expect(await codeMetrics.getSize()).to.equal('XS')
-        expect(await codeMetrics.getSizeIndicator()).to.equal('XS⚠️')
-        expect(await codeMetrics.getMetrics()).to.deep.equal(new CodeMetricsData(2, 0, 2))
-        expect(await codeMetrics.isSmall()).to.equal(true)
-        expect(await codeMetrics.isSufficientlyTested()).to.equal(false)
+        assert.deepEqual(await codeMetrics.getFilesNotRequiringReview(), ['ignored1.ts', 'ignored2.ts'])
+        assert.deepEqual(await codeMetrics.getDeletedFilesNotRequiringReview(), [])
+        assert.equal(await codeMetrics.getSize(), 'XS')
+        assert.equal(await codeMetrics.getSizeIndicator(), 'XS⚠️')
+        assert.deepEqual(await codeMetrics.getMetrics(), new CodeMetricsData(2, 0, 2))
+        assert.equal(await codeMetrics.isSmall(), true)
+        assert.equal(await codeMetrics.isSufficientlyTested(), false)
         verify(logger.logDebug('* CodeMetrics.getFilesNotRequiringReview()')).once()
         verify(logger.logDebug('* CodeMetrics.getDeletedFilesNotRequiringReview()')).once()
         verify(logger.logDebug('* CodeMetrics.getSize()')).once()
@@ -1250,13 +1250,13 @@ describe('codeMetrics.ts', (): void => {
     const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(logger), instance(runnerInvoker))
 
     // Assert
-    expect(await codeMetrics.getFilesNotRequiringReview()).to.deep.equal(['file.ts'])
-    expect(await codeMetrics.getDeletedFilesNotRequiringReview()).to.deep.equal([])
-    expect(await codeMetrics.getSize()).to.equal('XS')
-    expect(await codeMetrics.getSizeIndicator()).to.equal('XS⚠️')
-    expect(await codeMetrics.getMetrics()).to.deep.equal(new CodeMetricsData(1, 1, 1))
-    expect(await codeMetrics.isSmall()).to.equal(true)
-    expect(await codeMetrics.isSufficientlyTested()).to.equal(false)
+    assert.deepEqual(await codeMetrics.getFilesNotRequiringReview(), ['file.ts'])
+    assert.deepEqual(await codeMetrics.getDeletedFilesNotRequiringReview(), [])
+    assert.equal(await codeMetrics.getSize(), 'XS')
+    assert.equal(await codeMetrics.getSizeIndicator(), 'XS⚠️')
+    assert.deepEqual(await codeMetrics.getMetrics(), new CodeMetricsData(1, 1, 1))
+    assert.equal(await codeMetrics.isSmall(), true)
+    assert.equal(await codeMetrics.isSufficientlyTested(), false)
     verify(logger.logDebug('* CodeMetrics.getFilesNotRequiringReview()')).once()
     verify(logger.logDebug('* CodeMetrics.getDeletedFilesNotRequiringReview()')).once()
     verify(logger.logDebug('* CodeMetrics.getSize()')).once()
@@ -1284,13 +1284,13 @@ describe('codeMetrics.ts', (): void => {
     const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(logger), instance(runnerInvoker))
 
     // Assert
-    expect(await codeMetrics.getFilesNotRequiringReview()).to.deep.equal(['ignored1.ts', 'ignored3.ts'])
-    expect(await codeMetrics.getDeletedFilesNotRequiringReview()).to.deep.equal([])
-    expect(await codeMetrics.getSize()).to.equal('XS')
-    expect(await codeMetrics.getSizeIndicator()).to.equal('XS⚠️')
-    expect(await codeMetrics.getMetrics()).to.deep.equal(new CodeMetricsData(2, 0, 2))
-    expect(await codeMetrics.isSmall()).to.equal(true)
-    expect(await codeMetrics.isSufficientlyTested()).to.equal(false)
+    assert.deepEqual(await codeMetrics.getFilesNotRequiringReview(), ['ignored1.ts', 'ignored3.ts'])
+    assert.deepEqual(await codeMetrics.getDeletedFilesNotRequiringReview(), [])
+    assert.equal(await codeMetrics.getSize(), 'XS')
+    assert.equal(await codeMetrics.getSizeIndicator(), 'XS⚠️')
+    assert.deepEqual(await codeMetrics.getMetrics(), new CodeMetricsData(2, 0, 2))
+    assert.equal(await codeMetrics.isSmall(), true)
+    assert.equal(await codeMetrics.isSufficientlyTested(), false)
     verify(logger.logDebug('* CodeMetrics.getFilesNotRequiringReview()')).once()
     verify(logger.logDebug('* CodeMetrics.getDeletedFilesNotRequiringReview()')).once()
     verify(logger.logDebug('* CodeMetrics.getSize()')).once()
@@ -1314,13 +1314,13 @@ describe('codeMetrics.ts', (): void => {
     const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(logger), instance(runnerInvoker))
 
     // Assert
-    expect(await codeMetrics.getFilesNotRequiringReview()).to.deep.equal([])
-    expect(await codeMetrics.getDeletedFilesNotRequiringReview()).to.deep.equal([])
-    expect(await codeMetrics.getSize()).to.equal('XS')
-    expect(await codeMetrics.getSizeIndicator()).to.equal('XS')
-    expect(await codeMetrics.getMetrics()).to.deep.equal(new CodeMetricsData(1, 0, 0))
-    expect(await codeMetrics.isSmall()).to.equal(true)
-    expect(await codeMetrics.isSufficientlyTested()).to.equal(null)
+    assert.deepEqual(await codeMetrics.getFilesNotRequiringReview(), [])
+    assert.deepEqual(await codeMetrics.getDeletedFilesNotRequiringReview(), [])
+    assert.equal(await codeMetrics.getSize(), 'XS')
+    assert.equal(await codeMetrics.getSizeIndicator(), 'XS')
+    assert.deepEqual(await codeMetrics.getMetrics(), new CodeMetricsData(1, 0, 0))
+    assert.equal(await codeMetrics.isSmall(), true)
+    assert.equal(await codeMetrics.isSufficientlyTested(), null)
     verify(logger.logDebug('* CodeMetrics.getFilesNotRequiringReview()')).once()
     verify(logger.logDebug('* CodeMetrics.getDeletedFilesNotRequiringReview()')).once()
     verify(logger.logDebug('* CodeMetrics.getSize()')).once()
@@ -1355,7 +1355,7 @@ describe('codeMetrics.ts', (): void => {
           const func: () => Promise<string[]> = async () => await codeMetrics.getFilesNotRequiringReview()
 
           // Assert
-          await ExpectExtensions.toThrowAsync(func, 'The Git diff summary is empty.')
+          await AssertExtensions.toThrowAsync(func, 'The Git diff summary is empty.')
           verify(logger.logDebug('* CodeMetrics.getFilesNotRequiringReview()')).once()
           verify(logger.logDebug('* CodeMetrics.initialize()')).once()
         })
@@ -1405,7 +1405,7 @@ describe('codeMetrics.ts', (): void => {
           const func: () => Promise<string[]> = async () => await codeMetrics.getFilesNotRequiringReview()
 
           // Assert
-          await ExpectExtensions.toThrowAsync(func, `The number of elements '${elements}' in '${summary.trim()}' in input '${summary.trim()}' did not match the expected 3.`)
+          await AssertExtensions.toThrowAsync(func, `The number of elements '${elements}' in '${summary.trim()}' in input '${summary.trim()}' did not match the expected 3.`)
           verify(logger.logDebug('* CodeMetrics.getFilesNotRequiringReview()')).once()
           verify(logger.logDebug('* CodeMetrics.initialize()')).once()
           verify(logger.logDebug('* CodeMetrics.createFileMetricsMap()')).once()
@@ -1422,7 +1422,7 @@ describe('codeMetrics.ts', (): void => {
       const func: () => Promise<string[]> = async () => await codeMetrics.getFilesNotRequiringReview()
 
       // Assert
-      await ExpectExtensions.toThrowAsync(func, 'Could not parse added lines \'A\' from line \'A\t0\tfile.ts\'.')
+      await AssertExtensions.toThrowAsync(func, 'Could not parse added lines \'A\' from line \'A\t0\tfile.ts\'.')
       verify(logger.logDebug('* CodeMetrics.getFilesNotRequiringReview()')).once()
       verify(logger.logDebug('* CodeMetrics.initialize()')).once()
       verify(logger.logDebug('* CodeMetrics.createFileMetricsMap()')).once()
@@ -1437,7 +1437,7 @@ describe('codeMetrics.ts', (): void => {
       const func: () => Promise<string[]> = async () => await codeMetrics.getFilesNotRequiringReview()
 
       // Assert
-      await ExpectExtensions.toThrowAsync(func, 'Could not parse deleted lines \'A\' from line \'0\tA\tfile.ts\'.')
+      await AssertExtensions.toThrowAsync(func, 'Could not parse deleted lines \'A\' from line \'0\tA\tfile.ts\'.')
       verify(logger.logDebug('* CodeMetrics.getFilesNotRequiringReview()')).once()
       verify(logger.logDebug('* CodeMetrics.initialize()')).once()
       verify(logger.logDebug('* CodeMetrics.createFileMetricsMap()')).once()
@@ -1454,7 +1454,7 @@ describe('codeMetrics.ts', (): void => {
       const func: () => Promise<string[]> = async () => await codeMetrics.getDeletedFilesNotRequiringReview()
 
       // Assert
-      await ExpectExtensions.toThrowAsync(func, 'The Git diff summary is empty.')
+      await AssertExtensions.toThrowAsync(func, 'The Git diff summary is empty.')
       verify(logger.logDebug('* CodeMetrics.getDeletedFilesNotRequiringReview()')).once()
       verify(logger.logDebug('* CodeMetrics.initialize()')).once()
     })
@@ -1468,7 +1468,7 @@ describe('codeMetrics.ts', (): void => {
       const func: () => Promise<string[]> = async () => await codeMetrics.getDeletedFilesNotRequiringReview()
 
       // Assert
-      await ExpectExtensions.toThrowAsync(func, 'The number of elements \'1\' in \'0\' in input \'0\' did not match the expected 3.')
+      await AssertExtensions.toThrowAsync(func, 'The number of elements \'1\' in \'0\' in input \'0\' did not match the expected 3.')
       verify(logger.logDebug('* CodeMetrics.getDeletedFilesNotRequiringReview()')).once()
       verify(logger.logDebug('* CodeMetrics.initialize()')).once()
       verify(logger.logDebug('* CodeMetrics.createFileMetricsMap()')).once()
@@ -1483,7 +1483,7 @@ describe('codeMetrics.ts', (): void => {
       const func: () => Promise<string[]> = async () => await codeMetrics.getDeletedFilesNotRequiringReview()
 
       // Assert
-      await ExpectExtensions.toThrowAsync(func, 'Could not parse added lines \'A\' from line \'A\t0\tfile.ts\'.')
+      await AssertExtensions.toThrowAsync(func, 'Could not parse added lines \'A\' from line \'A\t0\tfile.ts\'.')
       verify(logger.logDebug('* CodeMetrics.getDeletedFilesNotRequiringReview()')).once()
       verify(logger.logDebug('* CodeMetrics.initialize()')).once()
       verify(logger.logDebug('* CodeMetrics.createFileMetricsMap()')).once()
@@ -1498,7 +1498,7 @@ describe('codeMetrics.ts', (): void => {
       const func: () => Promise<string[]> = async () => await codeMetrics.getDeletedFilesNotRequiringReview()
 
       // Assert
-      await ExpectExtensions.toThrowAsync(func, 'Could not parse deleted lines \'A\' from line \'0\tA\tfile.ts\'.')
+      await AssertExtensions.toThrowAsync(func, 'Could not parse deleted lines \'A\' from line \'0\tA\tfile.ts\'.')
       verify(logger.logDebug('* CodeMetrics.getDeletedFilesNotRequiringReview()')).once()
       verify(logger.logDebug('* CodeMetrics.initialize()')).once()
       verify(logger.logDebug('* CodeMetrics.createFileMetricsMap()')).once()

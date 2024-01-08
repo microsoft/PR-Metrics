@@ -1,8 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { singleton } from 'tsyringe'
 import parseGitDiff, { AddedFile, AnyFileChange, ChangedFile, Chunk, GitDiff, RenamedFile } from 'parse-git-diff'
+import { singleton } from 'tsyringe'
 import Logger from '../utilities/logger'
 import AxiosWrapper from '../wrappers/axiosWrapper'
 import GetPullResponse from '../wrappers/octokitInterfaces/getPullResponse'

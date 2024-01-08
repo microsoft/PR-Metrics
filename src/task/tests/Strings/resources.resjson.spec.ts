@@ -1,9 +1,9 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { expect } from 'chai'
 import * as fs from 'fs'
 import { globSync } from 'glob'
+import assert from 'node:assert/strict'
 import * as path from 'path'
 import ResourcesJson from '../../src/jsonTypes/resourcesJson'
 import TaskJson from '../jsonTypes/taskJson'
@@ -37,7 +37,7 @@ describe('resources.resjson', (): void => {
       // Assert
       keys.forEach((key: string): void => {
         if (key !== schemaEntry && !key.endsWith(commentSuffix)) {
-          expect(keys).to.contain(`${key}${commentSuffix}`)
+          assert(keys.includes(`${key}${commentSuffix}`))
         }
       })
     })
@@ -49,7 +49,7 @@ describe('resources.resjson', (): void => {
       // Assert
       keys.forEach((key: string): void => {
         if (key !== schemaEntry && key.endsWith(commentSuffix)) {
-          expect(keys).to.contain(key.substring(0, key.length - commentSuffix.length))
+          assert(keys.includes(key.substring(0, key.length - commentSuffix.length)))
         }
       })
     })
@@ -60,7 +60,7 @@ describe('resources.resjson', (): void => {
       const englishKeys: string[] = Object.keys(resources.get('en-US') ?? '')
 
       // Assert
-      expect(keys).to.deep.equal(englishKeys)
+      assert.deepEqual(keys, englishKeys)
     })
 
     it(`should have the same number of placeholders in language '${key}' as in en-US`, (): void => {
@@ -73,7 +73,7 @@ describe('resources.resjson', (): void => {
       entries.forEach((entry: [string, string]): void => {
         const placeholders: number = entry[1].match(placeholderRegExp)?.length ?? 0
         const placeholdersEnglishUS: number = (englishEntries.get(entry[0]) ?? '').match(placeholderRegExp)?.length ?? 0
-        expect(placeholders).equal(placeholdersEnglishUS)
+        assert.equal(placeholders, placeholdersEnglishUS)
       })
     })
   })
@@ -84,7 +84,7 @@ describe('resources.resjson', (): void => {
 
     // Assert
     keysTaskLocJson.forEach((entry: [string, string]): void => {
-      expect(entry[1]).to.equal(`ms-resource:loc.messages.${entry[0]}`)
+      assert.equal(entry[1], `ms-resource:loc.messages.${entry[0]}`)
     })
   })
 
@@ -105,7 +105,7 @@ describe('resources.resjson', (): void => {
     })
 
     // Assert
-    expect(allResources).to.deep.equal(relevantKeys)
+    assert.deepEqual(allResources, relevantKeys)
   })
 
   it('should have the same contents in task.json and task.loc.json', (): void => {
@@ -118,8 +118,8 @@ describe('resources.resjson', (): void => {
     const remainingResources: RegExpMatchArray | null = fileContents.match(/"ms-resource:.+?"/g)
 
     // Assert
-    expect(fileContents).to.equal(taskJsonContents)
-    expect(remainingResources).to.equal(null)
+    assert.equal(fileContents, taskJsonContents)
+    assert.equal(remainingResources, null)
   })
 
   it('should have the same number of placeholders across the TypeScript code and resources file', (): void => {
@@ -142,7 +142,7 @@ describe('resources.resjson', (): void => {
           if (existingValue === undefined) {
             typeScriptResources.set(key, value)
           } else {
-            expect(value).to.equal(existingValue)
+            assert.equal(value, existingValue)
           }
         })
       }
@@ -158,9 +158,9 @@ describe('resources.resjson', (): void => {
     })
 
     // Act
-    expect(Array.from(typeScriptResources.keys()).sort()).to.deep.equal(Array.from(relevantEntries.keys()).sort())
+    assert.deepEqual(Array.from(typeScriptResources.keys()).sort(), Array.from(relevantEntries.keys()).sort())
     typeScriptResources.forEach((value: number, key: string): void => {
-      expect(value).to.equal(relevantEntries.get(key) ?? '')
+      assert.equal(value, relevantEntries.get(key) ?? '')
     })
   })
 })

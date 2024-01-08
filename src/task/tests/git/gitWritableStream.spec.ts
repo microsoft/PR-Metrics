@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { expect } from 'chai'
+import assert from 'node:assert/strict'
 import 'reflect-metadata'
 import { instance, mock, verify } from 'ts-mockito'
 import { GitWritableStream } from '../../src/git/gitWritableStream'
@@ -20,7 +20,7 @@ describe('gitWritableStream.ts', (): void => {
       const gitWritableStream: GitWritableStream = new GitWritableStream(instance(logger))
 
       // Assert
-      expect(gitWritableStream.message).to.equal('')
+      assert.equal(gitWritableStream.message, '')
     })
 
     it('should log the expected message when called once', (): void => {
@@ -31,8 +31,8 @@ describe('gitWritableStream.ts', (): void => {
       const result: boolean = gitWritableStream.write('Message', (): void => {})
 
       // Assert
-      expect(result).to.equal(true)
-      expect(gitWritableStream.message).to.equal('Message')
+      assert.equal(result, true)
+      assert.equal(gitWritableStream.message, 'Message')
       verify(logger.logDebug('Message')).once()
     })
 
@@ -48,12 +48,12 @@ describe('gitWritableStream.ts', (): void => {
       const result5: boolean = gitWritableStream.write('Message5', (): void => {})
 
       // Assert
-      expect(result1).to.equal(true)
-      expect(result2).to.equal(true)
-      expect(result3).to.equal(true)
-      expect(result4).to.equal(true)
-      expect(result5).to.equal(true)
-      expect(gitWritableStream.message).to.equal('Message1Message2Message3Message4Message5')
+      assert.equal(result1, true)
+      assert.equal(result2, true)
+      assert.equal(result3, true)
+      assert.equal(result4, true)
+      assert.equal(result5, true)
+      assert.equal(gitWritableStream.message, 'Message1Message2Message3Message4Message5')
       verify(logger.logDebug('Message1')).once()
       verify(logger.logDebug('Message2')).once()
       verify(logger.logDebug('Message3')).once()
@@ -69,8 +69,8 @@ describe('gitWritableStream.ts', (): void => {
       const result: boolean = gitWritableStream.write('[command]Message', (): void => {})
 
       // Assert
-      expect(result).to.equal(true)
-      expect(gitWritableStream.message).to.equal('')
+      assert.equal(result, true)
+      assert.equal(gitWritableStream.message, '')
       verify(logger.logDebug('[command]Message')).once()
     })
 
@@ -90,16 +90,16 @@ describe('gitWritableStream.ts', (): void => {
       const result9: boolean = gitWritableStream.write('[command]Message5', (): void => {})
 
       // Assert
-      expect(result1).to.equal(true)
-      expect(result2).to.equal(true)
-      expect(result3).to.equal(true)
-      expect(result4).to.equal(true)
-      expect(result5).to.equal(true)
-      expect(result6).to.equal(true)
-      expect(result7).to.equal(true)
-      expect(result8).to.equal(true)
-      expect(result9).to.equal(true)
-      expect(gitWritableStream.message).to.equal('Message1Message2Message3Message4')
+      assert.equal(result1, true)
+      assert.equal(result2, true)
+      assert.equal(result3, true)
+      assert.equal(result4, true)
+      assert.equal(result5, true)
+      assert.equal(result6, true)
+      assert.equal(result7, true)
+      assert.equal(result8, true)
+      assert.equal(result9, true)
+      assert.equal(gitWritableStream.message, 'Message1Message2Message3Message4')
       verify(logger.logDebug('[command]Message1')).once()
       verify(logger.logDebug('Message1')).once()
       verify(logger.logDebug('[command]Message2')).once()

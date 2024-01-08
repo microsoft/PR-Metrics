@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { expect } from 'chai'
+import assert from 'node:assert/strict'
 import * as Converter from '../../src/utilities/converter'
 
 describe('converter.ts', (): void => {
@@ -48,7 +48,7 @@ describe('converter.ts', (): void => {
         const result: string = Converter.toString(value)
 
         // Assert
-        expect(result).to.equal(expected)
+        assert.equal(result, expected)
       })
     })
   })

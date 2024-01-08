@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 import * as actionsExec from '@actions/exec'
-import { expect } from 'chai'
+import assert from 'node:assert/strict'
 import * as path from 'path'
 import 'reflect-metadata'
 import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito'
@@ -39,7 +39,7 @@ describe('gitHubRunnerInvoker.ts', function (): void {
       const result: number = await gitHubRunnerInvoker.exec('TOOL', ['Argument 1', 'Argument 2'], true, outputStream, errorStream)
 
       // Assert
-      expect(result).to.equal(1)
+      assert.equal(result, 1)
       const options: actionsExec.ExecOptions = {
         failOnStdErr: true,
         outStream: outputStream,
@@ -59,7 +59,7 @@ describe('gitHubRunnerInvoker.ts', function (): void {
       const result: string | undefined = gitHubRunnerInvoker.getInput(['Test', 'Suffix'])
 
       // Assert
-      expect(result).to.equal('VALUE')
+      assert.equal(result, 'VALUE')
       verify(azurePipelinesRunnerWrapper.getInput('TEST-SUFFIX')).once()
     })
   })
@@ -73,7 +73,11 @@ describe('gitHubRunnerInvoker.ts', function (): void {
       const func: () => void = () => gitHubRunnerInvoker.locInitialize(resourcePath)
 
       // Assert
-      expect(func).to.not.throw()
+      try {
+        func()
+      } catch (error) {
+        assert.fail('Function should not have thrown an error')
+      }
     })
   })
 
@@ -87,7 +91,7 @@ describe('gitHubRunnerInvoker.ts', function (): void {
       const result: string = gitHubRunnerInvoker.loc('metrics.codeMetrics.titleSizeL')
 
       // Assert
-      expect(result).to.equal('L')
+      assert.equal(result, 'L')
     })
 
     it('should retrieve and format the correct resource when placeholders are present', (): void => {
@@ -99,7 +103,7 @@ describe('gitHubRunnerInvoker.ts', function (): void {
       const result: string = gitHubRunnerInvoker.loc('metrics.codeMetrics.titleSizeIndicatorFormat', 'Parameter 1', '[Parameter 2]')
 
       // Assert
-      expect(result).to.equal('Parameter 1[Parameter 2]')
+      assert.equal(result, 'Parameter 1[Parameter 2]')
     })
   })
 

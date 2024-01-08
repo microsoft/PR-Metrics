@@ -1,8 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { expect } from 'chai'
 import * as fs from 'fs'
+import assert from 'node:assert/strict'
 import * as path from 'path'
 import ResourcesJson from '../src/jsonTypes/resourcesJson'
 import PackageJson from './jsonTypes/packageJson'
@@ -27,13 +27,13 @@ describe('task.json', (): void => {
 
   it('should have a friendly name ending with the version number', (): void => {
     // Assert
-    expect(taskJson.friendlyName.endsWith(version)).to.equal(true)
+    assert.equal(taskJson.friendlyName.endsWith(version), true)
   })
 
   resources.forEach((value: ResourcesJson, key: string): void => {
     it(`should have a friendly name including the version number in language '${key}'`, (): void => {
       // Assert
-      expect(value['loc.friendlyName']?.includes(version)).to.equal(true)
+      assert.equal(value['loc.friendlyName']?.includes(version), true)
     })
   })
 
@@ -44,9 +44,9 @@ describe('task.json', (): void => {
     const taskLocJson: TaskJson = JSON.parse(taskLocJsonContents) as TaskJson
 
     // Assert
-    expect(taskJson.version.Major).to.equal(taskLocJson.version.Major)
-    expect(taskJson.version.Minor).to.equal(taskLocJson.version.Minor)
-    expect(taskJson.version.Patch).to.equal(taskLocJson.version.Patch)
+    assert.equal(taskJson.version.Major, taskLocJson.version.Major)
+    assert.equal(taskJson.version.Minor, taskLocJson.version.Minor)
+    assert.equal(taskJson.version.Patch, taskLocJson.version.Patch)
   })
 
   it('should have the same version number as vss-extension.json', (): void => {
@@ -56,7 +56,7 @@ describe('task.json', (): void => {
     const vssExtensionJson: VssExtensionJson = JSON.parse(vssExtensionJsonFileContents) as VssExtensionJson
 
     // Assert
-    expect(vssExtensionJson.version).to.equal(version)
+    assert.equal(vssExtensionJson.version, version)
   })
 
   it('should have the same version number as package.json', (): void => {
@@ -66,7 +66,7 @@ describe('task.json', (): void => {
     const packageJson: PackageJson = JSON.parse(packageJsonFileContents) as PackageJson
 
     // Assert
-    expect(packageJson.version).to.equal(version)
+    assert.equal(packageJson.version, version)
   })
 
   it('should have the same version number as package-lock.json', (): void => {
@@ -76,6 +76,6 @@ describe('task.json', (): void => {
     const packageLockJson: PackageJson = JSON.parse(packageLockJsonFileContents) as PackageJson
 
     // Assert
-    expect(packageLockJson.version).to.equal(version)
+    assert.equal(packageLockJson.version, version)
   })
 })

@@ -5,7 +5,7 @@ import { WebApi } from 'azure-devops-node-api'
 import { IGitApi } from 'azure-devops-node-api/GitApi'
 import { Comment, CommentThreadStatus, GitPullRequest, GitPullRequestCommentThread } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import { IRequestHandler } from 'azure-devops-node-api/interfaces/common/VsoBaseInterfaces'
-import { expect } from 'chai'
+import assert from 'node:assert/strict'
 import 'reflect-metadata'
 import { anyNumber, anything, deepEqual, instance, mock, verify, when } from 'ts-mockito'
 import GitInvoker from '../../src/git/gitInvoker'
@@ -16,7 +16,7 @@ import RunnerInvoker from '../../src/runners/runnerInvoker'
 import * as Converter from '../../src/utilities/converter'
 import Logger from '../../src/utilities/logger'
 import AzureDevOpsApiWrapper from '../../src/wrappers/azureDevOpsApiWrapper'
-import * as ExpectExtensions from '../testUtilities/expectExtensions'
+import * as AssertExtensions from '../testUtilities/assertExtensions'
 import { resolvableInstance } from '../testUtilities/resolvableInstance'
 import ErrorWithStatus from '../wrappers/errorWithStatus'
 
@@ -68,7 +68,7 @@ describe('azureReposInvoker.ts', function (): void {
       const result: string | null = azureReposInvoker.isAccessTokenAvailable
 
       // Assert
-      expect(result).to.equal(null)
+      assert.equal(result, null)
       verify(logger.logDebug('* AzureReposInvoker.isAccessTokenAvailable')).once()
     })
 
@@ -81,7 +81,7 @@ describe('azureReposInvoker.ts', function (): void {
       const result: string | null = azureReposInvoker.isAccessTokenAvailable
 
       // Assert
-      expect(result).to.equal('Could not access the Personal Access Token (PAT). Add \'PR_Metrics_Access_Token\' as a secret environment variable.')
+      assert.equal(result, 'Could not access the Personal Access Token (PAT). Add \'PR_Metrics_Access_Token\' as a secret environment variable.')
       verify(logger.logDebug('* AzureReposInvoker.isAccessTokenAvailable')).once()
     })
   })
@@ -108,7 +108,7 @@ describe('azureReposInvoker.ts', function (): void {
           const func: () => Promise<PullRequestDetails> = async () => await azureReposInvoker.getTitleAndDescription()
 
           // Assert
-          await ExpectExtensions.toThrowAsync(func, `'SYSTEM_TEAMPROJECT', accessed within 'AzureReposInvoker.getGitApi()', is invalid, null, or undefined '${Converter.toString(variable)}'.`)
+          await AssertExtensions.toThrowAsync(func, `'SYSTEM_TEAMPROJECT', accessed within 'AzureReposInvoker.getGitApi()', is invalid, null, or undefined '${Converter.toString(variable)}'.`)
           verify(logger.logDebug('* AzureReposInvoker.getTitleAndDescription()')).once()
           verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
         })
@@ -136,7 +136,7 @@ describe('azureReposInvoker.ts', function (): void {
           const func: () => Promise<PullRequestDetails> = async () => await azureReposInvoker.getTitleAndDescription()
 
           // Assert
-          await ExpectExtensions.toThrowAsync(func, `'BUILD_REPOSITORY_ID', accessed within 'AzureReposInvoker.getGitApi()', is invalid, null, or undefined '${Converter.toString(variable)}'.`)
+          await AssertExtensions.toThrowAsync(func, `'BUILD_REPOSITORY_ID', accessed within 'AzureReposInvoker.getGitApi()', is invalid, null, or undefined '${Converter.toString(variable)}'.`)
           verify(logger.logDebug('* AzureReposInvoker.getTitleAndDescription()')).once()
           verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
         })
@@ -164,7 +164,7 @@ describe('azureReposInvoker.ts', function (): void {
           const func: () => Promise<PullRequestDetails> = async () => await azureReposInvoker.getTitleAndDescription()
 
           // Assert
-          await ExpectExtensions.toThrowAsync(func, `'PR_METRICS_ACCESS_TOKEN', accessed within 'AzureReposInvoker.getGitApi()', is invalid, null, or undefined '${Converter.toString(variable)}'.`)
+          await AssertExtensions.toThrowAsync(func, `'PR_METRICS_ACCESS_TOKEN', accessed within 'AzureReposInvoker.getGitApi()', is invalid, null, or undefined '${Converter.toString(variable)}'.`)
           verify(logger.logDebug('* AzureReposInvoker.getTitleAndDescription()')).once()
           verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
         })
@@ -192,7 +192,7 @@ describe('azureReposInvoker.ts', function (): void {
           const func: () => Promise<PullRequestDetails> = async () => await azureReposInvoker.getTitleAndDescription()
 
           // Assert
-          await ExpectExtensions.toThrowAsync(func, `'SYSTEM_TEAMFOUNDATIONCOLLECTIONURI', accessed within 'AzureReposInvoker.getGitApi()', is invalid, null, or undefined '${Converter.toString(variable)}'.`)
+          await AssertExtensions.toThrowAsync(func, `'SYSTEM_TEAMFOUNDATIONCOLLECTIONURI', accessed within 'AzureReposInvoker.getGitApi()', is invalid, null, or undefined '${Converter.toString(variable)}'.`)
           verify(logger.logDebug('* AzureReposInvoker.getTitleAndDescription()')).once()
           verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
           verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('PAT')).once()
@@ -219,8 +219,8 @@ describe('azureReposInvoker.ts', function (): void {
           const func: () => Promise<PullRequestDetails> = async () => await azureReposInvoker.getTitleAndDescription()
 
           // Assert
-          const result: any = await ExpectExtensions.toThrowAsync(func, 'Could not access the resources. Ensure the \'PR_Metrics_Access_Token\' secret environment variable has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
-          expect(result.internalMessage).to.equal('Test')
+          const result: any = await AssertExtensions.toThrowAsync(func, 'Could not access the resources. Ensure the \'PR_Metrics_Access_Token\' secret environment variable has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
+          assert.equal(result.internalMessage, 'Test')
           verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('PAT')).once()
           verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
           verify(gitApi.getPullRequestById(10, 'Project')).once()
@@ -242,8 +242,8 @@ describe('azureReposInvoker.ts', function (): void {
       const result: PullRequestDetails = await azureReposInvoker.getTitleAndDescription()
 
       // Assert
-      expect(result.title).to.equal('Title')
-      expect(result.description).to.equal('Description')
+      assert.equal(result.title, 'Title')
+      assert.equal(result.description, 'Description')
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('PAT')).once()
       verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
       verify(gitApi.getPullRequestById(10, 'Project')).once()
@@ -265,8 +265,8 @@ describe('azureReposInvoker.ts', function (): void {
       const result: PullRequestDetails = await azureReposInvoker.getTitleAndDescription()
 
       // Assert
-      expect(result.title).to.equal('Title')
-      expect(result.description).to.equal('Description')
+      assert.equal(result.title, 'Title')
+      assert.equal(result.description, 'Description')
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('PAT')).once()
       verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
       verify(gitApi.getPullRequestById(10, 'Project')).twice()
@@ -286,8 +286,8 @@ describe('azureReposInvoker.ts', function (): void {
       const result: PullRequestDetails = await azureReposInvoker.getTitleAndDescription()
 
       // Assert
-      expect(result.title).to.equal('Title')
-      expect(result.description).to.equal(undefined)
+      assert.equal(result.title, 'Title')
+      assert.equal(result.description, undefined)
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('PAT')).once()
       verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
       verify(gitApi.getPullRequestById(10, 'Project')).once()
@@ -305,7 +305,7 @@ describe('azureReposInvoker.ts', function (): void {
       const func: () => Promise<PullRequestDetails> = async () => await azureReposInvoker.getTitleAndDescription()
 
       // Assert
-      await ExpectExtensions.toThrowAsync(func, '\'title\', accessed within \'AzureReposInvoker.getTitleAndDescription()\', is invalid, null, or undefined \'undefined\'.')
+      await AssertExtensions.toThrowAsync(func, '\'title\', accessed within \'AzureReposInvoker.getTitleAndDescription()\', is invalid, null, or undefined \'undefined\'.')
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('PAT')).once()
       verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
       verify(gitApi.getPullRequestById(10, 'Project')).once()
@@ -335,8 +335,8 @@ describe('azureReposInvoker.ts', function (): void {
           const func: () => Promise<CommentData> = async () => await azureReposInvoker.getComments()
 
           // Assert
-          const result: any = await ExpectExtensions.toThrowAsync(func, 'Could not access the resources. Ensure the \'PR_Metrics_Access_Token\' secret environment variable has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
-          expect(result.internalMessage).to.equal('Test')
+          const result: any = await AssertExtensions.toThrowAsync(func, 'Could not access the resources. Ensure the \'PR_Metrics_Access_Token\' secret environment variable has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
+          assert.equal(result.internalMessage, 'Test')
           verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('PAT')).once()
           verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
           verify(gitApi.getThreads('RepoID', 10, 'Project')).once()
@@ -355,11 +355,11 @@ describe('azureReposInvoker.ts', function (): void {
       const result: CommentData = await azureReposInvoker.getComments()
 
       // Assert
-      expect(result.pullRequestComments.length).to.equal(1)
-      expect(result.pullRequestComments[0]?.id).to.equal(1)
-      expect(result.pullRequestComments[0]?.content).to.equal('Content')
-      expect(result.pullRequestComments[0]?.status).to.equal(CommentThreadStatus.Active)
-      expect(result.fileComments.length).to.equal(0)
+      assert.equal(result.pullRequestComments.length, 1)
+      assert.equal(result.pullRequestComments[0]?.id, 1)
+      assert.equal(result.pullRequestComments[0]?.content, 'Content')
+      assert.equal(result.pullRequestComments[0]?.status, CommentThreadStatus.Active)
+      assert.equal(result.fileComments.length, 0)
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('PAT')).once()
       verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
       verify(gitApi.getThreads('RepoID', 10, 'Project')).once()
@@ -377,12 +377,12 @@ describe('azureReposInvoker.ts', function (): void {
       const result: CommentData = await azureReposInvoker.getComments()
 
       // Assert
-      expect(result.pullRequestComments.length).to.equal(0)
-      expect(result.fileComments.length).to.equal(1)
-      expect(result.fileComments[0]?.id).to.equal(1)
-      expect(result.fileComments[0]?.content).to.equal('Content')
-      expect(result.fileComments[0]?.status).to.equal(CommentThreadStatus.Active)
-      expect(result.fileComments[0]?.fileName).to.equal('file.ts')
+      assert.equal(result.pullRequestComments.length, 0)
+      assert.equal(result.fileComments.length, 1)
+      assert.equal(result.fileComments[0]?.id, 1)
+      assert.equal(result.fileComments[0]?.content, 'Content')
+      assert.equal(result.fileComments[0]?.status, CommentThreadStatus.Active)
+      assert.equal(result.fileComments[0]?.fileName, 'file.ts')
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('PAT')).once()
       verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
       verify(gitApi.getThreads('RepoID', 10, 'Project')).once()
@@ -404,15 +404,15 @@ describe('azureReposInvoker.ts', function (): void {
       const result: CommentData = await azureReposInvoker.getComments()
 
       // Assert
-      expect(result.pullRequestComments.length).to.equal(1)
-      expect(result.pullRequestComments[0]?.id).to.equal(1)
-      expect(result.pullRequestComments[0]?.content).to.equal('PR Content')
-      expect(result.pullRequestComments[0]?.status).to.equal(CommentThreadStatus.Active)
-      expect(result.fileComments.length).to.equal(1)
-      expect(result.fileComments[0]?.id).to.equal(2)
-      expect(result.fileComments[0]?.content).to.equal('File Content')
-      expect(result.fileComments[0]?.status).to.equal(CommentThreadStatus.Active)
-      expect(result.fileComments[0]?.fileName).to.equal('file.ts')
+      assert.equal(result.pullRequestComments.length, 1)
+      assert.equal(result.pullRequestComments[0]?.id, 1)
+      assert.equal(result.pullRequestComments[0]?.content, 'PR Content')
+      assert.equal(result.pullRequestComments[0]?.status, CommentThreadStatus.Active)
+      assert.equal(result.fileComments.length, 1)
+      assert.equal(result.fileComments[0]?.id, 2)
+      assert.equal(result.fileComments[0]?.content, 'File Content')
+      assert.equal(result.fileComments[0]?.status, CommentThreadStatus.Active)
+      assert.equal(result.fileComments[0]?.fileName, 'file.ts')
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('PAT')).once()
       verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
       verify(gitApi.getThreads('RepoID', 10, 'Project')).once()
@@ -431,11 +431,11 @@ describe('azureReposInvoker.ts', function (): void {
       const result: CommentData = await azureReposInvoker.getComments()
 
       // Assert
-      expect(result.pullRequestComments.length).to.equal(1)
-      expect(result.pullRequestComments[0]?.id).to.equal(1)
-      expect(result.pullRequestComments[0]?.content).to.equal('Content')
-      expect(result.pullRequestComments[0]?.status).to.equal(CommentThreadStatus.Active)
-      expect(result.fileComments.length).to.equal(0)
+      assert.equal(result.pullRequestComments.length, 1)
+      assert.equal(result.pullRequestComments[0]?.id, 1)
+      assert.equal(result.pullRequestComments[0]?.content, 'Content')
+      assert.equal(result.pullRequestComments[0]?.status, CommentThreadStatus.Active)
+      assert.equal(result.fileComments.length, 0)
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('PAT')).once()
       verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
       verify(gitApi.getThreads('RepoID', 10, 'Project')).twice()
@@ -453,7 +453,7 @@ describe('azureReposInvoker.ts', function (): void {
       const func: () => Promise<CommentData> = async () => await azureReposInvoker.getComments()
 
       // Assert
-      await ExpectExtensions.toThrowAsync(func, '\'commentThread[0].id\', accessed within \'AzureReposInvoker.convertPullRequestComments()\', is invalid, null, or undefined \'undefined\'.')
+      await AssertExtensions.toThrowAsync(func, '\'commentThread[0].id\', accessed within \'AzureReposInvoker.convertPullRequestComments()\', is invalid, null, or undefined \'undefined\'.')
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('PAT')).once()
       verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
       verify(gitApi.getThreads('RepoID', 10, 'Project')).once()
@@ -475,15 +475,15 @@ describe('azureReposInvoker.ts', function (): void {
       const result: CommentData = await azureReposInvoker.getComments()
 
       // Assert
-      expect(result.pullRequestComments.length).to.equal(1)
-      expect(result.pullRequestComments[0]?.id).to.equal(1)
-      expect(result.pullRequestComments[0]?.content).to.equal('PR Content')
-      expect(result.pullRequestComments[0]?.status).to.equal(CommentThreadStatus.Unknown)
-      expect(result.fileComments.length).to.equal(1)
-      expect(result.fileComments[0]?.id).to.equal(2)
-      expect(result.fileComments[0]?.content).to.equal('File Content')
-      expect(result.fileComments[0]?.status).to.equal(CommentThreadStatus.Unknown)
-      expect(result.fileComments[0]?.fileName).to.equal('file.ts')
+      assert.equal(result.pullRequestComments.length, 1)
+      assert.equal(result.pullRequestComments[0]?.id, 1)
+      assert.equal(result.pullRequestComments[0]?.content, 'PR Content')
+      assert.equal(result.pullRequestComments[0]?.status, CommentThreadStatus.Unknown)
+      assert.equal(result.fileComments.length, 1)
+      assert.equal(result.fileComments[0]?.id, 2)
+      assert.equal(result.fileComments[0]?.content, 'File Content')
+      assert.equal(result.fileComments[0]?.status, CommentThreadStatus.Unknown)
+      assert.equal(result.fileComments[0]?.fileName, 'file.ts')
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('PAT')).once()
       verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
       verify(gitApi.getThreads('RepoID', 10, 'Project')).once()
@@ -518,15 +518,15 @@ describe('azureReposInvoker.ts', function (): void {
           const result: CommentData = await azureReposInvoker.getComments()
 
           // Assert
-          expect(result.pullRequestComments.length).to.equal(1)
-          expect(result.pullRequestComments[0]?.id).to.equal(2)
-          expect(result.pullRequestComments[0]?.content).to.equal('PR Content')
-          expect(result.pullRequestComments[0]?.status).to.equal(CommentThreadStatus.Active)
-          expect(result.fileComments.length).to.equal(1)
-          expect(result.fileComments[0]?.id).to.equal(3)
-          expect(result.fileComments[0]?.content).to.equal('File Content')
-          expect(result.fileComments[0]?.status).to.equal(CommentThreadStatus.Active)
-          expect(result.fileComments[0]?.fileName).to.equal('file.ts')
+          assert.equal(result.pullRequestComments.length, 1)
+          assert.equal(result.pullRequestComments[0]?.id, 2)
+          assert.equal(result.pullRequestComments[0]?.content, 'PR Content')
+          assert.equal(result.pullRequestComments[0]?.status, CommentThreadStatus.Active)
+          assert.equal(result.fileComments.length, 1)
+          assert.equal(result.fileComments[0]?.id, 3)
+          assert.equal(result.fileComments[0]?.content, 'File Content')
+          assert.equal(result.fileComments[0]?.status, CommentThreadStatus.Active)
+          assert.equal(result.fileComments[0]?.fileName, 'file.ts')
           verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('PAT')).once()
           verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
           verify(gitApi.getThreads('RepoID', 10, 'Project')).once()
@@ -558,8 +558,8 @@ describe('azureReposInvoker.ts', function (): void {
           const func: () => Promise<void> = async () => await azureReposInvoker.setTitleAndDescription('Title', 'Description')
 
           // Assert
-          const result: any = await ExpectExtensions.toThrowAsync(func, 'Could not access the resources. Ensure the \'PR_Metrics_Access_Token\' secret environment variable has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
-          expect(result.internalMessage).to.equal('Test')
+          const result: any = await AssertExtensions.toThrowAsync(func, 'Could not access the resources. Ensure the \'PR_Metrics_Access_Token\' secret environment variable has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
+          assert.equal(result.internalMessage, 'Test')
           verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('PAT')).once()
           verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
           verify(gitApi.updatePullRequest(anything(), 'RepoID', 10, 'Project')).once()
@@ -688,8 +688,8 @@ describe('azureReposInvoker.ts', function (): void {
           const func: () => Promise<void> = async () => await azureReposInvoker.createComment('Comment Content', CommentThreadStatus.Active, 'file.ts')
 
           // Assert
-          const result: any = await ExpectExtensions.toThrowAsync(func, 'Could not access the resources. Ensure the \'PR_Metrics_Access_Token\' secret environment variable has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
-          expect(result.internalMessage).to.equal('Test')
+          const result: any = await AssertExtensions.toThrowAsync(func, 'Could not access the resources. Ensure the \'PR_Metrics_Access_Token\' secret environment variable has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
+          assert.equal(result.internalMessage, 'Test')
           verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('PAT')).once()
           verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
           verify(gitApi.createThread(anything(), 'RepoID', 10, 'Project')).once()
@@ -827,8 +827,8 @@ describe('azureReposInvoker.ts', function (): void {
           const func: () => Promise<void> = async () => await azureReposInvoker.updateComment(20, 'Content', CommentThreadStatus.Active)
 
           // Assert
-          const result: any = await ExpectExtensions.toThrowAsync(func, 'Could not access the resources. Ensure the \'PR_Metrics_Access_Token\' secret environment variable has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
-          expect(result.internalMessage).to.equal('Test')
+          const result: any = await AssertExtensions.toThrowAsync(func, 'Could not access the resources. Ensure the \'PR_Metrics_Access_Token\' secret environment variable has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
+          assert.equal(result.internalMessage, 'Test')
           verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('PAT')).once()
           verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
           verify(gitApi.updateComment(anything(), 'RepoID', 10, 20, 1, 'Project')).once()
@@ -858,8 +858,8 @@ describe('azureReposInvoker.ts', function (): void {
           const func: () => Promise<void> = async () => await azureReposInvoker.updateComment(20, 'Content', CommentThreadStatus.Active)
 
           // Assert
-          const result: any = await ExpectExtensions.toThrowAsync(func, 'Could not access the resources. Ensure the \'PR_Metrics_Access_Token\' secret environment variable has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
-          expect(result.internalMessage).to.equal('Test')
+          const result: any = await AssertExtensions.toThrowAsync(func, 'Could not access the resources. Ensure the \'PR_Metrics_Access_Token\' secret environment variable has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
+          assert.equal(result.internalMessage, 'Test')
           verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('PAT')).once()
           verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
           verify(gitApi.updateComment(anything(), 'RepoID', 10, 20, 1, 'Project')).once()
@@ -994,8 +994,8 @@ describe('azureReposInvoker.ts', function (): void {
           const func: () => Promise<void> = async () => await azureReposInvoker.deleteCommentThread(20)
 
           // Assert
-          const result: any = await ExpectExtensions.toThrowAsync(func, 'Could not access the resources. Ensure the \'PR_Metrics_Access_Token\' secret environment variable has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
-          expect(result.internalMessage).to.equal('Test')
+          const result: any = await AssertExtensions.toThrowAsync(func, 'Could not access the resources. Ensure the \'PR_Metrics_Access_Token\' secret environment variable has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
+          assert.equal(result.internalMessage, 'Test')
           verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('PAT')).once()
           verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
           verify(gitApi.deleteComment('RepoID', 10, 20, 1, 'Project')).once()

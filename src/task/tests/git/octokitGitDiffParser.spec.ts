@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { expect } from 'chai'
+import assert from 'node:assert/strict'
 import 'reflect-metadata'
 import { instance, mock, verify, when } from 'ts-mockito'
 import OctokitGitDiffParser from '../../src/git/octokitGitDiffParser'
@@ -97,7 +97,7 @@ describe('octokitGitDiffParser.ts', (): void => {
           const result: number | null = await octokitGitDiffParser.getFirstChangedLine(instance(octokitWrapper), 'owner', 'repo', 1, 'file.ts')
 
           // Assert
-          expect(result).to.equal(lineNumber)
+          assert.equal(result, lineNumber)
           verify(logger.logDebug('* OctokitGitDiffParser.getFirstChangedLine()')).once()
           verify(logger.logDebug('* OctokitGitDiffParser.getFirstChangedLines()')).once()
           verify(logger.logDebug('* OctokitGitDiffParser.getDiffs()')).once()
@@ -126,7 +126,7 @@ describe('octokitGitDiffParser.ts', (): void => {
       const result: number | null = await octokitGitDiffParser.getFirstChangedLine(instance(octokitWrapper), 'owner', 'repo', 1, 'file.ts')
 
       // Assert
-      expect(result).to.equal(11)
+      assert.equal(result, 11)
       verify(logger.logDebug('* OctokitGitDiffParser.getFirstChangedLine()')).once()
       verify(logger.logDebug('* OctokitGitDiffParser.getFirstChangedLines()')).once()
       verify(logger.logDebug('* OctokitGitDiffParser.getDiffs()')).once()
@@ -147,7 +147,7 @@ describe('octokitGitDiffParser.ts', (): void => {
       const result: number | null = await octokitGitDiffParser.getFirstChangedLine(instance(octokitWrapper), 'owner', 'repo', 1, 'file.ts')
 
       // Assert
-      expect(result).to.equal(null)
+      assert.equal(result, null)
       verify(logger.logDebug('* OctokitGitDiffParser.getFirstChangedLine()')).once()
       verify(logger.logDebug('* OctokitGitDiffParser.getFirstChangedLines()')).once()
       verify(logger.logDebug('* OctokitGitDiffParser.getDiffs()')).once()
@@ -172,7 +172,7 @@ describe('octokitGitDiffParser.ts', (): void => {
       const result: number | null = await octokitGitDiffParser.getFirstChangedLine(instance(octokitWrapper), 'owner', 'repo', 1, 'file.ts')
 
       // Assert
-      expect(result).to.equal(1)
+      assert.equal(result, 1)
       verify(logger.logDebug('* OctokitGitDiffParser.getFirstChangedLine()')).once()
       verify(logger.logDebug('* OctokitGitDiffParser.getFirstChangedLines()')).once()
       verify(logger.logDebug('* OctokitGitDiffParser.getDiffs()')).once()
@@ -196,7 +196,7 @@ describe('octokitGitDiffParser.ts', (): void => {
       const result: number | null = await octokitGitDiffParser.getFirstChangedLine(instance(octokitWrapper), 'owner', 'repo', 1, 'file.ts')
 
       // Assert
-      expect(result).to.equal(null)
+      assert.equal(result, null)
       verify(logger.logDebug('* OctokitGitDiffParser.getFirstChangedLine()')).once()
       verify(logger.logDebug('* OctokitGitDiffParser.getFirstChangedLines()')).once()
       verify(logger.logDebug('* OctokitGitDiffParser.getDiffs()')).once()
@@ -221,8 +221,8 @@ describe('octokitGitDiffParser.ts', (): void => {
       const result2: number | null = await octokitGitDiffParser.getFirstChangedLine(instance(octokitWrapper), 'owner', 'repo', 1, 'file.ts')
 
       // Assert
-      expect(result1).to.equal(11)
-      expect(result2).to.equal(11)
+      assert.equal(result1, 11)
+      assert.equal(result2, 11)
       verify(logger.logDebug('* OctokitGitDiffParser.getFirstChangedLine()')).twice()
       verify(logger.logDebug('* OctokitGitDiffParser.getFirstChangedLines()')).twice()
       verify(logger.logDebug('* OctokitGitDiffParser.getDiffs()')).once()
@@ -246,7 +246,7 @@ describe('octokitGitDiffParser.ts', (): void => {
       const result: number | null = await octokitGitDiffParser.getFirstChangedLine(instance(octokitWrapper), 'owner', 'repo', 1, 'oldFile.ts')
 
       // Assert
-      expect(result).to.equal(null)
+      assert.equal(result, null)
       verify(logger.logDebug('* OctokitGitDiffParser.getFirstChangedLine()')).once()
       verify(logger.logDebug('* OctokitGitDiffParser.getFirstChangedLines()')).once()
       verify(logger.logDebug('* OctokitGitDiffParser.getDiffs()')).once()

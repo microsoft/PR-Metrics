@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
-import { expect } from 'chai'
+import assert from 'node:assert/strict'
 import 'reflect-metadata'
 import { instance, mock, verify, when } from 'ts-mockito'
 import GitInvoker from '../../src/git/gitInvoker'
@@ -59,7 +59,7 @@ describe('codeMetricsCalculator.ts', (): void => {
       const result: string | null = codeMetricsCalculator.shouldSkip
 
       // Assert
-      expect(result).to.equal(null)
+      assert.equal(result, null)
       verify(logger.logDebug('* CodeMetricsCalculator.shouldSkip')).once()
     })
 
@@ -72,7 +72,7 @@ describe('codeMetricsCalculator.ts', (): void => {
       const result: string | null = codeMetricsCalculator.shouldSkip
 
       // Assert
-      expect(result).to.equal('The build is not running against a pull request.')
+      assert.equal(result, 'The build is not running against a pull request.')
       verify(logger.logDebug('* CodeMetricsCalculator.shouldSkip')).once()
     })
 
@@ -85,7 +85,7 @@ describe('codeMetricsCalculator.ts', (): void => {
       const result: string | null = codeMetricsCalculator.shouldSkip
 
       // Assert
-      expect(result).to.equal('The build is running against a pull request from \'Other\', which is not a supported provider.')
+      assert.equal(result, 'The build is running against a pull request from \'Other\', which is not a supported provider.')
       verify(logger.logDebug('* CodeMetricsCalculator.shouldSkip')).once()
     })
   })
@@ -99,7 +99,7 @@ describe('codeMetricsCalculator.ts', (): void => {
       const result: string | null = await codeMetricsCalculator.shouldStop()
 
       // Assert
-      expect(result).to.equal(null)
+      assert.equal(result, null)
       verify(logger.logDebug('* CodeMetricsCalculator.shouldStop()')).once()
     })
 
@@ -112,7 +112,7 @@ describe('codeMetricsCalculator.ts', (): void => {
       const result: string | null = await codeMetricsCalculator.shouldStop()
 
       // Assert
-      expect(result).to.equal('No Access Token')
+      assert.equal(result, 'No Access Token')
       verify(logger.logDebug('* CodeMetricsCalculator.shouldStop()')).once()
     })
 
@@ -125,7 +125,7 @@ describe('codeMetricsCalculator.ts', (): void => {
       const result: string | null = await codeMetricsCalculator.shouldStop()
 
       // Assert
-      expect(result).to.equal('No Git repo present. Remove \'checkout: none\' (YAML) or disable \'Don\'t sync sources\' under the build process phase settings (classic).')
+      assert.equal(result, 'No Git repo present. Remove \'checkout: none\' (YAML) or disable \'Don\'t sync sources\' under the build process phase settings (classic).')
       verify(logger.logDebug('* CodeMetricsCalculator.shouldStop()')).once()
     })
 
@@ -139,7 +139,7 @@ describe('codeMetricsCalculator.ts', (): void => {
       const result: string | null = await codeMetricsCalculator.shouldStop()
 
       // Assert
-      expect(result).to.equal('No Git repo present. Run the \'actions/checkout\' action prior to PR Metrics.')
+      assert.equal(result, 'No Git repo present. Run the \'actions/checkout\' action prior to PR Metrics.')
       verify(logger.logDebug('* CodeMetricsCalculator.shouldStop()')).once()
 
       // Finalization
@@ -155,7 +155,7 @@ describe('codeMetricsCalculator.ts', (): void => {
       const result: string | null = await codeMetricsCalculator.shouldStop()
 
       // Assert
-      expect(result).to.equal('Could not determine the Pull Request ID.')
+      assert.equal(result, 'Could not determine the Pull Request ID.')
       verify(logger.logDebug('* CodeMetricsCalculator.shouldStop()')).once()
     })
 
@@ -169,7 +169,7 @@ describe('codeMetricsCalculator.ts', (): void => {
       const result: string | null = await codeMetricsCalculator.shouldStop()
 
       // Assert
-      expect(result).to.equal('Could not determine the Pull Request ID. Ensure \'pull_request\' is the pipeline trigger.')
+      assert.equal(result, 'Could not determine the Pull Request ID. Ensure \'pull_request\' is the pipeline trigger.')
       verify(logger.logDebug('* CodeMetricsCalculator.shouldStop()')).once()
 
       // Finalization
@@ -185,7 +185,7 @@ describe('codeMetricsCalculator.ts', (): void => {
       const result: string | null = await codeMetricsCalculator.shouldStop()
 
       // Assert
-      expect(result).to.equal('Could not access sufficient Git history. Set \'fetchDepth: 0\' as a parameter to the \'checkout\' task (YAML) or disable \'Shallow fetch\' under the build process phase settings (classic).')
+      assert.equal(result, 'Could not access sufficient Git history. Set \'fetchDepth: 0\' as a parameter to the \'checkout\' task (YAML) or disable \'Shallow fetch\' under the build process phase settings (classic).')
       verify(logger.logDebug('* CodeMetricsCalculator.shouldStop()')).once()
     })
 
@@ -199,7 +199,7 @@ describe('codeMetricsCalculator.ts', (): void => {
       const result: string | null = await codeMetricsCalculator.shouldStop()
 
       // Assert
-      expect(result).to.equal('Could not access sufficient Git history. Add \'fetch-depth: 0\' as a parameter to the \'actions/checkout\' action.')
+      assert.equal(result, 'Could not access sufficient Git history. Add \'fetch-depth: 0\' as a parameter to the \'actions/checkout\' action.')
       verify(logger.logDebug('* CodeMetricsCalculator.shouldStop()')).once()
 
       // Finalization
