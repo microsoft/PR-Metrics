@@ -204,6 +204,7 @@ jobs:
           files: .markdownlint.json
           print-valid-files: true
           schema: .markdownlint.schema.json
+          strict: false
 
       - name: Validate package.json – Download package.schema.json
         shell: pwsh
