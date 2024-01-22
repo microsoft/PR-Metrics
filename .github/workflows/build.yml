@@ -215,6 +215,7 @@ jobs:
         run: |-
           $FileContent = Get-Content -Path 'package.schema.json' -Raw
           $FileContent = $FileContent -replace ',\s+".+": {\s+"\$ref": "https:\/\/json\.schemastore\.org\/.+\s+}', ''
+          $FileContent = $FileContent -replace 'http://json-schema.org/draft-07/schema#', 'http://json-schema.org/draft-04/schema#'
           Set-Content -NoNewline -Path 'package.schema.json' -Value $FileContent
 
       - name: Validate package.json
