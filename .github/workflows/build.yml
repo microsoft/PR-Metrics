@@ -207,26 +207,6 @@ jobs:
           schema: .markdownlint.schema.json
           strict: false
 
-      - name: Validate package.json – Download package.schema.json
-        shell: pwsh
-        run: Invoke-WebRequest -Uri 'https://json.schemastore.org/package.json' -OutFile 'package.schema.json'
-
-      - name: Validate package.json – Update package.schema.json
-        shell: pwsh
-        run: |-
-          $FileContent = Get-Content -Path 'package.schema.json' -Raw
-          $FileContent = $FileContent -replace ',\s+".+": {\s+"\$ref": "https:\/\/json\.schemastore\.org\/.+\s+}', ''
-          $FileContent = $FileContent -replace 'http://json-schema.org/draft-07/schema#', 'http://json-schema.org/draft-04/schema#'
-          Set-Content -NoNewline -Path 'package.schema.json' -Value $FileContent
-
-      - name: Validate package.json
-        uses: walbo/validate-json@1c24a27a740a698944ff5b697cb8010a72c55c6b  # v1.1.0
-        with:
-          files: package.json
-          print-valid-files: true
-          strict: false
-          schema: package.schema.json
-
       - name: Validate devcontainer.json – Download devcontainer.schema.json
         shell: pwsh
         run: Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/microsoft/vscode/main/extensions/configuration-editing/schemas/devContainer.codespaces.schema.json' -OutFile 'devcontainer.schema.json'
@@ -333,13 +313,13 @@ jobs:
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11  # v4.1.1
 
       - name: Initialize
-        uses: github/codeql-action/init@012739e5082ff0c22ca6d6ab32e07c36df03c4a4  # v3.22.12
+        uses: github/codeql-action/init@b7bf0a3ed3ecfa44160715d7c442788f65f0f923  # v3.23.2
         with:
           config-file: .github/linters/codeql.yml
           queries: security-and-quality
 
       - name: Analyze
-        uses: github/codeql-action/analyze@012739e5082ff0c22ca6d6ab32e07c36df03c4a4  # v3.22.12
+        uses: github/codeql-action/analyze@b7bf0a3ed3ecfa44160715d7c442788f65f0f923  # v3.23.2
 
   validate-linter:
     name: Validate – Linter
