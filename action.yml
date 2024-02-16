@@ -23,7 +23,7 @@ inputs:
     description: 'Code file extensions: Extensions for files containing code so that non-code files can be excluded. If left blank, a default set of file extensions will be used.'
     required: false
 runs:
-  using: node16
+  using: node20
   main: dist/index.js
 branding:
   icon: hash
