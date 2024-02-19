@@ -11,11 +11,11 @@
   "visibility": [
     "Build"
   ],
-  "minimumAgentVersion": "2.181.2",
+  "minimumAgentVersion": "3.234.0",
   "version": {
     "Major": 1,
     "Minor": 5,
-    "Patch": 10
+    "Patch": 11
   },
   "instanceNameFormat": "ms-resource:loc.instanceNameFormat",
   "showEnvironmentVariables": true,
@@ -58,7 +58,7 @@
     }
   ],
   "execution": {
-    "Node10": {
+    "Node16": {
       "target": "index.js"
     }
   },
