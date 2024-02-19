@@ -207,14 +207,14 @@ jobs:
       - name: npm – Update Transitive Dependencies
         run: npm update
 
-      - name: npm – Build Package
-        run: npm run build:package
-
       - name: Git – Add Changed Files
         run: git add -A
 
       - name: Git – Commit Changed Files
         run: git commit -m "Updating dependencies"
+
+      - name: Git – Pull Changed Files
+        run: git pull
 
       - name: Git – Push Changed Files
         run: git push --set-upstream origin release/v${{ env.version }}
