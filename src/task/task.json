@@ -11,7 +11,7 @@
   "visibility": [
     "Build"
   ],
-  "minimumAgentVersion": "2.181.2",
+  "minimumAgentVersion": "3.234.0",
   "version": {
     "Major": 1,
     "Minor": 5,
@@ -58,7 +58,7 @@
     }
   ],
   "execution": {
-    "Node10": {
+    "Node16": {
       "target": "index.js"
     }
   },
