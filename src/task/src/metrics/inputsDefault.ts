@@ -209,3 +209,8 @@ export const codeFileExtensions: string[] = [
   'thor',
   'watchr'
 ]
+
+/**
+ * The default value for changing the pull request title to add pull request size.
+ */
+export const changePrTitle: boolean = true

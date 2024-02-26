@@ -5,6 +5,7 @@ import { injectable } from 'tsyringe'
 import CodeMetrics from '../metrics/codeMetrics'
 import RunnerInvoker from '../runners/runnerInvoker'
 import Logger from '../utilities/logger'
+import Inputs from '../metrics/inputs'
 import * as Validator from '../utilities/validator'
 
 /**
@@ -15,17 +16,20 @@ export default class PullRequest {
   private readonly _codeMetrics: CodeMetrics
   private readonly _logger: Logger
   private readonly _runnerInvoker: RunnerInvoker
+  private readonly _inputs: Inputs
 
   /**
    * Initializes a new instance of the `PullRequest` class.
    * @param codeMetrics The code metrics calculation logic.
    * @param logger The logger.
    * @param runnerInvoker The runner invoker logic.
+   * @param inputs The inputs passed to the task
    */
-  public constructor (codeMetrics: CodeMetrics, logger: Logger, runnerInvoker: RunnerInvoker) {
+  public constructor (codeMetrics: CodeMetrics, logger: Logger, runnerInvoker: RunnerInvoker, inputs: Inputs) {
     this._codeMetrics = codeMetrics
     this._logger = logger
     this._runnerInvoker = runnerInvoker
+    this._inputs = inputs
   }
 
   /**
@@ -82,6 +86,10 @@ export default class PullRequest {
   public async getUpdatedTitle (currentTitle: string): Promise<string | null> {
     this._logger.logDebug('* PullRequest.getUpdatedTitle()')
 
+    if (!this._inputs.changePrTitle){
+      return null
+    }
+    
     const sizeIndicator: string = await this._codeMetrics.getSizeIndicator()
     if (currentTitle.startsWith(this._runnerInvoker.loc('pullRequests.pullRequest.titleFormat', sizeIndicator, ''))) {
       return null

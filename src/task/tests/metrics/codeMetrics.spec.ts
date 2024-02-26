@@ -28,6 +28,7 @@ describe('codeMetrics.ts', (): void => {
     when(inputs.testFactor).thenReturn(InputsDefault.testFactor)
     when(inputs.fileMatchingPatterns).thenReturn(InputsDefault.fileMatchingPatterns)
     when(inputs.codeFileExtensions).thenReturn(new Set<string>(InputsDefault.codeFileExtensions))
+    when(inputs.changePrTitle).thenReturn(InputsDefault.changePrTitle)
 
     logger = mock(Logger)
 

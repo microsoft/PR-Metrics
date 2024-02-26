@@ -9,11 +9,14 @@ import PullRequest from '../../src/pullRequests/pullRequest'
 import RunnerInvoker from '../../src/runners/runnerInvoker'
 import * as Converter from '../../src/utilities/converter'
 import Logger from '../../src/utilities/logger'
+import Inputs from '../../src/metrics/inputs'
+import * as InputsDefault from '../../src/metrics/inputsDefault'
 
 describe('pullRequest.ts', (): void => {
   let codeMetrics: CodeMetrics
   let logger: Logger
   let runnerInvoker: RunnerInvoker
+  let inputs: Inputs
 
   beforeEach((): void => {
     codeMetrics = mock(CodeMetrics)
@@ -42,6 +45,9 @@ describe('pullRequest.ts', (): void => {
     when(runnerInvoker.loc('pullRequests.pullRequest.titleFormat', 'S✔', 'PS✔ ◾ Title')).thenReturn('S✔ ◾ PS✔ ◾ Title')
     when(runnerInvoker.loc('pullRequests.pullRequest.titleFormat', 'S✔', 'PS⚠️ ◾ Title')).thenReturn('S✔ ◾ PS⚠️ ◾ Title')
     when(runnerInvoker.loc('pullRequests.pullRequest.titleFormat', '(XS|S|M|L|\\d*XL)(✔|⚠️)?', '(.*)')).thenReturn('(XS|S|M|L|\\d*XL)(✔|⚠️)? ◾ (.*)')
+
+    inputs = mock(Inputs)
+    when(inputs.changePrTitle).thenReturn(InputsDefault.changePrTitle)
   })
 
   describe('isPullRequest', (): void => {
@@ -49,7 +55,7 @@ describe('pullRequest.ts', (): void => {
       // Arrange
       process.env.GITHUB_ACTION = 'PR-Metrics'
       process.env.GITHUB_BASE_REF = 'develop'
-      const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(runnerInvoker))
+      const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(runnerInvoker), instance(inputs))
 
       // Act
       const result: boolean = pullRequest.isPullRequest
@@ -67,7 +73,7 @@ describe('pullRequest.ts', (): void => {
       // Arrange
       process.env.GITHUB_ACTION = 'PR-Metrics'
       process.env.GITHUB_BASE_REF = ''
-      const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(runnerInvoker))
+      const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(runnerInvoker), instance(inputs))
 
       // Act
       const result: boolean = pullRequest.isPullRequest
@@ -84,7 +90,7 @@ describe('pullRequest.ts', (): void => {
     it('should return true when the Azure Pipelines runner is being used and SYSTEM_PULLREQUEST_PULLREQUESTID is defined', (): void => {
       // Arrange
       process.env.SYSTEM_PULLREQUEST_PULLREQUESTID = 'refs/heads/develop'
-      const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(runnerInvoker))
+      const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(runnerInvoker), instance(inputs))
 
       // Act
       const result: boolean = pullRequest.isPullRequest
@@ -100,7 +106,7 @@ describe('pullRequest.ts', (): void => {
     it('should return false when the Azure Pipelines runner is being used and SYSTEM_PULLREQUEST_PULLREQUESTID is not defined', (): void => {
       // Arrange
       delete process.env.SYSTEM_PULLREQUEST_TARGETBRANCH
-      const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(runnerInvoker))
+      const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(runnerInvoker), instance(inputs))
 
       // Act
       const result: boolean = pullRequest.isPullRequest
@@ -115,7 +121,7 @@ describe('pullRequest.ts', (): void => {
     it('should return true when the GitHub runner is being used', (): void => {
       // Arrange
       process.env.GITHUB_ACTION = 'PR-Metrics'
-      const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(runnerInvoker))
+      const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(runnerInvoker), instance(inputs))
 
       // Act
       const result: boolean | string = pullRequest.isSupportedProvider
@@ -131,7 +137,7 @@ describe('pullRequest.ts', (): void => {
     it('should throw an error when the Azure Pipelines runner is being used and BUILD_REPOSITORY_PROVIDER is undefined', (): void => {
       // Arrange
       delete process.env.BUILD_REPOSITORY_PROVIDER
-      const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(runnerInvoker))
+      const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(runnerInvoker), instance(inputs))
 
       // Act
       const func: () => boolean | string = () => pullRequest.isSupportedProvider
@@ -152,7 +158,7 @@ describe('pullRequest.ts', (): void => {
         it(`should return true when the Azure Pipelines runner is being used and BUILD_REPOSITORY_PROVIDER is set to '${provider}'`, (): void => {
           // Arrange
           process.env.BUILD_REPOSITORY_PROVIDER = provider
-          const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(runnerInvoker))
+          const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(runnerInvoker), instance(inputs))
 
           // Act
           const result: boolean | string = pullRequest.isSupportedProvider
@@ -170,7 +176,7 @@ describe('pullRequest.ts', (): void => {
     it('should return the provider when the Azure Pipelines runner is being used and BUILD_REPOSITORY_PROVIDER is not set to TfsGit or GitHub', (): void => {
       // Arrange
       process.env.BUILD_REPOSITORY_PROVIDER = 'Other'
-      const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(runnerInvoker))
+      const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(runnerInvoker), instance(inputs))
 
       // Act
       const result: boolean | string = pullRequest.isSupportedProvider
@@ -187,7 +193,7 @@ describe('pullRequest.ts', (): void => {
   describe('getUpdatedDescription()', (): void => {
     it('should return null when the current description is set', (): void => {
       // Arrange
-      const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(runnerInvoker))
+      const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(runnerInvoker), instance(inputs))
 
       // Act
       const result: string | null = pullRequest.getUpdatedDescription('Description')
@@ -207,7 +213,7 @@ describe('pullRequest.ts', (): void => {
       testCases.forEach((currentDescription: string | undefined): void => {
         it(`should return the default description when the current description '${Converter.toString(currentDescription)}' is empty`, (): void => {
           // Arrange
-          const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(runnerInvoker))
+          const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(runnerInvoker), instance(inputs))
 
           // Act
           const result: string | null = pullRequest.getUpdatedDescription(currentDescription)
@@ -223,7 +229,7 @@ describe('pullRequest.ts', (): void => {
   describe('getUpdatedTitle()', (): void => {
     it('should return null when the current title is set to the expected title', async (): Promise<void> => {
       // Arrange
-      const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(runnerInvoker))
+      const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(runnerInvoker), instance(inputs))
 
       // Act
       const result: string | null = await pullRequest.getUpdatedTitle('S✔ ◾ Title')
@@ -247,7 +253,7 @@ describe('pullRequest.ts', (): void => {
       testCases.forEach((currentTitle: string): void => {
         it(`should prefix the current title '${currentTitle}' when no prefix exists`, async (): Promise<void> => {
           // Arrange
-          const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(runnerInvoker))
+          const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(runnerInvoker), instance(inputs))
 
           // Act
           const result: string | null = await pullRequest.getUpdatedTitle(currentTitle)
@@ -288,7 +294,7 @@ describe('pullRequest.ts', (): void => {
         it(`should update the current title '${currentTitle}' correctly`, async (): Promise<void> => {
           // Arrange
           when(codeMetrics.getSizeIndicator()).thenResolve('PREFIX')
-          const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(runnerInvoker))
+          const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(runnerInvoker), instance(inputs))
 
           // Act
           const result: string | null = await pullRequest.getUpdatedTitle(currentTitle)

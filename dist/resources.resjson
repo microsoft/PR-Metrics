@@ -98,6 +98,8 @@
   "loc.messages.metrics.inputs.settingGrowthRate.comment": "The message printed when the growth rate input is set to the user-provided value. The placeholder will be replaced by the default value.",
   "loc.messages.metrics.inputs.settingTestFactor": "Setting the test factor input to '%s'.",
   "loc.messages.metrics.inputs.settingTestFactor.comment": "The message printed when the test factor input is set to the user-provided value. The placeholder will be replaced by the default value.",
+  "loc.messages.metrics.inputs.settingChangePrTitle": "Setting the change-pr-title mode input to 'false'.",
+  "loc.messages.metrics.inputs.settingChangePrTitle.comment": "The message printed when the change-pr-title mode input is being disabled.",
   "loc.messages.pullRequestMetrics.succeeded": "PR Metrics succeeded",
   "loc.messages.pullRequestMetrics.succeeded.comment": "The message to display when completing after a successful run.",
   "loc.messages.pullRequests.pullRequest.addDescription": "❌ **Add a description.**",
