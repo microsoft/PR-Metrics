@@ -85,6 +85,10 @@ in the second, add `$(PR_Metrics_Access_Token)`.
 
 ![Screenshot of the task definition](images/task-definition.png)
 
+You can use a name other than `PR_Metrics_Access_Token` if you wish, but you
+will need to keep the name unified across the variable and task definitions. The
+name `PR_METRICS_ACCESS_TOKEN` cannot be altered.
+
 ## Always Close Comment
 
 The `AlwaysCloseComment` option is not available for GitHub PRs as the main size
