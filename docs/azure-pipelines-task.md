@@ -67,6 +67,29 @@ steps:
   continueOnError: true
 ```
 
+## Classic Pipelines
+
+For classic pipelines, you need to specify the secret as an environment
+variable.
+
+First, create a new environment variable in the pipeline definition under the
+variables tab with the name `PR_Metrics_Access_Token` and the value of the PAT
+as outlined above. Mark the variable as a secret to ensure it is not exposed in
+the logs.
+
+![Screenshot of the variable definition](images/variable-definition.png)
+
+Then, add the task to the pipeline and expose the secret as an environment
+variable. To do this, expand the "Environment Variables" section and press "+"
+to add a new variable. In the first text box, add `PR_METRICS_ACCESS_TOKEN` and
+in the second, add `$(PR_Metrics_Access_Token)`.
+
+![Screenshot of the task definition](images/task-definition.png)
+
+You can use a name other than `PR_Metrics_Access_Token` if you wish, but you
+will need to keep the name unified across the variable and task definitions. The
+name `PR_METRICS_ACCESS_TOKEN` cannot be altered.
+
 ## Always Close Comment
 
 The `AlwaysCloseComment` option is not available for GitHub PRs as the main size

@@ -65,7 +65,7 @@ jobs:
           token: ${{ secrets.BUILD_UPDATE_CODE_CHECKOUT }}
 
       - name: Install Node.js
-        uses: actions/setup-node@b39b52d1213e96004bfcb1c61a8a6fa8ab84f3e8  # v4.0.1
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8  # v4.0.2
         with:
           node-version: 21.x
 
@@ -116,7 +116,7 @@ jobs:
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11  # v4.1.1
 
       - name: Install Node.js
-        uses: actions/setup-node@b39b52d1213e96004bfcb1c61a8a6fa8ab84f3e8  # v4.0.1
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8  # v4.0.2
         with:
           node-version: 21.x
 
@@ -141,7 +141,7 @@ jobs:
         working-directory: ${{ github.workspace }}/release
 
       - name: Release – Upload
-        uses: actions/upload-artifact@26f96dfa697d77e81fd5907df203aa23a56210a8  # v4.3.0
+        uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3  # v4.3.1
         with:
           name: PRMetrics
           path: ${{ github.workspace }}/ms-omex.PRMetrics.vsix
@@ -313,13 +313,13 @@ jobs:
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11  # v4.1.1
 
       - name: Initialize
-        uses: github/codeql-action/init@b7bf0a3ed3ecfa44160715d7c442788f65f0f923  # v3.23.2
+        uses: github/codeql-action/init@8a470fddafa5cbb6266ee11b37ef4d8aae19c571  # v3.24.6
         with:
           config-file: .github/linters/codeql.yml
           queries: security-and-quality
 
       - name: Analyze
-        uses: github/codeql-action/analyze@b7bf0a3ed3ecfa44160715d7c442788f65f0f923  # v3.23.2
+        uses: github/codeql-action/analyze@8a470fddafa5cbb6266ee11b37ef4d8aae19c571  # v3.24.6
 
   validate-linter:
     name: Validate – Linter
@@ -332,7 +332,7 @@ jobs:
           fetch-depth: 0
 
       - name: Install Node.js
-        uses: actions/setup-node@b39b52d1213e96004bfcb1c61a8a6fa8ab84f3e8  # v4.0.1
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8  # v4.0.2
         with:
           node-version: 21.x
 
