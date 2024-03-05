@@ -63,6 +63,7 @@ steps:
     CodeFileExtensions: |
       cs
       ps1
+    ChangePrTitle: false
   continueOnError: true
 ```
 
