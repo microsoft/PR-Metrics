@@ -237,11 +237,11 @@ export default class Inputs {
   }
 
   private initializeChangePrTitle (changePrTitle: string | undefined): void{
-    this._logger.logDebug('* Inputs.initializeChangePrTitle')
+    this._logger.logDebug('* Inputs.initializeChangePrTitle()')
 
-    const convertedValue: boolean | undefined = changePrTitle?.toLocaleLowerCase() === "false"
-    if (!convertedValue){
-      this._changePrTitle = convertedValue
+    const convertedValue: boolean | undefined = changePrTitle?.toLocaleLowerCase() === 'false'
+    if (convertedValue){
+      this._changePrTitle = false
       this._logger.logInfo(this._runnerInvoker.loc('metrics.inputs.disablingChangePrTitle'))
       return
     }

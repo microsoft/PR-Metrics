@@ -227,6 +227,19 @@ describe('pullRequest.ts', (): void => {
   })
 
   describe('getUpdatedTitle()', (): void => {
+    it('should return null when the inputs disables changing the title', async (): Promise<void> => {
+      // Arrange
+      when(inputs.changePrTitle).thenReturn(false)
+      const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(runnerInvoker), instance(inputs))
+
+      // Act
+      const result: string | null = await pullRequest.getUpdatedTitle('S✔ ◾ Title')
+
+      // Assert
+      assert.equal(result, null)
+      verify(logger.logDebug('* PullRequest.getUpdatedTitle()')).once()
+    })
+
     it('should return null when the current title is set to the expected title', async (): Promise<void> => {
       // Arrange
       const pullRequest: PullRequest = new PullRequest(instance(codeMetrics), instance(logger), instance(runnerInvoker), instance(inputs))
