@@ -89,7 +89,7 @@ export default class PullRequest {
     if (!this._inputs.changeTitle) {
       return null
     }
-    
+
     const sizeIndicator: string = await this._codeMetrics.getSizeIndicator()
     if (currentTitle.startsWith(this._runnerInvoker.loc('pullRequests.pullRequest.titleFormat', sizeIndicator, ''))) {
       return null
