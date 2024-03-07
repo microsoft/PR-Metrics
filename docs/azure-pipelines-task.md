@@ -56,6 +56,7 @@ steps:
     BaseSize: 200
     GrowthRate: 2.0
     TestFactor: 1.0
+    ChangeTitle: false
     AlwaysCloseComment: true
     FileMatchingPatterns: |
       **/*
@@ -63,7 +64,6 @@ steps:
     CodeFileExtensions: |
       cs
       ps1
-    ChangePrTitle: false
   continueOnError: true
 ```
 

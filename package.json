@@ -2,7 +2,7 @@
   "$schema": "https://json.schemastore.org/package.json",
   "name": "prmetrics",
   "publisher": "ms-omex",
-  "version": "1.5.12",
+  "version": "1.5.11",
   "description": "Augments pull request titles to let reviewers quickly determine PR size and test coverage.",
   "main": "dist/index.js",
   "scripts": {
@@ -64,7 +64,7 @@
     "@types/glob": "8.1.0",
     "@types/isomorphic-fetch": "0.0.39",
     "@types/mocha": "10.0.6",
-    "@types/node": "^20.11.20",
+    "@types/node": "20.11.19",
     "@typescript-eslint/eslint-plugin": "7.0.1",
     "@typescript-eslint/parser": "7.0.1",
     "@vercel/ncc": "0.38.1",

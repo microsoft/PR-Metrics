@@ -213,4 +213,4 @@ export const codeFileExtensions: string[] = [
 /**
  * The default value for changing the pull request title to add pull request size.
  */
-export const changePrTitle: boolean = true
+export const changeTitle: boolean = true
