@@ -131,6 +131,7 @@ with:
   base-size: 200
   growth-rate: 2.0
   test-factor: 1.0
+  change-title: false
   file-matching-patterns: |
     **/*
     !Ignore.cs

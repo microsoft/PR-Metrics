@@ -22,6 +22,7 @@ export default class Inputs {
   private _alwaysCloseComment: boolean = false
   private _fileMatchingPatterns: string[] = []
   private _codeFileExtensions: Set<string> = new Set<string>()
+  private _changeTitle: boolean = true
 
   /**
    * Initializes a new instance of the `Inputs` class.
@@ -100,6 +101,13 @@ export default class Inputs {
     return this._codeFileExtensions
   }
 
+  public get changeTitle (): boolean {
+    this._logger.logDebug('* Inputs.changeTitle')
+
+    this.initialize()
+    return this._changeTitle
+  }
+
   private initialize (): void {
     this._logger.logDebug('* Inputs.initialize()')
 
@@ -124,6 +132,9 @@ export default class Inputs {
 
     const codeFileExtensions: string | undefined = this._runnerInvoker.getInput(['Code', 'File', 'Extensions'])
     this.initializeCodeFileExtensions(codeFileExtensions)
+
+    const changeTitle: string | undefined = this._runnerInvoker.getInput(['Change', 'Title'])
+    this.initializeChangeTitle(changeTitle)
 
     this._isInitialized = true
   }
@@ -223,5 +234,19 @@ export default class Inputs {
 
     this._logger.logInfo(this._runnerInvoker.loc('metrics.inputs.adjustingCodeFileExtensions', JSON.stringify(InputsDefault.codeFileExtensions)))
     this._codeFileExtensions = new Set<string>(InputsDefault.codeFileExtensions)
+  }
+
+  private initializeChangeTitle (changeTitle: string | undefined): void {
+    this._logger.logDebug('* Inputs.initializeChangeTitle()')
+
+    const convertedValue: boolean | undefined = changeTitle?.toLocaleLowerCase() === 'false'
+    if (convertedValue) {
+      this._changeTitle = false
+      this._logger.logInfo(this._runnerInvoker.loc('metrics.inputs.disablingChangeTitle'))
+      return
+    }
+
+    this._logger.logInfo(this._runnerInvoker.loc('metrics.inputs.adjustingChangeTitle'))
+    this._changeTitle = InputsDefault.changeTitle
   }
 }

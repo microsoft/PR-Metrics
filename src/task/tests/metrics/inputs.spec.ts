@@ -12,12 +12,14 @@ import Logger from '../../src/utilities/logger'
 
 describe('inputs.ts', (): void => {
   const adjustingAlwaysCloseComment: string = 'Adjusting the always-close-comment mode input to \'false\'.'
+  const adjustingChangeTitle: string = 'Adjusting the change-title mode input to \'false\'.'
   const adjustingBaseSizeResource: string = `Adjusting the base size input to '${InputsDefault.baseSize}'.`
   const adjustingGrowthRateResource: string = `Adjusting the growth rate input to '${InputsDefault.growthRate}'.`
   const adjustingTestFactorResource: string = `Adjusting the test factor input to '${InputsDefault.testFactor}'.`
   const adjustingFileMatchingPatternsResource: string = `Adjusting the file matching patterns input to '${JSON.stringify(InputsDefault.fileMatchingPatterns)}'.`
   const adjustingCodeFileExtensionsResource: string = `Adjusting the code file extensions input to '${JSON.stringify(InputsDefault.codeFileExtensions)}'.`
   const disablingTestFactorResource: string = 'Disabling the test factor validation.'
+  const disablingChangeTitle: string = 'Setting the change-title mode input to \'true\'.'
   const settingAlwaysCloseComment: string = 'Setting the always-close-comment mode input to \'true\'.'
   const settingBaseSizeResource: string = 'Setting the base size input to \'VALUE\'.'
   const settingGrowthRateResource: string = 'Setting the growth rate input to \'VALUE\'.'
@@ -38,13 +40,16 @@ describe('inputs.ts', (): void => {
     when(runnerInvoker.getInput(deepEqual(['Always', 'Close', 'Comment']))).thenReturn('')
     when(runnerInvoker.getInput(deepEqual(['File', 'Matching', 'Patterns']))).thenReturn('')
     when(runnerInvoker.getInput(deepEqual(['Code', 'File', 'Extensions']))).thenReturn('')
+    when(runnerInvoker.getInput(deepEqual(['Change', 'Title']))).thenReturn('')
     when(runnerInvoker.loc('metrics.inputs.adjustingAlwaysCloseComment')).thenReturn(adjustingAlwaysCloseComment)
+    when(runnerInvoker.loc('metrics.inputs.adjustingChangeTitle')).thenReturn(adjustingChangeTitle)
     when(runnerInvoker.loc('metrics.inputs.adjustingBaseSize', InputsDefault.baseSize.toLocaleString())).thenReturn(adjustingBaseSizeResource)
     when(runnerInvoker.loc('metrics.inputs.adjustingGrowthRate', InputsDefault.growthRate.toLocaleString())).thenReturn(adjustingGrowthRateResource)
     when(runnerInvoker.loc('metrics.inputs.adjustingTestFactor', InputsDefault.testFactor.toLocaleString())).thenReturn(adjustingTestFactorResource)
     when(runnerInvoker.loc('metrics.inputs.adjustingFileMatchingPatterns', JSON.stringify(InputsDefault.fileMatchingPatterns))).thenReturn(adjustingFileMatchingPatternsResource)
     when(runnerInvoker.loc('metrics.inputs.adjustingCodeFileExtensions', JSON.stringify(InputsDefault.codeFileExtensions))).thenReturn(adjustingCodeFileExtensionsResource)
     when(runnerInvoker.loc('metrics.inputs.disablingTestFactor')).thenReturn(disablingTestFactorResource)
+    when(runnerInvoker.loc('metrics.inputs.disablingChangeTitle')).thenReturn(disablingChangeTitle)
     when(runnerInvoker.loc('metrics.inputs.settingAlwaysCloseComment')).thenReturn(settingAlwaysCloseComment)
     when(runnerInvoker.loc('metrics.inputs.settingBaseSize', anyString())).thenReturn(settingBaseSizeResource)
     when(runnerInvoker.loc('metrics.inputs.settingGrowthRate', anyString())).thenReturn(settingGrowthRateResource)
@@ -66,25 +71,29 @@ describe('inputs.ts', (): void => {
         assert.equal(inputs.alwaysCloseComment, InputsDefault.alwaysCloseComment)
         assert.deepEqual(inputs.fileMatchingPatterns, InputsDefault.fileMatchingPatterns)
         assert.deepEqual(inputs.codeFileExtensions, new Set<string>(InputsDefault.codeFileExtensions))
-        verify(logger.logDebug('* Inputs.initialize()')).times(6)
+        assert.equal(inputs.changeTitle, InputsDefault.changeTitle)
+        verify(logger.logDebug('* Inputs.initialize()')).times(7)
         verify(logger.logDebug('* Inputs.initializeBaseSize()')).once()
         verify(logger.logDebug('* Inputs.initializeGrowthRate()')).once()
         verify(logger.logDebug('* Inputs.initializeTestFactor()')).once()
         verify(logger.logDebug('* Inputs.initializeAlwaysCloseComment()')).once()
         verify(logger.logDebug('* Inputs.initializeFileMatchingPatterns()')).once()
         verify(logger.logDebug('* Inputs.initializeCodeFileExtensions()')).once()
+        verify(logger.logDebug('* Inputs.initializeChangeTitle()')).once()
         verify(logger.logDebug('* Inputs.baseSize')).once()
         verify(logger.logDebug('* Inputs.growthRate')).once()
         verify(logger.logDebug('* Inputs.testFactor')).once()
         verify(logger.logDebug('* Inputs.alwaysCloseComment')).once()
         verify(logger.logDebug('* Inputs.fileMatchingPatterns')).once()
         verify(logger.logDebug('* Inputs.codeFileExtensions')).once()
+        verify(logger.logDebug('* Inputs.changeTitle')).once()
         verify(logger.logInfo(adjustingAlwaysCloseComment)).once()
         verify(logger.logInfo(adjustingBaseSizeResource)).once()
         verify(logger.logInfo(adjustingGrowthRateResource)).once()
         verify(logger.logInfo(adjustingTestFactorResource)).once()
         verify(logger.logInfo(adjustingFileMatchingPatternsResource)).once()
         verify(logger.logInfo(adjustingCodeFileExtensionsResource)).once()
+        verify(logger.logInfo(adjustingChangeTitle)).once()
         verify(logger.logInfo(disablingTestFactorResource)).never()
         verify(logger.logInfo(settingAlwaysCloseComment)).never()
         verify(logger.logInfo(settingBaseSizeResource)).never()
@@ -92,6 +101,7 @@ describe('inputs.ts', (): void => {
         verify(logger.logInfo(settingTestFactorResource)).never()
         verify(logger.logInfo(settingFileMatchingPatternsResource)).never()
         verify(logger.logInfo(settingCodeFileExtensionsResource)).never()
+        verify(logger.logInfo(disablingChangeTitle)).never()
       })
 
       it('should set all input values when all are specified', (): void => {
@@ -102,6 +112,7 @@ describe('inputs.ts', (): void => {
         when(runnerInvoker.getInput(deepEqual(['Always', 'Close', 'Comment']))).thenReturn('true')
         when(runnerInvoker.getInput(deepEqual(['File', 'Matching', 'Patterns']))).thenReturn('aa\nbb')
         when(runnerInvoker.getInput(deepEqual(['Code', 'File', 'Extensions']))).thenReturn('js\nts')
+        when(runnerInvoker.getInput(deepEqual(['Change', 'Title']))).thenReturn('false')
 
         // Act
         const inputs: Inputs = new Inputs(instance(logger), instance(runnerInvoker))
@@ -113,19 +124,22 @@ describe('inputs.ts', (): void => {
         assert.deepEqual(inputs.alwaysCloseComment, true)
         assert.deepEqual(inputs.fileMatchingPatterns, ['aa', 'bb'])
         assert.deepEqual(inputs.codeFileExtensions, new Set<string>(['js', 'ts']))
-        verify(logger.logDebug('* Inputs.initialize()')).times(6)
+        assert.deepEqual(inputs.changeTitle, false)
+        verify(logger.logDebug('* Inputs.initialize()')).times(7)
         verify(logger.logDebug('* Inputs.initializeBaseSize()')).once()
         verify(logger.logDebug('* Inputs.initializeGrowthRate()')).once()
         verify(logger.logDebug('* Inputs.initializeTestFactor()')).once()
         verify(logger.logDebug('* Inputs.initializeAlwaysCloseComment()')).once()
         verify(logger.logDebug('* Inputs.initializeFileMatchingPatterns()')).once()
         verify(logger.logDebug('* Inputs.initializeCodeFileExtensions()')).once()
+        verify(logger.logDebug('* Inputs.initializeChangeTitle()')).once()
         verify(logger.logDebug('* Inputs.baseSize')).once()
         verify(logger.logDebug('* Inputs.growthRate')).once()
         verify(logger.logDebug('* Inputs.testFactor')).once()
         verify(logger.logDebug('* Inputs.alwaysCloseComment')).once()
         verify(logger.logDebug('* Inputs.fileMatchingPatterns')).once()
         verify(logger.logDebug('* Inputs.codeFileExtensions')).once()
+        verify(logger.logDebug('* Inputs.changeTitle')).once()
         verify(logger.logInfo(adjustingAlwaysCloseComment)).never()
         verify(logger.logInfo(adjustingBaseSizeResource)).never()
         verify(logger.logInfo(adjustingGrowthRateResource)).never()
@@ -133,12 +147,14 @@ describe('inputs.ts', (): void => {
         verify(logger.logInfo(adjustingFileMatchingPatternsResource)).never()
         verify(logger.logInfo(adjustingCodeFileExtensionsResource)).never()
         verify(logger.logInfo(disablingTestFactorResource)).never()
+        verify(logger.logInfo(adjustingChangeTitle)).never()
         verify(logger.logInfo(settingAlwaysCloseComment)).once()
         verify(logger.logInfo(settingBaseSizeResource)).once()
         verify(logger.logInfo(settingGrowthRateResource)).once()
         verify(logger.logInfo(settingTestFactorResource)).once()
         verify(logger.logInfo(settingFileMatchingPatternsResource)).once()
         verify(logger.logInfo(settingCodeFileExtensionsResource)).once()
+        verify(logger.logInfo(disablingChangeTitle)).once()
       })
     })
 
@@ -179,6 +195,7 @@ describe('inputs.ts', (): void => {
             verify(logger.logInfo(adjustingTestFactorResource)).once()
             verify(logger.logInfo(adjustingFileMatchingPatternsResource)).once()
             verify(logger.logInfo(adjustingCodeFileExtensionsResource)).once()
+            verify(logger.logInfo(adjustingChangeTitle)).once()
             verify(logger.logInfo(disablingTestFactorResource)).never()
             verify(logger.logInfo(settingAlwaysCloseComment)).never()
             verify(logger.logInfo(settingBaseSizeResource)).never()
@@ -186,6 +203,7 @@ describe('inputs.ts', (): void => {
             verify(logger.logInfo(settingTestFactorResource)).never()
             verify(logger.logInfo(settingFileMatchingPatternsResource)).never()
             verify(logger.logInfo(settingCodeFileExtensionsResource)).never()
+            verify(logger.logInfo(disablingChangeTitle)).never()
           })
         })
       }
@@ -215,6 +233,7 @@ describe('inputs.ts', (): void => {
             verify(logger.logDebug('* Inputs.initializeAlwaysCloseComment()')).once()
             verify(logger.logDebug('* Inputs.initializeFileMatchingPatterns()')).once()
             verify(logger.logDebug('* Inputs.initializeCodeFileExtensions()')).once()
+            verify(logger.logDebug('* Inputs.initializeChangeTitle()')).once()
             verify(logger.logDebug('* Inputs.baseSize')).once()
             verify(logger.logInfo(adjustingAlwaysCloseComment)).once()
             verify(logger.logInfo(adjustingBaseSizeResource)).once()
@@ -222,6 +241,7 @@ describe('inputs.ts', (): void => {
             verify(logger.logInfo(adjustingTestFactorResource)).once()
             verify(logger.logInfo(adjustingFileMatchingPatternsResource)).once()
             verify(logger.logInfo(adjustingCodeFileExtensionsResource)).once()
+            verify(logger.logInfo(adjustingChangeTitle)).once()
             verify(logger.logInfo(disablingTestFactorResource)).never()
             verify(logger.logInfo(settingAlwaysCloseComment)).never()
             verify(logger.logInfo(settingBaseSizeResource)).never()
@@ -229,6 +249,7 @@ describe('inputs.ts', (): void => {
             verify(logger.logInfo(settingTestFactorResource)).never()
             verify(logger.logInfo(settingFileMatchingPatternsResource)).never()
             verify(logger.logInfo(settingCodeFileExtensionsResource)).never()
+            verify(logger.logInfo(disablingChangeTitle)).never()
           })
         })
       }
@@ -258,6 +279,7 @@ describe('inputs.ts', (): void => {
             verify(logger.logDebug('* Inputs.initializeAlwaysCloseComment()')).once()
             verify(logger.logDebug('* Inputs.initializeFileMatchingPatterns()')).once()
             verify(logger.logDebug('* Inputs.initializeCodeFileExtensions()')).once()
+            verify(logger.logDebug('* Inputs.initializeChangeTitle()')).once()
             verify(logger.logDebug('* Inputs.baseSize')).once()
             verify(logger.logInfo(adjustingAlwaysCloseComment)).once()
             verify(logger.logInfo(adjustingBaseSizeResource)).never()
@@ -265,6 +287,7 @@ describe('inputs.ts', (): void => {
             verify(logger.logInfo(adjustingTestFactorResource)).once()
             verify(logger.logInfo(adjustingFileMatchingPatternsResource)).once()
             verify(logger.logInfo(adjustingCodeFileExtensionsResource)).once()
+            verify(logger.logInfo(adjustingChangeTitle)).once()
             verify(logger.logInfo(disablingTestFactorResource)).never()
             verify(logger.logInfo(settingAlwaysCloseComment)).never()
             verify(logger.logInfo(settingBaseSizeResource)).once()
@@ -272,6 +295,7 @@ describe('inputs.ts', (): void => {
             verify(logger.logInfo(settingTestFactorResource)).never()
             verify(logger.logInfo(settingFileMatchingPatternsResource)).never()
             verify(logger.logInfo(settingCodeFileExtensionsResource)).never()
+            verify(logger.logInfo(disablingChangeTitle)).never()
           })
         })
       }
@@ -307,6 +331,7 @@ describe('inputs.ts', (): void => {
             verify(logger.logDebug('* Inputs.initializeAlwaysCloseComment()')).once()
             verify(logger.logDebug('* Inputs.initializeFileMatchingPatterns()')).once()
             verify(logger.logDebug('* Inputs.initializeCodeFileExtensions()')).once()
+            verify(logger.logDebug('* Inputs.initializeChangeTitle()')).once()
             verify(logger.logDebug('* Inputs.growthRate')).once()
             verify(logger.logInfo(adjustingAlwaysCloseComment)).once()
             verify(logger.logInfo(adjustingBaseSizeResource)).once()
@@ -314,6 +339,7 @@ describe('inputs.ts', (): void => {
             verify(logger.logInfo(adjustingTestFactorResource)).once()
             verify(logger.logInfo(adjustingFileMatchingPatternsResource)).once()
             verify(logger.logInfo(adjustingCodeFileExtensionsResource)).once()
+            verify(logger.logInfo(adjustingChangeTitle)).once()
             verify(logger.logInfo(disablingTestFactorResource)).never()
             verify(logger.logInfo(settingAlwaysCloseComment)).never()
             verify(logger.logInfo(settingBaseSizeResource)).never()
@@ -321,6 +347,7 @@ describe('inputs.ts', (): void => {
             verify(logger.logInfo(settingTestFactorResource)).never()
             verify(logger.logInfo(settingFileMatchingPatternsResource)).never()
             verify(logger.logInfo(settingCodeFileExtensionsResource)).never()
+            verify(logger.logInfo(disablingChangeTitle)).never()
           })
         })
       }
@@ -353,6 +380,7 @@ describe('inputs.ts', (): void => {
             verify(logger.logDebug('* Inputs.initializeAlwaysCloseComment()')).once()
             verify(logger.logDebug('* Inputs.initializeFileMatchingPatterns()')).once()
             verify(logger.logDebug('* Inputs.initializeCodeFileExtensions()')).once()
+            verify(logger.logDebug('* Inputs.initializeChangeTitle()')).once()
             verify(logger.logDebug('* Inputs.growthRate')).once()
             verify(logger.logInfo(adjustingAlwaysCloseComment)).once()
             verify(logger.logInfo(adjustingBaseSizeResource)).once()
@@ -360,6 +388,7 @@ describe('inputs.ts', (): void => {
             verify(logger.logInfo(adjustingTestFactorResource)).once()
             verify(logger.logInfo(adjustingFileMatchingPatternsResource)).once()
             verify(logger.logInfo(adjustingCodeFileExtensionsResource)).once()
+            verify(logger.logInfo(adjustingChangeTitle)).once()
             verify(logger.logInfo(disablingTestFactorResource)).never()
             verify(logger.logInfo(settingAlwaysCloseComment)).never()
             verify(logger.logInfo(settingBaseSizeResource)).never()
@@ -367,6 +396,7 @@ describe('inputs.ts', (): void => {
             verify(logger.logInfo(settingTestFactorResource)).never()
             verify(logger.logInfo(settingFileMatchingPatternsResource)).never()
             verify(logger.logInfo(settingCodeFileExtensionsResource)).never()
+            verify(logger.logInfo(disablingChangeTitle)).never()
           })
         })
       }
@@ -400,6 +430,7 @@ describe('inputs.ts', (): void => {
             verify(logger.logDebug('* Inputs.initializeAlwaysCloseComment()')).once()
             verify(logger.logDebug('* Inputs.initializeFileMatchingPatterns()')).once()
             verify(logger.logDebug('* Inputs.initializeCodeFileExtensions()')).once()
+            verify(logger.logDebug('* Inputs.initializeChangeTitle()')).once()
             verify(logger.logDebug('* Inputs.growthRate')).once()
             verify(logger.logInfo(adjustingAlwaysCloseComment)).once()
             verify(logger.logInfo(adjustingBaseSizeResource)).once()
@@ -407,6 +438,7 @@ describe('inputs.ts', (): void => {
             verify(logger.logInfo(adjustingTestFactorResource)).once()
             verify(logger.logInfo(adjustingFileMatchingPatternsResource)).once()
             verify(logger.logInfo(adjustingCodeFileExtensionsResource)).once()
+            verify(logger.logInfo(adjustingChangeTitle)).once()
             verify(logger.logInfo(disablingTestFactorResource)).never()
             verify(logger.logInfo(settingAlwaysCloseComment)).never()
             verify(logger.logInfo(settingBaseSizeResource)).never()
@@ -414,6 +446,7 @@ describe('inputs.ts', (): void => {
             verify(logger.logInfo(settingTestFactorResource)).never()
             verify(logger.logInfo(settingFileMatchingPatternsResource)).never()
             verify(logger.logInfo(settingCodeFileExtensionsResource)).never()
+            verify(logger.logInfo(disablingChangeTitle)).never()
           })
         })
       }
@@ -449,6 +482,7 @@ describe('inputs.ts', (): void => {
             verify(logger.logDebug('* Inputs.initializeAlwaysCloseComment()')).once()
             verify(logger.logDebug('* Inputs.initializeFileMatchingPatterns()')).once()
             verify(logger.logDebug('* Inputs.initializeCodeFileExtensions()')).once()
+            verify(logger.logDebug('* Inputs.initializeChangeTitle()')).once()
             verify(logger.logDebug('* Inputs.testFactor')).once()
             verify(logger.logInfo(adjustingAlwaysCloseComment)).once()
             verify(logger.logInfo(adjustingBaseSizeResource)).once()
@@ -456,6 +490,7 @@ describe('inputs.ts', (): void => {
             verify(logger.logInfo(adjustingTestFactorResource)).once()
             verify(logger.logInfo(adjustingFileMatchingPatternsResource)).once()
             verify(logger.logInfo(adjustingCodeFileExtensionsResource)).once()
+            verify(logger.logInfo(adjustingChangeTitle)).once()
             verify(logger.logInfo(disablingTestFactorResource)).never()
             verify(logger.logInfo(settingAlwaysCloseComment)).never()
             verify(logger.logInfo(settingBaseSizeResource)).never()
@@ -463,6 +498,7 @@ describe('inputs.ts', (): void => {
             verify(logger.logInfo(settingTestFactorResource)).never()
             verify(logger.logInfo(settingFileMatchingPatternsResource)).never()
             verify(logger.logInfo(settingCodeFileExtensionsResource)).never()
+            verify(logger.logInfo(disablingChangeTitle)).never()
           })
         })
       }
@@ -493,6 +529,7 @@ describe('inputs.ts', (): void => {
             verify(logger.logDebug('* Inputs.initializeAlwaysCloseComment()')).once()
             verify(logger.logDebug('* Inputs.initializeFileMatchingPatterns()')).once()
             verify(logger.logDebug('* Inputs.initializeCodeFileExtensions()')).once()
+            verify(logger.logDebug('* Inputs.initializeChangeTitle()')).once()
             verify(logger.logDebug('* Inputs.testFactor')).once()
             verify(logger.logInfo(adjustingAlwaysCloseComment)).once()
             verify(logger.logInfo(adjustingBaseSizeResource)).once()
@@ -500,6 +537,7 @@ describe('inputs.ts', (): void => {
             verify(logger.logInfo(adjustingTestFactorResource)).once()
             verify(logger.logInfo(adjustingFileMatchingPatternsResource)).once()
             verify(logger.logInfo(adjustingCodeFileExtensionsResource)).once()
+            verify(logger.logInfo(adjustingChangeTitle)).once()
             verify(logger.logInfo(disablingTestFactorResource)).never()
             verify(logger.logInfo(settingAlwaysCloseComment)).never()
             verify(logger.logInfo(settingBaseSizeResource)).never()
@@ -507,6 +545,7 @@ describe('inputs.ts', (): void => {
             verify(logger.logInfo(settingTestFactorResource)).never()
             verify(logger.logInfo(settingFileMatchingPatternsResource)).never()
             verify(logger.logInfo(settingCodeFileExtensionsResource)).never()
+            verify(logger.logInfo(disablingChangeTitle)).never()
           })
         })
       }
@@ -540,6 +579,7 @@ describe('inputs.ts', (): void => {
             verify(logger.logDebug('* Inputs.initializeAlwaysCloseComment()')).once()
             verify(logger.logDebug('* Inputs.initializeFileMatchingPatterns()')).once()
             verify(logger.logDebug('* Inputs.initializeCodeFileExtensions()')).once()
+            verify(logger.logDebug('* Inputs.initializeChangeTitle()')).once()
             verify(logger.logDebug('* Inputs.testFactor')).once()
             verify(logger.logInfo(adjustingAlwaysCloseComment)).once()
             verify(logger.logInfo(adjustingBaseSizeResource)).once()
@@ -547,6 +587,7 @@ describe('inputs.ts', (): void => {
             verify(logger.logInfo(adjustingTestFactorResource)).never()
             verify(logger.logInfo(adjustingFileMatchingPatternsResource)).once()
             verify(logger.logInfo(adjustingCodeFileExtensionsResource)).once()
+            verify(logger.logInfo(adjustingChangeTitle)).once()
             verify(logger.logInfo(disablingTestFactorResource)).never()
             verify(logger.logInfo(settingAlwaysCloseComment)).never()
             verify(logger.logInfo(settingBaseSizeResource)).never()
@@ -554,6 +595,7 @@ describe('inputs.ts', (): void => {
             verify(logger.logInfo(settingTestFactorResource)).once()
             verify(logger.logInfo(settingFileMatchingPatternsResource)).never()
             verify(logger.logInfo(settingCodeFileExtensionsResource)).never()
+            verify(logger.logInfo(disablingChangeTitle)).never()
           })
         })
       }
@@ -581,6 +623,7 @@ describe('inputs.ts', (): void => {
             verify(logger.logDebug('* Inputs.initializeAlwaysCloseComment()')).once()
             verify(logger.logDebug('* Inputs.initializeFileMatchingPatterns()')).once()
             verify(logger.logDebug('* Inputs.initializeCodeFileExtensions()')).once()
+            verify(logger.logDebug('* Inputs.initializeChangeTitle()')).once()
             verify(logger.logDebug('* Inputs.testFactor')).once()
             verify(logger.logInfo(adjustingAlwaysCloseComment)).once()
             verify(logger.logInfo(adjustingBaseSizeResource)).once()
@@ -588,6 +631,7 @@ describe('inputs.ts', (): void => {
             verify(logger.logInfo(adjustingTestFactorResource)).never()
             verify(logger.logInfo(adjustingFileMatchingPatternsResource)).once()
             verify(logger.logInfo(adjustingCodeFileExtensionsResource)).once()
+            verify(logger.logInfo(adjustingChangeTitle)).once()
             verify(logger.logInfo(disablingTestFactorResource)).once()
             verify(logger.logInfo(settingAlwaysCloseComment)).never()
             verify(logger.logInfo(settingBaseSizeResource)).never()
@@ -595,6 +639,7 @@ describe('inputs.ts', (): void => {
             verify(logger.logInfo(settingTestFactorResource)).never()
             verify(logger.logInfo(settingFileMatchingPatternsResource)).never()
             verify(logger.logInfo(settingCodeFileExtensionsResource)).never()
+            verify(logger.logInfo(disablingChangeTitle)).never()
           })
         })
       }
@@ -632,6 +677,7 @@ describe('inputs.ts', (): void => {
             verify(logger.logDebug('* Inputs.initializeAlwaysCloseComment()')).once()
             verify(logger.logDebug('* Inputs.initializeFileMatchingPatterns()')).once()
             verify(logger.logDebug('* Inputs.initializeCodeFileExtensions()')).once()
+            verify(logger.logDebug('* Inputs.initializeChangeTitle()')).once()
             verify(logger.logDebug('* Inputs.alwaysCloseComment')).once()
             verify(logger.logInfo(adjustingAlwaysCloseComment)).once()
             verify(logger.logInfo(adjustingBaseSizeResource)).once()
@@ -639,6 +685,7 @@ describe('inputs.ts', (): void => {
             verify(logger.logInfo(adjustingTestFactorResource)).once()
             verify(logger.logInfo(adjustingFileMatchingPatternsResource)).once()
             verify(logger.logInfo(adjustingCodeFileExtensionsResource)).once()
+            verify(logger.logInfo(adjustingChangeTitle)).once()
             verify(logger.logInfo(disablingTestFactorResource)).never()
             verify(logger.logInfo(settingAlwaysCloseComment)).never()
             verify(logger.logInfo(settingBaseSizeResource)).never()
@@ -646,6 +693,7 @@ describe('inputs.ts', (): void => {
             verify(logger.logInfo(settingTestFactorResource)).never()
             verify(logger.logInfo(settingFileMatchingPatternsResource)).never()
             verify(logger.logInfo(settingCodeFileExtensionsResource)).never()
+            verify(logger.logInfo(disablingChangeTitle)).never()
           })
         })
       }
@@ -675,6 +723,7 @@ describe('inputs.ts', (): void => {
             verify(logger.logDebug('* Inputs.initializeAlwaysCloseComment()')).once()
             verify(logger.logDebug('* Inputs.initializeFileMatchingPatterns()')).once()
             verify(logger.logDebug('* Inputs.initializeCodeFileExtensions()')).once()
+            verify(logger.logDebug('* Inputs.initializeChangeTitle()')).once()
             verify(logger.logDebug('* Inputs.alwaysCloseComment')).once()
             verify(logger.logInfo(adjustingAlwaysCloseComment)).never()
             verify(logger.logInfo(adjustingBaseSizeResource)).once()
@@ -682,6 +731,7 @@ describe('inputs.ts', (): void => {
             verify(logger.logInfo(adjustingTestFactorResource)).once()
             verify(logger.logInfo(adjustingFileMatchingPatternsResource)).once()
             verify(logger.logInfo(adjustingCodeFileExtensionsResource)).once()
+            verify(logger.logInfo(adjustingChangeTitle)).once()
             verify(logger.logInfo(disablingTestFactorResource)).never()
             verify(logger.logInfo(settingAlwaysCloseComment)).once()
             verify(logger.logInfo(settingBaseSizeResource)).never()
@@ -689,6 +739,106 @@ describe('inputs.ts', (): void => {
             verify(logger.logInfo(settingTestFactorResource)).never()
             verify(logger.logInfo(settingFileMatchingPatternsResource)).never()
             verify(logger.logInfo(settingCodeFileExtensionsResource)).never()
+            verify(logger.logInfo(disablingChangeTitle)).never()
+          })
+        })
+      }
+    })
+
+    describe('changeTitle', (): void => {
+      {
+        const testCases: string[] = [
+          'false',
+          'False',
+          'FALSE',
+          'fALSE'
+        ]
+        testCases.forEach((changeTitle: string): void => {
+          it(`should set false when the input is '${Converter.toString(changeTitle)}'`, (): void => {
+            // Arrange
+            when(runnerInvoker.getInput(deepEqual(['Change', 'Title']))).thenReturn(changeTitle)
+
+            // Act
+            const inputs: Inputs = new Inputs(instance(logger), instance(runnerInvoker))
+
+            // Assert
+            assert.equal(inputs.changeTitle, false)
+            verify(logger.logDebug('* Inputs.initialize()')).once()
+            verify(logger.logDebug('* Inputs.initializeBaseSize()')).once()
+            verify(logger.logDebug('* Inputs.initializeGrowthRate()')).once()
+            verify(logger.logDebug('* Inputs.initializeTestFactor()')).once()
+            verify(logger.logDebug('* Inputs.initializeAlwaysCloseComment()')).once()
+            verify(logger.logDebug('* Inputs.initializeFileMatchingPatterns()')).once()
+            verify(logger.logDebug('* Inputs.initializeCodeFileExtensions()')).once()
+            verify(logger.logDebug('* Inputs.initializeChangeTitle()')).once()
+            verify(logger.logDebug('* Inputs.changeTitle')).once()
+            verify(logger.logInfo(adjustingAlwaysCloseComment)).once()
+            verify(logger.logInfo(adjustingBaseSizeResource)).once()
+            verify(logger.logInfo(adjustingGrowthRateResource)).once()
+            verify(logger.logInfo(adjustingTestFactorResource)).once()
+            verify(logger.logInfo(adjustingFileMatchingPatternsResource)).once()
+            verify(logger.logInfo(adjustingCodeFileExtensionsResource)).once()
+            verify(logger.logInfo(adjustingChangeTitle)).never()
+            verify(logger.logInfo(disablingTestFactorResource)).never()
+            verify(logger.logInfo(settingAlwaysCloseComment)).never()
+            verify(logger.logInfo(settingBaseSizeResource)).never()
+            verify(logger.logInfo(settingGrowthRateResource)).never()
+            verify(logger.logInfo(settingTestFactorResource)).never()
+            verify(logger.logInfo(settingFileMatchingPatternsResource)).never()
+            verify(logger.logInfo(settingCodeFileExtensionsResource)).never()
+            verify(logger.logInfo(disablingChangeTitle)).once()
+          })
+        })
+      }
+
+      {
+        const testCases: Array<string | undefined> = [
+          undefined,
+          '',
+          ' ',
+          'abc',
+          'true',
+          'True',
+          'TRUE',
+          'tRUE',
+          'null',
+          'undefined'
+        ]
+
+        testCases.forEach((changeTitle: string| undefined): void => {
+          it(`should set to the default when the input is '${changeTitle}'`, (): void => {
+            // Arrange
+            when(runnerInvoker.getInput(deepEqual(['Change', 'Title']))).thenReturn(changeTitle)
+
+            // Act
+            const inputs: Inputs = new Inputs(instance(logger), instance(runnerInvoker))
+
+            // Assert
+            assert.equal(inputs.changeTitle, InputsDefault.changeTitle)
+            verify(logger.logDebug('* Inputs.initialize()')).once()
+            verify(logger.logDebug('* Inputs.initializeBaseSize()')).once()
+            verify(logger.logDebug('* Inputs.initializeGrowthRate()')).once()
+            verify(logger.logDebug('* Inputs.initializeTestFactor()')).once()
+            verify(logger.logDebug('* Inputs.initializeAlwaysCloseComment()')).once()
+            verify(logger.logDebug('* Inputs.initializeFileMatchingPatterns()')).once()
+            verify(logger.logDebug('* Inputs.initializeCodeFileExtensions()')).once()
+            verify(logger.logDebug('* Inputs.initializeChangeTitle()')).once()
+            verify(logger.logDebug('* Inputs.changeTitle')).once()
+            verify(logger.logInfo(adjustingAlwaysCloseComment)).once()
+            verify(logger.logInfo(adjustingBaseSizeResource)).once()
+            verify(logger.logInfo(adjustingGrowthRateResource)).once()
+            verify(logger.logInfo(adjustingTestFactorResource)).once()
+            verify(logger.logInfo(adjustingFileMatchingPatternsResource)).once()
+            verify(logger.logInfo(adjustingCodeFileExtensionsResource)).once()
+            verify(logger.logInfo(adjustingChangeTitle)).once()
+            verify(logger.logInfo(disablingTestFactorResource)).never()
+            verify(logger.logInfo(settingAlwaysCloseComment)).never()
+            verify(logger.logInfo(settingBaseSizeResource)).never()
+            verify(logger.logInfo(settingGrowthRateResource)).never()
+            verify(logger.logInfo(settingTestFactorResource)).never()
+            verify(logger.logInfo(settingFileMatchingPatternsResource)).never()
+            verify(logger.logInfo(settingCodeFileExtensionsResource)).never()
+            verify(logger.logInfo(disablingChangeTitle)).never()
           })
         })
       }
@@ -721,6 +871,7 @@ describe('inputs.ts', (): void => {
             verify(logger.logDebug('* Inputs.initializeAlwaysCloseComment()')).once()
             verify(logger.logDebug('* Inputs.initializeFileMatchingPatterns()')).once()
             verify(logger.logDebug('* Inputs.initializeCodeFileExtensions()')).once()
+            verify(logger.logDebug('* Inputs.initializeChangeTitle()')).once()
             verify(logger.logDebug('* Inputs.fileMatchingPatterns')).once()
             verify(logger.logInfo(adjustingAlwaysCloseComment)).once()
             verify(logger.logInfo(adjustingBaseSizeResource)).once()
@@ -728,6 +879,7 @@ describe('inputs.ts', (): void => {
             verify(logger.logInfo(adjustingTestFactorResource)).once()
             verify(logger.logInfo(adjustingFileMatchingPatternsResource)).once()
             verify(logger.logInfo(adjustingCodeFileExtensionsResource)).once()
+            verify(logger.logInfo(adjustingChangeTitle)).once()
             verify(logger.logInfo(disablingTestFactorResource)).never()
             verify(logger.logInfo(settingAlwaysCloseComment)).never()
             verify(logger.logInfo(settingBaseSizeResource)).never()
@@ -735,6 +887,7 @@ describe('inputs.ts', (): void => {
             verify(logger.logInfo(settingTestFactorResource)).never()
             verify(logger.logInfo(settingFileMatchingPatternsResource)).never()
             verify(logger.logInfo(settingCodeFileExtensionsResource)).never()
+            verify(logger.logInfo(disablingChangeTitle)).never()
           })
         })
       }
@@ -763,6 +916,7 @@ describe('inputs.ts', (): void => {
             verify(logger.logDebug('* Inputs.initializeAlwaysCloseComment()')).once()
             verify(logger.logDebug('* Inputs.initializeFileMatchingPatterns()')).once()
             verify(logger.logDebug('* Inputs.initializeCodeFileExtensions()')).once()
+            verify(logger.logDebug('* Inputs.initializeChangeTitle()')).once()
             verify(logger.logDebug('* Inputs.fileMatchingPatterns')).once()
             verify(logger.logInfo(adjustingAlwaysCloseComment)).once()
             verify(logger.logInfo(adjustingBaseSizeResource)).once()
@@ -770,6 +924,7 @@ describe('inputs.ts', (): void => {
             verify(logger.logInfo(adjustingTestFactorResource)).once()
             verify(logger.logInfo(adjustingFileMatchingPatternsResource)).never()
             verify(logger.logInfo(adjustingCodeFileExtensionsResource)).once()
+            verify(logger.logInfo(adjustingChangeTitle)).once()
             verify(logger.logInfo(disablingTestFactorResource)).never()
             verify(logger.logInfo(settingAlwaysCloseComment)).never()
             verify(logger.logInfo(settingBaseSizeResource)).never()
@@ -777,6 +932,7 @@ describe('inputs.ts', (): void => {
             verify(logger.logInfo(settingTestFactorResource)).never()
             verify(logger.logInfo(settingFileMatchingPatternsResource)).once()
             verify(logger.logInfo(settingCodeFileExtensionsResource)).never()
+            verify(logger.logInfo(disablingChangeTitle)).never()
           })
         })
       }
@@ -805,6 +961,7 @@ describe('inputs.ts', (): void => {
             verify(logger.logDebug('* Inputs.initializeAlwaysCloseComment()')).once()
             verify(logger.logDebug('* Inputs.initializeFileMatchingPatterns()')).once()
             verify(logger.logDebug('* Inputs.initializeCodeFileExtensions()')).once()
+            verify(logger.logDebug('* Inputs.initializeChangeTitle()')).once()
             verify(logger.logDebug('* Inputs.fileMatchingPatterns')).once()
             verify(logger.logInfo(adjustingAlwaysCloseComment)).once()
             verify(logger.logInfo(adjustingBaseSizeResource)).once()
@@ -812,6 +969,7 @@ describe('inputs.ts', (): void => {
             verify(logger.logInfo(adjustingTestFactorResource)).once()
             verify(logger.logInfo(adjustingFileMatchingPatternsResource)).never()
             verify(logger.logInfo(adjustingCodeFileExtensionsResource)).once()
+            verify(logger.logInfo(adjustingChangeTitle)).once()
             verify(logger.logInfo(disablingTestFactorResource)).never()
             verify(logger.logInfo(settingAlwaysCloseComment)).never()
             verify(logger.logInfo(settingBaseSizeResource)).never()
@@ -819,6 +977,7 @@ describe('inputs.ts', (): void => {
             verify(logger.logInfo(settingTestFactorResource)).never()
             verify(logger.logInfo(settingFileMatchingPatternsResource)).once()
             verify(logger.logInfo(settingCodeFileExtensionsResource)).never()
+            verify(logger.logInfo(disablingChangeTitle)).never()
           })
         })
       }
@@ -839,6 +998,7 @@ describe('inputs.ts', (): void => {
         verify(logger.logDebug('* Inputs.initializeAlwaysCloseComment()')).once()
         verify(logger.logDebug('* Inputs.initializeFileMatchingPatterns()')).once()
         verify(logger.logDebug('* Inputs.initializeCodeFileExtensions()')).once()
+        verify(logger.logDebug('* Inputs.initializeChangeTitle()')).once()
         verify(logger.logDebug('* Inputs.fileMatchingPatterns')).once()
         verify(logger.logInfo(adjustingAlwaysCloseComment)).once()
         verify(logger.logInfo(adjustingBaseSizeResource)).once()
@@ -846,6 +1006,7 @@ describe('inputs.ts', (): void => {
         verify(logger.logInfo(adjustingTestFactorResource)).once()
         verify(logger.logInfo(adjustingFileMatchingPatternsResource)).never()
         verify(logger.logInfo(adjustingCodeFileExtensionsResource)).once()
+        verify(logger.logInfo(adjustingChangeTitle)).once()
         verify(logger.logInfo(disablingTestFactorResource)).never()
         verify(logger.logInfo(settingAlwaysCloseComment)).never()
         verify(logger.logInfo(settingBaseSizeResource)).never()
@@ -853,6 +1014,7 @@ describe('inputs.ts', (): void => {
         verify(logger.logInfo(settingTestFactorResource)).never()
         verify(logger.logInfo(settingFileMatchingPatternsResource)).once()
         verify(logger.logInfo(settingCodeFileExtensionsResource)).never()
+        verify(logger.logInfo(disablingChangeTitle)).never()
       })
 
       it('should remove trailing new lines', (): void => {
@@ -871,6 +1033,7 @@ describe('inputs.ts', (): void => {
         verify(logger.logDebug('* Inputs.initializeAlwaysCloseComment()')).once()
         verify(logger.logDebug('* Inputs.initializeFileMatchingPatterns()')).once()
         verify(logger.logDebug('* Inputs.initializeCodeFileExtensions()')).once()
+        verify(logger.logDebug('* Inputs.initializeChangeTitle()')).once()
         verify(logger.logDebug('* Inputs.fileMatchingPatterns')).once()
         verify(logger.logInfo(adjustingAlwaysCloseComment)).once()
         verify(logger.logInfo(adjustingBaseSizeResource)).once()
@@ -878,6 +1041,7 @@ describe('inputs.ts', (): void => {
         verify(logger.logInfo(adjustingTestFactorResource)).once()
         verify(logger.logInfo(adjustingFileMatchingPatternsResource)).never()
         verify(logger.logInfo(adjustingCodeFileExtensionsResource)).once()
+        verify(logger.logInfo(adjustingChangeTitle)).once()
         verify(logger.logInfo(disablingTestFactorResource)).never()
         verify(logger.logInfo(settingAlwaysCloseComment)).never()
         verify(logger.logInfo(settingBaseSizeResource)).never()
@@ -885,6 +1049,7 @@ describe('inputs.ts', (): void => {
         verify(logger.logInfo(settingTestFactorResource)).never()
         verify(logger.logInfo(settingFileMatchingPatternsResource)).once()
         verify(logger.logInfo(settingCodeFileExtensionsResource)).never()
+        verify(logger.logInfo(disablingChangeTitle)).never()
       })
     })
 
@@ -915,6 +1080,7 @@ describe('inputs.ts', (): void => {
             verify(logger.logDebug('* Inputs.initializeAlwaysCloseComment()')).once()
             verify(logger.logDebug('* Inputs.initializeFileMatchingPatterns()')).once()
             verify(logger.logDebug('* Inputs.initializeCodeFileExtensions()')).once()
+            verify(logger.logDebug('* Inputs.initializeChangeTitle()')).once()
             verify(logger.logDebug('* Inputs.codeFileExtensions')).once()
             verify(logger.logInfo(adjustingAlwaysCloseComment)).once()
             verify(logger.logInfo(adjustingBaseSizeResource)).once()
@@ -922,6 +1088,7 @@ describe('inputs.ts', (): void => {
             verify(logger.logInfo(adjustingTestFactorResource)).once()
             verify(logger.logInfo(adjustingFileMatchingPatternsResource)).once()
             verify(logger.logInfo(adjustingCodeFileExtensionsResource)).once()
+            verify(logger.logInfo(adjustingChangeTitle)).once()
             verify(logger.logInfo(disablingTestFactorResource)).never()
             verify(logger.logInfo(settingAlwaysCloseComment)).never()
             verify(logger.logInfo(settingBaseSizeResource)).never()
@@ -929,6 +1096,7 @@ describe('inputs.ts', (): void => {
             verify(logger.logInfo(settingTestFactorResource)).never()
             verify(logger.logInfo(settingFileMatchingPatternsResource)).never()
             verify(logger.logInfo(settingCodeFileExtensionsResource)).never()
+            verify(logger.logInfo(disablingChangeTitle)).never()
           })
         })
       }
@@ -958,6 +1126,7 @@ describe('inputs.ts', (): void => {
             verify(logger.logDebug('* Inputs.initializeAlwaysCloseComment()')).once()
             verify(logger.logDebug('* Inputs.initializeFileMatchingPatterns()')).once()
             verify(logger.logDebug('* Inputs.initializeCodeFileExtensions()')).once()
+            verify(logger.logDebug('* Inputs.initializeChangeTitle()')).once()
             verify(logger.logDebug('* Inputs.codeFileExtensions')).once()
             verify(logger.logInfo(adjustingAlwaysCloseComment)).once()
             verify(logger.logInfo(adjustingBaseSizeResource)).once()
@@ -965,6 +1134,7 @@ describe('inputs.ts', (): void => {
             verify(logger.logInfo(adjustingTestFactorResource)).once()
             verify(logger.logInfo(adjustingFileMatchingPatternsResource)).once()
             verify(logger.logInfo(adjustingCodeFileExtensionsResource)).never()
+            verify(logger.logInfo(adjustingChangeTitle)).once()
             verify(logger.logInfo(disablingTestFactorResource)).never()
             verify(logger.logInfo(settingAlwaysCloseComment)).never()
             verify(logger.logInfo(settingBaseSizeResource)).never()
@@ -972,6 +1142,7 @@ describe('inputs.ts', (): void => {
             verify(logger.logInfo(settingTestFactorResource)).never()
             verify(logger.logInfo(settingFileMatchingPatternsResource)).never()
             verify(logger.logInfo(settingCodeFileExtensionsResource)).once()
+            verify(logger.logInfo(disablingChangeTitle)).never()
           })
         })
       }
@@ -992,6 +1163,7 @@ describe('inputs.ts', (): void => {
         verify(logger.logDebug('* Inputs.initializeAlwaysCloseComment()')).once()
         verify(logger.logDebug('* Inputs.initializeFileMatchingPatterns()')).once()
         verify(logger.logDebug('* Inputs.initializeCodeFileExtensions()')).once()
+        verify(logger.logDebug('* Inputs.initializeChangeTitle()')).once()
         verify(logger.logDebug('* Inputs.codeFileExtensions')).once()
         verify(logger.logInfo(adjustingAlwaysCloseComment)).once()
         verify(logger.logInfo(adjustingBaseSizeResource)).once()
@@ -999,6 +1171,7 @@ describe('inputs.ts', (): void => {
         verify(logger.logInfo(adjustingTestFactorResource)).once()
         verify(logger.logInfo(adjustingFileMatchingPatternsResource)).once()
         verify(logger.logInfo(adjustingCodeFileExtensionsResource)).never()
+        verify(logger.logInfo(adjustingChangeTitle)).once()
         verify(logger.logInfo(disablingTestFactorResource)).never()
         verify(logger.logInfo(settingAlwaysCloseComment)).never()
         verify(logger.logInfo(settingBaseSizeResource)).never()
@@ -1006,6 +1179,7 @@ describe('inputs.ts', (): void => {
         verify(logger.logInfo(settingTestFactorResource)).never()
         verify(logger.logInfo(settingFileMatchingPatternsResource)).never()
         verify(logger.logInfo(settingCodeFileExtensionsResource)).once()
+        verify(logger.logInfo(disablingChangeTitle)).never()
       })
 
       it('should convert extensions to lower case', (): void => {
@@ -1024,6 +1198,7 @@ describe('inputs.ts', (): void => {
         verify(logger.logDebug('* Inputs.initializeAlwaysCloseComment()')).once()
         verify(logger.logDebug('* Inputs.initializeFileMatchingPatterns()')).once()
         verify(logger.logDebug('* Inputs.initializeCodeFileExtensions()')).once()
+        verify(logger.logDebug('* Inputs.initializeChangeTitle()')).once()
         verify(logger.logDebug('* Inputs.codeFileExtensions')).once()
         verify(logger.logInfo(adjustingAlwaysCloseComment)).once()
         verify(logger.logInfo(adjustingBaseSizeResource)).once()
@@ -1031,6 +1206,7 @@ describe('inputs.ts', (): void => {
         verify(logger.logInfo(adjustingTestFactorResource)).once()
         verify(logger.logInfo(adjustingFileMatchingPatternsResource)).once()
         verify(logger.logInfo(adjustingCodeFileExtensionsResource)).never()
+        verify(logger.logInfo(adjustingChangeTitle)).once()
         verify(logger.logInfo(disablingTestFactorResource)).never()
         verify(logger.logInfo(settingAlwaysCloseComment)).never()
         verify(logger.logInfo(settingBaseSizeResource)).never()
@@ -1038,6 +1214,7 @@ describe('inputs.ts', (): void => {
         verify(logger.logInfo(settingTestFactorResource)).never()
         verify(logger.logInfo(settingFileMatchingPatternsResource)).never()
         verify(logger.logInfo(settingCodeFileExtensionsResource)).once()
+        verify(logger.logInfo(disablingChangeTitle)).never()
       })
 
       it('should remove . and * from extension names', (): void => {
@@ -1056,6 +1233,7 @@ describe('inputs.ts', (): void => {
         verify(logger.logDebug('* Inputs.initializeAlwaysCloseComment()')).once()
         verify(logger.logDebug('* Inputs.initializeFileMatchingPatterns()')).once()
         verify(logger.logDebug('* Inputs.initializeCodeFileExtensions()')).once()
+        verify(logger.logDebug('* Inputs.initializeChangeTitle()')).once()
         verify(logger.logDebug('* Inputs.codeFileExtensions')).once()
         verify(logger.logInfo(adjustingAlwaysCloseComment)).once()
         verify(logger.logInfo(adjustingBaseSizeResource)).once()
@@ -1063,6 +1241,7 @@ describe('inputs.ts', (): void => {
         verify(logger.logInfo(adjustingTestFactorResource)).once()
         verify(logger.logInfo(adjustingFileMatchingPatternsResource)).once()
         verify(logger.logInfo(adjustingCodeFileExtensionsResource)).never()
+        verify(logger.logInfo(adjustingChangeTitle)).once()
         verify(logger.logInfo(disablingTestFactorResource)).never()
         verify(logger.logInfo(settingAlwaysCloseComment)).never()
         verify(logger.logInfo(settingBaseSizeResource)).never()
@@ -1070,6 +1249,7 @@ describe('inputs.ts', (): void => {
         verify(logger.logInfo(settingTestFactorResource)).never()
         verify(logger.logInfo(settingFileMatchingPatternsResource)).never()
         verify(logger.logInfo(settingCodeFileExtensionsResource)).once()
+        verify(logger.logInfo(disablingChangeTitle)).never()
       })
 
       it('should convert extensions to lower case', (): void => {
@@ -1088,6 +1268,7 @@ describe('inputs.ts', (): void => {
         verify(logger.logDebug('* Inputs.initializeAlwaysCloseComment()')).once()
         verify(logger.logDebug('* Inputs.initializeFileMatchingPatterns()')).once()
         verify(logger.logDebug('* Inputs.initializeCodeFileExtensions()')).once()
+        verify(logger.logDebug('* Inputs.initializeChangeTitle()')).once()
         verify(logger.logDebug('* Inputs.codeFileExtensions')).once()
         verify(logger.logInfo(adjustingAlwaysCloseComment)).once()
         verify(logger.logInfo(adjustingBaseSizeResource)).once()
@@ -1095,6 +1276,7 @@ describe('inputs.ts', (): void => {
         verify(logger.logInfo(adjustingTestFactorResource)).once()
         verify(logger.logInfo(adjustingFileMatchingPatternsResource)).once()
         verify(logger.logInfo(adjustingCodeFileExtensionsResource)).never()
+        verify(logger.logInfo(adjustingChangeTitle)).once()
         verify(logger.logInfo(disablingTestFactorResource)).never()
         verify(logger.logInfo(settingAlwaysCloseComment)).never()
         verify(logger.logInfo(settingBaseSizeResource)).never()
@@ -1102,6 +1284,7 @@ describe('inputs.ts', (): void => {
         verify(logger.logInfo(settingTestFactorResource)).never()
         verify(logger.logInfo(settingFileMatchingPatternsResource)).never()
         verify(logger.logInfo(settingCodeFileExtensionsResource)).once()
+        verify(logger.logInfo(disablingChangeTitle)).never()
       })
 
       it('should remove trailing new lines', (): void => {
@@ -1120,6 +1303,7 @@ describe('inputs.ts', (): void => {
         verify(logger.logDebug('* Inputs.initializeAlwaysCloseComment()')).once()
         verify(logger.logDebug('* Inputs.initializeFileMatchingPatterns()')).once()
         verify(logger.logDebug('* Inputs.initializeCodeFileExtensions()')).once()
+        verify(logger.logDebug('* Inputs.initializeChangeTitle()')).once()
         verify(logger.logDebug('* Inputs.codeFileExtensions')).once()
         verify(logger.logInfo(adjustingAlwaysCloseComment)).once()
         verify(logger.logInfo(adjustingBaseSizeResource)).once()
@@ -1127,6 +1311,7 @@ describe('inputs.ts', (): void => {
         verify(logger.logInfo(adjustingTestFactorResource)).once()
         verify(logger.logInfo(adjustingFileMatchingPatternsResource)).once()
         verify(logger.logInfo(adjustingCodeFileExtensionsResource)).never()
+        verify(logger.logInfo(adjustingChangeTitle)).once()
         verify(logger.logInfo(disablingTestFactorResource)).never()
         verify(logger.logInfo(settingAlwaysCloseComment)).never()
         verify(logger.logInfo(settingBaseSizeResource)).never()
@@ -1134,6 +1319,7 @@ describe('inputs.ts', (): void => {
         verify(logger.logInfo(settingTestFactorResource)).never()
         verify(logger.logInfo(settingFileMatchingPatternsResource)).never()
         verify(logger.logInfo(settingCodeFileExtensionsResource)).once()
+        verify(logger.logInfo(disablingChangeTitle)).never()
       })
     })
   })

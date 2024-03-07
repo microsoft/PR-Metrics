@@ -3,6 +3,7 @@
 
 import { injectable } from 'tsyringe'
 import CodeMetrics from '../metrics/codeMetrics'
+import Inputs from '../metrics/inputs'
 import RunnerInvoker from '../runners/runnerInvoker'
 import Logger from '../utilities/logger'
 import * as Validator from '../utilities/validator'
@@ -13,17 +14,20 @@ import * as Validator from '../utilities/validator'
 @injectable()
 export default class PullRequest {
   private readonly _codeMetrics: CodeMetrics
+  private readonly _inputs: Inputs
   private readonly _logger: Logger
   private readonly _runnerInvoker: RunnerInvoker
 
   /**
    * Initializes a new instance of the `PullRequest` class.
    * @param codeMetrics The code metrics calculation logic.
+   * @param inputs The inputs passed to the task.
    * @param logger The logger.
    * @param runnerInvoker The runner invoker logic.
    */
-  public constructor (codeMetrics: CodeMetrics, logger: Logger, runnerInvoker: RunnerInvoker) {
+  public constructor (codeMetrics: CodeMetrics, inputs: Inputs, logger: Logger, runnerInvoker: RunnerInvoker) {
     this._codeMetrics = codeMetrics
+    this._inputs = inputs
     this._logger = logger
     this._runnerInvoker = runnerInvoker
   }
@@ -81,6 +85,10 @@ export default class PullRequest {
    */
   public async getUpdatedTitle (currentTitle: string): Promise<string | null> {
     this._logger.logDebug('* PullRequest.getUpdatedTitle()')
+
+    if (!this._inputs.changeTitle) {
+      return null
+    }
 
     const sizeIndicator: string = await this._codeMetrics.getSizeIndicator()
     if (currentTitle.startsWith(this._runnerInvoker.loc('pullRequests.pullRequest.titleFormat', sizeIndicator, ''))) {
