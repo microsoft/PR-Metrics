@@ -745,6 +745,105 @@ describe('inputs.ts', (): void => {
       }
     })
 
+    describe('changeTitle', (): void => {
+      {
+        const testCases: string[] = [
+          'false',
+          'False',
+          'FALSE',
+          'fALSE'
+        ]
+        testCases.forEach((changeTitle: string): void => {
+          it(`should set false when the input is '${Converter.toString(changeTitle)}'`, (): void => {
+            // Arrange
+            when(runnerInvoker.getInput(deepEqual(['Change', 'Title']))).thenReturn(changeTitle)
+
+            // Act
+            const inputs: Inputs = new Inputs(instance(logger), instance(runnerInvoker))
+
+            // Assert
+            assert.equal(inputs.changeTitle, false)
+            verify(logger.logDebug('* Inputs.initialize()')).once()
+            verify(logger.logDebug('* Inputs.initializeBaseSize()')).once()
+            verify(logger.logDebug('* Inputs.initializeGrowthRate()')).once()
+            verify(logger.logDebug('* Inputs.initializeTestFactor()')).once()
+            verify(logger.logDebug('* Inputs.initializeAlwaysCloseComment()')).once()
+            verify(logger.logDebug('* Inputs.initializeFileMatchingPatterns()')).once()
+            verify(logger.logDebug('* Inputs.initializeCodeFileExtensions()')).once()
+            verify(logger.logDebug('* Inputs.initializeChangeTitle()')).once()
+            verify(logger.logDebug('* Inputs.changeTitle')).once()
+            verify(logger.logInfo(adjustingAlwaysCloseComment)).once()
+            verify(logger.logInfo(adjustingBaseSizeResource)).once()
+            verify(logger.logInfo(adjustingGrowthRateResource)).once()
+            verify(logger.logInfo(adjustingTestFactorResource)).once()
+            verify(logger.logInfo(adjustingFileMatchingPatternsResource)).once()
+            verify(logger.logInfo(adjustingCodeFileExtensionsResource)).once()
+            verify(logger.logInfo(adjustingChangeTitle)).never()
+            verify(logger.logInfo(disablingTestFactorResource)).never()
+            verify(logger.logInfo(settingAlwaysCloseComment)).never()
+            verify(logger.logInfo(settingBaseSizeResource)).never()
+            verify(logger.logInfo(settingGrowthRateResource)).never()
+            verify(logger.logInfo(settingTestFactorResource)).never()
+            verify(logger.logInfo(settingFileMatchingPatternsResource)).never()
+            verify(logger.logInfo(settingCodeFileExtensionsResource)).never()
+            verify(logger.logInfo(disablingChangeTitle)).once()
+          })
+        })
+      }
+
+      {
+        const testCases: Array<string | undefined> = [
+          undefined,
+          '',
+          ' ',
+          'abc',
+          'true',
+          'True',
+          'TRUE',
+          'tRUE',
+          'null',
+          'undefined'
+        ]
+
+        testCases.forEach((changeTitle: string| undefined): void => {
+          it(`should set to the default when the input is '${changeTitle}'`, (): void => {
+            // Arrange
+            when(runnerInvoker.getInput(deepEqual(['Change', 'Title']))).thenReturn(changeTitle)
+
+            // Act
+            const inputs: Inputs = new Inputs(instance(logger), instance(runnerInvoker))
+
+            // Assert
+            assert.equal(inputs.changeTitle, InputsDefault.changeTitle)
+            verify(logger.logDebug('* Inputs.initialize()')).once()
+            verify(logger.logDebug('* Inputs.initializeBaseSize()')).once()
+            verify(logger.logDebug('* Inputs.initializeGrowthRate()')).once()
+            verify(logger.logDebug('* Inputs.initializeTestFactor()')).once()
+            verify(logger.logDebug('* Inputs.initializeAlwaysCloseComment()')).once()
+            verify(logger.logDebug('* Inputs.initializeFileMatchingPatterns()')).once()
+            verify(logger.logDebug('* Inputs.initializeCodeFileExtensions()')).once()
+            verify(logger.logDebug('* Inputs.initializeChangeTitle()')).once()
+            verify(logger.logDebug('* Inputs.changeTitle')).once()
+            verify(logger.logInfo(adjustingAlwaysCloseComment)).once()
+            verify(logger.logInfo(adjustingBaseSizeResource)).once()
+            verify(logger.logInfo(adjustingGrowthRateResource)).once()
+            verify(logger.logInfo(adjustingTestFactorResource)).once()
+            verify(logger.logInfo(adjustingFileMatchingPatternsResource)).once()
+            verify(logger.logInfo(adjustingCodeFileExtensionsResource)).once()
+            verify(logger.logInfo(adjustingChangeTitle)).once()
+            verify(logger.logInfo(disablingTestFactorResource)).never()
+            verify(logger.logInfo(settingAlwaysCloseComment)).never()
+            verify(logger.logInfo(settingBaseSizeResource)).never()
+            verify(logger.logInfo(settingGrowthRateResource)).never()
+            verify(logger.logInfo(settingTestFactorResource)).never()
+            verify(logger.logInfo(settingFileMatchingPatternsResource)).never()
+            verify(logger.logInfo(settingCodeFileExtensionsResource)).never()
+            verify(logger.logInfo(disablingChangeTitle)).never()
+          })
+        })
+      }
+    })
+
     describe('fileMatchingPatterns', (): void => {
       {
         const testCases: Array<string | undefined> = [
