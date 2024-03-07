@@ -21,7 +21,7 @@ export default class PullRequest {
   /**
    * Initializes a new instance of the `PullRequest` class.
    * @param codeMetrics The code metrics calculation logic.
-   * @param inputs The inputs passed to the task
+   * @param inputs The inputs passed to the task.
    * @param logger The logger.
    * @param runnerInvoker The runner invoker logic.
    */
