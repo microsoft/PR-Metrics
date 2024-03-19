@@ -1872,6 +1872,7 @@ THE SOFTWARE.
 @octokit/types 12.5.0 - MIT
 https://github.com/octokit/types.ts#readme
 
+Copyright (c) 2019 Octokit
 
 MIT License Copyright (c) 2019 Octokit contributors
 
@@ -1959,6 +1960,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 @types/aws-lambda 8.10.134 - MIT
 https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/aws-lambda
 
+Copyright (c) Microsoft Corporation
 
 MIT License
 
@@ -2702,7 +2704,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ---------------------------------------------------------
 
-follow-redirects 1.15.5 - MIT
+follow-redirects 1.15.6 - MIT
 https://github.com/follow-redirects/follow-redirects
 
 Copyright 2014-present Olivier Lalonde <olalonde@gmail.com> , James Talmage <james@talmage.io> , Ruben Verborgh
