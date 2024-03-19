@@ -11,6 +11,7 @@ on:
       - main
     paths:
       - .github/workflows/support/release-trigger.txt
+  workflow_dispatch: null
 
 permissions: {}
 
