@@ -87,6 +87,9 @@
     "typedoc": "0.25.12",
     "typescript": "5.4.3"
   },
+  "overrides": {
+    "@octokit/core": "5.1.0"
+  },
   "ts-standard": {
     "ignore": [
       "dist"
