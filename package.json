@@ -45,26 +45,26 @@
   "dependencies": {
     "@actions/core": "1.10.1",
     "@actions/exec": "1.1.1",
-    "@octokit/plugin-rest-endpoint-methods": "11.0.1",
-    "@octokit/types": "12.6.0",
+    "@octokit/plugin-rest-endpoint-methods": "12.1.0",
+    "@octokit/types": "13.0.0",
     "axios": "1.6.8",
     "azure-devops-node-api": "13.0.0",
     "azure-pipelines-task-lib": "4.10.1",
     "isomorphic-fetch": "3.0.0",
-    "octokit": "3.1.2",
+    "octokit": "3.2.0",
     "parse-git-diff": "0.0.15",
     "reflect-metadata": "0.2.2",
     "tsyringe": "4.8.0"
   },
   "devDependencies": {
     "@babel/cli": "7.24.1",
-    "@babel/core": "7.24.3",
-    "@babel/preset-env": "7.24.3",
+    "@babel/core": "7.24.4",
+    "@babel/preset-env": "7.24.4",
     "@tsconfig/node16": "16.1.3",
     "@types/glob": "8.1.0",
     "@types/isomorphic-fetch": "0.0.39",
     "@types/mocha": "10.0.6",
-    "@types/node": "20.12.2",
+    "@types/node": "20.12.4",
     "@typescript-eslint/eslint-plugin": "7.5.0",
     "@typescript-eslint/parser": "7.5.0",
     "@vercel/ncc": "0.38.1",
@@ -85,7 +85,7 @@
     "tfx-cli": "0.17.0",
     "ts-mockito": "2.6.1",
     "typedoc": "0.25.12",
-    "typescript": "5.4.3"
+    "typescript": "5.4.4"
   },
   "overrides": {
     "@octokit/core": "5.1.0"
