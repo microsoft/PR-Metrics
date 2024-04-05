@@ -1346,7 +1346,7 @@ IN THE SOFTWARE.
 
 ---------------------------------------------------------
 
-@octokit/app 14.0.2 - MIT
+@octokit/app 14.1.0 - MIT
 https://github.com/octokit/app.js#readme
 
 Copyright (c) 2018 Octokit
@@ -1378,7 +1378,7 @@ THE SOFTWARE.
 
 ---------------------------------------------------------
 
-@octokit/auth-app 6.0.4 - MIT
+@octokit/auth-app 6.1.0 - MIT
 https://github.com/octokit/auth-app.js#readme
 
 Copyright (c) 2019 Octokit
@@ -1712,10 +1712,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---------------------------------------------------------
 
-@octokit/openapi-types 20.0.0 - MIT
+@octokit/openapi-types 21.2.0 - MIT
 https://github.com/octokit/openapi-types.ts#readme
 
-Copyright 2020 Gregor Martynus
 
 Copyright 2020 Gregor Martynus
 
@@ -1783,9 +1782,10 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---------------------------------------------------------
 
-@octokit/plugin-rest-endpoint-methods 11.0.1 - MIT
+@octokit/plugin-rest-endpoint-methods 12.1.0 - MIT
 https://github.com/octokit/plugin-rest-endpoint-methods.js#readme
 
+Copyright (c) 2019 Octokit
 
 MIT License Copyright (c) 2019 Octokit contributors
 
@@ -1946,6 +1946,24 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---------------------------------------------------------
 
+@octokit/types 13.1.0 - MIT
+https://github.com/octokit/types.ts#readme
+
+Copyright (c) 2019 Octokit
+
+MIT License Copyright (c) 2019 Octokit contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice (including the next paragraph) shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+---------------------------------------------------------
+
+---------------------------------------------------------
+
 @octokit/webhooks 12.2.0 - MIT
 https://github.com/octokit/webhooks.js#readme
 
@@ -2016,10 +2034,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---------------------------------------------------------
 
-@types/aws-lambda 8.10.136 - MIT
+@types/aws-lambda 8.10.137 - MIT
 https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/aws-lambda
 
-Copyright (c) Microsoft Corporation
 
 MIT License
 
@@ -2073,7 +2090,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---------------------------------------------------------
 
-@types/node 20.12.2 - MIT
+@types/node 20.12.4 - MIT
 https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/node
 
 Copyright (c) Microsoft Corporation
@@ -2217,6 +2234,18 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 azure-devops-node-api 13.0.0 - MIT
 https://github.com/Microsoft/azure-devops-node-api#readme
 
+Copyright (c) Microsoft
+Copyright (c) 2014 Tyler Kellen
+Copyright (c) 2015 Tyler Kellen
+Copyright (c) Isaac Z. Schlueter
+Copyright (c) 2012 Koichi Kobayashi
+Copyright (c) Microsoft Corporation
+Copyright (c) Isaac Z. Schlueter and Contributors
+Copyright Joyent, Inc. and other Node contributors
+Copyright (c) 2012, Artur Adib <arturadib@gmail.com>
+Copyright (c) 2013 Julian Gruber <julian@juliangruber.com>
+Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
+Copyright (c) 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
 
 Visual Studio Team Services Client for Node.js
 
@@ -3796,7 +3825,7 @@ SOFTWARE.
 
 ---------------------------------------------------------
 
-octokit 3.1.2 - MIT
+octokit 3.2.0 - MIT
 https://github.com/octokit/octokit.js#readme
 
 Copyright (c) 2023 Octokit
@@ -4376,7 +4405,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 ---------------------------------------------------------
 
-undici 5.28.3 - MIT
+undici 5.28.4 - MIT
 https://undici.nodejs.org/
 
 Copyright (c) 2020 Ethan Arrowood
