@@ -42,7 +42,7 @@ jobs:
         run: '[int]::Parse(${{ inputs.patch }})'
 
       - name: Checkout
-        uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b  # v4.1.4
+        uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # v4.1.4
         with:
           # Fine-grained Personal Access Token (PAT) with the following permissions for microsoft/PR-Metrics:
           # - Read access to Metadata
@@ -134,23 +134,20 @@ jobs:
         run: |-
           $FilePath = '.github/workflows/release-phase-1.yml'
           $FileContents = Get-Content -Raw $FilePath
-          $FileContents = $FileContents -replace '(?<Yaml>major:\s+default: )''\d+''', '${Yaml}''${{ inputs.major }}'''
-          $FileContents = $FileContents -replace '(?<Yaml>minor:\s+default: )''\d+''', '${Yaml}''${{ inputs.minor }}'''
-          $FileContents = $FileContents -replace '(?<Yaml>patch:\s+default: )''\d+''', '${Yaml}''${{ steps.increment-patch.outputs.INCREMENTED_PATCH }}'''
-          $FileContents = $FileContents -replace 'inputs\.major \|\| \d+', 'inputs.major || ${{ inputs.major }}'
-          $FileContents = $FileContents -replace 'inputs\.minor \|\| \d+', 'inputs.minor || ${{ inputs.minor }}'
-          $FileContents = $FileContents -replace 'inputs\.patch \|\| \d+', 'inputs.patch || ${{ steps.increment-patch.outputs.INCREMENTED_PATCH }}'
+          $FileContents = $FileContents -replace '(?<Yaml>major: )\d+', '${Yaml}${{ inputs.major }}'
+          $FileContents = $FileContents -replace '(?<Yaml>minor: )\d+', '${Yaml}${{ inputs.minor }}'
+          $FileContents = $FileContents -replace '(?<Yaml>patch: )\d+', '${Yaml}${{ steps.increment-patch.outputs.INCREMENTED_PATCH }}'
           Set-Content -Path $FilePath -Value $FileContents.Substring(0, $FileContents.Length - 1)  # Remove the trailing newline.
 
       - name: Update LICENSE.txt
         shell: pwsh
         run: |-
-            $FilePath = 'src/LICENSE.txt'
-            $FileContents = Get-Content -Path $FilePath
-            $Index = [Array]::IndexOf($FileContents, ($FileContents | Where-Object { $_ -match 'NOTICES AND INFORMATION' }))
-            $Index -= 1
-            $FileContents = $FileContents[0..$Index]
-            Set-Content -Path $FilePath -Value $FileContents
+          $FilePath = 'src/LICENSE.txt'
+          $FileContents = Get-Content -Path $FilePath
+          $Index = [Array]::IndexOf($FileContents, ($FileContents | Where-Object { $_ -match 'NOTICES AND INFORMATION' }))
+          $Index -= 1
+          $FileContents = $FileContents[0..$Index]
+          Set-Content -Path $FilePath -Value $FileContents
 
       - name: Git – Setup Authentication
         run: gh auth setup-git
@@ -196,7 +193,7 @@ jobs:
       - name: npm – Install Node.js
         uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
         with:
-          node-version: 16.10.0  # The latest version with NPMv7, which is required to maintain a package-lock.json lockfileVersion of 2.
+          node-version: 16.10.0 # The latest version with NPMv7, which is required to maintain a package-lock.json lockfileVersion of 2.
 
       - name: npm – Install NCU
         run: npm install -g npm-check-updates

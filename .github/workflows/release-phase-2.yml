@@ -22,10 +22,10 @@ jobs:
     permissions: {}
     steps:
       - name: Checkout
-        uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b  # v4.1.4
+        uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # v4.1.4
 
       - name: Install Node.js
-        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8  # v4.0.2
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
         with:
           node-version: 21.x
 
@@ -44,7 +44,7 @@ jobs:
         working-directory: ${{ github.workspace }}/release
 
       - name: Release – Publish
-        uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808  # v4.3.3
+        uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4.3.3
         with:
           name: ms-omex.PRMetrics
           path: ${{ github.workspace }}/ms-omex.PRMetrics.vsix
@@ -57,7 +57,7 @@ jobs:
           Write-Output -InputObject "VERSION=v$Version" >> $Env:GITHUB_OUTPUT
 
       - name: GitHub Release
-        uses: softprops/action-gh-release@9d7c94cfd0a1f3ed45544c887983e9fa900f0564  # v0.1.15
+        uses: softprops/action-gh-release@9d7c94cfd0a1f3ed45544c887983e9fa900f0564 # v0.1.15
         with:
           discussion_category_name: Releases
           files: ${{ github.workspace }}/ms-omex.PRMetrics.vsix
@@ -70,7 +70,7 @@ jobs:
           token: ${{ secrets.RELEASE_PHASE_2_GITHUB_RELEASE }}
 
       - name: Publish Release
-        uses: HaaLeo/publish-vscode-extension@28e2d3f5817fccf23c1f219eb0cecc903132d1a2  # v1.6.2
+        uses: HaaLeo/publish-vscode-extension@28e2d3f5817fccf23c1f219eb0cecc903132d1a2 # v1.6.2
         with:
           # Fine-grained Azure DevOps Personal Access Token (PAT) with the Manage access to Marketplace permission.
           pat: ${{ secrets.RELEASE_PHASE_2_PUBLISH_RELEASE }}

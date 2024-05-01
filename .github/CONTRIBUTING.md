@@ -43,8 +43,8 @@ If you wish to create a new extension, please discuss this beforehand using
 
 The following instructions can be used for adding an extension.
 
-1. If instances of the extension category do not already exist in the repo,
-   create a new folder for this category.
+1. If instances of the extension category do not already exist in the
+   repository, create a new folder for this category.
 1. Within the category folder, create a new folder with the name of the extension.
 1. Follow the existing examples as well as the instructions at
    [Microsoft Docs](https://docs.microsoft.com/azure/devops/extend/develop/add-build-task).
