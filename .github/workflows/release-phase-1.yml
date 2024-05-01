@@ -9,23 +9,7 @@ on:
   schedule:
     # Run every quarter.
     - cron: 0 0 1 */3 *
-  workflow_dispatch:
-    inputs:
-      major:
-        default: '1'
-        description: The major element of the version number
-        required: true
-        type: string
-      minor:
-        default: '5'
-        description: The minor element of the version number
-        required: true
-        type: string
-      patch:
-        default: '15'
-        description: The patch element of the version number
-        required: true
-        type: string
+  workflow_dispatch: null
 
 permissions: {}
 
@@ -36,8 +20,8 @@ jobs:
     permissions:
       pull-requests: write
     with:
-      major: ${{ inputs.major || 1 }}
-      minor: ${{ inputs.minor || 5 }}
-      patch: ${{ inputs.patch || 15 }}
+      major: 1
+      minor: 5
+      patch: 15
 
 ...
