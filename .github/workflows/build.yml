@@ -2,6 +2,7 @@
 # Licensed under the MIT License.
 
 ---
+
 name: Build
 
 on:
@@ -354,3 +355,5 @@ jobs:
         run: gh pr merge --auto --delete-branch --squash "${{ github.event.pull_request.html_url }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+...
