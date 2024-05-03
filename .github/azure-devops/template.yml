@@ -56,11 +56,12 @@ stages:
                     Write-Host -Object "##vso[task.setvariable variable=MicrosoftEntraToken;issecret=true]$MicrosoftEntraToken"
 
               - pwsh: |
-                  Write-Host -Object "Running npx tfx-cli login --service-url https://dev.azure.com/$AdoAccount --token ($env:MicrosoftEntraToken).Length"
-                  npx tfx-cli login --service-url https://dev.azure.com/$AdoAccount --token $env:MicrosoftEntraToken
+                  Write-Host -Object "Running npx tfx-cli login --service-url https://dev.azure.com/$($env:AdoAccount) --token $env:MicrosoftEntraToken"
+                  npx tfx-cli login --service-url https://dev.azure.com/$($env:AdoAccount) --token $env:MicrosoftEntraToken
                   Write-Host -Object '##vso[task.setvariable variable=MicrosoftEntraToken;issecret=true]REMOVED'
                 displayName: Azure DevOps – Sign-in
                 env:
+                  AdoAccount: $(AdoAccount)
                   MicrosoftEntraToken: $(MicrosoftEntraToken)
 
               - bash: npx tfx-cli build tasks delete --task-id 907d3b28-6b37-4ac7-ac75-9631ee53e512 --no-prompt
