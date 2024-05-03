@@ -55,7 +55,7 @@ stages:
                     $MicrosoftEntraToken = az account get-access-token --query accessToken --resource 499b84ac-1321-427f-aa17-267ca6975798 -o tsv
                     Write-Host -Object "##vso[task.setvariable variable=MicrosoftEntraToken;issecret=true]$MicrosoftEntraToken"
 
-              - bash: npx tfx-cli login --service-url https://dev.azure.com/$(AdoAccount)/OC --token $(MicrosoftEntraToken)
+              - bash: npx tfx-cli login --service-url https://dev.azure.com/$(AdoAccount) --token $(MicrosoftEntraToken)
                 displayName: Azure DevOps – Sign-in
                 env:
                   MicrosoftEntraToken: $(MicrosoftEntraToken)
