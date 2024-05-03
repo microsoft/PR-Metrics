@@ -12,6 +12,60 @@ stages:
   - stage: Build
     displayName: Build
     jobs:
+      - ${{ if not(parameters.testInstance) }}:
+          - job: Deploy
+            displayName: Deploy
+            pool:
+              name: Azure-Pipelines-1ESPT-ExDShared
+              os: linux
+              image: ubuntu-latest
+            steps:
+              - checkout: self
+                displayName: Checkout
+
+              - task: AzureCLI@2
+                displayName: Azure DevOps – Acquire Microsoft Entra Token
+                inputs:
+                  azureSubscription: PR Metrics
+                  scriptType: pscore
+                  scriptLocation: inlineScript
+                  inlineScript: |
+                    $MicrosoftEntraToken = az account get-access-token --query accessToken --resource 499b84ac-1321-427f-aa17-267ca6975798 -o tsv
+                    Write-Host -Object "##vso[task.setvariable variable=MicrosoftEntraToken;issecret=true]$MicrosoftEntraToken"
+
+              - task: NodeTool@0
+                displayName: Install Node.js
+                inputs:
+                  versionSpec: 21.x
+
+              - task: Npm@1
+                displayName: npm – Install
+                inputs:
+                  command: install
+
+              - task: Npm@1
+                displayName: npm – Build Release
+                inputs:
+                  command: custom
+                  customCommand: run build:release
+
+              - task: Npm@1
+                displayName: Azure DevOps – Install TFX CLI
+                inputs:
+                  command: custom
+                  customCommand: install -g tfx-cli
+
+              - bash: npx tfx-cli login --service-url https://$(AdoAccount).visualstudio.com/DefaultCollection --token $(MicrosoftEntraToken)
+                displayName: Azure DevOps – Sign-in
+                env:
+                  MicrosoftEntraToken: $(MicrosoftEntraToken)
+
+              - bash: npx tfx-cli build tasks delete --task-id 907d3b28-6b37-4ac7-ac75-9631ee53e512 --no-prompt
+                displayName: Azure DevOps – Delete Task
+
+              - bash: npx tfx-cli build tasks upload --task-path release/task --no-prompt
+                displayName: Azure DevOps – Deploy
+
       - job: Delay
         displayName: Delay
         pool: server
@@ -19,7 +73,7 @@ stages:
           - task: Delay@1
             displayName: Wait for Deployment
             inputs:
-              delayForMinutes: '5'
+              delayForMinutes: 5
 
       - job: PRMetrics_macOS
         displayName: PR Metrics – macOS
@@ -42,7 +96,6 @@ stages:
           - task: PRMetrics@1
             displayName: PR Metrics
             env:
-              # Azure DevOps Personal Access Token (PAT) with the Agent Pools (Read & Manage) permission.
               PR_METRICS_ACCESS_TOKEN: $(GITHUB_PAT)
             inputs:
               file-matching-patterns: |
@@ -71,7 +124,6 @@ stages:
           - task: PRMetrics@1
             displayName: PR Metrics
             env:
-              # Azure DevOps Personal Access Token (PAT) with the Agent Pools (Read & Manage) permission.
               PR_METRICS_ACCESS_TOKEN: $(GITHUB_PAT)
             inputs:
               file-matching-patterns: |
@@ -100,7 +152,6 @@ stages:
           - task: PRMetrics@1
             displayName: PR Metrics
             env:
-              # Azure DevOps Personal Access Token (PAT) with the Agent Pools (Read & Manage) permission.
               PR_METRICS_ACCESS_TOKEN: $(GITHUB_PAT)
             inputs:
               file-matching-patterns: |
@@ -118,9 +169,6 @@ stages:
             os: windows
             image: windows-latest
         steps:
-          - task: ComponentGovernanceComponentDetection@0
-            displayName: Component Detection
-
           - task: PoliCheck@2
             displayName: PoliCheck
             inputs:

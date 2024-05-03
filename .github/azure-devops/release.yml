@@ -4,10 +4,9 @@
 ---
 
 trigger:
-  batch: true
-  branches:
+  tags:
     include:
-      - main
+      - v*
 
 pr: none
 
@@ -49,6 +48,14 @@ extends:
               name: Azure-Pipelines-1ESPT-ExDShared
               os: linux
               image: ubuntu-latest
+            templateContext:
+              outputs:
+                - output: adoExtension
+                  targetPath: $(Build.StagingDirectory)/publish
+                  connectedServiceName: 'PR Metrics: Visual Studio Marketplace'
+                  fileType: vsix
+                  vsixFile: $(Build.StagingDirectory)/publish/ms-omex.PRMetrics.vsix
+                  validateExtension: true
             steps:
               - checkout: none
                 displayName: Checkout
@@ -57,6 +64,20 @@ extends:
                 displayName: Terminate on PR
                 condition: ne(variables['Build.SourceBranchName'], 'main')
 
-      - template: template.yml
+              - task: NodeTool@0
+                displayName: Install Node.js
+                inputs:
+                  versionSpec: 21.x
+
+              - task: Npm@1
+                displayName: npm – Install Dependencies
+                inputs:
+                  command: install
+
+              - task: Npm@1
+                displayName: npm – Build
+                inputs:
+                  command: custom
+                  customCommand: run build:release
 
 ...
