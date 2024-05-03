@@ -23,16 +23,6 @@ stages:
               - checkout: self
                 displayName: Checkout
 
-              - task: AzureCLI@2
-                displayName: Azure DevOps – Acquire Microsoft Entra Token
-                inputs:
-                  azureSubscription: PR Metrics
-                  scriptType: pscore
-                  scriptLocation: inlineScript
-                  inlineScript: |
-                    $MicrosoftEntraToken = az account get-access-token --query accessToken --resource 499b84ac-1321-427f-aa17-267ca6975798 -o tsv
-                    Write-Host -Object "##vso[task.setvariable variable=MicrosoftEntraToken;issecret=true]$MicrosoftEntraToken"
-
               - task: NodeTool@0
                 displayName: Install Node.js
                 inputs:
@@ -54,6 +44,16 @@ stages:
                 inputs:
                   command: custom
                   customCommand: install -g tfx-cli
+
+              - task: AzureCLI@2
+                displayName: Azure DevOps – Acquire Microsoft Entra Token
+                inputs:
+                  azureSubscription: PR Metrics
+                  scriptType: pscore
+                  scriptLocation: inlineScript
+                  inlineScript: |
+                    $MicrosoftEntraToken = az account get-access-token --query accessToken --resource 499b84ac-1321-427f-aa17-267ca6975798 -o tsv
+                    Write-Host -Object "##vso[task.setvariable variable=MicrosoftEntraToken;issecret=true]$MicrosoftEntraToken"
 
               - bash: npx tfx-cli login --service-url https://$(AdoAccount).visualstudio.com/DefaultCollection --token $(MicrosoftEntraToken)
                 displayName: Azure DevOps – Sign-in
