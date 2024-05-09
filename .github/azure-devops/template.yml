@@ -39,6 +39,11 @@ stages:
                   command: custom
                   customCommand: run build:release
 
+              - task: TfxInstaller@4
+                displayName: Azure DevOps – Install TFX CLI
+                inputs:
+                  version: v0.x
+
               - task: Npm@1
                 displayName: Azure DevOps – Install TFX CLI
                 inputs:
@@ -46,27 +51,30 @@ stages:
                   customCommand: install -g tfx-cli
 
               - task: AzureCLI@2
-                displayName: Azure DevOps – Acquire Microsoft Entra Token
+                displayName: Azure DevOps – Acquire Access Token
                 inputs:
                   azureSubscription: PR Metrics
                   scriptType: pscore
                   scriptLocation: inlineScript
                   inlineScript: |
-                    $MicrosoftEntraToken = az account get-access-token --query accessToken --resource 499b84ac-1321-427f-aa17-267ca6975798 -o tsv
-                    Write-Host -Object "##vso[task.setvariable variable=MicrosoftEntraToken;issecret=true]$MicrosoftEntraToken"
+                    $ACCESS_TOKEN = az account get-access-token --query accessToken --resource 499b84ac-1321-427f-aa17-267ca6975798 -o tsv
+                    Write-Host -Object "##vso[task.setvariable variable=ACCESS_TOKEN;issecret=true]$ACCESS_TOKEN"
 
               - pwsh: |
-                  npx tfx-cli login --service-url https://dev.azure.com/$($env:AdoAccount) --token $env:MicrosoftEntraToken
-                  Write-Host -Object '##vso[task.setvariable variable=MicrosoftEntraToken;issecret=true]REMOVED'
+                  tfx login --service-url https://dev.azure.com/$($env:ADO_ACCOUNT) --token $env:ACCESS_TOKEN
+                  Write-Host -Object '##vso[task.setvariable variable=ACCESS_TOKEN;issecret=true]REMOVED'
                 displayName: Azure DevOps – Sign-in
                 env:
-                  AdoAccount: $(AdoAccount)
-                  MicrosoftEntraToken: $(MicrosoftEntraToken)
+                  ADO_ACCOUNT: $(ADO_ACCOUNT)
+                  ACCESS_TOKEN: $(ACCESS_TOKEN)
 
-              - bash: npx tfx-cli build tasks delete --task-id 907d3b28-6b37-4ac7-ac75-9631ee53e512 --no-prompt
+              - bash: tfx build tasks upload --task-path release/task --no-prompt
+                displayName: Azure DevOps – Deploy
+
+              - bash: tfx build tasks delete --task-id 907d3b28-6b37-4ac7-ac75-9631ee53e512 --no-prompt
                 displayName: Azure DevOps – Delete Old Task
 
-              - bash: npx tfx-cli build tasks upload --task-path release/task --no-prompt
+              - bash: tfx build tasks upload --task-path release/task --no-prompt
                 displayName: Azure DevOps – Deploy
 
       - job: Delay
