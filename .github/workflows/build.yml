@@ -274,6 +274,7 @@ jobs:
     name: Validate – CodeQL
     runs-on: ubuntu-latest
     permissions:
+      packages: read
       security-events: write
     steps:
       - name: Checkout
@@ -283,7 +284,7 @@ jobs:
         uses: github/codeql-action/init@d39d31e687223d841ef683f52467bd88e9b21c14 # v3.25.3
         with:
           config-file: .github/linters/codeql.yml
-          queries: security-and-quality
+          queries: security-extended,security-and-quality
 
       - name: Analyze
         uses: github/codeql-action/analyze@d39d31e687223d841ef683f52467bd88e9b21c14 # v3.25.3
