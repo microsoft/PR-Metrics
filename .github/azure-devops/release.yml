@@ -52,9 +52,9 @@ extends:
               - checkout: none
                 displayName: Checkout
 
-              #- bash: exit 1
-                #displayName: Terminate on PR
-                #condition: ne(variables['Build.SourceBranchName'], 'main')
+              - bash: exit 1
+                displayName: Terminate on PR
+                condition: ne(variables['Build.SourceBranchName'], 'main')
 
               - task: NodeTool@0
                 displayName: Install Node.js
