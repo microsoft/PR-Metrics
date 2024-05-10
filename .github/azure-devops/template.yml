@@ -64,6 +64,7 @@ stages:
 
               - bash: tfx build tasks delete --task-id 907d3b28-6b37-4ac7-ac75-9631ee53e512 --no-prompt
                 displayName: Azure DevOps – Delete Old Task
+                continueOnError: true
 
               - bash: tfx build tasks upload --task-path release/task --no-prompt
                 displayName: Azure DevOps – Deploy
