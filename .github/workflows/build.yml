@@ -274,7 +274,6 @@ jobs:
     name: Validate – CodeQL
     runs-on: ubuntu-latest
     permissions:
-      packages: read
       security-events: write
     steps:
       - name: Checkout
