@@ -40,6 +40,45 @@ extends:
         enableExclusions: true
         exclusionPatterns: '*.js'
     stages:
+      - stage: TEST
+        displayName: TEST
+        jobs:
+          - job: TEST
+            pool:
+              name: Azure-Pipelines-1ESPT-ExDShared
+              os: linux
+              image: ubuntu-latest
+            templateContext:
+              outputs:
+                - output: adoExtension
+                  targetPath: $(Build.StagingDirectory)/publish
+                  connectedServiceName: PR Metrics
+                  fileType: vsix
+                  vsixFile: $(Build.StagingDirectory)/publish/ms-omex.PRMetrics.vsix
+                  validateExtension: true
+            steps:
+              - checkout: none
+                displayName: Checkout
+
+              - bash: exit 1
+                displayName: Terminate on PR
+                condition: ne(variables['Build.SourceBranchName'], 'main')
+
+              - task: NodeTool@0
+                displayName: Install Node.js
+                inputs:
+                  versionSpec: 22.x
+
+              - task: Npm@1
+                displayName: npm – Install Dependencies
+                inputs:
+                  command: install
+
+              - task: Npm@1
+                displayName: npm – Build
+                inputs:
+                  command: custom
+                  customCommand: run build:release
       - template: template.yml
 
 ...

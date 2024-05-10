@@ -40,10 +40,10 @@ extends:
         enableExclusions: true
         exclusionPatterns: '*.js'
     stages:
-      - stage: Checks
-        displayName: Checks
+      - stage: Release
+        displayName: Release
         jobs:
-          - job: Checks
+          - job: Release
             pool:
               name: Azure-Pipelines-1ESPT-ExDShared
               os: linux
