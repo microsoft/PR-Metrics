@@ -48,14 +48,6 @@ extends:
               name: Azure-Pipelines-1ESPT-ExDShared
               os: linux
               image: ubuntu-latest
-            templateContext:
-              outputs:
-                - output: adoExtension
-                  targetPath: $(Build.StagingDirectory)/publish
-                  connectedServiceName: PR Metrics
-                  fileType: vsix
-                  vsixFile: $(Build.StagingDirectory)/publish/ms-omex.PRMetrics.vsix
-                  validateExtension: true
             steps:
               - checkout: none
                 displayName: Checkout
