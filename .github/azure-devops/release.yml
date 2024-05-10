@@ -72,4 +72,30 @@ extends:
                   command: custom
                   customCommand: run build:release
 
+              - task: TfxInstaller@4
+                displayName: Release – Install TFX CLI
+                inputs:
+                  version: v0.x
+
+              - bash: tfx extension create --manifest-globs vss-extension.json --output-path ../ms-omex.PRMetrics.vsix
+                displayName: Release – Create
+                workingDirectory: $(Build.SourcesDirectory)/release
+
+              - task: AzureCLI@2
+                displayName: Azure DevOps – Acquire Access Token
+                inputs:
+                  azureSubscription: PR Metrics
+                  scriptType: pscore
+                  scriptLocation: inlineScript
+                  inlineScript: |
+                    $ACCESS_TOKEN = az account get-access-token --query accessToken --resource 499b84ac-1321-427f-aa17-267ca6975798 -o tsv
+                    Write-Host -Object "##vso[task.setvariable variable=ACCESS_TOKEN;issecret=true]$ACCESS_TOKEN"
+
+              - pwsh: |
+                  tfx extension publish --service-url https://marketplace.visualstudio.com/ --token $env:ACCESS_TOKEN --vsix ms-omex.PRMetrics.vsix
+                  Write-Host -Object '##vso[task.setvariable variable=ACCESS_TOKEN;issecret=true]REDACTED'
+                displayName: Azure DevOps – Sign-in
+                env:
+                  ACCESS_TOKEN: $(ACCESS_TOKEN)
+
 ...
