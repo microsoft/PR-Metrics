@@ -43,7 +43,7 @@ extends:
       - stage: Release
         displayName: Release
         jobs:
-          - job: Release
+          - job: Checks
             pool:
               name: Azure-Pipelines-1ESPT-ExDShared
               os: linux
@@ -55,6 +55,15 @@ extends:
               - bash: exit 1
                 displayName: Terminate on PR
                 condition: ne(variables['Build.SourceBranchName'], 'main')
+
+          - job: Release
+            pool:
+              name: Azure-Pipelines-1ESPT-ExDShared
+              os: linux
+              image: ubuntu-latest
+            steps:
+              - checkout: self
+                displayName: Checkout
 
               - task: NodeTool@0
                 displayName: Install Node.js

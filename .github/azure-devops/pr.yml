@@ -49,12 +49,8 @@ extends:
               os: linux
               image: ubuntu-latest
             steps:
-              - checkout: none
+              - checkout: self
                 displayName: Checkout
-
-              #- bash: exit 1
-              #  displayName: Terminate on PR
-              #  condition: ne(variables['Build.SourceBranchName'], 'main')
 
               - task: NodeTool@0
                 displayName: Install Node.js
