@@ -56,7 +56,7 @@ stages:
 
               - pwsh: |
                   tfx login --service-url https://dev.azure.com/$($env:ADO_ACCOUNT) --token $env:ACCESS_TOKEN
-                  Write-Host -Object '##vso[task.setvariable variable=ACCESS_TOKEN;issecret=true]REMOVED'
+                  Write-Host -Object '##vso[task.setvariable variable=ACCESS_TOKEN;issecret=true]REDACTED'
                 displayName: Azure DevOps – Sign-in
                 env:
                   ACCESS_TOKEN: $(ACCESS_TOKEN)
