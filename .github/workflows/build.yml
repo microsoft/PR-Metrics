@@ -19,39 +19,6 @@ on:
 permissions: {}
 
 jobs:
-  deploy:
-    if: ${{ github.actor != 'dependabot[bot]' }}
-    name: Deploy
-    runs-on: ubuntu-latest
-    permissions: {}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # v4.1.4
-
-      - name: npm – Install
-        run: npm install
-
-      - name: npm – Build Release
-        run: npm run build:release
-
-      - name: Azure DevOps - Install TFX CLI
-        run: npm install -g tfx-cli
-        working-directory: ${{ github.workspace }}
-
-      - name: Azure DevOps - Sign-in
-        # Azure DevOps Personal Access Token (PAT) with the Agent Pools (Read & manage) permission.
-        run: npx tfx-cli login --service-url https://${{ secrets.AZDO_ACCOUNT }}.visualstudio.com/DefaultCollection --token ${{ secrets.AZDO_PAT }}
-        working-directory: ${{ github.workspace }}
-
-      - name: Azure DevOps – Delete Task
-        run: npx tfx-cli build tasks delete --task-id 907d3b28-6b37-4ac7-ac75-9631ee53e512 --no-prompt
-        continue-on-error: true
-        working-directory: ${{ github.workspace }}
-
-      - name: Azure DevOps – Deploy
-        run: npx tfx-cli build tasks upload --task-path release/task --no-prompt
-        working-directory: ${{ github.workspace }}
-
   update-code:
     name: Update Code
     runs-on: ubuntu-latest
@@ -67,7 +34,7 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
         with:
-          node-version: 21.x
+          node-version: 22.x
 
       - name: npm – Install Dependencies
         run: npm install
@@ -118,7 +85,7 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
         with:
-          node-version: 21.x
+          node-version: 22.x
 
       - name: npm – Install Dependencies
         run: npm install
@@ -316,7 +283,7 @@ jobs:
         uses: github/codeql-action/init@d39d31e687223d841ef683f52467bd88e9b21c14 # v3.25.3
         with:
           config-file: .github/linters/codeql.yml
-          queries: security-and-quality
+          queries: security-extended,security-and-quality
 
       - name: Analyze
         uses: github/codeql-action/analyze@d39d31e687223d841ef683f52467bd88e9b21c14 # v3.25.3

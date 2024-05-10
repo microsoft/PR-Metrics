@@ -53,7 +53,7 @@ extends:
               - checkout: none
                 displayName: Checkout
 
-              - script: exit 1
+              - bash: exit 1
                 displayName: Terminate on PR
                 condition: ne(variables['Build.SourceBranchName'], 'main')
 
