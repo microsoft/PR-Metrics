@@ -85,7 +85,6 @@ extends:
                   scriptLocation: inlineScript
                   inlineScript: |
                     $ACCESS_TOKEN = az account get-access-token --query accessToken --resource 499b84ac-1321-427f-aa17-267ca6975798 -o tsv
-                    az rest -u https://app.vssps.visualstudio.com/_apis/profile/profiles/me --resource 499b84ac-1321-427f-aa17-267ca6975798
                     Write-Host -Object "##vso[task.setvariable variable=ACCESS_TOKEN;issecret=true]$ACCESS_TOKEN"
 
               - pwsh: |
