@@ -103,7 +103,7 @@ extends:
               - pwsh: |
                   tfx extension publish --service-url https://marketplace.visualstudio.com/ --token $env:ACCESS_TOKEN --vsix ms-omex.PRMetrics.vsix
                   Write-Host -Object '##vso[task.setvariable variable=ACCESS_TOKEN;issecret=true]REDACTED'
-                displayName: Azure DevOps – Sign-in
+                displayName: Release – Publish
                 env:
                   ACCESS_TOKEN: $(ACCESS_TOKEN)
 
