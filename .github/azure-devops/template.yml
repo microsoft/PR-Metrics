@@ -12,14 +12,22 @@ stages:
   - stage: Build
     displayName: Build
     jobs:
-      - ${{ if not(parameters.testInstance) }}:
-          - job: Deploy
-            displayName: Deploy
-            pool:
-              name: Azure-Pipelines-1ESPT-ExDShared
-              os: linux
-              image: ubuntu-latest
-            steps:
+      - job: Prerequisites
+        displayName: Prerequisites
+        pool:
+          name: Azure-Pipelines-1ESPT-ExDShared
+          os: linux
+          image: ubuntu-latest
+        steps:
+          - ${{ if parameters.testInstance }}:
+            - checkout: none
+              displayName: Checkout
+
+            - task: Delay@1
+              displayName: Wait for Deployment
+              inputs:
+                delayForMinutes: 5
+          - ${{ else }}:
               - checkout: self
                 displayName: Checkout
 
@@ -69,18 +77,9 @@ stages:
               - bash: tfx build tasks upload --task-path release/task --no-prompt
                 displayName: Azure DevOps – Deploy
 
-      - job: Delay
-        displayName: Delay
-        pool: server
-        steps:
-          - task: Delay@1
-            displayName: Wait for Deployment
-            inputs:
-              delayForMinutes: 5
-
       - job: PRMetrics_macOS
         displayName: PR Metrics – macOS
-        dependsOn: Delay
+        dependsOn: Prerequisites
         pool:
           ${{ if parameters.testInstance }}:
             vmImage: macOS-latest
