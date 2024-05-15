@@ -12,75 +12,67 @@ stages:
   - stage: Build
     displayName: Build
     jobs:
-      - ${{ if not(parameters.testInstance) }}:
-          - job: Deploy
-            displayName: Deploy
-            pool:
-              name: Azure-Pipelines-1ESPT-ExDShared
-              os: linux
-              image: ubuntu-latest
-            steps:
-              - checkout: self
-                displayName: Checkout
+      - job: Prerequisites
+        displayName: Prerequisites
+        ${{ if parameters.testInstance }}:
+          pool: server
+          steps:
+            - task: Delay@1
+              displayName: Wait for Deployment
+              inputs:
+                delayForMinutes: 5
+        ${{ else }}:
+          pool:
+            name: Azure-Pipelines-1ESPT-ExDShared
+            os: linux
+            image: ubuntu-latest
+          steps:
+            - checkout: self
+              displayName: Checkout
 
-              - task: NodeTool@0
-                displayName: Install Node.js
-                inputs:
-                  versionSpec: 22.x
+            - task: NodeTool@0
+              displayName: Install Node.js
+              inputs:
+                versionSpec: 22.x
 
-              - task: Npm@1
-                displayName: npm – Install
-                inputs:
-                  command: install
+            - task: Npm@1
+              displayName: npm – Install
+              inputs:
+                command: install
 
-              - task: Npm@1
-                displayName: npm – Build Release
-                inputs:
-                  command: custom
-                  customCommand: run build:release
+            - task: Npm@1
+              displayName: npm – Build Release
+              inputs:
+                command: custom
+                customCommand: run build:release
 
-              - task: TfxInstaller@4
-                displayName: Azure DevOps – Install TFX CLI
-                inputs:
-                  version: v0.x
+            - task: TfxInstaller@4
+              displayName: Azure DevOps – Install TFX CLI
+              inputs:
+                version: v0.x
 
-              - task: AzureCLI@2
-                displayName: Azure DevOps – Acquire Access Token
-                inputs:
-                  azureSubscription: PR Metrics
-                  scriptType: pscore
-                  scriptLocation: inlineScript
-                  inlineScript: |
-                    $ACCESS_TOKEN = az account get-access-token --query accessToken --resource 499b84ac-1321-427f-aa17-267ca6975798 -o tsv
-                    Write-Host -Object "##vso[task.setvariable variable=ACCESS_TOKEN;issecret=true]$ACCESS_TOKEN"
+            - task: AzureCLI@2
+              displayName: Azure DevOps – Sign-in
+              inputs:
+                azureSubscription: PR Metrics
+                scriptType: pscore
+                scriptLocation: inlineScript
+                inlineScript: |
+                  $AccessToken = az account get-access-token --query accessToken --resource 499b84ac-1321-427f-aa17-267ca6975798 -o tsv
+                  tfx login --service-url https://dev.azure.com/$($env:ADO_ACCOUNT) --token $AccessToken
+              env:
+                ADO_ACCOUNT: $(ADO_ACCOUNT)
 
-              - pwsh: |
-                  tfx login --service-url https://dev.azure.com/$($env:ADO_ACCOUNT) --token $env:ACCESS_TOKEN
-                  Write-Host -Object '##vso[task.setvariable variable=ACCESS_TOKEN;issecret=true]REDACTED'
-                displayName: Azure DevOps – Sign-in
-                env:
-                  ACCESS_TOKEN: $(ACCESS_TOKEN)
-                  ADO_ACCOUNT: $(ADO_ACCOUNT)
+            - bash: tfx build tasks delete --task-id 907d3b28-6b37-4ac7-ac75-9631ee53e512 --no-prompt
+              displayName: Azure DevOps – Delete Old Task
+              continueOnError: true
 
-              - bash: tfx build tasks delete --task-id 907d3b28-6b37-4ac7-ac75-9631ee53e512 --no-prompt
-                displayName: Azure DevOps – Delete Old Task
-                continueOnError: true
-
-              - bash: tfx build tasks upload --task-path release/task --no-prompt
-                displayName: Azure DevOps – Deploy
-
-      - job: Delay
-        displayName: Delay
-        pool: server
-        steps:
-          - task: Delay@1
-            displayName: Wait for Deployment
-            inputs:
-              delayForMinutes: 5
+            - bash: tfx build tasks upload --task-path release/task --no-prompt
+              displayName: Azure DevOps – Deploy
 
       - job: PRMetrics_macOS
         displayName: PR Metrics – macOS
-        dependsOn: Delay
+        dependsOn: Prerequisites
         pool:
           ${{ if parameters.testInstance }}:
             vmImage: macOS-latest

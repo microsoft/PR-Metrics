@@ -1,0 +1,103 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+
+---
+
+trigger:
+  tags:
+    include:
+      - v*
+
+pr: none
+
+variables:
+  - name: tags
+    value: production, multi-phased
+
+resources:
+  repositories:
+    - repository: OfficePipelineTemplates
+      type: git
+      name: OE/OfficePipelineTemplates
+      ref: refs/heads/main
+
+extends:
+  template: v1/Office.Official.PipelineTemplate.yml@OfficePipelineTemplates
+  parameters:
+    sdl:
+      sourceAnalysisPool:
+        name: Azure-Pipelines-1ESPT-ExDShared
+        os: windows
+        image: windows-latest
+      credscan:
+        suppressionsFile: $(Build.SourcesDirectory)\.github\azure-devops\CredScanSuppressions.json
+      eslint:
+        environmentsEs2017: true
+        environmentsMocha: true
+        environmentsNode: true
+        parser: '@typescript-eslint/parser'
+        parserOptions: ecmaVersion:2018
+        enableExclusions: true
+        exclusionPatterns: '*.js'
+    stages:
+      - stage: Release
+        displayName: Release
+        jobs:
+          - job: Checks
+            pool:
+              name: Azure-Pipelines-1ESPT-ExDShared
+              os: linux
+              image: ubuntu-latest
+            steps:
+              - checkout: none
+                displayName: Checkout
+
+              - bash: exit 1
+                displayName: Terminate on PR
+                condition: ne(variables['Build.SourceBranchName'], 'main')
+
+          - job: Release
+            pool:
+              name: Azure-Pipelines-1ESPT-ExDShared
+              os: linux
+              image: ubuntu-latest
+            steps:
+              - checkout: self
+                displayName: Checkout
+
+              - task: NodeTool@0
+                displayName: Install Node.js
+                inputs:
+                  versionSpec: 22.x
+
+              - task: Npm@1
+                displayName: npm – Install Dependencies
+                inputs:
+                  command: install
+
+              - task: Npm@1
+                displayName: npm – Build
+                inputs:
+                  command: custom
+                  customCommand: run build:release
+
+              - task: TfxInstaller@4
+                displayName: Release – Install TFX CLI
+                inputs:
+                  version: v0.x
+
+              - bash: tfx extension create --manifest-globs vss-extension.json --output-path ../ms-omex.PRMetrics.vsix
+                displayName: Release – Create
+                workingDirectory: $(Build.SourcesDirectory)/release
+
+              - task: AzureCLI@2
+                displayName: Release – Publish
+                inputs:
+                  azureSubscription: PR Metrics
+                  scriptType: pscore
+                  scriptLocation: inlineScript
+                  inlineScript: |
+                    $AccessToken = az account get-access-token --query accessToken --resource 499b84ac-1321-427f-aa17-267ca6975798 -o tsv
+                    tfx extension publish --service-url https://marketplace.visualstudio.com/ --token $AccessToken --vsix ms-omex.PRMetrics.vsix
+
+...
