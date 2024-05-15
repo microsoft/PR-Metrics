@@ -14,20 +14,19 @@ stages:
     jobs:
       - job: Prerequisites
         displayName: Prerequisites
-        pool:
-          name: Azure-Pipelines-1ESPT-ExDShared
-          os: linux
-          image: ubuntu-latest
-        steps:
-          - ${{ if parameters.testInstance }}:
-              - checkout: none
-                displayName: Checkout
-
+        ${{ if not(parameters.testInstance) }}:
+            pool: server
+            steps:
               - task: Delay@1
                 displayName: Wait for Deployment
                 inputs:
                   delayForMinutes: 5
-          - ${{ else }}:
+        ${{ else }}:
+            pool:
+              name: Azure-Pipelines-1ESPT-ExDShared
+              os: linux
+              image: ubuntu-latest
+            steps:
               - checkout: self
                 displayName: Checkout
 
