@@ -91,7 +91,7 @@ stages:
           - task: PRMetrics@1
             displayName: PR Metrics
             env:
-              PR_METRICS_ACCESS_TOKEN: $(GITHUB_PAT)
+              PR_METRICS_ACCESS_TOKEN: $(TEST_GITHUB_PAT)
             inputs:
               file-matching-patterns: |
                 **/*
@@ -119,7 +119,7 @@ stages:
           - task: PRMetrics@1
             displayName: PR Metrics
             env:
-              PR_METRICS_ACCESS_TOKEN: $(GITHUB_PAT)
+              PR_METRICS_ACCESS_TOKEN: $(TEST_GITHUB_PAT)
             inputs:
               file-matching-patterns: |
                 **/*
@@ -147,7 +147,7 @@ stages:
           - task: PRMetrics@1
             displayName: PR Metrics
             env:
-              PR_METRICS_ACCESS_TOKEN: $(GITHUB_PAT)
+              PR_METRICS_ACCESS_TOKEN: $(TEST_GITHUB_PAT)
             inputs:
               file-matching-patterns: |
                 **/*
