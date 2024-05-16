@@ -193,7 +193,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
 
     const options: OctokitOptions = {
       auth: process.env.PR_METRICS_ACCESS_TOKEN,
-      userAgent: 'PRMetrics/v1.5.14',
+      userAgent: 'PRMetrics/v1.5.15',
       log: {
         debug: (message: string): void => this._logger.logDebug(`Octokit – ${message}`),
         info: (message: string): void => this._logger.logInfo(`Octokit – ${message}`),
