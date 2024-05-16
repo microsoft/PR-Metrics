@@ -1,14 +1,8 @@
 ## Summary
 
-### Motivation
-
-<!-- Provide a summary of the reasons or motivations behind this PR and what it
-     aims to accomplish. -->
-
-### Technical
-
-<!-- Provide a brief technical summary, if appropriate, describing the
-     change. -->
+<!-- Provide a summary of the reasons or motivations behind this PR, what it
+     aims to accomplish, and technical implementation details. Consider using
+     Copilot. -->
 
 ## Testing
 
