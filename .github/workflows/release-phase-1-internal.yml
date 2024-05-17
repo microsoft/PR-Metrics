@@ -181,8 +181,9 @@ jobs:
           --assignee "${{ github.actor }}"
           --reviewer "${{ github.actor }}"
         env:
-          # Classic Personal Access Token (PAT) with the "repo" permission for microsoft. Fine-grained PATs will
-          # not work due to GitHub CLI's dependence on GraphQL.
+          # Fine-grained Personal Access Token (PAT) with the following permissions for microsoft/PR-Metrics:
+          # - Read access to Metadata
+          # - Read and Write access to Pull Requests
           GITHUB_TOKEN: ${{ secrets.RELEASE_PHASE_1_PR_CREATE }}
 
       - name: PR – Comment
