@@ -61,7 +61,7 @@ stages:
                   $AccessToken = az account get-access-token --query accessToken --resource 499b84ac-1321-427f-aa17-267ca6975798 -o tsv
                   tfx login --service-url https://dev.azure.com/$($env:ADOACCOUNT) --token $AccessToken
               env:
-                ADO_ACCOUNT: $(ADOACCOUNT)
+                ADOACCOUNT: $(ADOACCOUNT)
 
             - bash: tfx build tasks delete --task-id 907d3b28-6b37-4ac7-ac75-9631ee53e512 --no-prompt
               displayName: Azure DevOps – Delete Old Task
