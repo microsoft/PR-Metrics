@@ -276,7 +276,6 @@ jobs:
           print-valid-files: true
           strict: false
 
-
   validate-codeql:
     name: Validate – CodeQL
     runs-on: ubuntu-latest
