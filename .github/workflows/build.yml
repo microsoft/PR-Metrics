@@ -279,7 +279,6 @@ jobs:
   validate-codeql:
     name: Validate – CodeQL
     runs-on: ubuntu-latest
-    timeout-minutes: 360
     permissions:
       security-events: write
     steps:
