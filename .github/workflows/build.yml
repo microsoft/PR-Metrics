@@ -302,7 +302,8 @@ jobs:
   validate-linter:
     name: Validate – Linter
     runs-on: ubuntu-latest
-    permissions: {}
+    permissions:
+      statuses: write
     steps:
       - name: Checkout
         uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b  # v4.1.4
