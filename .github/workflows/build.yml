@@ -305,7 +305,7 @@ jobs:
       - name: Analyze
         uses: github/codeql-action/analyze@2e230e8fe0ad3a14a340ad0815ddb96d599d2aff  # v3.25.8
         with:
-          category: "/language:javascript-typescript"
+          category: /language:javascript-typescript
 
   validate-linter:
     name: Validate – Linter
