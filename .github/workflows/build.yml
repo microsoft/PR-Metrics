@@ -282,7 +282,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 360
     permissions:
-      # required for all workflows
       security-events: write
 
       # required to fetch internal or private CodeQL packs
@@ -292,17 +291,19 @@ jobs:
       actions: read
       contents: read
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b  # v4.1.4
 
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3
+      - name: Initialize
+        uses: github/codeql-action/init@2e230e8fe0ad3a14a340ad0815ddb96d599d2aff  # v3.25.8
         with:
-          languages: javascript-typescript
           build-mode: none
+          config-file: .github/linters/codeql.yml
+          languages: javascript-typescript
+          queries: security-extended,security-and-quality
 
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3
+      - name: Analyze
+        uses: github/codeql-action/analyze@2e230e8fe0ad3a14a340ad0815ddb96d599d2aff  # v3.25.8
         with:
           category: "/language:javascript-typescript"
 
