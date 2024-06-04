@@ -283,13 +283,6 @@ jobs:
     timeout-minutes: 360
     permissions:
       security-events: write
-
-      # required to fetch internal or private CodeQL packs
-      packages: read
-
-      # only required for workflows in private repositories
-      actions: read
-      contents: read
     steps:
       - name: Checkout
         uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b  # v4.1.4
@@ -305,7 +298,7 @@ jobs:
       - name: Analyze
         uses: github/codeql-action/analyze@2e230e8fe0ad3a14a340ad0815ddb96d599d2aff  # v3.25.8
         with:
-          category: /language:javascript-typescript
+          category: TypeScript
 
   validate-linter:
     name: Validate – Linter
