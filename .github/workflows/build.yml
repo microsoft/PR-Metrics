@@ -29,6 +29,9 @@ jobs:
         uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b  # v4.1.4
         with:
           ref: ${{ github.HEAD_REF }}
+          # Fine-grained Personal Access Token (PAT) with the following permissions for microsoft/PR-Metrics:
+          # - Read access to Metadata
+          # - Read and Write access to Code (aka Contents)
           token: ${{ secrets.BUILD_UPDATE_CODE_CHECKOUT }}
 
       - name: Install Node.js
@@ -269,6 +272,29 @@ jobs:
           files: src/task/Strings/resources.resjson/en-US/resources.resjson
           print-valid-files: true
           strict: false
+
+
+  validate-codeql:
+    name: Validate – CodeQL
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b  # v4.1.4
+
+      - name: Initialize
+        uses: github/codeql-action/init@d39d31e687223d841ef683f52467bd88e9b21c14  # v3.25.3
+        with:
+          build-mode: none
+          config-file: .github/linters/codeql.yml
+          languages: javascript-typescript
+          queries: security-extended,security-and-quality
+
+      - name: Analyze
+        uses: github/codeql-action/analyze@d39d31e687223d841ef683f52467bd88e9b21c14  # v3.25.3
+        with:
+          category: /language:javascript-typescript
 
   validate-linter:
     name: Validate – Linter
