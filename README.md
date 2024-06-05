@@ -174,7 +174,7 @@ comments.
 [azuredevops]: https://azure.microsoft.com/services/devops/
 [vsmarketplace]: https://aka.ms/PRMetrics/AzureDevOps
 [githubpat]: https://docs.github.com/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token
-[globs]: https://wikipedia.org/wiki/Glob_(programming)
+[globs]: https://en.wikipedia.org/wiki/Glob_(programming)
 [defaultcodefileextensions]: docs/default-code-file-extensions.md
 [azurepipelinestask]: docs/azure-pipelines-task.md
 [github-token-pemissions]: https://docs.github.com/actions/security-guides/automatic-token-authentication#permissions-for-the-github_token

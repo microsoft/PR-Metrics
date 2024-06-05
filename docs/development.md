@@ -128,7 +128,7 @@ outputted by default irrespective of the value of the `system.debug` variable.
 [aaa]: https://automationpanda.com/2020/07/07/arrange-act-assert-a-pattern-for-writing-good-tests/
 [eslint]: https://eslint.org/
 [typedoc]: https://typedoc.org/
-[depinjection]: https://wikipedia.org/wiki/Dependency_injection
+[depinjection]: https://en.wikipedia.org/wiki/Dependency_injection
 [reposfolder]: ../src/task/src/repos/
 [reposinvoker]: ../src/task/src/repos/reposInvoker.ts
 [azurereposinvoker]: ../src/task/src/repos/azureReposInvoker.ts

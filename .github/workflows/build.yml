@@ -32,7 +32,12 @@ jobs:
         uses: step-security/harden-runner@f086349bfa2bd1361f7909c78558e816508cdc10  # v2.8.0
         with:
           disable-sudo: true
-          egress-policy: audit
+          egress-policy: block
+          allowed-endpoints: >
+            api.github.com:443
+            github.com:443
+            objects.githubusercontent.com:443
+            registry.npmjs.org:443
 
       - name: Checkout
         uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b  # v4.1.4
@@ -95,7 +100,10 @@ jobs:
         uses: step-security/harden-runner@f086349bfa2bd1361f7909c78558e816508cdc10  # v2.8.0
         with:
           disable-sudo: true
-          egress-policy: audit
+          egress-policy: block
+          allowed-endpoints: >
+            github.com:443
+            registry.npmjs.org:443
 
       - name: Checkout
         uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b  # v4.1.4
@@ -138,7 +146,11 @@ jobs:
         uses: step-security/harden-runner@f086349bfa2bd1361f7909c78558e816508cdc10  # v2.8.0
         with:
           disable-sudo: true
-          egress-policy: audit
+          egress-policy: block
+          allowed-endpoints: >
+            api.github.com:443
+            github.com:443
+            patch-diff.githubusercontent.com:443
 
       - name: Checkout
         uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b  # v4.1.4
@@ -165,7 +177,32 @@ jobs:
         uses: step-security/harden-runner@f086349bfa2bd1361f7909c78558e816508cdc10  # v2.8.0
         with:
           disable-sudo: true
-          egress-policy: audit
+          egress-policy: block
+          allowed-endpoints: >
+            aka.ms:443
+            api.github.com:443
+            automationpanda.com:443
+            azure.microsoft.com:443
+            babeljs.io:443
+            clearlydefined.io:443
+            docs.microsoft.com:443
+            docs.opensource.microsoft.com:443
+            en.wikipedia.org:443
+            eslint.org:443
+            github.blog:443
+            github.com:443
+            learn.microsoft.com:443
+            marketplace.visualstudio.com:443
+            mochajs.org:443
+            objects.githubusercontent.com:443
+            octoverse.github.com:443
+            opensource.microsoft.com:443
+            privacy.microsoft.com:443
+            registry.npmjs.org:443
+            semver.org:443
+            typedoc.org:443
+            www.npmjs.com:443
+            www.typescriptlang.org:443
 
       - name: Checkout
         uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b  # v4.1.4
@@ -216,6 +253,12 @@ jobs:
           TYPESCRIPT_ES_CONFIG_FILE: ../../.eslintrc.yml
           VALIDATE_JAVASCRIPT_STANDARD: false
           VALIDATE_PYTHON: false
+          VALIDATE_PYTHON_BLACK: false
+          VALIDATE_PYTHON_FLAKE8: false
+          VALIDATE_PYTHON_ISORT: false
+          VALIDATE_PYTHON_MYPY: false
+          VALIDATE_PYTHON_PYLINT: false
+          VALIDATE_PYTHON_RUFF: false
           VALIDATE_TYPESCRIPT_STANDARD: false
 
   dependabot:
