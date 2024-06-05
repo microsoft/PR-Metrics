@@ -174,12 +174,16 @@ jobs:
         with:
           config-file: .github/linters/markdown-link-check.json
 
+      - name: Validate .babel.config.json – Download babel.config.json
+        shell: pwsh
+        run: Invoke-WebRequest -Uri 'https://json.schemastore.org/babelrc.json' -OutFile 'babel.config.json'
+
       - name: Validate babel.config.json
-        uses: walbo/validate-json@1c24a27a740a698944ff5b697cb8010a72c55c6b  # v1.1.0
+        uses: ammarlakis/action-ajv@445274826a4b7d391eb2b995e1414b669c10b6b9  # v1.0.0
         with:
-          files: babel.config.json
-          print-valid-files: true
-          strict: false
+          allErrors: true
+          data: babel.config.json
+          schema: babel.config.schema.json
 
       - name: Validate .markdownlint.json – Download .markdownlint.schema.json
         shell: pwsh
@@ -193,12 +197,11 @@ jobs:
           Set-Content -NoNewline -Path '.markdownlint.schema.json' -Value $FileContent
 
       - name: Validate .markdownlint.json
-        uses: walbo/validate-json@1c24a27a740a698944ff5b697cb8010a72c55c6b  # v1.1.0
+        uses: ammarlakis/action-ajv@445274826a4b7d391eb2b995e1414b669c10b6b9  # v1.0.0
         with:
-          files: .markdownlint.json
-          print-valid-files: true
+          allErrors: true
+          data: .markdownlint.json
           schema: .markdownlint.schema.json
-          strict: false
 
       - name: Validate devcontainer.json – Download devcontainer.schema.json
         shell: pwsh
@@ -212,11 +215,10 @@ jobs:
           Set-Content -NoNewline -Path 'devcontainer.schema.json' -Value $FileContent
 
       - name: Validate devcontainer.json
-        uses: walbo/validate-json@1c24a27a740a698944ff5b697cb8010a72c55c6b  # v1.1.0
+        uses: ammarlakis/action-ajv@445274826a4b7d391eb2b995e1414b669c10b6b9  # v1.0.0
         with:
-          files: .devcontainer/devcontainer.json
-          print-valid-files: true
-          strict: false
+          allErrors: true
+          data: .devcontainer/devcontainer.json
           schema: devcontainer.schema.json
 
       - name: Validate vss-extension.json – Download vss-extension.schema.json
@@ -231,11 +233,10 @@ jobs:
           Set-Content -NoNewline -Path 'vss-extension.schema.json' -Value $FileContent
 
       - name: Validate vss-extension.json
-        uses: walbo/validate-json@1c24a27a740a698944ff5b697cb8010a72c55c6b  # v1.1.0
+        uses: ammarlakis/action-ajv@445274826a4b7d391eb2b995e1414b669c10b6b9  # v1.0.0
         with:
-          files: src/vss-extension.json
-          print-valid-files: true
-          strict: false
+          allErrors: true
+          data: src/vss-extension.json
           schema: vss-extension.schema.json
 
       - name: Validate task.json – Download task.schema.json
@@ -250,25 +251,29 @@ jobs:
           Set-Content -NoNewline -Path 'task.schema.json' -Value $FileContent
 
       - name: Validate task.json
-        uses: walbo/validate-json@1c24a27a740a698944ff5b697cb8010a72c55c6b  # v1.1.0
+        uses: ammarlakis/action-ajv@445274826a4b7d391eb2b995e1414b669c10b6b9  # v1.0.0
         with:
-          files: src/task/task.json
-          print-valid-files: true
+          allErrors: true
+          data: src/task/task.json
           schema: task.schema.json
 
       - name: Validate task.loc.json
-        uses: walbo/validate-json@1c24a27a740a698944ff5b697cb8010a72c55c6b  # v1.1.0
+        uses: ammarlakis/action-ajv@445274826a4b7d391eb2b995e1414b669c10b6b9  # v1.0.0
         with:
-          files: src/task/task.loc.json
-          print-valid-files: true
+          allErrors: true
+          data: src/task/task.loc.json
           schema: task.schema.json
 
+      - name: Validate tsconfig.json – Download tsconfig.schema.json
+        shell: pwsh
+        run: Invoke-WebRequest -Uri 'https://json.schemastore.org/tsconfig.json' -OutFile 'tsconfig.schema.json'
+
       - name: Validate tsconfig.json
-        uses: walbo/validate-json@1c24a27a740a698944ff5b697cb8010a72c55c6b  # v1.1.0
+        uses: ammarlakis/action-ajv@445274826a4b7d391eb2b995e1414b669c10b6b9  # v1.0.0
         with:
-          files: src/task/tsconfig.json
-          print-valid-files: true
-          strict: false
+          allErrors: true
+          data: src/task/tsconfig.json
+          schema: tsconfig.schema.json
 
       - name: Validate typedoc.json – Download typedoc.schema.json
         shell: pwsh
@@ -282,19 +287,17 @@ jobs:
           Set-Content -NoNewline -Path 'typedoc.schema.json' -Value $FileContent
 
       - name: Validate typedoc.json
-        uses: walbo/validate-json@1c24a27a740a698944ff5b697cb8010a72c55c6b  # v1.1.0
+        uses: ammarlakis/action-ajv@445274826a4b7d391eb2b995e1414b669c10b6b9  # v1.0.0
         with:
-          files: src/task/typedoc.json
-          print-valid-files: true
-          strict: false
+          allErrors: true
+          data: src/task/typedoc.json
           schema: typedoc.schema.json
 
       - name: Validate resources.resjson (en-US)
-        uses: walbo/validate-json@1c24a27a740a698944ff5b697cb8010a72c55c6b  # v1.1.0
+        uses: ammarlakis/action-ajv@445274826a4b7d391eb2b995e1414b669c10b6b9  # v1.0.0
         with:
-          files: src/task/Strings/resources.resjson/en-US/resources.resjson
-          print-valid-files: true
-          strict: false
+          allErrors: true
+          data: src/task/Strings/resources.resjson/en-US/resources.resjson
 
   validate-codeql:
     name: Validate – CodeQL
