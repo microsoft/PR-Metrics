@@ -27,17 +27,13 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8  # v4.0.2
         with:
-          node-version: d57af10d1be390f4e33e6efe596133de9da36c86
+          node-version: 20.14.0
 
       - name: npm – Install Dependencies
-        run: npm install
+        run: npm ci
 
       - name: npm – Build
         run: npm run build:release
-
-      - name: Release – Install TFX CLI
-        run: npm install -g tfx-cli
-        working-directory: ${{ github.workspace }}/release
 
       - name: Release – Create
         run: npx tfx-cli extension create --manifest-globs vss-extension.json --output-path ../ms-omex.PRMetrics.vsix

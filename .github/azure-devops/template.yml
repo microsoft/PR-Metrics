@@ -33,12 +33,12 @@ stages:
             - task: NodeTool@0
               displayName: Install Node.js
               inputs:
-                versionSpec: 22.2.0
+                versionSpec: 20.14.0
 
             - task: Npm@1
               displayName: npm – Install
               inputs:
-                command: install
+                command: ci
 
             - task: Npm@1
               displayName: npm – Build Release
