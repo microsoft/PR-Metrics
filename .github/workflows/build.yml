@@ -174,9 +174,9 @@ jobs:
         with:
           config-file: .github/linters/markdown-link-check.json
 
-      - name: Validate .babel.config.json – Download babel.config.json
+      - name: Validate babel.config.json – Download babel.config.json
         shell: pwsh
-        run: Invoke-WebRequest -Uri 'https://json.schemastore.org/babelrc.json' -OutFile 'babel.config.json'
+        run: Invoke-WebRequest -Uri 'https://json.schemastore.org/babelrc.json' -OutFile 'babel.config.schema.json'
 
       - name: Validate babel.config.json
         uses: ammarlakis/action-ajv@445274826a4b7d391eb2b995e1414b669c10b6b9  # v1.0.0
