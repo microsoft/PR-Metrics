@@ -54,8 +54,8 @@ jobs:
       - name: npm – Lint
         run: npm run lint
 
-      - name: npm – Build
-        run: npm run build
+      - name: npm – Build Package
+        run: npm run build:package
 
       - name: Git – Add Changed Files
         run: git add -A
@@ -112,7 +112,7 @@ jobs:
         run: npm run clean
 
       - name: npm – Build
-        run: npm run build:release
+        run: npm run build
 
       - name: npm – Test
         run: npm run test
