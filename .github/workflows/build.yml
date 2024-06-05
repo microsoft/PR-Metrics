@@ -40,7 +40,7 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8  # v4.0.2
         with:
-          node-version: 22.x
+          node-version: d57af10d1be390f4e33e6efe596133de9da36c86
 
       - name: npm – Install Dependencies
         run: npm install
@@ -91,7 +91,7 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8  # v4.0.2
         with:
-          node-version: 22.x
+          node-version: d57af10d1be390f4e33e6efe596133de9da36c86
 
       - name: npm – Install Dependencies
         run: npm install

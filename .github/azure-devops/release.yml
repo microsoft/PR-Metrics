@@ -68,7 +68,7 @@ extends:
               - task: NodeTool@0
                 displayName: Install Node.js
                 inputs:
-                  versionSpec: 22.x
+                  versionSpec: 22.2.0
 
               - task: Npm@1
                 displayName: npm – Install Dependencies
