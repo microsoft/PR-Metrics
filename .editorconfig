@@ -429,7 +429,7 @@ indent_size = unset
 [*.{copyproj,resjson}]
 indent_size = 2
 
-[LICENSE.txt]
+[LICENSE]
 indent_size = unset
 
 [.github/workflows/support/release-trigger.txt]

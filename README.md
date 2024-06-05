@@ -179,7 +179,7 @@ comments.
 [azurepipelinestask]: docs/azure-pipelines-task.md
 [github-token-pemissions]: https://docs.github.com/actions/security-guides/automatic-token-authentication#permissions-for-the-github_token
 [contributing]: .github/CONTRIBUTING.md
-[license]: LICENSE.txt
+[license]: LICENSE
 [codeofconduct]: https://opensource.microsoft.com/codeofconduct/
 [codeofconductfaq]: https://opensource.microsoft.com/codeofconduct/faq/
 [opencodeemail]: mailto:opencode@microsoft.com
