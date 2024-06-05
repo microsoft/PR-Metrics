@@ -36,7 +36,7 @@ stages:
                 versionSpec: 20.14.0
 
             - task: Npm@1
-              displayName: npm – Install
+              displayName: npm – Install Dependencies
               inputs:
                 command: ci
 

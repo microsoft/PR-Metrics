@@ -54,8 +54,8 @@ jobs:
       - name: npm – Lint
         run: npm run lint
 
-      - name: npm – Build Package
-        run: npm run build:package
+      - name: npm – Build
+        run: npm run build
 
       - name: Git – Add Changed Files
         run: git add -A
@@ -112,7 +112,7 @@ jobs:
         run: npm run clean
 
       - name: npm – Build
-        run: npm run build
+        run: npm run build:release
 
       - name: npm – Test
         run: npm run test
@@ -214,6 +214,7 @@ jobs:
           MARKDOWN_CONFIG_FILE: ../../.markdownlint.json
           TYPESCRIPT_ES_CONFIG_FILE: ../../.eslintrc.yml
           VALIDATE_JAVASCRIPT_STANDARD: false
+          VALIDATE_PYTHON: false
           VALIDATE_TYPESCRIPT_STANDARD: false
 
   dependabot:

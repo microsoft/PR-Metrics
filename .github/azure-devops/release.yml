@@ -76,7 +76,7 @@ extends:
                   command: ci
 
               - task: Npm@1
-                displayName: npm – Build
+                displayName: npm – Build Release
                 inputs:
                   command: custom
                   customCommand: run build:release
