@@ -28,6 +28,11 @@ jobs:
     permissions:
       contents: write
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@f086349bfa2bd1361f7909c78558e816508cdc10  # v2.8.0
+        with:
+          egress-policy: audit
+
       - name: Checkout
         uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b  # v4.1.4
         with:
@@ -85,6 +90,11 @@ jobs:
     runs-on: ubuntu-latest
     permissions: {}
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@f086349bfa2bd1361f7909c78558e816508cdc10  # v2.8.0
+        with:
+          egress-policy: audit
+
       - name: Checkout
         uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b  # v4.1.4
 
@@ -122,6 +132,11 @@ jobs:
       pull-requests: write
       statuses: write
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@f086349bfa2bd1361f7909c78558e816508cdc10  # v2.8.0
+        with:
+          egress-policy: audit
+
       - name: Checkout
         uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b  # v4.1.4
         with:
@@ -142,6 +157,11 @@ jobs:
     runs-on: ubuntu-latest
     permissions: {}
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@f086349bfa2bd1361f7909c78558e816508cdc10  # v2.8.0
+        with:
+          egress-policy: audit
+
       - name: Checkout
         uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b  # v4.1.4
 
@@ -278,6 +298,11 @@ jobs:
     permissions:
       security-events: write
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@f086349bfa2bd1361f7909c78558e816508cdc10  # v2.8.0
+        with:
+          egress-policy: audit
+
       - name: Checkout
         uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b  # v4.1.4
 
@@ -300,6 +325,11 @@ jobs:
     permissions:
       statuses: write
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@f086349bfa2bd1361f7909c78558e816508cdc10  # v2.8.0
+        with:
+          egress-policy: audit
+
       - name: Checkout
         uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b  # v4.1.4
         with:
@@ -325,6 +355,11 @@ jobs:
       contents: write
       pull-requests: write
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@f086349bfa2bd1361f7909c78558e816508cdc10  # v2.8.0
+        with:
+          egress-policy: audit
+
       - name: Enable Auto-Merge
         run: gh pr merge --auto --delete-branch --squash "${{ github.event.pull_request.html_url }}"
         env:
