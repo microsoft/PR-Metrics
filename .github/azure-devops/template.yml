@@ -91,9 +91,7 @@ stages:
           - task: PRMetrics@1
             displayName: PR Metrics
             env:
-              # Fine-grained Personal Access Token (PAT) with the following permissions for microsoft/PR-Metrics:
-              # - Read access to Metadata
-              # - Read and Write access to Pull Requests
+              # Classic Personal Access Token (PAT) with the public_repo scope.
               PR_METRICS_ACCESS_TOKEN: $(ADOTOGITHUB)
             inputs:
               file-matching-patterns: |
@@ -122,9 +120,7 @@ stages:
           - task: PRMetrics@1
             displayName: PR Metrics
             env:
-              # Fine-grained Personal Access Token (PAT) with the following permissions for microsoft/PR-Metrics:
-              # - Read access to Metadata
-              # - Read and Write access to Pull Requests
+              # Classic Personal Access Token (PAT) with the public_repo scope.
               PR_METRICS_ACCESS_TOKEN: $(ADOTOGITHUB)
             inputs:
               file-matching-patterns: |
@@ -153,9 +149,7 @@ stages:
           - task: PRMetrics@1
             displayName: PR Metrics
             env:
-              # Fine-grained Personal Access Token (PAT) with the following permissions for microsoft/PR-Metrics:
-              # - Read access to Metadata
-              # - Read and Write access to Pull Requests
+              # Classic Personal Access Token (PAT) with the public_repo scope.
               PR_METRICS_ACCESS_TOKEN: $(ADOTOGITHUB)
             inputs:
               file-matching-patterns: |
