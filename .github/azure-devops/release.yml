@@ -68,15 +68,15 @@ extends:
               - task: NodeTool@0
                 displayName: Install Node.js
                 inputs:
-                  versionSpec: 22.x
+                  versionSpec: 20.14.0
 
               - task: Npm@1
                 displayName: npm – Install Dependencies
                 inputs:
-                  command: install
+                  command: ci
 
               - task: Npm@1
-                displayName: npm – Build
+                displayName: npm – Build Release
                 inputs:
                   command: custom
                   customCommand: run build:release

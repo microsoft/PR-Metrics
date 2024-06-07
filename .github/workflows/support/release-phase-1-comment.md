@@ -11,7 +11,7 @@ Note that if `lockfileVersion` is set to `3` (rather than `2`) in [`package-lock
 
    1. At the top of the page, click `main` and select "Edit tracked branches".
    1. Click the wrench icon to right of `refs/pull/PR_ID/merge` where `PR_ID` is the PR number.
-   1. In the flyout, select "Track this branch". Ensure the "PR" pipeline is selected. Click "Submit".
+   1. In the flyout, select "Track this branch". Ensure the "PR Metrics – PR" pipeline is selected. Click "Submit".
    1. At the top of the page, click `microsoft/PR-Metrics` to navigate back to the original page.
    1. Change the `main` branch to `refs/pull/PR_ID/merge` where `PR_ID` is the PR number. **It is very important that this is selected correctly or the wrong license information will be generated.**
    1. Use Notice > Configure to ensure that only the `dependencies` from [`package.json`][packagejson] are included and that the `devDependencies` are excluded.

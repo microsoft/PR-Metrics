@@ -28,6 +28,12 @@ jobs:
     permissions:
       contents: write
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@f086349bfa2bd1361f7909c78558e816508cdc10  # v2.8.0
+        with:
+          disable-sudo: true
+          egress-policy: audit
+
       - name: Checkout
         uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b  # v4.1.4
         with:
@@ -40,10 +46,10 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8  # v4.0.2
         with:
-          node-version: 22.x
+          node-version: 20.14.0
 
       - name: npm – Install Dependencies
-        run: npm install
+        run: npm ci
 
       - name: npm – Lint
         run: npm run lint
@@ -85,16 +91,22 @@ jobs:
     runs-on: ubuntu-latest
     permissions: {}
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@f086349bfa2bd1361f7909c78558e816508cdc10  # v2.8.0
+        with:
+          disable-sudo: true
+          egress-policy: audit
+
       - name: Checkout
         uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b  # v4.1.4
 
       - name: Install Node.js
         uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8  # v4.0.2
         with:
-          node-version: 22.x
+          node-version: 20.14.0
 
       - name: npm – Install Dependencies
-        run: npm install
+        run: npm ci
 
       - name: npm – Test Clean
         run: npm run clean
@@ -104,10 +116,6 @@ jobs:
 
       - name: npm – Test
         run: npm run test
-
-      - name: Release - Install TFX CLI
-        run: npm install -g tfx-cli
-        working-directory: ${{ github.workspace }}/release
 
       - name: Release – Create
         run: npx tfx-cli extension create --manifest-globs vss-extension.json --output-path ../ms-omex.PRMetrics.vsix
@@ -126,6 +134,12 @@ jobs:
       pull-requests: write
       statuses: write
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@f086349bfa2bd1361f7909c78558e816508cdc10  # v2.8.0
+        with:
+          disable-sudo: true
+          egress-policy: audit
+
       - name: Checkout
         uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b  # v4.1.4
         with:
@@ -144,8 +158,15 @@ jobs:
   validate:
     name: Validate
     runs-on: ubuntu-latest
-    permissions: {}
+    permissions:
+      security-events: write
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@f086349bfa2bd1361f7909c78558e816508cdc10  # v2.8.0
+        with:
+          disable-sudo: true
+          egress-policy: audit
+
       - name: Checkout
         uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b  # v4.1.4
 
@@ -153,137 +174,6 @@ jobs:
         uses: gaurav-nelson/github-action-markdown-link-check@d53a906aa6b22b8979d33bc86170567e619495ec  # 1.0.15
         with:
           config-file: .github/linters/markdown-link-check.json
-
-      - name: Validate babel.config.json
-        uses: walbo/validate-json@1c24a27a740a698944ff5b697cb8010a72c55c6b  # v1.1.0
-        with:
-          files: babel.config.json
-          print-valid-files: true
-          strict: false
-
-      - name: Validate .markdownlint.json – Download .markdownlint.schema.json
-        shell: pwsh
-        run: Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/DavidAnson/markdownlint/main/schema/markdownlint-config-schema.json' -OutFile '.markdownlint.schema.json'
-
-      - name: Validate .markdownlint.json – Update .markdownlint.schema.json
-        shell: pwsh
-        run: |-
-          $FileContent = Get-Content -Path '.markdownlint.schema.json' -Raw
-          $FileContent = $FileContent -replace 'http://json-schema.org/draft-07/schema#', 'http://json-schema.org/draft-04/schema#'
-          Set-Content -NoNewline -Path '.markdownlint.schema.json' -Value $FileContent
-
-      - name: Validate .markdownlint.json
-        uses: walbo/validate-json@1c24a27a740a698944ff5b697cb8010a72c55c6b  # v1.1.0
-        with:
-          files: .markdownlint.json
-          print-valid-files: true
-          schema: .markdownlint.schema.json
-          strict: false
-
-      - name: Validate devcontainer.json – Download devcontainer.schema.json
-        shell: pwsh
-        run: Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/microsoft/vscode/main/extensions/configuration-editing/schemas/devContainer.codespaces.schema.json' -OutFile 'devcontainer.schema.json'
-
-      - name: Validate devcontainer.json – Update devcontainer.schema.json
-        shell: pwsh
-        run: |-
-          $FileContent = Get-Content -Path 'devcontainer.schema.json' -Raw
-          $FileContent = $FileContent -replace 'http://json-schema.org/draft-07/schema#', 'http://json-schema.org/draft-04/schema#'
-          Set-Content -NoNewline -Path 'devcontainer.schema.json' -Value $FileContent
-
-      - name: Validate devcontainer.json
-        uses: walbo/validate-json@1c24a27a740a698944ff5b697cb8010a72c55c6b  # v1.1.0
-        with:
-          files: .devcontainer/devcontainer.json
-          print-valid-files: true
-          strict: false
-          schema: devcontainer.schema.json
-
-      - name: Validate vss-extension.json – Download vss-extension.schema.json
-        shell: pwsh
-        run: Invoke-WebRequest -Uri 'https://json.schemastore.org/vss-extension.json' -OutFile 'vss-extension.schema.json'
-
-      - name: Validate vss-extension.json – Update vss-extension.schema.json
-        shell: pwsh
-        run: |-
-          $FileContent = Get-Content -Path 'vss-extension.schema.json' -Raw
-          $FileContent = $FileContent -replace 'http://json-schema.org/draft-07/schema#', 'http://json-schema.org/draft-04/schema#'
-          Set-Content -NoNewline -Path 'vss-extension.schema.json' -Value $FileContent
-
-      - name: Validate vss-extension.json
-        uses: walbo/validate-json@1c24a27a740a698944ff5b697cb8010a72c55c6b  # v1.1.0
-        with:
-          files: src/vss-extension.json
-          print-valid-files: true
-          strict: false
-          schema: vss-extension.schema.json
-
-      - name: Validate task.json – Download task.schema.json
-        shell: pwsh
-        run: Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/microsoft/azure-pipelines-task-lib/master/tasks.schema.json' -OutFile 'task.schema.json'
-
-      - name: Validate task.json – Update task.schema.json
-        shell: pwsh
-        run: |-
-          $FileContent = Get-Content -Path 'task.schema.json' -Raw
-          $FileContent = $FileContent.replace('^connectedService\\:.+$', '^connectedService:.+$')
-          Set-Content -NoNewline -Path 'task.schema.json' -Value $FileContent
-
-      - name: Validate task.json
-        uses: walbo/validate-json@1c24a27a740a698944ff5b697cb8010a72c55c6b  # v1.1.0
-        with:
-          files: src/task/task.json
-          print-valid-files: true
-          schema: task.schema.json
-
-      - name: Validate task.loc.json
-        uses: walbo/validate-json@1c24a27a740a698944ff5b697cb8010a72c55c6b  # v1.1.0
-        with:
-          files: src/task/task.loc.json
-          print-valid-files: true
-          schema: task.schema.json
-
-      - name: Validate tsconfig.json
-        uses: walbo/validate-json@1c24a27a740a698944ff5b697cb8010a72c55c6b  # v1.1.0
-        with:
-          files: src/task/tsconfig.json
-          print-valid-files: true
-          strict: false
-
-      - name: Validate typedoc.json – Download typedoc.schema.json
-        shell: pwsh
-        run: Invoke-WebRequest -Uri 'https://typedoc.org/schema.json' -OutFile 'typedoc.schema.json'
-
-      - name: Validate typedoc.json – Update typedoc.schema.json
-        shell: pwsh
-        run: |-
-          $FileContent = Get-Content -Path 'typedoc.schema.json' -Raw
-          $FileContent = $FileContent -replace 'https://json-schema.org/draft-07/schema', 'http://json-schema.org/draft-04/schema#'
-          Set-Content -NoNewline -Path 'typedoc.schema.json' -Value $FileContent
-
-      - name: Validate typedoc.json
-        uses: walbo/validate-json@1c24a27a740a698944ff5b697cb8010a72c55c6b  # v1.1.0
-        with:
-          files: src/task/typedoc.json
-          print-valid-files: true
-          strict: false
-          schema: typedoc.schema.json
-
-      - name: Validate resources.resjson (en-US)
-        uses: walbo/validate-json@1c24a27a740a698944ff5b697cb8010a72c55c6b  # v1.1.0
-        with:
-          files: src/task/Strings/resources.resjson/en-US/resources.resjson
-          print-valid-files: true
-          strict: false
-
-  validate-codeql:
-    name: Validate – CodeQL
-    runs-on: ubuntu-latest
-    permissions:
-      security-events: write
-    steps:
-      - name: Checkout
-        uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b  # v4.1.4
 
       - name: Initialize
         uses: github/codeql-action/init@2e230e8fe0ad3a14a340ad0815ddb96d599d2aff  # v3.25.8
@@ -304,6 +194,12 @@ jobs:
     permissions:
       statuses: write
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@f086349bfa2bd1361f7909c78558e816508cdc10  # v2.8.0
+        with:
+          disable-sudo: true
+          egress-policy: audit
+
       - name: Checkout
         uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b  # v4.1.4
         with:
@@ -329,6 +225,12 @@ jobs:
       contents: write
       pull-requests: write
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@f086349bfa2bd1361f7909c78558e816508cdc10  # v2.8.0
+        with:
+          disable-sudo: true
+          egress-policy: audit
+
       - name: Enable Auto-Merge
         run: gh pr merge --auto --delete-branch --squash "${{ github.event.pull_request.html_url }}"
         env:

@@ -29,6 +29,12 @@ jobs:
     permissions:
       pull-requests: write
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@f086349bfa2bd1361f7909c78558e816508cdc10  # v2.8.0
+        with:
+          disable-sudo: true
+          egress-policy: audit
+
       - name: Validate major
         shell: pwsh
         run: '[int]::Parse(${{ inputs.major }})'
@@ -197,11 +203,8 @@ jobs:
           # The latest version with NPMv7, which is required to maintain a package-lock.json lockfileVersion of 2.
           node-version: 16.10.0
 
-      - name: npm – Install NCU
-        run: npm install -g npm-check-updates
-
       - name: npm – Update Dependencies
-        run: ncu -u
+        run: npx ncu -u
 
       - name: npm – Update Transitive Dependencies
         run: npm update
