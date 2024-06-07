@@ -30,6 +30,7 @@ export default class Logger {
    * @param message The message to log.
    */
   public logDebug (message: string): void {
+    message = Logger.filterMessage(message)
     this._messages.push(`debug   – ${message}`)
     this._runnerInvoker.logDebug(message)
   }
@@ -39,6 +40,7 @@ export default class Logger {
    * @param message The message to log.
    */
   public logInfo (message: string): void {
+    message = Logger.filterMessage(message)
     this._messages.push(`info    – ${message}`)
     this._consoleWrapper.log(message)
   }
@@ -48,6 +50,7 @@ export default class Logger {
    * @param message The message to log.
    */
   public logWarning (message: string): void {
+    message = Logger.filterMessage(message)
     this._messages.push(`warning – ${message}`)
     this._runnerInvoker.logWarning(message)
   }
@@ -57,6 +60,7 @@ export default class Logger {
    * @param message The message to log.
    */
   public logError (message: string): void {
+    message = Logger.filterMessage(message)
     this._messages.push(`error   – ${message}`)
     this._runnerInvoker.logError(message)
   }
@@ -80,5 +84,14 @@ export default class Logger {
     this._messages.forEach((message: string): void => {
       this._consoleWrapper.log(`🔁 ${message}`)
     })
+  }
+
+  /**
+   * Filter messages so that control strings are not printed to `stdout`.
+   * @param message The message to filter.
+   * @returns The filtered message.
+   */
+  private static filterMessage (message: string): string {
+    return message.replace(/##(vso)?\[/gi, '')
   }
 }
