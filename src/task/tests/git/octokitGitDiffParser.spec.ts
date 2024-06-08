@@ -214,19 +214,41 @@ describe('octokitGitDiffParser.ts', (): void => {
       when(axiosWrapper.getUrl('https://github.com/microsoft/PR-Metrics')).thenCall(async (): Promise<string> =>
         Promise.resolve('diff --git a/file.png b/file.png\n' +
           'new file mode 100644\n' +
-          'index 00000000..8318c87e'))
-          const octokitGitDiffParser: OctokitGitDiffParser = new OctokitGitDiffParser(instance(axiosWrapper), instance(logger))
+          'index 00000000..8318c87e\n' +
+          'Binary files /dev/null and b/file.png differ'))
+      const octokitGitDiffParser: OctokitGitDiffParser = new OctokitGitDiffParser(instance(axiosWrapper), instance(logger))
 
-          // Act
-          const result: number | null = await octokitGitDiffParser.getFirstChangedLine(instance(octokitWrapper), 'owner', 'repo', 1, 'file.ts')
+      // Act
+      const result: number | null = await octokitGitDiffParser.getFirstChangedLine(instance(octokitWrapper), 'owner', 'repo', 1, 'file.ts')
 
-          // Assert
-          assert.equal(result, null)
-          verify(logger.logDebug('* OctokitGitDiffParser.getFirstChangedLine()')).once()
-          verify(logger.logDebug('* OctokitGitDiffParser.getFirstChangedLines()')).once()
-          verify(logger.logDebug('* OctokitGitDiffParser.getDiffs()')).once()
-          verify(logger.logDebug('* OctokitGitDiffParser.processDiffs()')).once()
-          verify(logger.logDebug('Skipping file type \'DeletedFile\' while performing diff parsing.')).once()
+      // Assert
+      assert.equal(result, null)
+      verify(logger.logDebug('* OctokitGitDiffParser.getFirstChangedLine()')).once()
+      verify(logger.logDebug('* OctokitGitDiffParser.getFirstChangedLines()')).once()
+      verify(logger.logDebug('* OctokitGitDiffParser.getDiffs()')).once()
+      verify(logger.logDebug('* OctokitGitDiffParser.processDiffs()')).once()
+      verify(logger.logDebug('Skipping \'AddedFile\' \'file.png\' while performing diff parsing.')).once()
+    })
+
+    it('should return null when considering a changed binary file', async (): Promise<void> => {
+      // Arrange
+      when(octokitWrapper.getPull('owner', 'repo', 1)).thenCall(async (): Promise<GetPullResponse> => Promise.resolve({ data: { diff_url: 'https://github.com/microsoft/PR-Metrics' } } as GetPullResponse))
+      when(axiosWrapper.getUrl('https://github.com/microsoft/PR-Metrics')).thenCall(async (): Promise<string> =>
+        Promise.resolve('diff --git a/file.png b/file.png\n' +
+          'index fec24ae2..86ffe12a 100644\n' +
+          'Binary files a/file.png and b/file.png differ'))
+      const octokitGitDiffParser: OctokitGitDiffParser = new OctokitGitDiffParser(instance(axiosWrapper), instance(logger))
+
+      // Act
+      const result: number | null = await octokitGitDiffParser.getFirstChangedLine(instance(octokitWrapper), 'owner', 'repo', 1, 'file.ts')
+
+      // Assert
+      assert.equal(result, null)
+      verify(logger.logDebug('* OctokitGitDiffParser.getFirstChangedLine()')).once()
+      verify(logger.logDebug('* OctokitGitDiffParser.getFirstChangedLines()')).once()
+      verify(logger.logDebug('* OctokitGitDiffParser.getDiffs()')).once()
+      verify(logger.logDebug('* OctokitGitDiffParser.processDiffs()')).once()
+      verify(logger.logDebug('Skipping \'ChangedFile\' \'file.png\' while performing diff parsing.')).once()
     })
 
     it('should return the correct line number when called twice', async (): Promise<void> => {

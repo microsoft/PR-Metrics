@@ -15,7 +15,8 @@
     "clean": "rimraf debug && rimraf release",
     "deploy": "npm run build:release && exitzero tfx build tasks delete --task-id 907d3b28-6b37-4ac7-ac75-9631ee53e512 --no-prompt && tfx build tasks upload --task-path release/task --no-prompt",
     "lint": "eslint --fix",
-    "test": "npm run build:debug && cd debug/task && c8 --reporter=text --reporter=text-summary mocha tests/**/*.spec.js"
+    "test": "npm run build:debug && cd debug/task && c8 --reporter=text --reporter=text-summary mocha tests/**/*.spec.js",
+    "test:fast": "cross-env-shell \"mkdirp debug && ncp src debug\" && cd debug/task && tsc --sourceMap && c8 --reporter=text --reporter=text-summary mocha tests/**/*.spec.js"
   },
   "repository": {
     "type": "git",

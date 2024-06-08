@@ -88,7 +88,7 @@ variable. To do this, expand the "Environment Variables" section and press "+"
 to add a new variable. In the first text box, add `PR_METRICS_ACCESS_TOKEN` and
 in the second, add `$(PR_Metrics_Access_Token)`.
 
-![Screenshot of the task definition](images/task-definition2.png)
+![Screenshot of the task definition](images/task-definition.png)
 
 You can use a name other than `PR_Metrics_Access_Token` if you wish, but you
 will need to keep the name unified across the variable and task definitions. The

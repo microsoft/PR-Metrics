@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import parseGitDiff, { AddedFile, AnyChunk, AnyFileChange, ChangedFile, GitDiff, RenamedFile } from 'parse-git-diff'
+import parseGitDiff, { AddedFile, AnyChunk, AnyFileChange, ChangedFile, Chunk, GitDiff, RenamedFile } from 'parse-git-diff'
 import AxiosWrapper from '../wrappers/axiosWrapper'
 import GetPullResponse from '../wrappers/octokitInterfaces/getPullResponse'
 import Logger from '../utilities/logger'
@@ -100,25 +100,20 @@ export default class OctokitGitDiffParser {
             // For an added or changed file, add the file path and the first changed line.
             const fileCasted: AddedFile | ChangedFile = file
             const chunk: AnyChunk | undefined = fileCasted.chunks[0]
-            if (chunk === undefined || chunk.type === 'BinaryFilesChunk') {
-                this._logger.logDebug(`Skipping added/changed file '${fileCasted.path}' of type '${chunk?.type}' while performing diff parsing.`)
+              if (chunk?.type === 'BinaryFilesChunk') {
+              console.log(`Skipping '${file.type}' '${fileCasted.path}' while performing diff parsing.`)
+                this._logger.logDebug(`Skipping '${file.type}' '${fileCasted.path}' while performing diff parsing.`)
                 break
             }
 
-            result.set(fileCasted.path, chunk.toFileRange.start)
+            result.set(fileCasted.path, chunk?.toFileRange.start!)
             break
           }
           case 'RenamedFile':
           {
             // For a renamed file, add the new file path and the first changed line.
-            const fileCasted: RenamedFile = file
-            const chunk: AnyChunk | undefined = fileCasted.chunks[0]
-            if (chunk === undefined || chunk.type === 'BinaryFilesChunk') {
-              this._logger.logDebug(`Skipping renamed file '${fileCasted.pathAfter}' of type '${chunk?.type} while performing diff parsing.`)
-              break
-            }
-
-            result.set(fileCasted.pathAfter, chunk.toFileRange.start)
+            const fileCasted: RenamedFile = file as RenamedFile
+            result.set(fileCasted.pathAfter, (fileCasted.chunks[0] as Chunk)?.toFileRange.start!)
             break
           }
           default:
