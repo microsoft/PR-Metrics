@@ -205,6 +205,7 @@ describe('octokitGitDiffParser.ts', (): void => {
       verify(logger.logDebug('* OctokitGitDiffParser.getFirstChangedLines()')).once()
       verify(logger.logDebug('* OctokitGitDiffParser.getDiffs()')).once()
       verify(logger.logDebug('* OctokitGitDiffParser.processDiffs()')).once()
+      verify(logger.logDebug('Skipping file type \'DeletedFile\' while performing diff parsing.')).once()
     })
 
     it('should return the correct line number when called twice', async (): Promise<void> => {
