@@ -6,7 +6,7 @@
 import { instance, mock, verify, when } from 'ts-mockito'
 import CodeMetricsCalculator from '../src/metrics/codeMetricsCalculator'
 import Logger from '../src/utilities/logger'
-import PullRequestMetrics from '../src/pullRequestMetrics2'
+import PullRequestMetrics from '../src/pullRequestMetrics'
 import RunnerInvoker from '../src/runners/runnerInvoker'
 
 describe('pullRequestMetrics.ts', (): void => {
