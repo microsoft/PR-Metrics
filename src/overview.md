@@ -57,6 +57,8 @@ steps:
   continueOnError: true
 ```
 
+Comprehensive documentation can be located [here][azurepipelinestask].
+
 ### Parameters
 
 The task parameters are:
@@ -78,6 +80,10 @@ The task parameters are:
 - **Code File Extensions:** Extensions for files containing code, so that
   non-code files can be excluded. If left blank,
   [a default set of file extensions will be used][defaultextensions].
+- **Workload Identity Federation:** This is recommended instead of Personal
+  Access Tokens (PATs) for security reasons, but getting started with PATs is
+  easier. See the [instructions][workloadidentityfederation] for more
+  information.
 
 ![The PR Metrics task definition](images/task-definition.png)
 
@@ -98,8 +104,10 @@ If you have feedback or encounter errors, please file an issue on
 [GitHub][issues].
 
 [build]: https://docs.microsoft.com/azure/devops/pipelines/create-first-pipeline
+[azurepipelinestask]: https://github.com/microsoft/PR-Metrics/blob/main/docs/azure-pipelines-task.md
 [globs]: https://docs.microsoft.com/azure/devops/pipelines/tasks/file-matching-patterns
-[defaultextensions]: https://github.com/microsoft/PR-Metrics/blob/main/README.md#default-code-file-extensions
+[defaultextensions]: https://github.com/microsoft/PR-Metrics/blob/main/docs/default-code-file-extensions.md
+[workloadidentityfederation]: https://github.com/microsoft/PR-Metrics/blob/main/docs/workload-identity-federation.md
 [github]: https://github.com/microsoft/PR-Metrics
 [privacy]: https://privacy.microsoft.com/privacystatement
 [readme]: https://github.com/microsoft/PR-Metrics/blob/main/README.md

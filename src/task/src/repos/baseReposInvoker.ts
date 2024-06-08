@@ -1,16 +1,18 @@
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT License.
+ */
 
+import CommentData from './interfaces/commentData'
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import IReposInvoker from './iReposInvoker'
-import CommentData from './interfaces/commentData'
 import PullRequestDetails from './interfaces/pullRequestDetails'
 
 /**
  * A base class for invoking repository functionality.
  */
 export default abstract class BaseReposInvoker implements IReposInvoker {
-  public abstract isAccessTokenAvailable: string | null
+  public abstract isAccessTokenAvailable (): Promise<string | null>
 
   public abstract getTitleAndDescription (): Promise<PullRequestDetails>
 

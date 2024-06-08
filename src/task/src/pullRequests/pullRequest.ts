@@ -1,11 +1,13 @@
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT License.
+ */
 
-import { injectable } from 'tsyringe'
-import CodeMetrics from '../metrics/codeMetrics'
-import RunnerInvoker from '../runners/runnerInvoker'
-import Logger from '../utilities/logger'
 import * as Validator from '../utilities/validator'
+import CodeMetrics from '../metrics/codeMetrics'
+import Logger from '../utilities/logger'
+import RunnerInvoker from '../runners/runnerInvoker'
+import { injectable } from 'tsyringe'
 
 /**
  * A class for managing pull requests.

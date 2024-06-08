@@ -1,16 +1,18 @@
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT License.
+ */
 
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
-import { injectable } from 'tsyringe'
 import GitInvoker from '../git/gitInvoker'
+import Logger from '../utilities/logger'
 import PullRequest from '../pullRequests/pullRequest'
 import PullRequestComments from '../pullRequests/pullRequestComments'
 import PullRequestCommentsData from '../pullRequests/pullRequestCommentsData'
 import PullRequestDetails from '../repos/interfaces/pullRequestDetails'
 import ReposInvoker from '../repos/reposInvoker'
 import RunnerInvoker from '../runners/runnerInvoker'
-import Logger from '../utilities/logger'
+import { injectable } from 'tsyringe'
 
 /**
  * A class for calculating and updating the code metrics within pull requests.
@@ -68,7 +70,7 @@ export default class CodeMetricsCalculator {
   public async shouldStop (): Promise<string | null> {
     this._logger.logDebug('* CodeMetricsCalculator.shouldStop()')
 
-    const accessTokenAvailable: string | null = this._reposInvoker.isAccessTokenAvailable
+    const accessTokenAvailable: string | null = await this._reposInvoker.isAccessTokenAvailable()
     if (accessTokenAvailable !== null) {
       return accessTokenAvailable
     }
@@ -115,7 +117,7 @@ export default class CodeMetricsCalculator {
   public async updateComments (): Promise<void> {
     this._logger.logDebug('* CodeMetricsCalculator.updateComments()')
 
-    const promises: Array<Promise<void>> = []
+    const promises: Promise<void>[] = []
 
     const commentData: PullRequestCommentsData = await this._pullRequestComments.getCommentData()
     promises.push(this.updateMetricsComment(commentData))
@@ -126,9 +128,7 @@ export default class CodeMetricsCalculator {
 
     await Promise.all(promises)
 
-    // Comment creation can cause problems when called in parallel on GitHub. Therefore, we must wait after each call
-    // to these APIs before continuing.
-
+    /* eslint-disable no-await-in-loop -- Comment creation can cause problems when called in parallel on GitHub. Therefore, there must be a wait after each call to these APIs before continuing. */
     for (const fileName of commentData.filesNotRequiringReview) {
       await this.updateNoReviewRequiredComment(fileName, false)
     }
@@ -136,6 +136,7 @@ export default class CodeMetricsCalculator {
     for (const fileName of commentData.deletedFilesNotRequiringReview) {
       await this.updateNoReviewRequiredComment(fileName, true)
     }
+    /* eslint-enable no-await-in-loop */
   }
 
   private async updateMetricsComment (commentData: PullRequestCommentsData): Promise<void> {

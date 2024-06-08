@@ -1,10 +1,12 @@
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT License.
+ */
 
-import { singleton } from 'tsyringe'
-import RunnerInvoker from '../runners/runnerInvoker'
-import Logger from '../utilities/logger'
 import * as InputsDefault from './inputsDefault'
+import Logger from '../utilities/logger'
+import RunnerInvoker from '../runners/runnerInvoker'
+import { singleton } from 'tsyringe'
 
 /**
  * A class representing inputs passed to the task.
@@ -28,7 +30,7 @@ export default class Inputs {
    * @param logger The logger.
    * @param runnerInvoker The runner invoker logic.
    */
-  constructor (logger: Logger, runnerInvoker: RunnerInvoker) {
+  public constructor (logger: Logger, runnerInvoker: RunnerInvoker) {
     this._logger = logger
     this._runnerInvoker = runnerInvoker
   }
@@ -131,7 +133,7 @@ export default class Inputs {
   private initializeBaseSize (baseSize: string | undefined): void {
     this._logger.logDebug('* Inputs.initializeBaseSize()')
 
-    const convertedValue: number = baseSize === undefined ? NaN : parseInt(baseSize)
+    const convertedValue: number = baseSize === undefined ? NaN : parseInt(baseSize, 10)
     if (!isNaN(convertedValue) && convertedValue > 0) {
       this._baseSize = convertedValue
       this._logger.logInfo(this._runnerInvoker.loc('metrics.inputs.settingBaseSize', this._baseSize.toLocaleString()))
@@ -194,7 +196,7 @@ export default class Inputs {
     this._logger.logDebug('* Inputs.initializeFileMatchingPatterns()')
 
     if (fileMatchingPatterns !== undefined && fileMatchingPatterns.trim() !== '') {
-      this._fileMatchingPatterns = fileMatchingPatterns.replace(/\\/g, '/').replace(/\n$/g, '').split('\n')
+      this._fileMatchingPatterns = fileMatchingPatterns.replace(/\\/gu, '/').replace(/\n$/gu, '').split('\n')
       this._logger.logInfo(this._runnerInvoker.loc('metrics.inputs.settingFileMatchingPatterns', JSON.stringify(this._fileMatchingPatterns)))
       return
     }
@@ -207,15 +209,16 @@ export default class Inputs {
     this._logger.logDebug('* Inputs.initializeCodeFileExtensions()')
 
     if (codeFileExtensions !== undefined && codeFileExtensions.trim() !== '') {
-      const codeFileExtensionsArray: string[] = codeFileExtensions.replace(/\n$/g, '').split('\n')
+      const codeFileExtensionsArray: string[] = codeFileExtensions.replace(/\n$/gu, '').split('\n')
       codeFileExtensionsArray.forEach((value: string): void => {
-        if (value.startsWith('*.')) {
-          value = value.substring(2)
-        } else if (value.startsWith('.')) {
-          value = value.substring(1)
+        let modifiedValue: string = value
+        if (modifiedValue.startsWith('*.')) {
+          modifiedValue = modifiedValue.substring(2)
+        } else if (modifiedValue.startsWith('.')) {
+          modifiedValue = modifiedValue.substring(1)
         }
 
-        this._codeFileExtensions.add(value.toLowerCase())
+        this._codeFileExtensions.add(modifiedValue.toLowerCase())
       })
       this._logger.logInfo(this._runnerInvoker.loc('metrics.inputs.settingCodeFileExtensions', JSON.stringify(Array.from(this._codeFileExtensions))))
       return

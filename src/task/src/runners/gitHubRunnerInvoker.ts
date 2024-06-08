@@ -1,17 +1,20 @@
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT License.
+ */
 
 import * as actionsExec from '@actions/exec'
 import * as fs from 'fs'
 import * as path from 'path'
-import { singleton } from 'tsyringe'
 import * as util from 'util'
-import { GitWritableStream } from '../git/gitWritableStream'
-import ResourcesJson from '../jsonTypes/resourcesJson'
 import AzurePipelinesRunnerWrapper from '../wrappers/azurePipelinesRunnerWrapper'
 import ConsoleWrapper from '../wrappers/consoleWrapper'
+import { EndpointAuthorization } from './endpointAuthorization'
+import ExecOutput from './execOutput'
 import GitHubRunnerWrapper from '../wrappers/gitHubRunnerWrapper'
 import IRunnerInvoker from './iRunnerInvoker'
+import ResourcesJson from '../jsonTypes/resourcesJson'
+import { singleton } from 'tsyringe'
 
 /**
  * A class for invoking GitHub runner functionality.
@@ -36,14 +39,18 @@ export default class GitHubRunnerInvoker implements IRunnerInvoker {
     this._gitHubRunnerWrapper = gitHubRunnerWrapper
   }
 
-  public async exec (tool: string, args: string[], failOnError: boolean, outputStream: GitWritableStream, errorStream: GitWritableStream): Promise<number> {
+  public async exec (tool: string, args: string): Promise<ExecOutput> {
     const options: actionsExec.ExecOptions = {
-      failOnStdErr: failOnError,
-      outStream: outputStream,
-      errStream: errorStream
+      failOnStdErr: true,
+      silent: true
     }
 
-    return await this._gitHubRunnerWrapper.exec(tool, args, options)
+    const result: actionsExec.ExecOutput = await this._gitHubRunnerWrapper.exec(tool, args, options)
+    return {
+      exitCode: result.exitCode,
+      stderr: result.stderr,
+      stdout: result.stdout
+    }
   }
 
   public getInput (name: string[]): string | undefined {
@@ -53,11 +60,23 @@ export default class GitHubRunnerInvoker implements IRunnerInvoker {
     return this._azurePipelinesRunnerWrapper.getInput(formattedName)
   }
 
+  public getEndpointAuthorization (_: string): EndpointAuthorization | undefined {
+    throw new Error('getEndpointAuthorization() unavailable in GitHub.')
+  }
+
+  public getEndpointAuthorizationScheme (_: string): string | undefined {
+    throw new Error('getEndpointAuthorizationScheme() unavailable in GitHub.')
+  }
+
+  public getEndpointAuthorizationParameter (_: string, __: string): string | undefined {
+    throw new Error('getEndpointAuthorizationParameter() unavailable in GitHub.')
+  }
+
   public locInitialize (folder: string): void {
     const resourceData: string = fs.readFileSync(path.join(folder, 'resources.resjson'), 'utf8')
     const resources: ResourcesJson = JSON.parse(resourceData) as ResourcesJson
 
-    const entries: Array<[string, string]> = Object.entries(resources)
+    const entries: [string, string][] = Object.entries(resources)
     const stringPrefix: string = 'loc.messages.'
     entries.forEach((entry: [string, string]): void => {
       if (entry[0].startsWith(stringPrefix)) {
@@ -92,5 +111,9 @@ export default class GitHubRunnerInvoker implements IRunnerInvoker {
 
   public setStatusSucceeded (message: string): void {
     this._consoleWrapper.log(message)
+  }
+
+  public setSecret (value: string): void {
+    this._gitHubRunnerWrapper.setSecret(value)
   }
 }

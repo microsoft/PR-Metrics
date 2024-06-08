@@ -1,13 +1,15 @@
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT License.
+ */
 
 import * as fs from 'fs'
-import assert from 'node:assert/strict'
 import * as path from 'path'
-import ResourcesJson from '../src/jsonTypes/resourcesJson'
 import PackageJson from './jsonTypes/packageJson'
+import ResourcesJson from '../src/jsonTypes/resourcesJson'
 import TaskJson from './jsonTypes/taskJson'
 import VssExtensionJson from './jsonTypes/vssExtensionJson'
+import assert from 'node:assert/strict'
 
 describe('task.json', (): void => {
   const basePath: string = path.join(__dirname, '..')

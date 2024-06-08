@@ -1,8 +1,10 @@
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT License.
+ */
 
-import assert from 'node:assert/strict'
 import * as Converter from '../../src/utilities/converter'
+import assert from 'node:assert/strict'
 
 describe('converter.ts', (): void => {
   describe('toString()', (): void => {

@@ -1,19 +1,21 @@
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT License.
+ */
 
-import * as actionsExec from '@actions/exec'
-import assert from 'node:assert/strict'
-import * as path from 'path'
 import 'reflect-metadata'
+import * as actionsExec from '@actions/exec'
+import * as path from 'path'
 import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito'
-import { GitWritableStream } from '../../src/git/gitWritableStream'
-import GitHubRunnerInvoker from '../../src/runners/gitHubRunnerInvoker'
-import Logger from '../../src/utilities/logger'
 import AzurePipelinesRunnerWrapper from '../../src/wrappers/azurePipelinesRunnerWrapper'
 import ConsoleWrapper from '../../src/wrappers/consoleWrapper'
+import { EndpointAuthorization } from 'azure-pipelines-task-lib'
+import ExecOutput from '../../src/runners/execOutput'
+import GitHubRunnerInvoker from '../../src/runners/gitHubRunnerInvoker'
 import GitHubRunnerWrapper from '../../src/wrappers/gitHubRunnerWrapper'
+import assert from 'node:assert/strict'
 
-describe('gitHubRunnerInvoker.ts', function (): void {
+describe('gitHubRunnerInvoker.ts', (): void => {
   const resourcePath: string = path.join(__dirname, '../../Strings/resources.resjson/en-US/')
 
   let azurePipelinesRunnerWrapper: AzurePipelinesRunnerWrapper
@@ -30,22 +32,25 @@ describe('gitHubRunnerInvoker.ts', function (): void {
     it('should call the underlying method', async (): Promise<void> => {
       // Arrange
       const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(instance(azurePipelinesRunnerWrapper), instance(consoleWrapper), instance(gitHubRunnerWrapper))
-      const logger: Logger = mock(Logger)
-      const outputStream: GitWritableStream = new GitWritableStream(instance(logger))
-      const errorStream: GitWritableStream = new GitWritableStream(instance(logger))
-      when(gitHubRunnerWrapper.exec('TOOL', deepEqual(['Argument 1', 'Argument 2']), anything())).thenResolve(1)
+      const execResult: actionsExec.ExecOutput = {
+        exitCode: 1,
+        stderr: 'Error',
+        stdout: 'Output'
+      }
+      when(gitHubRunnerWrapper.exec('TOOL', 'Argument1 Argument2', anything())).thenResolve(execResult)
 
       // Act
-      const result: number = await gitHubRunnerInvoker.exec('TOOL', ['Argument 1', 'Argument 2'], true, outputStream, errorStream)
+      const result: ExecOutput = await gitHubRunnerInvoker.exec('TOOL', 'Argument1 Argument2')
 
       // Assert
-      assert.equal(result, 1)
+      assert.equal(result.exitCode, 1)
+      assert.equal(result.stderr, 'Error')
+      assert.equal(result.stdout, 'Output')
       const options: actionsExec.ExecOptions = {
         failOnStdErr: true,
-        outStream: outputStream,
-        errStream: errorStream
+        silent: true
       }
-      verify(gitHubRunnerWrapper.exec('TOOL', deepEqual(['Argument 1', 'Argument 2']), deepEqual(options))).once()
+      verify(gitHubRunnerWrapper.exec('TOOL', 'Argument1 Argument2', deepEqual(options))).once()
     })
   })
 
@@ -61,6 +66,45 @@ describe('gitHubRunnerInvoker.ts', function (): void {
       // Assert
       assert.equal(result, 'VALUE')
       verify(azurePipelinesRunnerWrapper.getInput('TEST-SUFFIX')).once()
+    })
+  })
+
+  describe('getEndpointAuthorization()', (): void => {
+    it('should result in an exception', (): void => {
+      // Arrange
+      const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(instance(azurePipelinesRunnerWrapper), instance(consoleWrapper), instance(gitHubRunnerWrapper))
+
+      // Act
+      const func: () => EndpointAuthorization | undefined = () => gitHubRunnerInvoker.getEndpointAuthorization('id')
+
+      // Assert
+      assert.throws(func, Error('getEndpointAuthorization() unavailable in GitHub.'))
+    })
+  })
+
+  describe('getEndpointAuthorizationScheme()', (): void => {
+    it('should result in an exception', (): void => {
+      // Arrange
+      const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(instance(azurePipelinesRunnerWrapper), instance(consoleWrapper), instance(gitHubRunnerWrapper))
+
+      // Act
+      const func: () => string | undefined = () => gitHubRunnerInvoker.getEndpointAuthorizationScheme('id')
+
+      // Assert
+      assert.throws(func, Error('getEndpointAuthorizationScheme() unavailable in GitHub.'))
+    })
+  })
+
+  describe('getEndpointAuthorizationParameter()', (): void => {
+    it('should result in an exception', (): void => {
+      // Arrange
+      const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(instance(azurePipelinesRunnerWrapper), instance(consoleWrapper), instance(gitHubRunnerWrapper))
+
+      // Act
+      const func: () => string | undefined = () => gitHubRunnerInvoker.getEndpointAuthorizationParameter('id', 'key')
+
+      // Assert
+      assert.throws(func, Error('getEndpointAuthorizationParameter() unavailable in GitHub.'))
     })
   })
 
@@ -182,6 +226,19 @@ describe('gitHubRunnerInvoker.ts', function (): void {
 
       // Assert
       verify(consoleWrapper.log('TEST')).once()
+    })
+  })
+
+  describe('setSecret()', (): void => {
+    it('should call the underlying method', (): void => {
+      // Arrange
+      const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(instance(azurePipelinesRunnerWrapper), instance(consoleWrapper), instance(gitHubRunnerWrapper))
+
+      // Act
+      gitHubRunnerInvoker.setSecret('value')
+
+      // Assert
+      verify(gitHubRunnerWrapper.setSecret('value')).once()
     })
   })
 })

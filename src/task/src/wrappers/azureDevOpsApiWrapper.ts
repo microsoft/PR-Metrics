@@ -1,5 +1,7 @@
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT License.
+ */
 
 import * as azureDevOpsApi from 'azure-devops-node-api'
 import { IRequestHandler } from 'azure-devops-node-api/interfaces/common/VsoBaseInterfaces'
@@ -17,6 +19,15 @@ export default class AzureDevOpsApiWrapper {
    */
   public getPersonalAccessTokenHandler (token: string): IRequestHandler {
     return azureDevOpsApi.getPersonalAccessTokenHandler(token)
+  }
+
+  /**
+   * Gets a handler from a token.
+   * @param token The Azure DevOps API token.
+   * @returns The handler.
+   */
+  public getHandlerFromToken(token: string): IRequestHandler {
+    return azureDevOpsApi.getHandlerFromToken(token)
   }
 
   /**

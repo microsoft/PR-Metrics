@@ -1,12 +1,14 @@
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT License.
+ */
 
 import { IExecSyncResult } from 'azure-pipelines-task-lib/toolrunner'
 
 /**
  * A wrapper around `IExecSyncResult`, to facilitate testability.
  */
-class ExecSyncResult implements IExecSyncResult {
+export default class ExecSyncResult implements IExecSyncResult {
   /**
    * The standard output stream contents.
    */
@@ -27,5 +29,3 @@ class ExecSyncResult implements IExecSyncResult {
    */
   public error: Error = new Error()
 }
-
-export default ExecSyncResult

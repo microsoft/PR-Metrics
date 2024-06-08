@@ -1,23 +1,25 @@
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT License.
+ */
 
-import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
-import assert from 'node:assert/strict'
 import 'reflect-metadata'
+import * as Converter from '../../src/utilities/converter'
 import { instance, mock, verify, when } from 'ts-mockito'
 import CodeMetrics from '../../src/metrics/codeMetrics'
 import CodeMetricsData from '../../src/metrics/codeMetricsData'
+import CommentData from '../../src/repos/interfaces/commentData'
+import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
+import FileCommentData from '../../src/repos/interfaces/fileCommentData'
+import { FixedLengthArray } from '../../src/utilities/fixedLengthArray'
 import Inputs from '../../src/metrics/inputs'
+import Logger from '../../src/utilities/logger'
+import PullRequestCommentData from '../../src/repos/interfaces/pullRequestCommentData'
 import PullRequestComments from '../../src/pullRequests/pullRequestComments'
 import PullRequestCommentsData from '../../src/pullRequests/pullRequestCommentsData'
-import CommentData from '../../src/repos/interfaces/commentData'
-import FileCommentData from '../../src/repos/interfaces/fileCommentData'
-import PullRequestCommentData from '../../src/repos/interfaces/pullRequestCommentData'
 import ReposInvoker from '../../src/repos/reposInvoker'
 import RunnerInvoker from '../../src/runners/runnerInvoker'
-import * as Converter from '../../src/utilities/converter'
-import { FixedLengthArray } from '../../src/utilities/fixedLengthArray'
-import Logger from '../../src/utilities/logger'
+import assert from 'node:assert/strict'
 
 describe('pullRequestComments.ts', (): void => {
   let complexGitPullRequestComments: CommentData
@@ -335,7 +337,7 @@ describe('pullRequestComments.ts', (): void => {
 
   describe('getMetricsComment()', (): void => {
     {
-      const testCases: Array<FixedLengthArray<number, 5>> = [
+      const testCases: FixedLengthArray<number, 5>[] = [
         [0, 0, 0, 0, 0],
         [1, 0, 1, 0, 1],
         [1, 1, 2, 1, 3],
@@ -485,7 +487,7 @@ describe('pullRequestComments.ts', (): void => {
     })
 
     {
-      const testCases: Array<boolean | null> = [
+      const testCases: (boolean | null)[] = [
         true,
         null
       ]

@@ -1,12 +1,14 @@
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT License.
+ */
 
 import parseGitDiff, { AddedFile, AnyFileChange, ChangedFile, Chunk, GitDiff, RenamedFile } from 'parse-git-diff'
-import { singleton } from 'tsyringe'
-import Logger from '../utilities/logger'
 import AxiosWrapper from '../wrappers/axiosWrapper'
 import GetPullResponse from '../wrappers/octokitInterfaces/getPullResponse'
+import Logger from '../utilities/logger'
 import OctokitWrapper from '../wrappers/octokitWrapper'
+import { singleton } from 'tsyringe'
 
 /**
  * A parser for Git diffs read via Octokit.
@@ -66,13 +68,15 @@ export default class OctokitGitDiffParser {
     const diffResponse: string = await this._axiosWrapper.getUrl(pullRequestInfo.data.diff_url)
 
     // Split the response so that each file in a diff becomes a separate diff.
-    const diffResponses: string[] = diffResponse.split(/^diff --git/gm)
+    const diffResponses: string[] = diffResponse.split(/^diff --git/gmu)
 
-    // For each diff, reinstate the "diff --git" prefix that was removed by the split. The first diff is excluded as it
-    // will always be the empty string.
+    /**
+     * For each diff, reinstate the "diff --git" prefix that was removed by the split. The first diff is excluded as it
+     * will always be the empty string.
+     */
     const result: string[] = []
-    for (let i: number = 1; i < diffResponses.length; i++) {
-      result.push('diff --git' + diffResponses[i])
+    for (let iteration: number = 1; iteration < diffResponses.length; iteration += 1) {
+      result.push(`diff --git${  diffResponses[iteration]}`)
     }
 
     return result
@@ -94,17 +98,20 @@ export default class OctokitGitDiffParser {
           case 'ChangedFile':
           {
             // For an added or changed file, add the file path and the first changed line.
-            const fileCasted: AddedFile | ChangedFile = file as AddedFile | ChangedFile
-            result.set(fileCasted.path, (fileCasted.chunks[0] as Chunk)!.toFileRange.start)
+            const fileCasted: AddedFile | ChangedFile = file
+            result.set(fileCasted.path, (fileCasted.chunks[0] as Chunk).toFileRange.start)
             break
           }
           case 'RenamedFile':
           {
             // For a renamed file, add the new file path and the first changed line.
-            const fileCasted: RenamedFile = file as RenamedFile
-            result.set(fileCasted.pathAfter, (fileCasted.chunks[0] as Chunk)?.toFileRange.start!)
+            const fileCasted: RenamedFile = file
+            result.set(fileCasted.pathAfter, (fileCasted.chunks[0] as Chunk)?.toFileRange.start)
             break
           }
+          default:
+            this._logger.logDebug(`Skipping file type '${file.type}' when performing diff parsing.`)
+            break
         }
       })
     })

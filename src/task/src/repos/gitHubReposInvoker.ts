@@ -1,32 +1,34 @@
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT License.
+ */
 
-import { OctokitOptions } from '@octokit/core/dist-types/types'
-import { GetResponseDataTypeFromEndpointMethod } from '@octokit/types'
-import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import 'isomorphic-fetch'
-import { Octokit } from 'octokit'
-import { singleton } from 'tsyringe'
-import GitInvoker from '../git/gitInvoker'
-import RunnerInvoker from '../runners/runnerInvoker'
 import * as Converter from '../utilities/converter'
-import Logger from '../utilities/logger'
 import * as Validator from '../utilities/validator'
+import BaseReposInvoker from './baseReposInvoker'
+import CommentData from './interfaces/commentData'
+import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import CreateIssueCommentResponse from '../wrappers/octokitInterfaces/createIssueCommentResponse'
 import CreateReviewCommentResponse from '../wrappers/octokitInterfaces/createReviewCommentResponse'
 import DeleteReviewCommentResponse from '../wrappers/octokitInterfaces/deleteReviewCommentResponse'
+import FileCommentData from './interfaces/fileCommentData'
 import GetIssueCommentsResponse from '../wrappers/octokitInterfaces/getIssueCommentsResponse'
 import GetPullResponse from '../wrappers/octokitInterfaces/getPullResponse'
+import { GetResponseDataTypeFromEndpointMethod } from '@octokit/types'
 import GetReviewCommentsResponse from '../wrappers/octokitInterfaces/getReviewCommentsResponse'
+import GitInvoker from '../git/gitInvoker'
 import ListCommitsResponse from '../wrappers/octokitInterfaces/listCommitsResponse'
-import UpdateIssueCommentResponse from '../wrappers/octokitInterfaces/updateIssueCommentResponse'
-import UpdatePullResponse from '../wrappers/octokitInterfaces/updatePullResponse'
+import Logger from '../utilities/logger'
+import { Octokit } from 'octokit'
+import { OctokitOptions } from '@octokit/core/dist-types/types'
 import OctokitWrapper from '../wrappers/octokitWrapper'
-import BaseReposInvoker from './baseReposInvoker'
-import CommentData from './interfaces/commentData'
-import FileCommentData from './interfaces/fileCommentData'
 import PullRequestCommentData from './interfaces/pullRequestCommentData'
 import PullRequestDetails from './interfaces/pullRequestDetails'
+import RunnerInvoker from '../runners/runnerInvoker'
+import UpdateIssueCommentResponse from '../wrappers/octokitInterfaces/updateIssueCommentResponse'
+import UpdatePullResponse from '../wrappers/octokitInterfaces/updatePullResponse'
+import { singleton } from 'tsyringe'
 
 const octokit: Octokit = new Octokit()
 type GetIssueCommentsResponseData = GetResponseDataTypeFromEndpointMethod<typeof octokit.rest.issues.listComments>[0]
@@ -64,11 +66,11 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     this._runnerInvoker = runnerInvoker
   }
 
-  public get isAccessTokenAvailable (): string | null {
-    this._logger.logDebug('* GitHubReposInvoker.isAccessTokenAvailable')
+  public async isAccessTokenAvailable (): Promise<string | null> {
+    this._logger.logDebug('* GitHubReposInvoker.isAccessTokenAvailable()')
 
     if (process.env.PR_METRICS_ACCESS_TOKEN === undefined) {
-      return this._runnerInvoker.loc('metrics.codeMetricsCalculator.noGitHubAccessToken')
+      return this._runnerInvoker.loc('repos.gitHubReposInvoker.noGitHubAccessToken')
     }
 
     return null
@@ -79,10 +81,10 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
 
     this.initialize()
     const result: GetPullResponse = await this.invokeApiCall(async (): Promise<GetPullResponse> => {
-      const result: GetPullResponse = await this._octokitWrapper.getPull(this._owner, this._repo, this._pullRequestId)
-      this._logger.logDebug(JSON.stringify(result))
+      const internalResult: GetPullResponse = await this._octokitWrapper.getPull(this._owner, this._repo, this._pullRequestId)
+      this._logger.logDebug(JSON.stringify(internalResult))
 
-      return result
+      return internalResult
     })
 
     return {
@@ -122,7 +124,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     this.initialize()
 
     await this.invokeApiCall(async (): Promise<void> => {
-      const result: UpdatePullResponse = await this._octokitWrapper.updatePull(this._owner, this._repo, this._pullRequestId, title === null ? undefined : title, description === null ? undefined : description)
+      const result: UpdatePullResponse = await this._octokitWrapper.updatePull(this._owner, this._repo, this._pullRequestId, title ?? undefined, description ?? undefined)
       this._logger.logDebug(JSON.stringify(result))
     })
   }
@@ -193,7 +195,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
 
     const options: OctokitOptions = {
       auth: process.env.PR_METRICS_ACCESS_TOKEN,
-      userAgent: 'PRMetrics/v1.5.14',
+      userAgent: 'PRMetrics/v1.6.0',
       log: {
         debug: (message: string): void => this._logger.logDebug(`Octokit – ${message}`),
         info: (message: string): void => this._logger.logInfo(`Octokit – ${message}`),
@@ -223,7 +225,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     const gitHubRepository: string = Validator.validateVariable('GITHUB_REPOSITORY', 'GitHubReposInvoker.initializeForGitHub()')
     const gitHubRepositoryElements: string[] = gitHubRepository.split('/')
     if (gitHubRepositoryElements[1] === undefined) {
-      throw Error(`GITHUB_REPOSITORY '${gitHubRepository}' is in an unexpected format.`)
+      throw new Error(`GITHUB_REPOSITORY '${gitHubRepository}' is in an unexpected format.`)
     }
 
     this._repo = gitHubRepositoryElements[1]
@@ -236,7 +238,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     const sourceRepositoryUri: string = Validator.validateVariable('SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI', 'GitHubReposInvoker.initializeForAzureDevOps()')
     const sourceRepositoryUriElements: string[] = sourceRepositoryUri.split('/')
     if (sourceRepositoryUriElements[2] === undefined || sourceRepositoryUriElements[3] === undefined || sourceRepositoryUriElements[4] === undefined) {
-      throw Error(`SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI '${sourceRepositoryUri}' is in an unexpected format.`)
+      throw new Error(`SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI '${sourceRepositoryUri}' is in an unexpected format.`)
     }
 
     // Handle GitHub Enterprise invocations.
@@ -284,24 +286,24 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     this._logger.logDebug('* GitHubReposInvoker.getCommitId()')
 
     let result: ListCommitsResponse = await this.invokeApiCall(async (): Promise<ListCommitsResponse> => {
-      const result: ListCommitsResponse = await this._octokitWrapper.listCommits(this._owner, this._repo, this._pullRequestId, 1)
-      this._logger.logDebug(JSON.stringify(result))
-      return result
+      const internalResult: ListCommitsResponse = await this._octokitWrapper.listCommits(this._owner, this._repo, this._pullRequestId, 1)
+      this._logger.logDebug(JSON.stringify(internalResult))
+      return internalResult
     })
 
     // Get the last page of commits so that the last commit can be located.
     if (result.headers.link !== undefined) {
       const commitsLink: string = result.headers.link
-      const matches: RegExpMatchArray | null = commitsLink.match(/<.+>; rel="next", <.+?page=(\d+)>; rel="last"/)
-      if (matches === null || matches[1] === undefined) {
-        throw Error(`The regular expression did not match '${commitsLink}'.`)
+      const matches: RegExpMatchArray | null = /<.+>; rel="next", <.+?page=(\d+)>; rel="last"/u.exec(commitsLink)
+      if (matches?.[1] === undefined) {
+        throw new Error(`The regular expression did not match '${commitsLink}'.`)
       }
 
-      const match: number = parseInt(matches[1])
+      const match: number = parseInt(matches[1], 10)
       result = await this.invokeApiCall(async (): Promise<ListCommitsResponse> => {
-        const result: ListCommitsResponse = await this._octokitWrapper.listCommits(this._owner, this._repo, this._pullRequestId, match)
-        this._logger.logDebug(JSON.stringify(result))
-        return result
+        const internalResult: ListCommitsResponse = await this._octokitWrapper.listCommits(this._owner, this._repo, this._pullRequestId, match)
+        this._logger.logDebug(JSON.stringify(internalResult))
+        return internalResult
       })
     }
 
@@ -309,6 +311,6 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
   }
 
   protected async invokeApiCall<Response> (action: () => Promise<Response>): Promise<Response> {
-    return await super.invokeApiCall(action, this._runnerInvoker.loc('metrics.codeMetricsCalculator.insufficientGitHubAccessTokenPermissions'))
+    return super.invokeApiCall(action, this._runnerInvoker.loc('repos.gitHubReposInvoker.insufficientGitHubAccessTokenPermissions'))
   }
 }

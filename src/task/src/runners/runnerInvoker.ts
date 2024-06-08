@@ -1,11 +1,14 @@
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT License.
+ */
 
-import { singleton } from 'tsyringe'
-import { GitWritableStream } from '../git/gitWritableStream'
 import AzurePipelinesRunnerInvoker from './azurePipelinesRunnerInvoker'
+import { EndpointAuthorization } from './endpointAuthorization'
+import ExecOutput from './execOutput'
 import GitHubRunnerInvoker from './gitHubRunnerInvoker'
 import IRunnerInvoker from './iRunnerInvoker'
+import { singleton } from 'tsyringe'
 
 /**
  * A wrapper around the runner functionality, to facilitate testability. This class cannot use logging functionality as
@@ -36,9 +39,9 @@ export default class RunnerInvoker implements IRunnerInvoker {
     return process.env.GITHUB_ACTION !== undefined
   }
 
-  public async exec (tool: string, args: string[], failOnError: boolean, outputStream: GitWritableStream, errorStream: GitWritableStream): Promise<number> {
+  public async exec (tool: string, args: string): Promise<ExecOutput> {
     const runner: IRunnerInvoker = this.getRunner()
-    return await runner.exec(tool, args, failOnError, outputStream, errorStream)
+    return runner.exec(tool, args)
   }
 
   public getInput (name: string[]): string | undefined {
@@ -46,9 +49,24 @@ export default class RunnerInvoker implements IRunnerInvoker {
     return runner.getInput(name)
   }
 
+  public getEndpointAuthorization (id: string): EndpointAuthorization | undefined {
+    const runner: IRunnerInvoker = this.getRunner()
+    return runner.getEndpointAuthorization(id)
+  }
+
+  public getEndpointAuthorizationScheme (id: string): string | undefined {
+    const runner: IRunnerInvoker = this.getRunner()
+    return runner.getEndpointAuthorizationScheme(id)
+  }
+
+  public getEndpointAuthorizationParameter (id: string, key: string): string | undefined {
+    const runner: IRunnerInvoker = this.getRunner()
+    return runner.getEndpointAuthorizationParameter(id, key)
+  }
+
   public locInitialize (folder: string): void {
     if (this._localizationInitialized) {
-      throw Error('RunnerInvoker.locInitialize must not be called multiple times.')
+      throw new Error('RunnerInvoker.locInitialize must not be called multiple times.')
     }
 
     this._localizationInitialized = true
@@ -58,7 +76,7 @@ export default class RunnerInvoker implements IRunnerInvoker {
 
   public loc (key: string, ...param: any[]): string {
     if (!this._localizationInitialized) {
-      throw Error('RunnerInvoker.locInitialize must be called before RunnerInvoker.loc.')
+      throw new Error('RunnerInvoker.locInitialize must be called before RunnerInvoker.loc.')
     }
 
     const runner: IRunnerInvoker = this.getRunner()
@@ -93,6 +111,11 @@ export default class RunnerInvoker implements IRunnerInvoker {
   public setStatusSucceeded (message: string): void {
     const runner: IRunnerInvoker = this.getRunner()
     return runner.setStatusSucceeded(message)
+  }
+
+  public setSecret (value: string): void {
+    const runner: IRunnerInvoker = this.getRunner()
+    return runner.setSecret(value)
   }
 
   private getRunner (): IRunnerInvoker {

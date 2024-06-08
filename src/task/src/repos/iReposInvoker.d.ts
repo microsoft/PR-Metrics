@@ -1,8 +1,10 @@
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT License.
+ */
 
-import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import CommentData from './interfaces/commentData'
+import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import PullRequestDetails from './interfaces/pullRequestDetails'
 
 /**
@@ -10,9 +12,10 @@ import PullRequestDetails from './interfaces/pullRequestDetails'
  */
 export default interface IReposInvoker {
   /**
-   * Gets a value indicating whether the Personal Access Token (PAT) can be accessed by the task.
+   * Determines whether an access token can be retrieved by the task.
+   * @returns A promise containing a string to display if the operation failed.
    */
-  isAccessTokenAvailable: string | null
+  isAccessTokenAvailable: () => Promise<string | null>
 
   /**
    * Gets the title and description for the current pull request.

@@ -1,11 +1,13 @@
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT License.
+ */
 
-import { singleton } from 'tsyringe'
-import RunnerInvoker from '../runners/runnerInvoker'
-import Logger from '../utilities/logger'
 import * as Validator from '../utilities/validator'
-import { GitWritableStream } from './gitWritableStream'
+import ExecOutput from '../runners/execOutput'
+import Logger from '../utilities/logger'
+import RunnerInvoker from '../runners/runnerInvoker'
+import { singleton } from 'tsyringe'
 
 /**
  * A class for invoking Git commands.
@@ -39,7 +41,7 @@ export default class GitInvoker {
     this._logger.logDebug('* GitInvoker.isGitRepo()')
 
     try {
-      await this.invokeGit(['rev-parse', '--is-inside-work-tree'])
+      await this.invokeGit('rev-parse --is-inside-work-tree')
       return true
     } catch {
       return false
@@ -53,7 +55,7 @@ export default class GitInvoker {
   public isPullRequestIdAvailable (): boolean {
     this._logger.logDebug('* GitInvoker.isPullRequestIdAvailable()')
 
-    return !isNaN(parseInt(this.pullRequestIdInternal))
+    return !isNaN(parseInt(this.pullRequestIdInternal, 10))
   }
 
   /**
@@ -66,7 +68,7 @@ export default class GitInvoker {
     this.initialize()
 
     try {
-      await this.invokeGit(['rev-parse', '--branch', `origin/${this._targetBranch}...pull/${this._pullRequestIdInternal}/merge`])
+      await this.invokeGit(`rev-parse --branch origin/${this._targetBranch}...pull/${this._pullRequestIdInternal}/merge`)
       return true
     } catch {
       return false
@@ -84,7 +86,7 @@ export default class GitInvoker {
       return this._pullRequestId
     }
 
-    this._pullRequestId = Validator.validateNumber(parseInt(this.pullRequestIdInternal), 'Pull Request ID', 'GitInvoker.pullRequestId')
+    this._pullRequestId = Validator.validateNumber(parseInt(this.pullRequestIdInternal, 10), 'Pull Request ID', 'GitInvoker.pullRequestId')
     return this._pullRequestId
   }
 
@@ -96,7 +98,7 @@ export default class GitInvoker {
     this._logger.logDebug('* GitInvoker.getDiffSummary()')
 
     this.initialize()
-    return await this.invokeGit(['diff', '--numstat', '--ignore-all-space', `origin/${this._targetBranch}...pull/${this._pullRequestIdInternal}/merge`])
+    return this.invokeGit(`diff --numstat --ignore-all-space origin/${this._targetBranch}...pull/${this._pullRequestIdInternal}/merge`)
   }
 
   private initialize (): void {
@@ -157,15 +159,15 @@ export default class GitInvoker {
       }
 
       return result
-    } else {
-      const result: string | undefined = process.env.SYSTEM_PULLREQUEST_PULLREQUESTID
-      if (!result) {
-        this._logger.logWarning('\'SYSTEM_PULLREQUEST_PULLREQUESTID\' is undefined.')
-        return ''
-      }
-
-      return result
     }
+
+    const result: string | undefined = process.env.SYSTEM_PULLREQUEST_PULLREQUESTID
+    if (!result) {
+      this._logger.logWarning('\'SYSTEM_PULLREQUEST_PULLREQUESTID\' is undefined.')
+      return ''
+    }
+
+    return result
   }
 
   private get targetBranch (): string {
@@ -180,22 +182,19 @@ export default class GitInvoker {
     if (variable.startsWith(expectedStart)) {
       const startIndex: number = expectedStart.length
       return variable.substring(startIndex)
-    } else {
-      return variable
     }
+
+    return variable
   }
 
-  private async invokeGit (parameters: string[]): Promise<string> {
+  private async invokeGit (parameters: string): Promise<string> {
     this._logger.logDebug('* GitInvoker.invokeGit()')
 
-    const outputStream: GitWritableStream = new GitWritableStream(this._logger)
-    const errorStream: GitWritableStream = new GitWritableStream(this._logger)
-    const result: number = await this._runnerInvoker.exec('git', parameters, true, outputStream, errorStream)
-
-    if (result !== 0) {
-      throw Error(errorStream.message)
+    const result: ExecOutput = await this._runnerInvoker.exec('git', parameters)
+    if (result.exitCode !== 0) {
+      throw new Error(result.stderr)
     }
 
-    return outputStream.message
+    return result.stdout
   }
 }

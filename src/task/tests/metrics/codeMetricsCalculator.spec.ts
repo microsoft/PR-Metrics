@@ -1,18 +1,20 @@
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT License.
+ */
 
-import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
-import assert from 'node:assert/strict'
 import 'reflect-metadata'
 import { instance, mock, verify, when } from 'ts-mockito'
-import GitInvoker from '../../src/git/gitInvoker'
 import CodeMetricsCalculator from '../../src/metrics/codeMetricsCalculator'
+import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
+import GitInvoker from '../../src/git/gitInvoker'
+import Logger from '../../src/utilities/logger'
 import PullRequest from '../../src/pullRequests/pullRequest'
 import PullRequestComments from '../../src/pullRequests/pullRequestComments'
 import PullRequestCommentsData from '../../src/pullRequests/pullRequestCommentsData'
 import ReposInvoker from '../../src/repos/reposInvoker'
 import RunnerInvoker from '../../src/runners/runnerInvoker'
-import Logger from '../../src/utilities/logger'
+import assert from 'node:assert/strict'
 
 describe('codeMetricsCalculator.ts', (): void => {
   let gitInvoker: GitInvoker
@@ -24,7 +26,7 @@ describe('codeMetricsCalculator.ts', (): void => {
 
   beforeEach((): void => {
     reposInvoker = mock(ReposInvoker)
-    when(reposInvoker.isAccessTokenAvailable).thenReturn(null)
+    when(reposInvoker.isAccessTokenAvailable()).thenResolve(null)
 
     gitInvoker = mock(GitInvoker)
     when(gitInvoker.isGitRepo()).thenResolve(true)
@@ -105,7 +107,7 @@ describe('codeMetricsCalculator.ts', (): void => {
 
     it('should return the appropriate message when no access token is available', async (): Promise<void> => {
       // Arrange
-      when(reposInvoker.isAccessTokenAvailable).thenReturn('No Access Token')
+      when(reposInvoker.isAccessTokenAvailable()).thenResolve('No Access Token')
       const codeMetricsCalculator: CodeMetricsCalculator = new CodeMetricsCalculator(instance(gitInvoker), instance(logger), instance(pullRequest), instance(pullRequestComments), instance(reposInvoker), instance(runnerInvoker))
 
       // Act

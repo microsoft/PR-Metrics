@@ -1,31 +1,35 @@
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT License.
+ */
 
-import { WebApi } from 'azure-devops-node-api'
-import { IGitApi } from 'azure-devops-node-api/GitApi'
-import { Comment, CommentThreadStatus, GitPullRequest, GitPullRequestCommentThread } from 'azure-devops-node-api/interfaces/GitInterfaces'
-import { IRequestHandler } from 'azure-devops-node-api/interfaces/common/VsoBaseInterfaces'
-import assert from 'node:assert/strict'
 import 'reflect-metadata'
+import * as AssertExtensions from '../testUtilities/assertExtensions'
+import * as Converter from '../../src/utilities/converter'
+import { Comment, CommentThreadStatus, GitPullRequest, GitPullRequestCommentThread } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import { anyNumber, anything, deepEqual, instance, mock, verify, when } from 'ts-mockito'
-import GitInvoker from '../../src/git/gitInvoker'
+import AzureDevOpsApiWrapper from '../../src/wrappers/azureDevOpsApiWrapper'
 import AzureReposInvoker from '../../src/repos/azureReposInvoker'
 import CommentData from '../../src/repos/interfaces/commentData'
+import ErrorWithStatus from '../wrappers/errorWithStatus'
+import GitInvoker from '../../src/git/gitInvoker'
+import { IGitApi } from 'azure-devops-node-api/GitApi'
+import { IRequestHandler } from 'azure-devops-node-api/interfaces/common/VsoBaseInterfaces'
+import Logger from '../../src/utilities/logger'
 import PullRequestDetails from '../../src/repos/interfaces/pullRequestDetails'
 import RunnerInvoker from '../../src/runners/runnerInvoker'
-import * as Converter from '../../src/utilities/converter'
-import Logger from '../../src/utilities/logger'
-import AzureDevOpsApiWrapper from '../../src/wrappers/azureDevOpsApiWrapper'
-import * as AssertExtensions from '../testUtilities/assertExtensions'
+import TokenManager from '../../src/repos/tokenManager'
+import { WebApi } from 'azure-devops-node-api'
+import assert from 'node:assert/strict'
 import { resolvableInstance } from '../testUtilities/resolvableInstance'
-import ErrorWithStatus from '../wrappers/errorWithStatus'
 
-describe('azureReposInvoker.ts', function (): void {
+describe('azureReposInvoker.ts', (): void => {
   let gitApi: IGitApi
   let azureDevOpsApiWrapper: AzureDevOpsApiWrapper
   let gitInvoker: GitInvoker
   let logger: Logger
   let runnerInvoker: RunnerInvoker
+  let tokenManager: TokenManager
 
   beforeEach((): void => {
     process.env.SYSTEM_TEAMFOUNDATIONCOLLECTIONURI = 'https://dev.azure.com/organization'
@@ -48,8 +52,10 @@ describe('azureReposInvoker.ts', function (): void {
     logger = mock(Logger)
 
     runnerInvoker = mock(RunnerInvoker)
-    when(runnerInvoker.loc('metrics.codeMetricsCalculator.insufficientAzureReposAccessTokenPermissions')).thenReturn('Could not access the resources. Ensure the \'PR_Metrics_Access_Token\' secret environment variable has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
-    when(runnerInvoker.loc('metrics.codeMetricsCalculator.noAzureReposAccessToken')).thenReturn('Could not access the Personal Access Token (PAT). Add \'PR_Metrics_Access_Token\' as a secret environment variable.')
+    when(runnerInvoker.loc('repos.azureReposInvoker.insufficientAzureReposAccessTokenPermissions')).thenReturn('Could not access the resources. Ensure the \'PR_Metrics_Access_Token\' secret environment variable has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
+    when(runnerInvoker.loc('repos.azureReposInvoker.noAzureReposAccessToken')).thenReturn('Could not access the Workload Identity Federation or Personal Access Token (PAT). Add the \'WorkloadIdentityFederation\' input or \'PR_Metrics_Access_Token\' as a secret environment variable.')
+
+    tokenManager = mock(TokenManager)
   })
 
   after(() => {
@@ -59,36 +65,50 @@ describe('azureReposInvoker.ts', function (): void {
     delete process.env.PR_METRICS_ACCESS_TOKEN
   })
 
-  describe('isAccessTokenAvailable', (): void => {
-    it('should return null when the token exists', (): void => {
+  describe('isAccessTokenAvailable()', (): void => {
+    it('should return null when the token exists', async (): Promise<void> => {
       // Arrange
-      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker))
+      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker), instance(tokenManager))
 
       // Act
-      const result: string | null = azureReposInvoker.isAccessTokenAvailable
+      const result: string | null = await azureReposInvoker.isAccessTokenAvailable()
 
       // Assert
       assert.equal(result, null)
-      verify(logger.logDebug('* AzureReposInvoker.isAccessTokenAvailable')).once()
+      verify(logger.logDebug('* AzureReposInvoker.isAccessTokenAvailable()')).once()
     })
 
-    it('should return a string when the token does not exist', (): void => {
+    it('should return a string when the token manager fails', async (): Promise<void> => {
       // Arrange
       delete process.env.PR_METRICS_ACCESS_TOKEN
-      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker))
+      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker), instance(tokenManager))
+      when(tokenManager.getToken()).thenResolve('Failure')
 
       // Act
-      const result: string | null = azureReposInvoker.isAccessTokenAvailable
+      const result: string | null = await azureReposInvoker.isAccessTokenAvailable()
 
       // Assert
-      assert.equal(result, 'Could not access the Personal Access Token (PAT). Add \'PR_Metrics_Access_Token\' as a secret environment variable.')
-      verify(logger.logDebug('* AzureReposInvoker.isAccessTokenAvailable')).once()
+      assert.equal(result, 'Failure')
+      verify(logger.logDebug('* AzureReposInvoker.isAccessTokenAvailable()')).once()
+    })
+
+    it('should return a string when the token does not exist', async (): Promise<void> => {
+      // Arrange
+      delete process.env.PR_METRICS_ACCESS_TOKEN
+      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker), instance(tokenManager))
+
+      // Act
+      const result: string | null = await azureReposInvoker.isAccessTokenAvailable()
+
+      // Assert
+      assert.equal(result, 'Could not access the Workload Identity Federation or Personal Access Token (PAT). Add the \'WorkloadIdentityFederation\' input or \'PR_Metrics_Access_Token\' as a secret environment variable.')
+      verify(logger.logDebug('* AzureReposInvoker.isAccessTokenAvailable()')).once()
     })
   })
 
   describe('getTitleAndDescription()', (): void => {
     {
-      const testCases: Array<string | undefined> = [
+      const testCases: (string | undefined)[] = [
         undefined,
         ''
       ]
@@ -102,10 +122,10 @@ describe('azureReposInvoker.ts', function (): void {
             process.env.SYSTEM_TEAMPROJECT = variable
           }
 
-          const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker))
+          const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker), instance(tokenManager))
 
           // Act
-          const func: () => Promise<PullRequestDetails> = async () => await azureReposInvoker.getTitleAndDescription()
+          const func: () => Promise<PullRequestDetails> = async () => azureReposInvoker.getTitleAndDescription()
 
           // Assert
           await AssertExtensions.toThrowAsync(func, `'SYSTEM_TEAMPROJECT', accessed within 'AzureReposInvoker.getGitApi()', is invalid, null, or undefined '${Converter.toString(variable)}'.`)
@@ -116,7 +136,7 @@ describe('azureReposInvoker.ts', function (): void {
     }
 
     {
-      const testCases: Array<string | undefined> = [
+      const testCases: (string | undefined)[] = [
         undefined,
         ''
       ]
@@ -130,10 +150,10 @@ describe('azureReposInvoker.ts', function (): void {
             process.env.BUILD_REPOSITORY_ID = variable
           }
 
-          const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker))
+          const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker), instance(tokenManager))
 
           // Act
-          const func: () => Promise<PullRequestDetails> = async () => await azureReposInvoker.getTitleAndDescription()
+          const func: () => Promise<PullRequestDetails> = async () => azureReposInvoker.getTitleAndDescription()
 
           // Assert
           await AssertExtensions.toThrowAsync(func, `'BUILD_REPOSITORY_ID', accessed within 'AzureReposInvoker.getGitApi()', is invalid, null, or undefined '${Converter.toString(variable)}'.`)
@@ -144,7 +164,7 @@ describe('azureReposInvoker.ts', function (): void {
     }
 
     {
-      const testCases: Array<string | undefined> = [
+      const testCases: (string | undefined)[] = [
         undefined,
         ''
       ]
@@ -158,10 +178,10 @@ describe('azureReposInvoker.ts', function (): void {
             process.env.PR_METRICS_ACCESS_TOKEN = variable
           }
 
-          const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker))
+          const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker), instance(tokenManager))
 
           // Act
-          const func: () => Promise<PullRequestDetails> = async () => await azureReposInvoker.getTitleAndDescription()
+          const func: () => Promise<PullRequestDetails> = async () => azureReposInvoker.getTitleAndDescription()
 
           // Assert
           await AssertExtensions.toThrowAsync(func, `'PR_METRICS_ACCESS_TOKEN', accessed within 'AzureReposInvoker.getGitApi()', is invalid, null, or undefined '${Converter.toString(variable)}'.`)
@@ -172,7 +192,7 @@ describe('azureReposInvoker.ts', function (): void {
     }
 
     {
-      const testCases: Array<string | undefined> = [
+      const testCases: (string | undefined)[] = [
         undefined,
         ''
       ]
@@ -186,10 +206,10 @@ describe('azureReposInvoker.ts', function (): void {
             process.env.SYSTEM_TEAMFOUNDATIONCOLLECTIONURI = variable
           }
 
-          const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker))
+          const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker), instance(tokenManager))
 
           // Act
-          const func: () => Promise<PullRequestDetails> = async () => await azureReposInvoker.getTitleAndDescription()
+          const func: () => Promise<PullRequestDetails> = async () => azureReposInvoker.getTitleAndDescription()
 
           // Assert
           await AssertExtensions.toThrowAsync(func, `'SYSTEM_TEAMFOUNDATIONCOLLECTIONURI', accessed within 'AzureReposInvoker.getGitApi()', is invalid, null, or undefined '${Converter.toString(variable)}'.`)
@@ -213,10 +233,10 @@ describe('azureReposInvoker.ts', function (): void {
           const error: ErrorWithStatus = new ErrorWithStatus('Test')
           error.statusCode = statusCode
           when(gitApi.getPullRequestById(10, 'Project')).thenThrow(error)
-          const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker))
+          const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker), instance(tokenManager))
 
           // Act
-          const func: () => Promise<PullRequestDetails> = async () => await azureReposInvoker.getTitleAndDescription()
+          const func: () => Promise<PullRequestDetails> = async () => azureReposInvoker.getTitleAndDescription()
 
           // Assert
           const result: any = await AssertExtensions.toThrowAsync(func, 'Could not access the resources. Ensure the \'PR_Metrics_Access_Token\' secret environment variable has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
@@ -236,7 +256,7 @@ describe('azureReposInvoker.ts', function (): void {
         title: 'Title',
         description: 'Description'
       })
-      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker))
+      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker), instance(tokenManager))
 
       // Act
       const result: PullRequestDetails = await azureReposInvoker.getTitleAndDescription()
@@ -258,7 +278,7 @@ describe('azureReposInvoker.ts', function (): void {
         title: 'Title',
         description: 'Description'
       })
-      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker))
+      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker), instance(tokenManager))
 
       // Act
       await azureReposInvoker.getTitleAndDescription()
@@ -280,7 +300,7 @@ describe('azureReposInvoker.ts', function (): void {
       when(gitApi.getPullRequestById(10, 'Project')).thenResolve({
         title: 'Title'
       })
-      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker))
+      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker), instance(tokenManager))
 
       // Act
       const result: PullRequestDetails = await azureReposInvoker.getTitleAndDescription()
@@ -299,10 +319,10 @@ describe('azureReposInvoker.ts', function (): void {
     it('should throw when the title is unavailable', async (): Promise<void> => {
       // Arrange
       when(gitApi.getPullRequestById(10, 'Project')).thenResolve({})
-      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker))
+      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker), instance(tokenManager))
 
       // Act
-      const func: () => Promise<PullRequestDetails> = async () => await azureReposInvoker.getTitleAndDescription()
+      const func: () => Promise<PullRequestDetails> = async () => azureReposInvoker.getTitleAndDescription()
 
       // Assert
       await AssertExtensions.toThrowAsync(func, '\'title\', accessed within \'AzureReposInvoker.getTitleAndDescription()\', is invalid, null, or undefined \'undefined\'.')
@@ -329,10 +349,10 @@ describe('azureReposInvoker.ts', function (): void {
           const error: ErrorWithStatus = new ErrorWithStatus('Test')
           error.statusCode = statusCode
           when(gitApi.getThreads('RepoID', 10, 'Project')).thenThrow(error)
-          const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker))
+          const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker), instance(tokenManager))
 
           // Act
-          const func: () => Promise<CommentData> = async () => await azureReposInvoker.getComments()
+          const func: () => Promise<CommentData> = async () => azureReposInvoker.getComments()
 
           // Assert
           const result: any = await AssertExtensions.toThrowAsync(func, 'Could not access the resources. Ensure the \'PR_Metrics_Access_Token\' secret environment variable has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
@@ -349,7 +369,7 @@ describe('azureReposInvoker.ts', function (): void {
     it('should return the result when called with a pull request comment', async (): Promise<void> => {
       // Arrange
       when(gitApi.getThreads('RepoID', 10, 'Project')).thenResolve([{ id: 1, status: 1, comments: [{ content: 'Content' }] }])
-      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker))
+      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker), instance(tokenManager))
 
       // Act
       const result: CommentData = await azureReposInvoker.getComments()
@@ -371,7 +391,7 @@ describe('azureReposInvoker.ts', function (): void {
     it('should return the result when called with a file comment', async (): Promise<void> => {
       // Arrange
       when(gitApi.getThreads('RepoID', 10, 'Project')).thenResolve([{ id: 1, status: 1, comments: [{ content: 'Content' }], threadContext: { filePath: '/file.ts' } }])
-      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker))
+      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker), instance(tokenManager))
 
       // Act
       const result: CommentData = await azureReposInvoker.getComments()
@@ -398,7 +418,7 @@ describe('azureReposInvoker.ts', function (): void {
           { id: 1, status: 1, comments: [{ content: 'PR Content' }] },
           { id: 2, status: 1, comments: [{ content: 'File Content' }], threadContext: { filePath: '/file.ts' } }
         ])
-      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker))
+      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker), instance(tokenManager))
 
       // Act
       const result: CommentData = await azureReposInvoker.getComments()
@@ -424,7 +444,7 @@ describe('azureReposInvoker.ts', function (): void {
     it('should return the result when called multiple times', async (): Promise<void> => {
       // Arrange
       when(gitApi.getThreads('RepoID', 10, 'Project')).thenResolve([{ id: 1, status: 1, comments: [{ content: 'Content' }] }])
-      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker))
+      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker), instance(tokenManager))
 
       // Act
       await azureReposInvoker.getComments()
@@ -447,10 +467,10 @@ describe('azureReposInvoker.ts', function (): void {
     it('should throw when provided with a payload with no ID', async (): Promise<void> => {
       // Arrange
       when(gitApi.getThreads('RepoID', 10, 'Project')).thenResolve([{ status: 1, comments: [{ content: 'Content' }] }])
-      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker))
+      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker), instance(tokenManager))
 
       // Act
-      const func: () => Promise<CommentData> = async () => await azureReposInvoker.getComments()
+      const func: () => Promise<CommentData> = async () => azureReposInvoker.getComments()
 
       // Assert
       await AssertExtensions.toThrowAsync(func, '\'commentThread[0].id\', accessed within \'AzureReposInvoker.convertPullRequestComments()\', is invalid, null, or undefined \'undefined\'.')
@@ -469,7 +489,7 @@ describe('azureReposInvoker.ts', function (): void {
         { id: 2, comments: [{ content: 'File Content' }], threadContext: { filePath: '/file.ts' } }
       ]
       when(gitApi.getThreads('RepoID', 10, 'Project')).thenResolve(getThreadsResult)
-      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker))
+      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker), instance(tokenManager))
 
       // Act
       const result: CommentData = await azureReposInvoker.getComments()
@@ -512,7 +532,7 @@ describe('azureReposInvoker.ts', function (): void {
             { id: 3, status: 1, comments: [{ content: 'File Content' }], threadContext: { filePath: '/file.ts' } }
           ]
           when(gitApi.getThreads('RepoID', 10, 'Project')).thenResolve(getThreadsResult)
-          const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker))
+          const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker), instance(tokenManager))
 
           // Act
           const result: CommentData = await azureReposInvoker.getComments()
@@ -552,10 +572,10 @@ describe('azureReposInvoker.ts', function (): void {
           const error: ErrorWithStatus = new ErrorWithStatus('Test')
           error.statusCode = statusCode
           when(gitApi.updatePullRequest(anything(), 'RepoID', 10, 'Project')).thenThrow(error)
-          const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker))
+          const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker), instance(tokenManager))
 
           // Act
-          const func: () => Promise<void> = async () => await azureReposInvoker.setTitleAndDescription('Title', 'Description')
+          const func: () => Promise<void> = async () => azureReposInvoker.setTitleAndDescription('Title', 'Description')
 
           // Assert
           const result: any = await AssertExtensions.toThrowAsync(func, 'Could not access the resources. Ensure the \'PR_Metrics_Access_Token\' secret environment variable has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
@@ -571,7 +591,7 @@ describe('azureReposInvoker.ts', function (): void {
 
     it('should not call the API when the title and description are null', async (): Promise<void> => {
       // Arrange
-      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker))
+      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker), instance(tokenManager))
 
       // Act
       await azureReposInvoker.setTitleAndDescription(null, null)
@@ -590,7 +610,7 @@ describe('azureReposInvoker.ts', function (): void {
         title: 'Title'
       }
       when(gitApi.updatePullRequest(deepEqual(expectedDetails), 'RepoID', 10, 'Project')).thenResolve({})
-      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker))
+      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker), instance(tokenManager))
 
       // Act
       await azureReposInvoker.setTitleAndDescription('Title', null)
@@ -610,7 +630,7 @@ describe('azureReposInvoker.ts', function (): void {
         description: 'Description'
       }
       when(gitApi.updatePullRequest(deepEqual(expectedDetails), 'RepoID', 10, 'Project')).thenResolve({})
-      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker))
+      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker), instance(tokenManager))
 
       // Act
       await azureReposInvoker.setTitleAndDescription(null, 'Description')
@@ -631,7 +651,7 @@ describe('azureReposInvoker.ts', function (): void {
         description: 'Description'
       }
       when(gitApi.updatePullRequest(deepEqual(expectedDetails), 'RepoID', 10, 'Project')).thenResolve({})
-      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker))
+      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker), instance(tokenManager))
 
       // Act
       await azureReposInvoker.setTitleAndDescription('Title', 'Description')
@@ -652,7 +672,7 @@ describe('azureReposInvoker.ts', function (): void {
         description: 'Description'
       }
       when(gitApi.updatePullRequest(deepEqual(expectedDetails), 'RepoID', 10, 'Project')).thenResolve({})
-      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker))
+      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker), instance(tokenManager))
 
       // Act
       await azureReposInvoker.setTitleAndDescription('Title', 'Description')
@@ -682,10 +702,10 @@ describe('azureReposInvoker.ts', function (): void {
           const error: ErrorWithStatus = new ErrorWithStatus('Test')
           error.statusCode = statusCode
           when(gitApi.createThread(anything(), 'RepoID', 10, 'Project')).thenThrow(error)
-          const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker))
+          const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker), instance(tokenManager))
 
           // Act
-          const func: () => Promise<void> = async () => await azureReposInvoker.createComment('Comment Content', CommentThreadStatus.Active, 'file.ts')
+          const func: () => Promise<void> = async () => azureReposInvoker.createComment('Comment Content', CommentThreadStatus.Active, 'file.ts')
 
           // Assert
           const result: any = await AssertExtensions.toThrowAsync(func, 'Could not access the resources. Ensure the \'PR_Metrics_Access_Token\' secret environment variable has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
@@ -706,7 +726,7 @@ describe('azureReposInvoker.ts', function (): void {
         status: CommentThreadStatus.Active
       }
       when(gitApi.createThread(deepEqual(expectedComment), 'RepoID', 10, 'Project')).thenResolve({})
-      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker))
+      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker), instance(tokenManager))
 
       // Act
       await azureReposInvoker.createComment('Comment Content', CommentThreadStatus.Active)
@@ -727,7 +747,7 @@ describe('azureReposInvoker.ts', function (): void {
         status: CommentThreadStatus.Active
       }
       when(gitApi.createThread(deepEqual(expectedComment), 'RepoID', 10, 'Project')).thenResolve({})
-      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker))
+      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker), instance(tokenManager))
 
       // Act
       await azureReposInvoker.createComment('Comment Content', CommentThreadStatus.Active)
@@ -760,7 +780,7 @@ describe('azureReposInvoker.ts', function (): void {
         }
       }
       when(gitApi.createThread(deepEqual(expectedComment), 'RepoID', 10, 'Project')).thenResolve({})
-      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker))
+      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker), instance(tokenManager))
 
       // Act
       await azureReposInvoker.createComment('Comment Content', CommentThreadStatus.Active, 'file.ts')
@@ -792,7 +812,7 @@ describe('azureReposInvoker.ts', function (): void {
         }
       }
       when(gitApi.createThread(deepEqual(expectedComment), 'RepoID', 10, 'Project')).thenResolve({})
-      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker))
+      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker), instance(tokenManager))
 
       // Act
       await azureReposInvoker.createComment('Comment Content', CommentThreadStatus.Active, 'file.ts', true)
@@ -821,10 +841,10 @@ describe('azureReposInvoker.ts', function (): void {
           const error: ErrorWithStatus = new ErrorWithStatus('Test')
           error.statusCode = statusCode
           when(gitApi.updateComment(anything(), 'RepoID', 10, 20, 1, 'Project')).thenThrow(error)
-          const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker))
+          const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker), instance(tokenManager))
 
           // Act
-          const func: () => Promise<void> = async () => await azureReposInvoker.updateComment(20, 'Content', CommentThreadStatus.Active)
+          const func: () => Promise<void> = async () => azureReposInvoker.updateComment(20, 'Content', CommentThreadStatus.Active)
 
           // Assert
           const result: any = await AssertExtensions.toThrowAsync(func, 'Could not access the resources. Ensure the \'PR_Metrics_Access_Token\' secret environment variable has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
@@ -852,10 +872,10 @@ describe('azureReposInvoker.ts', function (): void {
           error.status = status
           when(gitApi.updateComment(anything(), 'RepoID', 10, 20, 1, 'Project')).thenResolve({})
           when(gitApi.updateThread(anything(), 'RepoID', 10, 20, 'Project')).thenThrow(error)
-          const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker))
+          const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker), instance(tokenManager))
 
           // Act
-          const func: () => Promise<void> = async () => await azureReposInvoker.updateComment(20, 'Content', CommentThreadStatus.Active)
+          const func: () => Promise<void> = async () => azureReposInvoker.updateComment(20, 'Content', CommentThreadStatus.Active)
 
           // Assert
           const result: any = await AssertExtensions.toThrowAsync(func, 'Could not access the resources. Ensure the \'PR_Metrics_Access_Token\' secret environment variable has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
@@ -881,7 +901,7 @@ describe('azureReposInvoker.ts', function (): void {
         status: CommentThreadStatus.Active
       }
       when(gitApi.updateThread(deepEqual(expectedCommentThread), 'RepoID', 10, 20, 'Project')).thenResolve({})
-      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker))
+      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker), instance(tokenManager))
 
       // Act
       await azureReposInvoker.updateComment(20, 'Content', CommentThreadStatus.Active)
@@ -902,7 +922,7 @@ describe('azureReposInvoker.ts', function (): void {
         content: 'Content'
       }
       when(gitApi.updateComment(deepEqual(expectedComment), 'RepoID', 10, 20, 1, 'Project')).thenResolve({})
-      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker))
+      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker), instance(tokenManager))
 
       // Act
       await azureReposInvoker.updateComment(20, 'Content', null)
@@ -922,7 +942,7 @@ describe('azureReposInvoker.ts', function (): void {
         status: CommentThreadStatus.Active
       }
       when(gitApi.updateThread(deepEqual(expectedComment), 'RepoID', 10, 20, 'Project')).thenResolve({})
-      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker))
+      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker), instance(tokenManager))
 
       // Act
       await azureReposInvoker.updateComment(20, null, CommentThreadStatus.Active)
@@ -938,7 +958,7 @@ describe('azureReposInvoker.ts', function (): void {
 
     it('should call no APIs when neither the comment content nor the thread status are updated', async (): Promise<void> => {
       // Arrange
-      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker))
+      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker), instance(tokenManager))
 
       // Act
       await azureReposInvoker.updateComment(20, null, null)
@@ -958,7 +978,7 @@ describe('azureReposInvoker.ts', function (): void {
         content: 'Content'
       }
       when(gitApi.updateComment(deepEqual(expectedComment), 'RepoID', 10, 20, 1, 'Project')).thenResolve({})
-      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker))
+      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker), instance(tokenManager))
 
       // Act
       await azureReposInvoker.updateComment(20, 'Content', null)
@@ -988,10 +1008,10 @@ describe('azureReposInvoker.ts', function (): void {
           const error: ErrorWithStatus = new ErrorWithStatus('Test')
           error.statusCode = statusCode
           when(gitApi.deleteComment('RepoID', 10, 20, 1, 'Project')).thenThrow(error)
-          const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker))
+          const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker), instance(tokenManager))
 
           // Act
-          const func: () => Promise<void> = async () => await azureReposInvoker.deleteCommentThread(20)
+          const func: () => Promise<void> = async () => azureReposInvoker.deleteCommentThread(20)
 
           // Assert
           const result: any = await AssertExtensions.toThrowAsync(func, 'Could not access the resources. Ensure the \'PR_Metrics_Access_Token\' secret environment variable has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
@@ -1008,7 +1028,7 @@ describe('azureReposInvoker.ts', function (): void {
     it('should call the API for a single comment', async (): Promise<void> => {
       // Arrange
       when(gitApi.deleteComment('RepoID', 10, 20, 1, 'Project')).thenResolve()
-      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker))
+      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker), instance(tokenManager))
 
       // Act
       await azureReposInvoker.deleteCommentThread(20)
@@ -1024,7 +1044,7 @@ describe('azureReposInvoker.ts', function (): void {
     it('should call the API when called multiple times', async (): Promise<void> => {
       // Arrange
       when(gitApi.deleteComment('RepoID', 10, anyNumber(), 1, 'Project')).thenResolve()
-      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker))
+      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker), instance(tokenManager))
 
       // Act
       await azureReposInvoker.deleteCommentThread(20)

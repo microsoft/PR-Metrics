@@ -1,14 +1,18 @@
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT License.
+ */
 
-import assert from 'node:assert/strict'
 import 'reflect-metadata'
 import { instance, mock, verify, when } from 'ts-mockito'
-import OctokitGitDiffParser from '../../src/git/octokitGitDiffParser'
-import Logger from '../../src/utilities/logger'
 import AxiosWrapper from '../../src/wrappers/axiosWrapper'
 import GetPullResponse from '../../src/wrappers/octokitInterfaces/getPullResponse'
+import Logger from '../../src/utilities/logger'
+import OctokitGitDiffParser from '../../src/git/octokitGitDiffParser'
 import OctokitWrapper from '../../src/wrappers/octokitWrapper'
+import assert from 'node:assert/strict'
+
+/* eslint-disable camelcase -- Required for alignment with Octokit. */
 
 describe('octokitGitDiffParser.ts', (): void => {
   let axiosWrapper: AxiosWrapper
@@ -89,8 +93,8 @@ describe('octokitGitDiffParser.ts', (): void => {
       testCases.forEach(({ fileCount, diff, lineNumber }: TestCaseType): void => {
         it(`should return the correct line number when ${fileCount} changed files are present`, async (): Promise<void> => {
           // Arrange
-          when(octokitWrapper.getPull('owner', 'repo', 1)).thenCall((): Promise<GetPullResponse> => Promise.resolve({ data: { diff_url: 'https://github.com/microsoft/PR-Metrics' } } as GetPullResponse))
-          when(axiosWrapper.getUrl('https://github.com/microsoft/PR-Metrics')).thenCall((): Promise<string> => Promise.resolve(diff))
+          when(octokitWrapper.getPull('owner', 'repo', 1)).thenCall(async (): Promise<GetPullResponse> => Promise.resolve({ data: { diff_url: 'https://github.com/microsoft/PR-Metrics' } } as GetPullResponse))
+          when(axiosWrapper.getUrl('https://github.com/microsoft/PR-Metrics')).thenCall(async (): Promise<string> => Promise.resolve(diff))
           const octokitGitDiffParser: OctokitGitDiffParser = new OctokitGitDiffParser(instance(axiosWrapper), instance(logger))
 
           // Act
@@ -108,8 +112,8 @@ describe('octokitGitDiffParser.ts', (): void => {
 
     it('should return the correct line number when considering a renamed file', async (): Promise<void> => {
       // Arrange
-      when(octokitWrapper.getPull('owner', 'repo', 1)).thenCall((): Promise<GetPullResponse> => Promise.resolve({ data: { diff_url: 'https://github.com/microsoft/PR-Metrics' } } as GetPullResponse))
-      when(axiosWrapper.getUrl('https://github.com/microsoft/PR-Metrics')).thenCall((): Promise<string> =>
+      when(octokitWrapper.getPull('owner', 'repo', 1)).thenCall(async (): Promise<GetPullResponse> => Promise.resolve({ data: { diff_url: 'https://github.com/microsoft/PR-Metrics' } } as GetPullResponse))
+      when(axiosWrapper.getUrl('https://github.com/microsoft/PR-Metrics')).thenCall(async (): Promise<string> =>
         Promise.resolve('diff --git a/oldFile.ts b/file.ts\n' +
           'similarity index 99%\n' +
           'rename from oldFile.ts\n' +
@@ -135,8 +139,8 @@ describe('octokitGitDiffParser.ts', (): void => {
 
     it('should return the correct line number when considering a renamed file with no changes', async (): Promise<void> => {
       // Arrange
-      when(octokitWrapper.getPull('owner', 'repo', 1)).thenCall((): Promise<GetPullResponse> => Promise.resolve({ data: { diff_url: 'https://github.com/microsoft/PR-Metrics' } } as GetPullResponse))
-      when(axiosWrapper.getUrl('https://github.com/microsoft/PR-Metrics')).thenCall((): Promise<string> =>
+      when(octokitWrapper.getPull('owner', 'repo', 1)).thenCall(async (): Promise<GetPullResponse> => Promise.resolve({ data: { diff_url: 'https://github.com/microsoft/PR-Metrics' } } as GetPullResponse))
+      when(axiosWrapper.getUrl('https://github.com/microsoft/PR-Metrics')).thenCall(async (): Promise<string> =>
         Promise.resolve('diff --git a/oldFile.ts b/file.ts\n' +
           'similarity index 100%\n' +
           'rename from oldFile.ts\n' +
@@ -156,8 +160,8 @@ describe('octokitGitDiffParser.ts', (): void => {
 
     it('should return the correct line number when considering an added file', async (): Promise<void> => {
       // Arrange
-      when(octokitWrapper.getPull('owner', 'repo', 1)).thenCall((): Promise<GetPullResponse> => Promise.resolve({ data: { diff_url: 'https://github.com/microsoft/PR-Metrics' } } as GetPullResponse))
-      when(axiosWrapper.getUrl('https://github.com/microsoft/PR-Metrics')).thenCall((): Promise<string> =>
+      when(octokitWrapper.getPull('owner', 'repo', 1)).thenCall(async (): Promise<GetPullResponse> => Promise.resolve({ data: { diff_url: 'https://github.com/microsoft/PR-Metrics' } } as GetPullResponse))
+      when(axiosWrapper.getUrl('https://github.com/microsoft/PR-Metrics')).thenCall(async (): Promise<string> =>
         Promise.resolve('diff --git a/file.ts b/file.ts\n' +
           'new file mode 100754\n' +
           'index 00000000..8318c87e\n' +
@@ -181,8 +185,8 @@ describe('octokitGitDiffParser.ts', (): void => {
 
     it('should return null when considering a deleted file', async (): Promise<void> => {
       // Arrange
-      when(octokitWrapper.getPull('owner', 'repo', 1)).thenCall((): Promise<GetPullResponse> => Promise.resolve({ data: { diff_url: 'https://github.com/microsoft/PR-Metrics' } } as GetPullResponse))
-      when(axiosWrapper.getUrl('https://github.com/microsoft/PR-Metrics')).thenCall((): Promise<string> =>
+      when(octokitWrapper.getPull('owner', 'repo', 1)).thenCall(async (): Promise<GetPullResponse> => Promise.resolve({ data: { diff_url: 'https://github.com/microsoft/PR-Metrics' } } as GetPullResponse))
+      when(axiosWrapper.getUrl('https://github.com/microsoft/PR-Metrics')).thenCall(async (): Promise<string> =>
         Promise.resolve('diff --git a/file.ts b/file.ts\n' +
           'deleted file mode 100754\n' +
           'index 68adfef0..00000000\n' +
@@ -205,8 +209,8 @@ describe('octokitGitDiffParser.ts', (): void => {
 
     it('should return the correct line number when called twice', async (): Promise<void> => {
       // Arrange
-      when(octokitWrapper.getPull('owner', 'repo', 1)).thenCall((): Promise<GetPullResponse> => Promise.resolve({ data: { diff_url: 'https://github.com/microsoft/PR-Metrics' } } as GetPullResponse))
-      when(axiosWrapper.getUrl('https://github.com/microsoft/PR-Metrics')).thenCall((): Promise<string> =>
+      when(octokitWrapper.getPull('owner', 'repo', 1)).thenCall(async (): Promise<GetPullResponse> => Promise.resolve({ data: { diff_url: 'https://github.com/microsoft/PR-Metrics' } } as GetPullResponse))
+      when(axiosWrapper.getUrl('https://github.com/microsoft/PR-Metrics')).thenCall(async (): Promise<string> =>
         Promise.resolve('diff --git oldFile.ts file.ts\n' +
           'index 6b76988..47f1131b 100646\n' +
           '--- oldFile.ts\n' +
@@ -231,8 +235,8 @@ describe('octokitGitDiffParser.ts', (): void => {
 
     it('should return null when an unknown file is specified', async (): Promise<void> => {
       // Arrange
-      when(octokitWrapper.getPull('owner', 'repo', 1)).thenCall((): Promise<GetPullResponse> => Promise.resolve({ data: { diff_url: 'https://github.com/microsoft/PR-Metrics' } } as GetPullResponse))
-      when(axiosWrapper.getUrl('https://github.com/microsoft/PR-Metrics')).thenCall((): Promise<string> =>
+      when(octokitWrapper.getPull('owner', 'repo', 1)).thenCall(async (): Promise<GetPullResponse> => Promise.resolve({ data: { diff_url: 'https://github.com/microsoft/PR-Metrics' } } as GetPullResponse))
+      when(axiosWrapper.getUrl('https://github.com/microsoft/PR-Metrics')).thenCall(async (): Promise<string> =>
         Promise.resolve('diff --git oldFile.ts file.ts\n' +
           'index 6b76988..47f1131b 100646\n' +
           '--- oldFile.ts\n' +

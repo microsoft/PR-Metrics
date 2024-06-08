@@ -1,5 +1,7 @@
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT License.
+ */
 
 import * as actionsCore from '@actions/core'
 import * as actionsExec from '@actions/exec'
@@ -33,8 +35,8 @@ export default class GitHubRunnerWrapper {
    * @param options The execution options.
    * @returns A promise containing the result of the execution.
    */
-  public async exec (tool: string, args: string[], options: actionsExec.ExecOptions): Promise<number> {
-    return await actionsExec.exec(tool, args, options)
+  public async exec (tool: string, args: string, options: actionsExec.ExecOptions): Promise<actionsExec.ExecOutput> {
+    return actionsExec.getExecOutput(tool, args.split(' '), options)
   }
 
   /**
@@ -43,6 +45,14 @@ export default class GitHubRunnerWrapper {
    */
   public setFailed (message: string): void {
     actionsCore.setFailed(message)
+  }
+
+  /**
+   * Registers a value with the logger, so the value will be masked from the logs. Multi-line secrets are disallowed.
+   * @param value The value to register.
+   */
+  public setSecret (value: string): void {
+    actionsCore.setSecret(value)
   }
 
   /**

@@ -1,8 +1,10 @@
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT License.
+ */
 
-import { instance } from 'ts-mockito'
 import ResolvableInstanceTarget from './resolvableInstanceTarget'
+import { instance } from 'ts-mockito'
 
 /**
  * Gets a resolvable instance of the specified mock object.
@@ -10,8 +12,7 @@ import ResolvableInstanceTarget from './resolvableInstanceTarget'
  * @param mock The mock object to resolve.
  * @returns The resolvable instance.
  */
-export function resolvableInstance<Type extends {}> (mock: Type): Type {
-  return new Proxy<Type>(instance(mock), {
+export const resolvableInstance = <Type extends NonNullable<unknown>> (mock: Type): Type => new Proxy<Type>(instance(mock), {
     get (target: Type, name: string): Type | undefined {
       if (['Symbol(Symbol.toPrimitive)', 'then', 'catch'].includes(name)) {
         return undefined
@@ -20,4 +21,3 @@ export function resolvableInstance<Type extends {}> (mock: Type): Type {
       return (target as ResolvableInstanceTarget<Type>)[name]
     }
   })
-}

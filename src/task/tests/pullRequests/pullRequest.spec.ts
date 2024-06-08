@@ -1,14 +1,16 @@
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT License.
+ */
 
-import assert from 'node:assert/strict'
 import 'reflect-metadata'
+import * as Converter from '../../src/utilities/converter'
 import { instance, mock, verify, when } from 'ts-mockito'
 import CodeMetrics from '../../src/metrics/codeMetrics'
+import Logger from '../../src/utilities/logger'
 import PullRequest from '../../src/pullRequests/pullRequest'
 import RunnerInvoker from '../../src/runners/runnerInvoker'
-import * as Converter from '../../src/utilities/converter'
-import Logger from '../../src/utilities/logger'
+import assert from 'node:assert/strict'
 
 describe('pullRequest.ts', (): void => {
   let codeMetrics: CodeMetrics
@@ -137,7 +139,7 @@ describe('pullRequest.ts', (): void => {
       const func: () => boolean | string = () => pullRequest.isSupportedProvider
 
       // Assert
-      assert.throws(func, TypeError('\'BUILD_REPOSITORY_PROVIDER\', accessed within \'PullRequest.isSupportedProvider\', is invalid, null, or undefined \'undefined\'.'))
+      assert.throws(func, new TypeError('\'BUILD_REPOSITORY_PROVIDER\', accessed within \'PullRequest.isSupportedProvider\', is invalid, null, or undefined \'undefined\'.'))
       verify(logger.logDebug('* PullRequest.isSupportedProvider')).once()
     })
 
@@ -198,7 +200,7 @@ describe('pullRequest.ts', (): void => {
     })
 
     {
-      const testCases: Array<string | undefined> = [
+      const testCases: (string | undefined)[] = [
         undefined,
         '',
         ' '
