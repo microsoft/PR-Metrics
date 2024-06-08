@@ -93,7 +93,7 @@ export default class OctokitGitDiffParser {
 
       // Process the diff for a single file.
       diffParsed.files.forEach((file: AnyFileChange): void => {
-        console.log('Parsing ' + file)
+        console.log('Parsing ' + JSON.stringify(file, null, 2))
         switch (file.type) {
           case 'AddedFile':
           case 'ChangedFile':
