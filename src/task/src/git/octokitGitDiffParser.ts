@@ -93,20 +93,21 @@ export default class OctokitGitDiffParser {
 
       // Process the diff for a single file.
       diffParsed.files.forEach((file: AnyFileChange): void => {
+        console.log('Parsing ' + file)
         switch (file.type) {
           case 'AddedFile':
           case 'ChangedFile':
           {
             // For an added or changed file, add the file path and the first changed line.
-            const fileCasted: AddedFile | ChangedFile = file as AddedFile | ChangedFile
-            result.set(fileCasted.path, (fileCasted.chunks[0] as Chunk)!.toFileRange.start)
+            const fileCasted: AddedFile | ChangedFile = file
+            result.set(fileCasted.path, (fileCasted.chunks[0] as Chunk).toFileRange.start)
             break
           }
           case 'RenamedFile':
           {
             // For a renamed file, add the new file path and the first changed line.
-            const fileCasted: RenamedFile = file as RenamedFile
-            result.set(fileCasted.pathAfter, (fileCasted.chunks[0] as Chunk)?.toFileRange.start!)
+            const fileCasted: RenamedFile = file
+            result.set(fileCasted.pathAfter, (fileCasted.chunks[0] as Chunk)?.toFileRange.start)
             break
           }
           default:

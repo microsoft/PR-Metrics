@@ -8,6 +8,9 @@
     },
     {
       "pattern": "^https://marketplace.visualstudio.com/manage/publishers/ms-omex$"
+    },
+    {
+      "pattern": "^https://github.com/microsoft/PR-Metrics/blob/main/docs/workload-identity-federation.md$"
     }
   ]
 }
