@@ -114,7 +114,7 @@ export default class OctokitGitDiffParser {
             const fileCasted: RenamedFile = file
             const chunk: AnyChunk | undefined = fileCasted.chunks[0]
             if (chunk === undefined || chunk.type === 'BinaryFilesChunk') {
-              this._logger.logDebug(`Skipping renamed file '${fileCasted.path}' of type '${chunk?.type} while performing diff parsing.`)
+              this._logger.logDebug(`Skipping renamed file '${fileCasted.pathAfter}' of type '${chunk?.type} while performing diff parsing.`)
               break
             }
 
