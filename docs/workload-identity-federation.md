@@ -43,7 +43,7 @@ admin and provide them with these instructions.
       - Subscription
       - Subscription ID
       - Client ID
-   1. Click into "Settings" > "Properties" and make a note of the "Tenant Id".
+   1. Click into "Settings" > "Properties" and make a note of the "Tenant ID".
 1. Create the Azure DevOps Service Connection.
    1. In a new browser tab, open your project in Azure DevOps. Retain the
       Managed Identity page in another tab as you will return to this later.
@@ -80,11 +80,11 @@ admin and provide them with these instructions.
    1. On the pane you were previously updating, enter the details as appropriate:
       - Environment: Azure Cloud
       - Scope Level: Subscription
-      - Subscription Id: Taken from the previously saved "Subscription ID".
+      - Subscription ID: Taken from the previously saved "Subscription ID".
       - Subscription Name: Taken from the previously saved "Subscription".
       - Authentication
-        - Service Principal Id: Taken from the previously saved "Client ID".
-        - Tenant ID: Taken from the previously saved "Tenant Id".
+        - Service Principal ID: Taken from the previously saved "Client ID".
+        - Tenant ID: Taken from the previously saved "Tenant ID".
 
       ![Step 2 of creating the Service Connection](images/workload-identity-federation/azure-devops-service-connection-4.png)
    1. Click "Verify and save".

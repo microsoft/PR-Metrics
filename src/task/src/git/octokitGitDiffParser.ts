@@ -100,14 +100,26 @@ export default class OctokitGitDiffParser {
           {
             // For an added or changed file, add the file path and the first changed line.
             const fileCasted: AddedFile | ChangedFile = file
-            result.set(fileCasted.path, (fileCasted.chunks[0] as Chunk).toFileRange.start)
+            const chunk: Chunk = fileCasted.chunks[0]
+            if (chunk.type === 'BinaryFilesChunk') {
+                this._logger.logDebug(`Skipping added/changed binary file '${fileCasted.path}' when performing diff parsing.`)
+                break
+            }
+
+            result.set(fileCasted.path, chunk.toFileRange.start)
             break
           }
           case 'RenamedFile':
           {
             // For a renamed file, add the new file path and the first changed line.
             const fileCasted: RenamedFile = file
-            result.set(fileCasted.pathAfter, (fileCasted.chunks[0] as Chunk)?.toFileRange.start)
+            const chunk: Chunk = fileCasted.chunks[0]
+            if (chunk.type === 'BinaryFilesChunk') {
+              this._logger.logDebug(`Skipping renamed binary file '${fileCasted.path}' when performing diff parsing.`)
+              break
+            }
+
+            result.set(fileCasted.pathAfter, chunk.toFileRange.start)
             break
           }
           default:
