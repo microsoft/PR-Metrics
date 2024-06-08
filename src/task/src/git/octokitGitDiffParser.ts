@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import parseGitDiff, { AddedFile, AnyChunk, AnyFileChange, ChangedFile, Chunk, GitDiff, RenamedFile } from 'parse-git-diff'
+import parseGitDiff, { AddedFile, AnyChunk, AnyFileChange, ChangedFile, GitDiff, RenamedFile } from 'parse-git-diff'
 import AxiosWrapper from '../wrappers/axiosWrapper'
 import GetPullResponse from '../wrappers/octokitInterfaces/getPullResponse'
 import Logger from '../utilities/logger'
@@ -101,7 +101,7 @@ export default class OctokitGitDiffParser {
             const fileCasted: AddedFile | ChangedFile = file
             const chunk: AnyChunk = fileCasted.chunks[0]!
             if (chunk.type === 'BinaryFilesChunk') {
-                this._logger.logDebug(`Skipping added/changed binary file '${fileCasted.path}' when performing diff parsing.`)
+                this._logger.logDebug(`Skipping added/changed binary file '${fileCasted.path}' while performing diff parsing.`)
                 break
             }
 
@@ -114,7 +114,7 @@ export default class OctokitGitDiffParser {
             const fileCasted: RenamedFile = file
             const chunk: AnyChunk = fileCasted.chunks[0]!
             if (chunk.type === 'BinaryFilesChunk') {
-              this._logger.logDebug(`Skipping renamed binary file '${fileCasted.pathAfter}' when performing diff parsing.`)
+              this._logger.logDebug(`Skipping renamed binary file '${fileCasted.pathAfter}' while performing diff parsing.`)
               break
             }
 
@@ -122,7 +122,7 @@ export default class OctokitGitDiffParser {
             break
           }
           default:
-            this._logger.logDebug(`Skipping file type '${file.type}' when performing diff parsing.`)
+            this._logger.logDebug(`Skipping file type '${file.type}' while performing diff parsing.`)
             break
         }
       })
