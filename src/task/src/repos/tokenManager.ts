@@ -83,7 +83,11 @@ export default class TokenManager {
       throw new Error(signInResult.stderr)
     }
 
-    // Acquire an access token for the Azure DevOps API using its resource ID '499b84ac-1321-427f-aa17-267ca6975798'.
+    /*
+     * Acquire an access token for the Azure DevOps API. This uses the resource ID for Azure DevOps in Microsoft Entra,
+     * 499b84ac-1321-427f-aa17-267ca6975798, as documented at https://learn.microsoft.com/rest/api/azure/devops/tokens/
+     * and https://learn.microsoft.com/azure/devops/integrate/get-started/authentication/service-principal-managed-identity.
+     */
     const accessTokenResult: ExecOutput = await this._runnerInvoker.exec('az', 'account get-access-token --query accessToken --resource 499b84ac-1321-427f-aa17-267ca6975798 -o tsv')
     if (accessTokenResult.exitCode !== 0) {
       throw new Error(accessTokenResult.stderr)
