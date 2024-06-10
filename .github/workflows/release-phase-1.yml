@@ -21,7 +21,7 @@ jobs:
       pull-requests: write
     with:
       major: 1
-      minor: 5
-      patch: 15
+      minor: 6
+      patch: 0
 
 ...
