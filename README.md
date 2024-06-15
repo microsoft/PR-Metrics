@@ -11,8 +11,8 @@ The Azure Pipelines task can be downloaded from the
 
 For example, a PR with the title "Adding code" could become either:
 
-- XS:heavy_check_mark: :black_small_square: Adding code
-- L:warning: :black_small_square: Adding code
+- XS :heavy_check_mark: :black_small_square: Adding code
+- L :warning: :black_small_square: Adding code
 
 The former would indicate an extra small PR with sufficient test coverage,
 whereas the latter would indicate a large PR with insufficient test coverage.
@@ -50,9 +50,9 @@ If no PR description is provided, the description will be set to:
 ## Inputs
 
 You will need to set the environment variable `PR_Metrics_Access_Token` to a
-Personal Access Token (PAT) with at least the 'repos' scope. If you are using a
-Fine-Grained PAT, it will need at least Read and Write access to pull requests.
-Instructions on creating a new PAT can be found [here][githubpat].
+Personal Access Token (PAT) with at least Read and Write access to pull
+requests. If you are using a Classic PAT, it will need at least the 'repos'
+scope. Instructions on creating a new PAT can be found [here][githubpat].
 Alternatively, you can use the in-built `GITHUB_TOKEN`.
 
 If using `GITHUB_TOKEN`, the following permissions are required:

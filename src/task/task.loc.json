@@ -55,6 +55,15 @@
       "label": "ms-resource:loc.input.label.codeFileExtensions",
       "type": "multiLine",
       "helpMarkDown": "ms-resource:loc.input.helpMarkDown.codeFileExtensions"
+    },
+    {
+      "name": "WorkloadIdentityFederation",
+      "label": "ms-resource:loc.input.label.workloadIdentityFederation",
+      "type": "connectedService:AzureRM",
+      "helpMarkDown": "ms-resource:loc.input.helpMarkDown.workloadIdentityFederation",
+      "properties": {
+        "EndpointFilterRule": ""
+      }
     }
   ],
   "execution": {
@@ -71,12 +80,8 @@
     "metrics.codeMetrics.titleSizeXS": "ms-resource:loc.messages.metrics.codeMetrics.titleSizeXS",
     "metrics.codeMetrics.titleTestsInsufficient": "ms-resource:loc.messages.metrics.codeMetrics.titleTestsInsufficient",
     "metrics.codeMetrics.titleTestsSufficient": "ms-resource:loc.messages.metrics.codeMetrics.titleTestsSufficient",
-    "metrics.codeMetricsCalculator.insufficientAzureReposAccessTokenPermissions": "ms-resource:loc.messages.metrics.codeMetricsCalculator.insufficientAzureReposAccessTokenPermissions",
-    "metrics.codeMetricsCalculator.insufficientGitHubAccessTokenPermissions": "ms-resource:loc.messages.metrics.codeMetricsCalculator.insufficientGitHubAccessTokenPermissions",
-    "metrics.codeMetricsCalculator.noAzureReposAccessToken": "ms-resource:loc.messages.metrics.codeMetricsCalculator.noAzureReposAccessToken",
     "metrics.codeMetricsCalculator.noGitHistoryAzureDevOps": "ms-resource:loc.messages.metrics.codeMetricsCalculator.noGitHistoryAzureDevOps",
     "metrics.codeMetricsCalculator.noGitHistoryGitHub": "ms-resource:loc.messages.metrics.codeMetricsCalculator.noGitHistoryGitHub",
-    "metrics.codeMetricsCalculator.noGitHubAccessToken": "ms-resource:loc.messages.metrics.codeMetricsCalculator.noGitHubAccessToken",
     "metrics.codeMetricsCalculator.noGitRepoAzureDevOps": "ms-resource:loc.messages.metrics.codeMetricsCalculator.noGitRepoAzureDevOps",
     "metrics.codeMetricsCalculator.noGitRepoGitHub": "ms-resource:loc.messages.metrics.codeMetricsCalculator.noGitRepoGitHub",
     "metrics.codeMetricsCalculator.noPullRequest": "ms-resource:loc.messages.metrics.codeMetricsCalculator.noPullRequest",
@@ -111,6 +116,11 @@
     "pullRequests.pullRequestComments.tableTestCode": "ms-resource:loc.messages.pullRequests.pullRequestComments.tableTestCode",
     "pullRequests.pullRequestComments.tableTotal": "ms-resource:loc.messages.pullRequests.pullRequestComments.tableTotal",
     "pullRequests.pullRequestComments.testsInsufficientComment": "ms-resource:loc.messages.pullRequests.pullRequestComments.testsInsufficientComment",
-    "pullRequests.pullRequestComments.testsSufficientComment": "ms-resource:loc.messages.pullRequests.pullRequestComments.testsSufficientComment"
+    "pullRequests.pullRequestComments.testsSufficientComment": "ms-resource:loc.messages.pullRequests.pullRequestComments.testsSufficientComment",
+    "repos.azureReposInvoker.insufficientAzureReposAccessTokenPermissions": "ms-resource:loc.messages.repos.azureReposInvoker.insufficientAzureReposAccessTokenPermissions",
+    "repos.azureReposInvoker.noAzureReposAccessToken": "ms-resource:loc.messages.repos.azureReposInvoker.noAzureReposAccessToken",
+    "repos.gitHubReposInvoker.insufficientGitHubAccessTokenPermissions": "ms-resource:loc.messages.repos.gitHubReposInvoker.insufficientGitHubAccessTokenPermissions",
+    "repos.gitHubReposInvoker.noGitHubAccessToken": "ms-resource:loc.messages.repos.gitHubReposInvoker.noGitHubAccessToken",
+    "repos.tokenManager.incorrectAuthorizationScheme": "ms-resource:loc.messages.repos.tokenManager.incorrectAuthorizationScheme"
   }
 }

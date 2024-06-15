@@ -20,6 +20,15 @@ export default class AzureDevOpsApiWrapper {
   }
 
   /**
+   * Gets a handler from a token.
+   * @param token The Azure DevOps API token.
+   * @returns The handler.
+   */
+  public getHandlerFromToken(token: string): IRequestHandler {
+    return azureDevOpsApi.getHandlerFromToken(token)
+  }
+
+  /**
    * Gets a web API instance on which the Azure DevOps operations can be invoked.
    * @param defaultUrl The default URL, which represents the base URL on which the operations are to be invoked.
    * @param authHandler The authentication handler instance.

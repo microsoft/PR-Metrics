@@ -26,6 +26,7 @@ describe('azureReposInvoker.ts', function (): void {
   let gitInvoker: GitInvoker
   let logger: Logger
   let runnerInvoker: RunnerInvoker
+  let tokenManager: TokenManager
 
   beforeEach((): void => {
     process.env.SYSTEM_TEAMFOUNDATIONCOLLECTIONURI = 'https://dev.azure.com/organization'
@@ -48,8 +49,10 @@ describe('azureReposInvoker.ts', function (): void {
     logger = mock(Logger)
 
     runnerInvoker = mock(RunnerInvoker)
-    when(runnerInvoker.loc('metrics.codeMetricsCalculator.insufficientAzureReposAccessTokenPermissions')).thenReturn('Could not access the resources. Ensure the \'PR_Metrics_Access_Token\' secret environment variable has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
-    when(runnerInvoker.loc('metrics.codeMetricsCalculator.noAzureReposAccessToken')).thenReturn('Could not access the Personal Access Token (PAT). Add \'PR_Metrics_Access_Token\' as a secret environment variable.')
+    when(runnerInvoker.loc('repos.azureReposInvoker.insufficientAzureReposAccessTokenPermissions')).thenReturn('Could not access the resources. Ensure the \'PR_Metrics_Access_Token\' secret environment variable has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
+    when(runnerInvoker.loc('repos.azureReposInvoker.noAzureReposAccessToken')).thenReturn('Could not access the Workload Identity Federation or Personal Access Token (PAT). Add the \'WorkloadIdentityFederation\' input or \'PR_Metrics_Access_Token\' as a secret environment variable.')
+
+    tokenManager = mock(TokenManager)
   })
 
   after(() => {
@@ -59,30 +62,46 @@ describe('azureReposInvoker.ts', function (): void {
     delete process.env.PR_METRICS_ACCESS_TOKEN
   })
 
-  describe('isAccessTokenAvailable', (): void => {
-    it('should return null when the token exists', (): void => {
+
+
+  describe('isAccessTokenAvailable()', (): void => {
+    it('should return null when the token exists', async (): Promise<void> => {
       // Arrange
-      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker))
+      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker), instance(tokenManager))
 
       // Act
-      const result: string | null = azureReposInvoker.isAccessTokenAvailable
+      const result: string | null = await azureReposInvoker.isAccessTokenAvailable()
 
       // Assert
       assert.equal(result, null)
-      verify(logger.logDebug('* AzureReposInvoker.isAccessTokenAvailable')).once()
+      verify(logger.logDebug('* AzureReposInvoker.isAccessTokenAvailable()')).once()
     })
 
-    it('should return a string when the token does not exist', (): void => {
+    it('should return a string when the token manager fails', async (): Promise<void> => {
       // Arrange
       delete process.env.PR_METRICS_ACCESS_TOKEN
-      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker))
+      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker), instance(tokenManager))
+      when(tokenManager.getToken()).thenResolve('Failure')
 
       // Act
-      const result: string | null = azureReposInvoker.isAccessTokenAvailable
+      const result: string | null = await azureReposInvoker.isAccessTokenAvailable()
 
       // Assert
-      assert.equal(result, 'Could not access the Personal Access Token (PAT). Add \'PR_Metrics_Access_Token\' as a secret environment variable.')
-      verify(logger.logDebug('* AzureReposInvoker.isAccessTokenAvailable')).once()
+      assert.equal(result, 'Failure')
+      verify(logger.logDebug('* AzureReposInvoker.isAccessTokenAvailable()')).once()
+    })
+
+    it('should return a string when the token does not exist', async (): Promise<void> => {
+      // Arrange
+      delete process.env.PR_METRICS_ACCESS_TOKEN
+      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker), instance(tokenManager))
+
+      // Act
+      const result: string | null = await azureReposInvoker.isAccessTokenAvailable()
+
+      // Assert
+      assert.equal(result, 'Could not access the Workload Identity Federation or Personal Access Token (PAT). Add the \'WorkloadIdentityFederation\' input or \'PR_Metrics_Access_Token\' as a secret environment variable.')
+      verify(logger.logDebug('* AzureReposInvoker.isAccessTokenAvailable()')).once()
     })
   })
 

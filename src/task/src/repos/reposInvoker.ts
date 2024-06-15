@@ -35,11 +35,11 @@ export default class ReposInvoker implements IReposInvoker {
     this._logger = logger
   }
 
-  public get isAccessTokenAvailable (): string | null {
-    this._logger.logDebug('* ReposInvoker.isAccessTokenAvailable')
+  public async isAccessTokenAvailable (): Promise<string | null> {
+    this._logger.logDebug('* ReposInvoker.isAccessTokenAvailable()')
 
     const reposInvoker: IReposInvoker = this.getReposInvoker()
-    return reposInvoker.isAccessTokenAvailable
+    return reposInvoker.isAccessTokenAvailable()
   }
 
   public async getTitleAndDescription (): Promise<PullRequestDetails> {

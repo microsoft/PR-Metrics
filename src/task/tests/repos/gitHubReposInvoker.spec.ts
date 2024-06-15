@@ -44,8 +44,8 @@ describe('gitHubReposInvoker.ts', function (): void {
     when(octokitWrapper.listCommits(anyString(), anyString(), anyNumber(), anyNumber())).thenResolve(GitHubReposInvokerConstants.listCommitsResponse)
 
     runnerInvoker = mock(RunnerInvoker)
-    when(runnerInvoker.loc('metrics.codeMetricsCalculator.insufficientGitHubAccessTokenPermissions')).thenReturn('Could not access the resources. Ensure the \'PR_Metrics_Access_Token\' secret environment variable has access to \'repos\'.')
-    when(runnerInvoker.loc('metrics.codeMetricsCalculator.noGitHubAccessToken')).thenReturn('Could not access the Personal Access Token (PAT). Add \'PR_Metrics_Access_Token\' as a secret environment variable with access to \'repos\'.')
+    when(runnerInvoker.loc('repos.gitHubReposInvoker.insufficientGitHubAccessTokenPermissions')).thenReturn('Could not access the resources. Ensure the \'PR_Metrics_Access_Token\' secret environment variable has Read and Write access to pull requests (or access to \'repos\' if using a Classic PAT).')
+    when(runnerInvoker.loc('repos.gitHubReposInvoker.noGitHubAccessToken')).thenReturn('Could not access the Personal Access Token (PAT). Add \'PR_Metrics_Access_Token\' as a secret environment variable with Read and Write access to Pull Requests (or access to \'repos\' if using a Classic PAT, or write access to \'pull-requests\' and \'statuses\' if specified within the workflow YAML).')
   })
 
   afterEach((): void => {
@@ -53,48 +53,48 @@ describe('gitHubReposInvoker.ts', function (): void {
     delete process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI
   })
 
-  describe('isAccessTokenAvailable', (): void => {
-    it('should return null when the token exists on Azure DevOps', (): void => {
+  describe('isAccessTokenAvailable()', (): void => {
+    it('should return null when the token exists on Azure DevOps', async (): Promise<void> => {
       // Arrange
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 
       // Act
-      const result: string | null = gitHubReposInvoker.isAccessTokenAvailable
+      const result: string | null = await gitHubReposInvoker.isAccessTokenAvailable()
 
       // Assert
       assert.equal(result, null)
-      verify(logger.logDebug('* GitHubReposInvoker.isAccessTokenAvailable')).once()
+      verify(logger.logDebug('* GitHubReposInvoker.isAccessTokenAvailable()')).once()
     })
 
-    it('should return null when the token exists on GitHub', (): void => {
+    it('should return null when the token exists on GitHub', async (): Promise<void> => {
       // Arrange
       process.env.PR_METRICS_ACCESS_TOKEN = 'PAT'
       process.env.GITHUB_ACTION = 'PR-Metrics'
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 
       // Act
-      const result: string | null = gitHubReposInvoker.isAccessTokenAvailable
+      const result: string | null = await gitHubReposInvoker.isAccessTokenAvailable()
 
       // Assert
       assert.equal(result, null)
-      verify(logger.logDebug('* GitHubReposInvoker.isAccessTokenAvailable')).once()
+      verify(logger.logDebug('* GitHubReposInvoker.isAccessTokenAvailable()')).once()
 
       // Finalization
       delete process.env.PR_METRICS_ACCESS_TOKEN
       delete process.env.GITHUB_ACTION
     })
 
-    it('should return a string when the token does not exist', (): void => {
+    it('should return a string when the token does not exist', async (): Promise<void> => {
       // Arrange
       delete process.env.PR_METRICS_ACCESS_TOKEN
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 
       // Act
-      const result: string | null = gitHubReposInvoker.isAccessTokenAvailable
+      const result: string | null = await gitHubReposInvoker.isAccessTokenAvailable()
 
       // Assert
-      assert.equal(result, 'Could not access the Personal Access Token (PAT). Add \'PR_Metrics_Access_Token\' as a secret environment variable with access to \'repos\'.')
-      verify(logger.logDebug('* GitHubReposInvoker.isAccessTokenAvailable')).once()
+      assert.equal(result, 'Could not access the Personal Access Token (PAT). Add \'PR_Metrics_Access_Token\' as a secret environment variable with Read and Write access to Pull Requests (or access to \'repos\' if using a Classic PAT, or write access to \'pull-requests\' and \'statuses\' if specified within the workflow YAML).')
+      verify(logger.logDebug('* GitHubReposInvoker.isAccessTokenAvailable()')).once()
     })
   })
 

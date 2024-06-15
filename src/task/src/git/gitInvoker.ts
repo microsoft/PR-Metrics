@@ -66,7 +66,7 @@ export default class GitInvoker {
     this.initialize()
 
     try {
-      await this.invokeGit(['rev-parse', '--branch', `origin/${this._targetBranch}...pull/${this._pullRequestIdInternal}/merge`])
+      await this.invokeGit(`rev-parse --branch origin/${this._targetBranch}...pull/${this._pullRequestIdInternal}/merge`)
       return true
     } catch {
       return false
@@ -185,17 +185,13 @@ export default class GitInvoker {
     }
   }
 
-  private async invokeGit (parameters: string[]): Promise<string> {
+  private async invokeGit (parameters: string): Promise<string> {
     this._logger.logDebug('* GitInvoker.invokeGit()')
 
-    const outputStream: GitWritableStream = new GitWritableStream(this._logger)
-    const errorStream: GitWritableStream = new GitWritableStream(this._logger)
-    const result: number = await this._runnerInvoker.exec('git', parameters, true, outputStream, errorStream)
-
-    if (result !== 0) {
-      throw Error(errorStream.message)
+    const result: ExecOutput = await this._runnerInvoker.exec('git', parameters)
+    if (result.exitCode !== 0) {
+      throw new Error(result.stderr)
     }
 
-    return outputStream.message
-  }
+    return result.stdout
 }

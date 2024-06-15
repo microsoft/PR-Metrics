@@ -47,36 +47,43 @@ describe('runnerInvoker.ts', function (): void {
     it('should call the underlying method when running on Azure Pipelines', async (): Promise<void> => {
       // Arrange
       const runnerInvoker: RunnerInvoker = new RunnerInvoker(instance(azurePipelinesRunnerInvoker), instance(gitHubRunnerInvoker))
-      const logger: Logger = mock(Logger)
-      const outputStream: GitWritableStream = new GitWritableStream(instance(logger))
-      const errorStream: GitWritableStream = new GitWritableStream(instance(logger))
-      when(azurePipelinesRunnerInvoker.exec('TOOL', deepEqual(['Argument 1', 'Argument 2']), true, anything(), anything())).thenResolve(1)
+      const execResult: ExecOutput = {
+        exitCode: 1,
+        stderr: 'Error',
+        stdout: 'Output'
+      }
+      when(azurePipelinesRunnerInvoker.exec('TOOL', 'Argument1 Argument2')).thenResolve(execResult)
 
       // Act
-      const result: number = await runnerInvoker.exec('TOOL', ['Argument 1', 'Argument 2'], true, outputStream, errorStream)
+      const result: ExecOutput = await runnerInvoker.exec('TOOL', 'Argument1 Argument2')
 
       // Assert
-      assert.equal(result, 1)
-      verify(azurePipelinesRunnerInvoker.exec('TOOL', deepEqual(['Argument 1', 'Argument 2']), true, outputStream, errorStream)).once()
-      verify(gitHubRunnerInvoker.exec('TOOL', deepEqual(['Argument 1', 'Argument 2']), true, outputStream, errorStream)).never()
-    })
+      assert.equal(result.exitCode, 1)
+      assert.equal(result.stderr, 'Error')
+      assert.equal(result.stdout, 'Output')
+      verify(azurePipelinesRunnerInvoker.exec('TOOL', 'Argument1 Argument2')).once()
+      verify(gitHubRunnerInvoker.exec('TOOL', 'Argument1 Argument2')).never()
 
     it('should call the underlying method when running on GitHub', async (): Promise<void> => {
       // Arrange
       process.env.GITHUB_ACTION = 'PR-Metrics'
       const runnerInvoker: RunnerInvoker = new RunnerInvoker(instance(azurePipelinesRunnerInvoker), instance(gitHubRunnerInvoker))
-      const logger: Logger = mock(Logger)
-      const outputStream: GitWritableStream = new GitWritableStream(instance(logger))
-      const errorStream: GitWritableStream = new GitWritableStream(instance(logger))
-      when(gitHubRunnerInvoker.exec('TOOL', deepEqual(['Argument 1', 'Argument 2']), true, anything(), anything())).thenResolve(1)
+      const execResult: ExecOutput = {
+        exitCode: 1,
+        stderr: 'Error',
+        stdout: 'Output'
+      }
+      when(gitHubRunnerInvoker.exec('TOOL', 'Argument1 Argument2')).thenResolve(execResult)
 
       // Act
-      const result: number = await runnerInvoker.exec('TOOL', ['Argument 1', 'Argument 2'], true, outputStream, errorStream)
+      const result: ExecOutput = await runnerInvoker.exec('TOOL', 'Argument1 Argument2')
 
       // Assert
-      assert.equal(result, 1)
-      verify(azurePipelinesRunnerInvoker.exec('TOOL', deepEqual(['Argument 1', 'Argument 2']), true, outputStream, errorStream)).never()
-      verify(gitHubRunnerInvoker.exec('TOOL', deepEqual(['Argument 1', 'Argument 2']), true, outputStream, errorStream)).once()
+      assert.equal(result.exitCode, 1)
+      assert.equal(result.stderr, 'Error')
+      assert.equal(result.stdout, 'Output')
+      verify(azurePipelinesRunnerInvoker.exec('TOOL', 'Argument1 Argument2')).never()
+      verify(gitHubRunnerInvoker.exec('TOOL', 'Argument1 Argument2')).once()
 
       // Finalization
       delete process.env.GITHUB_ACTION
@@ -86,20 +93,26 @@ describe('runnerInvoker.ts', function (): void {
       // Arrange
       process.env.GITHUB_ACTION = 'PR-Metrics'
       const runnerInvoker: RunnerInvoker = new RunnerInvoker(instance(azurePipelinesRunnerInvoker), instance(gitHubRunnerInvoker))
-      const logger: Logger = mock(Logger)
-      const outputStream: GitWritableStream = new GitWritableStream(instance(logger))
-      const errorStream: GitWritableStream = new GitWritableStream(instance(logger))
-      when(gitHubRunnerInvoker.exec('TOOL', deepEqual(['Argument 1', 'Argument 2']), true, anything(), anything())).thenResolve(1)
+      const execResult: ExecOutput = {
+        exitCode: 1,
+        stderr: 'Error',
+        stdout: 'Output'
+      }
+      when(gitHubRunnerInvoker.exec('TOOL', 'Argument1 Argument2')).thenResolve(execResult)
 
       // Act
-      const result1: number = await runnerInvoker.exec('TOOL', ['Argument 1', 'Argument 2'], true, outputStream, errorStream)
-      const result2: number = await runnerInvoker.exec('TOOL', ['Argument 1', 'Argument 2'], true, outputStream, errorStream)
+      const result1: ExecOutput = await runnerInvoker.exec('TOOL', 'Argument1 Argument2')
+      const result2: ExecOutput = await runnerInvoker.exec('TOOL', 'Argument1 Argument2')
 
       // Assert
-      assert.equal(result1, 1)
-      assert.equal(result2, 1)
-      verify(azurePipelinesRunnerInvoker.exec('TOOL', deepEqual(['Argument 1', 'Argument 2']), true, outputStream, errorStream)).never()
-      verify(gitHubRunnerInvoker.exec('TOOL', deepEqual(['Argument 1', 'Argument 2']), true, outputStream, errorStream)).twice()
+      assert.equal(result1.exitCode, 1)
+      assert.equal(result1.stderr, 'Error')
+      assert.equal(result1.stdout, 'Output')
+      assert.equal(result2.exitCode, 1)
+      assert.equal(result2.stderr, 'Error')
+      assert.equal(result2.stdout, 'Output')
+      verify(azurePipelinesRunnerInvoker.exec('TOOL', 'Argument1 Argument2')).never()
+      verify(gitHubRunnerInvoker.exec('TOOL', 'Argument1 Argument2')).twice()
 
       // Finalization
       delete process.env.GITHUB_ACTION
@@ -134,6 +147,120 @@ describe('runnerInvoker.ts', function (): void {
       assert.equal(result, 'VALUE')
       verify(azurePipelinesRunnerInvoker.getInput(deepEqual(['Test', 'Suffix']))).never()
       verify(gitHubRunnerInvoker.getInput(deepEqual(['Test', 'Suffix']))).once()
+
+      // Finalization
+      delete process.env.GITHUB_ACTION
+    })
+  })
+
+  describe('getEndpointAuthorization()', (): void => {
+    it('should call the underlying method when running on Azure Pipelines', (): void => {
+      // Arrange
+      const runnerInvoker: RunnerInvoker = new RunnerInvoker(instance(azurePipelinesRunnerInvoker), instance(gitHubRunnerInvoker))
+      const endpointAuthorization: EndpointAuthorization = {
+        parameters: {
+          key: 'value'
+        },
+        scheme: 'scheme'
+      }
+      when(azurePipelinesRunnerInvoker.getEndpointAuthorization('id')).thenReturn(endpointAuthorization)
+
+      // Act
+      const result: EndpointAuthorization | undefined = runnerInvoker.getEndpointAuthorization('id')
+
+      // Assert
+      assert.deepEqual(result, endpointAuthorization)
+      verify(azurePipelinesRunnerInvoker.getEndpointAuthorization('id')).once()
+      verify(gitHubRunnerInvoker.getEndpointAuthorization('id')).never()
+    })
+
+    it('should call the underlying method when running on GitHub', (): void => {
+      // Arrange
+      process.env.GITHUB_ACTION = 'PR-Metrics'
+      const runnerInvoker: RunnerInvoker = new RunnerInvoker(instance(azurePipelinesRunnerInvoker), instance(gitHubRunnerInvoker))
+      const endpointAuthorization: EndpointAuthorization = {
+        parameters: {
+          key: 'value'
+        },
+        scheme: 'scheme'
+      }
+      when(gitHubRunnerInvoker.getEndpointAuthorization('id')).thenReturn(endpointAuthorization)
+
+      // Act
+      const result: EndpointAuthorization | undefined = runnerInvoker.getEndpointAuthorization('id')
+
+      // Assert
+      assert.deepEqual(result, endpointAuthorization)
+      verify(azurePipelinesRunnerInvoker.getEndpointAuthorization('id')).never()
+      verify(gitHubRunnerInvoker.getEndpointAuthorization('id')).once()
+
+      // Finalization
+      delete process.env.GITHUB_ACTION
+    })
+  })
+
+  describe('getEndpointAuthorizationScheme()', (): void => {
+    it('should call the underlying method when running on Azure Pipelines', (): void => {
+      // Arrange
+      const runnerInvoker: RunnerInvoker = new RunnerInvoker(instance(azurePipelinesRunnerInvoker), instance(gitHubRunnerInvoker))
+      when(azurePipelinesRunnerInvoker.getEndpointAuthorizationScheme('id')).thenReturn('VALUE')
+
+      // Act
+      const result: string | undefined = runnerInvoker.getEndpointAuthorizationScheme('id')
+
+      // Assert
+      assert.equal(result, 'VALUE')
+      verify(azurePipelinesRunnerInvoker.getEndpointAuthorizationScheme('id')).once()
+      verify(gitHubRunnerInvoker.getEndpointAuthorizationScheme('id')).never()
+    })
+
+    it('should call the underlying method when running on GitHub', (): void => {
+      // Arrange
+      process.env.GITHUB_ACTION = 'PR-Metrics'
+      const runnerInvoker: RunnerInvoker = new RunnerInvoker(instance(azurePipelinesRunnerInvoker), instance(gitHubRunnerInvoker))
+      when(gitHubRunnerInvoker.getEndpointAuthorizationScheme('id')).thenReturn('VALUE')
+
+      // Act
+      const result: string | undefined = runnerInvoker.getEndpointAuthorizationScheme('id')
+
+      // Assert
+      assert.equal(result, 'VALUE')
+      verify(azurePipelinesRunnerInvoker.getEndpointAuthorizationScheme('id')).never()
+      verify(gitHubRunnerInvoker.getEndpointAuthorizationScheme('id')).once()
+
+      // Finalization
+      delete process.env.GITHUB_ACTION
+    })
+  })
+
+  describe('getEndpointAuthorizationParameter()', (): void => {
+    it('should call the underlying method when running on Azure Pipelines', (): void => {
+      // Arrange
+      const runnerInvoker: RunnerInvoker = new RunnerInvoker(instance(azurePipelinesRunnerInvoker), instance(gitHubRunnerInvoker))
+      when(azurePipelinesRunnerInvoker.getEndpointAuthorizationParameter('id', 'key')).thenReturn('VALUE')
+
+      // Act
+      const result: string | undefined = runnerInvoker.getEndpointAuthorizationParameter('id', 'key')
+
+      // Assert
+      assert.equal(result, 'VALUE')
+      verify(azurePipelinesRunnerInvoker.getEndpointAuthorizationParameter('id', 'key')).once()
+      verify(gitHubRunnerInvoker.getEndpointAuthorizationParameter('id', 'key')).never()
+    })
+
+    it('should call the underlying method when running on GitHub', (): void => {
+      // Arrange
+      process.env.GITHUB_ACTION = 'PR-Metrics'
+      const runnerInvoker: RunnerInvoker = new RunnerInvoker(instance(azurePipelinesRunnerInvoker), instance(gitHubRunnerInvoker))
+      when(gitHubRunnerInvoker.getEndpointAuthorizationParameter('id', 'key')).thenReturn('VALUE')
+
+      // Act
+      const result: string | undefined = runnerInvoker.getEndpointAuthorizationParameter('id', 'key')
+
+      // Assert
+      assert.equal(result, 'VALUE')
+      verify(azurePipelinesRunnerInvoker.getEndpointAuthorizationParameter('id', 'key')).never()
+      verify(gitHubRunnerInvoker.getEndpointAuthorizationParameter('id', 'key')).once()
 
       // Finalization
       delete process.env.GITHUB_ACTION
@@ -403,6 +530,36 @@ describe('runnerInvoker.ts', function (): void {
       // Assert
       verify(azurePipelinesRunnerInvoker.setStatusSucceeded('TEST')).never()
       verify(gitHubRunnerInvoker.setStatusSucceeded('TEST')).once()
+
+      // Finalization
+      delete process.env.GITHUB_ACTION
+    })
+  })
+
+  describe('setSecret()', (): void => {
+    it('should call the underlying method when running on Azure Pipelines', (): void => {
+      // Arrange
+      const runnerInvoker: RunnerInvoker = new RunnerInvoker(instance(azurePipelinesRunnerInvoker), instance(gitHubRunnerInvoker))
+
+      // Act
+      runnerInvoker.setSecret('id')
+
+      // Assert
+      verify(azurePipelinesRunnerInvoker.setSecret('id')).once()
+      verify(gitHubRunnerInvoker.setSecret('id')).never()
+    })
+
+    it('should call the underlying method when running on GitHub', (): void => {
+      // Arrange
+      process.env.GITHUB_ACTION = 'PR-Metrics'
+      const runnerInvoker: RunnerInvoker = new RunnerInvoker(instance(azurePipelinesRunnerInvoker), instance(gitHubRunnerInvoker))
+
+      // Act
+      runnerInvoker.setSecret('id')
+
+      // Assert
+      verify(azurePipelinesRunnerInvoker.setSecret('id')).never()
+      verify(gitHubRunnerInvoker.setSecret('id')).once()
 
       // Finalization
       delete process.env.GITHUB_ACTION

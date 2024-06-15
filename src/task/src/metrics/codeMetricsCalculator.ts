@@ -68,7 +68,7 @@ export default class CodeMetricsCalculator {
   public async shouldStop (): Promise<string | null> {
     this._logger.logDebug('* CodeMetricsCalculator.shouldStop()')
 
-    const accessTokenAvailable: string | null = this._reposInvoker.isAccessTokenAvailable
+    const accessTokenAvailable: string | null = await this._reposInvoker.isAccessTokenAvailable()
     if (accessTokenAvailable !== null) {
       return accessTokenAvailable
     }

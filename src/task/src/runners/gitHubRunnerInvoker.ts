@@ -36,14 +36,18 @@ export default class GitHubRunnerInvoker implements IRunnerInvoker {
     this._gitHubRunnerWrapper = gitHubRunnerWrapper
   }
 
-  public async exec (tool: string, args: string[], failOnError: boolean, outputStream: GitWritableStream, errorStream: GitWritableStream): Promise<number> {
+  public async exec (tool: string, args: string): Promise<ExecOutput> {
     const options: actionsExec.ExecOptions = {
-      failOnStdErr: failOnError,
-      outStream: outputStream,
-      errStream: errorStream
+      failOnStdErr: true,
+      silent: true
     }
 
-    return await this._gitHubRunnerWrapper.exec(tool, args, options)
+    const result: actionsExec.ExecOutput = await this._gitHubRunnerWrapper.exec(tool, args, options)
+    return {
+      exitCode: result.exitCode,
+      stderr: result.stderr,
+      stdout: result.stdout
+    }
   }
 
   public getInput (name: string[]): string | undefined {
@@ -51,6 +55,18 @@ export default class GitHubRunnerInvoker implements IRunnerInvoker {
 
     // This method redirects to the Azure Pipelines logic as the library will store the input data.
     return this._azurePipelinesRunnerWrapper.getInput(formattedName)
+  }
+
+  public getEndpointAuthorization (_: string): EndpointAuthorization | undefined {
+    throw new Error('getEndpointAuthorization() unavailable in GitHub.')
+  }
+
+  public getEndpointAuthorizationScheme (_: string): string | undefined {
+    throw new Error('getEndpointAuthorizationScheme() unavailable in GitHub.')
+  }
+
+  public getEndpointAuthorizationParameter (_: string, __: string): string | undefined {
+    throw new Error('getEndpointAuthorizationParameter() unavailable in GitHub.')
   }
 
   public locInitialize (folder: string): void {
@@ -92,5 +108,9 @@ export default class GitHubRunnerInvoker implements IRunnerInvoker {
 
   public setStatusSucceeded (message: string): void {
     this._consoleWrapper.log(message)
+  }
+
+  public setSecret (value: string): void {
+    this._gitHubRunnerWrapper.setSecret(value)
   }
 }

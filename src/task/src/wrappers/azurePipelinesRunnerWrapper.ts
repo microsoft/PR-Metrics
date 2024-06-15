@@ -31,10 +31,10 @@ export default class AzurePipelinesRunnerWrapper {
    * @param tool The tool executable to run.
    * @param args The arguments to pass to the tool.
    * @param options The execution options.
-   * @returns A promise containing the result of the execution.
+   * @returns The result of the execution.
    */
-  public async exec (tool: string, args: string[], options: IExecOptions): Promise<number> {
-    return taskLib.exec(tool, args, options)
+  public execSync(tool: string, args: string, options: IExecOptions): IExecSyncResult {
+    return taskLib.execSync(tool, args, options)
   }
 
   /**
@@ -44,6 +44,45 @@ export default class AzurePipelinesRunnerWrapper {
    */
   public getInput (name: string): string | undefined {
     return taskLib.getInput(name)
+  }
+
+  /**
+   * Gets the authorization details for a service endpoint.
+   * @param id The name of the service endpoint.
+   * @param optional A value indicating whether the URL is optional.
+   * @returns The authorization details or `undefined` if the endpoint was not found.
+   */
+  public getEndpointAuthorization (id: string, optional: boolean): taskLib.EndpointAuthorization | undefined {
+    return taskLib.getEndpointAuthorization(id, optional)
+  }
+
+  /**
+   * Gets the endpoint authorization scheme for a service endpoint.
+   * @param id The name of the service endpoint.
+   * @param optional A value indicating whether the endpoint authorization scheme is optional.
+   * @returns The value of the endpoint authorization scheme or `undefined` if the scheme was not found.
+   */
+  public getEndpointAuthorizationScheme (id: string, optional: boolean): string | undefined {
+    return taskLib.getEndpointAuthorizationScheme(id, optional)
+  }
+
+  /**
+   * Gets the endpoint authorization parameter value for a service endpoint with the specified key.
+   * @param id The name of the service endpoint.
+   * @param key The key to find the endpoint authorization parameter.
+   * @param optional A value indicating whether the endpoint authorization scheme is optional.
+   * @returns The value of the endpoint authorization parameter value or `undefined` if the parameter was not found.
+   */
+  public getEndpointAuthorizationParameter (id: string, key: string, optional: boolean): string | undefined {
+    return taskLib.getEndpointAuthorizationParameter(id, key, optional)
+  }
+
+  /**
+   * Registers a value with the logger, so the value will be masked from the logs. Multi-line secrets are disallowed.
+   * @param value The value to register.
+   */
+  public setSecret (value: string): void {
+    taskLib.setSecret(value)
   }
 
   /**
