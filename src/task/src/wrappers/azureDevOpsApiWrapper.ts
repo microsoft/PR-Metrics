@@ -24,7 +24,7 @@ export default class AzureDevOpsApiWrapper {
    * @param token The Azure DevOps API token.
    * @returns The handler.
    */
-  public getHandlerFromToken(token: string): IRequestHandler {
+  public getHandlerFromToken (token: string): IRequestHandler {
     return azureDevOpsApi.getHandlerFromToken(token)
   }
 

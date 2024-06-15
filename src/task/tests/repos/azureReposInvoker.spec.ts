@@ -63,8 +63,6 @@ describe('azureReposInvoker.ts', function (): void {
     delete process.env.PR_METRICS_ACCESS_TOKEN
   })
 
-
-
   describe('isAccessTokenAvailable()', (): void => {
     it('should return null when the token exists', async (): Promise<void> => {
       // Arrange

@@ -91,7 +91,7 @@ describe('tokenManager.ts', (): void => {
       // Arrange
       const tokenManager: TokenManager = new TokenManager(instance(azureDevOpsApiWrapper), instance(logger), instance(runnerInvoker))
       when(runnerInvoker.getEndpointAuthorizationScheme('Id')).thenReturn('Other')
-      when(runnerInvoker.loc('repos.tokenManager.incorrectAuthorizationScheme', 'WorkloadIdentityFederation', 'Other')).thenReturn('Authorization scheme of workload identity federation \'Id\' must be \'WorkloadIdentityFederation\' instead of \'Other\'.');
+      when(runnerInvoker.loc('repos.tokenManager.incorrectAuthorizationScheme', 'WorkloadIdentityFederation', 'Other')).thenReturn('Authorization scheme of workload identity federation \'Id\' must be \'WorkloadIdentityFederation\' instead of \'Other\'.')
 
       // Act
       const result: string | null = await tokenManager.getToken()

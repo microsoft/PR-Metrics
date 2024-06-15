@@ -1,7 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { GitWritableStream } from '../git/gitWritableStream'
+import ExecOutput from './execOutput'
+import { EndpointAuthorization } from './endpointAuthorization'
 
 /**
  * An interface for invoking runner functionality with any underlying runner.
