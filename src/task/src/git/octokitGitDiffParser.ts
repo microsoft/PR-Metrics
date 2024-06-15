@@ -70,7 +70,7 @@ export default class OctokitGitDiffParser {
     // Split the response so that each file in a diff becomes a separate diff.
     const diffResponses: string[] = diffResponse.split(/^diff --git/gmu)
 
-    /**
+    /*
      * For each diff, reinstate the "diff --git" prefix that was removed by the split. The first diff is excluded as it
      * will always be the empty string.
      */

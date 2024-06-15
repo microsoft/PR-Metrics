@@ -2,7 +2,6 @@
 # Licensed under the MIT License.
 
 ---
-
 name: Release – Phase 1 (Internal)
 
 on:
@@ -30,25 +29,25 @@ jobs:
       pull-requests: write
     steps:
       - name: Harden Runner
-        uses: step-security/harden-runner@f086349bfa2bd1361f7909c78558e816508cdc10  # v2.8.0
+        uses: step-security/harden-runner@f086349bfa2bd1361f7909c78558e816508cdc10 # v2.8.0
         with:
           disable-sudo: true
           egress-policy: audit
 
       - name: Validate major
         shell: pwsh
-        run: '[int]::Parse(${{ inputs.major }})'
+        run: "[int]::Parse(${{ inputs.major }})"
 
       - name: Validate minor
         shell: pwsh
-        run: '[int]::Parse(${{ inputs.minor }})'
+        run: "[int]::Parse(${{ inputs.minor }})"
 
       - name: Validate patch
         shell: pwsh
-        run: '[int]::Parse(${{ inputs.patch }})'
+        run: "[int]::Parse(${{ inputs.patch }})"
 
       - name: Checkout
-        uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b  # v4.1.4
+        uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # v4.1.4
         with:
           # Fine-grained Personal Access Token (PAT) with the following permissions for microsoft/PR-Metrics:
           # - Read access to Metadata
@@ -198,7 +197,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: npm – Install Node.js
-        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8  # v4.0.2
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
         with:
           # The latest version with NPMv7, which is required to maintain a package-lock.json lockfileVersion of 2.
           node-version: 16.10.0
@@ -207,7 +206,7 @@ jobs:
         run: npx ncu -u
 
       - name: npm – Update Transitive Dependencies
-        run: npm update
+        run: npm run update:package
 
       - name: Git – Add Changed Files
         run: git add -A
@@ -220,5 +219,3 @@ jobs:
 
       - name: Git – Push Changed Files
         run: git push --set-upstream origin release/v${{ env.version }}
-
-...

@@ -54,7 +54,7 @@ describe('tokenManager.ts', (): void => {
         AccessToken: 'AccessToken'
       }
     })
-    when(runnerInvoker.exec('az', `login --service-principal -u ServicePrincipalId --tenant TenantId --allow-no-subscriptions --federated-token OidcToken`)).thenResolve({
+    when(runnerInvoker.exec('az', 'login --service-principal -u ServicePrincipalId --tenant TenantId --allow-no-subscriptions --federated-token OidcToken')).thenResolve({
       exitCode: 0,
       stderr: '',
       stdout: ''
@@ -290,7 +290,7 @@ describe('tokenManager.ts', (): void => {
   it('throws an error when Azure sign in fails', async (): Promise<void> => {
     // Arrange
     const tokenManager: TokenManager = new TokenManager(instance(azureDevOpsApiWrapper), instance(logger), instance(runnerInvoker))
-    when(runnerInvoker.exec('az', `login --service-principal -u ServicePrincipalId --tenant TenantId --allow-no-subscriptions --federated-token OidcToken`)).thenResolve({
+    when(runnerInvoker.exec('az', 'login --service-principal -u ServicePrincipalId --tenant TenantId --allow-no-subscriptions --federated-token OidcToken')).thenResolve({
       exitCode: 1,
       stderr: 'Error Message',
       stdout: ''
@@ -312,7 +312,7 @@ describe('tokenManager.ts', (): void => {
   it('throws an error when access token retrieval fails', async (): Promise<void> => {
     // Arrange
     const tokenManager: TokenManager = new TokenManager(instance(azureDevOpsApiWrapper), instance(logger), instance(runnerInvoker))
-    when(runnerInvoker.exec('az', `account get-access-token --query accessToken --resource 499b84ac-1321-427f-aa17-267ca6975798 -o tsv`)).thenResolve({
+    when(runnerInvoker.exec('az', 'account get-access-token --query accessToken --resource 499b84ac-1321-427f-aa17-267ca6975798 -o tsv')).thenResolve({
       exitCode: 1,
       stderr: 'Error Message',
       stdout: ''
