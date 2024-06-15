@@ -3,12 +3,12 @@
 
 import assert from 'node:assert/strict'
 import 'reflect-metadata'
-import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito'
+import { instance, mock, verify, when } from 'ts-mockito'
 import GitInvoker from '../../src/git/gitInvoker'
-import { GitWritableStream } from '../../src/git/gitWritableStream'
 import RunnerInvoker from '../../src/runners/runnerInvoker'
 import Logger from '../../src/utilities/logger'
 import * as AssertExtensions from '../testUtilities/assertExtensions'
+import ExecOutput from '../../src/runners/execOutput'
 
 describe('gitInvoker.ts', (): void => {
   let logger: Logger

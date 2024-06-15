@@ -32,7 +32,7 @@ export default class TokenManager {
    * @param logger The logger.
    * @param runnerInvoker The runner invoker logic.
    */
-  public constructor(azureDevOpsApiWrapper: AzureDevOpsApiWrapper, logger: Logger, runnerInvoker: RunnerInvoker) {
+  public constructor (azureDevOpsApiWrapper: AzureDevOpsApiWrapper, logger: Logger, runnerInvoker: RunnerInvoker) {
     this._azureDevOpsApiWrapper = azureDevOpsApiWrapper
     this._logger = logger
     this._runnerInvoker = runnerInvoker

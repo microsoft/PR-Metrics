@@ -6,12 +6,12 @@ import assert from 'node:assert/strict'
 import * as path from 'path'
 import 'reflect-metadata'
 import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito'
-import { GitWritableStream } from '../../src/git/gitWritableStream'
 import GitHubRunnerInvoker from '../../src/runners/gitHubRunnerInvoker'
-import Logger from '../../src/utilities/logger'
 import AzurePipelinesRunnerWrapper from '../../src/wrappers/azurePipelinesRunnerWrapper'
 import ConsoleWrapper from '../../src/wrappers/consoleWrapper'
 import GitHubRunnerWrapper from '../../src/wrappers/gitHubRunnerWrapper'
+import { EndpointAuthorization } from 'azure-pipelines-task-lib'
+import ExecOutput from '../../src/runners/execOutput'
 
 describe('gitHubRunnerInvoker.ts', function (): void {
   const resourcePath: string = path.join(__dirname, '../../Strings/resources.resjson/en-US/')

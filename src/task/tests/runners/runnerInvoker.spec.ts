@@ -3,12 +3,12 @@
 
 import assert from 'node:assert/strict'
 import 'reflect-metadata'
-import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito'
-import { GitWritableStream } from '../../src/git/gitWritableStream'
+import { deepEqual, instance, mock, verify, when } from 'ts-mockito'
 import AzurePipelinesRunnerInvoker from '../../src/runners/azurePipelinesRunnerInvoker'
 import GitHubRunnerInvoker from '../../src/runners/gitHubRunnerInvoker'
 import RunnerInvoker from '../../src/runners/runnerInvoker'
-import Logger from '../../src/utilities/logger'
+import ExecOutput from '../../src/runners/execOutput'
+import { EndpointAuthorization } from '../../src/runners/endpointAuthorization'
 
 describe('runnerInvoker.ts', function (): void {
   let azurePipelinesRunnerInvoker: AzurePipelinesRunnerInvoker
@@ -63,6 +63,7 @@ describe('runnerInvoker.ts', function (): void {
       assert.equal(result.stdout, 'Output')
       verify(azurePipelinesRunnerInvoker.exec('TOOL', 'Argument1 Argument2')).once()
       verify(gitHubRunnerInvoker.exec('TOOL', 'Argument1 Argument2')).never()
+    })
 
     it('should call the underlying method when running on GitHub', async (): Promise<void> => {
       // Arrange

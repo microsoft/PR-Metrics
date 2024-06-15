@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import parseGitDiff, { AddedFile, AnyFileChange, ChangedFile, Chunk, GitDiff, RenamedFile } from 'parse-git-diff'
+import parseGitDiff, { AddedFile, AnyChunk, AnyFileChange, ChangedFile, Chunk, GitDiff, RenamedFile } from 'parse-git-diff'
 import { singleton } from 'tsyringe'
 import Logger from '../utilities/logger'
 import AxiosWrapper from '../wrappers/axiosWrapper'
@@ -103,6 +103,7 @@ export default class OctokitGitDiffParser {
             }
 
             result.set(fileCasted.path, chunk?.toFileRange.start!)
+            break
           }
           case 'RenamedFile':
           {

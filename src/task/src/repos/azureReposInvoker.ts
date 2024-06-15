@@ -16,6 +16,7 @@ import CommentData from './interfaces/commentData'
 import FileCommentData from './interfaces/fileCommentData'
 import PullRequestCommentData from './interfaces/pullRequestCommentData'
 import PullRequestDetails from './interfaces/pullRequestDetails'
+import TokenManager from './tokenManager'
 
 /**
  * A class for invoking Azure Repos functionality.

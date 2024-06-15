@@ -2,12 +2,13 @@
 // Licensed under the MIT License.
 
 import * as taskLib from 'azure-pipelines-task-lib/task'
-import { IExecOptions } from 'azure-pipelines-task-lib/toolrunner'
+import { IExecOptions, IExecSyncResult } from 'azure-pipelines-task-lib/toolrunner'
 import * as path from 'path'
 import { singleton } from 'tsyringe'
-import { GitWritableStream } from '../git/gitWritableStream'
 import AzurePipelinesRunnerWrapper from '../wrappers/azurePipelinesRunnerWrapper'
 import IRunnerInvoker from './iRunnerInvoker'
+import ExecOutput from './execOutput'
+import { EndpointAuthorization } from './endpointAuthorization'
 
 /**
  * A class for invoking Azure Pipelines runner functionality.
