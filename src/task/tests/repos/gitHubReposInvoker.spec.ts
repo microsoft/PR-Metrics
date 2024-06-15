@@ -495,7 +495,7 @@ describe('gitHubReposInvoker.ts', function (): void {
           const func: () => Promise<PullRequestDetails> = async () => await gitHubReposInvoker.getTitleAndDescription()
 
           // Assert
-          const result: any = await AssertExtensions.toThrowAsync(func, 'Could not access the resources. Ensure the \'PR_Metrics_Access_Token\' secret environment variable has access to \'repos\'.')
+          const result: any = await AssertExtensions.toThrowAsync(func, 'Could not access the resources. Ensure the \'PR_Metrics_Access_Token\' secret environment variable has Read and Write access to pull requests (or access to \'repos\' if using a Classic PAT).')
           assert.equal(result.internalMessage, 'Test')
           verify(octokitWrapper.initialize(anything())).once()
           verify(logger.logDebug('* GitHubReposInvoker.getTitleAndDescription()')).once()
