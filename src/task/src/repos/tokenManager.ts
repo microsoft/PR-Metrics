@@ -95,7 +95,7 @@ export default class TokenManager {
 
     const result: string = accessTokenResult.stdout.trim()
     this._runnerInvoker.setSecret(result)
-    return result;
+    return result
   }
 
   private async getFederatedToken (workloadIdentityFederation: string) : Promise<string> {
