@@ -55,6 +55,15 @@
       "label": "Code file extensions",
       "type": "multiLine",
       "helpMarkDown": "Extensions for files containing code so that non-code files can be excluded. If left blank, a default set of file extensions will be used."
+    },
+    {
+      "name": "WorkloadIdentityFederation",
+      "label": "Workload identity federation",
+      "type": "connectedService:AzureRM",
+      "helpMarkDown": "The optional workload identity federation that can be used for authentication instead of Personal Access Tokens (PATs).",
+      "properties": {
+        "EndpointFilterRule": ""
+      }
     }
   ],
   "execution": {
@@ -71,12 +80,8 @@
     "metrics.codeMetrics.titleSizeXS": "XS",
     "metrics.codeMetrics.titleTestsInsufficient": "⚠️",
     "metrics.codeMetrics.titleTestsSufficient": "✔",
-    "metrics.codeMetricsCalculator.insufficientAzureReposAccessTokenPermissions": "Could not access the resources. Ensure the 'PR_Metrics_Access_Token' secret environment variable has access to 'Code' > 'Read & write' and 'Pull Request Threads' > 'Read & write'.",
-    "metrics.codeMetricsCalculator.insufficientGitHubAccessTokenPermissions": "Could not access the resources. Ensure the 'PR_Metrics_Access_Token' secret environment variable has access to 'repos' (or Read and Write access to pull requests if using a Fine-Grained PAT).",
-    "metrics.codeMetricsCalculator.noAzureReposAccessToken": "Could not access the Personal Access Token (PAT). Add 'PR_Metrics_Access_Token' as a secret environment variable.",
     "metrics.codeMetricsCalculator.noGitHistoryAzureDevOps": "Could not access sufficient Git history. Set 'fetchDepth: 0' as a parameter to the 'checkout' task (YAML) or disable 'Shallow fetch' under the build process phase settings (classic).",
     "metrics.codeMetricsCalculator.noGitHistoryGitHub": "Could not access sufficient Git history. Add 'fetch-depth: 0' as a parameter to the 'actions/checkout' action.",
-    "metrics.codeMetricsCalculator.noGitHubAccessToken": "Could not access the Personal Access Token (PAT). Add 'PR_Metrics_Access_Token' as a secret environment variable with access to 'repos' (or Read and Write access to Pull Requests if using a Fine-Grained PAT, or write access to 'pull-requests' and 'statuses' if specified within the workflow YAML).",
     "metrics.codeMetricsCalculator.noGitRepoAzureDevOps": "No Git repo present. Remove 'checkout: none' (YAML) or disable 'Don't sync sources' under the build process phase settings (classic).",
     "metrics.codeMetricsCalculator.noGitRepoGitHub": "No Git repo present. Run the 'actions/checkout' action prior to PR Metrics.",
     "metrics.codeMetricsCalculator.noPullRequest": "The build is not running against a pull request.",
@@ -111,6 +116,11 @@
     "pullRequests.pullRequestComments.tableTestCode": "Test Code",
     "pullRequests.pullRequestComments.tableTotal": "Total",
     "pullRequests.pullRequestComments.testsInsufficientComment": "⚠️ **Consider adding additional tests.**",
-    "pullRequests.pullRequestComments.testsSufficientComment": "✔ **Thanks for adding tests.**"
+    "pullRequests.pullRequestComments.testsSufficientComment": "✔ **Thanks for adding tests.**",
+    "repos.azureReposInvoker.insufficientAzureReposAccessTokenPermissions": "Could not access the resources. Ensure the 'PR_Metrics_Access_Token' secret environment variable has access to 'Code' > 'Read & write' and 'Pull Request Threads' > 'Read & write'.",
+    "repos.azureReposInvoker.noAzureReposAccessToken": "Could not access the Workload Identity Federation or Personal Access Token (PAT). Add the 'WorkloadIdentityFederation' input or 'PR_Metrics_Access_Token' as a secret environment variable.",
+    "repos.gitHubReposInvoker.insufficientGitHubAccessTokenPermissions": "Could not access the resources. Ensure the 'PR_Metrics_Access_Token' secret environment variable has Read and Write access to pull requests (or access to 'repos' if using a Classic PAT).",
+    "repos.gitHubReposInvoker.noGitHubAccessToken": "Could not access the Personal Access Token (PAT). Add 'PR_Metrics_Access_Token' as a secret environment variable with Read and Write access to Pull Requests (or access to 'repos' if using a Classic PAT, or write access to 'pull-requests' and 'statuses' if specified within the workflow YAML).",
+    "repos.tokenManager.incorrectAuthorizationScheme": "Authorization scheme of workload identity federation '%s' must be 'WorkloadIdentityFederation' instead of '%s'."
   }
 }

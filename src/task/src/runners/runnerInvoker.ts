@@ -2,10 +2,11 @@
 // Licensed under the MIT License.
 
 import { singleton } from 'tsyringe'
-import { GitWritableStream } from '../git/gitWritableStream'
 import AzurePipelinesRunnerInvoker from './azurePipelinesRunnerInvoker'
 import GitHubRunnerInvoker from './gitHubRunnerInvoker'
 import IRunnerInvoker from './iRunnerInvoker'
+import { EndpointAuthorization } from './endpointAuthorization'
+import ExecOutput from './execOutput'
 
 /**
  * A wrapper around the runner functionality, to facilitate testability. This class cannot use logging functionality as
@@ -36,14 +37,29 @@ export default class RunnerInvoker implements IRunnerInvoker {
     return process.env.GITHUB_ACTION !== undefined
   }
 
-  public async exec (tool: string, args: string[], failOnError: boolean, outputStream: GitWritableStream, errorStream: GitWritableStream): Promise<number> {
+  public async exec (tool: string, args: string): Promise<ExecOutput> {
     const runner: IRunnerInvoker = this.getRunner()
-    return await runner.exec(tool, args, failOnError, outputStream, errorStream)
+    return runner.exec(tool, args)
   }
 
   public getInput (name: string[]): string | undefined {
     const runner: IRunnerInvoker = this.getRunner()
     return runner.getInput(name)
+  }
+
+  public getEndpointAuthorization (id: string): EndpointAuthorization | undefined {
+    const runner: IRunnerInvoker = this.getRunner()
+    return runner.getEndpointAuthorization(id)
+  }
+
+  public getEndpointAuthorizationScheme (id: string): string | undefined {
+    const runner: IRunnerInvoker = this.getRunner()
+    return runner.getEndpointAuthorizationScheme(id)
+  }
+
+  public getEndpointAuthorizationParameter (id: string, key: string): string | undefined {
+    const runner: IRunnerInvoker = this.getRunner()
+    return runner.getEndpointAuthorizationParameter(id, key)
   }
 
   public locInitialize (folder: string): void {
@@ -93,6 +109,11 @@ export default class RunnerInvoker implements IRunnerInvoker {
   public setStatusSucceeded (message: string): void {
     const runner: IRunnerInvoker = this.getRunner()
     return runner.setStatusSucceeded(message)
+  }
+
+  public setSecret (value: string): void {
+    const runner: IRunnerInvoker = this.getRunner()
+    return runner.setSecret(value)
   }
 
   private getRunner (): IRunnerInvoker {

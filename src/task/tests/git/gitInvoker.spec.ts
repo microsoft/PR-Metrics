@@ -3,12 +3,12 @@
 
 import assert from 'node:assert/strict'
 import 'reflect-metadata'
-import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito'
+import { instance, mock, verify, when } from 'ts-mockito'
 import GitInvoker from '../../src/git/gitInvoker'
-import { GitWritableStream } from '../../src/git/gitWritableStream'
 import RunnerInvoker from '../../src/runners/runnerInvoker'
 import Logger from '../../src/utilities/logger'
 import * as AssertExtensions from '../testUtilities/assertExtensions'
+import ExecOutput from '../../src/runners/execOutput'
 
 describe('gitInvoker.ts', (): void => {
   let logger: Logger
@@ -22,17 +22,21 @@ describe('gitInvoker.ts', (): void => {
     logger = mock(Logger)
 
     runnerInvoker = mock(RunnerInvoker)
-    when(runnerInvoker.exec('git', deepEqual(['rev-parse', '--branch', 'origin/develop...pull/12345/merge']), true, anything(), anything())).thenCall(
-      async (_tool: string, _args: string, _failOnError: boolean, outputStream: GitWritableStream): Promise<number> => {
+    when(runnerInvoker.exec('git', 'rev-parse --branch origin/develop...pull/12345/merge')).thenCall(
+      async (_tool: string, _args: string): Promise<ExecOutput> => {
         const testCommitId: string = '7235cb16e5e6ac83e3cbecae66bab557e9e2cee6'
-        outputStream.write(testCommitId)
-        return await Promise.resolve(0)
+        return Promise.resolve({
+          exitCode: 0,
+          stdout: testCommitId,
+          stderr: ''
+        })
       })
-    when(runnerInvoker.exec('git', deepEqual(['diff', '--numstat', '--ignore-all-space', 'origin/develop...pull/12345/merge']), true, anything(), anything())).thenCall(
-      async (_tool: string, _args: string, _failOnError: boolean, outputStream: GitWritableStream): Promise<number> => {
-        outputStream.write('1\t2\tFile.txt')
-        return await Promise.resolve(0)
-      })
+    when(runnerInvoker.exec('git', 'diff --numstat --ignore-all-space origin/develop...pull/12345/merge')).thenCall(
+      async (_tool: string, _args: string): Promise<ExecOutput> => Promise.resolve({
+        exitCode: 0,
+        stdout: '1\t2\tFile.txt',
+        stderr: ''
+      }))
   })
 
   afterEach((): void => {
@@ -52,11 +56,12 @@ describe('gitInvoker.ts', (): void => {
       testCases.forEach((response: string): void => {
         it(`should return true when called from a Git repo returning '${response.replace(/\n/g, '\\n')}'`, async (): Promise<void> => {
           // Arrange
-          when(runnerInvoker.exec('git', deepEqual(['rev-parse', '--is-inside-work-tree']), true, anything(), anything())).thenCall(
-            async (_tool: string, _args: string, _failOnError: boolean, outputStream: GitWritableStream): Promise<number> => {
-              outputStream.write(response)
-              return await Promise.resolve(0)
-            })
+          when(runnerInvoker.exec('git', 'rev-parse --is-inside-work-tree')).thenCall(
+            async (_tool: string, _args: string): Promise<ExecOutput> => Promise.resolve({
+              exitCode: 0,
+              stdout: response,
+              stderr: ''
+            }))
           const gitInvoker: GitInvoker = new GitInvoker(instance(logger), instance(runnerInvoker))
 
           // Act
@@ -72,11 +77,12 @@ describe('gitInvoker.ts', (): void => {
 
     it('should return false when not called from a Git repo', async (): Promise<void> => {
       // Arrange
-      when(runnerInvoker.exec('git', deepEqual(['rev-parse', '--is-inside-work-tree']), true, anything(), anything())).thenCall(
-        async (_tool: string, _args: string, _failOnError: boolean, _outputStream: GitWritableStream, errorStream: GitWritableStream): Promise<number> => {
-          errorStream.write('Failure')
-          return await Promise.resolve(1)
-        })
+      when(runnerInvoker.exec('git', 'rev-parse --is-inside-work-tree')).thenCall(
+        async (_tool: string, _args: string): Promise<ExecOutput> => Promise.resolve({
+          exitCode: 1,
+          stdout: '',
+          stderr: 'Failure'
+        }))
       const gitInvoker: GitInvoker = new GitInvoker(instance(logger), instance(runnerInvoker))
 
       // Act
@@ -368,11 +374,12 @@ describe('gitInvoker.ts', (): void => {
 
     it('should return false when the Git history is unavailable', async (): Promise<void> => {
       // Arrange
-      when(runnerInvoker.exec('git', deepEqual(['rev-parse', '--branch', 'origin/develop...pull/12345/merge']), true, anything(), anything())).thenCall(
-        async (_tool: string, _args: string, _failOnError: boolean, _outputStream: GitWritableStream, errorStream: GitWritableStream): Promise<number> => {
-          errorStream.write('fatal: ambiguous argument \'origin/develop...pull/12345/merge\': unknown revision or path not in the working tree.\n')
-          return await Promise.resolve(1)
-        })
+      when(runnerInvoker.exec('git', 'rev-parse --branch origin/develop...pull/12345/merge')).thenCall(
+        async (_tool: string, _args: string): Promise<ExecOutput> => Promise.resolve({
+          exitCode: 1,
+          stdout: '',
+          stderr: 'fatal: ambiguous argument \'origin/develop...pull/12345/merge\': unknown revision or path not in the working tree.\n'
+        }))
       const gitInvoker: GitInvoker = new GitInvoker(instance(logger), instance(runnerInvoker))
 
       // Act
@@ -678,11 +685,12 @@ describe('gitInvoker.ts', (): void => {
 
     it('should throw an error when Git invocation fails', async (): Promise<void> => {
       // Arrange
-      when(runnerInvoker.exec('git', deepEqual(['diff', '--numstat', '--ignore-all-space', 'origin/develop...pull/12345/merge']), true, anything(), anything())).thenCall(
-        async (_tool: string, _args: string, _failOnError: boolean, _outputStream: GitWritableStream, errorStream: GitWritableStream): Promise<number> => {
-          errorStream.write('Failure')
-          return await Promise.resolve(1)
-        })
+      when(runnerInvoker.exec('git', 'diff --numstat --ignore-all-space origin/develop...pull/12345/merge')).thenCall(
+        async (_tool: string, _args: string): Promise<ExecOutput> => Promise.resolve({
+          exitCode: 1,
+          stdout: '',
+          stderr: 'Failure'
+        }))
       const gitInvoker: GitInvoker = new GitInvoker(instance(logger), instance(runnerInvoker))
 
       // Act

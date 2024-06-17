@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import parseGitDiff, { AddedFile, AnyFileChange, ChangedFile, Chunk, GitDiff, RenamedFile } from 'parse-git-diff'
+import parseGitDiff, { AddedFile, AnyChunk, AnyFileChange, ChangedFile, Chunk, GitDiff, RenamedFile } from 'parse-git-diff'
 import { singleton } from 'tsyringe'
 import Logger from '../utilities/logger'
 import AxiosWrapper from '../wrappers/axiosWrapper'
@@ -94,8 +94,15 @@ export default class OctokitGitDiffParser {
           case 'ChangedFile':
           {
             // For an added or changed file, add the file path and the first changed line.
-            const fileCasted: AddedFile | ChangedFile = file as AddedFile | ChangedFile
-            result.set(fileCasted.path, (fileCasted.chunks[0] as Chunk)!.toFileRange.start)
+            const fileCasted: AddedFile | ChangedFile = file
+            const chunk: AnyChunk | undefined = fileCasted.chunks[0]
+            if (chunk?.type === 'BinaryFilesChunk') {
+              console.log(`Skipping '${file.type}' '${fileCasted.path}' while performing diff parsing.`)
+              this._logger.logDebug(`Skipping '${file.type}' '${fileCasted.path}' while performing diff parsing.`)
+              break
+            }
+
+            result.set(fileCasted.path, chunk?.toFileRange.start!)
             break
           }
           case 'RenamedFile':
@@ -105,6 +112,9 @@ export default class OctokitGitDiffParser {
             result.set(fileCasted.pathAfter, (fileCasted.chunks[0] as Chunk)?.toFileRange.start!)
             break
           }
+          default:
+            this._logger.logDebug(`Skipping file type '${file.type}' while performing diff parsing.`)
+            break
         }
       })
     })

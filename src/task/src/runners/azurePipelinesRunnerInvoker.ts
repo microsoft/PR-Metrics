@@ -2,12 +2,13 @@
 // Licensed under the MIT License.
 
 import * as taskLib from 'azure-pipelines-task-lib/task'
-import { IExecOptions } from 'azure-pipelines-task-lib/toolrunner'
+import { IExecOptions, IExecSyncResult } from 'azure-pipelines-task-lib/toolrunner'
 import * as path from 'path'
 import { singleton } from 'tsyringe'
-import { GitWritableStream } from '../git/gitWritableStream'
 import AzurePipelinesRunnerWrapper from '../wrappers/azurePipelinesRunnerWrapper'
 import IRunnerInvoker from './iRunnerInvoker'
+import ExecOutput from './execOutput'
+import { EndpointAuthorization } from './endpointAuthorization'
 
 /**
  * A class for invoking Azure Pipelines runner functionality.
@@ -24,19 +25,43 @@ export default class AzurePipelinesRunnerInvoker implements IRunnerInvoker {
     this._azurePipelinesRunnerWrapper = azurePipelinesRunnerWrapper
   }
 
-  public async exec (tool: string, args: string[], failOnError: boolean, outputStream: GitWritableStream, errorStream: GitWritableStream): Promise<number> {
+  public async exec (tool: string, args: string): Promise<ExecOutput> {
     const options: IExecOptions = {
-      failOnStdErr: failOnError,
-      outStream: outputStream,
-      errStream: errorStream
+      failOnStdErr: true,
+      silent: true
     }
 
-    return await this._azurePipelinesRunnerWrapper.exec(tool, args, options)
+    const result: IExecSyncResult = this._azurePipelinesRunnerWrapper.execSync(tool, args, options)
+    return {
+      exitCode: result.code,
+      stderr: result.stderr,
+      stdout: result.stdout
+    }
   }
 
   public getInput (name: string[]): string | undefined {
     const formattedName: string = name.join('')
     return this._azurePipelinesRunnerWrapper.getInput(formattedName)
+  }
+
+  public getEndpointAuthorization (id: string): EndpointAuthorization | undefined {
+    const result: taskLib.EndpointAuthorization | undefined = this._azurePipelinesRunnerWrapper.getEndpointAuthorization(id, true)
+    if (!result) {
+      return undefined
+    }
+
+    return {
+      scheme: result.scheme,
+      parameters: result.parameters
+    }
+  }
+
+  public getEndpointAuthorizationScheme (id: string): string | undefined {
+    return this._azurePipelinesRunnerWrapper.getEndpointAuthorizationScheme(id, true)
+  }
+
+  public getEndpointAuthorizationParameter (id: string, key: string): string | undefined {
+    return this._azurePipelinesRunnerWrapper.getEndpointAuthorizationParameter(id, key, true)
   }
 
   public locInitialize (folder: string): void {
@@ -69,5 +94,9 @@ export default class AzurePipelinesRunnerInvoker implements IRunnerInvoker {
 
   public setStatusSucceeded (message: string): void {
     this._azurePipelinesRunnerWrapper.setResult(taskLib.TaskResult.Succeeded, message)
+  }
+
+  public setSecret (value: string): void {
+    this._azurePipelinesRunnerWrapper.setSecret(value)
   }
 }

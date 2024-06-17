@@ -64,11 +64,11 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     this._runnerInvoker = runnerInvoker
   }
 
-  public get isAccessTokenAvailable (): string | null {
-    this._logger.logDebug('* GitHubReposInvoker.isAccessTokenAvailable')
+  public async isAccessTokenAvailable (): Promise<string | null> {
+    this._logger.logDebug('* GitHubReposInvoker.isAccessTokenAvailable()')
 
     if (process.env.PR_METRICS_ACCESS_TOKEN === undefined) {
-      return this._runnerInvoker.loc('metrics.codeMetricsCalculator.noGitHubAccessToken')
+      return this._runnerInvoker.loc('repos.gitHubReposInvoker.noGitHubAccessToken')
     }
 
     return null
@@ -309,6 +309,6 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
   }
 
   protected async invokeApiCall<Response> (action: () => Promise<Response>): Promise<Response> {
-    return await super.invokeApiCall(action, this._runnerInvoker.loc('metrics.codeMetricsCalculator.insufficientGitHubAccessTokenPermissions'))
+    return await super.invokeApiCall(action, this._runnerInvoker.loc('repos.gitHubReposInvoker.insufficientGitHubAccessTokenPermissions'))
   }
 }

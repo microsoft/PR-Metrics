@@ -16,6 +16,7 @@ import CommentData from './interfaces/commentData'
 import FileCommentData from './interfaces/fileCommentData'
 import PullRequestCommentData from './interfaces/pullRequestCommentData'
 import PullRequestDetails from './interfaces/pullRequestDetails'
+import TokenManager from './tokenManager'
 
 /**
  * A class for invoking Azure Repos functionality.
@@ -27,6 +28,7 @@ export default class AzureReposInvoker extends BaseReposInvoker {
   private readonly _gitInvoker: GitInvoker
   private readonly _logger: Logger
   private readonly _runnerInvoker: RunnerInvoker
+  private readonly _tokenManager: TokenManager
 
   private _project: string = ''
   private _repositoryId: string = ''
@@ -39,21 +41,28 @@ export default class AzureReposInvoker extends BaseReposInvoker {
    * @param gitInvoker The Git invoker.
    * @param logger The logger.
    * @param runnerInvoker The runner invoker logic.
+   * @param tokenManager The authorization token manager.
    */
-  public constructor (azureDevOpsApiWrapper: AzureDevOpsApiWrapper, gitInvoker: GitInvoker, logger: Logger, runnerInvoker: RunnerInvoker) {
+  public constructor (azureDevOpsApiWrapper: AzureDevOpsApiWrapper, gitInvoker: GitInvoker, logger: Logger, runnerInvoker: RunnerInvoker, tokenManager: TokenManager) {
     super()
 
     this._azureDevOpsApiWrapper = azureDevOpsApiWrapper
     this._gitInvoker = gitInvoker
     this._logger = logger
     this._runnerInvoker = runnerInvoker
+    this._tokenManager = tokenManager
   }
 
-  public get isAccessTokenAvailable (): string | null {
-    this._logger.logDebug('* AzureReposInvoker.isAccessTokenAvailable')
+  public async isAccessTokenAvailable (): Promise<string | null> {
+    this._logger.logDebug('* AzureReposInvoker.isAccessTokenAvailable()')
+
+    const tokenManagerResult: string | null = await this._tokenManager.getToken()
+    if (tokenManagerResult) {
+      return tokenManagerResult
+    }
 
     if (process.env.PR_METRICS_ACCESS_TOKEN === undefined) {
-      return this._runnerInvoker.loc('metrics.codeMetricsCalculator.noAzureReposAccessToken')
+      return this._runnerInvoker.loc('repos.azureReposInvoker.noAzureReposAccessToken')
     }
 
     return null
@@ -227,6 +236,6 @@ export default class AzureReposInvoker extends BaseReposInvoker {
   }
 
   protected async invokeApiCall<Response> (action: () => Promise<Response>): Promise<Response> {
-    return await super.invokeApiCall(action, this._runnerInvoker.loc('metrics.codeMetricsCalculator.insufficientAzureReposAccessTokenPermissions'))
+    return await super.invokeApiCall(action, this._runnerInvoker.loc('repos.azureReposInvoker.insufficientAzureReposAccessTokenPermissions'))
   }
 }
