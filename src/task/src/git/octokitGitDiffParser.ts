@@ -101,7 +101,6 @@ export default class OctokitGitDiffParser {
             const fileCasted: AddedFile | ChangedFile = file
             const chunk: AnyChunk | undefined = fileCasted.chunks[0]
             if (chunk?.type === 'BinaryFilesChunk') {
-              console.log(`Skipping '${file.type}' '${fileCasted.path}' while performing diff parsing.`)
               this._logger.logDebug(`Skipping '${file.type}' '${fileCasted.path}' while performing diff parsing.`)
               break
             }
