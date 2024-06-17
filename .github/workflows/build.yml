@@ -213,6 +213,8 @@ jobs:
           GITLEAKS_CONFIG_FILE: gitleaks.toml
           MARKDOWN_CONFIG_FILE: ../../.markdownlint.json
           VALIDATE_JAVASCRIPT_STANDARD: false
+          VALIDATE_JSON: false
+          VALIDATE_TYPESCRIPT_ES: false
           VALIDATE_TYPESCRIPT_STANDARD: false
 
   dependabot:
