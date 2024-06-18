@@ -1,16 +1,18 @@
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT License.
+ */
 
-import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
-import { singleton } from 'tsyringe'
-import RunnerInvoker from '../runners/runnerInvoker'
-import Logger from '../utilities/logger'
 import * as Validator from '../utilities/validator'
 import AzureReposInvoker from './azureReposInvoker'
+import CommentData from './interfaces/commentData'
+import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import GitHubReposInvoker from './gitHubReposInvoker'
 import IReposInvoker from './iReposInvoker'
-import CommentData from './interfaces/commentData'
+import Logger from '../utilities/logger'
 import PullRequestDetails from './interfaces/pullRequestDetails'
+import RunnerInvoker from '../runners/runnerInvoker'
+import { singleton } from 'tsyringe'
 
 /**
  * A class for invoking repository functionality with any underlying repository store.
@@ -46,42 +48,42 @@ export default class ReposInvoker implements IReposInvoker {
     this._logger.logDebug('* ReposInvoker.getTitleAndDescription()')
 
     const reposInvoker: IReposInvoker = this.getReposInvoker()
-    return await reposInvoker.getTitleAndDescription()
+    return reposInvoker.getTitleAndDescription()
   }
 
   public async getComments (): Promise<CommentData> {
     this._logger.logDebug('* ReposInvoker.getComments()')
 
     const reposInvoker: IReposInvoker = this.getReposInvoker()
-    return await reposInvoker.getComments()
+    return reposInvoker.getComments()
   }
 
   public async setTitleAndDescription (title: string | null, description: string | null): Promise<void> {
     this._logger.logDebug('* ReposInvoker.setTitleAndDescription()')
 
     const reposInvoker: IReposInvoker = this.getReposInvoker()
-    return await reposInvoker.setTitleAndDescription(title, description)
+    return reposInvoker.setTitleAndDescription(title, description)
   }
 
   public async createComment (content: string, status: CommentThreadStatus, fileName?: string, isFileDeleted?: boolean): Promise<void> {
     this._logger.logDebug('* ReposInvoker.createComment()')
 
     const reposInvoker: IReposInvoker = this.getReposInvoker()
-    return await reposInvoker.createComment(content, status, fileName, isFileDeleted)
+    return reposInvoker.createComment(content, status, fileName, isFileDeleted)
   }
 
   public async updateComment (commentThreadId: number, content: string | null, status: CommentThreadStatus | null): Promise<void> {
     this._logger.logDebug('* ReposInvoker.updateComment()')
 
     const reposInvoker: IReposInvoker = this.getReposInvoker()
-    return await reposInvoker.updateComment(commentThreadId, content, status)
+    return reposInvoker.updateComment(commentThreadId, content, status)
   }
 
   public async deleteCommentThread (commentThreadId: number): Promise<void> {
     this._logger.logDebug('* ReposInvoker.deleteCommentThread()')
 
     const reposInvoker: IReposInvoker = this.getReposInvoker()
-    return await reposInvoker.deleteCommentThread(commentThreadId)
+    return reposInvoker.deleteCommentThread(commentThreadId)
   }
 
   private getReposInvoker (): IReposInvoker {
@@ -107,7 +109,7 @@ export default class ReposInvoker implements IReposInvoker {
         this._reposInvoker = this._gitHubReposInvoker
         break
       default:
-        throw RangeError(`BUILD_REPOSITORY_PROVIDER '${repoProvider}' is unsupported.`)
+        throw new RangeError(`BUILD_REPOSITORY_PROVIDER '${repoProvider}' is unsupported.`)
     }
 
     return this._reposInvoker

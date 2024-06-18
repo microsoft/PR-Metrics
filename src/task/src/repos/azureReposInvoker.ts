@@ -1,22 +1,24 @@
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT License.
+ */
 
-import { WebApi } from 'azure-devops-node-api'
-import { IGitApi } from 'azure-devops-node-api/GitApi'
-import { Comment, CommentPosition, CommentThreadStatus, GitPullRequest, GitPullRequestCommentThread } from 'azure-devops-node-api/interfaces/GitInterfaces'
-import { IRequestHandler } from 'azure-devops-node-api/interfaces/common/VsoBaseInterfaces'
-import { singleton } from 'tsyringe'
-import GitInvoker from '../git/gitInvoker'
-import RunnerInvoker from '../runners/runnerInvoker'
-import Logger from '../utilities/logger'
 import * as Validator from '../utilities/validator'
+import { Comment, CommentPosition, CommentThreadStatus, GitPullRequest, GitPullRequestCommentThread } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import AzureDevOpsApiWrapper from '../wrappers/azureDevOpsApiWrapper'
 import BaseReposInvoker from './baseReposInvoker'
 import CommentData from './interfaces/commentData'
 import FileCommentData from './interfaces/fileCommentData'
+import GitInvoker from '../git/gitInvoker'
+import { IGitApi } from 'azure-devops-node-api/GitApi'
+import { IRequestHandler } from 'azure-devops-node-api/interfaces/common/VsoBaseInterfaces'
+import Logger from '../utilities/logger'
 import PullRequestCommentData from './interfaces/pullRequestCommentData'
 import PullRequestDetails from './interfaces/pullRequestDetails'
+import RunnerInvoker from '../runners/runnerInvoker'
 import TokenManager from './tokenManager'
+import { WebApi } from 'azure-devops-node-api'
+import { singleton } from 'tsyringe'
 
 /**
  * A class for invoking Azure Repos functionality.
@@ -72,7 +74,7 @@ export default class AzureReposInvoker extends BaseReposInvoker {
     this._logger.logDebug('* AzureReposInvoker.getTitleAndDescription()')
 
     const gitApiPromise: Promise<IGitApi> = this.getGitApi()
-    const result: GitPullRequest = await this.invokeApiCall(async (): Promise<GitPullRequest> => await (await gitApiPromise).getPullRequestById(this._pullRequestId, this._project))
+    const result: GitPullRequest = await this.invokeApiCall(async (): Promise<GitPullRequest> => (await gitApiPromise).getPullRequestById(this._pullRequestId, this._project))
     this._logger.logDebug(JSON.stringify(result))
 
     const title: string = Validator.validateString(result.title, 'title', 'AzureReposInvoker.getTitleAndDescription()')
@@ -86,7 +88,7 @@ export default class AzureReposInvoker extends BaseReposInvoker {
     this._logger.logDebug('* AzureReposInvoker.getComments()')
 
     const gitApiPromise: Promise<IGitApi> = this.getGitApi()
-    const result: GitPullRequestCommentThread[] = await this.invokeApiCall(async (): Promise<GitPullRequestCommentThread[]> => await (await gitApiPromise).getThreads(this._repositoryId, this._pullRequestId, this._project))
+    const result: GitPullRequestCommentThread[] = await this.invokeApiCall(async (): Promise<GitPullRequestCommentThread[]> => (await gitApiPromise).getThreads(this._repositoryId, this._pullRequestId, this._project))
     this._logger.logDebug(JSON.stringify(result))
     return AzureReposInvoker.convertPullRequestComments(result)
   }
@@ -108,7 +110,7 @@ export default class AzureReposInvoker extends BaseReposInvoker {
       updatedGitPullRequest.description = description
     }
 
-    const result: GitPullRequest = await this.invokeApiCall(async (): Promise<GitPullRequest> => await (await gitApiPromise).updatePullRequest(updatedGitPullRequest, this._repositoryId, this._pullRequestId, this._project))
+    const result: GitPullRequest = await this.invokeApiCall(async (): Promise<GitPullRequest> => (await gitApiPromise).updatePullRequest(updatedGitPullRequest, this._repositoryId, this._pullRequestId, this._project))
     this._logger.logDebug(JSON.stringify(result))
   }
 
@@ -144,7 +146,7 @@ export default class AzureReposInvoker extends BaseReposInvoker {
       }
     }
 
-    const result: GitPullRequestCommentThread = await this.invokeApiCall(async (): Promise<GitPullRequestCommentThread> => await (await gitApiPromise).createThread(commentThread, this._repositoryId, this._pullRequestId, this._project))
+    const result: GitPullRequestCommentThread = await this.invokeApiCall(async (): Promise<GitPullRequestCommentThread> => (await gitApiPromise).createThread(commentThread, this._repositoryId, this._pullRequestId, this._project))
     this._logger.logDebug(JSON.stringify(result))
   }
 
@@ -161,7 +163,7 @@ export default class AzureReposInvoker extends BaseReposInvoker {
         content
       }
 
-      const commentResult: Comment = await this.invokeApiCall(async (): Promise<Comment> => await (await gitApiPromise).updateComment(comment, this._repositoryId, this._pullRequestId, commentThreadId, 1, this._project))
+      const commentResult: Comment = await this.invokeApiCall(async (): Promise<Comment> => (await gitApiPromise).updateComment(comment, this._repositoryId, this._pullRequestId, commentThreadId, 1, this._project))
       this._logger.logDebug(JSON.stringify(commentResult))
     }
 
@@ -170,7 +172,7 @@ export default class AzureReposInvoker extends BaseReposInvoker {
         status
       }
 
-      const threadResult: GitPullRequestCommentThread = await this.invokeApiCall(async (): Promise<GitPullRequestCommentThread> => await (await gitApiPromise).updateThread(commentThread, this._repositoryId, this._pullRequestId, commentThreadId, this._project))
+      const threadResult: GitPullRequestCommentThread = await this.invokeApiCall(async (): Promise<GitPullRequestCommentThread> => (await gitApiPromise).updateThread(commentThread, this._repositoryId, this._pullRequestId, commentThreadId, this._project))
       this._logger.logDebug(JSON.stringify(threadResult))
     }
   }
@@ -179,7 +181,7 @@ export default class AzureReposInvoker extends BaseReposInvoker {
     this._logger.logDebug('* AzureReposInvoker.deleteCommentThread()')
 
     const gitApiPromise: Promise<IGitApi> = this.getGitApi()
-    await this.invokeApiCall(async (): Promise<void> => await (await gitApiPromise).deleteComment(this._repositoryId, this._pullRequestId, commentThreadId, 1, this._project))
+    await this.invokeApiCall(async (): Promise<void> => (await gitApiPromise).deleteComment(this._repositoryId, this._pullRequestId, commentThreadId, 1, this._project))
   }
 
   private async getGitApi (): Promise<IGitApi> {
@@ -208,12 +210,12 @@ export default class AzureReposInvoker extends BaseReposInvoker {
 
     comments.forEach((value: GitPullRequestCommentThread, index: number): void => {
       const id: number = Validator.validateNumber(value.id, `commentThread[${index}].id`, 'AzureReposInvoker.convertPullRequestComments()')
-      const comments: Comment[] | undefined = value.comments
-      if (comments === undefined) {
+      const currentComments: Comment[] | undefined = value.comments
+      if (currentComments === undefined) {
         return
       }
 
-      const content: string | undefined = comments[0]?.content
+      const content: string | undefined = currentComments[0]?.content
       if (content === undefined || content === '') {
         return
       }
@@ -236,6 +238,6 @@ export default class AzureReposInvoker extends BaseReposInvoker {
   }
 
   protected async invokeApiCall<Response> (action: () => Promise<Response>): Promise<Response> {
-    return await super.invokeApiCall(action, this._runnerInvoker.loc('repos.azureReposInvoker.insufficientAzureReposAccessTokenPermissions'))
+    return super.invokeApiCall(action, this._runnerInvoker.loc('repos.azureReposInvoker.insufficientAzureReposAccessTokenPermissions'))
   }
 }

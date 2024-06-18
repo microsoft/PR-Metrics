@@ -1,5 +1,7 @@
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT License.
+ */
 
 /**
  * A class representing code metrics data.
@@ -17,15 +19,15 @@ export default class CodeMetricsData {
    */
   public constructor (productCode: number, testCode: number, ignoredCode: number) {
     if (productCode < 0) {
-      throw RangeError(`Product code '${productCode}' must be >= 0.`)
+      throw new RangeError(`Product code '${productCode}' must be >= 0.`)
     }
 
     if (testCode < 0) {
-      throw RangeError(`Test code '${testCode}' must be >= 0.`)
+      throw new RangeError(`Test code '${testCode}' must be >= 0.`)
     }
 
     if (ignoredCode < 0) {
-      throw RangeError(`Ignored code '${ignoredCode}' must be >= 0.`)
+      throw new RangeError(`Ignored code '${ignoredCode}' must be >= 0.`)
     }
 
     this._productCode = productCode

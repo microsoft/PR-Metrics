@@ -1,18 +1,20 @@
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT License.
+ */
 
-import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
-import { injectable } from 'tsyringe'
 import CodeMetrics from '../metrics/codeMetrics'
 import CodeMetricsData from '../metrics/codeMetricsData'
-import Inputs from '../metrics/inputs'
 import CommentData from '../repos/interfaces/commentData'
+import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import FileCommentData from '../repos/interfaces/fileCommentData'
+import Inputs from '../metrics/inputs'
+import Logger from '../utilities/logger'
 import PullRequestComment from '../repos/interfaces/pullRequestCommentData'
+import PullRequestCommentsData from './pullRequestCommentsData'
 import ReposInvoker from '../repos/reposInvoker'
 import RunnerInvoker from '../runners/runnerInvoker'
-import Logger from '../utilities/logger'
-import PullRequestCommentsData from './pullRequestCommentsData'
+import { injectable } from 'tsyringe'
 
 /**
  * A class for managing pull requests comments.

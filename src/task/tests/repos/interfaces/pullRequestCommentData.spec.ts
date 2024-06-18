@@ -1,9 +1,11 @@
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT License.
+ */
 
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
-import assert from 'node:assert/strict'
 import PullRequestCommentData from '../../../src/repos/interfaces/pullRequestCommentData'
+import assert from 'node:assert/strict'
 
 describe('pullRequestCommentData.ts', (): void => {
   describe('constructor()', (): void => {

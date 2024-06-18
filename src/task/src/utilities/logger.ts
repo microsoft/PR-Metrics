@@ -1,9 +1,11 @@
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT License.
+ */
 
-import { singleton } from 'tsyringe'
-import RunnerInvoker from '../runners/runnerInvoker'
 import ConsoleWrapper from '../wrappers/consoleWrapper'
+import RunnerInvoker from '../runners/runnerInvoker'
+import { singleton } from 'tsyringe'
 
 /**
  * A class for logging messages.
@@ -30,9 +32,9 @@ export default class Logger {
    * @param message The message to log.
    */
   public logDebug (message: string): void {
-    message = Logger.filterMessage(message)
-    this._messages.push(`debug   – ${message}`)
-    this._runnerInvoker.logDebug(message)
+    const filteredMessage: string = Logger.filterMessage(message)
+    this._messages.push(`debug   – ${filteredMessage}`)
+    this._runnerInvoker.logDebug(filteredMessage)
   }
 
   /**
@@ -40,9 +42,9 @@ export default class Logger {
    * @param message The message to log.
    */
   public logInfo (message: string): void {
-    message = Logger.filterMessage(message)
-    this._messages.push(`info    – ${message}`)
-    this._consoleWrapper.log(message)
+    const filteredMessage: string = Logger.filterMessage(message)
+    this._messages.push(`info    – ${filteredMessage}`)
+    this._consoleWrapper.log(filteredMessage)
   }
 
   /**
@@ -50,9 +52,9 @@ export default class Logger {
    * @param message The message to log.
    */
   public logWarning (message: string): void {
-    message = Logger.filterMessage(message)
-    this._messages.push(`warning – ${message}`)
-    this._runnerInvoker.logWarning(message)
+    const filteredMessage: string = Logger.filterMessage(message)
+    this._messages.push(`warning – ${filteredMessage}`)
+    this._runnerInvoker.logWarning(filteredMessage)
   }
 
   /**
@@ -60,9 +62,9 @@ export default class Logger {
    * @param message The message to log.
    */
   public logError (message: string): void {
-    message = Logger.filterMessage(message)
-    this._messages.push(`error   – ${message}`)
-    this._runnerInvoker.logError(message)
+    const filteredMessage: string = Logger.filterMessage(message)
+    this._messages.push(`error   – ${filteredMessage}`)
+    this._runnerInvoker.logError(filteredMessage)
   }
 
   /**
@@ -92,6 +94,6 @@ export default class Logger {
    * @returns The filtered message.
    */
   private static filterMessage (message: string): string {
-    return message.replace(/##(vso)?\[/gi, '')
+    return message.replace(/##(vso)?\[/giu, '')
   }
 }

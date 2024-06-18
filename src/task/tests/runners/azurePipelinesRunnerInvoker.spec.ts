@@ -1,18 +1,20 @@
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT License.
+ */
 
+import 'reflect-metadata'
+import * as path from 'path'
 import * as taskLib from 'azure-pipelines-task-lib/task'
 import { IExecOptions, IExecSyncResult } from 'azure-pipelines-task-lib/toolrunner'
-import assert from 'node:assert/strict'
-import * as path from 'path'
-import 'reflect-metadata'
 import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito'
 import AzurePipelinesRunnerInvoker from '../../src/runners/azurePipelinesRunnerInvoker'
 import AzurePipelinesRunnerWrapper from '../../src/wrappers/azurePipelinesRunnerWrapper'
 import { EndpointAuthorization } from '../../src/runners/endpointAuthorization'
 import { ExecOutput } from '@actions/exec'
+import assert from 'node:assert/strict'
 
-describe('azurePipelinesRunnerInvoker.ts', function (): void {
+describe('azurePipelinesRunnerInvoker.ts', (): void => {
   let azurePipelinesRunnerWrapper: AzurePipelinesRunnerWrapper
 
   beforeEach((): void => {

@@ -1,13 +1,15 @@
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT License.
+ */
 
 import 'reflect-metadata'
-import { container } from 'tsyringe'
 import PullRequestMetrics from './src/pullRequestMetrics'
+import { container } from 'tsyringe'
 
-async function run (): Promise<void> {
+const run = async (): Promise<void> => {
   const pullRequestMetrics: PullRequestMetrics = container.resolve(PullRequestMetrics)
-  pullRequestMetrics.run(__dirname)
+  await pullRequestMetrics.run(__dirname)
 }
 
 run().finally((): void => {})

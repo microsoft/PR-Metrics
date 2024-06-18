@@ -1,14 +1,17 @@
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT License.
+ */
 
-import assert from 'node:assert/strict'
 import 'reflect-metadata'
-import { anyString, deepEqual, instance, mock, verify, when } from 'ts-mockito'
-import Inputs from '../../src/metrics/inputs'
-import * as InputsDefault from '../../src/metrics/inputsDefault'
-import RunnerInvoker from '../../src/runners/runnerInvoker'
 import * as Converter from '../../src/utilities/converter'
+import * as InputsDefault from '../../src/metrics/inputsDefault'
+import { anyString, deepEqual, instance, mock, verify, when } from 'ts-mockito'
+import { DecimalRadix } from '../../src/utilities/constants'
+import Inputs from '../../src/metrics/inputs'
 import Logger from '../../src/utilities/logger'
+import RunnerInvoker from '../../src/runners/runnerInvoker'
+import assert from 'node:assert/strict'
 
 describe('inputs.ts', (): void => {
   const adjustingAlwaysCloseComment: string = 'Adjusting the always-close-comment mode input to \'false\'.'
@@ -144,7 +147,7 @@ describe('inputs.ts', (): void => {
 
     describe('baseSize', (): void => {
       {
-        const testCases: Array<string | undefined> = [
+        const testCases: (string | undefined)[] = [
           undefined,
           '',
           ' ',
@@ -250,7 +253,7 @@ describe('inputs.ts', (): void => {
             const inputs: Inputs = new Inputs(instance(logger), instance(runnerInvoker))
 
             // Assert
-            assert.equal(inputs.baseSize, parseInt(baseSize))
+            assert.equal(inputs.baseSize, parseInt(baseSize, DecimalRadix))
             verify(logger.logDebug('* Inputs.initialize()')).once()
             verify(logger.logDebug('* Inputs.initializeBaseSize()')).once()
             verify(logger.logDebug('* Inputs.initializeGrowthRate()')).once()
@@ -279,7 +282,7 @@ describe('inputs.ts', (): void => {
 
     describe('growthRate', (): void => {
       {
-        const testCases: Array<string | undefined> = [
+        const testCases: (string | undefined)[] = [
           undefined,
           '',
           ' ',
@@ -421,7 +424,7 @@ describe('inputs.ts', (): void => {
 
     describe('testFactor', (): void => {
       {
-        const testCases: Array<string | undefined> = [
+        const testCases: (string | undefined)[] = [
           undefined,
           '',
           ' ',
@@ -602,7 +605,7 @@ describe('inputs.ts', (): void => {
 
     describe('alwaysCloseComment', (): void => {
       {
-        const testCases: Array<string | undefined> = [
+        const testCases: (string | undefined)[] = [
           undefined,
           '',
           ' ',
@@ -696,7 +699,7 @@ describe('inputs.ts', (): void => {
 
     describe('fileMatchingPatterns', (): void => {
       {
-        const testCases: Array<string | undefined> = [
+        const testCases: (string | undefined)[] = [
           undefined,
           '',
           ' ',
@@ -705,7 +708,7 @@ describe('inputs.ts', (): void => {
         ]
 
         testCases.forEach((fileMatchingPatterns: string | undefined): void => {
-          it(`should set the default when the input '${Converter.toString(fileMatchingPatterns?.replace(/\n/g, '\\n'))}' is invalid`, (): void => {
+          it(`should set the default when the input '${Converter.toString(fileMatchingPatterns?.replace(/\n/gu, '\\n'))}' is invalid`, (): void => {
             // Arrange
             when(runnerInvoker.getInput(deepEqual(['File', 'Matching', 'Patterns']))).thenReturn(fileMatchingPatterns)
 
@@ -788,7 +791,7 @@ describe('inputs.ts', (): void => {
         ]
 
         testCases.forEach((fileMatchingPatterns: string): void => {
-          it(`should split '${fileMatchingPatterns.replace(/\n/g, '\\n')}' at the newline character`, (): void => {
+          it(`should split '${fileMatchingPatterns.replace(/\n/gu, '\\n')}' at the newline character`, (): void => {
             // Arrange
             const expectedOutput: string[] = fileMatchingPatterns.split('\n')
             when(runnerInvoker.getInput(deepEqual(['File', 'Matching', 'Patterns']))).thenReturn(fileMatchingPatterns)
@@ -890,7 +893,7 @@ describe('inputs.ts', (): void => {
 
     describe('codeFileExtensions', (): void => {
       {
-        const testCases: Array<string | undefined> = [
+        const testCases: (string | undefined)[] = [
           undefined,
           '',
           ' ',
@@ -899,7 +902,7 @@ describe('inputs.ts', (): void => {
         ]
 
         testCases.forEach((codeFileExtensions: string | undefined): void => {
-          it(`should set the default when the input '${Converter.toString(codeFileExtensions?.replace(/\n/g, '\\n'))}' is invalid`, (): void => {
+          it(`should set the default when the input '${Converter.toString(codeFileExtensions?.replace(/\n/gu, '\\n'))}' is invalid`, (): void => {
             // Arrange
             when(runnerInvoker.getInput(deepEqual(['Code', 'File', 'Extensions']))).thenReturn(codeFileExtensions)
 
@@ -941,7 +944,7 @@ describe('inputs.ts', (): void => {
         ]
 
         testCases.forEach((codeFileExtensions: string): void => {
-          it(`should split '${codeFileExtensions.replace(/\n/g, '\\n')}' at the newline character`, (): void => {
+          it(`should split '${codeFileExtensions.replace(/\n/gu, '\\n')}' at the newline character`, (): void => {
             // Arrange
             const expectedResult: Set<string> = new Set<string>(codeFileExtensions.split('\n'))
             when(runnerInvoker.getInput(deepEqual(['Code', 'File', 'Extensions']))).thenReturn(codeFileExtensions)

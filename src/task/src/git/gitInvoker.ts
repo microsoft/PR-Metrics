@@ -1,11 +1,14 @@
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT License.
+ */
 
-import { singleton } from 'tsyringe'
-import RunnerInvoker from '../runners/runnerInvoker'
-import Logger from '../utilities/logger'
 import * as Validator from '../utilities/validator'
+import { DecimalRadix } from '../utilities/constants'
 import ExecOutput from '../runners/execOutput'
+import Logger from '../utilities/logger'
+import RunnerInvoker from '../runners/runnerInvoker'
+import { singleton } from 'tsyringe'
 
 /**
  * A class for invoking Git commands.
@@ -53,7 +56,7 @@ export default class GitInvoker {
   public isPullRequestIdAvailable (): boolean {
     this._logger.logDebug('* GitInvoker.isPullRequestIdAvailable()')
 
-    return !isNaN(parseInt(this.pullRequestIdInternal))
+    return !isNaN(parseInt(this.pullRequestIdInternal, DecimalRadix))
   }
 
   /**
@@ -84,7 +87,7 @@ export default class GitInvoker {
       return this._pullRequestId
     }
 
-    this._pullRequestId = Validator.validateNumber(parseInt(this.pullRequestIdInternal), 'Pull Request ID', 'GitInvoker.pullRequestId')
+    this._pullRequestId = Validator.validateNumber(parseInt(this.pullRequestIdInternal, DecimalRadix), 'Pull Request ID', 'GitInvoker.pullRequestId')
     return this._pullRequestId
   }
 
@@ -157,15 +160,15 @@ export default class GitInvoker {
       }
 
       return result
-    } else {
-      const result: string | undefined = process.env.SYSTEM_PULLREQUEST_PULLREQUESTID
-      if (!result) {
-        this._logger.logWarning('\'SYSTEM_PULLREQUEST_PULLREQUESTID\' is undefined.')
-        return ''
-      }
-
-      return result
     }
+
+    const result: string | undefined = process.env.SYSTEM_PULLREQUEST_PULLREQUESTID
+    if (!result) {
+      this._logger.logWarning('\'SYSTEM_PULLREQUEST_PULLREQUESTID\' is undefined.')
+      return ''
+    }
+
+    return result
   }
 
   private get targetBranch (): string {
@@ -180,9 +183,9 @@ export default class GitInvoker {
     if (variable.startsWith(expectedStart)) {
       const startIndex: number = expectedStart.length
       return variable.substring(startIndex)
-    } else {
-      return variable
     }
+
+    return variable
   }
 
   private async invokeGit (parameters: string): Promise<string> {

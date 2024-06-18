@@ -1,5 +1,7 @@
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT License.
+ */
 
 type _FixedLengthArray<Type, Length extends number, Recursion extends Type[]> = Recursion['length'] extends Length ? Recursion : _FixedLengthArray<Type, Length, [Type, ...Recursion]>
 

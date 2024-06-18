@@ -1,16 +1,19 @@
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT License.
+ */
 
 import * as minimatch from 'minimatch'
 import * as path from 'path'
-import { singleton } from 'tsyringe'
-import GitInvoker from '../git/gitInvoker'
-import RunnerInvoker from '../runners/runnerInvoker'
-import { FixedLengthArray } from '../utilities/fixedLengthArray'
-import Logger from '../utilities/logger'
 import { CodeFileMetric } from './codeFileMetric'
 import CodeMetricsData from './codeMetricsData'
+import { DecimalRadix } from '../utilities/constants'
+import { FixedLengthArray } from '../utilities/fixedLengthArray'
+import GitInvoker from '../git/gitInvoker'
 import Inputs from './inputs'
+import Logger from '../utilities/logger'
+import RunnerInvoker from '../runners/runnerInvoker'
+import { singleton } from 'tsyringe'
 
 /**
  * A class for computing metrics for software code in pull requests.
@@ -42,7 +45,7 @@ export default class CodeMetrics {
    * @param logger The logger.
    * @param runnerInvoker The runner invoker logic.
    */
-  constructor (gitInvoker: GitInvoker, inputs: Inputs, logger: Logger, runnerInvoker: RunnerInvoker) {
+  public constructor (gitInvoker: GitInvoker, inputs: Inputs, logger: Logger, runnerInvoker: RunnerInvoker) {
     this._gitInvoker = gitInvoker
     this._inputs = inputs
     this._logger = logger
@@ -135,7 +138,7 @@ export default class CodeMetrics {
 
     const gitDiffSummary: string = (await this._gitInvoker.getDiffSummary()).trim()
     if (gitDiffSummary === '') {
-      throw Error('The Git diff summary is empty.')
+      throw new Error('The Git diff summary is empty.')
     }
 
     this._isInitialized = true
@@ -157,9 +160,11 @@ export default class CodeMetrics {
     codeFileMetrics.forEach((codeFileMetric: CodeFileMetric): void => {
       let isValidFilePattern: boolean = false
 
-      // Iterate through the list of patterns. First, check for positive matches. Next, if one of the positive matches
-      // is overridden by a negative match, remove it from consideration. Finally, check for double negative matches,
-      // which override the negative matches.
+      /*
+       * Iterate through the list of patterns. First, check for positive matches. Next, if one of the positive matches
+       * is overridden by a negative match, remove it from consideration. Finally, check for double negative matches,
+       * which override the negative matches.
+       */
       const positiveFileMatchingPatterns: string[] = []
       const negativeFileMatchingPatterns: string[] = []
       const doubleNegativeFileMatchingPatterns: string[] = []
@@ -233,7 +238,7 @@ export default class CodeMetrics {
     let ignoredCode: number = 0
 
     matches.forEach((entry: CodeFileMetric): void => {
-      if (/.*((T|t)est|TEST).*/.test(entry.fileName) || /.*\.spec\..*/i.test(path.basename(entry.fileName))) {
+      if (/.*((T|t)est|TEST).*/u.test(entry.fileName) || /.*\.spec\..*/iu.test(path.basename(entry.fileName))) {
         this._logger.logDebug(`Test File: ${entry.fileName} (${entry.linesAdded} lines)`)
         testCode += entry.linesAdded
       } else {
@@ -266,24 +271,25 @@ export default class CodeMetrics {
 
     // Removing the ending that can be created by test mocks.
     const endingToRemove: string = '\r\nrc:0\r\nsuccess:true'
-    if (input.endsWith(endingToRemove)) {
-      input = input.substring(0, input.length - endingToRemove.length)
+    let modifiedInput: string = input
+    if (modifiedInput.endsWith(endingToRemove)) {
+      modifiedInput = modifiedInput.substring(0, input.length - endingToRemove.length)
     }
 
     // Condense file and folder names that were renamed e.g. F{a => i}leT{b => e}st.d{c => l}l".
-    const lines: string[] = input.split('\n')
+    const lines: string[] = modifiedInput.split('\n')
 
     const result: CodeFileMetric[] = []
     lines.forEach((line: string): void => {
       const elements: string[] = line.split('\t')
       if (elements[0] === undefined || elements[1] === undefined || elements[2] === undefined) {
-        throw RangeError(`The number of elements '${elements.length}' in '${line}' in input '${input}' did not match the expected 3.`)
+        throw new RangeError(`The number of elements '${elements.length}' in '${line}' in input '${modifiedInput}' did not match the expected 3.`)
       }
 
       // Condense file and folder names that were renamed e.g. "F{a => i}leT{b => e}st.d{c => l}l" or "FaleTbst.dcl => FileTest.dll".
       const fileName: string = elements[2]
-        .replace(/{.*? => ([^}]+?)}/g, '$1')
-        .replace(/.*? => ([^}]+?)/g, '$1')
+        .replace(/\{.*? => ([^}]+?)\}/gu, '$1')
+        .replace(/.*? => ([^}]+?)/gu, '$1')
 
       result.push({
         fileName,
@@ -301,9 +307,9 @@ export default class CodeMetrics {
     if (element === '-') {
       result = 0
     } else {
-      result = parseInt(element)
+      result = parseInt(element, DecimalRadix)
       if (isNaN(result)) {
-        throw Error(`Could not parse ${category} lines '${element}' from line '${line}'.`)
+        throw new Error(`Could not parse ${category} lines '${element}' from line '${line}'.`)
       }
     }
 
@@ -340,10 +346,10 @@ export default class CodeMetrics {
     this._logger.logDebug('* CodeMetrics.calculateSize()')
 
     const indicators: FixedLengthArray<((prefix: string) => string), 5> = [
-      (_: string): string => this._runnerInvoker.loc('metrics.codeMetrics.titleSizeXS'),
-      (_: string): string => this._runnerInvoker.loc('metrics.codeMetrics.titleSizeS'),
-      (_: string): string => this._runnerInvoker.loc('metrics.codeMetrics.titleSizeM'),
-      (_: string): string => this._runnerInvoker.loc('metrics.codeMetrics.titleSizeL'),
+      (): string => this._runnerInvoker.loc('metrics.codeMetrics.titleSizeXS'),
+      (): string => this._runnerInvoker.loc('metrics.codeMetrics.titleSizeS'),
+      (): string => this._runnerInvoker.loc('metrics.codeMetrics.titleSizeM'),
+      (): string => this._runnerInvoker.loc('metrics.codeMetrics.titleSizeL'),
       (prefix: string): string => this._runnerInvoker.loc('metrics.codeMetrics.titleSizeXL', prefix)
     ]
 
@@ -358,7 +364,7 @@ export default class CodeMetrics {
     let currentSize: number = this._inputs.baseSize * this._inputs.growthRate
     while (this._metrics.productCode >= currentSize) {
       currentSize *= this._inputs.growthRate
-      index++
+      index += 1
 
       if (index === 2 || index === 3 || index === 4) {
         result = indicators[index]('')

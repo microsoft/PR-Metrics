@@ -1,14 +1,16 @@
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT License.
+ */
 
-import assert from 'node:assert/strict'
 import 'reflect-metadata'
-import { instance, mock, verify, when } from 'ts-mockito'
-import GitInvoker from '../../src/git/gitInvoker'
-import RunnerInvoker from '../../src/runners/runnerInvoker'
-import Logger from '../../src/utilities/logger'
 import * as AssertExtensions from '../testUtilities/assertExtensions'
-import ExecOutput from '../../src/runners/execOutput'
+import { instance, mock, verify, when } from 'ts-mockito'
+import { ExecOutput } from '@actions/exec'
+import GitInvoker from '../../src/git/gitInvoker'
+import Logger from '../../src/utilities/logger'
+import RunnerInvoker from '../../src/runners/runnerInvoker'
+import assert from 'node:assert/strict'
 
 describe('gitInvoker.ts', (): void => {
   let logger: Logger
@@ -54,7 +56,7 @@ describe('gitInvoker.ts', (): void => {
       ]
 
       testCases.forEach((response: string): void => {
-        it(`should return true when called from a Git repo returning '${response.replace(/\n/g, '\\n')}'`, async (): Promise<void> => {
+        it(`should return true when called from a Git repo returning '${response.replace(/\n/gu, '\\n')}'`, async (): Promise<void> => {
           // Arrange
           when(runnerInvoker.exec('git', 'rev-parse --is-inside-work-tree')).thenCall(
             async (_tool: string, _args: string): Promise<ExecOutput> => Promise.resolve({
@@ -328,7 +330,7 @@ describe('gitInvoker.ts', (): void => {
       const gitInvoker: GitInvoker = new GitInvoker(instance(logger), instance(runnerInvoker))
 
       // Act
-      const func: () => Promise<boolean> = async () => await gitInvoker.isGitHistoryAvailable()
+      const func: () => Promise<boolean> = async () => gitInvoker.isGitHistoryAvailable()
 
       // Assert
       await AssertExtensions.toThrowAsync(func, '\'GITHUB_BASE_REF\', accessed within \'GitInvoker.targetBranch\', is invalid, null, or undefined \'undefined\'.')
@@ -420,7 +422,7 @@ describe('gitInvoker.ts', (): void => {
       const gitInvoker: GitInvoker = new GitInvoker(instance(logger), instance(runnerInvoker))
 
       // Act
-      const func: () => Promise<boolean> = async () => await gitInvoker.isGitHistoryAvailable()
+      const func: () => Promise<boolean> = async () => gitInvoker.isGitHistoryAvailable()
 
       // Assert
       await AssertExtensions.toThrowAsync(func, '\'SYSTEM_PULLREQUEST_TARGETBRANCH\', accessed within \'GitInvoker.targetBranch\', is invalid, null, or undefined \'undefined\'.')
@@ -482,7 +484,7 @@ describe('gitInvoker.ts', (): void => {
       const func: () => void = () => gitInvoker.pullRequestId
 
       // Assert
-      assert.throws(func, TypeError('\'Pull Request ID\', accessed within \'GitInvoker.pullRequestId\', is invalid, null, or undefined \'NaN\'.'))
+      assert.throws(func, new TypeError('\'Pull Request ID\', accessed within \'GitInvoker.pullRequestId\', is invalid, null, or undefined \'NaN\'.'))
       verify(logger.logWarning('\'GITHUB_REF\' is undefined.')).once()
       verify(logger.logDebug('* GitInvoker.pullRequestId')).once()
       verify(logger.logDebug('* GitInvoker.pullRequestIdInternal')).once()
@@ -502,7 +504,7 @@ describe('gitInvoker.ts', (): void => {
       const func: () => void = () => gitInvoker.pullRequestId
 
       // Assert
-      assert.throws(func, TypeError('\'Pull Request ID\', accessed within \'GitInvoker.pullRequestId\', is invalid, null, or undefined \'NaN\'.'))
+      assert.throws(func, new TypeError('\'Pull Request ID\', accessed within \'GitInvoker.pullRequestId\', is invalid, null, or undefined \'NaN\'.'))
       verify(logger.logWarning('\'GITHUB_REF\' is in an incorrect format \'refs/pull\'.')).once()
       verify(logger.logDebug('* GitInvoker.pullRequestId')).once()
       verify(logger.logDebug('* GitInvoker.pullRequestIdInternal')).once()
@@ -542,7 +544,7 @@ describe('gitInvoker.ts', (): void => {
       const func: () => void = () => gitInvoker.pullRequestId
 
       // Assert
-      assert.throws(func, TypeError('\'Pull Request ID\', accessed within \'GitInvoker.pullRequestId\', is invalid, null, or undefined \'NaN\'.'))
+      assert.throws(func, new TypeError('\'Pull Request ID\', accessed within \'GitInvoker.pullRequestId\', is invalid, null, or undefined \'NaN\'.'))
       verify(logger.logWarning('\'BUILD_REPOSITORY_PROVIDER\' is undefined.')).once()
       verify(logger.logDebug('* GitInvoker.pullRequestId')).once()
       verify(logger.logDebug('* GitInvoker.pullRequestIdInternal')).once()
@@ -558,7 +560,7 @@ describe('gitInvoker.ts', (): void => {
       const func: () => void = () => gitInvoker.pullRequestId
 
       // Assert
-      assert.throws(func, TypeError('\'Pull Request ID\', accessed within \'GitInvoker.pullRequestId\', is invalid, null, or undefined \'NaN\'.'))
+      assert.throws(func, new TypeError('\'Pull Request ID\', accessed within \'GitInvoker.pullRequestId\', is invalid, null, or undefined \'NaN\'.'))
       verify(logger.logWarning('\'SYSTEM_PULLREQUEST_PULLREQUESTID\' is undefined.')).once()
       verify(logger.logDebug('* GitInvoker.pullRequestId')).once()
       verify(logger.logDebug('* GitInvoker.pullRequestIdInternal')).once()
@@ -581,7 +583,7 @@ describe('gitInvoker.ts', (): void => {
           const func: () => void = () => gitInvoker.pullRequestId
 
           // Assert
-          assert.throws(func, TypeError('\'Pull Request ID\', accessed within \'GitInvoker.pullRequestId\', is invalid, null, or undefined \'NaN\'.'))
+          assert.throws(func, new TypeError('\'Pull Request ID\', accessed within \'GitInvoker.pullRequestId\', is invalid, null, or undefined \'NaN\'.'))
           verify(logger.logWarning('\'SYSTEM_PULLREQUEST_PULLREQUESTNUMBER\' is undefined.')).once()
           verify(logger.logDebug('* GitInvoker.pullRequestId')).once()
           verify(logger.logDebug('* GitInvoker.pullRequestIdInternal')).once()
@@ -603,7 +605,7 @@ describe('gitInvoker.ts', (): void => {
       const func: () => void = () => gitInvoker.pullRequestId
 
       // Assert
-      assert.throws(func, TypeError('\'Pull Request ID\', accessed within \'GitInvoker.pullRequestId\', is invalid, null, or undefined \'NaN\'.'))
+      assert.throws(func, new TypeError('\'Pull Request ID\', accessed within \'GitInvoker.pullRequestId\', is invalid, null, or undefined \'NaN\'.'))
       verify(logger.logDebug('* GitInvoker.pullRequestId')).once()
       verify(logger.logDebug('* GitInvoker.pullRequestIdInternal')).once()
       verify(logger.logDebug('* GitInvoker.pullRequestIdForGitHub')).once()
@@ -674,7 +676,7 @@ describe('gitInvoker.ts', (): void => {
       const gitInvoker: GitInvoker = new GitInvoker(instance(logger), instance(runnerInvoker))
 
       // Act
-      const func: () => Promise<string> = async () => await gitInvoker.getDiffSummary()
+      const func: () => Promise<string> = async () => gitInvoker.getDiffSummary()
 
       // Assert
       await AssertExtensions.toThrowAsync(func, '\'SYSTEM_PULLREQUEST_TARGETBRANCH\', accessed within \'GitInvoker.targetBranch\', is invalid, null, or undefined \'undefined\'.')
@@ -694,7 +696,7 @@ describe('gitInvoker.ts', (): void => {
       const gitInvoker: GitInvoker = new GitInvoker(instance(logger), instance(runnerInvoker))
 
       // Act
-      const func: () => Promise<string> = async () => await gitInvoker.getDiffSummary()
+      const func: () => Promise<string> = async () => gitInvoker.getDiffSummary()
 
       // Assert
       await AssertExtensions.toThrowAsync(func, 'Failure')

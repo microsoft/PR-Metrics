@@ -1,16 +1,18 @@
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT License.
+ */
 
-import assert from 'node:assert/strict'
 import 'reflect-metadata'
 import { deepEqual, instance, mock, verify, when } from 'ts-mockito'
 import AzurePipelinesRunnerInvoker from '../../src/runners/azurePipelinesRunnerInvoker'
+import { EndpointAuthorization } from 'azure-pipelines-task-lib'
+import ExecOutput from '../../src/runners/execOutput'
 import GitHubRunnerInvoker from '../../src/runners/gitHubRunnerInvoker'
 import RunnerInvoker from '../../src/runners/runnerInvoker'
-import ExecOutput from '../../src/runners/execOutput'
-import { EndpointAuthorization } from '../../src/runners/endpointAuthorization'
+import assert from 'node:assert/strict'
 
-describe('runnerInvoker.ts', function (): void {
+describe('runnerInvoker.ts', (): void => {
   let azurePipelinesRunnerInvoker: AzurePipelinesRunnerInvoker
   let gitHubRunnerInvoker: GitHubRunnerInvoker
 
@@ -20,7 +22,7 @@ describe('runnerInvoker.ts', function (): void {
   })
 
   describe('isGitHub()', (): void => {
-    it('should return false when running on Azure Pipelines', async (): Promise<void> => {
+    it('should return false when running on Azure Pipelines', (): void => {
       // Act
       const result: boolean = RunnerInvoker.isGitHub
 
@@ -28,7 +30,7 @@ describe('runnerInvoker.ts', function (): void {
       assert.equal(result, false)
     })
 
-    it('should return true when running on GitHub', async (): Promise<void> => {
+    it('should return true when running on GitHub', (): void => {
       // Arrange
       process.env.GITHUB_ACTION = 'PR-Metrics'
 

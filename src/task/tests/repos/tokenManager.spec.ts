@@ -1,5 +1,7 @@
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT License.
+ */
 
 import * as AssertExtensions from '../testUtilities/assertExtensions'
 import { deepEqual, instance, mock, verify, when } from 'ts-mockito'

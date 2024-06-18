@@ -1,14 +1,16 @@
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT License.
+ */
 
+import * as path from 'path'
 import * as taskLib from 'azure-pipelines-task-lib/task'
 import { IExecOptions, IExecSyncResult } from 'azure-pipelines-task-lib/toolrunner'
-import * as path from 'path'
-import { singleton } from 'tsyringe'
 import AzurePipelinesRunnerWrapper from '../wrappers/azurePipelinesRunnerWrapper'
-import IRunnerInvoker from './iRunnerInvoker'
-import ExecOutput from './execOutput'
 import { EndpointAuthorization } from './endpointAuthorization'
+import ExecOutput from './execOutput'
+import IRunnerInvoker from './iRunnerInvoker'
+import { singleton } from 'tsyringe'
 
 /**
  * A class for invoking Azure Pipelines runner functionality.

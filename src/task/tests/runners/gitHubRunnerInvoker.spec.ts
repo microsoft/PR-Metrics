@@ -1,19 +1,21 @@
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT License.
+ */
 
-import * as actionsExec from '@actions/exec'
-import assert from 'node:assert/strict'
-import * as path from 'path'
 import 'reflect-metadata'
+import * as actionsExec from '@actions/exec'
+import * as path from 'path'
 import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito'
-import GitHubRunnerInvoker from '../../src/runners/gitHubRunnerInvoker'
 import AzurePipelinesRunnerWrapper from '../../src/wrappers/azurePipelinesRunnerWrapper'
 import ConsoleWrapper from '../../src/wrappers/consoleWrapper'
-import GitHubRunnerWrapper from '../../src/wrappers/gitHubRunnerWrapper'
 import { EndpointAuthorization } from 'azure-pipelines-task-lib'
 import ExecOutput from '../../src/runners/execOutput'
+import GitHubRunnerInvoker from '../../src/runners/gitHubRunnerInvoker'
+import GitHubRunnerWrapper from '../../src/wrappers/gitHubRunnerWrapper'
+import assert from 'node:assert/strict'
 
-describe('gitHubRunnerInvoker.ts', function (): void {
+describe('gitHubRunnerInvoker.ts', (): void => {
   const resourcePath: string = path.join(__dirname, '../../Strings/resources.resjson/en-US/')
 
   let azurePipelinesRunnerWrapper: AzurePipelinesRunnerWrapper

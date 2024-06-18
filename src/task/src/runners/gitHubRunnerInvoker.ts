@@ -1,18 +1,20 @@
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT License.
+ */
 
 import * as actionsExec from '@actions/exec'
 import * as fs from 'fs'
 import * as path from 'path'
-import { singleton } from 'tsyringe'
 import * as util from 'util'
-import ResourcesJson from '../jsonTypes/resourcesJson'
 import AzurePipelinesRunnerWrapper from '../wrappers/azurePipelinesRunnerWrapper'
 import ConsoleWrapper from '../wrappers/consoleWrapper'
+import { EndpointAuthorization } from './endpointAuthorization'
+import ExecOutput from './execOutput'
 import GitHubRunnerWrapper from '../wrappers/gitHubRunnerWrapper'
 import IRunnerInvoker from './iRunnerInvoker'
-import ExecOutput from './execOutput'
-import { EndpointAuthorization } from './endpointAuthorization'
+import ResourcesJson from '../jsonTypes/resourcesJson'
+import { singleton } from 'tsyringe'
 
 /**
  * A class for invoking GitHub runner functionality.
@@ -74,7 +76,7 @@ export default class GitHubRunnerInvoker implements IRunnerInvoker {
     const resourceData: string = fs.readFileSync(path.join(folder, 'resources.resjson'), 'utf8')
     const resources: ResourcesJson = JSON.parse(resourceData) as ResourcesJson
 
-    const entries: Array<[string, string]> = Object.entries(resources)
+    const entries: [string, string][] = Object.entries(resources)
     const stringPrefix: string = 'loc.messages.'
     entries.forEach((entry: [string, string]): void => {
       if (entry[0].startsWith(stringPrefix)) {

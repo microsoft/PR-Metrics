@@ -1,26 +1,27 @@
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT License.
+ */
 
-import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
-import assert from 'node:assert/strict'
 import 'reflect-metadata'
+import * as AssertExtensions from '../testUtilities/assertExtensions'
 import { instance, mock, verify } from 'ts-mockito'
 import AzureReposInvoker from '../../src/repos/azureReposInvoker'
-import GitHubReposInvoker from '../../src/repos/gitHubReposInvoker'
 import CommentData from '../../src/repos/interfaces/commentData'
+import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
+import GitHubReposInvoker from '../../src/repos/gitHubReposInvoker'
+import Logger from '../../src/utilities/logger'
 import PullRequestDetails from '../../src/repos/interfaces/pullRequestDetails'
 import ReposInvoker from '../../src/repos/reposInvoker'
-import Logger from '../../src/utilities/logger'
-import * as AssertExtensions from '../testUtilities/assertExtensions'
+import assert from 'node:assert/strict'
 
-describe('reposInvoker.ts', function (): void {
+describe('reposInvoker.ts', (): void => {
   let azureReposInvoker: AzureReposInvoker
   let gitHubReposInvoker: GitHubReposInvoker
   let logger: Logger
 
   beforeEach((): void => {
     azureReposInvoker = mock(AzureReposInvoker)
-
     gitHubReposInvoker = mock(GitHubReposInvoker)
     logger = mock(Logger)
   })
@@ -222,7 +223,7 @@ describe('reposInvoker.ts', function (): void {
       const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
 
       // Act
-      const func: () => Promise<PullRequestDetails> = async () => await reposInvoker.getTitleAndDescription()
+      const func: () => Promise<PullRequestDetails> = async () => reposInvoker.getTitleAndDescription()
 
       // Assert
       await AssertExtensions.toThrowAsync(func, '\'BUILD_REPOSITORY_PROVIDER\', accessed within \'ReposInvoker.getReposInvoker()\', is invalid, null, or undefined \'undefined\'.')
@@ -238,7 +239,7 @@ describe('reposInvoker.ts', function (): void {
       const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
 
       // Act
-      const func: () => Promise<PullRequestDetails> = async () => await reposInvoker.getTitleAndDescription()
+      const func: () => Promise<PullRequestDetails> = async () => reposInvoker.getTitleAndDescription()
 
       // Assert
       await AssertExtensions.toThrowAsync(func, 'BUILD_REPOSITORY_PROVIDER \'Other\' is unsupported.')
@@ -325,7 +326,7 @@ describe('reposInvoker.ts', function (): void {
       const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
 
       // Act
-      const func: () => Promise<CommentData> = async () => await reposInvoker.getComments()
+      const func: () => Promise<CommentData> = async () => reposInvoker.getComments()
 
       // Assert
       await AssertExtensions.toThrowAsync(func, '\'BUILD_REPOSITORY_PROVIDER\', accessed within \'ReposInvoker.getReposInvoker()\', is invalid, null, or undefined \'undefined\'.')
@@ -341,7 +342,7 @@ describe('reposInvoker.ts', function (): void {
       const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
 
       // Act
-      const func: () => Promise<CommentData> = async () => await reposInvoker.getComments()
+      const func: () => Promise<CommentData> = async () => reposInvoker.getComments()
 
       // Assert
       await AssertExtensions.toThrowAsync(func, 'BUILD_REPOSITORY_PROVIDER \'Other\' is unsupported.')
@@ -425,7 +426,7 @@ describe('reposInvoker.ts', function (): void {
       const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
 
       // Act
-      const func: () => Promise<void> = async () => await reposInvoker.setTitleAndDescription(null, null)
+      const func: () => Promise<void> = async () => reposInvoker.setTitleAndDescription(null, null)
 
       // Assert
       await AssertExtensions.toThrowAsync(func, '\'BUILD_REPOSITORY_PROVIDER\', accessed within \'ReposInvoker.getReposInvoker()\', is invalid, null, or undefined \'undefined\'.')
@@ -441,7 +442,7 @@ describe('reposInvoker.ts', function (): void {
       const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
 
       // Act
-      const func: () => Promise<void> = async () => await reposInvoker.setTitleAndDescription(null, null)
+      const func: () => Promise<void> = async () => reposInvoker.setTitleAndDescription(null, null)
 
       // Assert
       await AssertExtensions.toThrowAsync(func, 'BUILD_REPOSITORY_PROVIDER \'Other\' is unsupported.')
@@ -525,7 +526,7 @@ describe('reposInvoker.ts', function (): void {
       const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
 
       // Act
-      const func: () => Promise<void> = async () => await reposInvoker.createComment('', CommentThreadStatus.Active, '', false)
+      const func: () => Promise<void> = async () => reposInvoker.createComment('', CommentThreadStatus.Active, '', false)
 
       // Assert
       await AssertExtensions.toThrowAsync(func, '\'BUILD_REPOSITORY_PROVIDER\', accessed within \'ReposInvoker.getReposInvoker()\', is invalid, null, or undefined \'undefined\'.')
@@ -541,7 +542,7 @@ describe('reposInvoker.ts', function (): void {
       const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
 
       // Act
-      const func: () => Promise<void> = async () => await reposInvoker.createComment('', CommentThreadStatus.Active, '', false)
+      const func: () => Promise<void> = async () => reposInvoker.createComment('', CommentThreadStatus.Active, '', false)
 
       // Assert
       await AssertExtensions.toThrowAsync(func, 'BUILD_REPOSITORY_PROVIDER \'Other\' is unsupported.')
@@ -625,7 +626,7 @@ describe('reposInvoker.ts', function (): void {
       const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
 
       // Act
-      const func: () => Promise<void> = async () => await reposInvoker.updateComment(0, null, null)
+      const func: () => Promise<void> = async () => reposInvoker.updateComment(0, null, null)
 
       // Assert
       await AssertExtensions.toThrowAsync(func, '\'BUILD_REPOSITORY_PROVIDER\', accessed within \'ReposInvoker.getReposInvoker()\', is invalid, null, or undefined \'undefined\'.')
@@ -641,7 +642,7 @@ describe('reposInvoker.ts', function (): void {
       const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
 
       // Act
-      const func: () => Promise<void> = async () => await reposInvoker.updateComment(0, null, null)
+      const func: () => Promise<void> = async () => reposInvoker.updateComment(0, null, null)
 
       // Assert
       await AssertExtensions.toThrowAsync(func, 'BUILD_REPOSITORY_PROVIDER \'Other\' is unsupported.')
@@ -725,7 +726,7 @@ describe('reposInvoker.ts', function (): void {
       const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
 
       // Act
-      const func: () => Promise<void> = async () => await reposInvoker.deleteCommentThread(20)
+      const func: () => Promise<void> = async () => reposInvoker.deleteCommentThread(20)
 
       // Assert
       await AssertExtensions.toThrowAsync(func, '\'BUILD_REPOSITORY_PROVIDER\', accessed within \'ReposInvoker.getReposInvoker()\', is invalid, null, or undefined \'undefined\'.')
@@ -741,7 +742,7 @@ describe('reposInvoker.ts', function (): void {
       const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
 
       // Act
-      const func: () => Promise<void> = async () => await reposInvoker.deleteCommentThread(20)
+      const func: () => Promise<void> = async () => reposInvoker.deleteCommentThread(20)
 
       // Assert
       await AssertExtensions.toThrowAsync(func, 'BUILD_REPOSITORY_PROVIDER \'Other\' is unsupported.')

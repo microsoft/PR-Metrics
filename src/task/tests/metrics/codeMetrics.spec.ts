@@ -1,17 +1,19 @@
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT License.
+ */
 
-import assert from 'node:assert/strict'
 import 'reflect-metadata'
+import * as AssertExtensions from '../testUtilities/assertExtensions'
+import * as InputsDefault from '../../src/metrics/inputsDefault'
 import { instance, mock, verify, when } from 'ts-mockito'
-import GitInvoker from '../../src/git/gitInvoker'
 import CodeMetrics from '../../src/metrics/codeMetrics'
 import CodeMetricsData from '../../src/metrics/codeMetricsData'
+import GitInvoker from '../../src/git/gitInvoker'
 import Inputs from '../../src/metrics/inputs'
-import * as InputsDefault from '../../src/metrics/inputsDefault'
-import RunnerInvoker from '../../src/runners/runnerInvoker'
 import Logger from '../../src/utilities/logger'
-import * as AssertExtensions from '../testUtilities/assertExtensions'
+import RunnerInvoker from '../../src/runners/runnerInvoker'
+import assert from 'node:assert/strict'
 
 describe('codeMetrics.ts', (): void => {
   let gitInvoker: GitInvoker
@@ -566,7 +568,7 @@ describe('codeMetrics.ts', (): void => {
     ]
 
     testCases.forEach(({ gitResponse, sizeIndicator, testCoverageIndicator, metrics, globChecks }: TestCaseType): void => {
-      it(`with default inputs and git diff '${gitResponse.replace(/\n/g, '\\n').replace(/\r/g, '\\r')}', returns '${sizeIndicator}' size and '${testCoverageIndicator.toString()}' test coverage`, async (): Promise<void> => {
+      it(`with default inputs and git diff '${gitResponse.replace(/\n/gu, '\\n').replace(/\r/gu, '\\r')}', returns '${sizeIndicator}' size and '${testCoverageIndicator.toString()}' test coverage`, async (): Promise<void> => {
         // Arrange
         when(gitInvoker.getDiffSummary()).thenResolve(gitResponse)
 
@@ -587,7 +589,7 @@ describe('codeMetrics.ts', (): void => {
         verify(logger.logDebug('* CodeMetrics.initialize()')).times(7)
         verify(logger.logDebug('* CodeMetrics.initializeMetrics()')).once()
         verify(logger.logDebug('* CodeMetrics.performGlobCheck()')).times(globChecks)
-        verify(logger.logDebug('* CodeMetrics.matchFileExtension()')).times((gitResponse.replace(/\r\n/g, '').match(/\n/g) ?? []).length + 1 - (gitResponse.endsWith('\n') ? 1 : 0))
+        verify(logger.logDebug('* CodeMetrics.matchFileExtension()')).times((gitResponse.replace(/\r\n/gu, '').match(/\n/gu) ?? []).length + 1 - (gitResponse.endsWith('\n') ? 1 : 0))
         verify(logger.logDebug('* CodeMetrics.constructMetrics()')).once()
         verify(logger.logDebug('* CodeMetrics.createFileMetricsMap()')).once()
         verify(logger.logDebug('* CodeMetrics.initializeIsSufficientlyTested()')).once()
@@ -1143,7 +1145,7 @@ describe('codeMetrics.ts', (): void => {
     ]
 
     testCases.forEach(({ gitResponse, sizeIndicator, testCoverageIndicator, metrics, filesNotRequiringReview, deletedFilesNotRequiringReview, globChecks }: TestCaseType): void => {
-      it(`with non-default inputs and git diff '${gitResponse.replace(/\n/g, '\\n')}', returns '${sizeIndicator}' size and '${testCoverageIndicator.toString()}' test coverage`, async (): Promise<void> => {
+      it(`with non-default inputs and git diff '${gitResponse.replace(/\n/gu, '\\n')}', returns '${sizeIndicator}' size and '${testCoverageIndicator.toString()}' test coverage`, async (): Promise<void> => {
         // Arrange
         when(inputs.baseSize).thenReturn(100)
         when(inputs.growthRate).thenReturn(1.5)
@@ -1169,7 +1171,7 @@ describe('codeMetrics.ts', (): void => {
         verify(logger.logDebug('* CodeMetrics.initialize()')).times(7)
         verify(logger.logDebug('* CodeMetrics.initializeMetrics()')).once()
         verify(logger.logDebug('* CodeMetrics.performGlobCheck()')).times(globChecks)
-        verify(logger.logDebug('* CodeMetrics.matchFileExtension()')).times((gitResponse.match(/\n/g) ?? []).length + 1)
+        verify(logger.logDebug('* CodeMetrics.matchFileExtension()')).times((gitResponse.match(/\n/gu) ?? []).length + 1)
         verify(logger.logDebug('* CodeMetrics.constructMetrics()')).once()
         verify(logger.logDebug('* CodeMetrics.createFileMetricsMap()')).once()
         verify(logger.logDebug('* CodeMetrics.initializeIsSufficientlyTested()')).once()
@@ -1227,7 +1229,7 @@ describe('codeMetrics.ts', (): void => {
         verify(logger.logDebug('* CodeMetrics.initialize()')).times(7)
         verify(logger.logDebug('* CodeMetrics.initializeMetrics()')).once()
         verify(logger.logDebug('* CodeMetrics.performGlobCheck()')).times(globChecks)
-        verify(logger.logDebug('* CodeMetrics.matchFileExtension()')).times((gitResponse.match(/\n/g) ?? []).length + 1)
+        verify(logger.logDebug('* CodeMetrics.matchFileExtension()')).times((gitResponse.match(/\n/gu) ?? []).length + 1)
         verify(logger.logDebug('* CodeMetrics.constructMetrics()')).once()
         verify(logger.logDebug('* CodeMetrics.createFileMetricsMap()')).once()
         verify(logger.logDebug('* CodeMetrics.initializeIsSufficientlyTested()')).once()
@@ -1352,7 +1354,7 @@ describe('codeMetrics.ts', (): void => {
           const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(logger), instance(runnerInvoker))
 
           // Act
-          const func: () => Promise<string[]> = async () => await codeMetrics.getFilesNotRequiringReview()
+          const func: () => Promise<string[]> = async () => codeMetrics.getFilesNotRequiringReview()
 
           // Assert
           await AssertExtensions.toThrowAsync(func, 'The Git diff summary is empty.')
@@ -1402,7 +1404,7 @@ describe('codeMetrics.ts', (): void => {
           const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(logger), instance(runnerInvoker))
 
           // Act
-          const func: () => Promise<string[]> = async () => await codeMetrics.getFilesNotRequiringReview()
+          const func: () => Promise<string[]> = async () => codeMetrics.getFilesNotRequiringReview()
 
           // Assert
           await AssertExtensions.toThrowAsync(func, `The number of elements '${elements}' in '${summary.trim()}' in input '${summary.trim()}' did not match the expected 3.`)
@@ -1419,7 +1421,7 @@ describe('codeMetrics.ts', (): void => {
       const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(logger), instance(runnerInvoker))
 
       // Act
-      const func: () => Promise<string[]> = async () => await codeMetrics.getFilesNotRequiringReview()
+      const func: () => Promise<string[]> = async () => codeMetrics.getFilesNotRequiringReview()
 
       // Assert
       await AssertExtensions.toThrowAsync(func, 'Could not parse added lines \'A\' from line \'A\t0\tfile.ts\'.')
@@ -1434,7 +1436,7 @@ describe('codeMetrics.ts', (): void => {
       const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(logger), instance(runnerInvoker))
 
       // Act
-      const func: () => Promise<string[]> = async () => await codeMetrics.getFilesNotRequiringReview()
+      const func: () => Promise<string[]> = async () => codeMetrics.getFilesNotRequiringReview()
 
       // Assert
       await AssertExtensions.toThrowAsync(func, 'Could not parse deleted lines \'A\' from line \'0\tA\tfile.ts\'.')
@@ -1451,7 +1453,7 @@ describe('codeMetrics.ts', (): void => {
       const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(logger), instance(runnerInvoker))
 
       // Act
-      const func: () => Promise<string[]> = async () => await codeMetrics.getDeletedFilesNotRequiringReview()
+      const func: () => Promise<string[]> = async () => codeMetrics.getDeletedFilesNotRequiringReview()
 
       // Assert
       await AssertExtensions.toThrowAsync(func, 'The Git diff summary is empty.')
@@ -1465,7 +1467,7 @@ describe('codeMetrics.ts', (): void => {
       const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(logger), instance(runnerInvoker))
 
       // Act
-      const func: () => Promise<string[]> = async () => await codeMetrics.getDeletedFilesNotRequiringReview()
+      const func: () => Promise<string[]> = async () => codeMetrics.getDeletedFilesNotRequiringReview()
 
       // Assert
       await AssertExtensions.toThrowAsync(func, 'The number of elements \'1\' in \'0\' in input \'0\' did not match the expected 3.')
@@ -1480,7 +1482,7 @@ describe('codeMetrics.ts', (): void => {
       const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(logger), instance(runnerInvoker))
 
       // Act
-      const func: () => Promise<string[]> = async () => await codeMetrics.getDeletedFilesNotRequiringReview()
+      const func: () => Promise<string[]> = async () => codeMetrics.getDeletedFilesNotRequiringReview()
 
       // Assert
       await AssertExtensions.toThrowAsync(func, 'Could not parse added lines \'A\' from line \'A\t0\tfile.ts\'.')
@@ -1495,7 +1497,7 @@ describe('codeMetrics.ts', (): void => {
       const codeMetrics: CodeMetrics = new CodeMetrics(instance(gitInvoker), instance(inputs), instance(logger), instance(runnerInvoker))
 
       // Act
-      const func: () => Promise<string[]> = async () => await codeMetrics.getDeletedFilesNotRequiringReview()
+      const func: () => Promise<string[]> = async () => codeMetrics.getDeletedFilesNotRequiringReview()
 
       // Assert
       await AssertExtensions.toThrowAsync(func, 'Could not parse deleted lines \'A\' from line \'0\tA\tfile.ts\'.')

@@ -1,8 +1,10 @@
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT License.
+ */
 
-import assert from 'node:assert/strict'
 import CodeMetricsData from '../../src/metrics/codeMetricsData'
+import assert from 'node:assert/strict'
 
 describe('codeMetricsData.ts', (): void => {
   describe('constructor()', (): void => {
@@ -11,7 +13,7 @@ describe('codeMetricsData.ts', (): void => {
       const func: () => CodeMetricsData = () => new CodeMetricsData(-1, 0, 0)
 
       // Assert
-      assert.throws(func, RangeError('Product code \'-1\' must be >= 0.'))
+      assert.throws(func, new RangeError('Product code \'-1\' must be >= 0.'))
     })
 
     it('should throw when the test code is less than zero', (): void => {
@@ -19,7 +21,7 @@ describe('codeMetricsData.ts', (): void => {
       const func: () => CodeMetricsData = () => new CodeMetricsData(0, -1, 0)
 
       // Assert
-      assert.throws(func, RangeError('Test code \'-1\' must be >= 0.'))
+      assert.throws(func, new RangeError('Test code \'-1\' must be >= 0.'))
     })
 
     it('should throw when the ignored code is less than zero', (): void => {
@@ -27,7 +29,7 @@ describe('codeMetricsData.ts', (): void => {
       const func: () => CodeMetricsData = () => new CodeMetricsData(0, 0, -1)
 
       // Assert
-      assert.throws(func, RangeError('Ignored code \'-1\' must be >= 0.'))
+      assert.throws(func, new RangeError('Ignored code \'-1\' must be >= 0.'))
     })
   })
 

@@ -1,12 +1,14 @@
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT License.
+ */
 
 import parseGitDiff, { AddedFile, AnyChunk, AnyFileChange, ChangedFile, Chunk, GitDiff, RenamedFile } from 'parse-git-diff'
-import { singleton } from 'tsyringe'
-import Logger from '../utilities/logger'
 import AxiosWrapper from '../wrappers/axiosWrapper'
 import GetPullResponse from '../wrappers/octokitInterfaces/getPullResponse'
+import Logger from '../utilities/logger'
 import OctokitWrapper from '../wrappers/octokitWrapper'
+import { singleton } from 'tsyringe'
 
 /**
  * A parser for Git diffs read via Octokit.
@@ -66,13 +68,15 @@ export default class OctokitGitDiffParser {
     const diffResponse: string = await this._axiosWrapper.getUrl(pullRequestInfo.data.diff_url)
 
     // Split the response so that each file in a diff becomes a separate diff.
-    const diffResponses: string[] = diffResponse.split(/^diff --git/gm)
+    const diffResponses: string[] = diffResponse.split(/^diff --git/gmu)
 
-    // For each diff, reinstate the "diff --git" prefix that was removed by the split. The first diff is excluded as it
-    // will always be the empty string.
+    /*
+     * For each diff, reinstate the "diff --git" prefix that was removed by the split. The first diff is excluded as it
+     * will always be the empty string.
+     */
     const result: string[] = []
-    for (let i: number = 1; i < diffResponses.length; i++) {
-      result.push('diff --git' + diffResponses[i])
+    for (let iteration: number = 1; iteration < diffResponses.length; iteration += 1) {
+      result.push(`diff --git${  diffResponses[iteration]}`)
     }
 
     return result
@@ -97,7 +101,6 @@ export default class OctokitGitDiffParser {
             const fileCasted: AddedFile | ChangedFile = file
             const chunk: AnyChunk | undefined = fileCasted.chunks[0]
             if (chunk?.type === 'BinaryFilesChunk') {
-              console.log(`Skipping '${file.type}' '${fileCasted.path}' while performing diff parsing.`)
               this._logger.logDebug(`Skipping '${file.type}' '${fileCasted.path}' while performing diff parsing.`)
               break
             }
