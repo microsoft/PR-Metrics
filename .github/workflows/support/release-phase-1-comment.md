@@ -33,4 +33,3 @@ Before completing this PR, the license information **must** be updated.
 [clearlydefinedharvest]: https://clearlydefined.io/harvest
 [licensetxt]: https://github.com/microsoft/PR-Metrics/blob/main/src/LICENSE.txt
 [packagejson]: https://github.com/microsoft/PR-Metrics/blob/main/package.json
-[packagelockjson]: https://github.com/microsoft/PR-Metrics/blob/main/package-lock.json
