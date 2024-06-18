@@ -243,3 +243,5 @@ export default class OctokitWrapper {
     })
   }
 }
+
+/* eslint-enable camelcase */

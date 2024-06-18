@@ -4,6 +4,7 @@
  */
 
 import * as InputsDefault from './inputsDefault'
+import { DecimalRadix } from '../utilities/constants'
 import Logger from '../utilities/logger'
 import RunnerInvoker from '../runners/runnerInvoker'
 import { singleton } from 'tsyringe'
@@ -133,7 +134,7 @@ export default class Inputs {
   private initializeBaseSize (baseSize: string | undefined): void {
     this._logger.logDebug('* Inputs.initializeBaseSize()')
 
-    const convertedValue: number = baseSize === undefined ? NaN : parseInt(baseSize, 10)
+    const convertedValue: number = baseSize === undefined ? NaN : parseInt(baseSize, DecimalRadix)
     if (!isNaN(convertedValue) && convertedValue > 0) {
       this._baseSize = convertedValue
       this._logger.logInfo(this._runnerInvoker.loc('metrics.inputs.settingBaseSize', this._baseSize.toLocaleString()))

@@ -7,6 +7,7 @@ import * as minimatch from 'minimatch'
 import * as path from 'path'
 import { CodeFileMetric } from './codeFileMetric'
 import CodeMetricsData from './codeMetricsData'
+import { DecimalRadix } from '../utilities/constants'
 import { FixedLengthArray } from '../utilities/fixedLengthArray'
 import GitInvoker from '../git/gitInvoker'
 import Inputs from './inputs'
@@ -306,7 +307,7 @@ export default class CodeMetrics {
     if (element === '-') {
       result = 0
     } else {
-      result = parseInt(element, 10)
+      result = parseInt(element, DecimalRadix)
       if (isNaN(result)) {
         throw new Error(`Could not parse ${category} lines '${element}' from line '${line}'.`)
       }

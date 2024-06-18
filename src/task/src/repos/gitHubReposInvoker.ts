@@ -11,6 +11,7 @@ import CommentData from './interfaces/commentData'
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import CreateIssueCommentResponse from '../wrappers/octokitInterfaces/createIssueCommentResponse'
 import CreateReviewCommentResponse from '../wrappers/octokitInterfaces/createReviewCommentResponse'
+import { DecimalRadix } from '../utilities/constants'
 import DeleteReviewCommentResponse from '../wrappers/octokitInterfaces/deleteReviewCommentResponse'
 import FileCommentData from './interfaces/fileCommentData'
 import GetIssueCommentsResponse from '../wrappers/octokitInterfaces/getIssueCommentsResponse'
@@ -299,7 +300,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
         throw new Error(`The regular expression did not match '${commitsLink}'.`)
       }
 
-      const match: number = parseInt(matches[1], 10)
+      const match: number = parseInt(matches[1], DecimalRadix)
       result = await this.invokeApiCall(async (): Promise<ListCommitsResponse> => {
         const internalResult: ListCommitsResponse = await this._octokitWrapper.listCommits(this._owner, this._repo, this._pullRequestId, match)
         this._logger.logDebug(JSON.stringify(internalResult))

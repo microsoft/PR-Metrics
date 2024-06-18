@@ -604,3 +604,5 @@ export const getReviewCommentsResponse: GetReviewCommentsResponse = {
     }
   ]
 }
+
+/* eslint-enable camelcase */

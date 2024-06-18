@@ -302,3 +302,5 @@ describe('octokitGitDiffParser.ts', (): void => {
     })
   })
 })
+
+/* eslint-enable camelcase */

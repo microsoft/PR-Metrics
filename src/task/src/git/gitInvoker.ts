@@ -4,6 +4,7 @@
  */
 
 import * as Validator from '../utilities/validator'
+import { DecimalRadix } from '../utilities/constants'
 import ExecOutput from '../runners/execOutput'
 import Logger from '../utilities/logger'
 import RunnerInvoker from '../runners/runnerInvoker'
@@ -55,7 +56,7 @@ export default class GitInvoker {
   public isPullRequestIdAvailable (): boolean {
     this._logger.logDebug('* GitInvoker.isPullRequestIdAvailable()')
 
-    return !isNaN(parseInt(this.pullRequestIdInternal, 10))
+    return !isNaN(parseInt(this.pullRequestIdInternal, DecimalRadix))
   }
 
   /**
@@ -86,7 +87,7 @@ export default class GitInvoker {
       return this._pullRequestId
     }
 
-    this._pullRequestId = Validator.validateNumber(parseInt(this.pullRequestIdInternal, 10), 'Pull Request ID', 'GitInvoker.pullRequestId')
+    this._pullRequestId = Validator.validateNumber(parseInt(this.pullRequestIdInternal, DecimalRadix), 'Pull Request ID', 'GitInvoker.pullRequestId')
     return this._pullRequestId
   }
 
