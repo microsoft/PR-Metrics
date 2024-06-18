@@ -4,8 +4,6 @@
 
 Before completing this PR, the license information **must** be updated.
 
-Note that if `lockfileVersion` is set to `3` (rather than `2`) in [`package-lock.json`][packagelockjson], the license information may not be correctly generated. In this case, you will need to change `lockfileVersion` to `2` and rerun the build.
-
 1. Wait for the entire PR build to complete.
 1. Use the internal Microsoft Component Governance tooling to update [`src/LICENSE.txt`][licensetxt] with the automatically generated license information.
 

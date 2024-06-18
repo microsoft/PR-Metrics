@@ -198,8 +198,7 @@ jobs:
       - name: npm – Install Node.js
         uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
         with:
-          # The latest version with NPMv7, which is required to maintain a package-lock.json lockfileVersion of 2.
-          node-version: 16.10.0
+          node-version: 20.14.0
 
       - name: npm – Update Dependencies
         run: npx ncu -u
