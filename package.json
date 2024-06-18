@@ -53,7 +53,7 @@
     "azure-devops-node-api": "13.0.0",
     "azure-pipelines-task-lib": "4.13.0",
     "isomorphic-fetch": "3.0.0",
-    "octokit": "4.0.2",
+    "octokit": "3.2.0",
     "parse-git-diff": "0.0.15",
     "reflect-metadata": "0.2.2",
     "tsyringe": "4.8.0"
