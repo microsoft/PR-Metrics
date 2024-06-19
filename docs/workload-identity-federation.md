@@ -22,6 +22,10 @@ save ongoing maintenance.
 If you don't have sufficient access, you should reach out to the appropriate
 admin and provide them with these instructions.
 
+The build agent where the PR Metrics task runs must have the Azure CLI
+installed, but this is often already the case. Further details about installing
+the Azure CLI can be found [here][azurecli].
+
 ## Instructions
 
 1. Create a Managed Identity in Azure.
@@ -131,4 +135,5 @@ Specify the name of the Service Connection within Azure DevOps as the
 `WorkloadIdentityFederation` input. You can add any other `inputs` you wish to
 specify.
 
+[azurecli]: https://learn.microsoft.com/cli/azure/install-azure-cli
 [azureportal]: https://portal.azure.com/
