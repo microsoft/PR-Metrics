@@ -22,9 +22,10 @@ save ongoing maintenance.
 If you don't have sufficient access, you should reach out to the appropriate
 admin and provide them with these instructions.
 
-The build agent where the PR Metrics task runs must have the Azure CLI
-installed, but this is often already the case. Further details about installing
-the Azure CLI can be found [here][azurecli].
+The build agent where the PR Metrics task runs must have Azure CLI installed,
+which is often already the case. If you encounter issues related to the `az`
+command being unavailable, check the details about installing the Azure CLI
+[here][azurecli].
 
 ## Instructions
 
