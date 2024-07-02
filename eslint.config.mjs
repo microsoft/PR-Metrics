@@ -31,8 +31,6 @@ export default tseslint.config(
       },
     },
     rules: {
-      'camelcase': 'error',
-      'no-await-in-loop': 'error',
       'no-console': 'error',
       'sort-imports': 'error',
       '@typescript-eslint/consistent-indexed-object-style': 'off',

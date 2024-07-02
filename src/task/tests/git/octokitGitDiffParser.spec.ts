@@ -12,8 +12,6 @@ import OctokitGitDiffParser from '../../src/git/octokitGitDiffParser'
 import OctokitWrapper from '../../src/wrappers/octokitWrapper'
 import assert from 'node:assert/strict'
 
-/* eslint-disable camelcase -- Required for alignment with Octokit. */
-
 describe('octokitGitDiffParser.ts', (): void => {
   let axiosWrapper: AxiosWrapper
   let logger: Logger
@@ -302,5 +300,3 @@ describe('octokitGitDiffParser.ts', (): void => {
     })
   })
 })
-
-/* eslint-enable camelcase */

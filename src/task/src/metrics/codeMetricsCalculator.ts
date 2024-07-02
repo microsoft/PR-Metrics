@@ -128,7 +128,7 @@ export default class CodeMetricsCalculator {
 
     await Promise.all(promises)
 
-    /* eslint-disable no-await-in-loop -- Comment creation can cause problems when called in parallel on GitHub. Therefore, there must be a wait after each call to these APIs before continuing. */
+    // Comment creation can cause problems when called in parallel on GitHub. Therefore, there must be a wait after each call to these APIs before continuing.
     for (const fileName of commentData.filesNotRequiringReview) {
       await this.updateNoReviewRequiredComment(fileName, false)
     }
@@ -136,7 +136,6 @@ export default class CodeMetricsCalculator {
     for (const fileName of commentData.deletedFilesNotRequiringReview) {
       await this.updateNoReviewRequiredComment(fileName, true)
     }
-    /* eslint-enable no-await-in-loop */
   }
 
   private async updateMetricsComment (commentData: PullRequestCommentsData): Promise<void> {
