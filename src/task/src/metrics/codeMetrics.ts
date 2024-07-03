@@ -178,25 +178,25 @@ export default class CodeMetrics {
         }
       })
 
-      positiveFileMatchingPatterns.forEach((fileMatchingPattern: string): void => {
+      for (const fileMatchingPattern of positiveFileMatchingPatterns) {
         if (this.performGlobCheck(codeFileMetric.fileName, fileMatchingPattern)) {
           isValidFilePattern = true
         }
-      })
+      }
 
       if (isValidFilePattern) {
-        negativeFileMatchingPatterns.forEach((fileMatchingPattern: string): void => {
+        for (const fileMatchingPattern of negativeFileMatchingPatterns) {
           if (this.performGlobCheck(codeFileMetric.fileName, fileMatchingPattern)) {
             isValidFilePattern = false
           }
-        })
+        }
 
         if (!isValidFilePattern) {
-          doubleNegativeFileMatchingPatterns.forEach((fileMatchingPattern: string): void => {
+          for (const fileMatchingPattern of doubleNegativeFileMatchingPatterns) {
             if (this.performGlobCheck(codeFileMetric.fileName, fileMatchingPattern)) {
               isValidFilePattern = true
             }
-          })
+          }
         }
       }
 

@@ -221,8 +221,7 @@ export default class AzureReposInvoker extends BaseReposInvoker {
       }
 
       const status: CommentThreadStatus = value.status ?? CommentThreadStatus.Unknown
-
-      if (value.threadContext === null || value.threadContext === undefined) {
+      if (value.threadContext === undefined) {
         result.pullRequestComments.push(new PullRequestCommentData(id, content, status))
       } else {
         const fileName: string | undefined = value.threadContext.filePath
