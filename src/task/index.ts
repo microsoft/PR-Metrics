@@ -12,4 +12,4 @@ const run = async (): Promise<void> => {
   await pullRequestMetrics.run(__dirname)
 }
 
-run().finally((): void => {})
+run().finally()
