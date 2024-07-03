@@ -33,7 +33,6 @@ export default tseslint.config(
     rules: {
       'no-console': 'error',
       'sort-imports': 'error',
-      '@typescript-eslint/consistent-indexed-object-style': 'off',
       '@typescript-eslint/no-confusing-void-expression': 'off',
       '@typescript-eslint/no-empty-function': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
