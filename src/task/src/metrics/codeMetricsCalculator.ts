@@ -122,9 +122,9 @@ export default class CodeMetricsCalculator {
     const commentData: PullRequestCommentsData = await this._pullRequestComments.getCommentData()
     promises.push(this.updateMetricsComment(commentData))
 
-    commentData.commentThreadsRequiringDeletion.forEach((commentThreadId: number): void => {
+    for (const commentThreadId of commentData.commentThreadsRequiringDeletion) {
       promises.push(this._reposInvoker.deleteCommentThread(commentThreadId))
-    })
+    }
 
     await Promise.all(promises)
 

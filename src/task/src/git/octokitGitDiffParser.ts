@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import parseGitDiff, { AddedFile, AnyChunk, AnyFileChange, ChangedFile, Chunk, GitDiff, RenamedFile } from 'parse-git-diff'
+import parseGitDiff, { AddedFile, AnyChunk, ChangedFile, Chunk, GitDiff, RenamedFile } from 'parse-git-diff'
 import AxiosWrapper from '../wrappers/axiosWrapper'
 import GetPullResponse from '../wrappers/octokitInterfaces/getPullResponse'
 import Logger from '../utilities/logger'
@@ -88,11 +88,11 @@ export default class OctokitGitDiffParser {
     const result: Map<string, number> = new Map<string, number>()
 
     // Process the diff for each file.
-    diffs.forEach((diff: string): void => {
+    for (const diff of diffs) {
       const diffParsed: GitDiff = parseGitDiff(diff)
 
       // Process the diff for a single file.
-      diffParsed.files.forEach((file: AnyFileChange): void => {
+      for (const file of diffParsed.files) {
         switch (file.type) {
           case 'AddedFile':
           case 'ChangedFile':
@@ -119,8 +119,8 @@ export default class OctokitGitDiffParser {
             this._logger.logDebug(`Skipping file type '${file.type}' while performing diff parsing.`)
             break
         }
-      })
-    })
+      }
+    }
 
     return result
   }

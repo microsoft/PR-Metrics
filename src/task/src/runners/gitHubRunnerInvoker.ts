@@ -78,11 +78,11 @@ export default class GitHubRunnerInvoker implements IRunnerInvoker {
 
     const entries: [string, string][] = Object.entries(resources)
     const stringPrefix: string = 'loc.messages.'
-    entries.forEach((entry: [string, string]): void => {
+    for(const entry of entries) {
       if (entry[0].startsWith(stringPrefix)) {
         this._resources.set(entry[0].substring(stringPrefix.length), entry[1])
       }
-    })
+    }
   }
 
   public loc (key: string, ...param: any[]): string {

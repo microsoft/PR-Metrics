@@ -211,7 +211,7 @@ export default class Inputs {
 
     if (codeFileExtensions !== undefined && codeFileExtensions.trim() !== '') {
       const codeFileExtensionsArray: string[] = codeFileExtensions.replace(/\n$/gu, '').split('\n')
-      codeFileExtensionsArray.forEach((value: string): void => {
+      for (const value of codeFileExtensionsArray) {
         let modifiedValue: string = value
         if (modifiedValue.startsWith('*.')) {
           modifiedValue = modifiedValue.substring(2)
@@ -220,7 +220,8 @@ export default class Inputs {
         }
 
         this._codeFileExtensions.add(modifiedValue.toLowerCase())
-      })
+      }
+
       this._logger.logInfo(this._runnerInvoker.loc('metrics.inputs.settingCodeFileExtensions', JSON.stringify(Array.from(this._codeFileExtensions))))
       return
     }

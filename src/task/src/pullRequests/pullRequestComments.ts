@@ -67,14 +67,14 @@ export default class PullRequestComments {
     const comments: CommentData = await this._reposInvoker.getComments()
 
     // If the current comment thread is not applied to a specified file, check if it is the metrics comment thread.
-    comments.pullRequestComments.forEach((comment: PullRequestComment): void => {
+    for(const comment of comments.pullRequestComments) {
       result = this.getMetricsCommentData(result, comment)
-    })
+    }
 
     // If the current comment thread is not applied to a specified file, check if it is the metrics comment thread.
-    comments.fileComments.forEach((comment: FileCommentData): void => {
+    for (const comment of comments.fileComments) {
       result = this.getFilesRequiringCommentUpdates(result, comment)
-    })
+    }
 
     return result
   }

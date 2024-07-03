@@ -74,18 +74,18 @@ export default class Logger {
   public logErrorObject (error: any): void {
     const name: string = error.name
     const properties: string[] = Object.getOwnPropertyNames(error)
-    properties.forEach((property: string): void => {
+    for (const property of properties) {
       this.logInfo(`${name} – ${property}: ${JSON.stringify(error[property])}`)
-    })
+    }
   }
 
   /**
    * Replays the messages logged.
    */
   public replay (): void {
-    this._messages.forEach((message: string): void => {
+    for (const message of this._messages) {
       this._consoleWrapper.log(`🔁 ${message}`)
-    })
+    }
   }
 
   /**

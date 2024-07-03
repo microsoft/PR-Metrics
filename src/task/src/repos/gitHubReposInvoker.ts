@@ -16,12 +16,10 @@ import DeleteReviewCommentResponse from '../wrappers/octokitInterfaces/deleteRev
 import FileCommentData from './interfaces/fileCommentData'
 import GetIssueCommentsResponse from '../wrappers/octokitInterfaces/getIssueCommentsResponse'
 import GetPullResponse from '../wrappers/octokitInterfaces/getPullResponse'
-import { GetResponseDataTypeFromEndpointMethod } from '@octokit/types'
 import GetReviewCommentsResponse from '../wrappers/octokitInterfaces/getReviewCommentsResponse'
 import GitInvoker from '../git/gitInvoker'
 import ListCommitsResponse from '../wrappers/octokitInterfaces/listCommitsResponse'
 import Logger from '../utilities/logger'
-import { Octokit } from 'octokit'
 import { OctokitOptions } from '@octokit/core/dist-types/types'
 import OctokitWrapper from '../wrappers/octokitWrapper'
 import PullRequestCommentData from './interfaces/pullRequestCommentData'
@@ -30,10 +28,6 @@ import RunnerInvoker from '../runners/runnerInvoker'
 import UpdateIssueCommentResponse from '../wrappers/octokitInterfaces/updateIssueCommentResponse'
 import UpdatePullResponse from '../wrappers/octokitInterfaces/updatePullResponse'
 import { singleton } from 'tsyringe'
-
-const octokit: Octokit = new Octokit()
-type GetIssueCommentsResponseData = GetResponseDataTypeFromEndpointMethod<typeof octokit.rest.issues.listComments>[0]
-type GetReviewCommentsResponseData = GetResponseDataTypeFromEndpointMethod<typeof octokit.rest.pulls.listReviewComments>[0]
 
 /**
  * A class for invoking GitHub Repos functionality.
@@ -263,22 +257,26 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
 
     const result: CommentData = new CommentData()
 
-    pullRequestComments?.data.forEach((value: GetIssueCommentsResponseData): void => {
-      const id: number = value.id
-      const content: string | undefined = value.body
-      if (content === undefined) {
-        return
+    if (pullRequestComments) {
+      for (const value of pullRequestComments.data) {
+        const id: number = value.id
+        const content: string | undefined = value.body
+        if (content === undefined) {
+          break
+        }
+
+        result.pullRequestComments.push(new PullRequestCommentData(id, content))
       }
+    }
 
-      result.pullRequestComments.push(new PullRequestCommentData(id, content))
-    })
-
-    fileComments?.data.forEach((value: GetReviewCommentsResponseData): void => {
-      const id: number = value.id
-      const content: string = value.body
-      const file: string = value.path
-      result.fileComments.push(new FileCommentData(id, content, file))
-    })
+    if (fileComments) {
+      for (const value of fileComments.data) {
+        const id: number = value.id
+        const content: string = value.body
+        const file: string = value.path
+        result.fileComments.push(new FileCommentData(id, content, file))
+      }
+    }
 
     return result
   }
