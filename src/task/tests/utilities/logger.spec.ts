@@ -14,17 +14,24 @@ describe('logger.ts', (): void => {
   let consoleWrapper: ConsoleWrapper
   let runnerInvoker: RunnerInvoker
 
+  const testCases: string[] = [
+    '##[test]Message',
+    '##vso[test]Message',
+    '##VSO[test]Message'
+  ]
+  const errorTestCases: string[] = [
+    '##[test]',
+    '##vso[test]',
+    '##VSO[test]'
+  ]
+
   beforeEach((): void => {
     consoleWrapper = mock(ConsoleWrapper)
     runnerInvoker = mock(RunnerInvoker)
   })
 
   describe('logDebug()', (): void => {
-    [
-      '##[test]Message',
-      '##vso[test]Message',
-      '##VSO[test]Message'
-    ].forEach((value: string): void => {
+    testCases.forEach((value: string): void => {
       it(`should log the filtered message for '${value}'`, (): void => {
         // Arrange
         const logger: Logger = new Logger(instance(consoleWrapper), instance(runnerInvoker))
@@ -50,11 +57,7 @@ describe('logger.ts', (): void => {
   })
 
   describe('logInfo()', (): void => {
-    [
-      '##[test]Message',
-      '##vso[test]Message',
-      '##VSO[test]Message'
-    ].forEach((value: string): void => {
+    testCases.forEach((value: string): void => {
       it(`should log the filtered message for '${value}'`, (): void => {
         // Arrange
         const logger: Logger = new Logger(instance(consoleWrapper), instance(runnerInvoker))
@@ -80,11 +83,7 @@ describe('logger.ts', (): void => {
   })
 
   describe('logWarning()', (): void => {
-    [
-      '##[test]Message',
-      '##vso[test]Message',
-      '##VSO[test]Message'
-    ].forEach((value: string): void => {
+    testCases.forEach((value: string): void => {
       it(`should log the filtered message for '${value}'`, (): void => {
         // Arrange
         const logger: Logger = new Logger(instance(consoleWrapper), instance(runnerInvoker))
@@ -110,11 +109,7 @@ describe('logger.ts', (): void => {
   })
 
   describe('logError()', (): void => {
-    [
-      '##[test]Message',
-      '##vso[test]Message',
-      '##VSO[test]Message'
-    ].forEach((value: string): void => {
+    testCases.forEach((value: string): void => {
       it(`should log the filtered message for '${value}'`, (): void => {
         // Arrange
         const logger: Logger = new Logger(instance(consoleWrapper), instance(runnerInvoker))
@@ -140,11 +135,7 @@ describe('logger.ts', (): void => {
   })
 
   describe('logErrorObject()', (): void => {
-    [
-      '##[test]',
-      '##vso[test]',
-      '##VSO[test]'
-    ].forEach((value: string): void => {
+    errorTestCases.forEach((value: string): void => {
       it(`should log all filtered properties '${value}' of the error object`, (): void => {
         // Arrange
         const logger: Logger = new Logger(instance(consoleWrapper), instance(runnerInvoker))
@@ -196,11 +187,7 @@ describe('logger.ts', (): void => {
   })
 
   describe('replay()', (): void => {
-    [
-      '##[test]',
-      '##vso[test]',
-      '##VSO[test]'
-    ].forEach((value: string): void => {
+    errorTestCases.forEach((value: string): void => {
       it(`should replay all filtered messages '${value}'`, (): void => {
         // Arrange
         const logger: Logger = new Logger(instance(consoleWrapper), instance(runnerInvoker))
