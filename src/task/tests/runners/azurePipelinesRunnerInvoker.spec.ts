@@ -80,7 +80,7 @@ describe('azurePipelinesRunnerInvoker.ts', (): void => {
 
       // Assert
       assert.deepEqual(result?.parameters, endpointAuthorization.parameters)
-      assert.equal(result?.scheme, endpointAuthorization.scheme)
+      assert.equal(result.scheme, endpointAuthorization.scheme)
       verify(azurePipelinesRunnerWrapper.getEndpointAuthorization('id', true)).once()
     })
 

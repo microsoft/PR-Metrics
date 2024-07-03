@@ -112,7 +112,7 @@ export default class OctokitGitDiffParser {
           {
             // For a renamed file, add the new file path and the first changed line.
             const fileCasted: RenamedFile = file as RenamedFile
-            result.set(fileCasted.pathAfter, (fileCasted.chunks[0] as Chunk)?.toFileRange.start!)
+            result.set(fileCasted.pathAfter, (fileCasted.chunks[0] as Chunk)?.toFileRange.start)
             break
           }
           default:
