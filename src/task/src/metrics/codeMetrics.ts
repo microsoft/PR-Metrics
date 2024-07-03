@@ -157,7 +157,7 @@ export default class CodeMetrics {
     const nonMatchesToComment: CodeFileMetric[] = []
 
     // Check for glob matches.
-    codeFileMetrics.forEach((codeFileMetric: CodeFileMetric): void => {
+    for (const codeFileMetric of codeFileMetrics) {
       let isValidFilePattern: boolean = false
 
       /*
@@ -168,7 +168,7 @@ export default class CodeMetrics {
       const positiveFileMatchingPatterns: string[] = []
       const negativeFileMatchingPatterns: string[] = []
       const doubleNegativeFileMatchingPatterns: string[] = []
-      this._inputs.fileMatchingPatterns.forEach((fileMatchingPattern: string): void => {
+      for (const fileMatchingPattern of this._inputs.fileMatchingPatterns){
         if (fileMatchingPattern.startsWith('!!')) {
           doubleNegativeFileMatchingPatterns.push(fileMatchingPattern.substring(2))
         } else if (fileMatchingPattern.startsWith('!')) {
@@ -176,7 +176,7 @@ export default class CodeMetrics {
         } else {
           positiveFileMatchingPatterns.push(fileMatchingPattern)
         }
-      })
+      }
 
       for (const fileMatchingPattern of positiveFileMatchingPatterns) {
         if (this.performGlobCheck(codeFileMetric.fileName, fileMatchingPattern)) {
@@ -208,7 +208,7 @@ export default class CodeMetrics {
       } else {
         nonMatches.push(codeFileMetric)
       }
-    })
+    }
 
     this.constructMetrics(matches, nonMatches, nonMatchesToComment)
   }
@@ -237,7 +237,7 @@ export default class CodeMetrics {
     let testCode: number = 0
     let ignoredCode: number = 0
 
-    matches.forEach((entry: CodeFileMetric): void => {
+    for (const entry of matches) {
       if (/.*((T|t)est|TEST).*/u.test(entry.fileName) || /.*\.spec\..*/iu.test(path.basename(entry.fileName))) {
         this._logger.logDebug(`Test File: ${entry.fileName} (${entry.linesAdded} lines)`)
         testCode += entry.linesAdded
@@ -245,14 +245,14 @@ export default class CodeMetrics {
         this._logger.logDebug(`Product File: ${entry.fileName} (${entry.linesAdded} lines)`)
         productCode += entry.linesAdded
       }
-    })
+    }
 
-    nonMatches.forEach((entry: CodeFileMetric): void => {
+    for (const entry of nonMatches) {
       this._logger.logDebug(`Ignored File: ${entry.fileName} (${entry.linesAdded} lines)`)
       ignoredCode += entry.linesAdded
-    })
+    }
 
-    nonMatchesToComment.forEach((entry: CodeFileMetric): void => {
+    for (const entry of nonMatchesToComment) {
       if (entry.linesAdded > 0 || (entry.linesAdded === 0 && entry.linesDeleted === 0)) {
         this._logger.logDebug(`Ignored File: ${entry.fileName} (${entry.linesAdded} lines), comment to be added`)
         ignoredCode += entry.linesAdded
@@ -261,7 +261,7 @@ export default class CodeMetrics {
         this._logger.logDebug(`Ignored File: ${entry.fileName} (deleted), comment to be added`)
         this._deletedFilesNotRequiringReview.push(entry.fileName)
       }
-    })
+    }
 
     this._metrics = new CodeMetricsData(productCode, testCode, ignoredCode)
   }
@@ -280,7 +280,7 @@ export default class CodeMetrics {
     const lines: string[] = modifiedInput.split('\n')
 
     const result: CodeFileMetric[] = []
-    lines.forEach((line: string): void => {
+    for (const line of lines) {
       const elements: string[] = line.split('\t')
       if (elements[0] === undefined || elements[1] === undefined || elements[2] === undefined) {
         throw new RangeError(`The number of elements '${elements.length}' in '${line}' in input '${modifiedInput}' did not match the expected 3.`)
@@ -296,7 +296,7 @@ export default class CodeMetrics {
         linesAdded: this.parseChangedLines(elements[0], line, 'added'),
         linesDeleted: this.parseChangedLines(elements[1], line, 'deleted')
       })
-    })
+    }
 
     return result
   }
