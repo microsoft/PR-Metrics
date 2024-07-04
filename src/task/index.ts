@@ -12,6 +12,6 @@ const run = async (): Promise<void> => {
   await pullRequestMetrics.run(__dirname)
 }
 
-run().catch(() => {
+run().catch((): void => {
   process.exit(1)
 });
