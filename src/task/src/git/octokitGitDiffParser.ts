@@ -105,7 +105,10 @@ export default class OctokitGitDiffParser {
               break
             }
 
-            result.set(fileCasted.path, chunk?.toFileRange.start!)
+            if (chunk) {
+              result.set(fileCasted.path, chunk.toFileRange.start)
+            }
+
             break
           }
           case 'RenamedFile':
