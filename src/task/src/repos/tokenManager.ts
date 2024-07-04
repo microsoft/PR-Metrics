@@ -128,6 +128,6 @@ export default class TokenManager {
     }
 
     this._logger.logDebug('Acquired authorization token from workload identity federation.')
-    return validateString(endpointAuthorization!.parameters.AccessToken, 'endpointAuthorization.parameters.AccessToken', 'TokenManager.getSystemAccessToken()')
+    return validateString(endpointAuthorization?.parameters.AccessToken, 'endpointAuthorization.parameters.AccessToken', 'TokenManager.getSystemAccessToken()')
   }
 }

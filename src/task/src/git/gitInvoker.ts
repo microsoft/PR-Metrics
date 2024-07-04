@@ -135,12 +135,12 @@ export default class GitInvoker {
     }
 
     const gitHubReferenceElements: string[] = gitHubReference.split('/')
-    if (gitHubReferenceElements.length < 3) {
+    if (gitHubReferenceElements[2] === undefined) {
       this._logger.logWarning(`'GITHUB_REF' is in an incorrect format '${gitHubReference}'.`)
       return ''
     }
 
-    return gitHubReferenceElements[2]!
+    return gitHubReferenceElements[2];
   }
 
   private get pullRequestIdForAzurePipelines (): string {
