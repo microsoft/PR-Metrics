@@ -114,7 +114,7 @@ describe('gitHubRunnerInvoker.ts', (): void => {
       const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(instance(azurePipelinesRunnerWrapper), instance(consoleWrapper), instance(gitHubRunnerWrapper))
 
       // Act
-      const func: () => void = () => gitHubRunnerInvoker.locInitialize(resourcePath)
+      const func: () => void = () => { gitHubRunnerInvoker.locInitialize(resourcePath); }
 
       // Assert
       try {

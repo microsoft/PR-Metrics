@@ -305,7 +305,7 @@ describe('runnerInvoker.ts', (): void => {
 
       // Act
       runnerInvoker.locInitialize('TEST')
-      const func: () => void = () => runnerInvoker.locInitialize('TEST')
+      const func: () => void = () => { runnerInvoker.locInitialize('TEST'); }
 
       // Assert
       assert.throws(func, Error('RunnerInvoker.locInitialize must not be called multiple times.'))
