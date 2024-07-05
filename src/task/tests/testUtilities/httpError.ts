@@ -22,7 +22,7 @@ export default class HttpError extends Error {
   /**
    * Gets the name of the object type.
    */
-  public name: string = 'HttpError'
+  public name = 'HttpError'
 
   /**
    * Gets the HTTP status code.

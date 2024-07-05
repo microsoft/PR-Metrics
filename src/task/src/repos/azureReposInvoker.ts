@@ -32,9 +32,9 @@ export default class AzureReposInvoker extends BaseReposInvoker {
   private readonly _runnerInvoker: RunnerInvoker
   private readonly _tokenManager: TokenManager
 
-  private _project: string = ''
-  private _repositoryId: string = ''
-  private _pullRequestId: number = 0
+  private _project = ''
+  private _repositoryId = ''
+  private _pullRequestId = 0
   private _gitApi: IGitApi | undefined
 
   /**

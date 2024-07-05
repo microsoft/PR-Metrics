@@ -19,10 +19,10 @@ export default class GitInvoker {
   private readonly _logger: Logger
   private readonly _runnerInvoker: RunnerInvoker
 
-  private _isInitialized: boolean = false
-  private _targetBranch: string = ''
-  private _pullRequestId: number = 0
-  private _pullRequestIdInternal: string = ''
+  private _isInitialized = false
+  private _targetBranch = ''
+  private _pullRequestId = 0
+  private _pullRequestIdInternal = ''
 
   /**
    * Initializes a new instance of the `GitInvoker` class.
@@ -179,7 +179,7 @@ export default class GitInvoker {
     }
 
     const variable: string = Validator.validateVariable('SYSTEM_PULLREQUEST_TARGETBRANCH', 'GitInvoker.targetBranch')
-    const expectedStart: string = 'refs/heads/'
+    const expectedStart = 'refs/heads/'
     if (variable.startsWith(expectedStart)) {
       const startIndex: number = expectedStart.length
       return variable.substring(startIndex)

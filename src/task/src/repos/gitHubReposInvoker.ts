@@ -39,11 +39,11 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
   private readonly _octokitWrapper: OctokitWrapper
   private readonly _runnerInvoker: RunnerInvoker
 
-  private _isInitialized: boolean = false
-  private _owner: string = ''
-  private _repo: string = ''
-  private _pullRequestId: number = 0
-  private _commitId: string = ''
+  private _isInitialized = false
+  private _owner = ''
+  private _repo = ''
+  private _pullRequestId = 0
+  private _commitId = ''
 
   /**
    * Initializes a new instance of the `GitHubReposInvoker` class.
@@ -138,7 +138,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
         try {
           const result: CreateReviewCommentResponse | null = await this._octokitWrapper.createReviewComment(this._owner, this._repo, this._pullRequestId, content, fileName, this._commitId)
           this._logger.logDebug(JSON.stringify(result))
-        } catch (error: unknown) {
+        } catch (error: any) {
           if (error.status === 422 && error.message.includes('pull_request_review_thread.path diff too large')) {
             this._logger.logInfo('GitHub createReviewComment() threw a 422 error related to a large diff. Ignoring as this is expected.')
             this._logger.logErrorObject(error)
@@ -244,7 +244,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
 
     this._owner = sourceRepositoryUriElements[3]
     this._repo = sourceRepositoryUriElements[4]
-    const gitEnding: string = '.git'
+    const gitEnding = '.git'
     if (this._repo.endsWith(gitEnding)) {
       this._repo = this._repo.substring(0, this._repo.length - gitEnding.length)
     }

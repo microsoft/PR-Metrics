@@ -88,7 +88,7 @@ export default class PullRequestComments {
 
     const metrics: CodeMetricsData = await this._codeMetrics.getMetrics()
 
-    let result: string = `${this._runnerInvoker.loc('pullRequests.pullRequestComments.commentTitle')}\n`
+    let result = `${this._runnerInvoker.loc('pullRequests.pullRequestComments.commentTitle')}\n`
     result += await this.addCommentSizeStatus()
     result += await this.addCommentTestStatus()
 
@@ -167,7 +167,7 @@ export default class PullRequestComments {
   private async addCommentSizeStatus (): Promise<string> {
     this._logger.logDebug('* PullRequestComments.addCommentSizeStatus()')
 
-    let result: string = ''
+    let result = ''
     if (await this._codeMetrics.isSmall()) {
       result += this._runnerInvoker.loc('pullRequests.pullRequestComments.smallPullRequestComment')
     } else {
@@ -181,7 +181,7 @@ export default class PullRequestComments {
   private async addCommentTestStatus (): Promise<string> {
     this._logger.logDebug('* PullRequestComments.addCommentTestStatus()')
 
-    let result: string = ''
+    let result = ''
     const isSufficientlyTested: boolean | null = await this._codeMetrics.isSufficientlyTested()
     if (isSufficientlyTested !== null) {
       if (isSufficientlyTested) {
@@ -199,7 +199,7 @@ export default class PullRequestComments {
   private addCommentMetrics (title: string, metric: number, highlight: boolean): string {
     this._logger.logDebug('* PullRequestComments.addCommentMetrics()')
 
-    let surround: string = ''
+    let surround = ''
     if (highlight) {
       surround = '**'
     }

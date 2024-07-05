@@ -20,7 +20,7 @@ export default class RunnerInvoker implements IRunnerInvoker {
   private readonly _gitHubRunnerInvoker: GitHubRunnerInvoker
 
   private _runnerInvoker: IRunnerInvoker | undefined
-  private _localizationInitialized: boolean = false
+  private _localizationInitialized = false
 
   /**
    * Initializes a new instance of the `RunnerInvoker` class.

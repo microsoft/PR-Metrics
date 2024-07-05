@@ -58,7 +58,7 @@ export default class PullRequestMetrics {
 
       this._runnerInvoker.setStatusSucceeded(this._runnerInvoker.loc('pullRequestMetrics.succeeded'))
     } catch (error: unknown) {
-      let statusMessage: string = 'An unknown error occurred.'
+      let statusMessage = 'An unknown error occurred.'
       if (error instanceof Error) {
         this._logger.logErrorObject(error)
         statusMessage = error.message
