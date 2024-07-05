@@ -119,7 +119,7 @@ describe('gitHubRunnerInvoker.ts', (): void => {
       // Assert
       try {
         func()
-      } catch (error) {
+      } catch (error: unknown) {
         assert.fail('Function should not have thrown an error')
       }
     })

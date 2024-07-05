@@ -11,11 +11,11 @@ import assert from 'node:assert/strict'
  * @param errorMessage The expected error message.
  * @returns The error object.
  */
-export const toThrowAsync = async (func: any, errorMessage: string): Promise<any> => {
-  let error: any = null
+export const toThrowAsync = async (func: any, errorMessage: string): Promise<Error> => {
+  let error: unknown = null
   try {
     await func()
-  } catch (err) {
+  } catch (err: unknown) {
     error = err
   }
 

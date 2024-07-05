@@ -78,5 +78,20 @@ describe('pullRequestMetrics.ts', (): void => {
       verify(logger.replay()).once()
       verify(runnerInvoker.setStatusFailed('Error Message')).once()
     })
+
+    it('should catch and log errors of an expected type', async (): Promise<void> => {
+      // Arrange
+      const pullRequestMetrics: PullRequestMetrics = new PullRequestMetrics(instance(codeMetricsCalculator), instance(logger), instance(runnerInvoker))
+      when(codeMetricsCalculator.shouldSkip).thenThrow('Error Message' as unknown as Error)
+
+      // Act
+      await pullRequestMetrics.run('Folder')
+
+      // Assert
+      verify(runnerInvoker.locInitialize('Folder')).once()
+      verify(logger.logError('An unknown error occurred.')).once()
+      verify(logger.replay()).once()
+      verify(runnerInvoker.setStatusFailed('An unknown error occurred.')).once()
+    })
   })
 })
