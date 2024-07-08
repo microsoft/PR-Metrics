@@ -60,15 +60,15 @@ export default class GitHubRunnerInvoker implements IRunnerInvoker {
     return this._azurePipelinesRunnerWrapper.getInput(formattedName)
   }
 
-  public getEndpointAuthorization (_: string): EndpointAuthorization | undefined {
+  public getEndpointAuthorization (_id: string): EndpointAuthorization | undefined {
     throw new Error('getEndpointAuthorization() unavailable in GitHub.')
   }
 
-  public getEndpointAuthorizationScheme (_: string): string | undefined {
+  public getEndpointAuthorizationScheme (_id: string): string | undefined {
     throw new Error('getEndpointAuthorizationScheme() unavailable in GitHub.')
   }
 
-  public getEndpointAuthorizationParameter (_: string, __: string): string | undefined {
+  public getEndpointAuthorizationParameter (_id: string, _key: string): string | undefined {
     throw new Error('getEndpointAuthorizationParameter() unavailable in GitHub.')
   }
 

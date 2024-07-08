@@ -33,13 +33,18 @@ export default tseslint.config(
     rules: {
       'no-console': 'error',
       'sort-imports': 'error',
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          'argsIgnorePattern': '^_[^_]+'
+        }
+      ],
       '@typescript-eslint/no-confusing-void-expression': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-unsafe-argument': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
       '@typescript-eslint/no-unsafe-call': 'off',
       '@typescript-eslint/no-unsafe-member-access': 'off',
-      '@typescript-eslint/no-unused-vars': 'off'
     }
   }
 )

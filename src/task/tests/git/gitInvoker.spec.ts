@@ -25,7 +25,7 @@ describe('gitInvoker.ts', (): void => {
 
     runnerInvoker = mock(RunnerInvoker)
     when(runnerInvoker.exec('git', 'rev-parse --branch origin/develop...pull/12345/merge')).thenCall(
-      async (_tool: string, _args: string): Promise<ExecOutput> => {
+      async (): Promise<ExecOutput> => {
         const testCommitId = '7235cb16e5e6ac83e3cbecae66bab557e9e2cee6'
         return Promise.resolve({
           exitCode: 0,
@@ -34,7 +34,7 @@ describe('gitInvoker.ts', (): void => {
         })
       })
     when(runnerInvoker.exec('git', 'diff --numstat --ignore-all-space origin/develop...pull/12345/merge')).thenCall(
-      async (_tool: string, _args: string): Promise<ExecOutput> => Promise.resolve({
+      async (): Promise<ExecOutput> => Promise.resolve({
         exitCode: 0,
         stdout: '1\t2\tFile.txt',
         stderr: ''
@@ -59,7 +59,7 @@ describe('gitInvoker.ts', (): void => {
         it(`should return true when called from a Git repo returning '${response.replace(/\n/gu, '\\n')}'`, async (): Promise<void> => {
           // Arrange
           when(runnerInvoker.exec('git', 'rev-parse --is-inside-work-tree')).thenCall(
-            async (_tool: string, _args: string): Promise<ExecOutput> => Promise.resolve({
+            async (): Promise<ExecOutput> => Promise.resolve({
               exitCode: 0,
               stdout: response,
               stderr: ''
@@ -80,7 +80,7 @@ describe('gitInvoker.ts', (): void => {
     it('should return false when not called from a Git repo', async (): Promise<void> => {
       // Arrange
       when(runnerInvoker.exec('git', 'rev-parse --is-inside-work-tree')).thenCall(
-        async (_tool: string, _args: string): Promise<ExecOutput> => Promise.resolve({
+        async (): Promise<ExecOutput> => Promise.resolve({
           exitCode: 1,
           stdout: '',
           stderr: 'Failure'
@@ -377,7 +377,7 @@ describe('gitInvoker.ts', (): void => {
     it('should return false when the Git history is unavailable', async (): Promise<void> => {
       // Arrange
       when(runnerInvoker.exec('git', 'rev-parse --branch origin/develop...pull/12345/merge')).thenCall(
-        async (_tool: string, _args: string): Promise<ExecOutput> => Promise.resolve({
+        async (): Promise<ExecOutput> => Promise.resolve({
           exitCode: 1,
           stdout: '',
           stderr: 'fatal: ambiguous argument \'origin/develop...pull/12345/merge\': unknown revision or path not in the working tree.\n'
@@ -688,7 +688,7 @@ describe('gitInvoker.ts', (): void => {
     it('should throw an error when Git invocation fails', async (): Promise<void> => {
       // Arrange
       when(runnerInvoker.exec('git', 'diff --numstat --ignore-all-space origin/develop...pull/12345/merge')).thenCall(
-        async (_tool: string, _args: string): Promise<ExecOutput> => Promise.resolve({
+        async (): Promise<ExecOutput> => Promise.resolve({
           exitCode: 1,
           stdout: '',
           stderr: 'Failure'

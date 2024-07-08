@@ -124,7 +124,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     })
   }
 
-  public async createComment (content: string, _: CommentThreadStatus, fileName?: string, __?: boolean): Promise<void> {
+  public async createComment (content: string, _status: CommentThreadStatus, fileName?: string, _isFileDeleted?: boolean): Promise<void> {
     this._logger.logDebug('* GitHubReposInvoker.createComment()')
 
     this.initialize()
@@ -155,7 +155,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     }
   }
 
-  public async updateComment (commentThreadId: number, content: string | null, _: CommentThreadStatus | null): Promise<void> {
+  public async updateComment (commentThreadId: number, content: string | null, _status: CommentThreadStatus | null): Promise<void> {
     this._logger.logDebug('* GitHubReposInvoker.updateComment()')
 
     if (content === null) {
