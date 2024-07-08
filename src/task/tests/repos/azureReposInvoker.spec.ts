@@ -228,7 +228,7 @@ describe('azureReposInvoker.ts', (): void => {
       ]
 
       testCases.forEach((statusCode: number): void => {
-        it(`should throw when the access token has insufficient access and the API call returns status code '${statusCode}'`, async (): Promise<void> => {
+        it(`should throw when the access token has insufficient access and the API call returns status code '${statusCode.toString()}'`, async (): Promise<void> => {
           // Arrange
           const error: ErrorWithStatus = new ErrorWithStatus('Test')
           error.statusCode = statusCode
@@ -344,7 +344,7 @@ describe('azureReposInvoker.ts', (): void => {
       ]
 
       testCases.forEach((statusCode: number): void => {
-        it(`should throw when the access token has insufficient access and the API call returns status code '${statusCode}'`, async (): Promise<void> => {
+        it(`should throw when the access token has insufficient access and the API call returns status code '${statusCode.toString()}'`, async (): Promise<void> => {
           // Arrange
           const error: ErrorWithStatus = new ErrorWithStatus('Test')
           error.statusCode = statusCode
@@ -567,7 +567,7 @@ describe('azureReposInvoker.ts', (): void => {
       ]
 
       testCases.forEach((statusCode: number): void => {
-        it(`should throw when the access token has insufficient access and the API call returns status code '${statusCode}'`, async (): Promise<void> => {
+        it(`should throw when the access token has insufficient access and the API call returns status code '${statusCode.toString()}'`, async (): Promise<void> => {
           // Arrange
           const error: ErrorWithStatus = new ErrorWithStatus('Test')
           error.statusCode = statusCode
@@ -697,7 +697,7 @@ describe('azureReposInvoker.ts', (): void => {
       ]
 
       testCases.forEach((statusCode: number): void => {
-        it(`should throw when the access token has insufficient access and the API call returns status code '${statusCode}'`, async (): Promise<void> => {
+        it(`should throw when the access token has insufficient access and the API call returns status code '${statusCode.toString()}'`, async (): Promise<void> => {
           // Arrange
           const error: ErrorWithStatus = new ErrorWithStatus('Test')
           error.statusCode = statusCode
@@ -836,7 +836,7 @@ describe('azureReposInvoker.ts', (): void => {
       ]
 
       testCases.forEach((statusCode: number): void => {
-        it(`should throw when the access token has insufficient access for the updateComment API and the API call returns status code '${statusCode}'`, async (): Promise<void> => {
+        it(`should throw when the access token has insufficient access for the updateComment API and the API call returns status code '${statusCode.toString()}'`, async (): Promise<void> => {
           // Arrange
           const error: ErrorWithStatus = new ErrorWithStatus('Test')
           error.statusCode = statusCode
@@ -866,7 +866,7 @@ describe('azureReposInvoker.ts', (): void => {
       ]
 
       testCases.forEach((status: number): void => {
-        it(`should throw when the access token has insufficient access for the updateComment API and the API call returns status '${status}'`, async (): Promise<void> => {
+        it(`should throw when the access token has insufficient access for the updateComment API and the API call returns status '${status.toString()}'`, async (): Promise<void> => {
           // Arrange
           const error: ErrorWithStatus = new ErrorWithStatus('Test')
           error.status = status
@@ -1003,7 +1003,7 @@ describe('azureReposInvoker.ts', (): void => {
       ]
 
       testCases.forEach((statusCode: number): void => {
-        it(`should throw when the access token has insufficient access and the API call returns status code '${statusCode}'`, async (): Promise<void> => {
+        it(`should throw when the access token has insufficient access and the API call returns status code '${statusCode.toString()}'`, async (): Promise<void> => {
           // Arrange
           const error: ErrorWithStatus = new ErrorWithStatus('Test')
           error.statusCode = statusCode

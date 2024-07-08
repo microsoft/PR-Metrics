@@ -306,7 +306,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
       })
     }
 
-    this._commitId = Validator.validateString(result.data[result.data.length - 1]?.sha, `result.data[${result.data.length - 1}].sha`, 'GitHubReposInvoker.getCommitId()')
+    this._commitId = Validator.validateString(result.data[result.data.length - 1]?.sha, `result.data[${(result.data.length - 1).toString()}].sha`, 'GitHubReposInvoker.getCommitId()')
   }
 
   protected async invokeApiCall<Response> (action: () => Promise<Response>): Promise<Response> {

@@ -15,9 +15,9 @@ import assert from 'node:assert/strict'
 
 describe('inputs.ts', (): void => {
   const adjustingAlwaysCloseComment = 'Adjusting the always-close-comment mode input to \'false\'.'
-  const adjustingBaseSizeResource = `Adjusting the base size input to '${InputsDefault.baseSize}'.`
-  const adjustingGrowthRateResource = `Adjusting the growth rate input to '${InputsDefault.growthRate}'.`
-  const adjustingTestFactorResource = `Adjusting the test factor input to '${InputsDefault.testFactor}'.`
+  const adjustingBaseSizeResource = `Adjusting the base size input to '${InputsDefault.baseSize.toString()}'.`
+  const adjustingGrowthRateResource = `Adjusting the growth rate input to '${InputsDefault.growthRate.toString()}'.`
+  const adjustingTestFactorResource = `Adjusting the test factor input to '${InputsDefault.testFactor.toString()}'.`
   const adjustingFileMatchingPatternsResource = `Adjusting the file matching patterns input to '${JSON.stringify(InputsDefault.fileMatchingPatterns)}'.`
   const adjustingCodeFileExtensionsResource = `Adjusting the code file extensions input to '${JSON.stringify(InputsDefault.codeFileExtensions)}'.`
   const disablingTestFactorResource = 'Disabling the test factor validation.'

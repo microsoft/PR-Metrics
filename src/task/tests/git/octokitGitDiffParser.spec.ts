@@ -89,7 +89,7 @@ describe('octokitGitDiffParser.ts', (): void => {
       ]
 
       testCases.forEach(({ fileCount, diff, lineNumber }: TestCaseType): void => {
-        it(`should return the correct line number when ${fileCount} changed files are present`, async (): Promise<void> => {
+        it(`should return the correct line number when ${fileCount.toString()} changed files are present`, async (): Promise<void> => {
           // Arrange
           when(octokitWrapper.getPull('owner', 'repo', 1)).thenCall(async (): Promise<GetPullResponse> => Promise.resolve({ data: { diff_url: 'https://github.com/microsoft/PR-Metrics' } } as GetPullResponse))
           when(axiosWrapper.getUrl('https://github.com/microsoft/PR-Metrics')).thenCall(async (): Promise<string> => Promise.resolve(diff))

@@ -346,7 +346,7 @@ describe('pullRequestComments.ts', (): void => {
       ]
 
       testCases.forEach((code: FixedLengthArray<number, 5>): void => {
-        it(`should return the expected result for metrics '[${code[0]}, ${code[1]}, ${code[2]}, ${code[3]}, ${code[4]}]'`, async (): Promise<void> => {
+        it(`should return the expected result for metrics '[${code[0].toString()}, ${code[1].toString()}, ${code[2].toString()}, ${code[3].toString()}, ${code[4].toString()}]'`, async (): Promise<void> => {
           // Arrange
           when(codeMetrics.getMetrics()).thenResolve(new CodeMetricsData(code[0], code[1], code[3]))
           const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(inputs), instance(logger), instance(reposInvoker), instance(runnerInvoker))
@@ -384,7 +384,7 @@ describe('pullRequestComments.ts', (): void => {
       ]
 
       testCases.forEach((baseSize: number): void => {
-        it(`should return the expected result when the pull request is not small and the base size is '${baseSize}'`, async (): Promise<void> => {
+        it(`should return the expected result when the pull request is not small and the base size is '${baseSize.toString()}'`, async (): Promise<void> => {
           // Arrange
           when(codeMetrics.isSmall()).thenResolve(false)
           when(inputs.baseSize).thenReturn(baseSize)

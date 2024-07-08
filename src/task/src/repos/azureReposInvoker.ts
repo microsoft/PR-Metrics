@@ -209,7 +209,7 @@ export default class AzureReposInvoker extends BaseReposInvoker {
     const result: CommentData = new CommentData()
 
     for (const [index, value] of comments.entries()) {
-      const id: number = Validator.validateNumber(value.id, `commentThread[${index}].id`, 'AzureReposInvoker.convertPullRequestComments()')
+      const id: number = Validator.validateNumber(value.id, `commentThread[${index.toString()}].id`, 'AzureReposInvoker.convertPullRequestComments()')
       const currentComments: Comment[] | undefined = value.comments
       if (currentComments === undefined) {
         continue
