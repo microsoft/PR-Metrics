@@ -85,7 +85,7 @@ export default class GitHubRunnerInvoker implements IRunnerInvoker {
     }
   }
 
-  public loc (key: string, ...param: any[]): string {
+  public loc (key: string, ...param: string[]): string {
     return util.format(this._resources.get(key), ...param)
   }
 

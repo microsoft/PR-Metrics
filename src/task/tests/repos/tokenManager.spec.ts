@@ -89,20 +89,40 @@ describe('tokenManager.ts', (): void => {
       verify(logger.logDebug('No workload identity federation specified. Using Personal Access Token (PAT) for authentication.')).once()
     })
 
-    it('returns a string indicating that the authorization scheme is invalid', async (): Promise<void> => {
-      // Arrange
-      const tokenManager: TokenManager = new TokenManager(instance(azureDevOpsApiWrapper), instance(logger), instance(runnerInvoker))
-      when(runnerInvoker.getEndpointAuthorizationScheme('Id')).thenReturn('Other')
-      when(runnerInvoker.loc('repos.tokenManager.incorrectAuthorizationScheme', 'WorkloadIdentityFederation', 'Other')).thenReturn('Authorization scheme of workload identity federation \'Id\' must be \'WorkloadIdentityFederation\' instead of \'Other\'.')
+    {
+      interface TestCaseType {
+        endpointAuthorization: string | undefined
+        logString: string
+      }
 
-      // Act
-      const result: string | null = await tokenManager.getToken()
+      const testCases: TestCaseType[] = [
+        {
+          endpointAuthorization: 'Other',
+          logString: 'Other'
+        },
+        {
+          endpointAuthorization: undefined,
+          logString: 'null'
+        }
+      ]
 
-      // Assert
-      assert.equal(result, null)
-      verify(logger.logDebug('* TokenManager.getToken()')).once()
-      verify(logger.logDebug('Using workload identity federation \'Id\' for authentication.')).once()
-    })
+      testCases.forEach(({ endpointAuthorization, logString }: TestCaseType): void => {
+        it(`returns a string indicating that the authorization scheme '${logString}' is invalid`, async (): Promise<void> => {
+          // Arrange
+          const tokenManager: TokenManager = new TokenManager(instance(azureDevOpsApiWrapper), instance(logger), instance(runnerInvoker))
+          when(runnerInvoker.getEndpointAuthorizationScheme('Id')).thenReturn(endpointAuthorization)
+          when(runnerInvoker.loc('repos.tokenManager.incorrectAuthorizationScheme', 'WorkloadIdentityFederation', logString)).thenReturn(`Authorization scheme of workload identity federation 'Id' must be 'WorkloadIdentityFederation' instead of '${logString}'.`)
+
+          // Act
+          const result: string | null = await tokenManager.getToken()
+
+          // Assert
+          assert.equal(result, null)
+          verify(logger.logDebug('* TokenManager.getToken()')).once()
+          verify(logger.logDebug('Using workload identity federation \'Id\' for authentication.')).once()
+        })
+      })
+    }
 
     it('throws an error when the service principal ID is undefined', async (): Promise<void> => {
       // Arrange

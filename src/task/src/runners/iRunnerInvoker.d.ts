@@ -59,7 +59,7 @@ export default interface IRunnerInvoker {
    * @param param Optional additional parameters for formatting the string.
    * @returns The localized and formatted string.
    */
-  loc: (key: string, ...param: any[]) => string
+  loc: (key: string, ...param: string[]) => string
 
   /**
    * Logs a debug message.

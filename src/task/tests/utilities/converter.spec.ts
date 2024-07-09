@@ -9,7 +9,7 @@ import assert from 'node:assert/strict'
 describe('converter.ts', (): void => {
   describe('toString()', (): void => {
     interface TestCaseType {
-      value: any
+      value: number | boolean | string | null | undefined
       expected: string
     }
 

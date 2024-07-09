@@ -74,7 +74,7 @@ export default class RunnerInvoker implements IRunnerInvoker {
     runner.locInitialize(folder);
   }
 
-  public loc (key: string, ...param: any[]): string {
+  public loc (key: string, ...param: string[]): string {
     if (!this._localizationInitialized) {
       throw new Error('RunnerInvoker.locInitialize must be called before RunnerInvoker.loc.')
     }
