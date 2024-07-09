@@ -10,7 +10,6 @@ import * as GitHubReposInvokerConstants from './gitHubReposInvokerConstants'
 import { anyNumber, anyString, anything, instance, mock, verify, when } from 'ts-mockito'
 import CommentData from '../../src/repos/interfaces/commentData'
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
-import ErrorWithStatus from '../wrappers/errorWithStatus'
 import GetIssueCommentsResponse from '../../src/wrappers/octokitInterfaces/getIssueCommentsResponse'
 import GetPullResponse from '../../src/wrappers/octokitInterfaces/getPullResponse'
 import GitHubReposInvoker from '../../src/repos/gitHubReposInvoker'
@@ -21,8 +20,10 @@ import OctokitLogObject from '../wrappers/octokitLogObject'
 import { OctokitOptions } from '@octokit/core/dist-types/types'
 import OctokitWrapper from '../../src/wrappers/octokitWrapper'
 import PullRequestDetails from '../../src/repos/interfaces/pullRequestDetails'
+import { RequestError } from '@octokit/request-error'
 import RunnerInvoker from '../../src/runners/runnerInvoker'
 import assert from 'node:assert/strict'
+import { createRequestError } from '../testUtilities/requestErrorCreator'
 
 describe('gitHubReposInvoker.ts', (): void => {
   let gitInvoker: GitInvoker
@@ -489,8 +490,7 @@ describe('gitHubReposInvoker.ts', (): void => {
             assert.notEqual(options.log?.warn, null)
             assert.notEqual(options.log?.error, null)
           })
-          const error: ErrorWithStatus = new ErrorWithStatus('Test')
-          error.status = status
+          const error: RequestError = createRequestError(status, 'Test')
           when(octokitWrapper.getPull(anyString(), anyString(), anyNumber())).thenThrow(error)
           const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 
@@ -498,7 +498,7 @@ describe('gitHubReposInvoker.ts', (): void => {
           const func: () => Promise<PullRequestDetails> = async () => gitHubReposInvoker.getTitleAndDescription()
 
           // Assert
-          const result: any = await AssertExtensions.toThrowAsync(func, 'Could not access the resources. Ensure the \'PR_Metrics_Access_Token\' secret environment variable has Read and Write access to pull requests (or access to \'repos\' if using a Classic PAT).')
+          const result: any = await AssertExtensions.toThrowAsync<any>(func, 'Could not access the resources. Ensure the \'PR_Metrics_Access_Token\' secret environment variable has Read and Write access to pull requests (or access to \'repos\' if using a Classic PAT).')
           assert.equal(result.internalMessage, 'Test')
           verify(octokitWrapper.initialize(anything())).once()
           verify(logger.logDebug('* GitHubReposInvoker.getTitleAndDescription()')).once()
@@ -996,7 +996,7 @@ describe('gitHubReposInvoker.ts', (): void => {
         assert.notEqual(options.log?.warn, null)
         assert.notEqual(options.log?.error, null)
       })
-      const error: HttpError = new HttpError(422, 'Validation Failed: {"resource":"PullRequestReviewComment","code":"custom","field":"pull_request_review_thread.path","message":"pull_request_review_thread.path diff too large"}, {"resource":"PullRequestReviewComment","code":"missing_field","field":"pull_request_review_thread.diff_hunk"}')
+      const error: RequestError = createRequestError(422, 'Validation Failed: {"resource":"PullRequestReviewComment","code":"custom","field":"pull_request_review_thread.path","message":"pull_request_review_thread.path diff too large"}, {"resource":"PullRequestReviewComment","code":"missing_field","field":"pull_request_review_thread.diff_hunk"}')
       when(octokitWrapper.createReviewComment('microsoft', 'PR-Metrics', 12345, 'Content', 'file.ts', 'sha54321')).thenCall((): void => {
         throw error
       })
