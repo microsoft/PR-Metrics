@@ -19,7 +19,7 @@ export const createRequestError = (status: number, content: string): RequestErro
       method: 'GET',
       url,
       headers: {
-        authorization: 'Token'
+        authorization: 'SampleToken'
       }
     },
     response: {
