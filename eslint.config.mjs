@@ -62,7 +62,6 @@ export default tseslint.config(
       'no-continue': 'off',
       'no-implicit-coercion': 'off',
       'no-implicit-globals': 'off',
-      'no-implicit-this': 'off',
       'no-magic-numbers': 'off',
       'no-negated-condition': 'off',
       'no-ternary': 'off',
