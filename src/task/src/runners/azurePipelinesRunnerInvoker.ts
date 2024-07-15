@@ -9,14 +9,14 @@ import { IExecOptions, IExecSyncResult } from 'azure-pipelines-task-lib/toolrunn
 import AzurePipelinesRunnerWrapper from '../wrappers/azurePipelinesRunnerWrapper'
 import { EndpointAuthorization } from './endpointAuthorization'
 import ExecOutput from './execOutput'
-import IRunnerInvoker from './iRunnerInvoker'
+import GenericRunnerInvoker from './genericRunnerInvoker'
 import { singleton } from 'tsyringe'
 
 /**
  * A class for invoking Azure Pipelines runner functionality.
  */
 @singleton()
-export default class AzurePipelinesRunnerInvoker implements IRunnerInvoker {
+export default class AzurePipelinesRunnerInvoker implements GenericRunnerInvoker {
   private readonly _azurePipelinesRunnerWrapper: AzurePipelinesRunnerWrapper
 
   /**

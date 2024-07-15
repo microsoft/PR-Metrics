@@ -6,8 +6,8 @@
 import AzurePipelinesRunnerInvoker from './azurePipelinesRunnerInvoker'
 import { EndpointAuthorization } from './endpointAuthorization'
 import ExecOutput from './execOutput'
+import GenericRunnerInvoker from './genericRunnerInvoker'
 import GitHubRunnerInvoker from './gitHubRunnerInvoker'
-import IRunnerInvoker from './iRunnerInvoker'
 import { singleton } from 'tsyringe'
 
 /**
@@ -15,11 +15,11 @@ import { singleton } from 'tsyringe'
  * the logger forms part of the runner functionality, and using logging here could result in circular dependencies.
  */
 @singleton()
-export default class RunnerInvoker implements IRunnerInvoker {
+export default class RunnerInvoker implements GenericRunnerInvoker {
   private readonly _azurePipelinesRunnerInvoker: AzurePipelinesRunnerInvoker
   private readonly _gitHubRunnerInvoker: GitHubRunnerInvoker
 
-  private _runnerInvoker: IRunnerInvoker | undefined
+  private _runnerInvoker: GenericRunnerInvoker | undefined
   private _localizationInitialized = false
 
   /**
@@ -40,27 +40,27 @@ export default class RunnerInvoker implements IRunnerInvoker {
   }
 
   public async exec (tool: string, args: string): Promise<ExecOutput> {
-    const runner: IRunnerInvoker = this.getRunner()
+    const runner: GenericRunnerInvoker = this.getRunner()
     return runner.exec(tool, args)
   }
 
   public getInput (name: string[]): string | undefined {
-    const runner: IRunnerInvoker = this.getRunner()
+    const runner: GenericRunnerInvoker = this.getRunner()
     return runner.getInput(name)
   }
 
   public getEndpointAuthorization (id: string): EndpointAuthorization | undefined {
-    const runner: IRunnerInvoker = this.getRunner()
+    const runner: GenericRunnerInvoker = this.getRunner()
     return runner.getEndpointAuthorization(id)
   }
 
   public getEndpointAuthorizationScheme (id: string): string | undefined {
-    const runner: IRunnerInvoker = this.getRunner()
+    const runner: GenericRunnerInvoker = this.getRunner()
     return runner.getEndpointAuthorizationScheme(id)
   }
 
   public getEndpointAuthorizationParameter (id: string, key: string): string | undefined {
-    const runner: IRunnerInvoker = this.getRunner()
+    const runner: GenericRunnerInvoker = this.getRunner()
     return runner.getEndpointAuthorizationParameter(id, key)
   }
 
@@ -70,7 +70,7 @@ export default class RunnerInvoker implements IRunnerInvoker {
     }
 
     this._localizationInitialized = true
-    const runner: IRunnerInvoker = this.getRunner()
+    const runner: GenericRunnerInvoker = this.getRunner()
     runner.locInitialize(folder);
   }
 
@@ -79,46 +79,46 @@ export default class RunnerInvoker implements IRunnerInvoker {
       throw new Error('RunnerInvoker.locInitialize must be called before RunnerInvoker.loc.')
     }
 
-    const runner: IRunnerInvoker = this.getRunner()
+    const runner: GenericRunnerInvoker = this.getRunner()
     return runner.loc(key, ...param)
   }
 
   public logDebug (message: string): void {
-    const runner: IRunnerInvoker = this.getRunner()
+    const runner: GenericRunnerInvoker = this.getRunner()
     runner.logDebug(message)
   }
 
   public logError (message: string): void {
-    const runner: IRunnerInvoker = this.getRunner()
+    const runner: GenericRunnerInvoker = this.getRunner()
     runner.logError(message)
   }
 
   public logWarning (message: string): void {
-    const runner: IRunnerInvoker = this.getRunner()
+    const runner: GenericRunnerInvoker = this.getRunner()
     runner.logWarning(message)
   }
 
   public setStatusFailed (message: string): void {
-    const runner: IRunnerInvoker = this.getRunner()
+    const runner: GenericRunnerInvoker = this.getRunner()
     runner.setStatusFailed(message);
   }
 
   public setStatusSkipped (message: string): void {
-    const runner: IRunnerInvoker = this.getRunner()
+    const runner: GenericRunnerInvoker = this.getRunner()
     runner.setStatusSkipped(message);
   }
 
   public setStatusSucceeded (message: string): void {
-    const runner: IRunnerInvoker = this.getRunner()
+    const runner: GenericRunnerInvoker = this.getRunner()
     runner.setStatusSucceeded(message);
   }
 
   public setSecret (value: string): void {
-    const runner: IRunnerInvoker = this.getRunner()
+    const runner: GenericRunnerInvoker = this.getRunner()
     runner.setSecret(value);
   }
 
-  private getRunner (): IRunnerInvoker {
+  private getRunner (): GenericRunnerInvoker {
     if (this._runnerInvoker !== undefined) {
       return this._runnerInvoker
     }

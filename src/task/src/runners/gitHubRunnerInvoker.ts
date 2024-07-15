@@ -11,8 +11,8 @@ import AzurePipelinesRunnerWrapper from '../wrappers/azurePipelinesRunnerWrapper
 import ConsoleWrapper from '../wrappers/consoleWrapper'
 import { EndpointAuthorization } from './endpointAuthorization'
 import ExecOutput from './execOutput'
+import GenericRunnerInvoker from './genericRunnerInvoker'
 import GitHubRunnerWrapper from '../wrappers/gitHubRunnerWrapper'
-import IRunnerInvoker from './iRunnerInvoker'
 import ResourcesJson from '../jsonTypes/resourcesJson'
 import { singleton } from 'tsyringe'
 
@@ -20,7 +20,7 @@ import { singleton } from 'tsyringe'
  * A class for invoking GitHub runner functionality.
  */
 @singleton()
-export default class GitHubRunnerInvoker implements IRunnerInvoker {
+export default class GitHubRunnerInvoker implements GenericRunnerInvoker {
   private readonly _azurePipelinesRunnerWrapper: AzurePipelinesRunnerWrapper
   private readonly _consoleWrapper: ConsoleWrapper
   private readonly _gitHubRunnerWrapper: GitHubRunnerWrapper

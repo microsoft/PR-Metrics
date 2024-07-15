@@ -9,7 +9,7 @@ import ExecOutput from './execOutput'
 /**
  * An interface for invoking runner functionality with any underlying runner.
  */
-export default interface IRunnerInvoker {
+export default interface GenericRunnerInvoker {
   /**
    * Asynchronously executes an external tool.
    * @param tool The tool executable to run.
