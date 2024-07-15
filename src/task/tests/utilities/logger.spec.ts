@@ -6,9 +6,9 @@
 import 'reflect-metadata'
 import { instance, mock, verify } from 'ts-mockito'
 import ConsoleWrapper from '../../src/wrappers/consoleWrapper'
-import HttpError from '../testUtilities/httpError'
 import Logger from '../../src/utilities/logger'
 import RunnerInvoker from '../../src/runners/runnerInvoker'
+import TestReposError from '../testUtilities/testReposError'
 
 describe('logger.ts', (): void => {
   let consoleWrapper: ConsoleWrapper
@@ -172,17 +172,18 @@ describe('logger.ts', (): void => {
     it('should log all properties of a complex error object', (): void => {
       // Arrange
       const logger: Logger = new Logger(instance(consoleWrapper), instance(runnerInvoker))
-      const error: HttpError = new HttpError(404, 'Not Found')
+      const error: TestReposError = new TestReposError('Not Found')
+      error.status = 404
       error.stack = 'Stack contents'
 
       // Act
       logger.logErrorObject(error)
 
       // Assert
-      verify(consoleWrapper.log('HttpError – name: "HttpError"')).once()
-      verify(consoleWrapper.log('HttpError – message: "Not Found"')).once()
-      verify(consoleWrapper.log('HttpError – stack: "Stack contents"')).once()
-      verify(consoleWrapper.log('HttpError – status: 404')).once()
+      verify(consoleWrapper.log('TestReposError – name: "TestReposError"')).once()
+      verify(consoleWrapper.log('TestReposError – message: "Not Found"')).once()
+      verify(consoleWrapper.log('TestReposError – stack: "Stack contents"')).once()
+      verify(consoleWrapper.log('TestReposError – status: 404')).once()
     })
   })
 

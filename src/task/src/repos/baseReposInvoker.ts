@@ -41,7 +41,7 @@ export default abstract class BaseReposInvoker implements GenericReposInvoker {
       const reposError: ReposError = error as ReposError
 
       const accessErrorStatusCodes: number[] = [401, 403, 404]
-      if (accessErrorStatusCodes.includes(reposError.status ?? reposError.statusCode)) {
+      if (accessErrorStatusCodes.includes(reposError.status ?? reposError.statusCode ?? 0)) {
         reposError.internalMessage = reposError.message
         reposError.message = accessErrorMessage
       }

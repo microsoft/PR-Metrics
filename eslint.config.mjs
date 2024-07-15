@@ -40,7 +40,6 @@ export default tseslint.config(
           'argsIgnorePattern': '^_[^_]+'
         }
       ],
-      '@typescript-eslint/no-unsafe-argument': 'off',
 
       // Full set
       '@typescript-eslint/class-methods-use-this': 'off',

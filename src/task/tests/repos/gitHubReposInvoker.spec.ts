@@ -14,7 +14,6 @@ import GetIssueCommentsResponse from '../../src/wrappers/octokitInterfaces/getIs
 import GetPullResponse from '../../src/wrappers/octokitInterfaces/getPullResponse'
 import GitHubReposInvoker from '../../src/repos/gitHubReposInvoker'
 import GitInvoker from '../../src/git/gitInvoker'
-import HttpError from '../testUtilities/httpError'
 import Logger from '../../src/utilities/logger'
 import OctokitLogObject from '../wrappers/octokitLogObject'
 import { OctokitOptions } from '@octokit/core/dist-types/types'
@@ -23,6 +22,7 @@ import PullRequestDetails from '../../src/repos/interfaces/pullRequestDetails'
 import ReposError from '../../src/repos/interfaces/reposError'
 import { RequestError } from '@octokit/request-error'
 import RunnerInvoker from '../../src/runners/runnerInvoker'
+import TestReposError from '../testUtilities/testReposError'
 import assert from 'node:assert/strict'
 import { createRequestError } from '../testUtilities/requestErrorCreator'
 
@@ -1019,12 +1019,12 @@ describe('gitHubReposInvoker.ts', (): void => {
     })
 
     {
-      const testCases: HttpError[] = [
-        new HttpError(400, 'Validation Failed: {"resource":"PullRequestReviewComment","code":"custom","field":"pull_request_review_thread.path","message":"pull_request_review_thread.path diff too large"}, {"resource":"PullRequestReviewComment","code":"missing_field","field":"pull_request_review_thread.diff_hunk"}'),
-        new HttpError(422, 'Unprocessable Entity')
+      const testCases: TestReposError[] = [
+        new TestReposError('Validation Failed: {"resource":"PullRequestReviewComment","code":"custom","field":"pull_request_review_thread.path","message":"pull_request_review_thread.path diff too large"}, {"resource":"PullRequestReviewComment","code":"missing_field","field":"pull_request_review_thread.diff_hunk"}').setStatus(400),
+        new TestReposError('Unprocessable Entity').setStatus(422)
       ]
 
-      testCases.forEach((error: HttpError): void => {
+      testCases.forEach((error: TestReposError): void => {
         it('should throw when an error occurs that is not a HTTP 422 or is not due to having a too large path diff', async (): Promise<void> => {
           // Arrange
           when(octokitWrapper.initialize(anything())).thenCall((options: OctokitOptions): void => {

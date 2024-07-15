@@ -7,15 +7,16 @@
  * An interface representing an error thrown while interacting with the repos.
  */
 export default interface ReposError extends Error {
+
   /**
-   * The HTTP status code.
+   * The error status code accessed via `status`.
    */
   status: number | undefined
 
   /**
-   * The HTTP status code.
+   * The error status code accessed via `statusCode`.
    */
-  statusCode: number
+  statusCode: number | undefined
 
   /**
    * The internal error message.

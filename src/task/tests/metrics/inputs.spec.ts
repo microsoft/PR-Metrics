@@ -6,11 +6,12 @@
 import 'reflect-metadata'
 import * as Converter from '../../src/utilities/converter'
 import * as InputsDefault from '../../src/metrics/inputsDefault'
-import { anyString, deepEqual, instance, mock, verify, when } from 'ts-mockito'
+import { deepEqual, instance, mock, verify, when } from 'ts-mockito'
 import { DecimalRadix } from '../../src/utilities/constants'
 import Inputs from '../../src/metrics/inputs'
 import Logger from '../../src/utilities/logger'
 import RunnerInvoker from '../../src/runners/runnerInvoker'
+import { anyString } from '../wrappers/mockito'
 import assert from 'node:assert/strict'
 
 describe('inputs.ts', (): void => {
