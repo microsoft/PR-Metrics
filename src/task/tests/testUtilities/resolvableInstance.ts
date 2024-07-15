@@ -12,12 +12,12 @@ import { instance } from 'ts-mockito'
  * @param mock The mock object to resolve.
  * @returns The resolvable instance.
  */
-export const resolvableInstance = <Type extends NonNullable<unknown>> (mock: Type): Type => new Proxy<Type>(instance(mock), {
-    get (target: Type, name: string): Type | undefined {
+export const resolvableInstance = <Mock extends NonNullable<unknown>> (mock: Mock): Mock => new Proxy<Mock>(instance(mock), {
+    get (target: Mock, name: string): Mock | undefined {
       if (['Symbol(Symbol.toPrimitive)', 'then', 'catch'].includes(name)) {
         return undefined
       }
 
-      return (target as ResolvableInstanceTarget<Type>)[name]
+      return (target as ResolvableInstanceTarget<Mock>)[name]
     }
   })

@@ -140,7 +140,7 @@ export default class GitInvoker {
       return ''
     }
 
-    return gitHubReferenceElements[2];
+    return gitHubReferenceElements[2]
   }
 
   private get pullRequestIdForAzurePipelines (): string {

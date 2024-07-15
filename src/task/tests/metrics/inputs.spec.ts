@@ -11,7 +11,7 @@ import { DecimalRadix } from '../../src/utilities/constants'
 import Inputs from '../../src/metrics/inputs'
 import Logger from '../../src/utilities/logger'
 import RunnerInvoker from '../../src/runners/runnerInvoker'
-import { anyString } from '../wrappers/mockito'
+import any from '../wrappers/any'
 import assert from 'node:assert/strict'
 
 describe('inputs.ts', (): void => {
@@ -50,11 +50,11 @@ describe('inputs.ts', (): void => {
     when(runnerInvoker.loc('metrics.inputs.adjustingCodeFileExtensions', JSON.stringify(InputsDefault.codeFileExtensions))).thenReturn(adjustingCodeFileExtensionsResource)
     when(runnerInvoker.loc('metrics.inputs.disablingTestFactor')).thenReturn(disablingTestFactorResource)
     when(runnerInvoker.loc('metrics.inputs.settingAlwaysCloseComment')).thenReturn(settingAlwaysCloseComment)
-    when(runnerInvoker.loc('metrics.inputs.settingBaseSize', anyString())).thenReturn(settingBaseSizeResource)
-    when(runnerInvoker.loc('metrics.inputs.settingGrowthRate', anyString())).thenReturn(settingGrowthRateResource)
-    when(runnerInvoker.loc('metrics.inputs.settingTestFactor', anyString())).thenReturn(settingTestFactorResource)
-    when(runnerInvoker.loc('metrics.inputs.settingFileMatchingPatterns', anyString())).thenReturn(settingFileMatchingPatternsResource)
-    when(runnerInvoker.loc('metrics.inputs.settingCodeFileExtensions', anyString())).thenReturn(settingCodeFileExtensionsResource)
+    when(runnerInvoker.loc('metrics.inputs.settingBaseSize', any())).thenReturn(settingBaseSizeResource)
+    when(runnerInvoker.loc('metrics.inputs.settingGrowthRate', any())).thenReturn(settingGrowthRateResource)
+    when(runnerInvoker.loc('metrics.inputs.settingTestFactor', any())).thenReturn(settingTestFactorResource)
+    when(runnerInvoker.loc('metrics.inputs.settingFileMatchingPatterns', any())).thenReturn(settingFileMatchingPatternsResource)
+    when(runnerInvoker.loc('metrics.inputs.settingCodeFileExtensions', any())).thenReturn(settingCodeFileExtensionsResource)
   })
 
   describe('initialize()', (): void => {

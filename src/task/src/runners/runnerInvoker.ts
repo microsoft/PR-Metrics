@@ -71,7 +71,7 @@ export default class RunnerInvoker implements GenericRunnerInvoker {
 
     this._localizationInitialized = true
     const runner: GenericRunnerInvoker = this.getRunner()
-    runner.locInitialize(folder);
+    runner.locInitialize(folder)
   }
 
   public loc (key: string, ...param: string[]): string {
@@ -100,22 +100,22 @@ export default class RunnerInvoker implements GenericRunnerInvoker {
 
   public setStatusFailed (message: string): void {
     const runner: GenericRunnerInvoker = this.getRunner()
-    runner.setStatusFailed(message);
+    runner.setStatusFailed(message)
   }
 
   public setStatusSkipped (message: string): void {
     const runner: GenericRunnerInvoker = this.getRunner()
-    runner.setStatusSkipped(message);
+    runner.setStatusSkipped(message)
   }
 
   public setStatusSucceeded (message: string): void {
     const runner: GenericRunnerInvoker = this.getRunner()
-    runner.setStatusSucceeded(message);
+    runner.setStatusSucceeded(message)
   }
 
   public setSecret (value: string): void {
     const runner: GenericRunnerInvoker = this.getRunner()
-    runner.setSecret(value);
+    runner.setSecret(value)
   }
 
   private getRunner (): GenericRunnerInvoker {

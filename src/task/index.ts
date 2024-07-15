@@ -14,4 +14,4 @@ const run = async (): Promise<void> => {
 
 run().catch((): void => {
   process.exit(1)
-});
+})

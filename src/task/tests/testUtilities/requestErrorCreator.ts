@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import { RequestError } from 'octokit';
+import { RequestError } from 'octokit'
 
 /**
  * Creates a `RequestError` object.
