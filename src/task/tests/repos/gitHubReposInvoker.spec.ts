@@ -20,6 +20,7 @@ import OctokitLogObject from '../wrappers/octokitLogObject'
 import { OctokitOptions } from '@octokit/core/dist-types/types'
 import OctokitWrapper from '../../src/wrappers/octokitWrapper'
 import PullRequestDetails from '../../src/repos/interfaces/pullRequestDetails'
+import ReposError from '../../src/repos/interfaces/reposError'
 import { RequestError } from '@octokit/request-error'
 import RunnerInvoker from '../../src/runners/runnerInvoker'
 import assert from 'node:assert/strict'
@@ -498,7 +499,7 @@ describe('gitHubReposInvoker.ts', (): void => {
           const func: () => Promise<PullRequestDetails> = async () => gitHubReposInvoker.getTitleAndDescription()
 
           // Assert
-          const result: any = await AssertExtensions.toThrowAsync<any>(func, 'Could not access the resources. Ensure the \'PR_Metrics_Access_Token\' secret environment variable has Read and Write access to pull requests (or access to \'repos\' if using a Classic PAT).')
+          const result: ReposError = await AssertExtensions.toThrowAsync(func, 'Could not access the resources. Ensure the \'PR_Metrics_Access_Token\' secret environment variable has Read and Write access to pull requests (or access to \'repos\' if using a Classic PAT).')
           assert.equal(result.internalMessage, 'Test')
           verify(octokitWrapper.initialize(anything())).once()
           verify(logger.logDebug('* GitHubReposInvoker.getTitleAndDescription()')).once()

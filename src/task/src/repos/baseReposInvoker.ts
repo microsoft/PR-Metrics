@@ -7,6 +7,7 @@ import CommentData from './interfaces/commentData'
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import IReposInvoker from './iReposInvoker'
 import PullRequestDetails from './interfaces/pullRequestDetails'
+import ReposError from './interfaces/reposError'
 
 /**
  * A base class for invoking repository functionality.
@@ -36,15 +37,16 @@ export default abstract class BaseReposInvoker implements IReposInvoker {
   protected async invokeApiCall<Response> (action: () => Promise<Response>, accessErrorMessage: string): Promise<Response> {
     try {
       return await action()
-    } catch (error: any) {
-      const accessErrorStatusCodes: number[] = [401, 403, 404]
+    } catch (error: unknown) {
+      const reposError: ReposError = error as ReposError
 
-      if (accessErrorStatusCodes.includes(error.status ?? error.statusCode)) {
-        error.internalMessage = error.message
-        error.message = accessErrorMessage
+      const accessErrorStatusCodes: number[] = [401, 403, 404]
+      if (accessErrorStatusCodes.includes(reposError.status ?? reposError.statusCode)) {
+        reposError.internalMessage = reposError.message
+        reposError.message = accessErrorMessage
       }
 
-      throw error
+      throw reposError
     }
   }
 }
