@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import ReposError from '../../src/repos/interfaces/reposError'
+import type ReposError from '../../src/repos/interfaces/reposError'
 
 /**
  * A class representing a test repos error.

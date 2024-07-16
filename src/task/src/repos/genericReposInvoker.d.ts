@@ -3,9 +3,9 @@
  * Licensed under the MIT License.
  */
 
-import CommentData from './interfaces/commentData'
-import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
-import PullRequestDetails from './interfaces/pullRequestDetails'
+import type CommentData from './interfaces/commentData'
+import type { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
+import type PullRequestDetails from './interfaces/pullRequestDetails'
 
 /**
  * An interface for invoking repository functionality with any underlying repository store.

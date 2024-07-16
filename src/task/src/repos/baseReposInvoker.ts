@@ -3,11 +3,11 @@
  * Licensed under the MIT License.
  */
 
-import CommentData from './interfaces/commentData'
-import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
-import GenericReposInvoker from './genericReposInvoker'
-import PullRequestDetails from './interfaces/pullRequestDetails'
-import ReposError from './interfaces/reposError'
+import type CommentData from './interfaces/commentData'
+import type { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
+import type GenericReposInvoker from './genericReposInvoker'
+import type PullRequestDetails from './interfaces/pullRequestDetails'
+import type ReposError from './interfaces/reposError'
 
 /**
  * A base class for invoking repository functionality.

@@ -5,8 +5,8 @@
 
 import * as fs from 'fs'
 import * as path from 'path'
-import ResourcesJson from '../../src/jsonTypes/resourcesJson'
-import TaskJson from '../jsonTypes/taskJson'
+import type ResourcesJson from '../../src/jsonTypes/resourcesJson'
+import type TaskJson from '../jsonTypes/taskJson'
 import assert from 'node:assert/strict'
 import { globSync } from 'glob'
 

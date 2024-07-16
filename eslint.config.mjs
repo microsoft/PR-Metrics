@@ -43,7 +43,6 @@ export default tseslint.config(
 
       // Full set
       '@typescript-eslint/class-methods-use-this': 'off',
-      '@typescript-eslint/consistent-type-imports': 'off',
       '@typescript-eslint/init-declarations': 'off',
       '@typescript-eslint/max-params': 'off',
       '@typescript-eslint/member-ordering': 'off',
