@@ -6,13 +6,14 @@
 import 'reflect-metadata'
 import * as actionsExec from '@actions/exec'
 import * as path from 'path'
-import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito'
+import { deepEqual, instance, mock, verify, when } from 'ts-mockito'
 import AzurePipelinesRunnerWrapper from '../../src/wrappers/azurePipelinesRunnerWrapper'
 import ConsoleWrapper from '../../src/wrappers/consoleWrapper'
 import { EndpointAuthorization } from 'azure-pipelines-task-lib'
 import ExecOutput from '../../src/runners/execOutput'
 import GitHubRunnerInvoker from '../../src/runners/gitHubRunnerInvoker'
 import GitHubRunnerWrapper from '../../src/wrappers/gitHubRunnerWrapper'
+import { any } from '../testUtilities/mockito'
 import assert from 'node:assert/strict'
 
 describe('gitHubRunnerInvoker.ts', (): void => {
@@ -37,7 +38,7 @@ describe('gitHubRunnerInvoker.ts', (): void => {
         stderr: 'Error',
         stdout: 'Output'
       }
-      when(gitHubRunnerWrapper.exec('TOOL', 'Argument1 Argument2', anything())).thenResolve(execResult)
+      when(gitHubRunnerWrapper.exec('TOOL', 'Argument1 Argument2', any())).thenResolve(execResult)
 
       // Act
       const result: ExecOutput = await gitHubRunnerInvoker.exec('TOOL', 'Argument1 Argument2')

@@ -13,20 +13,10 @@ export default class TestReposError extends Error implements ReposError {
    * Initializes a new instance of the `TestReposError` class.
    * @param message The error message.
    */
-  public constructor (message: string) {
+  public constructor(message: string) {
     super()
 
     this.message = message
-  }
-
-  /**
-   * Sets the status code.
-   * @param value The status code.
-   * @returns The current `TestReposError` object.
-   */
-  public setStatus (value: number): this {
-    this.status = value
-    return this
   }
 
   /**

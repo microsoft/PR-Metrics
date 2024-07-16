@@ -7,11 +7,12 @@ import 'reflect-metadata'
 import * as path from 'path'
 import * as taskLib from 'azure-pipelines-task-lib/task'
 import { IExecOptions, IExecSyncResult } from 'azure-pipelines-task-lib/toolrunner'
-import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito'
+import { deepEqual, instance, mock, verify, when } from 'ts-mockito'
 import AzurePipelinesRunnerInvoker from '../../src/runners/azurePipelinesRunnerInvoker'
 import AzurePipelinesRunnerWrapper from '../../src/wrappers/azurePipelinesRunnerWrapper'
 import { EndpointAuthorization } from '../../src/runners/endpointAuthorization'
 import { ExecOutput } from '@actions/exec'
+import { any } from '../testUtilities/mockito'
 import assert from 'node:assert/strict'
 
 describe('azurePipelinesRunnerInvoker.ts', (): void => {
@@ -31,7 +32,7 @@ describe('azurePipelinesRunnerInvoker.ts', (): void => {
         stderr: 'Error',
         stdout: 'Output'
       }
-      when(azurePipelinesRunnerWrapper.execSync('TOOL', 'Argument1 Argument2', anything())).thenReturn(execResult)
+      when(azurePipelinesRunnerWrapper.execSync('TOOL', 'Argument1 Argument2', any())).thenReturn(execResult)
 
       // Act
       const result: ExecOutput = await azurePipelinesRunnerInvoker.exec('TOOL', 'Argument1 Argument2')
