@@ -7,7 +7,6 @@
  * An interface representing an error thrown while interacting with the repos.
  */
 export default interface ReposError extends Error {
-
   /**
    * The error status code accessed via `status`.
    */
