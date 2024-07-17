@@ -58,7 +58,6 @@ export default tseslint.config(
       'max-statements': 'off',
       'no-await-in-loop': 'off',
       'no-continue': 'off',
-      'no-implicit-coercion': 'off',
       'no-magic-numbers': 'off',
       'no-negated-condition': 'off',
       'no-ternary': 'off',
