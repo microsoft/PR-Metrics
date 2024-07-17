@@ -203,10 +203,10 @@ export default class CodeMetrics {
       const isValidFileExtension: boolean = this.matchFileExtension(codeFileMetric.fileName)
       if (isValidFilePattern && isValidFileExtension) {
         matches.push(codeFileMetric)
-      } else if (!isValidFilePattern) {
-        nonMatchesToComment.push(codeFileMetric)
-      } else {
+      } else if (isValidFilePattern) {
         nonMatches.push(codeFileMetric)
+      } else {
+        nonMatchesToComment.push(codeFileMetric)
       }
     }
 

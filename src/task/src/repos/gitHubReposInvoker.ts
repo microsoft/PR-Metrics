@@ -130,7 +130,12 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
 
     this.initialize()
 
-    if (fileName !== undefined) {
+    if (fileName === undefined) {
+      await this.invokeApiCall(async (): Promise<void> => {
+        const result: CreateIssueCommentResponse = await this._octokitWrapper.createIssueComment(this._owner, this._repo, this._pullRequestId, content)
+        this._logger.logDebug(JSON.stringify(result))
+      })
+    } else {
       if (this._commitId === '') {
         await this.getCommitId()
       }
@@ -147,11 +152,6 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
             throw error
           }
         }
-      })
-    } else {
-      await this.invokeApiCall(async (): Promise<void> => {
-        const result: CreateIssueCommentResponse = await this._octokitWrapper.createIssueComment(this._owner, this._repo, this._pullRequestId, content)
-        this._logger.logDebug(JSON.stringify(result))
       })
     }
   }
