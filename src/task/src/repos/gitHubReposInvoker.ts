@@ -294,12 +294,12 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     // Get the last page of commits so that the last commit can be located.
     if (result.headers.link !== undefined) {
       const commitsLink: string = result.headers.link
-      const matches: RegExpMatchArray | null = /<.+>; rel="next", <.+?page=(\d+)>; rel="last"/u.exec(commitsLink)
-      if (matches?.[1] === undefined) {
+      const matches: RegExpMatchArray | null = /<.+>; rel="next", <.+?page=(?<pageNumber>\d+)>; rel="last"/u.exec(commitsLink)
+      if (matches?.groups?.pageNumber === undefined) {
         throw new Error(`The regular expression did not match '${commitsLink}'.`)
       }
 
-      const match: number = parseInt(matches[1], DecimalRadix)
+      const match: number = parseInt(matches.groups.pageNumber, DecimalRadix)
       result = await this.invokeApiCall(async (): Promise<ListCommitsResponse> => {
         const internalResult: ListCommitsResponse = await this._octokitWrapper.listCommits(this._owner, this._repo, this._pullRequestId, match)
         this._logger.logDebug(JSON.stringify(internalResult))

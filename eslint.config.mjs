@@ -68,7 +68,6 @@ export default tseslint.config(
       'no-undefined': 'off',
       'no-underscore-dangle': 'off',
       'one-var': 'off',
-      'prefer-named-capture-group': 'off',
       'sort-keys': 'off'
     }
   },

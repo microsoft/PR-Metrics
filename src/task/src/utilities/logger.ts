@@ -95,6 +95,6 @@ export default class Logger {
    * @returns The filtered message.
    */
   private static filterMessage (message: string): string {
-    return message.replace(/##(vso)?\[/giu, '')
+    return message.replace(/##(?:vso)?\[/giu, '')
   }
 }

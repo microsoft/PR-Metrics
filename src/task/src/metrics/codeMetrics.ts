@@ -238,7 +238,7 @@ export default class CodeMetrics {
     let ignoredCode = 0
 
     for (const entry of matches) {
-      if (/.*((T|t)est|TEST).*/u.test(entry.fileName) || /.*\.spec\..*/iu.test(path.basename(entry.fileName))) {
+      if (/.*(?:(?:T|t)est|TEST).*/u.test(entry.fileName) || /.*\.spec\..*/iu.test(path.basename(entry.fileName))) {
         this._logger.logDebug(`Test File: ${entry.fileName} (${entry.linesAdded.toString()} lines)`)
         testCode += entry.linesAdded
       } else {
@@ -288,8 +288,8 @@ export default class CodeMetrics {
 
       // Condense file and folder names that were renamed e.g. "F{a => i}leT{b => e}st.d{c => l}l" or "FaleTbst.dcl => FileTest.dll".
       const fileName: string = elements[2]
-        .replace(/\{.*? => ([^}]+?)\}/gu, '$1')
-        .replace(/.*? => ([^}]+?)/gu, '$1')
+        .replace(/\{.*? => (?<newName>[^}]+?)\}/gu, '$<newName>')
+        .replace(/.*? => (?<newName>[^}]+?)/gu, '$<newName>')
 
       result.push({
         fileName,
