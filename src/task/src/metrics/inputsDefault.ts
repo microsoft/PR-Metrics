@@ -28,7 +28,7 @@ export const alwaysCloseComment = false
  */
 export const fileMatchingPatterns: string[] = [
   '**/*',
-  '!**/package-lock.json'
+  '!**/package-lock.json',
 ]
 
 /**
@@ -209,5 +209,5 @@ export const codeFileExtensions: string[] = [
   'ruby',
   'spec',
   'thor',
-  'watchr'
+  'watchr',
 ]

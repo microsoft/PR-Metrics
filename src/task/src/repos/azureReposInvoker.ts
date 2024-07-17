@@ -80,7 +80,7 @@ export default class AzureReposInvoker extends BaseReposInvoker {
     const title: string = Validator.validateString(result.title, 'title', 'AzureReposInvoker.getTitleAndDescription()')
     return {
       description: result.description,
-      title
+      title,
     }
   }
 
@@ -119,22 +119,26 @@ export default class AzureReposInvoker extends BaseReposInvoker {
 
     const gitApiPromise: Promise<IGitApi> = this.getGitApi()
     const commentThread: GitPullRequestCommentThread = {
-      comments: [{ content }],
-      status
+      comments: [
+        {
+          content,
+        },
+      ],
+      status,
     }
 
     if (fileName !== undefined) {
       commentThread.threadContext = {
-        filePath: `/${fileName}`
+        filePath: `/${fileName}`,
       }
 
       const fileStart: CommentPosition = {
         line: 1,
-        offset: 1
+        offset: 1,
       }
       const fileEnd: CommentPosition = {
         line: 1,
-        offset: 2
+        offset: 2,
       }
 
       if (isFileDeleted ?? false) {
@@ -160,7 +164,7 @@ export default class AzureReposInvoker extends BaseReposInvoker {
     const gitApiPromise: Promise<IGitApi> = this.getGitApi()
     if (content !== null) {
       const comment: Comment = {
-        content
+        content,
       }
 
       const commentResult: Comment = await this.invokeApiCall(async (): Promise<Comment> => (await gitApiPromise).updateComment(comment, this._repositoryId, this._pullRequestId, commentThreadId, 1, this._project))
@@ -169,7 +173,7 @@ export default class AzureReposInvoker extends BaseReposInvoker {
 
     if (status !== null) {
       const commentThread: GitPullRequestCommentThread = {
-        status
+        status,
       }
 
       const threadResult: GitPullRequestCommentThread = await this.invokeApiCall(async (): Promise<GitPullRequestCommentThread> => (await gitApiPromise).updateThread(commentThread, this._repositoryId, this._pullRequestId, commentThreadId, this._project))

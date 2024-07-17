@@ -20,7 +20,7 @@ export const createRequestError = (status: number, content: string): RequestErro
         authorization: 'SampleToken'
       },
       method: 'GET',
-      url
+      url,
     },
     response: {
       data: {
@@ -30,7 +30,7 @@ export const createRequestError = (status: number, content: string): RequestErro
         'Content-Type': 'text/html; charset=utf-8'
       },
       status,
-      url
-    }
+      url,
+    },
   })
 }

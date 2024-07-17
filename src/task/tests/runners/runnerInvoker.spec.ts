@@ -52,7 +52,7 @@ describe('runnerInvoker.ts', (): void => {
       const execResult: ExecOutput = {
         exitCode: 1,
         stderr: 'Error',
-        stdout: 'Output'
+        stdout: 'Output',
       }
       when(azurePipelinesRunnerInvoker.exec('TOOL', 'Argument1 Argument2')).thenResolve(execResult)
 
@@ -74,7 +74,7 @@ describe('runnerInvoker.ts', (): void => {
       const execResult: ExecOutput = {
         exitCode: 1,
         stderr: 'Error',
-        stdout: 'Output'
+        stdout: 'Output',
       }
       when(gitHubRunnerInvoker.exec('TOOL', 'Argument1 Argument2')).thenResolve(execResult)
 
@@ -99,7 +99,7 @@ describe('runnerInvoker.ts', (): void => {
       const execResult: ExecOutput = {
         exitCode: 1,
         stderr: 'Error',
-        stdout: 'Output'
+        stdout: 'Output',
       }
       when(gitHubRunnerInvoker.exec('TOOL', 'Argument1 Argument2')).thenResolve(execResult)
 
@@ -162,9 +162,9 @@ describe('runnerInvoker.ts', (): void => {
       const runnerInvoker: RunnerInvoker = new RunnerInvoker(instance(azurePipelinesRunnerInvoker), instance(gitHubRunnerInvoker))
       const endpointAuthorization: EndpointAuthorization = {
         parameters: {
-          key: 'value'
+          key: 'value',
         },
-        scheme: 'scheme'
+        scheme: 'scheme',
       }
       when(azurePipelinesRunnerInvoker.getEndpointAuthorization('id')).thenReturn(endpointAuthorization)
 
@@ -183,9 +183,9 @@ describe('runnerInvoker.ts', (): void => {
       const runnerInvoker: RunnerInvoker = new RunnerInvoker(instance(azurePipelinesRunnerInvoker), instance(gitHubRunnerInvoker))
       const endpointAuthorization: EndpointAuthorization = {
         parameters: {
-          key: 'value'
+          key: 'value',
         },
-        scheme: 'scheme'
+        scheme: 'scheme',
       }
       when(gitHubRunnerInvoker.getEndpointAuthorization('id')).thenReturn(endpointAuthorization)
 

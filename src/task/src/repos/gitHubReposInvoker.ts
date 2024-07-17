@@ -85,7 +85,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
 
     return {
       description: result.data.body ?? undefined,
-      title: result.data.title
+      title: result.data.title,
     }
   }
 
@@ -104,7 +104,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
       this.invokeApiCall(async (): Promise<void> => {
         fileComments = await this._octokitWrapper.getReviewComments(this._owner, this._repo, this._pullRequestId)
         this._logger.logDebug(JSON.stringify(fileComments))
-      })
+      }),
     ])
 
     return this.convertPullRequestComments(pullRequestComments, fileComments)
@@ -195,9 +195,9 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
         debug: (message: string): void => { this._logger.logDebug(`Octokit – ${message}`) },
         error: (message: string): void => { this._logger.logError(`Octokit – ${message}`) },
         info: (message: string): void => { this._logger.logInfo(`Octokit – ${message}`) },
-        warn: (message: string): void => { this._logger.logWarning(`Octokit – ${message}`) }
+        warn: (message: string): void => { this._logger.logWarning(`Octokit – ${message}`) },
       },
-      userAgent: 'PRMetrics/v1.6.0'
+      userAgent: 'PRMetrics/v1.6.0',
     }
 
     if (RunnerInvoker.isGitHub) {

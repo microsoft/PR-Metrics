@@ -104,8 +104,13 @@ describe('pullRequestComments.ts', (): void => {
 
     {
       const testCases: PullRequestCommentData[][] = [
-        [new PullRequestCommentData(20, '# PR Metrics\n')],
-        [new PullRequestCommentData(20, '# PR Metrics'), new PullRequestCommentData(20, '# PR Metrics\n')]
+        [
+          new PullRequestCommentData(20, '# PR Metrics\n'),
+        ],
+        [
+          new PullRequestCommentData(20, '# PR Metrics'),
+          new PullRequestCommentData(20, '# PR Metrics\n'),
+        ],
       ]
 
       testCases.forEach((data: PullRequestCommentData[]): void => {
@@ -141,16 +146,16 @@ describe('pullRequestComments.ts', (): void => {
       const testCases: TestCaseType[] = [
         {
           filesNotRequiringReview: ['folder/file1.ts', 'file3.ts'],
-          fileComments: [new FileCommentData(20, '❗ **This file doesn\'t require review.**', 'file2.ts')]
+          fileComments: [new FileCommentData(20, '❗ **This file doesn\'t require review.**', 'file2.ts')],
         },
         {
           filesNotRequiringReview: ['folder/file1.ts', 'file3.ts'],
-          fileComments: [new FileCommentData(20, 'Content', 'folder/file1.ts'), new FileCommentData(20, '❗ **This file doesn\'t require review.**', 'file2.ts')]
+          fileComments: [new FileCommentData(20, 'Content', 'folder/file1.ts'), new FileCommentData(20, '❗ **This file doesn\'t require review.**', 'file2.ts')],
         },
         {
           filesNotRequiringReview: ['file3.ts'],
-          fileComments: [new FileCommentData(20, '❗ **This file doesn\'t require review.**', 'folder/file1.ts'), new FileCommentData(20, '❗ **This file doesn\'t require review.**', 'file2.ts')]
-        }
+          fileComments: [new FileCommentData(20, '❗ **This file doesn\'t require review.**', 'folder/file1.ts'), new FileCommentData(20, '❗ **This file doesn\'t require review.**', 'file2.ts')],
+        },
       ]
 
       testCases.forEach(({ filesNotRequiringReview, fileComments }: TestCaseType): void => {
@@ -187,16 +192,16 @@ describe('pullRequestComments.ts', (): void => {
       const testCases: TestCaseType[] = [
         {
           deletedFilesNotRequiringReview: ['folder/file1.ts', 'file3.ts'],
-          fileComments: [new FileCommentData(0, '❗ **This file doesn\'t require review.**', 'file2.ts')]
+          fileComments: [new FileCommentData(0, '❗ **This file doesn\'t require review.**', 'file2.ts')],
         },
         {
           deletedFilesNotRequiringReview: ['folder/file1.ts', 'file3.ts'],
-          fileComments: [new FileCommentData(0, 'Content', 'folder/file1.ts'), new FileCommentData(0, '❗ **This file doesn\'t require review.**', 'file2.ts')]
+          fileComments: [new FileCommentData(0, 'Content', 'folder/file1.ts'), new FileCommentData(0, '❗ **This file doesn\'t require review.**', 'file2.ts')],
         },
         {
           deletedFilesNotRequiringReview: ['file3.ts'],
-          fileComments: [new FileCommentData(0, '❗ **This file doesn\'t require review.**', 'folder/file1.ts'), new FileCommentData(0, '❗ **This file doesn\'t require review.**', 'file2.ts')]
-        }
+          fileComments: [new FileCommentData(0, '❗ **This file doesn\'t require review.**', 'folder/file1.ts'), new FileCommentData(0, '❗ **This file doesn\'t require review.**', 'file2.ts')],
+        },
       ]
 
       testCases.forEach(({ deletedFilesNotRequiringReview, fileComments }: TestCaseType): void => {
@@ -342,7 +347,7 @@ describe('pullRequestComments.ts', (): void => {
         [1, 0, 1, 0, 1],
         [1, 1, 2, 1, 3],
         [1000, 1000, 2000, 1000, 3000],
-        [1000000, 1000000, 2000000, 1000000, 3000000]
+        [1000000, 1000000, 2000000, 1000000, 3000000],
       ]
 
       testCases.forEach((code: FixedLengthArray<number, 5>): void => {
@@ -380,7 +385,7 @@ describe('pullRequestComments.ts', (): void => {
       const testCases: number[] = [
         200,
         1000,
-        1000000
+        1000000,
       ]
 
       testCases.forEach((baseSize: number): void => {
@@ -489,7 +494,7 @@ describe('pullRequestComments.ts', (): void => {
     {
       const testCases: (boolean | null)[] = [
         true,
-        null
+        null,
       ]
 
       testCases.forEach((sufficientlyTested: boolean | null): void => {
@@ -518,20 +523,20 @@ describe('pullRequestComments.ts', (): void => {
       const testCases: TestCaseType[] = [
         {
           isSmall: true,
-          isSufficientlyTested: false
+          isSufficientlyTested: false,
         },
         {
           isSmall: false,
-          isSufficientlyTested: true
+          isSufficientlyTested: true,
         },
         {
           isSmall: false,
-          isSufficientlyTested: false
+          isSufficientlyTested: false,
         },
         {
           isSmall: false,
-          isSufficientlyTested: null
-        }
+          isSufficientlyTested: null,
+        },
       ]
 
       testCases.forEach(({ isSmall, isSufficientlyTested }: TestCaseType): void => {

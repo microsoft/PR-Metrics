@@ -15,29 +15,29 @@ export const getPullResponse: GetPullResponse = {
   data: {
     _links: {
       comments: {
-        href: ''
+        href: '',
       },
       commits: {
-        href: ''
+        href: '',
       },
       html: {
-        href: ''
+        href: '',
       },
       issue: {
-        href: ''
+        href: '',
       },
       review_comment: {
-        href: ''
+        href: '',
       },
       review_comments: {
-        href: ''
+        href: '',
       },
       self: {
-        href: ''
+        href: '',
       },
       statuses: {
-        href: ''
-      }
+        href: '',
+      },
     },
     active_lock_reason: null,
     additions: 0,
@@ -59,7 +59,7 @@ export const getPullResponse: GetPullResponse = {
       starred_url: '',
       subscriptions_url: '',
       type: '',
-      url: ''
+      url: '',
     },
     assignees: [],
     author_association: 'MEMBER',
@@ -118,7 +118,7 @@ export const getPullResponse: GetPullResponse = {
           name: '',
           node_id: '',
           spdx_id: '',
-          url: null
+          url: null,
         },
         merges_url: '',
         milestones_url: '',
@@ -146,7 +146,7 @@ export const getPullResponse: GetPullResponse = {
           starred_url: '',
           subscriptions_url: '',
           type: '',
-          url: ''
+          url: '',
         },
         private: false,
         pulls_url: '',
@@ -166,7 +166,7 @@ export const getPullResponse: GetPullResponse = {
         updated_at: '',
         url: '',
         watchers: 0,
-        watchers_count: 0
+        watchers_count: 0,
       },
       sha: '',
       user: {
@@ -187,8 +187,8 @@ export const getPullResponse: GetPullResponse = {
         starred_url: '',
         subscriptions_url: '',
         type: '',
-        url: ''
-      }
+        url: '',
+      },
     },
     body: 'Description',
     changed_files: 0,
@@ -255,7 +255,7 @@ export const getPullResponse: GetPullResponse = {
           name: '',
           node_id: '',
           spdx_id: '',
-          url: null
+          url: null,
         },
         merges_url: '',
         milestones_url: '',
@@ -283,7 +283,7 @@ export const getPullResponse: GetPullResponse = {
           starred_url: '',
           subscriptions_url: '',
           type: '',
-          url: ''
+          url: '',
         },
         private: false,
         pulls_url: '',
@@ -303,7 +303,7 @@ export const getPullResponse: GetPullResponse = {
         updated_at: '',
         url: '',
         watchers: 0,
-        watchers_count: 0
+        watchers_count: 0,
       },
       sha: '',
       user: {
@@ -324,8 +324,8 @@ export const getPullResponse: GetPullResponse = {
         starred_url: '',
         subscriptions_url: '',
         type: '',
-        url: ''
-      }
+        url: '',
+      },
     },
     html_url: '',
     id: 0,
@@ -372,12 +372,12 @@ export const getPullResponse: GetPullResponse = {
       starred_url: '',
       subscriptions_url: '',
       type: '',
-      url: ''
-    }
+      url: '',
+    },
   },
   headers: {},
   status: 200,
-  url: ''
+  url: '',
 }
 
 /**
@@ -404,33 +404,33 @@ export const listCommitsResponse: ListCommitsResponse = {
         starred_url: '',
         subscriptions_url: '',
         type: '',
-        url: ''
+        url: '',
       },
       comments_url: '',
       commit: {
         author: {
           date: '',
           email: '',
-          name: ''
+          name: '',
         },
         comment_count: 0,
         committer: {
           date: '',
           email: '',
-          name: ''
+          name: '',
         },
         message: '',
         tree: {
           sha: '',
-          url: ''
+          url: '',
         },
         url: '',
         verification: {
           payload: null,
           reason: '',
           signature: null,
-          verified: false
-        }
+          verified: false,
+        },
       },
       committer: {
         avatar_url: '',
@@ -450,7 +450,7 @@ export const listCommitsResponse: ListCommitsResponse = {
         starred_url: '',
         subscriptions_url: '',
         type: '',
-        url: ''
+        url: '',
       },
       html_url: '',
       node_id: '',
@@ -458,12 +458,12 @@ export const listCommitsResponse: ListCommitsResponse = {
         {
           html_url: '',
           sha: '',
-          url: ''
-        }
+          url: '',
+        },
       ],
       sha: 'sha54321',
-      url: ''
-    }
+      url: '',
+    },
   ],
   headers: {},
   status: 200,
@@ -493,7 +493,7 @@ export const getIssueCommentsResponse: GetIssueCommentsResponse = {
         laugh: 0,
         rocket: 0,
         total_count: 0,
-        url: ''
+        url: '',
       },
       updated_at: '',
       url: '',
@@ -515,9 +515,9 @@ export const getIssueCommentsResponse: GetIssueCommentsResponse = {
         starred_url: '',
         subscriptions_url: '',
         type: 'User',
-        url: ''
-      }
-    }
+        url: '',
+      },
+    },
   ],
   headers: {},
   status: 200,
@@ -532,14 +532,14 @@ export const getReviewCommentsResponse: GetReviewCommentsResponse = {
     {
       _links: {
         html: {
-          href: ''
+          href: '',
         },
         pull_request: {
-          href: ''
+          href: '',
         },
         self: {
-          href: ''
-        }
+          href: '',
+        },
       },
       author_association: 'MEMBER',
       body: 'File Content',
@@ -568,7 +568,7 @@ export const getReviewCommentsResponse: GetReviewCommentsResponse = {
         laugh: 0,
         rocket: 0,
         total_count: 0,
-        url: ''
+        url: '',
       },
       side: 'LEFT',
       start_line: null,
@@ -593,11 +593,11 @@ export const getReviewCommentsResponse: GetReviewCommentsResponse = {
         starred_url: '',
         subscriptions_url: '',
         type: '',
-        url: ''
-      }
-    }
+        url: '',
+      },
+    },
   ],
   headers: {},
   status: 200,
-  url: ''
+  url: '',
 }

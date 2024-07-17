@@ -89,7 +89,7 @@ describe('reposInvoker.ts', (): void => {
     {
       const testCases: string[] = [
         'GitHub',
-        'GitHubEnterprise'
+        'GitHubEnterprise',
       ]
 
       testCases.forEach((buildRepositoryProvider: string): void => {
@@ -192,7 +192,7 @@ describe('reposInvoker.ts', (): void => {
     {
       const testCases: string[] = [
         'GitHub',
-        'GitHubEnterprise'
+        'GitHubEnterprise',
       ]
 
       testCases.forEach((buildRepositoryProvider: string): void => {
@@ -295,7 +295,7 @@ describe('reposInvoker.ts', (): void => {
     {
       const testCases: string[] = [
         'GitHub',
-        'GitHubEnterprise'
+        'GitHubEnterprise',
       ]
 
       testCases.forEach((buildRepositoryProvider: string): void => {
@@ -396,7 +396,7 @@ describe('reposInvoker.ts', (): void => {
     {
       const testCases: string[] = [
         'GitHub',
-        'GitHubEnterprise'
+        'GitHubEnterprise',
       ]
 
       testCases.forEach((buildRepositoryProvider: string): void => {
@@ -496,7 +496,7 @@ describe('reposInvoker.ts', (): void => {
     {
       const testCases: string[] = [
         'GitHub',
-        'GitHubEnterprise'
+        'GitHubEnterprise',
       ]
 
       testCases.forEach((buildRepositoryProvider: string): void => {
@@ -596,7 +596,7 @@ describe('reposInvoker.ts', (): void => {
     {
       const testCases: string[] = [
         'GitHub',
-        'GitHubEnterprise'
+        'GitHubEnterprise',
       ]
 
       testCases.forEach((buildRepositoryProvider: string): void => {
@@ -696,7 +696,7 @@ describe('reposInvoker.ts', (): void => {
     {
       const testCases: string[] = [
         'GitHub',
-        'GitHubEnterprise'
+        'GitHubEnterprise',
       ]
 
       testCases.forEach((buildRepositoryProvider: string): void => {

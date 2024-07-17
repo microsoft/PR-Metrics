@@ -17,12 +17,12 @@ describe('logger.ts', (): void => {
   const testCases: string[] = [
     '##[test]Message',
     '##vso[test]Message',
-    '##VSO[test]Message'
+    '##VSO[test]Message',
   ]
   const errorTestCases: string[] = [
     '##[test]',
     '##vso[test]',
-    '##VSO[test]'
+    '##VSO[test]',
   ]
 
   beforeEach((): void => {

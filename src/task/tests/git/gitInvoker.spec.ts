@@ -30,14 +30,14 @@ describe('gitInvoker.ts', (): void => {
         return Promise.resolve({
           exitCode: 0,
           stdout: testCommitId,
-          stderr: ''
+          stderr: '',
         })
       })
     when(runnerInvoker.exec('git', 'diff --numstat --ignore-all-space origin/develop...pull/12345/merge')).thenCall(
       async (): Promise<ExecOutput> => Promise.resolve({
         exitCode: 0,
         stdout: '1\t2\tFile.txt',
-        stderr: ''
+        stderr: '',
       }))
   })
 
@@ -52,7 +52,7 @@ describe('gitInvoker.ts', (): void => {
       const testCases: string[] = [
         'true',
         'true ',
-        'true\n'
+        'true\n',
       ]
 
       testCases.forEach((response: string): void => {
@@ -62,7 +62,7 @@ describe('gitInvoker.ts', (): void => {
             async (): Promise<ExecOutput> => Promise.resolve({
               exitCode: 0,
               stdout: response,
-              stderr: ''
+              stderr: '',
             }))
           const gitInvoker: GitInvoker = new GitInvoker(instance(logger), instance(runnerInvoker))
 
@@ -83,7 +83,7 @@ describe('gitInvoker.ts', (): void => {
         async (): Promise<ExecOutput> => Promise.resolve({
           exitCode: 1,
           stdout: '',
-          stderr: 'Failure'
+          stderr: 'Failure',
         }))
       const gitInvoker: GitInvoker = new GitInvoker(instance(logger), instance(runnerInvoker))
 
@@ -213,7 +213,7 @@ describe('gitInvoker.ts', (): void => {
     {
       const testCases: string[] = [
         'GitHub',
-        'GitHubEnterprise'
+        'GitHubEnterprise',
       ]
 
       testCases.forEach((buildRepositoryProvider: string): void => {
@@ -345,7 +345,7 @@ describe('gitInvoker.ts', (): void => {
     {
       const testCases: string[] = [
         'GitHub',
-        'GitHubEnterprise'
+        'GitHubEnterprise',
       ]
 
       testCases.forEach((buildRepositoryProvider: string): void => {
@@ -380,7 +380,7 @@ describe('gitInvoker.ts', (): void => {
         async (): Promise<ExecOutput> => Promise.resolve({
           exitCode: 1,
           stdout: '',
-          stderr: 'fatal: ambiguous argument \'origin/develop...pull/12345/merge\': unknown revision or path not in the working tree.\n'
+          stderr: 'fatal: ambiguous argument \'origin/develop...pull/12345/merge\': unknown revision or path not in the working tree.\n',
         }))
       const gitInvoker: GitInvoker = new GitInvoker(instance(logger), instance(runnerInvoker))
 
@@ -570,7 +570,7 @@ describe('gitInvoker.ts', (): void => {
     {
       const testCases: string[] = [
         'GitHub',
-        'GitHubEnterprise'
+        'GitHubEnterprise',
       ]
 
       testCases.forEach((buildRepositoryProvider: string): void => {
@@ -691,7 +691,7 @@ describe('gitInvoker.ts', (): void => {
         async (): Promise<ExecOutput> => Promise.resolve({
           exitCode: 1,
           stdout: '',
-          stderr: 'Failure'
+          stderr: 'Failure',
         }))
       const gitInvoker: GitInvoker = new GitInvoker(instance(logger), instance(runnerInvoker))
 

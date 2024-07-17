@@ -156,7 +156,7 @@ describe('inputs.ts', (): void => {
           '===',
           '!2',
           'null',
-          'undefined'
+          'undefined',
         ]
 
         testCases.forEach((baseSize: string | undefined): void => {
@@ -199,7 +199,7 @@ describe('inputs.ts', (): void => {
           '0',
           '-1',
           '-1000',
-          '-5'
+          '-5',
         ]
 
         testCases.forEach((baseSize: string): void => {
@@ -242,7 +242,7 @@ describe('inputs.ts', (): void => {
           '1',
           '5',
           '1000',
-          '5.5'
+          '5.5',
         ]
 
         testCases.forEach((baseSize: string): void => {
@@ -291,7 +291,7 @@ describe('inputs.ts', (): void => {
           '===',
           '!2',
           'null',
-          'undefined'
+          'undefined',
         ]
 
         testCases.forEach((growthRate: string | undefined): void => {
@@ -337,7 +337,7 @@ describe('inputs.ts', (): void => {
           '-2',
           '-1.2',
           '-5',
-          '0.9999999999'
+          '0.9999999999',
         ]
 
         testCases.forEach((growthRate: string): void => {
@@ -384,7 +384,7 @@ describe('inputs.ts', (): void => {
           '1.2',
           '1.0000000001',
           '1.09',
-          '7'
+          '7',
         ]
 
         testCases.forEach((growthRate: string): void => {
@@ -433,7 +433,7 @@ describe('inputs.ts', (): void => {
           '===',
           '!2',
           'null',
-          'undefined'
+          'undefined',
         ]
 
         testCases.forEach((testFactor: string | undefined): void => {
@@ -477,7 +477,7 @@ describe('inputs.ts', (): void => {
           '-2',
           '-1.2',
           '-5',
-          '-0.9999999999'
+          '-0.9999999999',
         ]
 
         testCases.forEach((testFactor: string): void => {
@@ -524,7 +524,7 @@ describe('inputs.ts', (): void => {
           '1.2',
           '0.000000000000009',
           '0.09',
-          '7'
+          '7',
         ]
 
         testCases.forEach((testFactor: string): void => {
@@ -565,7 +565,7 @@ describe('inputs.ts', (): void => {
       {
         const testCases: string[] = [
           '0',
-          '0.0'
+          '0.0',
         ]
 
         testCases.forEach((testFactor: string): void => {
@@ -616,7 +616,7 @@ describe('inputs.ts', (): void => {
           'FALSE',
           'fALSE',
           'null',
-          'undefined'
+          'undefined',
         ]
 
         testCases.forEach((alwaysCloseComment: string | undefined): void => {
@@ -659,7 +659,7 @@ describe('inputs.ts', (): void => {
           'true',
           'True',
           'TRUE',
-          'tRUE'
+          'tRUE',
         ]
 
         testCases.forEach((alwaysCloseComment: string): void => {
@@ -705,7 +705,7 @@ describe('inputs.ts', (): void => {
           '',
           ' ',
           '     ',
-          '\n'
+          '\n',
         ]
 
         testCases.forEach((fileMatchingPatterns: string | undefined): void => {
@@ -747,7 +747,7 @@ describe('inputs.ts', (): void => {
         const testCases: string[] = [
           'abc',
           'abc def hik',
-          '*.ada *.js *ts *.bb *txt'
+          '*.ada *.js *ts *.bb *txt',
         ]
 
         testCases.forEach((fileMatchingPatterns: string): void => {
@@ -788,7 +788,7 @@ describe('inputs.ts', (): void => {
       {
         const testCases: string[] = [
           '*.ada\n*.js\n*.ts\n*.bb\n*.txt',
-          'abc\ndef\nhij'
+          'abc\ndef\nhij',
         ]
 
         testCases.forEach((fileMatchingPatterns: string): void => {
@@ -899,7 +899,7 @@ describe('inputs.ts', (): void => {
           '',
           ' ',
           '     ',
-          '\n'
+          '\n',
         ]
 
         testCases.forEach((codeFileExtensions: string | undefined): void => {
@@ -941,7 +941,7 @@ describe('inputs.ts', (): void => {
         const testCases: string[] = [
           'ada\njs\nts\nbb\ntxt',
           'abc\ndef\nhij',
-          'ts'
+          'ts',
         ]
 
         testCases.forEach((codeFileExtensions: string): void => {

@@ -53,7 +53,7 @@ export default class PullRequestMetrics {
 
       await Promise.all([
         this._codeMetricsCalculator.updateDetails(),
-        this._codeMetricsCalculator.updateComments()
+        this._codeMetricsCalculator.updateComments(),
       ])
 
       this._runnerInvoker.setStatusSucceeded(this._runnerInvoker.loc('pullRequestMetrics.succeeded'))

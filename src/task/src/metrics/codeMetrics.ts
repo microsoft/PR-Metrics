@@ -27,7 +27,7 @@ export default class CodeMetrics {
   private readonly _runnerInvoker: RunnerInvoker
 
   private static readonly _minimatchOptions: minimatch.MinimatchOptions = {
-    dot: true
+    dot: true,
   }
 
   private _isInitialized = false
@@ -294,7 +294,7 @@ export default class CodeMetrics {
       result.push({
         fileName,
         linesAdded: this.parseChangedLines(elements[0], line, 'added'),
-        linesDeleted: this.parseChangedLines(elements[1], line, 'deleted')
+        linesDeleted: this.parseChangedLines(elements[1], line, 'deleted'),
       })
     }
 
@@ -350,7 +350,7 @@ export default class CodeMetrics {
       (): string => this._runnerInvoker.loc('metrics.codeMetrics.titleSizeS'),
       (): string => this._runnerInvoker.loc('metrics.codeMetrics.titleSizeM'),
       (): string => this._runnerInvoker.loc('metrics.codeMetrics.titleSizeL'),
-      (prefix: string): string => this._runnerInvoker.loc('metrics.codeMetrics.titleSizeXL', prefix)
+      (prefix: string): string => this._runnerInvoker.loc('metrics.codeMetrics.titleSizeXL', prefix),
     ]
 
     // Calculate the smaller size.

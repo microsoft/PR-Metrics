@@ -30,14 +30,14 @@ export default class AzurePipelinesRunnerInvoker implements GenericRunnerInvoker
   public exec (tool: string, args: string): Promise<ExecOutput> {
     const options: IExecOptions = {
       failOnStdErr: true,
-      silent: true
+      silent: true,
     }
 
     const result: IExecSyncResult = this._azurePipelinesRunnerWrapper.execSync(tool, args, options)
     return Promise.resolve({
       exitCode: result.code,
       stderr: result.stderr,
-      stdout: result.stdout
+      stdout: result.stdout,
     })
   }
 
@@ -54,7 +54,7 @@ export default class AzurePipelinesRunnerInvoker implements GenericRunnerInvoker
 
     return {
       parameters: result.parameters,
-      scheme: result.scheme
+      scheme: result.scheme,
     }
   }
 

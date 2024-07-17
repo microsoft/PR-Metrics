@@ -13,7 +13,7 @@ describe('validator.ts', (): void => {
       const testCases: (string | null | undefined)[] = [
         '',
         null,
-        undefined
+        undefined,
       ]
 
       testCases.forEach((value: string | null | undefined): void => {
@@ -40,7 +40,7 @@ describe('validator.ts', (): void => {
     {
       const testCases: (string | undefined)[] = [
         '',
-        undefined
+        undefined,
       ]
 
       testCases.forEach((value: string | undefined): void => {
@@ -85,7 +85,7 @@ describe('validator.ts', (): void => {
         0,
         NaN,
         null,
-        undefined
+        undefined,
       ]
 
       testCases.forEach((value: number | null | undefined): void => {

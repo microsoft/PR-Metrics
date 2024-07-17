@@ -147,7 +147,7 @@ describe('pullRequest.ts', (): void => {
       const testCases: string[] = [
         'TfsGit',
         'GitHub',
-        'GitHubEnterprise'
+        'GitHubEnterprise',
       ]
 
       testCases.forEach((provider: string): void => {
@@ -203,7 +203,7 @@ describe('pullRequest.ts', (): void => {
       const testCases: (string | undefined)[] = [
         undefined,
         '',
-        ' '
+        ' ',
       ]
 
       testCases.forEach((currentDescription: string | undefined): void => {
@@ -243,7 +243,7 @@ describe('pullRequest.ts', (): void => {
         'PREFIX⚠️ ◾ Title',
         'PS ◾ Title',
         'PS✔ ◾ Title',
-        'PS⚠️ ◾ Title'
+        'PS⚠️ ◾ Title',
       ]
 
       testCases.forEach((currentTitle: string): void => {
@@ -283,7 +283,7 @@ describe('pullRequest.ts', (): void => {
         '2XL ◾ Title',
         '20XL✔ ◾ Title',
         '20XL⚠️ ◾ Title',
-        '20XL ◾ Title'
+        '20XL ◾ Title',
       ]
 
       testCases.forEach((currentTitle: string): void => {

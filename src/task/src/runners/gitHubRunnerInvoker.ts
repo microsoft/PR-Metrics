@@ -42,14 +42,14 @@ export default class GitHubRunnerInvoker implements GenericRunnerInvoker {
   public async exec (tool: string, args: string): Promise<ExecOutput> {
     const options: actionsExec.ExecOptions = {
       failOnStdErr: true,
-      silent: true
+      silent: true,
     }
 
     const result: actionsExec.ExecOutput = await this._gitHubRunnerWrapper.exec(tool, args, options)
     return {
       exitCode: result.exitCode,
       stderr: result.stderr,
-      stdout: result.stdout
+      stdout: result.stdout,
     }
   }
 

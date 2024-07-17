@@ -41,7 +41,7 @@ describe('octokitGitDiffParser.ts', (): void => {
             '@@ -11,2 +11,3 @@ Line 1\n' +
             '+Line 2\n' +
             ' Line 3',
-          lineNumber: 11
+          lineNumber: 11,
         },
         {
           fileCount: 2,
@@ -59,7 +59,7 @@ describe('octokitGitDiffParser.ts', (): void => {
             '@@ -100,2 +100,3 @@ Line 1\n' +
             '+Line 2\n' +
             ' Line 3',
-          lineNumber: 100
+          lineNumber: 100,
         },
         {
           fileCount: 3,
@@ -84,8 +84,8 @@ describe('octokitGitDiffParser.ts', (): void => {
             '@@ -200,2 +200,3 @@ Line 1\n' +
             '+Line 2\n' +
             ' Line 3',
-          lineNumber: 100
-        }
+          lineNumber: 100,
+        },
       ]
 
       testCases.forEach(({ fileCount, diff, lineNumber }: TestCaseType): void => {

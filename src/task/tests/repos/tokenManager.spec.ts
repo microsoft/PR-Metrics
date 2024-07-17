@@ -34,7 +34,7 @@ describe('tokenManager.ts', (): void => {
     const webApi: WebApi = mock(WebApi)
     when(webApi.getTaskApi()).thenResolve(resolvableInstance(taskApi))
     when(taskApi.createOidcToken(deepEqual({}), 'TeamProjectId', 'HostType', 'PlanId', 'JobId', 'Id')).thenResolve({
-      oidcToken: 'OidcToken'
+      oidcToken: 'OidcToken',
     })
 
     azureDevOpsApiWrapper = mock(AzureDevOpsApiWrapper)
@@ -51,18 +51,18 @@ describe('tokenManager.ts', (): void => {
     when(runnerInvoker.getEndpointAuthorization('SYSTEMVSSCONNECTION')).thenReturn({
       scheme: 'OAuth',
       parameters: {
-        AccessToken: 'AccessToken'
-      }
+        AccessToken: 'AccessToken',
+      },
     })
     when(runnerInvoker.exec('az', 'login --service-principal -u ServicePrincipalId --tenant TenantId --allow-no-subscriptions --federated-token OidcToken')).thenResolve({
       exitCode: 0,
       stderr: '',
-      stdout: ''
+      stdout: '',
     })
     when(runnerInvoker.exec('az', 'account get-access-token --query accessToken --resource 499b84ac-1321-427f-aa17-267ca6975798 -o tsv')).thenResolve({
       exitCode: 0,
       stderr: '',
-      stdout: ' AccessToken '
+      stdout: ' AccessToken ',
     })
   })
 
@@ -98,12 +98,12 @@ describe('tokenManager.ts', (): void => {
       const testCases: TestCaseType[] = [
         {
           endpointAuthorization: 'Other',
-          logString: 'Other'
+          logString: 'Other',
         },
         {
           endpointAuthorization: undefined,
-          logString: 'null'
-        }
+          logString: 'null',
+        },
       ]
 
       testCases.forEach(({ endpointAuthorization, logString }: TestCaseType): void => {
@@ -158,8 +158,8 @@ describe('tokenManager.ts', (): void => {
         {
           scheme: 'Other',
           parameters: {
-            other: 'Other'
-          }
+            other: 'Other',
+          },
         }
       ]
 
@@ -189,8 +189,8 @@ describe('tokenManager.ts', (): void => {
     when(runnerInvoker.getEndpointAuthorization('SYSTEMVSSCONNECTION')).thenReturn({
       scheme: 'OAuth',
       parameters: {
-        other: 'Other'
-      }
+        other: 'Other',
+      },
     })
 
     // Act
@@ -313,7 +313,7 @@ describe('tokenManager.ts', (): void => {
     when(runnerInvoker.exec('az', 'login --service-principal -u ServicePrincipalId --tenant TenantId --allow-no-subscriptions --federated-token OidcToken')).thenResolve({
       exitCode: 1,
       stderr: 'Error Message',
-      stdout: ''
+      stdout: '',
     })
 
     // Act
@@ -335,7 +335,7 @@ describe('tokenManager.ts', (): void => {
     when(runnerInvoker.exec('az', 'account get-access-token --query accessToken --resource 499b84ac-1321-427f-aa17-267ca6975798 -o tsv')).thenResolve({
       exitCode: 1,
       stderr: 'Error Message',
-      stdout: ''
+      stdout: '',
     })
 
     // Act

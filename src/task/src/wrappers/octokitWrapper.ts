@@ -61,7 +61,7 @@ export default class OctokitWrapper {
     return this._octokit.rest.pulls.get({
       owner,
       pull_number: pullRequestId,
-      repo
+      repo,
     })
   }
 
@@ -84,7 +84,7 @@ export default class OctokitWrapper {
       owner,
       pull_number: pullRequestId,
       repo,
-      title
+      title,
     })
   }
 
@@ -103,7 +103,7 @@ export default class OctokitWrapper {
     return this._octokit.rest.issues.listComments({
       issue_number: pullRequestId,
       owner,
-      repo
+      repo,
     })
   }
 
@@ -122,7 +122,7 @@ export default class OctokitWrapper {
     return this._octokit.rest.pulls.listReviewComments({
       owner,
       pull_number: pullRequestId,
-      repo
+      repo,
     })
   }
 
@@ -143,7 +143,7 @@ export default class OctokitWrapper {
       body: content,
       issue_number: pullRequestId,
       owner,
-      repo
+      repo,
     })
   }
 
@@ -164,7 +164,7 @@ export default class OctokitWrapper {
       owner,
       page,
       pull_number: pullRequestId,
-      repo
+      repo,
     })
   }
 
@@ -195,7 +195,7 @@ export default class OctokitWrapper {
       owner,
       path: fileName,
       pull_number: pullRequestId,
-      repo
+      repo,
     })
   }
 
@@ -218,7 +218,7 @@ export default class OctokitWrapper {
       comment_id: commentThreadId,
       issue_number: pullRequestId,
       owner,
-      repo
+      repo,
     })
   }
 
@@ -237,7 +237,7 @@ export default class OctokitWrapper {
     return this._octokit.rest.pulls.deleteReviewComment({
       comment_id: commentThreadId,
       owner,
-      repo
+      repo,
     })
   }
 }

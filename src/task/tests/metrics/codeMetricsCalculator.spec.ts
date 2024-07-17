@@ -306,23 +306,23 @@ describe('codeMetricsCalculator.ts', (): void => {
         {
           deletedFiles: ['file1.ts'],
           file1Comments: 1,
-          file2Comments: 0
+          file2Comments: 0,
         },
         {
           deletedFiles: ['file1.ts', 'file2.ts'],
           file1Comments: 1,
-          file2Comments: 1
+          file2Comments: 1,
         },
         {
           deletedFiles: [],
           file1Comments: 0,
-          file2Comments: 0
+          file2Comments: 0,
         },
         {
           deletedFiles: ['file1.ts', 'file2.ts'],
           file1Comments: 1,
-          file2Comments: 1
-        }
+          file2Comments: 1,
+        },
       ]
 
       testCases.forEach(({ deletedFiles, file1Comments, file2Comments }: TestCaseType): void => {

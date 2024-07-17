@@ -30,7 +30,7 @@ describe('azurePipelinesRunnerInvoker.ts', (): void => {
         code: 1,
         error: Error('Error'),
         stderr: 'Error',
-        stdout: 'Output'
+        stdout: 'Output',
       }
       when(azurePipelinesRunnerWrapper.execSync('TOOL', 'Argument1 Argument2', any())).thenReturn(execResult)
 
@@ -43,7 +43,7 @@ describe('azurePipelinesRunnerInvoker.ts', (): void => {
       assert.equal(result.stdout, 'Output')
       const options: IExecOptions = {
         failOnStdErr: true,
-        silent: true
+        silent: true,
       }
       verify(azurePipelinesRunnerWrapper.execSync('TOOL', 'Argument1 Argument2', deepEqual(options))).once()
     })
@@ -70,9 +70,9 @@ describe('azurePipelinesRunnerInvoker.ts', (): void => {
       const azurePipelinesRunnerInvoker: AzurePipelinesRunnerInvoker = new AzurePipelinesRunnerInvoker(instance(azurePipelinesRunnerWrapper))
       const endpointAuthorization: taskLib.EndpointAuthorization = {
         parameters: {
-          key: 'value'
+          key: 'value',
         },
-        scheme: 'scheme'
+        scheme: 'scheme',
       }
       when(azurePipelinesRunnerWrapper.getEndpointAuthorization('id', true)).thenReturn(endpointAuthorization)
 

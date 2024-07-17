@@ -16,32 +16,32 @@ describe('converter.ts', (): void => {
     const testCases: TestCaseType[] = [
       {
         value: 0,
-        expected: '0'
+        expected: '0',
       },
       {
         value: NaN,
-        expected: 'NaN'
+        expected: 'NaN',
       },
       {
         value: true,
-        expected: 'true'
+        expected: 'true',
       },
       {
         value: '',
-        expected: ''
+        expected: '',
       },
       {
         value: 'string',
-        expected: 'string'
+        expected: 'string',
       },
       {
         value: null,
-        expected: 'null'
+        expected: 'null',
       },
       {
         value: undefined,
-        expected: 'undefined'
-      }
+        expected: 'undefined',
+      },
     ]
 
     testCases.forEach(({ value, expected }: TestCaseType): void => {

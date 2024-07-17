@@ -71,8 +71,7 @@ export default tseslint.config(
       '**/*.spec.ts',
     ],
     rules: {
-      '@typescript-eslint/no-confusing-void-expression': 'off',
-      'sort-keys': 'off'
+      '@typescript-eslint/no-confusing-void-expression': 'off'
     }
   }
 )

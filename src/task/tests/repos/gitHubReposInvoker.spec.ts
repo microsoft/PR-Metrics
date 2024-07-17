@@ -108,7 +108,7 @@ describe('gitHubReposInvoker.ts', (): void => {
     {
       const testCases: (string | undefined)[] = [
         undefined,
-        ''
+        '',
       ]
 
       testCases.forEach((variable: string | undefined): void => {
@@ -152,7 +152,7 @@ describe('gitHubReposInvoker.ts', (): void => {
     {
       const testCases: (string | undefined)[] = [
         undefined,
-        ''
+        '',
       ]
 
       testCases.forEach((variable: string | undefined): void => {
@@ -189,7 +189,7 @@ describe('gitHubReposInvoker.ts', (): void => {
     {
       const testCases: (string | undefined)[] = [
         undefined,
-        ''
+        '',
       ]
 
       testCases.forEach((variable: string | undefined): void => {
@@ -228,7 +228,7 @@ describe('gitHubReposInvoker.ts', (): void => {
     {
       const testCases: (string | undefined)[] = [
         undefined,
-        ''
+        '',
       ]
 
       testCases.forEach((variable: string | undefined): void => {
@@ -477,7 +477,7 @@ describe('gitHubReposInvoker.ts', (): void => {
       const testCases: number[] = [
         401,
         403,
-        404
+        404,
       ]
 
       testCases.forEach((status: number): void => {
@@ -844,7 +844,7 @@ describe('gitHubReposInvoker.ts', (): void => {
         headers: {},
         status: 200,
         url: '',
-        data: []
+        data: [],
       })
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 
@@ -874,11 +874,11 @@ describe('gitHubReposInvoker.ts', (): void => {
       })
       when(octokitWrapper.listCommits(anyString(), anyString(), anyNumber(), 1)).thenResolve({
         headers: {
-          link: '<https://api.github.com/repositories/309438703/pulls/172/commits?page=2>; rel="next", <https://api.github.com/repositories/309438703/pulls/172/commits?page=24>; rel="last"'
+          link: '<https://api.github.com/repositories/309438703/pulls/172/commits?page=2>; rel="next", <https://api.github.com/repositories/309438703/pulls/172/commits?page=24>; rel="last"',
         },
         status: 200,
         url: '',
-        data: []
+        data: [],
       })
       when(octokitWrapper.listCommits(anyString(), anyString(), anyNumber(), 24)).thenResolve(GitHubReposInvokerConstants.listCommitsResponse)
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
@@ -910,11 +910,11 @@ describe('gitHubReposInvoker.ts', (): void => {
       })
       when(octokitWrapper.listCommits(anyString(), anyString(), anyNumber(), 1)).thenResolve({
         headers: {
-          link: 'non-matching'
+          link: 'non-matching',
         },
         status: 200,
         url: '',
-        data: []
+        data: [],
       })
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 
@@ -1028,12 +1028,12 @@ describe('gitHubReposInvoker.ts', (): void => {
       const testCases: TestCaseType[] = [
         {
           message: 'Validation Failed: {"resource":"PullRequestReviewComment","code":"custom","field":"pull_request_review_thread.path","message":"pull_request_review_thread.path diff too large"}, {"resource":"PullRequestReviewComment","code":"missing_field","field":"pull_request_review_thread.diff_hunk"}',
-          status: 400
+          status: 400,
         },
         {
           message: 'Unprocessable Entity',
-          status: 422
-        }
+          status: 422,
+        },
       ]
 
       testCases.forEach(({ message, status }: TestCaseType): void => {

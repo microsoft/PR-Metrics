@@ -36,7 +36,7 @@ describe('gitHubRunnerInvoker.ts', (): void => {
       const execResult: actionsExec.ExecOutput = {
         exitCode: 1,
         stderr: 'Error',
-        stdout: 'Output'
+        stdout: 'Output',
       }
       when(gitHubRunnerWrapper.exec('TOOL', 'Argument1 Argument2', any())).thenResolve(execResult)
 
@@ -49,7 +49,7 @@ describe('gitHubRunnerInvoker.ts', (): void => {
       assert.equal(result.stdout, 'Output')
       const options: actionsExec.ExecOptions = {
         failOnStdErr: true,
-        silent: true
+        silent: true,
       }
       verify(gitHubRunnerWrapper.exec('TOOL', 'Argument1 Argument2', deepEqual(options))).once()
     })
