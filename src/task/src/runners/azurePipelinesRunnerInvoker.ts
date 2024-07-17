@@ -53,8 +53,8 @@ export default class AzurePipelinesRunnerInvoker implements GenericRunnerInvoker
     }
 
     return {
-      scheme: result.scheme,
-      parameters: result.parameters
+      parameters: result.parameters,
+      scheme: result.scheme
     }
   }
 

@@ -79,8 +79,8 @@ export default class AzureReposInvoker extends BaseReposInvoker {
 
     const title: string = Validator.validateString(result.title, 'title', 'AzureReposInvoker.getTitleAndDescription()')
     return {
-      title,
-      description: result.description
+      description: result.description,
+      title
     }
   }
 

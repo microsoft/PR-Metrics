@@ -16,21 +16,21 @@ export const createRequestError = (status: number, content: string): RequestErro
 
   return new RequestError(content, status, {
     request: {
-      method: 'GET',
-      url,
       headers: {
         authorization: 'SampleToken'
-      }
+      },
+      method: 'GET',
+      url
     },
     response: {
-      status,
-      url,
+      data: {
+        content
+      },
       headers: {
         'Content-Type': 'text/html; charset=utf-8'
       },
-      data: {
-        content
-      }
+      status,
+      url
     }
   })
 }

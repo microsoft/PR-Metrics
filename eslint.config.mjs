@@ -62,8 +62,8 @@ export default tseslint.config(
       'no-ternary': 'off',
       'no-undefined': 'off',
       'no-underscore-dangle': 'off',
-      'one-var': 'off',
-      'sort-keys': 'off'
+      'one-var': 'off'
+      //'sort-keys': 'off'
     }
   },
   {
@@ -71,7 +71,8 @@ export default tseslint.config(
       '**/*.spec.ts',
     ],
     rules: {
-      '@typescript-eslint/no-confusing-void-expression': 'off'
+      '@typescript-eslint/no-confusing-void-expression': 'off',
+      'sort-keys': 'off'
     }
   }
 )

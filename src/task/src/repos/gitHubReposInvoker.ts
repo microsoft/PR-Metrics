@@ -84,8 +84,8 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     })
 
     return {
-      title: result.data.title,
-      description: result.data.body ?? undefined
+      description: result.data.body ?? undefined,
+      title: result.data.title
     }
   }
 
@@ -191,13 +191,13 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
 
     const options: OctokitOptions = {
       auth: process.env.PR_METRICS_ACCESS_TOKEN,
-      userAgent: 'PRMetrics/v1.6.0',
       log: {
         debug: (message: string): void => { this._logger.logDebug(`Octokit – ${message}`) },
+        error: (message: string): void => { this._logger.logError(`Octokit – ${message}`) },
         info: (message: string): void => { this._logger.logInfo(`Octokit – ${message}`) },
-        warn: (message: string): void => { this._logger.logWarning(`Octokit – ${message}`) },
-        error: (message: string): void => { this._logger.logError(`Octokit – ${message}`) }
-      }
+        warn: (message: string): void => { this._logger.logWarning(`Octokit – ${message}`) }
+      },
+      userAgent: 'PRMetrics/v1.6.0'
     }
 
     if (RunnerInvoker.isGitHub) {

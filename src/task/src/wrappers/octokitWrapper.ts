@@ -60,8 +60,8 @@ export default class OctokitWrapper {
 
     return this._octokit.rest.pulls.get({
       owner,
-      repo,
-      pull_number: pullRequestId
+      pull_number: pullRequestId,
+      repo
     })
   }
 
@@ -80,11 +80,11 @@ export default class OctokitWrapper {
     }
 
     return this._octokit.rest.pulls.update({
+      body: description,
       owner,
-      repo,
       pull_number: pullRequestId,
-      title,
-      body: description
+      repo,
+      title
     })
   }
 
@@ -101,9 +101,9 @@ export default class OctokitWrapper {
     }
 
     return this._octokit.rest.issues.listComments({
+      issue_number: pullRequestId,
       owner,
-      repo,
-      issue_number: pullRequestId
+      repo
     })
   }
 
@@ -121,8 +121,8 @@ export default class OctokitWrapper {
 
     return this._octokit.rest.pulls.listReviewComments({
       owner,
-      repo,
-      pull_number: pullRequestId
+      pull_number: pullRequestId,
+      repo
     })
   }
 
@@ -140,10 +140,10 @@ export default class OctokitWrapper {
     }
 
     return this._octokit.rest.issues.createComment({
-      owner,
-      repo,
+      body: content,
       issue_number: pullRequestId,
-      body: content
+      owner,
+      repo
     })
   }
 
@@ -162,9 +162,9 @@ export default class OctokitWrapper {
 
     return this._octokit.rest.pulls.listCommits({
       owner,
-      repo,
+      page,
       pull_number: pullRequestId,
-      page
+      repo
     })
   }
 
@@ -189,13 +189,13 @@ export default class OctokitWrapper {
     }
 
     return this._octokit.rest.pulls.createReviewComment({
-      owner,
-      repo,
-      pull_number: pullRequestId,
       body: content,
-      path: fileName,
+      commit_id: commitId,
       line: lineNumber,
-      commit_id: commitId
+      owner,
+      path: fileName,
+      pull_number: pullRequestId,
+      repo
     })
   }
 
@@ -214,11 +214,11 @@ export default class OctokitWrapper {
     }
 
     return this._octokit.rest.issues.updateComment({
-      owner,
-      repo,
-      issue_number: pullRequestId,
+      body: content,
       comment_id: commentThreadId,
-      body: content
+      issue_number: pullRequestId,
+      owner,
+      repo
     })
   }
 
@@ -235,9 +235,9 @@ export default class OctokitWrapper {
     }
 
     return this._octokit.rest.pulls.deleteReviewComment({
+      comment_id: commentThreadId,
       owner,
-      repo,
-      comment_id: commentThreadId
+      repo
     })
   }
 }
