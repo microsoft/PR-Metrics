@@ -59,7 +59,6 @@ export default tseslint.config(
       'no-await-in-loop': 'off',
       'no-continue': 'off',
       'no-implicit-coercion': 'off',
-      'no-implicit-globals': 'off',
       'no-magic-numbers': 'off',
       'no-negated-condition': 'off',
       'no-ternary': 'off',
