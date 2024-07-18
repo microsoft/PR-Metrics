@@ -49,10 +49,10 @@ describe('tokenManager.ts', (): void => {
     when(runnerInvoker.getEndpointAuthorizationParameter('Id', 'serviceprincipalid')).thenReturn('ServicePrincipalId')
     when(runnerInvoker.getEndpointAuthorizationParameter('Id', 'tenantid')).thenReturn('TenantId')
     when(runnerInvoker.getEndpointAuthorization('SYSTEMVSSCONNECTION')).thenReturn({
-      scheme: 'OAuth',
       parameters: {
         AccessToken: 'AccessToken',
       },
+      scheme: 'OAuth',
     })
     when(runnerInvoker.exec('az', 'login --service-principal -u ServicePrincipalId --tenant TenantId --allow-no-subscriptions --federated-token OidcToken')).thenResolve({
       exitCode: 0,
@@ -156,10 +156,10 @@ describe('tokenManager.ts', (): void => {
       const testCases: (EndpointAuthorization | undefined)[] = [
         undefined,
         {
-          scheme: 'Other',
           parameters: {
             other: 'Other',
           },
+          scheme: 'Other',
         }
       ]
 
@@ -187,10 +187,10 @@ describe('tokenManager.ts', (): void => {
     // Arrange
     const tokenManager: TokenManager = new TokenManager(instance(azureDevOpsApiWrapper), instance(logger), instance(runnerInvoker))
     when(runnerInvoker.getEndpointAuthorization('SYSTEMVSSCONNECTION')).thenReturn({
-      scheme: 'OAuth',
       parameters: {
         other: 'Other',
       },
+      scheme: 'OAuth',
     })
 
     // Act

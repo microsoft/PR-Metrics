@@ -841,10 +841,10 @@ describe('gitHubReposInvoker.ts', (): void => {
         assert.notEqual(options.log?.error, null)
       })
       when(octokitWrapper.listCommits(anyString(), anyString(), anyNumber(), anyNumber())).thenResolve({
+        data: [],
         headers: {},
         status: 200,
         url: '',
-        data: [],
       })
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 
@@ -873,12 +873,12 @@ describe('gitHubReposInvoker.ts', (): void => {
         assert.notEqual(options.log?.error, null)
       })
       when(octokitWrapper.listCommits(anyString(), anyString(), anyNumber(), 1)).thenResolve({
+        data: [],
         headers: {
           link: '<https://api.github.com/repositories/309438703/pulls/172/commits?page=2>; rel="next", <https://api.github.com/repositories/309438703/pulls/172/commits?page=24>; rel="last"',
         },
         status: 200,
         url: '',
-        data: [],
       })
       when(octokitWrapper.listCommits(anyString(), anyString(), anyNumber(), 24)).thenResolve(GitHubReposInvokerConstants.listCommitsResponse)
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
@@ -909,12 +909,12 @@ describe('gitHubReposInvoker.ts', (): void => {
         assert.notEqual(options.log?.error, null)
       })
       when(octokitWrapper.listCommits(anyString(), anyString(), anyNumber(), 1)).thenResolve({
+        data: [],
         headers: {
           link: 'non-matching',
         },
         status: 200,
         url: '',
-        data: [],
       })
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 

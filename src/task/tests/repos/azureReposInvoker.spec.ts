@@ -255,8 +255,8 @@ describe('azureReposInvoker.ts', (): void => {
     it('should return the title and description when available', async (): Promise<void> => {
       // Arrange
       when(gitApi.getPullRequestById(10, 'Project')).thenResolve({
-        title: 'Title',
         description: 'Description',
+        title: 'Title',
       })
       const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker), instance(tokenManager))
 
@@ -277,8 +277,8 @@ describe('azureReposInvoker.ts', (): void => {
     it('should return the title and description when available and called multiple times', async (): Promise<void> => {
       // Arrange
       when(gitApi.getPullRequestById(10, 'Project')).thenResolve({
-        title: 'Title',
         description: 'Description',
+        title: 'Title',
       })
       const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker), instance(tokenManager))
 
@@ -370,7 +370,17 @@ describe('azureReposInvoker.ts', (): void => {
 
     it('should return the result when called with a pull request comment', async (): Promise<void> => {
       // Arrange
-      when(gitApi.getThreads('RepoID', 10, 'Project')).thenResolve([{ id: 1, status: 1, comments: [{ content: 'Content' }] }])
+      when(gitApi.getThreads('RepoID', 10, 'Project')).thenResolve([
+        {
+          comments: [
+            {
+              content: 'Content',
+            },
+          ],
+          id: 1,
+          status: 1,
+        },
+      ])
       const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker), instance(tokenManager))
 
       // Act
@@ -392,7 +402,20 @@ describe('azureReposInvoker.ts', (): void => {
 
     it('should return the result when called with a file comment', async (): Promise<void> => {
       // Arrange
-      when(gitApi.getThreads('RepoID', 10, 'Project')).thenResolve([{ id: 1, status: 1, comments: [{ content: 'Content' }], threadContext: { filePath: '/file.ts' } }])
+      when(gitApi.getThreads('RepoID', 10, 'Project')).thenResolve([
+        {
+          comments: [
+            {
+              content: 'Content',
+            },
+          ],
+          id: 1,
+          status: 1,
+          threadContext: {
+            filePath: '/file.ts',
+          },
+        },
+      ])
       const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker), instance(tokenManager))
 
       // Act
@@ -416,8 +439,27 @@ describe('azureReposInvoker.ts', (): void => {
     it('should return the result when called with both a pull request and file comment', async (): Promise<void> => {
       // Arrange
       const getThreadsResult: GitPullRequestCommentThread[] = [
-        { id: 1, status: 1, comments: [{ content: 'PR Content', },] },
-        { id: 2, status: 1, comments: [{ content: 'File Content', },], threadContext: { filePath: '/file.ts', }, },
+        {
+          comments: [
+            {
+              content: 'PR Content',
+            },
+          ],
+          id: 1,
+          status: 1,
+        },
+        {
+          comments: [
+            {
+              content: 'File Content',
+            },
+          ],
+          id: 2,
+          status: 1,
+          threadContext: {
+            filePath: '/file.ts',
+          },
+        },
       ]
       when(gitApi.getThreads('RepoID', 10, 'Project')).thenResolve(getThreadsResult)
       const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker), instance(tokenManager))
@@ -445,7 +487,17 @@ describe('azureReposInvoker.ts', (): void => {
 
     it('should return the result when called multiple times', async (): Promise<void> => {
       // Arrange
-      when(gitApi.getThreads('RepoID', 10, 'Project')).thenResolve([{ id: 1, status: 1, comments: [{ content: 'Content' }] }])
+      when(gitApi.getThreads('RepoID', 10, 'Project')).thenResolve([
+        {
+          comments: [
+            {
+              content: 'Content',
+            },
+          ],
+          id: 1,
+          status: 1,
+        },
+      ])
       const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker), instance(tokenManager))
 
       // Act
@@ -468,7 +520,16 @@ describe('azureReposInvoker.ts', (): void => {
 
     it('should throw when provided with a payload with no ID', async (): Promise<void> => {
       // Arrange
-      when(gitApi.getThreads('RepoID', 10, 'Project')).thenResolve([{ status: 1, comments: [{ content: 'Content' }] }])
+      when(gitApi.getThreads('RepoID', 10, 'Project')).thenResolve([
+        {
+          comments: [
+            {
+              content: 'Content',
+            },
+          ],
+          status: 1,
+        },
+      ])
       const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker), instance(tokenManager))
 
       // Act
@@ -487,8 +548,25 @@ describe('azureReposInvoker.ts', (): void => {
     it('should continue if the payload has no status', async (): Promise<void> => {
       // Arrange
       const getThreadsResult: GitPullRequestCommentThread[] = [
-        { id: 1, comments: [{ content: 'PR Content', },] },
-        { id: 2, comments: [{ content: 'File Content', },], threadContext: { filePath: '/file.ts', }, },
+        {
+          comments: [
+            {
+              content: 'PR Content',
+            },
+          ],
+          id: 1,
+        },
+        {
+          comments: [
+            {
+              content: 'File Content',
+            },
+          ],
+          id: 2,
+          threadContext: {
+            filePath: '/file.ts',
+          },
+        },
       ]
       when(gitApi.getThreads('RepoID', 10, 'Project')).thenResolve(getThreadsResult)
       const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker), instance(tokenManager))
@@ -516,13 +594,67 @@ describe('azureReposInvoker.ts', (): void => {
 
     {
       const testCases: GitPullRequestCommentThread[] = [
-        { id: 1, status: 1 },
-        { id: 1, status: 1, comments: [], },
-        { id: 1, status: 1, comments: [{},], },
-        { id: 1, status: 1, comments: [{ content: '', },], },
-        { id: 1, status: 1, comments: [{ content: 'Content', },], threadContext: {}, },
-        { id: 1, status: 1, comments: [{ content: 'Content', },], threadContext: { filePath: '', }, },
-        { id: 1, status: 1, comments: [{ content: 'Content', },], threadContext: { filePath: '/', }, },
+        {
+          id: 1,
+          status: 1,
+        },
+        {
+          comments: [],
+          id: 1,
+          status: 1,
+        },
+        {
+          comments: [
+            {
+
+            },
+          ],
+          id: 1,
+          status: 1,
+        },
+        {
+          comments: [
+            {
+              content: '',
+            },
+          ],
+          id: 1,
+          status: 1,
+        },
+        {
+          comments: [
+            {
+              content: 'Content',
+            },
+          ],
+          id: 1,
+          status: 1,
+          threadContext: {},
+        },
+        {
+          comments: [
+            {
+              content: 'Content',
+            },
+          ],
+          id: 1,
+          status: 1,
+          threadContext: {
+            filePath: '',
+          },
+        },
+        {
+          comments: [
+            {
+              content: 'Content',
+            },
+          ],
+          id: 1,
+          status: 1,
+          threadContext: {
+            filePath: '/',
+          },
+        },
       ]
 
       testCases.forEach((commentThread: GitPullRequestCommentThread): void => {
@@ -530,8 +662,27 @@ describe('azureReposInvoker.ts', (): void => {
           // Arrange
           const getThreadsResult: GitPullRequestCommentThread[] = [
             commentThread,
-            { id: 2, status: 1, comments: [{ content: 'PR Content', },], },
-            { id: 3, status: 1, comments: [{ content: 'File Content', },], threadContext: { filePath: '/file.ts', }, },
+            {
+              comments: [
+                {
+                  content: 'PR Content',
+                },
+              ],
+              id: 2,
+              status: 1,
+            },
+            {
+              comments: [
+                {
+                  content: 'File Content',
+                },
+              ],
+              id: 3,
+              status: 1,
+              threadContext: {
+                filePath: '/file.ts',
+              },
+            },
           ]
           when(gitApi.getThreads('RepoID', 10, 'Project')).thenResolve(getThreadsResult)
           const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker), instance(tokenManager))
@@ -649,8 +800,8 @@ describe('azureReposInvoker.ts', (): void => {
     it('should call the API when both the title and description are valid', async (): Promise<void> => {
       // Arrange
       const expectedDetails: GitPullRequest = {
-        title: 'Title',
         description: 'Description',
+        title: 'Title',
       }
       when(gitApi.updatePullRequest(deepEqual(expectedDetails), 'RepoID', 10, 'Project')).thenResolve({})
       const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker), instance(tokenManager))
@@ -670,8 +821,8 @@ describe('azureReposInvoker.ts', (): void => {
     it('should call the API when both the title and description are valid and called multiple times', async (): Promise<void> => {
       // Arrange
       const expectedDetails: GitPullRequest = {
-        title: 'Title',
         description: 'Description',
+        title: 'Title',
       }
       when(gitApi.updatePullRequest(deepEqual(expectedDetails), 'RepoID', 10, 'Project')).thenResolve({})
       const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker), instance(tokenManager))
@@ -779,13 +930,13 @@ describe('azureReposInvoker.ts', (): void => {
         status: CommentThreadStatus.Active,
         threadContext: {
           filePath: '/file.ts',
-          rightFileStart: {
-            line: 1,
-            offset: 1,
-          },
           rightFileEnd: {
             line: 1,
             offset: 2,
+          },
+          rightFileStart: {
+            line: 1,
+            offset: 1,
           },
         },
       }
@@ -811,13 +962,13 @@ describe('azureReposInvoker.ts', (): void => {
         status: CommentThreadStatus.Active,
         threadContext: {
           filePath: '/file.ts',
-          leftFileStart: {
-            line: 1,
-            offset: 1,
-          },
           leftFileEnd: {
             line: 1,
             offset: 2,
+          },
+          leftFileStart: {
+            line: 1,
+            offset: 1,
           },
         },
       }

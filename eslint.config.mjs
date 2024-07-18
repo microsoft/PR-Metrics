@@ -12,8 +12,8 @@ export default tseslint.config(
   {
     ignores: [
       'debug/**/*',
-      'release/**/*'
-    ]
+      'release/**/*',
+    ],
   },
   eslint.configs.all,
   ...tseslint.configs.all,
@@ -23,13 +23,13 @@ export default tseslint.config(
     languageOptions: {
       globals: {
         ...globals.es2017,
-        ...globals.node
+        ...globals.node,
       },
       parser: typescriptParser,
       parserOptions: {
         ecmaVersion: 2017,
-        project: './src/task/tsconfig.json'
-      }
+        project: './src/task/tsconfig.json',
+      },
     },
     rules: {
       'no-console': 'error',
@@ -62,8 +62,7 @@ export default tseslint.config(
       'no-ternary': 'off',
       'no-undefined': 'off',
       'no-underscore-dangle': 'off',
-      'one-var': 'off'
-      //'sort-keys': 'off'
+      'one-var': 'off',
     }
   },
   {
@@ -71,7 +70,7 @@ export default tseslint.config(
       '**/*.spec.ts',
     ],
     rules: {
-      '@typescript-eslint/no-confusing-void-expression': 'off'
-    }
-  }
+      '@typescript-eslint/no-confusing-void-expression': 'off',
+    },
+  },
 )

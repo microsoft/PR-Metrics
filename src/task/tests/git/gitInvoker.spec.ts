@@ -29,15 +29,15 @@ describe('gitInvoker.ts', (): void => {
         const testCommitId = '7235cb16e5e6ac83e3cbecae66bab557e9e2cee6'
         return Promise.resolve({
           exitCode: 0,
-          stdout: testCommitId,
           stderr: '',
+          stdout: testCommitId,
         })
       })
     when(runnerInvoker.exec('git', 'diff --numstat --ignore-all-space origin/develop...pull/12345/merge')).thenCall(
       async (): Promise<ExecOutput> => Promise.resolve({
         exitCode: 0,
-        stdout: '1\t2\tFile.txt',
         stderr: '',
+        stdout: '1\t2\tFile.txt',
       }))
   })
 
@@ -61,8 +61,8 @@ describe('gitInvoker.ts', (): void => {
           when(runnerInvoker.exec('git', 'rev-parse --is-inside-work-tree')).thenCall(
             async (): Promise<ExecOutput> => Promise.resolve({
               exitCode: 0,
-              stdout: response,
               stderr: '',
+              stdout: response,
             }))
           const gitInvoker: GitInvoker = new GitInvoker(instance(logger), instance(runnerInvoker))
 
@@ -82,8 +82,8 @@ describe('gitInvoker.ts', (): void => {
       when(runnerInvoker.exec('git', 'rev-parse --is-inside-work-tree')).thenCall(
         async (): Promise<ExecOutput> => Promise.resolve({
           exitCode: 1,
-          stdout: '',
           stderr: 'Failure',
+          stdout: '',
         }))
       const gitInvoker: GitInvoker = new GitInvoker(instance(logger), instance(runnerInvoker))
 
@@ -379,8 +379,8 @@ describe('gitInvoker.ts', (): void => {
       when(runnerInvoker.exec('git', 'rev-parse --branch origin/develop...pull/12345/merge')).thenCall(
         async (): Promise<ExecOutput> => Promise.resolve({
           exitCode: 1,
-          stdout: '',
           stderr: 'fatal: ambiguous argument \'origin/develop...pull/12345/merge\': unknown revision or path not in the working tree.\n',
+          stdout: '',
         }))
       const gitInvoker: GitInvoker = new GitInvoker(instance(logger), instance(runnerInvoker))
 
@@ -690,8 +690,8 @@ describe('gitInvoker.ts', (): void => {
       when(runnerInvoker.exec('git', 'diff --numstat --ignore-all-space origin/develop...pull/12345/merge')).thenCall(
         async (): Promise<ExecOutput> => Promise.resolve({
           exitCode: 1,
-          stdout: '',
           stderr: 'Failure',
+          stdout: '',
         }))
       const gitInvoker: GitInvoker = new GitInvoker(instance(logger), instance(runnerInvoker))
 

@@ -145,16 +145,16 @@ describe('pullRequestComments.ts', (): void => {
 
       const testCases: TestCaseType[] = [
         {
-          filesNotRequiringReview: ['folder/file1.ts', 'file3.ts'],
           fileComments: [new FileCommentData(20, '❗ **This file doesn\'t require review.**', 'file2.ts')],
-        },
-        {
           filesNotRequiringReview: ['folder/file1.ts', 'file3.ts'],
-          fileComments: [new FileCommentData(20, 'Content', 'folder/file1.ts'), new FileCommentData(20, '❗ **This file doesn\'t require review.**', 'file2.ts')],
         },
         {
-          filesNotRequiringReview: ['file3.ts'],
+          fileComments: [new FileCommentData(20, 'Content', 'folder/file1.ts'), new FileCommentData(20, '❗ **This file doesn\'t require review.**', 'file2.ts')],
+          filesNotRequiringReview: ['folder/file1.ts', 'file3.ts'],
+        },
+        {
           fileComments: [new FileCommentData(20, '❗ **This file doesn\'t require review.**', 'folder/file1.ts'), new FileCommentData(20, '❗ **This file doesn\'t require review.**', 'file2.ts')],
+          filesNotRequiringReview: ['file3.ts'],
         },
       ]
 

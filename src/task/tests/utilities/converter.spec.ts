@@ -9,48 +9,48 @@ import assert from 'node:assert/strict'
 describe('converter.ts', (): void => {
   describe('toString()', (): void => {
     interface TestCaseType {
-      value: number | boolean | string | null | undefined
-      expected: string
+      input: number | boolean | string | null | undefined
+      outputExpected: string
     }
 
     const testCases: TestCaseType[] = [
       {
-        value: 0,
-        expected: '0',
+        input: 0,
+        outputExpected: '0',
       },
       {
-        value: NaN,
-        expected: 'NaN',
+        input: NaN,
+        outputExpected: 'NaN',
       },
       {
-        value: true,
-        expected: 'true',
+        input: true,
+        outputExpected: 'true',
       },
       {
-        value: '',
-        expected: '',
+        input: '',
+        outputExpected: '',
       },
       {
-        value: 'string',
-        expected: 'string',
+        input: 'string',
+        outputExpected: 'string',
       },
       {
-        value: null,
-        expected: 'null',
+        input: null,
+        outputExpected: 'null',
       },
       {
-        value: undefined,
-        expected: 'undefined',
+        input: undefined,
+        outputExpected: 'undefined',
       },
     ]
 
-    testCases.forEach(({ value, expected }: TestCaseType): void => {
-      it(`should return '${expected}' when passed '${Converter.toString(value)}'`, (): void => {
+    testCases.forEach(({ input, outputExpected }: TestCaseType): void => {
+      it(`should return '${outputExpected}' when passed '${Converter.toString(input)}'`, (): void => {
         // Act
-        const result: string = Converter.toString(value)
+        const result: string = Converter.toString(input)
 
         // Assert
-        assert.equal(result, expected)
+        assert.equal(result, outputExpected)
       })
     })
   })
