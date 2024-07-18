@@ -37,8 +37,8 @@ export default tseslint.config(
       '@typescript-eslint/no-unused-vars': [
         'error',
         {
-          'argsIgnorePattern': '^_[^_]+'
-        }
+          'argsIgnorePattern': '^_[^_]+',
+        },
       ],
 
       // Full set
@@ -63,7 +63,7 @@ export default tseslint.config(
       'no-undefined': 'off',
       'no-underscore-dangle': 'off',
       'one-var': 'off',
-    }
+    },
   },
   {
     files: [
