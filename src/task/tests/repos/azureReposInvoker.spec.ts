@@ -397,7 +397,7 @@ describe('azureReposInvoker.ts', (): void => {
       verify(gitApi.getThreads('RepoID', 10, 'Project')).once()
       verify(logger.logDebug('* AzureReposInvoker.getComments()')).once()
       verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
-      verify(logger.logDebug('[{"comments":[{"content":"Content"}]},"id":1,"status":1]')).once()
+      verify(logger.logDebug('[{"comments":[{"content":"Content"}],"id":1,"status":1}]')).once()
     })
 
     it('should return the result when called with a file comment', async (): Promise<void> => {
