@@ -271,7 +271,7 @@ describe('azureReposInvoker.ts', (): void => {
       verify(gitApi.getPullRequestById(10, 'Project')).once()
       verify(logger.logDebug('* AzureReposInvoker.getTitleAndDescription()')).once()
       verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
-      verify(logger.logDebug('{"title":"Title","description":"Description"}')).once()
+      verify(logger.logDebug('{"description":"Description","title":"Title"}')).once()
     })
 
     it('should return the title and description when available and called multiple times', async (): Promise<void> => {
@@ -294,7 +294,7 @@ describe('azureReposInvoker.ts', (): void => {
       verify(gitApi.getPullRequestById(10, 'Project')).twice()
       verify(logger.logDebug('* AzureReposInvoker.getTitleAndDescription()')).twice()
       verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).twice()
-      verify(logger.logDebug('{"title":"Title","description":"Description"}')).twice()
+      verify(logger.logDebug('{"description":"Description","title":"Title"}')).twice()
     })
 
     it('should return the title when the description is unavailable', async (): Promise<void> => {
@@ -397,7 +397,7 @@ describe('azureReposInvoker.ts', (): void => {
       verify(gitApi.getThreads('RepoID', 10, 'Project')).once()
       verify(logger.logDebug('* AzureReposInvoker.getComments()')).once()
       verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
-      verify(logger.logDebug('[{"id":1,"status":1,"comments":[{"content":"Content"}]}]')).once()
+      verify(logger.logDebug('[{"comments":[{"content":"Content"}]},"id":1,"status":1]')).once()
     })
 
     it('should return the result when called with a file comment', async (): Promise<void> => {
@@ -433,7 +433,7 @@ describe('azureReposInvoker.ts', (): void => {
       verify(gitApi.getThreads('RepoID', 10, 'Project')).once()
       verify(logger.logDebug('* AzureReposInvoker.getComments()')).once()
       verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
-      verify(logger.logDebug('[{"id":1,"status":1,"comments":[{"content":"Content"}],"threadContext":{"filePath":"/file.ts"}}]')).once()
+      verify(logger.logDebug('[{"comments":[{"content":"Content"}],"id":1,"status":1,"threadContext":{"filePath":"/file.ts"}}]')).once()
     })
 
     it('should return the result when called with both a pull request and file comment', async (): Promise<void> => {
@@ -482,7 +482,7 @@ describe('azureReposInvoker.ts', (): void => {
       verify(gitApi.getThreads('RepoID', 10, 'Project')).once()
       verify(logger.logDebug('* AzureReposInvoker.getComments()')).once()
       verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
-      verify(logger.logDebug('[{"id":1,"status":1,"comments":[{"content":"PR Content"}]},{"id":2,"status":1,"comments":[{"content":"File Content"}],"threadContext":{"filePath":"/file.ts"}}]')).once()
+      verify(logger.logDebug('[{"comments":[{"content":"PR Content"}],"id":1,"status":1},{"comments":[{"content":"File Content"}],"id":2,"status":1,"threadContext":{"filePath":"/file.ts"}}]')).once()
     })
 
     it('should return the result when called multiple times', async (): Promise<void> => {
@@ -515,7 +515,7 @@ describe('azureReposInvoker.ts', (): void => {
       verify(gitApi.getThreads('RepoID', 10, 'Project')).twice()
       verify(logger.logDebug('* AzureReposInvoker.getComments()')).twice()
       verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).twice()
-      verify(logger.logDebug('[{"id":1,"status":1,"comments":[{"content":"Content"}]}]')).twice()
+      verify(logger.logDebug('[{"comments":[{"content":"Content"}],"id":1,"status":1}]')).twice()
     })
 
     it('should throw when provided with a payload with no ID', async (): Promise<void> => {
@@ -542,7 +542,7 @@ describe('azureReposInvoker.ts', (): void => {
       verify(gitApi.getThreads('RepoID', 10, 'Project')).once()
       verify(logger.logDebug('* AzureReposInvoker.getComments()')).once()
       verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
-      verify(logger.logDebug('[{"status":1,"comments":[{"content":"Content"}]}]')).once()
+      verify(logger.logDebug('[{"comments":[{"content":"Content"}],"status":1}]')).once()
     })
 
     it('should continue if the payload has no status', async (): Promise<void> => {

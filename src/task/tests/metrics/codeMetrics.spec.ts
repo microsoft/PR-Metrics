@@ -1372,32 +1372,32 @@ describe('codeMetrics.ts', (): void => {
 
       const testCases: TestCaseType[] = [
         {
+          elements: 1,
           summary: '0',
-          elements: 1,
         },
         {
+          elements: 1,
           summary: '0\t',
-          elements: 1,
         },
         {
+          elements: 2,
           summary: '0\t0',
-          elements: 2,
         },
         {
+          elements: 2,
           summary: '0\t0\t',
-          elements: 2,
         },
         {
+          elements: 2,
           summary: '0\tfile.ts',
-          elements: 2,
         },
         {
-          summary: '0\tfile.ts\t',
           elements: 2,
+          summary: '0\tfile.ts\t',
         },
       ]
 
-      testCases.forEach(({ summary, elements }: TestCaseType): void => {
+      testCases.forEach(({ elements, summary }: TestCaseType): void => {
         it(`should throw when the file name in the Git diff summary '${summary}' cannot be parsed`, async (): Promise<void> => {
           // Arrange
           when(gitInvoker.getDiffSummary()).thenResolve(summary)
