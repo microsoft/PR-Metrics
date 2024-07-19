@@ -52,7 +52,6 @@ export default tseslint.config(
       '@typescript-eslint/prefer-readonly-parameter-types': 'off',
       '@typescript-eslint/promise-function-async': 'off',
       '@typescript-eslint/strict-boolean-expressions': 'off',
-      'camelcase': 'off',
       'max-lines-per-function': 'off',
       'max-lines': 'off',
       'max-statements': 'off',
