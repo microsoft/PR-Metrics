@@ -90,13 +90,13 @@ export default class PullRequest {
     }
 
     const sizeRegExp: string =
-      `(${this._runnerInvoker.loc('metrics.codeMetrics.titleSizeXS')}` +
+      `(?:${this._runnerInvoker.loc('metrics.codeMetrics.titleSizeXS')}` +
       `|${this._runnerInvoker.loc('metrics.codeMetrics.titleSizeS')}` +
       `|${this._runnerInvoker.loc('metrics.codeMetrics.titleSizeM')}` +
       `|${this._runnerInvoker.loc('metrics.codeMetrics.titleSizeL')}` +
       `|${this._runnerInvoker.loc('metrics.codeMetrics.titleSizeXL', '\\d*')})`
     const testsRegExp: string =
-      `(${this._runnerInvoker.loc('metrics.codeMetrics.titleTestsSufficient')}` +
+      `(?:${this._runnerInvoker.loc('metrics.codeMetrics.titleTestsSufficient')}` +
       `|${this._runnerInvoker.loc('metrics.codeMetrics.titleTestsInsufficient')})?`
     const sizeIndicatorRegExp: string = this._runnerInvoker.loc('metrics.codeMetrics.titleSizeIndicatorFormat', sizeRegExp, testsRegExp)
     const completeRegExp = `^${this._runnerInvoker.loc('pullRequests.pullRequest.titleFormat', sizeIndicatorRegExp, '(.*)')}$`
@@ -104,8 +104,8 @@ export default class PullRequest {
     const prefixRegExp = new RegExp(completeRegExp, 'u')
     const prefixRegExpMatches: RegExpMatchArray | null = currentTitle.match(prefixRegExp)
     let originalTitle: string = currentTitle
-    if (prefixRegExpMatches?.[3] !== undefined) {
-      originalTitle = prefixRegExpMatches[3]
+    if (prefixRegExpMatches?.[1] !== undefined) {
+      originalTitle = prefixRegExpMatches[1]
     }
 
     return this._runnerInvoker.loc('pullRequests.pullRequest.titleFormat', sizeIndicator, originalTitle)

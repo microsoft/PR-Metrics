@@ -48,7 +48,6 @@ export default tseslint.config(
       '@typescript-eslint/member-ordering': 'off',
       '@typescript-eslint/naming-convention': 'off',
       '@typescript-eslint/no-magic-numbers': 'off',
-      '@typescript-eslint/prefer-destructuring': 'off',
       '@typescript-eslint/prefer-readonly-parameter-types': 'off',
       '@typescript-eslint/promise-function-async': 'off',
       '@typescript-eslint/strict-boolean-expressions': 'off',

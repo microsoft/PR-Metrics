@@ -24,7 +24,7 @@ describe('pullRequest.ts', (): void => {
     logger = mock(Logger)
 
     runnerInvoker = mock(RunnerInvoker)
-    when(runnerInvoker.loc('metrics.codeMetrics.titleSizeIndicatorFormat', '(XS|S|M|L|\\d*XL)', '(✔|⚠️)?')).thenReturn('(XS|S|M|L|\\d*XL)(✔|⚠️)?')
+    when(runnerInvoker.loc('metrics.codeMetrics.titleSizeIndicatorFormat', '(?:XS|S|M|L|\\d*XL)', '(?:✔|⚠️)?')).thenReturn('(?:XS|S|M|L|\\d*XL)(?:✔|⚠️)?')
     when(runnerInvoker.loc('metrics.codeMetrics.titleSizeL')).thenReturn('L')
     when(runnerInvoker.loc('metrics.codeMetrics.titleSizeM')).thenReturn('M')
     when(runnerInvoker.loc('metrics.codeMetrics.titleSizeS')).thenReturn('S')
@@ -43,7 +43,7 @@ describe('pullRequest.ts', (): void => {
     when(runnerInvoker.loc('pullRequests.pullRequest.titleFormat', 'S✔', 'PS ◾ Title')).thenReturn('S✔ ◾ PS ◾ Title')
     when(runnerInvoker.loc('pullRequests.pullRequest.titleFormat', 'S✔', 'PS✔ ◾ Title')).thenReturn('S✔ ◾ PS✔ ◾ Title')
     when(runnerInvoker.loc('pullRequests.pullRequest.titleFormat', 'S✔', 'PS⚠️ ◾ Title')).thenReturn('S✔ ◾ PS⚠️ ◾ Title')
-    when(runnerInvoker.loc('pullRequests.pullRequest.titleFormat', '(XS|S|M|L|\\d*XL)(✔|⚠️)?', '(.*)')).thenReturn('(XS|S|M|L|\\d*XL)(✔|⚠️)? ◾ (.*)')
+    when(runnerInvoker.loc('pullRequests.pullRequest.titleFormat', '(?:XS|S|M|L|\\d*XL)(?:✔|⚠️)?', '(.*)')).thenReturn('(?:XS|S|M|L|\\d*XL)(?:✔|⚠️)? ◾ (.*)')
   })
 
   describe('isPullRequest', (): void => {
