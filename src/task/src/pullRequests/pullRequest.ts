@@ -99,13 +99,13 @@ export default class PullRequest {
       `(?:${this._runnerInvoker.loc('metrics.codeMetrics.titleTestsSufficient')}` +
       `|${this._runnerInvoker.loc('metrics.codeMetrics.titleTestsInsufficient')})?`
     const sizeIndicatorRegExp: string = this._runnerInvoker.loc('metrics.codeMetrics.titleSizeIndicatorFormat', sizeRegExp, testsRegExp)
-    const completeRegExp = `^${this._runnerInvoker.loc('pullRequests.pullRequest.titleFormat', sizeIndicatorRegExp, '(.*)')}$`
+    const completeRegExp = `^${this._runnerInvoker.loc('pullRequests.pullRequest.titleFormat', sizeIndicatorRegExp, '(?<originalTitle>.*)')}$`
 
     const prefixRegExp = new RegExp(completeRegExp, 'u')
     const prefixRegExpMatches: RegExpMatchArray | null = currentTitle.match(prefixRegExp)
     let originalTitle: string = currentTitle
-    if (prefixRegExpMatches?.[1] !== undefined) {
-      originalTitle = prefixRegExpMatches[1]
+    if (prefixRegExpMatches?.groups?.originalTitle !== undefined) {
+      originalTitle = prefixRegExpMatches.groups.originalTitle
     }
 
     return this._runnerInvoker.loc('pullRequests.pullRequest.titleFormat', sizeIndicator, originalTitle)

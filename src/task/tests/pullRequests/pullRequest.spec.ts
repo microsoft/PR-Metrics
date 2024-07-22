@@ -43,7 +43,7 @@ describe('pullRequest.ts', (): void => {
     when(runnerInvoker.loc('pullRequests.pullRequest.titleFormat', 'S✔', 'PS ◾ Title')).thenReturn('S✔ ◾ PS ◾ Title')
     when(runnerInvoker.loc('pullRequests.pullRequest.titleFormat', 'S✔', 'PS✔ ◾ Title')).thenReturn('S✔ ◾ PS✔ ◾ Title')
     when(runnerInvoker.loc('pullRequests.pullRequest.titleFormat', 'S✔', 'PS⚠️ ◾ Title')).thenReturn('S✔ ◾ PS⚠️ ◾ Title')
-    when(runnerInvoker.loc('pullRequests.pullRequest.titleFormat', '(?:XS|S|M|L|\\d*XL)(?:✔|⚠️)?', '(.*)')).thenReturn('(?:XS|S|M|L|\\d*XL)(?:✔|⚠️)? ◾ (.*)')
+    when(runnerInvoker.loc('pullRequests.pullRequest.titleFormat', '(?:XS|S|M|L|\\d*XL)(?:✔|⚠️)?', '(?<originalTitle>.*)')).thenReturn('(?:XS|S|M|L|\\d*XL)(?:✔|⚠️)? ◾ (?<originalTitle>.*)')
   })
 
   describe('isPullRequest', (): void => {
