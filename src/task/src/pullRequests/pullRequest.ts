@@ -24,7 +24,7 @@ export default class PullRequest {
    * @param logger The logger.
    * @param runnerInvoker The runner invoker logic.
    */
-  public constructor (codeMetrics: CodeMetrics, logger: Logger, runnerInvoker: RunnerInvoker) {
+  public constructor(codeMetrics: CodeMetrics, logger: Logger, runnerInvoker: RunnerInvoker) {
     this._codeMetrics = codeMetrics
     this._logger = logger
     this._runnerInvoker = runnerInvoker
@@ -34,7 +34,7 @@ export default class PullRequest {
    * Determines whether the task is running against a pull request.
    * @returns A value indicating whether the task is running against a pull request.
    */
-  public get isPullRequest (): boolean {
+  public get isPullRequest(): boolean {
     this._logger.logDebug('* PullRequest.isPullRequest')
 
     return RunnerInvoker.isGitHub ? process.env.GITHUB_BASE_REF !== '' : process.env.SYSTEM_PULLREQUEST_PULLREQUESTID !== undefined
@@ -44,7 +44,7 @@ export default class PullRequest {
    * Determines whether the task is running against a supported pull request provider.
    * @returns `true` if the task is running against a supported pull request provider, or the name of the pull request provider otherwise.
    */
-  public get isSupportedProvider (): boolean | string {
+  public get isSupportedProvider(): boolean | string {
     this._logger.logDebug('* PullRequest.isSupportedProvider')
 
     // If the action is running on GitHub, the provider is always GitHub and therefore valid.
@@ -66,7 +66,7 @@ export default class PullRequest {
    * @param currentDescription The pull request's current description.
    * @returns The value to which to update the description or `null` if the description is not to be updated.
    */
-  public getUpdatedDescription (currentDescription: string | undefined): string | null {
+  public getUpdatedDescription(currentDescription: string | undefined): string | null {
     this._logger.logDebug('* PullRequest.getUpdatedDescription()')
 
     if (currentDescription !== undefined && currentDescription.trim() !== '') {
@@ -81,7 +81,7 @@ export default class PullRequest {
    * @param currentTitle The pull request's current title.
    * @returns A promise containing value to which to update the title or `null` if the title is not to be updated.
    */
-  public async getUpdatedTitle (currentTitle: string): Promise<string | null> {
+  public async getUpdatedTitle(currentTitle: string): Promise<string | null> {
     this._logger.logDebug('* PullRequest.getUpdatedTitle()')
 
     const sizeIndicator: string = await this._codeMetrics.getSizeIndicator()
@@ -103,9 +103,9 @@ export default class PullRequest {
 
     const prefixRegExp = new RegExp(completeRegExp, 'u')
     const prefixRegExpMatches: RegExpMatchArray | null = currentTitle.match(prefixRegExp)
-    let originalTitle: string = currentTitle
-    if (prefixRegExpMatches?.groups?.originalTitle !== undefined) {
-      originalTitle = prefixRegExpMatches.groups.originalTitle
+    let { originalTitle } = prefixRegExpMatches?.groups ?? {}
+    if (originalTitle === undefined) {
+      originalTitle = currentTitle
     }
 
     return this._runnerInvoker.loc('pullRequests.pullRequest.titleFormat', sizeIndicator, originalTitle)
