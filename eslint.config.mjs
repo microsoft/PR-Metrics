@@ -32,8 +32,6 @@ export default tseslint.config(
       },
     },
     rules: {
-      'no-console': 'error',
-      'sort-imports': 'error',
       '@typescript-eslint/no-unused-vars': [
         'error',
         {
@@ -54,7 +52,6 @@ export default tseslint.config(
       'max-lines-per-function': 'off',
       'max-lines': 'off',
       'max-statements': 'off',
-      'no-await-in-loop': 'off',
       'no-continue': 'off',
       'no-magic-numbers': 'off',
       'no-ternary': 'off',
