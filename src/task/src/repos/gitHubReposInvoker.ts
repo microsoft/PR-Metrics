@@ -224,7 +224,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
       throw new Error(`GITHUB_REPOSITORY '${gitHubRepository}' is in an unexpected format.`)
     }
 
-    this._repo = gitHubRepositoryElements[1]
+    [, this._repo] = gitHubRepositoryElements;
     return baseUrl
   }
 
@@ -243,8 +243,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
       baseUrl = `https://${sourceRepositoryUriElements[2]}/api/v3`
     }
 
-    this._owner = sourceRepositoryUriElements[3]
-    this._repo = sourceRepositoryUriElements[4]
+    [, , , this._owner, this._repo] = sourceRepositoryUriElements
     const gitEnding = '.git'
     if (this._repo.endsWith(gitEnding)) {
       this._repo = this._repo.substring(0, this._repo.length - gitEnding.length)
