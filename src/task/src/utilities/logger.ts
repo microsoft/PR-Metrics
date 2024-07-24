@@ -12,10 +12,10 @@ import { singleton } from 'tsyringe'
  */
 @singleton()
 export default class Logger {
-  private readonly _consoleWrapper: ConsoleWrapper
-  private readonly _runnerInvoker: RunnerInvoker
+  private readonly consoleWrapper: ConsoleWrapper
+  private readonly runnerInvoker: RunnerInvoker
 
-  private readonly _messages: string[] = []
+  private readonly messages: string[] = []
 
   /**
    * Initializes a new instance of the `Logger` class.
@@ -23,8 +23,8 @@ export default class Logger {
    * @param runnerInvoker The runner invoker logic.
    */
   public constructor (consoleWrapper: ConsoleWrapper, runnerInvoker: RunnerInvoker) {
-    this._consoleWrapper = consoleWrapper
-    this._runnerInvoker = runnerInvoker
+    this.consoleWrapper = consoleWrapper
+    this.runnerInvoker = runnerInvoker
   }
 
   /**
@@ -33,8 +33,8 @@ export default class Logger {
    */
   public logDebug (message: string): void {
     const filteredMessage: string = Logger.filterMessage(message)
-    this._messages.push(`debug   – ${filteredMessage}`)
-    this._runnerInvoker.logDebug(filteredMessage)
+    this.messages.push(`debug   – ${filteredMessage}`)
+    this.runnerInvoker.logDebug(filteredMessage)
   }
 
   /**
@@ -43,8 +43,8 @@ export default class Logger {
    */
   public logInfo (message: string): void {
     const filteredMessage: string = Logger.filterMessage(message)
-    this._messages.push(`info    – ${filteredMessage}`)
-    this._consoleWrapper.log(filteredMessage)
+    this.messages.push(`info    – ${filteredMessage}`)
+    this.consoleWrapper.log(filteredMessage)
   }
 
   /**
@@ -53,8 +53,8 @@ export default class Logger {
    */
   public logWarning (message: string): void {
     const filteredMessage: string = Logger.filterMessage(message)
-    this._messages.push(`warning – ${filteredMessage}`)
-    this._runnerInvoker.logWarning(filteredMessage)
+    this.messages.push(`warning – ${filteredMessage}`)
+    this.runnerInvoker.logWarning(filteredMessage)
   }
 
   /**
@@ -63,8 +63,8 @@ export default class Logger {
    */
   public logError (message: string): void {
     const filteredMessage: string = Logger.filterMessage(message)
-    this._messages.push(`error   – ${filteredMessage}`)
-    this._runnerInvoker.logError(filteredMessage)
+    this.messages.push(`error   – ${filteredMessage}`)
+    this.runnerInvoker.logError(filteredMessage)
   }
 
   /**
@@ -84,8 +84,8 @@ export default class Logger {
    * Replays the messages logged.
    */
   public replay (): void {
-    for (const message of this._messages) {
-      this._consoleWrapper.log(`🔁 ${message}`)
+    for (const message of this.messages) {
+      this.consoleWrapper.log(`🔁 ${message}`)
     }
   }
 

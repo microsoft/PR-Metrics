@@ -21,11 +21,11 @@ import { singleton } from 'tsyringe'
  */
 @singleton()
 export default class GitHubRunnerInvoker implements GenericRunnerInvoker {
-  private readonly _azurePipelinesRunnerWrapper: AzurePipelinesRunnerWrapper
-  private readonly _consoleWrapper: ConsoleWrapper
-  private readonly _gitHubRunnerWrapper: GitHubRunnerWrapper
+  private readonly azurePipelinesRunnerWrapper: AzurePipelinesRunnerWrapper
+  private readonly consoleWrapper: ConsoleWrapper
+  private readonly gitHubRunnerWrapper: GitHubRunnerWrapper
 
-  private readonly _resources: Map<string, string> = new Map<string, string>()
+  private readonly resources: Map<string, string> = new Map<string, string>()
 
   /**
    * Initializes a new instance of the `GitHubRunnerInvoker` class.
@@ -34,9 +34,9 @@ export default class GitHubRunnerInvoker implements GenericRunnerInvoker {
    * @param gitHubRunnerWrapper The wrapper around the GitHub runner.
    */
   public constructor (azurePipelinesRunnerWrapper: AzurePipelinesRunnerWrapper, consoleWrapper: ConsoleWrapper, gitHubRunnerWrapper: GitHubRunnerWrapper) {
-    this._azurePipelinesRunnerWrapper = azurePipelinesRunnerWrapper
-    this._consoleWrapper = consoleWrapper
-    this._gitHubRunnerWrapper = gitHubRunnerWrapper
+    this.azurePipelinesRunnerWrapper = azurePipelinesRunnerWrapper
+    this.consoleWrapper = consoleWrapper
+    this.gitHubRunnerWrapper = gitHubRunnerWrapper
   }
 
   public async exec (tool: string, args: string): Promise<ExecOutput> {
@@ -45,7 +45,7 @@ export default class GitHubRunnerInvoker implements GenericRunnerInvoker {
       silent: true,
     }
 
-    const result: actionsExec.ExecOutput = await this._gitHubRunnerWrapper.exec(tool, args, options)
+    const result: actionsExec.ExecOutput = await this.gitHubRunnerWrapper.exec(tool, args, options)
     return {
       exitCode: result.exitCode,
       stderr: result.stderr,
@@ -57,7 +57,7 @@ export default class GitHubRunnerInvoker implements GenericRunnerInvoker {
     const formattedName: string = name.join('-').toUpperCase()
 
     // This method redirects to the Azure Pipelines logic as the library will store the input data.
-    return this._azurePipelinesRunnerWrapper.getInput(formattedName)
+    return this.azurePipelinesRunnerWrapper.getInput(formattedName)
   }
 
   public getEndpointAuthorization (_id: string): EndpointAuthorization | undefined {
@@ -80,40 +80,40 @@ export default class GitHubRunnerInvoker implements GenericRunnerInvoker {
     const stringPrefix = 'loc.messages.'
     for(const entry of entries) {
       if (entry[0].startsWith(stringPrefix)) {
-        this._resources.set(entry[0].substring(stringPrefix.length), entry[1])
+        this.resources.set(entry[0].substring(stringPrefix.length), entry[1])
       }
     }
   }
 
   public loc (key: string, ...param: string[]): string {
-    return util.format(this._resources.get(key), ...param)
+    return util.format(this.resources.get(key), ...param)
   }
 
   public logDebug (message: string): void {
-    this._gitHubRunnerWrapper.debug(message)
+    this.gitHubRunnerWrapper.debug(message)
   }
 
   public logError (message: string): void {
-    this._gitHubRunnerWrapper.error(message)
+    this.gitHubRunnerWrapper.error(message)
   }
 
   public logWarning (message: string): void {
-    this._gitHubRunnerWrapper.warning(message)
+    this.gitHubRunnerWrapper.warning(message)
   }
 
   public setStatusFailed (message: string): void {
-    this._gitHubRunnerWrapper.setFailed(message)
+    this.gitHubRunnerWrapper.setFailed(message)
   }
 
   public setStatusSkipped (message: string): void {
-    this._consoleWrapper.log(message)
+    this.consoleWrapper.log(message)
   }
 
   public setStatusSucceeded (message: string): void {
-    this._consoleWrapper.log(message)
+    this.consoleWrapper.log(message)
   }
 
   public setSecret (value: string): void {
-    this._gitHubRunnerWrapper.setSecret(value)
+    this.gitHubRunnerWrapper.setSecret(value)
   }
 }

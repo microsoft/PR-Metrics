@@ -16,11 +16,11 @@ import { singleton } from 'tsyringe'
  */
 @singleton()
 export default class RunnerInvoker implements GenericRunnerInvoker {
-  private readonly _azurePipelinesRunnerInvoker: AzurePipelinesRunnerInvoker
-  private readonly _gitHubRunnerInvoker: GitHubRunnerInvoker
+  private readonly azurePipelinesRunnerInvoker: AzurePipelinesRunnerInvoker
+  private readonly gitHubRunnerInvoker: GitHubRunnerInvoker
 
-  private _runnerInvoker: GenericRunnerInvoker | undefined
-  private _localizationInitialized = false
+  private runnerInvoker: GenericRunnerInvoker | undefined
+  private localizationInitialized = false
 
   /**
    * Initializes a new instance of the `RunnerInvoker` class.
@@ -28,8 +28,8 @@ export default class RunnerInvoker implements GenericRunnerInvoker {
    * @param gitHubRunnerInvoker The GitHub runner logic.
    */
   public constructor (azurePipelinesRunnerInvoker: AzurePipelinesRunnerInvoker, gitHubRunnerInvoker: GitHubRunnerInvoker) {
-    this._azurePipelinesRunnerInvoker = azurePipelinesRunnerInvoker
-    this._gitHubRunnerInvoker = gitHubRunnerInvoker
+    this.azurePipelinesRunnerInvoker = azurePipelinesRunnerInvoker
+    this.gitHubRunnerInvoker = gitHubRunnerInvoker
   }
 
   /**
@@ -65,17 +65,17 @@ export default class RunnerInvoker implements GenericRunnerInvoker {
   }
 
   public locInitialize (folder: string): void {
-    if (this._localizationInitialized) {
+    if (this.localizationInitialized) {
       throw new Error('RunnerInvoker.locInitialize must not be called multiple times.')
     }
 
-    this._localizationInitialized = true
+    this.localizationInitialized = true
     const runner: GenericRunnerInvoker = this.getRunner()
     runner.locInitialize(folder)
   }
 
   public loc (key: string, ...param: string[]): string {
-    if (!this._localizationInitialized) {
+    if (!this.localizationInitialized) {
       throw new Error('RunnerInvoker.locInitialize must be called before RunnerInvoker.loc.')
     }
 
@@ -119,11 +119,11 @@ export default class RunnerInvoker implements GenericRunnerInvoker {
   }
 
   private getRunner (): GenericRunnerInvoker {
-    if (this._runnerInvoker !== undefined) {
-      return this._runnerInvoker
+    if (this.runnerInvoker !== undefined) {
+      return this.runnerInvoker
     }
 
-    this._runnerInvoker = RunnerInvoker.isGitHub ? this._gitHubRunnerInvoker : this._azurePipelinesRunnerInvoker
-    return this._runnerInvoker
+    this.runnerInvoker = RunnerInvoker.isGitHub ? this.gitHubRunnerInvoker : this.azurePipelinesRunnerInvoker
+    return this.runnerInvoker
   }
 }

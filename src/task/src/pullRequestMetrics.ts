@@ -14,9 +14,9 @@ import { singleton } from 'tsyringe'
  */
 @singleton()
 export default class PullRequestMetrics {
-  private readonly _codeMetricsCalculator: CodeMetricsCalculator
-  private readonly _logger: Logger
-  private readonly _runnerInvoker: RunnerInvoker
+  private readonly codeMetricsCalculator: CodeMetricsCalculator
+  private readonly logger: Logger
+  private readonly runnerInvoker: RunnerInvoker
 
   /**
    * Initializes a new instance of the `PullRequestMetrics` class.
@@ -25,9 +25,9 @@ export default class PullRequestMetrics {
    * @param runnerInvoker The runner invoker logic.
    */
   public constructor (codeMetricsCalculator: CodeMetricsCalculator, logger: Logger, runnerInvoker: RunnerInvoker) {
-    this._codeMetricsCalculator = codeMetricsCalculator
-    this._logger = logger
-    this._runnerInvoker = runnerInvoker
+    this.codeMetricsCalculator = codeMetricsCalculator
+    this.logger = logger
+    this.runnerInvoker = runnerInvoker
   }
 
   /**
@@ -37,37 +37,37 @@ export default class PullRequestMetrics {
    */
   public async run (folder: string): Promise<void> {
     try {
-      this._runnerInvoker.locInitialize(folder)
+      this.runnerInvoker.locInitialize(folder)
 
-      const skipMessage: string | null = this._codeMetricsCalculator.shouldSkip
+      const skipMessage: string | null = this.codeMetricsCalculator.shouldSkip
       if (skipMessage !== null) {
-        this._runnerInvoker.setStatusSkipped(skipMessage)
+        this.runnerInvoker.setStatusSkipped(skipMessage)
         return
       }
 
-      const terminateMessage: string | null = await this._codeMetricsCalculator.shouldStop()
+      const terminateMessage: string | null = await this.codeMetricsCalculator.shouldStop()
       if (terminateMessage !== null) {
-        this._runnerInvoker.setStatusFailed(terminateMessage)
+        this.runnerInvoker.setStatusFailed(terminateMessage)
         return
       }
 
       await Promise.all([
-        this._codeMetricsCalculator.updateDetails(),
-        this._codeMetricsCalculator.updateComments(),
+        this.codeMetricsCalculator.updateDetails(),
+        this.codeMetricsCalculator.updateComments(),
       ])
 
-      this._runnerInvoker.setStatusSucceeded(this._runnerInvoker.loc('pullRequestMetrics.succeeded'))
+      this.runnerInvoker.setStatusSucceeded(this.runnerInvoker.loc('pullRequestMetrics.succeeded'))
     } catch (error: unknown) {
       let statusMessage = 'An unknown error occurred.'
       if (error instanceof Error) {
-        this._logger.logErrorObject(error)
+        this.logger.logErrorObject(error)
         statusMessage = error.message
       } else {
-        this._logger.logError(statusMessage)
+        this.logger.logError(statusMessage)
       }
 
-      this._logger.replay()
-      this._runnerInvoker.setStatusFailed(statusMessage)
+      this.logger.replay()
+      this.runnerInvoker.setStatusFailed(statusMessage)
     }
   }
 }

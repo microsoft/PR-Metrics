@@ -17,14 +17,14 @@ import { singleton } from 'tsyringe'
  */
 @singleton()
 export default class AzurePipelinesRunnerInvoker implements GenericRunnerInvoker {
-  private readonly _azurePipelinesRunnerWrapper: AzurePipelinesRunnerWrapper
+  private readonly azurePipelinesRunnerWrapper: AzurePipelinesRunnerWrapper
 
   /**
    * Initializes a new instance of the `AzurePipelinesRunnerInvoker` class.
    * @param azurePipelinesRunnerWrapper The wrapper around the Azure Pipelines runner.
    */
   public constructor (azurePipelinesRunnerWrapper: AzurePipelinesRunnerWrapper) {
-    this._azurePipelinesRunnerWrapper = azurePipelinesRunnerWrapper
+    this.azurePipelinesRunnerWrapper = azurePipelinesRunnerWrapper
   }
 
   public exec (tool: string, args: string): Promise<ExecOutput> {
@@ -33,7 +33,7 @@ export default class AzurePipelinesRunnerInvoker implements GenericRunnerInvoker
       silent: true,
     }
 
-    const result: IExecSyncResult = this._azurePipelinesRunnerWrapper.execSync(tool, args, options)
+    const result: IExecSyncResult = this.azurePipelinesRunnerWrapper.execSync(tool, args, options)
     return Promise.resolve({
       exitCode: result.code,
       stderr: result.stderr,
@@ -43,11 +43,11 @@ export default class AzurePipelinesRunnerInvoker implements GenericRunnerInvoker
 
   public getInput (name: string[]): string | undefined {
     const formattedName: string = name.join('')
-    return this._azurePipelinesRunnerWrapper.getInput(formattedName)
+    return this.azurePipelinesRunnerWrapper.getInput(formattedName)
   }
 
   public getEndpointAuthorization (id: string): EndpointAuthorization | undefined {
-    const result: taskLib.EndpointAuthorization | undefined = this._azurePipelinesRunnerWrapper.getEndpointAuthorization(id, true)
+    const result: taskLib.EndpointAuthorization | undefined = this.azurePipelinesRunnerWrapper.getEndpointAuthorization(id, true)
     if (!result) {
       return undefined
     }
@@ -59,46 +59,46 @@ export default class AzurePipelinesRunnerInvoker implements GenericRunnerInvoker
   }
 
   public getEndpointAuthorizationScheme (id: string): string | undefined {
-    return this._azurePipelinesRunnerWrapper.getEndpointAuthorizationScheme(id, true)
+    return this.azurePipelinesRunnerWrapper.getEndpointAuthorizationScheme(id, true)
   }
 
   public getEndpointAuthorizationParameter (id: string, key: string): string | undefined {
-    return this._azurePipelinesRunnerWrapper.getEndpointAuthorizationParameter(id, key, true)
+    return this.azurePipelinesRunnerWrapper.getEndpointAuthorizationParameter(id, key, true)
   }
 
   public locInitialize (folder: string): void {
-    this._azurePipelinesRunnerWrapper.setResourcePath(path.join(folder, 'task.json'))
+    this.azurePipelinesRunnerWrapper.setResourcePath(path.join(folder, 'task.json'))
   }
 
   public loc (key: string, ...param: string[]): string {
-    return this._azurePipelinesRunnerWrapper.loc(key, ...param)
+    return this.azurePipelinesRunnerWrapper.loc(key, ...param)
   }
 
   public logDebug (message: string): void {
-    this._azurePipelinesRunnerWrapper.debug(message)
+    this.azurePipelinesRunnerWrapper.debug(message)
   }
 
   public logError (message: string): void {
-    this._azurePipelinesRunnerWrapper.error(message)
+    this.azurePipelinesRunnerWrapper.error(message)
   }
 
   public logWarning (message: string): void {
-    this._azurePipelinesRunnerWrapper.warning(message)
+    this.azurePipelinesRunnerWrapper.warning(message)
   }
 
   public setStatusFailed (message: string): void {
-    this._azurePipelinesRunnerWrapper.setResult(taskLib.TaskResult.Failed, message)
+    this.azurePipelinesRunnerWrapper.setResult(taskLib.TaskResult.Failed, message)
   }
 
   public setStatusSkipped (message: string): void {
-    this._azurePipelinesRunnerWrapper.setResult(taskLib.TaskResult.Skipped, message)
+    this.azurePipelinesRunnerWrapper.setResult(taskLib.TaskResult.Skipped, message)
   }
 
   public setStatusSucceeded (message: string): void {
-    this._azurePipelinesRunnerWrapper.setResult(taskLib.TaskResult.Succeeded, message)
+    this.azurePipelinesRunnerWrapper.setResult(taskLib.TaskResult.Succeeded, message)
   }
 
   public setSecret (value: string): void {
-    this._azurePipelinesRunnerWrapper.setSecret(value)
+    this.azurePipelinesRunnerWrapper.setSecret(value)
   }
 }

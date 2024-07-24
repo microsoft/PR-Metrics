@@ -15,10 +15,10 @@ import { singleton } from 'tsyringe'
  */
 @singleton()
 export default class OctokitGitDiffParser {
-  private readonly _axiosWrapper: AxiosWrapper
-  private readonly _logger: Logger
+  private readonly axiosWrapper: AxiosWrapper
+  private readonly logger: Logger
 
-  private _firstLineOfFiles: Map<string, number> | undefined
+  private firstLineOfFiles: Map<string, number> | undefined
 
   /**
    * Initializes a new instance of the `OctokitGitDiffParser` class.
@@ -26,8 +26,8 @@ export default class OctokitGitDiffParser {
    * @param logger The logger.
    */
   public constructor (axiosWrapper: AxiosWrapper, logger: Logger) {
-    this._axiosWrapper = axiosWrapper
-    this._logger = logger
+    this.axiosWrapper = axiosWrapper
+    this.logger = logger
   }
 
   /**
@@ -40,32 +40,32 @@ export default class OctokitGitDiffParser {
    * @returns The first changed line of the specified file.
    */
   public async getFirstChangedLine (octokitWrapper: OctokitWrapper, owner: string, repo: string, pullRequestId: number, fileName: string): Promise<number | null> {
-    this._logger.logDebug('* OctokitGitDiffParser.getFirstChangedLine()')
+    this.logger.logDebug('* OctokitGitDiffParser.getFirstChangedLine()')
 
     const lineNumbers: Map<string, number> = await this.getFirstChangedLines(octokitWrapper, owner, repo, pullRequestId)
     return lineNumbers.get(fileName) ?? null
   }
 
   private async getFirstChangedLines (octokitWrapper: OctokitWrapper, owner: string, repo: string, pullRequestId: number): Promise<Map<string, number>> {
-    this._logger.logDebug('* OctokitGitDiffParser.getFirstChangedLines()')
+    this.logger.logDebug('* OctokitGitDiffParser.getFirstChangedLines()')
 
     // If the information has already been retrieved, return the cached response.
-    if (this._firstLineOfFiles !== undefined) {
-      return this._firstLineOfFiles
+    if (this.firstLineOfFiles !== undefined) {
+      return this.firstLineOfFiles
     }
 
     // Otherwise, retrieve and process the diffs.
     const diffs: string[] = await this.getDiffs(octokitWrapper, owner, repo, pullRequestId)
-    this._firstLineOfFiles = this.processDiffs(diffs)
-    return this._firstLineOfFiles
+    this.firstLineOfFiles = this.processDiffs(diffs)
+    return this.firstLineOfFiles
   }
 
   private async getDiffs (octokitWrapper: OctokitWrapper, owner: string, repo: string, pullRequestId: number): Promise<string[]> {
-    this._logger.logDebug('* OctokitGitDiffParser.getDiffs()')
+    this.logger.logDebug('* OctokitGitDiffParser.getDiffs()')
 
     // Get the PR diff by extracting the URL from the Octokit response and downloading it.
     const pullRequestInfo: GetPullResponse = await octokitWrapper.getPull(owner, repo, pullRequestId)
-    const diffResponse: string = await this._axiosWrapper.getUrl(pullRequestInfo.data.diff_url)
+    const diffResponse: string = await this.axiosWrapper.getUrl(pullRequestInfo.data.diff_url)
 
     // Split the response so that each file in a diff becomes a separate diff.
     const diffResponses: string[] = diffResponse.split(/^diff --git/gmu)
@@ -83,7 +83,7 @@ export default class OctokitGitDiffParser {
   }
 
   private processDiffs (diffs: string[]): Map<string, number> {
-    this._logger.logDebug('* OctokitGitDiffParser.processDiffs()')
+    this.logger.logDebug('* OctokitGitDiffParser.processDiffs()')
 
     const result: Map<string, number> = new Map<string, number>()
 
@@ -101,7 +101,7 @@ export default class OctokitGitDiffParser {
             const fileCasted: AddedFile | ChangedFile = file
             const chunk: AnyChunk | undefined = fileCasted.chunks[0]
             if (chunk?.type === 'BinaryFilesChunk') {
-              this._logger.logDebug(`Skipping '${file.type}' '${fileCasted.path}' while performing diff parsing.`)
+              this.logger.logDebug(`Skipping '${file.type}' '${fileCasted.path}' while performing diff parsing.`)
               break
             }
 
@@ -122,7 +122,7 @@ export default class OctokitGitDiffParser {
             break
           }
           default:
-            this._logger.logDebug(`Skipping file type '${file.type}' while performing diff parsing.`)
+            this.logger.logDebug(`Skipping file type '${file.type}' while performing diff parsing.`)
             break
         }
       }

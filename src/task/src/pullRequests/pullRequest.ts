@@ -14,9 +14,9 @@ import { injectable } from 'tsyringe'
  */
 @injectable()
 export default class PullRequest {
-  private readonly _codeMetrics: CodeMetrics
-  private readonly _logger: Logger
-  private readonly _runnerInvoker: RunnerInvoker
+  private readonly codeMetrics: CodeMetrics
+  private readonly logger: Logger
+  private readonly runnerInvoker: RunnerInvoker
 
   /**
    * Initializes a new instance of the `PullRequest` class.
@@ -25,9 +25,9 @@ export default class PullRequest {
    * @param runnerInvoker The runner invoker logic.
    */
   public constructor(codeMetrics: CodeMetrics, logger: Logger, runnerInvoker: RunnerInvoker) {
-    this._codeMetrics = codeMetrics
-    this._logger = logger
-    this._runnerInvoker = runnerInvoker
+    this.codeMetrics = codeMetrics
+    this.logger = logger
+    this.runnerInvoker = runnerInvoker
   }
 
   /**
@@ -35,7 +35,7 @@ export default class PullRequest {
    * @returns A value indicating whether the task is running against a pull request.
    */
   public get isPullRequest(): boolean {
-    this._logger.logDebug('* PullRequest.isPullRequest')
+    this.logger.logDebug('* PullRequest.isPullRequest')
 
     return RunnerInvoker.isGitHub ? process.env.GITHUB_BASE_REF !== '' : process.env.SYSTEM_PULLREQUEST_PULLREQUESTID !== undefined
   }
@@ -45,7 +45,7 @@ export default class PullRequest {
    * @returns `true` if the task is running against a supported pull request provider, or the name of the pull request provider otherwise.
    */
   public get isSupportedProvider(): boolean | string {
-    this._logger.logDebug('* PullRequest.isSupportedProvider')
+    this.logger.logDebug('* PullRequest.isSupportedProvider')
 
     // If the action is running on GitHub, the provider is always GitHub and therefore valid.
     if (RunnerInvoker.isGitHub) {
@@ -67,13 +67,13 @@ export default class PullRequest {
    * @returns The value to which to update the description or `null` if the description is not to be updated.
    */
   public getUpdatedDescription(currentDescription: string | undefined): string | null {
-    this._logger.logDebug('* PullRequest.getUpdatedDescription()')
+    this.logger.logDebug('* PullRequest.getUpdatedDescription()')
 
     if (currentDescription !== undefined && currentDescription.trim() !== '') {
       return null
     }
 
-    return this._runnerInvoker.loc('pullRequests.pullRequest.addDescription')
+    return this.runnerInvoker.loc('pullRequests.pullRequest.addDescription')
   }
 
   /**
@@ -82,24 +82,24 @@ export default class PullRequest {
    * @returns A promise containing value to which to update the title or `null` if the title is not to be updated.
    */
   public async getUpdatedTitle(currentTitle: string): Promise<string | null> {
-    this._logger.logDebug('* PullRequest.getUpdatedTitle()')
+    this.logger.logDebug('* PullRequest.getUpdatedTitle()')
 
-    const sizeIndicator: string = await this._codeMetrics.getSizeIndicator()
-    if (currentTitle.startsWith(this._runnerInvoker.loc('pullRequests.pullRequest.titleFormat', sizeIndicator, ''))) {
+    const sizeIndicator: string = await this.codeMetrics.getSizeIndicator()
+    if (currentTitle.startsWith(this.runnerInvoker.loc('pullRequests.pullRequest.titleFormat', sizeIndicator, ''))) {
       return null
     }
 
     const sizeRegExp: string =
-      `(?:${this._runnerInvoker.loc('metrics.codeMetrics.titleSizeXS')}` +
-      `|${this._runnerInvoker.loc('metrics.codeMetrics.titleSizeS')}` +
-      `|${this._runnerInvoker.loc('metrics.codeMetrics.titleSizeM')}` +
-      `|${this._runnerInvoker.loc('metrics.codeMetrics.titleSizeL')}` +
-      `|${this._runnerInvoker.loc('metrics.codeMetrics.titleSizeXL', '\\d*')})`
+      `(?:${this.runnerInvoker.loc('metrics.codeMetrics.titleSizeXS')}` +
+      `|${this.runnerInvoker.loc('metrics.codeMetrics.titleSizeS')}` +
+      `|${this.runnerInvoker.loc('metrics.codeMetrics.titleSizeM')}` +
+      `|${this.runnerInvoker.loc('metrics.codeMetrics.titleSizeL')}` +
+      `|${this.runnerInvoker.loc('metrics.codeMetrics.titleSizeXL', '\\d*')})`
     const testsRegExp: string =
-      `(?:${this._runnerInvoker.loc('metrics.codeMetrics.titleTestsSufficient')}` +
-      `|${this._runnerInvoker.loc('metrics.codeMetrics.titleTestsInsufficient')})?`
-    const sizeIndicatorRegExp: string = this._runnerInvoker.loc('metrics.codeMetrics.titleSizeIndicatorFormat', sizeRegExp, testsRegExp)
-    const completeRegExp = `^${this._runnerInvoker.loc('pullRequests.pullRequest.titleFormat', sizeIndicatorRegExp, '(?<originalTitle>.*)')}$`
+      `(?:${this.runnerInvoker.loc('metrics.codeMetrics.titleTestsSufficient')}` +
+      `|${this.runnerInvoker.loc('metrics.codeMetrics.titleTestsInsufficient')})?`
+    const sizeIndicatorRegExp: string = this.runnerInvoker.loc('metrics.codeMetrics.titleSizeIndicatorFormat', sizeRegExp, testsRegExp)
+    const completeRegExp = `^${this.runnerInvoker.loc('pullRequests.pullRequest.titleFormat', sizeIndicatorRegExp, '(?<originalTitle>.*)')}$`
 
     const prefixRegExp = new RegExp(completeRegExp, 'u')
     const prefixRegExpMatches: RegExpMatchArray | null = currentTitle.match(prefixRegExp)
@@ -108,6 +108,6 @@ export default class PullRequest {
       originalTitle = currentTitle
     }
 
-    return this._runnerInvoker.loc('pullRequests.pullRequest.titleFormat', sizeIndicator, originalTitle)
+    return this.runnerInvoker.loc('pullRequests.pullRequest.titleFormat', sizeIndicator, originalTitle)
   }
 }

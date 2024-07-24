@@ -22,16 +22,16 @@ import { singleton } from 'tsyringe'
  */
 @singleton()
 export default class OctokitWrapper {
-  private readonly _octokitGitDiffParser: OctokitGitDiffParser
+  private readonly octokitGitDiffParser: OctokitGitDiffParser
 
-  private _octokit: Octokit | undefined
+  private octokit: Octokit | undefined
 
   /**
    * Initializes a new instance of the `OctokitWrapper` class.
    * @param octokitGitDiffParser The parser for Git diffs read via Octokit.
    */
   public constructor (octokitGitDiffParser: OctokitGitDiffParser) {
-    this._octokitGitDiffParser = octokitGitDiffParser
+    this.octokitGitDiffParser = octokitGitDiffParser
   }
 
   /**
@@ -39,11 +39,11 @@ export default class OctokitWrapper {
    * @param options The Octokit options including the authentication details.
    */
   public initialize (options: OctokitOptions): void {
-    if (this._octokit !== undefined) {
+    if (this.octokit !== undefined) {
       throw new Error('OctokitWrapper was already initialized prior to calling OctokitWrapper.initialize().')
     }
 
-    this._octokit = new Octokit(options)
+    this.octokit = new Octokit(options)
   }
 
   /**
@@ -54,11 +54,11 @@ export default class OctokitWrapper {
    * @returns The response from the API call.
    */
   public async getPull (owner: string, repo: string, pullRequestId: number): Promise<GetPullResponse> {
-    if (this._octokit === undefined) {
+    if (this.octokit === undefined) {
       throw new Error('OctokitWrapper was not initialized prior to calling OctokitWrapper.getPull().')
     }
 
-    return this._octokit.rest.pulls.get({
+    return this.octokit.rest.pulls.get({
       owner,
       pull_number: pullRequestId, // eslint-disable-line camelcase -- Required for alignment with Octokit.
       repo,
@@ -75,11 +75,11 @@ export default class OctokitWrapper {
    * @returns The response from the API call.
    */
   public async updatePull (owner: string, repo: string, pullRequestId: number, title: string | undefined, description: string | undefined): Promise<UpdatePullResponse> {
-    if (this._octokit === undefined) {
+    if (this.octokit === undefined) {
       throw new Error('OctokitWrapper was not initialized prior to calling OctokitWrapper.updatePull().')
     }
 
-    return this._octokit.rest.pulls.update({
+    return this.octokit.rest.pulls.update({
       body: description,
       owner,
       pull_number: pullRequestId, // eslint-disable-line camelcase -- Required for alignment with Octokit.
@@ -96,11 +96,11 @@ export default class OctokitWrapper {
    * @returns The response from the API call.
    */
   public async getIssueComments (owner: string, repo: string, pullRequestId: number): Promise<GetIssueCommentsResponse> {
-    if (this._octokit === undefined) {
+    if (this.octokit === undefined) {
       throw new Error('OctokitWrapper was not initialized prior to calling OctokitWrapper.getIssueComments().')
     }
 
-    return this._octokit.rest.issues.listComments({
+    return this.octokit.rest.issues.listComments({
       issue_number: pullRequestId, // eslint-disable-line camelcase -- Required for alignment with Octokit.
       owner,
       repo,
@@ -115,11 +115,11 @@ export default class OctokitWrapper {
    * @returns The response from the API call.
    */
   public async getReviewComments (owner: string, repo: string, pullRequestId: number): Promise<GetReviewCommentsResponse> {
-    if (this._octokit === undefined) {
+    if (this.octokit === undefined) {
       throw new Error('OctokitWrapper was not initialized prior to calling OctokitWrapper.getReviewComments().')
     }
 
-    return this._octokit.rest.pulls.listReviewComments({
+    return this.octokit.rest.pulls.listReviewComments({
       owner,
       pull_number: pullRequestId, // eslint-disable-line camelcase -- Required for alignment with Octokit.
       repo,
@@ -135,11 +135,11 @@ export default class OctokitWrapper {
    * @returns The response from the API call.
    */
   public async createIssueComment (owner: string, repo: string, pullRequestId: number, content: string): Promise<CreateIssueCommentResponse> {
-    if (this._octokit === undefined) {
+    if (this.octokit === undefined) {
       throw new Error('OctokitWrapper was not initialized prior to calling OctokitWrapper.createIssueComment().')
     }
 
-    return this._octokit.rest.issues.createComment({
+    return this.octokit.rest.issues.createComment({
       body: content,
       issue_number: pullRequestId, // eslint-disable-line camelcase -- Required for alignment with Octokit.
       owner,
@@ -156,11 +156,11 @@ export default class OctokitWrapper {
    * @returns The response from the API call.
    */
   public async listCommits (owner: string, repo: string, pullRequestId: number, page: number): Promise<ListCommitsResponse> {
-    if (this._octokit === undefined) {
+    if (this.octokit === undefined) {
       throw new Error('OctokitWrapper was not initialized prior to calling OctokitWrapper.listCommits().')
     }
 
-    return this._octokit.rest.pulls.listCommits({
+    return this.octokit.rest.pulls.listCommits({
       owner,
       page,
       pull_number: pullRequestId, // eslint-disable-line camelcase -- Required for alignment with Octokit.
@@ -179,16 +179,16 @@ export default class OctokitWrapper {
    * @returns The response from the API call.
    */
   public async createReviewComment (owner: string, repo: string, pullRequestId: number, content: string, fileName: string, commitId: string): Promise<CreateReviewCommentResponse | null> {
-    if (this._octokit === undefined) {
+    if (this.octokit === undefined) {
       throw new Error('OctokitWrapper was not initialized prior to calling OctokitWrapper.createReviewComment().')
     }
 
-    const lineNumber: number | null = await this._octokitGitDiffParser.getFirstChangedLine(this, owner, repo, pullRequestId, fileName)
+    const lineNumber: number | null = await this.octokitGitDiffParser.getFirstChangedLine(this, owner, repo, pullRequestId, fileName)
     if (lineNumber === null) {
       return null
     }
 
-    return this._octokit.rest.pulls.createReviewComment({
+    return this.octokit.rest.pulls.createReviewComment({
       body: content,
       commit_id: commitId,        // eslint-disable-line camelcase -- Required for alignment with Octokit.
       line: lineNumber,
@@ -209,11 +209,11 @@ export default class OctokitWrapper {
    * @returns The response from the API call.
    */
   public async updateIssueComment (owner: string, repo: string, pullRequestId: number, commentThreadId: number, content: string): Promise<UpdateIssueCommentResponse> {
-    if (this._octokit === undefined) {
+    if (this.octokit === undefined) {
       throw new Error('OctokitWrapper was not initialized prior to calling OctokitWrapper.updateIssueComment().')
     }
 
-    return this._octokit.rest.issues.updateComment({
+    return this.octokit.rest.issues.updateComment({
       body: content,
       comment_id: commentThreadId, // eslint-disable-line camelcase -- Required for alignment with Octokit.
       issue_number: pullRequestId, // eslint-disable-line camelcase -- Required for alignment with Octokit.
@@ -230,11 +230,11 @@ export default class OctokitWrapper {
    * @returns The response from the API call.
    */
   public async deleteReviewComment (owner: string, repo: string, commentThreadId: number): Promise<DeleteReviewCommentResponse> {
-    if (this._octokit === undefined) {
+    if (this.octokit === undefined) {
       throw new Error('OctokitWrapper was not initialized prior to calling OctokitWrapper.deleteReviewComment().')
     }
 
-    return this._octokit.rest.pulls.deleteReviewComment({
+    return this.octokit.rest.pulls.deleteReviewComment({
       comment_id: commentThreadId, // eslint-disable-line camelcase -- Required for alignment with Octokit.
       owner,
       repo,
