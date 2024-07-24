@@ -44,7 +44,6 @@ export default tseslint.config(
       '@typescript-eslint/init-declarations': 'off',
       '@typescript-eslint/max-params': 'off',
       '@typescript-eslint/member-ordering': 'off',
-      '@typescript-eslint/naming-convention': 'off',
       '@typescript-eslint/no-magic-numbers': 'off',
       '@typescript-eslint/prefer-readonly-parameter-types': 'off',
       '@typescript-eslint/promise-function-async': 'off',
