@@ -17,17 +17,17 @@ export const createRequestError = (status: number, content: string): RequestErro
   return new RequestError(content, status, {
     request: {
       headers: {
-        authorization: 'SampleToken'
+        authorization: 'SampleToken',
       },
       method: 'GET',
       url,
     },
     response: {
       data: {
-        content
+        content,
       },
       headers: {
-        'Content-Type': 'text/html; charset=utf-8'
+        'Content-Type': 'text/html; charset=utf-8',
       },
       status,
       url,

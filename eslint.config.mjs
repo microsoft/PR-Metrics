@@ -52,7 +52,6 @@ export default tseslint.config(
       'max-lines-per-function': 'off',
       'max-lines': 'off',
       'max-statements': 'off',
-      'no-continue': 'off',
       'no-magic-numbers': 'off',
       'no-ternary': 'off',
       'no-undefined': 'off',

@@ -536,7 +536,7 @@ describe('azureReposInvoker.ts', (): void => {
       const func: () => Promise<CommentData> = async () => azureReposInvoker.getComments()
 
       // Assert
-      await AssertExtensions.toThrowAsync(func, '\'commentThread[0].id\', accessed within \'AzureReposInvoker.convertPullRequestComments()\', is invalid, null, or undefined \'undefined\'.')
+      await AssertExtensions.toThrowAsync(func, '\'commentThread[0].id\', accessed within \'AzureReposInvoker.convertPullRequestCommentEntry()\', is invalid, null, or undefined \'undefined\'.')
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('PAT')).once()
       verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', any())).once()
       verify(gitApi.getThreads('RepoID', 10, 'Project')).once()

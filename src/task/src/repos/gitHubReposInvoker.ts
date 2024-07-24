@@ -224,7 +224,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
       throw new Error(`GITHUB_REPOSITORY '${gitHubRepository}' is in an unexpected format.`)
     }
 
-    [, this.repo] = gitHubRepositoryElements;
+    [, this.repo] = gitHubRepositoryElements
     return baseUrl
   }
 

@@ -213,31 +213,30 @@ export default class AzureReposInvoker extends BaseReposInvoker {
     const result: CommentData = new CommentData()
 
     for (const [index, value] of comments.entries()) {
-      const id: number = Validator.validateNumber(value.id, `commentThread[${index.toString()}].id`, 'AzureReposInvoker.convertPullRequestComments()')
-      const currentComments: Comment[] | undefined = value.comments
-      if (currentComments === undefined) {
-        continue
-      }
-
-      const content: string | undefined = currentComments[0]?.content
-      if (content === undefined || content === '') {
-        continue
-      }
-
-      const status: CommentThreadStatus = value.status ?? CommentThreadStatus.Unknown
-      if (value.threadContext === undefined) {
-        result.pullRequestComments.push(new PullRequestCommentData(id, content, status))
-      } else {
-        const fileName: string | undefined = value.threadContext.filePath
-        if (fileName === undefined || fileName.length <= 1) {
-          continue
-        }
-
-        result.fileComments.push(new FileCommentData(id, content, fileName.substring(1), status))
-      }
+      AzureReposInvoker.convertPullRequestCommentEntry(index, value, result)
     }
 
     return result
+  }
+
+  private static convertPullRequestCommentEntry (index: number, value: GitPullRequestCommentThread, result: CommentData): void
+  {
+    const id: number = Validator.validateNumber(value.id, `commentThread[${index.toString()}].id`, 'AzureReposInvoker.convertPullRequestCommentEntry()')
+    const currentComments: Comment[] | undefined = value.comments
+    if (currentComments !== undefined) {
+      const content: string | undefined = currentComments[0]?.content
+      if (content !== undefined && content !== '') {
+        const status: CommentThreadStatus = value.status ?? CommentThreadStatus.Unknown
+        if (value.threadContext === undefined) {
+          result.pullRequestComments.push(new PullRequestCommentData(id, content, status))
+        } else {
+          const fileName: string | undefined = value.threadContext.filePath
+          if (fileName !== undefined && fileName.length > 1) {
+            result.fileComments.push(new FileCommentData(id, content, fileName.substring(1), status))
+          }
+        }
+      }
+    }
   }
 
   protected async invokeApiCall<Response> (action: () => Promise<Response>): Promise<Response> {
