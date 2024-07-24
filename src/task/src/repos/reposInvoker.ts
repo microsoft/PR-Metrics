@@ -19,11 +19,11 @@ import { singleton } from 'tsyringe'
  */
 @singleton()
 export default class ReposInvoker implements GenericReposInvoker {
-  private readonly _azureReposInvoker: AzureReposInvoker
-  private readonly _gitHubReposInvoker: GitHubReposInvoker
-  private readonly _logger: Logger
+  private readonly azureReposInvoker: AzureReposInvoker
+  private readonly gitHubReposInvoker: GitHubReposInvoker
+  private readonly logger: Logger
 
-  private _reposInvoker: GenericReposInvoker | undefined
+  private reposInvoker: GenericReposInvoker | undefined
 
   /**
    * Initializes a new instance of the `ReposInvoker` class.
@@ -32,86 +32,86 @@ export default class ReposInvoker implements GenericReposInvoker {
    * @param logger The logger.
    */
   public constructor (azureReposInvoker: AzureReposInvoker, gitHubReposInvoker: GitHubReposInvoker, logger: Logger) {
-    this._azureReposInvoker = azureReposInvoker
-    this._gitHubReposInvoker = gitHubReposInvoker
-    this._logger = logger
+    this.azureReposInvoker = azureReposInvoker
+    this.gitHubReposInvoker = gitHubReposInvoker
+    this.logger = logger
   }
 
   public async isAccessTokenAvailable (): Promise<string | null> {
-    this._logger.logDebug('* ReposInvoker.isAccessTokenAvailable()')
+    this.logger.logDebug('* ReposInvoker.isAccessTokenAvailable()')
 
     const reposInvoker: GenericReposInvoker = this.getReposInvoker()
     return reposInvoker.isAccessTokenAvailable()
   }
 
   public async getTitleAndDescription (): Promise<PullRequestDetails> {
-    this._logger.logDebug('* ReposInvoker.getTitleAndDescription()')
+    this.logger.logDebug('* ReposInvoker.getTitleAndDescription()')
 
     const reposInvoker: GenericReposInvoker = this.getReposInvoker()
     return reposInvoker.getTitleAndDescription()
   }
 
   public async getComments (): Promise<CommentData> {
-    this._logger.logDebug('* ReposInvoker.getComments()')
+    this.logger.logDebug('* ReposInvoker.getComments()')
 
     const reposInvoker: GenericReposInvoker = this.getReposInvoker()
     return reposInvoker.getComments()
   }
 
   public async setTitleAndDescription (title: string | null, description: string | null): Promise<void> {
-    this._logger.logDebug('* ReposInvoker.setTitleAndDescription()')
+    this.logger.logDebug('* ReposInvoker.setTitleAndDescription()')
 
     const reposInvoker: GenericReposInvoker = this.getReposInvoker()
     return reposInvoker.setTitleAndDescription(title, description)
   }
 
   public async createComment (content: string, status: CommentThreadStatus, fileName?: string, isFileDeleted?: boolean): Promise<void> {
-    this._logger.logDebug('* ReposInvoker.createComment()')
+    this.logger.logDebug('* ReposInvoker.createComment()')
 
     const reposInvoker: GenericReposInvoker = this.getReposInvoker()
     return reposInvoker.createComment(content, status, fileName, isFileDeleted)
   }
 
   public async updateComment (commentThreadId: number, content: string | null, status: CommentThreadStatus | null): Promise<void> {
-    this._logger.logDebug('* ReposInvoker.updateComment()')
+    this.logger.logDebug('* ReposInvoker.updateComment()')
 
     const reposInvoker: GenericReposInvoker = this.getReposInvoker()
     return reposInvoker.updateComment(commentThreadId, content, status)
   }
 
   public async deleteCommentThread (commentThreadId: number): Promise<void> {
-    this._logger.logDebug('* ReposInvoker.deleteCommentThread()')
+    this.logger.logDebug('* ReposInvoker.deleteCommentThread()')
 
     const reposInvoker: GenericReposInvoker = this.getReposInvoker()
     return reposInvoker.deleteCommentThread(commentThreadId)
   }
 
   private getReposInvoker (): GenericReposInvoker {
-    this._logger.logDebug('* ReposInvoker.getReposInvoker()')
+    this.logger.logDebug('* ReposInvoker.getReposInvoker()')
 
-    if (this._reposInvoker !== undefined) {
-      return this._reposInvoker
+    if (this.reposInvoker !== undefined) {
+      return this.reposInvoker
     }
 
     // If a GitHub runner is in use, only GitHub repos are supported.
     if (RunnerInvoker.isGitHub) {
-      this._reposInvoker = this._gitHubReposInvoker
-      return this._reposInvoker
+      this.reposInvoker = this.gitHubReposInvoker
+      return this.reposInvoker
     }
 
     const repoProvider: string = Validator.validateVariable('BUILD_REPOSITORY_PROVIDER', 'ReposInvoker.getReposInvoker()')
     switch (repoProvider) {
       case 'TfsGit':
-        this._reposInvoker = this._azureReposInvoker
+        this.reposInvoker = this.azureReposInvoker
         break
       case 'GitHub':
       case 'GitHubEnterprise':
-        this._reposInvoker = this._gitHubReposInvoker
+        this.reposInvoker = this.gitHubReposInvoker
         break
       default:
         throw new RangeError(`BUILD_REPOSITORY_PROVIDER '${repoProvider}' is unsupported.`)
     }
 
-    return this._reposInvoker
+    return this.reposInvoker
   }
 }

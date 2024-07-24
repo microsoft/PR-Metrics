@@ -35,16 +35,16 @@ import { singleton } from 'tsyringe'
  */
 @singleton()
 export default class GitHubReposInvoker extends BaseReposInvoker {
-  private readonly _gitInvoker: GitInvoker
-  private readonly _logger: Logger
-  private readonly _octokitWrapper: OctokitWrapper
-  private readonly _runnerInvoker: RunnerInvoker
+  private readonly gitInvoker: GitInvoker
+  private readonly logger: Logger
+  private readonly octokitWrapper: OctokitWrapper
+  private readonly runnerInvoker: RunnerInvoker
 
-  private _isInitialized = false
-  private _owner = ''
-  private _repo = ''
-  private _pullRequestId = 0
-  private _commitId = ''
+  private isInitialized = false
+  private owner = ''
+  private repo = ''
+  private pullRequestId = 0
+  private commitId = ''
 
   /**
    * Initializes a new instance of the `GitHubReposInvoker` class.
@@ -56,29 +56,29 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
   public constructor (gitInvoker: GitInvoker, logger: Logger, octokitWrapper: OctokitWrapper, runnerInvoker: RunnerInvoker) {
     super()
 
-    this._gitInvoker = gitInvoker
-    this._logger = logger
-    this._octokitWrapper = octokitWrapper
-    this._runnerInvoker = runnerInvoker
+    this.gitInvoker = gitInvoker
+    this.logger = logger
+    this.octokitWrapper = octokitWrapper
+    this.runnerInvoker = runnerInvoker
   }
 
   public isAccessTokenAvailable (): Promise<string | null> {
-    this._logger.logDebug('* GitHubReposInvoker.isAccessTokenAvailable()')
+    this.logger.logDebug('* GitHubReposInvoker.isAccessTokenAvailable()')
 
     if (process.env.PR_METRICS_ACCESS_TOKEN === undefined) {
-      return Promise.resolve(this._runnerInvoker.loc('repos.gitHubReposInvoker.noGitHubAccessToken'))
+      return Promise.resolve(this.runnerInvoker.loc('repos.gitHubReposInvoker.noGitHubAccessToken'))
     }
 
     return Promise.resolve(null)
   }
 
   public async getTitleAndDescription (): Promise<PullRequestDetails> {
-    this._logger.logDebug('* GitHubReposInvoker.getTitleAndDescription()')
+    this.logger.logDebug('* GitHubReposInvoker.getTitleAndDescription()')
 
     this.initialize()
     const result: GetPullResponse = await this.invokeApiCall(async (): Promise<GetPullResponse> => {
-      const internalResult: GetPullResponse = await this._octokitWrapper.getPull(this._owner, this._repo, this._pullRequestId)
-      this._logger.logDebug(JSON.stringify(internalResult))
+      const internalResult: GetPullResponse = await this.octokitWrapper.getPull(this.owner, this.repo, this.pullRequestId)
+      this.logger.logDebug(JSON.stringify(internalResult))
 
       return internalResult
     })
@@ -90,7 +90,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
   }
 
   public async getComments (): Promise<CommentData> {
-    this._logger.logDebug('* GitHubReposInvoker.getComments()')
+    this.logger.logDebug('* GitHubReposInvoker.getComments()')
 
     this.initialize()
 
@@ -98,12 +98,12 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     let fileComments: GetReviewCommentsResponse | undefined
     await Promise.all([
       this.invokeApiCall(async (): Promise<void> => {
-        pullRequestComments = await this._octokitWrapper.getIssueComments(this._owner, this._repo, this._pullRequestId)
-        this._logger.logDebug(JSON.stringify(pullRequestComments))
+        pullRequestComments = await this.octokitWrapper.getIssueComments(this.owner, this.repo, this.pullRequestId)
+        this.logger.logDebug(JSON.stringify(pullRequestComments))
       }),
       this.invokeApiCall(async (): Promise<void> => {
-        fileComments = await this._octokitWrapper.getReviewComments(this._owner, this._repo, this._pullRequestId)
-        this._logger.logDebug(JSON.stringify(fileComments))
+        fileComments = await this.octokitWrapper.getReviewComments(this.owner, this.repo, this.pullRequestId)
+        this.logger.logDebug(JSON.stringify(fileComments))
       }),
     ])
 
@@ -111,7 +111,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
   }
 
   public async setTitleAndDescription (title: string | null, description: string | null): Promise<void> {
-    this._logger.logDebug('* GitHubReposInvoker.setTitleAndDescription()')
+    this.logger.logDebug('* GitHubReposInvoker.setTitleAndDescription()')
 
     if (title === null && description === null) {
       return
@@ -120,34 +120,34 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     this.initialize()
 
     await this.invokeApiCall(async (): Promise<void> => {
-      const result: UpdatePullResponse = await this._octokitWrapper.updatePull(this._owner, this._repo, this._pullRequestId, title ?? undefined, description ?? undefined)
-      this._logger.logDebug(JSON.stringify(result))
+      const result: UpdatePullResponse = await this.octokitWrapper.updatePull(this.owner, this.repo, this.pullRequestId, title ?? undefined, description ?? undefined)
+      this.logger.logDebug(JSON.stringify(result))
     })
   }
 
   public async createComment (content: string, _status: CommentThreadStatus, fileName?: string, _isFileDeleted?: boolean): Promise<void> {
-    this._logger.logDebug('* GitHubReposInvoker.createComment()')
+    this.logger.logDebug('* GitHubReposInvoker.createComment()')
 
     this.initialize()
 
     if (fileName === undefined) {
       await this.invokeApiCall(async (): Promise<void> => {
-        const result: CreateIssueCommentResponse = await this._octokitWrapper.createIssueComment(this._owner, this._repo, this._pullRequestId, content)
-        this._logger.logDebug(JSON.stringify(result))
+        const result: CreateIssueCommentResponse = await this.octokitWrapper.createIssueComment(this.owner, this.repo, this.pullRequestId, content)
+        this.logger.logDebug(JSON.stringify(result))
       })
     } else {
-      if (this._commitId === '') {
+      if (this.commitId === '') {
         await this.getCommitId()
       }
 
       await this.invokeApiCall(async (): Promise<void> => {
         try {
-          const result: CreateReviewCommentResponse | null = await this._octokitWrapper.createReviewComment(this._owner, this._repo, this._pullRequestId, content, fileName, this._commitId)
-          this._logger.logDebug(JSON.stringify(result))
+          const result: CreateReviewCommentResponse | null = await this.octokitWrapper.createReviewComment(this.owner, this.repo, this.pullRequestId, content, fileName, this.commitId)
+          this.logger.logDebug(JSON.stringify(result))
         } catch (error: unknown) {
           if (error instanceof RequestError && error.status === 422 && error.message.includes('pull_request_review_thread.path diff too large')) {
-            this._logger.logInfo('GitHub createReviewComment() threw a 422 error related to a large diff. Ignoring as this is expected.')
-            this._logger.logErrorObject(error)
+            this.logger.logInfo('GitHub createReviewComment() threw a 422 error related to a large diff. Ignoring as this is expected.')
+            this.logger.logErrorObject(error)
           } else {
             throw error
           }
@@ -157,7 +157,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
   }
 
   public async updateComment (commentThreadId: number, content: string | null, _status: CommentThreadStatus | null): Promise<void> {
-    this._logger.logDebug('* GitHubReposInvoker.updateComment()')
+    this.logger.logDebug('* GitHubReposInvoker.updateComment()')
 
     if (content === null) {
       return
@@ -166,36 +166,36 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     this.initialize()
 
     await this.invokeApiCall(async (): Promise<void> => {
-      const result: UpdateIssueCommentResponse = await this._octokitWrapper.updateIssueComment(this._owner, this._repo, this._pullRequestId, commentThreadId, content)
-      this._logger.logDebug(JSON.stringify(result))
+      const result: UpdateIssueCommentResponse = await this.octokitWrapper.updateIssueComment(this.owner, this.repo, this.pullRequestId, commentThreadId, content)
+      this.logger.logDebug(JSON.stringify(result))
     })
   }
 
   public async deleteCommentThread (commentThreadId: number): Promise<void> {
-    this._logger.logDebug('* GitHubReposInvoker.deleteCommentThread()')
+    this.logger.logDebug('* GitHubReposInvoker.deleteCommentThread()')
 
     this.initialize()
 
     await this.invokeApiCall(async (): Promise<void> => {
-      const result: DeleteReviewCommentResponse = await this._octokitWrapper.deleteReviewComment(this._owner, this._repo, commentThreadId)
-      this._logger.logDebug(JSON.stringify(result))
+      const result: DeleteReviewCommentResponse = await this.octokitWrapper.deleteReviewComment(this.owner, this.repo, commentThreadId)
+      this.logger.logDebug(JSON.stringify(result))
     })
   }
 
   private initialize (): void {
-    this._logger.logDebug('* GitHubReposInvoker.initialize()')
+    this.logger.logDebug('* GitHubReposInvoker.initialize()')
 
-    if (this._isInitialized) {
+    if (this.isInitialized) {
       return
     }
 
     const options: OctokitOptions = {
       auth: process.env.PR_METRICS_ACCESS_TOKEN,
       log: {
-        debug: (message: string): void => { this._logger.logDebug(`Octokit – ${message}`) },
-        error: (message: string): void => { this._logger.logError(`Octokit – ${message}`) },
-        info: (message: string): void => { this._logger.logInfo(`Octokit – ${message}`) },
-        warn: (message: string): void => { this._logger.logWarning(`Octokit – ${message}`) },
+        debug: (message: string): void => { this.logger.logDebug(`Octokit – ${message}`) },
+        error: (message: string): void => { this.logger.logError(`Octokit – ${message}`) },
+        info: (message: string): void => { this.logger.logInfo(`Octokit – ${message}`) },
+        warn: (message: string): void => { this.logger.logWarning(`Octokit – ${message}`) },
       },
       userAgent: 'PRMetrics/v1.6.0',
     }
@@ -206,17 +206,17 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
       options.baseUrl = this.initializeForAzureDevOps()
     }
 
-    this._logger.logDebug(`Using Base URL '${Converter.toString(options.baseUrl)}'.`)
-    this._octokitWrapper.initialize(options)
-    this._pullRequestId = this._gitInvoker.pullRequestId
-    this._isInitialized = true
+    this.logger.logDebug(`Using Base URL '${Converter.toString(options.baseUrl)}'.`)
+    this.octokitWrapper.initialize(options)
+    this.pullRequestId = this.gitInvoker.pullRequestId
+    this.isInitialized = true
   }
 
   private initializeForGitHub (): string {
-    this._logger.logDebug('* GitHubReposInvoker.initializeForGitHub()')
+    this.logger.logDebug('* GitHubReposInvoker.initializeForGitHub()')
 
     const baseUrl: string = Validator.validateVariable('GITHUB_API_URL', 'GitHubReposInvoker.initializeForGitHub()')
-    this._owner = Validator.validateVariable('GITHUB_REPOSITORY_OWNER', 'GitHubReposInvoker.initializeForGitHub()')
+    this.owner = Validator.validateVariable('GITHUB_REPOSITORY_OWNER', 'GitHubReposInvoker.initializeForGitHub()')
 
     const gitHubRepository: string = Validator.validateVariable('GITHUB_REPOSITORY', 'GitHubReposInvoker.initializeForGitHub()')
     const gitHubRepositoryElements: string[] = gitHubRepository.split('/')
@@ -224,12 +224,12 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
       throw new Error(`GITHUB_REPOSITORY '${gitHubRepository}' is in an unexpected format.`)
     }
 
-    [, this._repo] = gitHubRepositoryElements;
+    [, this.repo] = gitHubRepositoryElements;
     return baseUrl
   }
 
   private initializeForAzureDevOps (): string | undefined {
-    this._logger.logDebug('* GitHubReposInvoker.initializeForAzureDevOps()')
+    this.logger.logDebug('* GitHubReposInvoker.initializeForAzureDevOps()')
 
     const sourceRepositoryUri: string = Validator.validateVariable('SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI', 'GitHubReposInvoker.initializeForAzureDevOps()')
     const sourceRepositoryUriElements: string[] = sourceRepositoryUri.split('/')
@@ -243,17 +243,17 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
       baseUrl = `https://${sourceRepositoryUriElements[2]}/api/v3`
     }
 
-    [, , , this._owner, this._repo] = sourceRepositoryUriElements
+    [, , , this.owner, this.repo] = sourceRepositoryUriElements
     const gitEnding = '.git'
-    if (this._repo.endsWith(gitEnding)) {
-      this._repo = this._repo.substring(0, this._repo.length - gitEnding.length)
+    if (this.repo.endsWith(gitEnding)) {
+      this.repo = this.repo.substring(0, this.repo.length - gitEnding.length)
     }
 
     return baseUrl
   }
 
   private convertPullRequestComments (pullRequestComments?: GetIssueCommentsResponse, fileComments?: GetReviewCommentsResponse): CommentData {
-    this._logger.logDebug('* GitHubReposInvoker.convertPullRequestComments()')
+    this.logger.logDebug('* GitHubReposInvoker.convertPullRequestComments()')
 
     const result: CommentData = new CommentData()
 
@@ -282,11 +282,11 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
   }
 
   private async getCommitId (): Promise<void> {
-    this._logger.logDebug('* GitHubReposInvoker.getCommitId()')
+    this.logger.logDebug('* GitHubReposInvoker.getCommitId()')
 
     let result: ListCommitsResponse = await this.invokeApiCall(async (): Promise<ListCommitsResponse> => {
-      const internalResult: ListCommitsResponse = await this._octokitWrapper.listCommits(this._owner, this._repo, this._pullRequestId, 1)
-      this._logger.logDebug(JSON.stringify(internalResult))
+      const internalResult: ListCommitsResponse = await this.octokitWrapper.listCommits(this.owner, this.repo, this.pullRequestId, 1)
+      this.logger.logDebug(JSON.stringify(internalResult))
       return internalResult
     })
 
@@ -300,16 +300,16 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
 
       const match: number = parseInt(matches.groups.pageNumber, DecimalRadix)
       result = await this.invokeApiCall(async (): Promise<ListCommitsResponse> => {
-        const internalResult: ListCommitsResponse = await this._octokitWrapper.listCommits(this._owner, this._repo, this._pullRequestId, match)
-        this._logger.logDebug(JSON.stringify(internalResult))
+        const internalResult: ListCommitsResponse = await this.octokitWrapper.listCommits(this.owner, this.repo, this.pullRequestId, match)
+        this.logger.logDebug(JSON.stringify(internalResult))
         return internalResult
       })
     }
 
-    this._commitId = Validator.validateString(result.data[result.data.length - 1]?.sha, `result.data[${(result.data.length - 1).toString()}].sha`, 'GitHubReposInvoker.getCommitId()')
+    this.commitId = Validator.validateString(result.data[result.data.length - 1]?.sha, `result.data[${(result.data.length - 1).toString()}].sha`, 'GitHubReposInvoker.getCommitId()')
   }
 
   protected async invokeApiCall<Response> (action: () => Promise<Response>): Promise<Response> {
-    return super.invokeApiCall(action, this._runnerInvoker.loc('repos.gitHubReposInvoker.insufficientGitHubAccessTokenPermissions'))
+    return super.invokeApiCall(action, this.runnerInvoker.loc('repos.gitHubReposInvoker.insufficientGitHubAccessTokenPermissions'))
   }
 }

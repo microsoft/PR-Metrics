@@ -10,7 +10,7 @@ import PullRequestCommentData from './pullRequestCommentData'
  * A class representing a file comment.
  */
 export default class FileCommentData extends PullRequestCommentData {
-  private readonly _fileName: string
+  private readonly fileNameInternal: string
 
   /**
    * Initializes a new instance of the `FileCommentData` class.
@@ -22,7 +22,7 @@ export default class FileCommentData extends PullRequestCommentData {
   public constructor (id: number, content: string, fileName: string, status?: CommentThreadStatus) {
     super(id, content, status)
 
-    this._fileName = fileName
+    this.fileNameInternal = fileName
   }
 
   /**
@@ -30,6 +30,6 @@ export default class FileCommentData extends PullRequestCommentData {
    * @returns The full file name and path.
    */
   public get fileName (): string {
-    return this._fileName
+    return this.fileNameInternal
   }
 }

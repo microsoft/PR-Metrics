@@ -21,11 +21,11 @@ import { injectable } from 'tsyringe'
  */
 @injectable()
 export default class PullRequestComments {
-  private readonly _codeMetrics: CodeMetrics
-  private readonly _inputs: Inputs
-  private readonly _logger: Logger
-  private readonly _reposInvoker: ReposInvoker
-  private readonly _runnerInvoker: RunnerInvoker
+  private readonly codeMetrics: CodeMetrics
+  private readonly inputs: Inputs
+  private readonly logger: Logger
+  private readonly reposInvoker: ReposInvoker
+  private readonly runnerInvoker: RunnerInvoker
 
   /**
    * Initializes a new instance of the `PullRequestComments` class.
@@ -36,11 +36,11 @@ export default class PullRequestComments {
    * @param runnerInvoker The runner invoker logic.
    */
   public constructor (codeMetrics: CodeMetrics, inputs: Inputs, logger: Logger, reposInvoker: ReposInvoker, runnerInvoker: RunnerInvoker) {
-    this._codeMetrics = codeMetrics
-    this._inputs = inputs
-    this._logger = logger
-    this._reposInvoker = reposInvoker
-    this._runnerInvoker = runnerInvoker
+    this.codeMetrics = codeMetrics
+    this.inputs = inputs
+    this.logger = logger
+    this.reposInvoker = reposInvoker
+    this.runnerInvoker = runnerInvoker
   }
 
   /**
@@ -48,9 +48,9 @@ export default class PullRequestComments {
    * @returns The comment to add to files that do not require review.
    */
   public get noReviewRequiredComment (): string {
-    this._logger.logDebug('* PullRequestComments.noReviewRequiredComment')
+    this.logger.logDebug('* PullRequestComments.noReviewRequiredComment')
 
-    return this._runnerInvoker.loc('pullRequests.pullRequestComments.noReviewRequiredComment')
+    return this.runnerInvoker.loc('pullRequests.pullRequestComments.noReviewRequiredComment')
   }
 
   /**
@@ -58,13 +58,13 @@ export default class PullRequestComments {
    * @returns A promise containing the data used for constructing the comment within the pull request.
    */
   public async getCommentData (): Promise<PullRequestCommentsData> {
-    this._logger.logDebug('* PullRequestComments.getCommentData()')
+    this.logger.logDebug('* PullRequestComments.getCommentData()')
 
-    const filesNotRequiringReview: string[] = await this._codeMetrics.getFilesNotRequiringReview()
-    const deletedFilesNotRequiringReview: string[] = await this._codeMetrics.getDeletedFilesNotRequiringReview()
+    const filesNotRequiringReview: string[] = await this.codeMetrics.getFilesNotRequiringReview()
+    const deletedFilesNotRequiringReview: string[] = await this.codeMetrics.getDeletedFilesNotRequiringReview()
     let result: PullRequestCommentsData = new PullRequestCommentsData(filesNotRequiringReview, deletedFilesNotRequiringReview)
 
-    const comments: CommentData = await this._reposInvoker.getComments()
+    const comments: CommentData = await this.reposInvoker.getComments()
 
     // If the current comment thread is not applied to a specified file, check if it is the metrics comment thread.
     for(const comment of comments.pullRequestComments) {
@@ -84,24 +84,24 @@ export default class PullRequestComments {
    * @returns A promise containing the comment to add to the comment thread.
    */
   public async getMetricsComment (): Promise<string> {
-    this._logger.logDebug('* PullRequestComments.getMetricsComment()')
+    this.logger.logDebug('* PullRequestComments.getMetricsComment()')
 
-    const metrics: CodeMetricsData = await this._codeMetrics.getMetrics()
+    const metrics: CodeMetricsData = await this.codeMetrics.getMetrics()
 
-    let result = `${this._runnerInvoker.loc('pullRequests.pullRequestComments.commentTitle')}\n`
+    let result = `${this.runnerInvoker.loc('pullRequests.pullRequestComments.commentTitle')}\n`
     result += await this.addCommentSizeStatus()
     result += await this.addCommentTestStatus()
 
-    result += `||${this._runnerInvoker.loc('pullRequests.pullRequestComments.tableLines')}\n`
+    result += `||${this.runnerInvoker.loc('pullRequests.pullRequestComments.tableLines')}\n`
     result += '-|-:\n'
-    result += this.addCommentMetrics(this._runnerInvoker.loc('pullRequests.pullRequestComments.tableProductCode'), metrics.productCode, false)
-    result += this.addCommentMetrics(this._runnerInvoker.loc('pullRequests.pullRequestComments.tableTestCode'), metrics.testCode, false)
-    result += this.addCommentMetrics(this._runnerInvoker.loc('pullRequests.pullRequestComments.tableSubtotal'), metrics.subtotal, true)
-    result += this.addCommentMetrics(this._runnerInvoker.loc('pullRequests.pullRequestComments.tableIgnoredCode'), metrics.ignoredCode, false)
-    result += this.addCommentMetrics(this._runnerInvoker.loc('pullRequests.pullRequestComments.tableTotal'), metrics.total, true)
+    result += this.addCommentMetrics(this.runnerInvoker.loc('pullRequests.pullRequestComments.tableProductCode'), metrics.productCode, false)
+    result += this.addCommentMetrics(this.runnerInvoker.loc('pullRequests.pullRequestComments.tableTestCode'), metrics.testCode, false)
+    result += this.addCommentMetrics(this.runnerInvoker.loc('pullRequests.pullRequestComments.tableSubtotal'), metrics.subtotal, true)
+    result += this.addCommentMetrics(this.runnerInvoker.loc('pullRequests.pullRequestComments.tableIgnoredCode'), metrics.ignoredCode, false)
+    result += this.addCommentMetrics(this.runnerInvoker.loc('pullRequests.pullRequestComments.tableTotal'), metrics.total, true)
 
     result += '\n'
-    result += this._runnerInvoker.loc('pullRequests.pullRequestComments.commentFooter')
+    result += this.runnerInvoker.loc('pullRequests.pullRequestComments.commentFooter')
 
     return result
   }
@@ -111,14 +111,14 @@ export default class PullRequestComments {
    * @returns A promise containing the status to which to update the comment thread.
    */
   public async getMetricsCommentStatus (): Promise<CommentThreadStatus> {
-    this._logger.logDebug('* PullRequestComments.getMetricsCommentStatus()')
+    this.logger.logDebug('* PullRequestComments.getMetricsCommentStatus()')
 
-    if (this._inputs.alwaysCloseComment) {
+    if (this.inputs.alwaysCloseComment) {
       return CommentThreadStatus.Closed
     }
 
-    if (await this._codeMetrics.isSmall()) {
-      const isSufficientlyTested: boolean | null = await this._codeMetrics.isSufficientlyTested()
+    if (await this.codeMetrics.isSmall()) {
+      const isSufficientlyTested: boolean | null = await this.codeMetrics.isSufficientlyTested()
 
       if (isSufficientlyTested ?? true) {
         return CommentThreadStatus.Closed
@@ -129,9 +129,9 @@ export default class PullRequestComments {
   }
 
   private getMetricsCommentData (result: PullRequestCommentsData, comment: PullRequestComment): PullRequestCommentsData {
-    this._logger.logDebug('* PullRequestComments.getMetricsCommentData()')
+    this.logger.logDebug('* PullRequestComments.getMetricsCommentData()')
 
-    if (!comment.content.startsWith(`${this._runnerInvoker.loc('pullRequests.pullRequestComments.commentTitle')}\n`)) {
+    if (!comment.content.startsWith(`${this.runnerInvoker.loc('pullRequests.pullRequestComments.commentTitle')}\n`)) {
       return result
     }
 
@@ -142,7 +142,7 @@ export default class PullRequestComments {
   }
 
   private getFilesRequiringCommentUpdates (result: PullRequestCommentsData, comment: FileCommentData): PullRequestCommentsData {
-    this._logger.logDebug('* PullRequestComments.getFilesRequiringCommentUpdates()')
+    this.logger.logDebug('* PullRequestComments.getFilesRequiringCommentUpdates()')
 
     if (comment.content !== this.noReviewRequiredComment) {
       return result
@@ -165,13 +165,13 @@ export default class PullRequestComments {
   }
 
   private async addCommentSizeStatus (): Promise<string> {
-    this._logger.logDebug('* PullRequestComments.addCommentSizeStatus()')
+    this.logger.logDebug('* PullRequestComments.addCommentSizeStatus()')
 
     let result = ''
-    if (await this._codeMetrics.isSmall()) {
-      result += this._runnerInvoker.loc('pullRequests.pullRequestComments.smallPullRequestComment')
+    if (await this.codeMetrics.isSmall()) {
+      result += this.runnerInvoker.loc('pullRequests.pullRequestComments.smallPullRequestComment')
     } else {
-      result += this._runnerInvoker.loc('pullRequests.pullRequestComments.largePullRequestComment', (this._inputs.baseSize * this._inputs.growthRate).toLocaleString())
+      result += this.runnerInvoker.loc('pullRequests.pullRequestComments.largePullRequestComment', (this.inputs.baseSize * this.inputs.growthRate).toLocaleString())
     }
 
     result += '\n'
@@ -179,15 +179,15 @@ export default class PullRequestComments {
   }
 
   private async addCommentTestStatus (): Promise<string> {
-    this._logger.logDebug('* PullRequestComments.addCommentTestStatus()')
+    this.logger.logDebug('* PullRequestComments.addCommentTestStatus()')
 
     let result = ''
-    const isSufficientlyTested: boolean | null = await this._codeMetrics.isSufficientlyTested()
+    const isSufficientlyTested: boolean | null = await this.codeMetrics.isSufficientlyTested()
     if (isSufficientlyTested !== null) {
       if (isSufficientlyTested) {
-        result += this._runnerInvoker.loc('pullRequests.pullRequestComments.testsSufficientComment')
+        result += this.runnerInvoker.loc('pullRequests.pullRequestComments.testsSufficientComment')
       } else {
-        result += this._runnerInvoker.loc('pullRequests.pullRequestComments.testsInsufficientComment')
+        result += this.runnerInvoker.loc('pullRequests.pullRequestComments.testsInsufficientComment')
       }
 
       result += '\n'
@@ -197,7 +197,7 @@ export default class PullRequestComments {
   }
 
   private addCommentMetrics (title: string, metric: number, highlight: boolean): string {
-    this._logger.logDebug('* PullRequestComments.addCommentMetrics()')
+    this.logger.logDebug('* PullRequestComments.addCommentMetrics()')
 
     let surround = ''
     if (highlight) {

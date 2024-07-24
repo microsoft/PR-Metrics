@@ -7,9 +7,9 @@
  * A class representing code metrics data.
  */
 export default class CodeMetricsData {
-  private readonly _productCode: number
-  private readonly _testCode: number
-  private readonly _ignoredCode: number
+  private readonly productCodeInternal: number
+  private readonly testCodeInternal: number
+  private readonly ignoredCodeInternal: number
 
   /**
    * Initializes a new instance of the `CodeMetricsData` class.
@@ -30,9 +30,9 @@ export default class CodeMetricsData {
       throw new RangeError(`Ignored code '${ignoredCode.toString()}' must be >= 0.`)
     }
 
-    this._productCode = productCode
-    this._testCode = testCode
-    this._ignoredCode = ignoredCode
+    this.productCodeInternal = productCode
+    this.testCodeInternal = testCode
+    this.ignoredCodeInternal = ignoredCode
   }
 
   /**
@@ -40,7 +40,7 @@ export default class CodeMetricsData {
    * @returns The number of lines of product code.
    */
   public get productCode (): number {
-    return this._productCode
+    return this.productCodeInternal
   }
 
   /**
@@ -48,7 +48,7 @@ export default class CodeMetricsData {
    * @returns The number of lines of test code.
    */
   public get testCode (): number {
-    return this._testCode
+    return this.testCodeInternal
   }
 
   /**
@@ -56,7 +56,7 @@ export default class CodeMetricsData {
    * @returns The number of lines of ignored code.
    */
   public get ignoredCode (): number {
-    return this._ignoredCode
+    return this.ignoredCodeInternal
   }
 
   /**

@@ -56,7 +56,6 @@ export default tseslint.config(
       'no-magic-numbers': 'off',
       'no-ternary': 'off',
       'no-undefined': 'off',
-      //'no-underscore-dangle': 'off',
       'one-var': 'off',
     },
   },

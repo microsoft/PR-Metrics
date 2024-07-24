@@ -9,9 +9,9 @@ import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfa
  * A class representing a pull request comment.
  */
 export default class PullRequestCommentData {
-  private readonly _id: number
-  private readonly _status: CommentThreadStatus
-  private readonly _content: string
+  private readonly idInternal: number
+  private readonly contentInternal: string
+  private readonly statusInternal: CommentThreadStatus
 
   /**
    * Initializes a new instance of the `PullRequestCommentData` class.
@@ -20,9 +20,9 @@ export default class PullRequestCommentData {
    * @param status The optional status associated with the comment.
    */
   public constructor (id: number, content: string, status?: CommentThreadStatus) {
-    this._id = id
-    this._content = content
-    this._status = status ?? CommentThreadStatus.Unknown
+    this.idInternal = id
+    this.contentInternal = content
+    this.statusInternal = status ?? CommentThreadStatus.Unknown
   }
 
   /**
@@ -30,7 +30,7 @@ export default class PullRequestCommentData {
    * @returns The comment ID.
    */
   public get id (): number {
-    return this._id
+    return this.idInternal
   }
 
   /**
@@ -38,7 +38,7 @@ export default class PullRequestCommentData {
    * @returns The comment content.
    */
   public get content (): string {
-    return this._content
+    return this.contentInternal
   }
 
   /**
@@ -46,6 +46,6 @@ export default class PullRequestCommentData {
    * @returns The comment status.
    */
   public get status (): CommentThreadStatus {
-    return this._status
+    return this.statusInternal
   }
 }

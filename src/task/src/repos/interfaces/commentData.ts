@@ -10,15 +10,15 @@ import type PullRequestCommentData from './pullRequestCommentData'
  * A wrapper grouping types of pull request comments.
  */
 export default class CommentData {
-  public _pullRequestComments: PullRequestCommentData[] = []
-  public _fileComments: FileCommentData[] = []
+  public pullRequestCommentsInternal: PullRequestCommentData[] = []
+  public fileCommentsInternal: FileCommentData[] = []
 
   /**
    * Gets the set of pull request comments, i.e. those comments associated with no file.
    * @returns The pull request comments.
    */
   public get pullRequestComments (): PullRequestCommentData[] {
-    return this._pullRequestComments
+    return this.pullRequestCommentsInternal
   }
 
   /**
@@ -26,6 +26,6 @@ export default class CommentData {
    * @returns The file comments.
    */
   public get fileComments (): FileCommentData[] {
-    return this._fileComments
+    return this.fileCommentsInternal
   }
 }

@@ -15,16 +15,16 @@ import { singleton } from 'tsyringe'
  */
 @singleton()
 export default class Inputs {
-  private readonly _logger: Logger
-  private readonly _runnerInvoker: RunnerInvoker
+  private readonly logger: Logger
+  private readonly runnerInvoker: RunnerInvoker
 
-  private _isInitialized = false
-  private _baseSize = 0
-  private _growthRate = 0
-  private _testFactor: number | null = 0
-  private _alwaysCloseComment = false
-  private _fileMatchingPatterns: string[] = []
-  private _codeFileExtensions: Set<string> = new Set<string>()
+  private isInitializedInternal = false
+  private baseSizeInternal = 0
+  private growthRateInternal = 0
+  private testFactorInternal: number | null = 0
+  private alwaysCloseCommentInternal = false
+  private fileMatchingPatternsInternal: string[] = []
+  private codeFileExtensionsInternal: Set<string> = new Set<string>()
 
   /**
    * Initializes a new instance of the `Inputs` class.
@@ -32,8 +32,8 @@ export default class Inputs {
    * @param runnerInvoker The runner invoker logic.
    */
   public constructor (logger: Logger, runnerInvoker: RunnerInvoker) {
-    this._logger = logger
-    this._runnerInvoker = runnerInvoker
+    this.logger = logger
+    this.runnerInvoker = runnerInvoker
   }
 
   /**
@@ -41,10 +41,10 @@ export default class Inputs {
    * @returns The base size input.
    */
   public get baseSize (): number {
-    this._logger.logDebug('* Inputs.baseSize')
+    this.logger.logDebug('* Inputs.baseSize')
 
     this.initialize()
-    return this._baseSize
+    return this.baseSizeInternal
   }
 
   /**
@@ -52,10 +52,10 @@ export default class Inputs {
    * @returns The growth rate input.
    */
   public get growthRate (): number {
-    this._logger.logDebug('* Inputs.growthRate')
+    this.logger.logDebug('* Inputs.growthRate')
 
     this.initialize()
-    return this._growthRate
+    return this.growthRateInternal
   }
 
   /**
@@ -63,10 +63,10 @@ export default class Inputs {
    * @returns The test factor input. If the test coverage is not to be checked, this will be `null`.
    */
   public get testFactor (): number | null {
-    this._logger.logDebug('* Inputs.testFactor')
+    this.logger.logDebug('* Inputs.testFactor')
 
     this.initialize()
-    return this._testFactor
+    return this.testFactorInternal
   }
 
   /**
@@ -75,10 +75,10 @@ export default class Inputs {
    * @returns The value indicating whether to always close the comment.
    */
   public get alwaysCloseComment (): boolean {
-    this._logger.logDebug('* Inputs.alwaysCloseComment')
+    this.logger.logDebug('* Inputs.alwaysCloseComment')
 
     this.initialize()
-    return this._alwaysCloseComment
+    return this.alwaysCloseCommentInternal
   }
 
   /**
@@ -86,10 +86,10 @@ export default class Inputs {
    * @returns The file matching patterns input.
    */
   public get fileMatchingPatterns (): string[] {
-    this._logger.logDebug('* Inputs.fileMatchingPatterns')
+    this.logger.logDebug('* Inputs.fileMatchingPatterns')
 
     this.initialize()
-    return this._fileMatchingPatterns
+    return this.fileMatchingPatternsInternal
   }
 
   /**
@@ -97,117 +97,117 @@ export default class Inputs {
    * @returns The code file extensions input.
    */
   public get codeFileExtensions (): Set<string> {
-    this._logger.logDebug('* Inputs.codeFileExtensions')
+    this.logger.logDebug('* Inputs.codeFileExtensions')
 
     this.initialize()
-    return this._codeFileExtensions
+    return this.codeFileExtensionsInternal
   }
 
   private initialize (): void {
-    this._logger.logDebug('* Inputs.initialize()')
+    this.logger.logDebug('* Inputs.initialize()')
 
-    if (this._isInitialized) {
+    if (this.isInitializedInternal) {
       return
     }
 
-    const baseSize: string | undefined = this._runnerInvoker.getInput(['Base', 'Size'])
+    const baseSize: string | undefined = this.runnerInvoker.getInput(['Base', 'Size'])
     this.initializeBaseSize(baseSize)
 
-    const growthRate: string | undefined = this._runnerInvoker.getInput(['Growth', 'Rate'])
+    const growthRate: string | undefined = this.runnerInvoker.getInput(['Growth', 'Rate'])
     this.initializeGrowthRate(growthRate)
 
-    const testFactor: string | undefined = this._runnerInvoker.getInput(['Test', 'Factor'])
+    const testFactor: string | undefined = this.runnerInvoker.getInput(['Test', 'Factor'])
     this.initializeTestFactor(testFactor)
 
-    const alwaysCloseComment: string | undefined = this._runnerInvoker.getInput(['Always', 'Close', 'Comment'])
+    const alwaysCloseComment: string | undefined = this.runnerInvoker.getInput(['Always', 'Close', 'Comment'])
     this.initializeAlwaysCloseComment(alwaysCloseComment)
 
-    const fileMatchingPatterns: string | undefined = this._runnerInvoker.getInput(['File', 'Matching', 'Patterns'])
+    const fileMatchingPatterns: string | undefined = this.runnerInvoker.getInput(['File', 'Matching', 'Patterns'])
     this.initializeFileMatchingPatterns(fileMatchingPatterns)
 
-    const codeFileExtensions: string | undefined = this._runnerInvoker.getInput(['Code', 'File', 'Extensions'])
+    const codeFileExtensions: string | undefined = this.runnerInvoker.getInput(['Code', 'File', 'Extensions'])
     this.initializeCodeFileExtensions(codeFileExtensions)
 
-    this._isInitialized = true
+    this.isInitializedInternal = true
   }
 
   private initializeBaseSize (baseSize: string | undefined): void {
-    this._logger.logDebug('* Inputs.initializeBaseSize()')
+    this.logger.logDebug('* Inputs.initializeBaseSize()')
 
     const convertedValue: number = baseSize === undefined ? NaN : parseInt(baseSize, DecimalRadix)
     if (!isNaN(convertedValue) && convertedValue > 0) {
-      this._baseSize = convertedValue
-      this._logger.logInfo(this._runnerInvoker.loc('metrics.inputs.settingBaseSize', this._baseSize.toLocaleString()))
+      this.baseSizeInternal = convertedValue
+      this.logger.logInfo(this.runnerInvoker.loc('metrics.inputs.settingBaseSize', this.baseSizeInternal.toLocaleString()))
       return
     }
 
-    this._logger.logInfo(this._runnerInvoker.loc('metrics.inputs.adjustingBaseSize', InputsDefault.baseSize.toLocaleString()))
-    this._baseSize = InputsDefault.baseSize
+    this.logger.logInfo(this.runnerInvoker.loc('metrics.inputs.adjustingBaseSize', InputsDefault.baseSize.toLocaleString()))
+    this.baseSizeInternal = InputsDefault.baseSize
   }
 
   private initializeGrowthRate (growthRate: string | undefined): void {
-    this._logger.logDebug('* Inputs.initializeGrowthRate()')
+    this.logger.logDebug('* Inputs.initializeGrowthRate()')
 
     const convertedValue: number = growthRate === undefined ? NaN : parseFloat(growthRate)
     if (!isNaN(convertedValue) && convertedValue > 1.0) {
-      this._growthRate = convertedValue
-      this._logger.logInfo(this._runnerInvoker.loc('metrics.inputs.settingGrowthRate', this._growthRate.toLocaleString()))
+      this.growthRateInternal = convertedValue
+      this.logger.logInfo(this.runnerInvoker.loc('metrics.inputs.settingGrowthRate', this.growthRateInternal.toLocaleString()))
       return
     }
 
-    this._logger.logInfo(this._runnerInvoker.loc('metrics.inputs.adjustingGrowthRate', InputsDefault.growthRate.toLocaleString()))
-    this._growthRate = InputsDefault.growthRate
+    this.logger.logInfo(this.runnerInvoker.loc('metrics.inputs.adjustingGrowthRate', InputsDefault.growthRate.toLocaleString()))
+    this.growthRateInternal = InputsDefault.growthRate
   }
 
   private initializeTestFactor (testFactor: string | undefined): void {
-    this._logger.logDebug('* Inputs.initializeTestFactor()')
+    this.logger.logDebug('* Inputs.initializeTestFactor()')
 
     const convertedValue: number = testFactor === undefined ? NaN : parseFloat(testFactor)
     if (!isNaN(convertedValue) && convertedValue >= 0.0) {
       if (convertedValue === 0.0) {
-        this._testFactor = null
-        this._logger.logInfo(this._runnerInvoker.loc('metrics.inputs.disablingTestFactor'))
+        this.testFactorInternal = null
+        this.logger.logInfo(this.runnerInvoker.loc('metrics.inputs.disablingTestFactor'))
       } else {
-        this._testFactor = convertedValue
-        this._logger.logInfo(this._runnerInvoker.loc('metrics.inputs.settingTestFactor', this._testFactor.toLocaleString()))
+        this.testFactorInternal = convertedValue
+        this.logger.logInfo(this.runnerInvoker.loc('metrics.inputs.settingTestFactor', this.testFactorInternal.toLocaleString()))
       }
 
       return
     }
 
-    this._logger.logInfo(this._runnerInvoker.loc('metrics.inputs.adjustingTestFactor', InputsDefault.testFactor.toLocaleString()))
-    this._testFactor = InputsDefault.testFactor
+    this.logger.logInfo(this.runnerInvoker.loc('metrics.inputs.adjustingTestFactor', InputsDefault.testFactor.toLocaleString()))
+    this.testFactorInternal = InputsDefault.testFactor
   }
 
   private initializeAlwaysCloseComment (alwaysCloseComment: string | undefined): void {
-    this._logger.logDebug('* Inputs.initializeAlwaysCloseComment()')
+    this.logger.logDebug('* Inputs.initializeAlwaysCloseComment()')
 
     const convertedValue: boolean | undefined = alwaysCloseComment?.toLowerCase() === 'true'
     if (convertedValue) {
-      this._alwaysCloseComment = convertedValue
-      this._logger.logInfo(this._runnerInvoker.loc('metrics.inputs.settingAlwaysCloseComment'))
+      this.alwaysCloseCommentInternal = convertedValue
+      this.logger.logInfo(this.runnerInvoker.loc('metrics.inputs.settingAlwaysCloseComment'))
       return
     }
 
-    this._logger.logInfo(this._runnerInvoker.loc('metrics.inputs.adjustingAlwaysCloseComment'))
-    this._alwaysCloseComment = InputsDefault.alwaysCloseComment
+    this.logger.logInfo(this.runnerInvoker.loc('metrics.inputs.adjustingAlwaysCloseComment'))
+    this.alwaysCloseCommentInternal = InputsDefault.alwaysCloseComment
   }
 
   private initializeFileMatchingPatterns (fileMatchingPatterns: string | undefined): void {
-    this._logger.logDebug('* Inputs.initializeFileMatchingPatterns()')
+    this.logger.logDebug('* Inputs.initializeFileMatchingPatterns()')
 
     if (fileMatchingPatterns !== undefined && fileMatchingPatterns.trim() !== '') {
-      this._fileMatchingPatterns = fileMatchingPatterns.replace(/\\/gu, '/').replace(/\n$/gu, '').split('\n')
-      this._logger.logInfo(this._runnerInvoker.loc('metrics.inputs.settingFileMatchingPatterns', JSON.stringify(this._fileMatchingPatterns)))
+      this.fileMatchingPatternsInternal = fileMatchingPatterns.replace(/\\/gu, '/').replace(/\n$/gu, '').split('\n')
+      this.logger.logInfo(this.runnerInvoker.loc('metrics.inputs.settingFileMatchingPatterns', JSON.stringify(this.fileMatchingPatternsInternal)))
       return
     }
 
-    this._logger.logInfo(this._runnerInvoker.loc('metrics.inputs.adjustingFileMatchingPatterns', JSON.stringify(InputsDefault.fileMatchingPatterns)))
-    this._fileMatchingPatterns = InputsDefault.fileMatchingPatterns
+    this.logger.logInfo(this.runnerInvoker.loc('metrics.inputs.adjustingFileMatchingPatterns', JSON.stringify(InputsDefault.fileMatchingPatterns)))
+    this.fileMatchingPatternsInternal = InputsDefault.fileMatchingPatterns
   }
 
   private initializeCodeFileExtensions (codeFileExtensions: string | undefined): void {
-    this._logger.logDebug('* Inputs.initializeCodeFileExtensions()')
+    this.logger.logDebug('* Inputs.initializeCodeFileExtensions()')
 
     if (codeFileExtensions !== undefined && codeFileExtensions.trim() !== '') {
       const codeFileExtensionsArray: string[] = codeFileExtensions.replace(/\n$/gu, '').split('\n')
@@ -219,14 +219,14 @@ export default class Inputs {
           modifiedValue = modifiedValue.substring(1)
         }
 
-        this._codeFileExtensions.add(modifiedValue.toLowerCase())
+        this.codeFileExtensionsInternal.add(modifiedValue.toLowerCase())
       }
 
-      this._logger.logInfo(this._runnerInvoker.loc('metrics.inputs.settingCodeFileExtensions', JSON.stringify(Array.from(this._codeFileExtensions))))
+      this.logger.logInfo(this.runnerInvoker.loc('metrics.inputs.settingCodeFileExtensions', JSON.stringify(Array.from(this.codeFileExtensionsInternal))))
       return
     }
 
-    this._logger.logInfo(this._runnerInvoker.loc('metrics.inputs.adjustingCodeFileExtensions', JSON.stringify(InputsDefault.codeFileExtensions)))
-    this._codeFileExtensions = new Set<string>(InputsDefault.codeFileExtensions)
+    this.logger.logInfo(this.runnerInvoker.loc('metrics.inputs.adjustingCodeFileExtensions', JSON.stringify(InputsDefault.codeFileExtensions)))
+    this.codeFileExtensionsInternal = new Set<string>(InputsDefault.codeFileExtensions)
   }
 }
