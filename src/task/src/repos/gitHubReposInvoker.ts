@@ -62,7 +62,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     this.runnerInvoker = runnerInvoker
   }
 
-  public isAccessTokenAvailable (): Promise<string | null> {
+  public async isAccessTokenAvailable (): Promise<string | null> {
     this.logger.logDebug('* GitHubReposInvoker.isAccessTokenAvailable()')
 
     if (process.env.PR_METRICS_ACCESS_TOKEN === undefined) {

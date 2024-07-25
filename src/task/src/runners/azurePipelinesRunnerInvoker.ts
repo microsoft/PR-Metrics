@@ -27,7 +27,7 @@ export default class AzurePipelinesRunnerInvoker implements GenericRunnerInvoker
     this.azurePipelinesRunnerWrapper = azurePipelinesRunnerWrapper
   }
 
-  public exec (tool: string, args: string): Promise<ExecOutput> {
+  public async exec (tool: string, args: string): Promise<ExecOutput> {
     const options: IExecOptions = {
       failOnStdErr: true,
       silent: true,
