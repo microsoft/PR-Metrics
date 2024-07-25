@@ -32,6 +32,15 @@ export default tseslint.config(
       },
     },
     rules: {
+      '@typescript-eslint/naming-convention': [
+        'error',
+        {
+          'selector': 'variable',
+          'format': [
+            'camelCase',
+          ],
+        },
+      ],
       '@typescript-eslint/no-unused-vars': [
         'error',
         {
@@ -47,14 +56,14 @@ export default tseslint.config(
       '@typescript-eslint/no-magic-numbers': 'off',
       '@typescript-eslint/prefer-readonly-parameter-types': 'off',
       '@typescript-eslint/promise-function-async': 'off',
-//      '@typescript-eslint/strict-boolean-expressions': 'off',
+      '@typescript-eslint/strict-boolean-expressions': 'off',
       'max-lines-per-function': 'off',
       'max-lines': 'off',
       'max-statements': 'off',
       'no-magic-numbers': 'off',
       'no-ternary': 'off',
       'no-undefined': 'off',
-      'one-var': 'off',
+      'one-var': 'off'
     },
   },
   {

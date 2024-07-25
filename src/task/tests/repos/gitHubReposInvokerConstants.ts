@@ -8,7 +8,7 @@ import type GetPullResponse from '../../src/wrappers/octokitInterfaces/getPullRe
 import type GetReviewCommentsResponse from '../../src/wrappers/octokitInterfaces/getReviewCommentsResponse'
 import type ListCommitsResponse from '../../src/wrappers/octokitInterfaces/listCommitsResponse'
 
-/* eslint-disable camelcase -- Required for alignment with Octokit. */
+/* eslint-disable camelcase, @typescript-eslint/naming-convention -- Required for alignment with Octokit. */
 
 /**
  * A mock response for the Octokit API call to get the pull request details.
@@ -604,4 +604,4 @@ export const getReviewCommentsResponse: GetReviewCommentsResponse = {
   url: '',
 }
 
-/* eslint-enable camelcase */
+/* eslint-enable camelcase, @typescript-eslint/naming-convention */

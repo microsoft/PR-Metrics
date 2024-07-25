@@ -60,7 +60,7 @@ export default class OctokitWrapper {
 
     return this.octokit.rest.pulls.get({
       owner,
-      pull_number: pullRequestId, // eslint-disable-line camelcase -- Required for alignment with Octokit.
+      pull_number: pullRequestId, // eslint-disable-line camelcase, @typescript-eslint/naming-convention -- Required for alignment with Octokit.
       repo,
     })
   }
@@ -82,7 +82,7 @@ export default class OctokitWrapper {
     return this.octokit.rest.pulls.update({
       body: description,
       owner,
-      pull_number: pullRequestId, // eslint-disable-line camelcase -- Required for alignment with Octokit.
+      pull_number: pullRequestId, // eslint-disable-line camelcase, @typescript-eslint/naming-convention -- Required for alignment with Octokit.
       repo,
       title,
     })
@@ -101,7 +101,7 @@ export default class OctokitWrapper {
     }
 
     return this.octokit.rest.issues.listComments({
-      issue_number: pullRequestId, // eslint-disable-line camelcase -- Required for alignment with Octokit.
+      issue_number: pullRequestId, // eslint-disable-line camelcase, @typescript-eslint/naming-convention -- Required for alignment with Octokit.
       owner,
       repo,
     })
@@ -121,7 +121,7 @@ export default class OctokitWrapper {
 
     return this.octokit.rest.pulls.listReviewComments({
       owner,
-      pull_number: pullRequestId, // eslint-disable-line camelcase -- Required for alignment with Octokit.
+      pull_number: pullRequestId, // eslint-disable-line camelcase, @typescript-eslint/naming-convention -- Required for alignment with Octokit.
       repo,
     })
   }
@@ -141,7 +141,7 @@ export default class OctokitWrapper {
 
     return this.octokit.rest.issues.createComment({
       body: content,
-      issue_number: pullRequestId, // eslint-disable-line camelcase -- Required for alignment with Octokit.
+      issue_number: pullRequestId, // eslint-disable-line camelcase, @typescript-eslint/naming-convention -- Required for alignment with Octokit.
       owner,
       repo,
     })
@@ -163,7 +163,7 @@ export default class OctokitWrapper {
     return this.octokit.rest.pulls.listCommits({
       owner,
       page,
-      pull_number: pullRequestId, // eslint-disable-line camelcase -- Required for alignment with Octokit.
+      pull_number: pullRequestId, // eslint-disable-line camelcase, @typescript-eslint/naming-convention -- Required for alignment with Octokit.
       repo,
     })
   }
@@ -190,11 +190,11 @@ export default class OctokitWrapper {
 
     return this.octokit.rest.pulls.createReviewComment({
       body: content,
-      commit_id: commitId,        // eslint-disable-line camelcase -- Required for alignment with Octokit.
+      commit_id: commitId,        // eslint-disable-line camelcase, @typescript-eslint/naming-convention -- Required for alignment with Octokit.
       line: lineNumber,
       owner,
       path: fileName,
-      pull_number: pullRequestId, // eslint-disable-line camelcase -- Required for alignment with Octokit.
+      pull_number: pullRequestId, // eslint-disable-line camelcase, @typescript-eslint/naming-convention -- Required for alignment with Octokit.
       repo,
     })
   }
@@ -215,8 +215,8 @@ export default class OctokitWrapper {
 
     return this.octokit.rest.issues.updateComment({
       body: content,
-      comment_id: commentThreadId, // eslint-disable-line camelcase -- Required for alignment with Octokit.
-      issue_number: pullRequestId, // eslint-disable-line camelcase -- Required for alignment with Octokit.
+      comment_id: commentThreadId, // eslint-disable-line camelcase, @typescript-eslint/naming-convention -- Required for alignment with Octokit.
+      issue_number: pullRequestId, // eslint-disable-line camelcase, @typescript-eslint/naming-convention -- Required for alignment with Octokit.
       owner,
       repo,
     })
@@ -235,7 +235,7 @@ export default class OctokitWrapper {
     }
 
     return this.octokit.rest.pulls.deleteReviewComment({
-      comment_id: commentThreadId, // eslint-disable-line camelcase -- Required for alignment with Octokit.
+      comment_id: commentThreadId, // eslint-disable-line camelcase, @typescript-eslint/naming-convention -- Required for alignment with Octokit.
       owner,
       repo,
     })

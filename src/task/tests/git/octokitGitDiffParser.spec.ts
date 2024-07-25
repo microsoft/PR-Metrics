@@ -19,7 +19,7 @@ describe('octokitGitDiffParser.ts', (): void => {
 
   const getPullResponse: GetPullResponse = {
     data: {
-      diff_url: 'https://github.com/microsoft/PR-Metrics', // eslint-disable-line camelcase -- Required for alignment with Octokit.
+      diff_url: 'https://github.com/microsoft/PR-Metrics', // eslint-disable-line camelcase, @typescript-eslint/naming-convention -- Required for alignment with Octokit.
     },
   } as GetPullResponse
 

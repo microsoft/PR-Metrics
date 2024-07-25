@@ -6,4 +6,4 @@
 /**
  * The radix to use when parsing a decimal integer using `parseInt()`.
  */
-export const DecimalRadix = 10
+export const decimalRadix = 10
