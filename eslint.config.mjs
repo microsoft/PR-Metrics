@@ -56,7 +56,6 @@ export default tseslint.config(
       '@typescript-eslint/no-magic-numbers': 'off',
       '@typescript-eslint/prefer-readonly-parameter-types': 'off',
       '@typescript-eslint/promise-function-async': 'off',
-      '@typescript-eslint/strict-boolean-expressions': 'off',
       'max-lines-per-function': 'off',
       'max-lines': 'off',
       'max-statements': 'off',

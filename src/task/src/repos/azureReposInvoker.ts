@@ -59,7 +59,7 @@ export default class AzureReposInvoker extends BaseReposInvoker {
     this.logger.logDebug('* AzureReposInvoker.isAccessTokenAvailable()')
 
     const tokenManagerResult: string | null = await this.tokenManager.getToken()
-    if (tokenManagerResult) {
+    if (tokenManagerResult !== null) {
       return tokenManagerResult
     }
 
