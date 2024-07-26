@@ -36,8 +36,7 @@ export default tseslint.config(
         'error',
         {
           // Update the default order to group getters and setters.
-          'default':
-          [
+          'default': [
             // Index signature
             'signature',
             'call-signature',
