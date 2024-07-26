@@ -182,6 +182,10 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     })
   }
 
+  protected async invokeApiCall<Response> (action: () => Promise<Response>): Promise<Response> {
+    return super.invokeApiCall(action, this.runnerInvoker.loc('repos.gitHubReposInvoker.insufficientGitHubAccessTokenPermissions'))
+  }
+
   private initialize (): void {
     this.logger.logDebug('* GitHubReposInvoker.initialize()')
 
@@ -307,9 +311,5 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     }
 
     this.commitId = Validator.validateString(result.data[result.data.length - 1]?.sha, `result.data[${(result.data.length - 1).toString()}].sha`, 'GitHubReposInvoker.getCommitId()')
-  }
-
-  protected async invokeApiCall<Response> (action: () => Promise<Response>): Promise<Response> {
-    return super.invokeApiCall(action, this.runnerInvoker.loc('repos.gitHubReposInvoker.insufficientGitHubAccessTokenPermissions'))
   }
 }

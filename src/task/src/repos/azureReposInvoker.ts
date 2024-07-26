@@ -55,6 +55,36 @@ export default class AzureReposInvoker extends BaseReposInvoker {
     this.tokenManager = tokenManager
   }
 
+  private static convertPullRequestComments (comments: GitPullRequestCommentThread[]): CommentData {
+    const result: CommentData = new CommentData()
+
+    for (const [index, value] of comments.entries()) {
+      AzureReposInvoker.convertPullRequestCommentEntry(index, value, result)
+    }
+
+    return result
+  }
+
+  private static convertPullRequestCommentEntry (index: number, value: GitPullRequestCommentThread, result: CommentData): void
+  {
+    const id: number = Validator.validateNumber(value.id, `commentThread[${index.toString()}].id`, 'AzureReposInvoker.convertPullRequestCommentEntry()')
+    const currentComments: Comment[] | undefined = value.comments
+    if (currentComments !== undefined) {
+      const content: string | undefined = currentComments[0]?.content
+      if (content !== undefined && content !== '') {
+        const status: CommentThreadStatus = value.status ?? CommentThreadStatus.Unknown
+        if (value.threadContext === undefined) {
+          result.pullRequestComments.push(new PullRequestCommentData(id, content, status))
+        } else {
+          const fileName: string | undefined = value.threadContext.filePath
+          if (fileName !== undefined && fileName.length > 1) {
+            result.fileComments.push(new FileCommentData(id, content, fileName.substring(1), status))
+          }
+        }
+      }
+    }
+  }
+
   public async isAccessTokenAvailable (): Promise<string | null> {
     this.logger.logDebug('* AzureReposInvoker.isAccessTokenAvailable()')
 
@@ -188,6 +218,10 @@ export default class AzureReposInvoker extends BaseReposInvoker {
     await this.invokeApiCall(async (): Promise<void> => (await gitApiPromise).deleteComment(this.repositoryId, this.pullRequestId, commentThreadId, 1, this.project))
   }
 
+  protected async invokeApiCall<Response> (action: () => Promise<Response>): Promise<Response> {
+    return super.invokeApiCall(action, this.runnerInvoker.loc('repos.azureReposInvoker.insufficientAzureReposAccessTokenPermissions'))
+  }
+
   private async getGitApi (): Promise<IGitApi> {
     this.logger.logDebug('* AzureReposInvoker.getGitApi()')
 
@@ -207,39 +241,5 @@ export default class AzureReposInvoker extends BaseReposInvoker {
     this.gitApi = await connection.getGitApi()
 
     return this.gitApi
-  }
-
-  private static convertPullRequestComments (comments: GitPullRequestCommentThread[]): CommentData {
-    const result: CommentData = new CommentData()
-
-    for (const [index, value] of comments.entries()) {
-      AzureReposInvoker.convertPullRequestCommentEntry(index, value, result)
-    }
-
-    return result
-  }
-
-  private static convertPullRequestCommentEntry (index: number, value: GitPullRequestCommentThread, result: CommentData): void
-  {
-    const id: number = Validator.validateNumber(value.id, `commentThread[${index.toString()}].id`, 'AzureReposInvoker.convertPullRequestCommentEntry()')
-    const currentComments: Comment[] | undefined = value.comments
-    if (currentComments !== undefined) {
-      const content: string | undefined = currentComments[0]?.content
-      if (content !== undefined && content !== '') {
-        const status: CommentThreadStatus = value.status ?? CommentThreadStatus.Unknown
-        if (value.threadContext === undefined) {
-          result.pullRequestComments.push(new PullRequestCommentData(id, content, status))
-        } else {
-          const fileName: string | undefined = value.threadContext.filePath
-          if (fileName !== undefined && fileName.length > 1) {
-            result.fileComments.push(new FileCommentData(id, content, fileName.substring(1), status))
-          }
-        }
-      }
-    }
-  }
-
-  protected async invokeApiCall<Response> (action: () => Promise<Response>): Promise<Response> {
-    return super.invokeApiCall(action, this.runnerInvoker.loc('repos.azureReposInvoker.insufficientAzureReposAccessTokenPermissions'))
   }
 }

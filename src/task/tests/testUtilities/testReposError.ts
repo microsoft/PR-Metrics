@@ -10,16 +10,6 @@ import type ReposError from '../../src/repos/interfaces/reposError'
  */
 export default class TestReposError extends Error implements ReposError {
   /**
-   * Initializes a new instance of the `TestReposError` class.
-   * @param message The error message.
-   */
-  public constructor(message: string) {
-    super()
-
-    this.message = message
-  }
-
-  /**
    * Gets the name of the object type.
    */
   public name = 'TestReposError'
@@ -38,4 +28,14 @@ export default class TestReposError extends Error implements ReposError {
    * The internal error message.
    */
   public internalMessage = ''
+
+  /**
+   * Initializes a new instance of the `TestReposError` class.
+   * @param message The error message.
+   */
+  public constructor(message: string) {
+    super()
+
+    this.message = message
+  }
 }

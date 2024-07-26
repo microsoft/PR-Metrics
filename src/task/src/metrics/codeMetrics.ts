@@ -21,14 +21,14 @@ import { singleton } from 'tsyringe'
  */
 @singleton()
 export default class CodeMetrics {
+  private static readonly minimatchOptions: minimatch.MinimatchOptions = {
+    dot: true,
+  }
+
   private readonly gitInvoker: GitInvoker
   private readonly inputs: Inputs
   private readonly logger: Logger
   private readonly runnerInvoker: RunnerInvoker
-
-  private static readonly minimatchOptions: minimatch.MinimatchOptions = {
-    dot: true,
-  }
 
   private isInitialized = false
   private readonly filesNotRequiringReview: string[] = []
