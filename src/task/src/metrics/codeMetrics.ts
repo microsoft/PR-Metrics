@@ -52,6 +52,21 @@ export default class CodeMetrics {
     this.runnerInvoker = runnerInvoker
   }
 
+  private static parseChangedLines (element: string, line: string, category: string): number {
+    // Parse the number of lines changed. For binary files, the lines will be '-'.
+    let result: number
+    if (element === '-') {
+      result = 0
+    } else {
+      result = parseInt(element, decimalRadix)
+      if (isNaN(result)) {
+        throw new Error(`Could not parse ${category} lines '${element}' from line '${line}'.`)
+      }
+    }
+
+    return result
+  }
+
   /**
    * Gets the collection of files not requiring review to which to add a comment.
    * @returns A promise containing the collection of files not requiring review.
@@ -293,24 +308,9 @@ export default class CodeMetrics {
 
       result.push({
         fileName,
-        linesAdded: this.parseChangedLines(elements[0], line, 'added'),
-        linesDeleted: this.parseChangedLines(elements[1], line, 'deleted'),
+        linesAdded: CodeMetrics.parseChangedLines(elements[0], line, 'added'),
+        linesDeleted: CodeMetrics.parseChangedLines(elements[1], line, 'deleted'),
       })
-    }
-
-    return result
-  }
-
-  private parseChangedLines (element: string, line: string, category: string): number {
-    // Parse the number of lines changed. For binary files, the lines will be '-'.
-    let result: number
-    if (element === '-') {
-      result = 0
-    } else {
-      result = parseInt(element, decimalRadix)
-      if (isNaN(result)) {
-        throw new Error(`Could not parse ${category} lines '${element}' from line '${line}'.`)
-      }
     }
 
     return result

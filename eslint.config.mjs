@@ -32,6 +32,8 @@ export default tseslint.config(
       },
     },
     rules: {
+      '@typescript-eslint/class-methods-use-this': 'off',
+      '@typescript-eslint/init-declarations': 'off',
       '@typescript-eslint/max-params': [
         'error',
         {
@@ -120,35 +122,35 @@ export default tseslint.config(
             'accessor',
 
             // Getters & Setters
-            [ 'public-static-get', 'public-static-set' ],
-            [ 'protected-static-get', 'protected-static-set' ],
-            [ 'private-static-get', 'private-static-set' ],
-            [ '#private-static-get', '#private-static-set' ],
+            ['public-static-get', 'public-static-set'],
+            ['protected-static-get', 'protected-static-set'],
+            ['private-static-get', 'private-static-set'],
+            ['#private-static-get', '#private-static-set'],
 
-            [ 'public-decorated-get', 'private-decorated-set' ],
-            [ 'protected-decorated-get', 'protected-decorated-set' ],
-            [ 'private-decorated-get', 'private-decorated-set' ],
+            ['public-decorated-get', 'private-decorated-set'],
+            ['protected-decorated-get', 'protected-decorated-set'],
+            ['private-decorated-get', 'private-decorated-set'],
 
-            [ 'public-instance-get', 'public-instance-set' ],
-            [ 'protected-instance-get', 'protected-instance-set' ],
-            [ 'private-instance-get', 'private-instance-set' ],
-            [ '#private-instance-get', '#private-instance-set' ],
+            ['public-instance-get', 'public-instance-set'],
+            ['protected-instance-get', 'protected-instance-set'],
+            ['private-instance-get', 'private-instance-set'],
+            ['#private-instance-get', '#private-instance-set'],
 
-            [ 'public-abstract-get', 'public-abstract-set' ],
-            [ 'protected-abstract-get', 'protected-abstract-set' ],
+            ['public-abstract-get', 'public-abstract-set'],
+            ['protected-abstract-get', 'protected-abstract-set'],
 
-            [ 'public-get', 'public-set' ],
-            [ 'protected-get', 'protected-set' ],
-            [ 'private-get', 'private-set' ],
-            [ '#private-get', '#private-set' ],
+            ['public-get', 'public-set'],
+            ['protected-get', 'protected-set'],
+            ['private-get', 'private-set'],
+            ['#private-get', '#private-set'],
 
-            [ 'static-get', 'static-set' ],
-            [ 'instance-get', 'instance-set' ],
-            [ 'abstract-get', 'abstract-set' ],
+            ['static-get', 'static-set'],
+            ['instance-get', 'instance-set'],
+            ['abstract-get', 'abstract-set'],
 
-            [ 'decorated-get', 'decorated-set' ],
+            ['decorated-get', 'decorated-set'],
 
-            [ 'get', 'set' ],
+            ['get', 'set'],
 
             // Methods
             'public-static-method',
@@ -198,6 +200,7 @@ export default tseslint.config(
           'argsIgnorePattern': '^_[^_]+',
         },
       ],
+      '@typescript-eslint/prefer-readonly-parameter-types': 'off',
       'no-ternary': 'off',
       'one-var': [
         'error',
@@ -207,11 +210,8 @@ export default tseslint.config(
       ],
 
       // Full set
-      '@typescript-eslint/class-methods-use-this': 'off',
-      '@typescript-eslint/init-declarations': 'off',
       '@typescript-eslint/no-magic-numbers': 'off',
-      '@typescript-eslint/prefer-readonly-parameter-types': 'off',
-      'max-lines-per-function': 'off',
+      //'max-lines-per-function': 'off',
       'max-lines': 'off',
       'max-statements': 'off',
       'no-undefined': 'off',
