@@ -211,7 +211,6 @@ export default tseslint.config(
 
       // Full set
       '@typescript-eslint/no-magic-numbers': 'off',
-      //'max-lines-per-function': 'off',
       'max-lines': 'off',
       'max-statements': 'off',
       'no-undefined': 'off',
