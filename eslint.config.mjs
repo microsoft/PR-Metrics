@@ -34,12 +34,7 @@ export default tseslint.config(
     rules: {
       '@typescript-eslint/class-methods-use-this': 'off',
       '@typescript-eslint/init-declarations': 'off',
-      '@typescript-eslint/max-params': [
-        'error',
-        {
-          max: 6,
-        },
-      ],
+      '@typescript-eslint/max-params': 'off',
       '@typescript-eslint/member-ordering': [
         'error',
         {
@@ -201,6 +196,9 @@ export default tseslint.config(
         },
       ],
       '@typescript-eslint/prefer-readonly-parameter-types': 'off',
+      'max-lines': 'off',
+      'max-lines-per-function': 'off',
+      'max-statements': 'off',
       'no-ternary': 'off',
       'one-var': [
         'error',
@@ -211,8 +209,6 @@ export default tseslint.config(
 
       // Full set
       '@typescript-eslint/no-magic-numbers': 'off',
-      'max-lines': 'off',
-      'max-statements': 'off',
       'no-undefined': 'off',
     },
   },
@@ -225,9 +221,6 @@ export default tseslint.config(
 
       // Full set
       '@typescript-eslint/no-magic-numbers': 'off',
-      'max-lines-per-function': 'off',
-      'max-lines': 'off',
-      'max-statements': 'off',
     },
   },
 )
