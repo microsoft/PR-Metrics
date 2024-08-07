@@ -8,6 +8,7 @@ import type { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitIn
 import type GenericReposInvoker from './genericReposInvoker'
 import type PullRequestDetails from './interfaces/pullRequestDetails'
 import type ReposError from './interfaces/reposError'
+import { StatusCodes } from 'http-status-codes'
 
 /**
  * A base class for invoking repository functionality.
@@ -26,7 +27,7 @@ export default abstract class BaseReposInvoker implements GenericReposInvoker {
     } catch (error: unknown) {
       const reposError: ReposError = error as ReposError
 
-      const accessErrorStatusCodes: number[] = [401, 403, 404]
+      const accessErrorStatusCodes: number[] = [StatusCodes.UNAUTHORIZED, StatusCodes.FORBIDDEN, StatusCodes.NOT_FOUND]
       if (accessErrorStatusCodes.includes(reposError.status ?? reposError.statusCode ?? 0)) {
         reposError.internalMessage = reposError.message
         reposError.message = accessErrorMessage

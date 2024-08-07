@@ -25,6 +25,7 @@ import PullRequestCommentData from './interfaces/pullRequestCommentData'
 import PullRequestDetails from './interfaces/pullRequestDetails'
 import { RequestError } from 'octokit'
 import RunnerInvoker from '../runners/runnerInvoker'
+import { StatusCodes } from 'http-status-codes'
 import UpdateIssueCommentResponse from '../wrappers/octokitInterfaces/updateIssueCommentResponse'
 import UpdatePullResponse from '../wrappers/octokitInterfaces/updatePullResponse'
 import { decimalRadix } from '../utilities/constants'
@@ -145,7 +146,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
           const result: CreateReviewCommentResponse | null = await this.octokitWrapper.createReviewComment(this.owner, this.repo, this.pullRequestId, content, fileName, this.commitId)
           this.logger.logDebug(JSON.stringify(result))
         } catch (error: unknown) {
-          if (error instanceof RequestError && error.status === 422 && error.message.includes('pull_request_review_thread.path diff too large')) {
+          if (error instanceof RequestError && error.status as StatusCodes === StatusCodes.UNPROCESSABLE_ENTITY && error.message.includes('pull_request_review_thread.path diff too large')) {
             this.logger.logInfo('GitHub createReviewComment() threw a 422 error related to a large diff. Ignoring as this is expected.')
             this.logger.logErrorObject(error)
           } else {

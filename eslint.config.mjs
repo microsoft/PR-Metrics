@@ -208,7 +208,12 @@ export default tseslint.config(
       ],
 
       // Full set
-      '@typescript-eslint/no-magic-numbers': 'off',
+      '@typescript-eslint/no-magic-numbers': [
+        'error',
+        {
+          'ignore': [0, 1],
+        },
+      ],
       'no-undefined': 'off',
     },
   },
