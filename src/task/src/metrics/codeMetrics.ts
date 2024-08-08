@@ -181,11 +181,13 @@ export default class CodeMetrics {
       const positiveFileMatchingPatterns: string[] = []
       const negativeFileMatchingPatterns: string[] = []
       const doubleNegativeFileMatchingPatterns: string[] = []
+      const notNotPattern = '!!'
+      const notPattern = '!'
       for (const fileMatchingPattern of this.inputs.fileMatchingPatterns){
-        if (fileMatchingPattern.startsWith('!!')) {
-          doubleNegativeFileMatchingPatterns.push(fileMatchingPattern.substring(2))
-        } else if (fileMatchingPattern.startsWith('!')) {
-          negativeFileMatchingPatterns.push(fileMatchingPattern.substring(1))
+        if (fileMatchingPattern.startsWith(notNotPattern)) {
+          doubleNegativeFileMatchingPatterns.push(fileMatchingPattern.substring(notNotPattern.length))
+        } else if (fileMatchingPattern.startsWith(notPattern)) {
+          negativeFileMatchingPatterns.push(fileMatchingPattern.substring(notPattern.length))
         } else {
           positiveFileMatchingPatterns.push(fileMatchingPattern)
         }
@@ -302,21 +304,24 @@ export default class CodeMetrics {
     const lines: string[] = modifiedInput.split('\n')
 
     const result: CodeFileMetric[] = []
+    const linesAddedIndex = 0
+    const linesDeletedIndex = 1
+    const fileNameIndex = 2
     for (const line of lines) {
       const elements: string[] = line.split('\t')
-      if (elements[0] === undefined || elements[1] === undefined || elements[2] === undefined) {
+      if (elements[linesAddedIndex] === undefined || elements[linesDeletedIndex] === undefined || elements[fileNameIndex] === undefined) {
         throw new RangeError(`The number of elements '${elements.length.toString()}' in '${line}' in input '${modifiedInput}' did not match the expected 3.`)
       }
 
       // Condense file and folder names that were renamed e.g. "F{a => i}leT{b => e}st.d{c => l}l" or "FaleTbst.dcl => FileTest.dll".
-      const fileName: string = elements[2]
+      const fileName: string = elements[fileNameIndex]
         .replace(/\{.*? => (?<newName>[^}]+?)\}/gu, '$<newName>')
         .replace(/.*? => (?<newName>[^}]+?)/gu, '$<newName>')
 
       result.push({
         fileName,
-        linesAdded: CodeMetrics.parseChangedLines(elements[0], line, 'added'),
-        linesDeleted: CodeMetrics.parseChangedLines(elements[1], line, 'deleted'),
+        linesAdded: CodeMetrics.parseChangedLines(elements[linesAddedIndex], line, 'added'),
+        linesDeleted: CodeMetrics.parseChangedLines(elements[linesDeletedIndex], line, 'deleted'),
       })
     }
 
@@ -352,6 +357,12 @@ export default class CodeMetrics {
   private calculateSize (): string {
     this.logger.logDebug('* CodeMetrics.calculateSize()')
 
+    const xsIndex = 0
+    const sIndex = 1
+    const mIndex = 2
+    const lIndex = 3
+    const xlIndex = 4
+    // eslint-disable-next-line @typescript-eslint/no-magic-numbers -- A compile-time constant is required for the array size.
     const indicators: FixedLengthArray<((prefix: string) => string), 5> = [
       (): string => this.runnerInvoker.loc('metrics.codeMetrics.titleSizeXS'),
       (): string => this.runnerInvoker.loc('metrics.codeMetrics.titleSizeS'),
@@ -362,21 +373,21 @@ export default class CodeMetrics {
 
     // Calculate the smaller size.
     if (this.metrics.productCode < this.inputs.baseSize) {
-      return indicators[0]('')
+      return indicators[xsIndex]('')
     }
 
     // Calculate the larger sizes.
-    let index = 1
-    let result: string = indicators[1]('')
+    let index = sIndex
+    let result: string = indicators[sIndex]('')
     let currentSize: number = this.inputs.baseSize * this.inputs.growthRate
     while (this.metrics.productCode >= currentSize) {
       currentSize *= this.inputs.growthRate
       index += 1
 
-      if (index === 2 || index === 3 || index === 4) {
+      if (index === mIndex || index === lIndex || index === xlIndex) {
         result = indicators[index]('')
       } else {
-        result = indicators[4]((index - indicators.length + 2).toLocaleString())
+        result = indicators[xlIndex]((index - indicators.length + mIndex).toLocaleString())
       }
     }
 

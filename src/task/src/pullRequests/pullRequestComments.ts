@@ -6,6 +6,7 @@
 import CodeMetrics from '../metrics/codeMetrics'
 import CodeMetricsData from '../metrics/codeMetricsData'
 import CommentData from '../repos/interfaces/commentData'
+
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import FileCommentData from '../repos/interfaces/fileCommentData'
 import Inputs from '../metrics/inputs'
@@ -15,6 +16,7 @@ import PullRequestCommentsData from './pullRequestCommentsData'
 import ReposInvoker from '../repos/reposInvoker'
 import RunnerInvoker from '../runners/runnerInvoker'
 import { injectable } from 'tsyringe'
+import { notFound } from '../utilities/constants'
 
 /**
  * A class for managing pull requests comments.
@@ -149,13 +151,13 @@ export default class PullRequestComments {
     }
 
     const fileIndex: number = result.filesNotRequiringReview.indexOf(comment.fileName)
-    if (fileIndex !== -1) {
+    if (fileIndex !== notFound) {
       result.filesNotRequiringReview.splice(fileIndex, 1)
       return result
     }
 
     const deletedFileIndex: number = result.deletedFilesNotRequiringReview.indexOf(comment.fileName)
-    if (deletedFileIndex !== -1) {
+    if (deletedFileIndex !== notFound) {
       result.deletedFilesNotRequiringReview.splice(deletedFileIndex, 1)
       return result
     }

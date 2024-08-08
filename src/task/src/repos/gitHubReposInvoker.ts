@@ -238,17 +238,20 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
 
     const sourceRepositoryUri: string = Validator.validateVariable('SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI', 'GitHubReposInvoker.initializeForAzureDevOps()')
     const sourceRepositoryUriElements: string[] = sourceRepositoryUri.split('/')
-    if (sourceRepositoryUriElements[2] === undefined || sourceRepositoryUriElements[3] === undefined || sourceRepositoryUriElements[4] === undefined) {
+    const baseUrlIndex = 2
+    const ownerIndex = 3
+    const repoIndex = 4
+    if (sourceRepositoryUriElements[baseUrlIndex] === undefined || sourceRepositoryUriElements[ownerIndex] === undefined || sourceRepositoryUriElements[repoIndex] === undefined) {
       throw new Error(`SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI '${sourceRepositoryUri}' is in an unexpected format.`)
     }
 
     // Handle GitHub Enterprise invocations.
-    let baseUrl: string | undefined
-    if (sourceRepositoryUriElements[2] !== 'github.com') {
-      baseUrl = `https://${sourceRepositoryUriElements[2]}/api/v3`
+    let baseUrl: string
+    [, , baseUrl, this.owner, this.repo] = sourceRepositoryUriElements
+    if (baseUrl !== 'github.com') {
+      baseUrl = `https://${baseUrl}/api/v3`
     }
 
-    [, , , this.owner, this.repo] = sourceRepositoryUriElements
     const gitEnding = '.git'
     if (this.repo.endsWith(gitEnding)) {
       this.repo = this.repo.substring(0, this.repo.length - gitEnding.length)

@@ -209,14 +209,16 @@ export default class Inputs {
   private initializeCodeFileExtensions (codeFileExtensions: string | undefined): void {
     this.logger.logDebug('* Inputs.initializeCodeFileExtensions()')
 
+    const extensionPrefix1 = '*.'
+    const extensionPrefix2 = '.'
     if (codeFileExtensions !== undefined && codeFileExtensions.trim() !== '') {
       const codeFileExtensionsArray: string[] = codeFileExtensions.replace(/\n$/gu, '').split('\n')
       for (const value of codeFileExtensionsArray) {
         let modifiedValue: string = value
-        if (modifiedValue.startsWith('*.')) {
-          modifiedValue = modifiedValue.substring(2)
-        } else if (modifiedValue.startsWith('.')) {
-          modifiedValue = modifiedValue.substring(1)
+        if (modifiedValue.startsWith(extensionPrefix1)) {
+          modifiedValue = modifiedValue.substring(extensionPrefix1.length)
+        } else if (modifiedValue.startsWith(extensionPrefix2)) {
+          modifiedValue = modifiedValue.substring(extensionPrefix2.length)
         }
 
         this.codeFileExtensionsInternal.add(modifiedValue.toLowerCase())
