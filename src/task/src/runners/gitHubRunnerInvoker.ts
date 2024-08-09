@@ -78,9 +78,11 @@ export default class GitHubRunnerInvoker implements GenericRunnerInvoker {
 
     const entries: [string, string][] = Object.entries(resources)
     const stringPrefix = 'loc.messages.'
-    for(const entry of entries) {
-      if (entry[0].startsWith(stringPrefix)) {
-        this.resources.set(entry[0].substring(stringPrefix.length), entry[1])
+    const keyIndex = 0
+    const valueIndex = 1
+    for (const entry of entries) {
+      if (entry[keyIndex].startsWith(stringPrefix)) {
+        this.resources.set(entry[keyIndex].substring(stringPrefix.length), entry[valueIndex])
       }
     }
   }

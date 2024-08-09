@@ -77,8 +77,9 @@ export default class AzureReposInvoker extends BaseReposInvoker {
           result.pullRequestComments.push(new PullRequestCommentData(id, content, status))
         } else {
           const fileName: string | undefined = value.threadContext.filePath
-          if (fileName !== undefined && fileName.length > 1) {
-            result.fileComments.push(new FileCommentData(id, content, fileName.substring(1), status))
+          const prefixLength = 1
+          if (fileName !== undefined && fileName.length > prefixLength) {
+            result.fileComments.push(new FileCommentData(id, content, fileName.substring(prefixLength), status))
           }
         }
       }
@@ -197,7 +198,8 @@ export default class AzureReposInvoker extends BaseReposInvoker {
         content,
       }
 
-      const commentResult: Comment = await this.invokeApiCall(async (): Promise<Comment> => (await gitApiPromise).updateComment(comment, this.repositoryId, this.pullRequestId, commentThreadId, 1, this.project))
+      const commentId = 1
+      const commentResult: Comment = await this.invokeApiCall(async (): Promise<Comment> => (await gitApiPromise).updateComment(comment, this.repositoryId, this.pullRequestId, commentThreadId, commentId, this.project))
       this.logger.logDebug(JSON.stringify(commentResult))
     }
 
@@ -215,7 +217,8 @@ export default class AzureReposInvoker extends BaseReposInvoker {
     this.logger.logDebug('* AzureReposInvoker.deleteCommentThread()')
 
     const gitApiPromise: Promise<IGitApi> = this.getGitApi()
-    await this.invokeApiCall(async (): Promise<void> => (await gitApiPromise).deleteComment(this.repositoryId, this.pullRequestId, commentThreadId, 1, this.project))
+    const commentId = 1
+    await this.invokeApiCall(async (): Promise<void> => (await gitApiPromise).deleteComment(this.repositoryId, this.pullRequestId, commentThreadId, commentId, this.project))
   }
 
   protected async invokeApiCall<Response> (action: () => Promise<Response>): Promise<Response> {

@@ -150,15 +150,16 @@ export default class PullRequestComments {
       return result
     }
 
+    const deleteCount = 1
     const fileIndex: number = result.filesNotRequiringReview.indexOf(comment.fileName)
     if (fileIndex !== notFound) {
-      result.filesNotRequiringReview.splice(fileIndex, 1)
+      result.filesNotRequiringReview.splice(fileIndex, deleteCount)
       return result
     }
 
     const deletedFileIndex: number = result.deletedFilesNotRequiringReview.indexOf(comment.fileName)
     if (deletedFileIndex !== notFound) {
-      result.deletedFilesNotRequiringReview.splice(deletedFileIndex, 1)
+      result.deletedFilesNotRequiringReview.splice(deletedFileIndex, deleteCount)
       return result
     }
 

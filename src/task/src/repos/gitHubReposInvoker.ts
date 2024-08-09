@@ -225,7 +225,8 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
 
     const gitHubRepository: string = Validator.validateVariable('GITHUB_REPOSITORY', 'GitHubReposInvoker.initializeForGitHub()')
     const gitHubRepositoryElements: string[] = gitHubRepository.split('/')
-    if (gitHubRepositoryElements[1] === undefined) {
+    const repoIndex = 1
+    if (gitHubRepositoryElements[repoIndex] === undefined) {
       throw new Error(`GITHUB_REPOSITORY '${gitHubRepository}' is in an unexpected format.`)
     }
 
@@ -292,8 +293,9 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
   private async getCommitId (): Promise<void> {
     this.logger.logDebug('* GitHubReposInvoker.getCommitId()')
 
+    const page = 1
     let result: ListCommitsResponse = await this.invokeApiCall(async (): Promise<ListCommitsResponse> => {
-      const internalResult: ListCommitsResponse = await this.octokitWrapper.listCommits(this.owner, this.repo, this.pullRequestId, 1)
+      const internalResult: ListCommitsResponse = await this.octokitWrapper.listCommits(this.owner, this.repo, this.pullRequestId, page)
       this.logger.logDebug(JSON.stringify(internalResult))
       return internalResult
     })
