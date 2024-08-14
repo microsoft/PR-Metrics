@@ -49,7 +49,7 @@
     "@actions/exec": "1.1.1",
     "@octokit/plugin-rest-endpoint-methods": "13.2.1",
     "@octokit/types": "13.5.0",
-    "axios": "1.7.2",
+    "axios": "1.7.4",
     "azure-devops-node-api": "13.0.0",
     "azure-pipelines-task-lib": "4.13.0",
     "isomorphic-fetch": "3.0.0",
