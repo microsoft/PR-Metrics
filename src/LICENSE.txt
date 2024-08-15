@@ -2138,7 +2138,7 @@ SOFTWARE.
 
 ---------------------------------------------------------
 
-axios 1.7.2 - MIT
+axios 1.7.4 - MIT
 https://axios-http.com/
 
 Copyright (c) 2024 Matt Zabriskie and contributors
@@ -4482,4 +4482,3 @@ TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
    0. You just DO WHAT THE FUCK YOU WANT TO.
 
 ---------------------------------------------------------
-
