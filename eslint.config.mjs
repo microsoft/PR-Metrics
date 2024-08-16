@@ -32,32 +32,32 @@ export default tseslint.config(
       },
     },
     rules: {
-      // 1464
-      '@typescript-eslint/no-confusing-void-expression': 'off',
-      // 50
-      '@typescript-eslint/no-explicit-any': 'off',
-      // 71
-      '@typescript-eslint/no-inferrable-types': 'off',
       // 2
       '@typescript-eslint/no-non-null-asserted-optional-chain': 'off',
-      // 4
-      '@typescript-eslint/no-non-null-assertion': 'off',
-      // 3
-      '@typescript-eslint/no-redundant-type-constituents': 'off',
-      // 7
-      '@typescript-eslint/no-unnecessary-condition': 'off',
-      // 160
-      '@typescript-eslint/no-unsafe-argument': 'off',
-      // 11
-      '@typescript-eslint/no-unsafe-assignment': 'off',
       // 2
       '@typescript-eslint/no-unsafe-call': 'off',
-      // 202
-      '@typescript-eslint/no-unsafe-member-access': 'off',
+      // 3
+      '@typescript-eslint/no-redundant-type-constituents': 'off',
+      // 4
+      '@typescript-eslint/no-non-null-assertion': 'off',
+      // 7
+      '@typescript-eslint/no-unnecessary-condition': 'off',
+      // 11
+      '@typescript-eslint/no-unsafe-assignment': 'off',
       // 19
       '@typescript-eslint/no-unused-vars': 'off',
       // 36
       '@typescript-eslint/restrict-template-expressions': 'off',
+      // 50
+      '@typescript-eslint/no-explicit-any': 'off',
+      // 71
+      '@typescript-eslint/no-inferrable-types': 'off',
+      // 160
+      '@typescript-eslint/no-unsafe-argument': 'off',
+      // 202
+      '@typescript-eslint/no-unsafe-member-access': 'off',
+      // 1464
+      '@typescript-eslint/no-confusing-void-expression': 'off',
 
       //'@typescript-eslint/class-methods-use-this': 'error', – 28
       '@typescript-eslint/consistent-type-exports': 'error',
