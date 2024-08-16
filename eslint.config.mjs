@@ -32,24 +32,43 @@ export default tseslint.config(
       },
     },
     rules: {
+      // 2
       '@typescript-eslint/consistent-indexed-object-style': 'off',
+      // 1464
       '@typescript-eslint/no-confusing-void-expression': 'off',
+      // 1
       '@typescript-eslint/no-empty-function': 'off',
+      // 50
       '@typescript-eslint/no-explicit-any': 'off',
+      // 1
       '@typescript-eslint/no-floating-promises': 'off',
+      // 71
       '@typescript-eslint/no-inferrable-types': 'off',
+      // 2
       '@typescript-eslint/no-non-null-asserted-optional-chain': 'off',
+      // 4
       '@typescript-eslint/no-non-null-assertion': 'off',
+      // 3
       '@typescript-eslint/no-redundant-type-constituents': 'off',
+      // 7
       '@typescript-eslint/no-unnecessary-condition': 'off',
+      // 2
       '@typescript-eslint/no-unnecessary-type-assertion': 'off',
+      // 160
       '@typescript-eslint/no-unsafe-argument': 'off',
+      // 11
       '@typescript-eslint/no-unsafe-assignment': 'off',
+      // 2
       '@typescript-eslint/no-unsafe-call': 'off',
+      // 202
       '@typescript-eslint/no-unsafe-member-access': 'off',
+      // 1
       '@typescript-eslint/no-unsafe-return': 'off',
+      // 19
       '@typescript-eslint/no-unused-vars': 'off',
+      // 2
       '@typescript-eslint/require-await': 'off',
+      // 36
       '@typescript-eslint/restrict-template-expressions': 'off',
 
       //'@typescript-eslint/class-methods-use-this': 'error', – 28
