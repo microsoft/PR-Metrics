@@ -40,8 +40,6 @@ export default tseslint.config(
       '@typescript-eslint/no-empty-function': 'off',
       // 50
       '@typescript-eslint/no-explicit-any': 'off',
-      // 1
-      '@typescript-eslint/no-floating-promises': 'off',
       // 71
       '@typescript-eslint/no-inferrable-types': 'off',
       // 2
