@@ -36,8 +36,6 @@ export default tseslint.config(
       '@typescript-eslint/consistent-indexed-object-style': 'off',
       // 1464
       '@typescript-eslint/no-confusing-void-expression': 'off',
-      // 1
-      '@typescript-eslint/no-empty-function': 'off',
       // 50
       '@typescript-eslint/no-explicit-any': 'off',
       // 71

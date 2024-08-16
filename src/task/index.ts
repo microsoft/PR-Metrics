@@ -4,6 +4,7 @@
  */
 
 import 'reflect-metadata'
+import { ExitCodeForFailure } from './src/utilities/constants'
 import PullRequestMetrics from './src/pullRequestMetrics'
 import { container } from 'tsyringe'
 
@@ -12,4 +13,6 @@ const run = async (): Promise<void> => {
   await pullRequestMetrics.run(__dirname)
 }
 
-run().catch((): void => {}).finally((): void => {})
+run().catch((): void => {
+  process.exit(ExitCodeForFailure)
+})
