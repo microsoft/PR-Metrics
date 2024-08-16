@@ -34,11 +34,11 @@ export default class AzurePipelinesRunnerInvoker implements IRunnerInvoker {
     }
 
     const result: IExecSyncResult = this._azurePipelinesRunnerWrapper.execSync(tool, args, options)
-    return {
+    return Promise.resolve({
       exitCode: result.code,
       stderr: result.stderr,
-      stdout: result.stdout
-    }
+      stdout: result.stdout,
+    })
   }
 
   public getInput (name: string[]): string | undefined {

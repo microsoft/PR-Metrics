@@ -60,8 +60,6 @@ export default tseslint.config(
       '@typescript-eslint/no-unsafe-member-access': 'off',
       // 19
       '@typescript-eslint/no-unused-vars': 'off',
-      // 2
-      '@typescript-eslint/require-await': 'off',
       // 36
       '@typescript-eslint/restrict-template-expressions': 'off',
 
