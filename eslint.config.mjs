@@ -48,8 +48,6 @@ export default tseslint.config(
       '@typescript-eslint/no-redundant-type-constituents': 'off',
       // 7
       '@typescript-eslint/no-unnecessary-condition': 'off',
-      // 2
-      '@typescript-eslint/no-unnecessary-type-assertion': 'off',
       // 160
       '@typescript-eslint/no-unsafe-argument': 'off',
       // 11
