@@ -58,8 +58,6 @@ export default tseslint.config(
       '@typescript-eslint/no-unsafe-call': 'off',
       // 202
       '@typescript-eslint/no-unsafe-member-access': 'off',
-      // 1
-      '@typescript-eslint/no-unsafe-return': 'off',
       // 19
       '@typescript-eslint/no-unused-vars': 'off',
       // 2
