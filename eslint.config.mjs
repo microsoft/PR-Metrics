@@ -32,7 +32,7 @@ export default tseslint.config(
       },
     },
     rules: {
-      // 2
+      // 1
       '@typescript-eslint/no-unsafe-call': 'off',
       // 3
       '@typescript-eslint/no-redundant-type-constituents': 'off',
