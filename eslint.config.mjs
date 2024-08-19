@@ -33,8 +33,6 @@ export default tseslint.config(
     },
     rules: {
       // 2
-      '@typescript-eslint/no-non-null-asserted-optional-chain': 'off',
-      // 2
       '@typescript-eslint/no-unsafe-call': 'off',
       // 3
       '@typescript-eslint/no-redundant-type-constituents': 'off',
