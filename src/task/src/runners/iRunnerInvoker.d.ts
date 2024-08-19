@@ -5,7 +5,6 @@
 
 import { EndpointAuthorization } from './endpointAuthorization'
 import ExecOutput from './execOutput'
-import { GitWritableStream } from '../git/gitWritableStream'
 
 /**
  * An interface for invoking runner functionality with any underlying runner.
