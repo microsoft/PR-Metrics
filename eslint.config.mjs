@@ -38,7 +38,7 @@ export default tseslint.config(
       '@typescript-eslint/no-unnecessary-condition': 'off',
       // 11
       '@typescript-eslint/no-unsafe-assignment': 'off',
-      // 18
+      // 6
       //'@typescript-eslint/no-unused-vars': 'off',
       // 36
       '@typescript-eslint/restrict-template-expressions': 'off',
