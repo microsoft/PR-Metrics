@@ -55,7 +55,6 @@ export default tseslint.config(
       // 1464
       '@typescript-eslint/no-confusing-void-expression': 'off',
 
-      //'@typescript-eslint/no-unnecessary-type-parameters': 'error', – 1
       //'@typescript-eslint/explicit-module-boundary-types': 'error', – 2
       //'@typescript-eslint/prefer-destructuring': 'error', – 4
       //'no-negated-condition': 'error', – 4
@@ -104,6 +103,7 @@ export default tseslint.config(
       '@typescript-eslint/no-unnecessary-parameter-property-assignment': 'error',
       '@typescript-eslint/no-unnecessary-qualifier': 'error',
       '@typescript-eslint/no-unnecessary-type-constraint': 'error',
+      '@typescript-eslint/no-unnecessary-type-parameters': 'error',
       '@typescript-eslint/no-unsafe-declaration-merging': 'error',
       '@typescript-eslint/no-unsafe-enum-comparison': 'error',
       '@typescript-eslint/no-unsafe-function-type': 'error',

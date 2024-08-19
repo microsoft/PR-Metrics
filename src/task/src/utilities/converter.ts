@@ -9,11 +9,10 @@ interface StringConvertible {
 
 /**
  * Converts an object that can be null or undefined to a string.
- * @typeParam Type The type of the object, which must be convertible to a string.
  * @param value The value to convert.
  * @returns The converted value.
  */
-export const toString = <Type extends StringConvertible>(value: Type | null | undefined): string => {
+export const toString = (value: StringConvertible | null | undefined): string => {
   if (value === null) {
     return 'null'
   } else if (value === undefined) {
