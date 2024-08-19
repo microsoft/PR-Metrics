@@ -34,8 +34,6 @@ export default tseslint.config(
     rules: {
       // 1
       '@typescript-eslint/no-unsafe-call': 'off',
-      // 4
-      '@typescript-eslint/no-non-null-assertion': 'off',
       // 7
       '@typescript-eslint/no-unnecessary-condition': 'off',
       // 11
