@@ -77,7 +77,7 @@ export default class GitHubRunnerInvoker implements IRunnerInvoker {
     const resources: ResourcesJson = JSON.parse(resourceData) as ResourcesJson
 
     const entries: [string, string][] = Object.entries(resources)
-    const stringPrefix: string = 'loc.messages.'
+    const stringPrefix = 'loc.messages.'
     entries.forEach((entry: [string, string]): void => {
       if (entry[0].startsWith(stringPrefix)) {
         this._resources.set(entry[0].substring(stringPrefix.length), entry[1])

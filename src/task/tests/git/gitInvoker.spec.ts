@@ -26,7 +26,7 @@ describe('gitInvoker.ts', (): void => {
     runnerInvoker = mock(RunnerInvoker)
     when(runnerInvoker.exec('git', 'rev-parse --branch origin/develop...pull/12345/merge')).thenCall(
       async (_tool: string, _args: string): Promise<ExecOutput> => {
-        const testCommitId: string = '7235cb16e5e6ac83e3cbecae66bab557e9e2cee6'
+        const testCommitId = '7235cb16e5e6ac83e3cbecae66bab557e9e2cee6'
         return Promise.resolve({
           exitCode: 0,
           stdout: testCommitId,

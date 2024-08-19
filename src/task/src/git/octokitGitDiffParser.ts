@@ -75,7 +75,7 @@ export default class OctokitGitDiffParser {
      * will always be the empty string.
      */
     const result: string[] = []
-    for (let iteration: number = 1; iteration < diffResponses.length; iteration += 1) {
+    for (let iteration = 1; iteration < diffResponses.length; iteration += 1) {
       result.push(`diff --git${  diffResponses[iteration]}`)
     }
 

@@ -30,11 +30,11 @@ export default class CodeMetrics {
     dot: true
   }
 
-  private _isInitialized: boolean = false
+  private _isInitialized = false
   private readonly _filesNotRequiringReview: string[] = []
   private readonly _deletedFilesNotRequiringReview: string[] = []
-  private _size: string = ''
-  private _sizeIndicator: string = ''
+  private _size = ''
+  private _sizeIndicator = ''
   private _metrics: CodeMetricsData = new CodeMetricsData(0, 0, 0)
   private _isSufficientlyTested: boolean | null = null
 
@@ -158,7 +158,7 @@ export default class CodeMetrics {
 
     // Check for glob matches.
     codeFileMetrics.forEach((codeFileMetric: CodeFileMetric): void => {
-      let isValidFilePattern: boolean = false
+      let isValidFilePattern = false
 
       /*
        * Iterate through the list of patterns. First, check for positive matches. Next, if one of the positive matches
@@ -233,9 +233,9 @@ export default class CodeMetrics {
   private constructMetrics (matches: CodeFileMetric[], nonMatches: CodeFileMetric[], nonMatchesToComment: CodeFileMetric[]): void {
     this._logger.logDebug('* CodeMetrics.constructMetrics()')
 
-    let productCode: number = 0
-    let testCode: number = 0
-    let ignoredCode: number = 0
+    let productCode = 0
+    let testCode = 0
+    let ignoredCode = 0
 
     matches.forEach((entry: CodeFileMetric): void => {
       if (/.*((T|t)est|TEST).*/u.test(entry.fileName) || /.*\.spec\..*/iu.test(path.basename(entry.fileName))) {
@@ -270,7 +270,7 @@ export default class CodeMetrics {
     this._logger.logDebug('* CodeMetrics.createFileMetricsMap()')
 
     // Removing the ending that can be created by test mocks.
-    const endingToRemove: string = '\r\nrc:0\r\nsuccess:true'
+    const endingToRemove = '\r\nrc:0\r\nsuccess:true'
     let modifiedInput: string = input
     if (modifiedInput.endsWith(endingToRemove)) {
       modifiedInput = modifiedInput.substring(0, input.length - endingToRemove.length)
@@ -330,7 +330,7 @@ export default class CodeMetrics {
     this._logger.logDebug('* CodeMetrics.initializeSizeIndicator()')
 
     this._size = this.calculateSize()
-    let testIndicator: string = ''
+    let testIndicator = ''
     if (this._isSufficientlyTested !== null) {
       if (this._isSufficientlyTested) {
         testIndicator = this._runnerInvoker.loc('metrics.codeMetrics.titleTestsSufficient')
@@ -359,7 +359,7 @@ export default class CodeMetrics {
     }
 
     // Calculate the larger sizes.
-    let index: number = 1
+    let index = 1
     let result: string = indicators[1]('')
     let currentSize: number = this._inputs.baseSize * this._inputs.growthRate
     while (this._metrics.productCode >= currentSize) {

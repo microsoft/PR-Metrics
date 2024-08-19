@@ -26,7 +26,7 @@ export default class TokenManager {
   private readonly _logger: Logger
   private readonly _runnerInvoker: RunnerInvoker
 
-  private _previouslyInvoked: boolean = false
+  private _previouslyInvoked = false
 
   /**
    * Initializes a new instance of the `TokenManager` class.

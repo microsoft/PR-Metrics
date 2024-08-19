@@ -14,19 +14,19 @@ import RunnerInvoker from '../../src/runners/runnerInvoker'
 import assert from 'node:assert/strict'
 
 describe('inputs.ts', (): void => {
-  const adjustingAlwaysCloseComment: string = 'Adjusting the always-close-comment mode input to \'false\'.'
-  const adjustingBaseSizeResource: string = `Adjusting the base size input to '${InputsDefault.baseSize}'.`
-  const adjustingGrowthRateResource: string = `Adjusting the growth rate input to '${InputsDefault.growthRate}'.`
-  const adjustingTestFactorResource: string = `Adjusting the test factor input to '${InputsDefault.testFactor}'.`
-  const adjustingFileMatchingPatternsResource: string = `Adjusting the file matching patterns input to '${JSON.stringify(InputsDefault.fileMatchingPatterns)}'.`
-  const adjustingCodeFileExtensionsResource: string = `Adjusting the code file extensions input to '${JSON.stringify(InputsDefault.codeFileExtensions)}'.`
-  const disablingTestFactorResource: string = 'Disabling the test factor validation.'
-  const settingAlwaysCloseComment: string = 'Setting the always-close-comment mode input to \'true\'.'
-  const settingBaseSizeResource: string = 'Setting the base size input to \'VALUE\'.'
-  const settingGrowthRateResource: string = 'Setting the growth rate input to \'VALUE\'.'
-  const settingTestFactorResource: string = 'Setting the test factor input to \'VALUE\'.'
-  const settingFileMatchingPatternsResource: string = 'Setting the file matching patterns input to \'VALUE\'.'
-  const settingCodeFileExtensionsResource: string = 'Setting the code file extensions input to \'VALUE\'.'
+  const adjustingAlwaysCloseComment = 'Adjusting the always-close-comment mode input to \'false\'.'
+  const adjustingBaseSizeResource = `Adjusting the base size input to '${InputsDefault.baseSize}'.`
+  const adjustingGrowthRateResource = `Adjusting the growth rate input to '${InputsDefault.growthRate}'.`
+  const adjustingTestFactorResource = `Adjusting the test factor input to '${InputsDefault.testFactor}'.`
+  const adjustingFileMatchingPatternsResource = `Adjusting the file matching patterns input to '${JSON.stringify(InputsDefault.fileMatchingPatterns)}'.`
+  const adjustingCodeFileExtensionsResource = `Adjusting the code file extensions input to '${JSON.stringify(InputsDefault.codeFileExtensions)}'.`
+  const disablingTestFactorResource = 'Disabling the test factor validation.'
+  const settingAlwaysCloseComment = 'Setting the always-close-comment mode input to \'true\'.'
+  const settingBaseSizeResource = 'Setting the base size input to \'VALUE\'.'
+  const settingGrowthRateResource = 'Setting the growth rate input to \'VALUE\'.'
+  const settingTestFactorResource = 'Setting the test factor input to \'VALUE\'.'
+  const settingFileMatchingPatternsResource = 'Setting the file matching patterns input to \'VALUE\'.'
+  const settingCodeFileExtensionsResource = 'Setting the code file extensions input to \'VALUE\'.'
 
   let logger: Logger
   let runnerInvoker: RunnerInvoker

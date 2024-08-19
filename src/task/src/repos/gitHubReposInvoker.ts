@@ -45,11 +45,11 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
   private readonly _octokitWrapper: OctokitWrapper
   private readonly _runnerInvoker: RunnerInvoker
 
-  private _isInitialized: boolean = false
-  private _owner: string = ''
-  private _repo: string = ''
-  private _pullRequestId: number = 0
-  private _commitId: string = ''
+  private _isInitialized = false
+  private _owner = ''
+  private _repo = ''
+  private _pullRequestId = 0
+  private _commitId = ''
 
   /**
    * Initializes a new instance of the `GitHubReposInvoker` class.
@@ -250,7 +250,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
 
     this._owner = sourceRepositoryUriElements[3]
     this._repo = sourceRepositoryUriElements[4]
-    const gitEnding: string = '.git'
+    const gitEnding = '.git'
     if (this._repo.endsWith(gitEnding)) {
       this._repo = this._repo.substring(0, this._repo.length - gitEnding.length)
     }

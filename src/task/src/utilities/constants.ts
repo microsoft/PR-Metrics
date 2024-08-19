@@ -6,7 +6,7 @@
 /**
  * The radix to use when parsing a decimal integer using `parseInt()`.
  */
-export const DecimalRadix: number = 10
+export const DecimalRadix = 10
 
 /**
  * The exit code for an unsuccessful run of PR Metrics.

@@ -21,8 +21,8 @@ describe('resources.resjson', (): void => {
     const resourcesFileContents: string = fs.readFileSync(resourcesFile, 'utf8')
     resources.set(language, JSON.parse(resourcesFileContents) as ResourcesJson)
   })
-  const commentSuffix: string = '.comment'
-  const schemaEntry: string = '$schema'
+  const commentSuffix = '.comment'
+  const schemaEntry = '$schema'
 
   const taskJsonFile: string = path.join(basePath, 'task.json')
   const taskJsonContents: string = fs.readFileSync(taskJsonFile, 'utf8')
@@ -71,7 +71,7 @@ describe('resources.resjson', (): void => {
       const englishEntries: Map<string, string> = new Map<string, string>(Object.entries(resources.get('en-US') ?? ''))
 
       // Assert
-      const placeholderRegExp: RegExp = /%s/gu
+      const placeholderRegExp = /%s/gu
       entries.forEach((entry: [string, string]): void => {
         const placeholders: number = entry[1].match(placeholderRegExp)?.length ?? 0
         const placeholdersEnglishUS: number = (englishEntries.get(entry[0]) ?? '').match(placeholderRegExp)?.length ?? 0
@@ -126,13 +126,13 @@ describe('resources.resjson', (): void => {
 
   it('should have the same number of placeholders across the TypeScript code and resources file', (): void => {
     // Arrange
-    const globBasePath: string = `${basePath.replace(/\\/gu, '/')  }/`
+    const globBasePath = `${basePath.replace(/\\/gu, '/')  }/`
     const typeScriptFiles1: string[] = globSync(`${globBasePath  }!(node_modules|tests)/**/*.ts`)
     const typeScriptFiles2: string[] = globSync(`${globBasePath  }*.ts`)
     const typeScriptFiles: string[] = typeScriptFiles1.concat(typeScriptFiles2)
     const typeScriptResources: Map<string, number> = new Map<string, number>()
-    const resourceRegExp: RegExp = /loc\('.+?'.*?\)/gu
-    const parameterDelimiterRegExp: RegExp = /,/gu
+    const resourceRegExp = /loc\('.+?'.*?\)/gu
+    const parameterDelimiterRegExp = /,/gu
     typeScriptFiles.forEach((file: string): void => {
       const fileContents: string = fs.readFileSync(file, 'utf8')
       const matches: RegExpMatchArray | null = fileContents.match(resourceRegExp)
@@ -151,8 +151,8 @@ describe('resources.resjson', (): void => {
     })
     const englishEntries: [string, string][] = Object.entries(resources.get('en-US') ?? '')
     const relevantEntries: Map<string, number> = new Map<string, number>()
-    const expectedPrefix: string = 'loc.messages.'
-    const placeholderRegExp: RegExp = /%s/gu
+    const expectedPrefix = 'loc.messages.'
+    const placeholderRegExp = /%s/gu
     englishEntries.forEach((entry: [string, string]): void => {
       if (entry[0].startsWith(expectedPrefix) && !entry[0].endsWith(commentSuffix)) {
         relevantEntries.set(entry[0].substring(expectedPrefix.length), entry[1].match(placeholderRegExp)?.length ?? 0)

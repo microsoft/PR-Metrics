@@ -18,11 +18,11 @@ export default class Inputs {
   private readonly _logger: Logger
   private readonly _runnerInvoker: RunnerInvoker
 
-  private _isInitialized: boolean = false
-  private _baseSize: number = 0
-  private _growthRate: number = 0
+  private _isInitialized = false
+  private _baseSize = 0
+  private _growthRate = 0
   private _testFactor: number | null = 0
-  private _alwaysCloseComment: boolean = false
+  private _alwaysCloseComment = false
   private _fileMatchingPatterns: string[] = []
   private _codeFileExtensions: Set<string> = new Set<string>()
 

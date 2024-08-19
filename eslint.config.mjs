@@ -48,8 +48,6 @@ export default tseslint.config(
       '@typescript-eslint/restrict-template-expressions': 'off',
       // 50
       '@typescript-eslint/no-explicit-any': 'off',
-      // 71
-      '@typescript-eslint/no-inferrable-types': 'off',
       // 160
       '@typescript-eslint/no-unsafe-argument': 'off',
       // 202
