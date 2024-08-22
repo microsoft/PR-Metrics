@@ -10,7 +10,6 @@ import * as GitHubReposInvokerConstants from './gitHubReposInvokerConstants'
 import { anyNumber, anyString, anything, instance, mock, verify, when } from 'ts-mockito'
 import CommentData from '../../src/repos/interfaces/commentData'
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
-import ErrorWithStatus from '../wrappers/errorWithStatus'
 import GetIssueCommentsResponse from '../../src/wrappers/octokitInterfaces/getIssueCommentsResponse'
 import GetPullResponse from '../../src/wrappers/octokitInterfaces/getPullResponse'
 import GitHubReposInvoker from '../../src/repos/gitHubReposInvoker'
@@ -20,8 +19,11 @@ import Logger from '../../src/utilities/logger'
 import OctokitLogObject from '../wrappers/octokitLogObject'
 import OctokitWrapper from '../../src/wrappers/octokitWrapper'
 import PullRequestDetails from '../../src/repos/interfaces/pullRequestDetails'
+import { RequestError } from 'octokit'
 import RunnerInvoker from '../../src/runners/runnerInvoker'
+import { StatusCodes } from 'http-status-codes'
 import assert from 'node:assert/strict'
+import { createRequestError } from '../testUtilities/createRequestError'
 
 describe('gitHubReposInvoker.ts', (): void => {
   let gitInvoker: GitInvoker
@@ -470,13 +472,13 @@ describe('gitHubReposInvoker.ts', (): void => {
     })
 
     {
-      const testCases: number[] = [
-        401,
-        403,
-        404
+      const testCases: StatusCodes[] = [
+        StatusCodes.UNAUTHORIZED,
+        StatusCodes.FORBIDDEN,
+        StatusCodes.NOT_FOUND
       ]
 
-      testCases.forEach((status: number): void => {
+      testCases.forEach((status: StatusCodes): void => {
         it(`should throw when the PAT has insufficient access and the API call returns status '${status}'`, async (): Promise<void> => {
           // Arrange
           when(octokitWrapper.initialize(anything())).thenCall((options: any): void => {
@@ -488,8 +490,7 @@ describe('gitHubReposInvoker.ts', (): void => {
             assert.notEqual(options.log.warn, null)
             assert.notEqual(options.log.error, null)
           })
-          const error: ErrorWithStatus = new ErrorWithStatus('Test')
-          error.status = status
+          const error: RequestError = createRequestError(status, 'Test')
           when(octokitWrapper.getPull(anyString(), anyString(), anyNumber())).thenThrow(error)
           const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 
@@ -995,7 +996,7 @@ describe('gitHubReposInvoker.ts', (): void => {
         assert.notEqual(options.log.warn, null)
         assert.notEqual(options.log.error, null)
       })
-      const error: HttpError = new HttpError(422, 'Validation Failed: {"resource":"PullRequestReviewComment","code":"custom","field":"pull_request_review_thread.path","message":"pull_request_review_thread.path diff too large"}, {"resource":"PullRequestReviewComment","code":"missing_field","field":"pull_request_review_thread.diff_hunk"}')
+      const error: RequestError = createRequestError(StatusCodes.UNPROCESSABLE_ENTITY, 'Validation Failed: {"resource":"PullRequestReviewComment","code":"custom","field":"pull_request_review_thread.path","message":"pull_request_review_thread.path diff too large"}, {"resource":"PullRequestReviewComment","code":"missing_field","field":"pull_request_review_thread.diff_hunk"}')
       when(octokitWrapper.createReviewComment('microsoft', 'PR-Metrics', 12345, 'Content', 'file.ts', 'sha54321')).thenCall((): void => {
         throw error
       })
@@ -1018,8 +1019,8 @@ describe('gitHubReposInvoker.ts', (): void => {
 
     {
       const testCases: HttpError[] = [
-        new HttpError(400, 'Validation Failed: {"resource":"PullRequestReviewComment","code":"custom","field":"pull_request_review_thread.path","message":"pull_request_review_thread.path diff too large"}, {"resource":"PullRequestReviewComment","code":"missing_field","field":"pull_request_review_thread.diff_hunk"}'),
-        new HttpError(422, 'Unprocessable Entity')
+        new HttpError(StatusCodes.BAD_REQUEST, 'Validation Failed: {"resource":"PullRequestReviewComment","code":"custom","field":"pull_request_review_thread.path","message":"pull_request_review_thread.path diff too large"}, {"resource":"PullRequestReviewComment","code":"missing_field","field":"pull_request_review_thread.diff_hunk"}'),
+        new HttpError(StatusCodes.UNPROCESSABLE_ENTITY, 'Unprocessable Entity')
       ]
 
       testCases.forEach((error: HttpError): void => {

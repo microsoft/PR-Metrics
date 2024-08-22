@@ -6,6 +6,7 @@
 import 'isomorphic-fetch'
 import * as Converter from '../utilities/converter'
 import * as Validator from '../utilities/validator'
+import { Octokit, RequestError } from 'octokit'
 import BaseReposInvoker from './baseReposInvoker'
 import CommentData from './interfaces/commentData'
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
@@ -21,12 +22,12 @@ import GetReviewCommentsResponse from '../wrappers/octokitInterfaces/getReviewCo
 import GitInvoker from '../git/gitInvoker'
 import ListCommitsResponse from '../wrappers/octokitInterfaces/listCommitsResponse'
 import Logger from '../utilities/logger'
-import { Octokit } from 'octokit'
 import { OctokitOptions } from '@octokit/core/dist-types/types'
 import OctokitWrapper from '../wrappers/octokitWrapper'
 import PullRequestCommentData from './interfaces/pullRequestCommentData'
 import PullRequestDetails from './interfaces/pullRequestDetails'
 import RunnerInvoker from '../runners/runnerInvoker'
+import { StatusCodes } from 'http-status-codes'
 import UpdateIssueCommentResponse from '../wrappers/octokitInterfaces/updateIssueCommentResponse'
 import UpdatePullResponse from '../wrappers/octokitInterfaces/updatePullResponse'
 import { singleton } from 'tsyringe'
@@ -144,8 +145,8 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
         try {
           const result: CreateReviewCommentResponse | null = await this._octokitWrapper.createReviewComment(this._owner, this._repo, this._pullRequestId, content, fileName, this._commitId)
           this._logger.logDebug(JSON.stringify(result))
-        } catch (error: any) {
-          if (error.status === 422 && error.message.includes('pull_request_review_thread.path diff too large')) {
+        } catch (error: unknown) {
+          if (error instanceof RequestError && error.status as StatusCodes === StatusCodes.UNPROCESSABLE_ENTITY && error.message.includes('pull_request_review_thread.path diff too large')) {
             this._logger.logInfo('GitHub createReviewComment() threw a 422 error related to a large diff. Ignoring as this is expected.')
             this._logger.logErrorObject(error)
           } else {

@@ -18,6 +18,7 @@ import { IRequestHandler } from 'azure-devops-node-api/interfaces/common/VsoBase
 import Logger from '../../src/utilities/logger'
 import PullRequestDetails from '../../src/repos/interfaces/pullRequestDetails'
 import RunnerInvoker from '../../src/runners/runnerInvoker'
+import { StatusCodes } from 'http-status-codes'
 import TokenManager from '../../src/repos/tokenManager'
 import { WebApi } from 'azure-devops-node-api'
 import assert from 'node:assert/strict'
@@ -221,13 +222,13 @@ describe('azureReposInvoker.ts', (): void => {
     }
 
     {
-      const testCases: number[] = [
-        401,
-        403,
-        404
+      const testCases: StatusCodes[] = [
+        StatusCodes.UNAUTHORIZED,
+        StatusCodes.FORBIDDEN,
+        StatusCodes.NOT_FOUND
       ]
 
-      testCases.forEach((statusCode: number): void => {
+      testCases.forEach((statusCode: StatusCodes): void => {
         it(`should throw when the access token has insufficient access and the API call returns status code '${statusCode}'`, async (): Promise<void> => {
           // Arrange
           const error: ErrorWithStatus = new ErrorWithStatus('Test')
@@ -337,13 +338,13 @@ describe('azureReposInvoker.ts', (): void => {
 
   describe('getComments()', (): void => {
     {
-      const testCases: number[] = [
-        401,
-        403,
-        404
+      const testCases: StatusCodes[] = [
+        StatusCodes.UNAUTHORIZED,
+        StatusCodes.FORBIDDEN,
+        StatusCodes.NOT_FOUND
       ]
 
-      testCases.forEach((statusCode: number): void => {
+      testCases.forEach((statusCode: StatusCodes): void => {
         it(`should throw when the access token has insufficient access and the API call returns status code '${statusCode}'`, async (): Promise<void> => {
           // Arrange
           const error: ErrorWithStatus = new ErrorWithStatus('Test')
@@ -560,13 +561,13 @@ describe('azureReposInvoker.ts', (): void => {
 
   describe('setTitleAndDescription()', (): void => {
     {
-      const testCases: number[] = [
-        401,
-        403,
-        404
+      const testCases: StatusCodes[] = [
+        StatusCodes.UNAUTHORIZED,
+        StatusCodes.FORBIDDEN,
+        StatusCodes.NOT_FOUND
       ]
 
-      testCases.forEach((statusCode: number): void => {
+      testCases.forEach((statusCode: StatusCodes): void => {
         it(`should throw when the access token has insufficient access and the API call returns status code '${statusCode}'`, async (): Promise<void> => {
           // Arrange
           const error: ErrorWithStatus = new ErrorWithStatus('Test')
@@ -690,13 +691,13 @@ describe('azureReposInvoker.ts', (): void => {
 
   describe('createComment()', (): void => {
     {
-      const testCases: number[] = [
-        401,
-        403,
-        404
+      const testCases: StatusCodes[] = [
+        StatusCodes.UNAUTHORIZED,
+        StatusCodes.FORBIDDEN,
+        StatusCodes.NOT_FOUND
       ]
 
-      testCases.forEach((statusCode: number): void => {
+      testCases.forEach((statusCode: StatusCodes): void => {
         it(`should throw when the access token has insufficient access and the API call returns status code '${statusCode}'`, async (): Promise<void> => {
           // Arrange
           const error: ErrorWithStatus = new ErrorWithStatus('Test')
@@ -829,13 +830,13 @@ describe('azureReposInvoker.ts', (): void => {
 
   describe('updateComment()', (): void => {
     {
-      const testCases: number[] = [
-        401,
-        403,
-        404
+      const testCases: StatusCodes[] = [
+        StatusCodes.UNAUTHORIZED,
+        StatusCodes.FORBIDDEN,
+        StatusCodes.NOT_FOUND
       ]
 
-      testCases.forEach((statusCode: number): void => {
+      testCases.forEach((statusCode: StatusCodes): void => {
         it(`should throw when the access token has insufficient access for the updateComment API and the API call returns status code '${statusCode}'`, async (): Promise<void> => {
           // Arrange
           const error: ErrorWithStatus = new ErrorWithStatus('Test')
@@ -859,13 +860,13 @@ describe('azureReposInvoker.ts', (): void => {
     }
 
     {
-      const testCases: number[] = [
-        401,
-        403,
-        404
+      const testCases: StatusCodes[] = [
+        StatusCodes.UNAUTHORIZED,
+        StatusCodes.FORBIDDEN,
+        StatusCodes.NOT_FOUND
       ]
 
-      testCases.forEach((status: number): void => {
+      testCases.forEach((status: StatusCodes): void => {
         it(`should throw when the access token has insufficient access for the updateComment API and the API call returns status '${status}'`, async (): Promise<void> => {
           // Arrange
           const error: ErrorWithStatus = new ErrorWithStatus('Test')
@@ -996,13 +997,13 @@ describe('azureReposInvoker.ts', (): void => {
 
   describe('deleteCommentThread()', (): void => {
     {
-      const testCases: number[] = [
-        401,
-        403,
-        404
+      const testCases: StatusCodes[] = [
+        StatusCodes.UNAUTHORIZED,
+        StatusCodes.FORBIDDEN,
+        StatusCodes.NOT_FOUND
       ]
 
-      testCases.forEach((statusCode: number): void => {
+      testCases.forEach((statusCode: StatusCodes): void => {
         it(`should throw when the access token has insufficient access and the API call returns status code '${statusCode}'`, async (): Promise<void> => {
           // Arrange
           const error: ErrorWithStatus = new ErrorWithStatus('Test')
