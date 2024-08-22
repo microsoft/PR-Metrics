@@ -33,7 +33,7 @@ export default tseslint.config(
     },
     rules: {
       // 11
-      '@typescript-eslint/no-unsafe-assignment': 'off',
+      //'@typescript-eslint/no-unsafe-assignment': 'off',
       // 6
       '@typescript-eslint/no-unused-vars': 'off',
       // 36

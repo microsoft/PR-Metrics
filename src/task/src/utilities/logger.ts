@@ -71,11 +71,12 @@ export default class Logger {
    * Logs an error object.
    * @param error The error object to log.
    */
-  public logErrorObject (error: any): void {
+  public logErrorObject (error: Error): void {
     const name: string = error.name
     const properties: string[] = Object.getOwnPropertyNames(error)
+    const errorRecord: Record<string, unknown> = error as any as Record<string, unknown>
     properties.forEach((property: string): void => {
-      this.logInfo(`${name} – ${property}: ${JSON.stringify(error[property])}`)
+      this.logInfo(`${name} – ${property}: ${JSON.stringify(errorRecord[property])}`)
     })
   }
 
