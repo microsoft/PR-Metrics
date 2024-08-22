@@ -17,6 +17,7 @@ import GitInvoker from '../../src/git/gitInvoker'
 import HttpError from '../testUtilities/httpError'
 import Logger from '../../src/utilities/logger'
 import OctokitLogObject from '../wrappers/octokitLogObject'
+import { OctokitOptions } from '@octokit/core/dist-types/types'
 import OctokitWrapper from '../../src/wrappers/octokitWrapper'
 import PullRequestDetails from '../../src/repos/interfaces/pullRequestDetails'
 import { RequestError } from 'octokit'
@@ -536,7 +537,7 @@ describe('gitHubReposInvoker.ts', (): void => {
     it('should initialize log object correctly', async (): Promise<void> => {
       // Arrange
       let logObject: OctokitLogObject | undefined
-      when(octokitWrapper.initialize(anything())).thenCall((options: any): void => { logObject = options.log })
+      when(octokitWrapper.initialize(anything())).thenCall((options: OctokitOptions): void => { logObject = options.log })
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
       await gitHubReposInvoker.getTitleAndDescription()
 
