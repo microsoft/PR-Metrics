@@ -32,8 +32,6 @@ export default tseslint.config(
       },
     },
     rules: {
-      // 7
-      '@typescript-eslint/no-unnecessary-condition': 'off',
       // 11
       '@typescript-eslint/no-unsafe-assignment': 'off',
       // 6

@@ -150,6 +150,9 @@ export default class CodeMetrics {
   private initializeMetrics (gitDiffSummary: string): void {
     this._logger.logDebug('* CodeMetrics.initializeMetrics()')
 
+    const notNotPattern = '!!'
+    const notPattern = '!'
+
     const codeFileMetrics: CodeFileMetric[] = this.createFileMetricsMap(gitDiffSummary)
 
     const matches: CodeFileMetric[] = []
@@ -158,8 +161,6 @@ export default class CodeMetrics {
 
     // Check for glob matches.
     codeFileMetrics.forEach((codeFileMetric: CodeFileMetric): void => {
-      let isValidFilePattern = false
-
       /*
        * Iterate through the list of patterns. First, check for positive matches. Next, if one of the positive matches
        * is overridden by a negative match, remove it from consideration. Finally, check for double negative matches,
@@ -169,37 +170,16 @@ export default class CodeMetrics {
       const negativeFileMatchingPatterns: string[] = []
       const doubleNegativeFileMatchingPatterns: string[] = []
       this._inputs.fileMatchingPatterns.forEach((fileMatchingPattern: string): void => {
-        if (fileMatchingPattern.startsWith('!!')) {
-          doubleNegativeFileMatchingPatterns.push(fileMatchingPattern.substring(2))
-        } else if (fileMatchingPattern.startsWith('!')) {
-          negativeFileMatchingPatterns.push(fileMatchingPattern.substring(1))
+        if (fileMatchingPattern.startsWith(notNotPattern)) {
+          doubleNegativeFileMatchingPatterns.push(fileMatchingPattern.substring(notNotPattern.length))
+        } else if (fileMatchingPattern.startsWith(notPattern)) {
+          negativeFileMatchingPatterns.push(fileMatchingPattern.substring(notPattern.length))
         } else {
           positiveFileMatchingPatterns.push(fileMatchingPattern)
         }
       })
 
-      positiveFileMatchingPatterns.forEach((fileMatchingPattern: string): void => {
-        if (this.performGlobCheck(codeFileMetric.fileName, fileMatchingPattern)) {
-          isValidFilePattern = true
-        }
-      })
-
-      if (isValidFilePattern) {
-        negativeFileMatchingPatterns.forEach((fileMatchingPattern: string): void => {
-          if (this.performGlobCheck(codeFileMetric.fileName, fileMatchingPattern)) {
-            isValidFilePattern = false
-          }
-        })
-
-        if (!isValidFilePattern) {
-          doubleNegativeFileMatchingPatterns.forEach((fileMatchingPattern: string): void => {
-            if (this.performGlobCheck(codeFileMetric.fileName, fileMatchingPattern)) {
-              isValidFilePattern = true
-            }
-          })
-        }
-      }
-
+      const isValidFilePattern: boolean = this.determineIfValidFilePattern(codeFileMetric, positiveFileMatchingPatterns, negativeFileMatchingPatterns, doubleNegativeFileMatchingPatterns)
       const isValidFileExtension: boolean = this.matchFileExtension(codeFileMetric.fileName)
       if (isValidFilePattern && isValidFileExtension) {
         matches.push(codeFileMetric)
@@ -212,6 +192,37 @@ export default class CodeMetrics {
 
     this.constructMetrics(matches, nonMatches, nonMatchesToComment)
   }
+
+  private determineIfValidFilePattern(codeFileMetric: CodeFileMetric, positiveFileMatchingPatterns: string[], negativeFileMatchingPatterns: string[], doubleNegativeFileMatchingPatterns: string[]): boolean {
+    this._logger.logDebug('* CodeMetrics.determineIfValidFilePattern()')
+
+    let result = false
+
+    for (const fileMatchingPattern of positiveFileMatchingPatterns) {
+      if (this.performGlobCheck(codeFileMetric.fileName, fileMatchingPattern)) {
+        result = true
+      }
+    }
+
+    if (result) {
+      for (const fileMatchingPattern of negativeFileMatchingPatterns) {
+        if (this.performGlobCheck(codeFileMetric.fileName, fileMatchingPattern)) {
+          result = false
+        }
+      }
+
+      if (!result) {
+        for (const fileMatchingPattern of doubleNegativeFileMatchingPatterns) {
+          if (this.performGlobCheck(codeFileMetric.fileName, fileMatchingPattern)) {
+            result = true
+          }
+        }
+      }
+    }
+
+    return result
+  }
+
 
   private performGlobCheck (fileName: string, fileMatchingPattern: string): boolean {
     this._logger.logDebug('* CodeMetrics.performGlobCheck()')
