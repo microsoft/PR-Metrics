@@ -12,7 +12,6 @@ import CommentData from './interfaces/commentData'
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import CreateIssueCommentResponse from '../wrappers/octokitInterfaces/createIssueCommentResponse'
 import CreateReviewCommentResponse from '../wrappers/octokitInterfaces/createReviewCommentResponse'
-import { DecimalRadix } from '../utilities/constants'
 import DeleteReviewCommentResponse from '../wrappers/octokitInterfaces/deleteReviewCommentResponse'
 import FileCommentData from './interfaces/fileCommentData'
 import GetIssueCommentsResponse from '../wrappers/octokitInterfaces/getIssueCommentsResponse'
@@ -30,6 +29,7 @@ import RunnerInvoker from '../runners/runnerInvoker'
 import { StatusCodes } from 'http-status-codes'
 import UpdateIssueCommentResponse from '../wrappers/octokitInterfaces/updateIssueCommentResponse'
 import UpdatePullResponse from '../wrappers/octokitInterfaces/updatePullResponse'
+import { decimalRadix } from '../utilities/constants'
 import { singleton } from 'tsyringe'
 
 const octokit: Octokit = new Octokit()
@@ -301,7 +301,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
         throw new Error(`The regular expression did not match '${commitsLink}'.`)
       }
 
-      const match: number = parseInt(matches[1], DecimalRadix)
+      const match: number = parseInt(matches[1], decimalRadix)
       result = await this.invokeApiCall(async (): Promise<ListCommitsResponse> => {
         const internalResult: ListCommitsResponse = await this._octokitWrapper.listCommits(this._owner, this._repo, this._pullRequestId, match)
         this._logger.logDebug(JSON.stringify(internalResult))

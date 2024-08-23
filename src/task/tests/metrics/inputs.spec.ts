@@ -7,11 +7,11 @@ import 'reflect-metadata'
 import * as Converter from '../../src/utilities/converter'
 import * as InputsDefault from '../../src/metrics/inputsDefault'
 import { anyString, deepEqual, instance, mock, verify, when } from 'ts-mockito'
-import { DecimalRadix } from '../../src/utilities/constants'
 import Inputs from '../../src/metrics/inputs'
 import Logger from '../../src/utilities/logger'
 import RunnerInvoker from '../../src/runners/runnerInvoker'
 import assert from 'node:assert/strict'
+import { decimalRadix } from '../../src/utilities/constants'
 
 describe('inputs.ts', (): void => {
   const adjustingAlwaysCloseComment = 'Adjusting the always-close-comment mode input to \'false\'.'
@@ -253,7 +253,7 @@ describe('inputs.ts', (): void => {
             const inputs: Inputs = new Inputs(instance(logger), instance(runnerInvoker))
 
             // Assert
-            assert.equal(inputs.baseSize, parseInt(baseSize, DecimalRadix))
+            assert.equal(inputs.baseSize, parseInt(baseSize, decimalRadix))
             verify(logger.logDebug('* Inputs.initialize()')).once()
             verify(logger.logDebug('* Inputs.initializeBaseSize()')).once()
             verify(logger.logDebug('* Inputs.initializeGrowthRate()')).once()
