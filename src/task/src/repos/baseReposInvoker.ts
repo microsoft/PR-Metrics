@@ -5,6 +5,7 @@
 
 import CommentData from './interfaces/commentData'
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
+import ErrorWithStatus from './interfaces/errorWithStatus'
 import IReposInvoker from './iReposInvoker'
 import PullRequestDetails from './interfaces/pullRequestDetails'
 import { StatusCodes } from 'http-status-codes'
@@ -38,13 +39,15 @@ export default abstract class BaseReposInvoker implements IReposInvoker {
     try {
       return await action()
     } catch (error: any) {
+      const castedError: ErrorWithStatus = error as ErrorWithStatus
+      const statusCode: number | undefined = castedError.status ?? castedError.statusCode
       const accessErrorStatusCodes: number[] = [StatusCodes.UNAUTHORIZED, StatusCodes.FORBIDDEN, StatusCodes.NOT_FOUND]
-      if (accessErrorStatusCodes.includes(error.status ?? error.statusCode)) {
-        error.internalMessage = error.message
-        error.message = accessErrorMessage
+      if (statusCode !== undefined && accessErrorStatusCodes.includes(statusCode)) {
+        castedError.internalMessage = castedError.message
+        castedError.message = accessErrorMessage
       }
 
-      throw error
+      throw castedError
     }
   }
 }
