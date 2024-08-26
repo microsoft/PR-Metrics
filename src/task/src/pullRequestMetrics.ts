@@ -58,10 +58,11 @@ export default class PullRequestMetrics {
 
       this._runnerInvoker.setStatusSucceeded(this._runnerInvoker.loc('pullRequestMetrics.succeeded'))
     } catch (error: any) {
-      this._logger.logErrorObject(error)
+      const errorObject: Error = error as Error
+      this._logger.logErrorObject(errorObject)
       this._logger.replay()
 
-      this._runnerInvoker.setStatusFailed(error.message)
+      this._runnerInvoker.setStatusFailed(errorObject.message)
     }
   }
 }

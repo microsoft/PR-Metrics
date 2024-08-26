@@ -82,7 +82,7 @@ describe('resources.resjson', (): void => {
 
   it('should have the correct reference ID for all resources in task.loc.json', (): void => {
     // Arrange
-    const keysTaskLocJson: [string, string][] = Object.entries(taskLocJson.messages)
+    const keysTaskLocJson: [string, string][] = Object.entries(taskLocJson.messages as ArrayLike<string>)
 
     // Assert
     keysTaskLocJson.forEach((entry: [string, string]): void => {
