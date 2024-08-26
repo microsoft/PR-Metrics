@@ -1417,7 +1417,7 @@ describe('codeMetrics.ts', (): void => {
           const func: () => Promise<string[]> = async () => codeMetrics.getFilesNotRequiringReview()
 
           // Assert
-          await AssertExtensions.toThrowAsync(func, `The number of elements '${elements}' in '${summary.trim()}' in input '${summary.trim()}' did not match the expected 3.`)
+          await AssertExtensions.toThrowAsync(func, `The number of elements '${String(elements)}' in '${summary.trim()}' in input '${summary.trim()}' did not match the expected 3.`)
           verify(logger.logDebug('* CodeMetrics.getFilesNotRequiringReview()')).once()
           verify(logger.logDebug('* CodeMetrics.initialize()')).once()
           verify(logger.logDebug('* CodeMetrics.createFileMetricsMap()')).once()

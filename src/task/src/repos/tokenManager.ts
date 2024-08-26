@@ -124,7 +124,7 @@ export default class TokenManager {
 
     const scheme: string | undefined = endpointAuthorization?.scheme
     if (scheme !== 'OAuth') {
-      throw new Error(`Could not acquire authorization token from workload identity federation as the scheme was '${scheme}'.`)
+      throw new Error(`Could not acquire authorization token from workload identity federation as the scheme was '${scheme ?? ''}'.`)
     }
 
     this._logger.logDebug('Acquired authorization token from workload identity federation.')

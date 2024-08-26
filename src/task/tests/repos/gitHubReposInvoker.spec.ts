@@ -480,7 +480,7 @@ describe('gitHubReposInvoker.ts', (): void => {
       ]
 
       testCases.forEach((status: StatusCodes): void => {
-        it(`should throw when the PAT has insufficient access and the API call returns status '${status}'`, async (): Promise<void> => {
+        it(`should throw when the PAT has insufficient access and the API call returns status '${String(status)}'`, async (): Promise<void> => {
           // Arrange
           when(octokitWrapper.initialize(anything())).thenCall((options: any): void => {
             assert.equal(options.auth, 'PAT')

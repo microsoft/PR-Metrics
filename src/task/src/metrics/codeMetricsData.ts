@@ -19,15 +19,15 @@ export default class CodeMetricsData {
    */
   public constructor (productCode: number, testCode: number, ignoredCode: number) {
     if (productCode < 0) {
-      throw new RangeError(`Product code '${productCode}' must be >= 0.`)
+      throw new RangeError(`Product code '${String(productCode)}' must be >= 0.`)
     }
 
     if (testCode < 0) {
-      throw new RangeError(`Test code '${testCode}' must be >= 0.`)
+      throw new RangeError(`Test code '${String(testCode)}' must be >= 0.`)
     }
 
     if (ignoredCode < 0) {
-      throw new RangeError(`Ignored code '${ignoredCode}' must be >= 0.`)
+      throw new RangeError(`Ignored code '${String(ignoredCode)}' must be >= 0.`)
     }
 
     this._productCode = productCode

@@ -250,22 +250,22 @@ export default class CodeMetrics {
 
     matches.forEach((entry: CodeFileMetric): void => {
       if (/.*((T|t)est|TEST).*/u.test(entry.fileName) || /.*\.spec\..*/iu.test(path.basename(entry.fileName))) {
-        this._logger.logDebug(`Test File: ${entry.fileName} (${entry.linesAdded} lines)`)
+        this._logger.logDebug(`Test File: ${entry.fileName} (${String(entry.linesAdded)} lines)`)
         testCode += entry.linesAdded
       } else {
-        this._logger.logDebug(`Product File: ${entry.fileName} (${entry.linesAdded} lines)`)
+        this._logger.logDebug(`Product File: ${entry.fileName} (${String(entry.linesAdded)} lines)`)
         productCode += entry.linesAdded
       }
     })
 
     nonMatches.forEach((entry: CodeFileMetric): void => {
-      this._logger.logDebug(`Ignored File: ${entry.fileName} (${entry.linesAdded} lines)`)
+      this._logger.logDebug(`Ignored File: ${entry.fileName} (${String(entry.linesAdded)} lines)`)
       ignoredCode += entry.linesAdded
     })
 
     nonMatchesToComment.forEach((entry: CodeFileMetric): void => {
       if (entry.linesAdded > 0 || (entry.linesAdded === 0 && entry.linesDeleted === 0)) {
-        this._logger.logDebug(`Ignored File: ${entry.fileName} (${entry.linesAdded} lines), comment to be added`)
+        this._logger.logDebug(`Ignored File: ${entry.fileName} (${String(entry.linesAdded)} lines), comment to be added`)
         ignoredCode += entry.linesAdded
         this._filesNotRequiringReview.push(entry.fileName)
       } else {
@@ -294,7 +294,7 @@ export default class CodeMetrics {
     lines.forEach((line: string): void => {
       const elements: string[] = line.split('\t')
       if (elements[0] === undefined || elements[1] === undefined || elements[2] === undefined) {
-        throw new RangeError(`The number of elements '${elements.length}' in '${line}' in input '${modifiedInput}' did not match the expected 3.`)
+        throw new RangeError(`The number of elements '${String(elements.length)}' in '${line}' in input '${modifiedInput}' did not match the expected 3.`)
       }
 
       // Condense file and folder names that were renamed e.g. "F{a => i}leT{b => e}st.d{c => l}l" or "FaleTbst.dcl => FileTest.dll".

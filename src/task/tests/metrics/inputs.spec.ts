@@ -15,9 +15,9 @@ import { decimalRadix } from '../../src/utilities/constants'
 
 describe('inputs.ts', (): void => {
   const adjustingAlwaysCloseComment = 'Adjusting the always-close-comment mode input to \'false\'.'
-  const adjustingBaseSizeResource = `Adjusting the base size input to '${InputsDefault.baseSize}'.`
-  const adjustingGrowthRateResource = `Adjusting the growth rate input to '${InputsDefault.growthRate}'.`
-  const adjustingTestFactorResource = `Adjusting the test factor input to '${InputsDefault.testFactor}'.`
+  const adjustingBaseSizeResource = `Adjusting the base size input to '${String(InputsDefault.baseSize)}'.`
+  const adjustingGrowthRateResource = `Adjusting the growth rate input to '${String(InputsDefault.growthRate)}'.`
+  const adjustingTestFactorResource = `Adjusting the test factor input to '${String(InputsDefault.testFactor)}'.`
   const adjustingFileMatchingPatternsResource = `Adjusting the file matching patterns input to '${JSON.stringify(InputsDefault.fileMatchingPatterns)}'.`
   const adjustingCodeFileExtensionsResource = `Adjusting the code file extensions input to '${JSON.stringify(InputsDefault.codeFileExtensions)}'.`
   const disablingTestFactorResource = 'Disabling the test factor validation.'

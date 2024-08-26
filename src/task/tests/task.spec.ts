@@ -16,7 +16,7 @@ describe('task.json', (): void => {
   const taskJsonFile: string = path.join(basePath, 'task.json')
   const taskJsonContents: string = fs.readFileSync(taskJsonFile, 'utf8')
   const taskJson: TaskJson = JSON.parse(taskJsonContents) as TaskJson
-  const version = `${taskJson.version.Major}.${taskJson.version.Minor}.${taskJson.version.Patch}`
+  const version = `${String(taskJson.version.Major)}.${String(taskJson.version.Minor)}.${String(taskJson.version.Patch)}`
 
   const languagesPath: string = path.join(basePath, 'Strings', 'resources.resjson')
   const languages: string[] = fs.readdirSync(languagesPath)

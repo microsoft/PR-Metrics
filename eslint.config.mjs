@@ -34,8 +34,6 @@ export default tseslint.config(
     rules: {
       // 6
       '@typescript-eslint/no-unused-vars': 'off',
-      // 36
-      '@typescript-eslint/restrict-template-expressions': 'off',
       // 50
       '@typescript-eslint/no-explicit-any': 'off',
       // 160

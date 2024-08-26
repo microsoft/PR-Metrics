@@ -68,15 +68,15 @@ export default class OctokitGitDiffParser {
     const diffResponse: string = await this._axiosWrapper.getUrl(pullRequestInfo.data.diff_url)
 
     // Split the response so that each file in a diff becomes a separate diff.
-    const diffResponses: string[] = diffResponse.split(/^diff --git/gmu)
+    const diffResponseLines: string[] = diffResponse.split(/^diff --git/gmu)
 
     /*
      * For each diff, reinstate the "diff --git" prefix that was removed by the split. The first diff is excluded as it
      * will always be the empty string.
      */
     const result: string[] = []
-    for (let iteration = 1; iteration < diffResponses.length; iteration += 1) {
-      result.push(`diff --git${  diffResponses[iteration]}`)
+    for (const diffResponseLine of diffResponseLines.slice(1)) {
+      result.push(`diff --git ${diffResponseLine}`);
     }
 
     return result
