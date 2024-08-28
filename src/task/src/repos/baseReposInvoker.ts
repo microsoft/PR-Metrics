@@ -6,14 +6,14 @@
 import CommentData from './interfaces/commentData'
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import ErrorWithStatus from './interfaces/errorWithStatus'
-import IReposInvoker from './iReposInvoker'
 import PullRequestDetails from './interfaces/pullRequestDetails'
+import ReposInvokerInterface from './reposInvokerInterface'
 import { StatusCodes } from 'http-status-codes'
 
 /**
  * A base class for invoking repository functionality.
  */
-export default abstract class BaseReposInvoker implements IReposInvoker {
+export default abstract class BaseReposInvoker implements ReposInvokerInterface {
   public abstract isAccessTokenAvailable (): Promise<string | null>
 
   public abstract getTitleAndDescription (): Promise<PullRequestDetails>

@@ -10,7 +10,7 @@ import PullRequestDetails from './interfaces/pullRequestDetails'
 /**
  * An interface for invoking repository functionality with any underlying repository store.
  */
-export default interface IReposInvoker {
+export default interface ReposInvokerInterface {
   /**
    * Determines whether an access token can be retrieved by the task.
    * @returns A promise containing a string to display if the operation failed.

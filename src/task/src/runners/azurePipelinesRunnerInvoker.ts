@@ -70,8 +70,8 @@ export default class AzurePipelinesRunnerInvoker implements IRunnerInvoker {
     this._azurePipelinesRunnerWrapper.setResourcePath(path.join(folder, 'task.json'))
   }
 
-  public loc (key: string, ...param: any[]): string {
-    return this._azurePipelinesRunnerWrapper.loc(key, param)
+  public loc (key: string, ...param: string[]): string {
+    return this._azurePipelinesRunnerWrapper.loc(key, ...param)
   }
 
   public logDebug (message: string): void {
