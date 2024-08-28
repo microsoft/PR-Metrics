@@ -102,7 +102,7 @@ export default class AzurePipelinesRunnerWrapper {
    * @returns The localized and formatted string.
    */
   public loc (key: string, ...param: any[]): string {
-    return taskLib.loc(key, ...param)
+    return taskLib.loc(key, param)
   }
 
   /**

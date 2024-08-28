@@ -7,7 +7,8 @@ import 'reflect-metadata'
 import * as AssertExtensions from '../testUtilities/assertExtensions'
 import * as Converter from '../../src/utilities/converter'
 import { Comment, CommentThreadStatus, GitPullRequest, GitPullRequestCommentThread } from 'azure-devops-node-api/interfaces/GitInterfaces'
-import { anyNumber, anything, deepEqual, instance, mock, verify, when } from 'ts-mockito'
+import { any, anyNumber } from '../testUtilities/mockito'
+import { deepEqual, instance, mock, verify, when } from 'ts-mockito'
 import AzureDevOpsApiWrapper from '../../src/wrappers/azureDevOpsApiWrapper'
 import AzureReposInvoker from '../../src/repos/azureReposInvoker'
 import CommentData from '../../src/repos/interfaces/commentData'
@@ -243,7 +244,7 @@ describe('azureReposInvoker.ts', (): void => {
           const result: any = await AssertExtensions.toThrowAsync(func, 'Could not access the resources. Ensure the \'PR_Metrics_Access_Token\' secret environment variable has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
           assert.equal(result.internalMessage, 'Test')
           verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('PAT')).once()
-          verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
+          verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', any())).once()
           verify(gitApi.getPullRequestById(10, 'Project')).once()
           verify(logger.logDebug('* AzureReposInvoker.getTitleAndDescription()')).once()
           verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
@@ -266,7 +267,7 @@ describe('azureReposInvoker.ts', (): void => {
       assert.equal(result.title, 'Title')
       assert.equal(result.description, 'Description')
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('PAT')).once()
-      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
+      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', any())).once()
       verify(gitApi.getPullRequestById(10, 'Project')).once()
       verify(logger.logDebug('* AzureReposInvoker.getTitleAndDescription()')).once()
       verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
@@ -289,7 +290,7 @@ describe('azureReposInvoker.ts', (): void => {
       assert.equal(result.title, 'Title')
       assert.equal(result.description, 'Description')
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('PAT')).once()
-      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
+      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', any())).once()
       verify(gitApi.getPullRequestById(10, 'Project')).twice()
       verify(logger.logDebug('* AzureReposInvoker.getTitleAndDescription()')).twice()
       verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).twice()
@@ -310,7 +311,7 @@ describe('azureReposInvoker.ts', (): void => {
       assert.equal(result.title, 'Title')
       assert.equal(result.description, undefined)
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('PAT')).once()
-      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
+      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', any())).once()
       verify(gitApi.getPullRequestById(10, 'Project')).once()
       verify(logger.logDebug('* AzureReposInvoker.getTitleAndDescription()')).once()
       verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
@@ -328,7 +329,7 @@ describe('azureReposInvoker.ts', (): void => {
       // Assert
       await AssertExtensions.toThrowAsync(func, '\'title\', accessed within \'AzureReposInvoker.getTitleAndDescription()\', is invalid, null, or undefined \'undefined\'.')
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('PAT')).once()
-      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
+      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', any())).once()
       verify(gitApi.getPullRequestById(10, 'Project')).once()
       verify(logger.logDebug('* AzureReposInvoker.getTitleAndDescription()')).once()
       verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
@@ -359,7 +360,7 @@ describe('azureReposInvoker.ts', (): void => {
           const result: any = await AssertExtensions.toThrowAsync(func, 'Could not access the resources. Ensure the \'PR_Metrics_Access_Token\' secret environment variable has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
           assert.equal(result.internalMessage, 'Test')
           verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('PAT')).once()
-          verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
+          verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', any())).once()
           verify(gitApi.getThreads('RepoID', 10, 'Project')).once()
           verify(logger.logDebug('* AzureReposInvoker.getComments()')).once()
           verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
@@ -382,7 +383,7 @@ describe('azureReposInvoker.ts', (): void => {
       assert.equal(result.pullRequestComments[0]?.status, CommentThreadStatus.Active)
       assert.equal(result.fileComments.length, 0)
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('PAT')).once()
-      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
+      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', any())).once()
       verify(gitApi.getThreads('RepoID', 10, 'Project')).once()
       verify(logger.logDebug('* AzureReposInvoker.getComments()')).once()
       verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
@@ -405,7 +406,7 @@ describe('azureReposInvoker.ts', (): void => {
       assert.equal(result.fileComments[0]?.status, CommentThreadStatus.Active)
       assert.equal(result.fileComments[0]?.fileName, 'file.ts')
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('PAT')).once()
-      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
+      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', any())).once()
       verify(gitApi.getThreads('RepoID', 10, 'Project')).once()
       verify(logger.logDebug('* AzureReposInvoker.getComments()')).once()
       verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
@@ -435,7 +436,7 @@ describe('azureReposInvoker.ts', (): void => {
       assert.equal(result.fileComments[0]?.status, CommentThreadStatus.Active)
       assert.equal(result.fileComments[0]?.fileName, 'file.ts')
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('PAT')).once()
-      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
+      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', any())).once()
       verify(gitApi.getThreads('RepoID', 10, 'Project')).once()
       verify(logger.logDebug('* AzureReposInvoker.getComments()')).once()
       verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
@@ -458,7 +459,7 @@ describe('azureReposInvoker.ts', (): void => {
       assert.equal(result.pullRequestComments[0]?.status, CommentThreadStatus.Active)
       assert.equal(result.fileComments.length, 0)
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('PAT')).once()
-      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
+      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', any())).once()
       verify(gitApi.getThreads('RepoID', 10, 'Project')).twice()
       verify(logger.logDebug('* AzureReposInvoker.getComments()')).twice()
       verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).twice()
@@ -476,7 +477,7 @@ describe('azureReposInvoker.ts', (): void => {
       // Assert
       await AssertExtensions.toThrowAsync(func, '\'commentThread[0].id\', accessed within \'AzureReposInvoker.convertPullRequestComments()\', is invalid, null, or undefined \'undefined\'.')
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('PAT')).once()
-      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
+      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', any())).once()
       verify(gitApi.getThreads('RepoID', 10, 'Project')).once()
       verify(logger.logDebug('* AzureReposInvoker.getComments()')).once()
       verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
@@ -506,7 +507,7 @@ describe('azureReposInvoker.ts', (): void => {
       assert.equal(result.fileComments[0]?.status, CommentThreadStatus.Unknown)
       assert.equal(result.fileComments[0]?.fileName, 'file.ts')
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('PAT')).once()
-      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
+      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', any())).once()
       verify(gitApi.getThreads('RepoID', 10, 'Project')).once()
       verify(logger.logDebug('* AzureReposInvoker.getComments()')).once()
       verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
@@ -549,7 +550,7 @@ describe('azureReposInvoker.ts', (): void => {
           assert.equal(result.fileComments[0]?.status, CommentThreadStatus.Active)
           assert.equal(result.fileComments[0]?.fileName, 'file.ts')
           verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('PAT')).once()
-          verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
+          verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', any())).once()
           verify(gitApi.getThreads('RepoID', 10, 'Project')).once()
           verify(logger.logDebug('* AzureReposInvoker.getComments()')).once()
           verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
@@ -572,7 +573,7 @@ describe('azureReposInvoker.ts', (): void => {
           // Arrange
           const error: ErrorWithStatus = new ErrorWithStatus('Test')
           error.statusCode = statusCode
-          when(gitApi.updatePullRequest(anything(), 'RepoID', 10, 'Project')).thenThrow(error)
+          when(gitApi.updatePullRequest(any(), 'RepoID', 10, 'Project')).thenThrow(error)
           const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker), instance(tokenManager))
 
           // Act
@@ -582,8 +583,8 @@ describe('azureReposInvoker.ts', (): void => {
           const result: any = await AssertExtensions.toThrowAsync(func, 'Could not access the resources. Ensure the \'PR_Metrics_Access_Token\' secret environment variable has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
           assert.equal(result.internalMessage, 'Test')
           verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('PAT')).once()
-          verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
-          verify(gitApi.updatePullRequest(anything(), 'RepoID', 10, 'Project')).once()
+          verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', any())).once()
+          verify(gitApi.updatePullRequest(any(), 'RepoID', 10, 'Project')).once()
           verify(logger.logDebug('* AzureReposInvoker.setTitleAndDescription()')).once()
           verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
         })
@@ -599,8 +600,8 @@ describe('azureReposInvoker.ts', (): void => {
 
       // Assert
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('PAT')).never()
-      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).never()
-      verify(gitApi.updatePullRequest(anything(), 'RepoID', 10, 'Project')).never()
+      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', any())).never()
+      verify(gitApi.updatePullRequest(any(), 'RepoID', 10, 'Project')).never()
       verify(logger.logDebug('* AzureReposInvoker.setTitleAndDescription()')).once()
       verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).never()
     })
@@ -618,7 +619,7 @@ describe('azureReposInvoker.ts', (): void => {
 
       // Assert
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('PAT')).once()
-      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
+      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', any())).once()
       verify(gitApi.updatePullRequest(deepEqual(expectedDetails), 'RepoID', 10, 'Project')).once()
       verify(logger.logDebug('* AzureReposInvoker.setTitleAndDescription()')).once()
       verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
@@ -638,7 +639,7 @@ describe('azureReposInvoker.ts', (): void => {
 
       // Assert
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('PAT')).once()
-      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
+      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', any())).once()
       verify(gitApi.updatePullRequest(deepEqual(expectedDetails), 'RepoID', 10, 'Project')).once()
       verify(logger.logDebug('* AzureReposInvoker.setTitleAndDescription()')).once()
       verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
@@ -659,7 +660,7 @@ describe('azureReposInvoker.ts', (): void => {
 
       // Assert
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('PAT')).once()
-      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
+      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', any())).once()
       verify(gitApi.updatePullRequest(deepEqual(expectedDetails), 'RepoID', 10, 'Project')).once()
       verify(logger.logDebug('* AzureReposInvoker.setTitleAndDescription()')).once()
       verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
@@ -681,7 +682,7 @@ describe('azureReposInvoker.ts', (): void => {
 
       // Assert
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('PAT')).once()
-      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
+      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', any())).once()
       verify(gitApi.updatePullRequest(deepEqual(expectedDetails), 'RepoID', 10, 'Project')).twice()
       verify(logger.logDebug('* AzureReposInvoker.setTitleAndDescription()')).twice()
       verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).twice()
@@ -702,7 +703,7 @@ describe('azureReposInvoker.ts', (): void => {
           // Arrange
           const error: ErrorWithStatus = new ErrorWithStatus('Test')
           error.statusCode = statusCode
-          when(gitApi.createThread(anything(), 'RepoID', 10, 'Project')).thenThrow(error)
+          when(gitApi.createThread(any(), 'RepoID', 10, 'Project')).thenThrow(error)
           const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker), instance(tokenManager))
 
           // Act
@@ -712,8 +713,8 @@ describe('azureReposInvoker.ts', (): void => {
           const result: any = await AssertExtensions.toThrowAsync(func, 'Could not access the resources. Ensure the \'PR_Metrics_Access_Token\' secret environment variable has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
           assert.equal(result.internalMessage, 'Test')
           verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('PAT')).once()
-          verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
-          verify(gitApi.createThread(anything(), 'RepoID', 10, 'Project')).once()
+          verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', any())).once()
+          verify(gitApi.createThread(any(), 'RepoID', 10, 'Project')).once()
           verify(logger.logDebug('* AzureReposInvoker.createComment()')).once()
           verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
         })
@@ -734,7 +735,7 @@ describe('azureReposInvoker.ts', (): void => {
 
       // Assert
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('PAT')).once()
-      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
+      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', any())).once()
       verify(gitApi.createThread(deepEqual(expectedComment), 'RepoID', 10, 'Project')).once()
       verify(logger.logDebug('* AzureReposInvoker.createComment()')).once()
       verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
@@ -756,7 +757,7 @@ describe('azureReposInvoker.ts', (): void => {
 
       // Assert
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('PAT')).once()
-      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
+      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', any())).once()
       verify(gitApi.createThread(deepEqual(expectedComment), 'RepoID', 10, 'Project')).twice()
       verify(logger.logDebug('* AzureReposInvoker.createComment()')).twice()
       verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).twice()
@@ -788,7 +789,7 @@ describe('azureReposInvoker.ts', (): void => {
 
       // Assert
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('PAT')).once()
-      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
+      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', any())).once()
       verify(gitApi.createThread(deepEqual(expectedComment), 'RepoID', 10, 'Project')).once()
       verify(logger.logDebug('* AzureReposInvoker.createComment()')).once()
       verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
@@ -820,7 +821,7 @@ describe('azureReposInvoker.ts', (): void => {
 
       // Assert
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('PAT')).once()
-      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
+      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', any())).once()
       verify(gitApi.createThread(deepEqual(expectedComment), 'RepoID', 10, 'Project')).once()
       verify(logger.logDebug('* AzureReposInvoker.createComment()')).once()
       verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
@@ -841,7 +842,7 @@ describe('azureReposInvoker.ts', (): void => {
           // Arrange
           const error: ErrorWithStatus = new ErrorWithStatus('Test')
           error.statusCode = statusCode
-          when(gitApi.updateComment(anything(), 'RepoID', 10, 20, 1, 'Project')).thenThrow(error)
+          when(gitApi.updateComment(any(), 'RepoID', 10, 20, 1, 'Project')).thenThrow(error)
           const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker), instance(tokenManager))
 
           // Act
@@ -851,8 +852,8 @@ describe('azureReposInvoker.ts', (): void => {
           const result: any = await AssertExtensions.toThrowAsync(func, 'Could not access the resources. Ensure the \'PR_Metrics_Access_Token\' secret environment variable has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
           assert.equal(result.internalMessage, 'Test')
           verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('PAT')).once()
-          verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
-          verify(gitApi.updateComment(anything(), 'RepoID', 10, 20, 1, 'Project')).once()
+          verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', any())).once()
+          verify(gitApi.updateComment(any(), 'RepoID', 10, 20, 1, 'Project')).once()
           verify(logger.logDebug('* AzureReposInvoker.updateComment()')).once()
           verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
         })
@@ -871,8 +872,8 @@ describe('azureReposInvoker.ts', (): void => {
           // Arrange
           const error: ErrorWithStatus = new ErrorWithStatus('Test')
           error.status = status
-          when(gitApi.updateComment(anything(), 'RepoID', 10, 20, 1, 'Project')).thenResolve({})
-          when(gitApi.updateThread(anything(), 'RepoID', 10, 20, 'Project')).thenThrow(error)
+          when(gitApi.updateComment(any(), 'RepoID', 10, 20, 1, 'Project')).thenResolve({})
+          when(gitApi.updateThread(any(), 'RepoID', 10, 20, 'Project')).thenThrow(error)
           const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(instance(azureDevOpsApiWrapper), instance(gitInvoker), instance(logger), instance(runnerInvoker), instance(tokenManager))
 
           // Act
@@ -882,9 +883,9 @@ describe('azureReposInvoker.ts', (): void => {
           const result: any = await AssertExtensions.toThrowAsync(func, 'Could not access the resources. Ensure the \'PR_Metrics_Access_Token\' secret environment variable has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
           assert.equal(result.internalMessage, 'Test')
           verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('PAT')).once()
-          verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
-          verify(gitApi.updateComment(anything(), 'RepoID', 10, 20, 1, 'Project')).once()
-          verify(gitApi.updateThread(anything(), 'RepoID', 10, 20, 'Project')).once()
+          verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', any())).once()
+          verify(gitApi.updateComment(any(), 'RepoID', 10, 20, 1, 'Project')).once()
+          verify(gitApi.updateThread(any(), 'RepoID', 10, 20, 'Project')).once()
           verify(logger.logDebug('* AzureReposInvoker.updateComment()')).once()
           verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
           verify(logger.logDebug('{}')).once()
@@ -909,7 +910,7 @@ describe('azureReposInvoker.ts', (): void => {
 
       // Assert
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('PAT')).once()
-      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
+      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', any())).once()
       verify(gitApi.updateComment(deepEqual(expectedComment), 'RepoID', 10, 20, 1, 'Project')).once()
       verify(gitApi.updateThread(deepEqual(expectedCommentThread), 'RepoID', 10, 20, 'Project')).once()
       verify(logger.logDebug('* AzureReposInvoker.updateComment()')).once()
@@ -930,7 +931,7 @@ describe('azureReposInvoker.ts', (): void => {
 
       // Assert
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('PAT')).once()
-      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
+      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', any())).once()
       verify(gitApi.updateComment(deepEqual(expectedComment), 'RepoID', 10, 20, 1, 'Project')).once()
       verify(logger.logDebug('* AzureReposInvoker.updateComment()')).once()
       verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
@@ -950,7 +951,7 @@ describe('azureReposInvoker.ts', (): void => {
 
       // Assert
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('PAT')).once()
-      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
+      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', any())).once()
       verify(gitApi.updateThread(deepEqual(expectedComment), 'RepoID', 10, 20, 'Project')).once()
       verify(logger.logDebug('* AzureReposInvoker.updateComment()')).once()
       verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
@@ -966,9 +967,9 @@ describe('azureReposInvoker.ts', (): void => {
 
       // Assert
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('PAT')).never()
-      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).never()
-      verify(gitApi.updateComment(anything(), 'RepoID', 10, 20, 1, 'Project')).never()
-      verify(gitApi.updateThread(anything(), 'RepoID', 10, 20, 'Project')).never()
+      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', any())).never()
+      verify(gitApi.updateComment(any(), 'RepoID', 10, 20, 1, 'Project')).never()
+      verify(gitApi.updateThread(any(), 'RepoID', 10, 20, 'Project')).never()
       verify(logger.logDebug('* AzureReposInvoker.updateComment()')).once()
       verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).never()
     })
@@ -987,7 +988,7 @@ describe('azureReposInvoker.ts', (): void => {
 
       // Assert
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('PAT')).once()
-      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
+      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', any())).once()
       verify(gitApi.updateComment(deepEqual(expectedComment), 'RepoID', 10, 20, 1, 'Project')).twice()
       verify(logger.logDebug('* AzureReposInvoker.updateComment()')).twice()
       verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).twice()
@@ -1018,7 +1019,7 @@ describe('azureReposInvoker.ts', (): void => {
           const result: any = await AssertExtensions.toThrowAsync(func, 'Could not access the resources. Ensure the \'PR_Metrics_Access_Token\' secret environment variable has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
           assert.equal(result.internalMessage, 'Test')
           verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('PAT')).once()
-          verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
+          verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', any())).once()
           verify(gitApi.deleteComment('RepoID', 10, 20, 1, 'Project')).once()
           verify(logger.logDebug('* AzureReposInvoker.deleteCommentThread()')).once()
           verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
@@ -1036,7 +1037,7 @@ describe('azureReposInvoker.ts', (): void => {
 
       // Assert
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('PAT')).once()
-      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
+      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', any())).once()
       verify(gitApi.deleteComment('RepoID', 10, 20, 1, 'Project')).once()
       verify(logger.logDebug('* AzureReposInvoker.deleteCommentThread()')).once()
       verify(logger.logDebug('* AzureReposInvoker.getGitApi()')).once()
@@ -1053,7 +1054,7 @@ describe('azureReposInvoker.ts', (): void => {
 
       // Assert
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('PAT')).once()
-      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', anything())).once()
+      verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', any())).once()
       verify(gitApi.deleteComment('RepoID', 10, 20, 1, 'Project')).once()
       verify(gitApi.deleteComment('RepoID', 10, 30, 1, 'Project')).once()
       verify(logger.logDebug('* AzureReposInvoker.deleteCommentThread()')).twice()

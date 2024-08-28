@@ -80,7 +80,7 @@ export default class RunnerInvoker implements IRunnerInvoker {
     }
 
     const runner: IRunnerInvoker = this.getRunner()
-    return runner.loc(key, ...param)
+    return runner.loc(key, param)
   }
 
   public logDebug (message: string): void {

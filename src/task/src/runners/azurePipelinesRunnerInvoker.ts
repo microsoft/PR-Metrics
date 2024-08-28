@@ -71,7 +71,7 @@ export default class AzurePipelinesRunnerInvoker implements IRunnerInvoker {
   }
 
   public loc (key: string, ...param: any[]): string {
-    return this._azurePipelinesRunnerWrapper.loc(key, ...param)
+    return this._azurePipelinesRunnerWrapper.loc(key, param)
   }
 
   public logDebug (message: string): void {

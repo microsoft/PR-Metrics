@@ -18,6 +18,6 @@ export default class ConsoleWrapper {
    */
   public log (message: any, ...optionalParams: any[]): void {
     /* eslint-disable-next-line no-console -- This is a wrapper around the console. */
-    console.log(message, ...optionalParams)
+    console.log(message, optionalParams)
   }
 }
