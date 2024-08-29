@@ -68,12 +68,12 @@ export default class PullRequestComments {
 
     // If the current comment thread is not applied to a specified file, check if it is the metrics comment thread.
     for (const comment of comments.pullRequestComments) {
-      result = this.getMetricsCommentData(result, comment);
+      result = this.getMetricsCommentData(result, comment)
     }
 
     // If the current comment thread is not applied to a specified file, check if it is the metrics comment thread.
     for (const comment of comments.fileComments) {
-      result = this.getFilesRequiringCommentUpdates(result, comment);
+      result = this.getFilesRequiringCommentUpdates(result, comment)
     }
 
     return result

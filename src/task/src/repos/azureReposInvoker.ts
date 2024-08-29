@@ -208,16 +208,17 @@ export default class AzureReposInvoker extends BaseReposInvoker {
   private static convertPullRequestComments (comments: GitPullRequestCommentThread[]): CommentData {
     const result: CommentData = new CommentData()
 
-    comments.forEach((value: GitPullRequestCommentThread, index: number): void => {
+    let index = 0
+    for (const value of comments) {
       const id: number = Validator.validateNumber(value.id, `commentThread[${String(index)}].id`, 'AzureReposInvoker.convertPullRequestComments()')
       const currentComments: Comment[] | undefined = value.comments
       if (currentComments === undefined) {
-        return
+        continue
       }
 
       const content: string | undefined = currentComments[0]?.content
       if (content === undefined || content === '') {
-        return
+        continue
       }
 
       const status: CommentThreadStatus = value.status ?? CommentThreadStatus.Unknown
@@ -227,12 +228,14 @@ export default class AzureReposInvoker extends BaseReposInvoker {
       } else {
         const fileName: string | undefined = value.threadContext.filePath
         if (fileName === undefined || fileName.length <= 1) {
-          return
+          continue
         }
 
         result.fileComments.push(new FileCommentData(id, content, fileName.substring(1), status))
       }
-    })
+
+      index += 1
+    }
 
     return result
   }

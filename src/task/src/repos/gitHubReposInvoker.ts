@@ -6,7 +6,6 @@
 import 'isomorphic-fetch'
 import * as Converter from '../utilities/converter'
 import * as Validator from '../utilities/validator'
-import { Octokit, RequestError } from 'octokit'
 import BaseReposInvoker from './baseReposInvoker'
 import CommentData from './interfaces/commentData'
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
@@ -16,7 +15,6 @@ import DeleteReviewCommentResponse from '../wrappers/octokitInterfaces/deleteRev
 import FileCommentData from './interfaces/fileCommentData'
 import GetIssueCommentsResponse from '../wrappers/octokitInterfaces/getIssueCommentsResponse'
 import GetPullResponse from '../wrappers/octokitInterfaces/getPullResponse'
-import { GetResponseDataTypeFromEndpointMethod } from '@octokit/types'
 import GetReviewCommentsResponse from '../wrappers/octokitInterfaces/getReviewCommentsResponse'
 import GitInvoker from '../git/gitInvoker'
 import ListCommitsResponse from '../wrappers/octokitInterfaces/listCommitsResponse'
@@ -25,16 +23,13 @@ import { OctokitOptions } from '@octokit/core/dist-types/types'
 import OctokitWrapper from '../wrappers/octokitWrapper'
 import PullRequestCommentData from './interfaces/pullRequestCommentData'
 import PullRequestDetails from './interfaces/pullRequestDetails'
+import { RequestError } from 'octokit'
 import RunnerInvoker from '../runners/runnerInvoker'
 import { StatusCodes } from 'http-status-codes'
 import UpdateIssueCommentResponse from '../wrappers/octokitInterfaces/updateIssueCommentResponse'
 import UpdatePullResponse from '../wrappers/octokitInterfaces/updatePullResponse'
 import { decimalRadix } from '../utilities/constants'
 import { singleton } from 'tsyringe'
-
-const octokit: Octokit = new Octokit()
-type GetIssueCommentsResponseData = GetResponseDataTypeFromEndpointMethod<typeof octokit.rest.issues.listComments>[0]
-type GetReviewCommentsResponseData = GetResponseDataTypeFromEndpointMethod<typeof octokit.rest.pulls.listReviewComments>[0]
 
 /**
  * A class for invoking GitHub Repos functionality.
@@ -264,22 +259,24 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
 
     const result: CommentData = new CommentData()
 
-    pullRequestComments?.data.forEach((value: GetIssueCommentsResponseData): void => {
-      const id: number = value.id
-      const content: string | undefined = value.body
-      if (content === undefined) {
-        return
+    if (pullRequestComments) {
+      for (const value of pullRequestComments.data) {
+        const id: number = value.id
+        const content: string | undefined = value.body
+        if (content !== undefined) {
+          result.pullRequestComments.push(new PullRequestCommentData(id, content))
+        }
       }
+    }
 
-      result.pullRequestComments.push(new PullRequestCommentData(id, content))
-    })
-
-    fileComments?.data.forEach((value: GetReviewCommentsResponseData): void => {
-      const id: number = value.id
-      const content: string = value.body
-      const file: string = value.path
-      result.fileComments.push(new FileCommentData(id, content, file))
-    })
+    if (fileComments) {
+      for (const value of fileComments.data) {
+        const id: number = value.id
+        const content: string = value.body
+        const file: string = value.path
+        result.fileComments.push(new FileCommentData(id, content, file))
+      }
+    }
 
     return result
   }

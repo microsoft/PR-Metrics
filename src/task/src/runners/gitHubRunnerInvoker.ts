@@ -80,7 +80,7 @@ export default class GitHubRunnerInvoker implements RunnerInvokerInterface {
     const stringPrefix = 'loc.messages.'
     for (const [key, value] of entries) {
       if (key.startsWith(stringPrefix)) {
-        this._resources.set(key.substring(stringPrefix.length), value);
+        this._resources.set(key.substring(stringPrefix.length), value)
       }
     }
   }

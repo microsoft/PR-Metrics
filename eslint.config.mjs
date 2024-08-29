@@ -145,7 +145,6 @@ export default tseslint.config(
       'no-constant-binary-expression': 'error',
       'no-constant-condition': 'error',
       'no-constructor-return': 'error',
-      'no-continue': 'error',
       'no-control-regex': 'error',
       'no-debugger': 'error',
       'no-div-regex': 'error',

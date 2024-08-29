@@ -250,11 +250,11 @@ export default class CodeMetrics {
 
     for (const entry of matches) {
       if (/.*((T|t)est|TEST).*/u.test(entry.fileName) || /.*\.spec\..*/iu.test(path.basename(entry.fileName))) {
-        this._logger.logDebug(`Test File: ${entry.fileName} (${String(entry.linesAdded)} lines)`);
-        testCode += entry.linesAdded;
+        this._logger.logDebug(`Test File: ${entry.fileName} (${String(entry.linesAdded)} lines)`)
+        testCode += entry.linesAdded
       } else {
-        this._logger.logDebug(`Product File: ${entry.fileName} (${String(entry.linesAdded)} lines)`);
-        productCode += entry.linesAdded;
+        this._logger.logDebug(`Product File: ${entry.fileName} (${String(entry.linesAdded)} lines)`)
+        productCode += entry.linesAdded
       }
     }
 

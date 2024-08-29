@@ -85,7 +85,7 @@ export default class Logger {
    */
   public replay (): void {
     for (const message of this._messages) {
-      this._consoleWrapper.log(`🔁 ${message}`);
+      this._consoleWrapper.log(`🔁 ${message}`)
     }
   }
 
