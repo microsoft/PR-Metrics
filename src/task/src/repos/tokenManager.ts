@@ -61,7 +61,7 @@ export default class TokenManager {
     this._logger.logDebug(`Using workload identity federation '${workloadIdentityFederation}' for authentication.`)
     const authorizationScheme: string | undefined = this._runnerInvoker.getEndpointAuthorizationScheme(workloadIdentityFederation)
     if (authorizationScheme !== 'WorkloadIdentityFederation') {
-      return this._runnerInvoker.loc('repos.tokenManager.incorrectAuthorizationScheme', workloadIdentityFederation, authorizationScheme)
+      return this._runnerInvoker.loc('repos.tokenManager.incorrectAuthorizationScheme', workloadIdentityFederation, String(authorizationScheme))
     }
 
     process.env.PR_METRICS_ACCESS_TOKEN = await this.getAccessToken(workloadIdentityFederation)

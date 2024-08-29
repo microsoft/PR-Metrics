@@ -57,7 +57,7 @@ export default class CodeMetricsCalculator {
 
     const provider: boolean | string = this._pullRequest.isSupportedProvider
     if (provider !== true) {
-      return this._runnerInvoker.loc('metrics.codeMetricsCalculator.unsupportedProvider', provider)
+      return this._runnerInvoker.loc('metrics.codeMetricsCalculator.unsupportedProvider', String(provider))
     }
 
     return null
