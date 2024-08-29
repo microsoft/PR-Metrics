@@ -9,7 +9,7 @@ import CommentData from './interfaces/commentData'
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import GitHubReposInvoker from './gitHubReposInvoker'
 import Logger from '../utilities/logger'
-import PullRequestDetails from './interfaces/pullRequestDetails'
+import PullRequestDetailsInterface from './interfaces/pullRequestDetailsInterface'
 import ReposInvokerInterface from './reposInvokerInterface'
 import RunnerInvoker from '../runners/runnerInvoker'
 import { singleton } from 'tsyringe'
@@ -44,7 +44,7 @@ export default class ReposInvoker implements ReposInvokerInterface {
     return reposInvoker.isAccessTokenAvailable()
   }
 
-  public async getTitleAndDescription (): Promise<PullRequestDetails> {
+  public async getTitleAndDescription (): Promise<PullRequestDetailsInterface> {
     this._logger.logDebug('* ReposInvoker.getTitleAndDescription()')
 
     const reposInvoker: ReposInvokerInterface = this.getReposInvoker()

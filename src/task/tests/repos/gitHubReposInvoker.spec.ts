@@ -17,10 +17,10 @@ import GitHubReposInvoker from '../../src/repos/gitHubReposInvoker'
 import GitInvoker from '../../src/git/gitInvoker'
 import HttpError from '../testUtilities/httpError'
 import Logger from '../../src/utilities/logger'
-import OctokitLogObject from '../wrappers/octokitLogObject'
+import OctokitLogObjectInterface from '../wrappers/octokitLogObjectInterface'
 import { OctokitOptions } from '@octokit/core/dist-types/types'
 import OctokitWrapper from '../../src/wrappers/octokitWrapper'
-import PullRequestDetails from '../../src/repos/interfaces/pullRequestDetails'
+import PullRequestDetailsInterface from '../../src/repos/interfaces/pullRequestDetailsInterface'
 import { RequestError } from 'octokit'
 import RunnerInvoker from '../../src/runners/runnerInvoker'
 import { StatusCodes } from 'http-status-codes'
@@ -123,7 +123,7 @@ describe('gitHubReposInvoker.ts', (): void => {
           const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 
           // Act
-          const func: () => Promise<PullRequestDetails> = async () => gitHubReposInvoker.getTitleAndDescription()
+          const func: () => Promise<PullRequestDetailsInterface> = async () => gitHubReposInvoker.getTitleAndDescription()
 
           // Assert
           await AssertExtensions.toThrowAsync(func, `'SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI', accessed within 'GitHubReposInvoker.initializeForAzureDevOps()', is invalid, null, or undefined '${Converter.toString(variable)}'.`)
@@ -140,7 +140,7 @@ describe('gitHubReposInvoker.ts', (): void => {
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 
       // Act
-      const func: () => Promise<PullRequestDetails> = async () => gitHubReposInvoker.getTitleAndDescription()
+      const func: () => Promise<PullRequestDetailsInterface> = async () => gitHubReposInvoker.getTitleAndDescription()
 
       // Assert
       await AssertExtensions.toThrowAsync(func, 'SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI \'https://github.com/microsoft\' is in an unexpected format.')
@@ -170,7 +170,7 @@ describe('gitHubReposInvoker.ts', (): void => {
           const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 
           // Act
-          const func: () => Promise<PullRequestDetails> = async () => gitHubReposInvoker.getTitleAndDescription()
+          const func: () => Promise<PullRequestDetailsInterface> = async () => gitHubReposInvoker.getTitleAndDescription()
 
           // Assert
           await AssertExtensions.toThrowAsync(func, `'GITHUB_API_URL', accessed within 'GitHubReposInvoker.initializeForGitHub()', is invalid, null, or undefined '${Converter.toString(variable)}'.`)
@@ -208,7 +208,7 @@ describe('gitHubReposInvoker.ts', (): void => {
           const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 
           // Act
-          const func: () => Promise<PullRequestDetails> = async () => gitHubReposInvoker.getTitleAndDescription()
+          const func: () => Promise<PullRequestDetailsInterface> = async () => gitHubReposInvoker.getTitleAndDescription()
 
           // Assert
           await AssertExtensions.toThrowAsync(func, `'GITHUB_REPOSITORY_OWNER', accessed within 'GitHubReposInvoker.initializeForGitHub()', is invalid, null, or undefined '${Converter.toString(variable)}'.`)
@@ -248,7 +248,7 @@ describe('gitHubReposInvoker.ts', (): void => {
           const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 
           // Act
-          const func: () => Promise<PullRequestDetails> = async () => gitHubReposInvoker.getTitleAndDescription()
+          const func: () => Promise<PullRequestDetailsInterface> = async () => gitHubReposInvoker.getTitleAndDescription()
 
           // Assert
           await AssertExtensions.toThrowAsync(func, `'GITHUB_REPOSITORY', accessed within 'GitHubReposInvoker.initializeForGitHub()', is invalid, null, or undefined '${Converter.toString(variable)}'.`)
@@ -277,7 +277,7 @@ describe('gitHubReposInvoker.ts', (): void => {
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 
       // Act
-      const func: () => Promise<PullRequestDetails> = async () => gitHubReposInvoker.getTitleAndDescription()
+      const func: () => Promise<PullRequestDetailsInterface> = async () => gitHubReposInvoker.getTitleAndDescription()
 
       // Assert
       await AssertExtensions.toThrowAsync(func, 'GITHUB_REPOSITORY \'microsoft\' is in an unexpected format.')
@@ -307,7 +307,7 @@ describe('gitHubReposInvoker.ts', (): void => {
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 
       // Act
-      const result: PullRequestDetails = await gitHubReposInvoker.getTitleAndDescription()
+      const result: PullRequestDetailsInterface = await gitHubReposInvoker.getTitleAndDescription()
 
       // Assert
       assert.equal(result.title, 'Title')
@@ -338,7 +338,7 @@ describe('gitHubReposInvoker.ts', (): void => {
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 
       // Act
-      const result: PullRequestDetails = await gitHubReposInvoker.getTitleAndDescription()
+      const result: PullRequestDetailsInterface = await gitHubReposInvoker.getTitleAndDescription()
 
       // Assert
       assert.equal(result.title, 'Title')
@@ -372,7 +372,7 @@ describe('gitHubReposInvoker.ts', (): void => {
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 
       // Act
-      const result: PullRequestDetails = await gitHubReposInvoker.getTitleAndDescription()
+      const result: PullRequestDetailsInterface = await gitHubReposInvoker.getTitleAndDescription()
 
       // Assert
       assert.equal(result.title, 'Title')
@@ -401,7 +401,7 @@ describe('gitHubReposInvoker.ts', (): void => {
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 
       // Act
-      const result: PullRequestDetails = await gitHubReposInvoker.getTitleAndDescription()
+      const result: PullRequestDetailsInterface = await gitHubReposInvoker.getTitleAndDescription()
 
       // Assert
       assert.equal(result.title, 'Title')
@@ -430,7 +430,7 @@ describe('gitHubReposInvoker.ts', (): void => {
 
       // Act
       await gitHubReposInvoker.getTitleAndDescription()
-      const result: PullRequestDetails = await gitHubReposInvoker.getTitleAndDescription()
+      const result: PullRequestDetailsInterface = await gitHubReposInvoker.getTitleAndDescription()
 
       // Assert
       assert.equal(result.title, 'Title')
@@ -460,7 +460,7 @@ describe('gitHubReposInvoker.ts', (): void => {
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 
       // Act
-      const result: PullRequestDetails = await gitHubReposInvoker.getTitleAndDescription()
+      const result: PullRequestDetailsInterface = await gitHubReposInvoker.getTitleAndDescription()
 
       // Assert
       assert.equal(result.title, 'Title')
@@ -497,7 +497,7 @@ describe('gitHubReposInvoker.ts', (): void => {
           const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 
           // Act
-          const func: () => Promise<PullRequestDetails> = async () => gitHubReposInvoker.getTitleAndDescription()
+          const func: () => Promise<PullRequestDetailsInterface> = async () => gitHubReposInvoker.getTitleAndDescription()
 
           // Assert
           const result: any = await AssertExtensions.toThrowAsync(func, 'Could not access the resources. Ensure the \'PR_Metrics_Access_Token\' secret environment variable has Read and Write access to pull requests (or access to \'repos\' if using a Classic PAT).')
@@ -525,7 +525,7 @@ describe('gitHubReposInvoker.ts', (): void => {
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 
       // Act
-      const func: () => Promise<PullRequestDetails> = async () => gitHubReposInvoker.getTitleAndDescription()
+      const func: () => Promise<PullRequestDetailsInterface> = async () => gitHubReposInvoker.getTitleAndDescription()
 
       // Assert
       await AssertExtensions.toThrowAsync(func, 'Error')
@@ -537,7 +537,7 @@ describe('gitHubReposInvoker.ts', (): void => {
 
     it('should initialize log object correctly', async (): Promise<void> => {
       // Arrange
-      let logObject: OctokitLogObject | undefined
+      let logObject: OctokitLogObjectInterface | undefined
       when(octokitWrapper.initialize(any())).thenCall((options: OctokitOptions): void => { logObject = options.log })
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
       await gitHubReposInvoker.getTitleAndDescription()
@@ -842,7 +842,7 @@ describe('gitHubReposInvoker.ts', (): void => {
       })
       when(octokitWrapper.listCommits(anyString(), anyString(), anyNumber(), anyNumber())).thenResolve({
         headers: {},
-        status: 200,
+        status: StatusCodes.OK,
         url: '',
         data: []
       })
@@ -876,7 +876,7 @@ describe('gitHubReposInvoker.ts', (): void => {
         headers: {
           link: '<https://api.github.com/repositories/309438703/pulls/172/commits?page=2>; rel="next", <https://api.github.com/repositories/309438703/pulls/172/commits?page=24>; rel="last"'
         },
-        status: 200,
+        status: StatusCodes.OK,
         url: '',
         data: []
       })
@@ -912,7 +912,7 @@ describe('gitHubReposInvoker.ts', (): void => {
         headers: {
           link: 'non-matching'
         },
-        status: 200,
+        status: StatusCodes.OK,
         url: '',
         data: []
       })

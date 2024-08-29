@@ -7,6 +7,7 @@ import GetIssueCommentsResponse from '../../src/wrappers/octokitInterfaces/getIs
 import GetPullResponse from '../../src/wrappers/octokitInterfaces/getPullResponse'
 import GetReviewCommentsResponse from '../../src/wrappers/octokitInterfaces/getReviewCommentsResponse'
 import ListCommitsResponse from '../../src/wrappers/octokitInterfaces/listCommitsResponse'
+import { StatusCodes } from 'http-status-codes'
 
 /* eslint-disable camelcase -- Required for alignment with Octokit. */
 
@@ -15,7 +16,7 @@ import ListCommitsResponse from '../../src/wrappers/octokitInterfaces/listCommit
  */
 export const getPullResponse: GetPullResponse = {
   headers: {},
-  status: 200,
+  status: StatusCodes.OK,
   url: '',
   data: {
     title: 'Title',
@@ -387,7 +388,7 @@ export const getPullResponse: GetPullResponse = {
  */
 export const listCommitsResponse: ListCommitsResponse = {
   headers: {},
-  status: 200,
+  status: StatusCodes.OK,
   url: '',
   data:
     [
@@ -478,7 +479,7 @@ export const listCommitsResponse: ListCommitsResponse = {
  */
 export const getIssueCommentsResponse: GetIssueCommentsResponse = {
   headers: {},
-  status: 200,
+  status: StatusCodes.OK,
   url: '',
   data: [
     {
@@ -532,7 +533,7 @@ export const getIssueCommentsResponse: GetIssueCommentsResponse = {
  */
 export const getReviewCommentsResponse: GetReviewCommentsResponse = {
   headers: {},
-  status: 200,
+  status: StatusCodes.OK,
   url: '',
   data: [
     {

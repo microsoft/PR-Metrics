@@ -8,7 +8,7 @@ import ResourcesJson from '../jsonTypes/resourcesJson'
 /**
  * An interface defining the format of Azure Pipelines task JSON files.
  */
-export default interface TaskJson {
+export default interface TaskJsonInterface {
   /**
    * The friendly name of the task.
    */

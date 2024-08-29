@@ -11,7 +11,7 @@ import CommentData from '../../src/repos/interfaces/commentData'
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import GitHubReposInvoker from '../../src/repos/gitHubReposInvoker'
 import Logger from '../../src/utilities/logger'
-import PullRequestDetails from '../../src/repos/interfaces/pullRequestDetails'
+import PullRequestDetailsInterface from '../../src/repos/interfaces/pullRequestDetailsInterface'
 import ReposInvoker from '../../src/repos/reposInvoker'
 import assert from 'node:assert/strict'
 
@@ -157,7 +157,7 @@ describe('reposInvoker.ts', (): void => {
       const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
 
       // Act
-      const result: PullRequestDetails = await reposInvoker.getTitleAndDescription()
+      const result: PullRequestDetailsInterface = await reposInvoker.getTitleAndDescription()
 
       // Assert
       verify(azureReposInvoker.getTitleAndDescription()).once()
@@ -176,7 +176,7 @@ describe('reposInvoker.ts', (): void => {
       const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
 
       // Act
-      const result: PullRequestDetails = await reposInvoker.getTitleAndDescription()
+      const result: PullRequestDetailsInterface = await reposInvoker.getTitleAndDescription()
 
       // Assert
       verify(azureReposInvoker.getTitleAndDescription()).never()
@@ -202,7 +202,7 @@ describe('reposInvoker.ts', (): void => {
           const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
 
           // Act
-          const result: PullRequestDetails = await reposInvoker.getTitleAndDescription()
+          const result: PullRequestDetailsInterface = await reposInvoker.getTitleAndDescription()
 
           // Assert
           verify(azureReposInvoker.getTitleAndDescription()).never()
@@ -223,7 +223,7 @@ describe('reposInvoker.ts', (): void => {
       const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
 
       // Act
-      const func: () => Promise<PullRequestDetails> = async () => reposInvoker.getTitleAndDescription()
+      const func: () => Promise<PullRequestDetailsInterface> = async () => reposInvoker.getTitleAndDescription()
 
       // Assert
       await AssertExtensions.toThrowAsync(func, '\'BUILD_REPOSITORY_PROVIDER\', accessed within \'ReposInvoker.getReposInvoker()\', is invalid, null, or undefined \'undefined\'.')
@@ -239,7 +239,7 @@ describe('reposInvoker.ts', (): void => {
       const reposInvoker: ReposInvoker = new ReposInvoker(instance(azureReposInvoker), instance(gitHubReposInvoker), instance(logger))
 
       // Act
-      const func: () => Promise<PullRequestDetails> = async () => reposInvoker.getTitleAndDescription()
+      const func: () => Promise<PullRequestDetailsInterface> = async () => reposInvoker.getTitleAndDescription()
 
       // Assert
       await AssertExtensions.toThrowAsync(func, 'BUILD_REPOSITORY_PROVIDER \'Other\' is unsupported.')

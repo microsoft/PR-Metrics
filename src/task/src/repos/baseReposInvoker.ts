@@ -5,8 +5,8 @@
 
 import CommentData from './interfaces/commentData'
 import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
-import ErrorWithStatus from './interfaces/errorWithStatus'
-import PullRequestDetails from './interfaces/pullRequestDetails'
+import ErrorWithStatusInterface from './interfaces/errorWithStatusInterface'
+import PullRequestDetailsInterface from './interfaces/pullRequestDetailsInterface'
 import ReposInvokerInterface from './reposInvokerInterface'
 import { StatusCodes } from 'http-status-codes'
 
@@ -16,7 +16,7 @@ import { StatusCodes } from 'http-status-codes'
 export default abstract class BaseReposInvoker implements ReposInvokerInterface {
   public abstract isAccessTokenAvailable (): Promise<string | null>
 
-  public abstract getTitleAndDescription (): Promise<PullRequestDetails>
+  public abstract getTitleAndDescription (): Promise<PullRequestDetailsInterface>
 
   public abstract getComments (): Promise<CommentData>
 
@@ -39,7 +39,7 @@ export default abstract class BaseReposInvoker implements ReposInvokerInterface 
     try {
       return await action()
     } catch (error: any) {
-      const castedError: ErrorWithStatus = error as ErrorWithStatus
+      const castedError: ErrorWithStatusInterface = error as ErrorWithStatusInterface
       const statusCode: number | undefined = castedError.status ?? castedError.statusCode
       const accessErrorStatusCodes: number[] = [StatusCodes.UNAUTHORIZED, StatusCodes.FORBIDDEN, StatusCodes.NOT_FOUND]
       if (statusCode !== undefined && accessErrorStatusCodes.includes(statusCode)) {

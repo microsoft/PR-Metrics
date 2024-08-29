@@ -37,28 +37,32 @@ describe('validator.ts', (): void => {
   })
 
   describe('validateVariable()', (): void => {
-    [
-      '',
-      undefined
-    ].forEach((value: string | undefined): void => {
-      it(`should throw an error when passed invalid string value '${Converter.toString(value)}'`, (): void => {
-        // Arrange
-        if (value === undefined) {
+    {
+      const testCases: (string | undefined)[] = [
+        '',
+        undefined
+      ]
+
+      testCases.forEach((value: string | undefined): void => {
+        it(`should throw an error when passed invalid string value '${Converter.toString(value)}'`, (): void => {
+          // Arrange
+          if (value === undefined) {
+            delete process.env.TEST_VARIABLE
+          } else {
+            process.env.TEST_VARIABLE = value
+          }
+
+          // Act
+          const func: () => void = () => Validator.validateVariable('TEST_VARIABLE', 'string test method name')
+
+          // Assert
+          assert.throws(func, new TypeError(`'TEST_VARIABLE', accessed within 'string test method name', is invalid, null, or undefined '${Converter.toString(value)}'.`))
+
+          // Finalization
           delete process.env.TEST_VARIABLE
-        } else {
-          process.env.TEST_VARIABLE = value
-        }
-
-        // Act
-        const func: () => void = () => Validator.validateVariable('TEST_VARIABLE', 'string test method name')
-
-        // Assert
-        assert.throws(func, new TypeError(`'TEST_VARIABLE', accessed within 'string test method name', is invalid, null, or undefined '${Converter.toString(value)}'.`))
-
-        // Finalization
-        delete process.env.TEST_VARIABLE
+        })
       })
-    })
+    }
 
     it('should not throw an error when passed a valid string value', (): void => {
       // Arrange

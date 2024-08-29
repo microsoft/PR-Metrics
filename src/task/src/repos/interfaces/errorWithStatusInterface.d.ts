@@ -6,7 +6,7 @@
 /**
  * An interface representing an error object containing a status code.
  */
-export default interface ErrorWithStatus extends Error {
+export default interface ErrorWithStatusInterface extends Error {
   /**
    * The error status code accessed via `status`.
    */

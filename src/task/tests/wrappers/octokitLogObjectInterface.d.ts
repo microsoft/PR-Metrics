@@ -6,7 +6,7 @@
 /**
  * An interface representing the Octokit (GitHub) log object.
  */
-export default interface OctokitLogObject {
+export default interface OctokitLogObjectInterface {
   /**
    * Logs a debug message.
    * @param message The message to log.

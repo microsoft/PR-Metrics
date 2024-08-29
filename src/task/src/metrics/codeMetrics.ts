@@ -5,9 +5,9 @@
 
 import * as minimatch from 'minimatch'
 import * as path from 'path'
-import { CodeFileMetric } from './codeFileMetric'
+import { CodeFileMetricInterface } from './codeFileMetricInterface'
 import CodeMetricsData from './codeMetricsData'
-import { FixedLengthArray } from '../utilities/fixedLengthArray'
+import { FixedLengthArrayInterface } from '../utilities/fixedLengthArrayInterface'
 import GitInvoker from '../git/gitInvoker'
 import Inputs from './inputs'
 import Logger from '../utilities/logger'
@@ -153,11 +153,11 @@ export default class CodeMetrics {
     const notNotPattern = '!!'
     const notPattern = '!'
 
-    const codeFileMetrics: CodeFileMetric[] = this.createFileMetricsMap(gitDiffSummary)
+    const codeFileMetrics: CodeFileMetricInterface[] = this.createFileMetricsMap(gitDiffSummary)
 
-    const matches: CodeFileMetric[] = []
-    const nonMatches: CodeFileMetric[] = []
-    const nonMatchesToComment: CodeFileMetric[] = []
+    const matches: CodeFileMetricInterface[] = []
+    const nonMatches: CodeFileMetricInterface[] = []
+    const nonMatchesToComment: CodeFileMetricInterface[] = []
 
     // Check for glob matches.
     for (const codeFileMetric of codeFileMetrics) {
@@ -193,7 +193,7 @@ export default class CodeMetrics {
     this.constructMetrics(matches, nonMatches, nonMatchesToComment)
   }
 
-  private determineIfValidFilePattern(codeFileMetric: CodeFileMetric, positiveFileMatchingPatterns: string[], negativeFileMatchingPatterns: string[], doubleNegativeFileMatchingPatterns: string[]): boolean {
+  private determineIfValidFilePattern(codeFileMetric: CodeFileMetricInterface, positiveFileMatchingPatterns: string[], negativeFileMatchingPatterns: string[], doubleNegativeFileMatchingPatterns: string[]): boolean {
     this._logger.logDebug('* CodeMetrics.determineIfValidFilePattern()')
 
     let result = false
@@ -241,7 +241,7 @@ export default class CodeMetrics {
     return result
   }
 
-  private constructMetrics (matches: CodeFileMetric[], nonMatches: CodeFileMetric[], nonMatchesToComment: CodeFileMetric[]): void {
+  private constructMetrics (matches: CodeFileMetricInterface[], nonMatches: CodeFileMetricInterface[], nonMatchesToComment: CodeFileMetricInterface[]): void {
     this._logger.logDebug('* CodeMetrics.constructMetrics()')
 
     let productCode = 0
@@ -277,7 +277,7 @@ export default class CodeMetrics {
     this._metrics = new CodeMetricsData(productCode, testCode, ignoredCode)
   }
 
-  private createFileMetricsMap (input: string): CodeFileMetric[] {
+  private createFileMetricsMap (input: string): CodeFileMetricInterface[] {
     this._logger.logDebug('* CodeMetrics.createFileMetricsMap()')
 
     // Removing the ending that can be created by test mocks.
@@ -290,7 +290,7 @@ export default class CodeMetrics {
     // Condense file and folder names that were renamed e.g. F{a => i}leT{b => e}st.d{c => l}l".
     const lines: string[] = modifiedInput.split('\n')
 
-    const result: CodeFileMetric[] = []
+    const result: CodeFileMetricInterface[] = []
     for (const line of lines) {
       const elements: string[] = line.split('\t')
       if (elements[0] === undefined || elements[1] === undefined || elements[2] === undefined) {
@@ -356,7 +356,7 @@ export default class CodeMetrics {
   private calculateSize (): string {
     this._logger.logDebug('* CodeMetrics.calculateSize()')
 
-    const indicators: FixedLengthArray<((prefix: string) => string), 5> = [
+    const indicators: FixedLengthArrayInterface<((prefix: string) => string), 5> = [
       (): string => this._runnerInvoker.loc('metrics.codeMetrics.titleSizeXS'),
       (): string => this._runnerInvoker.loc('metrics.codeMetrics.titleSizeS'),
       (): string => this._runnerInvoker.loc('metrics.codeMetrics.titleSizeM'),

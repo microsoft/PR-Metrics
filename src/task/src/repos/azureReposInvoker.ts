@@ -14,7 +14,7 @@ import { IGitApi } from 'azure-devops-node-api/GitApi'
 import { IRequestHandler } from 'azure-devops-node-api/interfaces/common/VsoBaseInterfaces'
 import Logger from '../utilities/logger'
 import PullRequestCommentData from './interfaces/pullRequestCommentData'
-import PullRequestDetails from './interfaces/pullRequestDetails'
+import PullRequestDetailsInterface from './interfaces/pullRequestDetailsInterface'
 import RunnerInvoker from '../runners/runnerInvoker'
 import TokenManager from './tokenManager'
 import { WebApi } from 'azure-devops-node-api'
@@ -70,7 +70,7 @@ export default class AzureReposInvoker extends BaseReposInvoker {
     return null
   }
 
-  public async getTitleAndDescription (): Promise<PullRequestDetails> {
+  public async getTitleAndDescription (): Promise<PullRequestDetailsInterface> {
     this._logger.logDebug('* AzureReposInvoker.getTitleAndDescription()')
 
     const gitApiPromise: Promise<IGitApi> = this.getGitApi()

@@ -9,7 +9,7 @@ import Logger from '../utilities/logger'
 import PullRequest from '../pullRequests/pullRequest'
 import PullRequestComments from '../pullRequests/pullRequestComments'
 import PullRequestCommentsData from '../pullRequests/pullRequestCommentsData'
-import PullRequestDetails from '../repos/interfaces/pullRequestDetails'
+import PullRequestDetailsInterface from '../repos/interfaces/pullRequestDetailsInterface'
 import ReposInvoker from '../repos/reposInvoker'
 import RunnerInvoker from '../runners/runnerInvoker'
 import { injectable } from 'tsyringe'
@@ -103,7 +103,7 @@ export default class CodeMetricsCalculator {
   public async updateDetails (): Promise<void> {
     this._logger.logDebug('* CodeMetricsCalculator.updateDetails()')
 
-    const details: PullRequestDetails = await this._reposInvoker.getTitleAndDescription()
+    const details: PullRequestDetailsInterface = await this._reposInvoker.getTitleAndDescription()
     const updatedTitle: string | null = await this._pullRequest.getUpdatedTitle(details.title)
     const updatedDescription: string | null = this._pullRequest.getUpdatedDescription(details.description)
 

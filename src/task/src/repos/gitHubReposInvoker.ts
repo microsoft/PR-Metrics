@@ -22,7 +22,7 @@ import Logger from '../utilities/logger'
 import { OctokitOptions } from '@octokit/core/dist-types/types'
 import OctokitWrapper from '../wrappers/octokitWrapper'
 import PullRequestCommentData from './interfaces/pullRequestCommentData'
-import PullRequestDetails from './interfaces/pullRequestDetails'
+import PullRequestDetailsInterface from './interfaces/pullRequestDetailsInterface'
 import { RequestError } from 'octokit'
 import RunnerInvoker from '../runners/runnerInvoker'
 import { StatusCodes } from 'http-status-codes'
@@ -73,7 +73,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     return Promise.resolve(null)
   }
 
-  public async getTitleAndDescription (): Promise<PullRequestDetails> {
+  public async getTitleAndDescription (): Promise<PullRequestDetailsInterface> {
     this._logger.logDebug('* GitHubReposInvoker.getTitleAndDescription()')
 
     this.initialize()

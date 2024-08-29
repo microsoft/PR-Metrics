@@ -6,6 +6,6 @@
 /**
  * An interface defining the format of JSON resources (.resjson) files.
  */
-type ResourcesJson = Record<string, string>
+type ResourcesJsonInterface = Record<string, string>
 
-export default ResourcesJson
+export default ResourcesJsonInterface
