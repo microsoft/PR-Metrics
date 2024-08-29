@@ -75,18 +75,18 @@ export default class Logger {
     const name: string = error.name
     const properties: string[] = Object.getOwnPropertyNames(error)
     const errorRecord: Record<string, unknown> = error as any as Record<string, unknown>
-    properties.forEach((property: string): void => {
+    for (const property of properties) {
       this.logInfo(`${name} – ${property}: ${JSON.stringify(errorRecord[property])}`)
-    })
+    }
   }
 
   /**
    * Replays the messages logged.
    */
   public replay (): void {
-    this._messages.forEach((message: string): void => {
-      this._consoleWrapper.log(`🔁 ${message}`)
-    })
+    for (const message of this._messages) {
+      this._consoleWrapper.log(`🔁 ${message}`);
+    }
   }
 
   /**

@@ -12,15 +12,15 @@ import ConsoleWrapper from '../wrappers/consoleWrapper'
 import { EndpointAuthorization } from './endpointAuthorization'
 import ExecOutput from './execOutput'
 import GitHubRunnerWrapper from '../wrappers/gitHubRunnerWrapper'
-import IRunnerInvoker from './iRunnerInvoker'
 import ResourcesJson from '../jsonTypes/resourcesJson'
+import RunnerInvokerInterface from './runnerInvokerInterface'
 import { singleton } from 'tsyringe'
 
 /**
  * A class for invoking GitHub runner functionality.
  */
 @singleton()
-export default class GitHubRunnerInvoker implements IRunnerInvoker {
+export default class GitHubRunnerInvoker implements RunnerInvokerInterface {
   private readonly _azurePipelinesRunnerWrapper: AzurePipelinesRunnerWrapper
   private readonly _consoleWrapper: ConsoleWrapper
   private readonly _gitHubRunnerWrapper: GitHubRunnerWrapper
@@ -78,11 +78,11 @@ export default class GitHubRunnerInvoker implements IRunnerInvoker {
 
     const entries: [string, string][] = Object.entries(resources)
     const stringPrefix = 'loc.messages.'
-    entries.forEach((entry: [string, string]): void => {
-      if (entry[0].startsWith(stringPrefix)) {
-        this._resources.set(entry[0].substring(stringPrefix.length), entry[1])
+    for (const [key, value] of entries) {
+      if (key.startsWith(stringPrefix)) {
+        this._resources.set(key.substring(stringPrefix.length), value);
       }
-    })
+    }
   }
 
   public loc (key: string, ...param: string[]): string {
