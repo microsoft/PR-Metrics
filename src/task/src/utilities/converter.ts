@@ -19,5 +19,5 @@ export const toString = (value: StringConvertible | null | undefined): string =>
     return 'undefined'
   }
 
-  return value.toString()
+  return String(value)
 }

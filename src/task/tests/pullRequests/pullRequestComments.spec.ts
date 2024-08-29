@@ -535,7 +535,7 @@ describe('pullRequestComments.ts', (): void => {
       ]
 
       testCases.forEach(({ isSmall, isSufficientlyTested }: TestCaseType): void => {
-        it(`should return Active when the pull request small status is '${isSmall.toString()}' and the sufficient test coverage status is '${Converter.toString(isSufficientlyTested)}'`, async (): Promise<void> => {
+        it(`should return Active when the pull request small status is '${String(isSmall)}' and the sufficient test coverage status is '${Converter.toString(isSufficientlyTested)}'`, async (): Promise<void> => {
           // Arrange
           when(codeMetrics.isSmall()).thenResolve(isSmall)
           when(codeMetrics.isSufficientlyTested()).thenResolve(isSufficientlyTested)

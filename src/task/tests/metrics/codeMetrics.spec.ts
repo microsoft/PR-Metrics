@@ -568,7 +568,7 @@ describe('codeMetrics.ts', (): void => {
     ]
 
     testCases.forEach(({ gitResponse, sizeIndicator, testCoverageIndicator, metrics, globChecks }: TestCaseType): void => {
-      it(`with default inputs and git diff '${gitResponse.replace(/\n/gu, '\\n').replace(/\r/gu, '\\r')}', returns '${sizeIndicator}' size and '${testCoverageIndicator.toString()}' test coverage`, async (): Promise<void> => {
+      it(`with default inputs and git diff '${gitResponse.replace(/\n/gu, '\\n').replace(/\r/gu, '\\r')}', returns '${sizeIndicator}' size and '${String(testCoverageIndicator)}' test coverage`, async (): Promise<void> => {
         // Arrange
         when(gitInvoker.getDiffSummary()).thenResolve(gitResponse)
 
@@ -1147,7 +1147,7 @@ describe('codeMetrics.ts', (): void => {
     ]
 
     testCases.forEach(({ gitResponse, sizeIndicator, testCoverageIndicator, metrics, filesNotRequiringReview, deletedFilesNotRequiringReview, globChecks }: TestCaseType): void => {
-      it(`with non-default inputs and git diff '${gitResponse.replace(/\n/gu, '\\n')}', returns '${sizeIndicator}' size and '${testCoverageIndicator.toString()}' test coverage`, async (): Promise<void> => {
+      it(`with non-default inputs and git diff '${gitResponse.replace(/\n/gu, '\\n')}', returns '${sizeIndicator}' size and '${String(testCoverageIndicator)}' test coverage`, async (): Promise<void> => {
         // Arrange
         when(inputs.baseSize).thenReturn(100)
         when(inputs.growthRate).thenReturn(1.5)
