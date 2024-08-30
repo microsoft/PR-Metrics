@@ -241,7 +241,7 @@ describe('azureReposInvoker.ts', (): void => {
           const func: () => Promise<PullRequestDetailsInterface> = async () => azureReposInvoker.getTitleAndDescription()
 
           // Assert
-          const result: any = await AssertExtensions.toThrowAsync(func, 'Could not access the resources. Ensure the \'PR_Metrics_Access_Token\' secret environment variable has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
+          const result: ErrorWithStatus = await AssertExtensions.toThrowAsync(func, 'Could not access the resources. Ensure the \'PR_Metrics_Access_Token\' secret environment variable has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
           assert.equal(result.internalMessage, 'Test')
           verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('PAT')).once()
           verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', any())).once()
@@ -357,7 +357,7 @@ describe('azureReposInvoker.ts', (): void => {
           const func: () => Promise<CommentData> = async () => azureReposInvoker.getComments()
 
           // Assert
-          const result: any = await AssertExtensions.toThrowAsync(func, 'Could not access the resources. Ensure the \'PR_Metrics_Access_Token\' secret environment variable has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
+          const result: ErrorWithStatus = await AssertExtensions.toThrowAsync(func, 'Could not access the resources. Ensure the \'PR_Metrics_Access_Token\' secret environment variable has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
           assert.equal(result.internalMessage, 'Test')
           verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('PAT')).once()
           verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', any())).once()
@@ -580,7 +580,7 @@ describe('azureReposInvoker.ts', (): void => {
           const func: () => Promise<void> = async () => azureReposInvoker.setTitleAndDescription('Title', 'Description')
 
           // Assert
-          const result: any = await AssertExtensions.toThrowAsync(func, 'Could not access the resources. Ensure the \'PR_Metrics_Access_Token\' secret environment variable has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
+          const result: ErrorWithStatus = await AssertExtensions.toThrowAsync(func, 'Could not access the resources. Ensure the \'PR_Metrics_Access_Token\' secret environment variable has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
           assert.equal(result.internalMessage, 'Test')
           verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('PAT')).once()
           verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', any())).once()
@@ -710,7 +710,7 @@ describe('azureReposInvoker.ts', (): void => {
           const func: () => Promise<void> = async () => azureReposInvoker.createComment('Comment Content', CommentThreadStatus.Active, 'file.ts')
 
           // Assert
-          const result: any = await AssertExtensions.toThrowAsync(func, 'Could not access the resources. Ensure the \'PR_Metrics_Access_Token\' secret environment variable has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
+          const result: ErrorWithStatus = await AssertExtensions.toThrowAsync(func, 'Could not access the resources. Ensure the \'PR_Metrics_Access_Token\' secret environment variable has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
           assert.equal(result.internalMessage, 'Test')
           verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('PAT')).once()
           verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', any())).once()
@@ -849,7 +849,7 @@ describe('azureReposInvoker.ts', (): void => {
           const func: () => Promise<void> = async () => azureReposInvoker.updateComment(20, 'Content', CommentThreadStatus.Active)
 
           // Assert
-          const result: any = await AssertExtensions.toThrowAsync(func, 'Could not access the resources. Ensure the \'PR_Metrics_Access_Token\' secret environment variable has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
+          const result: ErrorWithStatus = await AssertExtensions.toThrowAsync(func, 'Could not access the resources. Ensure the \'PR_Metrics_Access_Token\' secret environment variable has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
           assert.equal(result.internalMessage, 'Test')
           verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('PAT')).once()
           verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', any())).once()
@@ -880,7 +880,7 @@ describe('azureReposInvoker.ts', (): void => {
           const func: () => Promise<void> = async () => azureReposInvoker.updateComment(20, 'Content', CommentThreadStatus.Active)
 
           // Assert
-          const result: any = await AssertExtensions.toThrowAsync(func, 'Could not access the resources. Ensure the \'PR_Metrics_Access_Token\' secret environment variable has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
+          const result: ErrorWithStatus = await AssertExtensions.toThrowAsync(func, 'Could not access the resources. Ensure the \'PR_Metrics_Access_Token\' secret environment variable has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
           assert.equal(result.internalMessage, 'Test')
           verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('PAT')).once()
           verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', any())).once()
@@ -1016,7 +1016,7 @@ describe('azureReposInvoker.ts', (): void => {
           const func: () => Promise<void> = async () => azureReposInvoker.deleteCommentThread(20)
 
           // Assert
-          const result: any = await AssertExtensions.toThrowAsync(func, 'Could not access the resources. Ensure the \'PR_Metrics_Access_Token\' secret environment variable has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
+          const result: ErrorWithStatus = await AssertExtensions.toThrowAsync(func, 'Could not access the resources. Ensure the \'PR_Metrics_Access_Token\' secret environment variable has access to \'Code\' > \'Read\' and \'Pull Request Threads\' > \'Read & write\'.')
           assert.equal(result.internalMessage, 'Test')
           verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler('PAT')).once()
           verify(azureDevOpsApiWrapper.getWebApiInstance('https://dev.azure.com/organization', any())).once()
