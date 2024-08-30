@@ -34,10 +34,8 @@ export default tseslint.config(
     rules: {
       // 6
       '@typescript-eslint/no-unused-vars': 'off',
-      // 50
-      '@typescript-eslint/no-explicit-any': 'off',
-      // 191
-      //'@typescript-eslint/no-unsafe-member-access': 'off',
+      // 6
+      //'@typescript-eslint/no-explicit-any': 'off',
       // 1464
       '@typescript-eslint/no-confusing-void-expression': 'off',
 
