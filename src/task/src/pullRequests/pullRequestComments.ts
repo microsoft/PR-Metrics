@@ -230,9 +230,12 @@ export default class PullRequestComments {
         "pullRequests.pullRequestComments.smallPullRequestComment",
       );
     } else {
+      const size: string = (
+        this._inputs.baseSize * this._inputs.growthRate
+      ).toLocaleString();
       result += this._runnerInvoker.loc(
         "pullRequests.pullRequestComments.largePullRequestComment",
-        (this._inputs.baseSize * this._inputs.growthRate).toLocaleString(),
+        size,
       );
     }
 

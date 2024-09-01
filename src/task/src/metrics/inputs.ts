@@ -152,19 +152,21 @@ export default class Inputs {
       baseSize === undefined ? NaN : parseInt(baseSize, DecimalRadix);
     if (!isNaN(convertedValue) && convertedValue > 0) {
       this._baseSize = convertedValue;
+      const baseSizeString: string = this._baseSize.toLocaleString();
       this._logger.logInfo(
         this._runnerInvoker.loc(
           "metrics.inputs.settingBaseSize",
-          this._baseSize.toLocaleString(),
+          baseSizeString,
         ),
       );
       return;
     }
 
+    const baseSizeString: string = InputsDefault.baseSize.toLocaleString();
     this._logger.logInfo(
       this._runnerInvoker.loc(
         "metrics.inputs.adjustingBaseSize",
-        InputsDefault.baseSize.toLocaleString(),
+        baseSizeString,
       ),
     );
     this._baseSize = InputsDefault.baseSize;
@@ -177,19 +179,21 @@ export default class Inputs {
       growthRate === undefined ? NaN : parseFloat(growthRate);
     if (!isNaN(convertedValue) && convertedValue > 1.0) {
       this._growthRate = convertedValue;
+      const growthRateString: string = this._growthRate.toLocaleString();
       this._logger.logInfo(
         this._runnerInvoker.loc(
           "metrics.inputs.settingGrowthRate",
-          this._growthRate.toLocaleString(),
+          growthRateString,
         ),
       );
       return;
     }
 
+    const growthRateString: string = InputsDefault.growthRate.toLocaleString();
     this._logger.logInfo(
       this._runnerInvoker.loc(
         "metrics.inputs.adjustingGrowthRate",
-        InputsDefault.growthRate.toLocaleString(),
+        growthRateString,
       ),
     );
     this._growthRate = InputsDefault.growthRate;
@@ -208,10 +212,11 @@ export default class Inputs {
         );
       } else {
         this._testFactor = convertedValue;
+        const testFactorString: string = this._testFactor.toLocaleString();
         this._logger.logInfo(
           this._runnerInvoker.loc(
             "metrics.inputs.settingTestFactor",
-            this._testFactor.toLocaleString(),
+            testFactorString,
           ),
         );
       }
@@ -219,10 +224,11 @@ export default class Inputs {
       return;
     }
 
+    const testFactorString: string = InputsDefault.testFactor.toLocaleString();
     this._logger.logInfo(
       this._runnerInvoker.loc(
         "metrics.inputs.adjustingTestFactor",
-        InputsDefault.testFactor.toLocaleString(),
+        testFactorString,
       ),
     );
     this._testFactor = InputsDefault.testFactor;
@@ -262,19 +268,25 @@ export default class Inputs {
         .replace(/\\/gu, "/")
         .replace(/\n$/gu, "")
         .split("\n");
+      const fileMatchPatternsString: string = JSON.stringify(
+        this._fileMatchingPatterns,
+      );
       this._logger.logInfo(
         this._runnerInvoker.loc(
           "metrics.inputs.settingFileMatchingPatterns",
-          JSON.stringify(this._fileMatchingPatterns),
+          fileMatchPatternsString,
         ),
       );
       return;
     }
 
+    const fileMatchPatternsString: string = JSON.stringify(
+      InputsDefault.fileMatchingPatterns,
+    );
     this._logger.logInfo(
       this._runnerInvoker.loc(
         "metrics.inputs.adjustingFileMatchingPatterns",
-        JSON.stringify(InputsDefault.fileMatchingPatterns),
+        fileMatchPatternsString,
       ),
     );
     this._fileMatchingPatterns = InputsDefault.fileMatchingPatterns;
@@ -299,19 +311,25 @@ export default class Inputs {
 
         this._codeFileExtensions.add(modifiedValue.toLowerCase());
       });
+      const codeFileExtensionsString: string = JSON.stringify(
+        Array.from(this._codeFileExtensions),
+      );
       this._logger.logInfo(
         this._runnerInvoker.loc(
           "metrics.inputs.settingCodeFileExtensions",
-          JSON.stringify(Array.from(this._codeFileExtensions)),
+          codeFileExtensionsString,
         ),
       );
       return;
     }
 
+    const codeFileExtensionsString: string = JSON.stringify(
+      InputsDefault.codeFileExtensions,
+    );
     this._logger.logInfo(
       this._runnerInvoker.loc(
         "metrics.inputs.adjustingCodeFileExtensions",
-        JSON.stringify(InputsDefault.codeFileExtensions),
+        codeFileExtensionsString,
       ),
     );
     this._codeFileExtensions = new Set<string>(

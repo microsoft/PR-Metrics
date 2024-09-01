@@ -126,7 +126,8 @@ export default class PullRequest {
       sizeRegExp,
       testsRegExp,
     );
-    const completeRegExp: string = `^${this._runnerInvoker.loc("pullRequests.pullRequest.titleFormat", sizeIndicatorRegExp, "(.*)")}$`;
+    const finalRegExp: string = "(.*)";
+    const completeRegExp: string = `^${this._runnerInvoker.loc("pullRequests.pullRequest.titleFormat", sizeIndicatorRegExp, finalRegExp)}$`;
 
     const prefixRegExp: RegExp = new RegExp(completeRegExp, "u");
     const prefixRegExpMatches: RegExpMatchArray | null =

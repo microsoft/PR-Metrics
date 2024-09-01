@@ -13,8 +13,8 @@ interface StringConvertible {
  * @param value The value to convert.
  * @returns The converted value.
  */
-export const toString = <Type extends StringConvertible>(
-  value: Type | null | undefined,
+export const toString = (
+  value: StringConvertible | null | undefined,
 ): string => {
   if (value === null) {
     return "null";

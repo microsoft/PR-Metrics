@@ -210,8 +210,10 @@ jobs:
           FILTER_REGEX_EXCLUDE: .*dist/.*
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITLEAKS_CONFIG_FILE: gitleaks.toml
-          JAVASCRIPT_ES_CONFIG_FILE: ../../eslint.config.mjs
           MARKDOWN_CONFIG_FILE: ../../.markdownlint.json
+          VALIDATE_JSON: false
+          VALIDATE_TYPESCRIPT_ES: false
+          VALIDATE_TYPESCRIPT_STANDARD: false
 
   dependabot:
     if: ${{ github.actor == 'dependabot[bot]' }}

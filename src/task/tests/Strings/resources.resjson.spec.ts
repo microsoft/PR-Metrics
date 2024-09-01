@@ -165,17 +165,29 @@ describe("resources.resjson", (): void => {
     const typeScriptFiles2: string[] = globSync(`${globBasePath}*.ts`);
     const typeScriptFiles: string[] = typeScriptFiles1.concat(typeScriptFiles2);
     const typeScriptResources: Map<string, number> = new Map<string, number>();
-    const resourceRegExp: RegExp = /loc\('.+?'.*?\)/gu;
+    const resourceRegExp: RegExp = /loc\(\s*".+?".*?\)/gu;
     const parameterDelimiterRegExp: RegExp = /,/gu;
     typeScriptFiles.forEach((file: string): void => {
-      const fileContents: string = fs.readFileSync(file, "utf8");
+      const fileContents: string = fs
+        .readFileSync(file, "utf8")
+        .replace(/\s|\n|\r/gu, "");
       const matches: RegExpMatchArray | null =
         fileContents.match(resourceRegExp);
-      if (matches !== null) {
+      if (matches) {
         matches.forEach((match: string): void => {
-          const key: string = match.substring(5, match.indexOf("'", 6));
+          const updatedMatch: string = match.replace(",)", ")");
+          const firstQuoteIndex: number = updatedMatch.indexOf('"');
+          const secondQuoteIndex: number = updatedMatch.indexOf(
+            '"',
+            firstQuoteIndex + 1,
+          );
+          const key: string = updatedMatch.substring(
+            firstQuoteIndex + 1,
+            secondQuoteIndex,
+          );
+
           const value: number =
-            match.match(parameterDelimiterRegExp)?.length ?? 0;
+            updatedMatch.match(parameterDelimiterRegExp)?.length ?? 0;
           const existingValue: number | undefined =
             typeScriptResources.get(key);
           if (existingValue === undefined) {

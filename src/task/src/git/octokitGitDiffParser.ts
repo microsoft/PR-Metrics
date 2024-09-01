@@ -150,15 +150,19 @@ export default class OctokitGitDiffParser {
               break;
             }
 
-            result.set(fileCasted.path, chunk?.toFileRange.start!);
+            const start: number | undefined = chunk?.toFileRange.start;
+            if (start) {
+              result.set(fileCasted.path, start);
+            }
+
             break;
           }
           case "RenamedFile": {
             // For a renamed file, add the new file path and the first changed line.
-            const fileCasted: RenamedFile = file as RenamedFile;
+            const fileCasted: RenamedFile = file;
             result.set(
               fileCasted.pathAfter,
-              (fileCasted.chunks[0] as Chunk)?.toFileRange.start!,
+              (fileCasted.chunks[0] as Chunk)?.toFileRange.start,
             );
             break;
           }
