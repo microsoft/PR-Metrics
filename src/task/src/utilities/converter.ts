@@ -4,7 +4,7 @@
  */
 
 interface StringConvertible {
-  toString: () => string
+  toString: () => string;
 }
 
 /**
@@ -13,12 +13,14 @@ interface StringConvertible {
  * @param value The value to convert.
  * @returns The converted value.
  */
-export const toString = <Type extends StringConvertible>(value: Type | null | undefined): string => {
+export const toString = <Type extends StringConvertible>(
+  value: Type | null | undefined,
+): string => {
   if (value === null) {
-    return 'null'
+    return "null";
   } else if (value === undefined) {
-    return 'undefined'
+    return "undefined";
   }
 
-  return value.toString()
-}
+  return value.toString();
+};

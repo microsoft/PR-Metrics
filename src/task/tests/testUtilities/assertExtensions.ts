@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import assert from 'node:assert/strict'
+import assert from "node:assert/strict";
 
 /**
  * Asserts that the asynchronous function call throws an error with the expected message.
@@ -11,15 +11,18 @@ import assert from 'node:assert/strict'
  * @param errorMessage The expected error message.
  * @returns The error object.
  */
-export const toThrowAsync = async (func: any, errorMessage: string): Promise<any> => {
-  let error: any | null = null
+export const toThrowAsync = async (
+  func: any,
+  errorMessage: string,
+): Promise<any> => {
+  let error: any | null = null;
   try {
-    await func()
+    await func();
   } catch (err) {
-    error = err
+    error = err;
   }
 
-  assert(error instanceof Error)
-  assert.equal(error.message, errorMessage)
-  return error
-}
+  assert(error instanceof Error);
+  assert.equal(error.message, errorMessage);
+  return error;
+};

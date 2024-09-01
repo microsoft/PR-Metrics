@@ -3,14 +3,14 @@
  * Licensed under the MIT License.
  */
 
-import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
-import PullRequestCommentData from './pullRequestCommentData'
+import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces";
+import PullRequestCommentData from "./pullRequestCommentData";
 
 /**
  * A class representing a file comment.
  */
 export default class FileCommentData extends PullRequestCommentData {
-  private readonly _fileName: string
+  private readonly _fileName: string;
 
   /**
    * Initializes a new instance of the `FileCommentData` class.
@@ -19,17 +19,22 @@ export default class FileCommentData extends PullRequestCommentData {
    * @param fileName The optional full file name and path associated with the comment.
    * @param status The optional status associated with the comment.
    */
-  public constructor (id: number, content: string, fileName: string, status?: CommentThreadStatus) {
-    super(id, content, status)
+  public constructor(
+    id: number,
+    content: string,
+    fileName: string,
+    status?: CommentThreadStatus,
+  ) {
+    super(id, content, status);
 
-    this._fileName = fileName
+    this._fileName = fileName;
   }
 
   /**
    * Gets the full file name and path associated with the comment.
    * @returns The full file name and path.
    */
-  public get fileName (): string {
-    return this._fileName
+  public get fileName(): string {
+    return this._fileName;
   }
 }

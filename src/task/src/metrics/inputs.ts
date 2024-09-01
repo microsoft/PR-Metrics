@@ -3,11 +3,11 @@
  * Licensed under the MIT License.
  */
 
-import * as InputsDefault from './inputsDefault'
-import { DecimalRadix } from '../utilities/constants'
-import Logger from '../utilities/logger'
-import RunnerInvoker from '../runners/runnerInvoker'
-import { singleton } from 'tsyringe'
+import * as InputsDefault from "./inputsDefault";
+import { DecimalRadix } from "../utilities/constants";
+import Logger from "../utilities/logger";
+import RunnerInvoker from "../runners/runnerInvoker";
+import { singleton } from "tsyringe";
 
 /**
  * A class representing inputs passed to the task.
@@ -15,58 +15,58 @@ import { singleton } from 'tsyringe'
  */
 @singleton()
 export default class Inputs {
-  private readonly _logger: Logger
-  private readonly _runnerInvoker: RunnerInvoker
+  private readonly _logger: Logger;
+  private readonly _runnerInvoker: RunnerInvoker;
 
-  private _isInitialized: boolean = false
-  private _baseSize: number = 0
-  private _growthRate: number = 0
-  private _testFactor: number | null = 0
-  private _alwaysCloseComment: boolean = false
-  private _fileMatchingPatterns: string[] = []
-  private _codeFileExtensions: Set<string> = new Set<string>()
+  private _isInitialized: boolean = false;
+  private _baseSize: number = 0;
+  private _growthRate: number = 0;
+  private _testFactor: number | null = 0;
+  private _alwaysCloseComment: boolean = false;
+  private _fileMatchingPatterns: string[] = [];
+  private _codeFileExtensions: Set<string> = new Set<string>();
 
   /**
    * Initializes a new instance of the `Inputs` class.
    * @param logger The logger.
    * @param runnerInvoker The runner invoker logic.
    */
-  public constructor (logger: Logger, runnerInvoker: RunnerInvoker) {
-    this._logger = logger
-    this._runnerInvoker = runnerInvoker
+  public constructor(logger: Logger, runnerInvoker: RunnerInvoker) {
+    this._logger = logger;
+    this._runnerInvoker = runnerInvoker;
   }
 
   /**
    * Gets the base size input, which is the maximum number of new lines in an extra small pull request.
    * @returns The base size input.
    */
-  public get baseSize (): number {
-    this._logger.logDebug('* Inputs.baseSize')
+  public get baseSize(): number {
+    this._logger.logDebug("* Inputs.baseSize");
 
-    this.initialize()
-    return this._baseSize
+    this.initialize();
+    return this._baseSize;
   }
 
   /**
    * Gets the growth rate input, which is applied to the base size for calculating the size of larger pull requests.
    * @returns The growth rate input.
    */
-  public get growthRate (): number {
-    this._logger.logDebug('* Inputs.growthRate')
+  public get growthRate(): number {
+    this._logger.logDebug("* Inputs.growthRate");
 
-    this.initialize()
-    return this._growthRate
+    this.initialize();
+    return this._growthRate;
   }
 
   /**
    * Gets the test factor input, which is the number of lines of test code expected for each line of product code.
    * @returns The test factor input. If the test coverage is not to be checked, this will be `null`.
    */
-  public get testFactor (): number | null {
-    this._logger.logDebug('* Inputs.testFactor')
+  public get testFactor(): number | null {
+    this._logger.logDebug("* Inputs.testFactor");
 
-    this.initialize()
-    return this._testFactor
+    this.initialize();
+    return this._testFactor;
   }
 
   /**
@@ -74,158 +74,248 @@ export default class Inputs {
    * requiring attention.
    * @returns The value indicating whether to always close the comment.
    */
-  public get alwaysCloseComment (): boolean {
-    this._logger.logDebug('* Inputs.alwaysCloseComment')
+  public get alwaysCloseComment(): boolean {
+    this._logger.logDebug("* Inputs.alwaysCloseComment");
 
-    this.initialize()
-    return this._alwaysCloseComment
+    this.initialize();
+    return this._alwaysCloseComment;
   }
 
   /**
    * Gets the file matching patterns input, which is the set of globs specifying the files and folders to include.
    * @returns The file matching patterns input.
    */
-  public get fileMatchingPatterns (): string[] {
-    this._logger.logDebug('* Inputs.fileMatchingPatterns')
+  public get fileMatchingPatterns(): string[] {
+    this._logger.logDebug("* Inputs.fileMatchingPatterns");
 
-    this.initialize()
-    return this._fileMatchingPatterns
+    this.initialize();
+    return this._fileMatchingPatterns;
   }
 
   /**
    * Gets the code file extensions input, which is the set of extensions for files containing code so that non-code files can be excluded.
    * @returns The code file extensions input.
    */
-  public get codeFileExtensions (): Set<string> {
-    this._logger.logDebug('* Inputs.codeFileExtensions')
+  public get codeFileExtensions(): Set<string> {
+    this._logger.logDebug("* Inputs.codeFileExtensions");
 
-    this.initialize()
-    return this._codeFileExtensions
+    this.initialize();
+    return this._codeFileExtensions;
   }
 
-  private initialize (): void {
-    this._logger.logDebug('* Inputs.initialize()')
+  private initialize(): void {
+    this._logger.logDebug("* Inputs.initialize()");
 
     if (this._isInitialized) {
-      return
+      return;
     }
 
-    const baseSize: string | undefined = this._runnerInvoker.getInput(['Base', 'Size'])
-    this.initializeBaseSize(baseSize)
+    const baseSize: string | undefined = this._runnerInvoker.getInput([
+      "Base",
+      "Size",
+    ]);
+    this.initializeBaseSize(baseSize);
 
-    const growthRate: string | undefined = this._runnerInvoker.getInput(['Growth', 'Rate'])
-    this.initializeGrowthRate(growthRate)
+    const growthRate: string | undefined = this._runnerInvoker.getInput([
+      "Growth",
+      "Rate",
+    ]);
+    this.initializeGrowthRate(growthRate);
 
-    const testFactor: string | undefined = this._runnerInvoker.getInput(['Test', 'Factor'])
-    this.initializeTestFactor(testFactor)
+    const testFactor: string | undefined = this._runnerInvoker.getInput([
+      "Test",
+      "Factor",
+    ]);
+    this.initializeTestFactor(testFactor);
 
-    const alwaysCloseComment: string | undefined = this._runnerInvoker.getInput(['Always', 'Close', 'Comment'])
-    this.initializeAlwaysCloseComment(alwaysCloseComment)
+    const alwaysCloseComment: string | undefined = this._runnerInvoker.getInput(
+      ["Always", "Close", "Comment"],
+    );
+    this.initializeAlwaysCloseComment(alwaysCloseComment);
 
-    const fileMatchingPatterns: string | undefined = this._runnerInvoker.getInput(['File', 'Matching', 'Patterns'])
-    this.initializeFileMatchingPatterns(fileMatchingPatterns)
+    const fileMatchingPatterns: string | undefined =
+      this._runnerInvoker.getInput(["File", "Matching", "Patterns"]);
+    this.initializeFileMatchingPatterns(fileMatchingPatterns);
 
-    const codeFileExtensions: string | undefined = this._runnerInvoker.getInput(['Code', 'File', 'Extensions'])
-    this.initializeCodeFileExtensions(codeFileExtensions)
+    const codeFileExtensions: string | undefined = this._runnerInvoker.getInput(
+      ["Code", "File", "Extensions"],
+    );
+    this.initializeCodeFileExtensions(codeFileExtensions);
 
-    this._isInitialized = true
+    this._isInitialized = true;
   }
 
-  private initializeBaseSize (baseSize: string | undefined): void {
-    this._logger.logDebug('* Inputs.initializeBaseSize()')
+  private initializeBaseSize(baseSize: string | undefined): void {
+    this._logger.logDebug("* Inputs.initializeBaseSize()");
 
-    const convertedValue: number = baseSize === undefined ? NaN : parseInt(baseSize, DecimalRadix)
+    const convertedValue: number =
+      baseSize === undefined ? NaN : parseInt(baseSize, DecimalRadix);
     if (!isNaN(convertedValue) && convertedValue > 0) {
-      this._baseSize = convertedValue
-      this._logger.logInfo(this._runnerInvoker.loc('metrics.inputs.settingBaseSize', this._baseSize.toLocaleString()))
-      return
+      this._baseSize = convertedValue;
+      this._logger.logInfo(
+        this._runnerInvoker.loc(
+          "metrics.inputs.settingBaseSize",
+          this._baseSize.toLocaleString(),
+        ),
+      );
+      return;
     }
 
-    this._logger.logInfo(this._runnerInvoker.loc('metrics.inputs.adjustingBaseSize', InputsDefault.baseSize.toLocaleString()))
-    this._baseSize = InputsDefault.baseSize
+    this._logger.logInfo(
+      this._runnerInvoker.loc(
+        "metrics.inputs.adjustingBaseSize",
+        InputsDefault.baseSize.toLocaleString(),
+      ),
+    );
+    this._baseSize = InputsDefault.baseSize;
   }
 
-  private initializeGrowthRate (growthRate: string | undefined): void {
-    this._logger.logDebug('* Inputs.initializeGrowthRate()')
+  private initializeGrowthRate(growthRate: string | undefined): void {
+    this._logger.logDebug("* Inputs.initializeGrowthRate()");
 
-    const convertedValue: number = growthRate === undefined ? NaN : parseFloat(growthRate)
+    const convertedValue: number =
+      growthRate === undefined ? NaN : parseFloat(growthRate);
     if (!isNaN(convertedValue) && convertedValue > 1.0) {
-      this._growthRate = convertedValue
-      this._logger.logInfo(this._runnerInvoker.loc('metrics.inputs.settingGrowthRate', this._growthRate.toLocaleString()))
-      return
+      this._growthRate = convertedValue;
+      this._logger.logInfo(
+        this._runnerInvoker.loc(
+          "metrics.inputs.settingGrowthRate",
+          this._growthRate.toLocaleString(),
+        ),
+      );
+      return;
     }
 
-    this._logger.logInfo(this._runnerInvoker.loc('metrics.inputs.adjustingGrowthRate', InputsDefault.growthRate.toLocaleString()))
-    this._growthRate = InputsDefault.growthRate
+    this._logger.logInfo(
+      this._runnerInvoker.loc(
+        "metrics.inputs.adjustingGrowthRate",
+        InputsDefault.growthRate.toLocaleString(),
+      ),
+    );
+    this._growthRate = InputsDefault.growthRate;
   }
 
-  private initializeTestFactor (testFactor: string | undefined): void {
-    this._logger.logDebug('* Inputs.initializeTestFactor()')
+  private initializeTestFactor(testFactor: string | undefined): void {
+    this._logger.logDebug("* Inputs.initializeTestFactor()");
 
-    const convertedValue: number = testFactor === undefined ? NaN : parseFloat(testFactor)
+    const convertedValue: number =
+      testFactor === undefined ? NaN : parseFloat(testFactor);
     if (!isNaN(convertedValue) && convertedValue >= 0.0) {
       if (convertedValue === 0.0) {
-        this._testFactor = null
-        this._logger.logInfo(this._runnerInvoker.loc('metrics.inputs.disablingTestFactor'))
+        this._testFactor = null;
+        this._logger.logInfo(
+          this._runnerInvoker.loc("metrics.inputs.disablingTestFactor"),
+        );
       } else {
-        this._testFactor = convertedValue
-        this._logger.logInfo(this._runnerInvoker.loc('metrics.inputs.settingTestFactor', this._testFactor.toLocaleString()))
+        this._testFactor = convertedValue;
+        this._logger.logInfo(
+          this._runnerInvoker.loc(
+            "metrics.inputs.settingTestFactor",
+            this._testFactor.toLocaleString(),
+          ),
+        );
       }
 
-      return
+      return;
     }
 
-    this._logger.logInfo(this._runnerInvoker.loc('metrics.inputs.adjustingTestFactor', InputsDefault.testFactor.toLocaleString()))
-    this._testFactor = InputsDefault.testFactor
+    this._logger.logInfo(
+      this._runnerInvoker.loc(
+        "metrics.inputs.adjustingTestFactor",
+        InputsDefault.testFactor.toLocaleString(),
+      ),
+    );
+    this._testFactor = InputsDefault.testFactor;
   }
 
-  private initializeAlwaysCloseComment (alwaysCloseComment: string | undefined): void {
-    this._logger.logDebug('* Inputs.initializeAlwaysCloseComment()')
+  private initializeAlwaysCloseComment(
+    alwaysCloseComment: string | undefined,
+  ): void {
+    this._logger.logDebug("* Inputs.initializeAlwaysCloseComment()");
 
-    const convertedValue: boolean | undefined = alwaysCloseComment?.toLowerCase() === 'true'
+    const convertedValue: boolean | undefined =
+      alwaysCloseComment?.toLowerCase() === "true";
     if (convertedValue) {
-      this._alwaysCloseComment = convertedValue
-      this._logger.logInfo(this._runnerInvoker.loc('metrics.inputs.settingAlwaysCloseComment'))
-      return
+      this._alwaysCloseComment = convertedValue;
+      this._logger.logInfo(
+        this._runnerInvoker.loc("metrics.inputs.settingAlwaysCloseComment"),
+      );
+      return;
     }
 
-    this._logger.logInfo(this._runnerInvoker.loc('metrics.inputs.adjustingAlwaysCloseComment'))
-    this._alwaysCloseComment = InputsDefault.alwaysCloseComment
+    this._logger.logInfo(
+      this._runnerInvoker.loc("metrics.inputs.adjustingAlwaysCloseComment"),
+    );
+    this._alwaysCloseComment = InputsDefault.alwaysCloseComment;
   }
 
-  private initializeFileMatchingPatterns (fileMatchingPatterns: string | undefined): void {
-    this._logger.logDebug('* Inputs.initializeFileMatchingPatterns()')
+  private initializeFileMatchingPatterns(
+    fileMatchingPatterns: string | undefined,
+  ): void {
+    this._logger.logDebug("* Inputs.initializeFileMatchingPatterns()");
 
-    if (fileMatchingPatterns !== undefined && fileMatchingPatterns.trim() !== '') {
-      this._fileMatchingPatterns = fileMatchingPatterns.replace(/\\/gu, '/').replace(/\n$/gu, '').split('\n')
-      this._logger.logInfo(this._runnerInvoker.loc('metrics.inputs.settingFileMatchingPatterns', JSON.stringify(this._fileMatchingPatterns)))
-      return
+    if (
+      fileMatchingPatterns !== undefined &&
+      fileMatchingPatterns.trim() !== ""
+    ) {
+      this._fileMatchingPatterns = fileMatchingPatterns
+        .replace(/\\/gu, "/")
+        .replace(/\n$/gu, "")
+        .split("\n");
+      this._logger.logInfo(
+        this._runnerInvoker.loc(
+          "metrics.inputs.settingFileMatchingPatterns",
+          JSON.stringify(this._fileMatchingPatterns),
+        ),
+      );
+      return;
     }
 
-    this._logger.logInfo(this._runnerInvoker.loc('metrics.inputs.adjustingFileMatchingPatterns', JSON.stringify(InputsDefault.fileMatchingPatterns)))
-    this._fileMatchingPatterns = InputsDefault.fileMatchingPatterns
+    this._logger.logInfo(
+      this._runnerInvoker.loc(
+        "metrics.inputs.adjustingFileMatchingPatterns",
+        JSON.stringify(InputsDefault.fileMatchingPatterns),
+      ),
+    );
+    this._fileMatchingPatterns = InputsDefault.fileMatchingPatterns;
   }
 
-  private initializeCodeFileExtensions (codeFileExtensions: string | undefined): void {
-    this._logger.logDebug('* Inputs.initializeCodeFileExtensions()')
+  private initializeCodeFileExtensions(
+    codeFileExtensions: string | undefined,
+  ): void {
+    this._logger.logDebug("* Inputs.initializeCodeFileExtensions()");
 
-    if (codeFileExtensions !== undefined && codeFileExtensions.trim() !== '') {
-      const codeFileExtensionsArray: string[] = codeFileExtensions.replace(/\n$/gu, '').split('\n')
+    if (codeFileExtensions !== undefined && codeFileExtensions.trim() !== "") {
+      const codeFileExtensionsArray: string[] = codeFileExtensions
+        .replace(/\n$/gu, "")
+        .split("\n");
       codeFileExtensionsArray.forEach((value: string): void => {
-        let modifiedValue: string = value
-        if (modifiedValue.startsWith('*.')) {
-          modifiedValue = modifiedValue.substring(2)
-        } else if (modifiedValue.startsWith('.')) {
-          modifiedValue = modifiedValue.substring(1)
+        let modifiedValue: string = value;
+        if (modifiedValue.startsWith("*.")) {
+          modifiedValue = modifiedValue.substring(2);
+        } else if (modifiedValue.startsWith(".")) {
+          modifiedValue = modifiedValue.substring(1);
         }
 
-        this._codeFileExtensions.add(modifiedValue.toLowerCase())
-      })
-      this._logger.logInfo(this._runnerInvoker.loc('metrics.inputs.settingCodeFileExtensions', JSON.stringify(Array.from(this._codeFileExtensions))))
-      return
+        this._codeFileExtensions.add(modifiedValue.toLowerCase());
+      });
+      this._logger.logInfo(
+        this._runnerInvoker.loc(
+          "metrics.inputs.settingCodeFileExtensions",
+          JSON.stringify(Array.from(this._codeFileExtensions)),
+        ),
+      );
+      return;
     }
 
-    this._logger.logInfo(this._runnerInvoker.loc('metrics.inputs.adjustingCodeFileExtensions', JSON.stringify(InputsDefault.codeFileExtensions)))
-    this._codeFileExtensions = new Set<string>(InputsDefault.codeFileExtensions)
+    this._logger.logInfo(
+      this._runnerInvoker.loc(
+        "metrics.inputs.adjustingCodeFileExtensions",
+        JSON.stringify(InputsDefault.codeFileExtensions),
+      ),
+    );
+    this._codeFileExtensions = new Set<string>(
+      InputsDefault.codeFileExtensions,
+    );
   }
 }

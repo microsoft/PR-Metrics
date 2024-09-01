@@ -3,9 +3,9 @@
  * Licensed under the MIT License.
  */
 
-import * as azureDevOpsApi from 'azure-devops-node-api'
-import { IRequestHandler } from 'azure-devops-node-api/interfaces/common/VsoBaseInterfaces'
-import { singleton } from 'tsyringe'
+import * as azureDevOpsApi from "azure-devops-node-api";
+import { IRequestHandler } from "azure-devops-node-api/interfaces/common/VsoBaseInterfaces";
+import { singleton } from "tsyringe";
 
 /**
  * A wrapper around the Azure DevOps API, to facilitate testability.
@@ -17,8 +17,8 @@ export default class AzureDevOpsApiWrapper {
    * @param token The Azure DevOps API token.
    * @returns The personal access token handler.
    */
-  public getPersonalAccessTokenHandler (token: string): IRequestHandler {
-    return azureDevOpsApi.getPersonalAccessTokenHandler(token)
+  public getPersonalAccessTokenHandler(token: string): IRequestHandler {
+    return azureDevOpsApi.getPersonalAccessTokenHandler(token);
   }
 
   /**
@@ -26,8 +26,8 @@ export default class AzureDevOpsApiWrapper {
    * @param token The Azure DevOps API token.
    * @returns The handler.
    */
-  public getHandlerFromToken (token: string): IRequestHandler {
-    return azureDevOpsApi.getHandlerFromToken(token)
+  public getHandlerFromToken(token: string): IRequestHandler {
+    return azureDevOpsApi.getHandlerFromToken(token);
   }
 
   /**
@@ -36,7 +36,10 @@ export default class AzureDevOpsApiWrapper {
    * @param authHandler The authentication handler instance.
    * @returns The web API instance.
    */
-  public getWebApiInstance (defaultUrl: string, authHandler: IRequestHandler): azureDevOpsApi.WebApi {
-    return new azureDevOpsApi.WebApi(defaultUrl, authHandler)
+  public getWebApiInstance(
+    defaultUrl: string,
+    authHandler: IRequestHandler,
+  ): azureDevOpsApi.WebApi {
+    return new azureDevOpsApi.WebApi(defaultUrl, authHandler);
   }
 }

@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import { singleton } from 'tsyringe'
+import { singleton } from "tsyringe";
 
 /**
  * A wrapper around the console, to facilitate testability.
@@ -18,6 +18,6 @@ export default class ConsoleWrapper {
    */
   public log(message: any | undefined, ...optionalParams: any[]): void {
     /* eslint-disable-next-line no-console -- This is a wrapper around the console. */
-    console.log(message, ...optionalParams)
+    console.log(message, ...optionalParams);
   }
 }

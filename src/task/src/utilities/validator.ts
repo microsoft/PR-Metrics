@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import * as Converter from './converter'
+import * as Converter from "./converter";
 
 /**
  * Validates that a string value is not invalid, `null`, or `undefined` and throws an `TypeError` if this condition is not met.
@@ -12,13 +12,19 @@ import * as Converter from './converter'
  * @param methodName The name of the calling method, for messaging purposes.
  * @returns The validated value.
  */
-export const validateString = (value: string | null | undefined, valueName: string, methodName: string): string => {
-  if (value === null || value === undefined || value === '') {
-    throw new TypeError(`'${valueName}', accessed within '${methodName}', is invalid, null, or undefined '${Converter.toString(value)}'.`)
+export const validateString = (
+  value: string | null | undefined,
+  valueName: string,
+  methodName: string,
+): string => {
+  if (value === null || value === undefined || value === "") {
+    throw new TypeError(
+      `'${valueName}', accessed within '${methodName}', is invalid, null, or undefined '${Converter.toString(value)}'.`,
+    );
   }
 
-  return value
-}
+  return value;
+};
 
 /**
  * Validates that an environment variable is not invalid or `undefined` and throws an `TypeError` if this condition is not met.
@@ -26,10 +32,13 @@ export const validateString = (value: string | null | undefined, valueName: stri
  * @param methodName The name of the calling method, for messaging purposes.
  * @returns The validated value.
  */
-export const validateVariable = (variableName: string, methodName: string): string => {
-  const value: string | undefined = process.env[variableName]
-  return validateString(value, variableName, methodName)
-}
+export const validateVariable = (
+  variableName: string,
+  methodName: string,
+): string => {
+  const value: string | undefined = process.env[variableName];
+  return validateString(value, variableName, methodName);
+};
 
 /**
  * Validates that a number value is not invalid, `null`, or `undefined` and throws an `TypeError` if this condition is not met.
@@ -38,10 +47,16 @@ export const validateVariable = (variableName: string, methodName: string): stri
  * @param methodName The name of the calling method, for messaging purposes.
  * @returns The validated value.
  */
-export const validateNumber = (value: number | null | undefined, valueName: string, methodName: string): number => {
+export const validateNumber = (
+  value: number | null | undefined,
+  valueName: string,
+  methodName: string,
+): number => {
   if (value === null || value === undefined || value === 0 || isNaN(value)) {
-    throw new TypeError(`'${valueName}', accessed within '${methodName}', is invalid, null, or undefined '${Converter.toString(value)}'.`)
+    throw new TypeError(
+      `'${valueName}', accessed within '${methodName}', is invalid, null, or undefined '${Converter.toString(value)}'.`,
+    );
   }
 
-  return value
-}
+  return value;
+};
