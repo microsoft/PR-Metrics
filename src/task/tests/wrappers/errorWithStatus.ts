@@ -10,10 +10,10 @@ export default class ErrorWithStatus extends Error {
   /**
    * The error status code accessed via `status`.
    */
-  public status: number | undefined
+  public status: number | undefined;
 
   /**
    * The error status code accessed via `statusCode`.
    */
-  public statusCode: number | undefined
+  public statusCode: number | undefined;
 }

@@ -2,7 +2,6 @@
 # Licensed under the MIT License.
 
 ---
-
 trigger: none
 
 pr:
@@ -36,11 +35,9 @@ extends:
         environmentsEs2017: true
         environmentsMocha: true
         environmentsNode: true
-        parser: '@typescript-eslint/parser'
+        parser: "@typescript-eslint/parser"
         parserOptions: ecmaVersion:2018
         enableExclusions: true
-        exclusionPatterns: '*.js'
+        exclusionPatterns: "*.js"
     stages:
       - template: template.yml
-
-...

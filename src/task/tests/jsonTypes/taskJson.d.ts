@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import ResourcesJson from '../jsonTypes/resourcesJson'
+import ResourcesJson from "../jsonTypes/resourcesJson";
 
 /**
  * An interface defining the format of Azure Pipelines task JSON files.
@@ -12,7 +12,7 @@ export default interface TaskJson {
   /**
    * The friendly name of the task.
    */
-  friendlyName: string
+  friendlyName: string;
 
   /**
    * The version number of the task.
@@ -21,21 +21,21 @@ export default interface TaskJson {
     /**
      * The major element of the version number.
      */
-    Major: number
+    Major: number;
 
     /**
      * The minor element of the version number.
      */
-    Minor: number
+    Minor: number;
 
     /**
      * The patch element of the version number.
      */
-    Patch: number
-  }
+    Patch: number;
+  };
 
   /**
    * The set of resource messages.
    */
-  messages: ResourcesJson
+  messages: ResourcesJson;
 }

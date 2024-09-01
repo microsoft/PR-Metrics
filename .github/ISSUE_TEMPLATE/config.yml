@@ -2,12 +2,9 @@
 # Licensed under the MIT License.
 
 ---
-
 blank_issues_enabled: false
 
 contact_links:
   - name: Support
     url: https://github.com/microsoft/PR-Metrics/discussions
     about: Request support
-
-...

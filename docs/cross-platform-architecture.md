@@ -1,7 +1,7 @@
 # Cross-Platform Architecture
 
 PR Metrics has a single, unified codebase that can be hosted as an Azure DevOps
-extension or as a GitHub action. The Azure DevOps extension can process PRs
+extension or as a GitHub Action. The Azure DevOps extension can process PRs
 created on either the Azure DevOps or GitHub platforms.
 
 To support this cross-platform design, all calls to the underlying system and to

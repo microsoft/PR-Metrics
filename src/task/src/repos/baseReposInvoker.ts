@@ -3,28 +3,40 @@
  * Licensed under the MIT License.
  */
 
-import CommentData from './interfaces/commentData'
-import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
-import IReposInvoker from './iReposInvoker'
-import PullRequestDetails from './interfaces/pullRequestDetails'
+import CommentData from "./interfaces/commentData";
+import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces";
+import IReposInvoker from "./iReposInvoker";
+import PullRequestDetails from "./interfaces/pullRequestDetails";
 
 /**
  * A base class for invoking repository functionality.
  */
 export default abstract class BaseReposInvoker implements IReposInvoker {
-  public abstract isAccessTokenAvailable (): Promise<string | null>
+  public abstract isAccessTokenAvailable(): Promise<string | null>;
 
-  public abstract getTitleAndDescription (): Promise<PullRequestDetails>
+  public abstract getTitleAndDescription(): Promise<PullRequestDetails>;
 
-  public abstract getComments (): Promise<CommentData>
+  public abstract getComments(): Promise<CommentData>;
 
-  public abstract setTitleAndDescription (title: string | null, description: string | null): Promise<void>
+  public abstract setTitleAndDescription(
+    title: string | null,
+    description: string | null,
+  ): Promise<void>;
 
-  public abstract createComment (content: string, status: CommentThreadStatus, fileName?: string, isFileDeleted?: boolean): Promise<void>
+  public abstract createComment(
+    content: string,
+    status: CommentThreadStatus,
+    fileName?: string,
+    isFileDeleted?: boolean,
+  ): Promise<void>;
 
-  public abstract updateComment (commentThreadId: number, content: string | null, status: CommentThreadStatus | null): Promise<void>
+  public abstract updateComment(
+    commentThreadId: number,
+    content: string | null,
+    status: CommentThreadStatus | null,
+  ): Promise<void>;
 
-  public abstract deleteCommentThread (commentThreadId: number): Promise<void>
+  public abstract deleteCommentThread(commentThreadId: number): Promise<void>;
 
   /**
    * Invokes an API call, augmenting any errors that may be thrown due to insufficient access.
@@ -33,18 +45,21 @@ export default abstract class BaseReposInvoker implements IReposInvoker {
    * @param accessErrorMessage The error message to insert if a caught error is due to insufficient access.
    * @returns A promise containing the response from the API call.
    */
-  protected async invokeApiCall<Response> (action: () => Promise<Response>, accessErrorMessage: string): Promise<Response> {
+  protected async invokeApiCall<Response>(
+    action: () => Promise<Response>,
+    accessErrorMessage: string,
+  ): Promise<Response> {
     try {
-      return await action()
+      return await action();
     } catch (error: any) {
-      const accessErrorStatusCodes: number[] = [401, 403, 404]
+      const accessErrorStatusCodes: number[] = [401, 403, 404];
 
       if (accessErrorStatusCodes.includes(error.status ?? error.statusCode)) {
-        error.internalMessage = error.message
-        error.message = accessErrorMessage
+        error.internalMessage = error.message;
+        error.message = accessErrorMessage;
       }
 
-      throw error
+      throw error;
     }
   }
 }

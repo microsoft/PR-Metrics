@@ -2,7 +2,6 @@
 # Licensed under the MIT License.
 
 ---
-
 trigger:
   batch: true
   branches:
@@ -37,10 +36,10 @@ extends:
         environmentsEs2017: true
         environmentsMocha: true
         environmentsNode: true
-        parser: '@typescript-eslint/parser'
+        parser: "@typescript-eslint/parser"
         parserOptions: ecmaVersion:2018
         enableExclusions: true
-        exclusionPatterns: '*.js'
+        exclusionPatterns: "*.js"
     stages:
       - stage: Checks
         displayName: Checks
@@ -59,5 +58,3 @@ extends:
                 condition: ne(variables['Build.SourceBranchName'], 'main')
 
       - template: template.yml
-
-...

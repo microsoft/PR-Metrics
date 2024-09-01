@@ -1,8 +1,5 @@
 {
-  "exclude": [
-    "tests/**/*",
-    "src/wrappers/**/*"
-  ],
+  "exclude": ["tests/**/*", "src/wrappers/**/*"],
   "check-coverage": true,
   "statements": 100,
   "branches": 100,

@@ -10,5 +10,5 @@ export default interface ResourcesJson {
   /**
    * A mapping from a resource name to a resource value.
    */
-  [name: string]: string
+  [name: string]: string;
 }

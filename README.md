@@ -30,12 +30,12 @@ metrics:
 >
 > :heavy_check_mark: Thanks for adding tests.
 >
-> |              | Lines   |
+> |              |   Lines |
 > | ------------ | ------: |
-> | Product Code |   100   |
-> | Test Code    |    50   |
+> | Product Code |     100 |
+> | Test Code    |      50 |
 > | **Subtotal** | **150** |
-> | Ignored      |     5   |
+> | Ignored      |       5 |
 > | **Total**    | **155** |
 
 It will furthermore add a comment to indicate that review of specific excluded

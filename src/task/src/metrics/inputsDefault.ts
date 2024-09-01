@@ -6,30 +6,27 @@
 /**
  * The default base size, which is the maximum number of new lines in an extra small pull request.
  */
-export const baseSize: number = 200
+export const baseSize: number = 200;
 
 /**
  * The default growth rate, which is applied to the base size for calculating the size of larger pull requests.
  */
-export const growthRate: number = 2.0
+export const growthRate: number = 2.0;
 
 /**
  * The default test factor, which is the number of lines of test code expected for each line of product code.
  */
-export const testFactor: number = 1.0
+export const testFactor: number = 1.0;
 
 /**
  * The default value for always close the size and test comment, instead of leaving it open when requiring attention.
  */
-export const alwaysCloseComment: boolean = false
+export const alwaysCloseComment: boolean = false;
 
 /**
  * The default file matching patterns, which is the set of globs specifying the files and folders to include.
  */
-export const fileMatchingPatterns: string[] = [
-  '**/*',
-  '!**/package-lock.json'
-]
+export const fileMatchingPatterns: string[] = ["**/*", "!**/package-lock.json"];
 
 /**
  * The default code file extensions, which is the set of extensions for files containing code so that non-code files can be excluded.
@@ -39,175 +36,175 @@ export const fileMatchingPatterns: string[] = [
  */
 export const codeFileExtensions: string[] = [
   // JavaScript
-  'js',
-  '_js',
-  'bones',
-  'cjs',
-  'es',
-  'es6',
-  'frag',
-  'gs',
-  'jake',
-  'jsb',
-  'jscad',
-  'jsfl',
-  'jsm',
-  'jss',
-  'jsx',
-  'mjs',
-  'njs',
-  'pac',
-  'sjs',
-  'ssjs',
-  'xsjs',
-  'xsjslib',
+  "js",
+  "_js",
+  "bones",
+  "cjs",
+  "es",
+  "es6",
+  "frag",
+  "gs",
+  "jake",
+  "jsb",
+  "jscad",
+  "jsfl",
+  "jsm",
+  "jss",
+  "jsx",
+  "mjs",
+  "njs",
+  "pac",
+  "sjs",
+  "ssjs",
+  "xsjs",
+  "xsjslib",
   // JavaScript: Ecere Projects
-  'epj',
+  "epj",
   // JavaScript: JavaScript+ERB
-  'erb',
+  "erb",
 
   // Python
-  'py',
-  'cgi',
-  'fcgi',
-  'gyp',
-  'gypi',
-  'lmi',
-  'py3',
-  'pyde',
-  'pyi',
-  'pyp',
-  'pyt',
-  'pyw',
-  'rpy',
-  'smk',
-  'spec',
-  'tac',
-  'wsgi',
-  'xpy',
+  "py",
+  "cgi",
+  "fcgi",
+  "gyp",
+  "gypi",
+  "lmi",
+  "py3",
+  "pyde",
+  "pyi",
+  "pyp",
+  "pyt",
+  "pyw",
+  "rpy",
+  "smk",
+  "spec",
+  "tac",
+  "wsgi",
+  "xpy",
   // Python: Cython
-  'pyx',
-  'pxd',
-  'pxi',
+  "pyx",
+  "pxd",
+  "pxi",
   // Python: Easybuild
-  'eb',
+  "eb",
   // Python: NumPy
-  'numpy',
-  'numpyw',
-  'numsc',
+  "numpy",
+  "numpyw",
+  "numsc",
   // Python: Python traceback
-  'pytb',
+  "pytb",
 
   // Java
-  'java',
+  "java",
   // Java: Java Server Pages
-  'jsp',
+  "jsp",
 
   // TypeScript
-  'ts',
+  "ts",
   // TypeScript: TSX
-  'tsx',
+  "tsx",
 
   // C#
-  'cs',
-  'cake',
-  'csx',
-  'linq',
+  "cs",
+  "cake",
+  "csx",
+  "linq",
 
   // PHP
-  'php',
-  'aw',
-  'ctp',
-  'fcgi',
-  'inc',
-  'php3',
-  'php4',
-  'php5',
-  'phps',
-  'phpt',
+  "php",
+  "aw",
+  "ctp",
+  "fcgi",
+  "inc",
+  "php3",
+  "php4",
+  "php5",
+  "phps",
+  "phpt",
 
   // C++
-  'cpp',
-  'c++',
-  'cc',
-  'cp',
-  'cxx',
-  'h',
-  'h++',
-  'hh',
-  'hpp',
-  'hxx',
-  'inc',
-  'inl',
-  'ino',
-  'ipp',
-  're',
-  'tcc',
-  'tpp',
+  "cpp",
+  "c++",
+  "cc",
+  "cp",
+  "cxx",
+  "h",
+  "h++",
+  "hh",
+  "hpp",
+  "hxx",
+  "inc",
+  "inl",
+  "ino",
+  "ipp",
+  "re",
+  "tcc",
+  "tpp",
 
   // C
-  'c',
-  'cats',
-  'h',
-  'idc',
+  "c",
+  "cats",
+  "h",
+  "idc",
   // C: OpenCL
-  'cl',
-  'opencl',
+  "cl",
+  "opencl",
   // C: Unified Parallel C
-  'upc',
+  "upc",
   // C: X BitMap
-  'xbm',
+  "xbm",
   // C: X PixMap
-  'xpm',
-  'pm',
+  "xpm",
+  "pm",
 
   // Shell
-  'sh',
-  'bash',
-  'bats',
-  'cgi',
-  'command',
-  'env',
-  'fcgi',
-  'ksh',
-  'tmux',
-  'tool',
-  'zsh',
+  "sh",
+  "bash",
+  "bats",
+  "cgi",
+  "command",
+  "env",
+  "fcgi",
+  "ksh",
+  "tmux",
+  "tool",
+  "zsh",
   // Shell: fish
-  'fish',
+  "fish",
   // Shell: Gentoo Ebuild
-  'ebuild',
+  "ebuild",
   // Shell: Gentoo Eclass
-  'eclass',
+  "eclass",
   // Shell: PowerShell
-  'ps1',
-  'psd1',
-  'psm1',
+  "ps1",
+  "psd1",
+  "psm1",
   // Shell: Tcsh
-  'tcsh',
-  'csh',
+  "tcsh",
+  "csh",
 
   // Ruby
-  'rb',
-  'builder',
-  'eye',
-  'fcgi',
-  'gemspec',
-  'god',
-  'jbuilder',
-  'mspec',
-  'pluginspec',
-  'podspec',
-  'prawn',
-  'rabl',
-  'rake',
-  'rbi',
-  'rbuild',
-  'rbw',
-  'rbx',
-  'ru',
-  'ruby',
-  'spec',
-  'thor',
-  'watchr'
-]
+  "rb",
+  "builder",
+  "eye",
+  "fcgi",
+  "gemspec",
+  "god",
+  "jbuilder",
+  "mspec",
+  "pluginspec",
+  "podspec",
+  "prawn",
+  "rabl",
+  "rake",
+  "rbi",
+  "rbuild",
+  "rbw",
+  "rbx",
+  "ru",
+  "ruby",
+  "spec",
+  "thor",
+  "watchr",
+];

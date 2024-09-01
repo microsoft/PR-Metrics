@@ -12,10 +12,12 @@ complement the unit tests to provide a high level of coverage.
    create a new Git repository or select an empty one.
 
    To create a new repository, navigate to your chosen project and select Repos
+
    > Files from the left-hand navigation. Click the drop down with the
-   repository name at the top of the page and select "New Repository". Leave
-   "Add a README" checked to create a main branch but do not add a `.gitignore`
-   file.
+   > repository name at the top of the page and select "New Repository". Leave
+   > "Add a Readme" checked to create a main branch but do not add a `.gitignore`
+   > file.
+
 1. Copy the contents of the `step1` subfolder to the root of your repository,
    preserving the folder tree.
 1. Commit the changes to your repository.
@@ -28,6 +30,7 @@ complement the unit tests to provide a high level of coverage.
    You can generate a PAT with at least the "Agent Pools (Read & manage)" scope
    by following the instructions [here][tfxcli]. This will only need to be
    performed the first time you use tfx-cli.
+
 1. To build and deploy, from within the `src/task` folder, run `npm run deploy`.
 
 ## Step 2: Creating the Pipelines

@@ -10,10 +10,10 @@ export interface EndpointAuthorization {
   /**
    * The authorization scheme, e.g., OAuth or username/password.
    */
-  scheme: string
+  scheme: string;
 
   /**
    * A dictionary of authorization data parameters.
    */
-  parameters: Record<string, string>
+  parameters: Record<string, string>;
 }

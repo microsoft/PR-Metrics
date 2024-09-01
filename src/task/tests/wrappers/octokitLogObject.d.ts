@@ -11,23 +11,23 @@ export default interface OctokitLogObject {
    * Logs a debug message.
    * @param message The message to log.
    */
-  debug: (message: string) => void
+  debug: (message: string) => void;
 
   /**
    * Logs an informational message.
    * @param message The message to log.
    */
-  info: (message: string) => void
+  info: (message: string) => void;
 
   /**
    * Logs a warning message.
    * @param message The message to log.
    */
-  warn: (message: string) => void
+  warn: (message: string) => void;
 
   /**
    * Logs an error message.
    * @param message The message to log.
    */
-  error: (message: string) => void
+  error: (message: string) => void;
 }

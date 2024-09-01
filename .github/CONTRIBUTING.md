@@ -26,7 +26,7 @@ you should follow the pattern of what you see in existing code where possible.
 ## Code Overview
 
 The repository is organized into a set of different extensions, as outlined in
-the [README](../README.md).
+the [Readme](../README.md).
 
 ## Updating an Extension
 

@@ -10,10 +10,10 @@ export default interface PullRequestDetails {
   /**
    * The pull request title.
    */
-  title: string
+  title: string;
 
   /**
    * The pull request description.
    */
-  description: string | undefined
+  description: string | undefined;
 }

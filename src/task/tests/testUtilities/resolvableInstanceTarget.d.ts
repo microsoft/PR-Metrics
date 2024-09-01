@@ -11,5 +11,5 @@ export default interface ResolvableInstanceTarget<T> {
   /**
    * A mapping from a name to a value.
    */
-  [name: string]: T
+  [name: string]: T;
 }

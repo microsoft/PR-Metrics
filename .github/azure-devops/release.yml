@@ -2,7 +2,6 @@
 # Licensed under the MIT License.
 
 ---
-
 trigger:
   tags:
     include:
@@ -35,10 +34,10 @@ extends:
         environmentsEs2017: true
         environmentsMocha: true
         environmentsNode: true
-        parser: '@typescript-eslint/parser'
+        parser: "@typescript-eslint/parser"
         parserOptions: ecmaVersion:2018
         enableExclusions: true
-        exclusionPatterns: '*.js'
+        exclusionPatterns: "*.js"
     stages:
       - stage: Release
         displayName: Release
@@ -99,5 +98,3 @@ extends:
                   inlineScript: |
                     $AccessToken = az account get-access-token --query accessToken --resource 499b84ac-1321-427f-aa17-267ca6975798 -o tsv
                     tfx extension publish --service-url https://marketplace.visualstudio.com/ --token $AccessToken --vsix ms-omex.PRMetrics.vsix
-
-...
