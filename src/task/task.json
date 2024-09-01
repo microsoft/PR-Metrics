@@ -8,9 +8,7 @@
   "helpMarkDown": "[More information](https://aka.ms/PRMetrics/README)",
   "author": "Microsoft Corporation",
   "category": "Azure Pipelines",
-  "visibility": [
-    "Build"
-  ],
+  "visibility": ["Build"],
   "minimumAgentVersion": "3.234.0",
   "version": {
     "Major": 1,

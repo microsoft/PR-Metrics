@@ -2,7 +2,6 @@
 # Licensed under the MIT License.
 
 ---
-
 trigger: none
 
 pr:
@@ -19,5 +18,3 @@ stages:
   - template: template.yml
     parameters:
       testInstance: true
-
-...

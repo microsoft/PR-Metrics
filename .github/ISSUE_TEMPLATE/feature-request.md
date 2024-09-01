@@ -1,9 +1,8 @@
 ---
 name: Feature Request
 about: Suggest a new feature
-title: ''
+title: ""
 labels: enhancement
-
 ---
 
 ## Summary

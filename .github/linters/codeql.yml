@@ -2,8 +2,5 @@
 # Licensed under the MIT License.
 
 ---
-
 paths-ignore:
   - dist
-
-...

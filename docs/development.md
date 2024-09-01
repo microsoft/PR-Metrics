@@ -75,6 +75,7 @@ interfaces to add additional methods, while retaining the same access pattern.
    You can generate a PAT with at least the "Agent Pools (Read & manage)" scope
    by following the instructions [here][tfxpat]. This will only need to be
    performed the first time you use tfx-cli.
+
 1. To build and deploy, from within the `src/task` folder, run `npm run deploy`.
 
 ## Testing

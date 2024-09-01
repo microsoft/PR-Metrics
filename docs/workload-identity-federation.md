@@ -30,16 +30,19 @@ command being unavailable, check the details about installing the Azure CLI
 ## Instructions
 
 1. Create a Managed Identity in Azure.
+
    1. Log into the [Azure Portal][azureportal].
    1. Use the search to locate "Managed Identities" and select it.
    1. Click "Create" to create a new managed identity.
    1. Enter the required details as appropriate:
+
       - Subscription
       - Resource group
       - Region
       - Name
 
       ![Creating the Managed Identity](images/workload-identity-federation/create-managed-identity.png)
+
    1. Click "Review + create".
    1. On the "Review + create" page, click "Create".
    1. Wait for the identity to be created.
@@ -49,7 +52,9 @@ command being unavailable, check the details about installing the Azure CLI
       - Subscription ID
       - Client ID
    1. Click into "Settings" > "Properties" and make a note of the "Tenant ID".
+
 1. Create the Azure DevOps Service Connection.
+
    1. In a new browser tab, open your project in Azure DevOps. Retain the
       Managed Identity page in another tab as you will return to this later.
    1. At the very bottom of the left-hand menu, click on "Project settings".
@@ -60,17 +65,21 @@ command being unavailable, check the details about installing the Azure CLI
    1. Select "Workload Identity federation (manual)" and click "Next".
       ![Selecting Workload Identity federation (manual)](images/workload-identity-federation/azure-devops-service-connection-2.png)
    1. Enter the details as appropriate:
+
       - Service connection name
       - Description (optional)
       - Security: Grant access permission to all pipelines. **This is strongly
         inadvisable for security reasons.**
 
       ![Step 1 of creating the Service Connection](images/workload-identity-federation/azure-devops-service-connection-3.png)
+
    1. Click "Next".
    1. On the second page, make a note of the following details:
       - Issuer
       - Subject identifier
+
 1. Add the federated credential to the Managed Identity.
+
    1. Return to the Managed Identity you created by switching to the previously
       opened browser tab.
    1. Click into "Settings" > "Federated credentials".
@@ -81,8 +90,11 @@ command being unavailable, check the details about installing the Azure CLI
    1. Click "Add".
 
    ![Adding the federated credential](images/workload-identity-federation/add-federated-credential.png)
+
 1. Finalize the Azure DevOps Service Connection.
+
    1. On the pane you were previously updating, enter the details as appropriate:
+
       - Environment: Azure Cloud
       - Scope Level: Subscription
       - Subscription ID: Taken from the previously saved "Subscription ID".
@@ -92,6 +104,7 @@ command being unavailable, check the details about installing the Azure CLI
         - Tenant ID: Taken from the previously saved "Tenant ID".
 
       ![Step 2 of creating the Service Connection](images/workload-identity-federation/azure-devops-service-connection-4.png)
+
    1. Click "Verify and save".
    1. If the connection is successful, you should see a notification at the
       bottom of the screen. If the connection fails, double-check the details
@@ -102,6 +115,7 @@ command being unavailable, check the details about installing the Azure CLI
    1. Add any users or organizations that should have access. It is strongly
       advised to limit access to only those who need it, but also to ensure that
       the connection is not lost if a user leaves the organization.
+
 1. Add the Managed Identity as an Azure DevOps user.
    1. Navigate to your Azure DevOps home, and not that of any project.
    1. At the very bottom of the left-hand menu, click on "Organization

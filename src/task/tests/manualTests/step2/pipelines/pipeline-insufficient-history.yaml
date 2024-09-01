@@ -2,7 +2,6 @@
 # Licensed under the MIT License.
 
 ---
-
 trigger: none
 
 pool:
@@ -27,5 +26,3 @@ stages:
             displayName: PR Metrics
             env:
               PR_METRICS_ACCESS_TOKEN: $(PR_Metrics_Access_Token)
-
-...

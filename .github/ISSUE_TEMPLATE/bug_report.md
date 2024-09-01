@@ -1,9 +1,8 @@
 ---
 name: Bug Report
 about: Report errors
-title: ''
+title: ""
 labels: bug
-
 ---
 
 ## Summary
