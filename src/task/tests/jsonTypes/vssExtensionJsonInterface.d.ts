@@ -10,5 +10,5 @@ export default interface VssExtensionJsonInterface {
   /**
    * The version number of the extension.
    */
-  version: string
+  version: string;
 }

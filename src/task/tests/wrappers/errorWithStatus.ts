@@ -12,7 +12,7 @@ export default class ErrorWithStatus extends Error implements ErrorWithStatusInt
   /**
    * The error status code accessed via `status`.
    */
-  public status: number | undefined
+  public status: number | undefined;
 
   /**
    * The error status code accessed via `statusCode`.

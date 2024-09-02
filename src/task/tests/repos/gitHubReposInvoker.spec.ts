@@ -28,273 +28,389 @@ import { StatusCodes } from 'http-status-codes'
 import assert from 'node:assert/strict'
 import { createRequestError } from '../testUtilities/createRequestError'
 
-describe('gitHubReposInvoker.ts', (): void => {
-  let gitInvoker: GitInvoker
-  let logger: Logger
-  let octokitWrapper: OctokitWrapper
-  let runnerInvoker: RunnerInvoker
+describe("gitHubReposInvoker.ts", (): void => {
+  let gitInvoker: GitInvoker;
+  let logger: Logger;
+  let octokitWrapper: OctokitWrapper;
+  let runnerInvoker: RunnerInvoker;
 
   const expectedUserAgent = 'PRMetrics/v1.6.1'
 
   beforeEach((): void => {
-    process.env.PR_METRICS_ACCESS_TOKEN = 'PAT'
-    process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI = 'https://github.com/microsoft/PR-Metrics'
+    process.env.PR_METRICS_ACCESS_TOKEN = "PAT";
+    process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI =
+      "https://github.com/microsoft/PR-Metrics";
 
-    gitInvoker = mock(GitInvoker)
-    when(gitInvoker.pullRequestId).thenReturn(12345)
+    gitInvoker = mock(GitInvoker);
+    when(gitInvoker.pullRequestId).thenReturn(12345);
 
-    logger = mock(Logger)
+    logger = mock(Logger);
 
-    octokitWrapper = mock(OctokitWrapper)
-    when(octokitWrapper.getPull(anyString(), anyString(), anyNumber())).thenResolve(GitHubReposInvokerConstants.getPullResponse)
-    when(octokitWrapper.updatePull(anyString(), anyString(), anyNumber(), anyString(), anyString())).thenResolve(GitHubReposInvokerConstants.getPullResponse)
-    when(octokitWrapper.listCommits(anyString(), anyString(), anyNumber(), anyNumber())).thenResolve(GitHubReposInvokerConstants.listCommitsResponse)
+    octokitWrapper = mock(OctokitWrapper);
+    when(
+      octokitWrapper.getPull(anyString(), anyString(), anyNumber()),
+    ).thenResolve(GitHubReposInvokerConstants.getPullResponse);
+    when(
+      octokitWrapper.updatePull(
+        anyString(),
+        anyString(),
+        anyNumber(),
+        anyString(),
+        anyString(),
+      ),
+    ).thenResolve(GitHubReposInvokerConstants.getPullResponse);
+    when(
+      octokitWrapper.listCommits(
+        anyString(),
+        anyString(),
+        anyNumber(),
+        anyNumber(),
+      ),
+    ).thenResolve(GitHubReposInvokerConstants.listCommitsResponse);
 
-    runnerInvoker = mock(RunnerInvoker)
-    when(runnerInvoker.loc('repos.gitHubReposInvoker.insufficientGitHubAccessTokenPermissions')).thenReturn('Could not access the resources. Ensure the \'PR_Metrics_Access_Token\' secret environment variable has Read and Write access to pull requests (or access to \'repos\' if using a Classic PAT).')
-    when(runnerInvoker.loc('repos.gitHubReposInvoker.noGitHubAccessToken')).thenReturn('Could not access the Personal Access Token (PAT). Add \'PR_Metrics_Access_Token\' as a secret environment variable with Read and Write access to Pull Requests (or access to \'repos\' if using a Classic PAT, or write access to \'pull-requests\' and \'statuses\' if specified within the workflow YAML).')
-  })
+    runnerInvoker = mock(RunnerInvoker);
+    when(
+      runnerInvoker.loc(
+        "repos.gitHubReposInvoker.insufficientGitHubAccessTokenPermissions",
+      ),
+    ).thenReturn(
+      "Could not access the resources. Ensure the 'PR_Metrics_Access_Token' secret environment variable has Read and Write access to pull requests (or access to 'repos' if using a Classic PAT).",
+    );
+    when(
+      runnerInvoker.loc("repos.gitHubReposInvoker.noGitHubAccessToken"),
+    ).thenReturn(
+      "Could not access the Personal Access Token (PAT). Add 'PR_Metrics_Access_Token' as a secret environment variable with Read and Write access to Pull Requests (or access to 'repos' if using a Classic PAT, or write access to 'pull-requests' and 'statuses' if specified within the workflow YAML).",
+    );
+  });
 
   afterEach((): void => {
-    delete process.env.PR_METRICS_ACCESS_TOKEN
-    delete process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI
-  })
+    delete process.env.PR_METRICS_ACCESS_TOKEN;
+    delete process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI;
+  });
 
-  describe('isAccessTokenAvailable()', (): void => {
-    it('should return null when the token exists on Azure DevOps', async (): Promise<void> => {
+  describe("isAccessTokenAvailable()", (): void => {
+    it("should return null when the token exists on Azure DevOps", async (): Promise<void> => {
       // Arrange
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
+        instance(gitInvoker),
+        instance(logger),
+        instance(octokitWrapper),
+        instance(runnerInvoker),
+      );
 
       // Act
-      const result: string | null = await gitHubReposInvoker.isAccessTokenAvailable()
+      const result: string | null =
+        await gitHubReposInvoker.isAccessTokenAvailable();
 
       // Assert
-      assert.equal(result, null)
-      verify(logger.logDebug('* GitHubReposInvoker.isAccessTokenAvailable()')).once()
-    })
+      assert.equal(result, null);
+      verify(
+        logger.logDebug("* GitHubReposInvoker.isAccessTokenAvailable()"),
+      ).once();
+    });
 
-    it('should return null when the token exists on GitHub', async (): Promise<void> => {
+    it("should return null when the token exists on GitHub", async (): Promise<void> => {
       // Arrange
-      process.env.PR_METRICS_ACCESS_TOKEN = 'PAT'
-      process.env.GITHUB_ACTION = 'PR-Metrics'
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
+      process.env.PR_METRICS_ACCESS_TOKEN = "PAT";
+      process.env.GITHUB_ACTION = "PR-Metrics";
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
+        instance(gitInvoker),
+        instance(logger),
+        instance(octokitWrapper),
+        instance(runnerInvoker),
+      );
 
       // Act
-      const result: string | null = await gitHubReposInvoker.isAccessTokenAvailable()
+      const result: string | null =
+        await gitHubReposInvoker.isAccessTokenAvailable();
 
       // Assert
-      assert.equal(result, null)
-      verify(logger.logDebug('* GitHubReposInvoker.isAccessTokenAvailable()')).once()
+      assert.equal(result, null);
+      verify(
+        logger.logDebug("* GitHubReposInvoker.isAccessTokenAvailable()"),
+      ).once();
 
       // Finalization
-      delete process.env.PR_METRICS_ACCESS_TOKEN
-      delete process.env.GITHUB_ACTION
-    })
+      delete process.env.PR_METRICS_ACCESS_TOKEN;
+      delete process.env.GITHUB_ACTION;
+    });
 
-    it('should return a string when the token does not exist', async (): Promise<void> => {
+    it("should return a string when the token does not exist", async (): Promise<void> => {
       // Arrange
-      delete process.env.PR_METRICS_ACCESS_TOKEN
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
+      delete process.env.PR_METRICS_ACCESS_TOKEN;
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
+        instance(gitInvoker),
+        instance(logger),
+        instance(octokitWrapper),
+        instance(runnerInvoker),
+      );
 
       // Act
-      const result: string | null = await gitHubReposInvoker.isAccessTokenAvailable()
+      const result: string | null =
+        await gitHubReposInvoker.isAccessTokenAvailable();
 
       // Assert
-      assert.equal(result, 'Could not access the Personal Access Token (PAT). Add \'PR_Metrics_Access_Token\' as a secret environment variable with Read and Write access to Pull Requests (or access to \'repos\' if using a Classic PAT, or write access to \'pull-requests\' and \'statuses\' if specified within the workflow YAML).')
-      verify(logger.logDebug('* GitHubReposInvoker.isAccessTokenAvailable()')).once()
-    })
-  })
+      assert.equal(
+        result,
+        "Could not access the Personal Access Token (PAT). Add 'PR_Metrics_Access_Token' as a secret environment variable with Read and Write access to Pull Requests (or access to 'repos' if using a Classic PAT, or write access to 'pull-requests' and 'statuses' if specified within the workflow YAML).",
+      );
+      verify(
+        logger.logDebug("* GitHubReposInvoker.isAccessTokenAvailable()"),
+      ).once();
+    });
+  });
 
-  describe('getTitleAndDescription()', (): void => {
+  describe("getTitleAndDescription()", (): void => {
     {
-      const testCases: (string | undefined)[] = [
-        undefined,
-        ''
-      ]
+      const testCases: (string | undefined)[] = [undefined, ""];
 
       testCases.forEach((variable: string | undefined): void => {
         it(`should throw when SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI is set to the invalid value '${Converter.toString(variable)}' and the task is running on Azure Pipelines`, async (): Promise<void> => {
           // Arrange
           if (variable === undefined) {
-            delete process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI
+            delete process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI;
           } else {
-            process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI = variable
+            process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI = variable;
           }
 
-          const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
+          const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
+            instance(gitInvoker),
+            instance(logger),
+            instance(octokitWrapper),
+            instance(runnerInvoker),
+          );
 
           // Act
           const func: () => Promise<PullRequestDetailsInterface> = async () => gitHubReposInvoker.getTitleAndDescription()
 
           // Assert
-          await AssertExtensions.toThrowAsync(func, `'SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI', accessed within 'GitHubReposInvoker.initializeForAzureDevOps()', is invalid, null, or undefined '${Converter.toString(variable)}'.`)
-          verify(logger.logDebug('* GitHubReposInvoker.getTitleAndDescription()')).once()
-          verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
-          verify(logger.logDebug('* GitHubReposInvoker.initializeForAzureDevOps()')).once()
-        })
-      })
+          await AssertExtensions.toThrowAsync(
+            func,
+            `'SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI', accessed within 'GitHubReposInvoker.initializeForAzureDevOps()', is invalid, null, or undefined '${Converter.toString(variable)}'.`,
+          );
+          verify(
+            logger.logDebug("* GitHubReposInvoker.getTitleAndDescription()"),
+          ).once();
+          verify(logger.logDebug("* GitHubReposInvoker.initialize()")).once();
+          verify(
+            logger.logDebug("* GitHubReposInvoker.initializeForAzureDevOps()"),
+          ).once();
+        });
+      });
     }
 
-    it('should throw when SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI is set to an invalid URL and the task is running on Azure Pipelines', async (): Promise<void> => {
+    it("should throw when SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI is set to an invalid URL and the task is running on Azure Pipelines", async (): Promise<void> => {
       // Arrange
-      process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI = 'https://github.com/microsoft'
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
+      process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI =
+        "https://github.com/microsoft";
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
+        instance(gitInvoker),
+        instance(logger),
+        instance(octokitWrapper),
+        instance(runnerInvoker),
+      );
 
       // Act
       const func: () => Promise<PullRequestDetailsInterface> = async () => gitHubReposInvoker.getTitleAndDescription()
 
       // Assert
-      await AssertExtensions.toThrowAsync(func, 'SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI \'https://github.com/microsoft\' is in an unexpected format.')
-      verify(logger.logDebug('* GitHubReposInvoker.getTitleAndDescription()')).once()
-      verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
-      verify(logger.logDebug('* GitHubReposInvoker.initializeForAzureDevOps()')).once()
-    })
+      await AssertExtensions.toThrowAsync(
+        func,
+        "SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI 'https://github.com/microsoft' is in an unexpected format.",
+      );
+      verify(
+        logger.logDebug("* GitHubReposInvoker.getTitleAndDescription()"),
+      ).once();
+      verify(logger.logDebug("* GitHubReposInvoker.initialize()")).once();
+      verify(
+        logger.logDebug("* GitHubReposInvoker.initializeForAzureDevOps()"),
+      ).once();
+    });
 
     {
-      const testCases: (string | undefined)[] = [
-        undefined,
-        ''
-      ]
+      const testCases: (string | undefined)[] = [undefined, ""];
 
       testCases.forEach((variable: string | undefined): void => {
         it(`should throw when GITHUB_API_URL is set to the invalid value '${Converter.toString(variable)}' and the task is running on GitHub`, async (): Promise<void> => {
           // Arrange
-          delete process.env.PR_METRICS_ACCESS_TOKEN
-          process.env.PR_METRICS_ACCESS_TOKEN = 'PAT'
-          process.env.GITHUB_ACTION = 'PR-Metrics'
+          delete process.env.PR_METRICS_ACCESS_TOKEN;
+          process.env.PR_METRICS_ACCESS_TOKEN = "PAT";
+          process.env.GITHUB_ACTION = "PR-Metrics";
           if (variable === undefined) {
-            delete process.env.GITHUB_API_URL
+            delete process.env.GITHUB_API_URL;
           } else {
-            process.env.GITHUB_API_URL = variable
+            process.env.GITHUB_API_URL = variable;
           }
 
-          const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
+          const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
+            instance(gitInvoker),
+            instance(logger),
+            instance(octokitWrapper),
+            instance(runnerInvoker),
+          );
 
           // Act
           const func: () => Promise<PullRequestDetailsInterface> = async () => gitHubReposInvoker.getTitleAndDescription()
 
           // Assert
-          await AssertExtensions.toThrowAsync(func, `'GITHUB_API_URL', accessed within 'GitHubReposInvoker.initializeForGitHub()', is invalid, null, or undefined '${Converter.toString(variable)}'.`)
-          verify(logger.logDebug('* GitHubReposInvoker.getTitleAndDescription()')).once()
-          verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
-          verify(logger.logDebug('* GitHubReposInvoker.initializeForGitHub()')).once()
+          await AssertExtensions.toThrowAsync(
+            func,
+            `'GITHUB_API_URL', accessed within 'GitHubReposInvoker.initializeForGitHub()', is invalid, null, or undefined '${Converter.toString(variable)}'.`,
+          );
+          verify(
+            logger.logDebug("* GitHubReposInvoker.getTitleAndDescription()"),
+          ).once();
+          verify(logger.logDebug("* GitHubReposInvoker.initialize()")).once();
+          verify(
+            logger.logDebug("* GitHubReposInvoker.initializeForGitHub()"),
+          ).once();
 
           // Finalization
-          delete process.env.PR_METRICS_ACCESS_TOKEN
-          delete process.env.GITHUB_ACTION
-          delete process.env.GITHUB_API_URL
-        })
-      })
+          delete process.env.PR_METRICS_ACCESS_TOKEN;
+          delete process.env.GITHUB_ACTION;
+          delete process.env.GITHUB_API_URL;
+        });
+      });
     }
 
     {
-      const testCases: (string | undefined)[] = [
-        undefined,
-        ''
-      ]
+      const testCases: (string | undefined)[] = [undefined, ""];
 
       testCases.forEach((variable: string | undefined): void => {
         it(`should throw when GITHUB_REPOSITORY_OWNER is set to the invalid value '${Converter.toString(variable)}' and the task is running on GitHub`, async (): Promise<void> => {
           // Arrange
-          delete process.env.PR_METRICS_ACCESS_TOKEN
-          process.env.PR_METRICS_ACCESS_TOKEN = 'PAT'
-          process.env.GITHUB_ACTION = 'PR-Metrics'
-          process.env.GITHUB_API_URL = 'https://api.github.com'
+          delete process.env.PR_METRICS_ACCESS_TOKEN;
+          process.env.PR_METRICS_ACCESS_TOKEN = "PAT";
+          process.env.GITHUB_ACTION = "PR-Metrics";
+          process.env.GITHUB_API_URL = "https://api.github.com";
           if (variable === undefined) {
-            delete process.env.GITHUB_REPOSITORY_OWNER
+            delete process.env.GITHUB_REPOSITORY_OWNER;
           } else {
-            process.env.GITHUB_REPOSITORY_OWNER = variable
+            process.env.GITHUB_REPOSITORY_OWNER = variable;
           }
 
-          const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
+          const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
+            instance(gitInvoker),
+            instance(logger),
+            instance(octokitWrapper),
+            instance(runnerInvoker),
+          );
 
           // Act
           const func: () => Promise<PullRequestDetailsInterface> = async () => gitHubReposInvoker.getTitleAndDescription()
 
           // Assert
-          await AssertExtensions.toThrowAsync(func, `'GITHUB_REPOSITORY_OWNER', accessed within 'GitHubReposInvoker.initializeForGitHub()', is invalid, null, or undefined '${Converter.toString(variable)}'.`)
-          verify(logger.logDebug('* GitHubReposInvoker.getTitleAndDescription()')).once()
-          verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
-          verify(logger.logDebug('* GitHubReposInvoker.initializeForGitHub()')).once()
+          await AssertExtensions.toThrowAsync(
+            func,
+            `'GITHUB_REPOSITORY_OWNER', accessed within 'GitHubReposInvoker.initializeForGitHub()', is invalid, null, or undefined '${Converter.toString(variable)}'.`,
+          );
+          verify(
+            logger.logDebug("* GitHubReposInvoker.getTitleAndDescription()"),
+          ).once();
+          verify(logger.logDebug("* GitHubReposInvoker.initialize()")).once();
+          verify(
+            logger.logDebug("* GitHubReposInvoker.initializeForGitHub()"),
+          ).once();
 
           // Finalization
-          delete process.env.PR_METRICS_ACCESS_TOKEN
-          delete process.env.GITHUB_ACTION
-          delete process.env.GITHUB_API_URL
-          delete process.env.GITHUB_REPOSITORY_OWNER
-        })
-      })
+          delete process.env.PR_METRICS_ACCESS_TOKEN;
+          delete process.env.GITHUB_ACTION;
+          delete process.env.GITHUB_API_URL;
+          delete process.env.GITHUB_REPOSITORY_OWNER;
+        });
+      });
     }
 
     {
-      const testCases: (string | undefined)[] = [
-        undefined,
-        ''
-      ]
+      const testCases: (string | undefined)[] = [undefined, ""];
 
       testCases.forEach((variable: string | undefined): void => {
         it(`should throw when GITHUB_REPOSITORY is set to the invalid value '${Converter.toString(variable)}' and the task is running on GitHub`, async (): Promise<void> => {
           // Arrange
-          delete process.env.PR_METRICS_ACCESS_TOKEN
-          process.env.PR_METRICS_ACCESS_TOKEN = 'PAT'
-          process.env.GITHUB_ACTION = 'PR-Metrics'
-          process.env.GITHUB_API_URL = 'https://api.github.com'
-          process.env.GITHUB_REPOSITORY_OWNER = 'microsoft'
+          delete process.env.PR_METRICS_ACCESS_TOKEN;
+          process.env.PR_METRICS_ACCESS_TOKEN = "PAT";
+          process.env.GITHUB_ACTION = "PR-Metrics";
+          process.env.GITHUB_API_URL = "https://api.github.com";
+          process.env.GITHUB_REPOSITORY_OWNER = "microsoft";
           if (variable === undefined) {
-            delete process.env.GITHUB_REPOSITORY
+            delete process.env.GITHUB_REPOSITORY;
           } else {
-            process.env.GITHUB_REPOSITORY = variable
+            process.env.GITHUB_REPOSITORY = variable;
           }
 
-          const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
+          const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
+            instance(gitInvoker),
+            instance(logger),
+            instance(octokitWrapper),
+            instance(runnerInvoker),
+          );
 
           // Act
           const func: () => Promise<PullRequestDetailsInterface> = async () => gitHubReposInvoker.getTitleAndDescription()
 
           // Assert
-          await AssertExtensions.toThrowAsync(func, `'GITHUB_REPOSITORY', accessed within 'GitHubReposInvoker.initializeForGitHub()', is invalid, null, or undefined '${Converter.toString(variable)}'.`)
-          verify(logger.logDebug('* GitHubReposInvoker.getTitleAndDescription()')).once()
-          verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
-          verify(logger.logDebug('* GitHubReposInvoker.initializeForGitHub()')).once()
+          await AssertExtensions.toThrowAsync(
+            func,
+            `'GITHUB_REPOSITORY', accessed within 'GitHubReposInvoker.initializeForGitHub()', is invalid, null, or undefined '${Converter.toString(variable)}'.`,
+          );
+          verify(
+            logger.logDebug("* GitHubReposInvoker.getTitleAndDescription()"),
+          ).once();
+          verify(logger.logDebug("* GitHubReposInvoker.initialize()")).once();
+          verify(
+            logger.logDebug("* GitHubReposInvoker.initializeForGitHub()"),
+          ).once();
 
           // Finalization
-          delete process.env.PR_METRICS_ACCESS_TOKEN
-          delete process.env.GITHUB_ACTION
-          delete process.env.GITHUB_API_URL
-          delete process.env.GITHUB_REPOSITORY_OWNER
-          delete process.env.GITHUB_REPOSITORY
-        })
-      })
+          delete process.env.PR_METRICS_ACCESS_TOKEN;
+          delete process.env.GITHUB_ACTION;
+          delete process.env.GITHUB_API_URL;
+          delete process.env.GITHUB_REPOSITORY_OWNER;
+          delete process.env.GITHUB_REPOSITORY;
+        });
+      });
     }
 
-    it('should throw when GITHUB_REPOSITORY is in an incorrect format and the task is running on GitHub', async (): Promise<void> => {
+    it("should throw when GITHUB_REPOSITORY is in an incorrect format and the task is running on GitHub", async (): Promise<void> => {
       // Arrange
-      delete process.env.PR_METRICS_ACCESS_TOKEN
-      process.env.PR_METRICS_ACCESS_TOKEN = 'PAT'
-      process.env.GITHUB_ACTION = 'PR-Metrics'
-      process.env.GITHUB_API_URL = 'https://api.github.com'
-      process.env.GITHUB_REPOSITORY_OWNER = 'microsoft'
-      process.env.GITHUB_REPOSITORY = 'microsoft'
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
+      delete process.env.PR_METRICS_ACCESS_TOKEN;
+      process.env.PR_METRICS_ACCESS_TOKEN = "PAT";
+      process.env.GITHUB_ACTION = "PR-Metrics";
+      process.env.GITHUB_API_URL = "https://api.github.com";
+      process.env.GITHUB_REPOSITORY_OWNER = "microsoft";
+      process.env.GITHUB_REPOSITORY = "microsoft";
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
+        instance(gitInvoker),
+        instance(logger),
+        instance(octokitWrapper),
+        instance(runnerInvoker),
+      );
 
       // Act
       const func: () => Promise<PullRequestDetailsInterface> = async () => gitHubReposInvoker.getTitleAndDescription()
 
       // Assert
-      await AssertExtensions.toThrowAsync(func, 'GITHUB_REPOSITORY \'microsoft\' is in an unexpected format.')
-      verify(logger.logDebug('* GitHubReposInvoker.getTitleAndDescription()')).once()
-      verify(logger.logDebug('* GitHubReposInvoker.initialize()')).once()
-      verify(logger.logDebug('* GitHubReposInvoker.initializeForGitHub()')).once()
+      await AssertExtensions.toThrowAsync(
+        func,
+        "GITHUB_REPOSITORY 'microsoft' is in an unexpected format.",
+      );
+      verify(
+        logger.logDebug("* GitHubReposInvoker.getTitleAndDescription()"),
+      ).once();
+      verify(logger.logDebug("* GitHubReposInvoker.initialize()")).once();
+      verify(
+        logger.logDebug("* GitHubReposInvoker.initializeForGitHub()"),
+      ).once();
 
       // Finalization
-      delete process.env.PR_METRICS_ACCESS_TOKEN
-      delete process.env.GITHUB_ACTION
-      delete process.env.GITHUB_API_URL
-      delete process.env.GITHUB_REPOSITORY_OWNER
-      delete process.env.GITHUB_REPOSITORY
-    })
+      delete process.env.PR_METRICS_ACCESS_TOKEN;
+      delete process.env.GITHUB_ACTION;
+      delete process.env.GITHUB_API_URL;
+      delete process.env.GITHUB_REPOSITORY_OWNER;
+      delete process.env.GITHUB_REPOSITORY;
+    });
 
-    it('should succeed when the inputs are valid and the task is running on Azure Pipelines', async (): Promise<void> => {
+    it("should succeed when the inputs are valid and the task is running on Azure Pipelines", async (): Promise<void> => {
       // Arrange
       when(octokitWrapper.initialize(any())).thenCall((options: OctokitOptions): void => {
         assert.equal(options.auth, 'PAT')
@@ -321,7 +437,7 @@ describe('gitHubReposInvoker.ts', (): void => {
       verify(logger.logDebug(JSON.stringify(GitHubReposInvokerConstants.getPullResponse))).once()
     })
 
-    it('should succeed when the inputs are valid and the task is running on GitHub', async (): Promise<void> => {
+    it("should succeed when the inputs are valid and the task is running on GitHub", async (): Promise<void> => {
       // Arrange
       process.env.GITHUB_ACTION = 'PR-Metrics'
       process.env.GITHUB_API_URL = 'https://api.github.com'
@@ -352,13 +468,13 @@ describe('gitHubReposInvoker.ts', (): void => {
       verify(logger.logDebug(JSON.stringify(GitHubReposInvokerConstants.getPullResponse))).once()
 
       // Finalization
-      delete process.env.GITHUB_ACTION
-      delete process.env.GITHUB_API_URL
-      delete process.env.GITHUB_REPOSITORY_OWNER
-      delete process.env.GITHUB_REPOSITORY
-    })
+      delete process.env.GITHUB_ACTION;
+      delete process.env.GITHUB_API_URL;
+      delete process.env.GITHUB_REPOSITORY_OWNER;
+      delete process.env.GITHUB_REPOSITORY;
+    });
 
-    it('should succeed when the inputs are valid and the URL ends with \'.git\'', async (): Promise<void> => {
+    it("should succeed when the inputs are valid and the URL ends with '.git'", async (): Promise<void> => {
       // Arrange
       process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI = 'https://github.com/microsoft/PR-Metrics.git'
       when(octokitWrapper.initialize(any())).thenCall((options: OctokitOptions): void => {
@@ -386,7 +502,7 @@ describe('gitHubReposInvoker.ts', (): void => {
       verify(logger.logDebug(JSON.stringify(GitHubReposInvokerConstants.getPullResponse))).once()
     })
 
-    it('should succeed when the inputs are valid and GitHub Enterprise is in use', async (): Promise<void> => {
+    it("should succeed when the inputs are valid and GitHub Enterprise is in use", async (): Promise<void> => {
       // Arrange
       process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI = 'https://organization.githubenterprise.com/microsoft/PR-Metrics'
       when(octokitWrapper.initialize(any())).thenCall((options: OctokitOptions): void => {
@@ -416,7 +532,7 @@ describe('gitHubReposInvoker.ts', (): void => {
       verify(logger.logDebug(JSON.stringify(GitHubReposInvokerConstants.getPullResponse))).once()
     })
 
-    it('should succeed when called twice with the inputs valid', async (): Promise<void> => {
+    it("should succeed when called twice with the inputs valid", async (): Promise<void> => {
       // Arrange
       when(octokitWrapper.initialize(any())).thenCall((options: OctokitOptions): void => {
         assert.equal(options.auth, 'PAT')
@@ -444,7 +560,7 @@ describe('gitHubReposInvoker.ts', (): void => {
       verify(logger.logDebug(JSON.stringify(GitHubReposInvokerConstants.getPullResponse))).twice()
     })
 
-    it('should succeed when the description is null', async (): Promise<void> => {
+    it("should succeed when the description is null", async (): Promise<void> => {
       // Arrange
       const currentMockPullResponse: GetPullResponse = GitHubReposInvokerConstants.getPullResponse
       currentMockPullResponse.data.body = null
@@ -511,7 +627,7 @@ describe('gitHubReposInvoker.ts', (): void => {
       })
     }
 
-    it('should throw an error when an error occurs', async (): Promise<void> => {
+    it("should throw an error when an error occurs", async (): Promise<void> => {
       // Arrange
       when(octokitWrapper.initialize(any())).thenCall((options: OctokitOptions): void => {
         assert.equal(options.auth, 'PAT')
@@ -536,7 +652,7 @@ describe('gitHubReposInvoker.ts', (): void => {
       verify(logger.logDebug('* GitHubReposInvoker.initializeForAzureDevOps()')).once()
     })
 
-    it('should initialize log object correctly', async (): Promise<void> => {
+    it("should initialize log object correctly", async (): Promise<void> => {
       // Arrange
       let logObject: OctokitLogObjectInterface | undefined
       when(octokitWrapper.initialize(any())).thenCall((options: OctokitOptions): void => { logObject = options.log })
@@ -544,21 +660,21 @@ describe('gitHubReposInvoker.ts', (): void => {
       await gitHubReposInvoker.getTitleAndDescription()
 
       // Act
-      logObject?.debug('Debug Message')
-      logObject?.info('Info Message')
-      logObject?.warn('Warning Message')
-      logObject?.error('Error Message')
+      logObject?.debug("Debug Message");
+      logObject?.info("Info Message");
+      logObject?.warn("Warning Message");
+      logObject?.error("Error Message");
 
       // Assert
-      verify(logger.logDebug('Octokit – Debug Message')).once()
-      verify(logger.logInfo('Octokit – Info Message')).once()
-      verify(logger.logWarning('Octokit – Warning Message')).once()
-      verify(logger.logError('Octokit – Error Message')).once()
-    })
-  })
+      verify(logger.logDebug("Octokit – Debug Message")).once();
+      verify(logger.logInfo("Octokit – Info Message")).once();
+      verify(logger.logWarning("Octokit – Warning Message")).once();
+      verify(logger.logError("Octokit – Error Message")).once();
+    });
+  });
 
-  describe('getComments()', (): void => {
-    it('should return the result when called with a pull request comment', async (): Promise<void> => {
+  describe("getComments()", (): void => {
+    it("should return the result when called with a pull request comment", async (): Promise<void> => {
       // Arrange
       when(octokitWrapper.initialize(any())).thenCall((options: OctokitOptions): void => {
         assert.equal(options.auth, 'PAT')
@@ -571,15 +687,22 @@ describe('gitHubReposInvoker.ts', (): void => {
       })
       const response: GetIssueCommentsResponse = GitHubReposInvokerConstants.getIssueCommentsResponse
       if (response.data[0] === undefined) {
-        throw new Error('response.data[0] is undefined')
+        throw new Error("response.data[0] is undefined");
       }
 
-      response.data[0].body = 'PR Content'
-      when(octokitWrapper.getIssueComments(anyString(), anyString(), anyNumber())).thenResolve(response)
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
+      response.data[0].body = "PR Content";
+      when(
+        octokitWrapper.getIssueComments(anyString(), anyString(), anyNumber()),
+      ).thenResolve(response);
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
+        instance(gitInvoker),
+        instance(logger),
+        instance(octokitWrapper),
+        instance(runnerInvoker),
+      );
 
       // Act
-      const result: CommentData = await gitHubReposInvoker.getComments()
+      const result: CommentData = await gitHubReposInvoker.getComments();
 
       // Assert
       assert.equal(result.pullRequestComments.length, 1)
@@ -597,7 +720,7 @@ describe('gitHubReposInvoker.ts', (): void => {
       verify(logger.logDebug(JSON.stringify(response))).once()
     })
 
-    it('should return the result when called with a file comment', async (): Promise<void> => {
+    it("should return the result when called with a file comment", async (): Promise<void> => {
       // Arrange
       when(octokitWrapper.initialize(any())).thenCall((options: OctokitOptions): void => {
         assert.equal(options.auth, 'PAT')
@@ -612,7 +735,7 @@ describe('gitHubReposInvoker.ts', (): void => {
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 
       // Act
-      const result: CommentData = await gitHubReposInvoker.getComments()
+      const result: CommentData = await gitHubReposInvoker.getComments();
 
       // Assert
       assert.equal(result.pullRequestComments.length, 0)
@@ -631,7 +754,7 @@ describe('gitHubReposInvoker.ts', (): void => {
       verify(logger.logDebug(JSON.stringify(GitHubReposInvokerConstants.getReviewCommentsResponse))).once()
     })
 
-    it('should return the result when called with both a pull request and file comment', async (): Promise<void> => {
+    it("should return the result when called with both a pull request and file comment", async (): Promise<void> => {
       // Arrange
       when(octokitWrapper.initialize(any())).thenCall((options: OctokitOptions): void => {
         assert.equal(options.auth, 'PAT')
@@ -644,16 +767,25 @@ describe('gitHubReposInvoker.ts', (): void => {
       })
       const response: GetIssueCommentsResponse = GitHubReposInvokerConstants.getIssueCommentsResponse
       if (response.data[0] === undefined) {
-        throw new Error('response.data[0] is undefined')
+        throw new Error("response.data[0] is undefined");
       }
 
-      response.data[0].body = 'PR Content'
-      when(octokitWrapper.getIssueComments(anyString(), anyString(), anyNumber())).thenResolve(response)
-      when(octokitWrapper.getReviewComments(anyString(), anyString(), anyNumber())).thenResolve(GitHubReposInvokerConstants.getReviewCommentsResponse)
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
+      response.data[0].body = "PR Content";
+      when(
+        octokitWrapper.getIssueComments(anyString(), anyString(), anyNumber()),
+      ).thenResolve(response);
+      when(
+        octokitWrapper.getReviewComments(anyString(), anyString(), anyNumber()),
+      ).thenResolve(GitHubReposInvokerConstants.getReviewCommentsResponse);
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
+        instance(gitInvoker),
+        instance(logger),
+        instance(octokitWrapper),
+        instance(runnerInvoker),
+      );
 
       // Act
-      const result: CommentData = await gitHubReposInvoker.getComments()
+      const result: CommentData = await gitHubReposInvoker.getComments();
 
       // Assert
       assert.equal(result.pullRequestComments.length, 1)
@@ -676,7 +808,7 @@ describe('gitHubReposInvoker.ts', (): void => {
       verify(logger.logDebug(JSON.stringify(GitHubReposInvokerConstants.getReviewCommentsResponse))).once()
     })
 
-    it('should skip pull request comments with no body', async (): Promise<void> => {
+    it("should skip pull request comments with no body", async (): Promise<void> => {
       // Arrange
       when(octokitWrapper.initialize(any())).thenCall((options: OctokitOptions): void => {
         assert.equal(options.auth, 'PAT')
@@ -689,15 +821,22 @@ describe('gitHubReposInvoker.ts', (): void => {
       })
       const response: GetIssueCommentsResponse = GitHubReposInvokerConstants.getIssueCommentsResponse
       if (response.data[0] === undefined) {
-        throw new Error('response.data[0] is undefined')
+        throw new Error("response.data[0] is undefined");
       }
 
-      response.data[0].body = undefined
-      when(octokitWrapper.getIssueComments(anyString(), anyString(), anyNumber())).thenResolve(response)
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
+      response.data[0].body = undefined;
+      when(
+        octokitWrapper.getIssueComments(anyString(), anyString(), anyNumber()),
+      ).thenResolve(response);
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
+        instance(gitInvoker),
+        instance(logger),
+        instance(octokitWrapper),
+        instance(runnerInvoker),
+      );
 
       // Act
-      const result: CommentData = await gitHubReposInvoker.getComments()
+      const result: CommentData = await gitHubReposInvoker.getComments();
 
       // Assert
       assert.equal(result.pullRequestComments.length, 0)
@@ -713,20 +852,27 @@ describe('gitHubReposInvoker.ts', (): void => {
     })
   })
 
-  describe('setTitleAndDescription()', (): void => {
-    it('should succeed when the title and description are both null', async (): Promise<void> => {
+  describe("setTitleAndDescription()", (): void => {
+    it("should succeed when the title and description are both null", async (): Promise<void> => {
       // Arrange
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
+        instance(gitInvoker),
+        instance(logger),
+        instance(octokitWrapper),
+        instance(runnerInvoker),
+      );
 
       // Act
-      await gitHubReposInvoker.setTitleAndDescription(null, null)
+      await gitHubReposInvoker.setTitleAndDescription(null, null);
 
       // Assert
-      verify(logger.logDebug('* GitHubReposInvoker.setTitleAndDescription()')).once()
-      verify(logger.logDebug('* GitHubReposInvoker.initialize()')).never()
-    })
+      verify(
+        logger.logDebug("* GitHubReposInvoker.setTitleAndDescription()"),
+      ).once();
+      verify(logger.logDebug("* GitHubReposInvoker.initialize()")).never();
+    });
 
-    it('should succeed when the title and description are both set', async (): Promise<void> => {
+    it("should succeed when the title and description are both set", async (): Promise<void> => {
       // Arrange
       when(octokitWrapper.initialize(any())).thenCall((options: OctokitOptions): void => {
         assert.equal(options.auth, 'PAT')
@@ -740,7 +886,7 @@ describe('gitHubReposInvoker.ts', (): void => {
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 
       // Act
-      await gitHubReposInvoker.setTitleAndDescription('Title', 'Description')
+      await gitHubReposInvoker.setTitleAndDescription("Title", "Description");
 
       // Assert
       verify(octokitWrapper.initialize(any())).once()
@@ -751,7 +897,7 @@ describe('gitHubReposInvoker.ts', (): void => {
       verify(logger.logDebug(JSON.stringify(GitHubReposInvokerConstants.getPullResponse))).once()
     })
 
-    it('should succeed when the title is set', async (): Promise<void> => {
+    it("should succeed when the title is set", async (): Promise<void> => {
       // Arrange
       when(octokitWrapper.initialize(any())).thenCall((options: OctokitOptions): void => {
         assert.equal(options.auth, 'PAT')
@@ -765,7 +911,7 @@ describe('gitHubReposInvoker.ts', (): void => {
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 
       // Act
-      await gitHubReposInvoker.setTitleAndDescription('Title', null)
+      await gitHubReposInvoker.setTitleAndDescription("Title", null);
 
       // Assert
       verify(octokitWrapper.initialize(any())).once()
@@ -776,7 +922,7 @@ describe('gitHubReposInvoker.ts', (): void => {
       verify(logger.logDebug('null')).once()
     })
 
-    it('should succeed when the description is set', async (): Promise<void> => {
+    it("should succeed when the description is set", async (): Promise<void> => {
       // Arrange
       when(octokitWrapper.initialize(any())).thenCall((options: OctokitOptions): void => {
         assert.equal(options.auth, 'PAT')
@@ -790,7 +936,7 @@ describe('gitHubReposInvoker.ts', (): void => {
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 
       // Act
-      await gitHubReposInvoker.setTitleAndDescription(null, 'Description')
+      await gitHubReposInvoker.setTitleAndDescription(null, "Description");
 
       // Assert
       verify(octokitWrapper.initialize(any())).once()
@@ -802,8 +948,8 @@ describe('gitHubReposInvoker.ts', (): void => {
     })
   })
 
-  describe('createComment()', (): void => {
-    it('should succeed when a file name is specified', async (): Promise<void> => {
+  describe("createComment()", (): void => {
+    it("should succeed when a file name is specified", async (): Promise<void> => {
       // Arrange
       when(octokitWrapper.initialize(any())).thenCall((options: OctokitOptions): void => {
         assert.equal(options.auth, 'PAT')
@@ -817,7 +963,11 @@ describe('gitHubReposInvoker.ts', (): void => {
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 
       // Act
-      await gitHubReposInvoker.createComment('Content', CommentThreadStatus.Unknown, 'file.ts')
+      await gitHubReposInvoker.createComment(
+        "Content",
+        CommentThreadStatus.Unknown,
+        "file.ts",
+      );
 
       // Assert
       verify(octokitWrapper.initialize(any())).once()
@@ -830,7 +980,7 @@ describe('gitHubReposInvoker.ts', (): void => {
       verify(logger.logDebug('null')).once()
     })
 
-    it('should throw when the commit list is empty', async (): Promise<void> => {
+    it("should throw when the commit list is empty", async (): Promise<void> => {
       // Arrange
       when(octokitWrapper.initialize(any())).thenCall((options: OctokitOptions): void => {
         assert.equal(options.auth, 'PAT')
@@ -850,7 +1000,12 @@ describe('gitHubReposInvoker.ts', (): void => {
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 
       // Act
-      const func: () => Promise<void> = async () => gitHubReposInvoker.createComment('Content', CommentThreadStatus.Unknown, 'file.ts')
+      const func: () => Promise<void> = async () =>
+        gitHubReposInvoker.createComment(
+          "Content",
+          CommentThreadStatus.Unknown,
+          "file.ts",
+        );
 
       // Assert
       await AssertExtensions.toThrowAsync(func, '\'result.data[-1].sha\', accessed within \'GitHubReposInvoker.getCommitId()\', is invalid, null, or undefined \'undefined\'.')
@@ -862,7 +1017,7 @@ describe('gitHubReposInvoker.ts', (): void => {
       verify(logger.logDebug('* GitHubReposInvoker.getCommitId()')).once()
     })
 
-    it('should succeed when there are multiple pages of commits', async (): Promise<void> => {
+    it("should succeed when there are multiple pages of commits", async (): Promise<void> => {
       // Arrange
       when(octokitWrapper.initialize(any())).thenCall((options: OctokitOptions): void => {
         assert.equal(options.auth, 'PAT')
@@ -875,7 +1030,7 @@ describe('gitHubReposInvoker.ts', (): void => {
       })
       when(octokitWrapper.listCommits(anyString(), anyString(), anyNumber(), 1)).thenResolve({
         headers: {
-          link: '<https://api.github.com/repositories/309438703/pulls/172/commits?page=2>; rel="next", <https://api.github.com/repositories/309438703/pulls/172/commits?page=24>; rel="last"'
+          link: '<https://api.github.com/repositories/309438703/pulls/172/commits?page=2>; rel="next", <https://api.github.com/repositories/309438703/pulls/172/commits?page=24>; rel="last"',
         },
         status: StatusCodes.OK,
         url: '',
@@ -885,7 +1040,11 @@ describe('gitHubReposInvoker.ts', (): void => {
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 
       // Act
-      await gitHubReposInvoker.createComment('Content', CommentThreadStatus.Unknown, 'file.ts')
+      await gitHubReposInvoker.createComment(
+        "Content",
+        CommentThreadStatus.Unknown,
+        "file.ts",
+      );
 
       // Assert
       verify(octokitWrapper.initialize(any())).once()
@@ -898,7 +1057,7 @@ describe('gitHubReposInvoker.ts', (): void => {
       verify(logger.logDebug('null')).once()
     })
 
-    it('should throw when the link header does not match the expected format', async (): Promise<void> => {
+    it("should throw when the link header does not match the expected format", async (): Promise<void> => {
       // Arrange
       when(octokitWrapper.initialize(any())).thenCall((options: OctokitOptions): void => {
         assert.equal(options.auth, 'PAT')
@@ -911,7 +1070,7 @@ describe('gitHubReposInvoker.ts', (): void => {
       })
       when(octokitWrapper.listCommits(anyString(), anyString(), anyNumber(), 1)).thenResolve({
         headers: {
-          link: 'non-matching'
+          link: "non-matching",
         },
         status: StatusCodes.OK,
         url: '',
@@ -920,7 +1079,12 @@ describe('gitHubReposInvoker.ts', (): void => {
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 
       // Act
-      const func: () => Promise<void> = async () => gitHubReposInvoker.createComment('Content', CommentThreadStatus.Unknown, 'file.ts')
+      const func: () => Promise<void> = async () =>
+        gitHubReposInvoker.createComment(
+          "Content",
+          CommentThreadStatus.Unknown,
+          "file.ts",
+        );
 
       // Assert
       await AssertExtensions.toThrowAsync(func, 'The regular expression did not match \'non-matching\'.')
@@ -932,7 +1096,7 @@ describe('gitHubReposInvoker.ts', (): void => {
       verify(logger.logDebug('* GitHubReposInvoker.getCommitId()')).once()
     })
 
-    it('should succeed when a file name is specified and the method is called twice', async (): Promise<void> => {
+    it("should succeed when a file name is specified and the method is called twice", async (): Promise<void> => {
       // Arrange
       when(octokitWrapper.initialize(any())).thenCall((options: OctokitOptions): void => {
         assert.equal(options.auth, 'PAT')
@@ -946,8 +1110,16 @@ describe('gitHubReposInvoker.ts', (): void => {
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 
       // Act
-      await gitHubReposInvoker.createComment('Content', CommentThreadStatus.Unknown, 'file.ts')
-      await gitHubReposInvoker.createComment('Content', CommentThreadStatus.Unknown, 'file.ts')
+      await gitHubReposInvoker.createComment(
+        "Content",
+        CommentThreadStatus.Unknown,
+        "file.ts",
+      );
+      await gitHubReposInvoker.createComment(
+        "Content",
+        CommentThreadStatus.Unknown,
+        "file.ts",
+      );
 
       // Assert
       verify(octokitWrapper.initialize(any())).once()
@@ -960,7 +1132,7 @@ describe('gitHubReposInvoker.ts', (): void => {
       verify(logger.logDebug('null')).twice()
     })
 
-    it('should succeed when createReviewComment() returns undefined', async (): Promise<void> => {
+    it("should succeed when createReviewComment() returns undefined", async (): Promise<void> => {
       // Arrange
       when(octokitWrapper.initialize(any())).thenCall((options: OctokitOptions): void => {
         assert.equal(options.auth, 'PAT')
@@ -975,7 +1147,11 @@ describe('gitHubReposInvoker.ts', (): void => {
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 
       // Act
-      await gitHubReposInvoker.createComment('Content', CommentThreadStatus.Unknown, 'file.ts')
+      await gitHubReposInvoker.createComment(
+        "Content",
+        CommentThreadStatus.Unknown,
+        "file.ts",
+      );
 
       // Assert
       verify(octokitWrapper.initialize(any())).once()
@@ -988,7 +1164,7 @@ describe('gitHubReposInvoker.ts', (): void => {
       verify(logger.logDebug('null')).once()
     })
 
-    it('should succeed when a HTTP 422 error occurs due to having a too large path diff', async (): Promise<void> => {
+    it("should succeed when a HTTP 422 error occurs due to having a too large path diff", async (): Promise<void> => {
       // Arrange
       when(octokitWrapper.initialize(any())).thenCall((options: OctokitOptions): void => {
         assert.equal(options.auth, 'PAT')
@@ -1006,7 +1182,11 @@ describe('gitHubReposInvoker.ts', (): void => {
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 
       // Act
-      await gitHubReposInvoker.createComment('Content', CommentThreadStatus.Unknown, 'file.ts')
+      await gitHubReposInvoker.createComment(
+        "Content",
+        CommentThreadStatus.Unknown,
+        "file.ts",
+      );
 
       // Assert
       verify(octokitWrapper.initialize(any())).once()
@@ -1027,7 +1207,7 @@ describe('gitHubReposInvoker.ts', (): void => {
       ]
 
       testCases.forEach((error: HttpError): void => {
-        it('should throw when an error occurs that is not a HTTP 422 or is not due to having a too large path diff', async (): Promise<void> => {
+        it("should throw when an error occurs that is not a HTTP 422 or is not due to having a too large path diff", async (): Promise<void> => {
           // Arrange
           when(octokitWrapper.initialize(any())).thenCall((options: OctokitOptions): void => {
             assert.equal(options.auth, 'PAT')
@@ -1044,7 +1224,12 @@ describe('gitHubReposInvoker.ts', (): void => {
           const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 
           // Act
-          const func: () => Promise<void> = async () => gitHubReposInvoker.createComment('Content', CommentThreadStatus.Unknown, 'file.ts')
+          const func: () => Promise<void> = async () =>
+            gitHubReposInvoker.createComment(
+              "Content",
+              CommentThreadStatus.Unknown,
+              "file.ts",
+            );
 
           // Assert
           await AssertExtensions.toThrowAsync(func, error.message)
@@ -1059,7 +1244,7 @@ describe('gitHubReposInvoker.ts', (): void => {
       })
     }
 
-    it('should succeed when no file name is specified', async (): Promise<void> => {
+    it("should succeed when no file name is specified", async (): Promise<void> => {
       // Arrange
       when(octokitWrapper.initialize(any())).thenCall((options: OctokitOptions): void => {
         assert.equal(options.auth, 'PAT')
@@ -1073,7 +1258,10 @@ describe('gitHubReposInvoker.ts', (): void => {
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 
       // Act
-      await gitHubReposInvoker.createComment('Content', CommentThreadStatus.Unknown)
+      await gitHubReposInvoker.createComment(
+        "Content",
+        CommentThreadStatus.Unknown,
+      );
 
       // Assert
       verify(octokitWrapper.initialize(any())).once()
@@ -1085,21 +1273,28 @@ describe('gitHubReposInvoker.ts', (): void => {
     })
   })
 
-  describe('updateComment()', (): void => {
-    it('should succeed when the content is null', async (): Promise<void> => {
+  describe("updateComment()", (): void => {
+    it("should succeed when the content is null", async (): Promise<void> => {
       // Arrange
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
+        instance(gitInvoker),
+        instance(logger),
+        instance(octokitWrapper),
+        instance(runnerInvoker),
+      );
 
       // Act
-      await gitHubReposInvoker.updateComment(54321, null, null)
+      await gitHubReposInvoker.updateComment(54321, null, null);
 
       // Assert
-      verify(logger.logDebug('* GitHubReposInvoker.updateComment()')).once()
-      verify(logger.logDebug('* GitHubReposInvoker.initialize()')).never()
-      verify(logger.logDebug('* GitHubReposInvoker.initializeForAzureDevOps()')).never()
-    })
+      verify(logger.logDebug("* GitHubReposInvoker.updateComment()")).once();
+      verify(logger.logDebug("* GitHubReposInvoker.initialize()")).never();
+      verify(
+        logger.logDebug("* GitHubReposInvoker.initializeForAzureDevOps()"),
+      ).never();
+    });
 
-    it('should succeed when the content is set', async (): Promise<void> => {
+    it("should succeed when the content is set", async (): Promise<void> => {
       // Arrange
       when(octokitWrapper.initialize(any())).thenCall((options: OctokitOptions): void => {
         assert.equal(options.auth, 'PAT')
@@ -1113,7 +1308,7 @@ describe('gitHubReposInvoker.ts', (): void => {
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 
       // Act
-      await gitHubReposInvoker.updateComment(54321, 'Content', null)
+      await gitHubReposInvoker.updateComment(54321, "Content", null);
 
       // Assert
       verify(octokitWrapper.initialize(any())).once()
@@ -1125,8 +1320,8 @@ describe('gitHubReposInvoker.ts', (): void => {
     })
   })
 
-  describe('deleteCommentThread()', (): void => {
-    it('should succeed', async (): Promise<void> => {
+  describe("deleteCommentThread()", (): void => {
+    it("should succeed", async (): Promise<void> => {
       // Arrange
       when(octokitWrapper.initialize(any())).thenCall((options: OctokitOptions): void => {
         assert.equal(options.auth, 'PAT')
@@ -1140,7 +1335,7 @@ describe('gitHubReposInvoker.ts', (): void => {
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(instance(gitInvoker), instance(logger), instance(octokitWrapper), instance(runnerInvoker))
 
       // Act
-      await gitHubReposInvoker.deleteCommentThread(54321)
+      await gitHubReposInvoker.deleteCommentThread(54321);
 
       // Assert
       verify(octokitWrapper.initialize(any())).once()

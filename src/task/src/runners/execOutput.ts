@@ -10,15 +10,15 @@ export default interface ExecOutput {
   /**
    * The exit code.
    */
-  exitCode: number
+  exitCode: number;
 
   /**
    * The standard output text.
    */
-  stdout: string
+  stdout: string;
 
   /**
    * The standard error text.
    */
-  stderr: string
+  stderr: string;
 }

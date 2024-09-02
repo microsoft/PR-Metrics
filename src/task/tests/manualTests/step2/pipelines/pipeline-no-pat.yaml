@@ -2,7 +2,6 @@
 # Licensed under the MIT License.
 
 ---
-
 trigger: none
 
 pool:
@@ -25,5 +24,3 @@ stages:
 
           - task: PRMetrics@1
             displayName: PR Metrics
-
-...

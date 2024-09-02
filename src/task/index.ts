@@ -9,9 +9,10 @@ import { container } from 'tsyringe'
 import { exitCodeForFailure } from './src/utilities/constants'
 
 const run = async (): Promise<void> => {
-  const pullRequestMetrics: PullRequestMetrics = container.resolve(PullRequestMetrics)
-  await pullRequestMetrics.run(__dirname)
-}
+  const pullRequestMetrics: PullRequestMetrics =
+    container.resolve(PullRequestMetrics);
+  await pullRequestMetrics.run(__dirname);
+};
 
 run().catch((): void => {
   process.exit(exitCodeForFailure)

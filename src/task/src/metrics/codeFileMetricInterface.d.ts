@@ -10,15 +10,15 @@ export interface CodeFileMetricInterface {
   /**
    * The name of the file.
    */
-  fileName: string
+  fileName: string;
 
   /**
    * The number of lines added to the file.
    */
-  linesAdded: number
+  linesAdded: number;
 
   /**
    * The number of lines deleted from the file.
    */
-  linesDeleted: number
+  linesDeleted: number;
 }

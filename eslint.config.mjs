@@ -35,7 +35,7 @@ export default tseslint.config(
       // 6
       '@typescript-eslint/no-unused-vars': 'off',
       // 6
-      //'@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/no-explicit-any': 'off',
       // 1464
       '@typescript-eslint/no-confusing-void-expression': 'off',
 

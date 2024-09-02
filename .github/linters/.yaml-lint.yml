@@ -1,13 +1,19 @@
-# Copyright (c) Microsoft Corporation.
-# Licensed under the MIT License.
+# © Muiris Woulfe
+# Licensed under the MIT License
 
 ---
-
 extends: default
 
 rules:
+  comments-indentation: enable
+  comments:
+    require-starting-space: true
+    min-spaces-from-content: 1
+  document-start: enable
+  empty-values: enable
   line-length: disable
+  octal-values: enable
+  quoted-strings:
+    required: only-when-needed
   truthy:
     check-keys: false
-
-...

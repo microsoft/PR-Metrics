@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import assert from 'node:assert/strict'
+import assert from "node:assert/strict";
 
 /**
  * Asserts that the asynchronous function call throws an error with the expected message.
@@ -15,9 +15,9 @@ import assert from 'node:assert/strict'
 export const toThrowAsync = async <ErrorType extends Error> (func: () => Promise<unknown>, errorMessage: string): Promise<ErrorType> => {
   let error: any = null
   try {
-    await func()
+    await func();
   } catch (err) {
-    error = err
+    error = err;
   }
 
   assert(error instanceof Error)

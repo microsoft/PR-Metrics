@@ -2,7 +2,6 @@
 # Licensed under the MIT License.
 
 ---
-
 parameters:
   - name: testInstance
     type: boolean
@@ -186,5 +185,3 @@ stages:
               GdnBreakPolicyMinSev: Note
               GdnBreakGdnToolGosecSeverity: Default
               GdnBreakPolicy: M365
-
-...

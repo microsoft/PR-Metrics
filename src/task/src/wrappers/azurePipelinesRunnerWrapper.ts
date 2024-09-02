@@ -3,9 +3,12 @@
  * Licensed under the MIT License.
  */
 
-import * as taskLib from 'azure-pipelines-task-lib/task'
-import { IExecOptions, IExecSyncResult } from 'azure-pipelines-task-lib/toolrunner'
-import { singleton } from 'tsyringe'
+import * as taskLib from "azure-pipelines-task-lib/task";
+import {
+  IExecOptions,
+  IExecSyncResult,
+} from "azure-pipelines-task-lib/toolrunner";
+import { singleton } from "tsyringe";
 
 /**
  * A wrapper around the Azure Pipelines runner, to facilitate testability.
@@ -16,16 +19,16 @@ export default class AzurePipelinesRunnerWrapper {
    * Logs a debug message.
    * @param message The message to log.
    */
-  public debug (message: string): void {
-    taskLib.debug(message)
+  public debug(message: string): void {
+    taskLib.debug(message);
   }
 
   /**
    * Logs an error message.
    * @param message The message to log.
    */
-  public error (message: string): void {
-    taskLib.error(message)
+  public error(message: string): void {
+    taskLib.error(message);
   }
 
   /**
@@ -35,8 +38,12 @@ export default class AzurePipelinesRunnerWrapper {
    * @param options The execution options.
    * @returns The result of the execution.
    */
-  public execSync (tool: string, args: string, options: IExecOptions): IExecSyncResult {
-    return taskLib.execSync(tool, args, options)
+  public execSync(
+    tool: string,
+    args: string,
+    options: IExecOptions,
+  ): IExecSyncResult {
+    return taskLib.execSync(tool, args, options);
   }
 
   /**
@@ -44,8 +51,8 @@ export default class AzurePipelinesRunnerWrapper {
    * @param name The name of the input.
    * @returns The value of the input or `undefined` if the input was not set.
    */
-  public getInput (name: string): string | undefined {
-    return taskLib.getInput(name)
+  public getInput(name: string): string | undefined {
+    return taskLib.getInput(name);
   }
 
   /**
@@ -54,8 +61,11 @@ export default class AzurePipelinesRunnerWrapper {
    * @param optional A value indicating whether the URL is optional.
    * @returns The authorization details or `undefined` if the endpoint was not found.
    */
-  public getEndpointAuthorization (id: string, optional: boolean): taskLib.EndpointAuthorization | undefined {
-    return taskLib.getEndpointAuthorization(id, optional)
+  public getEndpointAuthorization(
+    id: string,
+    optional: boolean,
+  ): taskLib.EndpointAuthorization | undefined {
+    return taskLib.getEndpointAuthorization(id, optional);
   }
 
   /**
@@ -64,8 +74,11 @@ export default class AzurePipelinesRunnerWrapper {
    * @param optional A value indicating whether the endpoint authorization scheme is optional.
    * @returns The value of the endpoint authorization scheme or `undefined` if the scheme was not found.
    */
-  public getEndpointAuthorizationScheme (id: string, optional: boolean): string | undefined {
-    return taskLib.getEndpointAuthorizationScheme(id, optional)
+  public getEndpointAuthorizationScheme(
+    id: string,
+    optional: boolean,
+  ): string | undefined {
+    return taskLib.getEndpointAuthorizationScheme(id, optional);
   }
 
   /**
@@ -75,24 +88,28 @@ export default class AzurePipelinesRunnerWrapper {
    * @param optional A value indicating whether the endpoint authorization scheme is optional.
    * @returns The value of the endpoint authorization parameter value or `undefined` if the parameter was not found.
    */
-  public getEndpointAuthorizationParameter (id: string, key: string, optional: boolean): string | undefined {
-    return taskLib.getEndpointAuthorizationParameter(id, key, optional)
+  public getEndpointAuthorizationParameter(
+    id: string,
+    key: string,
+    optional: boolean,
+  ): string | undefined {
+    return taskLib.getEndpointAuthorizationParameter(id, key, optional);
   }
 
   /**
    * Registers a value with the logger, so the value will be masked from the logs. Multi-line secrets are disallowed.
    * @param value The value to register.
    */
-  public setSecret (value: string): void {
-    taskLib.setSecret(value)
+  public setSecret(value: string): void {
+    taskLib.setSecret(value);
   }
 
   /**
    * Initializes the mechanism for getting localized strings from the JSON resource file by setting the resource path.
    * @param path The path of the file containing the resources.
    */
-  public setResourcePath (path: string): void {
-    taskLib.setResourcePath(path)
+  public setResourcePath(path: string): void {
+    taskLib.setResourcePath(path);
   }
 
   /**
@@ -110,15 +127,15 @@ export default class AzurePipelinesRunnerWrapper {
    * @param result The result of the run.
    * @param message The message to log as part of the status.
    */
-  public setResult (result: taskLib.TaskResult, message: string): void {
-    taskLib.setResult(result, message)
+  public setResult(result: taskLib.TaskResult, message: string): void {
+    taskLib.setResult(result, message);
   }
 
   /**
    * Logs a warning message.
    * @param message The message to log.
    */
-  public warning (message: string): void {
-    taskLib.warning(message)
+  public warning(message: string): void {
+    taskLib.warning(message);
   }
 }

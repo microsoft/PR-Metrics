@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import { IExecSyncResult } from 'azure-pipelines-task-lib/toolrunner'
+import { IExecSyncResult } from "azure-pipelines-task-lib/toolrunner";
 
 /**
  * A wrapper around `IExecSyncResult`, to facilitate testability.
@@ -27,5 +27,5 @@ export default class ExecSyncResult implements IExecSyncResult {
   /**
    * The `Error` object, which can be thrown when a failure occurs.
    */
-  public error: Error = new Error()
+  public error: Error = new Error();
 }

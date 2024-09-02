@@ -3,11 +3,11 @@
  * Licensed under the MIT License.
  */
 
-import * as Converter from '../../src/utilities/converter'
-import assert from 'node:assert/strict'
+import * as Converter from "../../src/utilities/converter";
+import assert from "node:assert/strict";
 
-describe('converter.ts', (): void => {
-  describe('toString()', (): void => {
+describe("converter.ts", (): void => {
+  describe("toString()", (): void => {
     interface TestCaseType {
       value: string | number | boolean | null | undefined
       expected: string
@@ -16,42 +16,42 @@ describe('converter.ts', (): void => {
     const testCases: TestCaseType[] = [
       {
         value: 0,
-        expected: '0'
+        expected: "0",
       },
       {
         value: NaN,
-        expected: 'NaN'
+        expected: "NaN",
       },
       {
         value: true,
-        expected: 'true'
+        expected: "true",
       },
       {
-        value: '',
-        expected: ''
+        value: "",
+        expected: "",
       },
       {
-        value: 'string',
-        expected: 'string'
+        value: "string",
+        expected: "string",
       },
       {
         value: null,
-        expected: 'null'
+        expected: "null",
       },
       {
         value: undefined,
-        expected: 'undefined'
-      }
-    ]
+        expected: "undefined",
+      },
+    ];
 
     testCases.forEach(({ value, expected }: TestCaseType): void => {
       it(`should return '${expected}' when passed '${Converter.toString(value)}'`, (): void => {
         // Act
-        const result: string = Converter.toString(value)
+        const result: string = Converter.toString(value);
 
         // Assert
-        assert.equal(result, expected)
-      })
-    })
-  })
-})
+        assert.equal(result, expected);
+      });
+    });
+  });
+});

@@ -26,15 +26,9 @@
       "id": "Microsoft.VisualStudio.Services"
     }
   ],
-  "scopes": [
-    "vso.code_write"
-  ],
-  "demands": [
-    "api-version/5.1"
-  ],
-  "categories": [
-    "Azure Pipelines"
-  ],
+  "scopes": ["vso.code_write"],
+  "demands": ["api-version/5.1"],
+  "categories": ["Azure Pipelines"],
   "content": {
     "details": {
       "path": "overview.md"
@@ -80,9 +74,7 @@
     {
       "id": "PRMetrics",
       "type": "ms.vss-distributed-task.task",
-      "targets": [
-        "ms.vss-distributed-task.tasks"
-      ],
+      "targets": ["ms.vss-distributed-task.tasks"],
       "properties": {
         "name": "task"
       }

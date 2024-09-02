@@ -27,16 +27,19 @@ export default class RunnerInvoker implements RunnerInvokerInterface {
    * @param azurePipelinesRunnerInvoker The Azure Pipelines runner logic.
    * @param gitHubRunnerInvoker The GitHub runner logic.
    */
-  public constructor (azurePipelinesRunnerInvoker: AzurePipelinesRunnerInvoker, gitHubRunnerInvoker: GitHubRunnerInvoker) {
-    this._azurePipelinesRunnerInvoker = azurePipelinesRunnerInvoker
-    this._gitHubRunnerInvoker = gitHubRunnerInvoker
+  public constructor(
+    azurePipelinesRunnerInvoker: AzurePipelinesRunnerInvoker,
+    gitHubRunnerInvoker: GitHubRunnerInvoker,
+  ) {
+    this._azurePipelinesRunnerInvoker = azurePipelinesRunnerInvoker;
+    this._gitHubRunnerInvoker = gitHubRunnerInvoker;
   }
 
   /**
    * Gets a value indicating whether a GitHub runner is in use.
    */
-  public static get isGitHub (): boolean {
-    return process.env.GITHUB_ACTION !== undefined
+  public static get isGitHub(): boolean {
+    return process.env.GITHUB_ACTION !== undefined;
   }
 
   public async exec (tool: string, args: string): Promise<ExecOutput> {
@@ -64,9 +67,11 @@ export default class RunnerInvoker implements RunnerInvokerInterface {
     return runner.getEndpointAuthorizationParameter(id, key)
   }
 
-  public locInitialize (folder: string): void {
+  public locInitialize(folder: string): void {
     if (this._localizationInitialized) {
-      throw new Error('RunnerInvoker.locInitialize must not be called multiple times.')
+      throw new Error(
+        "RunnerInvoker.locInitialize must not be called multiple times.",
+      );
     }
 
     this._localizationInitialized = true
@@ -76,7 +81,9 @@ export default class RunnerInvoker implements RunnerInvokerInterface {
 
   public loc (key: string, ...param: string[]): string {
     if (!this._localizationInitialized) {
-      throw new Error('RunnerInvoker.locInitialize must be called before RunnerInvoker.loc.')
+      throw new Error(
+        "RunnerInvoker.locInitialize must be called before RunnerInvoker.loc.",
+      );
     }
 
     const runner: RunnerInvokerInterface = this.getRunner()
@@ -120,10 +127,12 @@ export default class RunnerInvoker implements RunnerInvokerInterface {
 
   private getRunner (): RunnerInvokerInterface {
     if (this._runnerInvoker !== undefined) {
-      return this._runnerInvoker
+      return this._runnerInvoker;
     }
 
-    this._runnerInvoker = RunnerInvoker.isGitHub ? this._gitHubRunnerInvoker : this._azurePipelinesRunnerInvoker
-    return this._runnerInvoker
+    this._runnerInvoker = RunnerInvoker.isGitHub
+      ? this._gitHubRunnerInvoker
+      : this._azurePipelinesRunnerInvoker;
+    return this._runnerInvoker;
   }
 }

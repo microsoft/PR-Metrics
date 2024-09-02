@@ -4,7 +4,7 @@
  */
 
 interface StringConvertible {
-  toString: () => string
+  toString: () => string;
 }
 
 /**
@@ -14,9 +14,9 @@ interface StringConvertible {
  */
 export const toString = (value: StringConvertible | null | undefined): string => {
   if (value === null) {
-    return 'null'
+    return "null";
   } else if (value === undefined) {
-    return 'undefined'
+    return "undefined";
   }
 
   return String(value)

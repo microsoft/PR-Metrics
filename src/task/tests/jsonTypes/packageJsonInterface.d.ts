@@ -10,5 +10,5 @@ export default interface PackageJsonInterface {
   /**
    * The version number of the package.
    */
-  version: string
+  version: string;
 }

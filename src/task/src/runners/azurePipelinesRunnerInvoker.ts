@@ -23,15 +23,15 @@ export default class AzurePipelinesRunnerInvoker implements RunnerInvokerInterfa
    * Initializes a new instance of the `AzurePipelinesRunnerInvoker` class.
    * @param azurePipelinesRunnerWrapper The wrapper around the Azure Pipelines runner.
    */
-  public constructor (azurePipelinesRunnerWrapper: AzurePipelinesRunnerWrapper) {
-    this._azurePipelinesRunnerWrapper = azurePipelinesRunnerWrapper
+  public constructor(azurePipelinesRunnerWrapper: AzurePipelinesRunnerWrapper) {
+    this._azurePipelinesRunnerWrapper = azurePipelinesRunnerWrapper;
   }
 
-  public async exec (tool: string, args: string): Promise<ExecOutput> {
+  public async exec(tool: string, args: string): Promise<ExecOutput> {
     const options: IExecOptions = {
       failOnStdErr: true,
-      silent: true
-    }
+      silent: true,
+    };
 
     const result: IExecSyncResult = this._azurePipelinesRunnerWrapper.execSync(tool, args, options)
     return Promise.resolve({
@@ -41,64 +41,88 @@ export default class AzurePipelinesRunnerInvoker implements RunnerInvokerInterfa
     })
   }
 
-  public getInput (name: string[]): string | undefined {
-    const formattedName: string = name.join('')
-    return this._azurePipelinesRunnerWrapper.getInput(formattedName)
+  public getInput(name: string[]): string | undefined {
+    const formattedName: string = name.join("");
+    return this._azurePipelinesRunnerWrapper.getInput(formattedName);
   }
 
-  public getEndpointAuthorization (id: string): EndpointAuthorization | undefined {
-    const result: taskLib.EndpointAuthorization | undefined = this._azurePipelinesRunnerWrapper.getEndpointAuthorization(id, true)
+  public getEndpointAuthorization(
+    id: string,
+  ): EndpointAuthorization | undefined {
+    const result: taskLib.EndpointAuthorization | undefined =
+      this._azurePipelinesRunnerWrapper.getEndpointAuthorization(id, true);
     if (!result) {
-      return undefined
+      return undefined;
     }
 
     return {
       scheme: result.scheme,
-      parameters: result.parameters
-    }
+      parameters: result.parameters,
+    };
   }
 
-  public getEndpointAuthorizationScheme (id: string): string | undefined {
-    return this._azurePipelinesRunnerWrapper.getEndpointAuthorizationScheme(id, true)
+  public getEndpointAuthorizationScheme(id: string): string | undefined {
+    return this._azurePipelinesRunnerWrapper.getEndpointAuthorizationScheme(
+      id,
+      true,
+    );
   }
 
-  public getEndpointAuthorizationParameter (id: string, key: string): string | undefined {
-    return this._azurePipelinesRunnerWrapper.getEndpointAuthorizationParameter(id, key, true)
+  public getEndpointAuthorizationParameter(
+    id: string,
+    key: string,
+  ): string | undefined {
+    return this._azurePipelinesRunnerWrapper.getEndpointAuthorizationParameter(
+      id,
+      key,
+      true,
+    );
   }
 
-  public locInitialize (folder: string): void {
-    this._azurePipelinesRunnerWrapper.setResourcePath(path.join(folder, 'task.json'))
+  public locInitialize(folder: string): void {
+    this._azurePipelinesRunnerWrapper.setResourcePath(
+      path.join(folder, "task.json"),
+    );
   }
 
   public loc (key: string, ...param: string[]): string {
     return this._azurePipelinesRunnerWrapper.loc(key, ...param)
   }
 
-  public logDebug (message: string): void {
-    this._azurePipelinesRunnerWrapper.debug(message)
+  public logDebug(message: string): void {
+    this._azurePipelinesRunnerWrapper.debug(message);
   }
 
-  public logError (message: string): void {
-    this._azurePipelinesRunnerWrapper.error(message)
+  public logError(message: string): void {
+    this._azurePipelinesRunnerWrapper.error(message);
   }
 
-  public logWarning (message: string): void {
-    this._azurePipelinesRunnerWrapper.warning(message)
+  public logWarning(message: string): void {
+    this._azurePipelinesRunnerWrapper.warning(message);
   }
 
-  public setStatusFailed (message: string): void {
-    this._azurePipelinesRunnerWrapper.setResult(taskLib.TaskResult.Failed, message)
+  public setStatusFailed(message: string): void {
+    this._azurePipelinesRunnerWrapper.setResult(
+      taskLib.TaskResult.Failed,
+      message,
+    );
   }
 
-  public setStatusSkipped (message: string): void {
-    this._azurePipelinesRunnerWrapper.setResult(taskLib.TaskResult.Skipped, message)
+  public setStatusSkipped(message: string): void {
+    this._azurePipelinesRunnerWrapper.setResult(
+      taskLib.TaskResult.Skipped,
+      message,
+    );
   }
 
-  public setStatusSucceeded (message: string): void {
-    this._azurePipelinesRunnerWrapper.setResult(taskLib.TaskResult.Succeeded, message)
+  public setStatusSucceeded(message: string): void {
+    this._azurePipelinesRunnerWrapper.setResult(
+      taskLib.TaskResult.Succeeded,
+      message,
+    );
   }
 
-  public setSecret (value: string): void {
-    this._azurePipelinesRunnerWrapper.setSecret(value)
+  public setSecret(value: string): void {
+    this._azurePipelinesRunnerWrapper.setSecret(value);
   }
 }

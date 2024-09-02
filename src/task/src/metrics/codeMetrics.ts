@@ -21,14 +21,14 @@ import { singleton } from 'tsyringe'
  */
 @singleton()
 export default class CodeMetrics {
-  private readonly _gitInvoker: GitInvoker
-  private readonly _inputs: Inputs
-  private readonly _logger: Logger
-  private readonly _runnerInvoker: RunnerInvoker
+  private readonly _gitInvoker: GitInvoker;
+  private readonly _inputs: Inputs;
+  private readonly _logger: Logger;
+  private readonly _runnerInvoker: RunnerInvoker;
 
   private static readonly _minimatchOptions: minimatch.MinimatchOptions = {
-    dot: true
-  }
+    dot: true,
+  };
 
   private _isInitialized = false
   private readonly _filesNotRequiringReview: string[] = []
@@ -45,110 +45,120 @@ export default class CodeMetrics {
    * @param logger The logger.
    * @param runnerInvoker The runner invoker logic.
    */
-  public constructor (gitInvoker: GitInvoker, inputs: Inputs, logger: Logger, runnerInvoker: RunnerInvoker) {
-    this._gitInvoker = gitInvoker
-    this._inputs = inputs
-    this._logger = logger
-    this._runnerInvoker = runnerInvoker
+  public constructor(
+    gitInvoker: GitInvoker,
+    inputs: Inputs,
+    logger: Logger,
+    runnerInvoker: RunnerInvoker,
+  ) {
+    this._gitInvoker = gitInvoker;
+    this._inputs = inputs;
+    this._logger = logger;
+    this._runnerInvoker = runnerInvoker;
   }
 
   /**
    * Gets the collection of files not requiring review to which to add a comment.
    * @returns A promise containing the collection of files not requiring review.
    */
-  public async getFilesNotRequiringReview (): Promise<string[]> {
-    this._logger.logDebug('* CodeMetrics.getFilesNotRequiringReview()')
+  public async getFilesNotRequiringReview(): Promise<string[]> {
+    this._logger.logDebug("* CodeMetrics.getFilesNotRequiringReview()");
 
-    await this.initialize()
-    return this._filesNotRequiringReview
+    await this.initialize();
+    return this._filesNotRequiringReview;
   }
 
   /**
    * Gets the collection of deleted files not requiring review to which to add a comment.
    * @returns A promise containing the collection of deleted files not requiring review.
    */
-  public async getDeletedFilesNotRequiringReview (): Promise<string[]> {
-    this._logger.logDebug('* CodeMetrics.getDeletedFilesNotRequiringReview()')
+  public async getDeletedFilesNotRequiringReview(): Promise<string[]> {
+    this._logger.logDebug("* CodeMetrics.getDeletedFilesNotRequiringReview()");
 
-    await this.initialize()
-    return this._deletedFilesNotRequiringReview
+    await this.initialize();
+    return this._deletedFilesNotRequiringReview;
   }
 
   /**
    * Gets the size of the pull request – XS, S, M, etc.
    * @returns A promise containing the size of the pull request.
    */
-  public async getSize (): Promise<string> {
-    this._logger.logDebug('* CodeMetrics.getSize()')
+  public async getSize(): Promise<string> {
+    this._logger.logDebug("* CodeMetrics.getSize()");
 
-    await this.initialize()
-    return this._size
+    await this.initialize();
+    return this._size;
   }
 
   /**
    * Gets the size indicator comprising the size and test coverage indicator, which will form part of the title.
    * @returns A promise containing the size indicator.
    */
-  public async getSizeIndicator (): Promise<string> {
-    this._logger.logDebug('* CodeMetrics.getSizeIndicator()')
+  public async getSizeIndicator(): Promise<string> {
+    this._logger.logDebug("* CodeMetrics.getSizeIndicator()");
 
-    await this.initialize()
-    return this._sizeIndicator
+    await this.initialize();
+    return this._sizeIndicator;
   }
 
   /**
    * Gets the collection of pull request code metrics.
    * @returns A promise containing the collection of pull request code metrics.
    */
-  public async getMetrics (): Promise<CodeMetricsData> {
-    this._logger.logDebug('* CodeMetrics.getMetrics()')
+  public async getMetrics(): Promise<CodeMetricsData> {
+    this._logger.logDebug("* CodeMetrics.getMetrics()");
 
-    await this.initialize()
-    return this._metrics
+    await this.initialize();
+    return this._metrics;
   }
 
   /**
    * Gets a value indicating whether the pull request is small or extra small.
    * @returns A promise indicating whether the pull request is small or extra small.
    */
-  public async isSmall (): Promise<boolean> {
-    this._logger.logDebug('* CodeMetrics.isSmall()')
+  public async isSmall(): Promise<boolean> {
+    this._logger.logDebug("* CodeMetrics.isSmall()");
 
-    await this.initialize()
-    return this._metrics.productCode < (this._inputs.baseSize * this._inputs.growthRate)
+    await this.initialize();
+    return (
+      this._metrics.productCode <
+      this._inputs.baseSize * this._inputs.growthRate
+    );
   }
 
   /**
    * Gets a value indicating whether the pull request has sufficient test coverage.
    * @returns A promise indicating whether the pull request has sufficient test coverage. If the test coverage is not being checked, the value will be `null`.
    */
-  public async isSufficientlyTested (): Promise<boolean | null> {
-    this._logger.logDebug('* CodeMetrics.isSufficientlyTested()')
+  public async isSufficientlyTested(): Promise<boolean | null> {
+    this._logger.logDebug("* CodeMetrics.isSufficientlyTested()");
 
-    await this.initialize()
-    return this._isSufficientlyTested
+    await this.initialize();
+    return this._isSufficientlyTested;
   }
 
-  private async initialize (): Promise<void> {
-    this._logger.logDebug('* CodeMetrics.initialize()')
+  private async initialize(): Promise<void> {
+    this._logger.logDebug("* CodeMetrics.initialize()");
 
     if (this._isInitialized) {
-      return
+      return;
     }
 
-    const gitDiffSummary: string = (await this._gitInvoker.getDiffSummary()).trim()
-    if (gitDiffSummary === '') {
-      throw new Error('The Git diff summary is empty.')
+    const gitDiffSummary: string = (
+      await this._gitInvoker.getDiffSummary()
+    ).trim();
+    if (gitDiffSummary === "") {
+      throw new Error("The Git diff summary is empty.");
     }
 
-    this._isInitialized = true
-    this.initializeMetrics(gitDiffSummary)
-    this.initializeIsSufficientlyTested()
-    this.initializeSizeIndicator()
+    this._isInitialized = true;
+    this.initializeMetrics(gitDiffSummary);
+    this.initializeIsSufficientlyTested();
+    this.initializeSizeIndicator();
   }
 
-  private initializeMetrics (gitDiffSummary: string): void {
-    this._logger.logDebug('* CodeMetrics.initializeMetrics()')
+  private initializeMetrics(gitDiffSummary: string): void {
+    this._logger.logDebug("* CodeMetrics.initializeMetrics()");
 
     const notNotPattern = '!!'
     const notPattern = '!'
@@ -182,15 +192,15 @@ export default class CodeMetrics {
       const isValidFilePattern: boolean = this.determineIfValidFilePattern(codeFileMetric, positiveFileMatchingPatterns, negativeFileMatchingPatterns, doubleNegativeFileMatchingPatterns)
       const isValidFileExtension: boolean = this.matchFileExtension(codeFileMetric.fileName)
       if (isValidFilePattern && isValidFileExtension) {
-        matches.push(codeFileMetric)
+        matches.push(codeFileMetric);
       } else if (!isValidFilePattern) {
-        nonMatchesToComment.push(codeFileMetric)
+        nonMatchesToComment.push(codeFileMetric);
       } else {
-        nonMatches.push(codeFileMetric)
+        nonMatches.push(codeFileMetric);
       }
     }
 
-    this.constructMetrics(matches, nonMatches, nonMatchesToComment)
+    this.constructMetrics(matches, nonMatches, nonMatchesToComment);
   }
 
   private determineIfValidFilePattern(codeFileMetric: CodeFileMetricInterface, positiveFileMatchingPatterns: string[], negativeFileMatchingPatterns: string[], doubleNegativeFileMatchingPatterns: string[]): boolean {
@@ -269,12 +279,14 @@ export default class CodeMetrics {
         ignoredCode += entry.linesAdded
         this._filesNotRequiringReview.push(entry.fileName)
       } else {
-        this._logger.logDebug(`Ignored File: ${entry.fileName} (deleted), comment to be added`)
-        this._deletedFilesNotRequiringReview.push(entry.fileName)
+        this._logger.logDebug(
+          `Ignored File: ${entry.fileName} (deleted), comment to be added`,
+        );
+        this._deletedFilesNotRequiringReview.push(entry.fileName);
       }
     }
 
-    this._metrics = new CodeMetricsData(productCode, testCode, ignoredCode)
+    this._metrics = new CodeMetricsData(productCode, testCode, ignoredCode);
   }
 
   private createFileMetricsMap (input: string): CodeFileMetricInterface[] {
@@ -284,11 +296,14 @@ export default class CodeMetrics {
     const endingToRemove = '\r\nrc:0\r\nsuccess:true'
     let modifiedInput: string = input
     if (modifiedInput.endsWith(endingToRemove)) {
-      modifiedInput = modifiedInput.substring(0, input.length - endingToRemove.length)
+      modifiedInput = modifiedInput.substring(
+        0,
+        input.length - endingToRemove.length,
+      );
     }
 
     // Condense file and folder names that were renamed e.g. F{a => i}leT{b => e}st.d{c => l}l".
-    const lines: string[] = modifiedInput.split('\n')
+    const lines: string[] = modifiedInput.split("\n");
 
     const result: CodeFileMetricInterface[] = []
     for (const line of lines) {
@@ -299,8 +314,8 @@ export default class CodeMetrics {
 
       // Condense file and folder names that were renamed e.g. "F{a => i}leT{b => e}st.d{c => l}l" or "FaleTbst.dcl => FileTest.dll".
       const fileName: string = elements[2]
-        .replace(/\{.*? => ([^}]+?)\}/gu, '$1')
-        .replace(/.*? => ([^}]+?)/gu, '$1')
+        .replace(/\{.*? => ([^}]+?)\}/gu, "$1")
+        .replace(/.*? => ([^}]+?)/gu, "$1");
 
       result.push({
         fileName,
@@ -309,52 +324,68 @@ export default class CodeMetrics {
       })
     }
 
-    return result
+    return result;
   }
 
-  private parseChangedLines (element: string, line: string, category: string): number {
+  private parseChangedLines(
+    element: string,
+    line: string,
+    category: string,
+  ): number {
     // Parse the number of lines changed. For binary files, the lines will be '-'.
-    let result: number
-    if (element === '-') {
-      result = 0
+    let result: number;
+    if (element === "-") {
+      result = 0;
     } else {
       result = parseInt(element, decimalRadix)
       if (isNaN(result)) {
-        throw new Error(`Could not parse ${category} lines '${element}' from line '${line}'.`)
+        throw new Error(
+          `Could not parse ${category} lines '${element}' from line '${line}'.`,
+        );
       }
     }
 
-    return result
+    return result;
   }
 
-  private initializeIsSufficientlyTested (): void {
-    this._logger.logDebug('* CodeMetrics.initializeIsSufficientlyTested()')
+  private initializeIsSufficientlyTested(): void {
+    this._logger.logDebug("* CodeMetrics.initializeIsSufficientlyTested()");
 
     if (this._inputs.testFactor === null) {
-      this._isSufficientlyTested = null
+      this._isSufficientlyTested = null;
     } else {
-      this._isSufficientlyTested = this._metrics.testCode >= (this._metrics.productCode * this._inputs.testFactor)
+      this._isSufficientlyTested =
+        this._metrics.testCode >=
+        this._metrics.productCode * this._inputs.testFactor;
     }
   }
 
-  private initializeSizeIndicator (): void {
-    this._logger.logDebug('* CodeMetrics.initializeSizeIndicator()')
+  private initializeSizeIndicator(): void {
+    this._logger.logDebug("* CodeMetrics.initializeSizeIndicator()");
 
     this._size = this.calculateSize()
     let testIndicator = ''
     if (this._isSufficientlyTested !== null) {
       if (this._isSufficientlyTested) {
-        testIndicator = this._runnerInvoker.loc('metrics.codeMetrics.titleTestsSufficient')
+        testIndicator = this._runnerInvoker.loc(
+          "metrics.codeMetrics.titleTestsSufficient",
+        );
       } else {
-        testIndicator = this._runnerInvoker.loc('metrics.codeMetrics.titleTestsInsufficient')
+        testIndicator = this._runnerInvoker.loc(
+          "metrics.codeMetrics.titleTestsInsufficient",
+        );
       }
     }
 
-    this._sizeIndicator = this._runnerInvoker.loc('metrics.codeMetrics.titleSizeIndicatorFormat', this._size, testIndicator)
+    this._sizeIndicator = this._runnerInvoker.loc(
+      "metrics.codeMetrics.titleSizeIndicatorFormat",
+      this._size,
+      testIndicator,
+    );
   }
 
-  private calculateSize (): string {
-    this._logger.logDebug('* CodeMetrics.calculateSize()')
+  private calculateSize(): string {
+    this._logger.logDebug("* CodeMetrics.calculateSize()");
 
     const indicators: FixedLengthArrayInterface<((prefix: string) => string), 5> = [
       (): string => this._runnerInvoker.loc('metrics.codeMetrics.titleSizeXS'),
@@ -366,7 +397,7 @@ export default class CodeMetrics {
 
     // Calculate the smaller size.
     if (this._metrics.productCode < this._inputs.baseSize) {
-      return indicators[0]('')
+      return indicators[0]("");
     }
 
     // Calculate the larger sizes.
@@ -374,16 +405,18 @@ export default class CodeMetrics {
     let result: string = indicators[1]('')
     let currentSize: number = this._inputs.baseSize * this._inputs.growthRate
     while (this._metrics.productCode >= currentSize) {
-      currentSize *= this._inputs.growthRate
-      index += 1
+      currentSize *= this._inputs.growthRate;
+      index += 1;
 
       if (index === 2 || index === 3 || index === 4) {
-        result = indicators[index]('')
+        result = indicators[index]("");
       } else {
-        result = indicators[4]((index - indicators.length + 2).toLocaleString())
+        result = indicators[4](
+          (index - indicators.length + 2).toLocaleString(),
+        );
       }
     }
 
-    return result
+    return result;
   }
 }

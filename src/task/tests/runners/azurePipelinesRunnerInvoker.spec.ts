@@ -15,17 +15,18 @@ import { ExecOutput } from '@actions/exec'
 import { any } from '../testUtilities/mockito'
 import assert from 'node:assert/strict'
 
-describe('azurePipelinesRunnerInvoker.ts', (): void => {
-  let azurePipelinesRunnerWrapper: AzurePipelinesRunnerWrapper
+describe("azurePipelinesRunnerInvoker.ts", (): void => {
+  let azurePipelinesRunnerWrapper: AzurePipelinesRunnerWrapper;
 
   beforeEach((): void => {
-    azurePipelinesRunnerWrapper = mock(AzurePipelinesRunnerWrapper)
-  })
+    azurePipelinesRunnerWrapper = mock(AzurePipelinesRunnerWrapper);
+  });
 
-  describe('exec()', (): void => {
-    it('should call the underlying method', async (): Promise<void> => {
+  describe("exec()", (): void => {
+    it("should call the underlying method", async (): Promise<void> => {
       // Arrange
-      const azurePipelinesRunnerInvoker: AzurePipelinesRunnerInvoker = new AzurePipelinesRunnerInvoker(instance(azurePipelinesRunnerWrapper))
+      const azurePipelinesRunnerInvoker: AzurePipelinesRunnerInvoker =
+        new AzurePipelinesRunnerInvoker(instance(azurePipelinesRunnerWrapper));
       const execResult: IExecSyncResult = {
         code: 1,
         error: Error('Error'),
@@ -35,49 +36,68 @@ describe('azurePipelinesRunnerInvoker.ts', (): void => {
       when(azurePipelinesRunnerWrapper.execSync('TOOL', 'Argument1 Argument2', any())).thenReturn(execResult)
 
       // Act
-      const result: ExecOutput = await azurePipelinesRunnerInvoker.exec('TOOL', 'Argument1 Argument2')
+      const result: ExecOutput = await azurePipelinesRunnerInvoker.exec(
+        "TOOL",
+        "Argument1 Argument2",
+      );
 
       // Assert
-      assert.equal(result.exitCode, 1)
-      assert.equal(result.stderr, 'Error')
-      assert.equal(result.stdout, 'Output')
+      assert.equal(result.exitCode, 1);
+      assert.equal(result.stderr, "Error");
+      assert.equal(result.stdout, "Output");
       const options: IExecOptions = {
         failOnStdErr: true,
-        silent: true
-      }
-      verify(azurePipelinesRunnerWrapper.execSync('TOOL', 'Argument1 Argument2', deepEqual(options))).once()
-    })
-  })
+        silent: true,
+      };
+      verify(
+        azurePipelinesRunnerWrapper.execSync(
+          "TOOL",
+          "Argument1 Argument2",
+          deepEqual(options),
+        ),
+      ).once();
+    });
+  });
 
-  describe('getInput()', (): void => {
-    it('should call the underlying method', (): void => {
+  describe("getInput()", (): void => {
+    it("should call the underlying method", (): void => {
       // Arrange
-      const azurePipelinesRunnerInvoker: AzurePipelinesRunnerInvoker = new AzurePipelinesRunnerInvoker(instance(azurePipelinesRunnerWrapper))
-      when(azurePipelinesRunnerWrapper.getInput('TestSuffix')).thenReturn('VALUE')
+      const azurePipelinesRunnerInvoker: AzurePipelinesRunnerInvoker =
+        new AzurePipelinesRunnerInvoker(instance(azurePipelinesRunnerWrapper));
+      when(azurePipelinesRunnerWrapper.getInput("TestSuffix")).thenReturn(
+        "VALUE",
+      );
 
       // Act
-      const result: string | undefined = azurePipelinesRunnerInvoker.getInput(['Test', 'Suffix'])
+      const result: string | undefined = azurePipelinesRunnerInvoker.getInput([
+        "Test",
+        "Suffix",
+      ]);
 
       // Assert
-      assert.equal(result, 'VALUE')
-      verify(azurePipelinesRunnerWrapper.getInput('TestSuffix')).once()
-    })
-  })
+      assert.equal(result, "VALUE");
+      verify(azurePipelinesRunnerWrapper.getInput("TestSuffix")).once();
+    });
+  });
 
-  describe('getEndpointAuthorization()', (): void => {
-    it('should call the underlying method', (): void => {
+  describe("getEndpointAuthorization()", (): void => {
+    it("should call the underlying method", (): void => {
       // Arrange
-      const azurePipelinesRunnerInvoker: AzurePipelinesRunnerInvoker = new AzurePipelinesRunnerInvoker(instance(azurePipelinesRunnerWrapper))
+      const azurePipelinesRunnerInvoker: AzurePipelinesRunnerInvoker =
+        new AzurePipelinesRunnerInvoker(instance(azurePipelinesRunnerWrapper));
       const endpointAuthorization: taskLib.EndpointAuthorization = {
         parameters: {
-          key: 'value'
+          key: "value",
         },
-        scheme: 'scheme'
-      }
-      when(azurePipelinesRunnerWrapper.getEndpointAuthorization('id', true)).thenReturn(endpointAuthorization)
+        scheme: "scheme",
+      };
+      when(
+        azurePipelinesRunnerWrapper.getEndpointAuthorization("id", true),
+      ).thenReturn(endpointAuthorization);
 
       // Act
-      const result: EndpointAuthorization | undefined = azurePipelinesRunnerInvoker.getEndpointAuthorization('id')
+      const result: EndpointAuthorization | undefined =
+        azurePipelinesRunnerInvoker.getEndpointAuthorization("id");
 
       // Assert
       assert.deepEqual(result?.parameters, endpointAuthorization.parameters)
@@ -85,166 +105,239 @@ describe('azurePipelinesRunnerInvoker.ts', (): void => {
       verify(azurePipelinesRunnerWrapper.getEndpointAuthorization('id', true)).once()
     })
 
-    it('should call the underlying method and pass undefined to the caller', (): void => {
+    it("should call the underlying method and pass undefined to the caller", (): void => {
       // Arrange
-      const azurePipelinesRunnerInvoker: AzurePipelinesRunnerInvoker = new AzurePipelinesRunnerInvoker(instance(azurePipelinesRunnerWrapper))
-      when(azurePipelinesRunnerWrapper.getEndpointAuthorization('id', true)).thenReturn(undefined)
+      const azurePipelinesRunnerInvoker: AzurePipelinesRunnerInvoker =
+        new AzurePipelinesRunnerInvoker(instance(azurePipelinesRunnerWrapper));
+      when(
+        azurePipelinesRunnerWrapper.getEndpointAuthorization("id", true),
+      ).thenReturn(undefined);
 
       // Act
-      const result: EndpointAuthorization | undefined = azurePipelinesRunnerInvoker.getEndpointAuthorization('id')
+      const result: EndpointAuthorization | undefined =
+        azurePipelinesRunnerInvoker.getEndpointAuthorization("id");
 
       // Assert
-      assert.equal(result, undefined)
-      verify(azurePipelinesRunnerWrapper.getEndpointAuthorization('id', true)).once()
-    })
-  })
+      assert.equal(result, undefined);
+      verify(
+        azurePipelinesRunnerWrapper.getEndpointAuthorization("id", true),
+      ).once();
+    });
+  });
 
-  describe('getEndpointAuthorizationScheme()', (): void => {
-    it('should call the underlying method', (): void => {
+  describe("getEndpointAuthorizationScheme()", (): void => {
+    it("should call the underlying method", (): void => {
       // Arrange
-      const azurePipelinesRunnerInvoker: AzurePipelinesRunnerInvoker = new AzurePipelinesRunnerInvoker(instance(azurePipelinesRunnerWrapper))
-      when(azurePipelinesRunnerWrapper.getEndpointAuthorizationScheme('id', true)).thenReturn('VALUE')
+      const azurePipelinesRunnerInvoker: AzurePipelinesRunnerInvoker =
+        new AzurePipelinesRunnerInvoker(instance(azurePipelinesRunnerWrapper));
+      when(
+        azurePipelinesRunnerWrapper.getEndpointAuthorizationScheme("id", true),
+      ).thenReturn("VALUE");
 
       // Act
-      const result: string | undefined = azurePipelinesRunnerInvoker.getEndpointAuthorizationScheme('id')
+      const result: string | undefined =
+        azurePipelinesRunnerInvoker.getEndpointAuthorizationScheme("id");
 
       // Assert
-      assert.equal(result, 'VALUE')
-      verify(azurePipelinesRunnerWrapper.getEndpointAuthorizationScheme('id', true)).once()
-    })
-  })
+      assert.equal(result, "VALUE");
+      verify(
+        azurePipelinesRunnerWrapper.getEndpointAuthorizationScheme("id", true),
+      ).once();
+    });
+  });
 
-  describe('getEndpointAuthorizationParameter()', (): void => {
-    it('should call the underlying method', (): void => {
+  describe("getEndpointAuthorizationParameter()", (): void => {
+    it("should call the underlying method", (): void => {
       // Arrange
-      const azurePipelinesRunnerInvoker: AzurePipelinesRunnerInvoker = new AzurePipelinesRunnerInvoker(instance(azurePipelinesRunnerWrapper))
-      when(azurePipelinesRunnerWrapper.getEndpointAuthorizationParameter('id', 'key', true)).thenReturn('VALUE')
+      const azurePipelinesRunnerInvoker: AzurePipelinesRunnerInvoker =
+        new AzurePipelinesRunnerInvoker(instance(azurePipelinesRunnerWrapper));
+      when(
+        azurePipelinesRunnerWrapper.getEndpointAuthorizationParameter(
+          "id",
+          "key",
+          true,
+        ),
+      ).thenReturn("VALUE");
 
       // Act
-      const result: string | undefined = azurePipelinesRunnerInvoker.getEndpointAuthorizationParameter('id', 'key')
+      const result: string | undefined =
+        azurePipelinesRunnerInvoker.getEndpointAuthorizationParameter(
+          "id",
+          "key",
+        );
 
       // Assert
-      assert.equal(result, 'VALUE')
-      verify(azurePipelinesRunnerWrapper.getEndpointAuthorizationParameter('id', 'key', true)).once()
-    })
-  })
+      assert.equal(result, "VALUE");
+      verify(
+        azurePipelinesRunnerWrapper.getEndpointAuthorizationParameter(
+          "id",
+          "key",
+          true,
+        ),
+      ).once();
+    });
+  });
 
-  describe('locInitialize()', (): void => {
-    it('should call the underlying method', (): void => {
+  describe("locInitialize()", (): void => {
+    it("should call the underlying method", (): void => {
       // Arrange
-      const azurePipelinesRunnerInvoker: AzurePipelinesRunnerInvoker = new AzurePipelinesRunnerInvoker(instance(azurePipelinesRunnerWrapper))
+      const azurePipelinesRunnerInvoker: AzurePipelinesRunnerInvoker =
+        new AzurePipelinesRunnerInvoker(instance(azurePipelinesRunnerWrapper));
 
       // Act
-      azurePipelinesRunnerInvoker.locInitialize('/folder1/folder2/')
+      azurePipelinesRunnerInvoker.locInitialize("/folder1/folder2/");
 
       // Assert
-      verify(azurePipelinesRunnerWrapper.setResourcePath(path.join('/folder1/folder2/', 'task.json'))).once()
-    })
-  })
+      verify(
+        azurePipelinesRunnerWrapper.setResourcePath(
+          path.join("/folder1/folder2/", "task.json"),
+        ),
+      ).once();
+    });
+  });
 
-  describe('loc()', (): void => {
-    it('should call the underlying method', (): void => {
+  describe("loc()", (): void => {
+    it("should call the underlying method", (): void => {
       // Arrange
-      const azurePipelinesRunnerInvoker: AzurePipelinesRunnerInvoker = new AzurePipelinesRunnerInvoker(instance(azurePipelinesRunnerWrapper))
-      when(azurePipelinesRunnerWrapper.loc('TEST %s %s', 'Parameter 1', 'Parameter 2')).thenReturn('VALUE')
+      const azurePipelinesRunnerInvoker: AzurePipelinesRunnerInvoker =
+        new AzurePipelinesRunnerInvoker(instance(azurePipelinesRunnerWrapper));
+      when(
+        azurePipelinesRunnerWrapper.loc(
+          "TEST %s %s",
+          "Parameter 1",
+          "Parameter 2",
+        ),
+      ).thenReturn("VALUE");
 
       // Act
-      const result: string = azurePipelinesRunnerInvoker.loc('TEST %s %s', 'Parameter 1', 'Parameter 2')
+      const result: string = azurePipelinesRunnerInvoker.loc(
+        "TEST %s %s",
+        "Parameter 1",
+        "Parameter 2",
+      );
 
       // Assert
-      assert.equal(result, 'VALUE')
-      verify(azurePipelinesRunnerWrapper.loc('TEST %s %s', 'Parameter 1', 'Parameter 2')).once()
-    })
-  })
+      assert.equal(result, "VALUE");
+      verify(
+        azurePipelinesRunnerWrapper.loc(
+          "TEST %s %s",
+          "Parameter 1",
+          "Parameter 2",
+        ),
+      ).once();
+    });
+  });
 
-  describe('logDebug()', (): void => {
-    it('should call the underlying method', (): void => {
+  describe("logDebug()", (): void => {
+    it("should call the underlying method", (): void => {
       // Arrange
-      const azurePipelinesRunnerInvoker: AzurePipelinesRunnerInvoker = new AzurePipelinesRunnerInvoker(instance(azurePipelinesRunnerWrapper))
+      const azurePipelinesRunnerInvoker: AzurePipelinesRunnerInvoker =
+        new AzurePipelinesRunnerInvoker(instance(azurePipelinesRunnerWrapper));
 
       // Act
-      azurePipelinesRunnerInvoker.logDebug('TEST')
+      azurePipelinesRunnerInvoker.logDebug("TEST");
 
       // Assert
-      verify(azurePipelinesRunnerWrapper.debug('TEST')).once()
-    })
-  })
+      verify(azurePipelinesRunnerWrapper.debug("TEST")).once();
+    });
+  });
 
-  describe('logError()', (): void => {
-    it('should call the underlying method', (): void => {
+  describe("logError()", (): void => {
+    it("should call the underlying method", (): void => {
       // Arrange
-      const azurePipelinesRunnerInvoker: AzurePipelinesRunnerInvoker = new AzurePipelinesRunnerInvoker(instance(azurePipelinesRunnerWrapper))
+      const azurePipelinesRunnerInvoker: AzurePipelinesRunnerInvoker =
+        new AzurePipelinesRunnerInvoker(instance(azurePipelinesRunnerWrapper));
 
       // Act
-      azurePipelinesRunnerInvoker.logError('TEST')
+      azurePipelinesRunnerInvoker.logError("TEST");
 
       // Assert
-      verify(azurePipelinesRunnerWrapper.error('TEST')).once()
-    })
-  })
+      verify(azurePipelinesRunnerWrapper.error("TEST")).once();
+    });
+  });
 
-  describe('logWarning()', (): void => {
-    it('should call the underlying method', (): void => {
+  describe("logWarning()", (): void => {
+    it("should call the underlying method", (): void => {
       // Arrange
-      const azurePipelinesRunnerInvoker: AzurePipelinesRunnerInvoker = new AzurePipelinesRunnerInvoker(instance(azurePipelinesRunnerWrapper))
+      const azurePipelinesRunnerInvoker: AzurePipelinesRunnerInvoker =
+        new AzurePipelinesRunnerInvoker(instance(azurePipelinesRunnerWrapper));
 
       // Act
-      azurePipelinesRunnerInvoker.logWarning('TEST')
+      azurePipelinesRunnerInvoker.logWarning("TEST");
 
       // Assert
-      verify(azurePipelinesRunnerWrapper.warning('TEST')).once()
-    })
-  })
+      verify(azurePipelinesRunnerWrapper.warning("TEST")).once();
+    });
+  });
 
-  describe('setStatusFailed()', (): void => {
-    it('should call the underlying method', (): void => {
+  describe("setStatusFailed()", (): void => {
+    it("should call the underlying method", (): void => {
       // Arrange
-      const azurePipelinesRunnerInvoker: AzurePipelinesRunnerInvoker = new AzurePipelinesRunnerInvoker(instance(azurePipelinesRunnerWrapper))
+      const azurePipelinesRunnerInvoker: AzurePipelinesRunnerInvoker =
+        new AzurePipelinesRunnerInvoker(instance(azurePipelinesRunnerWrapper));
 
       // Act
-      azurePipelinesRunnerInvoker.setStatusFailed('TEST')
+      azurePipelinesRunnerInvoker.setStatusFailed("TEST");
 
       // Assert
-      verify(azurePipelinesRunnerWrapper.setResult(taskLib.TaskResult.Failed, 'TEST')).once()
-    })
-  })
+      verify(
+        azurePipelinesRunnerWrapper.setResult(
+          taskLib.TaskResult.Failed,
+          "TEST",
+        ),
+      ).once();
+    });
+  });
 
-  describe('setStatusSkipped()', (): void => {
-    it('should call the underlying method', (): void => {
+  describe("setStatusSkipped()", (): void => {
+    it("should call the underlying method", (): void => {
       // Arrange
-      const azurePipelinesRunnerInvoker: AzurePipelinesRunnerInvoker = new AzurePipelinesRunnerInvoker(instance(azurePipelinesRunnerWrapper))
+      const azurePipelinesRunnerInvoker: AzurePipelinesRunnerInvoker =
+        new AzurePipelinesRunnerInvoker(instance(azurePipelinesRunnerWrapper));
 
       // Act
-      azurePipelinesRunnerInvoker.setStatusSkipped('TEST')
+      azurePipelinesRunnerInvoker.setStatusSkipped("TEST");
 
       // Assert
-      verify(azurePipelinesRunnerWrapper.setResult(taskLib.TaskResult.Skipped, 'TEST')).once()
-    })
-  })
+      verify(
+        azurePipelinesRunnerWrapper.setResult(
+          taskLib.TaskResult.Skipped,
+          "TEST",
+        ),
+      ).once();
+    });
+  });
 
-  describe('setStatusSucceeded()', (): void => {
-    it('should call the underlying method', (): void => {
+  describe("setStatusSucceeded()", (): void => {
+    it("should call the underlying method", (): void => {
       // Arrange
-      const azurePipelinesRunnerInvoker: AzurePipelinesRunnerInvoker = new AzurePipelinesRunnerInvoker(instance(azurePipelinesRunnerWrapper))
+      const azurePipelinesRunnerInvoker: AzurePipelinesRunnerInvoker =
+        new AzurePipelinesRunnerInvoker(instance(azurePipelinesRunnerWrapper));
 
       // Act
-      azurePipelinesRunnerInvoker.setStatusSucceeded('TEST')
+      azurePipelinesRunnerInvoker.setStatusSucceeded("TEST");
 
       // Assert
-      verify(azurePipelinesRunnerWrapper.setResult(taskLib.TaskResult.Succeeded, 'TEST')).once()
-    })
-  })
+      verify(
+        azurePipelinesRunnerWrapper.setResult(
+          taskLib.TaskResult.Succeeded,
+          "TEST",
+        ),
+      ).once();
+    });
+  });
 
-  describe('setSecret()', (): void => {
-    it('should call the underlying method', (): void => {
+  describe("setSecret()", (): void => {
+    it("should call the underlying method", (): void => {
       // Arrange
-      const azurePipelinesRunnerInvoker: AzurePipelinesRunnerInvoker = new AzurePipelinesRunnerInvoker(instance(azurePipelinesRunnerWrapper))
+      const azurePipelinesRunnerInvoker: AzurePipelinesRunnerInvoker =
+        new AzurePipelinesRunnerInvoker(instance(azurePipelinesRunnerWrapper));
 
       // Act
-      azurePipelinesRunnerInvoker.setSecret('value')
+      azurePipelinesRunnerInvoker.setSecret("value");
 
       // Assert
-      verify(azurePipelinesRunnerWrapper.setSecret('value')).once()
-    })
-  })
-})
+      verify(azurePipelinesRunnerWrapper.setSecret("value")).once();
+    });
+  });
+});

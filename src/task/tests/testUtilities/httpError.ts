@@ -12,11 +12,11 @@ export default class HttpError extends Error {
    * @param status The HTTP status code.
    * @param message The error message.
    */
-  public constructor (status: number, message: string) {
-    super()
+  public constructor(status: number, message: string) {
+    super();
 
-    this.status = status
-    this.message = message
+    this.status = status;
+    this.message = message;
   }
 
   /**
@@ -27,10 +27,10 @@ export default class HttpError extends Error {
   /**
    * Gets the HTTP status code.
    */
-  public status: number
+  public status: number;
 
   /**
    * Gets the error message.
    */
-  public message: string
+  public message: string;
 }

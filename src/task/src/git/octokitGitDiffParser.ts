@@ -15,19 +15,19 @@ import { singleton } from 'tsyringe'
  */
 @singleton()
 export default class OctokitGitDiffParser {
-  private readonly _axiosWrapper: AxiosWrapper
-  private readonly _logger: Logger
+  private readonly _axiosWrapper: AxiosWrapper;
+  private readonly _logger: Logger;
 
-  private _firstLineOfFiles: Map<string, number> | undefined
+  private _firstLineOfFiles: Map<string, number> | undefined;
 
   /**
    * Initializes a new instance of the `OctokitGitDiffParser` class.
    * @param axiosWrapper The Axios wrapper.
    * @param logger The logger.
    */
-  public constructor (axiosWrapper: AxiosWrapper, logger: Logger) {
-    this._axiosWrapper = axiosWrapper
-    this._logger = logger
+  public constructor(axiosWrapper: AxiosWrapper, logger: Logger) {
+    this._axiosWrapper = axiosWrapper;
+    this._logger = logger;
   }
 
   /**
@@ -39,33 +39,65 @@ export default class OctokitGitDiffParser {
    * @param fileName The file name for which to retrieve the line number.
    * @returns The first changed line of the specified file.
    */
-  public async getFirstChangedLine (octokitWrapper: OctokitWrapper, owner: string, repo: string, pullRequestId: number, fileName: string): Promise<number | null> {
-    this._logger.logDebug('* OctokitGitDiffParser.getFirstChangedLine()')
+  public async getFirstChangedLine(
+    octokitWrapper: OctokitWrapper,
+    owner: string,
+    repo: string,
+    pullRequestId: number,
+    fileName: string,
+  ): Promise<number | null> {
+    this._logger.logDebug("* OctokitGitDiffParser.getFirstChangedLine()");
 
-    const lineNumbers: Map<string, number> = await this.getFirstChangedLines(octokitWrapper, owner, repo, pullRequestId)
-    return lineNumbers.get(fileName) ?? null
+    const lineNumbers: Map<string, number> = await this.getFirstChangedLines(
+      octokitWrapper,
+      owner,
+      repo,
+      pullRequestId,
+    );
+    return lineNumbers.get(fileName) ?? null;
   }
 
-  private async getFirstChangedLines (octokitWrapper: OctokitWrapper, owner: string, repo: string, pullRequestId: number): Promise<Map<string, number>> {
-    this._logger.logDebug('* OctokitGitDiffParser.getFirstChangedLines()')
+  private async getFirstChangedLines(
+    octokitWrapper: OctokitWrapper,
+    owner: string,
+    repo: string,
+    pullRequestId: number,
+  ): Promise<Map<string, number>> {
+    this._logger.logDebug("* OctokitGitDiffParser.getFirstChangedLines()");
 
     // If the information has already been retrieved, return the cached response.
     if (this._firstLineOfFiles !== undefined) {
-      return this._firstLineOfFiles
+      return this._firstLineOfFiles;
     }
 
     // Otherwise, retrieve and process the diffs.
-    const diffs: string[] = await this.getDiffs(octokitWrapper, owner, repo, pullRequestId)
-    this._firstLineOfFiles = this.processDiffs(diffs)
-    return this._firstLineOfFiles
+    const diffs: string[] = await this.getDiffs(
+      octokitWrapper,
+      owner,
+      repo,
+      pullRequestId,
+    );
+    this._firstLineOfFiles = this.processDiffs(diffs);
+    return this._firstLineOfFiles;
   }
 
-  private async getDiffs (octokitWrapper: OctokitWrapper, owner: string, repo: string, pullRequestId: number): Promise<string[]> {
-    this._logger.logDebug('* OctokitGitDiffParser.getDiffs()')
+  private async getDiffs(
+    octokitWrapper: OctokitWrapper,
+    owner: string,
+    repo: string,
+    pullRequestId: number,
+  ): Promise<string[]> {
+    this._logger.logDebug("* OctokitGitDiffParser.getDiffs()");
 
     // Get the PR diff by extracting the URL from the Octokit response and downloading it.
-    const pullRequestInfo: GetPullResponse = await octokitWrapper.getPull(owner, repo, pullRequestId)
-    const diffResponse: string = await this._axiosWrapper.getUrl(pullRequestInfo.data.diff_url)
+    const pullRequestInfo: GetPullResponse = await octokitWrapper.getPull(
+      owner,
+      repo,
+      pullRequestId,
+    );
+    const diffResponse: string = await this._axiosWrapper.getUrl(
+      pullRequestInfo.data.diff_url,
+    );
 
     // Split the response so that each file in a diff becomes a separate diff.
     const diffResponseLines: string[] = diffResponse.split(/^diff --git/gmu)
@@ -79,13 +111,13 @@ export default class OctokitGitDiffParser {
       result.push(`diff --git ${diffResponseLine}`)
     }
 
-    return result
+    return result;
   }
 
-  private processDiffs (diffs: string[]): Map<string, number> {
-    this._logger.logDebug('* OctokitGitDiffParser.processDiffs()')
+  private processDiffs(diffs: string[]): Map<string, number> {
+    this._logger.logDebug("* OctokitGitDiffParser.processDiffs()");
 
-    const result: Map<string, number> = new Map<string, number>()
+    const result: Map<string, number> = new Map<string, number>();
 
     // Process the diff for each file.
     for (const diff of diffs) {
@@ -94,15 +126,16 @@ export default class OctokitGitDiffParser {
       // Process the diff for a single file.
       for (const file of diffParsed.files) {
         switch (file.type) {
-          case 'AddedFile':
-          case 'ChangedFile':
-          {
+          case "AddedFile":
+          case "ChangedFile": {
             // For an added or changed file, add the file path and the first changed line.
-            const fileCasted: AddedFile | ChangedFile = file
-            const chunk: AnyChunk | undefined = fileCasted.chunks[0]
-            if (chunk?.type === 'BinaryFilesChunk') {
-              this._logger.logDebug(`Skipping '${file.type}' '${fileCasted.path}' while performing diff parsing.`)
-              break
+            const fileCasted: AddedFile | ChangedFile = file;
+            const chunk: AnyChunk | undefined = fileCasted.chunks[0];
+            if (chunk?.type === "BinaryFilesChunk") {
+              this._logger.logDebug(
+                `Skipping '${file.type}' '${fileCasted.path}' while performing diff parsing.`,
+              );
+              break;
             }
 
             if (chunk) {
@@ -111,8 +144,7 @@ export default class OctokitGitDiffParser {
 
             break
           }
-          case 'RenamedFile':
-          {
+          case "RenamedFile": {
             // For a renamed file, add the new file path and the first changed line.
             const fileCasted: RenamedFile = file
             if (fileCasted.chunks[0]) {
@@ -122,12 +154,14 @@ export default class OctokitGitDiffParser {
             break
           }
           default:
-            this._logger.logDebug(`Skipping file type '${file.type}' while performing diff parsing.`)
-            break
+            this._logger.logDebug(
+              `Skipping file type '${file.type}' while performing diff parsing.`,
+            );
+            break;
         }
       }
     }
 
-    return result
+    return result;
   }
 }

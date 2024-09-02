@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import { singleton } from 'tsyringe'
+import { singleton } from "tsyringe";
 
 /**
  * A wrapper around the console, to facilitate testability.

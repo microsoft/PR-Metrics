@@ -10,8 +10,8 @@ import TaskJsonInterface from '../jsonTypes/taskJsonInterface'
 import assert from 'node:assert/strict'
 import { globSync } from 'glob'
 
-describe('resources.resjson', (): void => {
-  const basePath: string = path.join(__dirname, '..', '..')
+describe("resources.resjson", (): void => {
+  const basePath: string = path.join(__dirname, "..", "..");
 
   const languagesPath: string = path.join(basePath, 'Strings', 'resources.resjson')
   const languages: string[] = fs.readdirSync(languagesPath)
@@ -25,8 +25,8 @@ describe('resources.resjson', (): void => {
   const commentSuffix = '.comment'
   const schemaEntry = '$schema'
 
-  const taskJsonFile: string = path.join(basePath, 'task.json')
-  const taskJsonContents: string = fs.readFileSync(taskJsonFile, 'utf8')
+  const taskJsonFile: string = path.join(basePath, "task.json");
+  const taskJsonContents: string = fs.readFileSync(taskJsonFile, "utf8");
 
   const taskLocJsonFile: string = path.join(basePath, 'task.loc.json')
   const taskLocJsonContents: string = fs.readFileSync(taskLocJsonFile, 'utf8')
@@ -35,24 +35,26 @@ describe('resources.resjson', (): void => {
   testCases.forEach((value: ResourcesJsonInterface, language: string): void => {
     it(`should contain a comment for every resource in language '${language}'`, (): void => {
       // Arrange
-      const keys: string[] = Object.keys(value)
+      const keys: string[] = Object.keys(value);
 
       // Assert
       for (const key of keys) {
         if (key !== schemaEntry && !key.endsWith(commentSuffix)) {
-          assert(keys.includes(`${key}${commentSuffix}`))
+          assert(keys.includes(`${key}${commentSuffix}`));
         }
       }
     })
 
     it(`should contain a resource for every comment in language '${language}'`, (): void => {
       // Arrange
-      const keys: string[] = Object.keys(value)
+      const keys: string[] = Object.keys(value);
 
       // Assert
       for (const key of keys) {
         if (key !== schemaEntry && key.endsWith(commentSuffix)) {
-          assert(keys.includes(key.substring(0, key.length - commentSuffix.length)))
+          assert(
+            keys.includes(key.substring(0, key.length - commentSuffix.length)),
+          );
         }
       }
     })
@@ -63,8 +65,8 @@ describe('resources.resjson', (): void => {
       const englishKeys: string[] = Object.keys(testCases.get('en-US') ?? '')
 
       // Assert
-      assert.deepEqual(keys, englishKeys)
-    })
+      assert.deepEqual(keys, englishKeys);
+    });
 
     it(`should have the same number of placeholders in language '${language}' as in en-US`, (): void => {
       // Arrange
@@ -81,7 +83,7 @@ describe('resources.resjson', (): void => {
     })
   })
 
-  it('should have the correct reference ID for all resources in task.loc.json', (): void => {
+  it("should have the correct reference ID for all resources in task.loc.json", (): void => {
     // Arrange
     const keysTaskLocJson: [string, string][] = Object.entries(taskLocJson.messages as ArrayLike<string>)
 
@@ -91,7 +93,7 @@ describe('resources.resjson', (): void => {
     }
   })
 
-  it('should have the same resources references in task.loc.json and in the resources files', (): void => {
+  it("should have the same resources references in task.loc.json and in the resources files", (): void => {
     // Arrange
     const taskJsonResources: RegExpMatchArray = taskLocJsonContents.match(/"ms-resource:.+?"/gu) ?? ['']
     const allResources: string[] = []
@@ -104,15 +106,15 @@ describe('resources.resjson', (): void => {
     const relevantKeys: string[] = []
     for (const entry of englishEntries) {
       if (entry[0] !== schemaEntry && !entry[0].endsWith(commentSuffix)) {
-        relevantKeys.push(entry[0])
+        relevantKeys.push(entry[0]);
       }
     }
 
     // Assert
-    assert.deepEqual(allResources, relevantKeys)
-  })
+    assert.deepEqual(allResources, relevantKeys);
+  });
 
-  it('should have the same contents in task.json and task.loc.json', (): void => {
+  it("should have the same contents in task.json and task.loc.json", (): void => {
     // Arrange
     let fileContents: string = taskLocJsonContents
     const englishEntries: [string, string][] = Object.entries(testCases.get('en-US') ?? '')
@@ -123,11 +125,11 @@ describe('resources.resjson', (): void => {
     const remainingResources: RegExpMatchArray | null = fileContents.match(/"ms-resource:.+?"/gu)
 
     // Assert
-    assert.equal(fileContents, taskJsonContents)
-    assert.equal(remainingResources, null)
-  })
+    assert.equal(fileContents, taskJsonContents);
+    assert.equal(remainingResources, null);
+  });
 
-  it('should have the same number of placeholders across the TypeScript code and resources file', (): void => {
+  it("should have the same number of placeholders across the TypeScript code and resources file", (): void => {
     // Arrange
     const globBasePath = `${basePath.replace(/\\/gu, '/')  }/`
     const typeScriptFiles1: string[] = globSync(`${globBasePath  }!(node_modules|tests)/**/*.ts`)
@@ -145,9 +147,9 @@ describe('resources.resjson', (): void => {
           const value: number = match.match(parameterDelimiterRegExp)?.length ?? 0
           const existingValue: number | undefined = typeScriptResources.get(key)
           if (existingValue === undefined) {
-            typeScriptResources.set(key, value)
+            typeScriptResources.set(key, value);
           } else {
-            assert.equal(value, existingValue)
+            assert.equal(value, existingValue);
           }
         }
       }
