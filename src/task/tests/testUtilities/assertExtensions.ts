@@ -16,7 +16,7 @@ export const toThrowAsync = async <ErrorType extends Error>(
   func: () => Promise<unknown>,
   errorMessage: string,
 ): Promise<ErrorType> => {
-  let error: any = null;
+  let error: unknown = null;
   try {
     await func();
   } catch (err) {

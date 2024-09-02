@@ -77,7 +77,7 @@ export default class Logger {
   public logErrorObject(error: Error): void {
     const name: string = error.name;
     const properties: string[] = Object.getOwnPropertyNames(error);
-    const errorRecord: Record<string, unknown> = error as any as Record<
+    const errorRecord: Record<string, unknown> = error as unknown as Record<
       string,
       unknown
     >;

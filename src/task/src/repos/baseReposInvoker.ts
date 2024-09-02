@@ -55,7 +55,7 @@ export default abstract class BaseReposInvoker
   ): Promise<Response> {
     try {
       return await action();
-    } catch (error: any) {
+    } catch (error: unknown) {
       const castedError: ErrorWithStatusInterface =
         error as ErrorWithStatusInterface;
       const statusCode: number | undefined =
