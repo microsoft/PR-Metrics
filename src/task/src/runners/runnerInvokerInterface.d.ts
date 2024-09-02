@@ -3,8 +3,8 @@
  * Licensed under the MIT License.
  */
 
-import { EndpointAuthorization } from './endpointAuthorization'
-import ExecOutput from './execOutput'
+import { EndpointAuthorization } from "./endpointAuthorization";
+import ExecOutput from "./execOutput";
 
 /**
  * An interface for invoking runner functionality with any underlying runner.
@@ -62,7 +62,7 @@ export default interface RunnerInvokerInterface {
    * @param param Optional additional parameters for formatting the string.
    * @returns The localized and formatted string.
    */
-  loc: (key: string, ...param: string[]) => string
+  loc: (key: string, ...param: string[]) => string;
 
   /**
    * Logs a debug message.

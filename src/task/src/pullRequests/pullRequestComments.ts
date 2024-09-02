@@ -81,12 +81,12 @@ export default class PullRequestComments {
 
     // If the current comment thread is not applied to a specified file, check if it is the metrics comment thread.
     for (const comment of comments.pullRequestComments) {
-      result = this.getMetricsCommentData(result, comment)
+      result = this.getMetricsCommentData(result, comment);
     }
 
     // If the current comment thread is not applied to a specified file, check if it is the metrics comment thread.
     for (const comment of comments.fileComments) {
-      result = this.getFilesRequiringCommentUpdates(result, comment)
+      result = this.getFilesRequiringCommentUpdates(result, comment);
     }
 
     return result;
@@ -101,9 +101,9 @@ export default class PullRequestComments {
 
     const metrics: CodeMetricsData = await this._codeMetrics.getMetrics();
 
-    let result = `${this._runnerInvoker.loc('pullRequests.pullRequestComments.commentTitle')}\n`
-    result += await this.addCommentSizeStatus()
-    result += await this.addCommentTestStatus()
+    let result = `${this._runnerInvoker.loc("pullRequests.pullRequestComments.commentTitle")}\n`;
+    result += await this.addCommentSizeStatus();
+    result += await this.addCommentTestStatus();
 
     result += `||${this._runnerInvoker.loc("pullRequests.pullRequestComments.tableLines")}\n`;
     result += "-|-:\n";
@@ -222,7 +222,7 @@ export default class PullRequestComments {
   private async addCommentSizeStatus(): Promise<string> {
     this._logger.logDebug("* PullRequestComments.addCommentSizeStatus()");
 
-    let result = ''
+    let result = "";
     if (await this._codeMetrics.isSmall()) {
       result += this._runnerInvoker.loc(
         "pullRequests.pullRequestComments.smallPullRequestComment",
@@ -244,8 +244,9 @@ export default class PullRequestComments {
   private async addCommentTestStatus(): Promise<string> {
     this._logger.logDebug("* PullRequestComments.addCommentTestStatus()");
 
-    let result = ''
-    const isSufficientlyTested: boolean | null = await this._codeMetrics.isSufficientlyTested()
+    let result = "";
+    const isSufficientlyTested: boolean | null =
+      await this._codeMetrics.isSufficientlyTested();
     if (isSufficientlyTested !== null) {
       if (isSufficientlyTested) {
         result += this._runnerInvoker.loc(
@@ -270,7 +271,7 @@ export default class PullRequestComments {
   ): string {
     this._logger.logDebug("* PullRequestComments.addCommentMetrics()");
 
-    let surround = ''
+    let surround = "";
     if (highlight) {
       surround = "**";
     }

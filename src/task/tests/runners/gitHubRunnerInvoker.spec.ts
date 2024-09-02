@@ -3,18 +3,18 @@
  * Licensed under the MIT License.
  */
 
-import 'reflect-metadata'
-import * as actionsExec from '@actions/exec'
-import * as path from 'path'
-import { deepEqual, instance, mock, verify, when } from 'ts-mockito'
-import AzurePipelinesRunnerWrapper from '../../src/wrappers/azurePipelinesRunnerWrapper'
-import ConsoleWrapper from '../../src/wrappers/consoleWrapper'
-import { EndpointAuthorization } from 'azure-pipelines-task-lib'
-import ExecOutput from '../../src/runners/execOutput'
-import GitHubRunnerInvoker from '../../src/runners/gitHubRunnerInvoker'
-import GitHubRunnerWrapper from '../../src/wrappers/gitHubRunnerWrapper'
-import { any } from '../testUtilities/mockito'
-import assert from 'node:assert/strict'
+import "reflect-metadata";
+import * as actionsExec from "@actions/exec";
+import * as path from "path";
+import { deepEqual, instance, mock, verify, when } from "ts-mockito";
+import AzurePipelinesRunnerWrapper from "../../src/wrappers/azurePipelinesRunnerWrapper";
+import ConsoleWrapper from "../../src/wrappers/consoleWrapper";
+import { EndpointAuthorization } from "azure-pipelines-task-lib";
+import ExecOutput from "../../src/runners/execOutput";
+import GitHubRunnerInvoker from "../../src/runners/gitHubRunnerInvoker";
+import GitHubRunnerWrapper from "../../src/wrappers/gitHubRunnerWrapper";
+import { any } from "../testUtilities/mockito";
+import assert from "node:assert/strict";
 
 describe("gitHubRunnerInvoker.ts", (): void => {
   const resourcePath: string = path.join(
@@ -42,10 +42,12 @@ describe("gitHubRunnerInvoker.ts", (): void => {
       );
       const execResult: actionsExec.ExecOutput = {
         exitCode: 1,
-        stderr: 'Error',
-        stdout: 'Output'
-      }
-      when(gitHubRunnerWrapper.exec('TOOL', 'Argument1 Argument2', any())).thenResolve(execResult)
+        stderr: "Error",
+        stdout: "Output",
+      };
+      when(
+        gitHubRunnerWrapper.exec("TOOL", "Argument1 Argument2", any()),
+      ).thenResolve(execResult);
 
       // Act
       const result: ExecOutput = await gitHubRunnerInvoker.exec(

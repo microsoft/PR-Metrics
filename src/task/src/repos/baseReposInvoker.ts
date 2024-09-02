@@ -3,20 +3,22 @@
  * Licensed under the MIT License.
  */
 
-import CommentData from './interfaces/commentData'
-import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
-import ErrorWithStatusInterface from './interfaces/errorWithStatusInterface'
-import PullRequestDetailsInterface from './interfaces/pullRequestDetailsInterface'
-import ReposInvokerInterface from './reposInvokerInterface'
-import { StatusCodes } from 'http-status-codes'
+import CommentData from "./interfaces/commentData";
+import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces";
+import ErrorWithStatusInterface from "./interfaces/errorWithStatusInterface";
+import PullRequestDetailsInterface from "./interfaces/pullRequestDetailsInterface";
+import ReposInvokerInterface from "./reposInvokerInterface";
+import { StatusCodes } from "http-status-codes";
 
 /**
  * A base class for invoking repository functionality.
  */
-export default abstract class BaseReposInvoker implements ReposInvokerInterface {
-  public abstract isAccessTokenAvailable (): Promise<string | null>
+export default abstract class BaseReposInvoker
+  implements ReposInvokerInterface
+{
+  public abstract isAccessTokenAvailable(): Promise<string | null>;
 
-  public abstract getTitleAndDescription (): Promise<PullRequestDetailsInterface>
+  public abstract getTitleAndDescription(): Promise<PullRequestDetailsInterface>;
 
   public abstract getComments(): Promise<CommentData>;
 
@@ -54,15 +56,24 @@ export default abstract class BaseReposInvoker implements ReposInvokerInterface 
     try {
       return await action();
     } catch (error: any) {
-      const castedError: ErrorWithStatusInterface = error as ErrorWithStatusInterface
-      const statusCode: number | undefined = castedError.status ?? castedError.statusCode
-      const accessErrorStatusCodes: number[] = [StatusCodes.UNAUTHORIZED, StatusCodes.FORBIDDEN, StatusCodes.NOT_FOUND]
-      if (statusCode !== undefined && accessErrorStatusCodes.includes(statusCode)) {
-        castedError.internalMessage = castedError.message
-        castedError.message = accessErrorMessage
+      const castedError: ErrorWithStatusInterface =
+        error as ErrorWithStatusInterface;
+      const statusCode: number | undefined =
+        castedError.status ?? castedError.statusCode;
+      const accessErrorStatusCodes: number[] = [
+        StatusCodes.UNAUTHORIZED,
+        StatusCodes.FORBIDDEN,
+        StatusCodes.NOT_FOUND,
+      ];
+      if (
+        statusCode !== undefined &&
+        accessErrorStatusCodes.includes(statusCode)
+      ) {
+        castedError.internalMessage = castedError.message;
+        castedError.message = accessErrorMessage;
       }
 
-      throw castedError
+      throw castedError;
     }
   }
 }

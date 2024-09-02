@@ -3,22 +3,28 @@
  * Licensed under the MIT License.
  */
 
-import * as Validator from '../utilities/validator'
-import { Comment, CommentPosition, CommentThreadStatus, GitPullRequest, GitPullRequestCommentThread } from 'azure-devops-node-api/interfaces/GitInterfaces'
-import AzureDevOpsApiWrapper from '../wrappers/azureDevOpsApiWrapper'
-import BaseReposInvoker from './baseReposInvoker'
-import CommentData from './interfaces/commentData'
-import FileCommentData from './interfaces/fileCommentData'
-import GitInvoker from '../git/gitInvoker'
-import { IGitApi } from 'azure-devops-node-api/GitApi'
-import { IRequestHandler } from 'azure-devops-node-api/interfaces/common/VsoBaseInterfaces'
-import Logger from '../utilities/logger'
-import PullRequestCommentData from './interfaces/pullRequestCommentData'
-import PullRequestDetailsInterface from './interfaces/pullRequestDetailsInterface'
-import RunnerInvoker from '../runners/runnerInvoker'
-import TokenManager from './tokenManager'
-import { WebApi } from 'azure-devops-node-api'
-import { singleton } from 'tsyringe'
+import * as Validator from "../utilities/validator";
+import {
+  Comment,
+  CommentPosition,
+  CommentThreadStatus,
+  GitPullRequest,
+  GitPullRequestCommentThread,
+} from "azure-devops-node-api/interfaces/GitInterfaces";
+import AzureDevOpsApiWrapper from "../wrappers/azureDevOpsApiWrapper";
+import BaseReposInvoker from "./baseReposInvoker";
+import CommentData from "./interfaces/commentData";
+import FileCommentData from "./interfaces/fileCommentData";
+import GitInvoker from "../git/gitInvoker";
+import { IGitApi } from "azure-devops-node-api/GitApi";
+import { IRequestHandler } from "azure-devops-node-api/interfaces/common/VsoBaseInterfaces";
+import Logger from "../utilities/logger";
+import PullRequestCommentData from "./interfaces/pullRequestCommentData";
+import PullRequestDetailsInterface from "./interfaces/pullRequestDetailsInterface";
+import RunnerInvoker from "../runners/runnerInvoker";
+import TokenManager from "./tokenManager";
+import { WebApi } from "azure-devops-node-api";
+import { singleton } from "tsyringe";
 
 /**
  * A class for invoking Azure Repos functionality.
@@ -32,10 +38,10 @@ export default class AzureReposInvoker extends BaseReposInvoker {
   private readonly _runnerInvoker: RunnerInvoker;
   private readonly _tokenManager: TokenManager;
 
-  private _project = ''
-  private _repositoryId = ''
-  private _pullRequestId = 0
-  private _gitApi: IGitApi | undefined
+  private _project = "";
+  private _repositoryId = "";
+  private _pullRequestId = 0;
+  private _gitApi: IGitApi | undefined;
 
   /**
    * Initializes a new instance of the `AzureReposInvoker` class.
@@ -79,8 +85,8 @@ export default class AzureReposInvoker extends BaseReposInvoker {
     return null;
   }
 
-  public async getTitleAndDescription (): Promise<PullRequestDetailsInterface> {
-    this._logger.logDebug('* AzureReposInvoker.getTitleAndDescription()')
+  public async getTitleAndDescription(): Promise<PullRequestDetailsInterface> {
+    this._logger.logDebug("* AzureReposInvoker.getTitleAndDescription()");
 
     const gitApiPromise: Promise<IGitApi> = this.getGitApi();
     const result: GitPullRequest = await this.invokeApiCall(
@@ -309,34 +315,42 @@ export default class AzureReposInvoker extends BaseReposInvoker {
   ): CommentData {
     const result: CommentData = new CommentData();
 
-    let index = 0
+    let index = 0;
     for (const value of comments) {
-      const id: number = Validator.validateNumber(value.id, `commentThread[${String(index)}].id`, 'AzureReposInvoker.convertPullRequestComments()')
-      const currentComments: Comment[] | undefined = value.comments
+      const id: number = Validator.validateNumber(
+        value.id,
+        `commentThread[${String(index)}].id`,
+        "AzureReposInvoker.convertPullRequestComments()",
+      );
+      const currentComments: Comment[] | undefined = value.comments;
       if (currentComments === undefined) {
-        continue
+        continue;
       }
 
-      const content: string | undefined = currentComments[0]?.content
-      if (content === undefined || content === '') {
-        continue
+      const content: string | undefined = currentComments[0]?.content;
+      if (content === undefined || content === "") {
+        continue;
       }
 
-        const status: CommentThreadStatus =
-          value.status ?? CommentThreadStatus.Unknown;
+      const status: CommentThreadStatus =
+        value.status ?? CommentThreadStatus.Unknown;
 
       if (value.threadContext === undefined) {
-        result.pullRequestComments.push(new PullRequestCommentData(id, content, status))
+        result.pullRequestComments.push(
+          new PullRequestCommentData(id, content, status),
+        );
       } else {
-        const fileName: string | undefined = value.threadContext.filePath
+        const fileName: string | undefined = value.threadContext.filePath;
         if (fileName === undefined || fileName.length <= 1) {
-          continue
+          continue;
         }
 
-        result.fileComments.push(new FileCommentData(id, content, fileName.substring(1), status))
+        result.fileComments.push(
+          new FileCommentData(id, content, fileName.substring(1), status),
+        );
       }
 
-      index += 1
+      index += 1;
     }
 
     return result;

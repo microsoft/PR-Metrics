@@ -26,7 +26,7 @@ export default class TokenManager {
   private readonly _logger: Logger;
   private readonly _runnerInvoker: RunnerInvoker;
 
-  private _previouslyInvoked = false
+  private _previouslyInvoked = false;
 
   /**
    * Initializes a new instance of the `TokenManager` class.
@@ -65,10 +65,19 @@ export default class TokenManager {
       return null;
     }
 
-    this._logger.logDebug(`Using workload identity federation '${workloadIdentityFederation}' for authentication.`)
-    const authorizationScheme: string | undefined = this._runnerInvoker.getEndpointAuthorizationScheme(workloadIdentityFederation)
-    if (authorizationScheme !== 'WorkloadIdentityFederation') {
-      return this._runnerInvoker.loc('repos.tokenManager.incorrectAuthorizationScheme', workloadIdentityFederation, String(authorizationScheme))
+    this._logger.logDebug(
+      `Using workload identity federation '${workloadIdentityFederation}' for authentication.`,
+    );
+    const authorizationScheme: string | undefined =
+      this._runnerInvoker.getEndpointAuthorizationScheme(
+        workloadIdentityFederation,
+      );
+    if (authorizationScheme !== "WorkloadIdentityFederation") {
+      return this._runnerInvoker.loc(
+        "repos.tokenManager.incorrectAuthorizationScheme",
+        workloadIdentityFederation,
+        String(authorizationScheme),
+      );
     }
 
     process.env.PR_METRICS_ACCESS_TOKEN = await this.getAccessToken(
@@ -188,12 +197,20 @@ export default class TokenManager {
     const endpointAuthorization: EndpointAuthorization | undefined =
       this._runnerInvoker.getEndpointAuthorization("SYSTEMVSSCONNECTION");
 
-    const scheme: string | undefined = endpointAuthorization?.scheme
-    if (scheme !== 'OAuth') {
-      throw new Error(`Could not acquire authorization token from workload identity federation as the scheme was '${scheme ?? ''}'.`)
+    const scheme: string | undefined = endpointAuthorization?.scheme;
+    if (scheme !== "OAuth") {
+      throw new Error(
+        `Could not acquire authorization token from workload identity federation as the scheme was '${scheme ?? ""}'.`,
+      );
     }
 
-    this._logger.logDebug('Acquired authorization token from workload identity federation.')
-    return validateString(endpointAuthorization?.parameters.AccessToken, 'endpointAuthorization.parameters.AccessToken', 'TokenManager.getSystemAccessToken()')
+    this._logger.logDebug(
+      "Acquired authorization token from workload identity federation.",
+    );
+    return validateString(
+      endpointAuthorization?.parameters.AccessToken,
+      "endpointAuthorization.parameters.AccessToken",
+      "TokenManager.getSystemAccessToken()",
+    );
   }
 }

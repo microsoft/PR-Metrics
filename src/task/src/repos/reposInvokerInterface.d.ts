@@ -3,9 +3,9 @@
  * Licensed under the MIT License.
  */
 
-import CommentData from './interfaces/commentData'
-import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
-import PullRequestDetailsInterface from './interfaces/pullRequestDetailsInterface'
+import CommentData from "./interfaces/commentData";
+import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces";
+import PullRequestDetailsInterface from "./interfaces/pullRequestDetailsInterface";
 
 /**
  * An interface for invoking repository functionality with any underlying repository store.
@@ -21,7 +21,7 @@ export default interface ReposInvokerInterface {
    * Gets the title and description for the current pull request.
    * @returns A promise containing the title and description.
    */
-  getTitleAndDescription: () => Promise<PullRequestDetailsInterface>
+  getTitleAndDescription: () => Promise<PullRequestDetailsInterface>;
 
   /**
    * Gets all comments for the current pull request.

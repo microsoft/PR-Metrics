@@ -7,6 +7,6 @@
  * The target object used for resolving an instance of a mock object.
  * @typeParam Mock The type of the mock object.
  */
-type ResolvableInstanceTargetInterface<Mock> = Record<string, Mock>
+type ResolvableInstanceTargetInterface<Mock> = Record<string, Mock>;
 
-export default ResolvableInstanceTargetInterface
+export default ResolvableInstanceTargetInterface;

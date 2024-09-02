@@ -3,12 +3,19 @@
  * Licensed under the MIT License.
  */
 
-import parseGitDiff, { AddedFile, AnyChunk, ChangedFile, Chunk, GitDiff, RenamedFile } from 'parse-git-diff'
-import AxiosWrapper from '../wrappers/axiosWrapper'
-import GetPullResponse from '../wrappers/octokitInterfaces/getPullResponse'
-import Logger from '../utilities/logger'
-import OctokitWrapper from '../wrappers/octokitWrapper'
-import { singleton } from 'tsyringe'
+import parseGitDiff, {
+  AddedFile,
+  AnyChunk,
+  ChangedFile,
+  Chunk,
+  GitDiff,
+  RenamedFile,
+} from "parse-git-diff";
+import AxiosWrapper from "../wrappers/axiosWrapper";
+import GetPullResponse from "../wrappers/octokitInterfaces/getPullResponse";
+import Logger from "../utilities/logger";
+import OctokitWrapper from "../wrappers/octokitWrapper";
+import { singleton } from "tsyringe";
 
 /**
  * A parser for Git diffs read via Octokit.
@@ -100,15 +107,15 @@ export default class OctokitGitDiffParser {
     );
 
     // Split the response so that each file in a diff becomes a separate diff.
-    const diffResponseLines: string[] = diffResponse.split(/^diff --git/gmu)
+    const diffResponseLines: string[] = diffResponse.split(/^diff --git/gmu);
 
     /*
      * For each diff, reinstate the "diff --git" prefix that was removed by the split. The first diff is excluded as it
      * will always be the empty string.
      */
-    const result: string[] = []
+    const result: string[] = [];
     for (const diffResponseLine of diffResponseLines.slice(1)) {
-      result.push(`diff --git ${diffResponseLine}`)
+      result.push(`diff --git ${diffResponseLine}`);
     }
 
     return result;
@@ -121,7 +128,7 @@ export default class OctokitGitDiffParser {
 
     // Process the diff for each file.
     for (const diff of diffs) {
-      const diffParsed: GitDiff = parseGitDiff(diff)
+      const diffParsed: GitDiff = parseGitDiff(diff);
 
       // Process the diff for a single file.
       for (const file of diffParsed.files) {
@@ -139,19 +146,22 @@ export default class OctokitGitDiffParser {
             }
 
             if (chunk) {
-              result.set(fileCasted.path, chunk.toFileRange.start)
+              result.set(fileCasted.path, chunk.toFileRange.start);
             }
 
-            break
+            break;
           }
           case "RenamedFile": {
             // For a renamed file, add the new file path and the first changed line.
-            const fileCasted: RenamedFile = file
+            const fileCasted: RenamedFile = file;
             if (fileCasted.chunks[0]) {
-              result.set(fileCasted.pathAfter, (fileCasted.chunks[0] as Chunk).toFileRange.start)
+              result.set(
+                fileCasted.pathAfter,
+                (fileCasted.chunks[0] as Chunk).toFileRange.start,
+              );
             }
 
-            break
+            break;
           }
           default:
             this._logger.logDebug(

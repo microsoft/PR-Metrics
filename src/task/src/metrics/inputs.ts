@@ -3,11 +3,11 @@
  * Licensed under the MIT License.
  */
 
-import * as InputsDefault from './inputsDefault'
-import Logger from '../utilities/logger'
-import RunnerInvoker from '../runners/runnerInvoker'
-import { decimalRadix } from '../utilities/constants'
-import { singleton } from 'tsyringe'
+import * as InputsDefault from "./inputsDefault";
+import Logger from "../utilities/logger";
+import RunnerInvoker from "../runners/runnerInvoker";
+import { decimalRadix } from "../utilities/constants";
+import { singleton } from "tsyringe";
 
 /**
  * A class representing inputs passed to the task.
@@ -18,13 +18,13 @@ export default class Inputs {
   private readonly _logger: Logger;
   private readonly _runnerInvoker: RunnerInvoker;
 
-  private _isInitialized = false
-  private _baseSize = 0
-  private _growthRate = 0
-  private _testFactor: number | null = 0
-  private _alwaysCloseComment = false
-  private _fileMatchingPatterns: string[] = []
-  private _codeFileExtensions: Set<string> = new Set<string>()
+  private _isInitialized = false;
+  private _baseSize = 0;
+  private _growthRate = 0;
+  private _testFactor: number | null = 0;
+  private _alwaysCloseComment = false;
+  private _fileMatchingPatterns: string[] = [];
+  private _codeFileExtensions: Set<string> = new Set<string>();
 
   /**
    * Initializes a new instance of the `Inputs` class.
@@ -148,7 +148,8 @@ export default class Inputs {
   private initializeBaseSize(baseSize: string | undefined): void {
     this._logger.logDebug("* Inputs.initializeBaseSize()");
 
-    const convertedValue: number = baseSize === undefined ? NaN : parseInt(baseSize, decimalRadix)
+    const convertedValue: number =
+      baseSize === undefined ? NaN : parseInt(baseSize, decimalRadix);
     if (!isNaN(convertedValue) && convertedValue > 0) {
       this._baseSize = convertedValue;
       const baseSizeString: string = this._baseSize.toLocaleString();
@@ -296,23 +297,37 @@ export default class Inputs {
   ): void {
     this._logger.logDebug("* Inputs.initializeCodeFileExtensions()");
 
-    if (codeFileExtensions !== undefined && codeFileExtensions.trim() !== '') {
-      const codeFileExtensionsArray: string[] = codeFileExtensions.replace(/\n$/gu, '').split('\n')
+    if (codeFileExtensions !== undefined && codeFileExtensions.trim() !== "") {
+      const codeFileExtensionsArray: string[] = codeFileExtensions
+        .replace(/\n$/gu, "")
+        .split("\n");
       for (const value of codeFileExtensionsArray) {
-        let modifiedValue = value
-        if (modifiedValue.startsWith('*.')) {
-          modifiedValue = modifiedValue.substring(2)
-        } else if (modifiedValue.startsWith('.')) {
-          modifiedValue = modifiedValue.substring(1)
+        let modifiedValue = value;
+        if (modifiedValue.startsWith("*.")) {
+          modifiedValue = modifiedValue.substring(2);
+        } else if (modifiedValue.startsWith(".")) {
+          modifiedValue = modifiedValue.substring(1);
         }
 
-        this._codeFileExtensions.add(modifiedValue.toLowerCase())
+        this._codeFileExtensions.add(modifiedValue.toLowerCase());
       }
-      this._logger.logInfo(this._runnerInvoker.loc('metrics.inputs.settingCodeFileExtensions', JSON.stringify(Array.from(this._codeFileExtensions))))
-      return
+      this._logger.logInfo(
+        this._runnerInvoker.loc(
+          "metrics.inputs.settingCodeFileExtensions",
+          JSON.stringify(Array.from(this._codeFileExtensions)),
+        ),
+      );
+      return;
     }
 
-    this._logger.logInfo(this._runnerInvoker.loc('metrics.inputs.adjustingCodeFileExtensions', JSON.stringify(InputsDefault.codeFileExtensions)))
-    this._codeFileExtensions = new Set<string>(InputsDefault.codeFileExtensions)
+    this._logger.logInfo(
+      this._runnerInvoker.loc(
+        "metrics.inputs.adjustingCodeFileExtensions",
+        JSON.stringify(InputsDefault.codeFileExtensions),
+      ),
+    );
+    this._codeFileExtensions = new Set<string>(
+      InputsDefault.codeFileExtensions,
+    );
   }
 }

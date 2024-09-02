@@ -3,13 +3,13 @@
  * Licensed under the MIT License.
  */
 
-import 'reflect-metadata'
-import { instance, mock, verify } from 'ts-mockito'
-import ConsoleWrapper from '../../src/wrappers/consoleWrapper'
-import HttpError from '../testUtilities/httpError'
-import Logger from '../../src/utilities/logger'
-import RunnerInvoker from '../../src/runners/runnerInvoker'
-import { StatusCodes } from 'http-status-codes'
+import "reflect-metadata";
+import { instance, mock, verify } from "ts-mockito";
+import ConsoleWrapper from "../../src/wrappers/consoleWrapper";
+import HttpError from "../testUtilities/httpError";
+import Logger from "../../src/utilities/logger";
+import RunnerInvoker from "../../src/runners/runnerInvoker";
+import { StatusCodes } from "http-status-codes";
 
 describe("logger.ts", (): void => {
   let consoleWrapper: ConsoleWrapper;
@@ -20,26 +20,29 @@ describe("logger.ts", (): void => {
     runnerInvoker = mock(RunnerInvoker);
   });
 
-  describe('logDebug()', (): void => {
+  describe("logDebug()", (): void => {
     {
       const testCases: string[] = [
-        '##[test]Message',
-        '##vso[test]Message',
-        '##VSO[test]Message'
-      ]
+        "##[test]Message",
+        "##vso[test]Message",
+        "##VSO[test]Message",
+      ];
 
       testCases.forEach((value: string): void => {
         it(`should log the filtered message for '${value}'`, (): void => {
           // Arrange
-          const logger: Logger = new Logger(instance(consoleWrapper), instance(runnerInvoker))
+          const logger: Logger = new Logger(
+            instance(consoleWrapper),
+            instance(runnerInvoker),
+          );
 
           // Act
-          logger.logDebug(value)
+          logger.logDebug(value);
 
           // Assert
-          verify(runnerInvoker.logDebug('test]Message')).once()
-        })
-      })
+          verify(runnerInvoker.logDebug("test]Message")).once();
+        });
+      });
     }
 
     it("should log the message", (): void => {
@@ -57,26 +60,29 @@ describe("logger.ts", (): void => {
     });
   });
 
-  describe('logInfo()', (): void => {
+  describe("logInfo()", (): void => {
     {
       const testCases: string[] = [
-        '##[test]Message',
-        '##vso[test]Message',
-        '##VSO[test]Message'
-      ]
+        "##[test]Message",
+        "##vso[test]Message",
+        "##VSO[test]Message",
+      ];
 
       testCases.forEach((value: string): void => {
         it(`should log the filtered message for '${value}'`, (): void => {
           // Arrange
-          const logger: Logger = new Logger(instance(consoleWrapper), instance(runnerInvoker))
+          const logger: Logger = new Logger(
+            instance(consoleWrapper),
+            instance(runnerInvoker),
+          );
 
           // Act
-          logger.logInfo(value)
+          logger.logInfo(value);
 
           // Assert
-          verify(consoleWrapper.log('test]Message')).once()
-        })
-      })
+          verify(consoleWrapper.log("test]Message")).once();
+        });
+      });
     }
 
     it("should log the message", (): void => {
@@ -94,26 +100,29 @@ describe("logger.ts", (): void => {
     });
   });
 
-  describe('logWarning()', (): void => {
+  describe("logWarning()", (): void => {
     {
       const testCases: string[] = [
-        '##[test]Message',
-        '##vso[test]Message',
-        '##VSO[test]Message'
-      ]
+        "##[test]Message",
+        "##vso[test]Message",
+        "##VSO[test]Message",
+      ];
 
       testCases.forEach((value: string): void => {
         it(`should log the filtered message for '${value}'`, (): void => {
           // Arrange
-          const logger: Logger = new Logger(instance(consoleWrapper), instance(runnerInvoker))
+          const logger: Logger = new Logger(
+            instance(consoleWrapper),
+            instance(runnerInvoker),
+          );
 
           // Act
-          logger.logWarning(value)
+          logger.logWarning(value);
 
           // Assert
-          verify(runnerInvoker.logWarning('test]Message')).once()
-        })
-      })
+          verify(runnerInvoker.logWarning("test]Message")).once();
+        });
+      });
     }
 
     it("should log the message", (): void => {
@@ -131,26 +140,29 @@ describe("logger.ts", (): void => {
     });
   });
 
-  describe('logError()', (): void => {
+  describe("logError()", (): void => {
     {
       const testCases: string[] = [
-        '##[test]Message',
-        '##vso[test]Message',
-        '##VSO[test]Message'
-      ]
+        "##[test]Message",
+        "##vso[test]Message",
+        "##VSO[test]Message",
+      ];
 
       testCases.forEach((value: string): void => {
         it(`should log the filtered message for '${value}'`, (): void => {
           // Arrange
-          const logger: Logger = new Logger(instance(consoleWrapper), instance(runnerInvoker))
+          const logger: Logger = new Logger(
+            instance(consoleWrapper),
+            instance(runnerInvoker),
+          );
 
           // Act
-          logger.logError(value)
+          logger.logError(value);
 
           // Assert
-          verify(runnerInvoker.logError('test]Message')).once()
-        })
-      })
+          verify(runnerInvoker.logError("test]Message")).once();
+        });
+      });
     }
 
     it("should log the message", (): void => {
@@ -168,31 +180,34 @@ describe("logger.ts", (): void => {
     });
   });
 
-  describe('logErrorObject()', (): void => {
+  describe("logErrorObject()", (): void => {
     {
-      const testCases: string[] = [
-        '##[test]',
-        '##vso[test]',
-        '##VSO[test]'
-      ]
+      const testCases: string[] = ["##[test]", "##vso[test]", "##VSO[test]"];
 
       testCases.forEach((value: string): void => {
         it(`should log all filtered properties '${value}' of the error object`, (): void => {
           // Arrange
-          const logger: Logger = new Logger(instance(consoleWrapper), instance(runnerInvoker))
-          const error: Error = new Error(`${value}Message`)
-          error.name = `${value}Error`
-          error.stack = `${value}Stack contents`
+          const logger: Logger = new Logger(
+            instance(consoleWrapper),
+            instance(runnerInvoker),
+          );
+          const error: Error = new Error(`${value}Message`);
+          error.name = `${value}Error`;
+          error.stack = `${value}Stack contents`;
 
           // Act
-          logger.logErrorObject(error)
+          logger.logErrorObject(error);
 
           // Assert
-          verify(consoleWrapper.log('test]Error – name: "test]Error"')).once()
-          verify(consoleWrapper.log('test]Error – message: "test]Message"')).once()
-          verify(consoleWrapper.log('test]Error – stack: "test]Stack contents"')).once()
-        })
-      })
+          verify(consoleWrapper.log('test]Error – name: "test]Error"')).once();
+          verify(
+            consoleWrapper.log('test]Error – message: "test]Message"'),
+          ).once();
+          verify(
+            consoleWrapper.log('test]Error – stack: "test]Stack contents"'),
+          ).once();
+        });
+      });
     }
 
     it("should log all properties of the error object", (): void => {
@@ -216,9 +231,15 @@ describe("logger.ts", (): void => {
 
     it("should log all properties of a complex error object", (): void => {
       // Arrange
-      const logger: Logger = new Logger(instance(consoleWrapper), instance(runnerInvoker))
-      const error: HttpError = new HttpError(StatusCodes.NOT_FOUND, 'Not Found')
-      error.stack = 'Stack contents'
+      const logger: Logger = new Logger(
+        instance(consoleWrapper),
+        instance(runnerInvoker),
+      );
+      const error: HttpError = new HttpError(
+        StatusCodes.NOT_FOUND,
+        "Not Found",
+      );
+      error.stack = "Stack contents";
 
       // Act
       logger.logErrorObject(error);
@@ -231,49 +252,60 @@ describe("logger.ts", (): void => {
     });
   });
 
-  describe('replay()', (): void => {
+  describe("replay()", (): void => {
     {
-      const testCases: string[] = [
-        '##[test]',
-        '##vso[test]',
-        '##VSO[test]'
-      ]
+      const testCases: string[] = ["##[test]", "##vso[test]", "##VSO[test]"];
 
       testCases.forEach((value: string): void => {
         it(`should replay all filtered messages '${value}'`, (): void => {
           // Arrange
-          const logger: Logger = new Logger(instance(consoleWrapper), instance(runnerInvoker))
-          logger.logDebug(`${value}Debug Message 1`)
-          logger.logInfo(`${value}Info Message 1`)
-          logger.logWarning(`${value}Warning Message 1`)
-          logger.logError(`${value}Error Message 1`)
-          logger.logDebug(`${value}Debug Message 2`)
-          logger.logInfo(`${value}Info Message 2`)
-          logger.logWarning(`${value}Warning Message 2`)
-          logger.logError(`${value}Error Message 2`)
+          const logger: Logger = new Logger(
+            instance(consoleWrapper),
+            instance(runnerInvoker),
+          );
+          logger.logDebug(`${value}Debug Message 1`);
+          logger.logInfo(`${value}Info Message 1`);
+          logger.logWarning(`${value}Warning Message 1`);
+          logger.logError(`${value}Error Message 1`);
+          logger.logDebug(`${value}Debug Message 2`);
+          logger.logInfo(`${value}Info Message 2`);
+          logger.logWarning(`${value}Warning Message 2`);
+          logger.logError(`${value}Error Message 2`);
 
           // Act
-          logger.replay()
+          logger.replay();
 
           // Assert
-          verify(runnerInvoker.logDebug('test]Debug Message 1')).once()
-          verify(consoleWrapper.log('test]Info Message 1')).once()
-          verify(runnerInvoker.logWarning('test]Warning Message 1')).once()
-          verify(runnerInvoker.logError('test]Error Message 1')).once()
-          verify(runnerInvoker.logDebug('test]Debug Message 2')).once()
-          verify(consoleWrapper.log('test]Info Message 2')).once()
-          verify(runnerInvoker.logWarning('test]Warning Message 2')).once()
-          verify(runnerInvoker.logError('test]Error Message 2')).once()
-          verify(consoleWrapper.log('🔁 debug   – test]Debug Message 1')).once()
-          verify(consoleWrapper.log('🔁 info    – test]Info Message 1')).once()
-          verify(consoleWrapper.log('🔁 warning – test]Warning Message 1')).once()
-          verify(consoleWrapper.log('🔁 error   – test]Error Message 1')).once()
-          verify(consoleWrapper.log('🔁 debug   – test]Debug Message 2')).once()
-          verify(consoleWrapper.log('🔁 info    – test]Info Message 2')).once()
-          verify(consoleWrapper.log('🔁 warning – test]Warning Message 2')).once()
-          verify(consoleWrapper.log('🔁 error   – test]Error Message 2')).once()
-        })
-      })
+          verify(runnerInvoker.logDebug("test]Debug Message 1")).once();
+          verify(consoleWrapper.log("test]Info Message 1")).once();
+          verify(runnerInvoker.logWarning("test]Warning Message 1")).once();
+          verify(runnerInvoker.logError("test]Error Message 1")).once();
+          verify(runnerInvoker.logDebug("test]Debug Message 2")).once();
+          verify(consoleWrapper.log("test]Info Message 2")).once();
+          verify(runnerInvoker.logWarning("test]Warning Message 2")).once();
+          verify(runnerInvoker.logError("test]Error Message 2")).once();
+          verify(
+            consoleWrapper.log("🔁 debug   – test]Debug Message 1"),
+          ).once();
+          verify(consoleWrapper.log("🔁 info    – test]Info Message 1")).once();
+          verify(
+            consoleWrapper.log("🔁 warning – test]Warning Message 1"),
+          ).once();
+          verify(
+            consoleWrapper.log("🔁 error   – test]Error Message 1"),
+          ).once();
+          verify(
+            consoleWrapper.log("🔁 debug   – test]Debug Message 2"),
+          ).once();
+          verify(consoleWrapper.log("🔁 info    – test]Info Message 2")).once();
+          verify(
+            consoleWrapper.log("🔁 warning – test]Warning Message 2"),
+          ).once();
+          verify(
+            consoleWrapper.log("🔁 error   – test]Error Message 2"),
+          ).once();
+        });
+      });
     }
 
     it("should replay all messages", (): void => {

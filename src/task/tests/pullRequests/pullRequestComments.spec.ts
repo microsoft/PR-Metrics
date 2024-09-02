@@ -3,23 +3,23 @@
  * Licensed under the MIT License.
  */
 
-import 'reflect-metadata'
-import * as Converter from '../../src/utilities/converter'
-import { instance, mock, verify, when } from 'ts-mockito'
-import CodeMetrics from '../../src/metrics/codeMetrics'
-import CodeMetricsData from '../../src/metrics/codeMetricsData'
-import CommentData from '../../src/repos/interfaces/commentData'
-import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
-import FileCommentData from '../../src/repos/interfaces/fileCommentData'
-import { FixedLengthArrayInterface } from '../../src/utilities/fixedLengthArrayInterface'
-import Inputs from '../../src/metrics/inputs'
-import Logger from '../../src/utilities/logger'
-import PullRequestCommentData from '../../src/repos/interfaces/pullRequestCommentData'
-import PullRequestComments from '../../src/pullRequests/pullRequestComments'
-import PullRequestCommentsData from '../../src/pullRequests/pullRequestCommentsData'
-import ReposInvoker from '../../src/repos/reposInvoker'
-import RunnerInvoker from '../../src/runners/runnerInvoker'
-import assert from 'node:assert/strict'
+import "reflect-metadata";
+import * as Converter from "../../src/utilities/converter";
+import { instance, mock, verify, when } from "ts-mockito";
+import CodeMetrics from "../../src/metrics/codeMetrics";
+import CodeMetricsData from "../../src/metrics/codeMetricsData";
+import CommentData from "../../src/repos/interfaces/commentData";
+import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces";
+import FileCommentData from "../../src/repos/interfaces/fileCommentData";
+import { FixedLengthArrayInterface } from "../../src/utilities/fixedLengthArrayInterface";
+import Inputs from "../../src/metrics/inputs";
+import Logger from "../../src/utilities/logger";
+import PullRequestCommentData from "../../src/repos/interfaces/pullRequestCommentData";
+import PullRequestComments from "../../src/pullRequests/pullRequestComments";
+import PullRequestCommentsData from "../../src/pullRequests/pullRequestCommentsData";
+import ReposInvoker from "../../src/repos/reposInvoker";
+import RunnerInvoker from "../../src/runners/runnerInvoker";
+import assert from "node:assert/strict";
 
 describe("pullRequestComments.ts", (): void => {
   let complexGitPullRequestComments: CommentData;
@@ -925,12 +925,22 @@ describe("pullRequestComments.ts", (): void => {
         },
       ];
 
-      testCases.forEach(({ isSmall, isSufficientlyTested }: TestCaseType): void => {
-        it(`should return Active when the pull request small status is '${String(isSmall)}' and the sufficient test coverage status is '${Converter.toString(isSufficientlyTested)}'`, async (): Promise<void> => {
-          // Arrange
-          when(codeMetrics.isSmall()).thenResolve(isSmall)
-          when(codeMetrics.isSufficientlyTested()).thenResolve(isSufficientlyTested)
-          const pullRequestComments: PullRequestComments = new PullRequestComments(instance(codeMetrics), instance(inputs), instance(logger), instance(reposInvoker), instance(runnerInvoker))
+      testCases.forEach(
+        ({ isSmall, isSufficientlyTested }: TestCaseType): void => {
+          it(`should return Active when the pull request small status is '${String(isSmall)}' and the sufficient test coverage status is '${Converter.toString(isSufficientlyTested)}'`, async (): Promise<void> => {
+            // Arrange
+            when(codeMetrics.isSmall()).thenResolve(isSmall);
+            when(codeMetrics.isSufficientlyTested()).thenResolve(
+              isSufficientlyTested,
+            );
+            const pullRequestComments: PullRequestComments =
+              new PullRequestComments(
+                instance(codeMetrics),
+                instance(inputs),
+                instance(logger),
+                instance(reposInvoker),
+                instance(runnerInvoker),
+              );
 
             // Act
             const result: CommentThreadStatus =

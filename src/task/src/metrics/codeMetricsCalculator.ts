@@ -3,16 +3,16 @@
  * Licensed under the MIT License.
  */
 
-import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
-import GitInvoker from '../git/gitInvoker'
-import Logger from '../utilities/logger'
-import PullRequest from '../pullRequests/pullRequest'
-import PullRequestComments from '../pullRequests/pullRequestComments'
-import PullRequestCommentsData from '../pullRequests/pullRequestCommentsData'
-import PullRequestDetailsInterface from '../repos/interfaces/pullRequestDetailsInterface'
-import ReposInvoker from '../repos/reposInvoker'
-import RunnerInvoker from '../runners/runnerInvoker'
-import { injectable } from 'tsyringe'
+import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces";
+import GitInvoker from "../git/gitInvoker";
+import Logger from "../utilities/logger";
+import PullRequest from "../pullRequests/pullRequest";
+import PullRequestComments from "../pullRequests/pullRequestComments";
+import PullRequestCommentsData from "../pullRequests/pullRequestCommentsData";
+import PullRequestDetailsInterface from "../repos/interfaces/pullRequestDetailsInterface";
+import ReposInvoker from "../repos/reposInvoker";
+import RunnerInvoker from "../runners/runnerInvoker";
+import { injectable } from "tsyringe";
 
 /**
  * A class for calculating and updating the code metrics within pull requests.
@@ -66,7 +66,10 @@ export default class CodeMetricsCalculator {
 
     const provider: boolean | string = this._pullRequest.isSupportedProvider;
     if (provider !== true) {
-      return this._runnerInvoker.loc('metrics.codeMetricsCalculator.unsupportedProvider', String(provider))
+      return this._runnerInvoker.loc(
+        "metrics.codeMetricsCalculator.unsupportedProvider",
+        String(provider),
+      );
     }
 
     return null;
@@ -125,9 +128,13 @@ export default class CodeMetricsCalculator {
   public async updateDetails(): Promise<void> {
     this._logger.logDebug("* CodeMetricsCalculator.updateDetails()");
 
-    const details: PullRequestDetailsInterface = await this._reposInvoker.getTitleAndDescription()
-    const updatedTitle: string | null = await this._pullRequest.getUpdatedTitle(details.title)
-    const updatedDescription: string | null = this._pullRequest.getUpdatedDescription(details.description)
+    const details: PullRequestDetailsInterface =
+      await this._reposInvoker.getTitleAndDescription();
+    const updatedTitle: string | null = await this._pullRequest.getUpdatedTitle(
+      details.title,
+    );
+    const updatedDescription: string | null =
+      this._pullRequest.getUpdatedDescription(details.description);
 
     await this._reposInvoker.setTitleAndDescription(
       updatedTitle,
@@ -149,7 +156,7 @@ export default class CodeMetricsCalculator {
     promises.push(this.updateMetricsComment(commentData));
 
     for (const commentThreadId of commentData.commentThreadsRequiringDeletion) {
-      promises.push(this._reposInvoker.deleteCommentThread(commentThreadId))
+      promises.push(this._reposInvoker.deleteCommentThread(commentThreadId));
     }
 
     await Promise.all(promises);

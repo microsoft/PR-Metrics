@@ -3,21 +3,26 @@
  * Licensed under the MIT License.
  */
 
-import * as path from 'path'
-import * as taskLib from 'azure-pipelines-task-lib/task'
-import { IExecOptions, IExecSyncResult } from 'azure-pipelines-task-lib/toolrunner'
-import AzurePipelinesRunnerWrapper from '../wrappers/azurePipelinesRunnerWrapper'
-import { EndpointAuthorization } from './endpointAuthorization'
-import ExecOutput from './execOutput'
-import RunnerInvokerInterface from './runnerInvokerInterface'
-import { singleton } from 'tsyringe'
+import * as path from "path";
+import * as taskLib from "azure-pipelines-task-lib/task";
+import {
+  IExecOptions,
+  IExecSyncResult,
+} from "azure-pipelines-task-lib/toolrunner";
+import AzurePipelinesRunnerWrapper from "../wrappers/azurePipelinesRunnerWrapper";
+import { EndpointAuthorization } from "./endpointAuthorization";
+import ExecOutput from "./execOutput";
+import RunnerInvokerInterface from "./runnerInvokerInterface";
+import { singleton } from "tsyringe";
 
 /**
  * A class for invoking Azure Pipelines runner functionality.
  */
 @singleton()
-export default class AzurePipelinesRunnerInvoker implements RunnerInvokerInterface {
-  private readonly _azurePipelinesRunnerWrapper: AzurePipelinesRunnerWrapper
+export default class AzurePipelinesRunnerInvoker
+  implements RunnerInvokerInterface
+{
+  private readonly _azurePipelinesRunnerWrapper: AzurePipelinesRunnerWrapper;
 
   /**
    * Initializes a new instance of the `AzurePipelinesRunnerInvoker` class.
@@ -33,12 +38,16 @@ export default class AzurePipelinesRunnerInvoker implements RunnerInvokerInterfa
       silent: true,
     };
 
-    const result: IExecSyncResult = this._azurePipelinesRunnerWrapper.execSync(tool, args, options)
+    const result: IExecSyncResult = this._azurePipelinesRunnerWrapper.execSync(
+      tool,
+      args,
+      options,
+    );
     return Promise.resolve({
       exitCode: result.code,
       stderr: result.stderr,
       stdout: result.stdout,
-    })
+    });
   }
 
   public getInput(name: string[]): string | undefined {
@@ -85,8 +94,8 @@ export default class AzurePipelinesRunnerInvoker implements RunnerInvokerInterfa
     );
   }
 
-  public loc (key: string, ...param: string[]): string {
-    return this._azurePipelinesRunnerWrapper.loc(key, ...param)
+  public loc(key: string, ...param: string[]): string {
+    return this._azurePipelinesRunnerWrapper.loc(key, ...param);
   }
 
   public logDebug(message: string): void {

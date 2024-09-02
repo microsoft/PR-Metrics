@@ -3,31 +3,35 @@
  * Licensed under the MIT License.
  */
 
-import 'reflect-metadata'
-import * as Converter from '../../src/utilities/converter'
-import * as InputsDefault from '../../src/metrics/inputsDefault'
-import { deepEqual, instance, mock, verify, when } from 'ts-mockito'
-import Inputs from '../../src/metrics/inputs'
-import Logger from '../../src/utilities/logger'
-import RunnerInvoker from '../../src/runners/runnerInvoker'
-import { anyString } from '../testUtilities/mockito'
-import assert from 'node:assert/strict'
-import { decimalRadix } from '../../src/utilities/constants'
+import "reflect-metadata";
+import * as Converter from "../../src/utilities/converter";
+import * as InputsDefault from "../../src/metrics/inputsDefault";
+import { deepEqual, instance, mock, verify, when } from "ts-mockito";
+import Inputs from "../../src/metrics/inputs";
+import Logger from "../../src/utilities/logger";
+import RunnerInvoker from "../../src/runners/runnerInvoker";
+import { anyString } from "../testUtilities/mockito";
+import assert from "node:assert/strict";
+import { decimalRadix } from "../../src/utilities/constants";
 
-describe('inputs.ts', (): void => {
-  const adjustingAlwaysCloseComment = 'Adjusting the always-close-comment mode input to \'false\'.'
-  const adjustingBaseSizeResource = `Adjusting the base size input to '${String(InputsDefault.baseSize)}'.`
-  const adjustingGrowthRateResource = `Adjusting the growth rate input to '${String(InputsDefault.growthRate)}'.`
-  const adjustingTestFactorResource = `Adjusting the test factor input to '${String(InputsDefault.testFactor)}'.`
-  const adjustingFileMatchingPatternsResource = `Adjusting the file matching patterns input to '${JSON.stringify(InputsDefault.fileMatchingPatterns)}'.`
-  const adjustingCodeFileExtensionsResource = `Adjusting the code file extensions input to '${JSON.stringify(InputsDefault.codeFileExtensions)}'.`
-  const disablingTestFactorResource = 'Disabling the test factor validation.'
-  const settingAlwaysCloseComment = 'Setting the always-close-comment mode input to \'true\'.'
-  const settingBaseSizeResource = 'Setting the base size input to \'VALUE\'.'
-  const settingGrowthRateResource = 'Setting the growth rate input to \'VALUE\'.'
-  const settingTestFactorResource = 'Setting the test factor input to \'VALUE\'.'
-  const settingFileMatchingPatternsResource = 'Setting the file matching patterns input to \'VALUE\'.'
-  const settingCodeFileExtensionsResource = 'Setting the code file extensions input to \'VALUE\'.'
+describe("inputs.ts", (): void => {
+  const adjustingAlwaysCloseComment =
+    "Adjusting the always-close-comment mode input to 'false'.";
+  const adjustingBaseSizeResource = `Adjusting the base size input to '${String(InputsDefault.baseSize)}'.`;
+  const adjustingGrowthRateResource = `Adjusting the growth rate input to '${String(InputsDefault.growthRate)}'.`;
+  const adjustingTestFactorResource = `Adjusting the test factor input to '${String(InputsDefault.testFactor)}'.`;
+  const adjustingFileMatchingPatternsResource = `Adjusting the file matching patterns input to '${JSON.stringify(InputsDefault.fileMatchingPatterns)}'.`;
+  const adjustingCodeFileExtensionsResource = `Adjusting the code file extensions input to '${JSON.stringify(InputsDefault.codeFileExtensions)}'.`;
+  const disablingTestFactorResource = "Disabling the test factor validation.";
+  const settingAlwaysCloseComment =
+    "Setting the always-close-comment mode input to 'true'.";
+  const settingBaseSizeResource = "Setting the base size input to 'VALUE'.";
+  const settingGrowthRateResource = "Setting the growth rate input to 'VALUE'.";
+  const settingTestFactorResource = "Setting the test factor input to 'VALUE'.";
+  const settingFileMatchingPatternsResource =
+    "Setting the file matching patterns input to 'VALUE'.";
+  const settingCodeFileExtensionsResource =
+    "Setting the code file extensions input to 'VALUE'.";
 
   let logger: Logger;
   let runnerInvoker: RunnerInvoker;
@@ -370,30 +374,38 @@ describe('inputs.ts', (): void => {
             );
 
             // Assert
-            assert.equal(inputs.baseSize, parseInt(baseSize, decimalRadix))
-            verify(logger.logDebug('* Inputs.initialize()')).once()
-            verify(logger.logDebug('* Inputs.initializeBaseSize()')).once()
-            verify(logger.logDebug('* Inputs.initializeGrowthRate()')).once()
-            verify(logger.logDebug('* Inputs.initializeTestFactor()')).once()
-            verify(logger.logDebug('* Inputs.initializeAlwaysCloseComment()')).once()
-            verify(logger.logDebug('* Inputs.initializeFileMatchingPatterns()')).once()
-            verify(logger.logDebug('* Inputs.initializeCodeFileExtensions()')).once()
-            verify(logger.logDebug('* Inputs.baseSize')).once()
-            verify(logger.logInfo(adjustingAlwaysCloseComment)).once()
-            verify(logger.logInfo(adjustingBaseSizeResource)).never()
-            verify(logger.logInfo(adjustingGrowthRateResource)).once()
-            verify(logger.logInfo(adjustingTestFactorResource)).once()
-            verify(logger.logInfo(adjustingFileMatchingPatternsResource)).once()
-            verify(logger.logInfo(adjustingCodeFileExtensionsResource)).once()
-            verify(logger.logInfo(disablingTestFactorResource)).never()
-            verify(logger.logInfo(settingAlwaysCloseComment)).never()
-            verify(logger.logInfo(settingBaseSizeResource)).once()
-            verify(logger.logInfo(settingGrowthRateResource)).never()
-            verify(logger.logInfo(settingTestFactorResource)).never()
-            verify(logger.logInfo(settingFileMatchingPatternsResource)).never()
-            verify(logger.logInfo(settingCodeFileExtensionsResource)).never()
-          })
-        })
+            assert.equal(inputs.baseSize, parseInt(baseSize, decimalRadix));
+            verify(logger.logDebug("* Inputs.initialize()")).once();
+            verify(logger.logDebug("* Inputs.initializeBaseSize()")).once();
+            verify(logger.logDebug("* Inputs.initializeGrowthRate()")).once();
+            verify(logger.logDebug("* Inputs.initializeTestFactor()")).once();
+            verify(
+              logger.logDebug("* Inputs.initializeAlwaysCloseComment()"),
+            ).once();
+            verify(
+              logger.logDebug("* Inputs.initializeFileMatchingPatterns()"),
+            ).once();
+            verify(
+              logger.logDebug("* Inputs.initializeCodeFileExtensions()"),
+            ).once();
+            verify(logger.logDebug("* Inputs.baseSize")).once();
+            verify(logger.logInfo(adjustingAlwaysCloseComment)).once();
+            verify(logger.logInfo(adjustingBaseSizeResource)).never();
+            verify(logger.logInfo(adjustingGrowthRateResource)).once();
+            verify(logger.logInfo(adjustingTestFactorResource)).once();
+            verify(
+              logger.logInfo(adjustingFileMatchingPatternsResource),
+            ).once();
+            verify(logger.logInfo(adjustingCodeFileExtensionsResource)).once();
+            verify(logger.logInfo(disablingTestFactorResource)).never();
+            verify(logger.logInfo(settingAlwaysCloseComment)).never();
+            verify(logger.logInfo(settingBaseSizeResource)).once();
+            verify(logger.logInfo(settingGrowthRateResource)).never();
+            verify(logger.logInfo(settingTestFactorResource)).never();
+            verify(logger.logInfo(settingFileMatchingPatternsResource)).never();
+            verify(logger.logInfo(settingCodeFileExtensionsResource)).never();
+          });
+        });
       }
     });
 

@@ -3,33 +3,33 @@
  * Licensed under the MIT License.
  */
 
-import 'isomorphic-fetch'
-import * as Converter from '../utilities/converter'
-import * as Validator from '../utilities/validator'
-import BaseReposInvoker from './baseReposInvoker'
-import CommentData from './interfaces/commentData'
-import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
-import CreateIssueCommentResponse from '../wrappers/octokitInterfaces/createIssueCommentResponse'
-import CreateReviewCommentResponse from '../wrappers/octokitInterfaces/createReviewCommentResponse'
-import DeleteReviewCommentResponse from '../wrappers/octokitInterfaces/deleteReviewCommentResponse'
-import FileCommentData from './interfaces/fileCommentData'
-import GetIssueCommentsResponse from '../wrappers/octokitInterfaces/getIssueCommentsResponse'
-import GetPullResponse from '../wrappers/octokitInterfaces/getPullResponse'
-import GetReviewCommentsResponse from '../wrappers/octokitInterfaces/getReviewCommentsResponse'
-import GitInvoker from '../git/gitInvoker'
-import ListCommitsResponse from '../wrappers/octokitInterfaces/listCommitsResponse'
-import Logger from '../utilities/logger'
-import { OctokitOptions } from '@octokit/core/dist-types/types'
-import OctokitWrapper from '../wrappers/octokitWrapper'
-import PullRequestCommentData from './interfaces/pullRequestCommentData'
-import PullRequestDetailsInterface from './interfaces/pullRequestDetailsInterface'
-import { RequestError } from 'octokit'
-import RunnerInvoker from '../runners/runnerInvoker'
-import { StatusCodes } from 'http-status-codes'
-import UpdateIssueCommentResponse from '../wrappers/octokitInterfaces/updateIssueCommentResponse'
-import UpdatePullResponse from '../wrappers/octokitInterfaces/updatePullResponse'
-import { decimalRadix } from '../utilities/constants'
-import { singleton } from 'tsyringe'
+import "isomorphic-fetch";
+import * as Converter from "../utilities/converter";
+import * as Validator from "../utilities/validator";
+import BaseReposInvoker from "./baseReposInvoker";
+import CommentData from "./interfaces/commentData";
+import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces";
+import CreateIssueCommentResponse from "../wrappers/octokitInterfaces/createIssueCommentResponse";
+import CreateReviewCommentResponse from "../wrappers/octokitInterfaces/createReviewCommentResponse";
+import DeleteReviewCommentResponse from "../wrappers/octokitInterfaces/deleteReviewCommentResponse";
+import FileCommentData from "./interfaces/fileCommentData";
+import GetIssueCommentsResponse from "../wrappers/octokitInterfaces/getIssueCommentsResponse";
+import GetPullResponse from "../wrappers/octokitInterfaces/getPullResponse";
+import GetReviewCommentsResponse from "../wrappers/octokitInterfaces/getReviewCommentsResponse";
+import GitInvoker from "../git/gitInvoker";
+import ListCommitsResponse from "../wrappers/octokitInterfaces/listCommitsResponse";
+import Logger from "../utilities/logger";
+import { OctokitOptions } from "@octokit/core/dist-types/types";
+import OctokitWrapper from "../wrappers/octokitWrapper";
+import PullRequestCommentData from "./interfaces/pullRequestCommentData";
+import PullRequestDetailsInterface from "./interfaces/pullRequestDetailsInterface";
+import { RequestError } from "octokit";
+import RunnerInvoker from "../runners/runnerInvoker";
+import { StatusCodes } from "http-status-codes";
+import UpdateIssueCommentResponse from "../wrappers/octokitInterfaces/updateIssueCommentResponse";
+import UpdatePullResponse from "../wrappers/octokitInterfaces/updatePullResponse";
+import { decimalRadix } from "../utilities/constants";
+import { singleton } from "tsyringe";
 
 /**
  * A class for invoking GitHub Repos functionality.
@@ -41,11 +41,11 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
   private readonly _octokitWrapper: OctokitWrapper;
   private readonly _runnerInvoker: RunnerInvoker;
 
-  private _isInitialized = false
-  private _owner = ''
-  private _repo = ''
-  private _pullRequestId = 0
-  private _commitId = ''
+  private _isInitialized = false;
+  private _owner = "";
+  private _repo = "";
+  private _pullRequestId = 0;
+  private _commitId = "";
 
   /**
    * Initializes a new instance of the `GitHubReposInvoker` class.
@@ -72,14 +72,16 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     this._logger.logDebug("* GitHubReposInvoker.isAccessTokenAvailable()");
 
     if (process.env.PR_METRICS_ACCESS_TOKEN === undefined) {
-      return Promise.resolve(this._runnerInvoker.loc('repos.gitHubReposInvoker.noGitHubAccessToken'))
+      return Promise.resolve(
+        this._runnerInvoker.loc("repos.gitHubReposInvoker.noGitHubAccessToken"),
+      );
     }
 
-    return Promise.resolve(null)
+    return Promise.resolve(null);
   }
 
-  public async getTitleAndDescription (): Promise<PullRequestDetailsInterface> {
-    this._logger.logDebug('* GitHubReposInvoker.getTitleAndDescription()')
+  public async getTitleAndDescription(): Promise<PullRequestDetailsInterface> {
+    this._logger.logDebug("* GitHubReposInvoker.getTitleAndDescription()");
 
     this.initialize();
     const result: GetPullResponse = await this.invokeApiCall(
@@ -172,12 +174,29 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
 
       await this.invokeApiCall(async (): Promise<void> => {
         try {
-          const result: CreateReviewCommentResponse | null = await this._octokitWrapper.createReviewComment(this._owner, this._repo, this._pullRequestId, content, fileName, this._commitId)
-          this._logger.logDebug(JSON.stringify(result))
+          const result: CreateReviewCommentResponse | null =
+            await this._octokitWrapper.createReviewComment(
+              this._owner,
+              this._repo,
+              this._pullRequestId,
+              content,
+              fileName,
+              this._commitId,
+            );
+          this._logger.logDebug(JSON.stringify(result));
         } catch (error: unknown) {
-          if (error instanceof RequestError && error.status as StatusCodes === StatusCodes.UNPROCESSABLE_ENTITY && error.message.includes('pull_request_review_thread.path diff too large')) {
-            this._logger.logInfo('GitHub createReviewComment() threw a 422 error related to a large diff. Ignoring as this is expected.')
-            this._logger.logErrorObject(error)
+          if (
+            error instanceof RequestError &&
+            (error.status as StatusCodes) ===
+              StatusCodes.UNPROCESSABLE_ENTITY &&
+            error.message.includes(
+              "pull_request_review_thread.path diff too large",
+            )
+          ) {
+            this._logger.logInfo(
+              "GitHub createReviewComment() threw a 422 error related to a large diff. Ignoring as this is expected.",
+            );
+            this._logger.logErrorObject(error);
           } else {
             throw error;
           }
@@ -327,9 +346,9 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
       baseUrl = `https://${sourceRepositoryUriElements[2]}/api/v3`;
     }
 
-    this._owner = sourceRepositoryUriElements[3]
-    this._repo = sourceRepositoryUriElements[4]
-    const gitEnding = '.git'
+    this._owner = sourceRepositoryUriElements[3];
+    this._repo = sourceRepositoryUriElements[4];
+    const gitEnding = ".git";
     if (this._repo.endsWith(gitEnding)) {
       this._repo = this._repo.substring(
         0,
@@ -350,20 +369,22 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
 
     if (pullRequestComments) {
       for (const value of pullRequestComments.data) {
-        const id: number = value.id
-        const content: string | undefined = value.body
+        const id: number = value.id;
+        const content: string | undefined = value.body;
         if (content !== undefined) {
-          result.pullRequestComments.push(new PullRequestCommentData(id, content))
+          result.pullRequestComments.push(
+            new PullRequestCommentData(id, content),
+          );
         }
       }
     }
 
     if (fileComments) {
       for (const value of fileComments.data) {
-        const id: number = value.id
-        const content: string = value.body
-        const file: string = value.path
-        result.fileComments.push(new FileCommentData(id, content, file))
+        const id: number = value.id;
+        const content: string = value.body;
+        const file: string = value.path;
+        result.fileComments.push(new FileCommentData(id, content, file));
       }
     }
 
@@ -398,15 +419,27 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
         );
       }
 
-      const match: number = parseInt(matches[1], decimalRadix)
-      result = await this.invokeApiCall(async (): Promise<ListCommitsResponse> => {
-        const internalResult: ListCommitsResponse = await this._octokitWrapper.listCommits(this._owner, this._repo, this._pullRequestId, match)
-        this._logger.logDebug(JSON.stringify(internalResult))
-        return internalResult
-      })
+      const match: number = parseInt(matches[1], decimalRadix);
+      result = await this.invokeApiCall(
+        async (): Promise<ListCommitsResponse> => {
+          const internalResult: ListCommitsResponse =
+            await this._octokitWrapper.listCommits(
+              this._owner,
+              this._repo,
+              this._pullRequestId,
+              match,
+            );
+          this._logger.logDebug(JSON.stringify(internalResult));
+          return internalResult;
+        },
+      );
     }
 
-    this._commitId = Validator.validateString(result.data[result.data.length - 1]?.sha, `result.data[${String(result.data.length - 1)}].sha`, 'GitHubReposInvoker.getCommitId()')
+    this._commitId = Validator.validateString(
+      result.data[result.data.length - 1]?.sha,
+      `result.data[${String(result.data.length - 1)}].sha`,
+      "GitHubReposInvoker.getCommitId()",
+    );
   }
 
   protected async invokeApiCall<Response>(

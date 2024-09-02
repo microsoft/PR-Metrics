@@ -3,27 +3,27 @@
  * Licensed under the MIT License.
  */
 
-import * as actionsExec from '@actions/exec'
-import * as fs from 'fs'
-import * as path from 'path'
-import * as util from 'util'
-import AzurePipelinesRunnerWrapper from '../wrappers/azurePipelinesRunnerWrapper'
-import ConsoleWrapper from '../wrappers/consoleWrapper'
-import { EndpointAuthorization } from './endpointAuthorization'
-import ExecOutput from './execOutput'
-import GitHubRunnerWrapper from '../wrappers/gitHubRunnerWrapper'
-import ResourcesJsonInterface from '../jsonTypes/resourcesJsonInterface'
-import RunnerInvokerInterface from './runnerInvokerInterface'
-import { singleton } from 'tsyringe'
+import * as actionsExec from "@actions/exec";
+import * as fs from "fs";
+import * as path from "path";
+import * as util from "util";
+import AzurePipelinesRunnerWrapper from "../wrappers/azurePipelinesRunnerWrapper";
+import ConsoleWrapper from "../wrappers/consoleWrapper";
+import { EndpointAuthorization } from "./endpointAuthorization";
+import ExecOutput from "./execOutput";
+import GitHubRunnerWrapper from "../wrappers/gitHubRunnerWrapper";
+import ResourcesJsonInterface from "../jsonTypes/resourcesJsonInterface";
+import RunnerInvokerInterface from "./runnerInvokerInterface";
+import { singleton } from "tsyringe";
 
 /**
  * A class for invoking GitHub runner functionality.
  */
 @singleton()
 export default class GitHubRunnerInvoker implements RunnerInvokerInterface {
-  private readonly _azurePipelinesRunnerWrapper: AzurePipelinesRunnerWrapper
-  private readonly _consoleWrapper: ConsoleWrapper
-  private readonly _gitHubRunnerWrapper: GitHubRunnerWrapper
+  private readonly _azurePipelinesRunnerWrapper: AzurePipelinesRunnerWrapper;
+  private readonly _consoleWrapper: ConsoleWrapper;
+  private readonly _gitHubRunnerWrapper: GitHubRunnerWrapper;
 
   private readonly _resources: Map<string, string> = new Map<string, string>();
 
@@ -87,21 +87,26 @@ export default class GitHubRunnerInvoker implements RunnerInvokerInterface {
     );
   }
 
-  public locInitialize (folder: string): void {
-    const resourceData: string = fs.readFileSync(path.join(folder, 'resources.resjson'), 'utf8')
-    const resources: ResourcesJsonInterface = JSON.parse(resourceData) as ResourcesJsonInterface
+  public locInitialize(folder: string): void {
+    const resourceData: string = fs.readFileSync(
+      path.join(folder, "resources.resjson"),
+      "utf8",
+    );
+    const resources: ResourcesJsonInterface = JSON.parse(
+      resourceData,
+    ) as ResourcesJsonInterface;
 
-    const entries: [string, string][] = Object.entries(resources)
-    const stringPrefix = 'loc.messages.'
+    const entries: [string, string][] = Object.entries(resources);
+    const stringPrefix = "loc.messages.";
     for (const [key, value] of entries) {
       if (key.startsWith(stringPrefix)) {
-        this._resources.set(key.substring(stringPrefix.length), value)
+        this._resources.set(key.substring(stringPrefix.length), value);
       }
     }
   }
 
-  public loc (key: string, ...param: string[]): string {
-    return util.format(this._resources.get(key), ...param)
+  public loc(key: string, ...param: string[]): string {
+    return util.format(this._resources.get(key), ...param);
   }
 
   public logDebug(message: string): void {

@@ -235,24 +235,39 @@ describe("tokenManager.ts", (): void => {
         },
       ];
 
-      testCases.forEach((endpointAuthorization: EndpointAuthorization | undefined): void => {
-        it(`throws an error when endpoint authorization scheme is '${endpointAuthorization?.scheme ?? ''}'`, async (): Promise<void> => {
-          // Arrange
-          const tokenManager: TokenManager = new TokenManager(instance(azureDevOpsApiWrapper), instance(logger), instance(runnerInvoker))
-          when(runnerInvoker.getEndpointAuthorization('SYSTEMVSSCONNECTION')).thenReturn(endpointAuthorization)
+      testCases.forEach(
+        (endpointAuthorization: EndpointAuthorization | undefined): void => {
+          it(`throws an error when endpoint authorization scheme is '${endpointAuthorization?.scheme ?? ""}'`, async (): Promise<void> => {
+            // Arrange
+            const tokenManager: TokenManager = new TokenManager(
+              instance(azureDevOpsApiWrapper),
+              instance(logger),
+              instance(runnerInvoker),
+            );
+            when(
+              runnerInvoker.getEndpointAuthorization("SYSTEMVSSCONNECTION"),
+            ).thenReturn(endpointAuthorization);
 
             // Act
             const func: () => Promise<string | null> = async () =>
               tokenManager.getToken();
 
-          // Assert
-          await AssertExtensions.toThrowAsync(func, `Could not acquire authorization token from workload identity federation as the scheme was '${endpointAuthorization?.scheme ?? ''}'.`)
-          verify(logger.logDebug('* TokenManager.getToken()')).once()
-          verify(logger.logDebug('* TokenManager.getAccessToken()')).once()
-          verify(logger.logDebug('* TokenManager.getFederatedToken()')).once()
-          verify(logger.logDebug('* TokenManager.getSystemAccessToken()')).once()
-        })
-      })
+            // Assert
+            await AssertExtensions.toThrowAsync(
+              func,
+              `Could not acquire authorization token from workload identity federation as the scheme was '${endpointAuthorization?.scheme ?? ""}'.`,
+            );
+            verify(logger.logDebug("* TokenManager.getToken()")).once();
+            verify(logger.logDebug("* TokenManager.getAccessToken()")).once();
+            verify(
+              logger.logDebug("* TokenManager.getFederatedToken()"),
+            ).once();
+            verify(
+              logger.logDebug("* TokenManager.getSystemAccessToken()"),
+            ).once();
+          });
+        },
+      );
     }
   });
 

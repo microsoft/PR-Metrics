@@ -3,17 +3,17 @@
  * Licensed under the MIT License.
  */
 
-import * as minimatch from 'minimatch'
-import * as path from 'path'
-import { CodeFileMetricInterface } from './codeFileMetricInterface'
-import CodeMetricsData from './codeMetricsData'
-import { FixedLengthArrayInterface } from '../utilities/fixedLengthArrayInterface'
-import GitInvoker from '../git/gitInvoker'
-import Inputs from './inputs'
-import Logger from '../utilities/logger'
-import RunnerInvoker from '../runners/runnerInvoker'
-import { decimalRadix } from '../utilities/constants'
-import { singleton } from 'tsyringe'
+import * as minimatch from "minimatch";
+import * as path from "path";
+import { CodeFileMetricInterface } from "./codeFileMetricInterface";
+import CodeMetricsData from "./codeMetricsData";
+import { FixedLengthArrayInterface } from "../utilities/fixedLengthArrayInterface";
+import GitInvoker from "../git/gitInvoker";
+import Inputs from "./inputs";
+import Logger from "../utilities/logger";
+import RunnerInvoker from "../runners/runnerInvoker";
+import { decimalRadix } from "../utilities/constants";
+import { singleton } from "tsyringe";
 
 /**
  * A class for computing metrics for software code in pull requests.
@@ -30,13 +30,13 @@ export default class CodeMetrics {
     dot: true,
   };
 
-  private _isInitialized = false
-  private readonly _filesNotRequiringReview: string[] = []
-  private readonly _deletedFilesNotRequiringReview: string[] = []
-  private _size = ''
-  private _sizeIndicator = ''
-  private _metrics: CodeMetricsData = new CodeMetricsData(0, 0, 0)
-  private _isSufficientlyTested: boolean | null = null
+  private _isInitialized = false;
+  private readonly _filesNotRequiringReview: string[] = [];
+  private readonly _deletedFilesNotRequiringReview: string[] = [];
+  private _size = "";
+  private _sizeIndicator = "";
+  private _metrics: CodeMetricsData = new CodeMetricsData(0, 0, 0);
+  private _isSufficientlyTested: boolean | null = null;
 
   /**
    * Initializes a new instance of the `CodeMetrics` class.
@@ -160,14 +160,15 @@ export default class CodeMetrics {
   private initializeMetrics(gitDiffSummary: string): void {
     this._logger.logDebug("* CodeMetrics.initializeMetrics()");
 
-    const notNotPattern = '!!'
-    const notPattern = '!'
+    const notNotPattern = "!!";
+    const notPattern = "!";
 
-    const codeFileMetrics: CodeFileMetricInterface[] = this.createFileMetricsMap(gitDiffSummary)
+    const codeFileMetrics: CodeFileMetricInterface[] =
+      this.createFileMetricsMap(gitDiffSummary);
 
-    const matches: CodeFileMetricInterface[] = []
-    const nonMatches: CodeFileMetricInterface[] = []
-    const nonMatchesToComment: CodeFileMetricInterface[] = []
+    const matches: CodeFileMetricInterface[] = [];
+    const nonMatches: CodeFileMetricInterface[] = [];
+    const nonMatchesToComment: CodeFileMetricInterface[] = [];
 
     // Check for glob matches.
     for (const codeFileMetric of codeFileMetrics) {
@@ -176,21 +177,32 @@ export default class CodeMetrics {
        * is overridden by a negative match, remove it from consideration. Finally, check for double negative matches,
        * which override the negative matches.
        */
-      const positiveFileMatchingPatterns: string[] = []
-      const negativeFileMatchingPatterns: string[] = []
-      const doubleNegativeFileMatchingPatterns: string[] = []
+      const positiveFileMatchingPatterns: string[] = [];
+      const negativeFileMatchingPatterns: string[] = [];
+      const doubleNegativeFileMatchingPatterns: string[] = [];
       for (const fileMatchingPattern of this._inputs.fileMatchingPatterns) {
         if (fileMatchingPattern.startsWith(notNotPattern)) {
-          doubleNegativeFileMatchingPatterns.push(fileMatchingPattern.substring(notNotPattern.length))
+          doubleNegativeFileMatchingPatterns.push(
+            fileMatchingPattern.substring(notNotPattern.length),
+          );
         } else if (fileMatchingPattern.startsWith(notPattern)) {
-          negativeFileMatchingPatterns.push(fileMatchingPattern.substring(notPattern.length))
+          negativeFileMatchingPatterns.push(
+            fileMatchingPattern.substring(notPattern.length),
+          );
         } else {
-          positiveFileMatchingPatterns.push(fileMatchingPattern)
+          positiveFileMatchingPatterns.push(fileMatchingPattern);
         }
       }
 
-      const isValidFilePattern: boolean = this.determineIfValidFilePattern(codeFileMetric, positiveFileMatchingPatterns, negativeFileMatchingPatterns, doubleNegativeFileMatchingPatterns)
-      const isValidFileExtension: boolean = this.matchFileExtension(codeFileMetric.fileName)
+      const isValidFilePattern: boolean = this.determineIfValidFilePattern(
+        codeFileMetric,
+        positiveFileMatchingPatterns,
+        negativeFileMatchingPatterns,
+        doubleNegativeFileMatchingPatterns,
+      );
+      const isValidFileExtension: boolean = this.matchFileExtension(
+        codeFileMetric.fileName,
+      );
       if (isValidFilePattern && isValidFileExtension) {
         matches.push(codeFileMetric);
       } else if (!isValidFilePattern) {
@@ -203,81 +215,120 @@ export default class CodeMetrics {
     this.constructMetrics(matches, nonMatches, nonMatchesToComment);
   }
 
-  private determineIfValidFilePattern(codeFileMetric: CodeFileMetricInterface, positiveFileMatchingPatterns: string[], negativeFileMatchingPatterns: string[], doubleNegativeFileMatchingPatterns: string[]): boolean {
-    this._logger.logDebug('* CodeMetrics.determineIfValidFilePattern()')
+  private determineIfValidFilePattern(
+    codeFileMetric: CodeFileMetricInterface,
+    positiveFileMatchingPatterns: string[],
+    negativeFileMatchingPatterns: string[],
+    doubleNegativeFileMatchingPatterns: string[],
+  ): boolean {
+    this._logger.logDebug("* CodeMetrics.determineIfValidFilePattern()");
 
-    let result = false
+    let result = false;
 
     for (const fileMatchingPattern of positiveFileMatchingPatterns) {
       if (this.performGlobCheck(codeFileMetric.fileName, fileMatchingPattern)) {
-        result = true
+        result = true;
       }
     }
 
     if (result) {
       for (const fileMatchingPattern of negativeFileMatchingPatterns) {
-        if (this.performGlobCheck(codeFileMetric.fileName, fileMatchingPattern)) {
-          result = false
+        if (
+          this.performGlobCheck(codeFileMetric.fileName, fileMatchingPattern)
+        ) {
+          result = false;
         }
       }
 
       if (!result) {
         for (const fileMatchingPattern of doubleNegativeFileMatchingPatterns) {
-          if (this.performGlobCheck(codeFileMetric.fileName, fileMatchingPattern)) {
-            result = true
+          if (
+            this.performGlobCheck(codeFileMetric.fileName, fileMatchingPattern)
+          ) {
+            result = true;
           }
         }
       }
     }
 
-    return result
+    return result;
   }
 
+  private performGlobCheck(
+    fileName: string,
+    fileMatchingPattern: string,
+  ): boolean {
+    this._logger.logDebug("* CodeMetrics.performGlobCheck()");
 
-  private performGlobCheck (fileName: string, fileMatchingPattern: string): boolean {
-    this._logger.logDebug('* CodeMetrics.performGlobCheck()')
-
-    return minimatch.match([fileName], fileMatchingPattern, CodeMetrics._minimatchOptions).length > 0
+    return (
+      minimatch.match(
+        [fileName],
+        fileMatchingPattern,
+        CodeMetrics._minimatchOptions,
+      ).length > 0
+    );
   }
 
-  private matchFileExtension (fileName: string): boolean {
-    this._logger.logDebug('* CodeMetrics.matchFileExtension()')
+  private matchFileExtension(fileName: string): boolean {
+    this._logger.logDebug("* CodeMetrics.matchFileExtension()");
 
-    const fileExtensionIndex: number = fileName.lastIndexOf('.')
-    const fileExtension: string = fileName.substring(fileExtensionIndex + 1).toLowerCase()
-    const result: boolean = this._inputs.codeFileExtensions.has(fileExtension)
+    const fileExtensionIndex: number = fileName.lastIndexOf(".");
+    const fileExtension: string = fileName
+      .substring(fileExtensionIndex + 1)
+      .toLowerCase();
+    const result: boolean = this._inputs.codeFileExtensions.has(fileExtension);
 
-    this._logger.logDebug(`File name '${fileName}' has extension '${fileExtension}', which is ${result ? 'in' : 'ex'}cluded.`)
-    return result
+    this._logger.logDebug(
+      `File name '${fileName}' has extension '${fileExtension}', which is ${result ? "in" : "ex"}cluded.`,
+    );
+    return result;
   }
 
-  private constructMetrics (matches: CodeFileMetricInterface[], nonMatches: CodeFileMetricInterface[], nonMatchesToComment: CodeFileMetricInterface[]): void {
-    this._logger.logDebug('* CodeMetrics.constructMetrics()')
+  private constructMetrics(
+    matches: CodeFileMetricInterface[],
+    nonMatches: CodeFileMetricInterface[],
+    nonMatchesToComment: CodeFileMetricInterface[],
+  ): void {
+    this._logger.logDebug("* CodeMetrics.constructMetrics()");
 
-    let productCode = 0
-    let testCode = 0
-    let ignoredCode = 0
+    let productCode = 0;
+    let testCode = 0;
+    let ignoredCode = 0;
 
     for (const entry of matches) {
-      if (/.*((T|t)est|TEST).*/u.test(entry.fileName) || /.*\.spec\..*/iu.test(path.basename(entry.fileName))) {
-        this._logger.logDebug(`Test File: ${entry.fileName} (${String(entry.linesAdded)} lines)`)
-        testCode += entry.linesAdded
+      if (
+        /.*((T|t)est|TEST).*/u.test(entry.fileName) ||
+        /.*\.spec\..*/iu.test(path.basename(entry.fileName))
+      ) {
+        this._logger.logDebug(
+          `Test File: ${entry.fileName} (${String(entry.linesAdded)} lines)`,
+        );
+        testCode += entry.linesAdded;
       } else {
-        this._logger.logDebug(`Product File: ${entry.fileName} (${String(entry.linesAdded)} lines)`)
-        productCode += entry.linesAdded
+        this._logger.logDebug(
+          `Product File: ${entry.fileName} (${String(entry.linesAdded)} lines)`,
+        );
+        productCode += entry.linesAdded;
       }
     }
 
     for (const entry of nonMatches) {
-      this._logger.logDebug(`Ignored File: ${entry.fileName} (${String(entry.linesAdded)} lines)`)
-      ignoredCode += entry.linesAdded
+      this._logger.logDebug(
+        `Ignored File: ${entry.fileName} (${String(entry.linesAdded)} lines)`,
+      );
+      ignoredCode += entry.linesAdded;
     }
 
     for (const entry of nonMatchesToComment) {
-      if (entry.linesAdded > 0 || (entry.linesAdded === 0 && entry.linesDeleted === 0)) {
-        this._logger.logDebug(`Ignored File: ${entry.fileName} (${String(entry.linesAdded)} lines), comment to be added`)
-        ignoredCode += entry.linesAdded
-        this._filesNotRequiringReview.push(entry.fileName)
+      if (
+        entry.linesAdded > 0 ||
+        (entry.linesAdded === 0 && entry.linesDeleted === 0)
+      ) {
+        this._logger.logDebug(
+          `Ignored File: ${entry.fileName} (${String(entry.linesAdded)} lines), comment to be added`,
+        );
+        ignoredCode += entry.linesAdded;
+        this._filesNotRequiringReview.push(entry.fileName);
       } else {
         this._logger.logDebug(
           `Ignored File: ${entry.fileName} (deleted), comment to be added`,
@@ -289,12 +340,12 @@ export default class CodeMetrics {
     this._metrics = new CodeMetricsData(productCode, testCode, ignoredCode);
   }
 
-  private createFileMetricsMap (input: string): CodeFileMetricInterface[] {
-    this._logger.logDebug('* CodeMetrics.createFileMetricsMap()')
+  private createFileMetricsMap(input: string): CodeFileMetricInterface[] {
+    this._logger.logDebug("* CodeMetrics.createFileMetricsMap()");
 
     // Removing the ending that can be created by test mocks.
-    const endingToRemove = '\r\nrc:0\r\nsuccess:true'
-    let modifiedInput: string = input
+    const endingToRemove = "\r\nrc:0\r\nsuccess:true";
+    let modifiedInput: string = input;
     if (modifiedInput.endsWith(endingToRemove)) {
       modifiedInput = modifiedInput.substring(
         0,
@@ -305,11 +356,17 @@ export default class CodeMetrics {
     // Condense file and folder names that were renamed e.g. F{a => i}leT{b => e}st.d{c => l}l".
     const lines: string[] = modifiedInput.split("\n");
 
-    const result: CodeFileMetricInterface[] = []
+    const result: CodeFileMetricInterface[] = [];
     for (const line of lines) {
-      const elements: string[] = line.split('\t')
-      if (elements[0] === undefined || elements[1] === undefined || elements[2] === undefined) {
-        throw new RangeError(`The number of elements '${String(elements.length)}' in '${line}' in input '${modifiedInput}' did not match the expected 3.`)
+      const elements: string[] = line.split("\t");
+      if (
+        elements[0] === undefined ||
+        elements[1] === undefined ||
+        elements[2] === undefined
+      ) {
+        throw new RangeError(
+          `The number of elements '${String(elements.length)}' in '${line}' in input '${modifiedInput}' did not match the expected 3.`,
+        );
       }
 
       // Condense file and folder names that were renamed e.g. "F{a => i}leT{b => e}st.d{c => l}l" or "FaleTbst.dcl => FileTest.dll".
@@ -319,9 +376,9 @@ export default class CodeMetrics {
 
       result.push({
         fileName,
-        linesAdded: this.parseChangedLines(elements[0], line, 'added'),
-        linesDeleted: this.parseChangedLines(elements[1], line, 'deleted')
-      })
+        linesAdded: this.parseChangedLines(elements[0], line, "added"),
+        linesDeleted: this.parseChangedLines(elements[1], line, "deleted"),
+      });
     }
 
     return result;
@@ -337,7 +394,7 @@ export default class CodeMetrics {
     if (element === "-") {
       result = 0;
     } else {
-      result = parseInt(element, decimalRadix)
+      result = parseInt(element, decimalRadix);
       if (isNaN(result)) {
         throw new Error(
           `Could not parse ${category} lines '${element}' from line '${line}'.`,
@@ -363,8 +420,8 @@ export default class CodeMetrics {
   private initializeSizeIndicator(): void {
     this._logger.logDebug("* CodeMetrics.initializeSizeIndicator()");
 
-    this._size = this.calculateSize()
-    let testIndicator = ''
+    this._size = this.calculateSize();
+    let testIndicator = "";
     if (this._isSufficientlyTested !== null) {
       if (this._isSufficientlyTested) {
         testIndicator = this._runnerInvoker.loc(
@@ -387,13 +444,16 @@ export default class CodeMetrics {
   private calculateSize(): string {
     this._logger.logDebug("* CodeMetrics.calculateSize()");
 
-    const indicators: FixedLengthArrayInterface<((prefix: string) => string), 5> = [
-      (): string => this._runnerInvoker.loc('metrics.codeMetrics.titleSizeXS'),
-      (): string => this._runnerInvoker.loc('metrics.codeMetrics.titleSizeS'),
-      (): string => this._runnerInvoker.loc('metrics.codeMetrics.titleSizeM'),
-      (): string => this._runnerInvoker.loc('metrics.codeMetrics.titleSizeL'),
-      (prefix: string): string => this._runnerInvoker.loc('metrics.codeMetrics.titleSizeXL', prefix)
-    ]
+    const indicators: FixedLengthArrayInterface<(prefix: string) => string, 5> =
+      [
+        (): string =>
+          this._runnerInvoker.loc("metrics.codeMetrics.titleSizeXS"),
+        (): string => this._runnerInvoker.loc("metrics.codeMetrics.titleSizeS"),
+        (): string => this._runnerInvoker.loc("metrics.codeMetrics.titleSizeM"),
+        (): string => this._runnerInvoker.loc("metrics.codeMetrics.titleSizeL"),
+        (prefix: string): string =>
+          this._runnerInvoker.loc("metrics.codeMetrics.titleSizeXL", prefix),
+      ];
 
     // Calculate the smaller size.
     if (this._metrics.productCode < this._inputs.baseSize) {
@@ -401,9 +461,9 @@ export default class CodeMetrics {
     }
 
     // Calculate the larger sizes.
-    let index = 1
-    let result: string = indicators[1]('')
-    let currentSize: number = this._inputs.baseSize * this._inputs.growthRate
+    let index = 1;
+    let result: string = indicators[1]("");
+    let currentSize: number = this._inputs.baseSize * this._inputs.growthRate;
     while (this._metrics.productCode >= currentSize) {
       currentSize *= this._inputs.growthRate;
       index += 1;

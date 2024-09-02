@@ -3,12 +3,15 @@
  * Licensed under the MIT License.
  */
 
-import ErrorWithStatusInterface from '../../src/repos/interfaces/errorWithStatusInterface'
+import ErrorWithStatusInterface from "../../src/repos/interfaces/errorWithStatusInterface";
 
 /**
  * An error object containing a status code.
  */
-export default class ErrorWithStatus extends Error implements ErrorWithStatusInterface {
+export default class ErrorWithStatus
+  extends Error
+  implements ErrorWithStatusInterface
+{
   /**
    * The error status code accessed via `status`.
    */
@@ -17,10 +20,10 @@ export default class ErrorWithStatus extends Error implements ErrorWithStatusInt
   /**
    * The error status code accessed via `statusCode`.
    */
-  public statusCode: number | undefined
+  public statusCode: number | undefined;
 
   /**
    * The internal error message.
    */
-  public internalMessage: string | undefined
+  public internalMessage: string | undefined;
 }

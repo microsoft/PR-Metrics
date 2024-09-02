@@ -3,28 +3,47 @@
  * Licensed under the MIT License.
  */
 
-import * as fs from 'fs'
-import * as path from 'path'
-import PackageJsonInterface from './jsonTypes/packageJsonInterface'
-import ResourcesJsonInterface from '../src/jsonTypes/resourcesJsonInterface'
-import TaskJsonInterface from './jsonTypes/taskJsonInterface'
-import VssExtensionJsonInterface from './jsonTypes/vssExtensionJsonInterface'
-import assert from 'node:assert/strict'
+import * as fs from "fs";
+import * as path from "path";
+import PackageJsonInterface from "./jsonTypes/packageJsonInterface";
+import ResourcesJsonInterface from "../src/jsonTypes/resourcesJsonInterface";
+import TaskJsonInterface from "./jsonTypes/taskJsonInterface";
+import VssExtensionJsonInterface from "./jsonTypes/vssExtensionJsonInterface";
+import assert from "node:assert/strict";
 
-describe('task.json', (): void => {
-  const basePath: string = path.join(__dirname, '..')
-  const taskJsonFile: string = path.join(basePath, 'task.json')
-  const taskJsonContents: string = fs.readFileSync(taskJsonFile, 'utf8')
-  const taskJson: TaskJsonInterface = JSON.parse(taskJsonContents) as TaskJsonInterface
-  const version = `${String(taskJson.version.Major)}.${String(taskJson.version.Minor)}.${String(taskJson.version.Patch)}`
+describe("task.json", (): void => {
+  const basePath: string = path.join(__dirname, "..");
+  const taskJsonFile: string = path.join(basePath, "task.json");
+  const taskJsonContents: string = fs.readFileSync(taskJsonFile, "utf8");
+  const taskJson: TaskJsonInterface = JSON.parse(
+    taskJsonContents,
+  ) as TaskJsonInterface;
+  const version = `${String(taskJson.version.Major)}.${String(taskJson.version.Minor)}.${String(taskJson.version.Patch)}`;
 
-  const languagesPath: string = path.join(basePath, 'Strings', 'resources.resjson')
-  const languages: string[] = fs.readdirSync(languagesPath)
-  const testCases: Map<string, ResourcesJsonInterface> = new Map<string, ResourcesJsonInterface>()
+  const languagesPath: string = path.join(
+    basePath,
+    "Strings",
+    "resources.resjson",
+  );
+  const languages: string[] = fs.readdirSync(languagesPath);
+  const testCases: Map<string, ResourcesJsonInterface> = new Map<
+    string,
+    ResourcesJsonInterface
+  >();
   for (const language of languages) {
-    const resourcesFile: string = path.join(languagesPath, language, 'resources.resjson')
-    const resourcesFileContents: string = fs.readFileSync(resourcesFile, 'utf8')
-    testCases.set(language, JSON.parse(resourcesFileContents) as ResourcesJsonInterface)
+    const resourcesFile: string = path.join(
+      languagesPath,
+      language,
+      "resources.resjson",
+    );
+    const resourcesFileContents: string = fs.readFileSync(
+      resourcesFile,
+      "utf8",
+    );
+    testCases.set(
+      language,
+      JSON.parse(resourcesFileContents) as ResourcesJsonInterface,
+    );
   }
 
   it("should have a friendly name ending with the version number", (): void => {
@@ -41,9 +60,14 @@ describe('task.json', (): void => {
 
   it("should have the same version number as task.loc.json", (): void => {
     // Arrange
-    const taskLocJsonFile: string = path.join(basePath, 'task.loc.json')
-    const taskLocJsonContents: string = fs.readFileSync(taskLocJsonFile, 'utf8')
-    const taskLocJson: TaskJsonInterface = JSON.parse(taskLocJsonContents) as TaskJsonInterface
+    const taskLocJsonFile: string = path.join(basePath, "task.loc.json");
+    const taskLocJsonContents: string = fs.readFileSync(
+      taskLocJsonFile,
+      "utf8",
+    );
+    const taskLocJson: TaskJsonInterface = JSON.parse(
+      taskLocJsonContents,
+    ) as TaskJsonInterface;
 
     // Assert
     assert.equal(taskJson.version.Major, taskLocJson.version.Major);
@@ -53,9 +77,18 @@ describe('task.json', (): void => {
 
   it("should have the same version number as vss-extension.json", (): void => {
     // Arrange
-    const vssExtensionJsonFile: string = path.join(basePath, '..', 'vss-extension.json')
-    const vssExtensionJsonFileContents: string = fs.readFileSync(vssExtensionJsonFile, 'utf8')
-    const vssExtensionJson: VssExtensionJsonInterface = JSON.parse(vssExtensionJsonFileContents) as VssExtensionJsonInterface
+    const vssExtensionJsonFile: string = path.join(
+      basePath,
+      "..",
+      "vss-extension.json",
+    );
+    const vssExtensionJsonFileContents: string = fs.readFileSync(
+      vssExtensionJsonFile,
+      "utf8",
+    );
+    const vssExtensionJson: VssExtensionJsonInterface = JSON.parse(
+      vssExtensionJsonFileContents,
+    ) as VssExtensionJsonInterface;
 
     // Assert
     assert.equal(vssExtensionJson.version, version);
@@ -63,9 +96,19 @@ describe('task.json', (): void => {
 
   it("should have the same version number as package.json", (): void => {
     // Arrange
-    const packageJsonFile: string = path.join(basePath, '..', '..', 'package.json')
-    const packageJsonFileContents: string = fs.readFileSync(packageJsonFile, 'utf8')
-    const packageJson: PackageJsonInterface = JSON.parse(packageJsonFileContents) as PackageJsonInterface
+    const packageJsonFile: string = path.join(
+      basePath,
+      "..",
+      "..",
+      "package.json",
+    );
+    const packageJsonFileContents: string = fs.readFileSync(
+      packageJsonFile,
+      "utf8",
+    );
+    const packageJson: PackageJsonInterface = JSON.parse(
+      packageJsonFileContents,
+    ) as PackageJsonInterface;
 
     // Assert
     assert.equal(packageJson.version, version);
@@ -73,9 +116,19 @@ describe('task.json', (): void => {
 
   it("should have the same version number as package-lock.json", (): void => {
     // Arrange
-    const packageLockJsonFile: string = path.join(basePath, '..', '..', 'package-lock.json')
-    const packageLockJsonFileContents: string = fs.readFileSync(packageLockJsonFile, 'utf8')
-    const packageLockJson: PackageJsonInterface = JSON.parse(packageLockJsonFileContents) as PackageJsonInterface
+    const packageLockJsonFile: string = path.join(
+      basePath,
+      "..",
+      "..",
+      "package-lock.json",
+    );
+    const packageLockJsonFileContents: string = fs.readFileSync(
+      packageLockJsonFile,
+      "utf8",
+    );
+    const packageLockJson: PackageJsonInterface = JSON.parse(
+      packageLockJsonFileContents,
+    ) as PackageJsonInterface;
 
     // Assert
     assert.equal(packageLockJson.version, version);

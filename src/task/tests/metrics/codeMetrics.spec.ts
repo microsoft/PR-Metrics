@@ -697,10 +697,17 @@ describe("codeMetrics.ts", (): void => {
       },
     ];
 
-    testCases.forEach(({ gitResponse, sizeIndicator, testCoverageIndicator, metrics, globChecks }: TestCaseType): void => {
-      it(`with default inputs and git diff '${gitResponse.replace(/\n/gu, '\\n').replace(/\r/gu, '\\r')}', returns '${sizeIndicator}' size and '${String(testCoverageIndicator)}' test coverage`, async (): Promise<void> => {
-        // Arrange
-        when(gitInvoker.getDiffSummary()).thenResolve(gitResponse)
+    testCases.forEach(
+      ({
+        gitResponse,
+        sizeIndicator,
+        testCoverageIndicator,
+        metrics,
+        globChecks,
+      }: TestCaseType): void => {
+        it(`with default inputs and git diff '${gitResponse.replace(/\n/gu, "\\n").replace(/\r/gu, "\\r")}', returns '${sizeIndicator}' size and '${String(testCoverageIndicator)}' test coverage`, async (): Promise<void> => {
+          // Arrange
+          when(gitInvoker.getDiffSummary()).thenResolve(gitResponse);
 
           // Act
           const codeMetrics: CodeMetrics = new CodeMetrics(
@@ -710,30 +717,64 @@ describe("codeMetrics.ts", (): void => {
             instance(runnerInvoker),
           );
 
-        // Assert
-        assert.deepEqual(await codeMetrics.getFilesNotRequiringReview(), [])
-        assert.deepEqual(await codeMetrics.getDeletedFilesNotRequiringReview(), [])
-        assert.equal(await codeMetrics.getSize(), sizeIndicator)
-        assert.equal(await codeMetrics.getSizeIndicator(), `${sizeIndicator}${testCoverageIndicator ? '✔' : '⚠️'}`)
-        assert.deepEqual(await codeMetrics.getMetrics(), metrics)
-        assert.equal(await codeMetrics.isSmall(), sizeIndicator === 'XS' || sizeIndicator === 'S')
-        assert.equal(await codeMetrics.isSufficientlyTested(), testCoverageIndicator)
-        const derivedCount: number = (gitResponse.replace(/\r\n/gu, '').match(/\n/gu) ?? []).length + 1 - (gitResponse.endsWith('\n') ? 1 : 0)
-        verify(logger.logDebug('* CodeMetrics.getFilesNotRequiringReview()')).once()
-        verify(logger.logDebug('* CodeMetrics.getDeletedFilesNotRequiringReview()')).once()
-        verify(logger.logDebug('* CodeMetrics.getSize()')).once()
-        verify(logger.logDebug('* CodeMetrics.initialize()')).times(7)
-        verify(logger.logDebug('* CodeMetrics.initializeMetrics()')).once()
-        verify(logger.logDebug('* CodeMetrics.determineIfValidFilePattern()')).times(derivedCount)
-        verify(logger.logDebug('* CodeMetrics.performGlobCheck()')).times(globChecks)
-        verify(logger.logDebug('* CodeMetrics.matchFileExtension()')).times(derivedCount)
-        verify(logger.logDebug('* CodeMetrics.constructMetrics()')).once()
-        verify(logger.logDebug('* CodeMetrics.createFileMetricsMap()')).once()
-        verify(logger.logDebug('* CodeMetrics.initializeIsSufficientlyTested()')).once()
-        verify(logger.logDebug('* CodeMetrics.initializeSizeIndicator()')).once()
-        verify(logger.logDebug('* CodeMetrics.calculateSize()')).once()
-      })
-    })
+          // Assert
+          assert.deepEqual(await codeMetrics.getFilesNotRequiringReview(), []);
+          assert.deepEqual(
+            await codeMetrics.getDeletedFilesNotRequiringReview(),
+            [],
+          );
+          assert.equal(await codeMetrics.getSize(), sizeIndicator);
+          assert.equal(
+            await codeMetrics.getSizeIndicator(),
+            `${sizeIndicator}${testCoverageIndicator ? "✔" : "⚠️"}`,
+          );
+          assert.deepEqual(await codeMetrics.getMetrics(), metrics);
+          assert.equal(
+            await codeMetrics.isSmall(),
+            sizeIndicator === "XS" || sizeIndicator === "S",
+          );
+          assert.equal(
+            await codeMetrics.isSufficientlyTested(),
+            testCoverageIndicator,
+          );
+          const derivedCount: number =
+            (gitResponse.replace(/\r\n/gu, "").match(/\n/gu) ?? []).length +
+            1 -
+            (gitResponse.endsWith("\n") ? 1 : 0);
+          verify(
+            logger.logDebug("* CodeMetrics.getFilesNotRequiringReview()"),
+          ).once();
+          verify(
+            logger.logDebug(
+              "* CodeMetrics.getDeletedFilesNotRequiringReview()",
+            ),
+          ).once();
+          verify(logger.logDebug("* CodeMetrics.getSize()")).once();
+          verify(logger.logDebug("* CodeMetrics.initialize()")).times(7);
+          verify(logger.logDebug("* CodeMetrics.initializeMetrics()")).once();
+          verify(
+            logger.logDebug("* CodeMetrics.determineIfValidFilePattern()"),
+          ).times(derivedCount);
+          verify(logger.logDebug("* CodeMetrics.performGlobCheck()")).times(
+            globChecks,
+          );
+          verify(logger.logDebug("* CodeMetrics.matchFileExtension()")).times(
+            derivedCount,
+          );
+          verify(logger.logDebug("* CodeMetrics.constructMetrics()")).once();
+          verify(
+            logger.logDebug("* CodeMetrics.createFileMetricsMap()"),
+          ).once();
+          verify(
+            logger.logDebug("* CodeMetrics.initializeIsSufficientlyTested()"),
+          ).once();
+          verify(
+            logger.logDebug("* CodeMetrics.initializeSizeIndicator()"),
+          ).once();
+          verify(logger.logDebug("* CodeMetrics.calculateSize()")).once();
+        });
+      },
+    );
   }
 
   {
@@ -1281,15 +1322,28 @@ describe("codeMetrics.ts", (): void => {
       },
     ];
 
-    testCases.forEach(({ gitResponse, sizeIndicator, testCoverageIndicator, metrics, filesNotRequiringReview, deletedFilesNotRequiringReview, globChecks }: TestCaseType): void => {
-      it(`with non-default inputs and git diff '${gitResponse.replace(/\n/gu, '\\n')}', returns '${sizeIndicator}' size and '${String(testCoverageIndicator)}' test coverage`, async (): Promise<void> => {
-        // Arrange
-        when(inputs.baseSize).thenReturn(100)
-        when(inputs.growthRate).thenReturn(1.5)
-        when(inputs.testFactor).thenReturn(2.0)
-        when(inputs.fileMatchingPatterns).thenReturn(['**/*', 'other.ts', '!**/ignored.*'])
-        when(inputs.codeFileExtensions).thenReturn(new Set<string>(['ts']))
-        when(gitInvoker.getDiffSummary()).thenResolve(gitResponse)
+    testCases.forEach(
+      ({
+        gitResponse,
+        sizeIndicator,
+        testCoverageIndicator,
+        metrics,
+        filesNotRequiringReview,
+        deletedFilesNotRequiringReview,
+        globChecks,
+      }: TestCaseType): void => {
+        it(`with non-default inputs and git diff '${gitResponse.replace(/\n/gu, "\\n")}', returns '${sizeIndicator}' size and '${String(testCoverageIndicator)}' test coverage`, async (): Promise<void> => {
+          // Arrange
+          when(inputs.baseSize).thenReturn(100);
+          when(inputs.growthRate).thenReturn(1.5);
+          when(inputs.testFactor).thenReturn(2.0);
+          when(inputs.fileMatchingPatterns).thenReturn([
+            "**/*",
+            "other.ts",
+            "!**/ignored.*",
+          ]);
+          when(inputs.codeFileExtensions).thenReturn(new Set<string>(["ts"]));
+          when(gitInvoker.getDiffSummary()).thenResolve(gitResponse);
 
           // Act
           const codeMetrics: CodeMetrics = new CodeMetrics(
@@ -1299,31 +1353,68 @@ describe("codeMetrics.ts", (): void => {
             instance(runnerInvoker),
           );
 
-        // Assert
-        assert.deepEqual(await codeMetrics.getFilesNotRequiringReview(), filesNotRequiringReview)
-        assert.deepEqual(await codeMetrics.getDeletedFilesNotRequiringReview(), deletedFilesNotRequiringReview)
-        assert.equal(await codeMetrics.getSize(), sizeIndicator)
-        assert.equal(await codeMetrics.getSizeIndicator(), `${sizeIndicator}${testCoverageIndicator ? '✔' : '⚠️'}`)
-        assert.deepEqual(await codeMetrics.getMetrics(), metrics)
-        assert.equal(await codeMetrics.isSmall(), sizeIndicator === 'XS' || sizeIndicator === 'S')
-        assert.equal(await codeMetrics.isSufficientlyTested(), testCoverageIndicator)
-        const derivedCount: number = (gitResponse.match(/\n/gu) ?? []).length + 1
-        verify(logger.logDebug('* CodeMetrics.getFilesNotRequiringReview()')).once()
-        verify(logger.logDebug('* CodeMetrics.getDeletedFilesNotRequiringReview()')).once()
-        verify(logger.logDebug('* CodeMetrics.getSize()')).once()
-        verify(logger.logDebug('* CodeMetrics.initialize()')).times(7)
-        verify(logger.logDebug('* CodeMetrics.initializeMetrics()')).once()
-        verify(logger.logDebug('* CodeMetrics.determineIfValidFilePattern()')).times(derivedCount)
-        verify(logger.logDebug('* CodeMetrics.performGlobCheck()')).times(globChecks)
-        verify(logger.logDebug('* CodeMetrics.matchFileExtension()')).times(derivedCount)
-        verify(logger.logDebug('* CodeMetrics.matchFileExtension()')).times((gitResponse.match(/\n/gu) ?? []).length + 1)
-        verify(logger.logDebug('* CodeMetrics.constructMetrics()')).once()
-        verify(logger.logDebug('* CodeMetrics.createFileMetricsMap()')).once()
-        verify(logger.logDebug('* CodeMetrics.initializeIsSufficientlyTested()')).once()
-        verify(logger.logDebug('* CodeMetrics.initializeSizeIndicator()')).once()
-        verify(logger.logDebug('* CodeMetrics.calculateSize()')).once()
-      })
-    })
+          // Assert
+          assert.deepEqual(
+            await codeMetrics.getFilesNotRequiringReview(),
+            filesNotRequiringReview,
+          );
+          assert.deepEqual(
+            await codeMetrics.getDeletedFilesNotRequiringReview(),
+            deletedFilesNotRequiringReview,
+          );
+          assert.equal(await codeMetrics.getSize(), sizeIndicator);
+          assert.equal(
+            await codeMetrics.getSizeIndicator(),
+            `${sizeIndicator}${testCoverageIndicator ? "✔" : "⚠️"}`,
+          );
+          assert.deepEqual(await codeMetrics.getMetrics(), metrics);
+          assert.equal(
+            await codeMetrics.isSmall(),
+            sizeIndicator === "XS" || sizeIndicator === "S",
+          );
+          assert.equal(
+            await codeMetrics.isSufficientlyTested(),
+            testCoverageIndicator,
+          );
+          const derivedCount: number =
+            (gitResponse.match(/\n/gu) ?? []).length + 1;
+          verify(
+            logger.logDebug("* CodeMetrics.getFilesNotRequiringReview()"),
+          ).once();
+          verify(
+            logger.logDebug(
+              "* CodeMetrics.getDeletedFilesNotRequiringReview()",
+            ),
+          ).once();
+          verify(logger.logDebug("* CodeMetrics.getSize()")).once();
+          verify(logger.logDebug("* CodeMetrics.initialize()")).times(7);
+          verify(logger.logDebug("* CodeMetrics.initializeMetrics()")).once();
+          verify(
+            logger.logDebug("* CodeMetrics.determineIfValidFilePattern()"),
+          ).times(derivedCount);
+          verify(logger.logDebug("* CodeMetrics.performGlobCheck()")).times(
+            globChecks,
+          );
+          verify(logger.logDebug("* CodeMetrics.matchFileExtension()")).times(
+            derivedCount,
+          );
+          verify(logger.logDebug("* CodeMetrics.matchFileExtension()")).times(
+            (gitResponse.match(/\n/gu) ?? []).length + 1,
+          );
+          verify(logger.logDebug("* CodeMetrics.constructMetrics()")).once();
+          verify(
+            logger.logDebug("* CodeMetrics.createFileMetricsMap()"),
+          ).once();
+          verify(
+            logger.logDebug("* CodeMetrics.initializeIsSufficientlyTested()"),
+          ).once();
+          verify(
+            logger.logDebug("* CodeMetrics.initializeSizeIndicator()"),
+          ).once();
+          verify(logger.logDebug("* CodeMetrics.calculateSize()")).once();
+        });
+      },
+    );
   }
 
   {
@@ -1372,29 +1463,53 @@ describe("codeMetrics.ts", (): void => {
         );
 
         // Assert
-        assert.deepEqual(await codeMetrics.getFilesNotRequiringReview(), ['ignored1.ts', 'ignored2.ts'])
-        assert.deepEqual(await codeMetrics.getDeletedFilesNotRequiringReview(), [])
-        assert.equal(await codeMetrics.getSize(), 'XS')
-        assert.equal(await codeMetrics.getSizeIndicator(), 'XS⚠️')
-        assert.deepEqual(await codeMetrics.getMetrics(), new CodeMetricsData(2, 0, 2))
-        assert.equal(await codeMetrics.isSmall(), true)
-        assert.equal(await codeMetrics.isSufficientlyTested(), false)
-        const derivedCount: number = (gitResponse.match(/\n/gu) ?? []).length + 1
-        verify(logger.logDebug('* CodeMetrics.getFilesNotRequiringReview()')).once()
-        verify(logger.logDebug('* CodeMetrics.getDeletedFilesNotRequiringReview()')).once()
-        verify(logger.logDebug('* CodeMetrics.getSize()')).once()
-        verify(logger.logDebug('* CodeMetrics.initialize()')).times(7)
-        verify(logger.logDebug('* CodeMetrics.initializeMetrics()')).once()
-        verify(logger.logDebug('* CodeMetrics.determineIfValidFilePattern()')).times(derivedCount)
-        verify(logger.logDebug('* CodeMetrics.performGlobCheck()')).times(globChecks)
-        verify(logger.logDebug('* CodeMetrics.matchFileExtension()')).times(derivedCount)
-        verify(logger.logDebug('* CodeMetrics.constructMetrics()')).once()
-        verify(logger.logDebug('* CodeMetrics.createFileMetricsMap()')).once()
-        verify(logger.logDebug('* CodeMetrics.initializeIsSufficientlyTested()')).once()
-        verify(logger.logDebug('* CodeMetrics.initializeSizeIndicator()')).once()
-        verify(logger.logDebug('* CodeMetrics.calculateSize()')).once()
-      })
-    })
+        assert.deepEqual(await codeMetrics.getFilesNotRequiringReview(), [
+          "ignored1.ts",
+          "ignored2.ts",
+        ]);
+        assert.deepEqual(
+          await codeMetrics.getDeletedFilesNotRequiringReview(),
+          [],
+        );
+        assert.equal(await codeMetrics.getSize(), "XS");
+        assert.equal(await codeMetrics.getSizeIndicator(), "XS⚠️");
+        assert.deepEqual(
+          await codeMetrics.getMetrics(),
+          new CodeMetricsData(2, 0, 2),
+        );
+        assert.equal(await codeMetrics.isSmall(), true);
+        assert.equal(await codeMetrics.isSufficientlyTested(), false);
+        const derivedCount: number =
+          (gitResponse.match(/\n/gu) ?? []).length + 1;
+        verify(
+          logger.logDebug("* CodeMetrics.getFilesNotRequiringReview()"),
+        ).once();
+        verify(
+          logger.logDebug("* CodeMetrics.getDeletedFilesNotRequiringReview()"),
+        ).once();
+        verify(logger.logDebug("* CodeMetrics.getSize()")).once();
+        verify(logger.logDebug("* CodeMetrics.initialize()")).times(7);
+        verify(logger.logDebug("* CodeMetrics.initializeMetrics()")).once();
+        verify(
+          logger.logDebug("* CodeMetrics.determineIfValidFilePattern()"),
+        ).times(derivedCount);
+        verify(logger.logDebug("* CodeMetrics.performGlobCheck()")).times(
+          globChecks,
+        );
+        verify(logger.logDebug("* CodeMetrics.matchFileExtension()")).times(
+          derivedCount,
+        );
+        verify(logger.logDebug("* CodeMetrics.constructMetrics()")).once();
+        verify(logger.logDebug("* CodeMetrics.createFileMetricsMap()")).once();
+        verify(
+          logger.logDebug("* CodeMetrics.initializeIsSufficientlyTested()"),
+        ).once();
+        verify(
+          logger.logDebug("* CodeMetrics.initializeSizeIndicator()"),
+        ).once();
+        verify(logger.logDebug("* CodeMetrics.calculateSize()")).once();
+      });
+    });
   }
 
   it("with custom include pattern, includes the relevant files", async (): Promise<void> => {
@@ -1417,27 +1532,40 @@ describe("codeMetrics.ts", (): void => {
     );
 
     // Assert
-    assert.deepEqual(await codeMetrics.getFilesNotRequiringReview(), ['file.ts'])
-    assert.deepEqual(await codeMetrics.getDeletedFilesNotRequiringReview(), [])
-    assert.equal(await codeMetrics.getSize(), 'XS')
-    assert.equal(await codeMetrics.getSizeIndicator(), 'XS⚠️')
-    assert.deepEqual(await codeMetrics.getMetrics(), new CodeMetricsData(1, 1, 1))
-    assert.equal(await codeMetrics.isSmall(), true)
-    assert.equal(await codeMetrics.isSufficientlyTested(), false)
-    verify(logger.logDebug('* CodeMetrics.getFilesNotRequiringReview()')).once()
-    verify(logger.logDebug('* CodeMetrics.getDeletedFilesNotRequiringReview()')).once()
-    verify(logger.logDebug('* CodeMetrics.getSize()')).once()
-    verify(logger.logDebug('* CodeMetrics.initialize()')).times(7)
-    verify(logger.logDebug('* CodeMetrics.initializeMetrics()')).once()
-    verify(logger.logDebug('* CodeMetrics.determineIfValidFilePattern()')).times(3)
-    verify(logger.logDebug('* CodeMetrics.performGlobCheck()')).times(6)
-    verify(logger.logDebug('* CodeMetrics.matchFileExtension()')).times(3)
-    verify(logger.logDebug('* CodeMetrics.constructMetrics()')).once()
-    verify(logger.logDebug('* CodeMetrics.createFileMetricsMap()')).once()
-    verify(logger.logDebug('* CodeMetrics.initializeIsSufficientlyTested()')).once()
-    verify(logger.logDebug('* CodeMetrics.initializeSizeIndicator()')).once()
-    verify(logger.logDebug('* CodeMetrics.calculateSize()')).once()
-  })
+    assert.deepEqual(await codeMetrics.getFilesNotRequiringReview(), [
+      "file.ts",
+    ]);
+    assert.deepEqual(await codeMetrics.getDeletedFilesNotRequiringReview(), []);
+    assert.equal(await codeMetrics.getSize(), "XS");
+    assert.equal(await codeMetrics.getSizeIndicator(), "XS⚠️");
+    assert.deepEqual(
+      await codeMetrics.getMetrics(),
+      new CodeMetricsData(1, 1, 1),
+    );
+    assert.equal(await codeMetrics.isSmall(), true);
+    assert.equal(await codeMetrics.isSufficientlyTested(), false);
+    verify(
+      logger.logDebug("* CodeMetrics.getFilesNotRequiringReview()"),
+    ).once();
+    verify(
+      logger.logDebug("* CodeMetrics.getDeletedFilesNotRequiringReview()"),
+    ).once();
+    verify(logger.logDebug("* CodeMetrics.getSize()")).once();
+    verify(logger.logDebug("* CodeMetrics.initialize()")).times(7);
+    verify(logger.logDebug("* CodeMetrics.initializeMetrics()")).once();
+    verify(
+      logger.logDebug("* CodeMetrics.determineIfValidFilePattern()"),
+    ).times(3);
+    verify(logger.logDebug("* CodeMetrics.performGlobCheck()")).times(6);
+    verify(logger.logDebug("* CodeMetrics.matchFileExtension()")).times(3);
+    verify(logger.logDebug("* CodeMetrics.constructMetrics()")).once();
+    verify(logger.logDebug("* CodeMetrics.createFileMetricsMap()")).once();
+    verify(
+      logger.logDebug("* CodeMetrics.initializeIsSufficientlyTested()"),
+    ).once();
+    verify(logger.logDebug("* CodeMetrics.initializeSizeIndicator()")).once();
+    verify(logger.logDebug("* CodeMetrics.calculateSize()")).once();
+  });
 
   it("with double exclusion ignore patterns ignores the appropriate files", async (): Promise<void> => {
     // Arrange
@@ -1463,27 +1591,41 @@ describe("codeMetrics.ts", (): void => {
     );
 
     // Assert
-    assert.deepEqual(await codeMetrics.getFilesNotRequiringReview(), ['ignored1.ts', 'ignored3.ts'])
-    assert.deepEqual(await codeMetrics.getDeletedFilesNotRequiringReview(), [])
-    assert.equal(await codeMetrics.getSize(), 'XS')
-    assert.equal(await codeMetrics.getSizeIndicator(), 'XS⚠️')
-    assert.deepEqual(await codeMetrics.getMetrics(), new CodeMetricsData(2, 0, 2))
-    assert.equal(await codeMetrics.isSmall(), true)
-    assert.equal(await codeMetrics.isSufficientlyTested(), false)
-    verify(logger.logDebug('* CodeMetrics.getFilesNotRequiringReview()')).once()
-    verify(logger.logDebug('* CodeMetrics.getDeletedFilesNotRequiringReview()')).once()
-    verify(logger.logDebug('* CodeMetrics.getSize()')).once()
-    verify(logger.logDebug('* CodeMetrics.initialize()')).times(7)
-    verify(logger.logDebug('* CodeMetrics.initializeMetrics()')).once()
-    verify(logger.logDebug('* CodeMetrics.determineIfValidFilePattern()')).times(4)
-    verify(logger.logDebug('* CodeMetrics.performGlobCheck()')).times(11)
-    verify(logger.logDebug('* CodeMetrics.matchFileExtension()')).times(4)
-    verify(logger.logDebug('* CodeMetrics.constructMetrics()')).once()
-    verify(logger.logDebug('* CodeMetrics.createFileMetricsMap()')).once()
-    verify(logger.logDebug('* CodeMetrics.initializeIsSufficientlyTested()')).once()
-    verify(logger.logDebug('* CodeMetrics.initializeSizeIndicator()')).once()
-    verify(logger.logDebug('* CodeMetrics.calculateSize()')).once()
-  })
+    assert.deepEqual(await codeMetrics.getFilesNotRequiringReview(), [
+      "ignored1.ts",
+      "ignored3.ts",
+    ]);
+    assert.deepEqual(await codeMetrics.getDeletedFilesNotRequiringReview(), []);
+    assert.equal(await codeMetrics.getSize(), "XS");
+    assert.equal(await codeMetrics.getSizeIndicator(), "XS⚠️");
+    assert.deepEqual(
+      await codeMetrics.getMetrics(),
+      new CodeMetricsData(2, 0, 2),
+    );
+    assert.equal(await codeMetrics.isSmall(), true);
+    assert.equal(await codeMetrics.isSufficientlyTested(), false);
+    verify(
+      logger.logDebug("* CodeMetrics.getFilesNotRequiringReview()"),
+    ).once();
+    verify(
+      logger.logDebug("* CodeMetrics.getDeletedFilesNotRequiringReview()"),
+    ).once();
+    verify(logger.logDebug("* CodeMetrics.getSize()")).once();
+    verify(logger.logDebug("* CodeMetrics.initialize()")).times(7);
+    verify(logger.logDebug("* CodeMetrics.initializeMetrics()")).once();
+    verify(
+      logger.logDebug("* CodeMetrics.determineIfValidFilePattern()"),
+    ).times(4);
+    verify(logger.logDebug("* CodeMetrics.performGlobCheck()")).times(11);
+    verify(logger.logDebug("* CodeMetrics.matchFileExtension()")).times(4);
+    verify(logger.logDebug("* CodeMetrics.constructMetrics()")).once();
+    verify(logger.logDebug("* CodeMetrics.createFileMetricsMap()")).once();
+    verify(
+      logger.logDebug("* CodeMetrics.initializeIsSufficientlyTested()"),
+    ).once();
+    verify(logger.logDebug("* CodeMetrics.initializeSizeIndicator()")).once();
+    verify(logger.logDebug("* CodeMetrics.calculateSize()")).once();
+  });
 
   it("should return the expected result with test coverage disabled", async (): Promise<void> => {
     // Arrange
@@ -1499,27 +1641,38 @@ describe("codeMetrics.ts", (): void => {
     );
 
     // Assert
-    assert.deepEqual(await codeMetrics.getFilesNotRequiringReview(), [])
-    assert.deepEqual(await codeMetrics.getDeletedFilesNotRequiringReview(), [])
-    assert.equal(await codeMetrics.getSize(), 'XS')
-    assert.equal(await codeMetrics.getSizeIndicator(), 'XS')
-    assert.deepEqual(await codeMetrics.getMetrics(), new CodeMetricsData(1, 0, 0))
-    assert.equal(await codeMetrics.isSmall(), true)
-    assert.equal(await codeMetrics.isSufficientlyTested(), null)
-    verify(logger.logDebug('* CodeMetrics.getFilesNotRequiringReview()')).once()
-    verify(logger.logDebug('* CodeMetrics.getDeletedFilesNotRequiringReview()')).once()
-    verify(logger.logDebug('* CodeMetrics.getSize()')).once()
-    verify(logger.logDebug('* CodeMetrics.initialize()')).times(7)
-    verify(logger.logDebug('* CodeMetrics.initializeMetrics()')).once()
-    verify(logger.logDebug('* CodeMetrics.determineIfValidFilePattern()')).once()
-    verify(logger.logDebug('* CodeMetrics.performGlobCheck()')).times(2)
-    verify(logger.logDebug('* CodeMetrics.matchFileExtension()')).once()
-    verify(logger.logDebug('* CodeMetrics.constructMetrics()')).once()
-    verify(logger.logDebug('* CodeMetrics.createFileMetricsMap()')).once()
-    verify(logger.logDebug('* CodeMetrics.initializeIsSufficientlyTested()')).once()
-    verify(logger.logDebug('* CodeMetrics.initializeSizeIndicator()')).once()
-    verify(logger.logDebug('* CodeMetrics.calculateSize()')).once()
-  })
+    assert.deepEqual(await codeMetrics.getFilesNotRequiringReview(), []);
+    assert.deepEqual(await codeMetrics.getDeletedFilesNotRequiringReview(), []);
+    assert.equal(await codeMetrics.getSize(), "XS");
+    assert.equal(await codeMetrics.getSizeIndicator(), "XS");
+    assert.deepEqual(
+      await codeMetrics.getMetrics(),
+      new CodeMetricsData(1, 0, 0),
+    );
+    assert.equal(await codeMetrics.isSmall(), true);
+    assert.equal(await codeMetrics.isSufficientlyTested(), null);
+    verify(
+      logger.logDebug("* CodeMetrics.getFilesNotRequiringReview()"),
+    ).once();
+    verify(
+      logger.logDebug("* CodeMetrics.getDeletedFilesNotRequiringReview()"),
+    ).once();
+    verify(logger.logDebug("* CodeMetrics.getSize()")).once();
+    verify(logger.logDebug("* CodeMetrics.initialize()")).times(7);
+    verify(logger.logDebug("* CodeMetrics.initializeMetrics()")).once();
+    verify(
+      logger.logDebug("* CodeMetrics.determineIfValidFilePattern()"),
+    ).once();
+    verify(logger.logDebug("* CodeMetrics.performGlobCheck()")).times(2);
+    verify(logger.logDebug("* CodeMetrics.matchFileExtension()")).once();
+    verify(logger.logDebug("* CodeMetrics.constructMetrics()")).once();
+    verify(logger.logDebug("* CodeMetrics.createFileMetricsMap()")).once();
+    verify(
+      logger.logDebug("* CodeMetrics.initializeIsSufficientlyTested()"),
+    ).once();
+    verify(logger.logDebug("* CodeMetrics.initializeSizeIndicator()")).once();
+    verify(logger.logDebug("* CodeMetrics.calculateSize()")).once();
+  });
 
   describe("getFilesNotRequiringReview()", (): void => {
     {
@@ -1602,12 +1755,19 @@ describe("codeMetrics.ts", (): void => {
             codeMetrics.getFilesNotRequiringReview();
 
           // Assert
-          await AssertExtensions.toThrowAsync(func, `The number of elements '${String(elements)}' in '${summary.trim()}' in input '${summary.trim()}' did not match the expected 3.`)
-          verify(logger.logDebug('* CodeMetrics.getFilesNotRequiringReview()')).once()
-          verify(logger.logDebug('* CodeMetrics.initialize()')).once()
-          verify(logger.logDebug('* CodeMetrics.createFileMetricsMap()')).once()
-        })
-      })
+          await AssertExtensions.toThrowAsync(
+            func,
+            `The number of elements '${String(elements)}' in '${summary.trim()}' in input '${summary.trim()}' did not match the expected 3.`,
+          );
+          verify(
+            logger.logDebug("* CodeMetrics.getFilesNotRequiringReview()"),
+          ).once();
+          verify(logger.logDebug("* CodeMetrics.initialize()")).once();
+          verify(
+            logger.logDebug("* CodeMetrics.createFileMetricsMap()"),
+          ).once();
+        });
+      });
     }
 
     it("should throw when the lines added in the Git diff summary cannot be converted", async (): Promise<void> => {

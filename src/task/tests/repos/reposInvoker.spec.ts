@@ -3,17 +3,17 @@
  * Licensed under the MIT License.
  */
 
-import 'reflect-metadata'
-import * as AssertExtensions from '../testUtilities/assertExtensions'
-import { instance, mock, verify } from 'ts-mockito'
-import AzureReposInvoker from '../../src/repos/azureReposInvoker'
-import CommentData from '../../src/repos/interfaces/commentData'
-import { CommentThreadStatus } from 'azure-devops-node-api/interfaces/GitInterfaces'
-import GitHubReposInvoker from '../../src/repos/gitHubReposInvoker'
-import Logger from '../../src/utilities/logger'
-import PullRequestDetailsInterface from '../../src/repos/interfaces/pullRequestDetailsInterface'
-import ReposInvoker from '../../src/repos/reposInvoker'
-import assert from 'node:assert/strict'
+import "reflect-metadata";
+import * as AssertExtensions from "../testUtilities/assertExtensions";
+import { instance, mock, verify } from "ts-mockito";
+import AzureReposInvoker from "../../src/repos/azureReposInvoker";
+import CommentData from "../../src/repos/interfaces/commentData";
+import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces";
+import GitHubReposInvoker from "../../src/repos/gitHubReposInvoker";
+import Logger from "../../src/utilities/logger";
+import PullRequestDetailsInterface from "../../src/repos/interfaces/pullRequestDetailsInterface";
+import ReposInvoker from "../../src/repos/reposInvoker";
+import assert from "node:assert/strict";
 
 describe("reposInvoker.ts", (): void => {
   let azureReposInvoker: AzureReposInvoker;
@@ -197,7 +197,8 @@ describe("reposInvoker.ts", (): void => {
       );
 
       // Act
-      const result: PullRequestDetailsInterface = await reposInvoker.getTitleAndDescription()
+      const result: PullRequestDetailsInterface =
+        await reposInvoker.getTitleAndDescription();
 
       // Assert
       verify(azureReposInvoker.getTitleAndDescription()).once();
@@ -220,7 +221,8 @@ describe("reposInvoker.ts", (): void => {
       );
 
       // Act
-      const result: PullRequestDetailsInterface = await reposInvoker.getTitleAndDescription()
+      const result: PullRequestDetailsInterface =
+        await reposInvoker.getTitleAndDescription();
 
       // Assert
       verify(azureReposInvoker.getTitleAndDescription()).never();
@@ -247,7 +249,8 @@ describe("reposInvoker.ts", (): void => {
           );
 
           // Act
-          const result: PullRequestDetailsInterface = await reposInvoker.getTitleAndDescription()
+          const result: PullRequestDetailsInterface =
+            await reposInvoker.getTitleAndDescription();
 
           // Assert
           verify(azureReposInvoker.getTitleAndDescription()).never();
@@ -274,7 +277,8 @@ describe("reposInvoker.ts", (): void => {
       );
 
       // Act
-      const func: () => Promise<PullRequestDetailsInterface> = async () => reposInvoker.getTitleAndDescription()
+      const func: () => Promise<PullRequestDetailsInterface> = async () =>
+        reposInvoker.getTitleAndDescription();
 
       // Assert
       await AssertExtensions.toThrowAsync(
@@ -297,7 +301,8 @@ describe("reposInvoker.ts", (): void => {
       );
 
       // Act
-      const func: () => Promise<PullRequestDetailsInterface> = async () => reposInvoker.getTitleAndDescription()
+      const func: () => Promise<PullRequestDetailsInterface> = async () =>
+        reposInvoker.getTitleAndDescription();
 
       // Assert
       await AssertExtensions.toThrowAsync(

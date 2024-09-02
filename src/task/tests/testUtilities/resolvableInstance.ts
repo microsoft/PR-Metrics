@@ -3,8 +3,8 @@
  * Licensed under the MIT License.
  */
 
-import ResolvableInstanceTargetInterface from './resolvableInstanceTargetInterface'
-import { instance } from 'ts-mockito'
+import ResolvableInstanceTargetInterface from "./resolvableInstanceTargetInterface";
+import { instance } from "ts-mockito";
 
 /**
  * Gets a resolvable instance of the specified mock object.
@@ -21,6 +21,6 @@ export const resolvableInstance = <Type extends NonNullable<unknown>>(
         return undefined;
       }
 
-      return (target as ResolvableInstanceTargetInterface<Type>)[name]
-    }
-  })
+      return (target as ResolvableInstanceTargetInterface<Type>)[name];
+    },
+  });
