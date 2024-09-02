@@ -35,7 +35,6 @@ export default tseslint.config(
       // 6
       '@typescript-eslint/no-unused-vars': 'off',
 
-      //'@typescript-eslint/explicit-module-boundary-types': 'error', – 2
       //'@typescript-eslint/prefer-destructuring': 'error', – 4
       //'no-negated-condition': 'error', – 4
       //'id-length': 'error', – 5
