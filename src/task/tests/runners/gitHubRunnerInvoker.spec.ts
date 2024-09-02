@@ -171,7 +171,7 @@ describe("gitHubRunnerInvoker.ts", (): void => {
 
       // Act
       const func: () => void = () =>
-        gitHubRunnerInvoker.locInitialize(resourcePath);
+        { gitHubRunnerInvoker.locInitialize(resourcePath); };
 
       // Assert
       try {
