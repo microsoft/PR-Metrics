@@ -34,8 +34,6 @@ export default tseslint.config(
     rules: {
       // 6
       '@typescript-eslint/no-unused-vars': 'off',
-      // 1464
-      '@typescript-eslint/no-confusing-void-expression': 'off',
 
       //'@typescript-eslint/explicit-module-boundary-types': 'error', – 2
       //'@typescript-eslint/prefer-destructuring': 'error', – 4
@@ -266,6 +264,14 @@ export default tseslint.config(
       'vars-on-top': 'error',
       'yoda': 'error',
     }
+  },
+  {
+    files: [
+      '**/*.spec.ts',
+    ],
+    rules: {
+      '@typescript-eslint/no-confusing-void-expression': 'off',
+    },
   },
   {
     files: [

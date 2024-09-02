@@ -81,7 +81,7 @@ export default class RunnerInvoker implements RunnerInvokerInterface {
 
     this._localizationInitialized = true;
     const runner: RunnerInvokerInterface = this.getRunner();
-    return runner.locInitialize(folder);
+    runner.locInitialize(folder);
   }
 
   public loc(key: string, ...param: string[]): string {
@@ -112,22 +112,22 @@ export default class RunnerInvoker implements RunnerInvokerInterface {
 
   public setStatusFailed(message: string): void {
     const runner: RunnerInvokerInterface = this.getRunner();
-    return runner.setStatusFailed(message);
+    runner.setStatusFailed(message);
   }
 
   public setStatusSkipped(message: string): void {
     const runner: RunnerInvokerInterface = this.getRunner();
-    return runner.setStatusSkipped(message);
+    runner.setStatusSkipped(message);
   }
 
   public setStatusSucceeded(message: string): void {
     const runner: RunnerInvokerInterface = this.getRunner();
-    return runner.setStatusSucceeded(message);
+    runner.setStatusSucceeded(message);
   }
 
   public setSecret(value: string): void {
     const runner: RunnerInvokerInterface = this.getRunner();
-    return runner.setSecret(value);
+    runner.setSecret(value);
   }
 
   private getRunner(): RunnerInvokerInterface {

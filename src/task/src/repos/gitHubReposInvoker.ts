@@ -270,13 +270,13 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
       userAgent: "PRMetrics/v1.6.1",
       log: {
         debug: (message: string): void =>
-          this._logger.logDebug(`Octokit – ${message}`),
+          { this._logger.logDebug(`Octokit – ${message}`); },
         info: (message: string): void =>
-          this._logger.logInfo(`Octokit – ${message}`),
+          { this._logger.logInfo(`Octokit – ${message}`); },
         warn: (message: string): void =>
-          this._logger.logWarning(`Octokit – ${message}`),
+          { this._logger.logWarning(`Octokit – ${message}`); },
         error: (message: string): void =>
-          this._logger.logError(`Octokit – ${message}`),
+          { this._logger.logError(`Octokit – ${message}`); },
       },
     };
 
