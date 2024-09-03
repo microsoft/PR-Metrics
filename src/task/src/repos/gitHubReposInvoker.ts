@@ -158,10 +158,9 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
   }
 
   public async createComment(
-    content: string,
-    _: CommentThreadStatus,
-    fileName?: string,
-    __?: boolean,
+      content: string,
+      _: CommentThreadStatus,
+      fileName?: string,
   ): Promise<void> {
     this._logger.logDebug("* GitHubReposInvoker.createComment()");
 

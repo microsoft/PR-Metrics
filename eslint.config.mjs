@@ -33,7 +33,7 @@ export default tseslint.config(
     },
     rules: {
       // 6
-      '@typescript-eslint/no-unused-vars': 'off',
+      //'@typescript-eslint/no-unused-vars': 'off',
 
       //'@typescript-eslint/prefer-destructuring': 'error', – 4
       //'no-negated-condition': 'error', – 4

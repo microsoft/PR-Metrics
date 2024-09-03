@@ -108,7 +108,7 @@ describe("gitHubRunnerInvoker.ts", (): void => {
 
       // Act
       const func: () => EndpointAuthorization | undefined = () =>
-        gitHubRunnerInvoker.getEndpointAuthorization("id");
+        gitHubRunnerInvoker.getEndpointAuthorization();
 
       // Assert
       assert.throws(
@@ -129,7 +129,7 @@ describe("gitHubRunnerInvoker.ts", (): void => {
 
       // Act
       const func: () => string | undefined = () =>
-        gitHubRunnerInvoker.getEndpointAuthorizationScheme("id");
+        gitHubRunnerInvoker.getEndpointAuthorizationScheme();
 
       // Assert
       assert.throws(
@@ -150,7 +150,7 @@ describe("gitHubRunnerInvoker.ts", (): void => {
 
       // Act
       const func: () => string | undefined = () =>
-        gitHubRunnerInvoker.getEndpointAuthorizationParameter("id", "key");
+        gitHubRunnerInvoker.getEndpointAuthorizationParameter();
 
       // Assert
       assert.throws(

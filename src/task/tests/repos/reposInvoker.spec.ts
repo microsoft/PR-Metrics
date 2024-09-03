@@ -606,6 +606,7 @@ describe("reposInvoker.ts", (): void => {
           "",
           CommentThreadStatus.Active,
           "",
+          // @ts-expect-error -- Interface is called with additional parameters not present in implementation.
           false,
         ),
       ).never();
@@ -647,6 +648,7 @@ describe("reposInvoker.ts", (): void => {
           "",
           CommentThreadStatus.Active,
           "",
+          // @ts-expect-error -- Interface is called with additional parameters not present in implementation.
           false,
         ),
       ).once();
@@ -692,6 +694,7 @@ describe("reposInvoker.ts", (): void => {
               "",
               CommentThreadStatus.Active,
               "",
+              // @ts-expect-error -- Interface is called with additional parameters not present in implementation.
               false,
             ),
           ).once();
@@ -735,6 +738,7 @@ describe("reposInvoker.ts", (): void => {
           "",
           CommentThreadStatus.Active,
           "",
+          // @ts-expect-error -- Interface is called with additional parameters not present in implementation.
           false,
         ),
       ).never();
@@ -773,6 +777,7 @@ describe("reposInvoker.ts", (): void => {
           "",
           CommentThreadStatus.Active,
           "",
+          // @ts-expect-error -- Interface is called with additional parameters not present in implementation.
           false,
         ),
       ).never();
