@@ -1248,7 +1248,6 @@ describe("gitHubReposInvoker.ts", (): void => {
       // Act
       await gitHubReposInvoker.createComment(
         "Content",
-        CommentThreadStatus.Unknown,
         "file.ts",
       );
 
@@ -1313,7 +1312,6 @@ describe("gitHubReposInvoker.ts", (): void => {
       const func: () => Promise<void> = async () =>
         gitHubReposInvoker.createComment(
           "Content",
-          CommentThreadStatus.Unknown,
           "file.ts",
         );
 
@@ -1370,7 +1368,6 @@ describe("gitHubReposInvoker.ts", (): void => {
       // Act
       await gitHubReposInvoker.createComment(
         "Content",
-        CommentThreadStatus.Unknown,
         "file.ts",
       );
 
@@ -1432,7 +1429,6 @@ describe("gitHubReposInvoker.ts", (): void => {
       const func: () => Promise<void> = async () =>
         gitHubReposInvoker.createComment(
           "Content",
-          CommentThreadStatus.Unknown,
           "file.ts",
         );
 
@@ -1476,12 +1472,10 @@ describe("gitHubReposInvoker.ts", (): void => {
       // Act
       await gitHubReposInvoker.createComment(
         "Content",
-        CommentThreadStatus.Unknown,
         "file.ts",
       );
       await gitHubReposInvoker.createComment(
         "Content",
-        CommentThreadStatus.Unknown,
         "file.ts",
       );
 
@@ -1542,7 +1536,6 @@ describe("gitHubReposInvoker.ts", (): void => {
       // Act
       await gitHubReposInvoker.createComment(
         "Content",
-        CommentThreadStatus.Unknown,
         "file.ts",
       );
 
@@ -1609,7 +1602,6 @@ describe("gitHubReposInvoker.ts", (): void => {
       // Act
       await gitHubReposInvoker.createComment(
         "Content",
-        CommentThreadStatus.Unknown,
         "file.ts",
       );
 
@@ -1688,7 +1680,6 @@ describe("gitHubReposInvoker.ts", (): void => {
           const func: () => Promise<void> = async () =>
             gitHubReposInvoker.createComment(
               "Content",
-              CommentThreadStatus.Unknown,
               "file.ts",
             );
 
@@ -1743,7 +1734,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       // Act
       await gitHubReposInvoker.createComment(
         "Content",
-        CommentThreadStatus.Unknown,
+        null,
       );
 
       // Assert
@@ -1776,7 +1767,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       );
 
       // Act
-      await gitHubReposInvoker.updateComment(54321, null, null);
+      await gitHubReposInvoker.updateComment(54321, null);
 
       // Assert
       verify(logger.logDebug("* GitHubReposInvoker.updateComment()")).once();
@@ -1807,7 +1798,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       );
 
       // Act
-      await gitHubReposInvoker.updateComment(54321, "Content", null);
+      await gitHubReposInvoker.updateComment(54321, "Content");
 
       // Assert
       verify(octokitWrapper.initialize(any())).once();

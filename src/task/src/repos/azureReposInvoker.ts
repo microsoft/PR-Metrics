@@ -159,8 +159,8 @@ export default class AzureReposInvoker extends BaseReposInvoker {
 
   public async createComment(
     content: string,
+    fileName: string | null,
     status: CommentThreadStatus,
-    fileName?: string,
     isFileDeleted?: boolean,
   ): Promise<void> {
     this._logger.logDebug("* AzureReposInvoker.createComment()");
@@ -171,7 +171,7 @@ export default class AzureReposInvoker extends BaseReposInvoker {
       status,
     };
 
-    if (fileName !== undefined) {
+    if (fileName !== null) {
       commentThread.threadContext = {
         filePath: `/${fileName}`,
       };

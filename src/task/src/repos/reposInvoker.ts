@@ -74,14 +74,14 @@ export default class ReposInvoker implements ReposInvokerInterface {
 
   public async createComment(
     content: string,
+    fileName: string | null,
     status: CommentThreadStatus,
-    fileName?: string,
     isFileDeleted?: boolean,
   ): Promise<void> {
     this._logger.logDebug("* ReposInvoker.createComment()");
 
     const reposInvoker: ReposInvokerInterface = this.getReposInvoker();
-    return reposInvoker.createComment(content, status, fileName, isFileDeleted);
+    return reposInvoker.createComment(content, fileName, status, isFileDeleted);
   }
 
   public async updateComment(

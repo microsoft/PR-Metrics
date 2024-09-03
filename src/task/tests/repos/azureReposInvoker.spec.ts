@@ -1218,8 +1218,8 @@ describe("azureReposInvoker.ts", (): void => {
           const func: () => Promise<void> = async () =>
             azureReposInvoker.createComment(
               "Comment Content",
-              CommentThreadStatus.Active,
               "file.ts",
+              CommentThreadStatus.Active,
             );
 
           // Assert
@@ -1269,6 +1269,7 @@ describe("azureReposInvoker.ts", (): void => {
       // Act
       await azureReposInvoker.createComment(
         "Comment Content",
+        null,
         CommentThreadStatus.Active,
       );
 
@@ -1318,10 +1319,12 @@ describe("azureReposInvoker.ts", (): void => {
       // Act
       await azureReposInvoker.createComment(
         "Comment Content",
+        null,
         CommentThreadStatus.Active,
       );
       await azureReposInvoker.createComment(
         "Comment Content",
+        null,
         CommentThreadStatus.Active,
       );
 
@@ -1382,8 +1385,8 @@ describe("azureReposInvoker.ts", (): void => {
       // Act
       await azureReposInvoker.createComment(
         "Comment Content",
-        CommentThreadStatus.Active,
         "file.ts",
+        CommentThreadStatus.Active,
       );
 
       // Assert
@@ -1443,8 +1446,8 @@ describe("azureReposInvoker.ts", (): void => {
       // Act
       await azureReposInvoker.createComment(
         "Comment Content",
-        CommentThreadStatus.Active,
         "file.ts",
+        CommentThreadStatus.Active,
         true,
       );
 

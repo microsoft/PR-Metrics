@@ -181,7 +181,7 @@ export default class CodeMetricsCalculator {
     const status: CommentThreadStatus =
       await this._pullRequestComments.getMetricsCommentStatus();
     if (commentData.metricsCommentThreadId === null) {
-      await this._reposInvoker.createComment(content, status);
+      await this._reposInvoker.createComment(content, null, status);
     } else {
       await this._reposInvoker.updateComment(
         commentData.metricsCommentThreadId,
@@ -203,8 +203,8 @@ export default class CodeMetricsCalculator {
       this._pullRequestComments.noReviewRequiredComment;
     await this._reposInvoker.createComment(
       noReviewRequiredComment,
-      CommentThreadStatus.Closed,
       fileName,
+      CommentThreadStatus.Closed,
       isFileDeleted,
     );
   }

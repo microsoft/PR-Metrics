@@ -29,8 +29,8 @@ export default abstract class BaseReposInvoker
 
   public abstract createComment(
     content: string,
+    fileName: string | null,
     status: CommentThreadStatus,
-    fileName?: string,
     isFileDeleted?: boolean,
   ): Promise<void>;
 

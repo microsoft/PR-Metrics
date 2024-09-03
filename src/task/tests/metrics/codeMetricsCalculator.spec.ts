@@ -519,7 +519,7 @@ describe("codeMetricsCalculator.ts", (): void => {
         logger.logDebug("* CodeMetricsCalculator.updateMetricsComment()"),
       ).once();
       verify(
-        reposInvoker.createComment("Description", CommentThreadStatus.Active),
+        reposInvoker.createComment("Description", null, CommentThreadStatus.Active),
       ).once();
     });
 
@@ -593,16 +593,16 @@ describe("codeMetricsCalculator.ts", (): void => {
             verify(
               reposInvoker.createComment(
                 "No Review Required",
-                CommentThreadStatus.Closed,
                 "file1.ts",
+                CommentThreadStatus.Closed,
                 false,
               ),
             ).times(file1Comments);
             verify(
               reposInvoker.createComment(
                 "No Review Required",
-                CommentThreadStatus.Closed,
                 "file2.ts",
+                CommentThreadStatus.Closed,
                 false,
               ),
             ).times(file2Comments);
@@ -650,16 +650,16 @@ describe("codeMetricsCalculator.ts", (): void => {
             verify(
               reposInvoker.createComment(
                 "No Review Required",
-                CommentThreadStatus.Closed,
                 "file1.ts",
+                CommentThreadStatus.Closed,
                 true,
               ),
             ).times(file1Comments);
             verify(
               reposInvoker.createComment(
                 "No Review Required",
-                CommentThreadStatus.Closed,
                 "file2.ts",
+                CommentThreadStatus.Closed,
                 true,
               ),
             ).times(file2Comments);

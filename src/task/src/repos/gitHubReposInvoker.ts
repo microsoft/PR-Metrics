@@ -8,7 +8,6 @@ import * as Converter from "../utilities/converter";
 import * as Validator from "../utilities/validator";
 import BaseReposInvoker from "./baseReposInvoker";
 import CommentData from "./interfaces/commentData";
-import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces";
 import CreateIssueCommentResponse from "../wrappers/octokitInterfaces/createIssueCommentResponse";
 import CreateReviewCommentResponse from "../wrappers/octokitInterfaces/createReviewCommentResponse";
 import DeleteReviewCommentResponse from "../wrappers/octokitInterfaces/deleteReviewCommentResponse";
@@ -159,14 +158,13 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
 
   public async createComment(
       content: string,
-      _: CommentThreadStatus,
-      fileName?: string,
+      fileName: string | null,
   ): Promise<void> {
     this._logger.logDebug("* GitHubReposInvoker.createComment()");
 
     this.initialize();
 
-    if (fileName !== undefined) {
+    if (fileName !== null) {
       if (this._commitId === "") {
         await this.getCommitId();
       }
@@ -218,7 +216,6 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
   public async updateComment(
     commentThreadId: number,
     content: string | null,
-    _: CommentThreadStatus | null,
   ): Promise<void> {
     this._logger.logDebug("* GitHubReposInvoker.updateComment()");
 

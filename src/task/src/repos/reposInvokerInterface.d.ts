@@ -44,15 +44,15 @@ export default interface ReposInvokerInterface {
    * Creates a new comment within the current pull request. Note that calling this method asynchronously can cause
    * problems with the GitHub APIs.
    * @param content The content of the new comment.
-   * @param status The status to which to the set the comment thread.
    * @param fileName The file to which to add the comment. If this is unspecified, the comment will be created in the global pull request scope.
+   * @param status The status to which to the set the comment thread.
    * @param isFileDeleted A value indicating whether the file is being deleted.
    * @returns A promise for awaiting the completion of the method call.
    */
   createComment: (
     content: string,
+    fileName: string | null,
     status: CommentThreadStatus,
-    fileName?: string,
     isFileDeleted?: boolean,
   ) => Promise<void>;
 

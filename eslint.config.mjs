@@ -32,34 +32,30 @@ export default tseslint.config(
       },
     },
     rules: {
-      // 6
-      //'@typescript-eslint/no-unused-vars': 'off',
-
       //'@typescript-eslint/prefer-destructuring': 'error', – 4
-      //'no-negated-condition': 'error', – 4
-      //'id-length': 'error', – 5
       //'@typescript-eslint/strict-boolean-expressions': 'error', – 6
+      //'@typescript-eslint/max-params': 'error', – 17
+      //'@typescript-eslint/member-ordering': 'error', – 19
+      //'@typescript-eslint/class-methods-use-this': 'error', – 28
+      //'@typescript-eslint/init-declarations': 'error', – 59
+      '@typescript-eslint/consistent-type-imports': 'error',// – 61
+      //'@typescript-eslint/prefer-readonly-parameter-types': 'error', – 115
+      //'@typescript-eslint/naming-convention': 'error',// – 349
+      //'@typescript-eslint/no-magic-numbers': 'error', – 1050
+      //'no-negated-condition': 'error', – 4
       //'prefer-destructuring': 'error', – 9
       //'max-lines': 'error', – 15
-      //'@typescript-eslint/max-params': 'error', – 17
       //'max-params': 'error', – 17
-      //'@typescript-eslint/member-ordering': 'error', – 19
       //'no-ternary': 'error', – 20
-      //'@typescript-eslint/class-methods-use-this': 'error', – 28
       //'class-methods-use-this': 'error', – 28
-      //'@typescript-eslint/init-declarations': 'error', – 59
       //'init-declarations': 'error', – 59
-      //'@typescript-eslint/consistent-type-imports': 'error', – 61
       //'max-lines-per-function': 'error', – 67
       //'no-undefined': 'error', – 96
-      //'@typescript-eslint/prefer-readonly-parameter-types': 'error', – 115
       //'max-statements': 'error', – 155
-      //'@typescript-eslint/naming-convention': 'error', – 349
       //'one-var': 'error', – 365
       //'no-undef': 'error', – 545
       //'no-underscore-dangle': 'error', – 593
       //'sort-keys': 'error', – 616
-      //'@typescript-eslint/no-magic-numbers': 'error', – 1050
       //'no-magic-numbers': 'error', – 1050
       '@typescript-eslint/consistent-type-exports': 'error',
       '@typescript-eslint/default-param-last': 'error',
@@ -122,6 +118,7 @@ export default tseslint.config(
       'grouped-accessor-pairs': 'error',
       'guard-for-in': 'error',
       'id-denylist': 'error',
+      'id-length': 'error',
       'id-match': 'error',
       'logical-assignment-operators': 'error',
       'max-classes-per-file': 'error',
