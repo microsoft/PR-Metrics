@@ -33,13 +33,12 @@ export default tseslint.config(
     },
     rules: {
       //'@typescript-eslint/prefer-destructuring': 'error', – 4
-      //'@typescript-eslint/strict-boolean-expressions': 'error', – 6
       //'@typescript-eslint/max-params': 'error', – 17
       //'@typescript-eslint/member-ordering': 'error', – 19
       //'@typescript-eslint/class-methods-use-this': 'error', – 28
       //'@typescript-eslint/init-declarations': 'error', – 59
       //'@typescript-eslint/prefer-readonly-parameter-types': 'error', – 115
-      //'@typescript-eslint/naming-convention': 'error',// – 349
+      //'@typescript-eslint/naming-convention': 'error', – 349
       //'@typescript-eslint/no-magic-numbers': 'error', – 1050
       //'no-negated-condition': 'error', – 4
       //'prefer-destructuring': 'error', – 9
@@ -57,6 +56,7 @@ export default tseslint.config(
       //'sort-keys': 'error', – 616
       //'no-magic-numbers': 'error', – 1050
       '@typescript-eslint/consistent-type-exports': 'error',
+      '@typescript-eslint/consistent-type-imports': 'error',
       '@typescript-eslint/default-param-last': 'error',
       '@typescript-eslint/explicit-function-return-type': 'error',
       '@typescript-eslint/explicit-member-accessibility': 'error',
@@ -93,6 +93,7 @@ export default tseslint.config(
       '@typescript-eslint/prefer-return-this-type': 'error',
       '@typescript-eslint/promise-function-async': 'error',
       '@typescript-eslint/require-array-sort-compare': 'error',
+      '@typescript-eslint/strict-boolean-expressions': 'error',
       '@typescript-eslint/switch-exhaustiveness-check': 'error',
       '@typescript-eslint/typedef': 'error',
       '@typescript-eslint/unbound-method': 'error',

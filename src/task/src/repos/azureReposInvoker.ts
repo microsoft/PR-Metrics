@@ -72,7 +72,7 @@ export default class AzureReposInvoker extends BaseReposInvoker {
 
     const tokenManagerResult: string | null =
       await this._tokenManager.getToken();
-    if (tokenManagerResult) {
+    if (tokenManagerResult !== null) {
       return tokenManagerResult;
     }
 

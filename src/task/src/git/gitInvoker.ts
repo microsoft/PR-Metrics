@@ -139,7 +139,7 @@ export default class GitInvoker {
     this._logger.logDebug("* GitInvoker.pullRequestIdForGitHub");
 
     const gitHubReference: string | undefined = process.env.GITHUB_REF;
-    if (!gitHubReference) {
+    if (gitHubReference === undefined) {
       this._logger.logWarning("'GITHUB_REF' is undefined.");
       return "";
     }
@@ -159,7 +159,7 @@ export default class GitInvoker {
     this._logger.logDebug("* GitInvoker.pullRequestIdForAzurePipelines");
 
     const variable: string | undefined = process.env.BUILD_REPOSITORY_PROVIDER;
-    if (!variable) {
+    if (variable === undefined) {
       this._logger.logWarning("'BUILD_REPOSITORY_PROVIDER' is undefined.");
       return "";
     }
@@ -167,7 +167,7 @@ export default class GitInvoker {
     if (variable === "GitHub" || variable === "GitHubEnterprise") {
       const result: string | undefined =
         process.env.SYSTEM_PULLREQUEST_PULLREQUESTNUMBER;
-      if (!result) {
+      if (result === undefined) {
         this._logger.logWarning(
           "'SYSTEM_PULLREQUEST_PULLREQUESTNUMBER' is undefined.",
         );
@@ -179,7 +179,7 @@ export default class GitInvoker {
 
     const result: string | undefined =
       process.env.SYSTEM_PULLREQUEST_PULLREQUESTID;
-    if (!result) {
+    if (result === undefined) {
       this._logger.logWarning(
         "'SYSTEM_PULLREQUEST_PULLREQUESTID' is undefined.",
       );
