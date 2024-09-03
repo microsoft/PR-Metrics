@@ -6,15 +6,15 @@
 import "reflect-metadata";
 import * as path from "path";
 import * as taskLib from "azure-pipelines-task-lib/task";
-import {
+import type {
   IExecOptions,
   IExecSyncResult,
 } from "azure-pipelines-task-lib/toolrunner";
 import { deepEqual, instance, mock, verify, when } from "ts-mockito";
 import AzurePipelinesRunnerInvoker from "../../src/runners/azurePipelinesRunnerInvoker";
 import AzurePipelinesRunnerWrapper from "../../src/wrappers/azurePipelinesRunnerWrapper";
-import { EndpointAuthorization } from "../../src/runners/endpointAuthorization";
-import { ExecOutput } from "@actions/exec";
+import type { EndpointAuthorization } from "../../src/runners/endpointAuthorization";
+import type { ExecOutput } from "@actions/exec";
 import { any } from "../testUtilities/mockito";
 import assert from "node:assert/strict";
 

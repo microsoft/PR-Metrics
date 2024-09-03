@@ -6,7 +6,7 @@
 import "reflect-metadata";
 import * as AssertExtensions from "../testUtilities/assertExtensions";
 import { instance, mock, verify, when } from "ts-mockito";
-import { ExecOutput } from "@actions/exec";
+import type { ExecOutput } from "@actions/exec";
 import GitInvoker from "../../src/git/gitInvoker";
 import Logger from "../../src/utilities/logger";
 import RunnerInvoker from "../../src/runners/runnerInvoker";

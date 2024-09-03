@@ -4,13 +4,13 @@
  */
 
 import "reflect-metadata";
-import * as actionsExec from "@actions/exec";
+import type * as actionsExec from "@actions/exec";
 import * as path from "path";
 import { deepEqual, instance, mock, verify, when } from "ts-mockito";
 import AzurePipelinesRunnerWrapper from "../../src/wrappers/azurePipelinesRunnerWrapper";
 import ConsoleWrapper from "../../src/wrappers/consoleWrapper";
-import { EndpointAuthorization } from "azure-pipelines-task-lib";
-import ExecOutput from "../../src/runners/execOutput";
+import type { EndpointAuthorization } from "azure-pipelines-task-lib";
+import type ExecOutput from "../../src/runners/execOutput";
 import GitHubRunnerInvoker from "../../src/runners/gitHubRunnerInvoker";
 import GitHubRunnerWrapper from "../../src/wrappers/gitHubRunnerWrapper";
 import { any } from "../testUtilities/mockito";

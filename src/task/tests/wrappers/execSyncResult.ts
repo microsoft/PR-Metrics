@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import { IExecSyncResult } from "azure-pipelines-task-lib/toolrunner";
+import type { IExecSyncResult } from "azure-pipelines-task-lib/toolrunner";
 
 /**
  * A wrapper around `IExecSyncResult`, to facilitate testability.

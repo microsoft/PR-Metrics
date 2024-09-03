@@ -6,23 +6,18 @@
 import "reflect-metadata";
 import * as AssertExtensions from "../testUtilities/assertExtensions";
 import * as Converter from "../../src/utilities/converter";
-import {
-  Comment,
-  CommentThreadStatus,
-  GitPullRequest,
-  GitPullRequestCommentThread,
-} from "azure-devops-node-api/interfaces/GitInterfaces";
+import { type Comment, CommentThreadStatus, type GitPullRequest, type GitPullRequestCommentThread } from 'azure-devops-node-api/interfaces/GitInterfaces'
 import { any, anyNumber } from "../testUtilities/mockito";
 import { deepEqual, instance, mock, verify, when } from "ts-mockito";
 import AzureDevOpsApiWrapper from "../../src/wrappers/azureDevOpsApiWrapper";
 import AzureReposInvoker from "../../src/repos/azureReposInvoker";
-import CommentData from "../../src/repos/interfaces/commentData";
+import type CommentData from "../../src/repos/interfaces/commentData";
 import ErrorWithStatus from "../wrappers/errorWithStatus";
 import GitInvoker from "../../src/git/gitInvoker";
-import { IGitApi } from "azure-devops-node-api/GitApi";
-import { IRequestHandler } from "azure-devops-node-api/interfaces/common/VsoBaseInterfaces";
+import type { IGitApi } from "azure-devops-node-api/GitApi";
+import type { IRequestHandler } from "azure-devops-node-api/interfaces/common/VsoBaseInterfaces";
 import Logger from "../../src/utilities/logger";
-import PullRequestDetailsInterface from "../../src/repos/interfaces/pullRequestDetailsInterface";
+import type PullRequestDetailsInterface from "../../src/repos/interfaces/pullRequestDetailsInterface";
 import RunnerInvoker from "../../src/runners/runnerInvoker";
 import { StatusCodes } from "http-status-codes";
 import TokenManager from "../../src/repos/tokenManager";

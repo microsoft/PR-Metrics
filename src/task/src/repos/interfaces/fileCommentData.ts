@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces";
+import type { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces";
 import PullRequestCommentData from "./pullRequestCommentData";
 
 /**

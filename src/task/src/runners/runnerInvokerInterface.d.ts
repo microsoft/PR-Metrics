@@ -3,8 +3,8 @@
  * Licensed under the MIT License.
  */
 
-import { EndpointAuthorization } from "./endpointAuthorization";
-import ExecOutput from "./execOutput";
+import type { EndpointAuthorization } from "./endpointAuthorization";
+import type ExecOutput from "./execOutput";
 
 /**
  * An interface for invoking runner functionality with any underlying runner.
