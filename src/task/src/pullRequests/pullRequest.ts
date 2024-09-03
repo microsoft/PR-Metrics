@@ -126,16 +126,11 @@ export default class PullRequest {
       sizeRegExp,
       testsRegExp,
     );
-    const completeRegExp = `^${this._runnerInvoker.loc("pullRequests.pullRequest.titleFormat", sizeIndicatorRegExp, "(.*)")}$`;
+    const completeRegExp = `^${this._runnerInvoker.loc("pullRequests.pullRequest.titleFormat", sizeIndicatorRegExp, "(?<originalTitle>.*)")}$`;
 
     const prefixRegExp = new RegExp(completeRegExp, "u");
-    const prefixRegExpMatches: RegExpMatchArray | null =
-      currentTitle.match(prefixRegExp);
-    let originalTitle: string = currentTitle;
-    if (prefixRegExpMatches?.[3] !== undefined) {
-      originalTitle = prefixRegExpMatches[3];
-    }
-
+    const prefixRegExpMatches: RegExpMatchArray | null = currentTitle.match(prefixRegExp);
+    const originalTitle: string = prefixRegExpMatches?.groups?.originalTitle ?? currentTitle;
     return this._runnerInvoker.loc(
       "pullRequests.pullRequest.titleFormat",
       sizeIndicator,
