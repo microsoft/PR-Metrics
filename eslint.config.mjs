@@ -32,13 +32,12 @@ export default tseslint.config(
       },
     },
     rules: {
-      //'@typescript-eslint/prefer-destructuring': 'error', – 4
       //'@typescript-eslint/max-params': 'error', – 17
       //'@typescript-eslint/member-ordering': 'error', – 19
       //'@typescript-eslint/class-methods-use-this': 'error', – 28
       //'@typescript-eslint/init-declarations': 'error', – 59
       //'@typescript-eslint/prefer-readonly-parameter-types': 'error', – 115
-      //'@typescript-eslint/naming-convention': 'error', – 349
+      '@typescript-eslint/naming-convention': 'error',
       //'@typescript-eslint/no-magic-numbers': 'error', – 1050
       //'no-negated-condition': 'error', – 4
       //'prefer-destructuring': 'error', – 9
@@ -87,6 +86,7 @@ export default tseslint.config(
       '@typescript-eslint/no-useless-empty-export': 'error',
       '@typescript-eslint/no-wrapper-object-types': 'error',
       '@typescript-eslint/parameter-properties': 'error',
+      '@typescript-eslint/prefer-destructuring': 'error',
       '@typescript-eslint/prefer-enum-initializers': 'error',
       '@typescript-eslint/prefer-readonly': 'error',
       '@typescript-eslint/prefer-reduce-type-parameter': 'error',
