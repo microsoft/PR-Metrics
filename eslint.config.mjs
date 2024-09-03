@@ -39,7 +39,6 @@ export default tseslint.config(
       //'no-negated-condition': 'error', – 4
       //'id-length': 'error', – 5
       //'@typescript-eslint/strict-boolean-expressions': 'error', – 6
-      //'prefer-named-capture-group': 'error', – 6
       //'prefer-destructuring': 'error', – 9
       //'max-lines': 'error', – 15
       //'@typescript-eslint/max-params': 'error', – 17
@@ -242,6 +241,7 @@ export default tseslint.config(
       'prefer-arrow-callback': 'error',
       'prefer-const': 'error',
       'prefer-exponentiation-operator': 'error',
+      'prefer-named-capture-group': 'error',
       'prefer-numeric-literals': 'error',
       'prefer-object-has-own': 'error',
       'prefer-object-spread': 'error',

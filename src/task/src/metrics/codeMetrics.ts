@@ -297,7 +297,7 @@ export default class CodeMetrics {
 
     for (const entry of matches) {
       if (
-        /.*((T|t)est|TEST).*/u.test(entry.fileName) ||
+        /.*(?:(?:T|t)est|TEST).*/u.test(entry.fileName) ||
         /.*\.spec\..*/iu.test(path.basename(entry.fileName))
       ) {
         this._logger.logDebug(
@@ -353,7 +353,7 @@ export default class CodeMetrics {
       );
     }
 
-    // Condense file and folder names that were renamed e.g. F{a => i}leT{b => e}st.d{c => l}l".
+    // Condense file and folder names that were renamed, e.g., F{a => i}leT{b => e}st.d{c => l}l".
     const lines: string[] = modifiedInput.split("\n");
 
     const result: CodeFileMetricInterface[] = [];
@@ -369,10 +369,10 @@ export default class CodeMetrics {
         );
       }
 
-      // Condense file and folder names that were renamed e.g. "F{a => i}leT{b => e}st.d{c => l}l" or "FaleTbst.dcl => FileTest.dll".
+      // Condense file and folder names that were renamed, e.g., "F{a => i}leT{b => e}st.d{c => l}l" or "FaleTbst.dcl => FileTest.dll".
       const fileName: string = elements[2]
-        .replace(/\{.*? => ([^}]+?)\}/gu, "$1")
-        .replace(/.*? => ([^}]+?)/gu, "$1");
+        .replace(/\{.*? => (?<newName>[^}]+?)\}/gu, '$<newName>')
+        .replace(/.*? => (?<newName>[^}]+?)/gu, '$<newName>')
 
       result.push({
         fileName,

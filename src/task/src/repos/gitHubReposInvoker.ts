@@ -412,14 +412,14 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     if (result.headers.link !== undefined) {
       const commitsLink: string = result.headers.link;
       const matches: RegExpMatchArray | null =
-        /<.+>; rel="next", <.+?page=(\d+)>; rel="last"/u.exec(commitsLink);
-      if (matches?.[1] === undefined) {
+        /<.+>; rel="next", <.+?page=(?<pageNumber>\d+)>; rel="last"/u.exec(commitsLink);
+      if (matches?.groups?.pageNumber === undefined) {
         throw new Error(
           `The regular expression did not match '${commitsLink}'.`,
         );
       }
 
-      const match: number = parseInt(matches[1], decimalRadix);
+      const match: number = parseInt(matches.groups.pageNumber, decimalRadix);
       result = await this.invokeApiCall(
         async (): Promise<ListCommitsResponse> => {
           const internalResult: ListCommitsResponse =
