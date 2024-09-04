@@ -198,7 +198,7 @@ describe("resources.resjson", (): void => {
             updatedMatch.match(parameterDelimiterRegExp)?.length ?? 0;
           const existingValue: number | undefined =
             typeScriptResources.get(key);
-          if (existingValue === undefined) {
+          if (typeof existingValue === "undefined") {
             typeScriptResources.set(key, value);
           } else {
             assert.equal(value, existingValue);

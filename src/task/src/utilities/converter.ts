@@ -17,7 +17,7 @@ export const toString = (
 ): string => {
   if (value === null) {
     return "null";
-  } else if (value === undefined) {
+  } else if (typeof value === "undefined") {
     return "undefined";
   }
 

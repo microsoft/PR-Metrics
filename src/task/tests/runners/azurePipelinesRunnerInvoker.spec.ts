@@ -129,7 +129,7 @@ describe("azurePipelinesRunnerInvoker.ts", (): void => {
         azurePipelinesRunnerInvoker.getEndpointAuthorization("id");
 
       // Assert
-      assert.equal(result, undefined);
+      assert.equal(typeof result, "undefined");
       verify(
         azurePipelinesRunnerWrapper.getEndpointAuthorization("id", true),
       ).once();

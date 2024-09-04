@@ -43,7 +43,7 @@ export default class PullRequest {
 
     return RunnerInvoker.isGitHub
       ? process.env.GITHUB_BASE_REF !== ""
-      : process.env.SYSTEM_PULLREQUEST_PULLREQUESTID !== undefined;
+      : typeof process.env.SYSTEM_PULLREQUEST_PULLREQUESTID !== "undefined";
   }
 
   /**
@@ -84,7 +84,7 @@ export default class PullRequest {
   ): string | null {
     this._logger.logDebug("* PullRequest.getUpdatedDescription()");
 
-    if (currentDescription !== undefined && currentDescription.trim() !== "") {
+    if (typeof currentDescription !== "undefined" && currentDescription.trim() !== "") {
       return null;
     }
 

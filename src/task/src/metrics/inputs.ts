@@ -149,7 +149,7 @@ export default class Inputs {
     this._logger.logDebug("* Inputs.initializeBaseSize()");
 
     const convertedValue: number =
-      baseSize === undefined ? NaN : parseInt(baseSize, decimalRadix);
+      typeof baseSize === "undefined" ? NaN : parseInt(baseSize, decimalRadix);
     if (!isNaN(convertedValue) && convertedValue > 0) {
       this._baseSize = convertedValue;
       const baseSizeString: string = this._baseSize.toLocaleString();
@@ -176,7 +176,7 @@ export default class Inputs {
     this._logger.logDebug("* Inputs.initializeGrowthRate()");
 
     const convertedValue: number =
-      growthRate === undefined ? NaN : parseFloat(growthRate);
+      typeof growthRate === "undefined" ? NaN : parseFloat(growthRate);
     if (!isNaN(convertedValue) && convertedValue > 1.0) {
       this._growthRate = convertedValue;
       const growthRateString: string = this._growthRate.toLocaleString();
@@ -203,7 +203,7 @@ export default class Inputs {
     this._logger.logDebug("* Inputs.initializeTestFactor()");
 
     const convertedValue: number =
-      testFactor === undefined ? NaN : parseFloat(testFactor);
+      typeof testFactor === "undefined" ? NaN : parseFloat(testFactor);
     if (!isNaN(convertedValue) && convertedValue >= 0.0) {
       if (convertedValue === 0.0) {
         this._testFactor = null;
@@ -261,7 +261,7 @@ export default class Inputs {
     this._logger.logDebug("* Inputs.initializeFileMatchingPatterns()");
 
     if (
-      fileMatchingPatterns !== undefined &&
+      typeof fileMatchingPatterns !== "undefined" &&
       fileMatchingPatterns.trim() !== ""
     ) {
       this._fileMatchingPatterns = fileMatchingPatterns
@@ -297,7 +297,7 @@ export default class Inputs {
   ): void {
     this._logger.logDebug("* Inputs.initializeCodeFileExtensions()");
 
-    if (codeFileExtensions !== undefined && codeFileExtensions.trim() !== "") {
+    if (typeof codeFileExtensions !== "undefined" && codeFileExtensions.trim() !== "") {
       const codeFileExtensionsArray: string[] = codeFileExtensions
         .replace(/\n$/gu, "")
         .split("\n");

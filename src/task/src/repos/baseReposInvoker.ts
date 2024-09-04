@@ -66,7 +66,7 @@ export default abstract class BaseReposInvoker
         StatusCodes.NOT_FOUND,
       ];
       if (
-        statusCode !== undefined &&
+        typeof statusCode !== "undefined" &&
         accessErrorStatusCodes.includes(statusCode)
       ) {
         castedError.internalMessage = castedError.message;

@@ -105,7 +105,7 @@ export default class ReposInvoker implements ReposInvokerInterface {
   private getReposInvoker(): ReposInvokerInterface {
     this._logger.logDebug("* ReposInvoker.getReposInvoker()");
 
-    if (this._reposInvoker !== undefined) {
+    if (typeof this._reposInvoker !== "undefined") {
       return this._reposInvoker;
     }
 

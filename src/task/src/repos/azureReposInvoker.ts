@@ -76,7 +76,7 @@ export default class AzureReposInvoker extends BaseReposInvoker {
       return tokenManagerResult;
     }
 
-    if (process.env.PR_METRICS_ACCESS_TOKEN === undefined) {
+    if (typeof process.env.PR_METRICS_ACCESS_TOKEN === "undefined") {
       return this._runnerInvoker.loc(
         "repos.azureReposInvoker.noAzureReposAccessToken",
       );
@@ -276,7 +276,7 @@ export default class AzureReposInvoker extends BaseReposInvoker {
   private async getGitApi(): Promise<IGitApi> {
     this._logger.logDebug("* AzureReposInvoker.getGitApi()");
 
-    if (this._gitApi !== undefined) {
+    if (typeof this._gitApi !== "undefined") {
       return this._gitApi;
     }
 
@@ -323,25 +323,25 @@ export default class AzureReposInvoker extends BaseReposInvoker {
         "AzureReposInvoker.convertPullRequestComments()",
       );
       const currentComments: Comment[] | undefined = value.comments;
-      if (currentComments === undefined) {
+      if (typeof currentComments === "undefined") {
         continue;
       }
 
       const content: string | undefined = currentComments[0]?.content;
-      if (content === undefined || content === "") {
+      if (typeof content === "undefined" || content === "") {
         continue;
       }
 
       const status: CommentThreadStatus =
         value.status ?? CommentThreadStatus.Unknown;
 
-      if (value.threadContext === undefined) {
+      if (typeof value.threadContext === "undefined") {
         result.pullRequestComments.push(
           new PullRequestCommentData(id, content, status),
         );
       } else {
         const fileName: string | undefined = value.threadContext.filePath;
-        if (fileName === undefined || fileName.length <= 1) {
+        if (typeof fileName === "undefined" || fileName.length <= 1) {
           continue;
         }
 

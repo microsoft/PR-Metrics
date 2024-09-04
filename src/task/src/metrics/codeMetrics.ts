@@ -360,9 +360,9 @@ export default class CodeMetrics {
     for (const line of lines) {
       const elements: string[] = line.split("\t");
       if (
-        elements[0] === undefined ||
-        elements[1] === undefined ||
-        elements[2] === undefined
+        typeof elements[0] === "undefined" ||
+        typeof elements[1] === "undefined" ||
+        typeof elements[2] === "undefined"
       ) {
         throw new RangeError(
           `The number of elements '${String(elements.length)}' in '${line}' in input '${modifiedInput}' did not match the expected 3.`,

@@ -41,7 +41,7 @@ export default class OctokitWrapper {
    * @param options The Octokit options including the authentication details.
    */
   public initialize(options: OctokitOptions): void {
-    if (this._octokit !== undefined) {
+    if (typeof this._octokit !== "undefined") {
       throw new Error(
         "OctokitWrapper was already initialized prior to calling OctokitWrapper.initialize().",
       );
@@ -62,7 +62,7 @@ export default class OctokitWrapper {
     repo: string,
     pullRequestId: number,
   ): Promise<GetPullResponse> {
-    if (this._octokit === undefined) {
+    if (typeof this._octokit === "undefined") {
       throw new Error(
         "OctokitWrapper was not initialized prior to calling OctokitWrapper.getPull().",
       );
@@ -91,7 +91,7 @@ export default class OctokitWrapper {
     title: string | undefined,
     description: string | undefined,
   ): Promise<UpdatePullResponse> {
-    if (this._octokit === undefined) {
+    if (typeof this._octokit === "undefined") {
       throw new Error(
         "OctokitWrapper was not initialized prior to calling OctokitWrapper.updatePull().",
       );
@@ -118,7 +118,7 @@ export default class OctokitWrapper {
     repo: string,
     pullRequestId: number,
   ): Promise<GetIssueCommentsResponse> {
-    if (this._octokit === undefined) {
+    if (typeof this._octokit === "undefined") {
       throw new Error(
         "OctokitWrapper was not initialized prior to calling OctokitWrapper.getIssueComments().",
       );
@@ -143,7 +143,7 @@ export default class OctokitWrapper {
     repo: string,
     pullRequestId: number,
   ): Promise<GetReviewCommentsResponse> {
-    if (this._octokit === undefined) {
+    if (typeof this._octokit === "undefined") {
       throw new Error(
         "OctokitWrapper was not initialized prior to calling OctokitWrapper.getReviewComments().",
       );
@@ -170,7 +170,7 @@ export default class OctokitWrapper {
     pullRequestId: number,
     content: string,
   ): Promise<CreateIssueCommentResponse> {
-    if (this._octokit === undefined) {
+    if (typeof this._octokit === "undefined") {
       throw new Error(
         "OctokitWrapper was not initialized prior to calling OctokitWrapper.createIssueComment().",
       );
@@ -198,7 +198,7 @@ export default class OctokitWrapper {
     pullRequestId: number,
     page: number,
   ): Promise<ListCommitsResponse> {
-    if (this._octokit === undefined) {
+    if (typeof this._octokit === "undefined") {
       throw new Error(
         "OctokitWrapper was not initialized prior to calling OctokitWrapper.listCommits().",
       );
@@ -230,7 +230,7 @@ export default class OctokitWrapper {
     fileName: string,
     commitId: string,
   ): Promise<CreateReviewCommentResponse | null> {
-    if (this._octokit === undefined) {
+    if (typeof this._octokit === "undefined") {
       throw new Error(
         "OctokitWrapper was not initialized prior to calling OctokitWrapper.createReviewComment().",
       );
@@ -275,7 +275,7 @@ export default class OctokitWrapper {
     commentThreadId: number,
     content: string,
   ): Promise<UpdateIssueCommentResponse> {
-    if (this._octokit === undefined) {
+    if (typeof this._octokit === "undefined") {
       throw new Error(
         "OctokitWrapper was not initialized prior to calling OctokitWrapper.updateIssueComment().",
       );
@@ -302,7 +302,7 @@ export default class OctokitWrapper {
     repo: string,
     commentThreadId: number,
   ): Promise<DeleteReviewCommentResponse> {
-    if (this._octokit === undefined) {
+    if (typeof this._octokit === "undefined") {
       throw new Error(
         "OctokitWrapper was not initialized prior to calling OctokitWrapper.deleteReviewComment().",
       );

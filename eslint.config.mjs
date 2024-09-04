@@ -36,7 +36,7 @@ export default tseslint.config(
       //'@typescript-eslint/class-methods-use-this': 'error', – 28
       //'@typescript-eslint/no-magic-numbers': 'error', – 1050
       //'class-methods-use-this': 'error', – 28
-      //'no-undefined': 'error', – 96
+      'no-undefined': 'error', //– 96
       //'no-undef': 'error', – 545
       //'no-underscore-dangle': 'error',// – 593
       //'sort-keys': 'error', – 616

@@ -73,7 +73,7 @@ export default class OctokitGitDiffParser {
     this._logger.logDebug("* OctokitGitDiffParser.getFirstChangedLines()");
 
     // If the information has already been retrieved, return the cached response.
-    if (this._firstLineOfFiles !== undefined) {
+    if (typeof this._firstLineOfFiles !== "undefined") {
       return this._firstLineOfFiles;
     }
 

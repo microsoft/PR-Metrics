@@ -167,7 +167,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       testCases.forEach((variable: string | undefined): void => {
         it(`should throw when SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI is set to the invalid value '${Converter.toString(variable)}' and the task is running on Azure Pipelines`, async (): Promise<void> => {
           // Arrange
-          if (variable === undefined) {
+          if (typeof variable === "undefined") {
             delete process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI;
           } else {
             process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI = variable;
@@ -238,7 +238,7 @@ describe("gitHubReposInvoker.ts", (): void => {
           delete process.env.PR_METRICS_ACCESS_TOKEN;
           process.env.PR_METRICS_ACCESS_TOKEN = "PAT";
           process.env.GITHUB_ACTION = "PR-Metrics";
-          if (variable === undefined) {
+          if (typeof variable === "undefined") {
             delete process.env.GITHUB_API_URL;
           } else {
             process.env.GITHUB_API_URL = variable;
@@ -286,7 +286,7 @@ describe("gitHubReposInvoker.ts", (): void => {
           process.env.PR_METRICS_ACCESS_TOKEN = "PAT";
           process.env.GITHUB_ACTION = "PR-Metrics";
           process.env.GITHUB_API_URL = "https://api.github.com";
-          if (variable === undefined) {
+          if (typeof variable === "undefined") {
             delete process.env.GITHUB_REPOSITORY_OWNER;
           } else {
             process.env.GITHUB_REPOSITORY_OWNER = variable;
@@ -336,7 +336,7 @@ describe("gitHubReposInvoker.ts", (): void => {
           process.env.GITHUB_ACTION = "PR-Metrics";
           process.env.GITHUB_API_URL = "https://api.github.com";
           process.env.GITHUB_REPOSITORY_OWNER = "microsoft";
-          if (variable === undefined) {
+          if (typeof variable === "undefined") {
             delete process.env.GITHUB_REPOSITORY;
           } else {
             process.env.GITHUB_REPOSITORY = variable;
@@ -687,7 +687,7 @@ describe("gitHubReposInvoker.ts", (): void => {
 
       // Assert
       assert.equal(result.title, "Title");
-      assert.equal(result.description, undefined);
+      assert.equal(typeof result.description, "undefined");
       verify(octokitWrapper.initialize(any())).once();
       verify(octokitWrapper.getPull("microsoft", "PR-Metrics", 12345)).once();
       verify(
@@ -840,7 +840,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       );
       const response: GetIssueCommentsResponse =
         GitHubReposInvokerConstants.getIssueCommentsResponse;
-      if (response.data[0] === undefined) {
+      if (typeof response.data[0] === "undefined") {
         throw new Error("response.data[0] is undefined");
       }
 
@@ -955,7 +955,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       );
       const response: GetIssueCommentsResponse =
         GitHubReposInvokerConstants.getIssueCommentsResponse;
-      if (response.data[0] === undefined) {
+      if (typeof response.data[0] === "undefined") {
         throw new Error("response.data[0] is undefined");
       }
 
@@ -1027,7 +1027,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       );
       const response: GetIssueCommentsResponse =
         GitHubReposInvokerConstants.getIssueCommentsResponse;
-      if (response.data[0] === undefined) {
+      if (typeof response.data[0] === "undefined") {
         throw new Error("response.data[0] is undefined");
       }
 

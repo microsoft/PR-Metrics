@@ -70,7 +70,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
   public async isAccessTokenAvailable(): Promise<string | null> {
     this._logger.logDebug("* GitHubReposInvoker.isAccessTokenAvailable()");
 
-    if (process.env.PR_METRICS_ACCESS_TOKEN === undefined) {
+    if (typeof process.env.PR_METRICS_ACCESS_TOKEN === "undefined") {
       return Promise.resolve(
         this._runnerInvoker.loc("repos.gitHubReposInvoker.noGitHubAccessToken"),
       );
@@ -307,7 +307,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
       "GitHubReposInvoker.initializeForGitHub()",
     );
     const gitHubRepositoryElements: string[] = gitHubRepository.split("/");
-    if (gitHubRepositoryElements[1] === undefined) {
+    if (typeof gitHubRepositoryElements[1] === "undefined") {
       throw new Error(
         `GITHUB_REPOSITORY '${gitHubRepository}' is in an unexpected format.`,
       );
@@ -327,9 +327,9 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     const sourceRepositoryUriElements: string[] =
       sourceRepositoryUri.split("/");
     if (
-      sourceRepositoryUriElements[2] === undefined ||
-      sourceRepositoryUriElements[3] === undefined ||
-      sourceRepositoryUriElements[4] === undefined
+      typeof sourceRepositoryUriElements[2] === "undefined" ||
+      typeof sourceRepositoryUriElements[3] === "undefined" ||
+      typeof sourceRepositoryUriElements[4] === "undefined"
     ) {
       throw new Error(
         `SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI '${sourceRepositoryUri}' is in an unexpected format.`,
@@ -362,7 +362,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     if (pullRequestComments) {
       for (const value of pullRequestComments.data) {
         const content: string | undefined = value.body;
-        if (content !== undefined) {
+        if (typeof content !== "undefined") {
           result.pullRequestComments.push(
             new PullRequestCommentData(value.id, content),
           );
@@ -399,11 +399,11 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     );
 
     // Get the last page of commits so that the last commit can be located.
-    if (result.headers.link !== undefined) {
+    if (typeof result.headers.link !== "undefined") {
       const commitsLink: string = result.headers.link;
       const matches: RegExpMatchArray | null =
         /<.+>; rel="next", <.+?page=(?<pageNumber>\d+)>; rel="last"/u.exec(commitsLink);
-      if (matches?.groups?.pageNumber === undefined) {
+      if (typeof matches?.groups?.pageNumber === "undefined") {
         throw new Error(
           `The regular expression did not match '${commitsLink}'.`,
         );

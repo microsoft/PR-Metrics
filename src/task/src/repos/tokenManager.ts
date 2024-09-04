@@ -58,7 +58,7 @@ export default class TokenManager {
     this._previouslyInvoked = true;
     const workloadIdentityFederation: string | undefined =
       this._runnerInvoker.getInput(["Workload", "Identity", "Federation"]);
-    if (workloadIdentityFederation === undefined) {
+    if (typeof workloadIdentityFederation === "undefined") {
       this._logger.logDebug(
         "No workload identity federation specified. Using Personal Access Token (PAT) for authentication.",
       );

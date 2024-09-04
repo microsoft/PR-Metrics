@@ -53,7 +53,7 @@ describe("validator.ts", (): void => {
       testCases.forEach((value: string | undefined): void => {
         it(`should throw an error when passed invalid string value '${Converter.toString(value)}'`, (): void => {
           // Arrange
-          if (value === undefined) {
+          if (typeof value === "undefined") {
             delete process.env.TEST_VARIABLE;
           } else {
             process.env.TEST_VARIABLE = value;

@@ -163,7 +163,7 @@ describe("azureReposInvoker.ts", (): void => {
       testCases.forEach((variable: string | undefined): void => {
         it(`should throw when SYSTEM_TEAMPROJECT is set to the invalid value '${Converter.toString(variable)}'`, async (): Promise<void> => {
           // Arrange
-          if (variable === undefined) {
+          if (typeof variable === "undefined") {
             delete process.env.SYSTEM_TEAMPROJECT;
           } else {
             process.env.SYSTEM_TEAMPROJECT = variable;
@@ -200,7 +200,7 @@ describe("azureReposInvoker.ts", (): void => {
       testCases.forEach((variable: string | undefined): void => {
         it(`should throw when BUILD_REPOSITORY_ID is set to the invalid value '${Converter.toString(variable)}'`, async (): Promise<void> => {
           // Arrange
-          if (variable === undefined) {
+          if (typeof variable === "undefined") {
             delete process.env.BUILD_REPOSITORY_ID;
           } else {
             process.env.BUILD_REPOSITORY_ID = variable;
@@ -237,7 +237,7 @@ describe("azureReposInvoker.ts", (): void => {
       testCases.forEach((variable: string | undefined): void => {
         it(`should throw when PR_METRICS_ACCESS_TOKEN is set to the invalid value '${Converter.toString(variable)}'`, async (): Promise<void> => {
           // Arrange
-          if (variable === undefined) {
+          if (typeof variable === "undefined") {
             delete process.env.PR_METRICS_ACCESS_TOKEN;
           } else {
             process.env.PR_METRICS_ACCESS_TOKEN = variable;
@@ -274,7 +274,7 @@ describe("azureReposInvoker.ts", (): void => {
       testCases.forEach((variable: string | undefined): void => {
         it(`should throw when SYSTEM_TEAMFOUNDATIONCOLLECTIONURI is set to the invalid value '${Converter.toString(variable)}'`, async (): Promise<void> => {
           // Arrange
-          if (variable === undefined) {
+          if (typeof variable === "undefined") {
             delete process.env.SYSTEM_TEAMFOUNDATIONCOLLECTIONURI;
           } else {
             process.env.SYSTEM_TEAMFOUNDATIONCOLLECTIONURI = variable;
@@ -453,7 +453,7 @@ describe("azureReposInvoker.ts", (): void => {
 
       // Assert
       assert.equal(result.title, "Title");
-      assert.equal(result.description, undefined);
+      assert.equal(typeof result.description, "undefined");
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler("PAT")).once();
       verify(
         azureDevOpsApiWrapper.getWebApiInstance(

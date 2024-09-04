@@ -39,7 +39,7 @@ export default class RunnerInvoker implements RunnerInvokerInterface {
    * Gets a value indicating whether a GitHub runner is in use.
    */
   public static get isGitHub(): boolean {
-    return process.env.GITHUB_ACTION !== undefined;
+    return typeof process.env.GITHUB_ACTION !== "undefined";
   }
 
   public async exec(tool: string, args: string): Promise<ExecOutput> {
@@ -131,7 +131,7 @@ export default class RunnerInvoker implements RunnerInvokerInterface {
   }
 
   private getRunner(): RunnerInvokerInterface {
-    if (this._runnerInvoker !== undefined) {
+    if (typeof this._runnerInvoker !== "undefined") {
       return this._runnerInvoker;
     }
 
