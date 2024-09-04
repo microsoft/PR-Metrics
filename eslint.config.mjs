@@ -35,8 +35,6 @@ export default tseslint.config(
       //'@typescript-eslint/member-ordering': 'error', – 19
       //'@typescript-eslint/class-methods-use-this': 'error', – 28
       //'@typescript-eslint/no-magic-numbers': 'error', – 1050
-      'no-negated-condition': 'error', //– 4
-      //'no-ternary': 'error', – 20
       //'class-methods-use-this': 'error', – 28
       //'no-undefined': 'error', – 96
       //'no-undef': 'error', – 545
@@ -45,6 +43,7 @@ export default tseslint.config(
       //'no-magic-numbers': 'error', – 1050
       // NO
       //'init-declarations': 'error', – 59
+      //'no-ternary': 'error', – 20
       //'@typescript-eslint/init-declarations': 'error', – 59
       //'@typescript-eslint/prefer-readonly-parameter-types': 'error', – 115
       // CONSIDER
@@ -175,6 +174,7 @@ export default tseslint.config(
       'no-misleading-character-class': 'error',
       'no-multi-assign': 'error',
       'no-multi-str': 'error',
+      'no-negated-condition': 'error',
       'no-nested-ternary': 'error',
       'no-new': 'error',
       'no-new-func': 'error',
