@@ -9,7 +9,7 @@ import type GetReviewCommentsResponse from "../../src/wrappers/octokitInterfaces
 import type ListCommitsResponse from "../../src/wrappers/octokitInterfaces/listCommitsResponse";
 import { StatusCodes } from "http-status-codes";
 
-/* eslint-disable camelcase -- Required for alignment with Octokit. */
+/* eslint-disable @typescript-eslint/naming-convention -- Required for alignment with Octokit. */
 
 /**
  * A mock response for the Octokit API call to get the pull request details.
@@ -605,4 +605,4 @@ export const getReviewCommentsResponse: GetReviewCommentsResponse = {
   ],
 };
 
-/* eslint-enable camelcase */
+/* eslint-enable @typescript-eslint/naming-convention */

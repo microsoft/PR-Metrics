@@ -3,13 +3,13 @@
  * Licensed under the MIT License.
  */
 
-type _FixedLengthArrayInterface<
+type FixedLengthArrayInternal<
   Type,
   Length extends number,
   Recursion extends Type[],
 > = Recursion["length"] extends Length
   ? Recursion
-  : _FixedLengthArrayInterface<Type, Length, [Type, ...Recursion]>;
+  : FixedLengthArrayInternal<Type, Length, [Type, ...Recursion]>;
 
 /**
  * A type definition reflecting an array of a fixed length.
@@ -22,5 +22,5 @@ export type FixedLengthArrayInterface<
 > = Length extends Length
   ? number extends Length
     ? Type[]
-    : _FixedLengthArrayInterface<Type, Length, []>
+    : FixedLengthArrayInternal<Type, Length, []>
   : never;

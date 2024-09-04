@@ -31,6 +31,7 @@ export const createRequestError = (
         content,
       },
       headers: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention -- Required for alignment with the HTTP header.
         "Content-Type": "text/html; charset=utf-8",
       },
       status,

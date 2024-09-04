@@ -37,7 +37,6 @@ export default tseslint.config(
       //'@typescript-eslint/class-methods-use-this': 'error', – 28
       //'@typescript-eslint/init-declarations': 'error', – 59
       //'@typescript-eslint/prefer-readonly-parameter-types': 'error', – 115
-      //'@typescript-eslint/naming-convention': 'error',
       //'@typescript-eslint/no-magic-numbers': 'error', – 1050
       //'no-negated-condition': 'error', – 4
       //'prefer-destructuring': 'error', – 9
@@ -60,6 +59,7 @@ export default tseslint.config(
       '@typescript-eslint/explicit-function-return-type': 'error',
       '@typescript-eslint/explicit-member-accessibility': 'error',
       '@typescript-eslint/method-signature-style': 'error',
+      '@typescript-eslint/naming-convention': 'error',
       '@typescript-eslint/no-array-constructor': 'error',
       '@typescript-eslint/no-invalid-this': 'error',
       '@typescript-eslint/no-loop-func': 'error',
@@ -102,7 +102,6 @@ export default tseslint.config(
       'array-callback-return': 'error',
       'arrow-body-style': 'error',
       'block-scoped-var': 'error',
-      'camelcase': 'error',
       'capitalized-comments': 'error',
       'complexity': 'error',
       'consistent-return': 'error',

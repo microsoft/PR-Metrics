@@ -80,6 +80,7 @@ describe("tokenManager.ts", (): void => {
     ).thenReturn({
       scheme: "OAuth",
       parameters: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention -- Required for alignment with underlying API.
         AccessToken: "AccessToken",
       },
     });

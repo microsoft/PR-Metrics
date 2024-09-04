@@ -12,7 +12,7 @@ import OctokitGitDiffParser from "../../src/git/octokitGitDiffParser";
 import OctokitWrapper from "../../src/wrappers/octokitWrapper";
 import assert from "node:assert/strict";
 
-/* eslint-disable camelcase -- Required for alignment with Octokit. */
+/* eslint-disable @typescript-eslint/naming-convention -- Required for alignment with Octokit. */
 
 describe("octokitGitDiffParser.ts", (): void => {
   let axiosWrapper: AxiosWrapper;
@@ -534,5 +534,4 @@ describe("octokitGitDiffParser.ts", (): void => {
     });
   });
 });
-
-/* eslint-enable camelcase */
+/* eslint-enable @typescript-eslint/naming-convention */
