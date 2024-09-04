@@ -137,7 +137,7 @@ export default class OctokitGitDiffParser {
           case "ChangedFile": {
             // For an added or changed file, add the file path and the first changed line.
             const fileCasted: AddedFile | ChangedFile = file;
-            const chunk: AnyChunk | undefined = fileCasted.chunks[0];
+            const [chunk]: (AnyChunk | undefined)[] = fileCasted.chunks;
             if (chunk?.type === "BinaryFilesChunk") {
               this._logger.logDebug(
                 `Skipping '${file.type}' '${fileCasted.path}' while performing diff parsing.`,

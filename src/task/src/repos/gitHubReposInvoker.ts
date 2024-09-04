@@ -361,11 +361,10 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
 
     if (pullRequestComments) {
       for (const value of pullRequestComments.data) {
-        const id: number = value.id;
         const content: string | undefined = value.body;
         if (content !== undefined) {
           result.pullRequestComments.push(
-            new PullRequestCommentData(id, content),
+            new PullRequestCommentData(value.id, content),
           );
         }
       }
@@ -373,10 +372,9 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
 
     if (fileComments) {
       for (const value of fileComments.data) {
-        const id: number = value.id;
         const content: string = value.body;
         const file: string = value.path;
-        result.fileComments.push(new FileCommentData(id, content, file));
+        result.fileComments.push(new FileCommentData(value.id, content, file));
       }
     }
 

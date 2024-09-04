@@ -39,11 +39,7 @@ describe("codeMetricsData.ts", (): void => {
       const codeMetricsData: CodeMetricsData = new CodeMetricsData(1, 2, 4);
 
       // Act
-      const productCode: number = codeMetricsData.productCode;
-      const testCode: number = codeMetricsData.testCode;
-      const subtotal: number = codeMetricsData.subtotal;
-      const ignoredCode: number = codeMetricsData.ignoredCode;
-      const total: number = codeMetricsData.total;
+      const { productCode, testCode, subtotal, ignoredCode, total } = codeMetricsData;
 
       // Assert
       assert.equal(productCode, 1);

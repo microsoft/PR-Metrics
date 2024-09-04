@@ -199,10 +199,8 @@ export default class CodeMetricsCalculator {
       "* CodeMetricsCalculator.updateNoReviewRequiredComment()",
     );
 
-    const noReviewRequiredComment: string =
-      this._pullRequestComments.noReviewRequiredComment;
     await this._reposInvoker.createComment(
-      noReviewRequiredComment,
+      this._pullRequestComments.noReviewRequiredComment,
       fileName,
       CommentThreadStatus.Closed,
       isFileDeleted,
