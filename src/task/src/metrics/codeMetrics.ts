@@ -205,10 +205,10 @@ export default class CodeMetrics {
       );
       if (isValidFilePattern && isValidFileExtension) {
         matches.push(codeFileMetric);
-      } else if (!isValidFilePattern) {
-        nonMatchesToComment.push(codeFileMetric);
-      } else {
+      } else if (isValidFilePattern) {
         nonMatches.push(codeFileMetric);
+      } else {
+        nonMatchesToComment.push(codeFileMetric);
       }
     }
 

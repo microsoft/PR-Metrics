@@ -32,19 +32,13 @@ export default tseslint.config(
       },
     },
     rules: {
-      //'@typescript-eslint/max-params': 'error', – 17
       //'@typescript-eslint/member-ordering': 'error', – 19
       //'@typescript-eslint/class-methods-use-this': 'error', – 28
-      //'@typescript-eslint/prefer-readonly-parameter-types': 'error', – 115
       //'@typescript-eslint/no-magic-numbers': 'error', – 1050
-      //'no-negated-condition': 'error', – 4
-      //'max-lines': 'error', – 15
-      //'max-params': 'error', – 17
+      'no-negated-condition': 'error', //– 4
       //'no-ternary': 'error', – 20
       //'class-methods-use-this': 'error', – 28
-      //'max-lines-per-function': 'error', – 67
       //'no-undefined': 'error', – 96
-      //'max-statements': 'error', – 155
       //'no-undef': 'error', – 545
       //'no-underscore-dangle': 'error',// – 593
       //'sort-keys': 'error', – 616
@@ -52,6 +46,13 @@ export default tseslint.config(
       // NO
       //'init-declarations': 'error', – 59
       //'@typescript-eslint/init-declarations': 'error', – 59
+      //'@typescript-eslint/prefer-readonly-parameter-types': 'error', – 115
+      // CONSIDER
+      //'@typescript-eslint/max-params': 'error', – 17
+      //'max-lines': 'error', – 15
+      //'max-params': 'error', – 17
+      //'max-statements': 'error', – 155
+      //'max-lines-per-function': 'error', – 67
       '@typescript-eslint/consistent-type-exports': 'error',
       '@typescript-eslint/consistent-type-imports': 'error',
       '@typescript-eslint/default-param-last': 'error',

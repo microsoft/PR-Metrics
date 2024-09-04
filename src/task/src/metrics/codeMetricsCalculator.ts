@@ -185,8 +185,8 @@ export default class CodeMetricsCalculator {
     } else {
       await this._reposInvoker.updateComment(
         commentData.metricsCommentThreadId,
-        commentData.metricsCommentContent !== content ? content : null,
-        commentData.metricsCommentThreadStatus !== status ? status : null,
+        commentData.metricsCommentContent === content ? null : content,
+        commentData.metricsCommentThreadStatus === status ? null : status,
       );
     }
   }
