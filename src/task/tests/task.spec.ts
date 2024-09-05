@@ -5,10 +5,10 @@
 
 import * as fs from "fs";
 import * as path from "path";
-import type PackageJsonInterface from "./jsonTypes/packageJsonInterface";
-import type ResourcesJsonInterface from "../src/jsonTypes/resourcesJsonInterface";
-import type TaskJsonInterface from "./jsonTypes/taskJsonInterface";
-import type VssExtensionJsonInterface from "./jsonTypes/vssExtensionJsonInterface";
+import PackageJsonInterface from "./jsonTypes/packageJsonInterface";
+import ResourcesJsonInterface from "../src/jsonTypes/resourcesJsonInterface";
+import TaskJsonInterface from "./jsonTypes/taskJsonInterface";
+import VssExtensionJsonInterface from "./jsonTypes/vssExtensionJsonInterface";
 import assert from "node:assert/strict";
 
 describe("task.json", (): void => {

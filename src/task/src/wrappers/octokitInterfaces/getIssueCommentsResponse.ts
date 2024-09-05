@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import type { GetResponseTypeFromEndpointMethod } from "@octokit/types";
+import { GetResponseTypeFromEndpointMethod } from "@octokit/types";
 import { Octokit } from "octokit";
 
 const octokit: Octokit = new Octokit();

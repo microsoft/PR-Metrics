@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import type ResolvableInstanceTargetInterface from "./resolvableInstanceTargetInterface";
+import ResolvableInstanceTargetInterface from "./resolvableInstanceTargetInterface";
 import { instance } from "ts-mockito";
 
 /**
