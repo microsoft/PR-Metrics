@@ -239,13 +239,12 @@ describe("pullRequestComments.ts", (): void => {
 
     {
       interface TestCaseType {
-        filesNotRequiringReview: string[];
         fileComments: FileCommentData[];
+        filesNotRequiringReview: string[];
       }
 
       const testCases: TestCaseType[] = [
         {
-          filesNotRequiringReview: ["folder/file1.ts", "file3.ts"],
           fileComments: [
             new FileCommentData(
               20,
@@ -253,9 +252,9 @@ describe("pullRequestComments.ts", (): void => {
               "file2.ts",
             ),
           ],
+          filesNotRequiringReview: ["folder/file1.ts", "file3.ts"],
         },
         {
-          filesNotRequiringReview: ["folder/file1.ts", "file3.ts"],
           fileComments: [
             new FileCommentData(20, "Content", "folder/file1.ts"),
             new FileCommentData(
@@ -264,9 +263,9 @@ describe("pullRequestComments.ts", (): void => {
               "file2.ts",
             ),
           ],
+          filesNotRequiringReview: ["folder/file1.ts", "file3.ts"],
         },
         {
-          filesNotRequiringReview: ["file3.ts"],
           fileComments: [
             new FileCommentData(
               20,
@@ -279,11 +278,12 @@ describe("pullRequestComments.ts", (): void => {
               "file2.ts",
             ),
           ],
+          filesNotRequiringReview: ["file3.ts"],
         },
       ];
 
       testCases.forEach(
-        ({ filesNotRequiringReview, fileComments }: TestCaseType): void => {
+        ({ fileComments, filesNotRequiringReview }: TestCaseType): void => {
           it(`should return the expected result for files not requiring review when the comment is present with files '${JSON.stringify(fileComments)}'`, async (): Promise<void> => {
             // Arrange
             const comments: CommentData = new CommentData();

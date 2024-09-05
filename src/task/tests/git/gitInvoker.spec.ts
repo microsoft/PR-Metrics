@@ -33,8 +33,8 @@ describe("gitInvoker.ts", (): void => {
       const testCommitId = "7235cb16e5e6ac83e3cbecae66bab557e9e2cee6";
       return Promise.resolve({
         exitCode: 0,
-        stdout: testCommitId,
         stderr: "",
+        stdout: testCommitId,
       });
     });
     when(
@@ -46,8 +46,8 @@ describe("gitInvoker.ts", (): void => {
       async (): Promise<ExecOutput> =>
         Promise.resolve({
           exitCode: 0,
-          stdout: "1\t2\tFile.txt",
           stderr: "",
+          stdout: "1\t2\tFile.txt",
         }),
     );
   });
@@ -71,8 +71,8 @@ describe("gitInvoker.ts", (): void => {
             async (): Promise<ExecOutput> =>
               Promise.resolve({
                 exitCode: 0,
-                stdout: response,
                 stderr: "",
+                stdout: response,
               }),
           );
           const gitInvoker: GitInvoker = new GitInvoker(
@@ -99,8 +99,8 @@ describe("gitInvoker.ts", (): void => {
         async (): Promise<ExecOutput> =>
           Promise.resolve({
             exitCode: 1,
-            stdout: "",
             stderr: "Failure",
+            stdout: "",
           }),
       );
       const gitInvoker: GitInvoker = new GitInvoker(
@@ -472,9 +472,9 @@ describe("gitInvoker.ts", (): void => {
         async (): Promise<ExecOutput> =>
           Promise.resolve({
             exitCode: 1,
-            stdout: "",
             stderr:
               "fatal: ambiguous argument 'origin/develop...pull/12345/merge': unknown revision or path not in the working tree.\n",
+            stdout: "",
           }),
       );
       const gitInvoker: GitInvoker = new GitInvoker(
@@ -902,8 +902,8 @@ describe("gitInvoker.ts", (): void => {
         async (): Promise<ExecOutput> =>
           Promise.resolve({
             exitCode: 1,
-            stdout: "",
             stderr: "Failure",
+            stdout: "",
           }),
       );
       const gitInvoker: GitInvoker = new GitInvoker(

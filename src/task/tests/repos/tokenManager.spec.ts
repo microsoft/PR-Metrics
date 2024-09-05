@@ -78,11 +78,11 @@ describe("tokenManager.ts", (): void => {
     when(
       runnerInvoker.getEndpointAuthorization("SYSTEMVSSCONNECTION"),
     ).thenReturn({
-      scheme: "OAuth",
       parameters: {
         // eslint-disable-next-line @typescript-eslint/naming-convention -- Required for alignment with underlying API.
         AccessToken: "AccessToken",
       },
+      scheme: "OAuth",
     });
     when(
       runnerInvoker.exec(
@@ -229,10 +229,10 @@ describe("tokenManager.ts", (): void => {
       const testCases: (EndpointAuthorization | undefined)[] = [
         undefined,
         {
-          scheme: "Other",
           parameters: {
             other: "Other",
           },
+          scheme: "Other",
         },
       ];
 
@@ -282,10 +282,10 @@ describe("tokenManager.ts", (): void => {
     when(
       runnerInvoker.getEndpointAuthorization("SYSTEMVSSCONNECTION"),
     ).thenReturn({
-      scheme: "OAuth",
       parameters: {
         other: "Other",
       },
+      scheme: "OAuth",
     });
 
     // Act

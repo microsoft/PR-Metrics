@@ -65,8 +65,8 @@ export default class AzurePipelinesRunnerInvoker
     }
 
     return {
-      scheme: result.scheme,
       parameters: result.parameters,
+      scheme: result.scheme,
     };
   }
 

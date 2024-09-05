@@ -1296,10 +1296,10 @@ describe("gitHubReposInvoker.ts", (): void => {
           anyNumber(),
         ),
       ).thenResolve({
+        data: [],
         headers: {},
         status: StatusCodes.OK,
         url: "",
-        data: [],
       });
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
         instance(gitInvoker),
@@ -1348,12 +1348,12 @@ describe("gitHubReposInvoker.ts", (): void => {
       when(
         octokitWrapper.listCommits(anyString(), anyString(), anyNumber(), 1),
       ).thenResolve({
+        data: [],
         headers: {
           link: '<https://api.github.com/repositories/309438703/pulls/172/commits?page=2>; rel="next", <https://api.github.com/repositories/309438703/pulls/172/commits?page=24>; rel="last"',
         },
         status: StatusCodes.OK,
         url: "",
-        data: [],
       });
       when(
         octokitWrapper.listCommits(anyString(), anyString(), anyNumber(), 24),
@@ -1411,12 +1411,12 @@ describe("gitHubReposInvoker.ts", (): void => {
       when(
         octokitWrapper.listCommits(anyString(), anyString(), anyNumber(), 1),
       ).thenResolve({
+        data: [],
         headers: {
           link: "non-matching",
         },
         status: StatusCodes.OK,
         url: "",
-        data: [],
       });
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
         instance(gitInvoker),
