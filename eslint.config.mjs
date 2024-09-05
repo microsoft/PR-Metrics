@@ -23,7 +23,8 @@ export default tseslint.config(
     languageOptions: {
       globals: {
         ...globals.es2017,
-        ...globals.node
+        ...globals.mocha,
+        ...globals.node,
       },
       parser: typescriptParser,
       parserOptions: {
@@ -36,8 +37,7 @@ export default tseslint.config(
       //'@typescript-eslint/class-methods-use-this': 'error', – 28
       //'@typescript-eslint/no-magic-numbers': 'error', – 1050
       //'class-methods-use-this': 'error', – 28
-      'no-undefined': 'error', //– 96
-      //'no-undef': 'error', – 545
+      //'no-undefined': 'error', //– 96
       //'no-underscore-dangle': 'error',// – 593
       //'sort-keys': 'error', – 616
       //'no-magic-numbers': 'error', – 1050
@@ -208,6 +208,7 @@ export default tseslint.config(
       'no-sparse-arrays': 'error',
       'no-template-curly-in-string': 'error',
       'no-this-before-super': 'error',
+      'no-undef': 'error',
       'no-undef-init': 'error',
       'no-unexpected-multiline': 'error',
       'no-unmodified-loop-condition': 'error',
