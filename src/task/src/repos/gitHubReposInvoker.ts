@@ -352,10 +352,12 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     }
 
     // Handle GitHub Enterprise invocations.
-    let baseUrl: string;
-    [, , baseUrl, this._owner, this._repo] = sourceRepositoryUriElements;
-    if (baseUrl !== "github.com") {
-      baseUrl = `https://${baseUrl}/api/v3`;
+    let baseUrl: string | undefined;
+    let baseUrlTemporary: string;
+    [, , baseUrlTemporary, this._owner, this._repo] =
+      sourceRepositoryUriElements;
+    if (baseUrlTemporary !== "github.com") {
+      baseUrl = `https://${baseUrlTemporary}/api/v3`;
     }
 
     const gitEnding = ".git";
