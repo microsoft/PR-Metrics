@@ -84,7 +84,7 @@ export default class Logger {
    * @param error The error object to log.
    */
   public logErrorObject(error: Error): void {
-    const {name} = error;
+    const { name } = error;
     const properties: string[] = Object.getOwnPropertyNames(error);
     const errorRecord: Record<string, unknown> = error as unknown as Record<
       string,

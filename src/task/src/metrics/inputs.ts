@@ -297,7 +297,10 @@ export default class Inputs {
   ): void {
     this._logger.logDebug("* Inputs.initializeCodeFileExtensions()");
 
-    if (typeof codeFileExtensions !== "undefined" && codeFileExtensions.trim() !== "") {
+    if (
+      typeof codeFileExtensions !== "undefined" &&
+      codeFileExtensions.trim() !== ""
+    ) {
       const wildcardStart = "*.";
       const periodStart = ".";
 

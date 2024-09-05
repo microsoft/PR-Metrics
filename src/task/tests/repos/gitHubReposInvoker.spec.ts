@@ -1246,10 +1246,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       );
 
       // Act
-      await gitHubReposInvoker.createComment(
-        "Content",
-        "file.ts",
-      );
+      await gitHubReposInvoker.createComment("Content", "file.ts");
 
       // Assert
       verify(octokitWrapper.initialize(any())).once();
@@ -1310,10 +1307,7 @@ describe("gitHubReposInvoker.ts", (): void => {
 
       // Act
       const func: () => Promise<void> = async () =>
-        gitHubReposInvoker.createComment(
-          "Content",
-          "file.ts",
-        );
+        gitHubReposInvoker.createComment("Content", "file.ts");
 
       // Assert
       await AssertExtensions.toThrowAsync(
@@ -1366,10 +1360,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       );
 
       // Act
-      await gitHubReposInvoker.createComment(
-        "Content",
-        "file.ts",
-      );
+      await gitHubReposInvoker.createComment("Content", "file.ts");
 
       // Assert
       verify(octokitWrapper.initialize(any())).once();
@@ -1427,10 +1418,7 @@ describe("gitHubReposInvoker.ts", (): void => {
 
       // Act
       const func: () => Promise<void> = async () =>
-        gitHubReposInvoker.createComment(
-          "Content",
-          "file.ts",
-        );
+        gitHubReposInvoker.createComment("Content", "file.ts");
 
       // Assert
       await AssertExtensions.toThrowAsync(
@@ -1470,14 +1458,8 @@ describe("gitHubReposInvoker.ts", (): void => {
       );
 
       // Act
-      await gitHubReposInvoker.createComment(
-        "Content",
-        "file.ts",
-      );
-      await gitHubReposInvoker.createComment(
-        "Content",
-        "file.ts",
-      );
+      await gitHubReposInvoker.createComment("Content", "file.ts");
+      await gitHubReposInvoker.createComment("Content", "file.ts");
 
       // Assert
       verify(octokitWrapper.initialize(any())).once();
@@ -1534,10 +1516,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       );
 
       // Act
-      await gitHubReposInvoker.createComment(
-        "Content",
-        "file.ts",
-      );
+      await gitHubReposInvoker.createComment("Content", "file.ts");
 
       // Assert
       verify(octokitWrapper.initialize(any())).once();
@@ -1600,10 +1579,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       );
 
       // Act
-      await gitHubReposInvoker.createComment(
-        "Content",
-        "file.ts",
-      );
+      await gitHubReposInvoker.createComment("Content", "file.ts");
 
       // Assert
       verify(octokitWrapper.initialize(any())).once();
@@ -1678,10 +1654,7 @@ describe("gitHubReposInvoker.ts", (): void => {
 
           // Act
           const func: () => Promise<void> = async () =>
-            gitHubReposInvoker.createComment(
-              "Content",
-              "file.ts",
-            );
+            gitHubReposInvoker.createComment("Content", "file.ts");
 
           // Assert
           await AssertExtensions.toThrowAsync(func, error.message);
@@ -1732,10 +1705,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       );
 
       // Act
-      await gitHubReposInvoker.createComment(
-        "Content",
-        null,
-      );
+      await gitHubReposInvoker.createComment("Content", null);
 
       // Assert
       verify(octokitWrapper.initialize(any())).once();

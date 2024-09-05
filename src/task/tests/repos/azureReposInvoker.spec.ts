@@ -6,7 +6,12 @@
 import "reflect-metadata";
 import * as AssertExtensions from "../testUtilities/assertExtensions";
 import * as Converter from "../../src/utilities/converter";
-import { type Comment, CommentThreadStatus, type GitPullRequest, type GitPullRequestCommentThread } from 'azure-devops-node-api/interfaces/GitInterfaces'
+import {
+  type Comment,
+  CommentThreadStatus,
+  type GitPullRequest,
+  type GitPullRequestCommentThread,
+} from "azure-devops-node-api/interfaces/GitInterfaces";
 import { any, anyNumber } from "../testUtilities/mockito";
 import { deepEqual, instance, mock, verify, when } from "ts-mockito";
 import AzureDevOpsApiWrapper from "../../src/wrappers/azureDevOpsApiWrapper";

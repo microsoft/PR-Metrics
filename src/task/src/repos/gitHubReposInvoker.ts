@@ -157,8 +157,8 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
   }
 
   public async createComment(
-      content: string,
-      fileName: string | null,
+    content: string,
+    fileName: string | null,
   ): Promise<void> {
     this._logger.logDebug("* GitHubReposInvoker.createComment()");
 
@@ -275,14 +275,18 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     const options: OctokitOptions = {
       auth: process.env.PR_METRICS_ACCESS_TOKEN,
       log: {
-        debug: (message: string): void =>
-          { this._logger.logDebug(`Octokit – ${message}`); },
-        error: (message: string): void =>
-          { this._logger.logError(`Octokit – ${message}`); },
-        info: (message: string): void =>
-          { this._logger.logInfo(`Octokit – ${message}`); },
-        warn: (message: string): void =>
-          { this._logger.logWarning(`Octokit – ${message}`); },
+        debug: (message: string): void => {
+          this._logger.logDebug(`Octokit – ${message}`);
+        },
+        error: (message: string): void => {
+          this._logger.logError(`Octokit – ${message}`);
+        },
+        info: (message: string): void => {
+          this._logger.logInfo(`Octokit – ${message}`);
+        },
+        warn: (message: string): void => {
+          this._logger.logWarning(`Octokit – ${message}`);
+        },
       },
       userAgent: "PRMetrics/v1.6.1",
     };
@@ -324,7 +328,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
       );
     }
 
-    [, this._repo] = gitHubRepositoryElements
+    [, this._repo] = gitHubRepositoryElements;
     return baseUrl;
   }
 
@@ -348,15 +352,18 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     }
 
     // Handle GitHub Enterprise invocations.
-    let baseUrl: string
-    [, , baseUrl, this._owner, this._repo] = sourceRepositoryUriElements
-    if (baseUrl !== 'github.com') {
-      baseUrl = `https://${baseUrl}/api/v3`
+    let baseUrl: string;
+    [, , baseUrl, this._owner, this._repo] = sourceRepositoryUriElements;
+    if (baseUrl !== "github.com") {
+      baseUrl = `https://${baseUrl}/api/v3`;
     }
 
-    const gitEnding = '.git'
+    const gitEnding = ".git";
     if (this._repo.endsWith(gitEnding)) {
-      this._repo = this._repo.substring(0, this._repo.length - gitEnding.length)
+      this._repo = this._repo.substring(
+        0,
+        this._repo.length - gitEnding.length,
+      );
     }
 
     return baseUrl;
@@ -413,7 +420,9 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     if (typeof result.headers.link !== "undefined") {
       const commitsLink: string = result.headers.link;
       const matches: RegExpMatchArray | null =
-        /<.+>; rel="next", <.+?page=(?<pageNumber>\d+)>; rel="last"/u.exec(commitsLink);
+        /<.+>; rel="next", <.+?page=(?<pageNumber>\d+)>; rel="last"/u.exec(
+          commitsLink,
+        );
       if (typeof matches?.groups?.pageNumber === "undefined") {
         throw new Error(
           `The regular expression did not match '${commitsLink}'.`,

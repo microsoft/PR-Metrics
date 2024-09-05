@@ -392,13 +392,17 @@ export default class CodeMetrics {
 
       // Condense file and folder names that were renamed, e.g., "F{a => i}leT{b => e}st.d{c => l}l" or "FaleTbst.dcl => FileTest.dll".
       const fileName: string = elements[2]
-        .replace(/\{.*? => (?<newName>[^}]+?)\}/gu, '$<newName>')
-        .replace(/.*? => (?<newName>[^}]+?)/gu, '$<newName>')
+        .replace(/\{.*? => (?<newName>[^}]+?)\}/gu, "$<newName>")
+        .replace(/.*? => (?<newName>[^}]+?)/gu, "$<newName>");
 
       result.push({
         fileName,
         linesAdded: CodeMetrics.parseChangedLines(elements[0], line, "added"),
-        linesDeleted: CodeMetrics.parseChangedLines(elements[1], line, "deleted"),
+        linesDeleted: CodeMetrics.parseChangedLines(
+          elements[1],
+          line,
+          "deleted",
+        ),
       });
     }
 
@@ -451,16 +455,17 @@ export default class CodeMetrics {
     const indexXL = 4;
     const size = 5;
 
-    const indicators: FixedLengthArrayInterface<(prefix: string) => string, typeof size> =
-      [
-        (): string =>
-          this._runnerInvoker.loc("metrics.codeMetrics.titleSizeXS"),
-        (): string => this._runnerInvoker.loc("metrics.codeMetrics.titleSizeS"),
-        (): string => this._runnerInvoker.loc("metrics.codeMetrics.titleSizeM"),
-        (): string => this._runnerInvoker.loc("metrics.codeMetrics.titleSizeL"),
-        (prefix: string): string =>
-          this._runnerInvoker.loc("metrics.codeMetrics.titleSizeXL", prefix),
-      ];
+    const indicators: FixedLengthArrayInterface<
+      (prefix: string) => string,
+      typeof size
+    > = [
+      (): string => this._runnerInvoker.loc("metrics.codeMetrics.titleSizeXS"),
+      (): string => this._runnerInvoker.loc("metrics.codeMetrics.titleSizeS"),
+      (): string => this._runnerInvoker.loc("metrics.codeMetrics.titleSizeM"),
+      (): string => this._runnerInvoker.loc("metrics.codeMetrics.titleSizeL"),
+      (prefix: string): string =>
+        this._runnerInvoker.loc("metrics.codeMetrics.titleSizeXL", prefix),
+    ];
 
     // Calculate the smaller size.
     if (this._metrics.productCode < this._inputs.baseSize) {

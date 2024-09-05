@@ -519,7 +519,11 @@ describe("codeMetricsCalculator.ts", (): void => {
         logger.logDebug("* CodeMetricsCalculator.updateMetricsComment()"),
       ).once();
       verify(
-        reposInvoker.createComment("Description", null, CommentThreadStatus.Active),
+        reposInvoker.createComment(
+          "Description",
+          null,
+          CommentThreadStatus.Active,
+        ),
       ).once();
     });
 

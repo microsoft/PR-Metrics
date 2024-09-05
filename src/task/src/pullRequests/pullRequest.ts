@@ -84,7 +84,10 @@ export default class PullRequest {
   ): string | null {
     this._logger.logDebug("* PullRequest.getUpdatedDescription()");
 
-    if (typeof currentDescription !== "undefined" && currentDescription.trim() !== "") {
+    if (
+      typeof currentDescription !== "undefined" &&
+      currentDescription.trim() !== ""
+    ) {
       return null;
     }
 
@@ -129,8 +132,10 @@ export default class PullRequest {
     const completeRegExp = `^${this._runnerInvoker.loc("pullRequests.pullRequest.titleFormat", sizeIndicatorRegExp, "(?<originalTitle>.*)")}$`;
 
     const prefixRegExp = new RegExp(completeRegExp, "u");
-    const prefixRegExpMatches: RegExpMatchArray | null = currentTitle.match(prefixRegExp);
-    const originalTitle: string = prefixRegExpMatches?.groups?.originalTitle ?? currentTitle;
+    const prefixRegExpMatches: RegExpMatchArray | null =
+      currentTitle.match(prefixRegExp);
+    const originalTitle: string =
+      prefixRegExpMatches?.groups?.originalTitle ?? currentTitle;
     return this._runnerInvoker.loc(
       "pullRequests.pullRequest.titleFormat",
       sizeIndicator,
