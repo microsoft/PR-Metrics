@@ -37,7 +37,6 @@ export default tseslint.config(
       //'@typescript-eslint/class-methods-use-this': 'error', – 28
       //'@typescript-eslint/no-magic-numbers': 'error', – 1050
       //'class-methods-use-this': 'error', – 28
-      //'no-undefined': 'error', //– 96
       //'no-underscore-dangle': 'error',// – 593
       //'sort-keys': 'error', – 616
       //'no-magic-numbers': 'error', – 1050
@@ -47,6 +46,7 @@ export default tseslint.config(
       //'@typescript-eslint/init-declarations': 'error', – 59
       //'@typescript-eslint/prefer-readonly-parameter-types': 'error', – 115
       // CONSIDER
+      //'no-undefined': 'error', //– 35
       //'@typescript-eslint/max-params': 'error', – 17
       //'max-lines': 'error', – 15
       //'max-params': 'error', – 17
