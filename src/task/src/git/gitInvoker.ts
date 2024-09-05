@@ -35,50 +35,6 @@ export default class GitInvoker {
   }
 
   /**
-   * Gets a value indicating whether the current folder corresponds to a Git repo.
-   * @returns A promise containing a value indicating whether the current folder corresponds to a Git repo.
-   */
-  public async isGitRepo(): Promise<boolean> {
-    this._logger.logDebug("* GitInvoker.isGitRepo()");
-
-    try {
-      await this.invokeGit("rev-parse --is-inside-work-tree");
-      return true;
-    } catch {
-      return false;
-    }
-  }
-
-  /**
-   * Gets a value indicating whether the pull request ID is available.
-   * @returns A value indicating whether the pull request ID is available.
-   */
-  public isPullRequestIdAvailable(): boolean {
-    this._logger.logDebug("* GitInvoker.isPullRequestIdAvailable()");
-
-    return !isNaN(parseInt(this.pullRequestIdInternal, decimalRadix));
-  }
-
-  /**
-   * Gets a value indicating whether sufficient Git history is available to generate the PR metrics.
-   * @returns A promise containing a value indicating whether sufficient Git history is available to generate the PR metrics.
-   */
-  public async isGitHistoryAvailable(): Promise<boolean> {
-    this._logger.logDebug("* GitInvoker.isGitHistoryAvailable()");
-
-    this.initialize();
-
-    try {
-      await this.invokeGit(
-        `rev-parse --branch origin/${this._targetBranch}...pull/${this._pullRequestIdInternal}/merge`,
-      );
-      return true;
-    } catch {
-      return false;
-    }
-  }
-
-  /**
    * Gets the ID of the pull request.
    * @returns The ID of the pull request.
    */
@@ -95,31 +51,6 @@ export default class GitInvoker {
       "GitInvoker.pullRequestId",
     );
     return this._pullRequestId;
-  }
-
-  /**
-   * Gets a diff summary related to the changes in the current branch.
-   * @returns A promise containing the diff summary.
-   */
-  public async getDiffSummary(): Promise<string> {
-    this._logger.logDebug("* GitInvoker.getDiffSummary()");
-
-    this.initialize();
-    return this.invokeGit(
-      `diff --numstat --ignore-all-space origin/${this._targetBranch}...pull/${this._pullRequestIdInternal}/merge`,
-    );
-  }
-
-  private initialize(): void {
-    this._logger.logDebug("* GitInvoker.initialize()");
-
-    if (this._isInitialized) {
-      return;
-    }
-
-    this._targetBranch = this.targetBranch;
-    this._pullRequestIdInternal = this.pullRequestIdInternal;
-    this._isInitialized = true;
   }
 
   private get pullRequestIdInternal(): string {
@@ -210,6 +141,75 @@ export default class GitInvoker {
     }
 
     return variable;
+  }
+
+  /**
+   * Gets a value indicating whether the current folder corresponds to a Git repo.
+   * @returns A promise containing a value indicating whether the current folder corresponds to a Git repo.
+   */
+  public async isGitRepo(): Promise<boolean> {
+    this._logger.logDebug("* GitInvoker.isGitRepo()");
+
+    try {
+      await this.invokeGit("rev-parse --is-inside-work-tree");
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  /**
+   * Gets a value indicating whether the pull request ID is available.
+   * @returns A value indicating whether the pull request ID is available.
+   */
+  public isPullRequestIdAvailable(): boolean {
+    this._logger.logDebug("* GitInvoker.isPullRequestIdAvailable()");
+
+    return !isNaN(parseInt(this.pullRequestIdInternal, decimalRadix));
+  }
+
+  /**
+   * Gets a value indicating whether sufficient Git history is available to generate the PR metrics.
+   * @returns A promise containing a value indicating whether sufficient Git history is available to generate the PR metrics.
+   */
+  public async isGitHistoryAvailable(): Promise<boolean> {
+    this._logger.logDebug("* GitInvoker.isGitHistoryAvailable()");
+
+    this.initialize();
+
+    try {
+      await this.invokeGit(
+        `rev-parse --branch origin/${this._targetBranch}...pull/${this._pullRequestIdInternal}/merge`,
+      );
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  /**
+   * Gets a diff summary related to the changes in the current branch.
+   * @returns A promise containing the diff summary.
+   */
+  public async getDiffSummary(): Promise<string> {
+    this._logger.logDebug("* GitInvoker.getDiffSummary()");
+
+    this.initialize();
+    return this.invokeGit(
+      `diff --numstat --ignore-all-space origin/${this._targetBranch}...pull/${this._pullRequestIdInternal}/merge`,
+    );
+  }
+
+  private initialize(): void {
+    this._logger.logDebug("* GitInvoker.initialize()");
+
+    if (this._isInitialized) {
+      return;
+    }
+
+    this._targetBranch = this.targetBranch;
+    this._pullRequestIdInternal = this.pullRequestIdInternal;
+    this._isInitialized = true;
   }
 
   private async invokeGit(parameters: string): Promise<string> {

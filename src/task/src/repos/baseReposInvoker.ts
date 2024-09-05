@@ -16,32 +16,6 @@ import { StatusCodes } from "http-status-codes";
 export default abstract class BaseReposInvoker
   implements ReposInvokerInterface
 {
-  public abstract isAccessTokenAvailable(): Promise<string | null>;
-
-  public abstract getTitleAndDescription(): Promise<PullRequestDetailsInterface>;
-
-  public abstract getComments(): Promise<CommentData>;
-
-  public abstract setTitleAndDescription(
-    title: string | null,
-    description: string | null,
-  ): Promise<void>;
-
-  public abstract createComment(
-    content: string,
-    fileName: string | null,
-    status: CommentThreadStatus,
-    isFileDeleted?: boolean,
-  ): Promise<void>;
-
-  public abstract updateComment(
-    commentThreadId: number,
-    content: string | null,
-    status: CommentThreadStatus | null,
-  ): Promise<void>;
-
-  public abstract deleteCommentThread(commentThreadId: number): Promise<void>;
-
   /**
    * Invokes an API call, augmenting any errors that may be thrown due to insufficient access.
    * @typeParam Response The type of the response from the API call.
@@ -76,4 +50,30 @@ export default abstract class BaseReposInvoker
       throw castedError;
     }
   }
+
+  public abstract isAccessTokenAvailable(): Promise<string | null>;
+
+  public abstract getTitleAndDescription(): Promise<PullRequestDetailsInterface>;
+
+  public abstract getComments(): Promise<CommentData>;
+
+  public abstract setTitleAndDescription(
+    title: string | null,
+    description: string | null,
+  ): Promise<void>;
+
+  public abstract createComment(
+    content: string,
+    fileName: string | null,
+    status: CommentThreadStatus,
+    isFileDeleted?: boolean,
+  ): Promise<void>;
+
+  public abstract updateComment(
+    commentThreadId: number,
+    content: string | null,
+    status: CommentThreadStatus | null,
+  ): Promise<void>;
+
+  public abstract deleteCommentThread(commentThreadId: number): Promise<void>;
 }

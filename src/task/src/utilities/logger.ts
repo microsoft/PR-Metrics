@@ -31,6 +31,15 @@ export default class Logger {
   }
 
   /**
+   * Filter messages so that control strings are not printed to `stdout`.
+   * @param message The message to filter.
+   * @returns The filtered message.
+   */
+  private static filterMessage(message: string): string {
+    return message.replace(/##(?:vso)?\[/giu, "");
+  }
+
+  /**
    * Logs a debug message.
    * @param message The message to log.
    */
@@ -95,14 +104,5 @@ export default class Logger {
     for (const message of this._messages) {
       this._consoleWrapper.log(`🔁 ${message}`);
     }
-  }
-
-  /**
-   * Filter messages so that control strings are not printed to `stdout`.
-   * @param message The message to filter.
-   * @returns The filtered message.
-   */
-  private static filterMessage(message: string): string {
-    return message.replace(/##(?:vso)?\[/giu, "");
   }
 }

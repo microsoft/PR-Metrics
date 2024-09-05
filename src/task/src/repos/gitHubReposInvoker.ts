@@ -254,6 +254,17 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     });
   }
 
+  protected async invokeApiCall<Response>(
+    action: () => Promise<Response>,
+  ): Promise<Response> {
+    return super.invokeApiCall(
+      action,
+      this._runnerInvoker.loc(
+        "repos.gitHubReposInvoker.insufficientGitHubAccessTokenPermissions",
+      ),
+    );
+  }
+
   private initialize(): void {
     this._logger.logDebug("* GitHubReposInvoker.initialize()");
 
@@ -429,17 +440,6 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
       result.data[result.data.length - 1]?.sha,
       `result.data[${String(result.data.length - 1)}].sha`,
       "GitHubReposInvoker.getCommitId()",
-    );
-  }
-
-  protected async invokeApiCall<Response>(
-    action: () => Promise<Response>,
-  ): Promise<Response> {
-    return super.invokeApiCall(
-      action,
-      this._runnerInvoker.loc(
-        "repos.gitHubReposInvoker.insufficientGitHubAccessTokenPermissions",
-      ),
     );
   }
 }

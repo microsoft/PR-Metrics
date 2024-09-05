@@ -21,14 +21,14 @@ import { singleton } from "tsyringe";
  */
 @singleton()
 export default class CodeMetrics {
+  private static readonly _minimatchOptions: minimatch.MinimatchOptions = {
+    dot: true,
+  };
+
   private readonly _gitInvoker: GitInvoker;
   private readonly _inputs: Inputs;
   private readonly _logger: Logger;
   private readonly _runnerInvoker: RunnerInvoker;
-
-  private static readonly _minimatchOptions: minimatch.MinimatchOptions = {
-    dot: true,
-  };
 
   private _isInitialized = false;
   private readonly _filesNotRequiringReview: string[] = [];
@@ -55,6 +55,27 @@ export default class CodeMetrics {
     this._inputs = inputs;
     this._logger = logger;
     this._runnerInvoker = runnerInvoker;
+  }
+
+  private static parseChangedLines(
+    element: string,
+    line: string,
+    category: string,
+  ): number {
+    // Parse the number of lines changed. For binary files, the lines will be '-'.
+    let result: number;
+    if (element === "-") {
+      result = 0;
+    } else {
+      result = parseInt(element, decimalRadix);
+      if (isNaN(result)) {
+        throw new Error(
+          `Could not parse ${category} lines '${element}' from line '${line}'.`,
+        );
+      }
+    }
+
+    return result;
   }
 
   /**
@@ -459,27 +480,6 @@ export default class CodeMetrics {
       } else {
         result = indicators[indexXL](
           (index - indicators.length + indexM).toLocaleString(),
-        );
-      }
-    }
-
-    return result;
-  }
-
-  private static parseChangedLines(
-    element: string,
-    line: string,
-    category: string,
-  ): number {
-    // Parse the number of lines changed. For binary files, the lines will be '-'.
-    let result: number;
-    if (element === "-") {
-      result = 0;
-    } else {
-      result = parseInt(element, decimalRadix);
-      if (isNaN(result)) {
-        throw new Error(
-          `Could not parse ${category} lines '${element}' from line '${line}'.`,
         );
       }
     }
