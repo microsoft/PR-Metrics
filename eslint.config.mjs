@@ -34,7 +34,7 @@ export default tseslint.config(
     },
     rules: {
       //'@typescript-eslint/member-ordering': 'error', – 19
-      //'@typescript-eslint/class-methods-use-this': 'error', – 28
+      '@typescript-eslint/class-methods-use-this': 'error',// – 28
       //'@typescript-eslint/no-magic-numbers': 'error', – 1050
       //'class-methods-use-this': 'error', – 28
       //'no-magic-numbers': 'error', – 1050
