@@ -298,15 +298,18 @@ export default class Inputs {
     this._logger.logDebug("* Inputs.initializeCodeFileExtensions()");
 
     if (typeof codeFileExtensions !== "undefined" && codeFileExtensions.trim() !== "") {
+      const wildcardStart = "*.";
+      const periodStart = ".";
+
       const codeFileExtensionsArray: string[] = codeFileExtensions
         .replace(/\n$/gu, "")
         .split("\n");
       for (const value of codeFileExtensionsArray) {
         let modifiedValue = value;
-        if (modifiedValue.startsWith("*.")) {
-          modifiedValue = modifiedValue.substring(2);
-        } else if (modifiedValue.startsWith(".")) {
-          modifiedValue = modifiedValue.substring(1);
+        if (modifiedValue.startsWith(wildcardStart)) {
+          modifiedValue = modifiedValue.substring(wildcardStart.length);
+        } else if (modifiedValue.startsWith(periodStart)) {
+          modifiedValue = modifiedValue.substring(periodStart.length);
         }
 
         this._codeFileExtensions.add(modifiedValue.toLowerCase());

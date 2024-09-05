@@ -423,7 +423,14 @@ export default class CodeMetrics {
   private calculateSize(): string {
     this._logger.logDebug("* CodeMetrics.calculateSize()");
 
-    const indicators: FixedLengthArrayInterface<(prefix: string) => string, 5> =
+    const indexXS = 0;
+    const indexS = 1;
+    const indexM = 2;
+    const indexL = 3;
+    const indexXL = 4;
+    const size = 5;
+
+    const indicators: FixedLengthArrayInterface<(prefix: string) => string, typeof size> =
       [
         (): string =>
           this._runnerInvoker.loc("metrics.codeMetrics.titleSizeXS"),
@@ -436,22 +443,22 @@ export default class CodeMetrics {
 
     // Calculate the smaller size.
     if (this._metrics.productCode < this._inputs.baseSize) {
-      return indicators[0]("");
+      return indicators[indexXS]("");
     }
 
     // Calculate the larger sizes.
-    let index = 1;
-    let result: string = indicators[1]("");
+    let index = indexS;
+    let result: string = indicators[indexS]("");
     let currentSize: number = this._inputs.baseSize * this._inputs.growthRate;
     while (this._metrics.productCode >= currentSize) {
       currentSize *= this._inputs.growthRate;
       index += 1;
 
-      if (index === 2 || index === 3 || index === 4) {
+      if (index === indexM || index === indexL || index === indexXL) {
         result = indicators[index]("");
       } else {
-        result = indicators[4](
-          (index - indicators.length + 2).toLocaleString(),
+        result = indicators[indexXL](
+          (index - indicators.length + indexM).toLocaleString(),
         );
       }
     }

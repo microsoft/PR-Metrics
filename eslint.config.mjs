@@ -33,11 +33,7 @@ export default tseslint.config(
       },
     },
     rules: {
-      //'@typescript-eslint/member-ordering': 'error', – 19
-      '@typescript-eslint/class-methods-use-this': 'error',// – 28
-      //'@typescript-eslint/no-magic-numbers': 'error', – 1050
-      //'class-methods-use-this': 'error', – 28
-      //'no-magic-numbers': 'error', – 1050
+      //'@typescript-eslint/member-ordering': 'error',
       // NO
       //'init-declarations': 'error', – 59
       //'no-ternary': 'error', – 20
@@ -48,9 +44,9 @@ export default tseslint.config(
       //'no-undefined': 'error', //– 35
       //'@typescript-eslint/max-params': 'error', – 17
       //'max-lines': 'error', – 15
-      //'max-params': 'error', – 17
       //'max-statements': 'error', – 155
       //'max-lines-per-function': 'error', – 67
+      //'@typescript-eslint/class-methods-use-this': 'error',// – 28
       '@typescript-eslint/consistent-type-exports': 'error',
       '@typescript-eslint/consistent-type-imports': 'error',
       '@typescript-eslint/default-param-last': 'error',
@@ -61,6 +57,7 @@ export default tseslint.config(
       '@typescript-eslint/no-array-constructor': 'error',
       '@typescript-eslint/no-invalid-this': 'error',
       '@typescript-eslint/no-loop-func': 'error',
+      '@typescript-eslint/no-magic-numbers': ['error', {'enforceConst': true,'ignore': [0,1], 'ignoreArrayIndexes': true}],
       '@typescript-eslint/no-misused-new': 'error',
       '@typescript-eslint/no-misused-promises': 'error',
       '@typescript-eslint/no-mixed-enums': 'error',
@@ -161,14 +158,12 @@ export default tseslint.config(
       'no-inline-comments': 'error',
       'no-inner-declarations': 'error',
       'no-invalid-regexp': 'error',
-      'no-invalid-this': 'error',
       'no-irregular-whitespace': 'error',
       'no-iterator': 'error',
       'no-label-var': 'error',
       'no-labels': 'error',
       'no-lone-blocks': 'error',
       'no-lonely-if': 'error',
-      'no-loop-func': 'error',
       'no-loss-of-precision': 'error',
       'no-misleading-character-class': 'error',
       'no-multi-assign': 'error',
@@ -189,11 +184,9 @@ export default tseslint.config(
       'no-promise-executor-return': 'error',
       'no-proto': 'error',
       'no-prototype-builtins': 'error',
-      'no-redeclare': 'error',
       'no-regex-spaces': 'error',
       'no-restricted-exports': 'error',
       'no-restricted-globals': 'error',
-      'no-restricted-imports': 'error',
       'no-restricted-properties': 'error',
       'no-restricted-syntax': 'error',
       'no-return-assign': 'error',
@@ -202,7 +195,6 @@ export default tseslint.config(
       'no-self-compare': 'error',
       'no-sequences': 'error',
       'no-setter-return': 'error',
-      'no-shadow': 'error',
       'no-shadow-restricted-names': 'error',
       'no-sparse-arrays': 'error',
       'no-template-curly-in-string': 'error',
@@ -219,7 +211,6 @@ export default tseslint.config(
       'no-unsafe-optional-chaining': 'error',
       'no-unused-labels': 'error',
       'no-unused-private-class-members': 'error',
-      'no-use-before-define': 'error',
       'no-useless-backreference': 'error',
       'no-useless-call': 'error',
       'no-useless-catch': 'error',
@@ -237,7 +228,6 @@ export default tseslint.config(
       'operator-assignment': 'error',
       'prefer-arrow-callback': 'error',
       'prefer-const': 'error',
-      'prefer-destructuring': 'error',
       'prefer-exponentiation-operator': 'error',
       'prefer-named-capture-group': 'error',
       'prefer-numeric-literals': 'error',
@@ -269,6 +259,7 @@ export default tseslint.config(
     ],
     rules: {
       '@typescript-eslint/no-confusing-void-expression': 'off',
+      '@typescript-eslint/no-magic-numbers': 'off',
     },
   },
 )
