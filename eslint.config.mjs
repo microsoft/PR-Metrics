@@ -33,19 +33,6 @@ export default tseslint.config(
       },
     },
     rules: {
-      // NO
-      //'init-declarations': 'error', – 59
-      //'no-ternary': 'error', – 20
-      //'@typescript-eslint/init-declarations': 'error', – 59
-      //'@typescript-eslint/prefer-readonly-parameter-types': 'error', – 115
-      //'no-underscore-dangle',// – 593
-      // CONSIDER
-      //'no-undefined': 'error', //– 35
-      //'@typescript-eslint/max-params': 'error', – 17
-      //'max-lines': 'error', – 15
-      //'max-statements': 'error', – 155
-      //'max-lines-per-function': 'error', – 67
-      //'@typescript-eslint/class-methods-use-this': 'error',// – 28
       '@typescript-eslint/consistent-type-exports': 'error',
       '@typescript-eslint/consistent-type-imports': 'error',
       '@typescript-eslint/default-param-last': 'error',
