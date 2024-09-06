@@ -453,12 +453,9 @@ export default class CodeMetrics {
     const indexM = 2;
     const indexL = 3;
     const indexXL = 4;
-    const size = 5;
 
-    const indicators: FixedLengthArrayInterface<
-      (prefix: string) => string,
-      typeof size
-    > = [
+    // eslint-disable-next-line @typescript-eslint/no-magic-numbers -- Required to be a compile-time constant.
+    const indicators: FixedLengthArrayInterface<(prefix: string) => string, 5> = [
       (): string => this._runnerInvoker.loc("metrics.codeMetrics.titleSizeXS"),
       (): string => this._runnerInvoker.loc("metrics.codeMetrics.titleSizeS"),
       (): string => this._runnerInvoker.loc("metrics.codeMetrics.titleSizeM"),

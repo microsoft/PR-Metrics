@@ -177,7 +177,7 @@ describe("gitHubRunnerInvoker.ts", (): void => {
       // Assert
       try {
         func();
-      } catch (error) {
+      } catch {
         assert.fail("Function should not have thrown an error");
       }
     });
