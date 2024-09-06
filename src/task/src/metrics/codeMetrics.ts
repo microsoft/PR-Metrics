@@ -455,14 +455,16 @@ export default class CodeMetrics {
     const indexXL = 4;
 
     // eslint-disable-next-line @typescript-eslint/no-magic-numbers -- Required to be a compile-time constant.
-    const indicators: FixedLengthArrayInterface<(prefix: string) => string, 5> = [
-      (): string => this._runnerInvoker.loc("metrics.codeMetrics.titleSizeXS"),
-      (): string => this._runnerInvoker.loc("metrics.codeMetrics.titleSizeS"),
-      (): string => this._runnerInvoker.loc("metrics.codeMetrics.titleSizeM"),
-      (): string => this._runnerInvoker.loc("metrics.codeMetrics.titleSizeL"),
-      (prefix: string): string =>
-        this._runnerInvoker.loc("metrics.codeMetrics.titleSizeXL", prefix),
-    ];
+    const indicators: FixedLengthArrayInterface<(prefix: string) => string, 5> =
+      [
+        (): string =>
+          this._runnerInvoker.loc("metrics.codeMetrics.titleSizeXS"),
+        (): string => this._runnerInvoker.loc("metrics.codeMetrics.titleSizeS"),
+        (): string => this._runnerInvoker.loc("metrics.codeMetrics.titleSizeM"),
+        (): string => this._runnerInvoker.loc("metrics.codeMetrics.titleSizeL"),
+        (prefix: string): string =>
+          this._runnerInvoker.loc("metrics.codeMetrics.titleSizeXL", prefix),
+      ];
 
     // Calculate the smaller size.
     if (this._metrics.productCode < this._inputs.baseSize) {
