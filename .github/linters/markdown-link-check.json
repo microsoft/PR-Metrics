@@ -4,6 +4,9 @@
       "pattern": "^https://aka.ms/opensource/security/"
     },
     {
+      "pattern": "^https://azure.microsoft.com/services/devops/"
+    },
+    {
       "pattern": "^https://docs.github.com/"
     },
     {
