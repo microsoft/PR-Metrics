@@ -4,10 +4,10 @@
  */
 
 import * as Validator from "../utilities/validator";
-import { DecimalRadix } from "../utilities/constants";
 import ExecOutput from "../runners/execOutput";
 import Logger from "../utilities/logger";
 import RunnerInvoker from "../runners/runnerInvoker";
+import { decimalRadix } from "../utilities/constants";
 import { singleton } from "tsyringe";
 
 /**
@@ -19,10 +19,10 @@ export default class GitInvoker {
   private readonly _logger: Logger;
   private readonly _runnerInvoker: RunnerInvoker;
 
-  private _isInitialized: boolean = false;
-  private _targetBranch: string = "";
-  private _pullRequestId: number = 0;
-  private _pullRequestIdInternal: string = "";
+  private _isInitialized = false;
+  private _targetBranch = "";
+  private _pullRequestId = 0;
+  private _pullRequestIdInternal = "";
 
   /**
    * Initializes a new instance of the `GitInvoker` class.
@@ -32,6 +32,115 @@ export default class GitInvoker {
   public constructor(logger: Logger, runnerInvoker: RunnerInvoker) {
     this._logger = logger;
     this._runnerInvoker = runnerInvoker;
+  }
+
+  /**
+   * Gets the ID of the pull request.
+   * @returns The ID of the pull request.
+   */
+  public get pullRequestId(): number {
+    this._logger.logDebug("* GitInvoker.pullRequestId");
+
+    if (this._pullRequestId !== 0) {
+      return this._pullRequestId;
+    }
+
+    this._pullRequestId = Validator.validateNumber(
+      parseInt(this.pullRequestIdInternal, decimalRadix),
+      "Pull Request ID",
+      "GitInvoker.pullRequestId",
+    );
+    return this._pullRequestId;
+  }
+
+  private get pullRequestIdInternal(): string {
+    this._logger.logDebug("* GitInvoker.pullRequestIdInternal");
+
+    if (this._pullRequestIdInternal !== "") {
+      return this._pullRequestIdInternal;
+    }
+
+    this._pullRequestIdInternal = RunnerInvoker.isGitHub
+      ? this.pullRequestIdForGitHub
+      : this.pullRequestIdForAzurePipelines;
+    return this._pullRequestIdInternal;
+  }
+
+  private get pullRequestIdForGitHub(): string {
+    this._logger.logDebug("* GitInvoker.pullRequestIdForGitHub");
+
+    const gitHubReference: string | undefined = process.env.GITHUB_REF;
+    if (typeof gitHubReference === "undefined") {
+      this._logger.logWarning("'GITHUB_REF' is undefined.");
+      return "";
+    }
+
+    const gitHubReferenceElements: string[] = gitHubReference.split("/");
+    if (typeof gitHubReferenceElements[2] === "undefined") {
+      this._logger.logWarning(
+        `'GITHUB_REF' is in an incorrect format '${gitHubReference}'.`,
+      );
+      return "";
+    }
+
+    return gitHubReferenceElements[2];
+  }
+
+  private get pullRequestIdForAzurePipelines(): string {
+    this._logger.logDebug("* GitInvoker.pullRequestIdForAzurePipelines");
+
+    const variable: string | undefined = process.env.BUILD_REPOSITORY_PROVIDER;
+    if (typeof variable === "undefined") {
+      this._logger.logWarning("'BUILD_REPOSITORY_PROVIDER' is undefined.");
+      return "";
+    }
+
+    if (variable === "GitHub" || variable === "GitHubEnterprise") {
+      const result: string | undefined =
+        process.env.SYSTEM_PULLREQUEST_PULLREQUESTNUMBER;
+      if (typeof result === "undefined") {
+        this._logger.logWarning(
+          "'SYSTEM_PULLREQUEST_PULLREQUESTNUMBER' is undefined.",
+        );
+        return "";
+      }
+
+      return result;
+    }
+
+    const result: string | undefined =
+      process.env.SYSTEM_PULLREQUEST_PULLREQUESTID;
+    if (typeof result === "undefined") {
+      this._logger.logWarning(
+        "'SYSTEM_PULLREQUEST_PULLREQUESTID' is undefined.",
+      );
+      return "";
+    }
+
+    return result;
+  }
+
+  private get targetBranch(): string {
+    this._logger.logDebug("* GitInvoker.targetBranch");
+
+    if (RunnerInvoker.isGitHub) {
+      return Validator.validateVariable(
+        "GITHUB_BASE_REF",
+        "GitInvoker.targetBranch",
+      );
+    }
+
+    const variable: string = Validator.validateVariable(
+      "SYSTEM_PULLREQUEST_TARGETBRANCH",
+      "GitInvoker.targetBranch",
+    );
+    const expectedStart = "refs/heads/";
+    if (variable.startsWith(expectedStart)) {
+      const startIndex: number = expectedStart.length;
+      return variable.substring(startIndex);
+    }
+
+    return variable;
   }
 
   /**
@@ -56,7 +165,7 @@ export default class GitInvoker {
   public isPullRequestIdAvailable(): boolean {
     this._logger.logDebug("* GitInvoker.isPullRequestIdAvailable()");
 
-    return !isNaN(parseInt(this.pullRequestIdInternal, DecimalRadix));
+    return !isNaN(parseInt(this.pullRequestIdInternal, decimalRadix));
   }
 
   /**
@@ -76,25 +185,6 @@ export default class GitInvoker {
     } catch {
       return false;
     }
-  }
-
-  /**
-   * Gets the ID of the pull request.
-   * @returns The ID of the pull request.
-   */
-  public get pullRequestId(): number {
-    this._logger.logDebug("* GitInvoker.pullRequestId");
-
-    if (this._pullRequestId !== 0) {
-      return this._pullRequestId;
-    }
-
-    this._pullRequestId = Validator.validateNumber(
-      parseInt(this.pullRequestIdInternal, DecimalRadix),
-      "Pull Request ID",
-      "GitInvoker.pullRequestId",
-    );
-    return this._pullRequestId;
   }
 
   /**
@@ -120,96 +210,6 @@ export default class GitInvoker {
     this._targetBranch = this.targetBranch;
     this._pullRequestIdInternal = this.pullRequestIdInternal;
     this._isInitialized = true;
-  }
-
-  private get pullRequestIdInternal(): string {
-    this._logger.logDebug("* GitInvoker.pullRequestIdInternal");
-
-    if (this._pullRequestIdInternal !== "") {
-      return this._pullRequestIdInternal;
-    }
-
-    this._pullRequestIdInternal = RunnerInvoker.isGitHub
-      ? this.pullRequestIdForGitHub
-      : this.pullRequestIdForAzurePipelines;
-    return this._pullRequestIdInternal;
-  }
-
-  private get pullRequestIdForGitHub(): string {
-    this._logger.logDebug("* GitInvoker.pullRequestIdForGitHub");
-
-    const gitHubReference: string | undefined = process.env.GITHUB_REF;
-    if (!gitHubReference) {
-      this._logger.logWarning("'GITHUB_REF' is undefined.");
-      return "";
-    }
-
-    const gitHubReferenceElements: string[] = gitHubReference.split("/");
-    if (gitHubReferenceElements.length < 3) {
-      this._logger.logWarning(
-        `'GITHUB_REF' is in an incorrect format '${gitHubReference}'.`,
-      );
-      return "";
-    }
-
-    return gitHubReferenceElements[2]!;
-  }
-
-  private get pullRequestIdForAzurePipelines(): string {
-    this._logger.logDebug("* GitInvoker.pullRequestIdForAzurePipelines");
-
-    const variable: string | undefined = process.env.BUILD_REPOSITORY_PROVIDER;
-    if (!variable) {
-      this._logger.logWarning("'BUILD_REPOSITORY_PROVIDER' is undefined.");
-      return "";
-    }
-
-    if (variable === "GitHub" || variable === "GitHubEnterprise") {
-      const result: string | undefined =
-        process.env.SYSTEM_PULLREQUEST_PULLREQUESTNUMBER;
-      if (!result) {
-        this._logger.logWarning(
-          "'SYSTEM_PULLREQUEST_PULLREQUESTNUMBER' is undefined.",
-        );
-        return "";
-      }
-
-      return result;
-    }
-
-    const result: string | undefined =
-      process.env.SYSTEM_PULLREQUEST_PULLREQUESTID;
-    if (!result) {
-      this._logger.logWarning(
-        "'SYSTEM_PULLREQUEST_PULLREQUESTID' is undefined.",
-      );
-      return "";
-    }
-
-    return result;
-  }
-
-  private get targetBranch(): string {
-    this._logger.logDebug("* GitInvoker.targetBranch");
-
-    if (RunnerInvoker.isGitHub) {
-      return Validator.validateVariable(
-        "GITHUB_BASE_REF",
-        "GitInvoker.targetBranch",
-      );
-    }
-
-    const variable: string = Validator.validateVariable(
-      "SYSTEM_PULLREQUEST_TARGETBRANCH",
-      "GitInvoker.targetBranch",
-    );
-    const expectedStart: string = "refs/heads/";
-    if (variable.startsWith(expectedStart)) {
-      const startIndex: number = expectedStart.length;
-      return variable.substring(startIndex);
-    }
-
-    return variable;
   }
 
   private async invokeGit(parameters: string): Promise<string> {

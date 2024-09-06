@@ -10,11 +10,12 @@ import {
   IExecOptions,
   IExecSyncResult,
 } from "azure-pipelines-task-lib/toolrunner";
-import { anything, deepEqual, instance, mock, verify, when } from "ts-mockito";
+import { deepEqual, instance, mock, verify, when } from "ts-mockito";
 import AzurePipelinesRunnerInvoker from "../../src/runners/azurePipelinesRunnerInvoker";
 import AzurePipelinesRunnerWrapper from "../../src/wrappers/azurePipelinesRunnerWrapper";
 import { EndpointAuthorization } from "../../src/runners/endpointAuthorization";
 import { ExecOutput } from "@actions/exec";
+import { any } from "../testUtilities/mockito";
 import assert from "node:assert/strict";
 
 describe("azurePipelinesRunnerInvoker.ts", (): void => {
@@ -39,7 +40,7 @@ describe("azurePipelinesRunnerInvoker.ts", (): void => {
         azurePipelinesRunnerWrapper.execSync(
           "TOOL",
           "Argument1 Argument2",
-          anything(),
+          any(),
         ),
       ).thenReturn(execResult);
 
@@ -109,7 +110,7 @@ describe("azurePipelinesRunnerInvoker.ts", (): void => {
 
       // Assert
       assert.deepEqual(result?.parameters, endpointAuthorization.parameters);
-      assert.equal(result?.scheme, endpointAuthorization.scheme);
+      assert.equal(result.scheme, endpointAuthorization.scheme);
       verify(
         azurePipelinesRunnerWrapper.getEndpointAuthorization("id", true),
       ).once();
@@ -128,7 +129,7 @@ describe("azurePipelinesRunnerInvoker.ts", (): void => {
         azurePipelinesRunnerInvoker.getEndpointAuthorization("id");
 
       // Assert
-      assert.equal(result, undefined);
+      assert.equal(typeof result, "undefined");
       verify(
         azurePipelinesRunnerWrapper.getEndpointAuthorization("id", true),
       ).once();

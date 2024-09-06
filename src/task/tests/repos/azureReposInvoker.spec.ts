@@ -12,15 +12,8 @@ import {
   GitPullRequest,
   GitPullRequestCommentThread,
 } from "azure-devops-node-api/interfaces/GitInterfaces";
-import {
-  anyNumber,
-  anything,
-  deepEqual,
-  instance,
-  mock,
-  verify,
-  when,
-} from "ts-mockito";
+import { any, anyNumber } from "../testUtilities/mockito";
+import { deepEqual, instance, mock, verify, when } from "ts-mockito";
 import AzureDevOpsApiWrapper from "../../src/wrappers/azureDevOpsApiWrapper";
 import AzureReposInvoker from "../../src/repos/azureReposInvoker";
 import CommentData from "../../src/repos/interfaces/commentData";
@@ -29,8 +22,9 @@ import GitInvoker from "../../src/git/gitInvoker";
 import { IGitApi } from "azure-devops-node-api/GitApi";
 import { IRequestHandler } from "azure-devops-node-api/interfaces/common/VsoBaseInterfaces";
 import Logger from "../../src/utilities/logger";
-import PullRequestDetails from "../../src/repos/interfaces/pullRequestDetails";
+import PullRequestDetailsInterface from "../../src/repos/interfaces/pullRequestDetailsInterface";
 import RunnerInvoker from "../../src/runners/runnerInvoker";
+import { StatusCodes } from "http-status-codes";
 import TokenManager from "../../src/repos/tokenManager";
 import { WebApi } from "azure-devops-node-api";
 import assert from "node:assert/strict";
@@ -174,7 +168,7 @@ describe("azureReposInvoker.ts", (): void => {
       testCases.forEach((variable: string | undefined): void => {
         it(`should throw when SYSTEM_TEAMPROJECT is set to the invalid value '${Converter.toString(variable)}'`, async (): Promise<void> => {
           // Arrange
-          if (variable === undefined) {
+          if (typeof variable === "undefined") {
             delete process.env.SYSTEM_TEAMPROJECT;
           } else {
             process.env.SYSTEM_TEAMPROJECT = variable;
@@ -189,7 +183,7 @@ describe("azureReposInvoker.ts", (): void => {
           );
 
           // Act
-          const func: () => Promise<PullRequestDetails> = async () =>
+          const func: () => Promise<PullRequestDetailsInterface> = async () =>
             azureReposInvoker.getTitleAndDescription();
 
           // Assert
@@ -211,7 +205,7 @@ describe("azureReposInvoker.ts", (): void => {
       testCases.forEach((variable: string | undefined): void => {
         it(`should throw when BUILD_REPOSITORY_ID is set to the invalid value '${Converter.toString(variable)}'`, async (): Promise<void> => {
           // Arrange
-          if (variable === undefined) {
+          if (typeof variable === "undefined") {
             delete process.env.BUILD_REPOSITORY_ID;
           } else {
             process.env.BUILD_REPOSITORY_ID = variable;
@@ -226,7 +220,7 @@ describe("azureReposInvoker.ts", (): void => {
           );
 
           // Act
-          const func: () => Promise<PullRequestDetails> = async () =>
+          const func: () => Promise<PullRequestDetailsInterface> = async () =>
             azureReposInvoker.getTitleAndDescription();
 
           // Assert
@@ -248,7 +242,7 @@ describe("azureReposInvoker.ts", (): void => {
       testCases.forEach((variable: string | undefined): void => {
         it(`should throw when PR_METRICS_ACCESS_TOKEN is set to the invalid value '${Converter.toString(variable)}'`, async (): Promise<void> => {
           // Arrange
-          if (variable === undefined) {
+          if (typeof variable === "undefined") {
             delete process.env.PR_METRICS_ACCESS_TOKEN;
           } else {
             process.env.PR_METRICS_ACCESS_TOKEN = variable;
@@ -263,7 +257,7 @@ describe("azureReposInvoker.ts", (): void => {
           );
 
           // Act
-          const func: () => Promise<PullRequestDetails> = async () =>
+          const func: () => Promise<PullRequestDetailsInterface> = async () =>
             azureReposInvoker.getTitleAndDescription();
 
           // Assert
@@ -285,7 +279,7 @@ describe("azureReposInvoker.ts", (): void => {
       testCases.forEach((variable: string | undefined): void => {
         it(`should throw when SYSTEM_TEAMFOUNDATIONCOLLECTIONURI is set to the invalid value '${Converter.toString(variable)}'`, async (): Promise<void> => {
           // Arrange
-          if (variable === undefined) {
+          if (typeof variable === "undefined") {
             delete process.env.SYSTEM_TEAMFOUNDATIONCOLLECTIONURI;
           } else {
             process.env.SYSTEM_TEAMFOUNDATIONCOLLECTIONURI = variable;
@@ -300,7 +294,7 @@ describe("azureReposInvoker.ts", (): void => {
           );
 
           // Act
-          const func: () => Promise<PullRequestDetails> = async () =>
+          const func: () => Promise<PullRequestDetailsInterface> = async () =>
             azureReposInvoker.getTitleAndDescription();
 
           // Assert
@@ -320,10 +314,14 @@ describe("azureReposInvoker.ts", (): void => {
     }
 
     {
-      const testCases: number[] = [401, 403, 404];
+      const testCases: StatusCodes[] = [
+        StatusCodes.UNAUTHORIZED,
+        StatusCodes.FORBIDDEN,
+        StatusCodes.NOT_FOUND,
+      ];
 
-      testCases.forEach((statusCode: number): void => {
-        it(`should throw when the access token has insufficient access and the API call returns status code '${statusCode}'`, async (): Promise<void> => {
+      testCases.forEach((statusCode: StatusCodes): void => {
+        it(`should throw when the access token has insufficient access and the API call returns status code '${String(statusCode)}'`, async (): Promise<void> => {
           // Arrange
           const error: ErrorWithStatus = new ErrorWithStatus("Test");
           error.statusCode = statusCode;
@@ -337,11 +335,11 @@ describe("azureReposInvoker.ts", (): void => {
           );
 
           // Act
-          const func: () => Promise<PullRequestDetails> = async () =>
+          const func: () => Promise<PullRequestDetailsInterface> = async () =>
             azureReposInvoker.getTitleAndDescription();
 
           // Assert
-          const result: any = await AssertExtensions.toThrowAsync(
+          const result: ErrorWithStatus = await AssertExtensions.toThrowAsync(
             func,
             "Could not access the resources. Ensure the 'PR_Metrics_Access_Token' secret environment variable has access to 'Code' > 'Read' and 'Pull Request Threads' > 'Read & write'.",
           );
@@ -352,7 +350,7 @@ describe("azureReposInvoker.ts", (): void => {
           verify(
             azureDevOpsApiWrapper.getWebApiInstance(
               "https://dev.azure.com/organization",
-              anything(),
+              any(),
             ),
           ).once();
           verify(gitApi.getPullRequestById(10, "Project")).once();
@@ -367,8 +365,8 @@ describe("azureReposInvoker.ts", (): void => {
     it("should return the title and description when available", async (): Promise<void> => {
       // Arrange
       when(gitApi.getPullRequestById(10, "Project")).thenResolve({
-        title: "Title",
         description: "Description",
+        title: "Title",
       });
       const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(
         instance(azureDevOpsApiWrapper),
@@ -379,7 +377,7 @@ describe("azureReposInvoker.ts", (): void => {
       );
 
       // Act
-      const result: PullRequestDetails =
+      const result: PullRequestDetailsInterface =
         await azureReposInvoker.getTitleAndDescription();
 
       // Assert
@@ -389,7 +387,7 @@ describe("azureReposInvoker.ts", (): void => {
       verify(
         azureDevOpsApiWrapper.getWebApiInstance(
           "https://dev.azure.com/organization",
-          anything(),
+          any(),
         ),
       ).once();
       verify(gitApi.getPullRequestById(10, "Project")).once();
@@ -398,15 +396,15 @@ describe("azureReposInvoker.ts", (): void => {
       ).once();
       verify(logger.logDebug("* AzureReposInvoker.getGitApi()")).once();
       verify(
-        logger.logDebug('{"title":"Title","description":"Description"}'),
+        logger.logDebug('{"description":"Description","title":"Title"}'),
       ).once();
     });
 
     it("should return the title and description when available and called multiple times", async (): Promise<void> => {
       // Arrange
       when(gitApi.getPullRequestById(10, "Project")).thenResolve({
-        title: "Title",
         description: "Description",
+        title: "Title",
       });
       const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(
         instance(azureDevOpsApiWrapper),
@@ -418,7 +416,7 @@ describe("azureReposInvoker.ts", (): void => {
 
       // Act
       await azureReposInvoker.getTitleAndDescription();
-      const result: PullRequestDetails =
+      const result: PullRequestDetailsInterface =
         await azureReposInvoker.getTitleAndDescription();
 
       // Assert
@@ -428,7 +426,7 @@ describe("azureReposInvoker.ts", (): void => {
       verify(
         azureDevOpsApiWrapper.getWebApiInstance(
           "https://dev.azure.com/organization",
-          anything(),
+          any(),
         ),
       ).once();
       verify(gitApi.getPullRequestById(10, "Project")).twice();
@@ -437,7 +435,7 @@ describe("azureReposInvoker.ts", (): void => {
       ).twice();
       verify(logger.logDebug("* AzureReposInvoker.getGitApi()")).twice();
       verify(
-        logger.logDebug('{"title":"Title","description":"Description"}'),
+        logger.logDebug('{"description":"Description","title":"Title"}'),
       ).twice();
     });
 
@@ -455,17 +453,17 @@ describe("azureReposInvoker.ts", (): void => {
       );
 
       // Act
-      const result: PullRequestDetails =
+      const result: PullRequestDetailsInterface =
         await azureReposInvoker.getTitleAndDescription();
 
       // Assert
       assert.equal(result.title, "Title");
-      assert.equal(result.description, undefined);
+      assert.equal(typeof result.description, "undefined");
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler("PAT")).once();
       verify(
         azureDevOpsApiWrapper.getWebApiInstance(
           "https://dev.azure.com/organization",
-          anything(),
+          any(),
         ),
       ).once();
       verify(gitApi.getPullRequestById(10, "Project")).once();
@@ -488,7 +486,7 @@ describe("azureReposInvoker.ts", (): void => {
       );
 
       // Act
-      const func: () => Promise<PullRequestDetails> = async () =>
+      const func: () => Promise<PullRequestDetailsInterface> = async () =>
         azureReposInvoker.getTitleAndDescription();
 
       // Assert
@@ -500,7 +498,7 @@ describe("azureReposInvoker.ts", (): void => {
       verify(
         azureDevOpsApiWrapper.getWebApiInstance(
           "https://dev.azure.com/organization",
-          anything(),
+          any(),
         ),
       ).once();
       verify(gitApi.getPullRequestById(10, "Project")).once();
@@ -514,10 +512,14 @@ describe("azureReposInvoker.ts", (): void => {
 
   describe("getComments()", (): void => {
     {
-      const testCases: number[] = [401, 403, 404];
+      const testCases: StatusCodes[] = [
+        StatusCodes.UNAUTHORIZED,
+        StatusCodes.FORBIDDEN,
+        StatusCodes.NOT_FOUND,
+      ];
 
-      testCases.forEach((statusCode: number): void => {
-        it(`should throw when the access token has insufficient access and the API call returns status code '${statusCode}'`, async (): Promise<void> => {
+      testCases.forEach((statusCode: StatusCodes): void => {
+        it(`should throw when the access token has insufficient access and the API call returns status code '${String(statusCode)}'`, async (): Promise<void> => {
           // Arrange
           const error: ErrorWithStatus = new ErrorWithStatus("Test");
           error.statusCode = statusCode;
@@ -535,7 +537,7 @@ describe("azureReposInvoker.ts", (): void => {
             azureReposInvoker.getComments();
 
           // Assert
-          const result: any = await AssertExtensions.toThrowAsync(
+          const result: ErrorWithStatus = await AssertExtensions.toThrowAsync(
             func,
             "Could not access the resources. Ensure the 'PR_Metrics_Access_Token' secret environment variable has access to 'Code' > 'Read' and 'Pull Request Threads' > 'Read & write'.",
           );
@@ -546,7 +548,7 @@ describe("azureReposInvoker.ts", (): void => {
           verify(
             azureDevOpsApiWrapper.getWebApiInstance(
               "https://dev.azure.com/organization",
-              anything(),
+              any(),
             ),
           ).once();
           verify(gitApi.getThreads("RepoID", 10, "Project")).once();
@@ -559,7 +561,7 @@ describe("azureReposInvoker.ts", (): void => {
     it("should return the result when called with a pull request comment", async (): Promise<void> => {
       // Arrange
       when(gitApi.getThreads("RepoID", 10, "Project")).thenResolve([
-        { id: 1, status: 1, comments: [{ content: "Content" }] },
+        { comments: [{ content: "Content" }], id: 1, status: 1 },
       ]);
       const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(
         instance(azureDevOpsApiWrapper),
@@ -585,7 +587,7 @@ describe("azureReposInvoker.ts", (): void => {
       verify(
         azureDevOpsApiWrapper.getWebApiInstance(
           "https://dev.azure.com/organization",
-          anything(),
+          any(),
         ),
       ).once();
       verify(gitApi.getThreads("RepoID", 10, "Project")).once();
@@ -593,7 +595,7 @@ describe("azureReposInvoker.ts", (): void => {
       verify(logger.logDebug("* AzureReposInvoker.getGitApi()")).once();
       verify(
         logger.logDebug(
-          '[{"id":1,"status":1,"comments":[{"content":"Content"}]}]',
+          '[{"comments":[{"content":"Content"}],"id":1,"status":1}]',
         ),
       ).once();
     });
@@ -602,9 +604,9 @@ describe("azureReposInvoker.ts", (): void => {
       // Arrange
       when(gitApi.getThreads("RepoID", 10, "Project")).thenResolve([
         {
+          comments: [{ content: "Content" }],
           id: 1,
           status: 1,
-          comments: [{ content: "Content" }],
           threadContext: { filePath: "/file.ts" },
         },
       ]);
@@ -630,7 +632,7 @@ describe("azureReposInvoker.ts", (): void => {
       verify(
         azureDevOpsApiWrapper.getWebApiInstance(
           "https://dev.azure.com/organization",
-          anything(),
+          any(),
         ),
       ).once();
       verify(gitApi.getThreads("RepoID", 10, "Project")).once();
@@ -638,7 +640,7 @@ describe("azureReposInvoker.ts", (): void => {
       verify(logger.logDebug("* AzureReposInvoker.getGitApi()")).once();
       verify(
         logger.logDebug(
-          '[{"id":1,"status":1,"comments":[{"content":"Content"}],"threadContext":{"filePath":"/file.ts"}}]',
+          '[{"comments":[{"content":"Content"}],"id":1,"status":1,"threadContext":{"filePath":"/file.ts"}}]',
         ),
       ).once();
     });
@@ -646,11 +648,11 @@ describe("azureReposInvoker.ts", (): void => {
     it("should return the result when called with both a pull request and file comment", async (): Promise<void> => {
       // Arrange
       when(gitApi.getThreads("RepoID", 10, "Project")).thenResolve([
-        { id: 1, status: 1, comments: [{ content: "PR Content" }] },
+        { comments: [{ content: "PR Content" }], id: 1, status: 1 },
         {
+          comments: [{ content: "File Content" }],
           id: 2,
           status: 1,
-          comments: [{ content: "File Content" }],
           threadContext: { filePath: "/file.ts" },
         },
       ]);
@@ -682,7 +684,7 @@ describe("azureReposInvoker.ts", (): void => {
       verify(
         azureDevOpsApiWrapper.getWebApiInstance(
           "https://dev.azure.com/organization",
-          anything(),
+          any(),
         ),
       ).once();
       verify(gitApi.getThreads("RepoID", 10, "Project")).once();
@@ -690,7 +692,7 @@ describe("azureReposInvoker.ts", (): void => {
       verify(logger.logDebug("* AzureReposInvoker.getGitApi()")).once();
       verify(
         logger.logDebug(
-          '[{"id":1,"status":1,"comments":[{"content":"PR Content"}]},{"id":2,"status":1,"comments":[{"content":"File Content"}],"threadContext":{"filePath":"/file.ts"}}]',
+          '[{"comments":[{"content":"PR Content"}],"id":1,"status":1},{"comments":[{"content":"File Content"}],"id":2,"status":1,"threadContext":{"filePath":"/file.ts"}}]',
         ),
       ).once();
     });
@@ -698,7 +700,7 @@ describe("azureReposInvoker.ts", (): void => {
     it("should return the result when called multiple times", async (): Promise<void> => {
       // Arrange
       when(gitApi.getThreads("RepoID", 10, "Project")).thenResolve([
-        { id: 1, status: 1, comments: [{ content: "Content" }] },
+        { comments: [{ content: "Content" }], id: 1, status: 1 },
       ]);
       const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(
         instance(azureDevOpsApiWrapper),
@@ -725,7 +727,7 @@ describe("azureReposInvoker.ts", (): void => {
       verify(
         azureDevOpsApiWrapper.getWebApiInstance(
           "https://dev.azure.com/organization",
-          anything(),
+          any(),
         ),
       ).once();
       verify(gitApi.getThreads("RepoID", 10, "Project")).twice();
@@ -733,7 +735,7 @@ describe("azureReposInvoker.ts", (): void => {
       verify(logger.logDebug("* AzureReposInvoker.getGitApi()")).twice();
       verify(
         logger.logDebug(
-          '[{"id":1,"status":1,"comments":[{"content":"Content"}]}]',
+          '[{"comments":[{"content":"Content"}],"id":1,"status":1}]',
         ),
       ).twice();
     });
@@ -741,7 +743,7 @@ describe("azureReposInvoker.ts", (): void => {
     it("should throw when provided with a payload with no ID", async (): Promise<void> => {
       // Arrange
       when(gitApi.getThreads("RepoID", 10, "Project")).thenResolve([
-        { status: 1, comments: [{ content: "Content" }] },
+        { comments: [{ content: "Content" }], status: 1 },
       ]);
       const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(
         instance(azureDevOpsApiWrapper),
@@ -764,24 +766,24 @@ describe("azureReposInvoker.ts", (): void => {
       verify(
         azureDevOpsApiWrapper.getWebApiInstance(
           "https://dev.azure.com/organization",
-          anything(),
+          any(),
         ),
       ).once();
       verify(gitApi.getThreads("RepoID", 10, "Project")).once();
       verify(logger.logDebug("* AzureReposInvoker.getComments()")).once();
       verify(logger.logDebug("* AzureReposInvoker.getGitApi()")).once();
       verify(
-        logger.logDebug('[{"status":1,"comments":[{"content":"Content"}]}]'),
+        logger.logDebug('[{"comments":[{"content":"Content"}],"status":1}]'),
       ).once();
     });
 
     it("should continue if the payload has no status", async (): Promise<void> => {
       // Arrange
       const getThreadsResult: GitPullRequestCommentThread[] = [
-        { id: 1, comments: [{ content: "PR Content" }] },
+        { comments: [{ content: "PR Content" }], id: 1 },
         {
-          id: 2,
           comments: [{ content: "File Content" }],
+          id: 2,
           threadContext: { filePath: "/file.ts" },
         },
       ];
@@ -816,7 +818,7 @@ describe("azureReposInvoker.ts", (): void => {
       verify(
         azureDevOpsApiWrapper.getWebApiInstance(
           "https://dev.azure.com/organization",
-          anything(),
+          any(),
         ),
       ).once();
       verify(gitApi.getThreads("RepoID", 10, "Project")).once();
@@ -828,25 +830,25 @@ describe("azureReposInvoker.ts", (): void => {
     {
       const testCases: GitPullRequestCommentThread[] = [
         { id: 1, status: 1 },
-        { id: 1, status: 1, comments: [] },
-        { id: 1, status: 1, comments: [{}] },
-        { id: 1, status: 1, comments: [{ content: "" }] },
+        { comments: [], id: 1, status: 1 },
+        { comments: [{}], id: 1, status: 1 },
+        { comments: [{ content: "" }], id: 1, status: 1 },
         {
+          comments: [{ content: "Content" }],
           id: 1,
           status: 1,
-          comments: [{ content: "Content" }],
           threadContext: {},
         },
         {
+          comments: [{ content: "Content" }],
           id: 1,
           status: 1,
-          comments: [{ content: "Content" }],
           threadContext: { filePath: "" },
         },
         {
+          comments: [{ content: "Content" }],
           id: 1,
           status: 1,
-          comments: [{ content: "Content" }],
           threadContext: { filePath: "/" },
         },
       ];
@@ -856,11 +858,11 @@ describe("azureReposInvoker.ts", (): void => {
           // Arrange
           const getThreadsResult: GitPullRequestCommentThread[] = [
             commentThread,
-            { id: 2, status: 1, comments: [{ content: "PR Content" }] },
+            { comments: [{ content: "PR Content" }], id: 2, status: 1 },
             {
+              comments: [{ content: "File Content" }],
               id: 3,
               status: 1,
-              comments: [{ content: "File Content" }],
               threadContext: { filePath: "/file.ts" },
             },
           ];
@@ -900,7 +902,7 @@ describe("azureReposInvoker.ts", (): void => {
           verify(
             azureDevOpsApiWrapper.getWebApiInstance(
               "https://dev.azure.com/organization",
-              anything(),
+              any(),
             ),
           ).once();
           verify(gitApi.getThreads("RepoID", 10, "Project")).once();
@@ -914,15 +916,19 @@ describe("azureReposInvoker.ts", (): void => {
 
   describe("setTitleAndDescription()", (): void => {
     {
-      const testCases: number[] = [401, 403, 404];
+      const testCases: StatusCodes[] = [
+        StatusCodes.UNAUTHORIZED,
+        StatusCodes.FORBIDDEN,
+        StatusCodes.NOT_FOUND,
+      ];
 
-      testCases.forEach((statusCode: number): void => {
-        it(`should throw when the access token has insufficient access and the API call returns status code '${statusCode}'`, async (): Promise<void> => {
+      testCases.forEach((statusCode: StatusCodes): void => {
+        it(`should throw when the access token has insufficient access and the API call returns status code '${String(statusCode)}'`, async (): Promise<void> => {
           // Arrange
           const error: ErrorWithStatus = new ErrorWithStatus("Test");
           error.statusCode = statusCode;
           when(
-            gitApi.updatePullRequest(anything(), "RepoID", 10, "Project"),
+            gitApi.updatePullRequest(any(), "RepoID", 10, "Project"),
           ).thenThrow(error);
           const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(
             instance(azureDevOpsApiWrapper),
@@ -937,7 +943,7 @@ describe("azureReposInvoker.ts", (): void => {
             azureReposInvoker.setTitleAndDescription("Title", "Description");
 
           // Assert
-          const result: any = await AssertExtensions.toThrowAsync(
+          const result: ErrorWithStatus = await AssertExtensions.toThrowAsync(
             func,
             "Could not access the resources. Ensure the 'PR_Metrics_Access_Token' secret environment variable has access to 'Code' > 'Read' and 'Pull Request Threads' > 'Read & write'.",
           );
@@ -948,11 +954,11 @@ describe("azureReposInvoker.ts", (): void => {
           verify(
             azureDevOpsApiWrapper.getWebApiInstance(
               "https://dev.azure.com/organization",
-              anything(),
+              any(),
             ),
           ).once();
           verify(
-            gitApi.updatePullRequest(anything(), "RepoID", 10, "Project"),
+            gitApi.updatePullRequest(any(), "RepoID", 10, "Project"),
           ).once();
           verify(
             logger.logDebug("* AzureReposInvoker.setTitleAndDescription()"),
@@ -982,12 +988,10 @@ describe("azureReposInvoker.ts", (): void => {
       verify(
         azureDevOpsApiWrapper.getWebApiInstance(
           "https://dev.azure.com/organization",
-          anything(),
+          any(),
         ),
       ).never();
-      verify(
-        gitApi.updatePullRequest(anything(), "RepoID", 10, "Project"),
-      ).never();
+      verify(gitApi.updatePullRequest(any(), "RepoID", 10, "Project")).never();
       verify(
         logger.logDebug("* AzureReposInvoker.setTitleAndDescription()"),
       ).once();
@@ -1023,7 +1027,7 @@ describe("azureReposInvoker.ts", (): void => {
       verify(
         azureDevOpsApiWrapper.getWebApiInstance(
           "https://dev.azure.com/organization",
-          anything(),
+          any(),
         ),
       ).once();
       verify(
@@ -1070,7 +1074,7 @@ describe("azureReposInvoker.ts", (): void => {
       verify(
         azureDevOpsApiWrapper.getWebApiInstance(
           "https://dev.azure.com/organization",
-          anything(),
+          any(),
         ),
       ).once();
       verify(
@@ -1091,8 +1095,8 @@ describe("azureReposInvoker.ts", (): void => {
     it("should call the API when both the title and description are valid", async (): Promise<void> => {
       // Arrange
       const expectedDetails: GitPullRequest = {
-        title: "Title",
         description: "Description",
+        title: "Title",
       };
       when(
         gitApi.updatePullRequest(
@@ -1118,7 +1122,7 @@ describe("azureReposInvoker.ts", (): void => {
       verify(
         azureDevOpsApiWrapper.getWebApiInstance(
           "https://dev.azure.com/organization",
-          anything(),
+          any(),
         ),
       ).once();
       verify(
@@ -1139,8 +1143,8 @@ describe("azureReposInvoker.ts", (): void => {
     it("should call the API when both the title and description are valid and called multiple times", async (): Promise<void> => {
       // Arrange
       const expectedDetails: GitPullRequest = {
-        title: "Title",
         description: "Description",
+        title: "Title",
       };
       when(
         gitApi.updatePullRequest(
@@ -1167,7 +1171,7 @@ describe("azureReposInvoker.ts", (): void => {
       verify(
         azureDevOpsApiWrapper.getWebApiInstance(
           "https://dev.azure.com/organization",
-          anything(),
+          any(),
         ),
       ).once();
       verify(
@@ -1188,16 +1192,20 @@ describe("azureReposInvoker.ts", (): void => {
 
   describe("createComment()", (): void => {
     {
-      const testCases: number[] = [401, 403, 404];
+      const testCases: StatusCodes[] = [
+        StatusCodes.UNAUTHORIZED,
+        StatusCodes.FORBIDDEN,
+        StatusCodes.NOT_FOUND,
+      ];
 
-      testCases.forEach((statusCode: number): void => {
-        it(`should throw when the access token has insufficient access and the API call returns status code '${statusCode}'`, async (): Promise<void> => {
+      testCases.forEach((statusCode: StatusCodes): void => {
+        it(`should throw when the access token has insufficient access and the API call returns status code '${String(statusCode)}'`, async (): Promise<void> => {
           // Arrange
           const error: ErrorWithStatus = new ErrorWithStatus("Test");
           error.statusCode = statusCode;
-          when(
-            gitApi.createThread(anything(), "RepoID", 10, "Project"),
-          ).thenThrow(error);
+          when(gitApi.createThread(any(), "RepoID", 10, "Project")).thenThrow(
+            error,
+          );
           const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(
             instance(azureDevOpsApiWrapper),
             instance(gitInvoker),
@@ -1210,12 +1218,12 @@ describe("azureReposInvoker.ts", (): void => {
           const func: () => Promise<void> = async () =>
             azureReposInvoker.createComment(
               "Comment Content",
-              CommentThreadStatus.Active,
               "file.ts",
+              CommentThreadStatus.Active,
             );
 
           // Assert
-          const result: any = await AssertExtensions.toThrowAsync(
+          const result: ErrorWithStatus = await AssertExtensions.toThrowAsync(
             func,
             "Could not access the resources. Ensure the 'PR_Metrics_Access_Token' secret environment variable has access to 'Code' > 'Read' and 'Pull Request Threads' > 'Read & write'.",
           );
@@ -1226,12 +1234,10 @@ describe("azureReposInvoker.ts", (): void => {
           verify(
             azureDevOpsApiWrapper.getWebApiInstance(
               "https://dev.azure.com/organization",
-              anything(),
+              any(),
             ),
           ).once();
-          verify(
-            gitApi.createThread(anything(), "RepoID", 10, "Project"),
-          ).once();
+          verify(gitApi.createThread(any(), "RepoID", 10, "Project")).once();
           verify(logger.logDebug("* AzureReposInvoker.createComment()")).once();
           verify(logger.logDebug("* AzureReposInvoker.getGitApi()")).once();
         });
@@ -1263,6 +1269,7 @@ describe("azureReposInvoker.ts", (): void => {
       // Act
       await azureReposInvoker.createComment(
         "Comment Content",
+        null,
         CommentThreadStatus.Active,
       );
 
@@ -1271,7 +1278,7 @@ describe("azureReposInvoker.ts", (): void => {
       verify(
         azureDevOpsApiWrapper.getWebApiInstance(
           "https://dev.azure.com/organization",
-          anything(),
+          any(),
         ),
       ).once();
       verify(
@@ -1312,10 +1319,12 @@ describe("azureReposInvoker.ts", (): void => {
       // Act
       await azureReposInvoker.createComment(
         "Comment Content",
+        null,
         CommentThreadStatus.Active,
       );
       await azureReposInvoker.createComment(
         "Comment Content",
+        null,
         CommentThreadStatus.Active,
       );
 
@@ -1324,7 +1333,7 @@ describe("azureReposInvoker.ts", (): void => {
       verify(
         azureDevOpsApiWrapper.getWebApiInstance(
           "https://dev.azure.com/organization",
-          anything(),
+          any(),
         ),
       ).once();
       verify(
@@ -1347,13 +1356,13 @@ describe("azureReposInvoker.ts", (): void => {
         status: CommentThreadStatus.Active,
         threadContext: {
           filePath: "/file.ts",
-          rightFileStart: {
-            line: 1,
-            offset: 1,
-          },
           rightFileEnd: {
             line: 1,
             offset: 2,
+          },
+          rightFileStart: {
+            line: 1,
+            offset: 1,
           },
         },
       };
@@ -1376,8 +1385,8 @@ describe("azureReposInvoker.ts", (): void => {
       // Act
       await azureReposInvoker.createComment(
         "Comment Content",
-        CommentThreadStatus.Active,
         "file.ts",
+        CommentThreadStatus.Active,
       );
 
       // Assert
@@ -1385,7 +1394,7 @@ describe("azureReposInvoker.ts", (): void => {
       verify(
         azureDevOpsApiWrapper.getWebApiInstance(
           "https://dev.azure.com/organization",
-          anything(),
+          any(),
         ),
       ).once();
       verify(
@@ -1408,13 +1417,13 @@ describe("azureReposInvoker.ts", (): void => {
         status: CommentThreadStatus.Active,
         threadContext: {
           filePath: "/file.ts",
-          leftFileStart: {
-            line: 1,
-            offset: 1,
-          },
           leftFileEnd: {
             line: 1,
             offset: 2,
+          },
+          leftFileStart: {
+            line: 1,
+            offset: 1,
           },
         },
       };
@@ -1437,8 +1446,8 @@ describe("azureReposInvoker.ts", (): void => {
       // Act
       await azureReposInvoker.createComment(
         "Comment Content",
-        CommentThreadStatus.Active,
         "file.ts",
+        CommentThreadStatus.Active,
         true,
       );
 
@@ -1447,7 +1456,7 @@ describe("azureReposInvoker.ts", (): void => {
       verify(
         azureDevOpsApiWrapper.getWebApiInstance(
           "https://dev.azure.com/organization",
-          anything(),
+          any(),
         ),
       ).once();
       verify(
@@ -1466,15 +1475,19 @@ describe("azureReposInvoker.ts", (): void => {
 
   describe("updateComment()", (): void => {
     {
-      const testCases: number[] = [401, 403, 404];
+      const testCases: StatusCodes[] = [
+        StatusCodes.UNAUTHORIZED,
+        StatusCodes.FORBIDDEN,
+        StatusCodes.NOT_FOUND,
+      ];
 
-      testCases.forEach((statusCode: number): void => {
-        it(`should throw when the access token has insufficient access for the updateComment API and the API call returns status code '${statusCode}'`, async (): Promise<void> => {
+      testCases.forEach((statusCode: StatusCodes): void => {
+        it(`should throw when the access token has insufficient access for the updateComment API and the API call returns status code '${String(statusCode)}'`, async (): Promise<void> => {
           // Arrange
           const error: ErrorWithStatus = new ErrorWithStatus("Test");
           error.statusCode = statusCode;
           when(
-            gitApi.updateComment(anything(), "RepoID", 10, 20, 1, "Project"),
+            gitApi.updateComment(any(), "RepoID", 10, 20, 1, "Project"),
           ).thenThrow(error);
           const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(
             instance(azureDevOpsApiWrapper),
@@ -1493,7 +1506,7 @@ describe("azureReposInvoker.ts", (): void => {
             );
 
           // Assert
-          const result: any = await AssertExtensions.toThrowAsync(
+          const result: ErrorWithStatus = await AssertExtensions.toThrowAsync(
             func,
             "Could not access the resources. Ensure the 'PR_Metrics_Access_Token' secret environment variable has access to 'Code' > 'Read' and 'Pull Request Threads' > 'Read & write'.",
           );
@@ -1504,11 +1517,11 @@ describe("azureReposInvoker.ts", (): void => {
           verify(
             azureDevOpsApiWrapper.getWebApiInstance(
               "https://dev.azure.com/organization",
-              anything(),
+              any(),
             ),
           ).once();
           verify(
-            gitApi.updateComment(anything(), "RepoID", 10, 20, 1, "Project"),
+            gitApi.updateComment(any(), "RepoID", 10, 20, 1, "Project"),
           ).once();
           verify(logger.logDebug("* AzureReposInvoker.updateComment()")).once();
           verify(logger.logDebug("* AzureReposInvoker.getGitApi()")).once();
@@ -1517,18 +1530,22 @@ describe("azureReposInvoker.ts", (): void => {
     }
 
     {
-      const testCases: number[] = [401, 403, 404];
+      const testCases: StatusCodes[] = [
+        StatusCodes.UNAUTHORIZED,
+        StatusCodes.FORBIDDEN,
+        StatusCodes.NOT_FOUND,
+      ];
 
-      testCases.forEach((status: number): void => {
-        it(`should throw when the access token has insufficient access for the updateComment API and the API call returns status '${status}'`, async (): Promise<void> => {
+      testCases.forEach((status: StatusCodes): void => {
+        it(`should throw when the access token has insufficient access for the updateComment API and the API call returns status '${String(status)}'`, async (): Promise<void> => {
           // Arrange
           const error: ErrorWithStatus = new ErrorWithStatus("Test");
           error.status = status;
           when(
-            gitApi.updateComment(anything(), "RepoID", 10, 20, 1, "Project"),
+            gitApi.updateComment(any(), "RepoID", 10, 20, 1, "Project"),
           ).thenResolve({});
           when(
-            gitApi.updateThread(anything(), "RepoID", 10, 20, "Project"),
+            gitApi.updateThread(any(), "RepoID", 10, 20, "Project"),
           ).thenThrow(error);
           const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(
             instance(azureDevOpsApiWrapper),
@@ -1547,7 +1564,7 @@ describe("azureReposInvoker.ts", (): void => {
             );
 
           // Assert
-          const result: any = await AssertExtensions.toThrowAsync(
+          const result: ErrorWithStatus = await AssertExtensions.toThrowAsync(
             func,
             "Could not access the resources. Ensure the 'PR_Metrics_Access_Token' secret environment variable has access to 'Code' > 'Read' and 'Pull Request Threads' > 'Read & write'.",
           );
@@ -1558,14 +1575,14 @@ describe("azureReposInvoker.ts", (): void => {
           verify(
             azureDevOpsApiWrapper.getWebApiInstance(
               "https://dev.azure.com/organization",
-              anything(),
+              any(),
             ),
           ).once();
           verify(
-            gitApi.updateComment(anything(), "RepoID", 10, 20, 1, "Project"),
+            gitApi.updateComment(any(), "RepoID", 10, 20, 1, "Project"),
           ).once();
           verify(
-            gitApi.updateThread(anything(), "RepoID", 10, 20, "Project"),
+            gitApi.updateThread(any(), "RepoID", 10, 20, "Project"),
           ).once();
           verify(logger.logDebug("* AzureReposInvoker.updateComment()")).once();
           verify(logger.logDebug("* AzureReposInvoker.getGitApi()")).once();
@@ -1621,7 +1638,7 @@ describe("azureReposInvoker.ts", (): void => {
       verify(
         azureDevOpsApiWrapper.getWebApiInstance(
           "https://dev.azure.com/organization",
-          anything(),
+          any(),
         ),
       ).once();
       verify(
@@ -1679,7 +1696,7 @@ describe("azureReposInvoker.ts", (): void => {
       verify(
         azureDevOpsApiWrapper.getWebApiInstance(
           "https://dev.azure.com/organization",
-          anything(),
+          any(),
         ),
       ).once();
       verify(
@@ -1731,7 +1748,7 @@ describe("azureReposInvoker.ts", (): void => {
       verify(
         azureDevOpsApiWrapper.getWebApiInstance(
           "https://dev.azure.com/organization",
-          anything(),
+          any(),
         ),
       ).once();
       verify(
@@ -1768,15 +1785,13 @@ describe("azureReposInvoker.ts", (): void => {
       verify(
         azureDevOpsApiWrapper.getWebApiInstance(
           "https://dev.azure.com/organization",
-          anything(),
+          any(),
         ),
       ).never();
       verify(
-        gitApi.updateComment(anything(), "RepoID", 10, 20, 1, "Project"),
+        gitApi.updateComment(any(), "RepoID", 10, 20, 1, "Project"),
       ).never();
-      verify(
-        gitApi.updateThread(anything(), "RepoID", 10, 20, "Project"),
-      ).never();
+      verify(gitApi.updateThread(any(), "RepoID", 10, 20, "Project")).never();
       verify(logger.logDebug("* AzureReposInvoker.updateComment()")).once();
       verify(logger.logDebug("* AzureReposInvoker.getGitApi()")).never();
     });
@@ -1813,7 +1828,7 @@ describe("azureReposInvoker.ts", (): void => {
       verify(
         azureDevOpsApiWrapper.getWebApiInstance(
           "https://dev.azure.com/organization",
-          anything(),
+          any(),
         ),
       ).once();
       verify(
@@ -1834,10 +1849,14 @@ describe("azureReposInvoker.ts", (): void => {
 
   describe("deleteCommentThread()", (): void => {
     {
-      const testCases: number[] = [401, 403, 404];
+      const testCases: StatusCodes[] = [
+        StatusCodes.UNAUTHORIZED,
+        StatusCodes.FORBIDDEN,
+        StatusCodes.NOT_FOUND,
+      ];
 
-      testCases.forEach((statusCode: number): void => {
-        it(`should throw when the access token has insufficient access and the API call returns status code '${statusCode}'`, async (): Promise<void> => {
+      testCases.forEach((statusCode: StatusCodes): void => {
+        it(`should throw when the access token has insufficient access and the API call returns status code '${String(statusCode)}'`, async (): Promise<void> => {
           // Arrange
           const error: ErrorWithStatus = new ErrorWithStatus("Test");
           error.statusCode = statusCode;
@@ -1857,7 +1876,7 @@ describe("azureReposInvoker.ts", (): void => {
             azureReposInvoker.deleteCommentThread(20);
 
           // Assert
-          const result: any = await AssertExtensions.toThrowAsync(
+          const result: ErrorWithStatus = await AssertExtensions.toThrowAsync(
             func,
             "Could not access the resources. Ensure the 'PR_Metrics_Access_Token' secret environment variable has access to 'Code' > 'Read' and 'Pull Request Threads' > 'Read & write'.",
           );
@@ -1868,7 +1887,7 @@ describe("azureReposInvoker.ts", (): void => {
           verify(
             azureDevOpsApiWrapper.getWebApiInstance(
               "https://dev.azure.com/organization",
-              anything(),
+              any(),
             ),
           ).once();
           verify(gitApi.deleteComment("RepoID", 10, 20, 1, "Project")).once();
@@ -1899,7 +1918,7 @@ describe("azureReposInvoker.ts", (): void => {
       verify(
         azureDevOpsApiWrapper.getWebApiInstance(
           "https://dev.azure.com/organization",
-          anything(),
+          any(),
         ),
       ).once();
       verify(gitApi.deleteComment("RepoID", 10, 20, 1, "Project")).once();
@@ -1931,7 +1950,7 @@ describe("azureReposInvoker.ts", (): void => {
       verify(
         azureDevOpsApiWrapper.getWebApiInstance(
           "https://dev.azure.com/organization",
-          anything(),
+          any(),
         ),
       ).once();
       verify(gitApi.deleteComment("RepoID", 10, 20, 1, "Project")).once();

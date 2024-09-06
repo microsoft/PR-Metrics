@@ -6,6 +6,7 @@
 import "reflect-metadata";
 import PullRequestMetrics from "./src/pullRequestMetrics";
 import { container } from "tsyringe";
+import { exitCodeForFailure } from "./src/utilities/constants";
 
 const run = async (): Promise<void> => {
   const pullRequestMetrics: PullRequestMetrics =
@@ -13,4 +14,6 @@ const run = async (): Promise<void> => {
   await pullRequestMetrics.run(__dirname);
 };
 
-run().finally((): void => {});
+run().catch((): void => {
+  process.exit(exitCodeForFailure);
+});

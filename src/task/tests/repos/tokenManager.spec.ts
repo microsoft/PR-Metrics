@@ -78,10 +78,11 @@ describe("tokenManager.ts", (): void => {
     when(
       runnerInvoker.getEndpointAuthorization("SYSTEMVSSCONNECTION"),
     ).thenReturn({
-      scheme: "OAuth",
       parameters: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention -- Required for alignment with underlying API.
         AccessToken: "AccessToken",
       },
+      scheme: "OAuth",
     });
     when(
       runnerInvoker.exec(
@@ -228,16 +229,16 @@ describe("tokenManager.ts", (): void => {
       const testCases: (EndpointAuthorization | undefined)[] = [
         undefined,
         {
-          scheme: "Other",
           parameters: {
             other: "Other",
           },
+          scheme: "Other",
         },
       ];
 
       testCases.forEach(
         (endpointAuthorization: EndpointAuthorization | undefined): void => {
-          it(`throws an error when endpoint authorization scheme is '${endpointAuthorization?.scheme}'`, async (): Promise<void> => {
+          it(`throws an error when endpoint authorization scheme is '${endpointAuthorization?.scheme ?? ""}'`, async (): Promise<void> => {
             // Arrange
             const tokenManager: TokenManager = new TokenManager(
               instance(azureDevOpsApiWrapper),
@@ -255,7 +256,7 @@ describe("tokenManager.ts", (): void => {
             // Assert
             await AssertExtensions.toThrowAsync(
               func,
-              `Could not acquire authorization token from workload identity federation as the scheme was '${endpointAuthorization?.scheme}'.`,
+              `Could not acquire authorization token from workload identity federation as the scheme was '${endpointAuthorization?.scheme ?? ""}'.`,
             );
             verify(logger.logDebug("* TokenManager.getToken()")).once();
             verify(logger.logDebug("* TokenManager.getAccessToken()")).once();
@@ -281,10 +282,10 @@ describe("tokenManager.ts", (): void => {
     when(
       runnerInvoker.getEndpointAuthorization("SYSTEMVSSCONNECTION"),
     ).thenReturn({
-      scheme: "OAuth",
       parameters: {
         other: "Other",
       },
+      scheme: "OAuth",
     });
 
     // Act

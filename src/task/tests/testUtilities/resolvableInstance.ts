@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import ResolvableInstanceTarget from "./resolvableInstanceTarget";
+import ResolvableInstanceTargetInterface from "./resolvableInstanceTargetInterface";
 import { instance } from "ts-mockito";
 
 /**
@@ -21,6 +21,6 @@ export const resolvableInstance = <Type extends NonNullable<unknown>>(
         return undefined;
       }
 
-      return (target as ResolvableInstanceTarget<Type>)[name];
+      return (target as ResolvableInstanceTargetInterface<Type>)[name];
     },
   });

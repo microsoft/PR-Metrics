@@ -8,9 +8,9 @@ import AzureReposInvoker from "./azureReposInvoker";
 import CommentData from "./interfaces/commentData";
 import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces";
 import GitHubReposInvoker from "./gitHubReposInvoker";
-import IReposInvoker from "./iReposInvoker";
 import Logger from "../utilities/logger";
-import PullRequestDetails from "./interfaces/pullRequestDetails";
+import PullRequestDetailsInterface from "./interfaces/pullRequestDetailsInterface";
+import ReposInvokerInterface from "./reposInvokerInterface";
 import RunnerInvoker from "../runners/runnerInvoker";
 import { singleton } from "tsyringe";
 
@@ -18,12 +18,12 @@ import { singleton } from "tsyringe";
  * A class for invoking repository functionality with any underlying repository store.
  */
 @singleton()
-export default class ReposInvoker implements IReposInvoker {
+export default class ReposInvoker implements ReposInvokerInterface {
   private readonly _azureReposInvoker: AzureReposInvoker;
   private readonly _gitHubReposInvoker: GitHubReposInvoker;
   private readonly _logger: Logger;
 
-  private _reposInvoker: IReposInvoker | undefined;
+  private _reposInvoker: ReposInvokerInterface | undefined;
 
   /**
    * Initializes a new instance of the `ReposInvoker` class.
@@ -44,21 +44,21 @@ export default class ReposInvoker implements IReposInvoker {
   public async isAccessTokenAvailable(): Promise<string | null> {
     this._logger.logDebug("* ReposInvoker.isAccessTokenAvailable()");
 
-    const reposInvoker: IReposInvoker = this.getReposInvoker();
+    const reposInvoker: ReposInvokerInterface = this.getReposInvoker();
     return reposInvoker.isAccessTokenAvailable();
   }
 
-  public async getTitleAndDescription(): Promise<PullRequestDetails> {
+  public async getTitleAndDescription(): Promise<PullRequestDetailsInterface> {
     this._logger.logDebug("* ReposInvoker.getTitleAndDescription()");
 
-    const reposInvoker: IReposInvoker = this.getReposInvoker();
+    const reposInvoker: ReposInvokerInterface = this.getReposInvoker();
     return reposInvoker.getTitleAndDescription();
   }
 
   public async getComments(): Promise<CommentData> {
     this._logger.logDebug("* ReposInvoker.getComments()");
 
-    const reposInvoker: IReposInvoker = this.getReposInvoker();
+    const reposInvoker: ReposInvokerInterface = this.getReposInvoker();
     return reposInvoker.getComments();
   }
 
@@ -68,20 +68,20 @@ export default class ReposInvoker implements IReposInvoker {
   ): Promise<void> {
     this._logger.logDebug("* ReposInvoker.setTitleAndDescription()");
 
-    const reposInvoker: IReposInvoker = this.getReposInvoker();
+    const reposInvoker: ReposInvokerInterface = this.getReposInvoker();
     return reposInvoker.setTitleAndDescription(title, description);
   }
 
   public async createComment(
     content: string,
+    fileName: string | null,
     status: CommentThreadStatus,
-    fileName?: string,
     isFileDeleted?: boolean,
   ): Promise<void> {
     this._logger.logDebug("* ReposInvoker.createComment()");
 
-    const reposInvoker: IReposInvoker = this.getReposInvoker();
-    return reposInvoker.createComment(content, status, fileName, isFileDeleted);
+    const reposInvoker: ReposInvokerInterface = this.getReposInvoker();
+    return reposInvoker.createComment(content, fileName, status, isFileDeleted);
   }
 
   public async updateComment(
@@ -91,21 +91,21 @@ export default class ReposInvoker implements IReposInvoker {
   ): Promise<void> {
     this._logger.logDebug("* ReposInvoker.updateComment()");
 
-    const reposInvoker: IReposInvoker = this.getReposInvoker();
+    const reposInvoker: ReposInvokerInterface = this.getReposInvoker();
     return reposInvoker.updateComment(commentThreadId, content, status);
   }
 
   public async deleteCommentThread(commentThreadId: number): Promise<void> {
     this._logger.logDebug("* ReposInvoker.deleteCommentThread()");
 
-    const reposInvoker: IReposInvoker = this.getReposInvoker();
+    const reposInvoker: ReposInvokerInterface = this.getReposInvoker();
     return reposInvoker.deleteCommentThread(commentThreadId);
   }
 
-  private getReposInvoker(): IReposInvoker {
+  private getReposInvoker(): ReposInvokerInterface {
     this._logger.logDebug("* ReposInvoker.getReposInvoker()");
 
-    if (this._reposInvoker !== undefined) {
+    if (typeof this._reposInvoker !== "undefined") {
       return this._reposInvoker;
     }
 

@@ -11,7 +11,7 @@ import CommentData from "../../src/repos/interfaces/commentData";
 import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces";
 import GitHubReposInvoker from "../../src/repos/gitHubReposInvoker";
 import Logger from "../../src/utilities/logger";
-import PullRequestDetails from "../../src/repos/interfaces/pullRequestDetails";
+import PullRequestDetailsInterface from "../../src/repos/interfaces/pullRequestDetailsInterface";
 import ReposInvoker from "../../src/repos/reposInvoker";
 import assert from "node:assert/strict";
 
@@ -197,7 +197,7 @@ describe("reposInvoker.ts", (): void => {
       );
 
       // Act
-      const result: PullRequestDetails =
+      const result: PullRequestDetailsInterface =
         await reposInvoker.getTitleAndDescription();
 
       // Assert
@@ -221,7 +221,7 @@ describe("reposInvoker.ts", (): void => {
       );
 
       // Act
-      const result: PullRequestDetails =
+      const result: PullRequestDetailsInterface =
         await reposInvoker.getTitleAndDescription();
 
       // Assert
@@ -249,7 +249,7 @@ describe("reposInvoker.ts", (): void => {
           );
 
           // Act
-          const result: PullRequestDetails =
+          const result: PullRequestDetailsInterface =
             await reposInvoker.getTitleAndDescription();
 
           // Assert
@@ -277,7 +277,7 @@ describe("reposInvoker.ts", (): void => {
       );
 
       // Act
-      const func: () => Promise<PullRequestDetails> = async () =>
+      const func: () => Promise<PullRequestDetailsInterface> = async () =>
         reposInvoker.getTitleAndDescription();
 
       // Assert
@@ -301,7 +301,7 @@ describe("reposInvoker.ts", (): void => {
       );
 
       // Act
-      const func: () => Promise<PullRequestDetails> = async () =>
+      const func: () => Promise<PullRequestDetailsInterface> = async () =>
         reposInvoker.getTitleAndDescription();
 
       // Assert
@@ -587,8 +587,8 @@ describe("reposInvoker.ts", (): void => {
       // Act
       await reposInvoker.createComment(
         "",
-        CommentThreadStatus.Active,
         "",
+        CommentThreadStatus.Active,
         false,
       );
 
@@ -596,16 +596,17 @@ describe("reposInvoker.ts", (): void => {
       verify(
         azureReposInvoker.createComment(
           "",
-          CommentThreadStatus.Active,
           "",
+          CommentThreadStatus.Active,
           false,
         ),
       ).once();
       verify(
         gitHubReposInvoker.createComment(
           "",
-          CommentThreadStatus.Active,
           "",
+          // @ts-expect-error -- Interface is called with additional parameters not present in implementation.
+          CommentThreadStatus.Active,
           false,
         ),
       ).never();
@@ -628,8 +629,8 @@ describe("reposInvoker.ts", (): void => {
       // Act
       await reposInvoker.createComment(
         "",
-        CommentThreadStatus.Active,
         "",
+        CommentThreadStatus.Active,
         false,
       );
 
@@ -637,16 +638,17 @@ describe("reposInvoker.ts", (): void => {
       verify(
         azureReposInvoker.createComment(
           "",
-          CommentThreadStatus.Active,
           "",
+          CommentThreadStatus.Active,
           false,
         ),
       ).never();
       verify(
         gitHubReposInvoker.createComment(
           "",
-          CommentThreadStatus.Active,
           "",
+          // @ts-expect-error -- Interface is called with additional parameters not present in implementation.
+          CommentThreadStatus.Active,
           false,
         ),
       ).once();
@@ -673,8 +675,8 @@ describe("reposInvoker.ts", (): void => {
           // Act
           await reposInvoker.createComment(
             "",
-            CommentThreadStatus.Active,
             "",
+            CommentThreadStatus.Active,
             false,
           );
 
@@ -682,16 +684,17 @@ describe("reposInvoker.ts", (): void => {
           verify(
             azureReposInvoker.createComment(
               "",
-              CommentThreadStatus.Active,
               "",
+              CommentThreadStatus.Active,
               false,
             ),
           ).never();
           verify(
             gitHubReposInvoker.createComment(
               "",
-              CommentThreadStatus.Active,
               "",
+              // @ts-expect-error -- Interface is called with additional parameters not present in implementation.
+              CommentThreadStatus.Active,
               false,
             ),
           ).once();
@@ -715,7 +718,7 @@ describe("reposInvoker.ts", (): void => {
 
       // Act
       const func: () => Promise<void> = async () =>
-        reposInvoker.createComment("", CommentThreadStatus.Active, "", false);
+        reposInvoker.createComment("", "", CommentThreadStatus.Active, false);
 
       // Assert
       await AssertExtensions.toThrowAsync(
@@ -725,16 +728,17 @@ describe("reposInvoker.ts", (): void => {
       verify(
         azureReposInvoker.createComment(
           "",
-          CommentThreadStatus.Active,
           "",
+          CommentThreadStatus.Active,
           false,
         ),
       ).never();
       verify(
         gitHubReposInvoker.createComment(
           "",
-          CommentThreadStatus.Active,
           "",
+          // @ts-expect-error -- Interface is called with additional parameters not present in implementation.
+          CommentThreadStatus.Active,
           false,
         ),
       ).never();
@@ -753,7 +757,7 @@ describe("reposInvoker.ts", (): void => {
 
       // Act
       const func: () => Promise<void> = async () =>
-        reposInvoker.createComment("", CommentThreadStatus.Active, "", false);
+        reposInvoker.createComment("", "", CommentThreadStatus.Active, false);
 
       // Assert
       await AssertExtensions.toThrowAsync(
@@ -763,16 +767,17 @@ describe("reposInvoker.ts", (): void => {
       verify(
         azureReposInvoker.createComment(
           "",
-          CommentThreadStatus.Active,
           "",
+          CommentThreadStatus.Active,
           false,
         ),
       ).never();
       verify(
         gitHubReposInvoker.createComment(
           "",
-          CommentThreadStatus.Active,
           "",
+          // @ts-expect-error -- Interface is called with additional parameters not present in implementation.
+          CommentThreadStatus.Active,
           false,
         ),
       ).never();
@@ -799,6 +804,7 @@ describe("reposInvoker.ts", (): void => {
 
       // Assert
       verify(azureReposInvoker.updateComment(0, null, null)).once();
+      // @ts-expect-error -- Interface is called with additional parameters not present in implementation.
       verify(gitHubReposInvoker.updateComment(0, null, null)).never();
       verify(logger.logDebug("* ReposInvoker.updateComment()")).once();
       verify(logger.logDebug("* ReposInvoker.getReposInvoker()")).once();
@@ -821,6 +827,7 @@ describe("reposInvoker.ts", (): void => {
 
       // Assert
       verify(azureReposInvoker.updateComment(0, null, null)).never();
+      // @ts-expect-error -- Interface is called with additional parameters not present in implementation.
       verify(gitHubReposInvoker.updateComment(0, null, null)).once();
       verify(logger.logDebug("* ReposInvoker.updateComment()")).once();
       verify(logger.logDebug("* ReposInvoker.getReposInvoker()")).once();
@@ -847,6 +854,7 @@ describe("reposInvoker.ts", (): void => {
 
           // Assert
           verify(azureReposInvoker.updateComment(0, null, null)).never();
+          // @ts-expect-error -- Interface is called with additional parameters not present in implementation.
           verify(gitHubReposInvoker.updateComment(0, null, null)).once();
           verify(logger.logDebug("* ReposInvoker.updateComment()")).once();
           verify(logger.logDebug("* ReposInvoker.getReposInvoker()")).once();
@@ -876,6 +884,7 @@ describe("reposInvoker.ts", (): void => {
         "'BUILD_REPOSITORY_PROVIDER', accessed within 'ReposInvoker.getReposInvoker()', is invalid, null, or undefined 'undefined'.",
       );
       verify(azureReposInvoker.updateComment(0, null, null)).never();
+      // @ts-expect-error -- Interface is called with additional parameters not present in implementation.
       verify(gitHubReposInvoker.updateComment(0, null, null)).never();
       verify(logger.logDebug("* ReposInvoker.updateComment()")).once();
       verify(logger.logDebug("* ReposInvoker.getReposInvoker()")).once();
@@ -900,6 +909,7 @@ describe("reposInvoker.ts", (): void => {
         "BUILD_REPOSITORY_PROVIDER 'Other' is unsupported.",
       );
       verify(azureReposInvoker.updateComment(0, null, null)).never();
+      // @ts-expect-error -- Interface is called with additional parameters not present in implementation.
       verify(gitHubReposInvoker.updateComment(0, null, null)).never();
       verify(logger.logDebug("* ReposInvoker.updateComment()")).once();
       verify(logger.logDebug("* ReposInvoker.getReposInvoker()")).once();

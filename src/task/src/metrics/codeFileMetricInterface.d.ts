@@ -6,7 +6,7 @@
 /**
  * An interface representing a metric related to a code file.
  */
-export interface CodeFileMetric {
+export interface CodeFileMetricInterface {
   /**
    * The name of the file.
    */

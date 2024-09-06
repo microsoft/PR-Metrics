@@ -12,14 +12,16 @@ import {
 import AzurePipelinesRunnerWrapper from "../wrappers/azurePipelinesRunnerWrapper";
 import { EndpointAuthorization } from "./endpointAuthorization";
 import ExecOutput from "./execOutput";
-import IRunnerInvoker from "./iRunnerInvoker";
+import RunnerInvokerInterface from "./runnerInvokerInterface";
 import { singleton } from "tsyringe";
 
 /**
  * A class for invoking Azure Pipelines runner functionality.
  */
 @singleton()
-export default class AzurePipelinesRunnerInvoker implements IRunnerInvoker {
+export default class AzurePipelinesRunnerInvoker
+  implements RunnerInvokerInterface
+{
   private readonly _azurePipelinesRunnerWrapper: AzurePipelinesRunnerWrapper;
 
   /**
@@ -41,11 +43,11 @@ export default class AzurePipelinesRunnerInvoker implements IRunnerInvoker {
       args,
       options,
     );
-    return {
+    return Promise.resolve({
       exitCode: result.code,
       stderr: result.stderr,
       stdout: result.stdout,
-    };
+    });
   }
 
   public getInput(name: string[]): string | undefined {
@@ -63,8 +65,8 @@ export default class AzurePipelinesRunnerInvoker implements IRunnerInvoker {
     }
 
     return {
-      scheme: result.scheme,
       parameters: result.parameters,
+      scheme: result.scheme,
     };
   }
 
@@ -92,7 +94,7 @@ export default class AzurePipelinesRunnerInvoker implements IRunnerInvoker {
     );
   }
 
-  public loc(key: string, ...param: any[]): string {
+  public loc(key: string, ...param: string[]): string {
     return this._azurePipelinesRunnerWrapper.loc(key, ...param);
   }
 

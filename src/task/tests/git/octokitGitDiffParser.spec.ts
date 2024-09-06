@@ -12,7 +12,7 @@ import OctokitGitDiffParser from "../../src/git/octokitGitDiffParser";
 import OctokitWrapper from "../../src/wrappers/octokitWrapper";
 import assert from "node:assert/strict";
 
-/* eslint-disable camelcase -- Required for alignment with Octokit. */
+/* eslint-disable @typescript-eslint/naming-convention -- Required for alignment with Octokit. */
 
 describe("octokitGitDiffParser.ts", (): void => {
   let axiosWrapper: AxiosWrapper;
@@ -28,14 +28,13 @@ describe("octokitGitDiffParser.ts", (): void => {
   describe("getFirstChangedLine()", (): void => {
     {
       interface TestCaseType {
-        fileCount: number;
         diff: string;
+        fileCount: number;
         lineNumber: number;
       }
 
       const testCases: TestCaseType[] = [
         {
-          fileCount: 1,
           diff:
             "diff --git file.ts file.ts\n" +
             "index 6b76988..47f1131b 100646\n" +
@@ -44,10 +43,10 @@ describe("octokitGitDiffParser.ts", (): void => {
             "@@ -11,2 +11,3 @@ Line 1\n" +
             "+Line 2\n" +
             " Line 3",
+          fileCount: 1,
           lineNumber: 11,
         },
         {
-          fileCount: 2,
           diff:
             "diff --git oldFile.ts oldFile.ts\n" +
             "index 6b76988..47f1131b 100646\n" +
@@ -63,10 +62,10 @@ describe("octokitGitDiffParser.ts", (): void => {
             "@@ -100,2 +100,3 @@ Line 1\n" +
             "+Line 2\n" +
             " Line 3",
+          fileCount: 2,
           lineNumber: 100,
         },
         {
-          fileCount: 3,
           diff:
             "diff --git oldFile.ts oldFile.ts\n" +
             "index 6b76988..47f1131b 100646\n" +
@@ -89,13 +88,14 @@ describe("octokitGitDiffParser.ts", (): void => {
             "@@ -200,2 +200,3 @@ Line 1\n" +
             "+Line 2\n" +
             " Line 3",
+          fileCount: 3,
           lineNumber: 100,
         },
       ];
 
       testCases.forEach(
-        ({ fileCount, diff, lineNumber }: TestCaseType): void => {
-          it(`should return the correct line number when ${fileCount} changed files are present`, async (): Promise<void> => {
+        ({ diff, fileCount, lineNumber }: TestCaseType): void => {
+          it(`should return the correct line number when ${String(fileCount)} changed files are present`, async (): Promise<void> => {
             // Arrange
             when(octokitWrapper.getPull("owner", "repo", 1)).thenCall(
               async (): Promise<GetPullResponse> =>
@@ -534,5 +534,4 @@ describe("octokitGitDiffParser.ts", (): void => {
     });
   });
 });
-
-/* eslint-enable camelcase */
+/* eslint-enable @typescript-eslint/naming-convention */

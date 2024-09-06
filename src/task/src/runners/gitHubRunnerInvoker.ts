@@ -12,15 +12,15 @@ import ConsoleWrapper from "../wrappers/consoleWrapper";
 import { EndpointAuthorization } from "./endpointAuthorization";
 import ExecOutput from "./execOutput";
 import GitHubRunnerWrapper from "../wrappers/gitHubRunnerWrapper";
-import IRunnerInvoker from "./iRunnerInvoker";
-import ResourcesJson from "../jsonTypes/resourcesJson";
+import ResourcesJsonInterface from "../jsonTypes/resourcesJsonInterface";
+import RunnerInvokerInterface from "./runnerInvokerInterface";
 import { singleton } from "tsyringe";
 
 /**
  * A class for invoking GitHub runner functionality.
  */
 @singleton()
-export default class GitHubRunnerInvoker implements IRunnerInvoker {
+export default class GitHubRunnerInvoker implements RunnerInvokerInterface {
   private readonly _azurePipelinesRunnerWrapper: AzurePipelinesRunnerWrapper;
   private readonly _consoleWrapper: ConsoleWrapper;
   private readonly _gitHubRunnerWrapper: GitHubRunnerWrapper;
@@ -68,20 +68,15 @@ export default class GitHubRunnerInvoker implements IRunnerInvoker {
     return this._azurePipelinesRunnerWrapper.getInput(formattedName);
   }
 
-  public getEndpointAuthorization(
-    _: string,
-  ): EndpointAuthorization | undefined {
+  public getEndpointAuthorization(): EndpointAuthorization | undefined {
     throw new Error("getEndpointAuthorization() unavailable in GitHub.");
   }
 
-  public getEndpointAuthorizationScheme(_: string): string | undefined {
+  public getEndpointAuthorizationScheme(): string | undefined {
     throw new Error("getEndpointAuthorizationScheme() unavailable in GitHub.");
   }
 
-  public getEndpointAuthorizationParameter(
-    _: string,
-    __: string,
-  ): string | undefined {
+  public getEndpointAuthorizationParameter(): string | undefined {
     throw new Error(
       "getEndpointAuthorizationParameter() unavailable in GitHub.",
     );
@@ -92,18 +87,20 @@ export default class GitHubRunnerInvoker implements IRunnerInvoker {
       path.join(folder, "resources.resjson"),
       "utf8",
     );
-    const resources: ResourcesJson = JSON.parse(resourceData) as ResourcesJson;
+    const resources: ResourcesJsonInterface = JSON.parse(
+      resourceData,
+    ) as ResourcesJsonInterface;
 
     const entries: [string, string][] = Object.entries(resources);
-    const stringPrefix: string = "loc.messages.";
-    entries.forEach((entry: [string, string]): void => {
-      if (entry[0].startsWith(stringPrefix)) {
-        this._resources.set(entry[0].substring(stringPrefix.length), entry[1]);
+    const stringPrefix = "loc.messages.";
+    for (const [key, value] of entries) {
+      if (key.startsWith(stringPrefix)) {
+        this._resources.set(key.substring(stringPrefix.length), value);
       }
-    });
+    }
   }
 
-  public loc(key: string, ...param: any[]): string {
+  public loc(key: string, ...param: string[]): string {
     return util.format(this._resources.get(key), ...param);
   }
 

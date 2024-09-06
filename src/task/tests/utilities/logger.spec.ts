@@ -9,6 +9,7 @@ import ConsoleWrapper from "../../src/wrappers/consoleWrapper";
 import HttpError from "../testUtilities/httpError";
 import Logger from "../../src/utilities/logger";
 import RunnerInvoker from "../../src/runners/runnerInvoker";
+import { StatusCodes } from "http-status-codes";
 
 describe("logger.ts", (): void => {
   let consoleWrapper: ConsoleWrapper;
@@ -20,8 +21,14 @@ describe("logger.ts", (): void => {
   });
 
   describe("logDebug()", (): void => {
-    ["##[test]Message", "##vso[test]Message", "##VSO[test]Message"].forEach(
-      (value: string): void => {
+    {
+      const testCases: string[] = [
+        "##[test]Message",
+        "##vso[test]Message",
+        "##VSO[test]Message",
+      ];
+
+      testCases.forEach((value: string): void => {
         it(`should log the filtered message for '${value}'`, (): void => {
           // Arrange
           const logger: Logger = new Logger(
@@ -35,8 +42,8 @@ describe("logger.ts", (): void => {
           // Assert
           verify(runnerInvoker.logDebug("test]Message")).once();
         });
-      },
-    );
+      });
+    }
 
     it("should log the message", (): void => {
       // Arrange
@@ -54,8 +61,14 @@ describe("logger.ts", (): void => {
   });
 
   describe("logInfo()", (): void => {
-    ["##[test]Message", "##vso[test]Message", "##VSO[test]Message"].forEach(
-      (value: string): void => {
+    {
+      const testCases: string[] = [
+        "##[test]Message",
+        "##vso[test]Message",
+        "##VSO[test]Message",
+      ];
+
+      testCases.forEach((value: string): void => {
         it(`should log the filtered message for '${value}'`, (): void => {
           // Arrange
           const logger: Logger = new Logger(
@@ -69,8 +82,8 @@ describe("logger.ts", (): void => {
           // Assert
           verify(consoleWrapper.log("test]Message")).once();
         });
-      },
-    );
+      });
+    }
 
     it("should log the message", (): void => {
       // Arrange
@@ -88,8 +101,14 @@ describe("logger.ts", (): void => {
   });
 
   describe("logWarning()", (): void => {
-    ["##[test]Message", "##vso[test]Message", "##VSO[test]Message"].forEach(
-      (value: string): void => {
+    {
+      const testCases: string[] = [
+        "##[test]Message",
+        "##vso[test]Message",
+        "##VSO[test]Message",
+      ];
+
+      testCases.forEach((value: string): void => {
         it(`should log the filtered message for '${value}'`, (): void => {
           // Arrange
           const logger: Logger = new Logger(
@@ -103,8 +122,8 @@ describe("logger.ts", (): void => {
           // Assert
           verify(runnerInvoker.logWarning("test]Message")).once();
         });
-      },
-    );
+      });
+    }
 
     it("should log the message", (): void => {
       // Arrange
@@ -122,8 +141,14 @@ describe("logger.ts", (): void => {
   });
 
   describe("logError()", (): void => {
-    ["##[test]Message", "##vso[test]Message", "##VSO[test]Message"].forEach(
-      (value: string): void => {
+    {
+      const testCases: string[] = [
+        "##[test]Message",
+        "##vso[test]Message",
+        "##VSO[test]Message",
+      ];
+
+      testCases.forEach((value: string): void => {
         it(`should log the filtered message for '${value}'`, (): void => {
           // Arrange
           const logger: Logger = new Logger(
@@ -137,8 +162,8 @@ describe("logger.ts", (): void => {
           // Assert
           verify(runnerInvoker.logError("test]Message")).once();
         });
-      },
-    );
+      });
+    }
 
     it("should log the message", (): void => {
       // Arrange
@@ -156,8 +181,10 @@ describe("logger.ts", (): void => {
   });
 
   describe("logErrorObject()", (): void => {
-    ["##[test]", "##vso[test]", "##VSO[test]"].forEach(
-      (value: string): void => {
+    {
+      const testCases: string[] = ["##[test]", "##vso[test]", "##VSO[test]"];
+
+      testCases.forEach((value: string): void => {
         it(`should log all filtered properties '${value}' of the error object`, (): void => {
           // Arrange
           const logger: Logger = new Logger(
@@ -180,8 +207,8 @@ describe("logger.ts", (): void => {
             consoleWrapper.log('test]Error – stack: "test]Stack contents"'),
           ).once();
         });
-      },
-    );
+      });
+    }
 
     it("should log all properties of the error object", (): void => {
       // Arrange
@@ -208,7 +235,10 @@ describe("logger.ts", (): void => {
         instance(consoleWrapper),
         instance(runnerInvoker),
       );
-      const error: HttpError = new HttpError(404, "Not Found");
+      const error: HttpError = new HttpError(
+        StatusCodes.NOT_FOUND,
+        "Not Found",
+      );
       error.stack = "Stack contents";
 
       // Act
@@ -223,8 +253,10 @@ describe("logger.ts", (): void => {
   });
 
   describe("replay()", (): void => {
-    ["##[test]", "##vso[test]", "##VSO[test]"].forEach(
-      (value: string): void => {
+    {
+      const testCases: string[] = ["##[test]", "##vso[test]", "##VSO[test]"];
+
+      testCases.forEach((value: string): void => {
         it(`should replay all filtered messages '${value}'`, (): void => {
           // Arrange
           const logger: Logger = new Logger(
@@ -273,8 +305,8 @@ describe("logger.ts", (): void => {
             consoleWrapper.log("🔁 error   – test]Error Message 2"),
           ).once();
         });
-      },
-    );
+      });
+    }
 
     it("should replay all messages", (): void => {
       // Arrange

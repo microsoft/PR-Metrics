@@ -5,12 +5,12 @@
 
 import CommentData from "./interfaces/commentData";
 import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces";
-import PullRequestDetails from "./interfaces/pullRequestDetails";
+import PullRequestDetailsInterface from "./interfaces/pullRequestDetailsInterface";
 
 /**
  * An interface for invoking repository functionality with any underlying repository store.
  */
-export default interface IReposInvoker {
+export default interface ReposInvokerInterface {
   /**
    * Determines whether an access token can be retrieved by the task.
    * @returns A promise containing a string to display if the operation failed.
@@ -21,7 +21,7 @@ export default interface IReposInvoker {
    * Gets the title and description for the current pull request.
    * @returns A promise containing the title and description.
    */
-  getTitleAndDescription: () => Promise<PullRequestDetails>;
+  getTitleAndDescription: () => Promise<PullRequestDetailsInterface>;
 
   /**
    * Gets all comments for the current pull request.
@@ -44,15 +44,15 @@ export default interface IReposInvoker {
    * Creates a new comment within the current pull request. Note that calling this method asynchronously can cause
    * problems with the GitHub APIs.
    * @param content The content of the new comment.
-   * @param status The status to which to the set the comment thread.
    * @param fileName The file to which to add the comment. If this is unspecified, the comment will be created in the global pull request scope.
+   * @param status The status to which to the set the comment thread.
    * @param isFileDeleted A value indicating whether the file is being deleted.
    * @returns A promise for awaiting the completion of the method call.
    */
   createComment: (
     content: string,
+    fileName: string | null,
     status: CommentThreadStatus,
-    fileName?: string,
     isFileDeleted?: boolean,
   ) => Promise<void>;
 

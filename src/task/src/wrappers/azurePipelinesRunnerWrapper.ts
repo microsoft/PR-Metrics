@@ -118,7 +118,7 @@ export default class AzurePipelinesRunnerWrapper {
    * @param param Optional additional parameters for formatting the string.
    * @returns The localized and formatted string.
    */
-  public loc(key: string, ...param: any[]): string {
+  public loc(key: string, ...param: string[]): string {
     return taskLib.loc(key, ...param);
   }
 

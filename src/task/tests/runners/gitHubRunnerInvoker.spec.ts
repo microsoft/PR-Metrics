@@ -6,13 +6,14 @@
 import "reflect-metadata";
 import * as actionsExec from "@actions/exec";
 import * as path from "path";
-import { anything, deepEqual, instance, mock, verify, when } from "ts-mockito";
+import { deepEqual, instance, mock, verify, when } from "ts-mockito";
 import AzurePipelinesRunnerWrapper from "../../src/wrappers/azurePipelinesRunnerWrapper";
 import ConsoleWrapper from "../../src/wrappers/consoleWrapper";
 import { EndpointAuthorization } from "azure-pipelines-task-lib";
 import ExecOutput from "../../src/runners/execOutput";
 import GitHubRunnerInvoker from "../../src/runners/gitHubRunnerInvoker";
 import GitHubRunnerWrapper from "../../src/wrappers/gitHubRunnerWrapper";
+import { any } from "../testUtilities/mockito";
 import assert from "node:assert/strict";
 
 describe("gitHubRunnerInvoker.ts", (): void => {
@@ -45,7 +46,7 @@ describe("gitHubRunnerInvoker.ts", (): void => {
         stdout: "Output",
       };
       when(
-        gitHubRunnerWrapper.exec("TOOL", "Argument1 Argument2", anything()),
+        gitHubRunnerWrapper.exec("TOOL", "Argument1 Argument2", any()),
       ).thenResolve(execResult);
 
       // Act
@@ -107,7 +108,7 @@ describe("gitHubRunnerInvoker.ts", (): void => {
 
       // Act
       const func: () => EndpointAuthorization | undefined = () =>
-        gitHubRunnerInvoker.getEndpointAuthorization("id");
+        gitHubRunnerInvoker.getEndpointAuthorization();
 
       // Assert
       assert.throws(
@@ -128,7 +129,7 @@ describe("gitHubRunnerInvoker.ts", (): void => {
 
       // Act
       const func: () => string | undefined = () =>
-        gitHubRunnerInvoker.getEndpointAuthorizationScheme("id");
+        gitHubRunnerInvoker.getEndpointAuthorizationScheme();
 
       // Assert
       assert.throws(
@@ -149,7 +150,7 @@ describe("gitHubRunnerInvoker.ts", (): void => {
 
       // Act
       const func: () => string | undefined = () =>
-        gitHubRunnerInvoker.getEndpointAuthorizationParameter("id", "key");
+        gitHubRunnerInvoker.getEndpointAuthorizationParameter();
 
       // Assert
       assert.throws(
@@ -169,8 +170,9 @@ describe("gitHubRunnerInvoker.ts", (): void => {
       );
 
       // Act
-      const func: () => void = () =>
+      const func: () => void = () => {
         gitHubRunnerInvoker.locInitialize(resourcePath);
+      };
 
       // Assert
       try {

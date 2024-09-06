@@ -29,12 +29,12 @@ describe("gitInvoker.ts", (): void => {
         "git",
         "rev-parse --branch origin/develop...pull/12345/merge",
       ),
-    ).thenCall(async (_tool: string, _args: string): Promise<ExecOutput> => {
-      const testCommitId: string = "7235cb16e5e6ac83e3cbecae66bab557e9e2cee6";
+    ).thenCall(async (): Promise<ExecOutput> => {
+      const testCommitId = "7235cb16e5e6ac83e3cbecae66bab557e9e2cee6";
       return Promise.resolve({
         exitCode: 0,
-        stdout: testCommitId,
         stderr: "",
+        stdout: testCommitId,
       });
     });
     when(
@@ -43,11 +43,11 @@ describe("gitInvoker.ts", (): void => {
         "diff --numstat --ignore-all-space origin/develop...pull/12345/merge",
       ),
     ).thenCall(
-      async (_tool: string, _args: string): Promise<ExecOutput> =>
+      async (): Promise<ExecOutput> =>
         Promise.resolve({
           exitCode: 0,
-          stdout: "1\t2\tFile.txt",
           stderr: "",
+          stdout: "1\t2\tFile.txt",
         }),
     );
   });
@@ -56,6 +56,262 @@ describe("gitInvoker.ts", (): void => {
     delete process.env.BUILD_REPOSITORY_PROVIDER;
     delete process.env.SYSTEM_PULLREQUEST_TARGETBRANCH;
     delete process.env.SYSTEM_PULLREQUEST_PULLREQUESTID;
+  });
+
+  describe("pullRequestId", (): void => {
+    it("should return the correct output when the GitHub runner is being used", (): void => {
+      // Arrange
+      process.env.GITHUB_ACTION = "PR-Metrics";
+      process.env.GITHUB_REF = "refs/pull/12345/merge";
+      const gitInvoker: GitInvoker = new GitInvoker(
+        instance(logger),
+        instance(runnerInvoker),
+      );
+
+      // Act
+      const result: number = gitInvoker.pullRequestId;
+
+      // Assert
+      assert.equal(result, 12345);
+      verify(logger.logDebug("* GitInvoker.pullRequestId")).once();
+      verify(logger.logDebug("* GitInvoker.pullRequestIdInternal")).once();
+      verify(logger.logDebug("* GitInvoker.pullRequestIdForGitHub")).once();
+
+      // Finalization
+      delete process.env.GITHUB_ACTION;
+      delete process.env.GITHUB_REF;
+    });
+
+    it("should return the correct output when the GitHub runner is being used and it is called multiple times", (): void => {
+      // Arrange
+      process.env.GITHUB_ACTION = "PR-Metrics";
+      process.env.GITHUB_REF = "refs/pull/12345/merge";
+      const gitInvoker: GitInvoker = new GitInvoker(
+        instance(logger),
+        instance(runnerInvoker),
+      );
+
+      // Act
+      const result1: number = gitInvoker.pullRequestId;
+      const result2: number = gitInvoker.pullRequestId;
+
+      // Assert
+      assert.equal(result1, 12345);
+      assert.equal(result2, 12345);
+      verify(logger.logDebug("* GitInvoker.pullRequestId")).twice();
+      verify(logger.logDebug("* GitInvoker.pullRequestIdInternal")).once();
+      verify(logger.logDebug("* GitInvoker.pullRequestIdForGitHub")).once();
+
+      // Finalization
+      delete process.env.GITHUB_ACTION;
+      delete process.env.GITHUB_REF;
+    });
+
+    it("should throw an error when the GitHub runner is being used and GITHUB_REF is undefined", (): void => {
+      // Arrange
+      process.env.GITHUB_ACTION = "PR-Metrics";
+      const gitInvoker: GitInvoker = new GitInvoker(
+        instance(logger),
+        instance(runnerInvoker),
+      );
+
+      // Act
+      const func: () => void = () => gitInvoker.pullRequestId;
+
+      // Assert
+      assert.throws(
+        func,
+        new TypeError(
+          "'Pull Request ID', accessed within 'GitInvoker.pullRequestId', is invalid, null, or undefined 'NaN'.",
+        ),
+      );
+      verify(logger.logWarning("'GITHUB_REF' is undefined.")).once();
+      verify(logger.logDebug("* GitInvoker.pullRequestId")).once();
+      verify(logger.logDebug("* GitInvoker.pullRequestIdInternal")).once();
+      verify(logger.logDebug("* GitInvoker.pullRequestIdForGitHub")).once();
+
+      // Finalization
+      delete process.env.GITHUB_ACTION;
+    });
+
+    it("should throw an error when the GitHub runner is being used and GITHUB_REF is in the incorrect format", (): void => {
+      // Arrange
+      process.env.GITHUB_ACTION = "PR-Metrics";
+      process.env.GITHUB_REF = "refs/pull";
+      const gitInvoker: GitInvoker = new GitInvoker(
+        instance(logger),
+        instance(runnerInvoker),
+      );
+
+      // Act
+      const func: () => void = () => gitInvoker.pullRequestId;
+
+      // Assert
+      assert.throws(
+        func,
+        new TypeError(
+          "'Pull Request ID', accessed within 'GitInvoker.pullRequestId', is invalid, null, or undefined 'NaN'.",
+        ),
+      );
+      verify(
+        logger.logWarning(
+          "'GITHUB_REF' is in an incorrect format 'refs/pull'.",
+        ),
+      ).once();
+      verify(logger.logDebug("* GitInvoker.pullRequestId")).once();
+      verify(logger.logDebug("* GitInvoker.pullRequestIdInternal")).once();
+      verify(logger.logDebug("* GitInvoker.pullRequestIdForGitHub")).once();
+
+      // Finalization
+      delete process.env.GITHUB_ACTION;
+      delete process.env.GITHUB_REF;
+    });
+
+    it("should return the correct output when the Azure Pipelines runner is being used", (): void => {
+      // Arrange
+      process.env.GITHUB_ACTION = "PR-Metrics";
+      process.env.GITHUB_REF = "refs/pull/12345/merge";
+      const gitInvoker: GitInvoker = new GitInvoker(
+        instance(logger),
+        instance(runnerInvoker),
+      );
+
+      // Act
+      const result: number = gitInvoker.pullRequestId;
+
+      // Assert
+      assert.equal(result, 12345);
+      verify(logger.logDebug("* GitInvoker.pullRequestId")).once();
+      verify(logger.logDebug("* GitInvoker.pullRequestIdInternal")).once();
+      verify(logger.logDebug("* GitInvoker.pullRequestIdForGitHub")).once();
+
+      // Finalization
+      delete process.env.GITHUB_ACTION;
+      delete process.env.GITHUB_REF;
+    });
+
+    it("should throw an error when the Azure Pipelines runner is being used and BUILD_REPOSITORY_PROVIDER is undefined", (): void => {
+      // Arrange
+      delete process.env.BUILD_REPOSITORY_PROVIDER;
+      const gitInvoker: GitInvoker = new GitInvoker(
+        instance(logger),
+        instance(runnerInvoker),
+      );
+
+      // Act
+      const func: () => void = () => gitInvoker.pullRequestId;
+
+      // Assert
+      assert.throws(
+        func,
+        new TypeError(
+          "'Pull Request ID', accessed within 'GitInvoker.pullRequestId', is invalid, null, or undefined 'NaN'.",
+        ),
+      );
+      verify(
+        logger.logWarning("'BUILD_REPOSITORY_PROVIDER' is undefined."),
+      ).once();
+      verify(logger.logDebug("* GitInvoker.pullRequestId")).once();
+      verify(logger.logDebug("* GitInvoker.pullRequestIdInternal")).once();
+      verify(
+        logger.logDebug("* GitInvoker.pullRequestIdForAzurePipelines"),
+      ).once();
+    });
+
+    it("should throw an error when the Azure Pipelines runner is being used and SYSTEM_PULLREQUEST_PULLREQUESTID is undefined", (): void => {
+      // Arrange
+      delete process.env.SYSTEM_PULLREQUEST_PULLREQUESTID;
+      const gitInvoker: GitInvoker = new GitInvoker(
+        instance(logger),
+        instance(runnerInvoker),
+      );
+
+      // Act
+      const func: () => void = () => gitInvoker.pullRequestId;
+
+      // Assert
+      assert.throws(
+        func,
+        new TypeError(
+          "'Pull Request ID', accessed within 'GitInvoker.pullRequestId', is invalid, null, or undefined 'NaN'.",
+        ),
+      );
+      verify(
+        logger.logWarning("'SYSTEM_PULLREQUEST_PULLREQUESTID' is undefined."),
+      ).once();
+      verify(logger.logDebug("* GitInvoker.pullRequestId")).once();
+      verify(logger.logDebug("* GitInvoker.pullRequestIdInternal")).once();
+      verify(
+        logger.logDebug("* GitInvoker.pullRequestIdForAzurePipelines"),
+      ).once();
+    });
+
+    {
+      const testCases: string[] = ["GitHub", "GitHubEnterprise"];
+
+      testCases.forEach((buildRepositoryProvider: string): void => {
+        it(`should throw an error when the Azure Pipelines runner is being used and the PR is on '${buildRepositoryProvider}' and SYSTEM_PULLREQUEST_PULLREQUESTNUMBER is undefined`, (): void => {
+          // Arrange
+          process.env.BUILD_REPOSITORY_PROVIDER = buildRepositoryProvider;
+          const gitInvoker: GitInvoker = new GitInvoker(
+            instance(logger),
+            instance(runnerInvoker),
+          );
+
+          // Act
+          const func: () => void = () => gitInvoker.pullRequestId;
+
+          // Assert
+          assert.throws(
+            func,
+            new TypeError(
+              "'Pull Request ID', accessed within 'GitInvoker.pullRequestId', is invalid, null, or undefined 'NaN'.",
+            ),
+          );
+          verify(
+            logger.logWarning(
+              "'SYSTEM_PULLREQUEST_PULLREQUESTNUMBER' is undefined.",
+            ),
+          ).once();
+          verify(logger.logDebug("* GitInvoker.pullRequestId")).once();
+          verify(logger.logDebug("* GitInvoker.pullRequestIdInternal")).once();
+          verify(
+            logger.logDebug("* GitInvoker.pullRequestIdForAzurePipelines"),
+          ).once();
+
+          // Finalization
+          delete process.env.BUILD_REPOSITORY_PROVIDER;
+        });
+      });
+    }
+
+    it("should throw an error when the ID cannot be parsed as an integer", (): void => {
+      // Arrange
+      process.env.GITHUB_ACTION = "PR-Metrics";
+      process.env.GITHUB_REF = "refs/pull/PullRequestID/merge";
+      const gitInvoker: GitInvoker = new GitInvoker(
+        instance(logger),
+        instance(runnerInvoker),
+      );
+
+      // Act
+      const func: () => void = () => gitInvoker.pullRequestId;
+
+      // Assert
+      assert.throws(
+        func,
+        new TypeError(
+          "'Pull Request ID', accessed within 'GitInvoker.pullRequestId', is invalid, null, or undefined 'NaN'.",
+        ),
+      );
+      verify(logger.logDebug("* GitInvoker.pullRequestId")).once();
+      verify(logger.logDebug("* GitInvoker.pullRequestIdInternal")).once();
+      verify(logger.logDebug("* GitInvoker.pullRequestIdForGitHub")).once();
+
+      // Finalization
+      delete process.env.GITHUB_ACTION;
+      delete process.env.GITHUB_REF;
+    });
   });
 
   describe("isGitRepo()", (): void => {
@@ -68,11 +324,11 @@ describe("gitInvoker.ts", (): void => {
           when(
             runnerInvoker.exec("git", "rev-parse --is-inside-work-tree"),
           ).thenCall(
-            async (_tool: string, _args: string): Promise<ExecOutput> =>
+            async (): Promise<ExecOutput> =>
               Promise.resolve({
                 exitCode: 0,
-                stdout: response,
                 stderr: "",
+                stdout: response,
               }),
           );
           const gitInvoker: GitInvoker = new GitInvoker(
@@ -96,11 +352,11 @@ describe("gitInvoker.ts", (): void => {
       when(
         runnerInvoker.exec("git", "rev-parse --is-inside-work-tree"),
       ).thenCall(
-        async (_tool: string, _args: string): Promise<ExecOutput> =>
+        async (): Promise<ExecOutput> =>
           Promise.resolve({
             exitCode: 1,
-            stdout: "",
             stderr: "Failure",
+            stdout: "",
           }),
       );
       const gitInvoker: GitInvoker = new GitInvoker(
@@ -469,12 +725,12 @@ describe("gitInvoker.ts", (): void => {
           "rev-parse --branch origin/develop...pull/12345/merge",
         ),
       ).thenCall(
-        async (_tool: string, _args: string): Promise<ExecOutput> =>
+        async (): Promise<ExecOutput> =>
           Promise.resolve({
             exitCode: 1,
-            stdout: "",
             stderr:
               "fatal: ambiguous argument 'origin/develop...pull/12345/merge': unknown revision or path not in the working tree.\n",
+            stdout: "",
           }),
       );
       const gitInvoker: GitInvoker = new GitInvoker(
@@ -541,262 +797,6 @@ describe("gitInvoker.ts", (): void => {
       verify(logger.logDebug("* GitInvoker.isGitHistoryAvailable()")).once();
       verify(logger.logDebug("* GitInvoker.initialize()")).once();
       verify(logger.logDebug("* GitInvoker.targetBranch")).once();
-    });
-  });
-
-  describe("pullRequestId", (): void => {
-    it("should return the correct output when the GitHub runner is being used", (): void => {
-      // Arrange
-      process.env.GITHUB_ACTION = "PR-Metrics";
-      process.env.GITHUB_REF = "refs/pull/12345/merge";
-      const gitInvoker: GitInvoker = new GitInvoker(
-        instance(logger),
-        instance(runnerInvoker),
-      );
-
-      // Act
-      const result: number = gitInvoker.pullRequestId;
-
-      // Assert
-      assert.equal(result, 12345);
-      verify(logger.logDebug("* GitInvoker.pullRequestId")).once();
-      verify(logger.logDebug("* GitInvoker.pullRequestIdInternal")).once();
-      verify(logger.logDebug("* GitInvoker.pullRequestIdForGitHub")).once();
-
-      // Finalization
-      delete process.env.GITHUB_ACTION;
-      delete process.env.GITHUB_REF;
-    });
-
-    it("should return the correct output when the GitHub runner is being used and it is called multiple times", (): void => {
-      // Arrange
-      process.env.GITHUB_ACTION = "PR-Metrics";
-      process.env.GITHUB_REF = "refs/pull/12345/merge";
-      const gitInvoker: GitInvoker = new GitInvoker(
-        instance(logger),
-        instance(runnerInvoker),
-      );
-
-      // Act
-      const result1: number = gitInvoker.pullRequestId;
-      const result2: number = gitInvoker.pullRequestId;
-
-      // Assert
-      assert.equal(result1, 12345);
-      assert.equal(result2, 12345);
-      verify(logger.logDebug("* GitInvoker.pullRequestId")).twice();
-      verify(logger.logDebug("* GitInvoker.pullRequestIdInternal")).once();
-      verify(logger.logDebug("* GitInvoker.pullRequestIdForGitHub")).once();
-
-      // Finalization
-      delete process.env.GITHUB_ACTION;
-      delete process.env.GITHUB_REF;
-    });
-
-    it("should throw an error when the GitHub runner is being used and GITHUB_REF is undefined", (): void => {
-      // Arrange
-      process.env.GITHUB_ACTION = "PR-Metrics";
-      const gitInvoker: GitInvoker = new GitInvoker(
-        instance(logger),
-        instance(runnerInvoker),
-      );
-
-      // Act
-      const func: () => void = () => gitInvoker.pullRequestId;
-
-      // Assert
-      assert.throws(
-        func,
-        new TypeError(
-          "'Pull Request ID', accessed within 'GitInvoker.pullRequestId', is invalid, null, or undefined 'NaN'.",
-        ),
-      );
-      verify(logger.logWarning("'GITHUB_REF' is undefined.")).once();
-      verify(logger.logDebug("* GitInvoker.pullRequestId")).once();
-      verify(logger.logDebug("* GitInvoker.pullRequestIdInternal")).once();
-      verify(logger.logDebug("* GitInvoker.pullRequestIdForGitHub")).once();
-
-      // Finalization
-      delete process.env.GITHUB_ACTION;
-    });
-
-    it("should throw an error when the GitHub runner is being used and GITHUB_REF is in the incorrect format", (): void => {
-      // Arrange
-      process.env.GITHUB_ACTION = "PR-Metrics";
-      process.env.GITHUB_REF = "refs/pull";
-      const gitInvoker: GitInvoker = new GitInvoker(
-        instance(logger),
-        instance(runnerInvoker),
-      );
-
-      // Act
-      const func: () => void = () => gitInvoker.pullRequestId;
-
-      // Assert
-      assert.throws(
-        func,
-        new TypeError(
-          "'Pull Request ID', accessed within 'GitInvoker.pullRequestId', is invalid, null, or undefined 'NaN'.",
-        ),
-      );
-      verify(
-        logger.logWarning(
-          "'GITHUB_REF' is in an incorrect format 'refs/pull'.",
-        ),
-      ).once();
-      verify(logger.logDebug("* GitInvoker.pullRequestId")).once();
-      verify(logger.logDebug("* GitInvoker.pullRequestIdInternal")).once();
-      verify(logger.logDebug("* GitInvoker.pullRequestIdForGitHub")).once();
-
-      // Finalization
-      delete process.env.GITHUB_ACTION;
-      delete process.env.GITHUB_REF;
-    });
-
-    it("should return the correct output when the Azure Pipelines runner is being used", (): void => {
-      // Arrange
-      process.env.GITHUB_ACTION = "PR-Metrics";
-      process.env.GITHUB_REF = "refs/pull/12345/merge";
-      const gitInvoker: GitInvoker = new GitInvoker(
-        instance(logger),
-        instance(runnerInvoker),
-      );
-
-      // Act
-      const result: number = gitInvoker.pullRequestId;
-
-      // Assert
-      assert.equal(result, 12345);
-      verify(logger.logDebug("* GitInvoker.pullRequestId")).once();
-      verify(logger.logDebug("* GitInvoker.pullRequestIdInternal")).once();
-      verify(logger.logDebug("* GitInvoker.pullRequestIdForGitHub")).once();
-
-      // Finalization
-      delete process.env.GITHUB_ACTION;
-      delete process.env.GITHUB_REF;
-    });
-
-    it("should throw an error when the Azure Pipelines runner is being used and BUILD_REPOSITORY_PROVIDER is undefined", (): void => {
-      // Arrange
-      delete process.env.BUILD_REPOSITORY_PROVIDER;
-      const gitInvoker: GitInvoker = new GitInvoker(
-        instance(logger),
-        instance(runnerInvoker),
-      );
-
-      // Act
-      const func: () => void = () => gitInvoker.pullRequestId;
-
-      // Assert
-      assert.throws(
-        func,
-        new TypeError(
-          "'Pull Request ID', accessed within 'GitInvoker.pullRequestId', is invalid, null, or undefined 'NaN'.",
-        ),
-      );
-      verify(
-        logger.logWarning("'BUILD_REPOSITORY_PROVIDER' is undefined."),
-      ).once();
-      verify(logger.logDebug("* GitInvoker.pullRequestId")).once();
-      verify(logger.logDebug("* GitInvoker.pullRequestIdInternal")).once();
-      verify(
-        logger.logDebug("* GitInvoker.pullRequestIdForAzurePipelines"),
-      ).once();
-    });
-
-    it("should throw an error when the Azure Pipelines runner is being used and SYSTEM_PULLREQUEST_PULLREQUESTID is undefined", (): void => {
-      // Arrange
-      delete process.env.SYSTEM_PULLREQUEST_PULLREQUESTID;
-      const gitInvoker: GitInvoker = new GitInvoker(
-        instance(logger),
-        instance(runnerInvoker),
-      );
-
-      // Act
-      const func: () => void = () => gitInvoker.pullRequestId;
-
-      // Assert
-      assert.throws(
-        func,
-        new TypeError(
-          "'Pull Request ID', accessed within 'GitInvoker.pullRequestId', is invalid, null, or undefined 'NaN'.",
-        ),
-      );
-      verify(
-        logger.logWarning("'SYSTEM_PULLREQUEST_PULLREQUESTID' is undefined."),
-      ).once();
-      verify(logger.logDebug("* GitInvoker.pullRequestId")).once();
-      verify(logger.logDebug("* GitInvoker.pullRequestIdInternal")).once();
-      verify(
-        logger.logDebug("* GitInvoker.pullRequestIdForAzurePipelines"),
-      ).once();
-    });
-
-    {
-      const testCases: string[] = ["GitHub", "GitHubEnterprise"];
-
-      testCases.forEach((buildRepositoryProvider: string): void => {
-        it(`should throw an error when the Azure Pipelines runner is being used and the PR is on '${buildRepositoryProvider}' and SYSTEM_PULLREQUEST_PULLREQUESTNUMBER is undefined`, (): void => {
-          // Arrange
-          process.env.BUILD_REPOSITORY_PROVIDER = buildRepositoryProvider;
-          const gitInvoker: GitInvoker = new GitInvoker(
-            instance(logger),
-            instance(runnerInvoker),
-          );
-
-          // Act
-          const func: () => void = () => gitInvoker.pullRequestId;
-
-          // Assert
-          assert.throws(
-            func,
-            new TypeError(
-              "'Pull Request ID', accessed within 'GitInvoker.pullRequestId', is invalid, null, or undefined 'NaN'.",
-            ),
-          );
-          verify(
-            logger.logWarning(
-              "'SYSTEM_PULLREQUEST_PULLREQUESTNUMBER' is undefined.",
-            ),
-          ).once();
-          verify(logger.logDebug("* GitInvoker.pullRequestId")).once();
-          verify(logger.logDebug("* GitInvoker.pullRequestIdInternal")).once();
-          verify(
-            logger.logDebug("* GitInvoker.pullRequestIdForAzurePipelines"),
-          ).once();
-
-          // Finalization
-          delete process.env.BUILD_REPOSITORY_PROVIDER;
-        });
-      });
-    }
-
-    it("should throw an error when the ID cannot be parsed as an integer", (): void => {
-      // Arrange
-      process.env.GITHUB_ACTION = "PR-Metrics";
-      process.env.GITHUB_REF = "refs/pull/PullRequestID/merge";
-      const gitInvoker: GitInvoker = new GitInvoker(
-        instance(logger),
-        instance(runnerInvoker),
-      );
-
-      // Act
-      const func: () => void = () => gitInvoker.pullRequestId;
-
-      // Assert
-      assert.throws(
-        func,
-        new TypeError(
-          "'Pull Request ID', accessed within 'GitInvoker.pullRequestId', is invalid, null, or undefined 'NaN'.",
-        ),
-      );
-      verify(logger.logDebug("* GitInvoker.pullRequestId")).once();
-      verify(logger.logDebug("* GitInvoker.pullRequestIdInternal")).once();
-      verify(logger.logDebug("* GitInvoker.pullRequestIdForGitHub")).once();
-
-      // Finalization
-      delete process.env.GITHUB_ACTION;
-      delete process.env.GITHUB_REF;
     });
   });
 
@@ -899,11 +899,11 @@ describe("gitInvoker.ts", (): void => {
           "diff --numstat --ignore-all-space origin/develop...pull/12345/merge",
         ),
       ).thenCall(
-        async (_tool: string, _args: string): Promise<ExecOutput> =>
+        async (): Promise<ExecOutput> =>
           Promise.resolve({
             exitCode: 1,
-            stdout: "",
             stderr: "Failure",
+            stdout: "",
           }),
       );
       const gitInvoker: GitInvoker = new GitInvoker(

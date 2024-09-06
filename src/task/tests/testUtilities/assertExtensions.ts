@@ -7,15 +7,16 @@ import assert from "node:assert/strict";
 
 /**
  * Asserts that the asynchronous function call throws an error with the expected message.
+ * @typeParam ErrorType The type of the error object.
  * @param func The function call to test.
  * @param errorMessage The expected error message.
  * @returns The error object.
  */
-export const toThrowAsync = async (
-  func: any,
+export const toThrowAsync = async <ErrorType extends Error>(
+  func: () => Promise<unknown>,
   errorMessage: string,
-): Promise<any> => {
-  let error: any | null = null;
+): Promise<ErrorType> => {
+  let error: unknown = null;
   try {
     await func();
   } catch (err) {
@@ -24,5 +25,5 @@ export const toThrowAsync = async (
 
   assert(error instanceof Error);
   assert.equal(error.message, errorMessage);
-  return error;
+  return error as ErrorType;
 };

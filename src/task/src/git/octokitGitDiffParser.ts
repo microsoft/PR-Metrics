@@ -6,7 +6,6 @@
 import parseGitDiff, {
   AddedFile,
   AnyChunk,
-  AnyFileChange,
   ChangedFile,
   Chunk,
   GitDiff,
@@ -74,7 +73,7 @@ export default class OctokitGitDiffParser {
     this._logger.logDebug("* OctokitGitDiffParser.getFirstChangedLines()");
 
     // If the information has already been retrieved, return the cached response.
-    if (this._firstLineOfFiles !== undefined) {
+    if (typeof this._firstLineOfFiles !== "undefined") {
       return this._firstLineOfFiles;
     }
 
@@ -108,19 +107,15 @@ export default class OctokitGitDiffParser {
     );
 
     // Split the response so that each file in a diff becomes a separate diff.
-    const diffResponses: string[] = diffResponse.split(/^diff --git/gmu);
+    const diffResponseLines: string[] = diffResponse.split(/^diff --git/gmu);
 
     /*
      * For each diff, reinstate the "diff --git" prefix that was removed by the split. The first diff is excluded as it
      * will always be the empty string.
      */
     const result: string[] = [];
-    for (
-      let iteration: number = 1;
-      iteration < diffResponses.length;
-      iteration += 1
-    ) {
-      result.push(`diff --git${diffResponses[iteration]}`);
+    for (const diffResponseLine of diffResponseLines.slice(1)) {
+      result.push(`diff --git ${diffResponseLine}`);
     }
 
     return result;
@@ -132,17 +127,17 @@ export default class OctokitGitDiffParser {
     const result: Map<string, number> = new Map<string, number>();
 
     // Process the diff for each file.
-    diffs.forEach((diff: string): void => {
+    for (const diff of diffs) {
       const diffParsed: GitDiff = parseGitDiff(diff);
 
       // Process the diff for a single file.
-      diffParsed.files.forEach((file: AnyFileChange): void => {
+      for (const file of diffParsed.files) {
         switch (file.type) {
           case "AddedFile":
           case "ChangedFile": {
             // For an added or changed file, add the file path and the first changed line.
             const fileCasted: AddedFile | ChangedFile = file;
-            const chunk: AnyChunk | undefined = fileCasted.chunks[0];
+            const [chunk]: (AnyChunk | undefined)[] = fileCasted.chunks;
             if (chunk?.type === "BinaryFilesChunk") {
               this._logger.logDebug(
                 `Skipping '${file.type}' '${fileCasted.path}' while performing diff parsing.`,
@@ -150,9 +145,8 @@ export default class OctokitGitDiffParser {
               break;
             }
 
-            const start: number | undefined = chunk?.toFileRange.start;
-            if (start) {
-              result.set(fileCasted.path, start);
+            if (chunk) {
+              result.set(fileCasted.path, chunk.toFileRange.start);
             }
 
             break;
@@ -160,10 +154,13 @@ export default class OctokitGitDiffParser {
           case "RenamedFile": {
             // For a renamed file, add the new file path and the first changed line.
             const fileCasted: RenamedFile = file;
-            result.set(
-              fileCasted.pathAfter,
-              (fileCasted.chunks[0] as Chunk)?.toFileRange.start,
-            );
+            if (fileCasted.chunks[0]) {
+              result.set(
+                fileCasted.pathAfter,
+                (fileCasted.chunks[0] as Chunk).toFileRange.start,
+              );
+            }
+
             break;
           }
           default:
@@ -172,8 +169,8 @@ export default class OctokitGitDiffParser {
             );
             break;
         }
-      });
-    });
+      }
+    }
 
     return result;
   }

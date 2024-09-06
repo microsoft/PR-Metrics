@@ -237,6 +237,7 @@ describe("runnerInvoker.ts", (): void => {
       // Assert
       assert.deepEqual(result, endpointAuthorization);
       verify(azurePipelinesRunnerInvoker.getEndpointAuthorization("id")).once();
+      // @ts-expect-error -- Interface is called with additional parameters not present in implementation.
       verify(gitHubRunnerInvoker.getEndpointAuthorization("id")).never();
     });
 
@@ -253,6 +254,7 @@ describe("runnerInvoker.ts", (): void => {
         },
         scheme: "scheme",
       };
+      // @ts-expect-error -- Interface is called with additional parameters not present in implementation.
       when(gitHubRunnerInvoker.getEndpointAuthorization("id")).thenReturn(
         endpointAuthorization,
       );
@@ -266,6 +268,7 @@ describe("runnerInvoker.ts", (): void => {
       verify(
         azurePipelinesRunnerInvoker.getEndpointAuthorization("id"),
       ).never();
+      // @ts-expect-error -- Interface is called with additional parameters not present in implementation.
       verify(gitHubRunnerInvoker.getEndpointAuthorization("id")).once();
 
       // Finalization
@@ -293,6 +296,7 @@ describe("runnerInvoker.ts", (): void => {
       verify(
         azurePipelinesRunnerInvoker.getEndpointAuthorizationScheme("id"),
       ).once();
+      // @ts-expect-error -- Interface is called with additional parameters not present in implementation.
       verify(gitHubRunnerInvoker.getEndpointAuthorizationScheme("id")).never();
     });
 
@@ -303,6 +307,7 @@ describe("runnerInvoker.ts", (): void => {
         instance(azurePipelinesRunnerInvoker),
         instance(gitHubRunnerInvoker),
       );
+      // @ts-expect-error -- Interface is called with additional parameters not present in implementation.
       when(gitHubRunnerInvoker.getEndpointAuthorizationScheme("id")).thenReturn(
         "VALUE",
       );
@@ -316,6 +321,7 @@ describe("runnerInvoker.ts", (): void => {
       verify(
         azurePipelinesRunnerInvoker.getEndpointAuthorizationScheme("id"),
       ).never();
+      // @ts-expect-error -- Interface is called with additional parameters not present in implementation.
       verify(gitHubRunnerInvoker.getEndpointAuthorizationScheme("id")).once();
 
       // Finalization
@@ -350,6 +356,7 @@ describe("runnerInvoker.ts", (): void => {
         ),
       ).once();
       verify(
+        // @ts-expect-error -- Interface is called with additional parameters not present in implementation.
         gitHubRunnerInvoker.getEndpointAuthorizationParameter("id", "key"),
       ).never();
     });
@@ -362,6 +369,7 @@ describe("runnerInvoker.ts", (): void => {
         instance(gitHubRunnerInvoker),
       );
       when(
+        // @ts-expect-error -- Interface is called with additional parameters not present in implementation.
         gitHubRunnerInvoker.getEndpointAuthorizationParameter("id", "key"),
       ).thenReturn("VALUE");
 
@@ -378,6 +386,7 @@ describe("runnerInvoker.ts", (): void => {
         ),
       ).never();
       verify(
+        // @ts-expect-error -- Interface is called with additional parameters not present in implementation.
         gitHubRunnerInvoker.getEndpointAuthorizationParameter("id", "key"),
       ).once();
 
@@ -430,7 +439,9 @@ describe("runnerInvoker.ts", (): void => {
 
       // Act
       runnerInvoker.locInitialize("TEST");
-      const func: () => void = () => runnerInvoker.locInitialize("TEST");
+      const func: () => void = () => {
+        runnerInvoker.locInitialize("TEST");
+      };
 
       // Assert
       assert.throws(

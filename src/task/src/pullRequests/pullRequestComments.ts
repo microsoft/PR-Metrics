@@ -80,16 +80,14 @@ export default class PullRequestComments {
     const comments: CommentData = await this._reposInvoker.getComments();
 
     // If the current comment thread is not applied to a specified file, check if it is the metrics comment thread.
-    comments.pullRequestComments.forEach(
-      (comment: PullRequestComment): void => {
-        result = this.getMetricsCommentData(result, comment);
-      },
-    );
+    for (const comment of comments.pullRequestComments) {
+      result = this.getMetricsCommentData(result, comment);
+    }
 
     // If the current comment thread is not applied to a specified file, check if it is the metrics comment thread.
-    comments.fileComments.forEach((comment: FileCommentData): void => {
+    for (const comment of comments.fileComments) {
       result = this.getFilesRequiringCommentUpdates(result, comment);
-    });
+    }
 
     return result;
   }
@@ -103,7 +101,7 @@ export default class PullRequestComments {
 
     const metrics: CodeMetricsData = await this._codeMetrics.getMetrics();
 
-    let result: string = `${this._runnerInvoker.loc("pullRequests.pullRequestComments.commentTitle")}\n`;
+    let result = `${this._runnerInvoker.loc("pullRequests.pullRequestComments.commentTitle")}\n`;
     result += await this.addCommentSizeStatus();
     result += await this.addCommentTestStatus();
 
@@ -202,17 +200,19 @@ export default class PullRequestComments {
       return result;
     }
 
+    const notFound = -1;
+
     const fileIndex: number = result.filesNotRequiringReview.indexOf(
       comment.fileName,
     );
-    if (fileIndex !== -1) {
+    if (fileIndex !== notFound) {
       result.filesNotRequiringReview.splice(fileIndex, 1);
       return result;
     }
 
     const deletedFileIndex: number =
       result.deletedFilesNotRequiringReview.indexOf(comment.fileName);
-    if (deletedFileIndex !== -1) {
+    if (deletedFileIndex !== notFound) {
       result.deletedFilesNotRequiringReview.splice(deletedFileIndex, 1);
       return result;
     }
@@ -224,7 +224,7 @@ export default class PullRequestComments {
   private async addCommentSizeStatus(): Promise<string> {
     this._logger.logDebug("* PullRequestComments.addCommentSizeStatus()");
 
-    let result: string = "";
+    let result = "";
     if (await this._codeMetrics.isSmall()) {
       result += this._runnerInvoker.loc(
         "pullRequests.pullRequestComments.smallPullRequestComment",
@@ -246,7 +246,7 @@ export default class PullRequestComments {
   private async addCommentTestStatus(): Promise<string> {
     this._logger.logDebug("* PullRequestComments.addCommentTestStatus()");
 
-    let result: string = "";
+    let result = "";
     const isSufficientlyTested: boolean | null =
       await this._codeMetrics.isSufficientlyTested();
     if (isSufficientlyTested !== null) {
@@ -273,7 +273,7 @@ export default class PullRequestComments {
   ): string {
     this._logger.logDebug("* PullRequestComments.addCommentMetrics()");
 
-    let surround: string = "";
+    let surround = "";
     if (highlight) {
       surround = "**";
     }

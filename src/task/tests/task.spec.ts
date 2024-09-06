@@ -5,18 +5,20 @@
 
 import * as fs from "fs";
 import * as path from "path";
-import PackageJson from "./jsonTypes/packageJson";
-import ResourcesJson from "../src/jsonTypes/resourcesJson";
-import TaskJson from "./jsonTypes/taskJson";
-import VssExtensionJson from "./jsonTypes/vssExtensionJson";
+import PackageJsonInterface from "./jsonTypes/packageJsonInterface";
+import ResourcesJsonInterface from "../src/jsonTypes/resourcesJsonInterface";
+import TaskJsonInterface from "./jsonTypes/taskJsonInterface";
+import VssExtensionJsonInterface from "./jsonTypes/vssExtensionJsonInterface";
 import assert from "node:assert/strict";
 
 describe("task.json", (): void => {
   const basePath: string = path.join(__dirname, "..");
   const taskJsonFile: string = path.join(basePath, "task.json");
   const taskJsonContents: string = fs.readFileSync(taskJsonFile, "utf8");
-  const taskJson: TaskJson = JSON.parse(taskJsonContents) as TaskJson;
-  const version: string = `${taskJson.version.Major}.${taskJson.version.Minor}.${taskJson.version.Patch}`;
+  const taskJson: TaskJsonInterface = JSON.parse(
+    taskJsonContents,
+  ) as TaskJsonInterface;
+  const version = `${String(taskJson.version.Major)}.${String(taskJson.version.Minor)}.${String(taskJson.version.Patch)}`;
 
   const languagesPath: string = path.join(
     basePath,
@@ -24,11 +26,11 @@ describe("task.json", (): void => {
     "resources.resjson",
   );
   const languages: string[] = fs.readdirSync(languagesPath);
-  const resources: Map<string, ResourcesJson> = new Map<
+  const testCases: Map<string, ResourcesJsonInterface> = new Map<
     string,
-    ResourcesJson
+    ResourcesJsonInterface
   >();
-  languages.forEach((language: string): void => {
+  for (const language of languages) {
     const resourcesFile: string = path.join(
       languagesPath,
       language,
@@ -38,15 +40,18 @@ describe("task.json", (): void => {
       resourcesFile,
       "utf8",
     );
-    resources.set(language, JSON.parse(resourcesFileContents) as ResourcesJson);
-  });
+    testCases.set(
+      language,
+      JSON.parse(resourcesFileContents) as ResourcesJsonInterface,
+    );
+  }
 
   it("should have a friendly name ending with the version number", (): void => {
     // Assert
     assert.equal(taskJson.friendlyName.endsWith(version), true);
   });
 
-  resources.forEach((value: ResourcesJson, key: string): void => {
+  testCases.forEach((value: ResourcesJsonInterface, key: string): void => {
     it(`should have a friendly name including the version number in language '${key}'`, (): void => {
       // Assert
       assert.equal(value["loc.friendlyName"]?.includes(version), true);
@@ -60,7 +65,9 @@ describe("task.json", (): void => {
       taskLocJsonFile,
       "utf8",
     );
-    const taskLocJson: TaskJson = JSON.parse(taskLocJsonContents) as TaskJson;
+    const taskLocJson: TaskJsonInterface = JSON.parse(
+      taskLocJsonContents,
+    ) as TaskJsonInterface;
 
     // Assert
     assert.equal(taskJson.version.Major, taskLocJson.version.Major);
@@ -79,9 +86,9 @@ describe("task.json", (): void => {
       vssExtensionJsonFile,
       "utf8",
     );
-    const vssExtensionJson: VssExtensionJson = JSON.parse(
+    const vssExtensionJson: VssExtensionJsonInterface = JSON.parse(
       vssExtensionJsonFileContents,
-    ) as VssExtensionJson;
+    ) as VssExtensionJsonInterface;
 
     // Assert
     assert.equal(vssExtensionJson.version, version);
@@ -99,9 +106,9 @@ describe("task.json", (): void => {
       packageJsonFile,
       "utf8",
     );
-    const packageJson: PackageJson = JSON.parse(
+    const packageJson: PackageJsonInterface = JSON.parse(
       packageJsonFileContents,
-    ) as PackageJson;
+    ) as PackageJsonInterface;
 
     // Assert
     assert.equal(packageJson.version, version);
@@ -119,9 +126,9 @@ describe("task.json", (): void => {
       packageLockJsonFile,
       "utf8",
     );
-    const packageLockJson: PackageJson = JSON.parse(
+    const packageLockJson: PackageJsonInterface = JSON.parse(
       packageLockJsonFileContents,
-    ) as PackageJson;
+    ) as PackageJsonInterface;
 
     // Assert
     assert.equal(packageLockJson.version, version);

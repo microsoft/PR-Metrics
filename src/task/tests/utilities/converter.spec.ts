@@ -9,48 +9,48 @@ import assert from "node:assert/strict";
 describe("converter.ts", (): void => {
   describe("toString()", (): void => {
     interface TestCaseType {
-      value: any | null | undefined;
-      expected: string;
+      input: string | number | boolean | null | undefined;
+      output: string;
     }
 
     const testCases: TestCaseType[] = [
       {
-        value: 0,
-        expected: "0",
+        input: 0,
+        output: "0",
       },
       {
-        value: NaN,
-        expected: "NaN",
+        input: NaN,
+        output: "NaN",
       },
       {
-        value: true,
-        expected: "true",
+        input: true,
+        output: "true",
       },
       {
-        value: "",
-        expected: "",
+        input: "",
+        output: "",
       },
       {
-        value: "string",
-        expected: "string",
+        input: "string",
+        output: "string",
       },
       {
-        value: null,
-        expected: "null",
+        input: null,
+        output: "null",
       },
       {
-        value: undefined,
-        expected: "undefined",
+        input: undefined,
+        output: "undefined",
       },
     ];
 
-    testCases.forEach(({ value, expected }: TestCaseType): void => {
-      it(`should return '${expected}' when passed '${Converter.toString(value)}'`, (): void => {
+    testCases.forEach(({ input, output }: TestCaseType): void => {
+      it(`should return '${output}' when passed '${Converter.toString(input)}'`, (): void => {
         // Act
-        const result: string = Converter.toString(value);
+        const result: string = Converter.toString(input);
 
         // Assert
-        assert.equal(result, expected);
+        assert.equal(result, output);
       });
     });
   });

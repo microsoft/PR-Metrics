@@ -7,29 +7,26 @@ import "reflect-metadata";
 import * as AssertExtensions from "../testUtilities/assertExtensions";
 import * as Converter from "../../src/utilities/converter";
 import * as GitHubReposInvokerConstants from "./gitHubReposInvokerConstants";
-import {
-  anyNumber,
-  anyString,
-  anything,
-  instance,
-  mock,
-  verify,
-  when,
-} from "ts-mockito";
+import { any, anyNumber, anyString } from "../testUtilities/mockito";
+import { instance, mock, verify, when } from "ts-mockito";
 import CommentData from "../../src/repos/interfaces/commentData";
 import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces";
-import ErrorWithStatus from "../wrappers/errorWithStatus";
+import ErrorWithStatusInterface from "../../src/repos/interfaces/errorWithStatusInterface";
 import GetIssueCommentsResponse from "../../src/wrappers/octokitInterfaces/getIssueCommentsResponse";
 import GetPullResponse from "../../src/wrappers/octokitInterfaces/getPullResponse";
 import GitHubReposInvoker from "../../src/repos/gitHubReposInvoker";
 import GitInvoker from "../../src/git/gitInvoker";
 import HttpError from "../testUtilities/httpError";
 import Logger from "../../src/utilities/logger";
-import OctokitLogObject from "../wrappers/octokitLogObject";
+import OctokitLogObjectInterface from "../wrappers/octokitLogObjectInterface";
+import { OctokitOptions } from "@octokit/core/dist-types/types";
 import OctokitWrapper from "../../src/wrappers/octokitWrapper";
-import PullRequestDetails from "../../src/repos/interfaces/pullRequestDetails";
+import PullRequestDetailsInterface from "../../src/repos/interfaces/pullRequestDetailsInterface";
+import { RequestError } from "octokit";
 import RunnerInvoker from "../../src/runners/runnerInvoker";
+import { StatusCodes } from "http-status-codes";
 import assert from "node:assert/strict";
+import { createRequestError } from "../testUtilities/createRequestError";
 
 describe("gitHubReposInvoker.ts", (): void => {
   let gitInvoker: GitInvoker;
@@ -37,7 +34,7 @@ describe("gitHubReposInvoker.ts", (): void => {
   let octokitWrapper: OctokitWrapper;
   let runnerInvoker: RunnerInvoker;
 
-  const expectedUserAgent: string = "PRMetrics/v1.6.1";
+  const expectedUserAgent = "PRMetrics/v1.6.1";
 
   beforeEach((): void => {
     process.env.PR_METRICS_ACCESS_TOKEN = "PAT";
@@ -170,7 +167,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       testCases.forEach((variable: string | undefined): void => {
         it(`should throw when SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI is set to the invalid value '${Converter.toString(variable)}' and the task is running on Azure Pipelines`, async (): Promise<void> => {
           // Arrange
-          if (variable === undefined) {
+          if (typeof variable === "undefined") {
             delete process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI;
           } else {
             process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI = variable;
@@ -184,7 +181,7 @@ describe("gitHubReposInvoker.ts", (): void => {
           );
 
           // Act
-          const func: () => Promise<PullRequestDetails> = async () =>
+          const func: () => Promise<PullRequestDetailsInterface> = async () =>
             gitHubReposInvoker.getTitleAndDescription();
 
           // Assert
@@ -215,7 +212,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       );
 
       // Act
-      const func: () => Promise<PullRequestDetails> = async () =>
+      const func: () => Promise<PullRequestDetailsInterface> = async () =>
         gitHubReposInvoker.getTitleAndDescription();
 
       // Assert
@@ -241,7 +238,7 @@ describe("gitHubReposInvoker.ts", (): void => {
           delete process.env.PR_METRICS_ACCESS_TOKEN;
           process.env.PR_METRICS_ACCESS_TOKEN = "PAT";
           process.env.GITHUB_ACTION = "PR-Metrics";
-          if (variable === undefined) {
+          if (typeof variable === "undefined") {
             delete process.env.GITHUB_API_URL;
           } else {
             process.env.GITHUB_API_URL = variable;
@@ -255,7 +252,7 @@ describe("gitHubReposInvoker.ts", (): void => {
           );
 
           // Act
-          const func: () => Promise<PullRequestDetails> = async () =>
+          const func: () => Promise<PullRequestDetailsInterface> = async () =>
             gitHubReposInvoker.getTitleAndDescription();
 
           // Assert
@@ -289,7 +286,7 @@ describe("gitHubReposInvoker.ts", (): void => {
           process.env.PR_METRICS_ACCESS_TOKEN = "PAT";
           process.env.GITHUB_ACTION = "PR-Metrics";
           process.env.GITHUB_API_URL = "https://api.github.com";
-          if (variable === undefined) {
+          if (typeof variable === "undefined") {
             delete process.env.GITHUB_REPOSITORY_OWNER;
           } else {
             process.env.GITHUB_REPOSITORY_OWNER = variable;
@@ -303,7 +300,7 @@ describe("gitHubReposInvoker.ts", (): void => {
           );
 
           // Act
-          const func: () => Promise<PullRequestDetails> = async () =>
+          const func: () => Promise<PullRequestDetailsInterface> = async () =>
             gitHubReposInvoker.getTitleAndDescription();
 
           // Assert
@@ -339,7 +336,7 @@ describe("gitHubReposInvoker.ts", (): void => {
           process.env.GITHUB_ACTION = "PR-Metrics";
           process.env.GITHUB_API_URL = "https://api.github.com";
           process.env.GITHUB_REPOSITORY_OWNER = "microsoft";
-          if (variable === undefined) {
+          if (typeof variable === "undefined") {
             delete process.env.GITHUB_REPOSITORY;
           } else {
             process.env.GITHUB_REPOSITORY = variable;
@@ -353,7 +350,7 @@ describe("gitHubReposInvoker.ts", (): void => {
           );
 
           // Act
-          const func: () => Promise<PullRequestDetails> = async () =>
+          const func: () => Promise<PullRequestDetailsInterface> = async () =>
             gitHubReposInvoker.getTitleAndDescription();
 
           // Assert
@@ -395,7 +392,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       );
 
       // Act
-      const func: () => Promise<PullRequestDetails> = async () =>
+      const func: () => Promise<PullRequestDetailsInterface> = async () =>
         gitHubReposInvoker.getTitleAndDescription();
 
       // Assert
@@ -421,15 +418,15 @@ describe("gitHubReposInvoker.ts", (): void => {
 
     it("should succeed when the inputs are valid and the task is running on Azure Pipelines", async (): Promise<void> => {
       // Arrange
-      when(octokitWrapper.initialize(anything())).thenCall(
-        (options: any): void => {
+      when(octokitWrapper.initialize(any())).thenCall(
+        (options: OctokitOptions): void => {
           assert.equal(options.auth, "PAT");
           assert.equal(options.userAgent, expectedUserAgent);
           assert.notEqual(options.log, null);
-          assert.notEqual(options.log.debug, null);
-          assert.notEqual(options.log.info, null);
-          assert.notEqual(options.log.warn, null);
-          assert.notEqual(options.log.error, null);
+          assert.notEqual(options.log?.debug, null);
+          assert.notEqual(options.log?.info, null);
+          assert.notEqual(options.log?.warn, null);
+          assert.notEqual(options.log?.error, null);
         },
       );
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
@@ -440,13 +437,13 @@ describe("gitHubReposInvoker.ts", (): void => {
       );
 
       // Act
-      const result: PullRequestDetails =
+      const result: PullRequestDetailsInterface =
         await gitHubReposInvoker.getTitleAndDescription();
 
       // Assert
       assert.equal(result.title, "Title");
       assert.equal(result.description, "Description");
-      verify(octokitWrapper.initialize(anything())).once();
+      verify(octokitWrapper.initialize(any())).once();
       verify(octokitWrapper.getPull("microsoft", "PR-Metrics", 12345)).once();
       verify(
         logger.logDebug("* GitHubReposInvoker.getTitleAndDescription()"),
@@ -468,15 +465,15 @@ describe("gitHubReposInvoker.ts", (): void => {
       process.env.GITHUB_API_URL = "https://api.github.com";
       process.env.GITHUB_REPOSITORY_OWNER = "microsoft";
       process.env.GITHUB_REPOSITORY = "microsoft/PR-Metrics";
-      when(octokitWrapper.initialize(anything())).thenCall(
-        (options: any): void => {
+      when(octokitWrapper.initialize(any())).thenCall(
+        (options: OctokitOptions): void => {
           assert.equal(options.auth, "PAT");
           assert.equal(options.userAgent, expectedUserAgent);
           assert.notEqual(options.log, null);
-          assert.notEqual(options.log.debug, null);
-          assert.notEqual(options.log.info, null);
-          assert.notEqual(options.log.warn, null);
-          assert.notEqual(options.log.error, null);
+          assert.notEqual(options.log?.debug, null);
+          assert.notEqual(options.log?.info, null);
+          assert.notEqual(options.log?.warn, null);
+          assert.notEqual(options.log?.error, null);
         },
       );
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
@@ -487,13 +484,13 @@ describe("gitHubReposInvoker.ts", (): void => {
       );
 
       // Act
-      const result: PullRequestDetails =
+      const result: PullRequestDetailsInterface =
         await gitHubReposInvoker.getTitleAndDescription();
 
       // Assert
       assert.equal(result.title, "Title");
       assert.equal(result.description, "Description");
-      verify(octokitWrapper.initialize(anything())).once();
+      verify(octokitWrapper.initialize(any())).once();
       verify(octokitWrapper.getPull("microsoft", "PR-Metrics", 12345)).once();
       verify(
         logger.logDebug("* GitHubReposInvoker.getTitleAndDescription()"),
@@ -519,15 +516,15 @@ describe("gitHubReposInvoker.ts", (): void => {
       // Arrange
       process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI =
         "https://github.com/microsoft/PR-Metrics.git";
-      when(octokitWrapper.initialize(anything())).thenCall(
-        (options: any): void => {
+      when(octokitWrapper.initialize(any())).thenCall(
+        (options: OctokitOptions): void => {
           assert.equal(options.auth, "PAT");
           assert.equal(options.userAgent, expectedUserAgent);
           assert.notEqual(options.log, null);
-          assert.notEqual(options.log.debug, null);
-          assert.notEqual(options.log.info, null);
-          assert.notEqual(options.log.warn, null);
-          assert.notEqual(options.log.error, null);
+          assert.notEqual(options.log?.debug, null);
+          assert.notEqual(options.log?.info, null);
+          assert.notEqual(options.log?.warn, null);
+          assert.notEqual(options.log?.error, null);
         },
       );
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
@@ -538,13 +535,13 @@ describe("gitHubReposInvoker.ts", (): void => {
       );
 
       // Act
-      const result: PullRequestDetails =
+      const result: PullRequestDetailsInterface =
         await gitHubReposInvoker.getTitleAndDescription();
 
       // Assert
       assert.equal(result.title, "Title");
       assert.equal(result.description, "Description");
-      verify(octokitWrapper.initialize(anything())).once();
+      verify(octokitWrapper.initialize(any())).once();
       verify(octokitWrapper.getPull("microsoft", "PR-Metrics", 12345)).once();
       verify(
         logger.logDebug("* GitHubReposInvoker.getTitleAndDescription()"),
@@ -564,8 +561,8 @@ describe("gitHubReposInvoker.ts", (): void => {
       // Arrange
       process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI =
         "https://organization.githubenterprise.com/microsoft/PR-Metrics";
-      when(octokitWrapper.initialize(anything())).thenCall(
-        (options: any): void => {
+      when(octokitWrapper.initialize(any())).thenCall(
+        (options: OctokitOptions): void => {
           assert.equal(options.auth, "PAT");
           assert.equal(options.userAgent, expectedUserAgent);
           assert.equal(
@@ -573,10 +570,10 @@ describe("gitHubReposInvoker.ts", (): void => {
             "https://organization.githubenterprise.com/api/v3",
           );
           assert.notEqual(options.log, null);
-          assert.notEqual(options.log.debug, null);
-          assert.notEqual(options.log.info, null);
-          assert.notEqual(options.log.warn, null);
-          assert.notEqual(options.log.error, null);
+          assert.notEqual(options.log?.debug, null);
+          assert.notEqual(options.log?.info, null);
+          assert.notEqual(options.log?.warn, null);
+          assert.notEqual(options.log?.error, null);
         },
       );
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
@@ -587,13 +584,13 @@ describe("gitHubReposInvoker.ts", (): void => {
       );
 
       // Act
-      const result: PullRequestDetails =
+      const result: PullRequestDetailsInterface =
         await gitHubReposInvoker.getTitleAndDescription();
 
       // Assert
       assert.equal(result.title, "Title");
       assert.equal(result.description, "Description");
-      verify(octokitWrapper.initialize(anything())).once();
+      verify(octokitWrapper.initialize(any())).once();
       verify(octokitWrapper.getPull("microsoft", "PR-Metrics", 12345)).once();
       verify(
         logger.logDebug("* GitHubReposInvoker.getTitleAndDescription()"),
@@ -616,15 +613,15 @@ describe("gitHubReposInvoker.ts", (): void => {
 
     it("should succeed when called twice with the inputs valid", async (): Promise<void> => {
       // Arrange
-      when(octokitWrapper.initialize(anything())).thenCall(
-        (options: any): void => {
+      when(octokitWrapper.initialize(any())).thenCall(
+        (options: OctokitOptions): void => {
           assert.equal(options.auth, "PAT");
           assert.equal(options.userAgent, expectedUserAgent);
           assert.notEqual(options.log, null);
-          assert.notEqual(options.log.debug, null);
-          assert.notEqual(options.log.info, null);
-          assert.notEqual(options.log.warn, null);
-          assert.notEqual(options.log.error, null);
+          assert.notEqual(options.log?.debug, null);
+          assert.notEqual(options.log?.info, null);
+          assert.notEqual(options.log?.warn, null);
+          assert.notEqual(options.log?.error, null);
         },
       );
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
@@ -636,13 +633,13 @@ describe("gitHubReposInvoker.ts", (): void => {
 
       // Act
       await gitHubReposInvoker.getTitleAndDescription();
-      const result: PullRequestDetails =
+      const result: PullRequestDetailsInterface =
         await gitHubReposInvoker.getTitleAndDescription();
 
       // Assert
       assert.equal(result.title, "Title");
       assert.equal(result.description, "Description");
-      verify(octokitWrapper.initialize(anything())).once();
+      verify(octokitWrapper.initialize(any())).once();
       verify(octokitWrapper.getPull("microsoft", "PR-Metrics", 12345)).twice();
       verify(
         logger.logDebug("* GitHubReposInvoker.getTitleAndDescription()"),
@@ -663,15 +660,15 @@ describe("gitHubReposInvoker.ts", (): void => {
       const currentMockPullResponse: GetPullResponse =
         GitHubReposInvokerConstants.getPullResponse;
       currentMockPullResponse.data.body = null;
-      when(octokitWrapper.initialize(anything())).thenCall(
-        (options: any): void => {
+      when(octokitWrapper.initialize(any())).thenCall(
+        (options: OctokitOptions): void => {
           assert.equal(options.auth, "PAT");
           assert.equal(options.userAgent, expectedUserAgent);
           assert.notEqual(options.log, null);
-          assert.notEqual(options.log.debug, null);
-          assert.notEqual(options.log.info, null);
-          assert.notEqual(options.log.warn, null);
-          assert.notEqual(options.log.error, null);
+          assert.notEqual(options.log?.debug, null);
+          assert.notEqual(options.log?.info, null);
+          assert.notEqual(options.log?.warn, null);
+          assert.notEqual(options.log?.error, null);
         },
       );
       when(
@@ -685,13 +682,13 @@ describe("gitHubReposInvoker.ts", (): void => {
       );
 
       // Act
-      const result: PullRequestDetails =
+      const result: PullRequestDetailsInterface =
         await gitHubReposInvoker.getTitleAndDescription();
 
       // Assert
       assert.equal(result.title, "Title");
-      assert.equal(result.description, undefined);
-      verify(octokitWrapper.initialize(anything())).once();
+      assert.equal(typeof result.description, "undefined");
+      verify(octokitWrapper.initialize(any())).once();
       verify(octokitWrapper.getPull("microsoft", "PR-Metrics", 12345)).once();
       verify(
         logger.logDebug("* GitHubReposInvoker.getTitleAndDescription()"),
@@ -704,24 +701,27 @@ describe("gitHubReposInvoker.ts", (): void => {
     });
 
     {
-      const testCases: number[] = [401, 403, 404];
+      const testCases: StatusCodes[] = [
+        StatusCodes.UNAUTHORIZED,
+        StatusCodes.FORBIDDEN,
+        StatusCodes.NOT_FOUND,
+      ];
 
-      testCases.forEach((status: number): void => {
-        it(`should throw when the PAT has insufficient access and the API call returns status '${status}'`, async (): Promise<void> => {
+      testCases.forEach((status: StatusCodes): void => {
+        it(`should throw when the PAT has insufficient access and the API call returns status '${String(status)}'`, async (): Promise<void> => {
           // Arrange
-          when(octokitWrapper.initialize(anything())).thenCall(
-            (options: any): void => {
+          when(octokitWrapper.initialize(any())).thenCall(
+            (options: OctokitOptions): void => {
               assert.equal(options.auth, "PAT");
               assert.equal(options.userAgent, expectedUserAgent);
               assert.notEqual(options.log, null);
-              assert.notEqual(options.log.debug, null);
-              assert.notEqual(options.log.info, null);
-              assert.notEqual(options.log.warn, null);
-              assert.notEqual(options.log.error, null);
+              assert.notEqual(options.log?.debug, null);
+              assert.notEqual(options.log?.info, null);
+              assert.notEqual(options.log?.warn, null);
+              assert.notEqual(options.log?.error, null);
             },
           );
-          const error: ErrorWithStatus = new ErrorWithStatus("Test");
-          error.status = status;
+          const error: RequestError = createRequestError(status, "Test");
           when(
             octokitWrapper.getPull(anyString(), anyString(), anyNumber()),
           ).thenThrow(error);
@@ -733,16 +733,17 @@ describe("gitHubReposInvoker.ts", (): void => {
           );
 
           // Act
-          const func: () => Promise<PullRequestDetails> = async () =>
+          const func: () => Promise<PullRequestDetailsInterface> = async () =>
             gitHubReposInvoker.getTitleAndDescription();
 
           // Assert
-          const result: any = await AssertExtensions.toThrowAsync(
-            func,
-            "Could not access the resources. Ensure the 'PR_Metrics_Access_Token' secret environment variable has Read and Write access to pull requests (or access to 'repos' if using a Classic PAT).",
-          );
+          const result: ErrorWithStatusInterface =
+            await AssertExtensions.toThrowAsync(
+              func,
+              "Could not access the resources. Ensure the 'PR_Metrics_Access_Token' secret environment variable has Read and Write access to pull requests (or access to 'repos' if using a Classic PAT).",
+            );
           assert.equal(result.internalMessage, "Test");
-          verify(octokitWrapper.initialize(anything())).once();
+          verify(octokitWrapper.initialize(any())).once();
           verify(
             logger.logDebug("* GitHubReposInvoker.getTitleAndDescription()"),
           ).once();
@@ -756,15 +757,15 @@ describe("gitHubReposInvoker.ts", (): void => {
 
     it("should throw an error when an error occurs", async (): Promise<void> => {
       // Arrange
-      when(octokitWrapper.initialize(anything())).thenCall(
-        (options: any): void => {
+      when(octokitWrapper.initialize(any())).thenCall(
+        (options: OctokitOptions): void => {
           assert.equal(options.auth, "PAT");
           assert.equal(options.userAgent, expectedUserAgent);
           assert.notEqual(options.log, null);
-          assert.notEqual(options.log.debug, null);
-          assert.notEqual(options.log.info, null);
-          assert.notEqual(options.log.warn, null);
-          assert.notEqual(options.log.error, null);
+          assert.notEqual(options.log?.debug, null);
+          assert.notEqual(options.log?.info, null);
+          assert.notEqual(options.log?.warn, null);
+          assert.notEqual(options.log?.error, null);
         },
       );
       when(
@@ -778,12 +779,12 @@ describe("gitHubReposInvoker.ts", (): void => {
       );
 
       // Act
-      const func: () => Promise<PullRequestDetails> = async () =>
+      const func: () => Promise<PullRequestDetailsInterface> = async () =>
         gitHubReposInvoker.getTitleAndDescription();
 
       // Assert
       await AssertExtensions.toThrowAsync(func, "Error");
-      verify(octokitWrapper.initialize(anything())).once();
+      verify(octokitWrapper.initialize(any())).once();
       verify(
         logger.logDebug("* GitHubReposInvoker.getTitleAndDescription()"),
       ).once();
@@ -795,9 +796,9 @@ describe("gitHubReposInvoker.ts", (): void => {
 
     it("should initialize log object correctly", async (): Promise<void> => {
       // Arrange
-      let logObject: OctokitLogObject | undefined;
-      when(octokitWrapper.initialize(anything())).thenCall(
-        (options: any): void => {
+      let logObject: OctokitLogObjectInterface | undefined;
+      when(octokitWrapper.initialize(any())).thenCall(
+        (options: OctokitOptions): void => {
           logObject = options.log;
         },
       );
@@ -826,20 +827,20 @@ describe("gitHubReposInvoker.ts", (): void => {
   describe("getComments()", (): void => {
     it("should return the result when called with a pull request comment", async (): Promise<void> => {
       // Arrange
-      when(octokitWrapper.initialize(anything())).thenCall(
-        (options: any): void => {
+      when(octokitWrapper.initialize(any())).thenCall(
+        (options: OctokitOptions): void => {
           assert.equal(options.auth, "PAT");
           assert.equal(options.userAgent, expectedUserAgent);
           assert.notEqual(options.log, null);
-          assert.notEqual(options.log.debug, null);
-          assert.notEqual(options.log.info, null);
-          assert.notEqual(options.log.warn, null);
-          assert.notEqual(options.log.error, null);
+          assert.notEqual(options.log?.debug, null);
+          assert.notEqual(options.log?.info, null);
+          assert.notEqual(options.log?.warn, null);
+          assert.notEqual(options.log?.error, null);
         },
       );
       const response: GetIssueCommentsResponse =
         GitHubReposInvokerConstants.getIssueCommentsResponse;
-      if (response.data[0] === undefined) {
+      if (typeof response.data[0] === "undefined") {
         throw new Error("response.data[0] is undefined");
       }
 
@@ -866,7 +867,7 @@ describe("gitHubReposInvoker.ts", (): void => {
         CommentThreadStatus.Unknown,
       );
       assert.equal(result.fileComments.length, 0);
-      verify(octokitWrapper.initialize(anything())).once();
+      verify(octokitWrapper.initialize(any())).once();
       verify(
         octokitWrapper.getIssueComments("microsoft", "PR-Metrics", 12345),
       ).once();
@@ -886,15 +887,15 @@ describe("gitHubReposInvoker.ts", (): void => {
 
     it("should return the result when called with a file comment", async (): Promise<void> => {
       // Arrange
-      when(octokitWrapper.initialize(anything())).thenCall(
-        (options: any): void => {
+      when(octokitWrapper.initialize(any())).thenCall(
+        (options: OctokitOptions): void => {
           assert.equal(options.auth, "PAT");
           assert.equal(options.userAgent, expectedUserAgent);
           assert.notEqual(options.log, null);
-          assert.notEqual(options.log.debug, null);
-          assert.notEqual(options.log.info, null);
-          assert.notEqual(options.log.warn, null);
-          assert.notEqual(options.log.error, null);
+          assert.notEqual(options.log?.debug, null);
+          assert.notEqual(options.log?.info, null);
+          assert.notEqual(options.log?.warn, null);
+          assert.notEqual(options.log?.error, null);
         },
       );
       when(
@@ -917,7 +918,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       assert.equal(result.fileComments[0]?.content, "File Content");
       assert.equal(result.fileComments[0]?.status, CommentThreadStatus.Unknown);
       assert.equal(result.fileComments[0]?.fileName, "file.ts");
-      verify(octokitWrapper.initialize(anything())).once();
+      verify(octokitWrapper.initialize(any())).once();
       verify(
         octokitWrapper.getIssueComments("microsoft", "PR-Metrics", 12345),
       ).once();
@@ -941,20 +942,20 @@ describe("gitHubReposInvoker.ts", (): void => {
 
     it("should return the result when called with both a pull request and file comment", async (): Promise<void> => {
       // Arrange
-      when(octokitWrapper.initialize(anything())).thenCall(
-        (options: any): void => {
+      when(octokitWrapper.initialize(any())).thenCall(
+        (options: OctokitOptions): void => {
           assert.equal(options.auth, "PAT");
           assert.equal(options.userAgent, expectedUserAgent);
           assert.notEqual(options.log, null);
-          assert.notEqual(options.log.debug, null);
-          assert.notEqual(options.log.info, null);
-          assert.notEqual(options.log.warn, null);
-          assert.notEqual(options.log.error, null);
+          assert.notEqual(options.log?.debug, null);
+          assert.notEqual(options.log?.info, null);
+          assert.notEqual(options.log?.warn, null);
+          assert.notEqual(options.log?.error, null);
         },
       );
       const response: GetIssueCommentsResponse =
         GitHubReposInvokerConstants.getIssueCommentsResponse;
-      if (response.data[0] === undefined) {
+      if (typeof response.data[0] === "undefined") {
         throw new Error("response.data[0] is undefined");
       }
 
@@ -988,7 +989,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       assert.equal(result.fileComments[0]?.content, "File Content");
       assert.equal(result.fileComments[0]?.status, CommentThreadStatus.Unknown);
       assert.equal(result.fileComments[0]?.fileName, "file.ts");
-      verify(octokitWrapper.initialize(anything())).once();
+      verify(octokitWrapper.initialize(any())).once();
       verify(
         octokitWrapper.getIssueComments("microsoft", "PR-Metrics", 12345),
       ).once();
@@ -1013,20 +1014,20 @@ describe("gitHubReposInvoker.ts", (): void => {
 
     it("should skip pull request comments with no body", async (): Promise<void> => {
       // Arrange
-      when(octokitWrapper.initialize(anything())).thenCall(
-        (options: any): void => {
+      when(octokitWrapper.initialize(any())).thenCall(
+        (options: OctokitOptions): void => {
           assert.equal(options.auth, "PAT");
           assert.equal(options.userAgent, expectedUserAgent);
           assert.notEqual(options.log, null);
-          assert.notEqual(options.log.debug, null);
-          assert.notEqual(options.log.info, null);
-          assert.notEqual(options.log.warn, null);
-          assert.notEqual(options.log.error, null);
+          assert.notEqual(options.log?.debug, null);
+          assert.notEqual(options.log?.info, null);
+          assert.notEqual(options.log?.warn, null);
+          assert.notEqual(options.log?.error, null);
         },
       );
       const response: GetIssueCommentsResponse =
         GitHubReposInvokerConstants.getIssueCommentsResponse;
-      if (response.data[0] === undefined) {
+      if (typeof response.data[0] === "undefined") {
         throw new Error("response.data[0] is undefined");
       }
 
@@ -1047,7 +1048,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       // Assert
       assert.equal(result.pullRequestComments.length, 0);
       assert.equal(result.fileComments.length, 0);
-      verify(octokitWrapper.initialize(anything())).once();
+      verify(octokitWrapper.initialize(any())).once();
       verify(
         octokitWrapper.getIssueComments("microsoft", "PR-Metrics", 12345),
       ).once();
@@ -1088,15 +1089,15 @@ describe("gitHubReposInvoker.ts", (): void => {
 
     it("should succeed when the title and description are both set", async (): Promise<void> => {
       // Arrange
-      when(octokitWrapper.initialize(anything())).thenCall(
-        (options: any): void => {
+      when(octokitWrapper.initialize(any())).thenCall(
+        (options: OctokitOptions): void => {
           assert.equal(options.auth, "PAT");
           assert.equal(options.userAgent, expectedUserAgent);
           assert.notEqual(options.log, null);
-          assert.notEqual(options.log.debug, null);
-          assert.notEqual(options.log.info, null);
-          assert.notEqual(options.log.warn, null);
-          assert.notEqual(options.log.error, null);
+          assert.notEqual(options.log?.debug, null);
+          assert.notEqual(options.log?.info, null);
+          assert.notEqual(options.log?.warn, null);
+          assert.notEqual(options.log?.error, null);
         },
       );
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
@@ -1110,7 +1111,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       await gitHubReposInvoker.setTitleAndDescription("Title", "Description");
 
       // Assert
-      verify(octokitWrapper.initialize(anything())).once();
+      verify(octokitWrapper.initialize(any())).once();
       verify(
         octokitWrapper.updatePull(
           "microsoft",
@@ -1136,15 +1137,15 @@ describe("gitHubReposInvoker.ts", (): void => {
 
     it("should succeed when the title is set", async (): Promise<void> => {
       // Arrange
-      when(octokitWrapper.initialize(anything())).thenCall(
-        (options: any): void => {
+      when(octokitWrapper.initialize(any())).thenCall(
+        (options: OctokitOptions): void => {
           assert.equal(options.auth, "PAT");
           assert.equal(options.userAgent, expectedUserAgent);
           assert.notEqual(options.log, null);
-          assert.notEqual(options.log.debug, null);
-          assert.notEqual(options.log.info, null);
-          assert.notEqual(options.log.warn, null);
-          assert.notEqual(options.log.error, null);
+          assert.notEqual(options.log?.debug, null);
+          assert.notEqual(options.log?.info, null);
+          assert.notEqual(options.log?.warn, null);
+          assert.notEqual(options.log?.error, null);
         },
       );
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
@@ -1158,7 +1159,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       await gitHubReposInvoker.setTitleAndDescription("Title", null);
 
       // Assert
-      verify(octokitWrapper.initialize(anything())).once();
+      verify(octokitWrapper.initialize(any())).once();
       verify(
         octokitWrapper.updatePull(
           "microsoft",
@@ -1180,15 +1181,15 @@ describe("gitHubReposInvoker.ts", (): void => {
 
     it("should succeed when the description is set", async (): Promise<void> => {
       // Arrange
-      when(octokitWrapper.initialize(anything())).thenCall(
-        (options: any): void => {
+      when(octokitWrapper.initialize(any())).thenCall(
+        (options: OctokitOptions): void => {
           assert.equal(options.auth, "PAT");
           assert.equal(options.userAgent, expectedUserAgent);
           assert.notEqual(options.log, null);
-          assert.notEqual(options.log.debug, null);
-          assert.notEqual(options.log.info, null);
-          assert.notEqual(options.log.warn, null);
-          assert.notEqual(options.log.error, null);
+          assert.notEqual(options.log?.debug, null);
+          assert.notEqual(options.log?.info, null);
+          assert.notEqual(options.log?.warn, null);
+          assert.notEqual(options.log?.error, null);
         },
       );
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
@@ -1202,7 +1203,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       await gitHubReposInvoker.setTitleAndDescription(null, "Description");
 
       // Assert
-      verify(octokitWrapper.initialize(anything())).once();
+      verify(octokitWrapper.initialize(any())).once();
       verify(
         octokitWrapper.updatePull(
           "microsoft",
@@ -1226,15 +1227,15 @@ describe("gitHubReposInvoker.ts", (): void => {
   describe("createComment()", (): void => {
     it("should succeed when a file name is specified", async (): Promise<void> => {
       // Arrange
-      when(octokitWrapper.initialize(anything())).thenCall(
-        (options: any): void => {
+      when(octokitWrapper.initialize(any())).thenCall(
+        (options: OctokitOptions): void => {
           assert.equal(options.auth, "PAT");
           assert.equal(options.userAgent, expectedUserAgent);
           assert.notEqual(options.log, null);
-          assert.notEqual(options.log.debug, null);
-          assert.notEqual(options.log.info, null);
-          assert.notEqual(options.log.warn, null);
-          assert.notEqual(options.log.error, null);
+          assert.notEqual(options.log?.debug, null);
+          assert.notEqual(options.log?.info, null);
+          assert.notEqual(options.log?.warn, null);
+          assert.notEqual(options.log?.error, null);
         },
       );
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
@@ -1245,14 +1246,10 @@ describe("gitHubReposInvoker.ts", (): void => {
       );
 
       // Act
-      await gitHubReposInvoker.createComment(
-        "Content",
-        CommentThreadStatus.Unknown,
-        "file.ts",
-      );
+      await gitHubReposInvoker.createComment("Content", "file.ts");
 
       // Assert
-      verify(octokitWrapper.initialize(anything())).once();
+      verify(octokitWrapper.initialize(any())).once();
       verify(
         octokitWrapper.listCommits("microsoft", "PR-Metrics", 12345, 1),
       ).once();
@@ -1277,15 +1274,15 @@ describe("gitHubReposInvoker.ts", (): void => {
 
     it("should throw when the commit list is empty", async (): Promise<void> => {
       // Arrange
-      when(octokitWrapper.initialize(anything())).thenCall(
-        (options: any): void => {
+      when(octokitWrapper.initialize(any())).thenCall(
+        (options: OctokitOptions): void => {
           assert.equal(options.auth, "PAT");
           assert.equal(options.userAgent, expectedUserAgent);
           assert.notEqual(options.log, null);
-          assert.notEqual(options.log.debug, null);
-          assert.notEqual(options.log.info, null);
-          assert.notEqual(options.log.warn, null);
-          assert.notEqual(options.log.error, null);
+          assert.notEqual(options.log?.debug, null);
+          assert.notEqual(options.log?.info, null);
+          assert.notEqual(options.log?.warn, null);
+          assert.notEqual(options.log?.error, null);
         },
       );
       when(
@@ -1296,10 +1293,10 @@ describe("gitHubReposInvoker.ts", (): void => {
           anyNumber(),
         ),
       ).thenResolve({
-        headers: {},
-        status: 200,
-        url: "",
         data: [],
+        headers: {},
+        status: StatusCodes.OK,
+        url: "",
       });
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
         instance(gitInvoker),
@@ -1310,18 +1307,14 @@ describe("gitHubReposInvoker.ts", (): void => {
 
       // Act
       const func: () => Promise<void> = async () =>
-        gitHubReposInvoker.createComment(
-          "Content",
-          CommentThreadStatus.Unknown,
-          "file.ts",
-        );
+        gitHubReposInvoker.createComment("Content", "file.ts");
 
       // Assert
       await AssertExtensions.toThrowAsync(
         func,
         "'result.data[-1].sha', accessed within 'GitHubReposInvoker.getCommitId()', is invalid, null, or undefined 'undefined'.",
       );
-      verify(octokitWrapper.initialize(anything())).once();
+      verify(octokitWrapper.initialize(any())).once();
       verify(
         octokitWrapper.listCommits("microsoft", "PR-Metrics", 12345, 1),
       ).once();
@@ -1335,26 +1328,26 @@ describe("gitHubReposInvoker.ts", (): void => {
 
     it("should succeed when there are multiple pages of commits", async (): Promise<void> => {
       // Arrange
-      when(octokitWrapper.initialize(anything())).thenCall(
-        (options: any): void => {
+      when(octokitWrapper.initialize(any())).thenCall(
+        (options: OctokitOptions): void => {
           assert.equal(options.auth, "PAT");
           assert.equal(options.userAgent, expectedUserAgent);
           assert.notEqual(options.log, null);
-          assert.notEqual(options.log.debug, null);
-          assert.notEqual(options.log.info, null);
-          assert.notEqual(options.log.warn, null);
-          assert.notEqual(options.log.error, null);
+          assert.notEqual(options.log?.debug, null);
+          assert.notEqual(options.log?.info, null);
+          assert.notEqual(options.log?.warn, null);
+          assert.notEqual(options.log?.error, null);
         },
       );
       when(
         octokitWrapper.listCommits(anyString(), anyString(), anyNumber(), 1),
       ).thenResolve({
+        data: [],
         headers: {
           link: '<https://api.github.com/repositories/309438703/pulls/172/commits?page=2>; rel="next", <https://api.github.com/repositories/309438703/pulls/172/commits?page=24>; rel="last"',
         },
-        status: 200,
+        status: StatusCodes.OK,
         url: "",
-        data: [],
       });
       when(
         octokitWrapper.listCommits(anyString(), anyString(), anyNumber(), 24),
@@ -1367,14 +1360,10 @@ describe("gitHubReposInvoker.ts", (): void => {
       );
 
       // Act
-      await gitHubReposInvoker.createComment(
-        "Content",
-        CommentThreadStatus.Unknown,
-        "file.ts",
-      );
+      await gitHubReposInvoker.createComment("Content", "file.ts");
 
       // Assert
-      verify(octokitWrapper.initialize(anything())).once();
+      verify(octokitWrapper.initialize(any())).once();
       verify(
         octokitWrapper.listCommits("microsoft", "PR-Metrics", 12345, 1),
       ).once();
@@ -1399,26 +1388,26 @@ describe("gitHubReposInvoker.ts", (): void => {
 
     it("should throw when the link header does not match the expected format", async (): Promise<void> => {
       // Arrange
-      when(octokitWrapper.initialize(anything())).thenCall(
-        (options: any): void => {
+      when(octokitWrapper.initialize(any())).thenCall(
+        (options: OctokitOptions): void => {
           assert.equal(options.auth, "PAT");
           assert.equal(options.userAgent, expectedUserAgent);
           assert.notEqual(options.log, null);
-          assert.notEqual(options.log.debug, null);
-          assert.notEqual(options.log.info, null);
-          assert.notEqual(options.log.warn, null);
-          assert.notEqual(options.log.error, null);
+          assert.notEqual(options.log?.debug, null);
+          assert.notEqual(options.log?.info, null);
+          assert.notEqual(options.log?.warn, null);
+          assert.notEqual(options.log?.error, null);
         },
       );
       when(
         octokitWrapper.listCommits(anyString(), anyString(), anyNumber(), 1),
       ).thenResolve({
+        data: [],
         headers: {
           link: "non-matching",
         },
-        status: 200,
+        status: StatusCodes.OK,
         url: "",
-        data: [],
       });
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
         instance(gitInvoker),
@@ -1429,18 +1418,14 @@ describe("gitHubReposInvoker.ts", (): void => {
 
       // Act
       const func: () => Promise<void> = async () =>
-        gitHubReposInvoker.createComment(
-          "Content",
-          CommentThreadStatus.Unknown,
-          "file.ts",
-        );
+        gitHubReposInvoker.createComment("Content", "file.ts");
 
       // Assert
       await AssertExtensions.toThrowAsync(
         func,
         "The regular expression did not match 'non-matching'.",
       );
-      verify(octokitWrapper.initialize(anything())).once();
+      verify(octokitWrapper.initialize(any())).once();
       verify(
         octokitWrapper.listCommits("microsoft", "PR-Metrics", 12345, 1),
       ).once();
@@ -1454,15 +1439,15 @@ describe("gitHubReposInvoker.ts", (): void => {
 
     it("should succeed when a file name is specified and the method is called twice", async (): Promise<void> => {
       // Arrange
-      when(octokitWrapper.initialize(anything())).thenCall(
-        (options: any): void => {
+      when(octokitWrapper.initialize(any())).thenCall(
+        (options: OctokitOptions): void => {
           assert.equal(options.auth, "PAT");
           assert.equal(options.userAgent, expectedUserAgent);
           assert.notEqual(options.log, null);
-          assert.notEqual(options.log.debug, null);
-          assert.notEqual(options.log.info, null);
-          assert.notEqual(options.log.warn, null);
-          assert.notEqual(options.log.error, null);
+          assert.notEqual(options.log?.debug, null);
+          assert.notEqual(options.log?.info, null);
+          assert.notEqual(options.log?.warn, null);
+          assert.notEqual(options.log?.error, null);
         },
       );
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
@@ -1473,19 +1458,11 @@ describe("gitHubReposInvoker.ts", (): void => {
       );
 
       // Act
-      await gitHubReposInvoker.createComment(
-        "Content",
-        CommentThreadStatus.Unknown,
-        "file.ts",
-      );
-      await gitHubReposInvoker.createComment(
-        "Content",
-        CommentThreadStatus.Unknown,
-        "file.ts",
-      );
+      await gitHubReposInvoker.createComment("Content", "file.ts");
+      await gitHubReposInvoker.createComment("Content", "file.ts");
 
       // Assert
-      verify(octokitWrapper.initialize(anything())).once();
+      verify(octokitWrapper.initialize(any())).once();
       verify(
         octokitWrapper.listCommits("microsoft", "PR-Metrics", 12345, 1),
       ).once();
@@ -1510,15 +1487,15 @@ describe("gitHubReposInvoker.ts", (): void => {
 
     it("should succeed when createReviewComment() returns undefined", async (): Promise<void> => {
       // Arrange
-      when(octokitWrapper.initialize(anything())).thenCall(
-        (options: any): void => {
+      when(octokitWrapper.initialize(any())).thenCall(
+        (options: OctokitOptions): void => {
           assert.equal(options.auth, "PAT");
           assert.equal(options.userAgent, expectedUserAgent);
           assert.notEqual(options.log, null);
-          assert.notEqual(options.log.debug, null);
-          assert.notEqual(options.log.info, null);
-          assert.notEqual(options.log.warn, null);
-          assert.notEqual(options.log.error, null);
+          assert.notEqual(options.log?.debug, null);
+          assert.notEqual(options.log?.info, null);
+          assert.notEqual(options.log?.warn, null);
+          assert.notEqual(options.log?.error, null);
         },
       );
       when(
@@ -1539,14 +1516,10 @@ describe("gitHubReposInvoker.ts", (): void => {
       );
 
       // Act
-      await gitHubReposInvoker.createComment(
-        "Content",
-        CommentThreadStatus.Unknown,
-        "file.ts",
-      );
+      await gitHubReposInvoker.createComment("Content", "file.ts");
 
       // Assert
-      verify(octokitWrapper.initialize(anything())).once();
+      verify(octokitWrapper.initialize(any())).once();
       verify(
         octokitWrapper.listCommits("microsoft", "PR-Metrics", 12345, 1),
       ).once();
@@ -1571,19 +1544,19 @@ describe("gitHubReposInvoker.ts", (): void => {
 
     it("should succeed when a HTTP 422 error occurs due to having a too large path diff", async (): Promise<void> => {
       // Arrange
-      when(octokitWrapper.initialize(anything())).thenCall(
-        (options: any): void => {
+      when(octokitWrapper.initialize(any())).thenCall(
+        (options: OctokitOptions): void => {
           assert.equal(options.auth, "PAT");
           assert.equal(options.userAgent, expectedUserAgent);
           assert.notEqual(options.log, null);
-          assert.notEqual(options.log.debug, null);
-          assert.notEqual(options.log.info, null);
-          assert.notEqual(options.log.warn, null);
-          assert.notEqual(options.log.error, null);
+          assert.notEqual(options.log?.debug, null);
+          assert.notEqual(options.log?.info, null);
+          assert.notEqual(options.log?.warn, null);
+          assert.notEqual(options.log?.error, null);
         },
       );
-      const error: HttpError = new HttpError(
-        422,
+      const error: RequestError = createRequestError(
+        StatusCodes.UNPROCESSABLE_ENTITY,
         'Validation Failed: {"resource":"PullRequestReviewComment","code":"custom","field":"pull_request_review_thread.path","message":"pull_request_review_thread.path diff too large"}, {"resource":"PullRequestReviewComment","code":"missing_field","field":"pull_request_review_thread.diff_hunk"}',
       );
       when(
@@ -1606,14 +1579,10 @@ describe("gitHubReposInvoker.ts", (): void => {
       );
 
       // Act
-      await gitHubReposInvoker.createComment(
-        "Content",
-        CommentThreadStatus.Unknown,
-        "file.ts",
-      );
+      await gitHubReposInvoker.createComment("Content", "file.ts");
 
       // Assert
-      verify(octokitWrapper.initialize(anything())).once();
+      verify(octokitWrapper.initialize(any())).once();
       verify(
         octokitWrapper.listCommits("microsoft", "PR-Metrics", 12345, 1),
       ).once();
@@ -1644,24 +1613,24 @@ describe("gitHubReposInvoker.ts", (): void => {
     {
       const testCases: HttpError[] = [
         new HttpError(
-          400,
+          StatusCodes.BAD_REQUEST,
           'Validation Failed: {"resource":"PullRequestReviewComment","code":"custom","field":"pull_request_review_thread.path","message":"pull_request_review_thread.path diff too large"}, {"resource":"PullRequestReviewComment","code":"missing_field","field":"pull_request_review_thread.diff_hunk"}',
         ),
-        new HttpError(422, "Unprocessable Entity"),
+        new HttpError(StatusCodes.UNPROCESSABLE_ENTITY, "Unprocessable Entity"),
       ];
 
       testCases.forEach((error: HttpError): void => {
         it("should throw when an error occurs that is not a HTTP 422 or is not due to having a too large path diff", async (): Promise<void> => {
           // Arrange
-          when(octokitWrapper.initialize(anything())).thenCall(
-            (options: any): void => {
+          when(octokitWrapper.initialize(any())).thenCall(
+            (options: OctokitOptions): void => {
               assert.equal(options.auth, "PAT");
               assert.equal(options.userAgent, expectedUserAgent);
               assert.notEqual(options.log, null);
-              assert.notEqual(options.log.debug, null);
-              assert.notEqual(options.log.info, null);
-              assert.notEqual(options.log.warn, null);
-              assert.notEqual(options.log.error, null);
+              assert.notEqual(options.log?.debug, null);
+              assert.notEqual(options.log?.info, null);
+              assert.notEqual(options.log?.warn, null);
+              assert.notEqual(options.log?.error, null);
             },
           );
           when(
@@ -1685,15 +1654,11 @@ describe("gitHubReposInvoker.ts", (): void => {
 
           // Act
           const func: () => Promise<void> = async () =>
-            gitHubReposInvoker.createComment(
-              "Content",
-              CommentThreadStatus.Unknown,
-              "file.ts",
-            );
+            gitHubReposInvoker.createComment("Content", "file.ts");
 
           // Assert
           await AssertExtensions.toThrowAsync(func, error.message);
-          verify(octokitWrapper.initialize(anything())).once();
+          verify(octokitWrapper.initialize(any())).once();
           verify(
             octokitWrapper.listCommits("microsoft", "PR-Metrics", 12345, 1),
           ).once();
@@ -1721,15 +1686,15 @@ describe("gitHubReposInvoker.ts", (): void => {
 
     it("should succeed when no file name is specified", async (): Promise<void> => {
       // Arrange
-      when(octokitWrapper.initialize(anything())).thenCall(
-        (options: any): void => {
+      when(octokitWrapper.initialize(any())).thenCall(
+        (options: OctokitOptions): void => {
           assert.equal(options.auth, "PAT");
           assert.equal(options.userAgent, expectedUserAgent);
           assert.notEqual(options.log, null);
-          assert.notEqual(options.log.debug, null);
-          assert.notEqual(options.log.info, null);
-          assert.notEqual(options.log.warn, null);
-          assert.notEqual(options.log.error, null);
+          assert.notEqual(options.log?.debug, null);
+          assert.notEqual(options.log?.info, null);
+          assert.notEqual(options.log?.warn, null);
+          assert.notEqual(options.log?.error, null);
         },
       );
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
@@ -1740,13 +1705,10 @@ describe("gitHubReposInvoker.ts", (): void => {
       );
 
       // Act
-      await gitHubReposInvoker.createComment(
-        "Content",
-        CommentThreadStatus.Unknown,
-      );
+      await gitHubReposInvoker.createComment("Content", null);
 
       // Assert
-      verify(octokitWrapper.initialize(anything())).once();
+      verify(octokitWrapper.initialize(any())).once();
       verify(
         octokitWrapper.createIssueComment(
           "microsoft",
@@ -1775,7 +1737,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       );
 
       // Act
-      await gitHubReposInvoker.updateComment(54321, null, null);
+      await gitHubReposInvoker.updateComment(54321, null);
 
       // Assert
       verify(logger.logDebug("* GitHubReposInvoker.updateComment()")).once();
@@ -1787,15 +1749,15 @@ describe("gitHubReposInvoker.ts", (): void => {
 
     it("should succeed when the content is set", async (): Promise<void> => {
       // Arrange
-      when(octokitWrapper.initialize(anything())).thenCall(
-        (options: any): void => {
+      when(octokitWrapper.initialize(any())).thenCall(
+        (options: OctokitOptions): void => {
           assert.equal(options.auth, "PAT");
           assert.equal(options.userAgent, expectedUserAgent);
           assert.notEqual(options.log, null);
-          assert.notEqual(options.log.debug, null);
-          assert.notEqual(options.log.info, null);
-          assert.notEqual(options.log.warn, null);
-          assert.notEqual(options.log.error, null);
+          assert.notEqual(options.log?.debug, null);
+          assert.notEqual(options.log?.info, null);
+          assert.notEqual(options.log?.warn, null);
+          assert.notEqual(options.log?.error, null);
         },
       );
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
@@ -1806,10 +1768,10 @@ describe("gitHubReposInvoker.ts", (): void => {
       );
 
       // Act
-      await gitHubReposInvoker.updateComment(54321, "Content", null);
+      await gitHubReposInvoker.updateComment(54321, "Content");
 
       // Assert
-      verify(octokitWrapper.initialize(anything())).once();
+      verify(octokitWrapper.initialize(any())).once();
       verify(
         octokitWrapper.updateIssueComment(
           "microsoft",
@@ -1831,15 +1793,15 @@ describe("gitHubReposInvoker.ts", (): void => {
   describe("deleteCommentThread()", (): void => {
     it("should succeed", async (): Promise<void> => {
       // Arrange
-      when(octokitWrapper.initialize(anything())).thenCall(
-        (options: any): void => {
+      when(octokitWrapper.initialize(any())).thenCall(
+        (options: OctokitOptions): void => {
           assert.equal(options.auth, "PAT");
           assert.equal(options.userAgent, expectedUserAgent);
           assert.notEqual(options.log, null);
-          assert.notEqual(options.log.debug, null);
-          assert.notEqual(options.log.info, null);
-          assert.notEqual(options.log.warn, null);
-          assert.notEqual(options.log.error, null);
+          assert.notEqual(options.log?.debug, null);
+          assert.notEqual(options.log?.info, null);
+          assert.notEqual(options.log?.warn, null);
+          assert.notEqual(options.log?.error, null);
         },
       );
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
@@ -1853,7 +1815,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       await gitHubReposInvoker.deleteCommentThread(54321);
 
       // Assert
-      verify(octokitWrapper.initialize(anything())).once();
+      verify(octokitWrapper.initialize(any())).once();
       verify(
         octokitWrapper.deleteReviewComment("microsoft", "PR-Metrics", 54321),
       ).once();

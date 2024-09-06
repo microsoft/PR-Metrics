@@ -5,39 +5,17 @@
 
 import CommentData from "./interfaces/commentData";
 import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces";
-import IReposInvoker from "./iReposInvoker";
-import PullRequestDetails from "./interfaces/pullRequestDetails";
+import ErrorWithStatusInterface from "./interfaces/errorWithStatusInterface";
+import PullRequestDetailsInterface from "./interfaces/pullRequestDetailsInterface";
+import ReposInvokerInterface from "./reposInvokerInterface";
+import { StatusCodes } from "http-status-codes";
 
 /**
  * A base class for invoking repository functionality.
  */
-export default abstract class BaseReposInvoker implements IReposInvoker {
-  public abstract isAccessTokenAvailable(): Promise<string | null>;
-
-  public abstract getTitleAndDescription(): Promise<PullRequestDetails>;
-
-  public abstract getComments(): Promise<CommentData>;
-
-  public abstract setTitleAndDescription(
-    title: string | null,
-    description: string | null,
-  ): Promise<void>;
-
-  public abstract createComment(
-    content: string,
-    status: CommentThreadStatus,
-    fileName?: string,
-    isFileDeleted?: boolean,
-  ): Promise<void>;
-
-  public abstract updateComment(
-    commentThreadId: number,
-    content: string | null,
-    status: CommentThreadStatus | null,
-  ): Promise<void>;
-
-  public abstract deleteCommentThread(commentThreadId: number): Promise<void>;
-
+export default abstract class BaseReposInvoker
+  implements ReposInvokerInterface
+{
   /**
    * Invokes an API call, augmenting any errors that may be thrown due to insufficient access.
    * @typeParam Response The type of the response from the API call.
@@ -51,15 +29,51 @@ export default abstract class BaseReposInvoker implements IReposInvoker {
   ): Promise<Response> {
     try {
       return await action();
-    } catch (error: any) {
-      const accessErrorStatusCodes: number[] = [401, 403, 404];
-
-      if (accessErrorStatusCodes.includes(error.status ?? error.statusCode)) {
-        error.internalMessage = error.message;
-        error.message = accessErrorMessage;
+    } catch (error: unknown) {
+      const castedError: ErrorWithStatusInterface =
+        error as ErrorWithStatusInterface;
+      const statusCode: number | undefined =
+        castedError.status ?? castedError.statusCode;
+      const accessErrorStatusCodes: number[] = [
+        StatusCodes.UNAUTHORIZED,
+        StatusCodes.FORBIDDEN,
+        StatusCodes.NOT_FOUND,
+      ];
+      if (
+        typeof statusCode !== "undefined" &&
+        accessErrorStatusCodes.includes(statusCode)
+      ) {
+        castedError.internalMessage = castedError.message;
+        castedError.message = accessErrorMessage;
       }
 
-      throw error;
+      throw castedError;
     }
   }
+
+  public abstract isAccessTokenAvailable(): Promise<string | null>;
+
+  public abstract getTitleAndDescription(): Promise<PullRequestDetailsInterface>;
+
+  public abstract getComments(): Promise<CommentData>;
+
+  public abstract setTitleAndDescription(
+    title: string | null,
+    description: string | null,
+  ): Promise<void>;
+
+  public abstract createComment(
+    content: string,
+    fileName: string | null,
+    status: CommentThreadStatus,
+    isFileDeleted?: boolean,
+  ): Promise<void>;
+
+  public abstract updateComment(
+    commentThreadId: number,
+    content: string | null,
+    status: CommentThreadStatus | null,
+  ): Promise<void>;
+
+  public abstract deleteCommentThread(commentThreadId: number): Promise<void>;
 }

@@ -6,7 +6,7 @@
 /**
  * An interface representing pull request details.
  */
-export default interface PullRequestDetails {
+export default interface PullRequestDetailsInterface {
   /**
    * The pull request title.
    */

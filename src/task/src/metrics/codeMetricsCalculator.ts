@@ -9,7 +9,7 @@ import Logger from "../utilities/logger";
 import PullRequest from "../pullRequests/pullRequest";
 import PullRequestComments from "../pullRequests/pullRequestComments";
 import PullRequestCommentsData from "../pullRequests/pullRequestCommentsData";
-import PullRequestDetails from "../repos/interfaces/pullRequestDetails";
+import PullRequestDetailsInterface from "../repos/interfaces/pullRequestDetailsInterface";
 import ReposInvoker from "../repos/reposInvoker";
 import RunnerInvoker from "../runners/runnerInvoker";
 import { injectable } from "tsyringe";
@@ -68,7 +68,7 @@ export default class CodeMetricsCalculator {
     if (provider !== true) {
       return this._runnerInvoker.loc(
         "metrics.codeMetricsCalculator.unsupportedProvider",
-        provider,
+        String(provider),
       );
     }
 
@@ -128,7 +128,7 @@ export default class CodeMetricsCalculator {
   public async updateDetails(): Promise<void> {
     this._logger.logDebug("* CodeMetricsCalculator.updateDetails()");
 
-    const details: PullRequestDetails =
+    const details: PullRequestDetailsInterface =
       await this._reposInvoker.getTitleAndDescription();
     const updatedTitle: string | null = await this._pullRequest.getUpdatedTitle(
       details.title,
@@ -155,11 +155,9 @@ export default class CodeMetricsCalculator {
       await this._pullRequestComments.getCommentData();
     promises.push(this.updateMetricsComment(commentData));
 
-    commentData.commentThreadsRequiringDeletion.forEach(
-      (commentThreadId: number): void => {
-        promises.push(this._reposInvoker.deleteCommentThread(commentThreadId));
-      },
-    );
+    for (const commentThreadId of commentData.commentThreadsRequiringDeletion) {
+      promises.push(this._reposInvoker.deleteCommentThread(commentThreadId));
+    }
 
     await Promise.all(promises);
 
@@ -183,12 +181,12 @@ export default class CodeMetricsCalculator {
     const status: CommentThreadStatus =
       await this._pullRequestComments.getMetricsCommentStatus();
     if (commentData.metricsCommentThreadId === null) {
-      await this._reposInvoker.createComment(content, status);
+      await this._reposInvoker.createComment(content, null, status);
     } else {
       await this._reposInvoker.updateComment(
         commentData.metricsCommentThreadId,
-        commentData.metricsCommentContent !== content ? content : null,
-        commentData.metricsCommentThreadStatus !== status ? status : null,
+        commentData.metricsCommentContent === content ? null : content,
+        commentData.metricsCommentThreadStatus === status ? null : status,
       );
     }
   }
@@ -201,12 +199,10 @@ export default class CodeMetricsCalculator {
       "* CodeMetricsCalculator.updateNoReviewRequiredComment()",
     );
 
-    const noReviewRequiredComment: string =
-      this._pullRequestComments.noReviewRequiredComment;
     await this._reposInvoker.createComment(
-      noReviewRequiredComment,
-      CommentThreadStatus.Closed,
+      this._pullRequestComments.noReviewRequiredComment,
       fileName,
+      CommentThreadStatus.Closed,
       isFileDeleted,
     );
   }

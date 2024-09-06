@@ -16,7 +16,7 @@ export default class ConsoleWrapper {
    * @param message The optional message to log.
    * @param optionalParams Optional parameters to insert into the message.
    */
-  public log(message: any | undefined, ...optionalParams: any[]): void {
+  public log(message: string, ...optionalParams: string[]): void {
     /* eslint-disable-next-line no-console -- This is a wrapper around the console. */
     console.log(message, ...optionalParams);
   }

@@ -8,21 +8,9 @@
  */
 export default class HttpError extends Error {
   /**
-   * Initializes a new instance of the `HttpError` class.
-   * @param status The HTTP status code.
-   * @param message The error message.
-   */
-  public constructor(status: number, message: string) {
-    super();
-
-    this.status = status;
-    this.message = message;
-  }
-
-  /**
    * Gets the name of the object type.
    */
-  public name: string = "HttpError";
+  public name = "HttpError";
 
   /**
    * Gets the HTTP status code.
@@ -33,4 +21,16 @@ export default class HttpError extends Error {
    * Gets the error message.
    */
   public message: string;
+
+  /**
+   * Initializes a new instance of the `HttpError` class.
+   * @param status The HTTP status code.
+   * @param message The error message.
+   */
+  public constructor(status: number, message: string) {
+    super();
+
+    this.status = status;
+    this.message = message;
+  }
 }

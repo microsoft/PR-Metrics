@@ -7,7 +7,7 @@ import AzurePipelinesRunnerInvoker from "./azurePipelinesRunnerInvoker";
 import { EndpointAuthorization } from "./endpointAuthorization";
 import ExecOutput from "./execOutput";
 import GitHubRunnerInvoker from "./gitHubRunnerInvoker";
-import IRunnerInvoker from "./iRunnerInvoker";
+import RunnerInvokerInterface from "./runnerInvokerInterface";
 import { singleton } from "tsyringe";
 
 /**
@@ -15,12 +15,12 @@ import { singleton } from "tsyringe";
  * the logger forms part of the runner functionality, and using logging here could result in circular dependencies.
  */
 @singleton()
-export default class RunnerInvoker implements IRunnerInvoker {
+export default class RunnerInvoker implements RunnerInvokerInterface {
   private readonly _azurePipelinesRunnerInvoker: AzurePipelinesRunnerInvoker;
   private readonly _gitHubRunnerInvoker: GitHubRunnerInvoker;
 
-  private _runnerInvoker: IRunnerInvoker | undefined;
-  private _localizationInitialized: boolean = false;
+  private _runnerInvoker: RunnerInvokerInterface | undefined;
+  private _localizationInitialized = false;
 
   /**
    * Initializes a new instance of the `RunnerInvoker` class.
@@ -39,28 +39,28 @@ export default class RunnerInvoker implements IRunnerInvoker {
    * Gets a value indicating whether a GitHub runner is in use.
    */
   public static get isGitHub(): boolean {
-    return process.env.GITHUB_ACTION !== undefined;
+    return typeof process.env.GITHUB_ACTION !== "undefined";
   }
 
   public async exec(tool: string, args: string): Promise<ExecOutput> {
-    const runner: IRunnerInvoker = this.getRunner();
+    const runner: RunnerInvokerInterface = this.getRunner();
     return runner.exec(tool, args);
   }
 
   public getInput(name: string[]): string | undefined {
-    const runner: IRunnerInvoker = this.getRunner();
+    const runner: RunnerInvokerInterface = this.getRunner();
     return runner.getInput(name);
   }
 
   public getEndpointAuthorization(
     id: string,
   ): EndpointAuthorization | undefined {
-    const runner: IRunnerInvoker = this.getRunner();
+    const runner: RunnerInvokerInterface = this.getRunner();
     return runner.getEndpointAuthorization(id);
   }
 
   public getEndpointAuthorizationScheme(id: string): string | undefined {
-    const runner: IRunnerInvoker = this.getRunner();
+    const runner: RunnerInvokerInterface = this.getRunner();
     return runner.getEndpointAuthorizationScheme(id);
   }
 
@@ -68,7 +68,7 @@ export default class RunnerInvoker implements IRunnerInvoker {
     id: string,
     key: string,
   ): string | undefined {
-    const runner: IRunnerInvoker = this.getRunner();
+    const runner: RunnerInvokerInterface = this.getRunner();
     return runner.getEndpointAuthorizationParameter(id, key);
   }
 
@@ -80,58 +80,58 @@ export default class RunnerInvoker implements IRunnerInvoker {
     }
 
     this._localizationInitialized = true;
-    const runner: IRunnerInvoker = this.getRunner();
-    return runner.locInitialize(folder);
+    const runner: RunnerInvokerInterface = this.getRunner();
+    runner.locInitialize(folder);
   }
 
-  public loc(key: string, ...param: any[]): string {
+  public loc(key: string, ...param: string[]): string {
     if (!this._localizationInitialized) {
       throw new Error(
         "RunnerInvoker.locInitialize must be called before RunnerInvoker.loc.",
       );
     }
 
-    const runner: IRunnerInvoker = this.getRunner();
+    const runner: RunnerInvokerInterface = this.getRunner();
     return runner.loc(key, ...param);
   }
 
   public logDebug(message: string): void {
-    const runner: IRunnerInvoker = this.getRunner();
+    const runner: RunnerInvokerInterface = this.getRunner();
     runner.logDebug(message);
   }
 
   public logError(message: string): void {
-    const runner: IRunnerInvoker = this.getRunner();
+    const runner: RunnerInvokerInterface = this.getRunner();
     runner.logError(message);
   }
 
   public logWarning(message: string): void {
-    const runner: IRunnerInvoker = this.getRunner();
+    const runner: RunnerInvokerInterface = this.getRunner();
     runner.logWarning(message);
   }
 
   public setStatusFailed(message: string): void {
-    const runner: IRunnerInvoker = this.getRunner();
-    return runner.setStatusFailed(message);
+    const runner: RunnerInvokerInterface = this.getRunner();
+    runner.setStatusFailed(message);
   }
 
   public setStatusSkipped(message: string): void {
-    const runner: IRunnerInvoker = this.getRunner();
-    return runner.setStatusSkipped(message);
+    const runner: RunnerInvokerInterface = this.getRunner();
+    runner.setStatusSkipped(message);
   }
 
   public setStatusSucceeded(message: string): void {
-    const runner: IRunnerInvoker = this.getRunner();
-    return runner.setStatusSucceeded(message);
+    const runner: RunnerInvokerInterface = this.getRunner();
+    runner.setStatusSucceeded(message);
   }
 
   public setSecret(value: string): void {
-    const runner: IRunnerInvoker = this.getRunner();
-    return runner.setSecret(value);
+    const runner: RunnerInvokerInterface = this.getRunner();
+    runner.setSecret(value);
   }
 
-  private getRunner(): IRunnerInvoker {
-    if (this._runnerInvoker !== undefined) {
+  private getRunner(): RunnerInvokerInterface {
+    if (typeof this._runnerInvoker !== "undefined") {
       return this._runnerInvoker;
     }
 

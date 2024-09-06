@@ -6,34 +6,31 @@
 import "reflect-metadata";
 import * as Converter from "../../src/utilities/converter";
 import * as InputsDefault from "../../src/metrics/inputsDefault";
-import { anyString, deepEqual, instance, mock, verify, when } from "ts-mockito";
-import { DecimalRadix } from "../../src/utilities/constants";
+import { deepEqual, instance, mock, verify, when } from "ts-mockito";
 import Inputs from "../../src/metrics/inputs";
 import Logger from "../../src/utilities/logger";
 import RunnerInvoker from "../../src/runners/runnerInvoker";
+import { anyString } from "../testUtilities/mockito";
 import assert from "node:assert/strict";
+import { decimalRadix } from "../../src/utilities/constants";
 
 describe("inputs.ts", (): void => {
-  const adjustingAlwaysCloseComment: string =
+  const adjustingAlwaysCloseComment =
     "Adjusting the always-close-comment mode input to 'false'.";
-  const adjustingBaseSizeResource: string = `Adjusting the base size input to '${InputsDefault.baseSize}'.`;
-  const adjustingGrowthRateResource: string = `Adjusting the growth rate input to '${InputsDefault.growthRate}'.`;
-  const adjustingTestFactorResource: string = `Adjusting the test factor input to '${InputsDefault.testFactor}'.`;
-  const adjustingFileMatchingPatternsResource: string = `Adjusting the file matching patterns input to '${JSON.stringify(InputsDefault.fileMatchingPatterns)}'.`;
-  const adjustingCodeFileExtensionsResource: string = `Adjusting the code file extensions input to '${JSON.stringify(InputsDefault.codeFileExtensions)}'.`;
-  const disablingTestFactorResource: string =
-    "Disabling the test factor validation.";
-  const settingAlwaysCloseComment: string =
+  const adjustingBaseSizeResource = `Adjusting the base size input to '${String(InputsDefault.baseSize)}'.`;
+  const adjustingGrowthRateResource = `Adjusting the growth rate input to '${String(InputsDefault.growthRate)}'.`;
+  const adjustingTestFactorResource = `Adjusting the test factor input to '${String(InputsDefault.testFactor)}'.`;
+  const adjustingFileMatchingPatternsResource = `Adjusting the file matching patterns input to '${JSON.stringify(InputsDefault.fileMatchingPatterns)}'.`;
+  const adjustingCodeFileExtensionsResource = `Adjusting the code file extensions input to '${JSON.stringify(InputsDefault.codeFileExtensions)}'.`;
+  const disablingTestFactorResource = "Disabling the test factor validation.";
+  const settingAlwaysCloseComment =
     "Setting the always-close-comment mode input to 'true'.";
-  const settingBaseSizeResource: string =
-    "Setting the base size input to 'VALUE'.";
-  const settingGrowthRateResource: string =
-    "Setting the growth rate input to 'VALUE'.";
-  const settingTestFactorResource: string =
-    "Setting the test factor input to 'VALUE'.";
-  const settingFileMatchingPatternsResource: string =
+  const settingBaseSizeResource = "Setting the base size input to 'VALUE'.";
+  const settingGrowthRateResource = "Setting the growth rate input to 'VALUE'.";
+  const settingTestFactorResource = "Setting the test factor input to 'VALUE'.";
+  const settingFileMatchingPatternsResource =
     "Setting the file matching patterns input to 'VALUE'.";
-  const settingCodeFileExtensionsResource: string =
+  const settingCodeFileExtensionsResource =
     "Setting the code file extensions input to 'VALUE'.";
 
   let logger: Logger;
@@ -377,7 +374,7 @@ describe("inputs.ts", (): void => {
             );
 
             // Assert
-            assert.equal(inputs.baseSize, parseInt(baseSize, DecimalRadix));
+            assert.equal(inputs.baseSize, parseInt(baseSize, decimalRadix));
             verify(logger.logDebug("* Inputs.initialize()")).once();
             verify(logger.logDebug("* Inputs.initializeBaseSize()")).once();
             verify(logger.logDebug("* Inputs.initializeGrowthRate()")).once();

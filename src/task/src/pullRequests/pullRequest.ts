@@ -43,7 +43,7 @@ export default class PullRequest {
 
     return RunnerInvoker.isGitHub
       ? process.env.GITHUB_BASE_REF !== ""
-      : process.env.SYSTEM_PULLREQUEST_PULLREQUESTID !== undefined;
+      : typeof process.env.SYSTEM_PULLREQUEST_PULLREQUESTID !== "undefined";
   }
 
   /**
@@ -84,7 +84,10 @@ export default class PullRequest {
   ): string | null {
     this._logger.logDebug("* PullRequest.getUpdatedDescription()");
 
-    if (currentDescription !== undefined && currentDescription.trim() !== "") {
+    if (
+      typeof currentDescription !== "undefined" &&
+      currentDescription.trim() !== ""
+    ) {
       return null;
     }
 
@@ -126,17 +129,13 @@ export default class PullRequest {
       sizeRegExp,
       testsRegExp,
     );
-    const finalRegExp: string = "(.*)";
-    const completeRegExp: string = `^${this._runnerInvoker.loc("pullRequests.pullRequest.titleFormat", sizeIndicatorRegExp, finalRegExp)}$`;
+    const completeRegExp = `^${this._runnerInvoker.loc("pullRequests.pullRequest.titleFormat", sizeIndicatorRegExp, "(?<originalTitle>.*)")}$`;
 
-    const prefixRegExp: RegExp = new RegExp(completeRegExp, "u");
+    const prefixRegExp = new RegExp(completeRegExp, "u");
     const prefixRegExpMatches: RegExpMatchArray | null =
       currentTitle.match(prefixRegExp);
-    let originalTitle: string = currentTitle;
-    if (prefixRegExpMatches?.[3] !== undefined) {
-      originalTitle = prefixRegExpMatches[3];
-    }
-
+    const originalTitle: string =
+      prefixRegExpMatches?.groups?.originalTitle ?? currentTitle;
     return this._runnerInvoker.loc(
       "pullRequests.pullRequest.titleFormat",
       sizeIndicator,

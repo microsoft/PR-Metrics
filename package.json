@@ -14,7 +14,7 @@
     "build": "npm run build:release && npm run build:package && npm run build:docs",
     "clean": "rimraf debug && rimraf release",
     "deploy": "npm run build:release && exitzero tfx build tasks delete --task-id 907d3b28-6b37-4ac7-ac75-9631ee53e512 --no-prompt && tfx build tasks upload --task-path release/task --no-prompt",
-    "lint": "eslint --fix",
+    "lint": "eslint --fix **/*.ts",
     "test": "npm run build:debug && cd debug/task && c8 --reporter=text --reporter=text-summary mocha tests/**/*.spec.js",
     "test:fast": "cross-env-shell \"mkdirp debug && ncp src debug\" && cd debug/task && tsc --sourceMap && c8 --reporter=text --reporter=text-summary mocha tests/**/*.spec.js",
     "update:package": "npm update"
@@ -52,6 +52,7 @@
     "axios": "1.7.4",
     "azure-devops-node-api": "14.0.2",
     "azure-pipelines-task-lib": "4.16.0",
+    "http-status-codes": "2.3.0",
     "isomorphic-fetch": "3.0.0",
     "octokit": "3.2.1",
     "parse-git-diff": "0.0.15",

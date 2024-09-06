@@ -31,6 +31,15 @@ export default class Logger {
   }
 
   /**
+   * Filter messages so that control strings are not printed to `stdout`.
+   * @param message The message to filter.
+   * @returns The filtered message.
+   */
+  private static filterMessage(message: string): string {
+    return message.replace(/##(?:vso)?\[/giu, "");
+  }
+
+  /**
    * Logs a debug message.
    * @param message The message to log.
    */
@@ -74,29 +83,26 @@ export default class Logger {
    * Logs an error object.
    * @param error The error object to log.
    */
-  public logErrorObject(error: any): void {
-    const name: string = error.name;
+  public logErrorObject(error: Error): void {
+    const { name } = error;
     const properties: string[] = Object.getOwnPropertyNames(error);
-    properties.forEach((property: string): void => {
-      this.logInfo(`${name} – ${property}: ${JSON.stringify(error[property])}`);
-    });
+    const errorRecord: Record<string, unknown> = error as unknown as Record<
+      string,
+      unknown
+    >;
+    for (const property of properties) {
+      this.logInfo(
+        `${name} – ${property}: ${JSON.stringify(errorRecord[property])}`,
+      );
+    }
   }
 
   /**
    * Replays the messages logged.
    */
   public replay(): void {
-    this._messages.forEach((message: string): void => {
+    for (const message of this._messages) {
       this._consoleWrapper.log(`🔁 ${message}`);
-    });
-  }
-
-  /**
-   * Filter messages so that control strings are not printed to `stdout`.
-   * @param message The message to filter.
-   * @returns The filtered message.
-   */
-  private static filterMessage(message: string): string {
-    return message.replace(/##(vso)?\[/giu, "");
+    }
   }
 }

@@ -109,9 +109,9 @@ describe("pullRequest.ts", (): void => {
       runnerInvoker.loc(
         "pullRequests.pullRequest.titleFormat",
         "(XS|S|M|L|\\d*XL)(✔|⚠️)?",
-        "(.*)",
+        "(?<originalTitle>.*)",
       ),
-    ).thenReturn("(XS|S|M|L|\\d*XL)(✔|⚠️)? ◾ (.*)");
+    ).thenReturn("(XS|S|M|L|\\d*XL)(✔|⚠️)? ◾ (?<originalTitle>.*)");
   });
 
   describe("isPullRequest", (): void => {

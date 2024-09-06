@@ -26,7 +26,7 @@ export default class TokenManager {
   private readonly _logger: Logger;
   private readonly _runnerInvoker: RunnerInvoker;
 
-  private _previouslyInvoked: boolean = false;
+  private _previouslyInvoked = false;
 
   /**
    * Initializes a new instance of the `TokenManager` class.
@@ -58,7 +58,7 @@ export default class TokenManager {
     this._previouslyInvoked = true;
     const workloadIdentityFederation: string | undefined =
       this._runnerInvoker.getInput(["Workload", "Identity", "Federation"]);
-    if (workloadIdentityFederation === undefined) {
+    if (typeof workloadIdentityFederation === "undefined") {
       this._logger.logDebug(
         "No workload identity federation specified. Using Personal Access Token (PAT) for authentication.",
       );
@@ -76,7 +76,7 @@ export default class TokenManager {
       return this._runnerInvoker.loc(
         "repos.tokenManager.incorrectAuthorizationScheme",
         workloadIdentityFederation,
-        authorizationScheme,
+        String(authorizationScheme),
       );
     }
 
@@ -200,7 +200,7 @@ export default class TokenManager {
     const scheme: string | undefined = endpointAuthorization?.scheme;
     if (scheme !== "OAuth") {
       throw new Error(
-        `Could not acquire authorization token from workload identity federation as the scheme was '${scheme}'.`,
+        `Could not acquire authorization token from workload identity federation as the scheme was '${scheme ?? ""}'.`,
       );
     }
 
@@ -208,7 +208,7 @@ export default class TokenManager {
       "Acquired authorization token from workload identity federation.",
     );
     return validateString(
-      endpointAuthorization!.parameters.AccessToken,
+      endpointAuthorization?.parameters.AccessToken,
       "endpointAuthorization.parameters.AccessToken",
       "TokenManager.getSystemAccessToken()",
     );

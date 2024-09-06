@@ -4,9 +4,9 @@
  */
 
 import * as InputsDefault from "./inputsDefault";
-import { DecimalRadix } from "../utilities/constants";
 import Logger from "../utilities/logger";
 import RunnerInvoker from "../runners/runnerInvoker";
+import { decimalRadix } from "../utilities/constants";
 import { singleton } from "tsyringe";
 
 /**
@@ -18,11 +18,11 @@ export default class Inputs {
   private readonly _logger: Logger;
   private readonly _runnerInvoker: RunnerInvoker;
 
-  private _isInitialized: boolean = false;
-  private _baseSize: number = 0;
-  private _growthRate: number = 0;
+  private _isInitialized = false;
+  private _baseSize = 0;
+  private _growthRate = 0;
   private _testFactor: number | null = 0;
-  private _alwaysCloseComment: boolean = false;
+  private _alwaysCloseComment = false;
   private _fileMatchingPatterns: string[] = [];
   private _codeFileExtensions: Set<string> = new Set<string>();
 
@@ -149,7 +149,7 @@ export default class Inputs {
     this._logger.logDebug("* Inputs.initializeBaseSize()");
 
     const convertedValue: number =
-      baseSize === undefined ? NaN : parseInt(baseSize, DecimalRadix);
+      typeof baseSize === "undefined" ? NaN : parseInt(baseSize, decimalRadix);
     if (!isNaN(convertedValue) && convertedValue > 0) {
       this._baseSize = convertedValue;
       const baseSizeString: string = this._baseSize.toLocaleString();
@@ -176,7 +176,7 @@ export default class Inputs {
     this._logger.logDebug("* Inputs.initializeGrowthRate()");
 
     const convertedValue: number =
-      growthRate === undefined ? NaN : parseFloat(growthRate);
+      typeof growthRate === "undefined" ? NaN : parseFloat(growthRate);
     if (!isNaN(convertedValue) && convertedValue > 1.0) {
       this._growthRate = convertedValue;
       const growthRateString: string = this._growthRate.toLocaleString();
@@ -203,7 +203,7 @@ export default class Inputs {
     this._logger.logDebug("* Inputs.initializeTestFactor()");
 
     const convertedValue: number =
-      testFactor === undefined ? NaN : parseFloat(testFactor);
+      typeof testFactor === "undefined" ? NaN : parseFloat(testFactor);
     if (!isNaN(convertedValue) && convertedValue >= 0.0) {
       if (convertedValue === 0.0) {
         this._testFactor = null;
@@ -261,7 +261,7 @@ export default class Inputs {
     this._logger.logDebug("* Inputs.initializeFileMatchingPatterns()");
 
     if (
-      fileMatchingPatterns !== undefined &&
+      typeof fileMatchingPatterns !== "undefined" &&
       fileMatchingPatterns.trim() !== ""
     ) {
       this._fileMatchingPatterns = fileMatchingPatterns
@@ -297,39 +297,39 @@ export default class Inputs {
   ): void {
     this._logger.logDebug("* Inputs.initializeCodeFileExtensions()");
 
-    if (codeFileExtensions !== undefined && codeFileExtensions.trim() !== "") {
+    if (
+      typeof codeFileExtensions !== "undefined" &&
+      codeFileExtensions.trim() !== ""
+    ) {
+      const wildcardStart = "*.";
+      const periodStart = ".";
+
       const codeFileExtensionsArray: string[] = codeFileExtensions
         .replace(/\n$/gu, "")
         .split("\n");
-      codeFileExtensionsArray.forEach((value: string): void => {
-        let modifiedValue: string = value;
-        if (modifiedValue.startsWith("*.")) {
-          modifiedValue = modifiedValue.substring(2);
-        } else if (modifiedValue.startsWith(".")) {
-          modifiedValue = modifiedValue.substring(1);
+      for (const value of codeFileExtensionsArray) {
+        let modifiedValue = value;
+        if (modifiedValue.startsWith(wildcardStart)) {
+          modifiedValue = modifiedValue.substring(wildcardStart.length);
+        } else if (modifiedValue.startsWith(periodStart)) {
+          modifiedValue = modifiedValue.substring(periodStart.length);
         }
 
         this._codeFileExtensions.add(modifiedValue.toLowerCase());
-      });
-      const codeFileExtensionsString: string = JSON.stringify(
-        Array.from(this._codeFileExtensions),
-      );
+      }
       this._logger.logInfo(
         this._runnerInvoker.loc(
           "metrics.inputs.settingCodeFileExtensions",
-          codeFileExtensionsString,
+          JSON.stringify(Array.from(this._codeFileExtensions)),
         ),
       );
       return;
     }
 
-    const codeFileExtensionsString: string = JSON.stringify(
-      InputsDefault.codeFileExtensions,
-    );
     this._logger.logInfo(
       this._runnerInvoker.loc(
         "metrics.inputs.adjustingCodeFileExtensions",
-        codeFileExtensionsString,
+        JSON.stringify(InputsDefault.codeFileExtensions),
       ),
     );
     this._codeFileExtensions = new Set<string>(

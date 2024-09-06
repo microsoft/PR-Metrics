@@ -6,22 +6,22 @@
 /**
  * The default base size, which is the maximum number of new lines in an extra small pull request.
  */
-export const baseSize: number = 200;
+export const baseSize = 200;
 
 /**
  * The default growth rate, which is applied to the base size for calculating the size of larger pull requests.
  */
-export const growthRate: number = 2.0;
+export const growthRate = 2.0;
 
 /**
  * The default test factor, which is the number of lines of test code expected for each line of product code.
  */
-export const testFactor: number = 1.0;
+export const testFactor = 1.0;
 
 /**
  * The default value for always close the size and test comment, instead of leaving it open when requiring attention.
  */
-export const alwaysCloseComment: boolean = false;
+export const alwaysCloseComment = false;
 
 /**
  * The default file matching patterns, which is the set of globs specifying the files and folders to include.

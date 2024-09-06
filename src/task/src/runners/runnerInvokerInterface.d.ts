@@ -4,12 +4,12 @@
  */
 
 import { EndpointAuthorization } from "./endpointAuthorization";
-import { GitWritableStream } from "../git/gitWritableStream";
+import ExecOutput from "./execOutput";
 
 /**
  * An interface for invoking runner functionality with any underlying runner.
  */
-export default interface IRunnerInvoker {
+export default interface RunnerInvokerInterface {
   /**
    * Asynchronously executes an external tool.
    * @param tool The tool executable to run.
@@ -62,7 +62,7 @@ export default interface IRunnerInvoker {
    * @param param Optional additional parameters for formatting the string.
    * @returns The localized and formatted string.
    */
-  loc: (key: string, ...param: any[]) => string;
+  loc: (key: string, ...param: string[]) => string;
 
   /**
    * Logs a debug message.

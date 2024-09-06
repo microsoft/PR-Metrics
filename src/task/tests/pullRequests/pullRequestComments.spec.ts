@@ -11,7 +11,7 @@ import CodeMetricsData from "../../src/metrics/codeMetricsData";
 import CommentData from "../../src/repos/interfaces/commentData";
 import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces";
 import FileCommentData from "../../src/repos/interfaces/fileCommentData";
-import { FixedLengthArray } from "../../src/utilities/fixedLengthArray";
+import { FixedLengthArrayInterface } from "../../src/utilities/fixedLengthArrayInterface";
 import Inputs from "../../src/metrics/inputs";
 import Logger from "../../src/utilities/logger";
 import PullRequestCommentData from "../../src/repos/interfaces/pullRequestCommentData";
@@ -239,13 +239,12 @@ describe("pullRequestComments.ts", (): void => {
 
     {
       interface TestCaseType {
-        filesNotRequiringReview: string[];
         fileComments: FileCommentData[];
+        filesNotRequiringReview: string[];
       }
 
       const testCases: TestCaseType[] = [
         {
-          filesNotRequiringReview: ["folder/file1.ts", "file3.ts"],
           fileComments: [
             new FileCommentData(
               20,
@@ -253,9 +252,9 @@ describe("pullRequestComments.ts", (): void => {
               "file2.ts",
             ),
           ],
+          filesNotRequiringReview: ["folder/file1.ts", "file3.ts"],
         },
         {
-          filesNotRequiringReview: ["folder/file1.ts", "file3.ts"],
           fileComments: [
             new FileCommentData(20, "Content", "folder/file1.ts"),
             new FileCommentData(
@@ -264,9 +263,9 @@ describe("pullRequestComments.ts", (): void => {
               "file2.ts",
             ),
           ],
+          filesNotRequiringReview: ["folder/file1.ts", "file3.ts"],
         },
         {
-          filesNotRequiringReview: ["file3.ts"],
           fileComments: [
             new FileCommentData(
               20,
@@ -279,11 +278,12 @@ describe("pullRequestComments.ts", (): void => {
               "file2.ts",
             ),
           ],
+          filesNotRequiringReview: ["file3.ts"],
         },
       ];
 
       testCases.forEach(
-        ({ filesNotRequiringReview, fileComments }: TestCaseType): void => {
+        ({ fileComments, filesNotRequiringReview }: TestCaseType): void => {
           it(`should return the expected result for files not requiring review when the comment is present with files '${JSON.stringify(fileComments)}'`, async (): Promise<void> => {
             // Arrange
             const comments: CommentData = new CommentData();
@@ -646,7 +646,7 @@ describe("pullRequestComments.ts", (): void => {
 
   describe("getMetricsComment()", (): void => {
     {
-      const testCases: FixedLengthArray<number, 5>[] = [
+      const testCases: FixedLengthArrayInterface<number, 5>[] = [
         [0, 0, 0, 0, 0],
         [1, 0, 1, 0, 1],
         [1, 1, 2, 1, 3],
@@ -654,8 +654,8 @@ describe("pullRequestComments.ts", (): void => {
         [1000000, 1000000, 2000000, 1000000, 3000000],
       ];
 
-      testCases.forEach((code: FixedLengthArray<number, 5>): void => {
-        it(`should return the expected result for metrics '[${code[0]}, ${code[1]}, ${code[2]}, ${code[3]}, ${code[4]}]'`, async (): Promise<void> => {
+      testCases.forEach((code: FixedLengthArrayInterface<number, 5>): void => {
+        it(`should return the expected result for metrics '[${String(code[0])}, ${String(code[1])}, ${String(code[2])}, ${String(code[3])}, ${String(code[4])}]'`, async (): Promise<void> => {
           // Arrange
           when(codeMetrics.getMetrics()).thenResolve(
             new CodeMetricsData(code[0], code[1], code[3]),
@@ -708,7 +708,7 @@ describe("pullRequestComments.ts", (): void => {
       const testCases: number[] = [200, 1000, 1000000];
 
       testCases.forEach((baseSize: number): void => {
-        it(`should return the expected result when the pull request is not small and the base size is '${baseSize}'`, async (): Promise<void> => {
+        it(`should return the expected result when the pull request is not small and the base size is '${String(baseSize)}'`, async (): Promise<void> => {
           // Arrange
           when(codeMetrics.isSmall()).thenResolve(false);
           when(inputs.baseSize).thenReturn(baseSize);
@@ -927,7 +927,7 @@ describe("pullRequestComments.ts", (): void => {
 
       testCases.forEach(
         ({ isSmall, isSufficientlyTested }: TestCaseType): void => {
-          it(`should return Active when the pull request small status is '${isSmall.toString()}' and the sufficient test coverage status is '${Converter.toString(isSufficientlyTested)}'`, async (): Promise<void> => {
+          it(`should return Active when the pull request small status is '${String(isSmall)}' and the sufficient test coverage status is '${Converter.toString(isSufficientlyTested)}'`, async (): Promise<void> => {
             // Arrange
             when(codeMetrics.isSmall()).thenResolve(isSmall);
             when(codeMetrics.isSufficientlyTested()).thenResolve(
