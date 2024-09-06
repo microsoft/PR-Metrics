@@ -81,6 +81,7 @@
     "mocha": "10.7.3",
     "ncp": "2.0.0",
     "npm-check-updates": "17.1.1",
+    "rimraf": "6.0.1",
     "source-map-support": "0.5.21",
     "tfx-cli": "0.17.0",
     "ts-mockito": "2.6.1",
