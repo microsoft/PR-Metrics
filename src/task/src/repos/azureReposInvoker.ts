@@ -92,7 +92,11 @@ export default class AzureReposInvoker extends BaseReposInvoker {
       const status: CommentThreadStatus =
         value.status ?? CommentThreadStatus.Unknown;
 
-      if (typeof value.threadContext === "undefined") {
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- The type definition is incorrect.
+      if (
+        value.threadContext === null ||
+        typeof value.threadContext === "undefined"
+      ) {
         result.pullRequestComments.push(
           new PullRequestCommentData(id, content, status),
         );
