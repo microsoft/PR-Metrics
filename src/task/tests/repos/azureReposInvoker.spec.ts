@@ -558,7 +558,7 @@ describe("azureReposInvoker.ts", (): void => {
       });
     }
 
-    it("should return the result when called with a pull request comment", async (): Promise<void> => {
+    it("should return the result when called with a pull request comment whose thread context is undefined", async (): Promise<void> => {
       // Arrange
       when(gitApi.getThreads("RepoID", 10, "Project")).thenResolve([
         { comments: [{ content: "Content" }], id: 1, status: 1 },
@@ -596,6 +596,53 @@ describe("azureReposInvoker.ts", (): void => {
       verify(
         logger.logDebug(
           '[{"comments":[{"content":"Content"}],"id":1,"status":1}]',
+        ),
+      ).once();
+    });
+
+    it("should return the result when called with a pull request comment whose thread context is null", async (): Promise<void> => {
+      // Arrange
+      when(gitApi.getThreads("RepoID", 10, "Project")).thenResolve([
+        {
+          comments: [{ content: "Content" }],
+          id: 1,
+          status: 1,
+          threadContext: null as unknown as undefined,
+        },
+      ]);
+      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(
+        instance(azureDevOpsApiWrapper),
+        instance(gitInvoker),
+        instance(logger),
+        instance(runnerInvoker),
+        instance(tokenManager),
+      );
+
+      // Act
+      const result: CommentData = await azureReposInvoker.getComments();
+
+      // Assert
+      assert.equal(result.pullRequestComments.length, 1);
+      assert.equal(result.pullRequestComments[0]?.id, 1);
+      assert.equal(result.pullRequestComments[0]?.content, "Content");
+      assert.equal(
+        result.pullRequestComments[0]?.status,
+        CommentThreadStatus.Active,
+      );
+      assert.equal(result.fileComments.length, 0);
+      verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler("PAT")).once();
+      verify(
+        azureDevOpsApiWrapper.getWebApiInstance(
+          "https://dev.azure.com/organization",
+          any(),
+        ),
+      ).once();
+      verify(gitApi.getThreads("RepoID", 10, "Project")).once();
+      verify(logger.logDebug("* AzureReposInvoker.getComments()")).once();
+      verify(logger.logDebug("* AzureReposInvoker.getGitApi()")).once();
+      verify(
+        logger.logDebug(
+          '[{"comments":[{"content":"Content"}],"id":1,"status":1,"threadContext":null}]',
         ),
       ).once();
     });
