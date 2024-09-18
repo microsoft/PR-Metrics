@@ -148,6 +148,23 @@ when using this trigger.**
 Instructions on using the action within Azure Pipelines can be found
 [here][azurepipelinestask].
 
+## Git History
+
+Depending on the nature of your repo history, it may be necessary to fetch Git
+history during checkout. This can be done by updating the `actions/checkout`
+step:
+
+```YAML
+- uses: actions/checkout@4.1.7
+  fetch-depth: 0
+```
+
+In many cases, `fetch-depth` will not be required so it is recommended not to
+set this unless the task explicitly requests it. It may also be possible to set
+this to a value greater than 0 if you only require a partial history, but it can
+be difficult to determine a value that will work consistently, due to the nature
+of Git history.
+
 ## Troubleshooting
 
 A set of steps for troubleshooting any issues encountered can be found

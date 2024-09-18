@@ -94,15 +94,31 @@ You can use a name other than `PR_Metrics_Access_Token` if you wish, but you
 will need to keep the name unified across the variable and task definitions. The
 name `PR_METRICS_ACCESS_TOKEN` cannot be altered.
 
+## Git History
+
+Depending on the nature of your repo history, it may be necessary to fetch Git
+history during checkout. This can be done by updating the `checkout` step:
+
+```YAML
+- checkout: self
+  fetchDepth: 0
+```
+
+Alternatively, if using classic pipelines, you can disable 'Shallow fetch' under
+the build process phase settings.
+
+In many cases, `fetchDepth` will not be required so it is recommended not to set
+this unless the task explicitly requests it. It may also be possible to set this
+to a value greater than 0 if you only require a partial history, but it can be
+difficult to determine a value that will work consistently, due to the nature of
+Git history.
+
 ## Always Close Comment
 
-The `AlwaysCloseComment` option is not available for GitHub PRs as the main size
-and test comment there cannot be open by default.
-
-By default in Azure DevOps, the comment is left open if it requires further
-attention, such as when a smaller PR or increased test coverage is suggested. If
-this input is set to `true`, the comment will be closed, to prevent it blocking
-automatic closure of the PR.
+By default, the comment is left open if it requires further attention, such as
+when a smaller PR or increased test coverage is suggested. If the
+`AlwaysCloseComment` option is set to `true`, the comment will be closed, to
+prevent it blocking automatic closure of the PR.
 
 [addingtask]: https://docs.microsoft.com/azure/devops/pipelines/customize-pipeline
 [workloadidentityfederation]: workload-identity-federation.md
