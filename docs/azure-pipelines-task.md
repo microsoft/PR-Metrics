@@ -96,8 +96,8 @@ name `PR_METRICS_ACCESS_TOKEN` cannot be altered.
 
 ## Git History
 
-Depending on the nature of your repo history, it may be necessary to fetch Git
-history during checkout. This can be done by updating the `checkout` step:
+Depending on the nature of your repository history, it may be necessary to fetch
+Git history during checkout. This can be done by updating the `checkout` step:
 
 ```YAML
 - checkout: self
