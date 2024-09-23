@@ -96,8 +96,9 @@ name `PR_METRICS_ACCESS_TOKEN` cannot be altered.
 
 ## Git History
 
-Depending on the nature of your repository history, it may be necessary to fetch
-Git history during checkout. This can be done by updating the `checkout` step:
+If your repository contains _any_ non-linear history, it will be necessary to
+fetch Git history during checkout. This can be done by updating the `checkout`
+step:
 
 ```YAML
 - checkout: self
@@ -113,6 +114,9 @@ to a value greater than 0 if you only require a partial history, but it can be
 difficult to determine a value that will work consistently, due to the nature of
 Git history.
 
+To avoid this, it is recommended to only use commit types that squash the Git
+history such as ["squash merge" or "rebase and fast-forward"][squashmerge].
+
 ## Always Close Comment
 
 By default, the comment is left open if it requires further attention, such as
@@ -124,3 +128,4 @@ prevent it blocking automatic closure of the PR.
 [workloadidentityfederation]: workload-identity-federation.md
 [githubpat]: https://docs.github.com/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token
 [githubsecret]: https://docs.github.com/actions/reference/encrypted-secrets
+[squashmerge]: https://learn.microsoft.com/azure/devops/repos/git/merging-with-squash

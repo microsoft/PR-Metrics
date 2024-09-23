@@ -150,9 +150,9 @@ Instructions on using the action within Azure Pipelines can be found
 
 ## Git History
 
-Depending on the nature of your repository history, it may be necessary to fetch
-Git history during checkout. This can be done by updating the `actions/checkout`
-step:
+If your repository contains _any_ non-linear history, it will be necessary to
+fetch Git history during checkout. This can be done by updating the
+`actions/checkout` step:
 
 ```YAML
 - uses: actions/checkout@4.1.7
@@ -164,6 +164,9 @@ set this unless the action explicitly requests it. It may also be possible to
 set this to a value greater than 0 if you only require a partial history, but it
 can be difficult to determine a value that will work consistently, due to the
 nature of Git history.
+
+To avoid this, it is recommended to only use commit types that squash the Git
+history such as "squash merge" or "rebase and fast-forward".
 
 ## Troubleshooting
 
