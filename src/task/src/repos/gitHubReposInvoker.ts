@@ -288,7 +288,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
           this._logger.logWarning(`Octokit – ${message}`);
         },
       },
-      userAgent: "PRMetrics/v1.6.3",
+      userAgent: "PRMetrics/v1.6.4",
     };
 
     if (RunnerInvoker.isGitHub) {
