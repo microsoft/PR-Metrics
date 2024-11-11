@@ -166,8 +166,7 @@ can be difficult to determine a value that will work consistently, due to the
 nature of Git history.
 
 To avoid this, it is recommended to only use commit types that squash the Git
-history by using a setting such as
-["require linear history"][github-linear-history].
+history such as "squash merge" or "rebase and fast-forward".
 
 ## Troubleshooting
 
@@ -199,7 +198,6 @@ comments.
 [defaultcodefileextensions]: docs/default-code-file-extensions.md
 [azurepipelinestask]: docs/azure-pipelines-task.md
 [github-token-pemissions]: https://docs.github.com/actions/security-guides/automatic-token-authentication#permissions-for-the-github_token
-[github-linear-history]: https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/available-rules-for-rulesets#require-linear-history
 [contributing]: .github/CONTRIBUTING.md
 [license]: LICENSE
 [codeofconduct]: https://opensource.microsoft.com/codeofconduct/
