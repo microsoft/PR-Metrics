@@ -11,6 +11,9 @@
     },
     {
       "pattern": "^https://marketplace.visualstudio.com/manage/publishers/ms-omex$"
+    },
+    {
+      "pattern": "^mailto:"
     }
   ]
 }
