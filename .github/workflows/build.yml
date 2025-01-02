@@ -120,7 +120,7 @@ jobs:
         working-directory: ${{ github.workspace }}/release
 
       - name: Release – Upload
-        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
+        uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4.5.0
         with:
           name: PRMetrics
           path: ${{ github.workspace }}/ms-omex.PRMetrics.vsix
@@ -174,7 +174,7 @@ jobs:
           config-file: .github/linters/markdown-link-check.json
 
       - name: Initialize
-        uses: github/codeql-action/init@f09c1c0a94de965c15400f5634aa42fac8fb8f88 # v3.27.5
+        uses: github/codeql-action/init@48ab28a6f5dbc2a99bf1e0131198dd8f1df78169 # v3.28.0
         with:
           build-mode: none
           config-file: .github/linters/codeql.yml
@@ -182,7 +182,7 @@ jobs:
           queries: security-extended,security-and-quality
 
       - name: Analyze
-        uses: github/codeql-action/analyze@f09c1c0a94de965c15400f5634aa42fac8fb8f88 # v3.27.5
+        uses: github/codeql-action/analyze@48ab28a6f5dbc2a99bf1e0131198dd8f1df78169 # v3.28.0
         with:
           category: TypeScript
 
