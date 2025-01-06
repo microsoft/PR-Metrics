@@ -163,6 +163,7 @@ export default class OctokitGitDiffParser {
 
             break;
           }
+          case "DeletedFile":
           default:
             this._logger.logDebug(
               `Skipping file type '${file.type}' while performing diff parsing.`,
