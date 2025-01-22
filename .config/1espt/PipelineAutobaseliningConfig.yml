@@ -14,3 +14,13 @@ pipelines:
           lastModifiedDate: 2025-01-06
         armory:
           lastModifiedDate: 2025-01-06
+  24127:
+    usedNonDefaultBranch: true
+    retail:
+      source:
+        credscan:
+          lastModifiedDate: 2025-01-22
+        eslint:
+          lastModifiedDate: 2025-01-22
+        armory:
+          lastModifiedDate: 2025-01-22
