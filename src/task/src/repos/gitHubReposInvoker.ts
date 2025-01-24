@@ -257,7 +257,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
   protected async invokeApiCall<Response>(
     action: () => Promise<Response>,
   ): Promise<Response> {
-    return super.invokeApiCall(
+    return BaseReposInvoker.invokeApiCall(
       action,
       this._runnerInvoker.loc(
         "repos.gitHubReposInvoker.insufficientGitHubAccessTokenPermissions",

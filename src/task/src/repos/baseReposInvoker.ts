@@ -23,7 +23,7 @@ export default abstract class BaseReposInvoker
    * @param accessErrorMessage The error message to insert if a caught error is due to insufficient access.
    * @returns A promise containing the response from the API call.
    */
-  protected async invokeApiCall<Response>(
+  protected static async invokeApiCall<Response>(
     action: () => Promise<Response>,
     accessErrorMessage: string,
   ): Promise<Response> {
