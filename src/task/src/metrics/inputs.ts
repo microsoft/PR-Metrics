@@ -110,34 +110,34 @@ export default class Inputs {
       return;
     }
 
-    const baseSize: string | undefined = this._runnerInvoker.getInput([
+    const baseSize: string | null = this._runnerInvoker.getInput([
       "Base",
       "Size",
     ]);
     this.initializeBaseSize(baseSize);
 
-    const growthRate: string | undefined = this._runnerInvoker.getInput([
+    const growthRate: string | null = this._runnerInvoker.getInput([
       "Growth",
       "Rate",
     ]);
     this.initializeGrowthRate(growthRate);
 
-    const testFactor: string | undefined = this._runnerInvoker.getInput([
+    const testFactor: string | null = this._runnerInvoker.getInput([
       "Test",
       "Factor",
     ]);
     this.initializeTestFactor(testFactor);
 
-    const alwaysCloseComment: string | undefined = this._runnerInvoker.getInput(
+    const alwaysCloseComment: string | null = this._runnerInvoker.getInput(
       ["Always", "Close", "Comment"],
     );
     this.initializeAlwaysCloseComment(alwaysCloseComment);
 
-    const fileMatchingPatterns: string | undefined =
+    const fileMatchingPatterns: string | null =
       this._runnerInvoker.getInput(["File", "Matching", "Patterns"]);
     this.initializeFileMatchingPatterns(fileMatchingPatterns);
 
-    const codeFileExtensions: string | undefined = this._runnerInvoker.getInput(
+    const codeFileExtensions: string | null = this._runnerInvoker.getInput(
       ["Code", "File", "Extensions"],
     );
     this.initializeCodeFileExtensions(codeFileExtensions);
@@ -145,11 +145,11 @@ export default class Inputs {
     this._isInitialized = true;
   }
 
-  private initializeBaseSize(baseSize: string | undefined): void {
+  private initializeBaseSize(baseSize: string | null): void {
     this._logger.logDebug("* Inputs.initializeBaseSize()");
 
     const convertedValue: number =
-      typeof baseSize === "undefined" ? NaN : parseInt(baseSize, decimalRadix);
+      baseSize === null ? NaN : parseInt(baseSize, decimalRadix);
     if (!isNaN(convertedValue) && convertedValue > 0) {
       this._baseSize = convertedValue;
       const baseSizeString: string = this._baseSize.toLocaleString();
@@ -172,11 +172,11 @@ export default class Inputs {
     this._baseSize = InputsDefault.baseSize;
   }
 
-  private initializeGrowthRate(growthRate: string | undefined): void {
+  private initializeGrowthRate(growthRate: string | null): void {
     this._logger.logDebug("* Inputs.initializeGrowthRate()");
 
     const convertedValue: number =
-      typeof growthRate === "undefined" ? NaN : parseFloat(growthRate);
+      growthRate === null ? NaN : parseFloat(growthRate);
     if (!isNaN(convertedValue) && convertedValue > 1.0) {
       this._growthRate = convertedValue;
       const growthRateString: string = this._growthRate.toLocaleString();
@@ -199,11 +199,11 @@ export default class Inputs {
     this._growthRate = InputsDefault.growthRate;
   }
 
-  private initializeTestFactor(testFactor: string | undefined): void {
+  private initializeTestFactor(testFactor: string | null): void {
     this._logger.logDebug("* Inputs.initializeTestFactor()");
 
     const convertedValue: number =
-      typeof testFactor === "undefined" ? NaN : parseFloat(testFactor);
+      testFactor === null ? NaN : parseFloat(testFactor);
     if (!isNaN(convertedValue) && convertedValue >= 0.0) {
       if (convertedValue === 0.0) {
         this._testFactor = null;
@@ -235,11 +235,11 @@ export default class Inputs {
   }
 
   private initializeAlwaysCloseComment(
-    alwaysCloseComment: string | undefined,
+    alwaysCloseComment: string | null,
   ): void {
     this._logger.logDebug("* Inputs.initializeAlwaysCloseComment()");
 
-    const convertedValue: boolean | undefined =
+    const convertedValue: boolean | null =
       alwaysCloseComment?.toLowerCase() === "true";
     if (convertedValue) {
       this._alwaysCloseComment = convertedValue;
@@ -256,12 +256,12 @@ export default class Inputs {
   }
 
   private initializeFileMatchingPatterns(
-    fileMatchingPatterns: string | undefined,
+    fileMatchingPatterns: string | null,
   ): void {
     this._logger.logDebug("* Inputs.initializeFileMatchingPatterns()");
 
     if (
-      typeof fileMatchingPatterns !== "undefined" &&
+      fileMatchingPatterns !== null &&
       fileMatchingPatterns.trim() !== ""
     ) {
       this._fileMatchingPatterns = fileMatchingPatterns
@@ -293,12 +293,12 @@ export default class Inputs {
   }
 
   private initializeCodeFileExtensions(
-    codeFileExtensions: string | undefined,
+    codeFileExtensions: string | null,
   ): void {
     this._logger.logDebug("* Inputs.initializeCodeFileExtensions()");
 
     if (
-      typeof codeFileExtensions !== "undefined" &&
+      codeFileExtensions !== null &&
       codeFileExtensions.trim() !== ""
     ) {
       const wildcardStart = "*.";

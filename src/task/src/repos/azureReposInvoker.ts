@@ -337,7 +337,7 @@ export default class AzureReposInvoker extends BaseReposInvoker {
   private async getGitApi(): Promise<IGitApi> {
     this._logger.logDebug("* AzureReposInvoker.getGitApi()");
 
-    if (typeof this._gitApi !== "undefined") {
+    if (this._gitApi !== null) {
       return this._gitApi;
     }
 

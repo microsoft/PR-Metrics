@@ -61,7 +61,7 @@ export default class GitHubRunnerInvoker implements RunnerInvokerInterface {
     };
   }
 
-  public getInput(name: string[]): string | undefined {
+  public getInput(name: string[]): string | null {
     const formattedName: string = name.join("-").toUpperCase();
 
     // This method redirects to the Azure Pipelines logic as the library will store the input data.
@@ -72,11 +72,11 @@ export default class GitHubRunnerInvoker implements RunnerInvokerInterface {
     throw new Error("getEndpointAuthorization() unavailable in GitHub.");
   }
 
-  public getEndpointAuthorizationScheme(): string | undefined {
+  public getEndpointAuthorizationScheme(): string | null {
     throw new Error("getEndpointAuthorizationScheme() unavailable in GitHub.");
   }
 
-  public getEndpointAuthorizationParameter(): string | undefined {
+  public getEndpointAuthorizationParameter(): string | null {
     throw new Error(
       "getEndpointAuthorizationParameter() unavailable in GitHub.",
     );

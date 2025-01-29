@@ -50,7 +50,7 @@ export default class AzurePipelinesRunnerInvoker
     });
   }
 
-  public getInput(name: string[]): string | undefined {
+  public getInput(name: string[]): string | null {
     const formattedName: string = name.join("");
     return this._azurePipelinesRunnerWrapper.getInput(formattedName);
   }
@@ -58,9 +58,9 @@ export default class AzurePipelinesRunnerInvoker
   public getEndpointAuthorization(
     id: string,
   ): EndpointAuthorization | null {
-    const result: taskLib.EndpointAuthorization | undefined =
+    const result: taskLib.EndpointAuthorization | null =
       this._azurePipelinesRunnerWrapper.getEndpointAuthorization(id, true);
-    if (!result) {
+    if (result === null) {
       return null;
     }
 
@@ -70,7 +70,7 @@ export default class AzurePipelinesRunnerInvoker
     };
   }
 
-  public getEndpointAuthorizationScheme(id: string): string | undefined {
+  public getEndpointAuthorizationScheme(id: string): string | null {
     return this._azurePipelinesRunnerWrapper.getEndpointAuthorizationScheme(
       id,
       true,
@@ -80,7 +80,7 @@ export default class AzurePipelinesRunnerInvoker
   public getEndpointAuthorizationParameter(
     id: string,
     key: string,
-  ): string | undefined {
+  ): string | null {
     return this._azurePipelinesRunnerWrapper.getEndpointAuthorizationParameter(
       id,
       key,
