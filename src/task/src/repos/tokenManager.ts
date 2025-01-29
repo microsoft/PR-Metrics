@@ -194,7 +194,7 @@ export default class TokenManager {
   private getSystemAccessToken(): string {
     this._logger.logDebug("* TokenManager.getSystemAccessToken()");
 
-    const endpointAuthorization: EndpointAuthorization | undefined =
+    const endpointAuthorization: EndpointAuthorization | null =
       this._runnerInvoker.getEndpointAuthorization("SYSTEMVSSCONNECTION");
 
     const scheme: string | undefined = endpointAuthorization?.scheme;

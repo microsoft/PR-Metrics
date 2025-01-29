@@ -57,11 +57,11 @@ export default class AzurePipelinesRunnerInvoker
 
   public getEndpointAuthorization(
     id: string,
-  ): EndpointAuthorization | undefined {
+  ): EndpointAuthorization | null {
     const result: taskLib.EndpointAuthorization | undefined =
       this._azurePipelinesRunnerWrapper.getEndpointAuthorization(id, true);
     if (!result) {
-      return undefined;
+      return null;
     }
 
     return {

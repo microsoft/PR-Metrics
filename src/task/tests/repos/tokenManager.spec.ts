@@ -226,8 +226,8 @@ describe("tokenManager.ts", (): void => {
     });
 
     {
-      const testCases: (EndpointAuthorization | undefined)[] = [
-        undefined,
+      const testCases: (EndpointAuthorization | null)[] = [
+        null,
         {
           parameters: {
             other: "Other",
@@ -237,7 +237,7 @@ describe("tokenManager.ts", (): void => {
       ];
 
       testCases.forEach(
-        (endpointAuthorization: EndpointAuthorization | undefined): void => {
+        (endpointAuthorization: EndpointAuthorization | null): void => {
           it(`throws an error when endpoint authorization scheme is '${endpointAuthorization?.scheme ?? ""}'`, async (): Promise<void> => {
             // Arrange
             const tokenManager: TokenManager = new TokenManager(

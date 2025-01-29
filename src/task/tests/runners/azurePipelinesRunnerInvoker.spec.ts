@@ -105,7 +105,7 @@ describe("azurePipelinesRunnerInvoker.ts", (): void => {
       ).thenReturn(endpointAuthorization);
 
       // Act
-      const result: EndpointAuthorization | undefined =
+      const result: EndpointAuthorization | null =
         azurePipelinesRunnerInvoker.getEndpointAuthorization("id");
 
       // Assert
@@ -125,11 +125,11 @@ describe("azurePipelinesRunnerInvoker.ts", (): void => {
       ).thenReturn(undefined);
 
       // Act
-      const result: EndpointAuthorization | undefined =
+      const result: EndpointAuthorization | null =
         azurePipelinesRunnerInvoker.getEndpointAuthorization("id");
 
       // Assert
-      assert.equal(typeof result, "undefined");
+      assert.equal(result, null);
       verify(
         azurePipelinesRunnerWrapper.getEndpointAuthorization("id", true),
       ).once();

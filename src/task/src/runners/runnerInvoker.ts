@@ -54,7 +54,7 @@ export default class RunnerInvoker implements RunnerInvokerInterface {
 
   public getEndpointAuthorization(
     id: string,
-  ): EndpointAuthorization | undefined {
+  ): EndpointAuthorization | null {
     const runner: RunnerInvokerInterface = this.getRunner();
     return runner.getEndpointAuthorization(id);
   }

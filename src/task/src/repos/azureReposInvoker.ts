@@ -41,7 +41,7 @@ export default class AzureReposInvoker extends BaseReposInvoker {
   private _project = "";
   private _repositoryId = "";
   private _pullRequestId = 0;
-  private _gitApi: IGitApi | undefined;
+  private _gitApi: IGitApi | null = null;
 
   /**
    * Initializes a new instance of the `AzureReposInvoker` class.

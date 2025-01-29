@@ -68,7 +68,7 @@ export default class GitHubRunnerInvoker implements RunnerInvokerInterface {
     return this._azurePipelinesRunnerWrapper.getInput(formattedName);
   }
 
-  public getEndpointAuthorization(): EndpointAuthorization | undefined {
+  public getEndpointAuthorization(): EndpointAuthorization | null {
     throw new Error("getEndpointAuthorization() unavailable in GitHub.");
   }
 

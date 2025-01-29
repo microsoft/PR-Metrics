@@ -107,7 +107,7 @@ describe("gitHubRunnerInvoker.ts", (): void => {
       );
 
       // Act
-      const func: () => EndpointAuthorization | undefined = () =>
+      const func: () => EndpointAuthorization | null = () =>
         gitHubRunnerInvoker.getEndpointAuthorization();
 
       // Assert

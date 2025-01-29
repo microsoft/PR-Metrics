@@ -28,9 +28,9 @@ export default interface RunnerInvokerInterface {
   /**
    * Gets the authorization details for a service endpoint.
    * @param id The name of the service endpoint.
-   * @returns The authorization details or `undefined` if the endpoint was not found.
+   * @returns The authorization details or `null` if the endpoint was not found.
    */
-  getEndpointAuthorization: (id: string) => EndpointAuthorization | undefined;
+  getEndpointAuthorization: (id: string) => EndpointAuthorization | null;
 
   /**
    * Gets the endpoint authorization scheme for a service endpoint.
