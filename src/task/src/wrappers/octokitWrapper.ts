@@ -97,7 +97,7 @@ export default class OctokitWrapper {
       );
     }
 
-    const request: import("@octokit/plugin-rest-endpoint-methods").RestEndpointMethodTypes["pulls"]["update"]["parameters"] =
+    const request: import("@octokit/plugin-rest-endpoint-methods", { with: { "resolution-mode": "import" } }).RestEndpointMethodTypes["pulls"]["update"]["parameters"] =
       {
         owner,
         pull_number: pullRequestId,
