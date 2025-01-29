@@ -98,7 +98,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     );
 
     return {
-      description: result.data.body ?? undefined,
+      description: result.data.body ?? null,
       title: result.data.title,
     };
   }
@@ -149,8 +149,8 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
         this._owner,
         this._repo,
         this._pullRequestId,
-        title ?? undefined,
-        description ?? undefined,
+        title,
+        description,
       );
       this._logger.logDebug(JSON.stringify(result));
     });

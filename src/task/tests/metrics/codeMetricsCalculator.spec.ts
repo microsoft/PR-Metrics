@@ -388,11 +388,11 @@ describe("codeMetricsCalculator.ts", (): void => {
     it("should perform the expected actions when the description is missing", async (): Promise<void> => {
       // Arrange
       when(reposInvoker.getTitleAndDescription()).thenResolve({
-        description: undefined,
+        description: null,
         title: "Title",
       });
       when(pullRequest.getUpdatedTitle("Title")).thenResolve("S✔ ◾ Title");
-      when(pullRequest.getUpdatedDescription(undefined)).thenReturn(
+      when(pullRequest.getUpdatedDescription(null)).thenReturn(
         "Description",
       );
       const codeMetricsCalculator: CodeMetricsCalculator =
@@ -411,7 +411,7 @@ describe("codeMetricsCalculator.ts", (): void => {
       // Assert
       verify(logger.logDebug("* CodeMetricsCalculator.updateDetails()")).once();
       verify(pullRequest.getUpdatedTitle("Title")).once();
-      verify(pullRequest.getUpdatedDescription(undefined)).once();
+      verify(pullRequest.getUpdatedDescription(null)).once();
       verify(
         reposInvoker.setTitleAndDescription("S✔ ◾ Title", "Description"),
       ).once();

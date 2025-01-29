@@ -687,7 +687,7 @@ describe("gitHubReposInvoker.ts", (): void => {
 
       // Assert
       assert.equal(result.title, "Title");
-      assert.equal(typeof result.description, "undefined");
+      assert.equal(result.description, null);
       verify(octokitWrapper.initialize(any())).once();
       verify(octokitWrapper.getPull("microsoft", "PR-Metrics", 12345)).once();
       verify(
@@ -1166,7 +1166,7 @@ describe("gitHubReposInvoker.ts", (): void => {
           "PR-Metrics",
           12345,
           "Title",
-          undefined,
+          null,
         ),
       ).once();
       verify(
@@ -1209,7 +1209,7 @@ describe("gitHubReposInvoker.ts", (): void => {
           "microsoft",
           "PR-Metrics",
           12345,
-          undefined,
+          null,
           "Description",
         ),
       ).once();

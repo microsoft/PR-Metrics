@@ -88,8 +88,8 @@ export default class OctokitWrapper {
     owner: string,
     repo: string,
     pullRequestId: number,
-    title: string | undefined,
-    description: string | undefined,
+    title: string | null,
+    description: string | null,
   ): Promise<UpdatePullResponse> {
     if (typeof this._octokit === "undefined") {
       throw new Error(
@@ -97,13 +97,21 @@ export default class OctokitWrapper {
       );
     }
 
-    return this._octokit.rest.pulls.update({
-      body: description,
+    const request: import("@octokit/plugin-rest-endpoint-methods", { with: { "resolution-mode": "import" } }).RestEndpointMethodTypes["pulls"]["update"]["parameters"] = {
       owner,
       pull_number: pullRequestId,
       repo,
-      title,
-    });
+    }
+
+    if (title !== null) {
+      request.title = title;
+    }
+
+    if (description !== null) {
+      request.body = description;
+    }
+
+    return this._octokit.rest.pulls.update(request);
   }
 
   /**

@@ -80,12 +80,12 @@ export default class PullRequest {
    * @returns The value to which to update the description or `null` if the description is not to be updated.
    */
   public getUpdatedDescription(
-    currentDescription: string | undefined,
+    currentDescription: string | null,
   ): string | null {
     this._logger.logDebug("* PullRequest.getUpdatedDescription()");
 
     if (
-      typeof currentDescription !== "undefined" &&
+      currentDescription !== null &&
       currentDescription.trim() !== ""
     ) {
       return null;

@@ -154,7 +154,7 @@ export default class AzureReposInvoker extends BaseReposInvoker {
       "AzureReposInvoker.getTitleAndDescription()",
     );
     return {
-      description: result.description,
+      description: result.description ?? null,
       title,
     };
   }
