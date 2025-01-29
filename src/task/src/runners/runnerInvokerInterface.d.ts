@@ -45,10 +45,7 @@ export default interface RunnerInvokerInterface {
    * @param key The key to find the endpoint authorization parameter.
    * @returns The value of the endpoint authorization parameter value or `null` if the parameter was not found.
    */
-  getEndpointAuthorizationParameter: (
-    id: string,
-    key: string,
-  ) => string | null;
+  getEndpointAuthorizationParameter: (id: string, key: string) => string | null;
 
   /**
    * Initializes the mechanism for getting localized strings from the JSON resource file.

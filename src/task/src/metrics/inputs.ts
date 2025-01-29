@@ -128,18 +128,25 @@ export default class Inputs {
     ]);
     this.initializeTestFactor(testFactor);
 
-    const alwaysCloseComment: string | null = this._runnerInvoker.getInput(
-      ["Always", "Close", "Comment"],
-    );
+    const alwaysCloseComment: string | null = this._runnerInvoker.getInput([
+      "Always",
+      "Close",
+      "Comment",
+    ]);
     this.initializeAlwaysCloseComment(alwaysCloseComment);
 
-    const fileMatchingPatterns: string | null =
-      this._runnerInvoker.getInput(["File", "Matching", "Patterns"]);
+    const fileMatchingPatterns: string | null = this._runnerInvoker.getInput([
+      "File",
+      "Matching",
+      "Patterns",
+    ]);
     this.initializeFileMatchingPatterns(fileMatchingPatterns);
 
-    const codeFileExtensions: string | null = this._runnerInvoker.getInput(
-      ["Code", "File", "Extensions"],
-    );
+    const codeFileExtensions: string | null = this._runnerInvoker.getInput([
+      "Code",
+      "File",
+      "Extensions",
+    ]);
     this.initializeCodeFileExtensions(codeFileExtensions);
 
     this._isInitialized = true;
@@ -260,10 +267,7 @@ export default class Inputs {
   ): void {
     this._logger.logDebug("* Inputs.initializeFileMatchingPatterns()");
 
-    if (
-      fileMatchingPatterns !== null &&
-      fileMatchingPatterns.trim() !== ""
-    ) {
+    if (fileMatchingPatterns !== null && fileMatchingPatterns.trim() !== "") {
       this._fileMatchingPatterns = fileMatchingPatterns
         .replace(/\\/gu, "/")
         .replace(/\n$/gu, "")
@@ -297,10 +301,7 @@ export default class Inputs {
   ): void {
     this._logger.logDebug("* Inputs.initializeCodeFileExtensions()");
 
-    if (
-      codeFileExtensions !== null &&
-      codeFileExtensions.trim() !== ""
-    ) {
+    if (codeFileExtensions !== null && codeFileExtensions.trim() !== "") {
       const wildcardStart = "*.";
       const periodStart = ".";
 

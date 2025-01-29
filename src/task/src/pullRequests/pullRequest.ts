@@ -84,10 +84,7 @@ export default class PullRequest {
   ): string | null {
     this._logger.logDebug("* PullRequest.getUpdatedDescription()");
 
-    if (
-      currentDescription !== null &&
-      currentDescription.trim() !== ""
-    ) {
+    if (currentDescription !== null && currentDescription.trim() !== "") {
       return null;
     }
 

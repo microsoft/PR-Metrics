@@ -39,10 +39,7 @@ export default abstract class BaseReposInvoker
         StatusCodes.FORBIDDEN,
         StatusCodes.NOT_FOUND,
       ];
-      if (
-        statusCode !== null &&
-        accessErrorStatusCodes.includes(statusCode)
-      ) {
+      if (statusCode !== null && accessErrorStatusCodes.includes(statusCode)) {
         castedError.internalMessage = castedError.message;
         castedError.message = accessErrorMessage;
       }

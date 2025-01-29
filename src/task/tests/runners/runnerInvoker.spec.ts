@@ -167,10 +167,7 @@ describe("runnerInvoker.ts", (): void => {
       ).thenReturn("VALUE");
 
       // Act
-      const result: string | null = runnerInvoker.getInput([
-        "Test",
-        "Suffix",
-      ]);
+      const result: string | null = runnerInvoker.getInput(["Test", "Suffix"]);
 
       // Assert
       assert.equal(result, "VALUE");
@@ -194,10 +191,7 @@ describe("runnerInvoker.ts", (): void => {
       ).thenReturn("VALUE");
 
       // Act
-      const result: string | null = runnerInvoker.getInput([
-        "Test",
-        "Suffix",
-      ]);
+      const result: string | null = runnerInvoker.getInput(["Test", "Suffix"]);
 
       // Assert
       assert.equal(result, "VALUE");

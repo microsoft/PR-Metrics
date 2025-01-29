@@ -55,9 +55,7 @@ export default class AzurePipelinesRunnerInvoker
     return this._azurePipelinesRunnerWrapper.getInput(formattedName);
   }
 
-  public getEndpointAuthorization(
-    id: string,
-  ): EndpointAuthorization | null {
+  public getEndpointAuthorization(id: string): EndpointAuthorization | null {
     const result: taskLib.EndpointAuthorization | null =
       this._azurePipelinesRunnerWrapper.getEndpointAuthorization(id, true);
     if (result === null) {

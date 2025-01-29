@@ -392,9 +392,7 @@ describe("codeMetricsCalculator.ts", (): void => {
         title: "Title",
       });
       when(pullRequest.getUpdatedTitle("Title")).thenResolve("S✔ ◾ Title");
-      when(pullRequest.getUpdatedDescription(null)).thenReturn(
-        "Description",
-      );
+      when(pullRequest.getUpdatedDescription(null)).thenReturn("Description");
       const codeMetricsCalculator: CodeMetricsCalculator =
         new CodeMetricsCalculator(
           instance(gitInvoker),

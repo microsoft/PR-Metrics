@@ -940,13 +940,7 @@ describe("inputs.ts", (): void => {
 
     describe("fileMatchingPatterns", (): void => {
       {
-        const testCases: (string | null)[] = [
-          null,
-          "",
-          " ",
-          "     ",
-          "\n",
-        ];
+        const testCases: (string | null)[] = [null, "", " ", "     ", "\n"];
 
         testCases.forEach((fileMatchingPatterns: string | null): void => {
           it(`should set the default when the input '${Converter.toString(fileMatchingPatterns?.replace(/\n/gu, "\\n"))}' is invalid`, (): void => {
@@ -1209,13 +1203,7 @@ describe("inputs.ts", (): void => {
 
     describe("codeFileExtensions", (): void => {
       {
-        const testCases: (string | null)[] = [
-          null,
-          "",
-          " ",
-          "     ",
-          "\n",
-        ];
+        const testCases: (string | null)[] = [null, "", " ", "     ", "\n"];
 
         testCases.forEach((codeFileExtensions: string | null): void => {
           it(`should set the default when the input '${Converter.toString(codeFileExtensions?.replace(/\n/gu, "\\n"))}' is invalid`, (): void => {
