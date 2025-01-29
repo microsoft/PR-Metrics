@@ -247,8 +247,8 @@ describe("inputs.ts", (): void => {
 
     describe("baseSize", (): void => {
       {
-        const testCases: (string | undefined)[] = [
-          undefined,
+        const testCases: (string | null)[] = [
+          null,
           "",
           " ",
           "abc",
@@ -258,7 +258,7 @@ describe("inputs.ts", (): void => {
           "undefined",
         ];
 
-        testCases.forEach((baseSize: string | undefined): void => {
+        testCases.forEach((baseSize: string | null): void => {
           it(`should set the default when the input '${Converter.toString(baseSize)}' is invalid`, (): void => {
             // Arrange
             when(
@@ -411,8 +411,8 @@ describe("inputs.ts", (): void => {
 
     describe("growthRate", (): void => {
       {
-        const testCases: (string | undefined)[] = [
-          undefined,
+        const testCases: (string | null)[] = [
+          null,
           "",
           " ",
           "abc",
@@ -422,7 +422,7 @@ describe("inputs.ts", (): void => {
           "undefined",
         ];
 
-        testCases.forEach((growthRate: string | undefined): void => {
+        testCases.forEach((growthRate: string | null): void => {
           it(`should set the default when the input '${Converter.toString(growthRate)}' is invalid`, (): void => {
             // Arrange
             when(
@@ -592,8 +592,8 @@ describe("inputs.ts", (): void => {
 
     describe("testFactor", (): void => {
       {
-        const testCases: (string | undefined)[] = [
-          undefined,
+        const testCases: (string | null)[] = [
+          null,
           "",
           " ",
           "abc",
@@ -603,7 +603,7 @@ describe("inputs.ts", (): void => {
           "undefined",
         ];
 
-        testCases.forEach((testFactor: string | undefined): void => {
+        testCases.forEach((testFactor: string | null): void => {
           it(`should set the default when the input '${Converter.toString(testFactor)}' is invalid`, (): void => {
             // Arrange
             when(
@@ -822,8 +822,8 @@ describe("inputs.ts", (): void => {
 
     describe("alwaysCloseComment", (): void => {
       {
-        const testCases: (string | undefined)[] = [
-          undefined,
+        const testCases: (string | null)[] = [
+          null,
           "",
           " ",
           "abc",
@@ -835,7 +835,7 @@ describe("inputs.ts", (): void => {
           "undefined",
         ];
 
-        testCases.forEach((alwaysCloseComment: string | undefined): void => {
+        testCases.forEach((alwaysCloseComment: string | null): void => {
           it(`should set the default when the input is '${Converter.toString(alwaysCloseComment)}'`, (): void => {
             // Arrange
             when(
@@ -940,15 +940,15 @@ describe("inputs.ts", (): void => {
 
     describe("fileMatchingPatterns", (): void => {
       {
-        const testCases: (string | undefined)[] = [
-          undefined,
+        const testCases: (string | null)[] = [
+          null,
           "",
           " ",
           "     ",
           "\n",
         ];
 
-        testCases.forEach((fileMatchingPatterns: string | undefined): void => {
+        testCases.forEach((fileMatchingPatterns: string | null): void => {
           it(`should set the default when the input '${Converter.toString(fileMatchingPatterns?.replace(/\n/gu, "\\n"))}' is invalid`, (): void => {
             // Arrange
             when(
@@ -1209,15 +1209,15 @@ describe("inputs.ts", (): void => {
 
     describe("codeFileExtensions", (): void => {
       {
-        const testCases: (string | undefined)[] = [
-          undefined,
+        const testCases: (string | null)[] = [
+          null,
           "",
           " ",
           "     ",
           "\n",
         ];
 
-        testCases.forEach((codeFileExtensions: string | undefined): void => {
+        testCases.forEach((codeFileExtensions: string | null): void => {
           it(`should set the default when the input '${Converter.toString(codeFileExtensions?.replace(/\n/gu, "\\n"))}' is invalid`, (): void => {
             // Arrange
             when(

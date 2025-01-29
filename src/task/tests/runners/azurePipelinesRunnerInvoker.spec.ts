@@ -78,7 +78,7 @@ describe("azurePipelinesRunnerInvoker.ts", (): void => {
       );
 
       // Act
-      const result: string | undefined = azurePipelinesRunnerInvoker.getInput([
+      const result: string | null = azurePipelinesRunnerInvoker.getInput([
         "Test",
         "Suffix",
       ]);
@@ -116,13 +116,13 @@ describe("azurePipelinesRunnerInvoker.ts", (): void => {
       ).once();
     });
 
-    it("should call the underlying method and pass undefined to the caller", (): void => {
+    it("should call the underlying method and pass null to the caller", (): void => {
       // Arrange
       const azurePipelinesRunnerInvoker: AzurePipelinesRunnerInvoker =
         new AzurePipelinesRunnerInvoker(instance(azurePipelinesRunnerWrapper));
       when(
         azurePipelinesRunnerWrapper.getEndpointAuthorization("id", true),
-      ).thenReturn(undefined);
+      ).thenReturn(null);
 
       // Act
       const result: EndpointAuthorization | null =
@@ -146,7 +146,7 @@ describe("azurePipelinesRunnerInvoker.ts", (): void => {
       ).thenReturn("VALUE");
 
       // Act
-      const result: string | undefined =
+      const result: string | null =
         azurePipelinesRunnerInvoker.getEndpointAuthorizationScheme("id");
 
       // Assert
@@ -171,7 +171,7 @@ describe("azurePipelinesRunnerInvoker.ts", (): void => {
       ).thenReturn("VALUE");
 
       // Act
-      const result: string | undefined =
+      const result: string | null =
         azurePipelinesRunnerInvoker.getEndpointAuthorizationParameter(
           "id",
           "key",

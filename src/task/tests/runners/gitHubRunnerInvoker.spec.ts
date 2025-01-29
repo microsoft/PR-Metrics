@@ -86,7 +86,7 @@ describe("gitHubRunnerInvoker.ts", (): void => {
       );
 
       // Act
-      const result: string | undefined = gitHubRunnerInvoker.getInput([
+      const result: string | null = gitHubRunnerInvoker.getInput([
         "Test",
         "Suffix",
       ]);
@@ -128,7 +128,7 @@ describe("gitHubRunnerInvoker.ts", (): void => {
       );
 
       // Act
-      const func: () => string | undefined = () =>
+      const func: () => string | null = () =>
         gitHubRunnerInvoker.getEndpointAuthorizationScheme();
 
       // Assert
@@ -149,7 +149,7 @@ describe("gitHubRunnerInvoker.ts", (): void => {
       );
 
       // Act
-      const func: () => string | undefined = () =>
+      const func: () => string | null = () =>
         gitHubRunnerInvoker.getEndpointAuthorizationParameter();
 
       // Assert
