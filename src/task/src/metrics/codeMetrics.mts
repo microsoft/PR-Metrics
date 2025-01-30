@@ -5,10 +5,10 @@
 
 import * as minimatch from "minimatch";
 import * as path from "path";
-import { CodeFileMetricInterface } from "./codeFileMetricInterface";
+import { CodeFileMetricInterface } from "./codeFileMetricInterface.mjs";
 import CodeMetricsData from "./codeMetricsData.mjs";
 import { FixedLengthArrayInterface } from "../utilities/fixedLengthArrayInterface.mjs";
-import GitInvoker from "../git/gitInvoker";
+import GitInvoker from "../git/gitInvoker.mjs";
 import Inputs from "./inputs.mjs";
 import Logger from "../utilities/logger.mjs";
 import RunnerInvoker from "../runners/runnerInvoker.mjs";

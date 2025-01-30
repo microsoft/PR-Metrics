@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import ErrorWithStatusInterface from "../../src/repos/interfaces/errorWithStatusInterface";
+import ErrorWithStatusInterface from "../../src/repos/interfaces/errorWithStatusInterface.mjs";
 
 /**
  * An error object containing a status code.

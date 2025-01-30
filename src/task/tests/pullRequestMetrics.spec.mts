@@ -4,10 +4,10 @@
  */
 
 import { instance, mock, verify, when } from "ts-mockito";
-import CodeMetricsCalculator from "../src/metrics/codeMetricsCalculator";
-import Logger from "../src/utilities/logger";
-import PullRequestMetrics from "../src/pullRequestMetrics";
-import RunnerInvoker from "../src/runners/runnerInvoker";
+import CodeMetricsCalculator from "../src/metrics/codeMetricsCalculator.mjs";
+import Logger from "../src/utilities/logger.mjs";
+import PullRequestMetrics from "../src/pullRequestMetrics.mjs";
+import RunnerInvoker from "../src/runners/runnerInvoker.mjs";
 
 describe("pullRequestMetrics.ts", (): void => {
   let codeMetricsCalculator: CodeMetricsCalculator;

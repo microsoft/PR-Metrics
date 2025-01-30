@@ -8,11 +8,11 @@ import { validateString, validateVariable } from "../utilities/validator.mjs";
 import AzureDevOpsApiWrapper from "../wrappers/azureDevOpsApiWrapper.mjs";
 import { EndpointAuthorization } from "../runners/endpointAuthorization.mjs";
 import ExecOutput from "../runners/execOutput.mjs";
-import { IRequestHandler } from "azure-devops-node-api/interfaces/common/VsoBaseInterfaces";
-import { ITaskApi } from "azure-devops-node-api/TaskApi";
+import { IRequestHandler } from "azure-devops-node-api/interfaces/common/VsoBaseInterfaces.js";
+import { ITaskApi } from "azure-devops-node-api/TaskApi.js";
 import Logger from "../utilities/logger.mjs";
 import RunnerInvoker from "../runners/runnerInvoker.mjs";
-import { TaskHubOidcToken } from "azure-devops-node-api/interfaces/TaskAgentInterfaces";
+import { TaskHubOidcToken } from "azure-devops-node-api/interfaces/TaskAgentInterfaces.js";
 import { WebApi } from "azure-devops-node-api";
 import { singleton } from "tsyringe";
 

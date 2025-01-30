@@ -4,7 +4,7 @@
  */
 
 import * as Validator from "../utilities/validator.mjs";
-import CodeMetrics from "../metrics/codeMetrics";
+import CodeMetrics from "../metrics/codeMetrics.mjs";
 import Logger from "../utilities/logger.mjs";
 import RunnerInvoker from "../runners/runnerInvoker.mjs";
 import { injectable } from "tsyringe";

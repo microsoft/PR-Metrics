@@ -3,8 +3,8 @@
  * Licensed under the MIT License.
  */
 
-import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces";
-import GitInvoker from "../git/gitInvoker";
+import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces.js";
+import GitInvoker from "../git/gitInvoker.mjs";
 import Logger from "../utilities/logger.mjs";
 import PullRequest from "../pullRequests/pullRequest.mjs";
 import PullRequestComments from "../pullRequests/pullRequestComments.mjs";

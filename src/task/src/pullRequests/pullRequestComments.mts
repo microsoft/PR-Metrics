@@ -3,12 +3,12 @@
  * Licensed under the MIT License.
  */
 
-import CodeMetrics from "../metrics/codeMetrics";
-import CodeMetricsData from "../metrics/codeMetricsData";
+import CodeMetrics from "../metrics/codeMetrics.mjs";
+import CodeMetricsData from "../metrics/codeMetricsData.mjs";
 import CommentData from "../repos/interfaces/commentData.mjs";
-import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces";
+import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces.js";
 import FileCommentData from "../repos/interfaces/fileCommentData.mjs";
-import Inputs from "../metrics/inputs";
+import Inputs from "../metrics/inputs.mjs";
 import Logger from "../utilities/logger.mjs";
 import PullRequestComment from "../repos/interfaces/pullRequestCommentData.mjs";
 import PullRequestCommentsData from "./pullRequestCommentsData.mjs";

@@ -9,10 +9,10 @@ import * as path from "path";
 import * as util from "util";
 import AzurePipelinesRunnerWrapper from "../wrappers/azurePipelinesRunnerWrapper.mjs";
 import ConsoleWrapper from "../wrappers/consoleWrapper.mjs";
-import { EndpointAuthorization } from "./endpointAuthorization";
-import ExecOutput from "./execOutput";
+import { EndpointAuthorization } from "./endpointAuthorization.mjs";
+import ExecOutput from "./execOutput.mjs";
 import GitHubRunnerWrapper from "../wrappers/gitHubRunnerWrapper.mjs";
-import ResourcesJsonInterface from "../jsonTypes/resourcesJsonInterface";
+import ResourcesJsonInterface from "../jsonTypes/resourcesJsonInterface.mjs";
 import RunnerInvokerInterface from "./runnerInvokerInterface.mjs";
 import { singleton } from "tsyringe";
 
