@@ -15,7 +15,7 @@ import {
  * @returns The object.
  */
 // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters -- This is necessary to have a concrete return type.
-export const any: <Argument>() => Argument = <Argument>(): Argument =>
+export const any: <Argument extends unknown>() => Argument = <Argument extends unknown>(): Argument =>
   anything() as Argument;
 
 /**

@@ -5,11 +5,17 @@
 
 import * as fs from "fs";
 import * as path from "path";
-import PackageJsonInterface from "./jsonTypes/packageJsonInterface";
-import ResourcesJsonInterface from "../src/jsonTypes/resourcesJsonInterface";
-import TaskJsonInterface from "./jsonTypes/taskJsonInterface";
-import VssExtensionJsonInterface from "./jsonTypes/vssExtensionJsonInterface";
+import PackageJsonInterface from "./jsonTypes/packageJsonInterface.mjs";
+import ResourcesJsonInterface from "../src/jsonTypes/resourcesJsonInterface.mjs";
+import TaskJsonInterface from "./jsonTypes/taskJsonInterface.mjs";
+import VssExtensionJsonInterface from "./jsonTypes/vssExtensionJsonInterface.mjs";
 import assert from "node:assert/strict";
+
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 describe("task.json", (): void => {
   const basePath: string = path.join(__dirname, "..");

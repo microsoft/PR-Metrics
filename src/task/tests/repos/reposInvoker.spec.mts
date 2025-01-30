@@ -6,13 +6,13 @@
 import "reflect-metadata";
 import * as AssertExtensions from "../testUtilities/assertExtensions.mjs";
 import { instance, mock, verify } from "ts-mockito";
-import AzureReposInvoker from "../../src/repos/azureReposInvoker";
-import CommentData from "../../src/repos/interfaces/commentData";
-import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces";
-import GitHubReposInvoker from "../../src/repos/gitHubReposInvoker";
-import Logger from "../../src/utilities/logger";
-import PullRequestDetailsInterface from "../../src/repos/interfaces/pullRequestDetailsInterface";
-import ReposInvoker from "../../src/repos/reposInvoker";
+import AzureReposInvoker from "../../src/repos/azureReposInvoker.mjs";
+import CommentData from "../../src/repos/interfaces/commentData.mjs";
+import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces.js";
+import GitHubReposInvoker from "../../src/repos/gitHubReposInvoker.mjs";
+import Logger from "../../src/utilities/logger.mjs";
+import PullRequestDetailsInterface from "../../src/repos/interfaces/pullRequestDetailsInterface.mjs";
+import ReposInvoker from "../../src/repos/reposInvoker.mjs";
 import assert from "node:assert/strict";
 
 describe("reposInvoker.ts", (): void => {

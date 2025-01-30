@@ -5,13 +5,13 @@
 
 import * as AssertExtensions from "../testUtilities/assertExtensions.mjs";
 import { deepEqual, instance, mock, verify, when } from "ts-mockito";
-import AzureDevOpsApiWrapper from "../../src/wrappers/azureDevOpsApiWrapper";
+import AzureDevOpsApiWrapper from "../../src/wrappers/azureDevOpsApiWrapper.mjs";
 import { EndpointAuthorization } from "azure-pipelines-task-lib";
-import { IRequestHandler } from "azure-devops-node-api/interfaces/common/VsoBaseInterfaces";
-import { ITaskApi } from "azure-devops-node-api/TaskApi";
-import Logger from "../../src/utilities/logger";
-import RunnerInvoker from "../../src/runners/runnerInvoker";
-import TokenManager from "../../src/repos/tokenManager";
+import { IRequestHandler } from "azure-devops-node-api/interfaces/common/VsoBaseInterfaces.js";
+import { ITaskApi } from "azure-devops-node-api/TaskApi.js";
+import Logger from "../../src/utilities/logger.mjs";
+import RunnerInvoker from "../../src/runners/runnerInvoker.mjs";
+import TokenManager from "../../src/repos/tokenManager.mjs";
 import { WebApi } from "azure-devops-node-api";
 import assert from "node:assert/strict";
 import { resolvableInstance } from "../testUtilities/resolvableInstance.mjs";

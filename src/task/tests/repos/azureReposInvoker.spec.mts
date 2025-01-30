@@ -5,27 +5,27 @@
 
 import "reflect-metadata";
 import * as AssertExtensions from "../testUtilities/assertExtensions.mjs";
-import * as Converter from "../../src/utilities/converter";
+import * as Converter from "../../src/utilities/converter.mjs";
 import {
   Comment,
   CommentThreadStatus,
   GitPullRequest,
   GitPullRequestCommentThread,
-} from "azure-devops-node-api/interfaces/GitInterfaces";
+} from "azure-devops-node-api/interfaces/GitInterfaces.js";
 import { any, anyNumber } from "../testUtilities/mockito.mjs";
 import { deepEqual, instance, mock, verify, when } from "ts-mockito";
-import AzureDevOpsApiWrapper from "../../src/wrappers/azureDevOpsApiWrapper";
-import AzureReposInvoker from "../../src/repos/azureReposInvoker";
-import CommentData from "../../src/repos/interfaces/commentData";
+import AzureDevOpsApiWrapper from "../../src/wrappers/azureDevOpsApiWrapper.mjs";
+import AzureReposInvoker from "../../src/repos/azureReposInvoker.mjs";
+import CommentData from "../../src/repos/interfaces/commentData.mjs";
 import ErrorWithStatus from "../wrappers/errorWithStatus.mjs";
-import GitInvoker from "../../src/git/gitInvoker";
-import { IGitApi } from "azure-devops-node-api/GitApi";
-import { IRequestHandler } from "azure-devops-node-api/interfaces/common/VsoBaseInterfaces";
-import Logger from "../../src/utilities/logger";
-import PullRequestDetailsInterface from "../../src/repos/interfaces/pullRequestDetailsInterface";
-import RunnerInvoker from "../../src/runners/runnerInvoker";
+import GitInvoker from "../../src/git/gitInvoker.mjs";
+import { IGitApi } from "azure-devops-node-api/GitApi.js";
+import { IRequestHandler } from "azure-devops-node-api/interfaces/common/VsoBaseInterfaces.js";
+import Logger from "../../src/utilities/logger.mjs";
+import PullRequestDetailsInterface from "../../src/repos/interfaces/pullRequestDetailsInterface.mjs";
+import RunnerInvoker from "../../src/runners/runnerInvoker.mjs";
 import { StatusCodes } from "http-status-codes";
-import TokenManager from "../../src/repos/tokenManager";
+import TokenManager from "../../src/repos/tokenManager.mjs";
 import { WebApi } from "azure-devops-node-api";
 import assert from "node:assert/strict";
 import { resolvableInstance } from "../testUtilities/resolvableInstance.mjs";

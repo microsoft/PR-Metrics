@@ -3,8 +3,8 @@
  * Licensed under the MIT License.
  */
 
-import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces";
-import FileCommentData from "../../../src/repos/interfaces/fileCommentData";
+import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces.js";
+import FileCommentData from "../../../src/repos/interfaces/fileCommentData.mjs";
 import assert from "node:assert/strict";
 
 describe("fileCommentData.ts", (): void => {

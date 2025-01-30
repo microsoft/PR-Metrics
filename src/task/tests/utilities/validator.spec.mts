@@ -3,8 +3,8 @@
  * Licensed under the MIT License.
  */
 
-import * as Converter from "../../src/utilities/converter";
-import * as Validator from "../../src/utilities/validator";
+import * as Converter from "../../src/utilities/converter.mjs";
+import * as Validator from "../../src/utilities/validator.mjs";
 import assert from "node:assert/strict";
 
 describe("validator.ts", (): void => {

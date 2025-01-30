@@ -5,10 +5,10 @@
 
 import "reflect-metadata";
 import { instance, mock, verify } from "ts-mockito";
-import ConsoleWrapper from "../../src/wrappers/consoleWrapper";
-import HttpError from "../testUtilities/httpError";
-import Logger from "../../src/utilities/logger";
-import RunnerInvoker from "../../src/runners/runnerInvoker";
+import ConsoleWrapper from "../../src/wrappers/consoleWrapper.mjs";
+import HttpError from "../testUtilities/httpError.mjs";
+import Logger from "../../src/utilities/logger.mjs";
+import RunnerInvoker from "../../src/runners/runnerInvoker.mjs";
 import { StatusCodes } from "http-status-codes";
 
 describe("logger.ts", (): void => {

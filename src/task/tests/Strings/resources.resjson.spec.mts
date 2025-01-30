@@ -10,6 +10,12 @@ import TaskJsonInterface from "../jsonTypes/taskJsonInterface.mjs";
 import assert from "node:assert/strict";
 import { globSync } from "glob";
 
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 describe("resources.resjson", (): void => {
   const basePath: string = path.join(__dirname, "..", "..");
 

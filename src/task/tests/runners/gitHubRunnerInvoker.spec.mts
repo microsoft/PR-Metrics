@@ -7,14 +7,20 @@ import "reflect-metadata";
 import * as actionsExec from "@actions/exec";
 import * as path from "path";
 import { deepEqual, instance, mock, verify, when } from "ts-mockito";
-import AzurePipelinesRunnerWrapper from "../../src/wrappers/azurePipelinesRunnerWrapper";
-import ConsoleWrapper from "../../src/wrappers/consoleWrapper";
+import AzurePipelinesRunnerWrapper from "../../src/wrappers/azurePipelinesRunnerWrapper.mjs";
+import ConsoleWrapper from "../../src/wrappers/consoleWrapper.mjs";
 import { EndpointAuthorization } from "azure-pipelines-task-lib";
-import ExecOutput from "../../src/runners/execOutput";
-import GitHubRunnerInvoker from "../../src/runners/gitHubRunnerInvoker";
-import GitHubRunnerWrapper from "../../src/wrappers/gitHubRunnerWrapper";
+import ExecOutput from "../../src/runners/execOutput.mjs";
+import GitHubRunnerInvoker from "../../src/runners/gitHubRunnerInvoker.mjs";
+import GitHubRunnerWrapper from "../../src/wrappers/gitHubRunnerWrapper.mjs";
 import { any } from "../testUtilities/mockito.mjs";
 import assert from "node:assert/strict";
+
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 describe("gitHubRunnerInvoker.ts", (): void => {
   const resourcePath: string = path.join(

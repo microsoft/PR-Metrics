@@ -5,11 +5,11 @@
 
 import "reflect-metadata";
 import { deepEqual, instance, mock, verify, when } from "ts-mockito";
-import AzurePipelinesRunnerInvoker from "../../src/runners/azurePipelinesRunnerInvoker";
+import AzurePipelinesRunnerInvoker from "../../src/runners/azurePipelinesRunnerInvoker.mjs";
 import { EndpointAuthorization } from "azure-pipelines-task-lib";
-import ExecOutput from "../../src/runners/execOutput";
-import GitHubRunnerInvoker from "../../src/runners/gitHubRunnerInvoker";
-import RunnerInvoker from "../../src/runners/runnerInvoker";
+import ExecOutput from "../../src/runners/execOutput.mjs";
+import GitHubRunnerInvoker from "../../src/runners/gitHubRunnerInvoker.mjs";
+import RunnerInvoker from "../../src/runners/runnerInvoker.mjs";
 import assert from "node:assert/strict";
 
 describe("runnerInvoker.ts", (): void => {

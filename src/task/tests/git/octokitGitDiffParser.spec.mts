@@ -5,11 +5,11 @@
 
 import "reflect-metadata";
 import { instance, mock, verify, when } from "ts-mockito";
-import AxiosWrapper from "../../src/wrappers/axiosWrapper";
-import GetPullResponse from "../../src/wrappers/octokitInterfaces/getPullResponse";
-import Logger from "../../src/utilities/logger";
-import OctokitGitDiffParser from "../../src/git/octokitGitDiffParser";
-import OctokitWrapper from "../../src/wrappers/octokitWrapper";
+import AxiosWrapper from "../../src/wrappers/axiosWrapper.mjs";
+import GetPullResponse from "../../src/wrappers/octokitInterfaces/getPullResponse.mjs";
+import Logger from "../../src/utilities/logger.mjs";
+import OctokitGitDiffParser from "../../src/git/octokitGitDiffParser.mjs";
+import OctokitWrapper from "../../src/wrappers/octokitWrapper.mjs";
 import assert from "node:assert/strict";
 
 /* eslint-disable @typescript-eslint/naming-convention -- Required for alignment with Octokit. */
