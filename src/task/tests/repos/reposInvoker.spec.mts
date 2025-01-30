@@ -4,7 +4,7 @@
  */
 
 import "reflect-metadata";
-import * as AssertExtensions from "../testUtilities/assertExtensions";
+import * as AssertExtensions from "../testUtilities/assertExtensions.mjs";
 import { instance, mock, verify } from "ts-mockito";
 import AzureReposInvoker from "../../src/repos/azureReposInvoker";
 import CommentData from "../../src/repos/interfaces/commentData";

@@ -10,7 +10,7 @@ import { deepEqual, instance, mock, verify, when } from "ts-mockito";
 import Inputs from "../../src/metrics/inputs";
 import Logger from "../../src/utilities/logger";
 import RunnerInvoker from "../../src/runners/runnerInvoker";
-import { anyString } from "../testUtilities/mockito";
+import { anyString } from "../testUtilities/mockito.mjs";
 import assert from "node:assert/strict";
 import { decimalRadix } from "../../src/utilities/constants";
 

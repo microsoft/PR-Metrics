@@ -4,10 +4,10 @@
  */
 
 import "reflect-metadata";
-import * as AssertExtensions from "../testUtilities/assertExtensions";
+import * as AssertExtensions from "../testUtilities/assertExtensions.mjs";
 import * as Converter from "../../src/utilities/converter";
-import * as GitHubReposInvokerConstants from "./gitHubReposInvokerConstants";
-import { any, anyNumber, anyString } from "../testUtilities/mockito";
+import * as GitHubReposInvokerConstants from "./gitHubReposInvokerConstants.mjs";
+import { any, anyNumber, anyString } from "../testUtilities/mockito.mjs";
 import { instance, mock, verify, when } from "ts-mockito";
 import CommentData from "../../src/repos/interfaces/commentData";
 import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces";
@@ -16,9 +16,9 @@ import GetIssueCommentsResponse from "../../src/wrappers/octokitInterfaces/getIs
 import GetPullResponse from "../../src/wrappers/octokitInterfaces/getPullResponse";
 import GitHubReposInvoker from "../../src/repos/gitHubReposInvoker";
 import GitInvoker from "../../src/git/gitInvoker";
-import HttpError from "../testUtilities/httpError";
+import HttpError from "../testUtilities/httpError.mjs";
 import Logger from "../../src/utilities/logger";
-import OctokitLogObjectInterface from "../wrappers/octokitLogObjectInterface";
+import OctokitLogObjectInterface from "../wrappers/octokitLogObjectInterface.mjs";
 import { OctokitOptions } from "@octokit/core/dist-types/types";
 import OctokitWrapper from "../../src/wrappers/octokitWrapper";
 import PullRequestDetailsInterface from "../../src/repos/interfaces/pullRequestDetailsInterface";
@@ -26,7 +26,7 @@ import { RequestError } from "octokit";
 import RunnerInvoker from "../../src/runners/runnerInvoker";
 import { StatusCodes } from "http-status-codes";
 import assert from "node:assert/strict";
-import { createRequestError } from "../testUtilities/createRequestError";
+import { createRequestError } from "../testUtilities/createRequestError.mjs";
 
 describe("gitHubReposInvoker.ts", (): void => {
   let gitInvoker: GitInvoker;

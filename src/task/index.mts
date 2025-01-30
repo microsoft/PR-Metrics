@@ -4,9 +4,9 @@
  */
 
 import "reflect-metadata";
-import PullRequestMetrics from "./src/pullRequestMetrics";
+import PullRequestMetrics from "./src/pullRequestMetrics.mjs";
 import { container } from "tsyringe";
-import { exitCodeForFailure } from "./src/utilities/constants";
+import { exitCodeForFailure } from "./src/utilities/constants.mjs";
 
 const run = async (): Promise<void> => {
   const pullRequestMetrics: PullRequestMetrics =

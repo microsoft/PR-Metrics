@@ -13,7 +13,7 @@ import { EndpointAuthorization } from "azure-pipelines-task-lib";
 import ExecOutput from "../../src/runners/execOutput";
 import GitHubRunnerInvoker from "../../src/runners/gitHubRunnerInvoker";
 import GitHubRunnerWrapper from "../../src/wrappers/gitHubRunnerWrapper";
-import { any } from "../testUtilities/mockito";
+import { any } from "../testUtilities/mockito.mjs";
 import assert from "node:assert/strict";
 
 describe("gitHubRunnerInvoker.ts", (): void => {

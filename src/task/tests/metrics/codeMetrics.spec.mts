@@ -4,7 +4,7 @@
  */
 
 import "reflect-metadata";
-import * as AssertExtensions from "../testUtilities/assertExtensions";
+import * as AssertExtensions from "../testUtilities/assertExtensions.mjs";
 import * as InputsDefault from "../../src/metrics/inputsDefault";
 import { instance, mock, verify, when } from "ts-mockito";
 import CodeMetrics from "../../src/metrics/codeMetrics";

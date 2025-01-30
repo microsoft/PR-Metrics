@@ -4,7 +4,7 @@
  */
 
 import "reflect-metadata";
-import * as AssertExtensions from "../testUtilities/assertExtensions";
+import * as AssertExtensions from "../testUtilities/assertExtensions.mjs";
 import * as Converter from "../../src/utilities/converter";
 import {
   Comment,
@@ -12,12 +12,12 @@ import {
   GitPullRequest,
   GitPullRequestCommentThread,
 } from "azure-devops-node-api/interfaces/GitInterfaces";
-import { any, anyNumber } from "../testUtilities/mockito";
+import { any, anyNumber } from "../testUtilities/mockito.mjs";
 import { deepEqual, instance, mock, verify, when } from "ts-mockito";
 import AzureDevOpsApiWrapper from "../../src/wrappers/azureDevOpsApiWrapper";
 import AzureReposInvoker from "../../src/repos/azureReposInvoker";
 import CommentData from "../../src/repos/interfaces/commentData";
-import ErrorWithStatus from "../wrappers/errorWithStatus";
+import ErrorWithStatus from "../wrappers/errorWithStatus.mjs";
 import GitInvoker from "../../src/git/gitInvoker";
 import { IGitApi } from "azure-devops-node-api/GitApi";
 import { IRequestHandler } from "azure-devops-node-api/interfaces/common/VsoBaseInterfaces";
@@ -28,7 +28,7 @@ import { StatusCodes } from "http-status-codes";
 import TokenManager from "../../src/repos/tokenManager";
 import { WebApi } from "azure-devops-node-api";
 import assert from "node:assert/strict";
-import { resolvableInstance } from "../testUtilities/resolvableInstance";
+import { resolvableInstance } from "../testUtilities/resolvableInstance.mjs";
 
 describe("azureReposInvoker.ts", (): void => {
   let gitApi: IGitApi;

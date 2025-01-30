@@ -5,8 +5,8 @@
 
 import * as fs from "fs";
 import * as path from "path";
-import ResourcesJsonInterface from "../../src/jsonTypes/resourcesJsonInterface";
-import TaskJsonInterface from "../jsonTypes/taskJsonInterface";
+import ResourcesJsonInterface from "../../src/jsonTypes/resourcesJsonInterface.mjs";
+import TaskJsonInterface from "../jsonTypes/taskJsonInterface.mjs";
 import assert from "node:assert/strict";
 import { globSync } from "glob";
 

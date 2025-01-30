@@ -15,7 +15,7 @@ import AzurePipelinesRunnerInvoker from "../../src/runners/azurePipelinesRunnerI
 import AzurePipelinesRunnerWrapper from "../../src/wrappers/azurePipelinesRunnerWrapper";
 import { EndpointAuthorization } from "../../src/runners/endpointAuthorization";
 import { ExecOutput } from "@actions/exec";
-import { any } from "../testUtilities/mockito";
+import { any } from "../testUtilities/mockito.mjs";
 import assert from "node:assert/strict";
 
 describe("azurePipelinesRunnerInvoker.ts", (): void => {
