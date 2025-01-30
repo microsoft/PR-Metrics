@@ -10,14 +10,8 @@ import TaskJsonInterface from "../jsonTypes/taskJsonInterface.mjs";
 import assert from "node:assert/strict";
 import { globSync } from "glob";
 
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
 describe("resources.resjson", (): void => {
-  const basePath: string = path.join(__dirname, "..", "..");
+  const basePath: string = path.join(import.meta.dirname, "..", "..");
 
   const languagesPath: string = path.join(
     basePath,
@@ -174,9 +168,9 @@ describe("resources.resjson", (): void => {
     // Arrange
     const globBasePath = `${basePath.replace(/\\/gu, "/")}/`;
     const typeScriptFiles1: string[] = globSync(
-      `${globBasePath}!(node_modules|tests)/**/*.ts`,
+      `${globBasePath}!(node_modules|tests)/**/*.mts`,
     );
-    const typeScriptFiles2: string[] = globSync(`${globBasePath}*.ts`);
+    const typeScriptFiles2: string[] = globSync(`${globBasePath}*.mts`);
     const typeScriptFiles: string[] = typeScriptFiles1.concat(typeScriptFiles2);
     const typeScriptResources: Map<string, number> = new Map<string, number>();
     const resourceRegExp = /loc\(\s*".+?".*?\)/gu;

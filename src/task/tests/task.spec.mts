@@ -11,14 +11,8 @@ import TaskJsonInterface from "./jsonTypes/taskJsonInterface.mjs";
 import VssExtensionJsonInterface from "./jsonTypes/vssExtensionJsonInterface.mjs";
 import assert from "node:assert/strict";
 
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
 describe("task.json", (): void => {
-  const basePath: string = path.join(__dirname, "..");
+  const basePath: string = path.join(import.meta.dirname, "..");
   const taskJsonFile: string = path.join(basePath, "task.json");
   const taskJsonContents: string = fs.readFileSync(taskJsonFile, "utf8");
   const taskJson: TaskJsonInterface = JSON.parse(
