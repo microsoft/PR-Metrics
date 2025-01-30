@@ -9,7 +9,7 @@ import GetReviewCommentsResponse from "../../src/wrappers/octokitInterfaces/getR
 import ListCommitsResponse from "../../src/wrappers/octokitInterfaces/listCommitsResponse.js";
 import { StatusCodes } from "http-status-codes";
 
- 
+/* eslint-disable @typescript-eslint/naming-convention -- Required for alignment with Octokit. */
 
 /**
  * A mock response for the Octokit API call to get the pull request details.
@@ -605,4 +605,4 @@ export const getReviewCommentsResponse: GetReviewCommentsResponse = {
   url: "",
 };
 
- 
+/* eslint-enable @typescript-eslint/naming-convention */

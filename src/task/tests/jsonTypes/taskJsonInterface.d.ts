@@ -21,19 +21,19 @@ export default interface TaskJsonInterface {
     /**
      * The major element of the version number.
      */
-     
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Required for alignment with the JSON definition.
     Major: number;
 
     /**
      * The minor element of the version number.
      */
-     
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Required for alignment with the JSON definition.
     Minor: number;
 
     /**
      * The patch element of the version number.
      */
-     
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Required for alignment with the JSON definition.
     Patch: number;
   };
 

@@ -79,7 +79,7 @@ describe("tokenManager.ts", (): void => {
       runnerInvoker.getEndpointAuthorization("SYSTEMVSSCONNECTION"),
     ).thenReturn({
       parameters: {
-         
+        // eslint-disable-next-line @typescript-eslint/naming-convention -- Required for alignment with underlying API.
         AccessToken: "AccessToken",
       },
       scheme: "OAuth",

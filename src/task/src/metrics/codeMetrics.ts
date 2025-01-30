@@ -454,7 +454,7 @@ export default class CodeMetrics {
     const indexL = 3;
     const indexXL = 4;
 
-     
+    // eslint-disable-next-line @typescript-eslint/no-magic-numbers -- Required to be a compile-time constant.
     const indicators: FixedLengthArrayInterface<(prefix: string) => string, 5> =
       [
         (): string =>

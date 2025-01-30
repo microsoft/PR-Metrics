@@ -17,7 +17,7 @@ import UpdateIssueCommentResponse from "./octokitInterfaces/updateIssueCommentRe
 import UpdatePullResponse from "./octokitInterfaces/updatePullResponse.js";
 import { singleton } from "tsyringe";
 
- 
+/* eslint-disable @typescript-eslint/naming-convention -- Required for alignment with Octokit. */
 
 /**
  * A wrapper around the Octokit (GitHub) API, to facilitate testability.
@@ -316,4 +316,4 @@ export default class OctokitWrapper {
   }
 }
 
- 
+/* eslint-enable @typescript-eslint/naming-convention */
