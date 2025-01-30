@@ -3,11 +3,11 @@
  * Licensed under the MIT License.
  */
 
-import * as Validator from "../utilities/validator";
-import ExecOutput from "../runners/execOutput";
-import Logger from "../utilities/logger";
-import RunnerInvoker from "../runners/runnerInvoker";
-import { decimalRadix } from "../utilities/constants";
+import * as Validator from "../utilities/validator.mjs";
+import ExecOutput from "../runners/execOutput.mjs";
+import Logger from "../utilities/logger.mjs";
+import RunnerInvoker from "../runners/runnerInvoker.mjs";
+import { decimalRadix } from "../utilities/constants.mjs";
 import { singleton } from "tsyringe";
 
 /**

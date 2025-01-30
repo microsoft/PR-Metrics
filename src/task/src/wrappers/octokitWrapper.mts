@@ -3,18 +3,18 @@
  * Licensed under the MIT License.
  */
 
-import CreateIssueCommentResponse from "./octokitInterfaces/createIssueCommentResponse";
-import CreateReviewCommentResponse from "./octokitInterfaces/createReviewCommentResponse";
-import DeleteReviewCommentResponse from "./octokitInterfaces/deleteReviewCommentResponse";
-import GetIssueCommentsResponse from "./octokitInterfaces/getIssueCommentsResponse";
-import GetPullResponse from "./octokitInterfaces/getPullResponse";
-import GetReviewCommentsResponse from "./octokitInterfaces/getReviewCommentsResponse";
-import ListCommitsResponse from "./octokitInterfaces/listCommitsResponse";
+import CreateIssueCommentResponse from "./octokitInterfaces/createIssueCommentResponse.mjs";
+import CreateReviewCommentResponse from "./octokitInterfaces/createReviewCommentResponse.mjs";
+import DeleteReviewCommentResponse from "./octokitInterfaces/deleteReviewCommentResponse.mjs";
+import GetIssueCommentsResponse from "./octokitInterfaces/getIssueCommentsResponse.mjs";
+import GetPullResponse from "./octokitInterfaces/getPullResponse.mjs";
+import GetReviewCommentsResponse from "./octokitInterfaces/getReviewCommentsResponse.mjs";
+import ListCommitsResponse from "./octokitInterfaces/listCommitsResponse.mjs";
 import { Octokit } from "octokit";
 import OctokitGitDiffParser from "../git/octokitGitDiffParser";
 import { OctokitOptions } from "@octokit/core/dist-types/types";
-import UpdateIssueCommentResponse from "./octokitInterfaces/updateIssueCommentResponse";
-import UpdatePullResponse from "./octokitInterfaces/updatePullResponse";
+import UpdateIssueCommentResponse from "./octokitInterfaces/updateIssueCommentResponse.mjs";
+import UpdatePullResponse from "./octokitInterfaces/updatePullResponse.mjs";
 import { singleton } from "tsyringe";
 
 /* eslint-disable @typescript-eslint/naming-convention -- Required for alignment with Octokit. */

@@ -3,26 +3,26 @@
  * Licensed under the MIT License.
  */
 
-import * as Validator from "../utilities/validator";
+import * as Validator from "../utilities/validator.mjs";
 import {
   Comment,
   CommentPosition,
   CommentThreadStatus,
   GitPullRequest,
   GitPullRequestCommentThread,
-} from "azure-devops-node-api/interfaces/GitInterfaces";
-import AzureDevOpsApiWrapper from "../wrappers/azureDevOpsApiWrapper";
-import BaseReposInvoker from "./baseReposInvoker";
-import CommentData from "./interfaces/commentData";
-import FileCommentData from "./interfaces/fileCommentData";
-import GitInvoker from "../git/gitInvoker";
-import { IGitApi } from "azure-devops-node-api/GitApi";
-import { IRequestHandler } from "azure-devops-node-api/interfaces/common/VsoBaseInterfaces";
-import Logger from "../utilities/logger";
-import PullRequestCommentData from "./interfaces/pullRequestCommentData";
-import PullRequestDetailsInterface from "./interfaces/pullRequestDetailsInterface";
-import RunnerInvoker from "../runners/runnerInvoker";
-import TokenManager from "./tokenManager";
+} from "azure-devops-node-api/interfaces/GitInterfaces.js";
+import AzureDevOpsApiWrapper from "../wrappers/azureDevOpsApiWrapper.mjs";
+import BaseReposInvoker from "./baseReposInvoker.mjs";
+import CommentData from "./interfaces/commentData.mjs";
+import FileCommentData from "./interfaces/fileCommentData.mjs";
+import GitInvoker from "../git/gitInvoker.mjs";
+import { IGitApi } from "azure-devops-node-api/GitApi.js";
+import { IRequestHandler } from "azure-devops-node-api/interfaces/common/VsoBaseInterfaces.js";
+import Logger from "../utilities/logger.mjs";
+import PullRequestCommentData from "./interfaces/pullRequestCommentData.mjs";
+import PullRequestDetailsInterface from "./interfaces/pullRequestDetailsInterface.mjs";
+import RunnerInvoker from "../runners/runnerInvoker.mjs";
+import TokenManager from "./tokenManager.mjs";
 import { WebApi } from "azure-devops-node-api";
 import { singleton } from "tsyringe";
 

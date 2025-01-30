@@ -5,6 +5,7 @@
   "version": "1.6.5",
   "description": "Augments pull request titles to let reviewers quickly determine PR size and test coverage.",
   "main": "dist/index.js",
+  "type": "module",
   "scripts": {
     "build:initialization": "npm ci && cross-env-shell \"mkdirp $npm_config_dir && ncp src $npm_config_dir\"",
     "build:debug": "npm run build:initialization --dir=debug && cd debug/task && tsc --sourceMap",

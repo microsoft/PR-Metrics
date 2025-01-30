@@ -4,9 +4,9 @@
  */
 
 import "reflect-metadata";
-import CodeMetricsCalculator from "./metrics/codeMetricsCalculator";
-import Logger from "./utilities/logger";
-import RunnerInvoker from "./runners/runnerInvoker";
+import CodeMetricsCalculator from "./metrics/codeMetricsCalculator.mjs";
+import Logger from "./utilities/logger.mjs";
+import RunnerInvoker from "./runners/runnerInvoker.mjs";
 import { singleton } from "tsyringe";
 
 /**

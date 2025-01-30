@@ -7,13 +7,13 @@ import * as actionsExec from "@actions/exec";
 import * as fs from "fs";
 import * as path from "path";
 import * as util from "util";
-import AzurePipelinesRunnerWrapper from "../wrappers/azurePipelinesRunnerWrapper";
-import ConsoleWrapper from "../wrappers/consoleWrapper";
+import AzurePipelinesRunnerWrapper from "../wrappers/azurePipelinesRunnerWrapper.mjs";
+import ConsoleWrapper from "../wrappers/consoleWrapper.mjs";
 import { EndpointAuthorization } from "./endpointAuthorization";
 import ExecOutput from "./execOutput";
-import GitHubRunnerWrapper from "../wrappers/gitHubRunnerWrapper";
+import GitHubRunnerWrapper from "../wrappers/gitHubRunnerWrapper.mjs";
 import ResourcesJsonInterface from "../jsonTypes/resourcesJsonInterface";
-import RunnerInvokerInterface from "./runnerInvokerInterface";
+import RunnerInvokerInterface from "./runnerInvokerInterface.mjs";
 import { singleton } from "tsyringe";
 
 /**

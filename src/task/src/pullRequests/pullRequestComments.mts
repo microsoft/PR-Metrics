@@ -5,15 +5,15 @@
 
 import CodeMetrics from "../metrics/codeMetrics";
 import CodeMetricsData from "../metrics/codeMetricsData";
-import CommentData from "../repos/interfaces/commentData";
+import CommentData from "../repos/interfaces/commentData.mjs";
 import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces";
-import FileCommentData from "../repos/interfaces/fileCommentData";
+import FileCommentData from "../repos/interfaces/fileCommentData.mjs";
 import Inputs from "../metrics/inputs";
-import Logger from "../utilities/logger";
-import PullRequestComment from "../repos/interfaces/pullRequestCommentData";
-import PullRequestCommentsData from "./pullRequestCommentsData";
-import ReposInvoker from "../repos/reposInvoker";
-import RunnerInvoker from "../runners/runnerInvoker";
+import Logger from "../utilities/logger.mjs";
+import PullRequestComment from "../repos/interfaces/pullRequestCommentData.mjs";
+import PullRequestCommentsData from "./pullRequestCommentsData.mjs";
+import ReposInvoker from "../repos/reposInvoker.mjs";
+import RunnerInvoker from "../runners/runnerInvoker.mjs";
 import { injectable } from "tsyringe";
 
 /**

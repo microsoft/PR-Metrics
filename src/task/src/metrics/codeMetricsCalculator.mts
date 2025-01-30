@@ -5,13 +5,13 @@
 
 import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces";
 import GitInvoker from "../git/gitInvoker";
-import Logger from "../utilities/logger";
-import PullRequest from "../pullRequests/pullRequest";
-import PullRequestComments from "../pullRequests/pullRequestComments";
-import PullRequestCommentsData from "../pullRequests/pullRequestCommentsData";
-import PullRequestDetailsInterface from "../repos/interfaces/pullRequestDetailsInterface";
-import ReposInvoker from "../repos/reposInvoker";
-import RunnerInvoker from "../runners/runnerInvoker";
+import Logger from "../utilities/logger.mjs";
+import PullRequest from "../pullRequests/pullRequest.mjs";
+import PullRequestComments from "../pullRequests/pullRequestComments.mjs";
+import PullRequestCommentsData from "../pullRequests/pullRequestCommentsData.mjs";
+import PullRequestDetailsInterface from "../repos/interfaces/pullRequestDetailsInterface.mjs";
+import ReposInvoker from "../repos/reposInvoker.mjs";
+import RunnerInvoker from "../runners/runnerInvoker.mjs";
 import { injectable } from "tsyringe";
 
 /**

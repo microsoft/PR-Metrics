@@ -4,14 +4,14 @@
  */
 
 import "reflect-metadata";
-import { validateString, validateVariable } from "../utilities/validator";
-import AzureDevOpsApiWrapper from "../wrappers/azureDevOpsApiWrapper";
-import { EndpointAuthorization } from "../runners/endpointAuthorization";
-import ExecOutput from "../runners/execOutput";
+import { validateString, validateVariable } from "../utilities/validator.mjs";
+import AzureDevOpsApiWrapper from "../wrappers/azureDevOpsApiWrapper.mjs";
+import { EndpointAuthorization } from "../runners/endpointAuthorization.mjs";
+import ExecOutput from "../runners/execOutput.mjs";
 import { IRequestHandler } from "azure-devops-node-api/interfaces/common/VsoBaseInterfaces";
 import { ITaskApi } from "azure-devops-node-api/TaskApi";
-import Logger from "../utilities/logger";
-import RunnerInvoker from "../runners/runnerInvoker";
+import Logger from "../utilities/logger.mjs";
+import RunnerInvoker from "../runners/runnerInvoker.mjs";
 import { TaskHubOidcToken } from "azure-devops-node-api/interfaces/TaskAgentInterfaces";
 import { WebApi } from "azure-devops-node-api";
 import { singleton } from "tsyringe";

@@ -6,13 +6,13 @@
 import * as minimatch from "minimatch";
 import * as path from "path";
 import { CodeFileMetricInterface } from "./codeFileMetricInterface";
-import CodeMetricsData from "./codeMetricsData";
-import { FixedLengthArrayInterface } from "../utilities/fixedLengthArrayInterface";
+import CodeMetricsData from "./codeMetricsData.mjs";
+import { FixedLengthArrayInterface } from "../utilities/fixedLengthArrayInterface.mjs";
 import GitInvoker from "../git/gitInvoker";
-import Inputs from "./inputs";
-import Logger from "../utilities/logger";
-import RunnerInvoker from "../runners/runnerInvoker";
-import { decimalRadix } from "../utilities/constants";
+import Inputs from "./inputs.mjs";
+import Logger from "../utilities/logger.mjs";
+import RunnerInvoker from "../runners/runnerInvoker.mjs";
+import { decimalRadix } from "../utilities/constants.mjs";
 import { singleton } from "tsyringe";
 
 /**

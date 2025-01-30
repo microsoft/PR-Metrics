@@ -3,11 +3,11 @@
  * Licensed under the MIT License.
  */
 
-import CommentData from "./interfaces/commentData";
-import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces";
-import ErrorWithStatusInterface from "./interfaces/errorWithStatusInterface";
-import PullRequestDetailsInterface from "./interfaces/pullRequestDetailsInterface";
-import ReposInvokerInterface from "./reposInvokerInterface";
+import CommentData from "./interfaces/commentData.mjs";
+import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces.js";
+import ErrorWithStatusInterface from "./interfaces/errorWithStatusInterface.mjs";
+import PullRequestDetailsInterface from "./interfaces/pullRequestDetailsInterface.mjs";
+import ReposInvokerInterface from "./reposInvokerInterface.mjs";
 import { StatusCodes } from "http-status-codes";
 
 /**

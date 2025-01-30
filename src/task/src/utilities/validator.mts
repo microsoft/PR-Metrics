@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import * as Converter from "./converter";
+import * as Converter from "./converter.mjs";
 
 /**
  * Validates that a string value is not invalid, `null`, or `undefined` and throws an `TypeError` if this condition is not met.
