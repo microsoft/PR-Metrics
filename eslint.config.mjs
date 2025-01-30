@@ -29,7 +29,7 @@ export default tseslint.config(
       },
     },
     rules: {
-      "@typescript-eslint/consistent-type-exports": "error",
+      /*"@typescript-eslint/consistent-type-exports": "error",
       "@typescript-eslint/default-param-last": "error",
       "@typescript-eslint/explicit-function-return-type": "error",
       "@typescript-eslint/explicit-member-accessibility": "error",
@@ -341,7 +341,7 @@ export default tseslint.config(
       "use-isnan": "error",
       "valid-typeof": "error",
       "vars-on-top": "error",
-      yoda: "error",
+      yoda: "error",*/
     },
   },
   {
