@@ -32,17 +32,14 @@ export default abstract class BaseReposInvoker
     } catch (error: unknown) {
       const castedError: ErrorWithStatusInterface =
         error as ErrorWithStatusInterface;
-      const statusCode: number | undefined =
+      const statusCode: number | null =
         castedError.status ?? castedError.statusCode;
       const accessErrorStatusCodes: number[] = [
         StatusCodes.UNAUTHORIZED,
         StatusCodes.FORBIDDEN,
         StatusCodes.NOT_FOUND,
       ];
-      if (
-        typeof statusCode !== "undefined" &&
-        accessErrorStatusCodes.includes(statusCode)
-      ) {
+      if (statusCode !== null && accessErrorStatusCodes.includes(statusCode)) {
         castedError.internalMessage = castedError.message;
         castedError.message = accessErrorMessage;
       }

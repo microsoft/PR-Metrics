@@ -167,10 +167,7 @@ describe("runnerInvoker.ts", (): void => {
       ).thenReturn("VALUE");
 
       // Act
-      const result: string | undefined = runnerInvoker.getInput([
-        "Test",
-        "Suffix",
-      ]);
+      const result: string | null = runnerInvoker.getInput(["Test", "Suffix"]);
 
       // Assert
       assert.equal(result, "VALUE");
@@ -194,10 +191,7 @@ describe("runnerInvoker.ts", (): void => {
       ).thenReturn("VALUE");
 
       // Act
-      const result: string | undefined = runnerInvoker.getInput([
-        "Test",
-        "Suffix",
-      ]);
+      const result: string | null = runnerInvoker.getInput(["Test", "Suffix"]);
 
       // Assert
       assert.equal(result, "VALUE");
@@ -231,7 +225,7 @@ describe("runnerInvoker.ts", (): void => {
       ).thenReturn(endpointAuthorization);
 
       // Act
-      const result: EndpointAuthorization | undefined =
+      const result: EndpointAuthorization | null =
         runnerInvoker.getEndpointAuthorization("id");
 
       // Assert
@@ -260,7 +254,7 @@ describe("runnerInvoker.ts", (): void => {
       );
 
       // Act
-      const result: EndpointAuthorization | undefined =
+      const result: EndpointAuthorization | null =
         runnerInvoker.getEndpointAuthorization("id");
 
       // Assert
@@ -288,7 +282,7 @@ describe("runnerInvoker.ts", (): void => {
       ).thenReturn("VALUE");
 
       // Act
-      const result: string | undefined =
+      const result: string | null =
         runnerInvoker.getEndpointAuthorizationScheme("id");
 
       // Assert
@@ -313,7 +307,7 @@ describe("runnerInvoker.ts", (): void => {
       );
 
       // Act
-      const result: string | undefined =
+      const result: string | null =
         runnerInvoker.getEndpointAuthorizationScheme("id");
 
       // Assert
@@ -344,7 +338,7 @@ describe("runnerInvoker.ts", (): void => {
       ).thenReturn("VALUE");
 
       // Act
-      const result: string | undefined =
+      const result: string | null =
         runnerInvoker.getEndpointAuthorizationParameter("id", "key");
 
       // Assert
@@ -374,7 +368,7 @@ describe("runnerInvoker.ts", (): void => {
       ).thenReturn("VALUE");
 
       // Act
-      const result: string | undefined =
+      const result: string | null =
         runnerInvoker.getEndpointAuthorizationParameter("id", "key");
 
       // Assert

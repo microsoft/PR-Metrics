@@ -23,7 +23,7 @@ export default class ReposInvoker implements ReposInvokerInterface {
   private readonly _gitHubReposInvoker: GitHubReposInvoker;
   private readonly _logger: Logger;
 
-  private _reposInvoker: ReposInvokerInterface | undefined;
+  private _reposInvoker: ReposInvokerInterface | null = null;
 
   /**
    * Initializes a new instance of the `ReposInvoker` class.
@@ -105,7 +105,7 @@ export default class ReposInvoker implements ReposInvokerInterface {
   private getReposInvoker(): ReposInvokerInterface {
     this._logger.logDebug("* ReposInvoker.getReposInvoker()");
 
-    if (typeof this._reposInvoker !== "undefined") {
+    if (this._reposInvoker !== null) {
       return this._reposInvoker;
     }
 

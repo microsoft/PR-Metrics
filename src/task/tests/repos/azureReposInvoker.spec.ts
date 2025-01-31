@@ -458,7 +458,7 @@ describe("azureReposInvoker.ts", (): void => {
 
       // Assert
       assert.equal(result.title, "Title");
-      assert.equal(typeof result.description, "undefined");
+      assert.equal(result.description, null);
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler("PAT")).once();
       verify(
         azureDevOpsApiWrapper.getWebApiInstance(
