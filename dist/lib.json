@@ -34,5 +34,5 @@
     "LIB_PlatformNotSupported": "Platform not supported: %s",
     "LIB_CopyFileFailed": "Error while copying the file. Attempts left: %s",
     "LIB_UndefinedNodeVersion": "Node version is undefined."
-  }
+  } 
 }
