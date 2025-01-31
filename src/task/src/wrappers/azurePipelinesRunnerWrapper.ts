@@ -49,36 +49,36 @@ export default class AzurePipelinesRunnerWrapper {
   /**
    * Gets the value of an input.
    * @param name The name of the input.
-   * @returns The value of the input or `undefined` if the input was not set.
+   * @returns The value of the input or `null` if the input was not set.
    */
-  public getInput(name: string): string | undefined {
-    return taskLib.getInput(name);
+  public getInput(name: string): string | null {
+    return taskLib.getInput(name) ?? null;
   }
 
   /**
    * Gets the authorization details for a service endpoint.
    * @param id The name of the service endpoint.
    * @param optional A value indicating whether the URL is optional.
-   * @returns The authorization details or `undefined` if the endpoint was not found.
+   * @returns The authorization details or `null` if the endpoint was not found.
    */
   public getEndpointAuthorization(
     id: string,
     optional: boolean,
-  ): taskLib.EndpointAuthorization | undefined {
-    return taskLib.getEndpointAuthorization(id, optional);
+  ): taskLib.EndpointAuthorization | null {
+    return taskLib.getEndpointAuthorization(id, optional) ?? null;
   }
 
   /**
    * Gets the endpoint authorization scheme for a service endpoint.
    * @param id The name of the service endpoint.
    * @param optional A value indicating whether the endpoint authorization scheme is optional.
-   * @returns The value of the endpoint authorization scheme or `undefined` if the scheme was not found.
+   * @returns The value of the endpoint authorization scheme or `null` if the scheme was not found.
    */
   public getEndpointAuthorizationScheme(
     id: string,
     optional: boolean,
-  ): string | undefined {
-    return taskLib.getEndpointAuthorizationScheme(id, optional);
+  ): string | null {
+    return taskLib.getEndpointAuthorizationScheme(id, optional) ?? null;
   }
 
   /**
@@ -86,14 +86,14 @@ export default class AzurePipelinesRunnerWrapper {
    * @param id The name of the service endpoint.
    * @param key The key to find the endpoint authorization parameter.
    * @param optional A value indicating whether the endpoint authorization scheme is optional.
-   * @returns The value of the endpoint authorization parameter value or `undefined` if the parameter was not found.
+   * @returns The value of the endpoint authorization parameter value or `null` if the parameter was not found.
    */
   public getEndpointAuthorizationParameter(
     id: string,
     key: string,
     optional: boolean,
-  ): string | undefined {
-    return taskLib.getEndpointAuthorizationParameter(id, key, optional);
+  ): string | null {
+    return taskLib.getEndpointAuthorizationParameter(id, key, optional) ?? null;
   }
 
   /**

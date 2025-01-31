@@ -307,9 +307,9 @@ describe("pullRequest.ts", (): void => {
     });
 
     {
-      const testCases: (string | undefined)[] = [undefined, "", " "];
+      const testCases: (string | null)[] = [null, "", " "];
 
-      testCases.forEach((currentDescription: string | undefined): void => {
+      testCases.forEach((currentDescription: string | null): void => {
         it(`should return the default description when the current description '${Converter.toString(currentDescription)}' is empty`, (): void => {
           // Arrange
           const pullRequest: PullRequest = new PullRequest(

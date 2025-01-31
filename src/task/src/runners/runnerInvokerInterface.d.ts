@@ -21,34 +21,31 @@ export default interface RunnerInvokerInterface {
   /**
    * Gets the value of an input.
    * @param name The name of the input, with each word stored as a separate element of the array.
-   * @returns The value of the input or `undefined` if the input was not set.
+   * @returns The value of the input or `null` if the input was not set.
    */
-  getInput: (name: string[]) => string | undefined;
+  getInput: (name: string[]) => string | null;
 
   /**
    * Gets the authorization details for a service endpoint.
    * @param id The name of the service endpoint.
-   * @returns The authorization details or `undefined` if the endpoint was not found.
+   * @returns The authorization details or `null` if the endpoint was not found.
    */
-  getEndpointAuthorization: (id: string) => EndpointAuthorization | undefined;
+  getEndpointAuthorization: (id: string) => EndpointAuthorization | null;
 
   /**
    * Gets the endpoint authorization scheme for a service endpoint.
    * @param id The name of the service endpoint.
-   * @returns The value of the endpoint authorization scheme or `undefined` if the scheme was not found.
+   * @returns The value of the endpoint authorization scheme or `null` if the scheme was not found.
    */
-  getEndpointAuthorizationScheme: (id: string) => string | undefined;
+  getEndpointAuthorizationScheme: (id: string) => string | null;
 
   /**
    * Gets the endpoint authorization parameter value for a service endpoint with the specified key.
    * @param id The name of the service endpoint.
    * @param key The key to find the endpoint authorization parameter.
-   * @returns The value of the endpoint authorization parameter value or `undefined` if the parameter was not found.
+   * @returns The value of the endpoint authorization parameter value or `null` if the parameter was not found.
    */
-  getEndpointAuthorizationParameter: (
-    id: string,
-    key: string,
-  ) => string | undefined;
+  getEndpointAuthorizationParameter: (id: string, key: string) => string | null;
 
   /**
    * Initializes the mechanism for getting localized strings from the JSON resource file.

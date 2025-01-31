@@ -25,7 +25,7 @@ export default class OctokitGitDiffParser {
   private readonly _axiosWrapper: AxiosWrapper;
   private readonly _logger: Logger;
 
-  private _firstLineOfFiles: Map<string, number> | undefined;
+  private _firstLineOfFiles: Map<string, number> | null = null;
 
   /**
    * Initializes a new instance of the `OctokitGitDiffParser` class.
@@ -73,7 +73,7 @@ export default class OctokitGitDiffParser {
     this._logger.logDebug("* OctokitGitDiffParser.getFirstChangedLines()");
 
     // If the information has already been retrieved, return the cached response.
-    if (typeof this._firstLineOfFiles !== "undefined") {
+    if (this._firstLineOfFiles !== null) {
       return this._firstLineOfFiles;
     }
 
@@ -137,7 +137,7 @@ export default class OctokitGitDiffParser {
           case "ChangedFile": {
             // For an added or changed file, add the file path and the first changed line.
             const fileCasted: AddedFile | ChangedFile = file;
-            const [chunk]: (AnyChunk | undefined)[] = fileCasted.chunks;
+            const [chunk]: AnyChunk[] = fileCasted.chunks;
             if (chunk?.type === "BinaryFilesChunk") {
               this._logger.logDebug(
                 `Skipping '${file.type}' '${fileCasted.path}' while performing diff parsing.`,

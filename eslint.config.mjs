@@ -301,6 +301,7 @@ export default tseslint.config(
       "no-this-before-super": "error",
       "no-undef": "error",
       "no-undef-init": "error",
+      "no-undefined": "error",
       "no-unexpected-multiline": "error",
       "no-unmodified-loop-condition": "error",
       "no-unneeded-ternary": "error",
@@ -358,6 +359,7 @@ export default tseslint.config(
     rules: {
       "@typescript-eslint/no-confusing-void-expression": "off",
       "@typescript-eslint/no-magic-numbers": "off",
+      "no-undefined": "off",
     },
   },
 );

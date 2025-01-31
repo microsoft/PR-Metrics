@@ -98,7 +98,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     );
 
     return {
-      description: result.data.body ?? undefined,
+      description: result.data.body ?? null,
       title: result.data.title,
     };
   }
@@ -108,8 +108,8 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
 
     this.initialize();
 
-    let pullRequestComments: GetIssueCommentsResponse | undefined;
-    let fileComments: GetReviewCommentsResponse | undefined;
+    let pullRequestComments: GetIssueCommentsResponse | null = null;
+    let fileComments: GetReviewCommentsResponse | null = null;
     await Promise.all([
       this.invokeApiCall(async (): Promise<void> => {
         pullRequestComments = await this._octokitWrapper.getIssueComments(
@@ -149,8 +149,8 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
         this._owner,
         this._repo,
         this._pullRequestId,
-        title ?? undefined,
-        description ?? undefined,
+        title,
+        description,
       );
       this._logger.logDebug(JSON.stringify(result));
     });
@@ -332,7 +332,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     return baseUrl;
   }
 
-  private initializeForAzureDevOps(): string | undefined {
+  private initializeForAzureDevOps(): string {
     this._logger.logDebug("* GitHubReposInvoker.initializeForAzureDevOps()");
 
     const sourceRepositoryUri: string = Validator.validateVariable(
@@ -352,7 +352,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     }
 
     // Handle GitHub Enterprise invocations.
-    let baseUrl: string | undefined;
+    let baseUrl = "";
     let baseUrlTemporary: string;
     [, , baseUrlTemporary, this._owner, this._repo] =
       sourceRepositoryUriElements;
@@ -372,14 +372,14 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
   }
 
   private convertPullRequestComments(
-    pullRequestComments?: GetIssueCommentsResponse,
-    fileComments?: GetReviewCommentsResponse,
+    pullRequestComments: GetIssueCommentsResponse | null,
+    fileComments: GetReviewCommentsResponse | null,
   ): CommentData {
     this._logger.logDebug("* GitHubReposInvoker.convertPullRequestComments()");
 
     const result: CommentData = new CommentData();
 
-    if (pullRequestComments) {
+    if (pullRequestComments !== null) {
       for (const value of pullRequestComments.data) {
         const content: string | undefined = value.body;
         if (typeof content !== "undefined") {
@@ -390,7 +390,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
       }
     }
 
-    if (fileComments) {
+    if (fileComments !== null) {
       for (const value of fileComments.data) {
         const content: string = value.body;
         const file: string = value.path;
