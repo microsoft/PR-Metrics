@@ -41,7 +41,7 @@ export default class AzureReposInvoker extends BaseReposInvoker {
   private _project = "";
   private _repositoryId = "";
   private _pullRequestId = 0;
-  private _gitApi: IGitApi | undefined;
+  private _gitApi: IGitApi | null = null;
 
   /**
    * Initializes a new instance of the `AzureReposInvoker` class.
@@ -154,7 +154,7 @@ export default class AzureReposInvoker extends BaseReposInvoker {
       "AzureReposInvoker.getTitleAndDescription()",
     );
     return {
-      description: result.description,
+      description: result.description ?? null,
       title,
     };
   }
@@ -337,7 +337,7 @@ export default class AzureReposInvoker extends BaseReposInvoker {
   private async getGitApi(): Promise<IGitApi> {
     this._logger.logDebug("* AzureReposInvoker.getGitApi()");
 
-    if (typeof this._gitApi !== "undefined") {
+    if (this._gitApi !== null) {
       return this._gitApi;
     }
 

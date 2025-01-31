@@ -19,7 +19,7 @@ export default class RunnerInvoker implements RunnerInvokerInterface {
   private readonly _azurePipelinesRunnerInvoker: AzurePipelinesRunnerInvoker;
   private readonly _gitHubRunnerInvoker: GitHubRunnerInvoker;
 
-  private _runnerInvoker: RunnerInvokerInterface | undefined;
+  private _runnerInvoker: RunnerInvokerInterface | null = null;
   private _localizationInitialized = false;
 
   /**
@@ -47,19 +47,17 @@ export default class RunnerInvoker implements RunnerInvokerInterface {
     return runner.exec(tool, args);
   }
 
-  public getInput(name: string[]): string | undefined {
+  public getInput(name: string[]): string | null {
     const runner: RunnerInvokerInterface = this.getRunner();
     return runner.getInput(name);
   }
 
-  public getEndpointAuthorization(
-    id: string,
-  ): EndpointAuthorization | undefined {
+  public getEndpointAuthorization(id: string): EndpointAuthorization | null {
     const runner: RunnerInvokerInterface = this.getRunner();
     return runner.getEndpointAuthorization(id);
   }
 
-  public getEndpointAuthorizationScheme(id: string): string | undefined {
+  public getEndpointAuthorizationScheme(id: string): string | null {
     const runner: RunnerInvokerInterface = this.getRunner();
     return runner.getEndpointAuthorizationScheme(id);
   }
@@ -67,7 +65,7 @@ export default class RunnerInvoker implements RunnerInvokerInterface {
   public getEndpointAuthorizationParameter(
     id: string,
     key: string,
-  ): string | undefined {
+  ): string | null {
     const runner: RunnerInvokerInterface = this.getRunner();
     return runner.getEndpointAuthorizationParameter(id, key);
   }
@@ -131,7 +129,7 @@ export default class RunnerInvoker implements RunnerInvokerInterface {
   }
 
   private getRunner(): RunnerInvokerInterface {
-    if (typeof this._runnerInvoker !== "undefined") {
+    if (this._runnerInvoker !== null) {
       return this._runnerInvoker;
     }
 

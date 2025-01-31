@@ -16,11 +16,11 @@ export const resolvableInstance = <Type extends NonNullable<unknown>>(
   mock: Type,
 ): Type =>
   new Proxy<Type>(instance(mock), {
-    get(target: Type, name: string): Type | undefined {
+    get(target: Type, name: string): Type | null {
       if (["Symbol(Symbol.toPrimitive)", "then", "catch"].includes(name)) {
-        return undefined;
+        return null;
       }
 
-      return (target as ResolvableInstanceTargetInterface<Type>)[name];
+      return (target as ResolvableInstanceTargetInterface<Type>)[name] ?? null;
     },
   });

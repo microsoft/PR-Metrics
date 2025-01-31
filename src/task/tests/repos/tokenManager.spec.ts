@@ -126,7 +126,7 @@ describe("tokenManager.ts", (): void => {
         runnerInvoker.getInput(
           deepEqual(["Workload", "Identity", "Federation"]),
         ),
-      ).thenReturn(undefined);
+      ).thenReturn(null);
 
       // Act
       const result: string | null = await tokenManager.getToken();
@@ -174,7 +174,7 @@ describe("tokenManager.ts", (): void => {
       ).once();
     });
 
-    it("throws an error when the service principal ID is undefined", async (): Promise<void> => {
+    it("throws an error when the service principal ID is null", async (): Promise<void> => {
       // Arrange
       const tokenManager: TokenManager = new TokenManager(
         instance(azureDevOpsApiWrapper),
@@ -186,7 +186,7 @@ describe("tokenManager.ts", (): void => {
           "Id",
           "serviceprincipalid",
         ),
-      ).thenReturn(undefined);
+      ).thenReturn(null);
 
       // Act
       const func: () => Promise<string | null> = async () =>
@@ -195,13 +195,13 @@ describe("tokenManager.ts", (): void => {
       // Assert
       await AssertExtensions.toThrowAsync(
         func,
-        "'servicePrincipalId', accessed within 'TokenManager.getAccessToken()', is invalid, null, or undefined 'undefined'.",
+        "'servicePrincipalId', accessed within 'TokenManager.getAccessToken()', is invalid, null, or undefined 'null'.",
       );
       verify(logger.logDebug("* TokenManager.getToken()")).once();
       verify(logger.logDebug("* TokenManager.getAccessToken()")).once();
     });
 
-    it("throws an error when the tenant ID is undefined", async (): Promise<void> => {
+    it("throws an error when the tenant ID is null", async (): Promise<void> => {
       // Arrange
       const tokenManager: TokenManager = new TokenManager(
         instance(azureDevOpsApiWrapper),
@@ -210,7 +210,7 @@ describe("tokenManager.ts", (): void => {
       );
       when(
         runnerInvoker.getEndpointAuthorizationParameter("Id", "tenantid"),
-      ).thenReturn(undefined);
+      ).thenReturn(null);
 
       // Act
       const func: () => Promise<string | null> = async () =>
@@ -219,15 +219,15 @@ describe("tokenManager.ts", (): void => {
       // Assert
       await AssertExtensions.toThrowAsync(
         func,
-        "'tenantId', accessed within 'TokenManager.getAccessToken()', is invalid, null, or undefined 'undefined'.",
+        "'tenantId', accessed within 'TokenManager.getAccessToken()', is invalid, null, or undefined 'null'.",
       );
       verify(logger.logDebug("* TokenManager.getToken()")).once();
       verify(logger.logDebug("* TokenManager.getAccessToken()")).once();
     });
 
     {
-      const testCases: (EndpointAuthorization | undefined)[] = [
-        undefined,
+      const testCases: (EndpointAuthorization | null)[] = [
+        null,
         {
           parameters: {
             other: "Other",
@@ -237,7 +237,7 @@ describe("tokenManager.ts", (): void => {
       ];
 
       testCases.forEach(
-        (endpointAuthorization: EndpointAuthorization | undefined): void => {
+        (endpointAuthorization: EndpointAuthorization | null): void => {
           it(`throws an error when endpoint authorization scheme is '${endpointAuthorization?.scheme ?? ""}'`, async (): Promise<void> => {
             // Arrange
             const tokenManager: TokenManager = new TokenManager(
