@@ -49,7 +49,7 @@
     "@actions/core": "1.11.1",
     "@actions/exec": "1.1.1",
     "@octokit/plugin-rest-endpoint-methods": "13.3.0",
-    "@octokit/types": "13.7.0",
+    "@octokit/types": "13.8.0",
     "axios": "1.7.9",
     "azure-devops-node-api": "14.1.0",
     "azure-pipelines-task-lib": "4.17.3",
@@ -89,9 +89,6 @@
     "typedoc": "0.27.6",
     "typescript": "5.7.3",
     "typescript-eslint": "8.22.0"
-  },
-  "overrides": {
-    "@octokit/core": "5.2.0"
   },
   "ts-standard": {
     "ignore": [

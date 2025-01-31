@@ -12,7 +12,7 @@ import GetReviewCommentsResponse from "./octokitInterfaces/getReviewCommentsResp
 import ListCommitsResponse from "./octokitInterfaces/listCommitsResponse.js";
 import { Octokit } from "octokit";
 import OctokitGitDiffParser from "../git/octokitGitDiffParser.js";
-import { OctokitOptions } from "@octokit/core/dist-types/types.js";
+import { OctokitOptions } from "@octokit/core";
 import UpdateIssueCommentResponse from "./octokitInterfaces/updateIssueCommentResponse.js";
 import UpdatePullResponse from "./octokitInterfaces/updatePullResponse.js";
 import { singleton } from "tsyringe";

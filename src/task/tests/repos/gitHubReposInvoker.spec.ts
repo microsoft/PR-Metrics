@@ -19,7 +19,7 @@ import GitInvoker from "../../src/git/gitInvoker.js";
 import HttpError from "../testUtilities/httpError.js";
 import Logger from "../../src/utilities/logger.js";
 import OctokitLogObjectInterface from "../wrappers/octokitLogObjectInterface.js";
-import { OctokitOptions } from "@octokit/core/dist-types/types.js";
+import { OctokitOptions } from "@octokit/core";
 import OctokitWrapper from "../../src/wrappers/octokitWrapper.js";
 import PullRequestDetailsInterface from "../../src/repos/interfaces/pullRequestDetailsInterface.js";
 import { RequestError } from "octokit";

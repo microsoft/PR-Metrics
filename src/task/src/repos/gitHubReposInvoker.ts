@@ -18,7 +18,7 @@ import GetReviewCommentsResponse from "../wrappers/octokitInterfaces/getReviewCo
 import GitInvoker from "../git/gitInvoker.js";
 import ListCommitsResponse from "../wrappers/octokitInterfaces/listCommitsResponse.js";
 import Logger from "../utilities/logger.js";
-import { OctokitOptions } from "@octokit/core/dist-types/types.js";
+import { OctokitOptions } from "@octokit/core";
 import OctokitWrapper from "../wrappers/octokitWrapper.js";
 import PullRequestCommentData from "./interfaces/pullRequestCommentData.js";
 import PullRequestDetailsInterface from "./interfaces/pullRequestDetailsInterface.js";
