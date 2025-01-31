@@ -15,10 +15,11 @@ import GitHubRunnerInvoker from "../../src/runners/gitHubRunnerInvoker.js";
 import GitHubRunnerWrapper from "../../src/wrappers/gitHubRunnerWrapper.js";
 import { any } from "../testUtilities/mockito.js";
 import assert from "node:assert/strict";
+import { fileURLToPath } from "node:url";
 
 describe("gitHubRunnerInvoker.js", (): void => {
   const resourcePath: string = path.join(
-    import.meta.dirname,
+    path.dirname(fileURLToPath(import.meta.url)),
     "../../Strings/resources.resjson/en-US/",
   );
 
