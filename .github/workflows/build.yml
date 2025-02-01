@@ -174,7 +174,7 @@ jobs:
           config-file: .github/linters/markdown-link-check.json
 
       - name: Initialize
-        uses: github/codeql-action/init@48ab28a6f5dbc2a99bf1e0131198dd8f1df78169 # v3.28.0
+        uses: github/codeql-action/init@dd746615b3b9d728a6a37ca2045b68ca76d4841a # v3.28.8
         with:
           build-mode: none
           config-file: .github/linters/codeql.yml
@@ -182,7 +182,7 @@ jobs:
           queries: security-extended,security-and-quality
 
       - name: Analyze
-        uses: github/codeql-action/analyze@48ab28a6f5dbc2a99bf1e0131198dd8f1df78169 # v3.28.0
+        uses: github/codeql-action/analyze@dd746615b3b9d728a6a37ca2045b68ca76d4841a # v3.28.8
         with:
           category: TypeScript
 
