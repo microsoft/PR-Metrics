@@ -3,11 +3,11 @@
  * Licensed under the MIT License.
  */
 
-import * as taskLib from "azure-pipelines-task-lib/task";
+import * as taskLib from "azure-pipelines-task-lib/task.js";
 import {
   IExecOptions,
   IExecSyncResult,
-} from "azure-pipelines-task-lib/toolrunner";
+} from "azure-pipelines-task-lib/toolrunner.js";
 import { singleton } from "tsyringe";
 
 /**

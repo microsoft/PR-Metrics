@@ -3,8 +3,8 @@
  * Licensed under the MIT License.
  */
 
-import ConsoleWrapper from "../wrappers/consoleWrapper";
-import RunnerInvoker from "../runners/runnerInvoker";
+import ConsoleWrapper from "../wrappers/consoleWrapper.js";
+import RunnerInvoker from "../runners/runnerInvoker.js";
 import { singleton } from "tsyringe";
 
 /**

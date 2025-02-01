@@ -4,15 +4,15 @@
  */
 
 import * as path from "path";
-import * as taskLib from "azure-pipelines-task-lib/task";
+import * as taskLib from "azure-pipelines-task-lib/task.js";
 import {
   IExecOptions,
   IExecSyncResult,
-} from "azure-pipelines-task-lib/toolrunner";
-import AzurePipelinesRunnerWrapper from "../wrappers/azurePipelinesRunnerWrapper";
-import { EndpointAuthorization } from "./endpointAuthorization";
-import ExecOutput from "./execOutput";
-import RunnerInvokerInterface from "./runnerInvokerInterface";
+} from "azure-pipelines-task-lib/toolrunner.js";
+import AzurePipelinesRunnerWrapper from "../wrappers/azurePipelinesRunnerWrapper.js";
+import { EndpointAuthorization } from "./endpointAuthorization.js";
+import ExecOutput from "./execOutput.js";
+import RunnerInvokerInterface from "./runnerInvokerInterface.js";
 import { singleton } from "tsyringe";
 
 /**

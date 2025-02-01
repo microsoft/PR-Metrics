@@ -4,12 +4,12 @@
  */
 
 import "reflect-metadata";
-import * as AssertExtensions from "../testUtilities/assertExtensions";
+import * as AssertExtensions from "../testUtilities/assertExtensions.js";
 import { instance, mock, verify, when } from "ts-mockito";
 import { ExecOutput } from "@actions/exec";
-import GitInvoker from "../../src/git/gitInvoker";
-import Logger from "../../src/utilities/logger";
-import RunnerInvoker from "../../src/runners/runnerInvoker";
+import GitInvoker from "../../src/git/gitInvoker.js";
+import Logger from "../../src/utilities/logger.js";
+import RunnerInvoker from "../../src/runners/runnerInvoker.js";
 import assert from "node:assert/strict";
 
 describe("gitInvoker.ts", (): void => {

@@ -4,21 +4,21 @@
  */
 
 import "reflect-metadata";
-import * as Converter from "../../src/utilities/converter";
+import * as Converter from "../../src/utilities/converter.js";
 import { instance, mock, verify, when } from "ts-mockito";
-import CodeMetrics from "../../src/metrics/codeMetrics";
-import CodeMetricsData from "../../src/metrics/codeMetricsData";
-import CommentData from "../../src/repos/interfaces/commentData";
-import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces";
-import FileCommentData from "../../src/repos/interfaces/fileCommentData";
-import { FixedLengthArrayInterface } from "../../src/utilities/fixedLengthArrayInterface";
-import Inputs from "../../src/metrics/inputs";
-import Logger from "../../src/utilities/logger";
-import PullRequestCommentData from "../../src/repos/interfaces/pullRequestCommentData";
-import PullRequestComments from "../../src/pullRequests/pullRequestComments";
-import PullRequestCommentsData from "../../src/pullRequests/pullRequestCommentsData";
-import ReposInvoker from "../../src/repos/reposInvoker";
-import RunnerInvoker from "../../src/runners/runnerInvoker";
+import CodeMetrics from "../../src/metrics/codeMetrics.js";
+import CodeMetricsData from "../../src/metrics/codeMetricsData.js";
+import CommentData from "../../src/repos/interfaces/commentData.js";
+import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces.js";
+import FileCommentData from "../../src/repos/interfaces/fileCommentData.js";
+import { FixedLengthArrayInterface } from "../../src/utilities/fixedLengthArrayInterface.js";
+import Inputs from "../../src/metrics/inputs.js";
+import Logger from "../../src/utilities/logger.js";
+import PullRequestCommentData from "../../src/repos/interfaces/pullRequestCommentData.js";
+import PullRequestComments from "../../src/pullRequests/pullRequestComments.js";
+import PullRequestCommentsData from "../../src/pullRequests/pullRequestCommentsData.js";
+import ReposInvoker from "../../src/repos/reposInvoker.js";
+import RunnerInvoker from "../../src/runners/runnerInvoker.js";
 import assert from "node:assert/strict";
 
 describe("pullRequestComments.ts", (): void => {

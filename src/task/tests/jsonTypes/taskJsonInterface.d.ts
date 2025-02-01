@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import ResourcesJson from "../jsonTypes/resourcesJson";
+import ResourcesJson from "../jsonTypes/resourcesJson.js";
 
 /**
  * An interface defining the format of Azure Pipelines task JSON files.

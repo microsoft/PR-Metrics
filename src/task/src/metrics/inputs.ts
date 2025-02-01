@@ -3,10 +3,10 @@
  * Licensed under the MIT License.
  */
 
-import * as InputsDefault from "./inputsDefault";
-import Logger from "../utilities/logger";
-import RunnerInvoker from "../runners/runnerInvoker";
-import { decimalRadix } from "../utilities/constants";
+import * as InputsDefault from "./inputsDefault.js";
+import Logger from "../utilities/logger.js";
+import RunnerInvoker from "../runners/runnerInvoker.js";
+import { decimalRadix } from "../utilities/constants.js";
 import { singleton } from "tsyringe";
 
 /**
