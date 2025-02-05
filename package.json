@@ -9,7 +9,7 @@
   "scripts": {
     "build:initialization": "npm ci && cross-env-shell \"mkdirp $npm_config_dir && ncp src $npm_config_dir\"",
     "build:debug": "npm run build:initialization --dir=debug && cd debug/task && tsc --sourceMap",
-    "build:release": "npm run build:initialization --dir=release && cd release/task && tsc && ncc build index.js --out . --minify && babel index.js --out-file index2.js --config-file ../../babel.config.json && ncc build index2.js --out . --minify && ncp index2.js index.mjs && rimraf src tests typedocs *.ts index2.js package.json tsconfig.json typedoc.json && cd .. && mkdirp extension && ncp ../package.json extension/package.json",
+    "build:release": "npm run build:initialization --dir=release && cd release/task && tsc && ncc build index.js --out index.mjs --minify && babel index.mjs --out-file index2.mjs --config-file ../../babel.config.json && ncc build index2.mjs --out . --minify && ncp index2.mjs index.mjs && rimraf src tests typedocs *.ts index.js index2.mjs package.json tsconfig.json typedoc.json && cd .. && mkdirp extension && ncp ../package.json extension/package.json",
     "build:package": "npm ci && ncc build src/task/index.ts --out dist --minify && ncp dist/index.js dist/index.mjs && rimraf dist/index.js dist/package.json && ncp src/task/Strings/resources.resjson/en-US/resources.resjson dist/resources.resjson",
     "build:docs": "cd src/task && typedoc",
     "build": "npm run build:release && npm run build:package && npm run build:docs",
