@@ -3,7 +3,6 @@
  * Licensed under the MIT License.
  */
 
-import "./a";
 import "reflect-metadata";
 import PullRequestMetrics from "./src/pullRequestMetrics.js";
 import { container } from "tsyringe";
