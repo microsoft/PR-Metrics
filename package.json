@@ -9,9 +9,8 @@
   "scripts": {
     "build:initialization": "npm ci && cross-env-shell \"mkdirp $npm_config_dir && ncp src $npm_config_dir\"",
     "build:debug": "npm run build:initialization --dir=debug && cd debug/task && tsc --sourceMap",
-    "build:release": "npm run build:initialization --dir=release && cd release/task && tsc && ncc build index.js --out index.mjs --minify && babel index.mjs --out-file index2.mjs --config-file ../../babel.config.json && ncc build index2.mjs --out . --minify && ncp index2.mjs index.mjs && rimraf src tests typedocs *.ts index.js index2.mjs package.json tsconfig.json typedoc.json && cd .. && mkdirp extension && ncp ../package.json extension/package.json",
-    "build:package": "npm ci && ncc build src/task/index.ts --out dist --minify && ncp dist/index.js dist/index.mjs && rimraf dist/index.js dist/package.json && ncp src/task/Strings/resources.resjson/en-US/resources.resjson dist/resources.resjson",
-    /* module.exports=eval("require")("encoding")},2613:e=>{e.exports=(0,module__WEBPACK_IMPORTED_MODULE_0__.createRequire)(import.meta.url)("assert")},290:e=>{e.exports=(0,module__WEBPACK_IMPORTED_MODULE_0__.createRequire)(import.meta.url)("async_hooks")},181:e=>{e.exports=(0, */
+    "build:release": "npm run build:initialization --dir=release && cd release/task && tsc && ncc build index.js --out index.mjs --minify && babel index.mjs --out-file index2.mjs --config-file ../../babel.config.json && ncc build index2.mjs --out . --minify && ncp index2.mjs index.mjs && shx sed -i 's/module=>{module.exports=eval(\"require\")(\"\")}/module=>{module.exports={}}/g' index.mjs && rimraf src tests typedocs *.ts index.js index2.mjs package.json tsconfig.json typedoc.json && cd .. && mkdirp extension && ncp ../package.json extension/package.json",
+    "build:package": "npm ci && ncc build src/task/index.ts --out dist --minify && ncp dist/index.js dist/index.mjs && shx sed -i 's/module=>{module.exports=eval(\"require\")(\"\")}/module=>{module.exports={}}/g' dist/index.mjs && rimraf dist/index.js dist/package.json && ncp src/task/Strings/resources.resjson/en-US/resources.resjson dist/resources.resjson",
     "build:docs": "cd src/task && typedoc",
     "build": "npm run build:release && npm run build:package && npm run build:docs",
     "clean": "rimraf debug && rimraf release",
@@ -84,6 +83,7 @@
     "ncp": "2.0.0",
     "npm-check-updates": "17.1.14",
     "rimraf": "6.0.1",
+    "shx": "^0.3.4",
     "source-map-support": "0.5.21",
     "tfx-cli": "0.18.0",
     "ts-mockito": "2.6.1",
