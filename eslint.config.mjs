@@ -29,15 +29,6 @@ export default tseslint.config(
       },
     },
     rules: {
-      //temp
-      "@typescript-eslint/no-unsafe-assignment": "off",
-      "@typescript-eslint/no-unsafe-argument": "off",
-      "@typescript-eslint/no-unsafe-member-access": "off",
-      "@typescript-eslint/no-redundant-type-constituents": "off",
-      "@typescript-eslint/strict-boolean-expressions": "off",
-      "@typescript-eslint/require-await": "off",
-      "@typescript-eslint/no-unsafe-call": "off",
-      //older
       "@typescript-eslint/consistent-type-exports": "error",
       "@typescript-eslint/default-param-last": "error",
       "@typescript-eslint/explicit-function-return-type": "error",
@@ -188,7 +179,7 @@ export default tseslint.config(
       "@typescript-eslint/prefer-return-this-type": "error",
       "@typescript-eslint/promise-function-async": "error",
       "@typescript-eslint/require-array-sort-compare": "error",
-      //"@typescript-eslint/strict-boolean-expressions": "error",
+      "@typescript-eslint/strict-boolean-expressions": "error",
       "@typescript-eslint/switch-exhaustiveness-check": "error",
       "@typescript-eslint/typedef": "error",
       "@typescript-eslint/unbound-method": "error",
