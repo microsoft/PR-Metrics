@@ -54,7 +54,7 @@
     "azure-pipelines-task-lib": "4.17.3",
     "http-status-codes": "2.3.0",
     "isomorphic-fetch": "3.0.0",
-    "octokit": "3.2.1",
+    "octokit": "4.1.1",
     "parse-git-diff": "0.0.17",
     "reflect-metadata": "0.2.2",
     "tsyringe": "4.8.0"
