@@ -4,18 +4,10 @@
     [
       "@babel/preset-env",
       {
-        "modules": false
+        "modules": "systemjs"
       }
     ]
   ],
-  "plugins": [
-    "babel-plugin-transform-globalthis",
-    [
-      "@babel/plugin-transform-runtime",
-      {
-        "useESModules": true
-      }
-    ]
-  ],
+  "plugins": ["babel-plugin-transform-globalthis"],
   "compact": true
 }
