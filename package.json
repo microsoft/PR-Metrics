@@ -56,7 +56,6 @@
     "encoding": "0.1.13",
     "http-status-codes": "2.3.0",
     "isomorphic-fetch": "3.0.0",
-    "module": "1.2.5",
     "octokit": "4.1.1",
     "parse-git-diff": "0.0.17",
     "reflect-metadata": "0.2.2",
@@ -64,8 +63,8 @@
   },
   "devDependencies": {
     "@babel/cli": "7.26.4",
-    "@babel/core": "7.26.8",
-    "@babel/preset-env": "7.26.8",
+    "@babel/core": "7.26.9",
+    "@babel/preset-env": "7.26.9",
     "@tsconfig/node20": "20.1.4",
     "@types/glob": "8.1.0",
     "@types/isomorphic-fetch": "0.0.39",

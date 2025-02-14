@@ -1,6 +1,13 @@
 {
   "$schema": "https://json.schemastore.org/babelrc.json",
-  "presets": [["@babel/preset-env"]],
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "modules": false
+      }
+    ]
+  ],
   "plugins": ["babel-plugin-transform-globalthis"],
   "compact": true
 }
