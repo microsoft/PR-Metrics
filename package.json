@@ -9,7 +9,7 @@
   "scripts": {
     "build:initialization": "npm ci && cross-env-shell \"mkdirp $npm_config_dir && ncp src $npm_config_dir\"",
     "build:debug": "npm run build:initialization --dir=debug && cd debug/task && tsc --sourceMap",
-    "build:release": "npm run build:initialization --dir=release && cd release/task && tsc && ncc build index.js --out . --minify && ncp index.js index.mjs && rimraf src tests typedocs index.js index.ts index2.js package.json tsconfig.json typedoc.json && cd .. && mkdirp extension && ncp ../package.json extension/package.json",
+    "build:release": "npm run build:initialization --dir=release && cd release/task && tsc && ncc build index.js --out . --minify && ncp index.js index.mjs && rimraf src tests typedocs index.js index.ts package.json tsconfig.json typedoc.json && cd .. && mkdirp extension && ncp ../package.json extension/package.json",
     "build:package": "npm ci && ncc build src/task/index.ts --out dist --minify && ncp dist/index.js dist/index.mjs && rimraf dist/index.js dist/package.json && ncp src/task/Strings/resources.resjson/en-US/resources.resjson dist/resources.resjson",
     "build:docs": "cd src/task && typedoc",
     "build": "npm run build:release && npm run build:package && npm run build:docs",
@@ -48,7 +48,6 @@
   "dependencies": {
     "@actions/core": "1.11.1",
     "@actions/exec": "1.1.1",
-    "@babel/runtime": "7.26.9",
     "@octokit/plugin-rest-endpoint-methods": "13.3.1",
     "@octokit/types": "13.8.0",
     "axios": "1.7.9",
@@ -63,10 +62,7 @@
     "tsyringe": "4.8.0"
   },
   "devDependencies": {
-    "@babel/cli": "7.26.4",
-    "@babel/core": "7.26.9",
-    "@babel/plugin-transform-runtime": "7.26.9",
-    "@babel/preset-env": "7.26.9",    "@tsconfig/node20": "20.1.4",
+    "@tsconfig/node20": "20.1.4",
     "@types/glob": "8.1.0",
     "@types/isomorphic-fetch": "0.0.39",
     "@types/mocha": "10.0.10",
@@ -74,7 +70,6 @@
     "@typescript-eslint/eslint-plugin": "8.24.0",
     "@typescript-eslint/parser": "8.24.0",
     "@vercel/ncc": "0.38.3",
-    "babel-plugin-transform-globalthis": "1.0.0",
     "c8": "10.1.3",
     "cross-env": "7.0.3",
     "eslint": "9.20.1",
