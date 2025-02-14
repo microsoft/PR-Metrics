@@ -48,6 +48,7 @@
   "dependencies": {
     "@actions/core": "1.11.1",
     "@actions/exec": "1.1.1",
+    "@babel/runtime": "7.26.9",
     "@octokit/plugin-rest-endpoint-methods": "13.3.1",
     "@octokit/types": "13.8.0",
     "axios": "1.7.9",
