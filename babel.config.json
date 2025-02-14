@@ -8,6 +8,14 @@
       }
     ]
   ],
-  "plugins": ["babel-plugin-transform-globalthis"],
+  "plugins": [
+    "babel-plugin-transform-globalthis",
+    [
+      "@babel/plugin-transform-runtime",
+      {
+        "useESModules": true
+      }
+    ]
+  ],
   "compact": true
 }
