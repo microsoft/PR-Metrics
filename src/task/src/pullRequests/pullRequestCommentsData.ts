@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces";
+import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces.js";
 
 /**
  * A class representing data about the pull request comments to be added and updated.

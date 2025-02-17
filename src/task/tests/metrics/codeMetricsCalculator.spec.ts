@@ -5,15 +5,15 @@
 
 import "reflect-metadata";
 import { instance, mock, verify, when } from "ts-mockito";
-import CodeMetricsCalculator from "../../src/metrics/codeMetricsCalculator";
-import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces";
-import GitInvoker from "../../src/git/gitInvoker";
-import Logger from "../../src/utilities/logger";
-import PullRequest from "../../src/pullRequests/pullRequest";
-import PullRequestComments from "../../src/pullRequests/pullRequestComments";
-import PullRequestCommentsData from "../../src/pullRequests/pullRequestCommentsData";
-import ReposInvoker from "../../src/repos/reposInvoker";
-import RunnerInvoker from "../../src/runners/runnerInvoker";
+import CodeMetricsCalculator from "../../src/metrics/codeMetricsCalculator.js";
+import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces.js";
+import GitInvoker from "../../src/git/gitInvoker.js";
+import Logger from "../../src/utilities/logger.js";
+import PullRequest from "../../src/pullRequests/pullRequest.js";
+import PullRequestComments from "../../src/pullRequests/pullRequestComments.js";
+import PullRequestCommentsData from "../../src/pullRequests/pullRequestCommentsData.js";
+import ReposInvoker from "../../src/repos/reposInvoker.js";
+import RunnerInvoker from "../../src/runners/runnerInvoker.js";
 import assert from "node:assert/strict";
 
 describe("codeMetricsCalculator.ts", (): void => {

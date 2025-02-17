@@ -3,11 +3,11 @@
  * Licensed under the MIT License.
  */
 
-import AzurePipelinesRunnerInvoker from "./azurePipelinesRunnerInvoker";
-import { EndpointAuthorization } from "./endpointAuthorization";
-import ExecOutput from "./execOutput";
-import GitHubRunnerInvoker from "./gitHubRunnerInvoker";
-import RunnerInvokerInterface from "./runnerInvokerInterface";
+import AzurePipelinesRunnerInvoker from "./azurePipelinesRunnerInvoker.js";
+import { EndpointAuthorization } from "./endpointAuthorization.js";
+import ExecOutput from "./execOutput.js";
+import GitHubRunnerInvoker from "./gitHubRunnerInvoker.js";
+import RunnerInvokerInterface from "./runnerInvokerInterface.js";
 import { singleton } from "tsyringe";
 
 /**

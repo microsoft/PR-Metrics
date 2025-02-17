@@ -5,14 +5,14 @@
 
 import * as minimatch from "minimatch";
 import * as path from "path";
-import { CodeFileMetricInterface } from "./codeFileMetricInterface";
-import CodeMetricsData from "./codeMetricsData";
-import { FixedLengthArrayInterface } from "../utilities/fixedLengthArrayInterface";
-import GitInvoker from "../git/gitInvoker";
-import Inputs from "./inputs";
-import Logger from "../utilities/logger";
-import RunnerInvoker from "../runners/runnerInvoker";
-import { decimalRadix } from "../utilities/constants";
+import { CodeFileMetricInterface } from "./codeFileMetricInterface.js";
+import CodeMetricsData from "./codeMetricsData.js";
+import { FixedLengthArrayInterface } from "../utilities/fixedLengthArrayInterface.js";
+import GitInvoker from "../git/gitInvoker.js";
+import Inputs from "./inputs.js";
+import Logger from "../utilities/logger.js";
+import RunnerInvoker from "../runners/runnerInvoker.js";
+import { decimalRadix } from "../utilities/constants.js";
 import { singleton } from "tsyringe";
 
 /**

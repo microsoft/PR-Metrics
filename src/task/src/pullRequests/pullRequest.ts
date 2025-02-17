@@ -3,10 +3,10 @@
  * Licensed under the MIT License.
  */
 
-import * as Validator from "../utilities/validator";
-import CodeMetrics from "../metrics/codeMetrics";
-import Logger from "../utilities/logger";
-import RunnerInvoker from "../runners/runnerInvoker";
+import * as Validator from "../utilities/validator.js";
+import CodeMetrics from "../metrics/codeMetrics.js";
+import Logger from "../utilities/logger.js";
+import RunnerInvoker from "../runners/runnerInvoker.js";
 import { injectable } from "tsyringe";
 
 /**

@@ -3,15 +3,15 @@
  * Licensed under the MIT License.
  */
 
-import * as Validator from "../utilities/validator";
-import AzureReposInvoker from "./azureReposInvoker";
-import CommentData from "./interfaces/commentData";
-import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces";
-import GitHubReposInvoker from "./gitHubReposInvoker";
-import Logger from "../utilities/logger";
-import PullRequestDetailsInterface from "./interfaces/pullRequestDetailsInterface";
-import ReposInvokerInterface from "./reposInvokerInterface";
-import RunnerInvoker from "../runners/runnerInvoker";
+import * as Validator from "../utilities/validator.js";
+import AzureReposInvoker from "./azureReposInvoker.js";
+import CommentData from "./interfaces/commentData.js";
+import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces.js";
+import GitHubReposInvoker from "./gitHubReposInvoker.js";
+import Logger from "../utilities/logger.js";
+import PullRequestDetailsInterface from "./interfaces/pullRequestDetailsInterface.js";
+import ReposInvokerInterface from "./reposInvokerInterface.js";
+import RunnerInvoker from "../runners/runnerInvoker.js";
 import { singleton } from "tsyringe";
 
 /**

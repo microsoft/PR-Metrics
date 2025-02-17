@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import * as Converter from "../../src/utilities/converter";
+import * as Converter from "../../src/utilities/converter.js";
 import assert from "node:assert/strict";
 
 describe("converter.ts", (): void => {

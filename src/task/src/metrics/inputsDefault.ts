@@ -102,8 +102,10 @@ export const codeFileExtensions: string[] = [
 
   // TypeScript
   "ts",
+  "mts",
   // TypeScript: TSX
   "tsx",
+  "mtsx",
 
   // C#
   "cs",

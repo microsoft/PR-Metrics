@@ -3,15 +3,15 @@
  * Licensed under the MIT License.
  */
 
-import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces";
-import GitInvoker from "../git/gitInvoker";
-import Logger from "../utilities/logger";
-import PullRequest from "../pullRequests/pullRequest";
-import PullRequestComments from "../pullRequests/pullRequestComments";
-import PullRequestCommentsData from "../pullRequests/pullRequestCommentsData";
-import PullRequestDetailsInterface from "../repos/interfaces/pullRequestDetailsInterface";
-import ReposInvoker from "../repos/reposInvoker";
-import RunnerInvoker from "../runners/runnerInvoker";
+import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces.js";
+import GitInvoker from "../git/gitInvoker.js";
+import Logger from "../utilities/logger.js";
+import PullRequest from "../pullRequests/pullRequest.js";
+import PullRequestComments from "../pullRequests/pullRequestComments.js";
+import PullRequestCommentsData from "../pullRequests/pullRequestCommentsData.js";
+import PullRequestDetailsInterface from "../repos/interfaces/pullRequestDetailsInterface.js";
+import ReposInvoker from "../repos/reposInvoker.js";
+import RunnerInvoker from "../runners/runnerInvoker.js";
 import { injectable } from "tsyringe";
 
 /**

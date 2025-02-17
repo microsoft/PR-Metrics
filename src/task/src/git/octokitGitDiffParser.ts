@@ -11,10 +11,10 @@ import parseGitDiff, {
   GitDiff,
   RenamedFile,
 } from "parse-git-diff";
-import AxiosWrapper from "../wrappers/axiosWrapper";
-import GetPullResponse from "../wrappers/octokitInterfaces/getPullResponse";
-import Logger from "../utilities/logger";
-import OctokitWrapper from "../wrappers/octokitWrapper";
+import AxiosWrapper from "../wrappers/axiosWrapper.js";
+import GetPullResponse from "../wrappers/octokitInterfaces/getPullResponse.js";
+import Logger from "../utilities/logger.js";
+import OctokitWrapper from "../wrappers/octokitWrapper.js";
 import { singleton } from "tsyringe";
 
 /**

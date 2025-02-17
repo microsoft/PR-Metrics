@@ -5,11 +5,11 @@
 
 import "reflect-metadata";
 import { instance, mock, verify, when } from "ts-mockito";
-import AxiosWrapper from "../../src/wrappers/axiosWrapper";
-import GetPullResponse from "../../src/wrappers/octokitInterfaces/getPullResponse";
-import Logger from "../../src/utilities/logger";
-import OctokitGitDiffParser from "../../src/git/octokitGitDiffParser";
-import OctokitWrapper from "../../src/wrappers/octokitWrapper";
+import AxiosWrapper from "../../src/wrappers/axiosWrapper.js";
+import GetPullResponse from "../../src/wrappers/octokitInterfaces/getPullResponse.js";
+import Logger from "../../src/utilities/logger.js";
+import OctokitGitDiffParser from "../../src/git/octokitGitDiffParser.js";
+import OctokitWrapper from "../../src/wrappers/octokitWrapper.js";
 import assert from "node:assert/strict";
 
 /* eslint-disable @typescript-eslint/naming-convention -- Required for alignment with Octokit. */
@@ -534,4 +534,5 @@ describe("octokitGitDiffParser.ts", (): void => {
     });
   });
 });
+
 /* eslint-enable @typescript-eslint/naming-convention */

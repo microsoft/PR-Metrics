@@ -3,17 +3,17 @@
  * Licensed under the MIT License.
  */
 
-import CodeMetrics from "../metrics/codeMetrics";
-import CodeMetricsData from "../metrics/codeMetricsData";
-import CommentData from "../repos/interfaces/commentData";
-import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces";
-import FileCommentData from "../repos/interfaces/fileCommentData";
-import Inputs from "../metrics/inputs";
-import Logger from "../utilities/logger";
-import PullRequestComment from "../repos/interfaces/pullRequestCommentData";
-import PullRequestCommentsData from "./pullRequestCommentsData";
-import ReposInvoker from "../repos/reposInvoker";
-import RunnerInvoker from "../runners/runnerInvoker";
+import CodeMetrics from "../metrics/codeMetrics.js";
+import CodeMetricsData from "../metrics/codeMetricsData.js";
+import CommentData from "../repos/interfaces/commentData.js";
+import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces.js";
+import FileCommentData from "../repos/interfaces/fileCommentData.js";
+import Inputs from "../metrics/inputs.js";
+import Logger from "../utilities/logger.js";
+import PullRequestComment from "../repos/interfaces/pullRequestCommentData.js";
+import PullRequestCommentsData from "./pullRequestCommentsData.js";
+import ReposInvoker from "../repos/reposInvoker.js";
+import RunnerInvoker from "../runners/runnerInvoker.js";
 import { injectable } from "tsyringe";
 
 /**

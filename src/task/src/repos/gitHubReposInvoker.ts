@@ -4,30 +4,30 @@
  */
 
 import "isomorphic-fetch";
-import * as Converter from "../utilities/converter";
-import * as Validator from "../utilities/validator";
-import BaseReposInvoker from "./baseReposInvoker";
-import CommentData from "./interfaces/commentData";
-import CreateIssueCommentResponse from "../wrappers/octokitInterfaces/createIssueCommentResponse";
-import CreateReviewCommentResponse from "../wrappers/octokitInterfaces/createReviewCommentResponse";
-import DeleteReviewCommentResponse from "../wrappers/octokitInterfaces/deleteReviewCommentResponse";
-import FileCommentData from "./interfaces/fileCommentData";
-import GetIssueCommentsResponse from "../wrappers/octokitInterfaces/getIssueCommentsResponse";
-import GetPullResponse from "../wrappers/octokitInterfaces/getPullResponse";
-import GetReviewCommentsResponse from "../wrappers/octokitInterfaces/getReviewCommentsResponse";
-import GitInvoker from "../git/gitInvoker";
-import ListCommitsResponse from "../wrappers/octokitInterfaces/listCommitsResponse";
-import Logger from "../utilities/logger";
-import { OctokitOptions } from "@octokit/core/dist-types/types";
-import OctokitWrapper from "../wrappers/octokitWrapper";
-import PullRequestCommentData from "./interfaces/pullRequestCommentData";
-import PullRequestDetailsInterface from "./interfaces/pullRequestDetailsInterface";
+import * as Converter from "../utilities/converter.js";
+import * as Validator from "../utilities/validator.js";
+import BaseReposInvoker from "./baseReposInvoker.js";
+import CommentData from "./interfaces/commentData.js";
+import CreateIssueCommentResponse from "../wrappers/octokitInterfaces/createIssueCommentResponse.js";
+import CreateReviewCommentResponse from "../wrappers/octokitInterfaces/createReviewCommentResponse.js";
+import DeleteReviewCommentResponse from "../wrappers/octokitInterfaces/deleteReviewCommentResponse.js";
+import FileCommentData from "./interfaces/fileCommentData.js";
+import GetIssueCommentsResponse from "../wrappers/octokitInterfaces/getIssueCommentsResponse.js";
+import GetPullResponse from "../wrappers/octokitInterfaces/getPullResponse.js";
+import GetReviewCommentsResponse from "../wrappers/octokitInterfaces/getReviewCommentsResponse.js";
+import GitInvoker from "../git/gitInvoker.js";
+import ListCommitsResponse from "../wrappers/octokitInterfaces/listCommitsResponse.js";
+import Logger from "../utilities/logger.js";
+import { OctokitOptions } from "@octokit/core";
+import OctokitWrapper from "../wrappers/octokitWrapper.js";
+import PullRequestCommentData from "./interfaces/pullRequestCommentData.js";
+import PullRequestDetailsInterface from "./interfaces/pullRequestDetailsInterface.js";
 import { RequestError } from "octokit";
-import RunnerInvoker from "../runners/runnerInvoker";
+import RunnerInvoker from "../runners/runnerInvoker.js";
 import { StatusCodes } from "http-status-codes";
-import UpdateIssueCommentResponse from "../wrappers/octokitInterfaces/updateIssueCommentResponse";
-import UpdatePullResponse from "../wrappers/octokitInterfaces/updatePullResponse";
-import { decimalRadix } from "../utilities/constants";
+import UpdateIssueCommentResponse from "../wrappers/octokitInterfaces/updateIssueCommentResponse.js";
+import UpdatePullResponse from "../wrappers/octokitInterfaces/updatePullResponse.js";
+import { decimalRadix } from "../utilities/constants.js";
 import { singleton } from "tsyringe";
 
 /**
