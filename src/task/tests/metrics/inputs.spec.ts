@@ -336,7 +336,9 @@ describe("inputs.ts", (): void => {
             verify(
               logger.logInfo(adjustingFileMatchingPatternsResource),
             ).once();
-            verify(logger.logInfo(adjustingTestMatchingPatternsResource)).once();
+            verify(
+              logger.logInfo(adjustingTestMatchingPatternsResource),
+            ).once();
             verify(logger.logInfo(adjustingCodeFileExtensionsResource)).once();
             verify(logger.logInfo(disablingTestFactorResource)).never();
             verify(logger.logInfo(settingAlwaysCloseComment)).never();
@@ -392,7 +394,9 @@ describe("inputs.ts", (): void => {
             verify(
               logger.logInfo(adjustingFileMatchingPatternsResource),
             ).once();
-            verify(logger.logInfo(adjustingTestMatchingPatternsResource)).once();
+            verify(
+              logger.logInfo(adjustingTestMatchingPatternsResource),
+            ).once();
             verify(logger.logInfo(adjustingCodeFileExtensionsResource)).once();
             verify(logger.logInfo(disablingTestFactorResource)).never();
             verify(logger.logInfo(settingAlwaysCloseComment)).never();
@@ -448,7 +452,9 @@ describe("inputs.ts", (): void => {
             verify(
               logger.logInfo(adjustingFileMatchingPatternsResource),
             ).once();
-            verify(logger.logInfo(adjustingTestMatchingPatternsResource)).once();
+            verify(
+              logger.logInfo(adjustingTestMatchingPatternsResource),
+            ).once();
             verify(logger.logInfo(adjustingCodeFileExtensionsResource)).once();
             verify(logger.logInfo(disablingTestFactorResource)).never();
             verify(logger.logInfo(settingAlwaysCloseComment)).never();
@@ -515,7 +521,9 @@ describe("inputs.ts", (): void => {
             verify(
               logger.logInfo(adjustingFileMatchingPatternsResource),
             ).once();
-            verify(logger.logInfo(adjustingTestMatchingPatternsResource)).once();
+            verify(
+              logger.logInfo(adjustingTestMatchingPatternsResource),
+            ).once();
             verify(logger.logInfo(adjustingCodeFileExtensionsResource)).once();
             verify(logger.logInfo(disablingTestFactorResource)).never();
             verify(logger.logInfo(settingAlwaysCloseComment)).never();
@@ -579,7 +587,9 @@ describe("inputs.ts", (): void => {
             verify(
               logger.logInfo(adjustingFileMatchingPatternsResource),
             ).once();
-            verify(logger.logInfo(adjustingTestMatchingPatternsResource)).once();
+            verify(
+              logger.logInfo(adjustingTestMatchingPatternsResource),
+            ).once();
             verify(logger.logInfo(adjustingCodeFileExtensionsResource)).once();
             verify(logger.logInfo(disablingTestFactorResource)).never();
             verify(logger.logInfo(settingAlwaysCloseComment)).never();
@@ -644,7 +654,9 @@ describe("inputs.ts", (): void => {
             verify(
               logger.logInfo(adjustingFileMatchingPatternsResource),
             ).once();
-            verify(logger.logInfo(adjustingTestMatchingPatternsResource)).once();
+            verify(
+              logger.logInfo(adjustingTestMatchingPatternsResource),
+            ).once();
             verify(logger.logInfo(adjustingCodeFileExtensionsResource)).once();
             verify(logger.logInfo(disablingTestFactorResource)).never();
             verify(logger.logInfo(settingAlwaysCloseComment)).never();
@@ -711,7 +723,9 @@ describe("inputs.ts", (): void => {
             verify(
               logger.logInfo(adjustingFileMatchingPatternsResource),
             ).once();
-            verify(logger.logInfo(adjustingTestMatchingPatternsResource)).once();
+            verify(
+              logger.logInfo(adjustingTestMatchingPatternsResource),
+            ).once();
             verify(logger.logInfo(adjustingCodeFileExtensionsResource)).once();
             verify(logger.logInfo(disablingTestFactorResource)).never();
             verify(logger.logInfo(settingAlwaysCloseComment)).never();
@@ -773,7 +787,9 @@ describe("inputs.ts", (): void => {
             verify(
               logger.logInfo(adjustingFileMatchingPatternsResource),
             ).once();
-            verify(logger.logInfo(adjustingTestMatchingPatternsResource)).once();
+            verify(
+              logger.logInfo(adjustingTestMatchingPatternsResource),
+            ).once();
             verify(logger.logInfo(adjustingCodeFileExtensionsResource)).once();
             verify(logger.logInfo(disablingTestFactorResource)).never();
             verify(logger.logInfo(settingAlwaysCloseComment)).never();
@@ -838,7 +854,9 @@ describe("inputs.ts", (): void => {
             verify(
               logger.logInfo(adjustingFileMatchingPatternsResource),
             ).once();
-            verify(logger.logInfo(adjustingTestMatchingPatternsResource)).once();
+            verify(
+              logger.logInfo(adjustingTestMatchingPatternsResource),
+            ).once();
             verify(logger.logInfo(adjustingCodeFileExtensionsResource)).once();
             verify(logger.logInfo(disablingTestFactorResource)).never();
             verify(logger.logInfo(settingAlwaysCloseComment)).never();
@@ -894,7 +912,9 @@ describe("inputs.ts", (): void => {
             verify(
               logger.logInfo(adjustingFileMatchingPatternsResource),
             ).once();
-            verify(logger.logInfo(adjustingTestMatchingPatternsResource)).once();
+            verify(
+              logger.logInfo(adjustingTestMatchingPatternsResource),
+            ).once();
             verify(logger.logInfo(adjustingCodeFileExtensionsResource)).once();
             verify(logger.logInfo(disablingTestFactorResource)).once();
             verify(logger.logInfo(settingAlwaysCloseComment)).never();
@@ -966,7 +986,9 @@ describe("inputs.ts", (): void => {
             verify(
               logger.logInfo(adjustingFileMatchingPatternsResource),
             ).once();
-            verify(logger.logInfo(adjustingTestMatchingPatternsResource)).once();
+            verify(
+              logger.logInfo(adjustingTestMatchingPatternsResource),
+            ).once();
             verify(logger.logInfo(adjustingCodeFileExtensionsResource)).once();
             verify(logger.logInfo(disablingTestFactorResource)).never();
             verify(logger.logInfo(settingAlwaysCloseComment)).never();
@@ -1022,7 +1044,9 @@ describe("inputs.ts", (): void => {
             verify(
               logger.logInfo(adjustingFileMatchingPatternsResource),
             ).once();
-            verify(logger.logInfo(adjustingTestMatchingPatternsResource)).once();
+            verify(
+              logger.logInfo(adjustingTestMatchingPatternsResource),
+            ).once();
             verify(logger.logInfo(adjustingCodeFileExtensionsResource)).once();
             verify(logger.logInfo(disablingTestFactorResource)).never();
             verify(logger.logInfo(settingAlwaysCloseComment)).once();
@@ -1085,7 +1109,9 @@ describe("inputs.ts", (): void => {
             verify(
               logger.logInfo(adjustingFileMatchingPatternsResource),
             ).once();
-            verify(logger.logInfo(adjustingTestMatchingPatternsResource)).once();
+            verify(
+              logger.logInfo(adjustingTestMatchingPatternsResource),
+            ).once();
             verify(logger.logInfo(adjustingCodeFileExtensionsResource)).once();
             verify(logger.logInfo(disablingTestFactorResource)).never();
             verify(logger.logInfo(settingAlwaysCloseComment)).never();
@@ -1149,7 +1175,9 @@ describe("inputs.ts", (): void => {
             verify(
               logger.logInfo(adjustingFileMatchingPatternsResource),
             ).never();
-            verify(logger.logInfo(adjustingTestMatchingPatternsResource)).once();
+            verify(
+              logger.logInfo(adjustingTestMatchingPatternsResource),
+            ).once();
             verify(logger.logInfo(adjustingCodeFileExtensionsResource)).once();
             verify(logger.logInfo(disablingTestFactorResource)).never();
             verify(logger.logInfo(settingAlwaysCloseComment)).never();
@@ -1211,7 +1239,9 @@ describe("inputs.ts", (): void => {
             verify(
               logger.logInfo(adjustingFileMatchingPatternsResource),
             ).never();
-            verify(logger.logInfo(adjustingTestMatchingPatternsResource)).once();
+            verify(
+              logger.logInfo(adjustingTestMatchingPatternsResource),
+            ).once();
             verify(logger.logInfo(adjustingCodeFileExtensionsResource)).once();
             verify(logger.logInfo(disablingTestFactorResource)).never();
             verify(logger.logInfo(settingAlwaysCloseComment)).never();
@@ -1373,7 +1403,9 @@ describe("inputs.ts", (): void => {
             verify(
               logger.logInfo(adjustingFileMatchingPatternsResource),
             ).once();
-            verify(logger.logInfo(adjustingTestMatchingPatternsResource)).once();
+            verify(
+              logger.logInfo(adjustingTestMatchingPatternsResource),
+            ).once();
             verify(logger.logInfo(adjustingCodeFileExtensionsResource)).once();
             verify(logger.logInfo(disablingTestFactorResource)).never();
             verify(logger.logInfo(settingAlwaysCloseComment)).never();
@@ -1437,7 +1469,9 @@ describe("inputs.ts", (): void => {
             verify(
               logger.logInfo(adjustingFileMatchingPatternsResource),
             ).once();
-            verify(logger.logInfo(adjustingTestMatchingPatternsResource)).never();
+            verify(
+              logger.logInfo(adjustingTestMatchingPatternsResource),
+            ).never();
             verify(logger.logInfo(adjustingCodeFileExtensionsResource)).once();
             verify(logger.logInfo(disablingTestFactorResource)).never();
             verify(logger.logInfo(settingAlwaysCloseComment)).never();
@@ -1499,7 +1533,9 @@ describe("inputs.ts", (): void => {
             verify(
               logger.logInfo(adjustingFileMatchingPatternsResource),
             ).once();
-            verify(logger.logInfo(adjustingTestMatchingPatternsResource)).never();
+            verify(
+              logger.logInfo(adjustingTestMatchingPatternsResource),
+            ).never();
             verify(logger.logInfo(adjustingCodeFileExtensionsResource)).once();
             verify(logger.logInfo(disablingTestFactorResource)).never();
             verify(logger.logInfo(settingAlwaysCloseComment)).never();
@@ -1659,7 +1695,9 @@ describe("inputs.ts", (): void => {
             verify(
               logger.logInfo(adjustingFileMatchingPatternsResource),
             ).once();
-            verify(logger.logInfo(adjustingTestMatchingPatternsResource)).once();
+            verify(
+              logger.logInfo(adjustingTestMatchingPatternsResource),
+            ).once();
             verify(logger.logInfo(adjustingCodeFileExtensionsResource)).once();
             verify(logger.logInfo(disablingTestFactorResource)).never();
             verify(logger.logInfo(settingAlwaysCloseComment)).never();
@@ -1722,7 +1760,9 @@ describe("inputs.ts", (): void => {
             verify(
               logger.logInfo(adjustingFileMatchingPatternsResource),
             ).once();
-            verify(logger.logInfo(adjustingTestMatchingPatternsResource)).once();
+            verify(
+              logger.logInfo(adjustingTestMatchingPatternsResource),
+            ).once();
             verify(logger.logInfo(adjustingCodeFileExtensionsResource)).never();
             verify(logger.logInfo(disablingTestFactorResource)).never();
             verify(logger.logInfo(settingAlwaysCloseComment)).never();

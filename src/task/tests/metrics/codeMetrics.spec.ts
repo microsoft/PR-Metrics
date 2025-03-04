@@ -1428,18 +1428,19 @@ describe("codeMetrics.ts", (): void => {
 
     const testCases: TestCaseType[] = [
       {
-        gitResponse: "2\t2\tfile.ts\n1\t1\tignored1.ts\n1\t1\tignored2.ts",
-        globChecks: 13,
+        gitResponse:
+          "2\t2\tfile.ts\n1\t1\tignored1.ts\n1\t1\tacceptance.ts\n1\t1\tignored2.ts",
+        globChecks: 14,
       },
       {
         gitResponse:
-          "1\t1\tfile1.ts\n1\t1\tignored1.ts\n1\t1\tignored2.ts\n1\t1\tfile2.ts",
-        globChecks: 20,
+          "1\t1\tfile1.ts\n1\t1\tignored1.ts\n1\t1\tignored2.ts\n1\t1\tacceptance.ts\n1\t1\tfile2.ts",
+        globChecks: 18,
       },
       {
         gitResponse:
-          "1\t1\tfile1.ts\n1\t1\tignored1.ts\n1\t1\tfile2.ts\n1\t1\tignored2.ts",
-        globChecks: 20,
+          "1\t1\tfile1.ts\n1\t1\tignored1.ts\n1\t1\tfile2.ts\n1\t1\tacceptance.ts\n1\t1\tignored2.ts",
+        globChecks: 18,
       },
     ];
 
@@ -1454,6 +1455,7 @@ describe("codeMetrics.ts", (): void => {
           "!**/ignored1.ts",
           "!**/ignored2.ts",
         ]);
+        when(inputs.testMatchingPatterns).thenReturn(["**/acceptance.ts"]);
         when(inputs.codeFileExtensions).thenReturn(new Set<string>(["ts"]));
         when(gitInvoker.getDiffSummary()).thenResolve(gitResponse);
 
@@ -1478,7 +1480,7 @@ describe("codeMetrics.ts", (): void => {
         assert.equal(await codeMetrics.getSizeIndicator(), "XS⚠️");
         assert.deepEqual(
           await codeMetrics.getMetrics(),
-          new CodeMetricsData(2, 0, 2),
+          new CodeMetricsData(2, 1, 2),
         );
         assert.equal(await codeMetrics.isSmall(), true);
         assert.equal(await codeMetrics.isSufficientlyTested(), false);

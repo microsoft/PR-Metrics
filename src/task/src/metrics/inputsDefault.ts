@@ -35,7 +35,7 @@ export const testMatchingPatterns: string[] = [
   "**/*{{t,T}est,TEST}*",
   "**/*{{t,T}est,TEST}*/**",
   "**/*.{{s,S}pec,SPEC}.*",
-  "**/*.{{s,S}pec,SPEC}.*/**"
+  "**/*.{{s,S}pec,SPEC}.*/**",
 ];
 
 /**
