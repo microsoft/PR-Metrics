@@ -24,6 +24,7 @@ export default class Inputs {
   private _testFactor: number | null = 0;
   private _alwaysCloseComment = false;
   private _fileMatchingPatterns: string[] = [];
+  private _testMatchingPatterns: string[] = [];
   private _codeFileExtensions: Set<string> = new Set<string>();
 
   /**
@@ -93,6 +94,17 @@ export default class Inputs {
   }
 
   /**
+   * Gets the test matching patterns input, which is the set of globs specifying the files and folders to consider tests.
+   * @returns The test matching patterns input.
+   */
+  public get testMatchingPatterns(): string[] {
+    this._logger.logDebug("* Inputs.testMatchingPatterns");
+
+    this.initialize();
+    return this._testMatchingPatterns;
+  }
+
+  /**
    * Gets the code file extensions input, which is the set of extensions for files containing code so that non-code files can be excluded.
    * @returns The code file extensions input.
    */
@@ -141,6 +153,13 @@ export default class Inputs {
       "Patterns",
     ]);
     this.initializeFileMatchingPatterns(fileMatchingPatterns);
+
+    const testMatchingPatterns: string | null = this._runnerInvoker.getInput([
+      "Test",
+      "Matching",
+      "Patterns",
+    ]);
+    this.initializeTestMatchingPatterns(testMatchingPatterns);
 
     const codeFileExtensions: string | null = this._runnerInvoker.getInput([
       "Code",
@@ -294,6 +313,40 @@ export default class Inputs {
       ),
     );
     this._fileMatchingPatterns = InputsDefault.fileMatchingPatterns;
+  }
+
+  private initializeTestMatchingPatterns(
+    testMatchingPatterns: string | null,
+  ): void {
+    this._logger.logDebug("* Inputs.initializeTestMatchingPatterns()");
+
+    if (testMatchingPatterns !== null && testMatchingPatterns.trim() !== "") {
+      this._testMatchingPatterns = testMatchingPatterns
+        .replace(/\\/gu, "/")
+        .replace(/\n$/gu, "")
+        .split("\n");
+      const testMatchPatternsString: string = JSON.stringify(
+        this._testMatchingPatterns,
+      );
+      this._logger.logInfo(
+        this._runnerInvoker.loc(
+          "metrics.inputs.settingTestMatchingPatterns",
+          testMatchPatternsString,
+        ),
+      );
+      return;
+    }
+
+    const testMatchPatternsString: string = JSON.stringify(
+      InputsDefault.testMatchingPatterns,
+    );
+    this._logger.logInfo(
+      this._runnerInvoker.loc(
+        "metrics.inputs.adjustingTestMatchingPatterns",
+        testMatchPatternsString,
+      ),
+    );
+    this._testMatchingPatterns = InputsDefault.testMatchingPatterns;
   }
 
   private initializeCodeFileExtensions(
