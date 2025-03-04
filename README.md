@@ -113,7 +113,7 @@ blank, a default of
 **/*.{{s,S}pec,SPEC}.*/**
 ```
 
-(any file or folder containing `test` or `.spec) will be used.
+(any file or folder with a name containing `test` or `.spec`) will be used.
 
 ### code-file-extensions
 
