@@ -52,7 +52,7 @@
       "name": "TestMatchingPatterns",
       "label": "Test matching patterns",
       "type": "multiLine",
-      "helpMarkDown": "[Globs](https://aka.ms/PRMetrics/Globs) specifying the files and folders to consider tests. If left blank, files and folders containing 'test' or 'spec' will be considered tests."
+      "helpMarkDown": "[Globs](https://aka.ms/PRMetrics/Globs) specifying the files and folders to consider tests. If left blank, files and folders containing 'test' or '.spec.' will be considered tests."
     },
     {
       "name": "CodeFileExtensions",

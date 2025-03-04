@@ -18,7 +18,7 @@
   "loc.input.helpMarkDown.growthRate.comment": "The Markdown-formatted help text for the 'growth rate' setting on the Azure Pipelines task properties page.",
   "loc.input.helpMarkDown.testFactor": "The lines of test code expected for each line of product code. This check can be disabled by setting the value to '0'. If left blank, a default of '1.0' will be used.",
   "loc.input.helpMarkDown.testFactor.comment": "The Markdown-formatted help text for the 'test ratio' setting on the Azure Pipelines task properties page.",
-  "loc.input.helpMarkDown.testMatchingPatterns": "[Globs](https://aka.ms/PRMetrics/Globs) specifying the files and folders to consider tests. If left blank, files and folders containing 'test' or 'spec' will be considered tests.",
+  "loc.input.helpMarkDown.testMatchingPatterns": "[Globs](https://aka.ms/PRMetrics/Globs) specifying the files and folders to consider tests. If left blank, files and folders containing 'test' or '.spec.' will be considered tests.",
   "loc.input.helpMarkDown.testMatchingPatterns.comment": "The Markdown-formatted help text for the 'test matching patterns' setting on the Azure Pipelines task properties page.",
   "loc.input.helpMarkDown.workloadIdentityFederation": "The optional workload identity federation that can be used for authentication instead of Personal Access Tokens (PATs).",
   "loc.input.helpMarkDown.workloadIdentityFederation.comment": "The Markdown-formatted help text for the 'workload identity federation' setting on the Azure Pipelines task properties page.",

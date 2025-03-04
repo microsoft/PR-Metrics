@@ -31,7 +31,12 @@ export const fileMatchingPatterns: string[] = ["**/*", "!**/package-lock.json"];
 /**
  * The default test matching patterns, which is the set of globs specifying the files and folders to consider tests.
  */
-export const testMatchingPatterns: string[] = ["**/*{test,Test,TEST}*", "**/*{spec,Spec,SPEC}*"];
+export const testMatchingPatterns: string[] = [
+  "**/*{{t,T}est,TEST}*",
+  "**/*{{t,T}est,TEST}*/**",
+  "**/*.{{s,S}pec,SPEC}.*",
+  "**/*.{{s,S}pec,SPEC}.*/**"
+];
 
 /**
  * The default code file extensions, which is the set of extensions for files containing code so that non-code files can be excluded.
