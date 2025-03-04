@@ -101,6 +101,20 @@ default of
 
 (all files except `package-lock.json`) will be used.
 
+### test-matching-patterns
+
+[Globs][globs] specifying the files and folders to consider tests. If left
+blank, a default of
+
+```Text
+**/*{{t,T}est,TEST}*
+**/*{{t,T}est,TEST}*/**
+**/*.{{s,S}pec,SPEC}.*
+**/*.{{s,S}pec,SPEC}.*/**
+```
+
+(any file or folder containing `test` or `.spec) will be used.
+
 ### code-file-extensions
 
 Extensions for files containing code, so that non-code files can be excluded. If
@@ -134,6 +148,9 @@ with:
   file-matching-patterns: |
     **/*
     !Ignore.cs
+  test-matching-patterns: |
+    **/*test*
+    **/*TEST*
   code-file-extensions: |
     cs
     ps1
