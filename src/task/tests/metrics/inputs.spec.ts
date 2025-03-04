@@ -175,6 +175,9 @@ describe("inputs.ts", (): void => {
           logger.logDebug("* Inputs.initializeTestMatchingPatterns()"),
         ).once();
         verify(
+          logger.logDebug("* Inputs.initializeMatchingPatterns()"),
+        ).twice();
+        verify(
           logger.logDebug("* Inputs.initializeCodeFileExtensions()"),
         ).once();
         verify(logger.logDebug("* Inputs.baseSize")).once();
@@ -256,6 +259,9 @@ describe("inputs.ts", (): void => {
           logger.logDebug("* Inputs.initializeTestMatchingPatterns()"),
         ).once();
         verify(
+          logger.logDebug("* Inputs.initializeMatchingPatterns()"),
+        ).twice();
+        verify(
           logger.logDebug("* Inputs.initializeCodeFileExtensions()"),
         ).once();
         verify(logger.logDebug("* Inputs.baseSize")).once();
@@ -326,6 +332,9 @@ describe("inputs.ts", (): void => {
               logger.logDebug("* Inputs.initializeTestMatchingPatterns()"),
             ).once();
             verify(
+              logger.logDebug("* Inputs.initializeMatchingPatterns()"),
+            ).twice();
+            verify(
               logger.logDebug("* Inputs.initializeCodeFileExtensions()"),
             ).once();
             verify(logger.logDebug("* Inputs.baseSize")).once();
@@ -384,6 +393,9 @@ describe("inputs.ts", (): void => {
               logger.logDebug("* Inputs.initializeTestMatchingPatterns()"),
             ).once();
             verify(
+              logger.logDebug("* Inputs.initializeMatchingPatterns()"),
+            ).twice();
+            verify(
               logger.logDebug("* Inputs.initializeCodeFileExtensions()"),
             ).once();
             verify(logger.logDebug("* Inputs.baseSize")).once();
@@ -441,6 +453,9 @@ describe("inputs.ts", (): void => {
             verify(
               logger.logDebug("* Inputs.initializeTestMatchingPatterns()"),
             ).once();
+            verify(
+              logger.logDebug("* Inputs.initializeMatchingPatterns()"),
+            ).twice();
             verify(
               logger.logDebug("* Inputs.initializeCodeFileExtensions()"),
             ).once();
@@ -511,6 +526,9 @@ describe("inputs.ts", (): void => {
               logger.logDebug("* Inputs.initializeTestMatchingPatterns()"),
             ).once();
             verify(
+              logger.logDebug("* Inputs.initializeMatchingPatterns()"),
+            ).twice();
+            verify(
               logger.logDebug("* Inputs.initializeCodeFileExtensions()"),
             ).once();
             verify(logger.logDebug("* Inputs.growthRate")).once();
@@ -576,6 +594,9 @@ describe("inputs.ts", (): void => {
             verify(
               logger.logDebug("* Inputs.initializeTestMatchingPatterns()"),
             ).once();
+            verify(
+              logger.logDebug("* Inputs.initializeMatchingPatterns()"),
+            ).twice();
             verify(
               logger.logDebug("* Inputs.initializeCodeFileExtensions()"),
             ).once();
@@ -643,6 +664,9 @@ describe("inputs.ts", (): void => {
             verify(
               logger.logDebug("* Inputs.initializeTestMatchingPatterns()"),
             ).once();
+            verify(
+              logger.logDebug("* Inputs.initializeMatchingPatterns()"),
+            ).twice();
             verify(
               logger.logDebug("* Inputs.initializeCodeFileExtensions()"),
             ).once();
@@ -713,6 +737,9 @@ describe("inputs.ts", (): void => {
               logger.logDebug("* Inputs.initializeTestMatchingPatterns()"),
             ).once();
             verify(
+              logger.logDebug("* Inputs.initializeMatchingPatterns()"),
+            ).twice();
+            verify(
               logger.logDebug("* Inputs.initializeCodeFileExtensions()"),
             ).once();
             verify(logger.logDebug("* Inputs.testFactor")).once();
@@ -776,6 +803,9 @@ describe("inputs.ts", (): void => {
             verify(
               logger.logDebug("* Inputs.initializeTestMatchingPatterns()"),
             ).once();
+            verify(
+              logger.logDebug("* Inputs.initializeMatchingPatterns()"),
+            ).twice();
             verify(
               logger.logDebug("* Inputs.initializeCodeFileExtensions()"),
             ).once();
@@ -844,6 +874,9 @@ describe("inputs.ts", (): void => {
               logger.logDebug("* Inputs.initializeTestMatchingPatterns()"),
             ).once();
             verify(
+              logger.logDebug("* Inputs.initializeMatchingPatterns()"),
+            ).twice();
+            verify(
               logger.logDebug("* Inputs.initializeCodeFileExtensions()"),
             ).once();
             verify(logger.logDebug("* Inputs.testFactor")).once();
@@ -901,6 +934,9 @@ describe("inputs.ts", (): void => {
             verify(
               logger.logDebug("* Inputs.initializeTestMatchingPatterns()"),
             ).once();
+            verify(
+              logger.logDebug("* Inputs.initializeMatchingPatterns()"),
+            ).twice();
             verify(
               logger.logDebug("* Inputs.initializeCodeFileExtensions()"),
             ).once();
@@ -976,6 +1012,9 @@ describe("inputs.ts", (): void => {
               logger.logDebug("* Inputs.initializeTestMatchingPatterns()"),
             ).once();
             verify(
+              logger.logDebug("* Inputs.initializeMatchingPatterns()"),
+            ).twice();
+            verify(
               logger.logDebug("* Inputs.initializeCodeFileExtensions()"),
             ).once();
             verify(logger.logDebug("* Inputs.alwaysCloseComment")).once();
@@ -1030,6 +1069,9 @@ describe("inputs.ts", (): void => {
             verify(
               logger.logDebug("* Inputs.initializeFileMatchingPatterns()"),
             ).once();
+            verify(
+              logger.logDebug("* Inputs.initializeMatchingPatterns()"),
+            ).twice();
             verify(
               logger.logDebug("* Inputs.initializeTestMatchingPatterns()"),
             ).once();
@@ -1099,6 +1141,9 @@ describe("inputs.ts", (): void => {
               logger.logDebug("* Inputs.initializeTestMatchingPatterns()"),
             ).once();
             verify(
+              logger.logDebug("* Inputs.initializeMatchingPatterns()"),
+            ).twice();
+            verify(
               logger.logDebug("* Inputs.initializeCodeFileExtensions()"),
             ).once();
             verify(logger.logDebug("* Inputs.fileMatchingPatterns")).once();
@@ -1165,6 +1210,9 @@ describe("inputs.ts", (): void => {
               logger.logDebug("* Inputs.initializeTestMatchingPatterns()"),
             ).once();
             verify(
+              logger.logDebug("* Inputs.initializeMatchingPatterns()"),
+            ).twice();
+            verify(
               logger.logDebug("* Inputs.initializeCodeFileExtensions()"),
             ).once();
             verify(logger.logDebug("* Inputs.fileMatchingPatterns")).once();
@@ -1229,6 +1277,9 @@ describe("inputs.ts", (): void => {
               logger.logDebug("* Inputs.initializeTestMatchingPatterns()"),
             ).once();
             verify(
+              logger.logDebug("* Inputs.initializeMatchingPatterns()"),
+            ).twice();
+            verify(
               logger.logDebug("* Inputs.initializeCodeFileExtensions()"),
             ).once();
             verify(logger.logDebug("* Inputs.fileMatchingPatterns")).once();
@@ -1286,6 +1337,9 @@ describe("inputs.ts", (): void => {
           logger.logDebug("* Inputs.initializeTestMatchingPatterns()"),
         ).once();
         verify(
+          logger.logDebug("* Inputs.initializeMatchingPatterns()"),
+        ).twice();
+        verify(
           logger.logDebug("* Inputs.initializeCodeFileExtensions()"),
         ).once();
         verify(logger.logDebug("* Inputs.fileMatchingPatterns")).once();
@@ -1333,6 +1387,9 @@ describe("inputs.ts", (): void => {
         verify(
           logger.logDebug("* Inputs.initializeTestMatchingPatterns()"),
         ).once();
+        verify(
+          logger.logDebug("* Inputs.initializeMatchingPatterns()"),
+        ).twice();
         verify(
           logger.logDebug("* Inputs.initializeCodeFileExtensions()"),
         ).once();
@@ -1392,6 +1449,9 @@ describe("inputs.ts", (): void => {
             verify(
               logger.logDebug("* Inputs.initializeTestMatchingPatterns()"),
             ).once();
+            verify(
+              logger.logDebug("* Inputs.initializeMatchingPatterns()"),
+            ).twice();
             verify(
               logger.logDebug("* Inputs.initializeCodeFileExtensions()"),
             ).once();
@@ -1459,6 +1519,9 @@ describe("inputs.ts", (): void => {
               logger.logDebug("* Inputs.initializeTestMatchingPatterns()"),
             ).once();
             verify(
+              logger.logDebug("* Inputs.initializeMatchingPatterns()"),
+            ).twice();
+            verify(
               logger.logDebug("* Inputs.initializeCodeFileExtensions()"),
             ).once();
             verify(logger.logDebug("* Inputs.testMatchingPatterns")).once();
@@ -1523,6 +1586,9 @@ describe("inputs.ts", (): void => {
               logger.logDebug("* Inputs.initializeTestMatchingPatterns()"),
             ).once();
             verify(
+              logger.logDebug("* Inputs.initializeMatchingPatterns()"),
+            ).twice();
+            verify(
               logger.logDebug("* Inputs.initializeCodeFileExtensions()"),
             ).once();
             verify(logger.logDebug("* Inputs.testMatchingPatterns")).once();
@@ -1580,6 +1646,9 @@ describe("inputs.ts", (): void => {
           logger.logDebug("* Inputs.initializeTestMatchingPatterns()"),
         ).once();
         verify(
+          logger.logDebug("* Inputs.initializeMatchingPatterns()"),
+        ).twice();
+        verify(
           logger.logDebug("* Inputs.initializeCodeFileExtensions()"),
         ).once();
         verify(logger.logDebug("* Inputs.testMatchingPatterns")).once();
@@ -1627,6 +1696,12 @@ describe("inputs.ts", (): void => {
         verify(
           logger.logDebug("* Inputs.initializeTestMatchingPatterns()"),
         ).once();
+        verify(
+          logger.logDebug("* Inputs.initializeMatchingPatterns()"),
+        ).twice();
+        verify(
+          logger.logDebug("* Inputs.initializeMatchingPatterns()"),
+        ).twice();
         verify(
           logger.logDebug("* Inputs.initializeCodeFileExtensions()"),
         ).once();
@@ -1684,6 +1759,9 @@ describe("inputs.ts", (): void => {
             verify(
               logger.logDebug("* Inputs.initializeTestMatchingPatterns()"),
             ).once();
+            verify(
+              logger.logDebug("* Inputs.initializeMatchingPatterns()"),
+            ).twice();
             verify(
               logger.logDebug("* Inputs.initializeCodeFileExtensions()"),
             ).once();
@@ -1750,6 +1828,9 @@ describe("inputs.ts", (): void => {
               logger.logDebug("* Inputs.initializeTestMatchingPatterns()"),
             ).once();
             verify(
+              logger.logDebug("* Inputs.initializeMatchingPatterns()"),
+            ).twice();
+            verify(
               logger.logDebug("* Inputs.initializeCodeFileExtensions()"),
             ).once();
             verify(logger.logDebug("* Inputs.codeFileExtensions")).once();
@@ -1804,6 +1885,9 @@ describe("inputs.ts", (): void => {
           logger.logDebug("* Inputs.initializeTestMatchingPatterns()"),
         ).once();
         verify(
+          logger.logDebug("* Inputs.initializeMatchingPatterns()"),
+        ).twice();
+        verify(
           logger.logDebug("* Inputs.initializeCodeFileExtensions()"),
         ).once();
         verify(logger.logDebug("* Inputs.codeFileExtensions")).once();
@@ -1854,6 +1938,9 @@ describe("inputs.ts", (): void => {
         verify(
           logger.logDebug("* Inputs.initializeTestMatchingPatterns()"),
         ).once();
+        verify(
+          logger.logDebug("* Inputs.initializeMatchingPatterns()"),
+        ).twice();
         verify(
           logger.logDebug("* Inputs.initializeCodeFileExtensions()"),
         ).once();
@@ -1906,6 +1993,9 @@ describe("inputs.ts", (): void => {
           logger.logDebug("* Inputs.initializeTestMatchingPatterns()"),
         ).once();
         verify(
+          logger.logDebug("* Inputs.initializeMatchingPatterns()"),
+        ).twice();
+        verify(
           logger.logDebug("* Inputs.initializeCodeFileExtensions()"),
         ).once();
         verify(logger.logDebug("* Inputs.codeFileExtensions")).once();
@@ -1957,6 +2047,9 @@ describe("inputs.ts", (): void => {
           logger.logDebug("* Inputs.initializeTestMatchingPatterns()"),
         ).once();
         verify(
+          logger.logDebug("* Inputs.initializeMatchingPatterns()"),
+        ).twice();
+        verify(
           logger.logDebug("* Inputs.initializeCodeFileExtensions()"),
         ).once();
         verify(logger.logDebug("* Inputs.codeFileExtensions")).once();
@@ -2007,6 +2100,9 @@ describe("inputs.ts", (): void => {
         verify(
           logger.logDebug("* Inputs.initializeTestMatchingPatterns()"),
         ).once();
+        verify(
+          logger.logDebug("* Inputs.initializeMatchingPatterns()"),
+        ).twice();
         verify(
           logger.logDebug("* Inputs.initializeCodeFileExtensions()"),
         ).once();

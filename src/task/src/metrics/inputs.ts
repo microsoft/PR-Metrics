@@ -286,33 +286,20 @@ export default class Inputs {
   ): void {
     this._logger.logDebug("* Inputs.initializeFileMatchingPatterns()");
 
-    if (fileMatchingPatterns !== null && fileMatchingPatterns.trim() !== "") {
-      this._fileMatchingPatterns = fileMatchingPatterns
-        .replace(/\\/gu, "/")
-        .replace(/\n$/gu, "")
-        .split("\n");
-      const fileMatchPatternsString: string = JSON.stringify(
-        this._fileMatchingPatterns,
-      );
-      this._logger.logInfo(
+    this._fileMatchingPatterns = this.initializeMatchingPatterns(
+      fileMatchingPatterns,
+      InputsDefault.fileMatchingPatterns,
+      (patterns) =>
         this._runnerInvoker.loc(
           "metrics.inputs.settingFileMatchingPatterns",
-          fileMatchPatternsString,
+          patterns,
         ),
-      );
-      return;
-    }
-
-    const fileMatchPatternsString: string = JSON.stringify(
-      InputsDefault.fileMatchingPatterns,
+      (patterns) =>
+        this._runnerInvoker.loc(
+          "metrics.inputs.adjustingFileMatchingPatterns",
+          patterns,
+        ),
     );
-    this._logger.logInfo(
-      this._runnerInvoker.loc(
-        "metrics.inputs.adjustingFileMatchingPatterns",
-        fileMatchPatternsString,
-      ),
-    );
-    this._fileMatchingPatterns = InputsDefault.fileMatchingPatterns;
   }
 
   private initializeTestMatchingPatterns(
@@ -320,33 +307,43 @@ export default class Inputs {
   ): void {
     this._logger.logDebug("* Inputs.initializeTestMatchingPatterns()");
 
-    if (testMatchingPatterns !== null && testMatchingPatterns.trim() !== "") {
-      this._testMatchingPatterns = testMatchingPatterns
+    this._testMatchingPatterns = this.initializeMatchingPatterns(
+      testMatchingPatterns,
+      InputsDefault.testMatchingPatterns,
+      (patterns) =>
+        this._runnerInvoker.loc(
+          "metrics.inputs.settingTestMatchingPatterns",
+          patterns,
+        ),
+      (patterns) =>
+        this._runnerInvoker.loc(
+          "metrics.inputs.adjustingTestMatchingPatterns",
+          patterns,
+        ),
+    );
+  }
+
+  private initializeMatchingPatterns(
+    inputValue: string | null,
+    defaultValue: string[],
+    settingString: (patterns: string) => string,
+    adjustingString: (patterns: string) => string,
+  ): string[] {
+    this._logger.logDebug("* Inputs.initializeMatchingPatterns()");
+
+    if (inputValue !== null && inputValue.trim() !== "") {
+      const patterns = inputValue
         .replace(/\\/gu, "/")
         .replace(/\n$/gu, "")
         .split("\n");
-      const testMatchPatternsString: string = JSON.stringify(
-        this._testMatchingPatterns,
-      );
-      this._logger.logInfo(
-        this._runnerInvoker.loc(
-          "metrics.inputs.settingTestMatchingPatterns",
-          testMatchPatternsString,
-        ),
-      );
-      return;
+      const patternsString: string = JSON.stringify(patterns);
+      this._logger.logInfo(settingString(patternsString));
+      return patterns;
     }
 
-    const testMatchPatternsString: string = JSON.stringify(
-      InputsDefault.testMatchingPatterns,
-    );
-    this._logger.logInfo(
-      this._runnerInvoker.loc(
-        "metrics.inputs.adjustingTestMatchingPatterns",
-        testMatchPatternsString,
-      ),
-    );
-    this._testMatchingPatterns = InputsDefault.testMatchingPatterns;
+    const defaultPatternsString: string = JSON.stringify(defaultValue);
+    this._logger.logInfo(adjustingString(defaultPatternsString));
+    return defaultValue;
   }
 
   private initializeCodeFileExtensions(
