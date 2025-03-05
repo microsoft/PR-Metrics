@@ -29,6 +29,16 @@ export const alwaysCloseComment = false;
 export const fileMatchingPatterns: string[] = ["**/*", "!**/package-lock.json"];
 
 /**
+ * The default test matching patterns, which is the set of globs specifying the files and folders to consider tests.
+ */
+export const testMatchingPatterns: string[] = [
+  "**/*{{t,T}est,TEST}*",
+  "**/*{{t,T}est,TEST}*/**",
+  "**/*.{{s,S}pec,SPEC}.*",
+  "**/*.{{s,S}pec,SPEC}.*/**",
+];
+
+/**
  * The default code file extensions, which is the set of extensions for files containing code so that non-code files can be excluded.
  * @remarks This corresponds to the top 10 languages used on GitHub in 2020 (https://octoverse.github.com/) and uses
  * the language extensions defined in the GitHub language detection logic

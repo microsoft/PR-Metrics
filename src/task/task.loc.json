@@ -49,6 +49,12 @@
       "helpMarkDown": "ms-resource:loc.input.helpMarkDown.fileMatchingPatterns"
     },
     {
+      "name": "TestMatchingPatterns",
+      "label": "ms-resource:loc.input.label.testMatchingPatterns",
+      "type": "multiLine",
+      "helpMarkDown": "ms-resource:loc.input.helpMarkDown.testMatchingPatterns"
+    },
+    {
       "name": "CodeFileExtensions",
       "label": "ms-resource:loc.input.label.codeFileExtensions",
       "type": "multiLine",
@@ -92,6 +98,7 @@
     "metrics.inputs.adjustingFileMatchingPatterns": "ms-resource:loc.messages.metrics.inputs.adjustingFileMatchingPatterns",
     "metrics.inputs.adjustingGrowthRate": "ms-resource:loc.messages.metrics.inputs.adjustingGrowthRate",
     "metrics.inputs.adjustingTestFactor": "ms-resource:loc.messages.metrics.inputs.adjustingTestFactor",
+    "metrics.inputs.adjustingTestMatchingPatterns": "ms-resource:loc.messages.metrics.inputs.adjustingTestMatchingPatterns",
     "metrics.inputs.disablingTestFactor": "ms-resource:loc.messages.metrics.inputs.disablingTestFactor",
     "metrics.inputs.settingAlwaysCloseComment": "ms-resource:loc.messages.metrics.inputs.settingAlwaysCloseComment",
     "metrics.inputs.settingBaseSize": "ms-resource:loc.messages.metrics.inputs.settingBaseSize",
@@ -99,6 +106,7 @@
     "metrics.inputs.settingFileMatchingPatterns": "ms-resource:loc.messages.metrics.inputs.settingFileMatchingPatterns",
     "metrics.inputs.settingGrowthRate": "ms-resource:loc.messages.metrics.inputs.settingGrowthRate",
     "metrics.inputs.settingTestFactor": "ms-resource:loc.messages.metrics.inputs.settingTestFactor",
+    "metrics.inputs.settingTestMatchingPatterns": "ms-resource:loc.messages.metrics.inputs.settingTestMatchingPatterns",
     "pullRequestMetrics.succeeded": "ms-resource:loc.messages.pullRequestMetrics.succeeded",
     "pullRequests.pullRequest.addDescription": "ms-resource:loc.messages.pullRequests.pullRequest.addDescription",
     "pullRequests.pullRequest.titleFormat": "ms-resource:loc.messages.pullRequests.pullRequest.titleFormat",
