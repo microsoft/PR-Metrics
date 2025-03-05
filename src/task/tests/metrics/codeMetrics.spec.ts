@@ -1632,6 +1632,55 @@ describe("codeMetrics.ts", (): void => {
     verify(logger.logDebug("* CodeMetrics.calculateSize()")).once();
   });
 
+  it("with all files matching test files, returns the appropriate results", async (): Promise<void> => {
+    // Arrange
+    when(inputs.testMatchingPatterns).thenReturn(["**", "*/**"]);
+    when(gitInvoker.getDiffSummary()).thenResolve(
+      "1\t0\tfile.ts\n1\t0\ttest.ts\n1\t0\tfolder/file.ts",
+    );
+
+    // Act
+    const codeMetrics: CodeMetrics = new CodeMetrics(
+      instance(gitInvoker),
+      instance(inputs),
+      instance(logger),
+      instance(runnerInvoker),
+    );
+
+    // Assert
+    assert.deepEqual(await codeMetrics.getFilesNotRequiringReview(), []);
+    assert.deepEqual(await codeMetrics.getDeletedFilesNotRequiringReview(), []);
+    assert.equal(await codeMetrics.getSize(), "XS");
+    assert.equal(await codeMetrics.getSizeIndicator(), "XS✔");
+    assert.deepEqual(
+      await codeMetrics.getMetrics(),
+      new CodeMetricsData(0, 3, 0),
+    );
+    assert.equal(await codeMetrics.isSmall(), true);
+    assert.equal(await codeMetrics.isSufficientlyTested(), true);
+    verify(
+      logger.logDebug("* CodeMetrics.getFilesNotRequiringReview()"),
+    ).once();
+    verify(
+      logger.logDebug("* CodeMetrics.getDeletedFilesNotRequiringReview()"),
+    ).once();
+    verify(logger.logDebug("* CodeMetrics.getSize()")).once();
+    verify(logger.logDebug("* CodeMetrics.initialize()")).times(7);
+    verify(logger.logDebug("* CodeMetrics.initializeMetrics()")).once();
+    verify(
+      logger.logDebug("* CodeMetrics.determineIfValidFilePattern()"),
+    ).times(3);
+    verify(logger.logDebug("* CodeMetrics.performGlobCheck()")).times(9);
+    verify(logger.logDebug("* CodeMetrics.matchFileExtension()")).times(3);
+    verify(logger.logDebug("* CodeMetrics.constructMetrics()")).once();
+    verify(logger.logDebug("* CodeMetrics.createFileMetricsMap()")).once();
+    verify(
+      logger.logDebug("* CodeMetrics.initializeIsSufficientlyTested()"),
+    ).once();
+    verify(logger.logDebug("* CodeMetrics.initializeSizeIndicator()")).once();
+    verify(logger.logDebug("* CodeMetrics.calculateSize()")).once();
+  });
+
   it("should return the expected result with test coverage disabled", async (): Promise<void> => {
     // Arrange
     when(inputs.testFactor).thenReturn(null);
