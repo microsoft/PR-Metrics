@@ -24,6 +24,7 @@ export default class Inputs {
   private _testFactor: number | null = 0;
   private _alwaysCloseComment = false;
   private _fileMatchingPatterns: string[] = [];
+  private _testMatchingPatterns: string[] = [];
   private _codeFileExtensions: Set<string> = new Set<string>();
 
   /**
@@ -93,6 +94,17 @@ export default class Inputs {
   }
 
   /**
+   * Gets the test matching patterns input, which is the set of globs specifying the files and folders to consider tests.
+   * @returns The test matching patterns input.
+   */
+  public get testMatchingPatterns(): string[] {
+    this._logger.logDebug("* Inputs.testMatchingPatterns");
+
+    this.initialize();
+    return this._testMatchingPatterns;
+  }
+
+  /**
    * Gets the code file extensions input, which is the set of extensions for files containing code so that non-code files can be excluded.
    * @returns The code file extensions input.
    */
@@ -141,6 +153,13 @@ export default class Inputs {
       "Patterns",
     ]);
     this.initializeFileMatchingPatterns(fileMatchingPatterns);
+
+    const testMatchingPatterns: string | null = this._runnerInvoker.getInput([
+      "Test",
+      "Matching",
+      "Patterns",
+    ]);
+    this.initializeTestMatchingPatterns(testMatchingPatterns);
 
     const codeFileExtensions: string | null = this._runnerInvoker.getInput([
       "Code",
@@ -267,33 +286,64 @@ export default class Inputs {
   ): void {
     this._logger.logDebug("* Inputs.initializeFileMatchingPatterns()");
 
-    if (fileMatchingPatterns !== null && fileMatchingPatterns.trim() !== "") {
-      this._fileMatchingPatterns = fileMatchingPatterns
+    this._fileMatchingPatterns = this.initializeMatchingPatterns(
+      fileMatchingPatterns,
+      InputsDefault.fileMatchingPatterns,
+      (patterns) =>
+        this._runnerInvoker.loc(
+          "metrics.inputs.settingFileMatchingPatterns",
+          patterns,
+        ),
+      (patterns) =>
+        this._runnerInvoker.loc(
+          "metrics.inputs.adjustingFileMatchingPatterns",
+          patterns,
+        ),
+    );
+  }
+
+  private initializeTestMatchingPatterns(
+    testMatchingPatterns: string | null,
+  ): void {
+    this._logger.logDebug("* Inputs.initializeTestMatchingPatterns()");
+
+    this._testMatchingPatterns = this.initializeMatchingPatterns(
+      testMatchingPatterns,
+      InputsDefault.testMatchingPatterns,
+      (patterns) =>
+        this._runnerInvoker.loc(
+          "metrics.inputs.settingTestMatchingPatterns",
+          patterns,
+        ),
+      (patterns) =>
+        this._runnerInvoker.loc(
+          "metrics.inputs.adjustingTestMatchingPatterns",
+          patterns,
+        ),
+    );
+  }
+
+  private initializeMatchingPatterns(
+    inputValue: string | null,
+    defaultValue: string[],
+    settingString: (patterns: string) => string,
+    adjustingString: (patterns: string) => string,
+  ): string[] {
+    this._logger.logDebug("* Inputs.initializeMatchingPatterns()");
+
+    if (inputValue !== null && inputValue.trim() !== "") {
+      const patterns = inputValue
         .replace(/\\/gu, "/")
         .replace(/\n$/gu, "")
         .split("\n");
-      const fileMatchPatternsString: string = JSON.stringify(
-        this._fileMatchingPatterns,
-      );
-      this._logger.logInfo(
-        this._runnerInvoker.loc(
-          "metrics.inputs.settingFileMatchingPatterns",
-          fileMatchPatternsString,
-        ),
-      );
-      return;
+      const patternsString: string = JSON.stringify(patterns);
+      this._logger.logInfo(settingString(patternsString));
+      return patterns;
     }
 
-    const fileMatchPatternsString: string = JSON.stringify(
-      InputsDefault.fileMatchingPatterns,
-    );
-    this._logger.logInfo(
-      this._runnerInvoker.loc(
-        "metrics.inputs.adjustingFileMatchingPatterns",
-        fileMatchPatternsString,
-      ),
-    );
-    this._fileMatchingPatterns = InputsDefault.fileMatchingPatterns;
+    const defaultPatternsString: string = JSON.stringify(defaultValue);
+    this._logger.logInfo(adjustingString(defaultPatternsString));
+    return defaultValue;
   }
 
   private initializeCodeFileExtensions(

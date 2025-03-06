@@ -4,7 +4,6 @@
  */
 
 import * as minimatch from "minimatch";
-import * as path from "path";
 import { CodeFileMetricInterface } from "./codeFileMetricInterface.js";
 import CodeMetricsData from "./codeMetricsData.js";
 import { FixedLengthArrayInterface } from "../utilities/fixedLengthArrayInterface.js";
@@ -317,10 +316,15 @@ export default class CodeMetrics {
     let ignoredCode = 0;
 
     for (const entry of matches) {
-      if (
-        /.*(?:(?:T|t)est|TEST).*/u.test(entry.fileName) ||
-        /.*\.spec\..*/iu.test(path.basename(entry.fileName))
-      ) {
+      let isTestFile = false;
+      for (const testMatchingPattern of this._inputs.testMatchingPatterns) {
+        if (this.performGlobCheck(entry.fileName, testMatchingPattern)) {
+          isTestFile = true;
+          break;
+        }
+      }
+
+      if (isTestFile) {
         this._logger.logDebug(
           `Test File: ${entry.fileName} (${String(entry.linesAdded)} lines)`,
         );
