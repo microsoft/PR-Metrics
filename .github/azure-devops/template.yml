@@ -32,7 +32,7 @@ stages:
             - task: NodeTool@0
               displayName: Install Node.js
               inputs:
-                versionSpec: 20.17.0
+                versionSpec: 20.18.2
 
             - task: Npm@1
               displayName: npm – Install Dependencies

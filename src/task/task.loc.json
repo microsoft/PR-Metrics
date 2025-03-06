@@ -9,11 +9,11 @@
   "author": "Microsoft Corporation",
   "category": "Azure Pipelines",
   "visibility": ["Build"],
-  "minimumAgentVersion": "4.251.0",
+  "minimumAgentVersion": "4.252.0",
   "version": {
     "Major": 1,
-    "Minor": 6,
-    "Patch": 7
+    "Minor": 7,
+    "Patch": 0
   },
   "instanceNameFormat": "ms-resource:loc.instanceNameFormat",
   "showEnvironmentVariables": true,
