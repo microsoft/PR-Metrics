@@ -1,0 +1,26 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+
+---
+trigger: none
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  - name: System.Debug
+    value: true
+
+stages:
+  - stage: PRMetricsManualTestStep2NoPAT
+    displayName: PR Metrics Manual Test – Step 2 – No PAT
+    jobs:
+      - job: PRMetricsManualTestStep2NoPAT
+        displayName: PR Metrics Manual Test – Step 2 – No PAT
+        steps:
+          - checkout: self
+            displayName: Checkout
+            fetchDepth: 0
+
+          - task: PRMetrics@1
+            displayName: PR Metrics
