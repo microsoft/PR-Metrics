@@ -44,7 +44,7 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
         with:
-          node-version: 20.18.2
+          node-version: 20.17.0
 
       - name: npm – Install Dependencies
         run: npm ci
@@ -101,7 +101,7 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
         with:
-          node-version: 20.18.2
+          node-version: 20.17.0
 
       - name: npm – Install Dependencies
         run: npm ci
