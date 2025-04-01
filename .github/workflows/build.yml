@@ -22,6 +22,7 @@ permissions: {}
 
 jobs:
   update-code:
+    if: ${{ github.actor != 'dependabot[bot]' }}
     name: Update Code
     runs-on: ubuntu-latest
     permissions:
