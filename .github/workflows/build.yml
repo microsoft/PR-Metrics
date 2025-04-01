@@ -69,19 +69,19 @@ jobs:
           Write-Output -InputObject $NoChangesPresent
           Write-Output -InputObject "NO_CHANGES_PRESENT=$NoChangesPresent" >> $Env:GITHUB_OUTPUT
 
-      - if: ${{ github.actor != 'dependabot[bot]' || steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
+      - if: ${{ github.actor != 'dependabot[bot]' && steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
         name: Git – Set Name
         run: git config --global user.name "github-actions[bot]"
 
-      - if: ${{ github.actor != 'dependabot[bot]' || steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
+      - if: ${{ github.actor != 'dependabot[bot]' && steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
         name: Git – Set Email
         run: git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-      - if: ${{ github.actor != 'dependabot[bot]' || steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
+      - if: ${{ github.actor != 'dependabot[bot]' && steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
         name: Git – Commit Changed Files
         run: git commit -m "Fixing linting, Updating dist folder"
 
-      - if: ${{ github.actor != 'dependabot[bot]' || steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
+      - if: ${{ github.actor != 'dependabot[bot]' && steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
         name: Git – Push Changed Files
         run: git push
 
