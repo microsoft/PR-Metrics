@@ -52,7 +52,7 @@ extends:
                 displayName: Checkout
 
               - bash: exit 1
-                displayName: Terminate on Non-Release2
+                displayName: Terminate on Non-Release
                 # Releases are performed on tags, which begin with 'v'.
                 condition: not(startsWith(variables['Build.SourceBranchName'], 'v'))
 
