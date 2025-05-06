@@ -51,15 +51,9 @@ extends:
               - checkout: none
                 displayName: Checkout
 
-              - bash: echo variables['Build.SourceBranchName']
-                displayName: Test1
-
-              - bash: echo $(Build.SourceBranchName)
-                displayName: Test2
-
               - bash: exit 1
                 displayName: Terminate on PR
-                condition: ne($(Build.SourceBranchName), 'main')
+                condition: not(startsWith(variables['Build.SourceBranchName'], 'v'))
 
           - job: Release
             pool:
