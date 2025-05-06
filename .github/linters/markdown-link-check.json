@@ -1,5 +1,5 @@
 {
-  "aliveStatusCodes":[200, 206, 429],
+  "aliveStatusCodes": [200, 206, 429],
   "ignorePatterns": [
     {
       "pattern": "^https://aka.ms/opensource/security/"
