@@ -42,7 +42,7 @@ export const testMatchingPatterns: string[] = [
  * The default code file extensions, which is the set of extensions for files containing code so that non-code files can be excluded.
  * @remarks This corresponds to the top 10 languages used on GitHub in 2020 (https://octoverse.github.com/) and uses
  * the language extensions defined in the GitHub language detection logic
- * (https://github.com/github/linguist/blob/master/lib/linguist/languages.yml).
+ * (https://github.com/github/linguist/blob/main/lib/linguist/languages.yml).
  */
 export const codeFileExtensions: string[] = [
   // JavaScript
