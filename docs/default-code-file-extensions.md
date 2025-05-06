@@ -222,4 +222,4 @@ extensions defined in the [GitHub language detection logic][githublinguist].
 - `watchr`
 
 [octoverse]: https://octoverse.github.com/
-[githublinguist]: https://github.com/github/linguist/blob/master/lib/linguist/languages.yml
+[githublinguist]: https://github.com/github/linguist/blob/main/lib/linguist/languages.yml
