@@ -52,8 +52,9 @@ extends:
                 displayName: Checkout
 
               - bash: exit 1
-                displayName: Terminate on PR
-                condition: ne(variables['Build.SourceBranchName'], 'main')
+                displayName: Terminate on Non-Release
+                # Releases are performed on tags, which begin with 'v'.
+                condition: not(startsWith(variables['Build.SourceBranchName'], 'v'))
 
           - job: Release
             pool:
