@@ -71,7 +71,7 @@ stages:
 
       - job: PRMetrics_Ubuntu
         displayName: PR Metrics – Ubuntu
-        dependsOn: PRMetrics_macOS
+        dependsOn: Prerequisites
         pool:
           ${{ if parameters.testInstance }}:
             vmImage: ubuntu-latest
