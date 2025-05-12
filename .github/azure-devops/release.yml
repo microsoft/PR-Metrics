@@ -25,7 +25,7 @@ extends:
   parameters:
     sdl:
       sourceAnalysisPool:
-        name: Azure-Pipelines-1ESPT-ExDShared
+        name: Azure-Pipelines-1ESPT-ExDShared-StaticIP
         os: windows
         image: windows-latest
       credscan:
@@ -44,7 +44,7 @@ extends:
         jobs:
           - job: Checks
             pool:
-              name: Azure-Pipelines-1ESPT-ExDShared
+              name: Azure-Pipelines-1ESPT-ExDShared-StaticIP
               os: linux
               image: ubuntu-latest
             steps:
@@ -58,7 +58,7 @@ extends:
 
           - job: Release
             pool:
-              name: Azure-Pipelines-1ESPT-ExDShared
+              name: Azure-Pipelines-1ESPT-ExDShared-StaticIP
               os: linux
               image: ubuntu-latest
             steps:

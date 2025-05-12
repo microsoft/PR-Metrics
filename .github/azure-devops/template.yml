@@ -133,7 +133,7 @@ stages:
           ${{ if parameters.testInstance }}:
             vmImage: windows-latest
           ${{ else }}:
-            name: Azure-Pipelines-1ESPT-ExDShared
+            name: Azure-Pipelines-1ESPT-ExDShared-StaticIP
             os: windows
             image: windows-latest
         steps:
