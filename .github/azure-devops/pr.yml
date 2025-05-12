@@ -12,7 +12,6 @@ pr:
 variables:
   - name: tags
     value: multi-phased
-  - group: PR Metrics
 
 resources:
   repositories:
@@ -26,7 +25,7 @@ extends:
   parameters:
     sdl:
       sourceAnalysisPool:
-        name: Azure-Pipelines-1ESPT-ExDShared-StaticIP
+        name: Azure-Pipelines-1ESPT-ExDShared
         os: windows
         image: windows-latest
       credscan:
