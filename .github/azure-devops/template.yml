@@ -75,12 +75,12 @@ stages:
         displayName: PR Metrics – Ubuntu
         dependsOn: Prerequisites
         pool:
-            ${{ if parameters.testInstance }}:
-              name: Azure-Pipelines-1ESPT-OfficePPE-StaticIP
-            ${{ else }}:
-              name: Azure-Pipelines-1ESPT-ExDShared-StaticIP
-            os: linux
-            image: ubuntu-latest
+          ${{ if parameters.testInstance }}:
+            name: Azure-Pipelines-1ESPT-OfficePPE-StaticIP
+          ${{ else }}:
+            name: Azure-Pipelines-1ESPT-ExDShared-StaticIP
+          os: linux
+          image: ubuntu-latest
         variables:
           - name: System.Debug
             value: true
@@ -105,12 +105,12 @@ stages:
         displayName: PR Metrics – Windows
         dependsOn: PRMetrics_Ubuntu
         pool:
-            ${{ if parameters.testInstance }}:
-              name: Azure-Pipelines-1ESPT-OfficePPE-StaticIP
-            ${{ else }}:
-              name: Azure-Pipelines-1ESPT-ExDShared-StaticIP
-            os: windows
-            image: windows-latest
+          ${{ if parameters.testInstance }}:
+            name: Azure-Pipelines-1ESPT-OfficePPE-StaticIP
+          ${{ else }}:
+            name: Azure-Pipelines-1ESPT-ExDShared-StaticIP
+          os: windows
+          image: windows-latest
         variables:
           - name: System.Debug
             value: true
