@@ -75,10 +75,7 @@ stages:
         displayName: PR Metrics – Ubuntu
         dependsOn: Prerequisites
         pool:
-          ${{ if parameters.testInstance }}:
-            name: Azure-Pipelines-1ESPT-OfficePPE-StaticIP
-          ${{ else }}:
-            name: Azure-Pipelines-1ESPT-ExDShared-StaticIP
+          name: Azure-Pipelines-1ESPT-ExDShared-StaticIP
           os: linux
           image: ubuntu-latest
         variables:
@@ -105,10 +102,7 @@ stages:
         displayName: PR Metrics – Windows
         dependsOn: PRMetrics_Ubuntu
         pool:
-          ${{ if parameters.testInstance }}:
-            name: Azure-Pipelines-1ESPT-OfficePPE-StaticIP
-          ${{ else }}:
-            name: Azure-Pipelines-1ESPT-ExDShared-StaticIP
+          name: Azure-Pipelines-1ESPT-ExDShared-StaticIP
           os: windows
           image: windows-latest
         variables:
@@ -134,12 +128,9 @@ stages:
       - job: Validation
         displayName: Validation
         pool:
-          ${{ if parameters.testInstance }}:
-            vmImage: windows-latest
-          ${{ else }}:
-            name: Azure-Pipelines-1ESPT-ExDShared
-            os: windows
-            image: windows-latest
+          name: Azure-Pipelines-1ESPT-ExDShared
+          os: windows
+          image: windows-latest
         steps:
           - task: ComponentGovernanceComponentDetection@0
             displayName: Component Detection
