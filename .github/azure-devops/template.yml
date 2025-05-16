@@ -22,9 +22,11 @@ stages:
                 delayForMinutes: 5
         ${{ else }}:
           pool:
-            name: Azure-Pipelines-1ESPT-ExDShared
+            name: Azure-Pipelines-1ESPT-ExDShared-StaticIP
             os: linux
             image: ubuntu-latest
+          variables:
+            - group: PR Metrics
           steps:
             - checkout: self
               displayName: Checkout
@@ -69,48 +71,17 @@ stages:
             - bash: tfx build tasks upload --task-path release/task --no-prompt
               displayName: Azure DevOps – Deploy
 
-      - job: PRMetrics_macOS
-        displayName: PR Metrics – macOS
-        dependsOn: Prerequisites
-        pool:
-          ${{ if parameters.testInstance }}:
-            vmImage: macOS-latest
-          ${{ else }}:
-            name: Azure Pipelines
-            os: macOS
-            image: macos-latest
-        variables:
-          - name: System.Debug
-            value: true
-        steps:
-          - checkout: self
-            displayName: Checkout
-            fetchDepth: 0
-
-          - task: PRMetrics@1
-            displayName: PR Metrics
-            env:
-              # Classic Personal Access Token (PAT) with the public_repo scope.
-              PR_METRICS_ACCESS_TOKEN: $(ADOTOGITHUB)
-            inputs:
-              file-matching-patterns: |
-                **/*
-                !dist/*
-                !package-lock.json
-
       - job: PRMetrics_Ubuntu
         displayName: PR Metrics – Ubuntu
-        dependsOn: PRMetrics_macOS
+        dependsOn: Prerequisites
         pool:
-          ${{ if parameters.testInstance }}:
-            vmImage: ubuntu-latest
-          ${{ else }}:
-            name: Azure-Pipelines-1ESPT-ExDShared
-            os: linux
-            image: ubuntu-latest
+          name: Azure-Pipelines-1ESPT-ExDShared-StaticIP
+          os: linux
+          image: ubuntu-latest
         variables:
           - name: System.Debug
             value: true
+          - group: PR Metrics
         steps:
           - checkout: self
             displayName: Checkout
@@ -131,15 +102,13 @@ stages:
         displayName: PR Metrics – Windows
         dependsOn: PRMetrics_Ubuntu
         pool:
-          ${{ if parameters.testInstance }}:
-            vmImage: windows-latest
-          ${{ else }}:
-            name: Azure-Pipelines-1ESPT-ExDShared
-            os: windows
-            image: windows-latest
+          name: Azure-Pipelines-1ESPT-ExDShared-StaticIP
+          os: windows
+          image: windows-latest
         variables:
           - name: System.Debug
             value: true
+          - group: PR Metrics
         steps:
           - checkout: self
             displayName: Checkout
@@ -159,12 +128,9 @@ stages:
       - job: Validation
         displayName: Validation
         pool:
-          ${{ if parameters.testInstance }}:
-            vmImage: windows-latest
-          ${{ else }}:
-            name: Azure-Pipelines-1ESPT-ExDShared
-            os: windows
-            image: windows-latest
+          name: Azure-Pipelines-1ESPT-ExDShared
+          os: windows
+          image: windows-latest
         steps:
           - task: ComponentGovernanceComponentDetection@0
             displayName: Component Detection
