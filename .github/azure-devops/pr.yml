@@ -12,6 +12,7 @@ pr:
 variables:
   - name: tags
     value: multi-phased
+  - group: PR Metrics
 
 resources:
   repositories:
