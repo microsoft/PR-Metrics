@@ -17,7 +17,7 @@ resources:
   repositories:
     - repository: 1ESPipelineTemplates
       type: git
-      name: OE/1ESPipelineTemplates
+      name: 1ESPipelineTemplates
       ref: refs/heads/main
 
 extends:
