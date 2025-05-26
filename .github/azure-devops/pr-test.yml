@@ -15,13 +15,13 @@ variables:
 
 resources:
   repositories:
-    - repository: OfficePipelineTemplates
+    - repository: 1ESPipelineTemplates
       type: git
-      name: OE/OfficePipelineTemplates
+      name: OE/1ESPipelineTemplates
       ref: refs/heads/main
 
 extends:
-  template: v1/Office.Unofficial.PipelineTemplate.yml@OfficePipelineTemplates
+  template: v1/1ES.Unofficial.PipelineTemplate.yml@1ESPipelineTemplates
   parameters:
     sdl:
       sourceAnalysisPool:
