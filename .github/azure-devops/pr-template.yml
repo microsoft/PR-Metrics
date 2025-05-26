@@ -11,13 +11,6 @@ parameters:
   - name: testInstance
     type: boolean
 
-trigger: none
-
-pr:
-  branches:
-    include:
-      - main
-
 variables:
   - name: tags
     value: multi-phased
