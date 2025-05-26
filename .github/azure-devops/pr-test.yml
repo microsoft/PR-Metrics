@@ -9,10 +9,36 @@ pr:
     include:
       - main
 
+variables:
+  - name: tags
+    value: multi-phased
+
+resources:
+  repositories:
+    - repository: 1ESPipelineTemplates
+      type: git
+      name: 1ESPipelineTemplates/1ESPipelineTemplates
+      ref: refs/tags/stable
+
 extends:
-  template: pr-template.yml
+  template: v1/1ES.Unofficial.PipelineTemplate.yml@1ESPipelineTemplates
   parameters:
-    repositoryName: 1ESPipelineTemplates/1ESPipelineTemplates
-    repositoryRef: refs/tags/stable
-    templatePath: v1/1ES.Unofficial.PipelineTemplate.yml
-    testInstance: true
+    sdl:
+      sourceAnalysisPool:
+        name: Azure-Pipelines-1ESPT-ExDShared
+        os: windows
+        image: windows-latest
+      credscan:
+        suppressionsFile: $(Build.SourcesDirectory)\.github\azure-devops\CredScanSuppressions.json
+      eslint:
+        environmentsEs2017: true
+        environmentsMocha: true
+        environmentsNode: true
+        parser: "@typescript-eslint/parser"
+        parserOptions: ecmaVersion:2018
+        enableExclusions: true
+        exclusionPatterns: "*.js"
+    stages:
+      - template: template.yml
+        parameters:
+          testInstance: true
