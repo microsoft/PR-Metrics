@@ -40,4 +40,5 @@ extends:
         exclusionPatterns: "*.js"
     stages:
       - template: template.yml
-        testInstance: true
+        parameters:
+          testInstance: true
