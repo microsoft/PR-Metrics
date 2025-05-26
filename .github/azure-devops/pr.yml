@@ -2,41 +2,10 @@
 # Licensed under the MIT License.
 
 ---
-trigger: none
-
-pr:
-  branches:
-    include:
-      - main
-
-variables:
-  - name: tags
-    value: multi-phased
-
-resources:
-  repositories:
-    - repository: OfficePipelineTemplates
-      type: git
-      name: OE/OfficePipelineTemplates
-      ref: refs/heads/main
-
 extends:
-  template: v1/Office.Unofficial.PipelineTemplate.yml@OfficePipelineTemplates
+  template: pr-template.yml
   parameters:
-    sdl:
-      sourceAnalysisPool:
-        name: Azure-Pipelines-1ESPT-ExDShared
-        os: windows
-        image: windows-latest
-      credscan:
-        suppressionsFile: $(Build.SourcesDirectory)\.github\azure-devops\CredScanSuppressions.json
-      eslint:
-        environmentsEs2017: true
-        environmentsMocha: true
-        environmentsNode: true
-        parser: "@typescript-eslint/parser"
-        parserOptions: ecmaVersion:2018
-        enableExclusions: true
-        exclusionPatterns: "*.js"
-    stages:
-      - template: template.yml
+    repositoryName: OE/OfficePipelineTemplates
+    repositoryRef: refs/heads/main
+    templatePath: v1/Office.Unofficial.PipelineTemplate.yml
+    testInstance: false
