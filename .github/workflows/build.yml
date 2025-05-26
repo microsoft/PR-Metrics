@@ -93,7 +93,7 @@ jobs:
         name: Request Manual Updates
         shell: pwsh
         run: |-
-          Write-Output -InputObject "::error::Code changes detected in the PR. Please update the PR using "npm run lint && npm run build:package" to include the latest changes."
+          Write-Output -InputObject "::error::Code changes detected in the PR. Please update the PR using 'npm run lint && npm run build:package' to include the latest changes."
           exit 1
 
   build:
