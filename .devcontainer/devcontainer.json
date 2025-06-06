@@ -29,9 +29,7 @@
           "other": "on"
         },
         "editor.renderWhitespace": "all",
-        "editor.rulers": [
-          80
-        ],
+        "editor.rulers": [80],
         "eslint.format.enable": true,
         "eslint.lintTask.enable": true,
         "files.associations": {
