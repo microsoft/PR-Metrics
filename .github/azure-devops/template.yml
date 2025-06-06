@@ -128,7 +128,7 @@ stages:
       - job: Validation
         displayName: Validation
         pool:
-          name: Azure-Pipelines-1ESPT-ExDShared
+          name: Azure-Pipelines-1ESPT-ExDShared-StaticIP
           os: windows
           image: windows-latest
         steps:
