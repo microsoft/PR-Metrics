@@ -2,10 +2,10 @@
   "$schema": "https://raw.githubusercontent.com/microsoft/vscode/main/extensions/configuration-editing/schemas/devContainer.codespaces.schema.json",
   "name": "PR Metrics",
   "imageContainer": {
-    "image": "mcr.microsoft.com/devcontainers/typescript-node:18"
+    "image": "mcr.microsoft.com/devcontainers/typescript-node:20"
   },
   "features": {
-    "ghcr.io/devcontainers-contrib/features/typescript:1": {}
+    "ghcr.io/devcontainers-contrib/features/node:1": {}
   },
   "customizations": {
     "vscode": {
