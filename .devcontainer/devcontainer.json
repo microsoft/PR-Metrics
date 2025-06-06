@@ -4,9 +4,6 @@
   "imageContainer": {
     "image": "mcr.microsoft.com/devcontainers/typescript-node:20"
   },
-  "features": {
-    "ghcr.io/devcontainers-contrib/features/node:1": {}
-  },
   "customizations": {
     "vscode": {
       "extensions": [
