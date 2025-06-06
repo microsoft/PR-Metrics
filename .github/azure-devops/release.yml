@@ -15,13 +15,13 @@ variables:
 
 resources:
   repositories:
-    - repository: OfficePipelineTemplates
+    - repository: M365GPT
       type: git
-      name: OE/OfficePipelineTemplates
+      name: 1ESPipelineTemplates/M365GPT
       ref: refs/heads/main
 
 extends:
-  template: v1/Office.Official.PipelineTemplate.yml@OfficePipelineTemplates
+  template: v1/M365.Official.PipelineTemplate.yml@M365GPT
   parameters:
     sdl:
       sourceAnalysisPool:
