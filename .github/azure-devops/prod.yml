@@ -17,17 +17,17 @@ variables:
 
 resources:
   repositories:
-    - repository: OfficePipelineTemplates
+    - repository: M365GPT
       type: git
-      name: OE/OfficePipelineTemplates
-      ref: refs/heads/main
+      name: 1ESPipelineTemplates/M365GPT
+      ref: refs/tags/release
 
 extends:
-  template: v1/Office.Official.PipelineTemplate.yml@OfficePipelineTemplates
+  template: v1/M365.Official.PipelineTemplate.yml@M365GPT
   parameters:
     sdl:
       sourceAnalysisPool:
-        name: Azure-Pipelines-1ESPT-ExDShared
+        name: Azure-Pipelines-1ESPT-ExDShared-StaticIP
         os: windows
         image: windows-latest
       credscan:
@@ -46,7 +46,7 @@ extends:
         jobs:
           - job: Checks
             pool:
-              name: Azure-Pipelines-1ESPT-ExDShared
+              name: Azure-Pipelines-1ESPT-ExDShared-StaticIP
               os: linux
               image: ubuntu-latest
             steps:
