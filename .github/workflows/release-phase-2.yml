@@ -22,7 +22,7 @@ jobs:
       contents: write
     steps:
       - name: Harden Runner
-        uses: step-security/harden-runner@0634a2670c59f64b4a01f0f96f84700a4088b9f0 # v2.12.0
+        uses: step-security/harden-runner@6c439dc8bdf85cadbbce9ed30d1c7b959517bc49 # v2.12.2
         with:
           disable-sudo: true
           egress-policy: audit
@@ -59,7 +59,7 @@ jobs:
           Write-Output -InputObject "VERSION=v$Version" >> $Env:GITHUB_OUTPUT
 
       - name: GitHub Release
-        uses: softprops/action-gh-release@da05d552573ad5aba039eaac05058a918a7bf631 # v0.1.15
+        uses: softprops/action-gh-release@72f2c25fcb47643c292f7107632f7a47c1df5cd8 # v0.1.15
         with:
           discussion_category_name: Releases
           files: ${{ github.workspace }}/ms-omex.PRMetrics.vsix
