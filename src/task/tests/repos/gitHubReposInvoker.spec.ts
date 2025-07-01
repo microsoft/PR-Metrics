@@ -34,7 +34,7 @@ describe("gitHubReposInvoker.ts", (): void => {
   let octokitWrapper: OctokitWrapper;
   let runnerInvoker: RunnerInvoker;
 
-  const expectedUserAgent = "PRMetrics/v1.7.2";
+  const expectedUserAgent = "PRMetrics/v1.7.3";
 
   beforeEach((): void => {
     process.env.PR_METRICS_ACCESS_TOKEN = "PAT";
@@ -861,9 +861,9 @@ describe("gitHubReposInvoker.ts", (): void => {
       // Assert
       assert.equal(result.pullRequestComments.length, 1);
       assert.equal(result.pullRequestComments[0]?.id, 1);
-      assert.equal(result.pullRequestComments[0]?.content, "PR Content");
+      assert.equal(result.pullRequestComments[0].content, "PR Content");
       assert.equal(
-        result.pullRequestComments[0]?.status,
+        result.pullRequestComments[0].status,
         CommentThreadStatus.Unknown,
       );
       assert.equal(result.fileComments.length, 0);
@@ -915,9 +915,9 @@ describe("gitHubReposInvoker.ts", (): void => {
       assert.equal(result.pullRequestComments.length, 0);
       assert.equal(result.fileComments.length, 1);
       assert.equal(result.fileComments[0]?.id, 2);
-      assert.equal(result.fileComments[0]?.content, "File Content");
-      assert.equal(result.fileComments[0]?.status, CommentThreadStatus.Unknown);
-      assert.equal(result.fileComments[0]?.fileName, "file.ts");
+      assert.equal(result.fileComments[0].content, "File Content");
+      assert.equal(result.fileComments[0].status, CommentThreadStatus.Unknown);
+      assert.equal(result.fileComments[0].fileName, "file.ts");
       verify(octokitWrapper.initialize(any())).once();
       verify(
         octokitWrapper.getIssueComments("microsoft", "PR-Metrics", 12345),
@@ -979,16 +979,16 @@ describe("gitHubReposInvoker.ts", (): void => {
       // Assert
       assert.equal(result.pullRequestComments.length, 1);
       assert.equal(result.pullRequestComments[0]?.id, 1);
-      assert.equal(result.pullRequestComments[0]?.content, "PR Content");
+      assert.equal(result.pullRequestComments[0].content, "PR Content");
       assert.equal(
-        result.pullRequestComments[0]?.status,
+        result.pullRequestComments[0].status,
         CommentThreadStatus.Unknown,
       );
       assert.equal(result.fileComments.length, 1);
       assert.equal(result.fileComments[0]?.id, 2);
-      assert.equal(result.fileComments[0]?.content, "File Content");
-      assert.equal(result.fileComments[0]?.status, CommentThreadStatus.Unknown);
-      assert.equal(result.fileComments[0]?.fileName, "file.ts");
+      assert.equal(result.fileComments[0].content, "File Content");
+      assert.equal(result.fileComments[0].status, CommentThreadStatus.Unknown);
+      assert.equal(result.fileComments[0].fileName, "file.ts");
       verify(octokitWrapper.initialize(any())).once();
       verify(
         octokitWrapper.getIssueComments("microsoft", "PR-Metrics", 12345),
