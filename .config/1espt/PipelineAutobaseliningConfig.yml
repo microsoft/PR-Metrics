@@ -31,3 +31,6 @@ pipelines:
           lastModifiedDate: 2025-06-17
         armory:
           lastModifiedDate: 2025-06-17
+        credscan:
+          lastModifiedDate: 2025-07-01
+    usedNonDefaultBranch: true
