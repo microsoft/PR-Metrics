@@ -30,10 +30,12 @@ command being unavailable, check the details about installing the Azure CLI
 ## Instructions
 
 1. Create a Managed Identity in Azure.
+
    1. Log into the [Azure Portal][azureportal].
    1. Use the search to locate "Managed Identities" and select it.
    1. Click "Create" to create a new managed identity.
    1. Enter the required details as appropriate:
+
       - Subscription
       - Resource group
       - Region
@@ -52,6 +54,7 @@ command being unavailable, check the details about installing the Azure CLI
    1. Click into "Settings" > "Properties" and make a note of the "Tenant ID".
 
 1. Create the Azure DevOps Service Connection.
+
    1. In a new browser tab, open your project in Azure DevOps. Retain the
       Managed Identity page in another tab as you will return to this later.
    1. At the very bottom of the left-hand menu, click on "Project settings".
@@ -62,6 +65,7 @@ command being unavailable, check the details about installing the Azure CLI
    1. Select "Workload Identity federation (manual)" and click "Next".
       ![Selecting Workload Identity federation (manual)](images/workload-identity-federation/azure-devops-service-connection-2.png)
    1. Enter the details as appropriate:
+
       - Service connection name
       - Description (optional)
       - Security: Grant access permission to all pipelines. **This is strongly
@@ -75,6 +79,7 @@ command being unavailable, check the details about installing the Azure CLI
       - Subject identifier
 
 1. Add the federated credential to the Managed Identity.
+
    1. Return to the Managed Identity you created by switching to the previously
       opened browser tab.
    1. Click into "Settings" > "Federated credentials".
@@ -87,7 +92,9 @@ command being unavailable, check the details about installing the Azure CLI
    ![Adding the federated credential](images/workload-identity-federation/add-federated-credential.png)
 
 1. Finalize the Azure DevOps Service Connection.
+
    1. On the pane you were previously updating, enter the details as appropriate:
+
       - Environment: Azure Cloud
       - Scope Level: Subscription
       - Subscription ID: Taken from the previously saved "Subscription ID".
