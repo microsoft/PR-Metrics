@@ -80,7 +80,7 @@
     "npm-check-updates": "18.0.1",
     "rimraf": "6.0.1",
     "source-map-support": "0.5.21",
-    "tfx-cli": "0.21.1",
+    "tfx-cli": "0.21.2",
     "ts-mockito": "2.6.1",
     "typedoc": "0.28.7",
     "typescript": "5.8.3",
