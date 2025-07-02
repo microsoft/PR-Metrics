@@ -577,9 +577,9 @@ describe("azureReposInvoker.ts", (): void => {
       // Assert
       assert.equal(result.pullRequestComments.length, 1);
       assert.equal(result.pullRequestComments[0]?.id, 1);
-      assert.equal(result.pullRequestComments[0]?.content, "Content");
+      assert.equal(result.pullRequestComments[0].content, "Content");
       assert.equal(
-        result.pullRequestComments[0]?.status,
+        result.pullRequestComments[0].status,
         CommentThreadStatus.Active,
       );
       assert.equal(result.fileComments.length, 0);
@@ -624,9 +624,9 @@ describe("azureReposInvoker.ts", (): void => {
       // Assert
       assert.equal(result.pullRequestComments.length, 1);
       assert.equal(result.pullRequestComments[0]?.id, 1);
-      assert.equal(result.pullRequestComments[0]?.content, "Content");
+      assert.equal(result.pullRequestComments[0].content, "Content");
       assert.equal(
-        result.pullRequestComments[0]?.status,
+        result.pullRequestComments[0].status,
         CommentThreadStatus.Active,
       );
       assert.equal(result.fileComments.length, 0);
@@ -672,9 +672,9 @@ describe("azureReposInvoker.ts", (): void => {
       assert.equal(result.pullRequestComments.length, 0);
       assert.equal(result.fileComments.length, 1);
       assert.equal(result.fileComments[0]?.id, 1);
-      assert.equal(result.fileComments[0]?.content, "Content");
-      assert.equal(result.fileComments[0]?.status, CommentThreadStatus.Active);
-      assert.equal(result.fileComments[0]?.fileName, "file.ts");
+      assert.equal(result.fileComments[0].content, "Content");
+      assert.equal(result.fileComments[0].status, CommentThreadStatus.Active);
+      assert.equal(result.fileComments[0].fileName, "file.ts");
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler("PAT")).once();
       verify(
         azureDevOpsApiWrapper.getWebApiInstance(
@@ -717,16 +717,16 @@ describe("azureReposInvoker.ts", (): void => {
       // Assert
       assert.equal(result.pullRequestComments.length, 1);
       assert.equal(result.pullRequestComments[0]?.id, 1);
-      assert.equal(result.pullRequestComments[0]?.content, "PR Content");
+      assert.equal(result.pullRequestComments[0].content, "PR Content");
       assert.equal(
-        result.pullRequestComments[0]?.status,
+        result.pullRequestComments[0].status,
         CommentThreadStatus.Active,
       );
       assert.equal(result.fileComments.length, 1);
       assert.equal(result.fileComments[0]?.id, 2);
-      assert.equal(result.fileComments[0]?.content, "File Content");
-      assert.equal(result.fileComments[0]?.status, CommentThreadStatus.Active);
-      assert.equal(result.fileComments[0]?.fileName, "file.ts");
+      assert.equal(result.fileComments[0].content, "File Content");
+      assert.equal(result.fileComments[0].status, CommentThreadStatus.Active);
+      assert.equal(result.fileComments[0].fileName, "file.ts");
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler("PAT")).once();
       verify(
         azureDevOpsApiWrapper.getWebApiInstance(
@@ -764,9 +764,9 @@ describe("azureReposInvoker.ts", (): void => {
       // Assert
       assert.equal(result.pullRequestComments.length, 1);
       assert.equal(result.pullRequestComments[0]?.id, 1);
-      assert.equal(result.pullRequestComments[0]?.content, "Content");
+      assert.equal(result.pullRequestComments[0].content, "Content");
       assert.equal(
-        result.pullRequestComments[0]?.status,
+        result.pullRequestComments[0].status,
         CommentThreadStatus.Active,
       );
       assert.equal(result.fileComments.length, 0);
@@ -851,16 +851,16 @@ describe("azureReposInvoker.ts", (): void => {
       // Assert
       assert.equal(result.pullRequestComments.length, 1);
       assert.equal(result.pullRequestComments[0]?.id, 1);
-      assert.equal(result.pullRequestComments[0]?.content, "PR Content");
+      assert.equal(result.pullRequestComments[0].content, "PR Content");
       assert.equal(
-        result.pullRequestComments[0]?.status,
+        result.pullRequestComments[0].status,
         CommentThreadStatus.Unknown,
       );
       assert.equal(result.fileComments.length, 1);
       assert.equal(result.fileComments[0]?.id, 2);
-      assert.equal(result.fileComments[0]?.content, "File Content");
-      assert.equal(result.fileComments[0]?.status, CommentThreadStatus.Unknown);
-      assert.equal(result.fileComments[0]?.fileName, "file.ts");
+      assert.equal(result.fileComments[0].content, "File Content");
+      assert.equal(result.fileComments[0].status, CommentThreadStatus.Unknown);
+      assert.equal(result.fileComments[0].fileName, "file.ts");
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler("PAT")).once();
       verify(
         azureDevOpsApiWrapper.getWebApiInstance(
@@ -930,19 +930,19 @@ describe("azureReposInvoker.ts", (): void => {
           // Assert
           assert.equal(result.pullRequestComments.length, 1);
           assert.equal(result.pullRequestComments[0]?.id, 2);
-          assert.equal(result.pullRequestComments[0]?.content, "PR Content");
+          assert.equal(result.pullRequestComments[0].content, "PR Content");
           assert.equal(
-            result.pullRequestComments[0]?.status,
+            result.pullRequestComments[0].status,
             CommentThreadStatus.Active,
           );
           assert.equal(result.fileComments.length, 1);
           assert.equal(result.fileComments[0]?.id, 3);
-          assert.equal(result.fileComments[0]?.content, "File Content");
+          assert.equal(result.fileComments[0].content, "File Content");
           assert.equal(
-            result.fileComments[0]?.status,
+            result.fileComments[0].status,
             CommentThreadStatus.Active,
           );
-          assert.equal(result.fileComments[0]?.fileName, "file.ts");
+          assert.equal(result.fileComments[0].fileName, "file.ts");
           verify(
             azureDevOpsApiWrapper.getPersonalAccessTokenHandler("PAT"),
           ).once();

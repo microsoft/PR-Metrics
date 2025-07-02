@@ -433,6 +433,7 @@ export const listCommitsResponse: ListCommitsResponse = {
           reason: "",
           signature: null,
           verified: false,
+          verified_at: "",
         },
       },
       committer: {
