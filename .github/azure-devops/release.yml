@@ -102,6 +102,7 @@ extends:
                   AppRegistrationTenantId: $(CodeSigningAppRegistrationTenantId)
                   AuthAKVName: $(CodeSigningAuthAKVName)
                   AuthSignCertName: $(CodeSigningAuthSignCertName)
+                  UseMSIAuthentication: true
                   FolderPath: $(Build.SourcesDirectory)/release
                   Pattern: "*.vsix"
                   signConfigType: inlineSignParams
