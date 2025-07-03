@@ -95,12 +95,12 @@ extends:
                 displayName: ESRP CodeSigning
                 inputs:
                   # Signing details are stored within the PR Metrics variable group.
-                  ConnectedServiceName: $(CODESIGNING-CONNECTEDSERVICENAME)
-                  AppRegistrationClientId: $(CODESIGNING-APPREGISTRATIONCLIENTID)
-                  AppRegistrationTenantId: $(CODESIGNING-APPREGISTRATIONTENANTID)
-                  AuthAKVName: $(CODESIGNING-AUTHAKVNAME)
-                  AuthCertName: $(CODESIGNING-AUTHCERTNAME)
-                  AuthSignCertName: $(CODESIGNING-AUTHSIGNCERTNAME)
+                  ConnectedServiceName: $($env:CODESIGNING-CONNECTEDSERVICENAME)
+                  AppRegistrationClientId: $($env:CODESIGNING-APPREGISTRATIONCLIENTID)
+                  AppRegistrationTenantId: $($env:CODESIGNING-APPREGISTRATIONTENANTID)
+                  AuthAKVName: $($env:CODESIGNING-AUTHAKVNAME)
+                  AuthCertName: $($env:CODESIGNING-AUTHCERTNAME)
+                  AuthSignCertName: $($env:CODESIGNING-AUTHSIGNCERTNAME)
                   FolderPath: $(Build.SourcesDirectory)/release
                   Pattern: "*.vsix"
                   signConfigType: inlineSignParams
@@ -122,6 +122,13 @@ extends:
                       }
                     ]
                   SessionTimeout: 30
+                env:
+                  CODESIGNING-CONNECTEDSERVICENAME: $(CODESIGNING-CONNECTEDSERVICENAME)
+                  CODESIGNING-APPREGISTRATIONCLIENTID: $(CODESIGNING-APPREGISTRATIONCLIENTID)
+                  CODESIGNING-APPREGISTRATIONTENANTID: $(CODESIGNING-APPREGISTRATIONTENANTID)
+                  CODESIGNING-AUTHAKVNAME: $(CODESIGNING-AUTHAKVNAME)
+                  CODESIGNING-AUTHCERTNAME: $(CODESIGNING-AUTHCERTNAME)
+                  CODESIGNING-AUTHSIGNCERTNAME: $(CODESIGNING-AUTHSIGNCERTNAME)
 
               - task: AzureCLI@2
                 displayName: Release – Publish
