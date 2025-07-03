@@ -96,12 +96,11 @@ extends:
                 displayName: ESRP CodeSigning
                 inputs:
                   # Signing details are stored within the PR Metrics variable group.
-                  ConnectedServiceName: $($env:CODESIGNING-CONNECTEDSERVICENAME)
-                  AppRegistrationClientId: $($env:CODESIGNING-APPREGISTRATIONCLIENTID)
-                  AppRegistrationTenantId: $($env:CODESIGNING-APPREGISTRATIONTENANTID)
-                  AuthAKVName: $($env:CODESIGNING-AUTHAKVNAME)
-                  AuthCertName: $($env:CODESIGNING-AUTHCERTNAME)
-                  AuthSignCertName: $($env:CODESIGNING-AUTHSIGNCERTNAME)
+                  ConnectedServiceName: $(CodeSigningConnectedServiceName)
+                  AppRegistrationClientId: $(CodeSigningAppRegistrationClientId)
+                  AppRegistrationTenantId: $(CodeSigningAppRegistrationTenantId)
+                  AuthAKVName: $(CodeSigningAuthAKVName)
+                  AuthSignCertName: $(CodeSigningAuthSignCertName)
                   FolderPath: $(Build.SourcesDirectory)/release
                   Pattern: "*.vsix"
                   signConfigType: inlineSignParams
@@ -123,16 +122,16 @@ extends:
                       }
                     ]
                   SessionTimeout: 30
-                env:
-                  CODESIGNING-CONNECTEDSERVICENAME: $(CODESIGNING-CONNECTEDSERVICENAME)
-                  CODESIGNING-APPREGISTRATIONCLIENTID: $(CODESIGNING-APPREGISTRATIONCLIENTID)
-                  CODESIGNING-APPREGISTRATIONTENANTID: $(CODESIGNING-APPREGISTRATIONTENANTID)
-                  CODESIGNING-AUTHAKVNAME: $(CODESIGNING-AUTHAKVNAME)
-                  CODESIGNING-AUTHCERTNAME: $(CODESIGNING-AUTHCERTNAME)
-                  CODESIGNING-AUTHSIGNCERTNAME: $(CODESIGNING-AUTHSIGNCERTNAME)
 
               - task: AzureCLI@2
                 displayName: Release – Publish
+                inputs:
+                  azureSubscription: PR Metrics
+                  scriptType: pscore
+                  scriptLocation: inlineScript
+                  inlineScript: |
+                    $AccessToken = az account get-access-token --query accessToken --resource 499b84ac-1321-427f-aa17-267ca6975798 -o tsv
+                    tfx extension publish --service-url https://marketplace.visualstudio.com/ --token $AccessToken --vsix ms-omex.PRMetrics.vsix
                 inputs:
                   azureSubscription: PR Metrics
                   scriptType: pscore
