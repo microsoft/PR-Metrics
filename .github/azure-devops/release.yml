@@ -94,7 +94,7 @@ extends:
               - task: EsrpCodeSigning@5
                 displayName: ESRP CodeSigning
                 inputs:
-                  ConnectedServiceName: $($env:CONNECTEDSERVICENAME)
+                  ConnectedServiceName: $($env:CODESIGNING-CONNECTEDSERVICENAME)
                   AppRegistrationClientId: $($env:APPREGISTRATIONCLIENTID)
                   AppRegistrationTenantId: $($env:APPREGISTRATIONTENANTID)
                   AuthAKVName: $($env:AUTHAKVNAME)
@@ -122,7 +122,7 @@ extends:
                     ]
                   SessionTimeout: 30
                 env:
-                  CONNECTEDSERVICENAME: $(CODESIGNING-CONNECTEDSERVICENAME)
+                  CODESIGNING-CONNECTEDSERVICENAME: $(CODESIGNING-CONNECTEDSERVICENAME)
                   APPREGISTRATIONCLIENTID: $(CODESIGNING-APPREGISTRATIONCLIENTID)
                   APPREGISTRATIONTENANTID: $(CODESIGNING-APPREGISTRATIONTENANTID)
                   AUTHAKVNAME: $(CODESIGNING-AUTHAKVNAME)
