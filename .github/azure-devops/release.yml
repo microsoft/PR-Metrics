@@ -94,12 +94,12 @@ extends:
               - task: EsrpCodeSigning@5
                 displayName: ESRP CodeSigning
                 inputs:
-                  ConnectedServiceName: $($env:CODESIGNING-CONNECTEDSERVICENAME)
-                  AppRegistrationClientId: $($env:APPREGISTRATIONCLIENTID)
-                  AppRegistrationTenantId: $($env:APPREGISTRATIONTENANTID)
-                  AuthAKVName: $($env:AUTHAKVNAME)
-                  AuthCertName: $($env:AUTHSIGNCERTNAME)
-                  AuthSignCertName: $($env:AUTHSIGNCERTNAME)
+                  ConnectedServiceName: $(CODESIGNING-CONNECTEDSERVICENAME)
+                  AppRegistrationClientId: $(CODESIGNING-APPREGISTRATIONCLIENTID)
+                  AppRegistrationTenantId: $(CODESIGNING-APPREGISTRATIONTENANTID)
+                  AuthAKVName: $(CODESIGNING-AUTHAKVNAME)
+                  AuthCertName: $(CODESIGNING-AUTHCERTNAME)
+                  AuthSignCertName: $(CODESIGNING-AUTHSIGNCERTNAME)
                   FolderPath: $(Build.SourcesDirectory)/release
                   Pattern: "*.vsix"
                   signConfigType: inlineSignParams
@@ -121,13 +121,6 @@ extends:
                       }
                     ]
                   SessionTimeout: 30
-                env:
-                  CODESIGNING-CONNECTEDSERVICENAME: $(CODESIGNING-CONNECTEDSERVICENAME)
-                  APPREGISTRATIONCLIENTID: $(CODESIGNING-APPREGISTRATIONCLIENTID)
-                  APPREGISTRATIONTENANTID: $(CODESIGNING-APPREGISTRATIONTENANTID)
-                  AUTHAKVNAME: $(CODESIGNING-AUTHAKVNAME)
-                  AUTHCERTNAME: $(CODESIGNING-AUTHCERTNAME)
-                  AUTHSIGNCERTNAME: $(CODESIGNING-AUTHSIGNCERTNAME)
 
               - task: AzureCLI@2
                 displayName: Release – Publish
