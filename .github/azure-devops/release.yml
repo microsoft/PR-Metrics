@@ -97,7 +97,7 @@ extends:
                 displayName: ESRP CodeSigning
                 inputs:
                   # Signing details are stored within the PR Metrics variable group.
-                  ConnectedServiceName: $(CodeSigningConnectedServiceName)
+                  ConnectedServiceName: OmexCodeSigningESRP-Torus
                   AppRegistrationClientId: $(CodeSigningAppRegistrationClientId)
                   AppRegistrationTenantId: $(CodeSigningAppRegistrationTenantId)
                   AuthAKVName: $(CodeSigningAuthAKVName)
