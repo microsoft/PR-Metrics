@@ -12,7 +12,6 @@ pr: none
 variables:
   - name: tags
     value: production, multi-phased
-  - group: PR Metrics
 
 resources:
   repositories:
@@ -59,9 +58,11 @@ extends:
 
           - job: Release
             pool:
-              name: Azure-Pipelines-1ESPT-ExDShared
+              name: Azure-Pipelines-1ESPT-ExDShared-StaticIP
               os: linux
               image: ubuntu-latest
+            variables:
+              - group: PR Metrics
             steps:
               - checkout: self
                 displayName: Checkout
@@ -94,6 +95,7 @@ extends:
               - task: EsrpCodeSigning@5
                 displayName: ESRP CodeSigning
                 inputs:
+                  # Signing details are stored within the PR Metrics variable group.
                   ConnectedServiceName: $(CODESIGNING-CONNECTEDSERVICENAME)
                   AppRegistrationClientId: $(CODESIGNING-APPREGISTRATIONCLIENTID)
                   AppRegistrationTenantId: $(CODESIGNING-APPREGISTRATIONTENANTID)
