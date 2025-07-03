@@ -94,12 +94,12 @@ extends:
               - task: EsrpCodeSigning@5
                 displayName: ESRP CodeSigning
                 inputs:
-                  ConnectedServiceName: $env:CONNECTEDSERVICENAME
-                  AppRegistrationClientId: $env:APPREGISTRATIONCLIENTID
-                  AppRegistrationTenantId: $env:APPREGISTRATIONTENANTID
-                  AuthAKVName: $env:AUTHAKVNAME
-                  AuthCertName: $env:AUTHSIGNCERTNAME
-                  AuthSignCertName: $env:AUTHSIGNCERTNAME
+                  ConnectedServiceName: $($env:CONNECTEDSERVICENAME)
+                  AppRegistrationClientId: $($env:APPREGISTRATIONCLIENTID)
+                  AppRegistrationTenantId: $($env:APPREGISTRATIONTENANTID)
+                  AuthAKVName: $($env:AUTHAKVNAME)
+                  AuthCertName: $($env:AUTHSIGNCERTNAME)
+                  AuthSignCertName: $($env:AUTHSIGNCERTNAME)
                   FolderPath: $(Build.SourcesDirectory)/release
                   Pattern: "*.vsix"
                   signConfigType: inlineSignParams
