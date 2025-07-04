@@ -101,6 +101,7 @@ extends:
                   AppRegistrationTenantId: $(CodeSigningAppRegistrationTenantId)
                   AuthAKVName: $(CodeSigningAuthAKVName)
                   AuthSignCertName: $(CodeSigningAuthSignCertName)
+                  EsrpClientId: $(CodeSigningEsrpClientId)
                   UseMSIAuthentication: true
                   FolderPath: $(Build.SourcesDirectory)/release
                   Pattern: "*.vsix"
