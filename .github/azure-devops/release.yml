@@ -103,7 +103,7 @@ extends:
                   AuthSignCertName: $(CodeSigningAuthSignCertName)
                   EsrpClientId: $(CodeSigningEsrpClientId)
                   UseMSIAuthentication: true
-                  FolderPath: $(Build.SourcesDirectory)/release
+                  FolderPath: $(Build.SourcesDirectory)
                   Pattern: "*.vsix"
                   signConfigType: inlineSignParams
                   inlineOperation: |-
