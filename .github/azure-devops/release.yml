@@ -58,9 +58,11 @@ extends:
 
           - job: Release
             pool:
-              name: Azure-Pipelines-1ESPT-ExDShared
+              name: Azure-Pipelines-1ESPT-ExDShared-StaticIP
               os: linux
               image: ubuntu-latest
+            variables:
+              - group: PR Metrics
             steps:
               - checkout: self
                 displayName: Checkout
@@ -89,6 +91,39 @@ extends:
               - bash: tfx extension create --manifest-globs vss-extension.json --output-path ../ms-omex.PRMetrics.vsix
                 displayName: Release – Create
                 workingDirectory: $(Build.SourcesDirectory)/release
+
+              - task: EsrpCodeSigning@5
+                displayName: ESRP CodeSigning
+                inputs:
+                  # Signing details are stored within the PR Metrics variable group.
+                  ConnectedServiceName: OmexCodeSigningESRP-Torus
+                  AppRegistrationClientId: $(CodeSigningAppRegistrationClientId)
+                  AppRegistrationTenantId: $(CodeSigningAppRegistrationTenantId)
+                  AuthAKVName: $(CodeSigningAuthAKVName)
+                  AuthSignCertName: $(CodeSigningAuthSignCertName)
+                  EsrpClientId: $(CodeSigningEsrpClientId)
+                  UseMSIAuthentication: true
+                  FolderPath: $(Build.SourcesDirectory)
+                  Pattern: "*.vsix"
+                  signConfigType: inlineSignParams
+                  inlineOperation: |-
+                    [
+                      {
+                        "KeyCode": "CP-500813",
+                        "OperationCode": "AdoExtensionSign",
+                        "ToolName": "sign",
+                        "ToolVersion": "1.0",
+                        "Parameters": {}
+                      },
+                      {
+                        "KeyCode": "CP-500813",
+                        "OperationCode": "AdoExtensionVerify",
+                        "ToolName": "sign",
+                        "ToolVersion": "1.0",
+                        "Parameters": {}
+                      }
+                    ]
+                  SessionTimeout: 30
 
               - task: AzureCLI@2
                 displayName: Release – Publish
