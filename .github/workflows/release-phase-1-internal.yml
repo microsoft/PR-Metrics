@@ -170,6 +170,9 @@ jobs:
       - name: Git – Add Changed Files
         run: git add -A
 
+      - name: Git – Commit Changed Files
+        run: git commit -m "Release v${{ env.version }}"
+
       - name: Git – Push Changed Files
         run: git push --set-upstream origin release/v${{ env.version }}
 
