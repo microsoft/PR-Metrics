@@ -212,6 +212,9 @@ jobs:
       - name: Git – Commit Changed Files
         run: git commit -m "Updating dependencies"
 
+      - name: Git – Push Changed Files
+        run: git push --set-upstream origin release/v${{ env.version }}
+
       - name: Git – Pull Changed Files
         run: git pull
 
