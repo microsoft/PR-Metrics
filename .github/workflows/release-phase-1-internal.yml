@@ -209,21 +209,6 @@ jobs:
       - name: npm – Update Dependencies
         run: npx ncu -u
 
-      - name: npm – NPM Install
-        run: npm install
-
-      - name: Git – Add Changed Files
-        run: git add -A
-
-      - name: Git – Commit Changed Files
-        run: git commit -m "Updating npm dependencies"
-
-      - name: Git – Pull Changed Files
-        run: git pull
-
-      - name: Git – Push Changed Files
-        run: git push --set-upstream origin release/v${{ env.version }}
-
       - name: npm – Update Transitive Dependencies
         run: npm update
 
