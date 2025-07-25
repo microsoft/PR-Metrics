@@ -14,11 +14,18 @@ permissions: {}
 
 jobs:
   release:
-    uses: ./.github/actions/release-phase-1-internal.yml
-    secrets: inherit
+    name: Release – Phase 1 – Internal
+    runs-on: ubuntu-latest
     permissions:
+      contents: write
       pull-requests: write
-    with:
-      major: 1
-      minor: 7
-      patch: 6
+    steps:
+      - name: Release – Phase 1 – Internal
+        uses: ./.github/actions/release-phase-1-internal
+        with:
+          major: 1
+          minor: 7
+          patch: 6
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          release-phase-1-checkout-token: ${{ secrets.RELEASE_PHASE_1_CHECKOUT }}
+          release-pr-create-token: ${{ secrets.RELEASE_PR_CREATE }}
