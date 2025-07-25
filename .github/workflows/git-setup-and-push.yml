@@ -7,10 +7,10 @@ name: Git Setup & Push
 on:
   workflow_call:
     inputs:
-      version:
+      phase:
         required: true
         type: string
-      phase:
+      version:
         required: true
         type: string
 
