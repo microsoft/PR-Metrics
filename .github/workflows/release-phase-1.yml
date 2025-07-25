@@ -14,7 +14,7 @@ permissions: {}
 
 jobs:
   release:
-    uses: ./.github/workflows/release-phase-1-internal.yml
+    uses: ./.github/actions/release-phase-1-internal.yml
     secrets: inherit
     permissions:
       pull-requests: write
