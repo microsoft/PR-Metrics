@@ -65,7 +65,7 @@ PERFORMANCE OF THIS SOFTWARE.
 
 ---------------------------------------------------------
 
-before-after-hook 4.0.0 - Apache-2.0
+before-after-hook 3.0.2 - Apache-2.0
 https://github.com/gr2m/before-after-hook#readme
 
 Copyright 2018 Gregor Martynus and other contributors
@@ -343,23 +343,38 @@ END OF TERMS AND CONDITIONS
 
 ---------------------------------------------------------
 
-azure-devops-node-api 15.1.0 - Apache-2.0 AND BSD-3-Clause AND ISC AND LicenseRef-scancode-unknown AND MIT
-https://github.com/Microsoft/azure-devops-node-api#readme
+typed-rest-client 1.8.11 - Apache-2.0 AND BSD-3-Clause AND CC0-1.0 AND ISC AND LicenseRef-scancode-unknown AND MIT
+https://github.com/Microsoft/typed-rest-client#readme
 
 Copyright (c) Microsoft
+Copyright (c) 2015 Zhiye Li
+Copyright (c) 2016 Zeit, Inc.
 Copyright (c) 2014 Tyler Kellen
 Copyright (c) 2015 Tyler Kellen
 Copyright (c) Isaac Z. Schlueter
 Copyright (c) 2012 Koichi Kobayashi
 Copyright (c) Microsoft Corporation
+Copyright (c) Isaac Z. Schlueter 'Author
 Copyright (c) Isaac Z. Schlueter and Contributors
+Copyright 2010 James Halliday (mail@substack.net)
 Copyright Joyent, Inc. and other Node contributors
 Copyright (c) 2012, Artur Adib <arturadib@gmail.com>
+Copyright Mathias Bynens <https://mathiasbynens.be/>
+Copyright (c) 2012 Joshua M. Clulow <josh@sysmgr.org>
+Copyright (c) 2011 TJ Holowaychuk <tj@vision-media.ca>
+Copyright (c) 2014 TJ Holowaychuk <tj@vision-media.ca>
+Copyright (c) 2009-2015, Kevin Decker <kpdecker@gmail.com>
 Copyright (c) 2013 Julian Gruber <julian@juliangruber.com>
+Copyright (c) 2012-2014 Kit Cambridge. http://kitcambridge.be
+Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
 Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
+Copyright jQuery Foundation and other contributors <https://jquery.org/>
+Copyright (c) 2011-2017 JS Foundation and contributors, https://js.foundation
 Copyright (c) 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors <http://underscorejs.org/>
+copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors <http://underscorejs.org/>
 
-Visual Studio Team Services Client for Node.js
+Typed Rest Client for Node.js
 
 Copyright (c) Microsoft Corporation
 
@@ -382,11 +397,29 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
----------------------------------------------------------
+/* Node-SMB/ntlm
+ * https://github.com/Node-SMB/ntlm
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ *
+ * Copyright (C) 2012  Joshua M. Clulow <josh@sysmgr.org>
+ */
+
 
 ---------------------------------------------------------
 
-azure-pipelines-task-lib 5.2.1 - Apache-2.0 AND BSD-3-Clause AND ISC AND LicenseRef-scancode-unknown AND MIT
+---------------------------------------------------------
+
+azure-pipelines-task-lib 5.0.0 - Apache-2.0 AND BSD-3-Clause AND ISC AND LicenseRef-scancode-unknown AND MIT
 https://github.com/Microsoft/azure-pipelines-task-lib
 
 Copyright 2018 kumavis
@@ -998,6 +1031,32 @@ IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 ---------------------------------------------------------
 
+lru-cache 4.1.5 - ISC
+https://github.com/isaacs/node-lru-cache#readme
+
+Copyright (c) Isaac Z. Schlueter and Contributors
+
+The ISC License
+
+Copyright (c) Isaac Z. Schlueter and Contributors
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
+IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+
+---------------------------------------------------------
+
+---------------------------------------------------------
+
 minimalistic-assert 1.0.1 - ISC
 https://github.com/calvinmetcalf/minimalistic-assert
 
@@ -1021,7 +1080,7 @@ PERFORMANCE OF THIS SOFTWARE.
 
 ---------------------------------------------------------
 
-minimatch 10.0.3 - ISC
+minimatch 10.0.1 - ISC
 https://github.com/isaacs/minimatch#readme
 
 Copyright (c) 2011-2023 Isaac Z. Schlueter and Contributors
@@ -1117,6 +1176,32 @@ IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 ---------------------------------------------------------
 
+pseudomap 1.0.2 - ISC
+https://github.com/isaacs/pseudomap#readme
+
+Copyright (c) Isaac Z. Schlueter and Contributors
+
+The ISC License
+
+Copyright (c) Isaac Z. Schlueter and Contributors
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
+IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+
+---------------------------------------------------------
+
+---------------------------------------------------------
+
 semver 5.7.2 - ISC
 https://github.com/npm/node-semver#readme
 
@@ -1144,7 +1229,7 @@ IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 ---------------------------------------------------------
 
-universal-user-agent 7.0.3 - ISC
+universal-user-agent 7.0.2 - ISC
 https://github.com/gr2m/universal-user-agent#readme
 
 Copyright (c) 2018-2021, Gregor Martynus (https://github.com/gr2m)
@@ -1162,8 +1247,60 @@ THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH RE
 
 ---------------------------------------------------------
 
+which 1.3.1 - ISC
+https://github.com/isaacs/node-which#readme
+
+Copyright (c) Isaac Z. Schlueter and Contributors
+
+The ISC License
+
+Copyright (c) Isaac Z. Schlueter and Contributors
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
+IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+
+---------------------------------------------------------
+
+---------------------------------------------------------
+
 wrappy 1.0.2 - ISC
 https://github.com/npm/wrappy
+
+Copyright (c) Isaac Z. Schlueter and Contributors
+
+The ISC License
+
+Copyright (c) Isaac Z. Schlueter and Contributors
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
+IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+
+---------------------------------------------------------
+
+---------------------------------------------------------
+
+yallist 2.1.2 - ISC
+https://github.com/isaacs/yallist#readme
 
 Copyright (c) Isaac Z. Schlueter and Contributors
 
@@ -1427,77 +1564,7 @@ IN THE SOFTWARE.
 
 ---------------------------------------------------------
 
-@isaacs/balanced-match 4.0.1 - MIT
-https://github.com/isaacs/balanced-match#readme
-
-Copyright Isaac Z. Schlueter <i@izs.me>
-Copyright Julian Gruber <julian@juliangruber.com>
-
-(MIT)
-
-Original code Copyright Julian Gruber <julian@juliangruber.com>
-
-Port to TypeScript Copyright Isaac Z. Schlueter <i@izs.me>
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of
-this software and associated documentation files (the "Software"), to deal in
-the Software without restriction, including without limitation the rights to
-use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
-of the Software, and to permit persons to whom the Software is furnished to do
-so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-
----------------------------------------------------------
-
----------------------------------------------------------
-
-@isaacs/brace-expansion 5.0.0 - MIT
-
-
-Copyright Isaac Z. Schlueter <i@izs.me>
-Copyright Julian Gruber <julian@juliangruber.com>
-
-MIT License
-
-Copyright Julian Gruber <julian@juliangruber.com>
-
-TypeScript port Copyright Isaac Z. Schlueter <i@izs.me>
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-
----------------------------------------------------------
-
----------------------------------------------------------
-
-@octokit/app 16.0.1 - MIT
+@octokit/app 15.1.5 - MIT
 https://github.com/octokit/app.js#readme
 
 Copyright (c) 2018 Octokit contributors
@@ -1529,7 +1596,7 @@ THE SOFTWARE.
 
 ---------------------------------------------------------
 
-@octokit/auth-app 8.0.1 - MIT
+@octokit/auth-app 7.1.5 - MIT
 https://github.com/octokit/auth-app.js#readme
 
 Copyright (c) 2019 Octokit contributors
@@ -1561,7 +1628,7 @@ THE SOFTWARE.
 
 ---------------------------------------------------------
 
-@octokit/auth-oauth-app 9.0.1 - MIT
+@octokit/auth-oauth-app 8.1.3 - MIT
 https://github.com/octokit/auth-oauth-app.js#readme
 
 Copyright (c) 2019 Octokit contributors
@@ -1593,7 +1660,7 @@ THE SOFTWARE.
 
 ---------------------------------------------------------
 
-@octokit/auth-oauth-device 8.0.1 - MIT
+@octokit/auth-oauth-device 7.1.3 - MIT
 https://github.com/octokit/auth-oauth-device.js#readme
 
 Copyright (c) 2021 Octokit contributors
@@ -1613,7 +1680,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---------------------------------------------------------
 
-@octokit/auth-oauth-user 6.0.0 - MIT
+@octokit/auth-oauth-user 5.1.3 - MIT
 https://github.com/octokit/auth-oauth-user.js#readme
 
 Copyright (c) 2021 Octokit contributors
@@ -1633,7 +1700,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---------------------------------------------------------
 
-@octokit/auth-token 6.0.0 - MIT
+@octokit/auth-token 5.1.2 - MIT
 https://github.com/octokit/auth-token.js#readme
 
 Copyright (c) 2019 Octokit contributors
@@ -1665,7 +1732,7 @@ THE SOFTWARE.
 
 ---------------------------------------------------------
 
-@octokit/auth-unauthenticated 7.0.1 - MIT
+@octokit/auth-unauthenticated 6.1.2 - MIT
 https://github.com/octokit/auth-unauthenticated.js#readme
 
 Copyright (c) 2020 Octokit contributors
@@ -1697,7 +1764,7 @@ THE SOFTWARE.
 
 ---------------------------------------------------------
 
-@octokit/core 7.0.2 - MIT
+@octokit/core 6.1.4 - MIT
 https://github.com/octokit/core.js#readme
 
 Copyright (c) 2019 Octokit contributors
@@ -1729,7 +1796,7 @@ THE SOFTWARE.
 
 ---------------------------------------------------------
 
-@octokit/endpoint 11.0.0 - MIT
+@octokit/endpoint 10.1.3 - MIT
 https://github.com/octokit/endpoint.js#readme
 
 Copyright (c) 2018 Octokit contributors
@@ -1761,7 +1828,7 @@ THE SOFTWARE.
 
 ---------------------------------------------------------
 
-@octokit/graphql 9.0.1 - MIT
+@octokit/graphql 8.2.1 - MIT
 https://github.com/octokit/graphql.js#readme
 
 Copyright (c) 2018 Octokit contributors
@@ -1793,7 +1860,7 @@ THE SOFTWARE.
 
 ---------------------------------------------------------
 
-@octokit/oauth-app 8.0.1 - MIT
+@octokit/oauth-app 7.1.6 - MIT
 https://github.com/octokit/oauth-app.js#readme
 
 Copyright (c) 2020 Octokit contributors
@@ -1811,7 +1878,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---------------------------------------------------------
 
-@octokit/oauth-authorization-url 8.0.0 - MIT
+@octokit/oauth-authorization-url 7.1.1 - MIT
 https://github.com/octokit/oauth-authorization-url.js#readme
 
 Copyright (c) 2019 Octokit contributors
@@ -1843,7 +1910,7 @@ THE SOFTWARE.
 
 ---------------------------------------------------------
 
-@octokit/oauth-methods 6.0.0 - MIT
+@octokit/oauth-methods 5.1.4 - MIT
 https://github.com/octokit/oauth-methods.js#readme
 
 Copyright (c) 2021 Octokit contributors
@@ -1863,13 +1930,13 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---------------------------------------------------------
 
-@octokit/openapi-types 25.1.0 - MIT
+@octokit/openapi-types 23.0.1 - MIT
 https://github.com/octokit/openapi-types.ts#readme
 
-Copyright (c) GitHub 2025
 Copyright (c) 1985 GitHub.com
+Copyright 2020 Gregor Martynus
 
-Copyright (c) GitHub 2025 - Licensed as MIT.
+Copyright 2020 Gregor Martynus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
@@ -1877,15 +1944,13 @@ The above copyright notice and this permission notice shall be included in all c
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-
 ---------------------------------------------------------
 
 ---------------------------------------------------------
 
-@octokit/openapi-webhooks-types 12.0.3 - MIT
+@octokit/openapi-webhooks-types 10.1.1 - MIT
 https://github.com/octokit/openapi-webhooks#readme
 
-Copyright (c) 2020 Octokit contributors
 
 MIT License Copyright (c) 2020 Octokit contributors
 
@@ -1900,7 +1965,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---------------------------------------------------------
 
-@octokit/plugin-paginate-graphql 6.0.0 - MIT
+@octokit/plugin-paginate-graphql 5.2.4 - MIT
 https://github.com/octokit/plugin-paginate-graphql.js#readme
 
 Copyright (c) 2019 Octokit contributors
@@ -1918,7 +1983,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---------------------------------------------------------
 
-@octokit/plugin-paginate-rest 13.1.1 - MIT
+@octokit/plugin-paginate-rest 11.4.3 - MIT
 https://github.com/octokit/plugin-paginate-rest.js#readme
 
 Copyright (c) 2019 Octokit contributors
@@ -1936,7 +2001,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---------------------------------------------------------
 
-@octokit/plugin-rest-endpoint-methods 16.0.0 - MIT
+@octokit/plugin-rest-endpoint-methods 13.3.1 - MIT
 https://github.com/octokit/plugin-rest-endpoint-methods.js#readme
 
 Copyright (c) 2019 Octokit contributors
@@ -1954,7 +2019,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---------------------------------------------------------
 
-@octokit/plugin-retry 8.0.1 - MIT
+@octokit/plugin-retry 7.1.4 - MIT
 https://github.com/octokit/plugin-retry.js#readme
 
 Copyright (c) 2018 Octokit contributors
@@ -1986,7 +2051,7 @@ SOFTWARE.
 
 ---------------------------------------------------------
 
-@octokit/plugin-throttling 11.0.1 - MIT
+@octokit/plugin-throttling 9.4.0 - MIT
 https://github.com/octokit/plugin-throttling.js#readme
 
 Copyright (c) 2018 Octokit contributors
@@ -2018,7 +2083,7 @@ THE SOFTWARE.
 
 ---------------------------------------------------------
 
-@octokit/request 10.0.3 - MIT
+@octokit/request 9.2.2 - MIT
 https://github.com/octokit/request.js#readme
 
 Copyright (c) 2018 Octokit contributors
@@ -2050,7 +2115,7 @@ THE SOFTWARE.
 
 ---------------------------------------------------------
 
-@octokit/request-error 7.0.0 - MIT
+@octokit/request-error 6.1.7 - MIT
 https://github.com/octokit/request-error.js#readme
 
 Copyright (c) 2019 Octokit contributors
@@ -2082,7 +2147,7 @@ THE SOFTWARE.
 
 ---------------------------------------------------------
 
-@octokit/types 14.1.0 - MIT
+@octokit/types 13.8.0 - MIT
 https://github.com/octokit/types.ts#readme
 
 Copyright (c) 2019 Octokit contributors
@@ -2100,12 +2165,12 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---------------------------------------------------------
 
-@octokit/webhooks 14.1.0 - MIT
+@octokit/webhooks 13.7.4 - MIT
 https://github.com/octokit/webhooks.js#readme
 
-Copyright (c) GitHub 2025
+Copyright (c) 2017 Gregor Martynus
 
-Copyright (c) GitHub 2025 - Licensed as MIT.
+Copyright (c) 2017 Gregor Martynus
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
@@ -2131,7 +2196,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ---------------------------------------------------------
 
-@octokit/webhooks-methods 6.0.0 - MIT
+@octokit/webhooks-methods 5.1.1 - MIT
 https://github.com/octokit/webhooks-methods.js#readme
 
 Copyright (c) 2021 Octokit contributors
@@ -2151,7 +2216,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---------------------------------------------------------
 
-@types/aws-lambda 8.10.150 - MIT
+@types/aws-lambda 8.10.147 - MIT
 https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/aws-lambda
 
 Copyright (c) Microsoft Corporation
@@ -2253,7 +2318,7 @@ SOFTWARE.
 
 ---------------------------------------------------------
 
-axios 1.10.0 - MIT
+axios 1.8.2 - MIT
 https://axios-http.com/
 
 Copyright (c) 2025 Matt Zabriskie and contributors
@@ -2266,6 +2331,49 @@ Permission is hereby granted, free of charge, to any person obtaining a copy of 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+---------------------------------------------------------
+
+---------------------------------------------------------
+
+azure-devops-node-api 14.1.0 - MIT
+https://github.com/Microsoft/azure-devops-node-api#readme
+
+Copyright (c) Microsoft
+Copyright (c) 2014 Tyler Kellen
+Copyright (c) 2015 Tyler Kellen
+Copyright (c) Isaac Z. Schlueter
+Copyright (c) 2012 Koichi Kobayashi
+Copyright (c) Microsoft Corporation
+Copyright (c) Isaac Z. Schlueter and Contributors
+Copyright Joyent, Inc. and other Node contributors
+Copyright (c) 2012, Artur Adib <arturadib@gmail.com>
+Copyright (c) 2013 Julian Gruber <julian@juliangruber.com>
+Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
+Copyright (c) 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+
+Visual Studio Team Services Client for Node.js
+
+Copyright (c) Microsoft Corporation
+
+All rights reserved.
+
+MIT License
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+associated documentation files (the "Software"), to deal in the Software without restriction,
+including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
+and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED *AS IS*, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 ---------------------------------------------------------
@@ -2336,39 +2444,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ---------------------------------------------------------
 
-brace-expansion 1.1.12 - MIT
-https://github.com/juliangruber/brace-expansion
-
-Copyright (c) 2013 Julian Gruber <julian@juliangruber.com>
-
-MIT License
-
-Copyright (c) 2013 Julian Gruber <julian@juliangruber.com>
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-
----------------------------------------------------------
-
----------------------------------------------------------
-
-brace-expansion 2.0.2 - MIT
+brace-expansion 2.0.1 - MIT
 https://github.com/juliangruber/brace-expansion
 
 Copyright (c) 2013 Julian Gruber <julian@juliangruber.com>
@@ -2494,7 +2570,7 @@ THE SOFTWARE.
 
 ---------------------------------------------------------
 
-debug 4.4.1 - MIT
+debug 4.4.0 - MIT
 https://github.com/debug-js/debug#readme
 
 Copyright (c) 2018-2021 Josh Junon
@@ -2608,7 +2684,7 @@ SOFTWARE.
 ---------------------------------------------------------
 
 encoding 0.1.13 - MIT
-https://github.com/andris9/encoding
+https://github.com/andris9/encoding#readme
 
 Copyright (c) 2012-2014 Andris Reinman
 
@@ -2762,7 +2838,7 @@ SOFTWARE.
 
 ---------------------------------------------------------
 
-fast-content-type-parse 3.0.0 - MIT
+fast-content-type-parse 2.0.1 - MIT
 https://github.com/fastify/fast-content-type-parse#readme
 
 Copyright (c) 2023 The Fastify Team
@@ -2825,7 +2901,7 @@ IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ---------------------------------------------------------
 
-form-data 4.0.3 - MIT
+form-data 4.0.2 - MIT
 https://github.com/form-data/form-data#readme
 
 Copyright (c) 2012 Felix Geisendorfer (felix@debuggable.com) and contributors
@@ -3693,7 +3769,7 @@ SOFTWARE.
 
 ---------------------------------------------------------
 
-octokit 5.0.3 - MIT
+octokit 4.1.2 - MIT
 https://github.com/octokit/octokit.js#readme
 
 Copyright (c) 2023 Octokit contributors
@@ -3725,7 +3801,7 @@ THE SOFTWARE.
 
 ---------------------------------------------------------
 
-parse-git-diff 0.0.19 - MIT
+parse-git-diff 0.0.17 - MIT
 https://github.com/yeonjuan/parse-git-diff#readme
 
 Copyright (c) 2021 YeonJuan
@@ -3984,6 +4060,72 @@ SOFTWARE.
 
 ---------------------------------------------------------
 
+shebang-command 1.2.0 - MIT
+https://github.com/kevva/shebang-command#readme
+
+(c) Kevin Martensson (http://github.com/kevva)
+Copyright (c) Kevin Martensson <kevinmartensson@gmail.com>
+
+The MIT License (MIT)
+
+Copyright (c) Kevin Martensson <kevinmartensson@gmail.com> (github.com/kevva)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+
+---------------------------------------------------------
+
+---------------------------------------------------------
+
+shebang-regex 1.0.0 - MIT
+https://github.com/sindresorhus/shebang-regex
+
+(c) Sindre Sorhus (http://sindresorhus.com)
+Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
+
+The MIT License (MIT)
+
+Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+
+---------------------------------------------------------
+
+---------------------------------------------------------
+
 side-channel 1.1.0 - MIT
 https://github.com/ljharb/side-channel#readme
 
@@ -4195,9 +4337,10 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---------------------------------------------------------
 
-tsyringe 4.10.0 - MIT
+tsyringe 4.8.0 - MIT
 https://github.com/Microsoft/tsyringe#readme
 
+Copyright (c) Microsoft Corporation
 
     MIT License
 
@@ -4427,7 +4570,7 @@ SOFTWARE.
 
 ---------------------------------------------------------
 
-universal-github-app-jwt 2.2.2 - MIT
+universal-github-app-jwt 2.2.0 - MIT
 https://github.com/gr2m/universal-github-app-jwt#readme
 
 Copyright (c) 2019 Gregor Martynus
