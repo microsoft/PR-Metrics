@@ -77,9 +77,9 @@ jobs:
           $FileContents = $FileContents -replace '"version": "\d+\.\d+\.\d+"', '"version": "${{ env.version }}"'
           Set-Content -Path $FilePath -Value $FileContents
 
-      - name: Version Number – release-trigger.txt
+      - name: Version Number – release-phase-2-trigger.txt
         shell: pwsh
-        run: Set-Content -Path '.github/workflows/support/release-trigger.txt' -Value ${{ env.version }}
+        run: Set-Content -Path '.github/workflows/support/release-phase-2-trigger.txt' -Value ${{ env.version }}
 
       - name: Version Number – task.json
         shell: pwsh
@@ -143,41 +143,13 @@ jobs:
           $FileContents = $FileContents -replace '(?<Yaml>patch: )\d+', '${Yaml}${{ steps.increment-patch.outputs.INCREMENTED_PATCH }}'
           Set-Content -Path $FilePath -Value $FileContents.Substring(0, $FileContents.Length - 1)  # Remove the trailing newline.
 
-      - name: Update LICENSE.txt
-        shell: pwsh
-        run: |-
-          $FilePath = 'src/LICENSE.txt'
-          $FileContents = Get-Content -Path $FilePath
-          $Index = [Array]::IndexOf($FileContents, ($FileContents | Where-Object { $_ -match 'NOTICES AND INFORMATION' }))
-          $Index -= 1
-          $FileContents = $FileContents[0..$Index]
-          Set-Content -Path $FilePath -Value $FileContents
-
-      - name: Git – Setup Authentication
-        run: gh auth setup-git
+      - name: Git Setup & Push
+        uses: ./.github/actions/git-setup-and-push
+        with:
+          phase: 1
+          version: ${{ env.version }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Git – Set Name
-        run: git config --global user.name "github-actions[bot]"
-
-      - name: Git – Set Email
-        run: git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-      - name: Git – Set Merge Strategy
-        run: git config pull.rebase false
-
-      - name: Git – Create Branch
-        run: git checkout -b release/v${{ env.version }}
-
-      - name: Git – Add Changed Files
-        run: git add -A
-
-      - name: Git – Commit Changed Files
-        run: git commit -m "Release v${{ env.version }}"
-
-      - name: Git – Push Changed Files
-        run: git push --set-upstream origin release/v${{ env.version }}
 
       - name: PR – Create
         run: >-
@@ -191,12 +163,7 @@ jobs:
           # Fine-grained Personal Access Token (PAT) with the following permissions for microsoft/PR-Metrics:
           # - Read access to Metadata
           # - Read and Write access to Pull Requests
-          GITHUB_TOKEN: ${{ secrets.RELEASE_PHASE_1_PR_CREATE }}
-
-      - name: PR – Comment
-        run: gh pr comment --body-file "./.github/workflows/support/release-phase-1-comment.md"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.RELEASE_PR_CREATE }}
 
       - name: npm – Install Node.js
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
@@ -222,4 +189,4 @@ jobs:
         run: git pull
 
       - name: Git – Push Changed Files
-        run: git push --set-upstream origin release/v${{ env.version }}
+        run: git push --set-upstream origin release/v${{ env.version }}-phase-1
