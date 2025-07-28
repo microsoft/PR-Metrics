@@ -39,7 +39,7 @@ runs:
 
     - name: Git – Create Branch
       shell: pwsh
-      run: git checkout -b "release/v${{ inputs.version }}-phase-${{ inputs.phase }}"
+      run: git checkout -b release/v${{ inputs.version }}-phase-${{ inputs.phase }}
 
     - name: Git – Add Changed Files
       shell: pwsh
@@ -51,4 +51,4 @@ runs:
 
     - name: Git – Push Changed Files
       shell: pwsh
-      run: git push --set-upstream origin "release/v${{ inputs.version }}-phase-${{ inputs.phase }}"
+      run: git push --set-upstream origin release/v${{ inputs.version }}-phase-${{ inputs.phase }}
