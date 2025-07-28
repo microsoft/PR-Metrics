@@ -30,7 +30,7 @@ jobs:
           # Fine-grained Personal Access Token (PAT) with the following permissions for microsoft/PR-Metrics:
           # - Read access to Metadata
           # - Read and Write access to Actions, Code (aka Contents), and Workflows
-          token: ${{ secrets.RELEASE_PHASE_1_CHECKOUT }}
+          token: ${{ secrets.RELEASE_CHECKOUT }}
 
       - name: Release – Phase 1 – Internal
         uses: ./.github/actions/release-phase-1-internal
