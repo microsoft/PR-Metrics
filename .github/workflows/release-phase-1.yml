@@ -14,11 +14,29 @@ permissions: {}
 
 jobs:
   release:
-    uses: ./.github/workflows/release-phase-1-internal.yml
-    secrets: inherit
+    name: Release
+    runs-on: ubuntu-latest
     permissions:
       pull-requests: write
-    with:
-      major: 1
-      minor: 7
-      patch: 5
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@6c439dc8bdf85cadbbce9ed30d1c7b959517bc49 # v2.12.2
+        with:
+          egress-policy: audit
+
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          # Fine-grained Personal Access Token (PAT) with the following permissions for microsoft/PR-Metrics:
+          # - Read access to Metadata
+          # - Read and Write access to Actions, Code (aka Contents), and Workflows
+          token: ${{ secrets.RELEASE_PHASE_1_CHECKOUT }}
+
+      - name: Release – Phase 1 – Internal
+        uses: ./.github/actions/release-phase-1-internal
+        with:
+          major: 1
+          minor: 7
+          patch: 6
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          release-pr-create-token: ${{ secrets.RELEASE_PR_CREATE }}

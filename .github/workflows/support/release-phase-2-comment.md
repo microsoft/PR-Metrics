@@ -4,12 +4,11 @@
 
 Before completing this PR, the license information **must** be updated.
 
-1. Wait for the entire PR build to complete.
 1. Use the internal Microsoft Component Governance tooling to update [`src/LICENSE.txt`][licensetxt] with the automatically generated license information.
 
+   1. At the top, ensure the branch is set to `main`.
    1. Switch to the Components tab.
-   1. At the top of the page, click `main` and select `refs/pull/PR_ID/merge` where `PR_ID` is the PR number. **It is vital that this is selected correctly or the wrong license information will be generated.**
-   1. Use Notice > Download to generate the file. Select Pipeline "PR Metrics – Prod (Validation)" and Format "Plain Text". Click "Download".
+   1. Use Notice > Download to generate the file. Select Pipeline "PR Metrics – Prod" and Format "Plain Text". Click "Download".
    1. Add the downloaded content to the end of [`src/LICENSE.txt`][licensetxt]. Note that the ordering of licenses may change.
    1. If the download dialog includes any notice indicating that license information could not be located at [Clearly Defined][clearlydefined], you will need to add the information to that source. To do this, expand the drop down menu in the dialog to reveal the problematic dependencies. For each dependency:
 
@@ -21,7 +20,7 @@ Before completing this PR, the license information **must** be updated.
 
       It is also possible to add all dependencies to the page and click "Harvest" afterwards to harvest all license information simultaneously.
 
-      Wait some time for harvesting to complete and try regenerating the license information at the Component Governance page. Repeat the process until all license information is available.
+      Wait some time (up to a day) for harvesting to complete and try regenerating the license information at the Component Governance page. Repeat the process until all license information is available.
 
 1. Commit all the changes to your branch, updating the PR.
 

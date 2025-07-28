@@ -9,7 +9,7 @@ on:
     branches:
       - main
     paths:
-      - .github/workflows/support/release-trigger.txt
+      - .github/workflows/support/release-phase-2-trigger.txt
   workflow_dispatch: null
 
 permissions: {}
@@ -30,43 +30,47 @@ jobs:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
-      - name: Install Node.js
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
-        with:
-          node-version: 20.17.0
-
-      - name: npm – Install Dependencies
-        run: npm ci
-
-      - name: npm – Build
-        run: npm run build:release
-
-      - name: Release – Create
-        run: npx tfx-cli extension create --manifest-globs vss-extension.json --output-path ../ms-omex.PRMetrics.vsix
-        working-directory: ${{ github.workspace }}/release
-
-      - name: Release – Publish
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-        with:
-          name: ms-omex.PRMetrics
-          path: ${{ github.workspace }}/ms-omex.PRMetrics.vsix
-
       - name: Get Version
         id: version
         shell: pwsh
         run: |-
-          $Version = Get-Content -Path '.github/workflows/support/release-trigger.txt'
+          $Version = Get-Content -Path '.github/workflows/support/release-phase-2-trigger.txt'
           Write-Output -InputObject "VERSION=v$Version" >> $Env:GITHUB_OUTPUT
 
-      - name: GitHub Release
-        uses: softprops/action-gh-release@72f2c25fcb47643c292f7107632f7a47c1df5cd8 # v0.1.15
+      - name: Update LICENSE.txt
+        shell: pwsh
+        run: |-
+          $FilePath = 'src/LICENSE.txt'
+          $FileContents = Get-Content -Path $FilePath
+          $Index = [Array]::IndexOf($FileContents, ($FileContents | Where-Object { $_ -match 'NOTICES AND INFORMATION' }))
+          $Index -= 1
+          $FileContents = $FileContents[0..$Index]
+          Set-Content -Path $FilePath -Value $FileContents
+
+      - name: Update release-phase-3-trigger.txt
+        shell: pwsh
+        run: Set-Content -Path '.github/workflows/support/release-phase-3-trigger.txt' -Value ${{ steps.version.outputs.VERSION }}
+
+      - name: Git Setup & Push
+        uses: ./.github/actions/git-setup-and-push
         with:
-          discussion_category_name: Releases
-          files: ${{ github.workspace }}/ms-omex.PRMetrics.vsix
-          generate_release_notes: true
-          name: Release ${{ steps.version.outputs.VERSION }}
-          tag_name: ${{ steps.version.outputs.VERSION }}
+          phase: 2
+          version: ${{ steps.version.outputs.VERSION }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: PR – Create
+        run: >-
+          gh pr create
+          --title "Release v${{ steps.version.outputs.VERSION }}"
+          --body "Release for PR Metrics v${{ steps.version.outputs.VERSION }}. This includes the license updates."
+          --label "release"
+        env:
           # Fine-grained Personal Access Token (PAT) with the following permissions for microsoft/PR-Metrics:
           # - Read access to Metadata
-          # - Read and Write access to Code (aka Contents) and Discussions
-          token: ${{ secrets.RELEASE_PHASE_2_GITHUB_RELEASE }}
+          # - Read and Write access to Pull Requests
+          GITHUB_TOKEN: ${{ secrets.RELEASE_PR_CREATE }}
+
+      - name: PR – Comment
+        run: gh pr comment --body-file "./.github/workflows/support/release-phase-2-comment.md"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
