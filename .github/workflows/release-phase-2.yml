@@ -64,8 +64,6 @@ jobs:
           --title "Release v${{ steps.version.outputs.VERSION }}"
           --body "Release for PR Metrics v${{ steps.version.outputs.VERSION }}. This includes the license updates."
           --label "release"
-          --assignee "${{ github.actor }}"
-          --reviewer "${{ github.actor }}"
         env:
           # Fine-grained Personal Access Token (PAT) with the following permissions for microsoft/PR-Metrics:
           # - Read access to Metadata
