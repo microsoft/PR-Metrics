@@ -40,4 +40,4 @@ jobs:
           minor: 7
           patch: 6
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          release-pr-create-token: ${{ secrets.RELEASE_PHASE_1_PR_CREATE }}
+          release-pr-create-token: ${{ secrets.RELEASE_PR_CREATE }}
