@@ -69,4 +69,4 @@ jobs:
           # Fine-grained Personal Access Token (PAT) with the following permissions for microsoft/PR-Metrics:
           # - Read access to Metadata
           # - Read and Write access to Code (aka Contents) and Discussions
-          token: ${{ secrets.RELEASE_PHASE_2_GITHUB_RELEASE }}
+          token: ${{ secrets.RELEASE_PHASE_3_GITHUB_RELEASE }}
