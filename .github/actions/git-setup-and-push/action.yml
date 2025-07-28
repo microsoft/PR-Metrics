@@ -20,35 +20,35 @@ runs:
   using: composite
   steps:
     - name: Git – Setup Authentication
-      shell: bash
+      shell: pwsh
       run: gh auth setup-git
       env:
         GITHUB_TOKEN: ${{ inputs.github-token }}
 
     - name: Git – Set Name
-      shell: bash
+      shell: pwsh
       run: git config --global user.name "github-actions[bot]"
 
     - name: Git – Set Email
-      shell: bash
+      shell: pwsh
       run: git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
     - name: Git – Set Merge Strategy
-      shell: bash
+      shell: pwsh
       run: git config pull.rebase false
 
     - name: Git – Create Branch
-      shell: bash
+      shell: pwsh
       run: git checkout -b "release/v${{ inputs.version }}-phase-${{ inputs.phase }}"
 
     - name: Git – Add Changed Files
-      shell: bash
+      shell: pwsh
       run: git add -A
 
     - name: Git – Commit Changed Files
-      shell: bash
+      shell: pwsh
       run: git commit -m "Release v${{ inputs.version }}"
 
     - name: Git – Push Changed Files
-      shell: bash
+      shell: pwsh
       run: git push --set-upstream origin "release/v${{ inputs.version }}-phase-${{ inputs.phase }}"

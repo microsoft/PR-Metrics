@@ -156,9 +156,9 @@ runs:
       with:
         node-version: 20.17.0
 
-    - name: npm – Install NPM Check Updates
+    - name: npm – Install
       shell: pwsh
-      run: npm install npm-check-updates
+      run: npm install
 
     - name: npm – Update Dependencies
       shell: pwsh
