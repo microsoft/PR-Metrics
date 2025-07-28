@@ -162,7 +162,7 @@ jobs:
           # Fine-grained Personal Access Token (PAT) with the following permissions for microsoft/PR-Metrics:
           # - Read access to Metadata
           # - Read and Write access to Pull Requests
-          GITHUB_TOKEN: ${{ secrets.RELEASE_PR_CREATE }}
+          GITHUB_TOKEN: ${{ secrets.RELEASE_PHASE_1_PR_CREATE }}
 
       - name: npm – Install Node.js
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
