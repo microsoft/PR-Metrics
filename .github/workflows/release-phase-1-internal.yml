@@ -148,8 +148,7 @@ jobs:
         with:
           phase: 1
           version: ${{ env.version }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: PR – Create
         run: >-
