@@ -2,7 +2,8 @@
 # Licensed under the MIT License
 
 ---
-dirs: /
+dirs:
+  - /
 aliveStatusCodes:
   - 200
   - 206
