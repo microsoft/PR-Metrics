@@ -9,9 +9,8 @@ updates:
     directory: /
     open-pull-requests-limit: 100
     schedule:
-      interval: monthly
-      time: "00:00" # yamllint disable-line rule:quoted-strings
-      timezone: Etc/UTC
+      interval: cron
+      cronjob: 0 0 10 */3 * # Run every quarter on the 10th day.
     labels:
       - dependencies
       - github-actions
