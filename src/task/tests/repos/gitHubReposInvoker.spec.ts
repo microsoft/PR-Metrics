@@ -1557,7 +1557,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       );
       const error: RequestError = createRequestError(
         StatusCodes.UNPROCESSABLE_ENTITY,
-        'Validation Failed: {"resource":"PullRequestReviewComment","code":"custom","field":"pull_request_review_thread.path","message":"pull_request_review_thread.path diff too large"}, {"resource":"PullRequestReviewComment","code":"missing_field","field":"pull_request_review_thread.diff_hunk"}',
+        'Validation Failed: {"resource":"PullRequestReviewComment","code":"custom","field":"pull_request_review_thread.diff_entry","message":"file.ts is too big"}',
       );
       when(
         octokitWrapper.createReviewComment(
@@ -1614,7 +1614,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       const testCases: HttpError[] = [
         new HttpError(
           StatusCodes.BAD_REQUEST,
-          'Validation Failed: {"resource":"PullRequestReviewComment","code":"custom","field":"pull_request_review_thread.path","message":"pull_request_review_thread.path diff too large"}, {"resource":"PullRequestReviewComment","code":"missing_field","field":"pull_request_review_thread.diff_hunk"}',
+          'Validation Failed: {"resource":"PullRequestReviewComment","code":"custom","field":"pull_request_review_thread.diff_entry","message":"file.ts is too big"}',
         ),
         new HttpError(StatusCodes.UNPROCESSABLE_ENTITY, "Unprocessable Entity"),
       ];
