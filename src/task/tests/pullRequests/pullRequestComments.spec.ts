@@ -79,26 +79,26 @@ describe("pullRequestComments.ts", (): void => {
     when(
       runnerInvoker.loc(
         "pullRequests.pullRequestComments.largePullRequestComment",
-        Number(400).toLocaleString(),
+        (400).toLocaleString(),
       ),
     ).thenReturn(
-      `❌ **Try to keep pull requests smaller than ${Number(400).toLocaleString()} lines of new product code by following the [Single Responsibility Principle (SRP)](https://aka.ms/PRMetrics/SRP).**`,
+      `❌ **Try to keep pull requests smaller than ${(400).toLocaleString()} lines of new product code by following the [Single Responsibility Principle (SRP)](https://aka.ms/PRMetrics/SRP).**`,
     );
     when(
       runnerInvoker.loc(
         "pullRequests.pullRequestComments.largePullRequestComment",
-        Number(2000).toLocaleString(),
+        (2000).toLocaleString(),
       ),
     ).thenReturn(
-      `❌ **Try to keep pull requests smaller than ${Number(2000).toLocaleString()} lines of new product code by following the [Single Responsibility Principle (SRP)](https://aka.ms/PRMetrics/SRP).**`,
+      `❌ **Try to keep pull requests smaller than ${(2000).toLocaleString()} lines of new product code by following the [Single Responsibility Principle (SRP)](https://aka.ms/PRMetrics/SRP).**`,
     );
     when(
       runnerInvoker.loc(
         "pullRequests.pullRequestComments.largePullRequestComment",
-        Number(2000000).toLocaleString(),
+        (2000000).toLocaleString(),
       ),
     ).thenReturn(
-      `❌ **Try to keep pull requests smaller than ${Number(2000000).toLocaleString()} lines of new product code by following the [Single Responsibility Principle (SRP)](https://aka.ms/PRMetrics/SRP).**`,
+      `❌ **Try to keep pull requests smaller than ${(2000000).toLocaleString()} lines of new product code by following the [Single Responsibility Principle (SRP)](https://aka.ms/PRMetrics/SRP).**`,
     );
     when(
       runnerInvoker.loc(
@@ -733,11 +733,11 @@ describe("pullRequestComments.ts", (): void => {
               "✔ **Thanks for adding tests.**\n" +
               "||Lines\n" +
               "-|-:\n" +
-              `Product Code|${Number(1000).toLocaleString()}\n` +
-              `Test Code|${Number(1000).toLocaleString()}\n` +
-              `**Subtotal**|**${Number(2000).toLocaleString()}**\n` +
-              `Ignored Code|${Number(1000).toLocaleString()}\n` +
-              `**Total**|**${Number(3000).toLocaleString()}**\n` +
+              `Product Code|${(1000).toLocaleString()}\n` +
+              `Test Code|${(1000).toLocaleString()}\n` +
+              `**Subtotal**|**${(2000).toLocaleString()}**\n` +
+              `Ignored Code|${(1000).toLocaleString()}\n` +
+              `**Total**|**${(3000).toLocaleString()}**\n` +
               "\n" +
               "[Metrics computed by PR Metrics. Add it to your Azure DevOps and GitHub PRs!](https://aka.ms/PRMetrics/Comment)",
           );
@@ -779,11 +779,11 @@ describe("pullRequestComments.ts", (): void => {
           "⚠️ **Consider adding additional tests.**\n" +
           "||Lines\n" +
           "-|-:\n" +
-          `Product Code|${Number(1000).toLocaleString()}\n` +
-          `Test Code|${Number(1000).toLocaleString()}\n` +
-          `**Subtotal**|**${Number(2000).toLocaleString()}**\n` +
-          `Ignored Code|${Number(1000).toLocaleString()}\n` +
-          `**Total**|**${Number(3000).toLocaleString()}**\n` +
+          `Product Code|${(1000).toLocaleString()}\n` +
+          `Test Code|${(1000).toLocaleString()}\n` +
+          `**Subtotal**|**${(2000).toLocaleString()}**\n` +
+          `Ignored Code|${(1000).toLocaleString()}\n` +
+          `**Total**|**${(3000).toLocaleString()}**\n` +
           "\n" +
           "[Metrics computed by PR Metrics. Add it to your Azure DevOps and GitHub PRs!](https://aka.ms/PRMetrics/Comment)",
       );
@@ -822,11 +822,11 @@ describe("pullRequestComments.ts", (): void => {
           "✔ **Thanks for keeping your pull request small.**\n" +
           "||Lines\n" +
           "-|-:\n" +
-          `Product Code|${Number(1000).toLocaleString()}\n` +
-          `Test Code|${Number(1000).toLocaleString()}\n` +
-          `**Subtotal**|**${Number(2000).toLocaleString()}**\n` +
-          `Ignored Code|${Number(1000).toLocaleString()}\n` +
-          `**Total**|**${Number(3000).toLocaleString()}**\n` +
+          `Product Code|${(1000).toLocaleString()}\n` +
+          `Test Code|${(1000).toLocaleString()}\n` +
+          `**Subtotal**|**${(2000).toLocaleString()}**\n` +
+          `Ignored Code|${(1000).toLocaleString()}\n` +
+          `**Total**|**${(3000).toLocaleString()}**\n` +
           "\n" +
           "[Metrics computed by PR Metrics. Add it to your Azure DevOps and GitHub PRs!](https://aka.ms/PRMetrics/Comment)",
       );
