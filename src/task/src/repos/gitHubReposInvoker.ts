@@ -197,9 +197,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
             error instanceof RequestError &&
             (error.status as StatusCodes) ===
               StatusCodes.UNPROCESSABLE_ENTITY &&
-            error.message.includes(
-              "pull_request_review_thread.path diff too large",
-            )
+            error.message.includes("is too big")
           ) {
             this._logger.logInfo(
               "GitHub createReviewComment() threw a 422 error related to a large diff. Ignoring as this is expected.",
@@ -288,7 +286,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
           this._logger.logWarning(`Octokit – ${message}`);
         },
       },
-      userAgent: "PRMetrics/v1.7.5",
+      userAgent: "PRMetrics/v1.7.6",
     };
 
     if (RunnerInvoker.isGitHub) {
