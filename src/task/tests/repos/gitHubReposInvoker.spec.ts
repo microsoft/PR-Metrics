@@ -1542,73 +1542,85 @@ describe("gitHubReposInvoker.ts", (): void => {
       verify(logger.logDebug("null")).once();
     });
 
-    it("should succeed when a HTTP 422 error occurs due to having a too large path diff", async (): Promise<void> => {
-      // Arrange
-      when(octokitWrapper.initialize(any())).thenCall(
-        (options: OctokitOptions): void => {
-          assert.equal(options.auth, "PAT");
-          assert.equal(options.userAgent, expectedUserAgent);
-          assert.notEqual(options.log, null);
-          assert.notEqual(options.log?.debug, null);
-          assert.notEqual(options.log?.info, null);
-          assert.notEqual(options.log?.warn, null);
-          assert.notEqual(options.log?.error, null);
-        },
-      );
-      const error: RequestError = createRequestError(
-        StatusCodes.UNPROCESSABLE_ENTITY,
-        'Validation Failed: {"resource":"PullRequestReviewComment","code":"custom","field":"pull_request_review_thread.diff_entry","message":"file.ts is too big"}',
-      );
-      when(
-        octokitWrapper.createReviewComment(
-          "microsoft",
-          "PR-Metrics",
-          12345,
-          "Content",
-          "file.ts",
-          "sha54321",
-        ),
-      ).thenCall((): void => {
-        throw error;
+    {
+      const testCases: string[] = [
+        "file.ts is too big",
+        "file.ts diff is too large",
+      ];
+
+      testCases.forEach((message: string): void => {
+        it(`should succeed when a HTTP 422 error occurs due to: '${message}'`, async (): Promise<void> => {
+          // Arrange
+          when(octokitWrapper.initialize(any())).thenCall(
+            (options: OctokitOptions): void => {
+              assert.equal(options.auth, "PAT");
+              assert.equal(options.userAgent, expectedUserAgent);
+              assert.notEqual(options.log, null);
+              assert.notEqual(options.log?.debug, null);
+              assert.notEqual(options.log?.info, null);
+              assert.notEqual(options.log?.warn, null);
+              assert.notEqual(options.log?.error, null);
+            },
+          );
+          const errorMessage = `Validation Failed: {"resource":"PullRequestReviewComment","code":"custom","field":"pull_request_review_thread.diff_entry","message":"${message}"}`;
+          const error: RequestError = createRequestError(
+            StatusCodes.UNPROCESSABLE_ENTITY,
+            errorMessage,
+          );
+          when(
+            octokitWrapper.createReviewComment(
+              "microsoft",
+              "PR-Metrics",
+              12345,
+              "Content",
+              "file.ts",
+              "sha54321",
+            ),
+          ).thenCall((): void => {
+            throw error;
+          });
+          const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
+            instance(gitInvoker),
+            instance(logger),
+            instance(octokitWrapper),
+            instance(runnerInvoker),
+          );
+
+          // Act
+          await gitHubReposInvoker.createComment("Content", "file.ts");
+
+          // Assert
+          verify(octokitWrapper.initialize(any())).once();
+          verify(
+            octokitWrapper.listCommits("microsoft", "PR-Metrics", 12345, 1),
+          ).once();
+          verify(
+            octokitWrapper.createReviewComment(
+              "microsoft",
+              "PR-Metrics",
+              12345,
+              "Content",
+              "file.ts",
+              "sha54321",
+            ),
+          ).once();
+          verify(
+            logger.logDebug("* GitHubReposInvoker.createComment()"),
+          ).once();
+          verify(logger.logDebug("* GitHubReposInvoker.initialize()")).once();
+          verify(
+            logger.logDebug("* GitHubReposInvoker.initializeForAzureDevOps()"),
+          ).once();
+          verify(logger.logDebug("* GitHubReposInvoker.getCommitId()")).once();
+          verify(
+            logger.logInfo(
+              "GitHub createReviewComment() threw a 422 error related to a large diff. Ignoring as this is expected.",
+            ),
+          ).once();
+          verify(logger.logErrorObject(error)).once();
+        });
       });
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
-        instance(gitInvoker),
-        instance(logger),
-        instance(octokitWrapper),
-        instance(runnerInvoker),
-      );
-
-      // Act
-      await gitHubReposInvoker.createComment("Content", "file.ts");
-
-      // Assert
-      verify(octokitWrapper.initialize(any())).once();
-      verify(
-        octokitWrapper.listCommits("microsoft", "PR-Metrics", 12345, 1),
-      ).once();
-      verify(
-        octokitWrapper.createReviewComment(
-          "microsoft",
-          "PR-Metrics",
-          12345,
-          "Content",
-          "file.ts",
-          "sha54321",
-        ),
-      ).once();
-      verify(logger.logDebug("* GitHubReposInvoker.createComment()")).once();
-      verify(logger.logDebug("* GitHubReposInvoker.initialize()")).once();
-      verify(
-        logger.logDebug("* GitHubReposInvoker.initializeForAzureDevOps()"),
-      ).once();
-      verify(logger.logDebug("* GitHubReposInvoker.getCommitId()")).once();
-      verify(
-        logger.logInfo(
-          "GitHub createReviewComment() threw a 422 error related to a large diff. Ignoring as this is expected.",
-        ),
-      ).once();
-      verify(logger.logErrorObject(error)).once();
-    });
+    }
 
     {
       const testCases: HttpError[] = [
