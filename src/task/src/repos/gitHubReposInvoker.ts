@@ -197,7 +197,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
             error instanceof RequestError &&
             (error.status as StatusCodes) ===
               StatusCodes.UNPROCESSABLE_ENTITY &&
-            error.message.includes("is too big")
+            (error.message.includes("is too big") || error.message.includes("diff is too large"))
           ) {
             this._logger.logInfo(
               "GitHub createReviewComment() threw a 422 error related to a large diff. Ignoring as this is expected.",
