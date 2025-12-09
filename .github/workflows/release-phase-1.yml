@@ -32,6 +32,6 @@ jobs:
         with:
           major: 1
           minor: 7
-          patch: 9
+          patch: 10
           github-token: ${{ secrets.GITHUB_TOKEN }}
           release-pr-create-token: ${{ secrets.RELEASE_PR_CREATE }}
