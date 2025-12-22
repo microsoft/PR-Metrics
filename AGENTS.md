@@ -1,4 +1,4 @@
-# Copilot Instructions for PR Metrics
+# AI Agent Instructions for PR Metrics
 
 ## Project Overview
 
