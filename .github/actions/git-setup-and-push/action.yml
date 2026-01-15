@@ -35,7 +35,7 @@ runs:
 
     - name: Git – Set Merge Strategy
       shell: pwsh
-      run: git config pull.rebase false
+      run: git config --global pull.rebase false
 
     - name: Git – Create Branch
       shell: pwsh
