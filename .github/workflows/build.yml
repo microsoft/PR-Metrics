@@ -77,8 +77,16 @@ jobs:
         run: git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
       - if: ${{ github.actor != 'dependabot[bot]' && steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
+        name: Git – Set Merge Strategy
+        run: git config --global pull.rebase true
+
+      - if: ${{ github.actor != 'dependabot[bot]' && steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
         name: Git – Commit Changed Files
         run: git commit -m "Fixing linting, Updating dist folder"
+
+      - if: ${{ github.actor != 'dependabot[bot]' && steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
+        name: Git – Pull Changed Files
+        run: git pull --autostash
 
       - if: ${{ github.actor != 'dependabot[bot]' && steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
         name: Git – Push Changed Files
