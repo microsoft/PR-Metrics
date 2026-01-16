@@ -7,7 +7,7 @@ name: Release – Phase 1
 on:
   schedule:
     # Run every quarter on the 15th day.
-    - cron: 0 0 15 */3 *
+    - cron: 0 9 15 */3 *
   workflow_dispatch: null
 
 permissions: {}
