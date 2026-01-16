@@ -86,7 +86,7 @@ jobs:
 
       - if: ${{ github.actor != 'dependabot[bot]' && steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
         name: Git – Pull Changed Files
-        run: git pull
+        run: git pull --rebase --autostash
 
       - if: ${{ github.actor != 'dependabot[bot]' && steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
         name: Git – Push Changed Files
