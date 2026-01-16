@@ -178,7 +178,7 @@ runs:
 
     - name: Git – Pull Changed Files
       shell: pwsh
-      run: git pull --rebase --autostash
+      run: git pull --autostash
 
     - name: Git – Push Changed Files
       shell: pwsh
