@@ -78,7 +78,7 @@ jobs:
 
       - if: ${{ github.actor != 'dependabot[bot]' && steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
         name: Git – Set Merge Strategy
-        run: git config --global pull.rebase false
+        run: git config --global pull.rebase true
 
       - if: ${{ github.actor != 'dependabot[bot]' && steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
         name: Git – Commit Changed Files
