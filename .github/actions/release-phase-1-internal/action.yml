@@ -25,6 +25,10 @@ inputs:
 runs:
   using: composite
   steps:
+    - name: gh – Log Version
+      shell: pwsh
+      run: gh --version
+
     - name: Validate major
       shell: pwsh
       run: "[int]::Parse(${{ inputs.major }})"

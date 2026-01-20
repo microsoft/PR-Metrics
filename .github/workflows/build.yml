@@ -231,6 +231,9 @@ jobs:
       contents: write
       pull-requests: write
     steps:
+      - name: gh – Log Version
+        run: gh --version
+
       - name: Enable Auto-Merge
         run: gh pr merge --auto --delete-branch --squash "${{ github.event.pull_request.html_url }}"
         env:
