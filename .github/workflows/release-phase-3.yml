@@ -56,6 +56,7 @@ jobs:
         run: |
           gh api repos/${{ github.repository }}/releases/generate-notes \
             -f tag_name="${{ steps.version.outputs.VERSION }}" \
+            -f target_commitish=${{ github.sha }} \
             --jq '.body' > release-notes.md
         env:
           # Fine-grained Personal Access Token (PAT) with the following permissions for microsoft/PR-Metrics:
@@ -68,6 +69,7 @@ jobs:
           gh release create "${{ steps.version.outputs.VERSION }}" \
             "${{ github.workspace }}/ms-omex.PRMetrics.vsix" \
             --title "Release ${{ steps.version.outputs.VERSION }}" \
+            --target "${{ github.sha }}" \
             --notes-file release-notes.md \
             --discussion-category "Releases"
         env:
