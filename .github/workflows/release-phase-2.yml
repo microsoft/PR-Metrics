@@ -29,6 +29,9 @@ jobs:
           # - Read and Write access to Actions, Code (aka Contents), and Workflows
           token: ${{ secrets.RELEASE_CHECKOUT }}
 
+      - name: gh – Log Version
+        run: gh --version
+
       - name: Get Version
         id: version
         shell: pwsh

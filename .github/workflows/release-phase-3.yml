@@ -24,6 +24,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
 
+      - name: gh – Log Version
+        run: gh --version
+
       - name: Install Node.js
         uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
         with:
@@ -52,15 +55,28 @@ jobs:
           $Version = Get-Content -Path '.github/workflows/support/release-phase-3-trigger.txt'
           Write-Output -InputObject "VERSION=v$Version" >> $Env:GITHUB_OUTPUT
 
-      - name: GitHub Release
-        uses: softprops/action-gh-release@aec2ec56f94eb8180ceec724245f64ef008b89f5 # v0.1.15
-        with:
-          discussion_category_name: Releases
-          files: ${{ github.workspace }}/ms-omex.PRMetrics.vsix
-          generate_release_notes: true
-          name: Release ${{ steps.version.outputs.VERSION }}
-          tag_name: ${{ steps.version.outputs.VERSION }}
+      - name: Generate Release Notes
+        run: |
+          gh api repos/${{ github.repository }}/releases/generate-notes \
+            -f tag_name="${{ steps.version.outputs.VERSION }}" \
+            -f target_commitish=${{ github.sha }} \
+            --jq '.body' > release-notes.md
+        env:
           # Fine-grained Personal Access Token (PAT) with the following permissions for microsoft/PR-Metrics:
           # - Read access to Metadata
           # - Read and Write access to Code (aka Contents) and Discussions
-          token: ${{ secrets.RELEASE_PHASE_3_GITHUB_RELEASE }}
+          GITHUB_TOKEN: ${{ secrets.RELEASE_PHASE_3_GITHUB_RELEASE }}
+
+      - name: GitHub Release
+        run: |
+          gh release create "${{ steps.version.outputs.VERSION }}" \
+            "${{ github.workspace }}/ms-omex.PRMetrics.vsix" \
+            --title "Release ${{ steps.version.outputs.VERSION }}" \
+            --target "${{ github.sha }}" \
+            --notes-file release-notes.md \
+            --discussion-category "Releases"
+        env:
+          # Fine-grained Personal Access Token (PAT) with the following permissions for microsoft/PR-Metrics:
+          # - Read access to Metadata
+          # - Read and Write access to Code (aka Contents) and Discussions
+          GITHUB_TOKEN: ${{ secrets.RELEASE_PHASE_3_GITHUB_RELEASE }}
