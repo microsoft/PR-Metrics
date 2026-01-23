@@ -34,3 +34,11 @@ runs:
         create-branch-on-remote: true
         stage-all-files: true
         token: ${{ inputs.github-token }}
+
+    - name: Git – Sync Local with Remote
+      shell: pwsh
+      run: |
+        git fetch origin release/v${{ inputs.version }}-phase-${{ inputs.phase }}
+        git reset --hard origin/release/v${{ inputs.version }}-phase-${{ inputs.phase }}
+      env:
+        GITHUB_TOKEN: ${{ inputs.github-token }}

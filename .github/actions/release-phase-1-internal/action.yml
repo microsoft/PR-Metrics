@@ -178,3 +178,11 @@ runs:
         commit-message: Updating dependencies
         stage-all-files: true
         token: ${{ inputs.github-token }}
+
+    - name: Git – Sync Local with Remote
+      shell: pwsh
+      run: |
+        git fetch origin release/v${{ env.version }}-phase-1
+        git reset --hard origin/release/v${{ env.version }}-phase-1
+      env:
+        GITHUB_TOKEN: ${{ inputs.github-token }}
