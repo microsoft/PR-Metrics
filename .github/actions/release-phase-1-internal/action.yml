@@ -19,10 +19,7 @@ inputs:
     description: GitHub token for API access
     required: true
   commit-token:
-    # Fine-grained Personal Access Token (PAT) with the following permissions for microsoft/PR-Metrics:
-    # - Read access to Metadata
-    # - Read and Write access to Code (aka Contents)
-    description: Token for committing changes via the GitHub API
+    description: Token for committing changes
     required: true
   release-pr-create-token:
     description: Token for creating pull requests
@@ -146,7 +143,7 @@ runs:
       with:
         phase: 1
         version: ${{ env.version }}
-        commit-token: ${{ inputs.commit-token }}
+        github-token: ${{ inputs.github-token }}
 
     - name: PR – Create
       shell: pwsh
@@ -182,6 +179,7 @@ runs:
       uses: grafana/github-api-commit-action@cb4e7799d2cd77d607acf280ed70a0d03572d8bd # v1.0.0
       with:
         commit-message: Updating dependencies
+        create-branch-on-remote: true
         stage-all-files: true
         token: ${{ inputs.commit-token }}
 
