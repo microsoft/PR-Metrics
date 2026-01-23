@@ -55,7 +55,7 @@ jobs:
         with:
           phase: 2
           version: ${{ steps.version.outputs.VERSION }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          code-token: ${{ secrets.CODE_TOKEN }}
 
       - name: PR – Create
         run: >-
