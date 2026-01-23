@@ -24,10 +24,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
-          # Fine-grained Personal Access Token (PAT) with the following permissions for microsoft/PR-Metrics:
-          # - Read access to Metadata
-          # - Read and Write access to Actions, Code (aka Contents), and Workflows
-          token: ${{ secrets.RELEASE_CHECKOUT }}
+          token: ${{ secrets.CODE_TOKEN }}
 
       - name: gh – Log Version
         run: gh --version
@@ -67,10 +64,7 @@ jobs:
           --body "Release for PR Metrics v${{ steps.version.outputs.VERSION }}. This includes the license updates."
           --label "release"
         env:
-          # Fine-grained Personal Access Token (PAT) with the following permissions for microsoft/PR-Metrics:
-          # - Read access to Metadata
-          # - Read and Write access to Pull Requests
-          GITHUB_TOKEN: ${{ secrets.RELEASE_PR_CREATE }}
+          GITHUB_TOKEN: ${{ secrets.CODE_TOKEN }}
 
       - name: PR – Comment
         run: gh pr comment --body-file "./.github/workflows/support/release-phase-2-comment.md"

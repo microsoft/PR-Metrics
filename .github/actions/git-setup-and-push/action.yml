@@ -12,11 +12,8 @@ inputs:
   version:
     description: Version string for the release
     required: true
-  commit-token:
-    # Fine-grained Personal Access Token (PAT) with the following permissions for microsoft/PR-Metrics:
-    # - Read access to Metadata
-    # - Read and Write access to Code (aka Contents)
-    description: Token for committing changes via the GitHub API
+  code-token:
+    description: Token for modifying code
     required: true
 
 runs:
@@ -36,7 +33,7 @@ runs:
         commit-message: Release v${{ inputs.version }}
         create-branch-on-remote: true
         stage-all-files: true
-        token: ${{ inputs.commit-token }}
+        token: ${{ inputs.code-token }}
 
     - name: Git – Sync Local with Remote
       shell: pwsh
