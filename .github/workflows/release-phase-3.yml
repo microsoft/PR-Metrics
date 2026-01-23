@@ -53,7 +53,7 @@ jobs:
         shell: pwsh
         run: |-
           $Version = Get-Content -Path '.github/workflows/support/release-phase-3-trigger.txt'
-          Write-Output -InputObject "VERSION=v1.7.10-test4" >> $Env:GITHUB_OUTPUT
+          Write-Output -InputObject "VERSION=v1.7.10-test8" >> $Env:GITHUB_OUTPUT
 
       - name: Generate Release Notes
         run: |
