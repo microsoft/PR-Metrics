@@ -172,18 +172,10 @@ runs:
       shell: pwsh
       run: npm update
 
-    - name: Git – Add Changed Files
-      shell: pwsh
-      run: git add -A
-
-    - name: Git – Commit Changed Files
-      shell: pwsh
-      run: git commit -m "Updating dependencies"
-
-    - name: Git – Pull Changed Files
-      shell: pwsh
-      run: git pull --autostash
-
-    - name: Git – Push Changed Files
-      shell: pwsh
-      run: git push --set-upstream origin release/v${{ env.version }}-phase-1
+    - name: Git – Commit
+      uses: grafana/github-api-commit-action@cb4e7799d2cd77d607acf280ed70a0d03572d8bd # v1.0.0
+      with:
+        commit-message: Updating dependencies
+        create-branch-on-remote: true
+        stage-all-files: true
+        token: ${{ inputs.github-token }}
