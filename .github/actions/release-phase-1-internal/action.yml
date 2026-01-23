@@ -18,8 +18,8 @@ inputs:
   github-token:
     description: GitHub token for API access
     required: true
-  update-code-token:
-    description: Token for updating code
+  commit-token:
+    description: Token for committing changes
     required: true
   release-pr-create-token:
     description: Token for creating pull requests
@@ -180,7 +180,7 @@ runs:
       with:
         commit-message: Updating dependencies
         stage-all-files: true
-        token: ${{ inputs.update-code-token }}
+        token: ${{ inputs.commit-token }}
 
     - name: Git – Sync Local with Remote
       shell: pwsh

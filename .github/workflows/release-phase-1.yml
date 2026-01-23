@@ -22,9 +22,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
-          # Fine-grained Personal Access Token (PAT) with the following permissions for microsoft/PR-Metrics:
-          # - Read access to Metadata
-          # - Read and Write access to Actions, Code (aka Contents), and Workflows
           token: ${{ secrets.RELEASE_CHECKOUT }}
 
       - name: Release – Phase 1 – Internal
@@ -34,5 +31,5 @@ jobs:
           minor: 7
           patch: 11
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          update-code-token: ${{ secrets.BUILD_UPDATE_CODE_CHECKOUT }}
+          commit-token: ${{ secrets.RELEASE_CHECKOUT }}
           release-pr-create-token: ${{ secrets.RELEASE_PR_CREATE }}
