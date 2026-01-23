@@ -40,5 +40,3 @@ runs:
       run: |
         git fetch origin release/v${{ inputs.version }}-phase-${{ inputs.phase }}
         git reset --hard origin/release/v${{ inputs.version }}-phase-${{ inputs.phase }}
-      env:
-        GITHUB_TOKEN: ${{ inputs.github-token }}

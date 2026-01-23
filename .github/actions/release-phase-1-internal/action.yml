@@ -187,5 +187,3 @@ runs:
       run: |
         git fetch origin release/v${{ env.version }}-phase-1
         git reset --hard origin/release/v${{ env.version }}-phase-1
-      env:
-        GITHUB_TOKEN: ${{ inputs.update-code-token }}
