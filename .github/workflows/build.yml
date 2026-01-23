@@ -69,11 +69,10 @@ jobs:
           Write-Output -InputObject "NO_CHANGES_PRESENT=$NoChangesPresent" >> $Env:GITHUB_OUTPUT
 
       - if: ${{ github.actor != 'dependabot[bot]' && steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
-        name: Git – Commit
+        name: Commit & Push (Signed)
         uses: grafana/github-api-commit-action@cb4e7799d2cd77d607acf280ed70a0d03572d8bd # v1.0.0
         with:
           commit-message: Fixing linting, Updating dist folder
-          create-branch-on-remote: true
           stage-all-files: true
           token: ${{ secrets.BUILD_UPDATE_CODE_CHECKOUT }}
 
