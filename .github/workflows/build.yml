@@ -76,8 +76,8 @@ jobs:
           stage-all-files: true
           # Fine-grained Personal Access Token (PAT) with the following permissions for microsoft/PR-Metrics:
           # - Read access to Metadata
-          # - Read and Write access to Actions, Code (aka Contents), and Workflows
-          token: ${{ secrets.RELEASE_CHECKOUT }}
+          # - Read and Write access to Code (aka Contents)
+          token: ${{ secrets.BUILD_COMMIT }}
 
       - if: ${{ github.actor == 'dependabot[bot]' && steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
         name: Request Manual Updates

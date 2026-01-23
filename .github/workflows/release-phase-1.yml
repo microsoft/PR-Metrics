@@ -31,5 +31,8 @@ jobs:
           minor: 7
           patch: 11
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          commit-token: ${{ secrets.RELEASE_CHECKOUT }}
+          # Fine-grained Personal Access Token (PAT) with the following permissions for microsoft/PR-Metrics:
+          # - Read access to Metadata
+          # - Read and Write access to Code (aka Contents)
+          commit-token: ${{ secrets.RELEASE_COMMIT }}
           release-pr-create-token: ${{ secrets.RELEASE_PR_CREATE }}
