@@ -33,5 +33,6 @@ jobs:
           major: 1
           minor: 7
           patch: 11
-          github-token: ${{ secrets.RELEASE_CHECKOUT }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          update-code-token: ${{ secrets.BUILD_UPDATE_CODE_CHECKOUT }}
           release-pr-create-token: ${{ secrets.RELEASE_PR_CREATE }}

@@ -18,6 +18,9 @@ inputs:
   github-token:
     description: GitHub token for API access
     required: true
+  update-code-token:
+    description: Token for updating code
+    required: true
   release-pr-create-token:
     description: Token for creating pull requests
     required: true
@@ -172,12 +175,12 @@ runs:
       shell: pwsh
       run: npm update
 
-    - name: Commit & Push (Signed)
+    - name: Git – Commit & Push (Signed)
       uses: grafana/github-api-commit-action@cb4e7799d2cd77d607acf280ed70a0d03572d8bd # v1.0.0
       with:
         commit-message: Updating dependencies
         stage-all-files: true
-        token: ${{ inputs.github-token }}
+        token: ${{ inputs.update-code-token }}
 
     - name: Git – Sync Local with Remote
       shell: pwsh
@@ -185,4 +188,4 @@ runs:
         git fetch origin release/v${{ env.version }}-phase-1
         git reset --hard origin/release/v${{ env.version }}-phase-1
       env:
-        GITHUB_TOKEN: ${{ inputs.github-token }}
+        GITHUB_TOKEN: ${{ inputs.update-code-token }}
