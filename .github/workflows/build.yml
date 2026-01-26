@@ -32,7 +32,7 @@ jobs:
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           ref: ${{ github.HEAD_REF }}
-          token: ${{ secrets.CODE_TOKEN }}
+          token: ${{ secrets.PR_METRICS_TOKEN }}
 
       - if: ${{ github.actor == 'dependabot[bot]' }}
         name: Checkout
@@ -72,7 +72,7 @@ jobs:
           commit-message: Fixing linting, Updating dist folder
           create-branch-on-remote: true
           stage-all-files: true
-          token: ${{ secrets.CODE_TOKEN }}
+          token: ${{ secrets.PR_METRICS_TOKEN }}
 
       - if: ${{ github.actor == 'dependabot[bot]' && steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
         name: Request Manual Updates

@@ -12,8 +12,8 @@ inputs:
   version:
     description: Version string for the release
     required: true
-  code-token:
-    description: Token for modifying code
+  pr-metrics-token:
+    description: Token for modifying the project
     required: true
 
 runs:
@@ -33,7 +33,7 @@ runs:
         commit-message: Release v${{ inputs.version }}
         create-branch-on-remote: true
         stage-all-files: true
-        token: ${{ inputs.code-token }}
+        token: ${{ inputs.pr-metrics-token }}
 
     - name: Git – Sync Local with Remote
       shell: pwsh

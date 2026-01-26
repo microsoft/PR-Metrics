@@ -18,8 +18,8 @@ inputs:
   github-token:
     description: GitHub token for API access
     required: true
-  code-token:
-    description: Token for modifying code
+  pr-metrics-token:
+    description: Token for modifying the project
     required: true
 
 runs:
@@ -140,7 +140,7 @@ runs:
       with:
         phase: 1
         version: ${{ env.version }}
-        code-token: ${{ inputs.code-token }}
+        pr-metrics-token: ${{ inputs.pr-metrics-token }}
 
     - name: PR – Create
       shell: pwsh
@@ -178,7 +178,7 @@ runs:
         commit-message: Updating dependencies
         create-branch-on-remote: true
         stage-all-files: true
-        token: ${{ inputs.code-token }}
+        token: ${{ inputs.pr-metrics-token }}
 
     - name: Git – Sync Local with Remote
       shell: pwsh

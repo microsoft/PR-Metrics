@@ -24,7 +24,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
-          token: ${{ secrets.CODE_TOKEN }}
+          token: ${{ secrets.PR_METRICS_TOKEN }}
 
       - name: gh – Log Version
         run: gh --version
@@ -55,7 +55,7 @@ jobs:
         with:
           phase: 2
           version: ${{ steps.version.outputs.VERSION }}
-          code-token: ${{ secrets.CODE_TOKEN }}
+          pr-metrics-token: ${{ secrets.PR_METRICS_TOKEN }}
 
       - name: PR – Create
         run: >-
@@ -64,7 +64,7 @@ jobs:
           --body "Release for PR Metrics v${{ steps.version.outputs.VERSION }}. This includes the license updates."
           --label "release"
         env:
-          GITHUB_TOKEN: ${{ secrets.CODE_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PR_METRICS_TOKEN }}
 
       - name: PR – Comment
         run: gh pr comment --body-file "./.github/workflows/support/release-phase-2-comment.md"

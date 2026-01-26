@@ -62,7 +62,7 @@ jobs:
             -f target_commitish=${{ github.sha }} \
             --jq '.body' > release-notes.md
         env:
-          GITHUB_TOKEN: ${{ secrets.CODE_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PR_METRICS_TOKEN }}
 
       - name: GitHub Release
         run: |
@@ -73,4 +73,4 @@ jobs:
             --notes-file release-notes.md \
             --discussion-category "Releases"
         env:
-          GITHUB_TOKEN: ${{ secrets.CODE_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PR_METRICS_TOKEN }}
