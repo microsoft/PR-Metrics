@@ -12,35 +12,13 @@ inputs:
   version:
     description: Version string for the release
     required: true
-  github-token:
-    description: GitHub token for authentication
+  pr-metrics-token:
+    description: Token for modifying the project
     required: true
 
 runs:
   using: composite
   steps:
-    - name: gh – Log Version
-      shell: pwsh
-      run: gh --version
-
-    - name: Git – Setup Authentication
-      shell: pwsh
-      run: gh auth setup-git
-      env:
-        GITHUB_TOKEN: ${{ inputs.github-token }}
-
-    - name: Git – Set Name
-      shell: pwsh
-      run: git config --global user.name "github-actions[bot]"
-
-    - name: Git – Set Email
-      shell: pwsh
-      run: git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-    - name: Git – Set Merge Strategy
-      shell: pwsh
-      run: git config --global pull.rebase true
-
     - name: Git – Create Branch
       shell: pwsh
       run: git checkout -b release/v${{ inputs.version }}-phase-${{ inputs.phase }}
@@ -49,10 +27,16 @@ runs:
       shell: pwsh
       run: git add -A
 
-    - name: Git – Commit Changed Files
-      shell: pwsh
-      run: git commit -m "Release v${{ inputs.version }}"
+    - name: Git – Commit & Push (Signed)
+      uses: grafana/github-api-commit-action@cb4e7799d2cd77d607acf280ed70a0d03572d8bd # v1.0.0
+      with:
+        commit-message: Release v${{ inputs.version }}
+        create-branch-on-remote: true
+        stage-all-files: true
+        token: ${{ inputs.pr-metrics-token }}
 
-    - name: Git – Push Changed Files
+    - name: Git – Sync Local with Remote
       shell: pwsh
-      run: git push --set-upstream origin release/v${{ inputs.version }}-phase-${{ inputs.phase }}
+      run: |
+        git fetch origin release/v${{ inputs.version }}-phase-${{ inputs.phase }}
+        git reset --hard origin/release/v${{ inputs.version }}-phase-${{ inputs.phase }}

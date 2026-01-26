@@ -32,10 +32,7 @@ jobs:
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           ref: ${{ github.HEAD_REF }}
-          # Fine-grained Personal Access Token (PAT) with the following permissions for microsoft/PR-Metrics:
-          # - Read access to Metadata
-          # - Read and Write access to Code (aka Contents)
-          token: ${{ secrets.BUILD_UPDATE_CODE_CHECKOUT }}
+          token: ${{ secrets.PR_METRICS_TOKEN }}
 
       - if: ${{ github.actor == 'dependabot[bot]' }}
         name: Checkout
@@ -69,28 +66,13 @@ jobs:
           Write-Output -InputObject "NO_CHANGES_PRESENT=$NoChangesPresent" >> $Env:GITHUB_OUTPUT
 
       - if: ${{ github.actor != 'dependabot[bot]' && steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
-        name: Git – Set Name
-        run: git config --global user.name "github-actions[bot]"
-
-      - if: ${{ github.actor != 'dependabot[bot]' && steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
-        name: Git – Set Email
-        run: git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-      - if: ${{ github.actor != 'dependabot[bot]' && steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
-        name: Git – Set Merge Strategy
-        run: git config --global pull.rebase true
-
-      - if: ${{ github.actor != 'dependabot[bot]' && steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
-        name: Git – Commit Changed Files
-        run: git commit -m "Fixing linting, Updating dist folder"
-
-      - if: ${{ github.actor != 'dependabot[bot]' && steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
-        name: Git – Pull Changed Files
-        run: git pull --autostash
-
-      - if: ${{ github.actor != 'dependabot[bot]' && steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
-        name: Git – Push Changed Files
-        run: git push
+        name: Git – Commit & Push (Signed)
+        uses: grafana/github-api-commit-action@cb4e7799d2cd77d607acf280ed70a0d03572d8bd # v1.0.0
+        with:
+          commit-message: Fixing linting, Updating dist folder
+          create-branch-on-remote: true
+          stage-all-files: true
+          token: ${{ secrets.PR_METRICS_TOKEN }}
 
       - if: ${{ github.actor == 'dependabot[bot]' && steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
         name: Request Manual Updates
