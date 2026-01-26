@@ -18,8 +18,8 @@ inputs:
   github-token:
     description: GitHub token for API access
     required: true
-  release-pr-create-token:
-    description: Token for creating pull requests
+  code-token:
+    description: Token for modifying code
     required: true
 
 runs:
@@ -140,7 +140,7 @@ runs:
       with:
         phase: 1
         version: ${{ env.version }}
-        github-token: ${{ inputs.github-token }}
+        code-token: ${{ inputs.code-token }}
 
     - name: PR – Create
       shell: pwsh
@@ -172,18 +172,16 @@ runs:
       shell: pwsh
       run: npm update
 
-    - name: Git – Add Changed Files
-      shell: pwsh
-      run: git add -A
+    - name: Git – Commit & Push (Signed)
+      uses: grafana/github-api-commit-action@cb4e7799d2cd77d607acf280ed70a0d03572d8bd # v1.0.0
+      with:
+        commit-message: Updating dependencies
+        create-branch-on-remote: true
+        stage-all-files: true
+        token: ${{ inputs.code-token }}
 
-    - name: Git – Commit Changed Files
+    - name: Git – Sync Local with Remote
       shell: pwsh
-      run: git commit -m "Updating dependencies"
-
-    - name: Git – Pull Changed Files
-      shell: pwsh
-      run: git pull --autostash
-
-    - name: Git – Push Changed Files
-      shell: pwsh
-      run: git push --set-upstream origin release/v${{ env.version }}-phase-1
+      run: |
+        git fetch origin release/v${{ env.version }}-phase-1
+        git reset --hard origin/release/v${{ env.version }}-phase-1
