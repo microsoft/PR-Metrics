@@ -11,7 +11,6 @@ describe("codeMetricsData.ts", (): void => {
   describe("Property-Based Tests", (): void => {
     describe("constructor()", (): void => {
       it("should accept any combination of non-negative integers", (): void => {
-        // ARRANGE, ACT, ASSERT
         fc.assert(
           fc.property(
             fc.nat(),
@@ -32,7 +31,6 @@ describe("codeMetricsData.ts", (): void => {
       });
 
       it("should reject negative productCode values", (): void => {
-        // ARRANGE, ACT, ASSERT
         fc.assert(
           fc.property(
             fc.integer({ max: -1 }),
@@ -49,7 +47,6 @@ describe("codeMetricsData.ts", (): void => {
       });
 
       it("should reject negative testCode values", (): void => {
-        // ARRANGE, ACT, ASSERT
         fc.assert(
           fc.property(
             fc.nat(),
@@ -66,7 +63,6 @@ describe("codeMetricsData.ts", (): void => {
       });
 
       it("should reject negative ignoredCode values", (): void => {
-        // ARRANGE, ACT, ASSERT
         fc.assert(
           fc.property(
             fc.nat(),
@@ -85,7 +81,6 @@ describe("codeMetricsData.ts", (): void => {
 
     describe("subtotal", (): void => {
       it("should always equal productCode + testCode", (): void => {
-        // ARRANGE, ACT, ASSERT
         fc.assert(
           fc.property(
             fc.nat(),
@@ -104,7 +99,6 @@ describe("codeMetricsData.ts", (): void => {
       });
 
       it("should be commutative with respect to productCode and testCode", (): void => {
-        // ARRANGE, ACT, ASSERT
         fc.assert(
           fc.property(
             fc.nat(),
@@ -130,7 +124,6 @@ describe("codeMetricsData.ts", (): void => {
 
     describe("total", (): void => {
       it("should always equal productCode + testCode + ignoredCode", (): void => {
-        // ARRANGE, ACT, ASSERT
         fc.assert(
           fc.property(
             fc.nat(),
@@ -149,7 +142,6 @@ describe("codeMetricsData.ts", (): void => {
       });
 
       it("should always equal subtotal + ignoredCode", (): void => {
-        // ARRANGE, ACT, ASSERT
         fc.assert(
           fc.property(
             fc.nat(),
@@ -168,7 +160,6 @@ describe("codeMetricsData.ts", (): void => {
       });
 
       it("should be >= subtotal", (): void => {
-        // ARRANGE, ACT, ASSERT
         fc.assert(
           fc.property(
             fc.nat(),
@@ -189,7 +180,6 @@ describe("codeMetricsData.ts", (): void => {
 
     describe("invariants", (): void => {
       it("should maintain consistent values across multiple reads", (): void => {
-        // ARRANGE, ACT, ASSERT
         fc.assert(
           fc.property(
             fc.nat(),
@@ -217,7 +207,6 @@ describe("codeMetricsData.ts", (): void => {
       });
 
       it("should have total >= each individual component", (): void => {
-        // ARRANGE, ACT, ASSERT
         fc.assert(
           fc.property(
             fc.nat(),
