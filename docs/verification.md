@@ -253,14 +253,14 @@ If you have questions about verifying releases or encounter issues with verifica
 
 For security concerns, follow the [security policy][security].
 
-[cosign-docs]: https://docs.sigstore.dev/cosign/overview/
+[releases]: https://github.com/microsoft/PR-Metrics/releases
+[gh-cli]: https://cli.github.com/
 [cosign-install]: https://docs.sigstore.dev/cosign/system_config/installation/
+[security]: ../SECURITY.md
+[gh-attestations]: https://docs.github.com/en/actions/security-guides/using-artifact-attestations-to-establish-provenance-for-builds
+[cosign-docs]: https://docs.sigstore.dev/cosign/overview/
+[slsa]: https://slsa.dev/
+[sigstore]: https://www.sigstore.dev/
+[troubleshooting]: troubleshooting.md
 [discussions]: https://github.com/microsoft/PR-Metrics/discussions
 [discussions-qa]: https://github.com/microsoft/PR-Metrics/discussions/new?category=q-a
-[gh-attestations]: https://docs.github.com/en/actions/security-guides/using-artifact-attestations-to-establish-provenance-for-builds
-[gh-cli]: https://cli.github.com/
-[releases]: https://github.com/microsoft/PR-Metrics/releases
-[security]: ../SECURITY.md
-[sigstore]: https://www.sigstore.dev/
-[slsa]: https://slsa.dev/
-[troubleshooting]: troubleshooting.md
