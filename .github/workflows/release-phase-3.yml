@@ -49,14 +49,12 @@ jobs:
         with:
           subject-path: ${{ github.workspace }}/ms-omex.PRMetrics.vsix
 
-      - name: Install cosign
+      - name: cosign – Install
         uses: sigstore/cosign-installer@faadad0cce49287aee09b3a48701e75088a2c6ad # v4.0.0
 
-      - name: Sign VSIX with cosign
+      - name: cosign – Sign VSIX
         run: |
           cosign sign-blob --yes \
-            --output-signature "${{ github.workspace }}/ms-omex.PRMetrics.vsix.sig" \
-            --output-certificate "${{ github.workspace }}/ms-omex.PRMetrics.vsix.pem" \
             --bundle "${{ github.workspace }}/ms-omex.PRMetrics.vsix.sigstore.json" \
             "${{ github.workspace }}/ms-omex.PRMetrics.vsix"
 
@@ -66,8 +64,6 @@ jobs:
           name: ms-omex.PRMetrics
           path: |
             ${{ github.workspace }}/ms-omex.PRMetrics.vsix
-            ${{ github.workspace }}/ms-omex.PRMetrics.vsix.sig
-            ${{ github.workspace }}/ms-omex.PRMetrics.vsix.pem
             ${{ github.workspace }}/ms-omex.PRMetrics.vsix.sigstore.json
 
       - name: Get Version
@@ -75,7 +71,7 @@ jobs:
         shell: pwsh
         run: |-
           $Version = Get-Content -Path '.github/workflows/support/release-phase-3-trigger.txt'
-          Write-Output -InputObject "VERSION=v$Version" >> $Env:GITHUB_OUTPUT
+          Write-Output -InputObject "VERSION=v1.7.10-test20" >> $Env:GITHUB_OUTPUT
 
       - name: Generate Release Notes
         run: |
@@ -90,8 +86,6 @@ jobs:
         run: |
           gh release create "${{ steps.version.outputs.VERSION }}" \
             "${{ github.workspace }}/ms-omex.PRMetrics.vsix" \
-            "${{ github.workspace }}/ms-omex.PRMetrics.vsix.sig" \
-            "${{ github.workspace }}/ms-omex.PRMetrics.vsix.pem" \
             "${{ github.workspace }}/ms-omex.PRMetrics.vsix.sigstore.json" \
             --title "Release ${{ steps.version.outputs.VERSION }}" \
             --target "${{ github.sha }}" \
