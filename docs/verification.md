@@ -23,11 +23,11 @@ Build provenance attestations provide cryptographically verifiable proof about
 how, when, and where an artifact was built. This helps ensure the artifact
 hasn't been tampered with and was built from the expected source code.
 
-### Prerequisites
+### GitHub CLI Prerequisites
 
 - [GitHub CLI (`gh`)][gh-cli] version 2.49.0 or later
 
-### Verification Steps
+### GitHub CLI Verification Steps
 
 1. Download the VSIX file from the [releases page][releases]:
 
@@ -53,7 +53,7 @@ hasn't been tampered with and was built from the expected source code.
    microsoft/PR-Metrics  https://slsa.dev/provenance/v1  .github/workflows/release-phase-3.yml@refs/heads/main
    ```
 
-### What This Verifies
+### What This Verifies via GitHub CLI
 
 The attestation verification confirms:
 
@@ -81,11 +81,11 @@ Cosign signatures provide an additional layer of verification using Sigstore's
 keyless signing infrastructure. This signature is generated during the release
 process and can be verified without needing to manage signing keys.
 
-### Prerequisites
+### Cosign Prerequisites
 
 - [Cosign][cosign-install] version 2.0 or later
 
-### Verification Steps
+### Cosign Verification Steps
 
 1. Download both the VSIX file and the signature bundle:
 
@@ -112,7 +112,7 @@ process and can be verified without needing to manage signing keys.
    Verified OK
    ```
 
-### What This Verifies
+### What This Verifies via Cosign
 
 The cosign signature verification confirms:
 
