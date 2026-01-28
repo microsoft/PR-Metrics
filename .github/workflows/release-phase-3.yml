@@ -19,7 +19,9 @@ jobs:
     name: Release
     runs-on: ubuntu-latest
     permissions:
+      attestations: write
       contents: write
+      id-token: write
     steps:
       - name: Checkout
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
@@ -42,11 +44,31 @@ jobs:
         run: npx tfx-cli extension create --manifest-globs vss-extension.json --output-path ../ms-omex.PRMetrics.vsix
         working-directory: ${{ github.workspace }}/release
 
+      - name: Attest Build Provenance
+        uses: actions/attest-build-provenance@96278af6caaf10aea03fd8d33a09a777ca52d62f # v3.2.0
+        with:
+          subject-path: ${{ github.workspace }}/ms-omex.PRMetrics.vsix
+
+      - name: Install cosign
+        uses: sigstore/cosign-installer@faadad0cce49287aee09b3a48701e75088a2c6ad # v4.0.0
+
+      - name: Sign VSIX with cosign
+        run: |
+          cosign sign-blob --yes \
+            --output-signature "${{ github.workspace }}/ms-omex.PRMetrics.vsix.sig" \
+            --output-certificate "${{ github.workspace }}/ms-omex.PRMetrics.vsix.pem" \
+            --bundle "${{ github.workspace }}/ms-omex.PRMetrics.vsix.sigstore.json" \
+            "${{ github.workspace }}/ms-omex.PRMetrics.vsix"
+
       - name: Release – Publish
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: ms-omex.PRMetrics
-          path: ${{ github.workspace }}/ms-omex.PRMetrics.vsix
+          path: |
+            ${{ github.workspace }}/ms-omex.PRMetrics.vsix
+            ${{ github.workspace }}/ms-omex.PRMetrics.vsix.sig
+            ${{ github.workspace }}/ms-omex.PRMetrics.vsix.pem
+            ${{ github.workspace }}/ms-omex.PRMetrics.vsix.sigstore.json
 
       - name: Get Version
         id: version
@@ -68,6 +90,9 @@ jobs:
         run: |
           gh release create "${{ steps.version.outputs.VERSION }}" \
             "${{ github.workspace }}/ms-omex.PRMetrics.vsix" \
+            "${{ github.workspace }}/ms-omex.PRMetrics.vsix.sig" \
+            "${{ github.workspace }}/ms-omex.PRMetrics.vsix.pem" \
+            "${{ github.workspace }}/ms-omex.PRMetrics.vsix.sigstore.json" \
             --title "Release ${{ steps.version.outputs.VERSION }}" \
             --target "${{ github.sha }}" \
             --notes-file release-notes.md \
