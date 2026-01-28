@@ -185,6 +185,14 @@ nature of Git history.
 To avoid this, it is recommended to only use commit types that squash the Git
 history such as "squash merge" or "rebase and fast-forward".
 
+## Security
+
+All PR Metrics releases include cryptographic attestations and signatures to
+ensure artifact integrity and authenticity. For information on verifying
+downloads, see [VERIFICATION.md][verification].
+
+For security vulnerability reporting, see our [security policy][security].
+
 ## Troubleshooting
 
 A set of steps for troubleshooting any issues encountered can be found
@@ -215,6 +223,8 @@ comments.
 [defaultcodefileextensions]: docs/default-code-file-extensions.md
 [azurepipelinestask]: docs/azure-pipelines-task.md
 [github-token-pemissions]: https://docs.github.com/actions/security-guides/automatic-token-authentication#permissions-for-the-github_token
+[verification]: VERIFICATION.md
+[security]: SECURITY.md
 [contributing]: .github/CONTRIBUTING.md
 [license]: LICENSE
 [codeofconduct]: https://opensource.microsoft.com/codeofconduct/
