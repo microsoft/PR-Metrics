@@ -193,7 +193,6 @@ jobs:
           VALIDATE_TYPESCRIPT_STANDARD: false
 
   dependabot:
-    if: ${{ github.actor == 'dependabot[bot]' }}
     name: Dependabot
     runs-on: ubuntu-latest
     permissions:
@@ -203,7 +202,8 @@ jobs:
       - name: gh – Log Version
         run: gh --version
 
-      - name: Enable Auto-Merge
+      - if: ${{ github.actor == 'dependabot[bot]' }}
+        name: Enable Auto-Merge
         run: gh pr merge --auto --delete-branch --squash "${{ github.event.pull_request.html_url }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
