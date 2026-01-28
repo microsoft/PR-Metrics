@@ -66,7 +66,13 @@ describe("converter.ts", (): void => {
       it("should never return null or undefined as actual values", (): void => {
         fc.assert(
           fc.property(
-            fc.oneof(fc.string(), fc.integer(), fc.boolean(), fc.constant(null), fc.constant(undefined)),
+            fc.oneof(
+              fc.string(),
+              fc.integer(),
+              fc.boolean(),
+              fc.constant(null),
+              fc.constant(undefined),
+            ),
             (value: string | number | boolean | null | undefined) => {
               const result: string = Converter.toString(value);
               assert.notEqual(result, null);
