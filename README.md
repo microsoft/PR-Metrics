@@ -187,11 +187,11 @@ history such as "squash merge" or "rebase and fast-forward".
 
 ## Security
 
-All PR Metrics releases include cryptographic attestations and signatures to
-ensure artifact integrity and authenticity. For information on verifying
-downloads, see [VERIFICATION.md][verification].
+PR Metrics releases include cryptographic attestations and signatures to ensure
+artifact integrity and authenticity. For information on verifying downloads, see
+[the verification details][verification].
 
-For security vulnerability reporting, see our [security policy][security].
+For security vulnerability reporting, see the [security policy][security].
 
 ## Troubleshooting
 
@@ -223,7 +223,7 @@ comments.
 [defaultcodefileextensions]: docs/default-code-file-extensions.md
 [azurepipelinestask]: docs/azure-pipelines-task.md
 [github-token-pemissions]: https://docs.github.com/actions/security-guides/automatic-token-authentication#permissions-for-the-github_token
-[verification]: VERIFICATION.md
+[verification]: docs/verification.md
 [security]: SECURITY.md
 [contributing]: .github/CONTRIBUTING.md
 [license]: LICENSE
