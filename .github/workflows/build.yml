@@ -215,7 +215,6 @@ jobs:
         uses: grafana/github-api-commit-action@cb4e7799d2cd77d607acf280ed70a0d03572d8bd # v1.0.0
         with:
           commit-message: "chore: fixing linting"
-          create-branch-on-remote: true
           stage-all-files: true
           token: ${{ secrets.PR_METRICS_TOKEN }}
 
