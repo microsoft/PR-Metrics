@@ -1,18 +1,19 @@
 # Azure Pipelines Task
 
-The task can be added to a pipeline as detailed [here][addingtask].
+The task can be added to a pipeline as detailed
+[in the Azure Pipelines documentation][addingtask].
 
 The Azure Pipelines task can run against Azure or GitHub repositories.
 
 For Azure repositories, the task will require access to the PR resources. The
 recommended solution is to use workload identity federation as this is more
-maintainable and secure. Instructions for setting up workload identity
-federation can be found [here][workloadidentityfederation].
+maintainable and secure. For more information, see the
+[workload identity federation instructions][workloadidentityfederation].
 
 Alternatively, you can use Personal Access Tokens (PATs). For this, you can try
 remapping `System.AccessToken` to `PR_Metrics_Access_Token` using
 
-```YAML
+```yaml
 env:
   PR_METRICS_ACCESS_TOKEN: $(System.AccessToken)
 ```
@@ -23,12 +24,13 @@ Token (PAT) with scopes 'Code' > 'Read & write' and 'Pull Request Threads' >
 'Read & write', which you can then map to `PR_Metrics_Access_Token`.
 
 For GitHub repositories, you will need to create a PAT according to the
-instructions [here][githubpat] with at least Read and Write access to pull
-requests. If you are using a Classic PAT, it will need at least the 'repos'
-scope. The resulting PAT should then be added to your repository as a secret
-with the name `PR_Metrics_Access_Token` according to the instructions
-[here][githubsecret] and mapped to `PR_Metrics_Access_Token` within the task
-definition. Alternatively, you can use the in-built `GITHUB_TOKEN`.
+instructions [in the GitHub documentation][githubpat] with at least Read and
+Write access to pull requests. If you are using a Classic PAT, it will need at
+least the 'repos' scope. The resulting PAT should then be added to your
+repository as a secret with the name `PR_Metrics_Access_Token` according to the
+instructions [in the GitHub documentation][githubsecret] and mapped to
+`PR_Metrics_Access_Token` within the task definition. Alternatively, you can use
+the in-built `GITHUB_TOKEN`.
 
 It is recommended to run the task as one of the first operations in your build,
 after code check out is complete. Running the task early in the build process
@@ -40,7 +42,7 @@ wait a long time for the title update.
 The default input values are expected to be appropriate for most builds.
 Therefore, the following YAML definition is recommended:
 
-```YAML
+```yaml
 steps:
 - task: ms-omex.prmetrics.prmetrics.PRMetrics@1
   displayName: PR Metrics
@@ -51,7 +53,7 @@ steps:
 
 If you wish to modify the inputs, YAML akin the to the following can be used:
 
-```YAML
+```yaml
 steps:
 - task: ms-omex.prmetrics.prmetrics.PRMetrics@1
   displayName: PR Metrics
@@ -100,7 +102,7 @@ If your repository contains _any_ non-linear history, it will be necessary to
 fetch Git history during checkout. This can be done by updating the `checkout`
 step:
 
-```YAML
+```yaml
 - checkout: self
   fetchDepth: 0
 ```
@@ -125,7 +127,7 @@ when a smaller PR or increased test coverage is suggested. If the
 prevent it blocking automatic closure of the PR.
 
 [addingtask]: https://docs.microsoft.com/azure/devops/pipelines/customize-pipeline
-[workloadidentityfederation]: workload-identity-federation.md
 [githubpat]: https://docs.github.com/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token
 [githubsecret]: https://docs.github.com/actions/reference/encrypted-secrets
 [squashmerge]: https://learn.microsoft.com/azure/devops/repos/git/merging-with-squash
+[workloadidentityfederation]: workload-identity-federation.md

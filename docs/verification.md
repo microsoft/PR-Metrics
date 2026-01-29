@@ -31,19 +31,19 @@ hasn't been tampered with and was built from the expected source code.
 
 1. Download the VSIX file from the [releases page][releases]:
 
-   ```Batchfile
+   ```batchfile
    gh release download v1.7.11 --repo microsoft/PR-Metrics --pattern "ms-omex.PRMetrics.vsix"
    ```
 
 1. Verify the attestation:
 
-   ```Batchfile
+   ```batchfile
    gh attestation verify ms-omex.PRMetrics.vsix --repo microsoft/PR-Metrics
    ```
 
 1. Expected output (if verification succeeds):
 
-   ```Text
+   ```text
    Loaded digest sha256:... for file://ms-omex.PRMetrics.vsix
    Loaded 1 attestation from GitHub API
    ✓ Verification succeeded!
@@ -67,7 +67,7 @@ The attestation verification confirms:
 
 You can also verify attestations programmatically using the GitHub API:
 
-```Batchfile
+```batchfile
 curl -H "Authorization: Bearer $GITHUB_TOKEN" \
   "https://api.github.com/repos/microsoft/PR-Metrics/attestations/sha256:$(sha256sum ms-omex.PRMetrics.vsix | cut -d' ' -f1)"
 ```
@@ -89,7 +89,7 @@ process and can be verified without needing to manage signing keys.
 
 1. Download both the VSIX file and the signature bundle:
 
-   ```Batchfile
+   ```batchfile
    gh release download v1.7.11 --repo microsoft/PR-Metrics --pattern "*.vsix*"
    ```
 
@@ -99,7 +99,7 @@ process and can be verified without needing to manage signing keys.
 
 1. Verify the signature:
 
-   ```Batchfile
+   ```batchfile
    cosign verify-blob ms-omex.PRMetrics.vsix \
      --bundle ms-omex.PRMetrics.vsix.sigstore.json \
      --certificate-identity-regexp="^https://github.com/microsoft/PR-Metrics/" \
@@ -108,7 +108,7 @@ process and can be verified without needing to manage signing keys.
 
 1. Expected output (if verification succeeds):
 
-   ```Text
+   ```text
    Verified OK
    ```
 
@@ -126,7 +126,7 @@ The cosign signature verification confirms:
 
 To verify additional details about the signature, you can use:
 
-```Batchfile
+```batchfile
 cosign verify-blob ms-omex.PRMetrics.vsix \
   --bundle ms-omex.PRMetrics.vsix.sigstore.json \
   --certificate-identity-regexp="^https://github.com/microsoft/PR-Metrics/" \
@@ -197,7 +197,7 @@ To maximize security when using PR Metrics:
 1. **Automate Verification**: Incorporate verification into your CI/CD
    pipelines:
 
-   ```YAML
+   ```yaml
    - name: Verify PR Metrics
      run: |
        gh attestation verify ms-omex.PRMetrics.vsix --repo microsoft/PR-Metrics
@@ -254,14 +254,14 @@ verification:
 
 For security concerns, follow the [security policy][security].
 
-[releases]: https://github.com/microsoft/PR-Metrics/releases
-[gh-cli]: https://cli.github.com/
-[cosign-install]: https://docs.sigstore.dev/cosign/system_config/installation/
-[security]: ../SECURITY.md
-[gh-attestations]: https://docs.github.com/en/actions/security-guides/using-artifact-attestations-to-establish-provenance-for-builds
 [cosign-docs]: https://docs.sigstore.dev/cosign/overview/
-[slsa]: https://slsa.dev/
-[sigstore]: https://www.sigstore.dev/
-[troubleshooting]: troubleshooting.md
-[discussions]: https://github.com/microsoft/PR-Metrics/discussions
+[cosign-install]: https://docs.sigstore.dev/cosign/system_config/installation/
 [discussions-qa]: https://github.com/microsoft/PR-Metrics/discussions/new?category=q-a
+[discussions]: https://github.com/microsoft/PR-Metrics/discussions
+[gh-attestations]: https://docs.github.com/en/actions/security-guides/using-artifact-attestations-to-establish-provenance-for-builds
+[gh-cli]: https://cli.github.com/
+[releases]: https://github.com/microsoft/PR-Metrics/releases
+[security]: ../SECURITY.md
+[sigstore]: https://www.sigstore.dev/
+[slsa]: https://slsa.dev/
+[troubleshooting]: troubleshooting.md

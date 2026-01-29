@@ -24,8 +24,8 @@ admin and provide them with these instructions.
 
 The build agent where the PR Metrics task runs must have Azure CLI installed,
 which is often already the case. If you encounter issues related to the `az`
-command being unavailable, check the details about installing the Azure CLI
-[here][azurecli].
+command being unavailable, check the
+[Azure CLI installation instructions][azurecli].
 
 ## Instructions
 
@@ -137,7 +137,7 @@ command being unavailable, check the details about installing the Azure CLI
 To use this within Azure Pipelines, you should create a YAML definition similar
 to:
 
-```YAML
+```yaml
 steps:
 - task: ms-omex.prmetrics.prmetrics.PRMetrics@1
   displayName: PR Metrics

@@ -27,7 +27,7 @@ task to a new or existing [build definition][build].
 
 Or you can use YAML:
 
-```YAML
+```yaml
 steps:
 - task: PRMetrics@1
   displayName: PR Metrics
@@ -38,7 +38,7 @@ steps:
 
 If you wish to modify the inputs, YAML akin the to the following can be used:
 
-```YAML
+```yaml
 steps:
 - task: PRMetrics@1
   displayName: PR Metrics
@@ -57,7 +57,8 @@ steps:
   continueOnError: true
 ```
 
-Comprehensive documentation can be located [here][azurepipelinestask].
+Comprehensive documentation can be located in the
+[Azure Pipelines Task guide][azurepipelinestask].
 
 ### Parameters
 
@@ -98,17 +99,18 @@ Further information can be found in [Microsoft's privacy statement][privacy].
 
 ## Feedback & Issues
 
-A more thorough description of the extension can be found [here][readme].
+A more thorough description of the extension can be found in the
+[README][readme].
 
 If you have feedback or encounter errors, please file an issue on
 [GitHub][issues].
 
-[build]: https://docs.microsoft.com/azure/devops/pipelines/create-first-pipeline
 [azurepipelinestask]: https://github.com/microsoft/PR-Metrics/blob/main/docs/azure-pipelines-task.md
-[globs]: https://docs.microsoft.com/azure/devops/pipelines/tasks/file-matching-patterns
+[build]: https://docs.microsoft.com/azure/devops/pipelines/create-first-pipeline
 [defaultextensions]: https://github.com/microsoft/PR-Metrics/blob/main/docs/default-code-file-extensions.md
-[workloadidentityfederation]: https://github.com/microsoft/PR-Metrics/blob/main/docs/workload-identity-federation.md
 [github]: https://github.com/microsoft/PR-Metrics
+[globs]: https://docs.microsoft.com/azure/devops/pipelines/tasks/file-matching-patterns
+[issues]: https://github.com/microsoft/PR-Metrics/issues
 [privacy]: https://privacy.microsoft.com/privacystatement
 [readme]: https://github.com/microsoft/PR-Metrics/blob/main/README.md
-[issues]: https://github.com/microsoft/PR-Metrics/issues
+[workloadidentityfederation]: https://github.com/microsoft/PR-Metrics/blob/main/docs/workload-identity-federation.md
