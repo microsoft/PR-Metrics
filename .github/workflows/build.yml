@@ -69,7 +69,7 @@ jobs:
         name: Git – Commit & Push (Signed)
         uses: grafana/github-api-commit-action@cb4e7799d2cd77d607acf280ed70a0d03572d8bd # v1.0.0
         with:
-          commit-message: Fixing linting, Updating dist folder
+          commit-message: "chore: fixing linting, updating dist folder"
           create-branch-on-remote: true
           stage-all-files: true
           token: ${{ secrets.PR_METRICS_TOKEN }}
@@ -210,6 +210,14 @@ jobs:
           VALIDATE_JSON: false
           VALIDATE_TYPESCRIPT_ES: false
           VALIDATE_TYPESCRIPT_STANDARD: false
+
+      - name: Git – Commit & Push (Signed)
+        uses: grafana/github-api-commit-action@cb4e7799d2cd77d607acf280ed70a0d03572d8bd # v1.0.0
+        with:
+          commit-message: "chore: fixing linting"
+          create-branch-on-remote: true
+          stage-all-files: true
+          token: ${{ secrets.PR_METRICS_TOKEN }}
 
   dependabot:
     if: ${{ github.actor == 'dependabot[bot]' }}
