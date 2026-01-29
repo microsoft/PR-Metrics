@@ -198,7 +198,6 @@ jobs:
         uses: github/super-linter@b807e99ddd37e444d189cfd2c2ca1274d8ae8ef1 # v7
         env:
           EDITORCONFIG_FILE_NAME: ../../.editorconfig
-          ENABLE_GITHUB_ACTIONS_STEP_SUMMARY: false
           FILTER_REGEX_EXCLUDE: .*dist/.*
           FIX_JSON_PRETTIER: true
           FIX_MARKDOWN_PRETTIER: true
@@ -209,14 +208,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITLEAKS_CONFIG_FILE: gitleaks.toml
           MARKDOWN_CONFIG_FILE: ../../.markdownlint.json
-          SAVE_SUPER_LINTER_SUMMARY: false
           VALIDATE_JSON: false
           VALIDATE_TYPESCRIPT_ES: false
           VALIDATE_TYPESCRIPT_STANDARD: false
-
-      - if: github.ref_name != 'main'
-        name: Delete Unwanted Files
-        run: sudo rm -rf github_conf/branch_protection_rules.json
 
       - if: github.ref_name != 'main'
         name: Detect Changes
