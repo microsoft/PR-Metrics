@@ -212,13 +212,6 @@ jobs:
           VALIDATE_TYPESCRIPT_ES: false
           VALIDATE_TYPESCRIPT_STANDARD: false
 
-      - if: github.ref_name != 'main'
-        name: Delete Unwanted Files
-        shell: pwsh
-        run: |
-          Remove-Item -Path 'super-linter-output/super-linter-summary.md' -Force -ErrorAction SilentlyContinue
-          Remove-Item -Path 'github_conf/branch_protection_rules.json' -Force -ErrorAction SilentlyContinue
-
       # Super-Linter must operate on the commit, but changes must be pushed to
       # the branch. To facilitate this, the changes are stashed, the branch is
       # checked out, and the changes are applied back.
@@ -239,6 +232,27 @@ jobs:
         run: git stash pop || true
 
       - if: github.ref_name != 'main'
+        name: Delete Unwanted Files
+        shell: pwsh
+        run: |
+          Remove-Item -Path 'super-linter-output/super-linter-summary.md' -Force -ErrorAction SilentlyContinue
+          Remove-Item -Path 'github_conf/branch_protection_rules.json' -Force -ErrorAction SilentlyContinue
+
+      - if: github.ref_name != 'main'
+        name: Git – Add Changed Files
+        run: git add -A
+
+      - if: github.ref_name != 'main'
+        name: Detect Changes
+        id: detect-changes
+        shell: pwsh
+        run: |
+          $GitStatus = git status
+          Write-Output -InputObject $GitStatus
+          $ChangesPresent = -not $GitStatus.Contains("nothing to commit, working tree clean")
+          Write-Output -InputObject "CHANGES_PRESENT=$ChangesPresent" >> $Env:GITHUB_OUTPUT
+
+      - if: github.ref_name != 'main' && steps.detect-changes.outputs.CHANGES_PRESENT == 'True'
         name: Git – Commit & Push (Signed)
         uses: grafana/github-api-commit-action@cb4e7799d2cd77d607acf280ed70a0d03572d8bd # v1.0.0
         with:
