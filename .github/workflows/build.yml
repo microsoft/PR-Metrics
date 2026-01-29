@@ -47,10 +47,12 @@ jobs:
       - name: npm – Build Package
         run: npm run build:package
 
-      - name: Git – Add Changed Files
+      - if: github.ref_name != 'main'
+        name: Git – Add Changed Files
         run: git add -A
 
-      - name: Detect Changes
+      - if: github.ref_name != 'main'
+        name: Detect Changes
         id: detect-changes
         shell: pwsh
         run: |-
@@ -60,7 +62,7 @@ jobs:
           Write-Output -InputObject $NoChangesPresent
           Write-Output -InputObject "NO_CHANGES_PRESENT=$NoChangesPresent" >> $Env:GITHUB_OUTPUT
 
-      - if: ${{ steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False' }}
+      - if: steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False'
         name: Git – Commit & Push (Signed)
         uses: grafana/github-api-commit-action@cb4e7799d2cd77d607acf280ed70a0d03572d8bd # v1.0.0
         with:
@@ -203,7 +205,7 @@ jobs:
       - name: gh – Log Version
         run: gh --version
 
-      - if: ${{ github.actor == 'dependabot[bot]' }}
+      - if: github.actor == 'dependabot[bot]'
         name: Enable Auto-Merge
         run: gh pr merge --auto --delete-branch --squash "${{ github.event.pull_request.html_url }}"
         env:
