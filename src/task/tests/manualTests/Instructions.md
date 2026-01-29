@@ -23,12 +23,12 @@ complement the unit tests to provide a high level of coverage.
 1. Commit the changes to your repository.
 1. Deploy your local PR Metrics code to the server using:
 
-   ```Batchfile
+   ```batchfile
    tfx login --service-url https://<account>.visualstudio.com/DefaultCollection --token <PAT>
    ```
 
    You can generate a PAT with at least the "Agent Pools (Read & manage)" scope
-   by following the instructions [here][tfxcli]. This will only need to be
+   by following the [tfx-cli instructions][tfxcli]. This will only need to be
    performed the first time you use tfx-cli.
 
 1. To build and deploy, from within the `src/task` folder, run `npm run deploy`.
@@ -95,7 +95,7 @@ complement the unit tests to provide a high level of coverage.
 1. Delete `delete.ts`.
 1. Add the following to the end of `linesToAdd.ts` and `temporary.ts`:
 
-   ```TypeScript
+   ```typescript
    // Added Line
    // Added Line
    // Added Line

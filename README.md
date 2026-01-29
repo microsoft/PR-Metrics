@@ -52,12 +52,13 @@ If no PR description is provided, the description will be set to:
 You will need to set the environment variable `PR_Metrics_Access_Token` to a
 Personal Access Token (PAT) with at least Read and Write access to pull
 requests. If you are using a Classic PAT, it will need at least the 'repos'
-scope. Instructions on creating a new PAT can be found [here][githubpat].
-Alternatively, you can use the in-built `GITHUB_TOKEN`.
+scope. Instructions on creating a new PAT can be found
+[in the GitHub documentation][githubpat]. Alternatively, you can use the
+in-built `GITHUB_TOKEN`.
 
 If using `GITHUB_TOKEN`, the following permissions are required:
 
-```YAML
+```yaml
 permissions:
   pull-requests: write
   statuses: write
@@ -94,7 +95,7 @@ should typically be excluded. Excluded files will contain a comment to inform
 reviewers that they are unlikely to need to review those files. If left blank, a
 default of
 
-```Text
+```text
 **/*
 !**/package-lock.json
 ```
@@ -106,7 +107,7 @@ default of
 [Globs][globs] specifying the files and folders to consider tests. If left
 blank, a default of
 
-```Text
+```text
 **/*{{t,T}est,TEST}*
 **/*{{t,T}est,TEST}*/**
 **/*.{{s,S}pec,SPEC}.*
@@ -118,15 +119,15 @@ blank, a default of
 ### code-file-extensions
 
 Extensions for files containing code, so that non-code files can be excluded. If
-left blank, a default set of file extensions will be used, which are listed
-[here][defaultcodefileextensions].
+left blank, a [default set of file extensions][defaultcodefileextensions] will
+be used.
 
 ## Example Usage
 
 The default input values are expected to be appropriate for most builds.
 Therefore, the following YAML definition is recommended:
 
-```YAML
+```yaml
 uses: microsoft/PR-Metrics@v1.7.10
 name: PR Metrics
 env:
@@ -136,7 +137,7 @@ continue-on-error: true
 
 If you wish to modify the inputs, YAML akin the to the following can be used:
 
-```YAML
+```yaml
 uses: microsoft/PR-Metrics@v1.7.10
 name: PR Metrics
 env:
@@ -162,8 +163,8 @@ information, including the Pull Request ID, is available to PR Metrics.
 `pull_request_target` will not work as insufficient information is available
 when using this trigger.**
 
-Instructions on using the action within Azure Pipelines can be found
-[here][azurepipelinestask].
+For instructions on using the action within Azure Pipelines, see the
+[Azure Pipelines task documentation][azurepipelinestask].
 
 ## Git History
 
@@ -171,7 +172,7 @@ If your repository contains _any_ non-linear history, it will be necessary to
 fetch Git history during checkout. This can be done by updating the
 `actions/checkout` step:
 
-```YAML
+```yaml
 - uses: actions/checkout@4.1.7
   fetch-depth: 0
 ```
@@ -187,8 +188,8 @@ history such as "squash merge" or "rebase and fast-forward".
 
 ## Troubleshooting
 
-A set of steps for troubleshooting any issues encountered can be found
-[here][troubleshooting].
+For steps on troubleshooting any issues encountered, see the
+[troubleshooting guide][troubleshooting].
 
 ## Contributing
 
@@ -209,15 +210,15 @@ see the [Code of Conduct FAQ][codeofconductfaq] or contact
 comments.
 
 [azuredevops]: https://azure.microsoft.com/services/devops/
-[vsmarketplace]: https://aka.ms/PRMetrics/AzureDevOps
-[githubpat]: https://docs.github.com/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token
-[globs]: https://en.wikipedia.org/wiki/Glob_(programming)
-[defaultcodefileextensions]: docs/default-code-file-extensions.md
 [azurepipelinestask]: docs/azure-pipelines-task.md
-[github-token-pemissions]: https://docs.github.com/actions/security-guides/automatic-token-authentication#permissions-for-the-github_token
-[contributing]: .github/CONTRIBUTING.md
-[license]: LICENSE
 [codeofconduct]: https://opensource.microsoft.com/codeofconduct/
 [codeofconductfaq]: https://opensource.microsoft.com/codeofconduct/faq/
+[contributing]: .github/CONTRIBUTING.md
+[defaultcodefileextensions]: docs/default-code-file-extensions.md
+[github-token-pemissions]: https://docs.github.com/actions/security-guides/automatic-token-authentication#permissions-for-the-github_token
+[githubpat]: https://docs.github.com/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token
+[globs]: https://en.wikipedia.org/wiki/Glob_(programming)
+[license]: LICENSE
 [opencodeemail]: mailto:opencode@microsoft.com
 [troubleshooting]: docs/troubleshooting.md
+[vsmarketplace]: https://aka.ms/PRMetrics/AzureDevOps
