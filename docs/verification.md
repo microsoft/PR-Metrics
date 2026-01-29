@@ -245,7 +245,8 @@ attestations, which provide strong provenance guarantees.
 
 ## Questions and Support
 
-If you have questions about verifying releases or encounter issues with verification:
+If you have questions about verifying releases or encounter issues with
+verification:
 
 1. Check the [troubleshooting guide][troubleshooting]
 1. Review existing [GitHub Discussions][discussions]
