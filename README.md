@@ -185,6 +185,14 @@ nature of Git history.
 To avoid this, it is recommended to only use commit types that squash the Git
 history such as "squash merge" or "rebase and fast-forward".
 
+## Security
+
+PR Metrics releases include cryptographic attestations and signatures to ensure
+artifact integrity and authenticity. For information on verifying downloads, see
+[the verification details][verification].
+
+For security vulnerability reporting, see the [security policy][security].
+
 ## Troubleshooting
 
 A set of steps for troubleshooting any issues encountered can be found
@@ -220,4 +228,6 @@ comments.
 [codeofconduct]: https://opensource.microsoft.com/codeofconduct/
 [codeofconductfaq]: https://opensource.microsoft.com/codeofconduct/faq/
 [opencodeemail]: mailto:opencode@microsoft.com
+[security]: SECURITY.md
 [troubleshooting]: docs/troubleshooting.md
+[verification]: docs/verification.md
