@@ -56,10 +56,9 @@ jobs:
         id: detect-changes
         shell: pwsh
         run: |-
-          $GitStatus = git status
+          $GitStatus = git status --porcelain
           Write-Output -InputObject $GitStatus
-          $ChangesPresent = -not $GitStatus.Contains("nothing to commit, working tree clean")
-          Write-Output -InputObject $ChangesPresent
+          $ChangesPresent = -not [string]::IsNullOrWhiteSpace($GitStatus)
           Write-Output -InputObject "CHANGES_PRESENT=$ChangesPresent" >> $Env:GITHUB_OUTPUT
 
       - if: github.ref_name != 'main' && steps.detect-changes.outputs.CHANGES_PRESENT == 'True'
