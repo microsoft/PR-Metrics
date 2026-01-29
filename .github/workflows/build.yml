@@ -192,6 +192,8 @@ jobs:
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           fetch-depth: 0
+          ref: ${{ github.HEAD_REF }}
+          token: ${{ secrets.PR_METRICS_TOKEN }}
 
       - name: Super Linter
         uses: github/super-linter@b807e99ddd37e444d189cfd2c2ca1274d8ae8ef1 # v7
@@ -215,6 +217,7 @@ jobs:
         uses: grafana/github-api-commit-action@cb4e7799d2cd77d607acf280ed70a0d03572d8bd # v1.0.0
         with:
           commit-message: "chore: fixing linting"
+          create-branch-on-remote: true
           stage-all-files: true
           token: ${{ secrets.PR_METRICS_TOKEN }}
 
