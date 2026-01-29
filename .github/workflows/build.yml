@@ -213,10 +213,9 @@ jobs:
           VALIDATE_TYPESCRIPT_STANDARD: false
 
       - name: Delete Unwanted Files
-        shell: pwsh
         run: |
-          Remove-Item -Path 'super-linter-output/super-linter-summary.md' -Force -ErrorAction SilentlyContinue
-          Remove-Item -Path 'github_conf/branch_protection_rules.json' -Force -ErrorAction SilentlyContinue
+          sudo rm -rf super-linter-output/super-linter-summary.md
+          sudo rm -rf github_conf/branch_protection_rules.json
 
       # Super-Linter must operate on the commit, but changes must be pushed to
       # the branch. To facilitate this, the changes are stashed, the branch is
