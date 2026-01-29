@@ -58,11 +58,11 @@ jobs:
         run: |-
           $GitStatus = git status
           Write-Output -InputObject $GitStatus
-          $NoChangesPresent = $GitStatus.Contains("nothing to commit, working tree clean")
-          Write-Output -InputObject $NoChangesPresent
-          Write-Output -InputObject "NO_CHANGES_PRESENT=$NoChangesPresent" >> $Env:GITHUB_OUTPUT
+          $ChangesPresent = -not $GitStatus.Contains("nothing to commit, working tree clean")
+          Write-Output -InputObject $ChangesPresent
+          Write-Output -InputObject "CHANGES_PRESENT=$ChangesPresent" >> $Env:GITHUB_OUTPUT
 
-      - if: steps.detect-changes.outputs.NO_CHANGES_PRESENT == 'False'
+      - if: github.ref_name != 'main' && steps.detect-changes.outputs.CHANGES_PRESENT == 'True'
         name: Git – Commit & Push (Signed)
         uses: grafana/github-api-commit-action@cb4e7799d2cd77d607acf280ed70a0d03572d8bd # v1.0.0
         with:
