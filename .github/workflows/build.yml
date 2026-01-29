@@ -215,10 +215,11 @@ jobs:
         run: git stash --include-untracked || true
 
       - name: Git – Checkout PR Branch
+        env:
+          HEAD_REF: ${{ github.head_ref }}
         run: |
-          git remote set-url origin "https://x-access-token:${{ secrets.PR_METRICS_TOKEN }}@github.com/${{ github.repository }}.git"
-          git fetch origin ${{ github.head_ref }}
-          git checkout ${{ github.head_ref }}
+          git fetch origin "$HEAD_REF"
+          git checkout "$HEAD_REF"
 
       - name: Git – Apply Stashed Changes
         run: git stash pop || true
