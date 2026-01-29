@@ -47,7 +47,7 @@ The codebase uses a unique dual-platform architecture with dependency injection:
 
 ### Build Commands (from root)
 
-```bash
+```batchfile
 npm run build:debug    # Builds with source maps for debugging
 npm run build:release  # Production build with minification
 npm run build:package  # Creates dist/ for GitHub Action
