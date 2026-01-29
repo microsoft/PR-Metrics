@@ -198,7 +198,9 @@ jobs:
         uses: github/super-linter@b807e99ddd37e444d189cfd2c2ca1274d8ae8ef1 # v7
         env:
           EDITORCONFIG_FILE_NAME: ../../.editorconfig
+          ENABLE_GITHUB_ACTIONS_STEP_SUMMARY: false
           FILTER_REGEX_EXCLUDE: .*dist/.*
+          SAVE_SUPER_LINTER_SUMMARY: false
           FIX_JSON_PRETTIER: true
           FIX_MARKDOWN_PRETTIER: true
           FIX_MARKDOWN: true
@@ -212,34 +214,11 @@ jobs:
           VALIDATE_TYPESCRIPT_ES: false
           VALIDATE_TYPESCRIPT_STANDARD: false
 
-      - name: Delete Unwanted Files
+      - if: github.ref_name != 'main'
+        name: Delete Unwanted Files
         run: |
           sudo rm -rf super-linter-output/super-linter-summary.md
           sudo rm -rf github_conf/branch_protection_rules.json
-
-      # Super-Linter must operate on the commit, but changes must be pushed to
-      # the branch. To facilitate this, the changes are stashed, the branch is
-      # checked out, and the changes are applied back.
-      - if: github.ref_name != 'main'
-        name: Git – Stash Changes
-        run: git stash --include-untracked || true
-
-      - if: github.ref_name != 'main'
-        name: Git – Checkout PR Branch
-        run: |
-          git fetch origin "$HEAD_REF"
-          git checkout "$HEAD_REF"
-        env:
-          HEAD_REF: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
-
-      - if: github.ref_name != 'main'
-        name: Git – Apply Stashed Changes
-        run: git stash pop || true
-
-      - if: github.ref_name != 'main'
-        name: Git – Add Changed Files
-        run: git add -A
-
       - if: github.ref_name != 'main'
         name: Detect Changes
         id: detect-changes
@@ -249,6 +228,29 @@ jobs:
           Write-Output -InputObject $GitStatus
           $ChangesPresent = -not $GitStatus.Contains("nothing to commit, working tree clean")
           Write-Output -InputObject "CHANGES_PRESENT=$ChangesPresent" >> $Env:GITHUB_OUTPUT
+
+      # Super-Linter must operate on the commit, but changes must be pushed to
+      # the branch. To facilitate this, the changes are stashed, the branch is
+      # checked out, and the changes are applied back.
+      - if: github.ref_name != 'main' && steps.detect-changes.outputs.CHANGES_PRESENT == 'True'
+        name: Git – Stash Changes
+        run: git stash --include-untracked || true
+
+      - if: github.ref_name != 'main' && steps.detect-changes.outputs.CHANGES_PRESENT == 'True'
+        name: Git – Checkout PR Branch
+        run: |
+          git fetch origin "$HEAD_REF"
+          git checkout "$HEAD_REF"
+        env:
+          HEAD_REF: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
+
+      - if: github.ref_name != 'main' && steps.detect-changes.outputs.CHANGES_PRESENT == 'True'
+        name: Git – Apply Stashed Changes
+        run: git stash pop || true
+
+      - if: github.ref_name != 'main' && steps.detect-changes.outputs.CHANGES_PRESENT == 'True'
+        name: Git – Add Changed Files
+        run: git add -A
 
       - if: github.ref_name != 'main' && steps.detect-changes.outputs.CHANGES_PRESENT == 'True'
         name: Git – Commit & Push (Signed)
