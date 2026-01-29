@@ -67,11 +67,11 @@ The attestation verification confirms:
 
 You can also verify attestations programmatically using the GitHub API:
 
-```batchfile
-FOR /F "tokens=*" %%H IN ('certutil -hashfile ms-omex.PRMetrics.vsix SHA256 ^| findstr /v "hash"') DO (
-  curl -H "Authorization: Bearer %GITHUB_TOKEN%" ^
-    "https://api.github.com/repos/microsoft/PR-Metrics/attestations/sha256:%%H"
-)
+```powershell
+$hash = (Get-FileHash -Path 'ms-omex.PRMetrics.vsix' -Algorithm 'SHA256').Hash.ToLowerInvariant()
+$uri = "https://api.github.com/repos/microsoft/PR-Metrics/attestations/sha256:$hash"
+$headers = @{ Authorization = "Bearer $env:GITHUB_TOKEN" }
+Invoke-RestMethod -Uri $uri -Headers $headers
 ```
 
 This returns the attestation bundle in JSON format, which you can verify using
@@ -105,7 +105,7 @@ process and can be verified without needing to manage signing keys.
    ```batchfile
    cosign verify-blob ms-omex.PRMetrics.vsix ^
      --bundle ms-omex.PRMetrics.vsix.sigstore.json ^
-     --certificate-identity-regexp="^https://github.com/microsoft/PR-Metrics/" ^
+     --certificate-identity-regexp="^https://github.com/microsoft/PR-Metrics/\.github/workflows/release-phase-3\.yml@refs/heads/main$" ^
      --certificate-oidc-issuer="https://token.actions.githubusercontent.com"
    ```
 
@@ -132,13 +132,12 @@ To verify additional details about the signature, you can use:
 ```batchfile
 cosign verify-blob ms-omex.PRMetrics.vsix ^
   --bundle ms-omex.PRMetrics.vsix.sigstore.json ^
-  --certificate-identity-regexp="^https://github.com/microsoft/PR-Metrics/" ^
+  --certificate-identity-regexp="^https://github.com/microsoft/PR-Metrics/\.github/workflows/release-phase-3\.yml@refs/heads/main$" ^
   --certificate-oidc-issuer="https://token.actions.githubusercontent.com" ^
-  --certificate-github-workflow-repository="microsoft/PR-Metrics" ^
-  --certificate-github-workflow-name="Release – Phase 3"
+  --certificate-github-workflow-repository="microsoft/PR-Metrics"
 ```
 
-This additionally verifies the specific workflow name that created the
+This additionally verifies the specific workflow repository that created the
 signature.
 
 ## Security Guarantees
