@@ -100,7 +100,7 @@ Further information can be found in [Microsoft's privacy statement][privacy].
 ## Feedback & Issues
 
 A more thorough description of the extension can be found in the
-[README][readme].
+[Readme][readme].
 
 If you have feedback or encounter errors, please file an issue on
 [GitHub][issues].
