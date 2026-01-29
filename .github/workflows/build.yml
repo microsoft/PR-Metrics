@@ -11,9 +11,6 @@ on:
   pull_request:
     branches:
       - main
-  merge_group:
-    types:
-      - checks_requested
   schedule:
     - cron: 0 9 * * 1
   workflow_dispatch: null
@@ -217,9 +214,9 @@ jobs:
         id: detect-changes
         shell: pwsh
         run: |
-          $GitStatus = git status
+          $GitStatus = git status --porcelain
           Write-Output -InputObject $GitStatus
-          $ChangesPresent = -not $GitStatus.Contains("nothing to commit, working tree clean")
+          $ChangesPresent = -not [string]::IsNullOrWhiteSpace($GitStatus)
           Write-Output -InputObject "CHANGES_PRESENT=$ChangesPresent" >> $Env:GITHUB_OUTPUT
 
       # Super-Linter must operate on the commit, but changes must be pushed to
@@ -227,7 +224,7 @@ jobs:
       # checked out, and the changes are applied back.
       - if: github.ref_name != 'main' && steps.detect-changes.outputs.CHANGES_PRESENT == 'True'
         name: Git – Stash Changes
-        run: git stash --include-untracked || true
+        run: git stash --include-untracked
 
       - if: github.ref_name != 'main' && steps.detect-changes.outputs.CHANGES_PRESENT == 'True'
         name: Git – Checkout PR Branch
@@ -239,7 +236,7 @@ jobs:
 
       - if: github.ref_name != 'main' && steps.detect-changes.outputs.CHANGES_PRESENT == 'True'
         name: Git – Apply Stashed Changes
-        run: git stash pop || true
+        run: git stash pop
 
       - if: github.ref_name != 'main' && steps.detect-changes.outputs.CHANGES_PRESENT == 'True'
         name: Git – Add Changed Files
