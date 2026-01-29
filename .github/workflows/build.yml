@@ -198,7 +198,6 @@ jobs:
         uses: github/super-linter@b807e99ddd37e444d189cfd2c2ca1274d8ae8ef1 # v7
         env:
           EDITORCONFIG_FILE_NAME: ../../.editorconfig
-          ENABLE_GITHUB_PULL_REQUEST_SUMMARY_COMMENT: false
           FILTER_REGEX_EXCLUDE: .*dist/.*
           FIX_JSON_PRETTIER: true
           FIX_MARKDOWN_PRETTIER: true
@@ -209,28 +208,38 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITLEAKS_CONFIG_FILE: gitleaks.toml
           MARKDOWN_CONFIG_FILE: ../../.markdownlint.json
-          SAVE_SUPER_LINTER_SUMMARY: false
           VALIDATE_JSON: false
           VALIDATE_TYPESCRIPT_ES: false
           VALIDATE_TYPESCRIPT_STANDARD: false
 
+      - if: github.ref_name != 'main'
+        name: Delete Unwanted Files
+        shell: pwsh
+        run: |
+          Remove-Item -Path 'super-linter-output/super-linter-summary.md' -Force -ErrorAction SilentlyContinue
+          Remove-Item -Path 'github_conf/branch_protection_rules.json' -Force -ErrorAction SilentlyContinue
+
       # Super-Linter must operate on the commit, but changes must be pushed to
       # the branch. To facilitate this, the changes are stashed, the branch is
       # checked out, and the changes are applied back.
-      - name: Git – Stash Changes
+      - if: github.ref_name != 'main'
+        name: Git – Stash Changes
         run: git stash --include-untracked || true
 
-      - name: Git – Checkout PR Branch
+      - if: github.ref_name != 'main'
+        name: Git – Checkout PR Branch
         run: |
           git fetch origin "$HEAD_REF"
           git checkout "$HEAD_REF"
         env:
           HEAD_REF: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
 
-      - name: Git – Apply Stashed Changes
+      - if: github.ref_name != 'main'
+        name: Git – Apply Stashed Changes
         run: git stash pop || true
 
-      - name: Git – Commit & Push (Signed)
+      - if: github.ref_name != 'main'
+        name: Git – Commit & Push (Signed)
         uses: grafana/github-api-commit-action@cb4e7799d2cd77d607acf280ed70a0d03572d8bd # v1.0.0
         with:
           commit-message: "chore: fix linting"
