@@ -198,6 +198,12 @@ jobs:
         env:
           EDITORCONFIG_FILE_NAME: ../../.editorconfig
           FILTER_REGEX_EXCLUDE: .*dist/.*
+          FIX_JSON_PRETTIER: true
+          FIX_MARKDOWN_PRETTIER: true
+          FIX_MARKDOWN: true
+          FIX_NATURAL_LANGUAGE: true
+          FIX_TYPESCRIPT_PRETTIER: true
+          FIX_YAML_PRETTIER: true
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITLEAKS_CONFIG_FILE: gitleaks.toml
           MARKDOWN_CONFIG_FILE: ../../.markdownlint.json
