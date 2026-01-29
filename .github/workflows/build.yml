@@ -69,7 +69,7 @@ jobs:
         name: Git – Commit & Push (Signed)
         uses: grafana/github-api-commit-action@cb4e7799d2cd77d607acf280ed70a0d03572d8bd # v1.0.0
         with:
-          commit-message: "chore: fixing linting, updating dist folder"
+          commit-message: "chore: fix linting, update dist folder"
           create-branch-on-remote: true
           stage-all-files: true
           token: ${{ secrets.PR_METRICS_TOKEN }}
@@ -186,6 +186,7 @@ jobs:
     name: Validate – Linter
     runs-on: ubuntu-latest
     permissions:
+      contents: write
       statuses: write
     steps:
       - name: Checkout
@@ -224,7 +225,7 @@ jobs:
           git fetch origin "$HEAD_REF"
           git checkout "$HEAD_REF"
         env:
-          HEAD_REF: ${{ github.head_ref }}
+          HEAD_REF: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
 
       - name: Git – Apply Stashed Changes
         run: git stash pop || true
@@ -232,7 +233,7 @@ jobs:
       - name: Git – Commit & Push (Signed)
         uses: grafana/github-api-commit-action@cb4e7799d2cd77d607acf280ed70a0d03572d8bd # v1.0.0
         with:
-          commit-message: "chore: fixing linting"
+          commit-message: "chore: fix linting"
           create-branch-on-remote: true
           stage-all-files: true
           token: ${{ secrets.PR_METRICS_TOKEN }}
