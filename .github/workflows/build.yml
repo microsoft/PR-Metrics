@@ -31,7 +31,7 @@ jobs:
         name: Checkout
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
-          ref: ${{ github.HEAD_REF }}
+          ref: ${{ github.head_ref }}
           token: ${{ secrets.PR_METRICS_TOKEN }}
 
       - if: ${{ github.actor == 'dependabot[bot]' }}
@@ -186,29 +186,42 @@ jobs:
     name: Validate – Linter
     runs-on: ubuntu-latest
     permissions:
-      contents: write
       statuses: write
     steps:
       - name: Checkout
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           fetch-depth: 0
-          ref: ${{ github.HEAD_REF }}
-          token: ${{ secrets.PR_METRICS_TOKEN }}
-          persist-credentials: false
 
       - name: Super Linter
         uses: github/super-linter@b807e99ddd37e444d189cfd2c2ca1274d8ae8ef1 # v7
         env:
           EDITORCONFIG_FILE_NAME: ../../.editorconfig
           FILTER_REGEX_EXCLUDE: .*dist/.*
+          FIX_JSON_PRETTIER: true
           FIX_MARKDOWN_PRETTIER: true
+          FIX_MARKDOWN: true
+          FIX_NATURAL_LANGUAGE: true
+          FIX_TYPESCRIPT_PRETTIER: true
+          FIX_YAML_PRETTIER: true
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITLEAKS_CONFIG_FILE: gitleaks.toml
           MARKDOWN_CONFIG_FILE: ../../.markdownlint.json
           VALIDATE_JSON: false
           VALIDATE_TYPESCRIPT_ES: false
           VALIDATE_TYPESCRIPT_STANDARD: false
+
+      - name: Git – Stash Changes
+        run: git stash --include-untracked || true
+
+      - name: Git – Checkout PR Branch
+        run: |
+          git remote set-url origin "https://x-access-token:${{ secrets.PR_METRICS_TOKEN }}@github.com/${{ github.repository }}.git"
+          git fetch origin ${{ github.head_ref }}
+          git checkout ${{ github.head_ref }}
+
+      - name: Git – Apply Stashed Changes
+        run: git stash pop || true
 
       - name: Git – Commit & Push (Signed)
         uses: grafana/github-api-commit-action@cb4e7799d2cd77d607acf280ed70a0d03572d8bd # v1.0.0
