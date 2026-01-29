@@ -186,6 +186,7 @@ jobs:
     name: Validate – Linter
     runs-on: ubuntu-latest
     permissions:
+      contents: write
       statuses: write
     steps:
       - name: Checkout
@@ -199,12 +200,7 @@ jobs:
         env:
           EDITORCONFIG_FILE_NAME: ../../.editorconfig
           FILTER_REGEX_EXCLUDE: .*dist/.*
-          FIX_JSON_PRETTIER: true
           FIX_MARKDOWN_PRETTIER: true
-          FIX_MARKDOWN: true
-          FIX_NATURAL_LANGUAGE: true
-          FIX_TYPESCRIPT_PRETTIER: true
-          FIX_YAML_PRETTIER: true
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITLEAKS_CONFIG_FILE: gitleaks.toml
           MARKDOWN_CONFIG_FILE: ../../.markdownlint.json
@@ -212,13 +208,19 @@ jobs:
           VALIDATE_TYPESCRIPT_ES: false
           VALIDATE_TYPESCRIPT_STANDARD: false
 
-      - name: Git – Commit & Push (Signed)
-        uses: grafana/github-api-commit-action@cb4e7799d2cd77d607acf280ed70a0d03572d8bd # v1.0.0
+      - name: Commit and push linting fixes
+        # Run only on:
+        # - Pull requests
+        # - Not on the default branch
+        if: >
+          github.event_name == 'pull_request' &&
+          github.ref_name != github.event.repository.default_branch
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit-message: "chore: fixing linting"
-          create-branch-on-remote: true
-          stage-all-files: true
-          token: ${{ secrets.PR_METRICS_TOKEN }}
+          branch: ${{ github.event.pull_request.head.ref || github.head_ref || github.ref }}
+          commit_message: "chore: fix linting issues"
+          commit_user_name: super-linter
+          commit_user_email: super-linter@super-linter.dev
 
   dependabot:
     if: ${{ github.actor == 'dependabot[bot]' }}
