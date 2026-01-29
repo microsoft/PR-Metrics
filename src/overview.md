@@ -29,32 +29,32 @@ Or you can use YAML:
 
 ```yaml
 steps:
-- task: PRMetrics@1
-  displayName: PR Metrics
-  env:
-    PR_METRICS_ACCESS_TOKEN: $(PR_Metrics_Access_Token)
-  continueOnError: true
+  - task: PRMetrics@1
+    displayName: PR Metrics
+    env:
+      PR_METRICS_ACCESS_TOKEN: $(PR_Metrics_Access_Token)
+    continueOnError: true
 ```
 
 If you wish to modify the inputs, YAML akin the to the following can be used:
 
 ```yaml
 steps:
-- task: PRMetrics@1
-  displayName: PR Metrics
-  env:
-    PR_METRICS_ACCESS_TOKEN: $(PR_Metrics_Access_Token)
-  inputs:
-    BaseSize: 200
-    GrowthRate: 2.0
-    TestFactor: 1.0
-    FileMatchingPatterns: |
-      **/*
-      !Ignore.cs
-    CodeFileExtensions: |
-      cs
-      ps1
-  continueOnError: true
+  - task: PRMetrics@1
+    displayName: PR Metrics
+    env:
+      PR_METRICS_ACCESS_TOKEN: $(PR_Metrics_Access_Token)
+    inputs:
+      BaseSize: 200
+      GrowthRate: 2.0
+      TestFactor: 1.0
+      FileMatchingPatterns: |
+        **/*
+        !Ignore.cs
+      CodeFileExtensions: |
+        cs
+        ps1
+    continueOnError: true
 ```
 
 Comprehensive documentation can be located in the

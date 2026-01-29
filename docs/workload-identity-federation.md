@@ -139,11 +139,11 @@ to:
 
 ```yaml
 steps:
-- task: ms-omex.prmetrics.prmetrics.PRMetrics@1
-  displayName: PR Metrics
-  inputs:
-    WorkloadIdentityFederation: PR-Metrics
-  continueOnError: true
+  - task: ms-omex.prmetrics.prmetrics.PRMetrics@1
+    displayName: PR Metrics
+    inputs:
+      WorkloadIdentityFederation: PR-Metrics
+    continueOnError: true
 ```
 
 Specify the name of the Service Connection within Azure DevOps as the
