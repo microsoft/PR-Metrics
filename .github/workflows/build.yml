@@ -197,6 +197,7 @@ jobs:
         uses: github/super-linter@b807e99ddd37e444d189cfd2c2ca1274d8ae8ef1 # v7
         env:
           EDITORCONFIG_FILE_NAME: ../../.editorconfig
+          ENABLE_GITHUB_PULL_REQUEST_SUMMARY_COMMENT: false
           FILTER_REGEX_EXCLUDE: .*dist/.*
           FIX_JSON_PRETTIER: true
           FIX_MARKDOWN_PRETTIER: true
@@ -207,19 +208,23 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITLEAKS_CONFIG_FILE: gitleaks.toml
           MARKDOWN_CONFIG_FILE: ../../.markdownlint.json
+          SAVE_SUPER_LINTER_SUMMARY: false
           VALIDATE_JSON: false
           VALIDATE_TYPESCRIPT_ES: false
           VALIDATE_TYPESCRIPT_STANDARD: false
 
+      # Super-Linter must operate on the commit, but changes must be pushed to
+      # the branch. To facilitate this, the changes are stashed, the branch is
+      # checked out, and the changes are applied back.
       - name: Git – Stash Changes
         run: git stash --include-untracked || true
 
       - name: Git – Checkout PR Branch
-        env:
-          HEAD_REF: ${{ github.head_ref }}
         run: |
           git fetch origin "$HEAD_REF"
           git checkout "$HEAD_REF"
+        env:
+          HEAD_REF: ${{ github.head_ref }}
 
       - name: Git – Apply Stashed Changes
         run: git stash pop || true
