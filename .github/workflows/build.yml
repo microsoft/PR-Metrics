@@ -52,7 +52,7 @@ jobs:
         name: Detect Changes
         id: detect-changes
         shell: pwsh
-        run: |-
+        run: |
           $GitStatus = git status --porcelain
           Write-Output -InputObject $GitStatus
           $ChangesPresent = -not [string]::IsNullOrWhiteSpace($GitStatus)
@@ -162,6 +162,7 @@ jobs:
           config-file: .github/linters/codeql.yml
           languages: javascript-typescript
           queries: security-extended,security-and-quality
+
       - name: Analyze
         uses: github/codeql-action/analyze@e296a935590eb16afc0c0108289f68c87e2a89a5 # v3.29.5
         with:
