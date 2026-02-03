@@ -52,9 +52,9 @@ To resolve this, the build process was adapted.
 
 1. After compiling the TypeScript code in ECMAScript, the result is merged into
    a single file by [ncc][ncc].
-2. The code is then processed using [Babel][babel] to transpile newer ECMAScript
+1. The code is then processed using [Babel][babel] to transpile newer ECMAScript
    concepts into older ones.
-3. The transpiled code includes unused dependencies, which are then removed by
+1. The transpiled code includes unused dependencies, which are then removed by
    another ncc execution.
 
 This process is only used for the Azure DevOps build. As GitHub does not require

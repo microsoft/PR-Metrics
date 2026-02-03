@@ -221,5 +221,5 @@ extensions defined in the [GitHub language detection logic][githublinguist].
 - `thor`
 - `watchr`
 
-[octoverse]: https://octoverse.github.com/
 [githublinguist]: https://github.com/github/linguist/blob/main/lib/linguist/languages.yml
+[octoverse]: https://octoverse.github.com/
