@@ -205,6 +205,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITLEAKS_CONFIG_FILE: gitleaks.toml
           MARKDOWN_CONFIG_FILE: ../../.markdownlint.json
+          # Disable linters that conflict with other linters.
           VALIDATE_JSON: false
           VALIDATE_TYPESCRIPT_ES: false
           VALIDATE_TYPESCRIPT_STANDARD: false
