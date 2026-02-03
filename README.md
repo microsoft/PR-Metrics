@@ -128,7 +128,7 @@ The default input values are expected to be appropriate for most builds.
 Therefore, the following YAML definition is recommended:
 
 ```yaml
-uses: microsoft/PR-Metrics@v1.7.10
+uses: microsoft/PR-Metrics@v1.7.11
 name: PR Metrics
 env:
   PR_METRICS_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -138,7 +138,7 @@ continue-on-error: true
 If you wish to modify the inputs, YAML akin the to the following can be used:
 
 ```yaml
-uses: microsoft/PR-Metrics@v1.7.10
+uses: microsoft/PR-Metrics@v1.7.11
 name: PR Metrics
 env:
   PR_METRICS_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
