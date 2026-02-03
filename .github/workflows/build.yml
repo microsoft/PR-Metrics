@@ -27,7 +27,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
-          ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
+          ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref_name }}
           token: ${{ secrets.PR_METRICS_TOKEN }}
 
       - name: Install Node.js
@@ -172,7 +172,6 @@ jobs:
     name: Validate – Linter
     runs-on: ubuntu-latest
     permissions:
-      contents: write
       statuses: write
     steps:
       - name: Checkout
@@ -222,7 +221,7 @@ jobs:
           git fetch origin "$HEAD_REF"
           git checkout "$HEAD_REF"
         env:
-          HEAD_REF: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
+          HEAD_REF: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref_name }}
 
       - if: github.ref_name != 'main' && steps.detect-changes.outputs.CHANGES_PRESENT == 'True'
         name: Git – Apply Stashed Changes
