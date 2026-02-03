@@ -75,7 +75,7 @@
     "fast-check": "4.5.3",
     "glob": "13.0.0",
     "mkdirp": "3.0.1",
-    "mocha": "^11.3.0",
+    "mocha": "^11.7.5",
     "ncp": "2.0.0",
     "npm-check-updates": "19.3.2",
     "rimraf": "6.1.2",
