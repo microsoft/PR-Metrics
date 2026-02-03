@@ -16,7 +16,7 @@ Pipelines created after this release will have shallow fetch set by default,
 unlike in earlier releases. This issue can be resolved by adding the following
 as the first step in your pipeline jobs:
 
-```YAML
+```yaml
 - checkout: self
   displayName: Checkout
   fetchDepth: 0
@@ -26,7 +26,7 @@ as the first step in your pipeline jobs:
 
 Next, run the following Git command as part of your build pipeline.
 
-```Batchfile
+```batchfile
 git diff --numstat --ignore-all-space origin/<target>...pull/<pull_request_id>/merge
 ```
 
@@ -51,24 +51,26 @@ the issue.
 If you are using Azure Pipelines, you can enable debug mode by setting the
 `system.debug` variable to `true` in your pipeline.
 
-```YAML
+```yaml
 variables:
   system.debug: true
 ```
 
-More information can be located [here][azurepipelines].
+More information can be located in the
+[Azure Pipelines troubleshooting documentation][azurepipelines].
 
 ### GitHub Actions
 
 If you are using GitHub Actions, you can enable debug mode by setting the
 `ACTIONS_STEP_DEBUG` environment variable to `true` in your workflow.
 
-```YAML
+```yaml
 env:
   ACTIONS_STEP_DEBUG: true
 ```
 
-More information can be located [here][github].
+More information can be located in the
+[GitHub Actions debugging documentation][github].
 
 [azuredevops209]: https://learn.microsoft.com/azure/devops/pipelines/yaml-schema/steps-checkout#shallow-fetch
 [azurepipelines]: https://learn.microsoft.com/azure/devops/pipelines/troubleshooting/review-logs

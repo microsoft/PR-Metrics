@@ -68,13 +68,13 @@ interfaces to add additional methods, while retaining the same access pattern.
    `npm install -g tfx-cli`.
 1. Sign in to the server using:
 
-   ```Batchfile
+   ```batchfile
    tfx login --service-url https://<account>.visualstudio.com/DefaultCollection --token <PAT>
    ```
 
    You can generate a PAT with at least the "Agent Pools (Read & manage)" scope
-   by following the instructions [here][tfxpat]. This will only need to be
-   performed the first time you use tfx-cli.
+   by following the [PAT generation instructions][tfxpat]. This will only need
+   to be performed the first time you use tfx-cli.
 
 1. To build and deploy, from within the `src/task` folder, run `npm run deploy`.
 
@@ -103,9 +103,8 @@ PR to be merged.
 Unfortunately, it is difficult to automatically test everything as the task runs
 on the Azure DevOps or GitHub platforms, which the unit tests cannot run on.
 Therefore, for Azure DevOps, it is recommended that you perform the following
-manual test cases outlined in [here][manualtesting] whenever significant changes
-are made. Similar instructions can be followed for testing the GitHub
-functionality.
+[manual test cases][manualtesting] whenever significant changes are made.
+Similar instructions can be followed for testing the GitHub functionality.
 
 ## Debugging
 
@@ -117,25 +116,25 @@ methods called, which can be used for posting bug reports, etc.
 If a failure occurs during the task, full debugging information will be
 outputted by default irrespective of the value of the `system.debug` variable.
 
-[contributing]: ../.github/CONTRIBUTING.md
-[typescript]: https://www.typescriptlang.org/
-[sdk]: https://github.com/microsoft/azure-pipelines-task-lib
-[octokit]: https://github.com/octokit
-[tfxcli]: https://github.com/Microsoft/tfs-cli
-[npm]: https://www.npmjs.com/
-[tfxpat]: https://docs.microsoft.com/azure/devops/extend/publish/command-line
-[mocha]: https://mochajs.org/
-[tsmockito]: https://github.com/NagRock/ts-mockito
 [aaa]: https://automationpanda.com/2020/07/07/arrange-act-assert-a-pattern-for-writing-good-tests/
-[eslint]: https://eslint.org/
-[typedoc]: https://typedoc.org/
-[depinjection]: https://en.wikipedia.org/wiki/Dependency_injection
-[reposfolder]: ../src/task/src/repos/
-[reposinvoker]: ../src/task/src/repos/reposInvoker.ts
-[azurereposinvoker]: ../src/task/src/repos/azureReposInvoker.ts
-[githubreposinvoker]: ../src/task/src/repos/gitHubReposInvoker.ts
-[runnersfolder]: ../src/task/src/runners/
-[runnerinvoker]: ../src/task/src/runners/runnerInvoker.ts
 [azurepipelinesrunnerinvoker]: ../src/task/src/runners/azurePipelinesRunnerInvoker.ts
+[azurereposinvoker]: ../src/task/src/repos/azureReposInvoker.ts
+[contributing]: ../.github/CONTRIBUTING.md
+[depinjection]: https://en.wikipedia.org/wiki/Dependency_injection
+[eslint]: https://eslint.org/
+[githubreposinvoker]: ../src/task/src/repos/gitHubReposInvoker.ts
 [githubrunnerinvoker]: ../src/task/src/runners/gitHubRunnerInvoker.ts
 [manualtesting]: ../src/task/tests/manualTests/Instructions.md
+[mocha]: https://mochajs.org/
+[npm]: https://www.npmjs.com/
+[octokit]: https://github.com/octokit
+[reposfolder]: ../src/task/src/repos/
+[reposinvoker]: ../src/task/src/repos/reposInvoker.ts
+[runnerinvoker]: ../src/task/src/runners/runnerInvoker.ts
+[runnersfolder]: ../src/task/src/runners/
+[sdk]: https://github.com/microsoft/azure-pipelines-task-lib
+[tfxcli]: https://github.com/Microsoft/tfs-cli
+[tfxpat]: https://docs.microsoft.com/azure/devops/extend/publish/command-line
+[tsmockito]: https://github.com/NagRock/ts-mockito
+[typedoc]: https://typedoc.org/
+[typescript]: https://www.typescriptlang.org/
