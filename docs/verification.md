@@ -205,7 +205,7 @@ To maximize security when using PR Metrics:
        gh attestation verify ms-omex.PRMetrics.vsix --repo microsoft/PR-Metrics
        cosign verify-blob ms-omex.PRMetrics.vsix \
          --bundle ms-omex.PRMetrics.vsix.sigstore.json \
-         --certificate-identity-regexp="^https://github.com/microsoft/PR-Metrics/" \
+         --certificate-identity-regexp="^https://github.com/microsoft/PR-Metrics/.github/workflows/release-phase-3\.yml@refs/heads/main$" \
          --certificate-oidc-issuer="https://token.actions.githubusercontent.com"
    ```
 
