@@ -32,7 +32,7 @@ hasn't been tampered with and was built from the expected source code.
 1. Download the VSIX file from the [releases page][releases]:
 
    ```batchfile
-   gh release download <version> --repo microsoft/PR-Metrics --pattern "ms-omex.PRMetrics.vsix"
+   gh release download {version} --repo microsoft/PR-Metrics --pattern "ms-omex.PRMetrics.vsix"
    ```
 
 1. Verify the attestation:
@@ -92,7 +92,7 @@ process and can be verified without needing to manage signing keys.
 1. Download both the VSIX file and the signature bundle:
 
    ```batchfile
-   gh release download <version> --repo microsoft/PR-Metrics --pattern "*.vsix*"
+   gh release download {version} --repo microsoft/PR-Metrics --pattern "*.vsix*"
    ```
 
    This will download:
