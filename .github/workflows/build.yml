@@ -52,10 +52,9 @@ jobs:
         name: Detect Changes
         id: detect-changes
         shell: pwsh
-        run: |-
-          $GitStatus = git status --porcelain
-          Write-Output -InputObject $GitStatus
-          $ChangesPresent = -not [string]::IsNullOrWhiteSpace($GitStatus)
+        run: |
+          git diff --quiet
+          $ChangesPresent = $LASTEXITCODE -ne 0
           Write-Output -InputObject "CHANGES_PRESENT=$ChangesPresent" >> $Env:GITHUB_OUTPUT
 
       - if: github.ref_name != 'main' && steps.detect-changes.outputs.CHANGES_PRESENT == 'True'
@@ -202,9 +201,8 @@ jobs:
         id: detect-changes
         shell: pwsh
         run: |
-          $GitStatus = git status --porcelain
-          Write-Output -InputObject $GitStatus
-          $ChangesPresent = -not [string]::IsNullOrWhiteSpace($GitStatus)
+          git diff --quiet
+          $ChangesPresent = $LASTEXITCODE -ne 0
           Write-Output -InputObject "CHANGES_PRESENT=$ChangesPresent" >> $Env:GITHUB_OUTPUT
 
       # Super-Linter must operate on the commit, but changes must be pushed to
