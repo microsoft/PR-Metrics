@@ -37,7 +37,7 @@ When Component Governance cannot retrieve license information, you must add it t
 
 > **Tip:** You can add multiple dependencies to the page and click **Harvest** once to process them all simultaneously.
 
-After clicking **Harvest**, you can try regenerating the license information by repeating Step 1 to check whether the updates have been applied. Processing may take up to a day, so you may need to wait before the licenses become available.
+After clicking **Harvest**, you can try regenerating the license information by repeating Step 1 to check whether the updates have been applied. Processing may take up to 48 hours, so you may need to wait before the licenses become available.
 
 ## Step 3: Update the License File and PR
 
