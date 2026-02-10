@@ -135,6 +135,12 @@ stages:
           - task: ComponentGovernanceComponentDetection@0
             displayName: Component Detection
 
+          - task: notice@0
+            displayName: Generate NOTICE File
+            inputs:
+              outputfile: $(System.DefaultWorkingDirectory)/obj/NOTICE
+              outputformat: text
+
           - task: PoliCheck@2
             displayName: PoliCheck
             inputs:
