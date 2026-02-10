@@ -70,7 +70,8 @@ npm run test:fast      # Quick test run during development
 - **Production**: `src/task/src/` - Main source code
 - **Tests**: `src/task/tests/` - Mirror source structure for test files
 - **Interfaces**: Separate `.d.ts` files for all major interfaces
-- **Build Outputs**: `debug/`, `release/`, `dist/` (git-ignored)
+- **Build Outputs**: `debug/`, `release/` (git-ignored), `dist/` (committed for
+  GitHub Action)
 
 ### Critical Git Command
 
@@ -111,10 +112,9 @@ The core functionality relies on:
 ### Environment Variables
 
 `PR_METRICS_ACCESS_TOKEN` - The only token variable read by the source code.
-Typically set to `${{ secrets.GITHUB_TOKEN }}` in workflows (requires
-`pull-requests: write`, `statuses: write` permissions) or to an Azure DevOps
-PAT. Can also be populated automatically by workload identity federation via
-`TokenManager`.
+Typically set to `${{ secrets.GITHUB_TOKEN }}` in workflows or to an Azure
+DevOps PAT. Can also be populated automatically by workload identity federation
+via `TokenManager`.
 
 ### External APIs
 
