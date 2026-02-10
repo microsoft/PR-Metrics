@@ -21,6 +21,10 @@ The codebase uses a unique dual-platform architecture with dependency injection:
   APIs
   - `reposInvoker.ts` routes to `gitHubReposInvoker.ts` or
     `azureReposInvoker.ts`
+  - Both extend `baseReposInvoker.ts`, which provides shared API error handling
+    (e.g., mapping 401/403/404 to access-error messages)
+  - `tokenManager.ts` handles workload identity federation as an alternative to
+    Personal Access Tokens
   - Single codebase handles both GitHub and Azure DevOps repositories
 
 ### Core Components
@@ -28,11 +32,16 @@ The codebase uses a unique dual-platform architecture with dependency injection:
 - **Entry Point**: `src/task/index.ts` - Simple DI container resolution and
   error handling
 - **Main Logic**: `src/task/src/pullRequestMetrics.ts` - Orchestrates the
-  workflow with parallel execution of `updateDetails()` and `updateComments()`
+  workflow, calling `codeMetricsCalculator.updateDetails()` and
+  `codeMetricsCalculator.updateComments()` in parallel via `Promise.all()`
 - **Metrics Engine**: `src/task/src/metrics/codeMetricsCalculator.ts` -
-  Validates conditions, calculates PR metrics
+  Validates conditions, calculates PR metrics, and defines `updateDetails()` and
+  `updateComments()`
 - **Git Integration**: `src/task/src/git/gitInvoker.ts` - Executes Git commands
-  for diff analysis
+  for diff analysis (numstat-based metrics)
+- **Diff Parsing**: `src/task/src/git/octokitGitDiffParser.ts` - Uses the
+  `parse-git-diff` library to determine the first changed line per file for
+  precise comment placement on GitHub PRs
 
 ### Key Patterns
 
@@ -51,7 +60,7 @@ The codebase uses a unique dual-platform architecture with dependency injection:
 npm run build:debug    # Builds with source maps for debugging
 npm run build:release  # Production build with minification
 npm run build:package  # Creates dist/ for GitHub Action
-npm run lint           # ESLint with strict TypeScript rules
+npm run lint           # ESLint with autofix (strict TypeScript rules)
 npm run test:fast      # Quick test run during development
 ```
 
@@ -71,7 +80,9 @@ The core functionality relies on:
 
 ### TypeScript Conventions
 
-- **Strict ESLint**: Uses `typescript-eslint/strict` with extensive custom rules
+- **Strict ESLint**: Flat config (`eslint.config.mjs`) extending
+  `strictTypeChecked` and `stylisticTypeChecked` presets with extensive custom
+  rules
 - **Explicit Types**: `@typescript-eslint/explicit-function-return-type`
   enforced
 - **Member Ordering**: Specific ordering enforced (fields → constructor →
@@ -80,10 +91,12 @@ The core functionality relies on:
 
 ### Testing Patterns
 
-- **Framework**: Mocha + ts-mockito + c8 for coverage
+- **Framework**: Mocha + ts-mockito + c8 for coverage + fast-check for
+  property-based testing
 - **Pattern**: Arrange-Act-Assert structure
 - **Coverage**: Maintain high coverage rates (critical for edge cases)
-- **Test Files**: `.spec.ts` files mirror source structure
+- **Test Files**: `.spec.ts` files mirror source structure; `.property.spec.ts`
+  files contain property-based (fuzz) tests
 
 ### Error Handling
 
@@ -96,9 +109,11 @@ The core functionality relies on:
 
 ### Environment Variables
 
-- `PR_METRICS_ACCESS_TOKEN` - GitHub PAT or Azure DevOps PAT
-- `GITHUB_TOKEN` - Built-in GitHub Actions token (requires
-  `pull-requests: write`, `statuses: write`)
+`PR_METRICS_ACCESS_TOKEN` - The only token variable read by the source code.
+Typically set to `${{ secrets.GITHUB_TOKEN }}` in workflows (requires
+`pull-requests: write`, `statuses: write` permissions) or to an Azure DevOps
+PAT. Can also be populated automatically by workload identity federation via
+`TokenManager`.
 
 ### External APIs
 
