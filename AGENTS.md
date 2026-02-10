@@ -40,8 +40,9 @@ The codebase uses a unique dual-platform architecture with dependency injection:
 - **Git Integration**: `src/task/src/git/gitInvoker.ts` - Executes Git commands
   for diff analysis (numstat-based metrics)
 - **Diff Parsing**: `src/task/src/git/octokitGitDiffParser.ts` - Uses the
-  `parse-git-diff` library to determine the first changed line per file for
-  precise comment placement on GitHub PRs
+  `parse-git-diff` library to determine, for each file, the first diff hunk
+  start line (a diff line suitable as a comment anchor) for precise comment
+  placement on GitHub PRs
 
 ### Key Patterns
 
