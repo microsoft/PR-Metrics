@@ -144,7 +144,7 @@ stages:
             displayName: Generate NOTICE File
             continueOnError: true
             inputs:
-              outputfile: $(System.DefaultWorkingDirectory)/temp/NOTICE
+              outputfile: $(System.DefaultWorkingDirectory)/temp/NOTICE.txt
               outputformat: text
 
           - pwsh: $(Build.SourcesDirectory)/.github/azure-devops/Update-LicenseFile.ps1
