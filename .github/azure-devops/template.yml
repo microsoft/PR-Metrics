@@ -178,6 +178,8 @@ stages:
               http_code=$(echo "$response" | tail -1)
               body=$(echo "$response" | sed '$d')
 
+              echo "GitHub API GET status: $http_code"
+
               existing_sha=""
               if [ "$http_code" = "200" ]; then
                 existing_sha=$(python3 -c "
@@ -186,6 +188,8 @@ stages:
               print(data['sha'])
               " <<< "$body")
 
+                echo "Existing file SHA: $existing_sha"
+
                 existing_content=$(python3 -c "
               import json, sys
               data = json.loads(sys.stdin.read())
@@ -193,13 +197,13 @@ stages:
               " <<< "$body")
 
                 if [ "$content_base64" = "$existing_content" ]; then
-                  echo "NOTICE.txt is unchanged. Skipping commit."
+                  echo "NOTICE.txt is unchanged (content matches). Skipping commit."
                   exit 0
                 fi
 
-                echo "NOTICE.txt has changed. Updating."
+                echo "NOTICE.txt has changed. Updating (SHA: $existing_sha)."
               else
-                echo "NOTICE.txt does not exist. Creating."
+                echo "NOTICE.txt does not exist on branch. Creating."
               fi
 
               echo "$content_base64" | python3 -c "
