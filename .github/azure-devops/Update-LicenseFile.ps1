@@ -23,6 +23,12 @@ foreach ($line in $lines)
 
 $prSection = ($prLines -join "`n").TrimEnd("`n") + "`n"
 
+# GitHub API headers (reused for content and comment API calls).
+$headers = @{
+    Accept        = 'application/vnd.github.v3+json'
+    Authorization = "token $env:GITHUB_PAT"
+}
+
 # Build combined content.
 $noticeFile = "$env:SYSTEM_DEFAULTWORKINGDIRECTORY/temp/NOTICE.txt"
 if (Test-Path -Path $noticeFile)
@@ -35,6 +41,51 @@ else
 {
     Write-Host -Object 'NOTICE file not found. Using PR Metrics license only.'
     $content = $prSection
+}
+
+# Post a PR comment if the Validation job encountered issues (warnings or errors).
+if ($env:BUILD_REASON -eq 'PullRequest' -and $env:PR_NUMBER -and $env:AGENT_JOBSTATUS -ne 'Succeeded')
+{
+    Write-Host -Object "Job status: $env:AGENT_JOBSTATUS. Posting PR comment."
+    $marker = '<!-- pr-metrics-notice-warning -->'
+    $commentsUrl = "https://api.github.com/repos/$env:REPO_NAME/issues/$env:PR_NUMBER/comments?per_page=100"
+    try
+    {
+        $existing = Invoke-RestMethod -Uri $commentsUrl -Headers $headers -Method Get -ErrorAction Stop
+        if (-not ($existing | Where-Object { $_.body -like "*$marker*" }))
+        {
+            if (Test-Path -Path $noticeFile)
+            {
+                $commentBody =
+                    "**Notice Generation Warning**`n`n" +
+                    "The ``notice@0`` task completed with warnings. " +
+                    "``src/LICENSE.txt`` has been updated but the third-party notices may be incomplete. " +
+                    "Check the pipeline logs for details.`n`n" +
+                    $marker
+            }
+            else
+            {
+                $commentBody =
+                    "**Notice Generation Warning**`n`n" +
+                    "The ``notice@0`` task did not produce a NOTICE file. " +
+                    "``src/LICENSE.txt`` has been updated with only the PR Metrics license. " +
+                    "Third-party notices are not included.`n`n" +
+                    $marker
+            }
+
+            $commentJson = ConvertTo-Json -InputObject @{ body = $commentBody } -Compress
+            Invoke-RestMethod -Uri $commentsUrl -Headers $headers -Method Post -Body $commentJson -ContentType 'application/json' | Out-Null
+            Write-Host -Object 'PR comment posted about NOTICE generation issues.'
+        }
+        else
+        {
+            Write-Host -Object 'PR comment already exists. Skipping.'
+        }
+    }
+    catch
+    {
+        Write-Host -Object "Failed to post PR comment: $($_.Exception.Message)"
+    }
 }
 
 # Determine target branch.
@@ -56,10 +107,6 @@ $contentBase64 = [System.Convert]::ToBase64String($bytes)
 
 # Check if the file already exists and is unchanged.
 $apiUrl = "https://api.github.com/repos/$env:REPO_NAME/contents/src/LICENSE.txt"
-$headers = @{
-    Accept        = 'application/vnd.github.v3+json'
-    Authorization = "token $env:GITHUB_PAT"
-}
 
 $existingSha = $null
 try

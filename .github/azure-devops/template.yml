@@ -153,10 +153,12 @@ stages:
             condition: ne(variables['ADOTOGITHUB'], '')
             env:
               GITHUB_PAT: $(ADOTOGITHUB)
+              AGENT_JOBSTATUS: $(Agent.JobStatus)
               BUILD_REASON: $(Build.Reason)
-              SOURCE_BRANCH: $(Build.SourceBranch)
+              PR_NUMBER: $(System.PullRequest.PullRequestNumber)
               PR_SOURCE_BRANCH: $(System.PullRequest.SourceBranch)
               REPO_NAME: $(Build.Repository.Name)
+              SOURCE_BRANCH: $(Build.SourceBranch)
 
           - task: PoliCheck@2
             displayName: PoliCheck
