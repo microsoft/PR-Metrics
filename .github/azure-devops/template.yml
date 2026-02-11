@@ -142,90 +142,13 @@ stages:
 
           - task: notice@0
             displayName: Generate NOTICE File
+            continueOnError: true
             inputs:
-              outputfile: $(System.DefaultWorkingDirectory)/obj/NOTICE
+              outputfile: $(System.DefaultWorkingDirectory)/temp/NOTICE
               outputformat: text
 
-          - bash: |
-              notice_file="$(System.DefaultWorkingDirectory)/obj/NOTICE"
-              if [ ! -f "$notice_file" ]; then
-                echo "NOTICE file not found. Skipping."
-                exit 0
-              fi
-
-              if [ "$BUILD_REASON" = "PullRequest" ]; then
-                branch="$PR_SOURCE_BRANCH"
-              else
-                branch="$SOURCE_BRANCH"
-              fi
-              branch="${branch#refs/heads/}"
-
-              echo "Target branch: $branch"
-
-              content_base64=$(python3 -c "
-              import base64, sys
-              with open(sys.argv[1], 'rb') as f:
-                  print(base64.b64encode(f.read()).decode())
-              " "$notice_file")
-
-              api_url="https://api.github.com/repos/$REPO_NAME/contents/NOTICE.txt"
-
-              response=$(curl -s -w "\n%{http_code}" \
-                -H "Authorization: token $GITHUB_PAT" \
-                -H "Accept: application/vnd.github.v3+json" \
-                "$api_url?ref=$branch")
-
-              http_code=$(echo "$response" | tail -1)
-              body=$(echo "$response" | sed '$d')
-
-              echo "GitHub API GET status: $http_code"
-
-              existing_sha=""
-              if [ "$http_code" = "200" ]; then
-                existing_sha=$(python3 -c "
-              import json, sys
-              data = json.loads(sys.stdin.read())
-              print(data['sha'])
-              " <<< "$body")
-
-                echo "Existing file SHA: $existing_sha"
-
-                existing_content=$(python3 -c "
-              import json, sys
-              data = json.loads(sys.stdin.read())
-              print(data['content'].replace('\n', ''))
-              " <<< "$body")
-
-                if [ "$content_base64" = "$existing_content" ]; then
-                  echo "NOTICE.txt is unchanged (content matches). Skipping commit."
-                  exit 0
-                fi
-
-                echo "NOTICE.txt has changed. Updating (SHA: $existing_sha)."
-              else
-                echo "NOTICE.txt does not exist on branch. Creating."
-              fi
-
-              echo "$content_base64" | python3 -c "
-              import json, sys
-              content = sys.stdin.read().strip()
-              data = {
-                  'message': 'Update NOTICE.txt [skip ci]',
-                  'content': content,
-                  'branch': sys.argv[1]
-              }
-              if sys.argv[2]:
-                  data['sha'] = sys.argv[2]
-              print(json.dumps(data))
-              " "$branch" "$existing_sha" | \
-              curl -s -X PUT \
-                -H "Authorization: token $GITHUB_PAT" \
-                -H "Accept: application/vnd.github.v3+json" \
-                -d @- \
-                "$api_url"
-
-              echo "NOTICE.txt committed successfully."
-            displayName: Commit NOTICE File
+          - pwsh: $(Build.SourcesDirectory)/.github/azure-devops/Update-LicenseFile.ps1
+            displayName: Commit LICENSE File
             continueOnError: true
             condition: ne(variables['ADOTOGITHUB'], '')
             env:
