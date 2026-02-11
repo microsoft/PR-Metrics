@@ -159,6 +159,7 @@ stages:
               PR_SOURCE_BRANCH: $(System.PullRequest.SourceBranch)
               REPO_NAME: $(Build.Repository.Name)
               SOURCE_BRANCH: $(Build.SourceBranch)
+              SYSTEM_ACCESSTOKEN: $(System.AccessToken)
 
           - task: PoliCheck@2
             displayName: PoliCheck

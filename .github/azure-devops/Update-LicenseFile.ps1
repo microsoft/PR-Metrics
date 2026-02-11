@@ -43,25 +43,63 @@ else
     $content = $prSection
 }
 
-# Post a PR comment if the Validation job encountered issues (warnings or errors).
-if ($env:BUILD_REASON -eq 'PullRequest' -and $env:PR_NUMBER -and $env:AGENT_JOBSTATUS -ne 'Succeeded')
+# Detect notice task issues (formal status changes or text-based warnings in logs).
+$noticeHadIssues = $env:AGENT_JOBSTATUS -ne 'Succeeded'
+$noticeLogContent = $null
+if ($noticeHadIssues)
 {
-    Write-Host -Object "Job status: $env:AGENT_JOBSTATUS. Posting PR comment."
+    Write-Host -Object "Job status: $env:AGENT_JOBSTATUS."
+}
+
+if ($env:SYSTEM_ACCESSTOKEN)
+{
+    try
+    {
+        $adoHeaders = @{ Authorization = "Bearer $env:SYSTEM_ACCESSTOKEN" }
+        $timelineUrl = "$env:SYSTEM_COLLECTIONURI$env:SYSTEM_TEAMPROJECT/_apis/build/builds/$env:BUILD_BUILDID/timeline?api-version=7.0"
+        $timeline = Invoke-RestMethod -Uri $timelineUrl -Headers $adoHeaders -Method Get -ErrorAction Stop
+        $noticeRecord = $timeline.records | Where-Object { $_.name -eq 'Generate NOTICE File' }
+        if ($noticeRecord.log)
+        {
+            $noticeLogContent = Invoke-RestMethod -Uri $noticeRecord.log.url -Headers $adoHeaders -Method Get -ErrorAction Stop
+            if (-not $noticeHadIssues -and $noticeLogContent -match '(?i)\bwarning\b')
+            {
+                Write-Host -Object 'Notice task log contains warning text.'
+                $noticeHadIssues = $true
+            }
+        }
+    }
+    catch
+    {
+        Write-Host -Object "Failed to check notice task log: $($_.Exception.Message)"
+    }
+}
+
+# Manage PR comment for notice task issues.
+if ($env:BUILD_REASON -eq 'PullRequest' -and $env:PR_NUMBER)
+{
     $marker = '<!-- pr-metrics-notice-warning -->'
     $commentsUrl = "https://api.github.com/repos/$env:REPO_NAME/issues/$env:PR_NUMBER/comments?per_page=100"
     try
     {
+        # Always delete any existing marker comment first.
         $existing = Invoke-RestMethod -Uri $commentsUrl -Headers $headers -Method Get -ErrorAction Stop
-        if (-not ($existing | Where-Object { $_.body -like "*$marker*" }))
+        foreach ($comment in ($existing | Where-Object { $_.body -like "*$marker*" }))
+        {
+            $deleteUrl = "https://api.github.com/repos/$env:REPO_NAME/issues/comments/$($comment.id)"
+            Invoke-RestMethod -Uri $deleteUrl -Headers $headers -Method Delete -ErrorAction Stop | Out-Null
+            Write-Host -Object "Deleted existing PR comment $($comment.id)."
+        }
+
+        # Post a new comment if the notice task had issues.
+        if ($noticeHadIssues)
         {
             if (Test-Path -Path $noticeFile)
             {
                 $commentBody =
                     "**Notice Generation Warning**`n`n" +
                     "The ``notice@0`` task completed with warnings. " +
-                    "``src/LICENSE.txt`` has been updated but the third-party notices may be incomplete. " +
-                    "Check the pipeline logs for details.`n`n" +
-                    $marker
+                    "``src/LICENSE.txt`` has been updated but the third-party notices may be incomplete.`n`n"
             }
             else
             {
@@ -69,22 +107,27 @@ if ($env:BUILD_REASON -eq 'PullRequest' -and $env:PR_NUMBER -and $env:AGENT_JOBS
                     "**Notice Generation Warning**`n`n" +
                     "The ``notice@0`` task did not produce a NOTICE file. " +
                     "``src/LICENSE.txt`` has been updated with only the PR Metrics license. " +
-                    "Third-party notices are not included.`n`n" +
-                    $marker
+                    "Third-party notices are not included.`n`n"
             }
 
+            if ($noticeLogContent)
+            {
+                $commentBody +=
+                    "<details>`n<summary>Pipeline log</summary>`n`n" +
+                    "``````text`n" +
+                    $noticeLogContent.TrimEnd("`n") +
+                    "`n```````n</details>`n`n"
+            }
+
+            $commentBody += $marker
             $commentJson = ConvertTo-Json -InputObject @{ body = $commentBody } -Compress
             Invoke-RestMethod -Uri $commentsUrl -Headers $headers -Method Post -Body $commentJson -ContentType 'application/json' | Out-Null
             Write-Host -Object 'PR comment posted about NOTICE generation issues.'
         }
-        else
-        {
-            Write-Host -Object 'PR comment already exists. Skipping.'
-        }
     }
     catch
     {
-        Write-Host -Object "Failed to post PR comment: $($_.Exception.Message)"
+        Write-Host -Object "Failed to manage PR comment: $($_.Exception.Message)"
     }
 }
 
