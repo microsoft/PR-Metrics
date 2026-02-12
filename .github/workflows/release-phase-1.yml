@@ -11,10 +11,18 @@ on:
 
 permissions: {}
 
+env:
+  major: 1
+  minor: 7
+  patch: 12
+
 jobs:
   release:
     name: Release
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: pwsh
     permissions:
       pull-requests: write
     steps:
@@ -23,11 +31,162 @@ jobs:
         with:
           token: ${{ secrets.PR_METRICS_TOKEN }}
 
-      - name: Release – Phase 1 – Internal
-        uses: ./.github/actions/release-phase-1-internal
+      - name: gh – Log Version
+        run: gh --version
+
+      - name: Validate Version Numbers
+        run: |-
+          [int]::Parse(${{ env.major }})
+          [int]::Parse(${{ env.minor }})
+          [int]::Parse(${{ env.patch }})
+
+      - name: Set version environment variable
+        run: Write-Output -InputObject "version=${{ env.major }}.${{ env.minor }}.${{ env.patch }}" >> $Env:GITHUB_ENV
+
+      - name: Version Number – README.md
+        run: |-
+          $FilePath = 'README.md'
+          $FileContents = Get-Content -Path $FilePath
+          $FileContents = $FileContents -replace 'PR-Metrics@v\d+\.\d+\.\d+', 'PR-Metrics@v${{ env.version }}'
+          Set-Content -Path $FilePath -Value $FileContents
+
+      - name: Version Number – package.json
+        run: |-
+          $FilePath = 'package.json'
+          $FileContents = Get-Content -Path $FilePath
+          $FileContents = $FileContents -replace '"version": "\d+\.\d+\.\d+"', '"version": "${{ env.version }}"'
+          Set-Content -Path $FilePath -Value $FileContents
+
+      - name: Version Number – vss-extension.json
+        run: |-
+          $FilePath = 'src/vss-extension.json'
+          $FileContents = Get-Content -Path $FilePath
+          $FileContents = $FileContents -replace '"version": "\d+\.\d+\.\d+"', '"version": "${{ env.version }}"'
+          Set-Content -Path $FilePath -Value $FileContents
+
+      - name: Version Number – task.json
+        run: |-
+          $FilePath = 'src/task/task.json'
+          $FileContents = Get-Content -Path $FilePath
+          $FileContents = $FileContents -replace 'PR Metrics v\d+\.\d+\.\d+', 'PR Metrics v${{ env.version }}'
+          $FileContents = $FileContents -replace '"Major": \d+', '"Major": ${{ env.major }}'
+          $FileContents = $FileContents -replace '"Minor": \d+', '"Minor": ${{ env.minor }}'
+          $FileContents = $FileContents -replace '"Patch": \d+', '"Patch": ${{ env.patch }}'
+          Set-Content -Path $FilePath -Value $FileContents
+
+      - name: Version Number – task.loc.json
+        run: |-
+          $FilePath = 'src/task/task.loc.json'
+          $FileContents = Get-Content -Path $FilePath
+          $FileContents = $FileContents -replace '"Major": \d+', '"Major": ${{ env.major }}'
+          $FileContents = $FileContents -replace '"Minor": \d+', '"Minor": ${{ env.minor }}'
+          $FileContents = $FileContents -replace '"Patch": \d+', '"Patch": ${{ env.patch }}'
+          Set-Content -Path $FilePath -Value $FileContents
+
+      - name: Version Number – resources.resjson
+        run: |-
+          $FilePath = 'src/task/Strings/resources.resjson/en-US/resources.resjson'
+          $FileContents = Get-Content -Path $FilePath
+          $FileContents = $FileContents -replace 'PR Metrics v\d+\.\d+\.\d+', 'PR Metrics v${{ env.version }}'
+          Set-Content -Path $FilePath -Value $FileContents
+
+      - name: Version Number – gitHubReposInvoker.ts
+        run: |-
+          $FilePath = 'src/task/src/repos/gitHubReposInvoker.ts'
+          $FileContents = Get-Content -Path $FilePath
+          $FileContents = $FileContents -replace 'PRMetrics\/v\d+\.\d+\.\d+', 'PRMetrics/v${{ env.version }}'
+          Set-Content -Path $FilePath -Value $FileContents
+
+      - name: Version Number – gitHubReposInvoker.spec.ts
+        run: |-
+          $FilePath = 'src/task/tests/repos/gitHubReposInvoker.spec.ts'
+          $FileContents = Get-Content -Path $FilePath
+          $FileContents = $FileContents -replace 'PRMetrics\/v\d+\.\d+\.\d+', 'PRMetrics/v${{ env.version }}'
+          Set-Content -Path $FilePath -Value $FileContents
+
+      - name: Version Number – Increment Patch
+        id: increment-patch
+        run: |-
+          $IncrementedPatch = [int]::Parse(${{ env.patch }}) + 1
+          Write-Output -InputObject "INCREMENTED_PATCH=$IncrementedPatch" >> $Env:GITHUB_OUTPUT
+
+      - name: Version Number – release-phase-1.yml
+        run: |-
+          $FilePath = '.github/workflows/release-phase-1.yml'
+          $FileContents = Get-Content -Raw $FilePath
+          $FileContents = $FileContents -replace '(?<Yaml>major: )\d+', '${Yaml}${{ env.major }}'
+          $FileContents = $FileContents -replace '(?<Yaml>minor: )\d+', '${Yaml}${{ env.minor }}'
+          $FileContents = $FileContents -replace '(?<Yaml>patch: )\d+', '${Yaml}${{ steps.increment-patch.outputs.INCREMENTED_PATCH }}'
+          Set-Content -Path $FilePath -Value $FileContents.Substring(0, $FileContents.Length - 1)  # Remove the trailing newline.
+
+      - name: License – Truncate LICENSE.txt
+        run: |-
+          $FilePath = 'src/LICENSE.txt'
+          $FileContents = Get-Content -Path $FilePath
+          $Index = [Array]::IndexOf($FileContents, ($FileContents | Where-Object { $_ -match 'NOTICES AND INFORMATION' }))
+          $Index -= 1
+          $FileContents = $FileContents[0..$Index]
+          Set-Content -Path $FilePath -Value $FileContents
+
+      - name: Version Number – release-phase-2-trigger.txt
+        run: Set-Content -Path '.github/workflows/support/release-phase-2-trigger.txt' -Value ${{ env.version }}
+
+      - name: Git – Create Branch
+        run: git checkout -b release/v${{ env.version }}
+
+      - name: Git – Add Changed Files
+        run: git add -A
+
+      - name: Git – Commit & Push (Signed)
+        uses: grafana/github-api-commit-action@cb4e7799d2cd77d607acf280ed70a0d03572d8bd # v1.0.0
         with:
-          major: 1
-          minor: 7
-          patch: 12
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          pr-metrics-token: ${{ secrets.PR_METRICS_TOKEN }}
+          commit-message: "feat: release v${{ env.version }}"
+          create-branch-on-remote: true
+          stage-all-files: true
+          token: ${{ secrets.PR_METRICS_TOKEN }}
+
+      - name: Git – Sync Local with Remote
+        run: |-
+          git fetch origin release/v${{ env.version }}
+          git reset --hard origin/release/v${{ env.version }}
+
+      - name: PR – Create
+        run: >-
+          gh pr create
+          --title "[Autogenerated] Release v${{ env.version }}"
+          --body "Autogenerated release for PR Metrics v${{ env.version }}. This includes version updates, dependency updates, and license preparation."
+          --label "release"
+        env:
+          GITHUB_TOKEN: ${{ secrets.PR_METRICS_TOKEN }}
+
+      - name: PR – Comment
+        run: gh pr comment --body-file "./.github/workflows/support/release-comment.md"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install Node.js
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
+        with:
+          node-version: 20.17.0
+
+      - name: npm – Install
+        run: npm install
+
+      - name: npm – Update Dependencies
+        run: npx ncu -u
+
+      - name: npm – Update Transitive Dependencies
+        run: npm update
+
+      - name: Git – Commit & Push (Signed)
+        uses: grafana/github-api-commit-action@cb4e7799d2cd77d607acf280ed70a0d03572d8bd # v1.0.0
+        with:
+          commit-message: "chore: update dependencies"
+          create-branch-on-remote: true
+          stage-all-files: true
+          token: ${{ secrets.PR_METRICS_TOKEN }}
+
+      - name: Git – Sync Local with Remote
+        run: |-
+          git fetch origin release/v${{ env.version }}
+          git reset --hard origin/release/v${{ env.version }}

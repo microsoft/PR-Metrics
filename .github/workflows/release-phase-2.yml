@@ -19,54 +19,75 @@ jobs:
     name: Release
     runs-on: ubuntu-latest
     permissions:
-      pull-requests: write
+      attestations: write
+      id-token: write
     steps:
       - name: Checkout
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-        with:
-          token: ${{ secrets.PR_METRICS_TOKEN }}
 
       - name: gh – Log Version
         run: gh --version
 
+      - name: Install Node.js
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
+        with:
+          node-version: 20.17.0
+
+      - name: npm – Install Dependencies
+        run: npm ci
+
+      - name: npm – Build
+        run: npm run build:release
+
+      - name: Release – Create
+        run: npx tfx-cli extension create --manifest-globs vss-extension.json --output-path ../ms-omex.PRMetrics.vsix
+        working-directory: ${{ github.workspace }}/release
+
+      - name: Attest Build Provenance
+        uses: actions/attest-build-provenance@96278af6caaf10aea03fd8d33a09a777ca52d62f # v3.2.0
+        with:
+          subject-path: ${{ github.workspace }}/ms-omex.PRMetrics.vsix
+
+      - name: cosign – Install
+        uses: sigstore/cosign-installer@faadad0cce49287aee09b3a48701e75088a2c6ad # v4.0.0
+
+      - name: cosign – Sign VSIX
+        run: >-
+          cosign sign-blob --yes
+          --bundle "${{ github.workspace }}/ms-omex.PRMetrics.vsix.sigstore.json"
+          "${{ github.workspace }}/ms-omex.PRMetrics.vsix"
+
+      - name: Release – Publish
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: ms-omex.PRMetrics
+          path: |
+            ${{ github.workspace }}/ms-omex.PRMetrics.vsix
+            ${{ github.workspace }}/ms-omex.PRMetrics.vsix.sigstore.json
+
       - name: Get Version
         id: version
-        shell: pwsh
-        run: |-
-          $Version = Get-Content -Path '.github/workflows/support/release-phase-2-trigger.txt'
-          Write-Output -InputObject "VERSION=$Version" >> $Env:GITHUB_OUTPUT
+        run: |
+          VERSION=$(cat '.github/workflows/support/release-phase-2-trigger.txt')
+          echo "VERSION=v$VERSION" >> "$GITHUB_OUTPUT"
 
-      - name: Update LICENSE.txt
-        shell: pwsh
-        run: |-
-          $FilePath = 'src/LICENSE.txt'
-          $FileContents = Get-Content -Path $FilePath
-          $Index = [Array]::IndexOf($FileContents, ($FileContents | Where-Object { $_ -match 'NOTICES AND INFORMATION' }))
-          $Index -= 1
-          $FileContents = $FileContents[0..$Index]
-          Set-Content -Path $FilePath -Value $FileContents
-
-      - name: Update release-phase-3-trigger.txt
-        shell: pwsh
-        run: Set-Content -Path '.github/workflows/support/release-phase-3-trigger.txt' -Value ${{ steps.version.outputs.VERSION }}
-
-      - name: Git Setup & Push
-        uses: ./.github/actions/git-setup-and-push
-        with:
-          phase: 2
-          version: ${{ steps.version.outputs.VERSION }}
-          pr-metrics-token: ${{ secrets.PR_METRICS_TOKEN }}
-
-      - name: PR – Create
+      - name: Generate Release Notes
         run: >-
-          gh pr create
-          --title "Release v${{ steps.version.outputs.VERSION }}"
-          --body "Release for PR Metrics v${{ steps.version.outputs.VERSION }}. This includes the license updates."
-          --label "release"
+          gh api repos/${{ github.repository }}/releases/generate-notes
+          -f tag_name="${{ steps.version.outputs.VERSION }}"
+          -f target_commitish=${{ github.sha }}
+          --jq '.body' > release-notes.md
         env:
           GITHUB_TOKEN: ${{ secrets.PR_METRICS_TOKEN }}
 
-      - name: PR – Comment
-        run: gh pr comment --body-file "./.github/workflows/support/release-phase-2-comment.md"
+      - name: GitHub Release
+        run: >-
+          gh release create "${{ steps.version.outputs.VERSION }}"
+          "${{ github.workspace }}/ms-omex.PRMetrics.vsix"
+          "${{ github.workspace }}/ms-omex.PRMetrics.vsix.sigstore.json"
+          --title "Release ${{ steps.version.outputs.VERSION }}"
+          --target "${{ github.sha }}"
+          --notes-file release-notes.md
+          --discussion-category "Releases"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PR_METRICS_TOKEN }}

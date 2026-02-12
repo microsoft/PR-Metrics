@@ -51,12 +51,14 @@ jobs:
       - if: github.ref_name != 'main'
         name: Detect Changes
         id: detect-changes
-        shell: pwsh
         run: |
-          $GitStatus = git status --porcelain
-          Write-Output -InputObject $GitStatus
-          $ChangesPresent = -not [string]::IsNullOrWhiteSpace($GitStatus)
-          Write-Output -InputObject "CHANGES_PRESENT=$ChangesPresent" >> $Env:GITHUB_OUTPUT
+          GIT_STATUS=$(git status --porcelain)
+          echo "$GIT_STATUS"
+          if [ -n "$GIT_STATUS" ]; then
+            echo "CHANGES_PRESENT=True" >> "$GITHUB_OUTPUT"
+          else
+            echo "CHANGES_PRESENT=False" >> "$GITHUB_OUTPUT"
+          fi
 
       - if: github.ref_name != 'main' && steps.detect-changes.outputs.CHANGES_PRESENT == 'True'
         name: Git – Commit & Push (Signed)
@@ -155,7 +157,7 @@ jobs:
         with:
           config_file: .github/linters/.linkspector.yml
 
-      - name: Initialize
+      - name: CodeQL – Initialize
         uses: github/codeql-action/init@e296a935590eb16afc0c0108289f68c87e2a89a5 # v3.29.5
         with:
           build-mode: none
@@ -163,7 +165,7 @@ jobs:
           languages: javascript-typescript
           queries: security-extended,security-and-quality
 
-      - name: Analyze
+      - name: CodeQL – Analyze
         uses: github/codeql-action/analyze@e296a935590eb16afc0c0108289f68c87e2a89a5 # v3.29.5
         with:
           category: TypeScript
@@ -201,12 +203,14 @@ jobs:
       - if: github.ref_name != 'main'
         name: Detect Changes
         id: detect-changes
-        shell: pwsh
         run: |
-          $GitStatus = git status --porcelain
-          Write-Output -InputObject $GitStatus
-          $ChangesPresent = -not [string]::IsNullOrWhiteSpace($GitStatus)
-          Write-Output -InputObject "CHANGES_PRESENT=$ChangesPresent" >> $Env:GITHUB_OUTPUT
+          GIT_STATUS=$(git status --porcelain)
+          echo "$GIT_STATUS"
+          if [ -n "$GIT_STATUS" ]; then
+            echo "CHANGES_PRESENT=True" >> "$GITHUB_OUTPUT"
+          else
+            echo "CHANGES_PRESENT=False" >> "$GITHUB_OUTPUT"
+          fi
 
       # Super-Linter must operate on the commit, but changes must be pushed to
       # the branch. To facilitate this, the changes are stashed, the branch is
