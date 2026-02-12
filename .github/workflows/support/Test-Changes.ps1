@@ -1,13 +1,13 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT License.
 
-$GitStatus = git status --porcelain
-Write-Host -Object $GitStatus
-if ($GitStatus)
+$gitStatus = git status --porcelain
+Write-Host -Object $gitStatus
+if ($gitStatus)
 {
-    Write-Host -Object 'CHANGES_PRESENT=True' >> $Env:GITHUB_OUTPUT
+    'CHANGES_PRESENT=True' >> $Env:GITHUB_OUTPUT
 }
 else
 {
-    Write-Host -Object 'CHANGES_PRESENT=False' >> $Env:GITHUB_OUTPUT
+    'CHANGES_PRESENT=False' >> $Env:GITHUB_OUTPUT
 }

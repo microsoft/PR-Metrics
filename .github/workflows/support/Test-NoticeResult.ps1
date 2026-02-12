@@ -12,7 +12,7 @@ $timeline = Invoke-RestMethod -Uri $timelineUrl -Headers $headers
 $noticeRecord = $timeline.records |
     Where-Object { $_.name -eq 'Generate NOTICE File' }
 
-$noticeResult = $noticeRecord.result
+$errorCount = $noticeRecord.errorCount
 $warningCount = $noticeRecord.warningCount
 
 # Determine if we should post a PR comment.
@@ -25,7 +25,7 @@ if (-not [string]::IsNullOrWhiteSpace($prNumber))
         Accept = 'application/vnd.github.v3+json'
     }
 
-    if ($noticeResult -eq 'failed')
+    if ($errorCount -gt 0)
     {
         $body = @{ body = 'error' } | ConvertTo-Json
         Invoke-RestMethod -Method Post -Uri "$repoApi/issues/$prNumber/comments" -Headers $commentHeaders -Body $body -ContentType 'application/json'
@@ -35,11 +35,11 @@ if (-not [string]::IsNullOrWhiteSpace($prNumber))
     {
         $commentBody = Get-Content -Path '.github/workflows/support/release-comment.md' -Raw
         $body = @{ body = $commentBody } | ConvertTo-Json
-        Invoke-RestMethod -Method Post -Uri "$repoApi/issues/$prNumber/comments" -Headers $commentHeaders -Body $body -ContentType 'application/json' -Body $body -ContentType 'application/json'
+        Invoke-RestMethod -Method Post -Uri "$repoApi/issues/$prNumber/comments" -Headers $commentHeaders -Body $body -ContentType 'application/json'
         Write-Host -Object "notice@0 had $warningCount warning(s). Posted comment."
     }
 }
 
 # Set output for downstream steps.
-$noticeOk = if ($noticeResult -eq 'failed') { 'false' } else { 'true' }
+$noticeOk = if ($errorCount -gt 0) { 'false' } else { 'true' }
 Write-Host -Object "##vso[task.setvariable variable=NOTICE_OK;isoutput=true]$noticeOk"

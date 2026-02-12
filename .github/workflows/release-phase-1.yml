@@ -45,7 +45,7 @@ jobs:
         id: release-version
         run: |-
           $patch = [int]::Parse(${{ env.patch }}) + 1
-          Write-Host -Object "PATCH=$patch" >> $Env:GITHUB_OUTPUT
+          "PATCH=$patch" >> $Env:GITHUB_OUTPUT
 
       - name: Set Version Environment Variable
         run: >-
