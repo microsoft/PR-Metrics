@@ -72,8 +72,8 @@ jobs:
       - name: Get Version
         id: version
         run: |-
-          $Version = Get-Content -Path '.github/workflows/support/release-phase-2-trigger.txt'
-          Write-Output -InputObject "VERSION=v$Version" >> $Env:GITHUB_OUTPUT
+          $version = Get-Content -Path '.github/workflows/support/release-phase-2-trigger.txt'
+          Write-Output -InputObject "VERSION=v$version" >> $Env:GITHUB_OUTPUT
 
       - name: Generate Release Notes
         run: >-

@@ -17,10 +17,6 @@ Both the main artifact (`ms-omex.PRMetrics.vsix`) and the signature bundle
 (`ms-omex.PRMetrics.vsix.sigstore.json`) are available on the
 [GitHub Releases page][releases].
 
-> **Note:** Releases prior to v1.7.12 were signed using
-> `release-phase-3.yml`. For those releases, replace `release-phase-2` with
-> `release-phase-3` in the verification commands below.
-
 ## Verifying Build Provenance Attestation
 
 Build provenance attestations provide cryptographically verifiable proof about
