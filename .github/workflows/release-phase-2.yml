@@ -36,7 +36,7 @@ jobs:
       - name: npm – Install Dependencies
         run: npm ci
 
-      - name: npm – Build
+      - name: npm – Build Release
         run: npm run build:release
 
       - name: Release – Create
