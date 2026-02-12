@@ -40,3 +40,5 @@ extends:
         exclusionPatterns: "*.js"
     stages:
       - template: template.yml
+        parameters:
+          generateLicenses: true

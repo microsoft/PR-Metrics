@@ -44,12 +44,12 @@ jobs:
       - name: Compute Release Version
         id: release-version
         run: |-
-          $Patch = [int]::Parse(${{ env.patch }}) + 1
-          Write-Output -InputObject "PATCH=$Patch" >> $Env:GITHUB_OUTPUT
+          $patch = [int]::Parse(${{ env.patch }}) + 1
+          Write-Host -Object "PATCH=$patch" >> $Env:GITHUB_OUTPUT
 
       - name: Set Version Environment Variable
         run: >-
-          Write-Output -InputObject
+          Write-Host -Object
           "version=${{ env.major }}.${{ env.minor }}.${{ steps.release-version.outputs.PATCH }}"
           >> $Env:GITHUB_ENV
 
@@ -61,13 +61,7 @@ jobs:
           -Patch ${{ steps.release-version.outputs.PATCH }}
 
       - name: License – Truncate LICENSE.txt
-        run: |-
-          $FilePath = 'src/LICENSE.txt'
-          $FileContents = Get-Content -Path $FilePath
-          $Index = [Array]::IndexOf($FileContents, ($FileContents | Where-Object { $_ -match 'NOTICES AND INFORMATION' }))
-          $Index -= 1
-          $FileContents = $FileContents[0..$Index]
-          Set-Content -Path $FilePath -Value $FileContents
+        run: .github/workflows/support/Update-Licenses.ps1 -Truncate
 
       - name: Version Number – release-phase-2-trigger.txt
         run: Set-Content -Path '.github/workflows/support/release-phase-2-trigger.txt' -Value ${{ env.version }}
