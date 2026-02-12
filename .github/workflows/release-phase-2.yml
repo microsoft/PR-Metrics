@@ -14,6 +14,10 @@ on:
 
 permissions: {}
 
+defaults:
+  run:
+    shell: pwsh
+
 jobs:
   release:
     name: Release
@@ -67,9 +71,9 @@ jobs:
 
       - name: Get Version
         id: version
-        run: |
-          VERSION=$(cat '.github/workflows/support/release-phase-2-trigger.txt')
-          echo "VERSION=v$VERSION" >> "$GITHUB_OUTPUT"
+        run: |-
+          $Version = Get-Content -Path '.github/workflows/support/release-phase-2-trigger.txt'
+          Write-Output -InputObject "VERSION=v$Version" >> $Env:GITHUB_OUTPUT
 
       - name: Generate Release Notes
         run: >-

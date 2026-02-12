@@ -17,6 +17,10 @@ on:
 
 permissions: {}
 
+defaults:
+  run:
+    shell: pwsh
+
 jobs:
   update-code:
     name: Update Code
@@ -51,14 +55,17 @@ jobs:
       - if: github.ref_name != 'main'
         name: Detect Changes
         id: detect-changes
-        run: |
-          GIT_STATUS=$(git status --porcelain)
-          echo "$GIT_STATUS"
-          if [ -n "$GIT_STATUS" ]; then
-            echo "CHANGES_PRESENT=True" >> "$GITHUB_OUTPUT"
+        run: |-
+          $GitStatus = git status --porcelain
+          Write-Output -InputObject $GitStatus
+          if ($GitStatus)
+          {
+            Write-Output -InputObject 'CHANGES_PRESENT=True' >> $Env:GITHUB_OUTPUT
+          }
           else
-            echo "CHANGES_PRESENT=False" >> "$GITHUB_OUTPUT"
-          fi
+          {
+            Write-Output -InputObject 'CHANGES_PRESENT=False' >> $Env:GITHUB_OUTPUT
+          }
 
       - if: github.ref_name != 'main' && steps.detect-changes.outputs.CHANGES_PRESENT == 'True'
         name: Git – Commit & Push (Signed)
@@ -203,14 +210,17 @@ jobs:
       - if: github.ref_name != 'main'
         name: Detect Changes
         id: detect-changes
-        run: |
-          GIT_STATUS=$(git status --porcelain)
-          echo "$GIT_STATUS"
-          if [ -n "$GIT_STATUS" ]; then
-            echo "CHANGES_PRESENT=True" >> "$GITHUB_OUTPUT"
+        run: |-
+          $GitStatus = git status --porcelain
+          Write-Output -InputObject $GitStatus
+          if ($GitStatus)
+          {
+            Write-Output -InputObject 'CHANGES_PRESENT=True' >> $Env:GITHUB_OUTPUT
+          }
           else
-            echo "CHANGES_PRESENT=False" >> "$GITHUB_OUTPUT"
-          fi
+          {
+            Write-Output -InputObject 'CHANGES_PRESENT=False' >> $Env:GITHUB_OUTPUT
+          }
 
       # Super-Linter must operate on the commit, but changes must be pushed to
       # the branch. To facilitate this, the changes are stashed, the branch is
@@ -221,9 +231,9 @@ jobs:
 
       - if: github.ref_name != 'main' && steps.detect-changes.outputs.CHANGES_PRESENT == 'True'
         name: Git – Checkout PR Branch
-        run: |
-          git fetch origin "$HEAD_REF"
-          git checkout "$HEAD_REF"
+        run: |-
+          git fetch origin $Env:HEAD_REF
+          git checkout $Env:HEAD_REF
         env:
           HEAD_REF: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref_name }}
 

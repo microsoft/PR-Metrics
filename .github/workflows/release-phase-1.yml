@@ -16,13 +16,14 @@ env:
   minor: 7
   patch: 12
 
+defaults:
+  run:
+    shell: pwsh
+
 jobs:
   release:
     name: Release
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: pwsh
     permissions:
       pull-requests: write
     steps:
