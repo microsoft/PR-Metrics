@@ -14,7 +14,7 @@ permissions: {}
 env:
   major: 1
   minor: 7
-  patch: 12
+  patch: 11
 
 defaults:
   run:
@@ -41,11 +41,24 @@ jobs:
           [int]::Parse(${{ env.minor }})
           [int]::Parse(${{ env.patch }})
 
+      - name: Compute Release Version
+        id: release-version
+        run: |-
+          $Patch = [int]::Parse(${{ env.patch }}) + 1
+          Write-Output -InputObject "PATCH=$Patch" >> $Env:GITHUB_OUTPUT
+
       - name: Set Version Environment Variable
-        run: Write-Output -InputObject "version=${{ env.major }}.${{ env.minor }}.${{ env.patch }}" >> $Env:GITHUB_ENV
+        run: >-
+          Write-Output -InputObject
+          "version=${{ env.major }}.${{ env.minor }}.${{ steps.release-version.outputs.PATCH }}"
+          >> $Env:GITHUB_ENV
 
       - name: Update Version Numbers
-        run: .github/workflows/support/Update-Version.ps1 -Major ${{ env.major }} -Minor ${{ env.minor }} -Patch ${{ env.patch }}
+        run: >-
+          .github/workflows/support/Update-Version.ps1
+          -Major ${{ env.major }}
+          -Minor ${{ env.minor }}
+          -Patch ${{ steps.release-version.outputs.PATCH }}
 
       - name: License – Truncate LICENSE.txt
         run: |-
