@@ -40,7 +40,7 @@ jobs:
           [int]::Parse(${{ env.minor }})
           [int]::Parse(${{ env.patch }})
 
-      - name: Set version environment variable
+      - name: Set Version Environment Variable
         run: Write-Output -InputObject "version=${{ env.major }}.${{ env.minor }}.${{ env.patch }}" >> $Env:GITHUB_ENV
 
       - name: Version Number – README.md
@@ -169,7 +169,7 @@ jobs:
         with:
           node-version: 20.17.0
 
-      - name: npm – Install
+      - name: npm – Install Dependencies
         run: npm install
 
       - name: npm – Update Dependencies
