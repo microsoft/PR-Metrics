@@ -21,32 +21,17 @@ function Update-FileContent
         [string]$Path,
 
         [Parameter(Mandatory)]
-        [hashtable[]]$Replacements,
-
-        [switch]$Raw
+        [hashtable[]]$Replacements
     )
 
-    $getContentParams = @{ Path = $Path }
-    if ($Raw)
-    {
-        $getContentParams['Raw'] = $true
-    }
-
-    $content = Get-Content @getContentParams
+    $content = Get-Content -Path $Path -Raw
     foreach ($replacement in $Replacements)
     {
         $content = $content -replace $replacement.Pattern, $replacement.Value
     }
 
-    if ($Raw)
-    {
-        # Remove the trailing newline added by Get-Content -Raw.
-        Set-Content -Path $Path -Value $content.Substring(0, $content.Length - 1)
-    }
-    else
-    {
-        Set-Content -Path $Path -Value $content
-    }
+    # Remove the trailing newline added by Get-Content -Raw.
+    Set-Content -Path $Path -Value $content.Substring(0, $content.Length - 1)
 }
 
 # Define shared replacement patterns.
@@ -74,8 +59,7 @@ Update-FileContent -Path 'src/task/Strings/resources.resjson/en-US/resources.res
 Update-FileContent -Path 'src/task/src/repos/gitHubReposInvoker.ts' -Replacements @($UserAgentReplacement)
 Update-FileContent -Path 'src/task/tests/repos/gitHubReposInvoker.spec.ts' -Replacements @($UserAgentReplacement)
 
-# .github/workflows/release-phase-1.yml (self-update).
-Update-FileContent -Path '.github/workflows/release-phase-1.yml' -Raw -Replacements @(
+Update-FileContent -Path '.github/workflows/release-phase-1.yml' -Replacements @(
     @{ Pattern = '(?<Yaml>major: )\d+'; Value = '${Yaml}' + $Major }
     @{ Pattern = '(?<Yaml>minor: )\d+'; Value = '${Yaml}' + $Minor }
     @{ Pattern = '(?<Yaml>patch: )\d+'; Value = '${Yaml}' + $Patch }
