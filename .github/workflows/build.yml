@@ -53,21 +53,11 @@ jobs:
         run: git add -A
 
       - if: github.ref_name != 'main'
-        name: Detect Changes
-        id: detect-changes
-        run: |-
-          $GitStatus = git status --porcelain
-          Write-Output -InputObject $GitStatus
-          if ($GitStatus)
-          {
-            Write-Output -InputObject 'CHANGES_PRESENT=True' >> $Env:GITHUB_OUTPUT
-          }
-          else
-          {
-            Write-Output -InputObject 'CHANGES_PRESENT=False' >> $Env:GITHUB_OUTPUT
-          }
+        name: Git – Test for Changes
+        id: git-test-for-changes
+        run: .github/workflows/support/Test-Changes.ps1
 
-      - if: github.ref_name != 'main' && steps.detect-changes.outputs.CHANGES_PRESENT == 'True'
+      - if: github.ref_name != 'main' && steps.git-test-for-changes.outputs.CHANGES_PRESENT == 'True'
         name: Git – Commit & Push (Signed)
         uses: grafana/github-api-commit-action@cb4e7799d2cd77d607acf280ed70a0d03572d8bd # v1.0.0
         with:
@@ -208,28 +198,18 @@ jobs:
           VALIDATE_TYPESCRIPT_STANDARD: false
 
       - if: github.ref_name != 'main'
-        name: Detect Changes
-        id: detect-changes
-        run: |-
-          $GitStatus = git status --porcelain
-          Write-Output -InputObject $GitStatus
-          if ($GitStatus)
-          {
-            Write-Output -InputObject 'CHANGES_PRESENT=True' >> $Env:GITHUB_OUTPUT
-          }
-          else
-          {
-            Write-Output -InputObject 'CHANGES_PRESENT=False' >> $Env:GITHUB_OUTPUT
-          }
+        name: Git – Test for Changes
+        id: git-test-for-changes
+        run: .github/workflows/support/Test-Changes.ps1
 
       # Super-Linter must operate on the commit, but changes must be pushed to
       # the branch. To facilitate this, the changes are stashed, the branch is
       # checked out, and the changes are applied back.
-      - if: github.ref_name != 'main' && steps.detect-changes.outputs.CHANGES_PRESENT == 'True'
+      - if: github.ref_name != 'main' && steps.git-test-for-changes.outputs.CHANGES_PRESENT == 'True'
         name: Git – Stash Changes
         run: git stash --include-untracked
 
-      - if: github.ref_name != 'main' && steps.detect-changes.outputs.CHANGES_PRESENT == 'True'
+      - if: github.ref_name != 'main' && steps.git-test-for-changes.outputs.CHANGES_PRESENT == 'True'
         name: Git – Checkout PR Branch
         run: |-
           git fetch origin $Env:HEAD_REF
@@ -237,15 +217,15 @@ jobs:
         env:
           HEAD_REF: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref_name }}
 
-      - if: github.ref_name != 'main' && steps.detect-changes.outputs.CHANGES_PRESENT == 'True'
+      - if: github.ref_name != 'main' && steps.git-test-for-changes.outputs.CHANGES_PRESENT == 'True'
         name: Git – Apply Stashed Changes
         run: git stash pop
 
-      - if: github.ref_name != 'main' && steps.detect-changes.outputs.CHANGES_PRESENT == 'True'
+      - if: github.ref_name != 'main' && steps.git-test-for-changes.outputs.CHANGES_PRESENT == 'True'
         name: Git – Add Changed Files
         run: git add -A
 
-      - if: github.ref_name != 'main' && steps.detect-changes.outputs.CHANGES_PRESENT == 'True'
+      - if: github.ref_name != 'main' && steps.git-test-for-changes.outputs.CHANGES_PRESENT == 'True'
         name: Git – Commit & Push (Signed)
         uses: grafana/github-api-commit-action@cb4e7799d2cd77d607acf280ed70a0d03572d8bd # v1.0.0
         with:
