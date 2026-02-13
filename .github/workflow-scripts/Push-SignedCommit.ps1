@@ -11,7 +11,7 @@ $headers = @{
 # Get the source branch name.
 # SYSTEM_PULLREQUEST_SOURCEBRANCH is set for PR-triggered builds.
 # BUILD_SOURCEBRANCH may be refs/pull/{id}/merge for PR builds or refs/heads/{branch} for manual runs.
-$branchRef = if (-not [string]::IsNullOrWhiteSpace($Env:SYSTEM_PULLREQUEST_SOURCEBRANCH))
+$branchReference = if (-not [string]::IsNullOrWhiteSpace($Env:SYSTEM_PULLREQUEST_SOURCEBRANCH))
 {
     $Env:SYSTEM_PULLREQUEST_SOURCEBRANCH
 }
@@ -19,13 +19,14 @@ elseif ($Env:BUILD_SOURCEBRANCH -match '^refs/pull/(\d+)/')
 {
     $prNumber = $Matches[1]
     $prInfo = Invoke-RestMethod -Uri "$repoApi/pulls/$prNumber" -Headers $headers
-    "refs/heads/$($prInfo.head.ref)"
+    $prInfo.head.ref
 }
 else
 {
     $Env:BUILD_SOURCEBRANCH
 }
-$branch = $branchRef -replace '^refs/heads/', ''
+
+$branch = $branchReference -replace '^refs/heads/', ''
 
 # Read the file.
 $fileBytes = [System.IO.File]::ReadAllBytes($filePath)
@@ -41,10 +42,9 @@ $localSha = -join ($hashBytes | ForEach-Object { $_.ToString('x2') })
 # Get the remote file's blob SHA.
 $fileInfo = Invoke-RestMethod -Uri "$repoApi/contents/$($filePath)?ref=$branch" -Headers $headers
 $remoteSha = $fileInfo.sha
-
 if ($localSha -eq $remoteSha)
 {
-    Write-Output -InputObject 'No licence changes to commit.'
+    Write-Output -InputObject 'No license changes to commit.'
     return
 }
 
@@ -84,7 +84,7 @@ $variables = @{
             branchName              = $branch
         }
         message = @{
-            headline = 'chore: update licence notices'
+            headline = 'chore: update license notices'
         }
         fileChanges = @{
             additions = @(
@@ -103,7 +103,6 @@ $body = @{
 } | ConvertTo-Json -Depth 10
 
 $response = Invoke-RestMethod -Method Post -Uri 'https://api.github.com/graphql' -Headers $headers -Body $body -ContentType 'application/json'
-
 if ($response.errors)
 {
     $errorMessage = $response.errors | ConvertTo-Json -Depth 5
@@ -111,4 +110,4 @@ if ($response.errors)
     exit 1
 }
 
-Write-Output -InputObject "Licence notices committed via GitHub API (signed): $($response.data.createCommitOnBranch.commit.url)"
+Write-Output -InputObject "License notices committed via GitHub API (signed): $($response.data.createCommitOnBranch.commit.url)"
