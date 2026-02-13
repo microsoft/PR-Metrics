@@ -152,7 +152,7 @@ stages:
             displayName: Component Detection
 
           - ${{ if parameters.generateLicenses }}:
-              - pwsh: .github/workflow-scripts/Update-Licenses.ps1 -Force:${{ if parameters.forceLicenseGeneration }}
+              - pwsh: .github/workflow-scripts/Update-Licenses.ps1 -Force:${{ parameters.forceLicenseGeneration }}
                 displayName: License – Check State
                 name: licenseCheck
 
