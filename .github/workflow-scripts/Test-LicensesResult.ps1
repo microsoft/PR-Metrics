@@ -45,17 +45,27 @@ if ([string]::IsNullOrWhiteSpace($prNumber))
 if (-not [string]::IsNullOrWhiteSpace($prNumber))
 {
 
-    # Remove previous licence generation comments.
+    # Remove previous licence generation comments (both issue comments and review comments).
     $errorTemplate = (Get-Content -Path '.github/workflows/support/license-generation-error.md' -Raw).Trim()
     $warningTemplate = (Get-Content -Path '.github/workflows/support/license-generation-warning.md' -Raw).Trim()
-    $comments = Invoke-RestMethod -Uri "$repoApi/issues/$prNumber/comments?per_page=100" -Headers $commentHeaders
-    foreach ($comment in $comments)
+    $issueComments = Invoke-RestMethod -Uri "$repoApi/issues/$prNumber/comments?per_page=100" -Headers $commentHeaders
+    foreach ($comment in $issueComments)
     {
         if ($comment.body.StartsWith($errorTemplate) -or
             $comment.body.StartsWith($warningTemplate))
         {
             Invoke-RestMethod -Method Delete -Uri $comment.url -Headers $commentHeaders
-            Write-Output -InputObject "Deleted previous licence comment: $($comment.id)"
+            Write-Output -InputObject "Deleted previous licence issue comment: $($comment.id)"
+        }
+    }
+    $reviewComments = Invoke-RestMethod -Uri "$repoApi/pulls/$prNumber/comments?per_page=100" -Headers $commentHeaders
+    foreach ($comment in $reviewComments)
+    {
+        if ($comment.path -eq 'src/LICENSE.txt' -and
+            ($comment.body.StartsWith($errorTemplate) -or $comment.body.StartsWith($warningTemplate)))
+        {
+            Invoke-RestMethod -Method Delete -Uri $comment.url -Headers $commentHeaders
+            Write-Output -InputObject "Deleted previous licence review comment: $($comment.id)"
         }
     }
 
@@ -75,19 +85,46 @@ if (-not [string]::IsNullOrWhiteSpace($prNumber))
         }
     }
 
-    if ($errorCount -gt 0)
+    if ($errorCount -gt 0 -or $warningCount -gt 0)
     {
-        $commentBody = (Get-Content -Path '.github/workflows/support/license-generation-error.md' -Raw) + $logSuffix
-        $body = @{ body = $commentBody } | ConvertTo-Json
-        Invoke-RestMethod -Method Post -Uri "$repoApi/issues/$prNumber/comments" -Headers $commentHeaders -Body $body -ContentType 'application/json'
-        Write-Output -InputObject 'notice@0 failed. Posted comment.'
-    }
-    elseif ($warningCount -gt 0)
-    {
-        $commentBody = (Get-Content -Path '.github/workflows/support/license-generation-warning.md' -Raw) + $logSuffix
-        $body = @{ body = $commentBody } | ConvertTo-Json
-        Invoke-RestMethod -Method Post -Uri "$repoApi/issues/$prNumber/comments" -Headers $commentHeaders -Body $body -ContentType 'application/json'
-        Write-Output -InputObject "notice@0 had $warningCount warning(s). Posted comment."
+        $templatePath = if ($errorCount -gt 0)
+        {
+            '.github/workflows/support/license-generation-error.md'
+        }
+        else
+        {
+            '.github/workflows/support/license-generation-warning.md'
+        }
+        $commentBody = (Get-Content -Path $templatePath -Raw) + $logSuffix
+
+        # Try file-level review comment first (works when LICENSE.txt is already in the PR diff
+        # from a prior commit). Fall back to a global PR comment otherwise.
+        $prInfo = Invoke-RestMethod -Uri "$repoApi/pulls/$prNumber" -Headers $commentHeaders
+        $headSha = $prInfo.head.sha
+        $posted = $false
+        try
+        {
+            $body = @{
+                body         = $commentBody
+                commit_id    = $headSha
+                path         = 'src/LICENSE.txt'
+                subject_type = 'file'
+            } | ConvertTo-Json
+            Invoke-RestMethod -Method Post -Uri "$repoApi/pulls/$prNumber/comments" -Headers $commentHeaders -Body $body -ContentType 'application/json'
+            $posted = $true
+            Write-Output -InputObject 'Posted licence comment on LICENSE.txt.'
+        }
+        catch
+        {
+            Write-Output -InputObject 'LICENSE.txt not in PR diff. Falling back to PR comment.'
+        }
+
+        if (-not $posted)
+        {
+            $body = @{ body = $commentBody } | ConvertTo-Json
+            Invoke-RestMethod -Method Post -Uri "$repoApi/issues/$prNumber/comments" -Headers $commentHeaders -Body $body -ContentType 'application/json'
+            Write-Output -InputObject 'Posted licence comment on PR.'
+        }
     }
 }
 
