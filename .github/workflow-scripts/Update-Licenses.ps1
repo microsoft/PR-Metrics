@@ -8,6 +8,26 @@ param(
 
 $filePath = 'src/LICENSE.txt'
 
+function Get-SeparatorIndex
+{
+    param(
+        [Parameter(Mandatory)]
+        [string[]]$Lines
+    )
+
+    # Find the separator line (all hyphens), which marks the boundary between
+    # the license header and any appended dependency notices.
+    for ($i = 0; $i -lt $Lines.Count; $i++)
+    {
+        if ($Lines[$i] -match '^-+$')
+        {
+            return $i
+        }
+    }
+
+    return -1
+}
+
 function Test-NoticesPresent
 {
     param(
@@ -16,19 +36,18 @@ function Test-NoticesPresent
     )
 
     $lines = Get-Content -Path $Path
-    for ($i = 0; $i -lt $lines.Count; $i++)
+    $separatorIndex = Get-SeparatorIndex -Lines $lines
+    if ($separatorIndex -eq -1)
     {
-        if ($lines[$i] -match '^-+$')
-        {
-            for ($j = $i + 1; $j -lt $lines.Count; $j++)
-            {
-                if (-not [string]::IsNullOrWhiteSpace($lines[$j]))
-                {
-                    return $true
-                }
-            }
+        return $false
+    }
 
-            return $false
+    # Check whether any non-blank content follows the separator.
+    for ($j = $separatorIndex + 1; $j -lt $lines.Count; $j++)
+    {
+        if (-not [string]::IsNullOrWhiteSpace($lines[$j]))
+        {
+            return $true
         }
     }
 
@@ -44,24 +63,21 @@ function Remove-Notice
     )
 
     $lines = Get-Content -Path $Path
-    for ($i = 0; $i -lt $lines.Count; $i++)
-    {
-        if ($lines[$i] -match '^-+$')
-        {
-            if ($PSCmdlet.ShouldProcess($Path, 'Remove notices'))
-            {
-                $truncated = $lines[0..$i].ForEach({ $_.TrimEnd() }) + ''
-                Set-Content -Path $Path -Value $truncated
-            }
+    $separatorIndex = Get-SeparatorIndex -Lines $lines
 
-            return
-        }
+    # Remove everything after the separator by keeping only the lines up to and
+    # including it and adding a final newline.
+    if ($separatorIndex -ge 0 -and $PSCmdlet.ShouldProcess($Path, 'Remove licenses'))
+    {
+        $truncated = $lines[0..$separatorIndex] + ''
+        Set-Content -Path $Path -Value $truncated
     }
 }
 
 $hasNotices = Test-NoticesPresent -Path $filePath
 
-# Phase 1 mode: truncate only.
+# In truncation mode, remove dependency licenses if present, but do not generate
+# new ones.
 if ($Truncate)
 {
     if ($hasNotices)
@@ -77,19 +93,23 @@ if ($Truncate)
     return
 }
 
-# ADO mode: guard check + optional re-truncation.
-if ($hasNotices -and -not $Force)
-{
-    Write-Output -InputObject 'Licence notices present. Skipping generation.'
-    Write-Output -InputObject '##vso[task.setvariable variable=GENERATE_LICENSES;isoutput=true]false'
-    return
-}
-
+# Outside truncation mode, if notices are already present and force is
+# unspecified, skip generation. If force is specified, remove existing notices
+# to allow regeneration.
 if ($hasNotices)
 {
-    Remove-Notice -Path $filePath
-    Write-Output -InputObject 'Re-truncated LICENSE.txt for forced regeneration.'
+    if (-not $Force)
+    {
+        Write-Output -InputObject 'Dependency licenses present. Skipping generation.'
+        Write-Output -InputObject '##vso[task.setvariable variable=GENERATE_LICENSES;isoutput=true]false'
+        return
+    }
+    else
+    {
+        Remove-Notice -Path $filePath
+        Write-Output -InputObject 'Re-truncated LICENSE.txt for forced regeneration.'
+    }
 }
 
-Write-Output -InputObject 'Licence generation required.'
+Write-Output -InputObject 'Dependency license generation required.'
 Write-Output -InputObject '##vso[task.setvariable variable=GENERATE_LICENSES;isoutput=true]true'
