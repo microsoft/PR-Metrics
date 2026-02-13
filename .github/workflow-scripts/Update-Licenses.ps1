@@ -66,15 +66,15 @@ if ($Truncate)
     return
 }
 
-if ($hasLicenses -and -not $Force)
-{
-    Write-Output -InputObject 'Dependency licenses present. Skipping generation.'
-    Write-Output -InputObject '##vso[task.setvariable variable=GENERATE_LICENSES;isoutput=true]false'
-    return
-}
-
 if ($hasLicenses)
 {
+    if (-not $Force)
+    {
+        Write-Output -InputObject 'Dependency licenses present. Skipping generation.'
+        Write-Output -InputObject '##vso[task.setvariable variable=GENERATE_LICENSES;isoutput=true]false'
+        return
+    }
+
     Remove-Licenses -Path $filePath
     Write-Output -InputObject 'Re-truncated LICENSE.txt for forced regeneration.'
 }
