@@ -104,11 +104,9 @@ if ($hasNotices)
         Write-Output -InputObject '##vso[task.setvariable variable=GENERATE_LICENSES;isoutput=true]false'
         return
     }
-    else
-    {
-        Remove-Notice -Path $filePath
-        Write-Output -InputObject 'Re-truncated LICENSE.txt for forced regeneration.'
-    }
+
+    Remove-Notice -Path $filePath
+    Write-Output -InputObject 'Re-truncated LICENSE.txt for forced regeneration.'
 }
 
 Write-Output -InputObject 'Dependency license generation required.'
