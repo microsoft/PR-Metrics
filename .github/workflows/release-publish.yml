@@ -2,17 +2,21 @@
 # Licensed under the MIT License.
 
 ---
-name: Release – Phase 3
+name: Release – Publish
 
 on:
   push:
     branches:
       - main
     paths:
-      - .github/workflows/support/release-phase-3-trigger.txt
+      - .github/workflows/support/release-publish-trigger.txt
   workflow_dispatch: null
 
 permissions: {}
+
+defaults:
+  run:
+    shell: pwsh
 
 jobs:
   release:
@@ -36,7 +40,7 @@ jobs:
       - name: npm – Install Dependencies
         run: npm ci
 
-      - name: npm – Build
+      - name: npm – Build Release
         run: npm run build:release
 
       - name: Release – Create
@@ -52,10 +56,10 @@ jobs:
         uses: sigstore/cosign-installer@faadad0cce49287aee09b3a48701e75088a2c6ad # v4.0.0
 
       - name: cosign – Sign VSIX
-        run: |
-          cosign sign-blob --yes \
-            --bundle "${{ github.workspace }}/ms-omex.PRMetrics.vsix.sigstore.json" \
-            "${{ github.workspace }}/ms-omex.PRMetrics.vsix"
+        run: >-
+          cosign sign-blob --yes
+          --bundle "${{ github.workspace }}/ms-omex.PRMetrics.vsix.sigstore.json"
+          "${{ github.workspace }}/ms-omex.PRMetrics.vsix"
 
       - name: Release – Publish
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
@@ -67,28 +71,27 @@ jobs:
 
       - name: Get Version
         id: version
-        shell: pwsh
         run: |-
-          $Version = Get-Content -Path '.github/workflows/support/release-phase-3-trigger.txt'
-          Write-Output -InputObject "VERSION=v$Version" >> $Env:GITHUB_OUTPUT
+          $version = Get-Content -Path '.github/workflows/support/release-publish-trigger.txt'
+          "VERSION=v$version" >> $Env:GITHUB_OUTPUT
 
       - name: Generate Release Notes
-        run: |
-          gh api repos/${{ github.repository }}/releases/generate-notes \
-            -f tag_name="${{ steps.version.outputs.VERSION }}" \
-            -f target_commitish=${{ github.sha }} \
-            --jq '.body' > release-notes.md
+        run: >-
+          gh api repos/${{ github.repository }}/releases/generate-notes
+          -f tag_name="${{ steps.version.outputs.VERSION }}"
+          -f target_commitish=${{ github.sha }}
+          --jq '.body' > release-notes.md
         env:
           GITHUB_TOKEN: ${{ secrets.PR_METRICS_TOKEN }}
 
       - name: GitHub Release
-        run: |
-          gh release create "${{ steps.version.outputs.VERSION }}" \
-            "${{ github.workspace }}/ms-omex.PRMetrics.vsix" \
-            "${{ github.workspace }}/ms-omex.PRMetrics.vsix.sigstore.json" \
-            --title "Release ${{ steps.version.outputs.VERSION }}" \
-            --target "${{ github.sha }}" \
-            --notes-file release-notes.md \
-            --discussion-category "Releases"
+        run: >-
+          gh release create "${{ steps.version.outputs.VERSION }}"
+          "${{ github.workspace }}/ms-omex.PRMetrics.vsix"
+          "${{ github.workspace }}/ms-omex.PRMetrics.vsix.sigstore.json"
+          --title "Release ${{ steps.version.outputs.VERSION }}"
+          --target "${{ github.sha }}"
+          --notes-file release-notes.md
+          --discussion-category "Releases"
         env:
           GITHUB_TOKEN: ${{ secrets.PR_METRICS_TOKEN }}

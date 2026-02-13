@@ -17,6 +17,10 @@ on:
 
 permissions: {}
 
+defaults:
+  run:
+    shell: pwsh
+
 jobs:
   update-code:
     name: Update Code
@@ -49,16 +53,11 @@ jobs:
         run: git add -A
 
       - if: github.ref_name != 'main'
-        name: Detect Changes
-        id: detect-changes
-        shell: pwsh
-        run: |
-          $GitStatus = git status --porcelain
-          Write-Output -InputObject $GitStatus
-          $ChangesPresent = -not [string]::IsNullOrWhiteSpace($GitStatus)
-          Write-Output -InputObject "CHANGES_PRESENT=$ChangesPresent" >> $Env:GITHUB_OUTPUT
+        name: Git – Test for Changes
+        id: git-test-for-changes
+        run: .github/workflow-scripts/Test-Changes.ps1
 
-      - if: github.ref_name != 'main' && steps.detect-changes.outputs.CHANGES_PRESENT == 'True'
+      - if: github.ref_name != 'main' && steps.git-test-for-changes.outputs.CHANGES_PRESENT == 'True'
         name: Git – Commit & Push (Signed)
         uses: grafana/github-api-commit-action@cb4e7799d2cd77d607acf280ed70a0d03572d8bd # v1.0.0
         with:
@@ -83,7 +82,7 @@ jobs:
       - name: npm – Install Dependencies
         run: npm ci
 
-      - name: npm – Test Clean
+      - name: npm – Clean
         run: npm run clean
 
       - name: npm – Build
@@ -155,15 +154,15 @@ jobs:
         with:
           config_file: .github/linters/.linkspector.yml
 
-      - name: Initialize
+      - name: CodeQL – Initialize
         uses: github/codeql-action/init@e296a935590eb16afc0c0108289f68c87e2a89a5 # v3.29.5
         with:
           build-mode: none
           config-file: .github/linters/codeql.yml
           languages: javascript-typescript
-          queries: security-extended,security-and-quality
+          queries: code-quality,code-scanning,security-and-quality,security-experimental,security-extended
 
-      - name: Analyze
+      - name: CodeQL – Analyze
         uses: github/codeql-action/analyze@e296a935590eb16afc0c0108289f68c87e2a89a5 # v3.29.5
         with:
           category: TypeScript
@@ -199,39 +198,34 @@ jobs:
           VALIDATE_TYPESCRIPT_STANDARD: false
 
       - if: github.ref_name != 'main'
-        name: Detect Changes
-        id: detect-changes
-        shell: pwsh
-        run: |
-          $GitStatus = git status --porcelain
-          Write-Output -InputObject $GitStatus
-          $ChangesPresent = -not [string]::IsNullOrWhiteSpace($GitStatus)
-          Write-Output -InputObject "CHANGES_PRESENT=$ChangesPresent" >> $Env:GITHUB_OUTPUT
+        name: Git – Test for Changes
+        id: git-test-for-changes
+        run: .github/workflow-scripts/Test-Changes.ps1
 
       # Super-Linter must operate on the commit, but changes must be pushed to
       # the branch. To facilitate this, the changes are stashed, the branch is
       # checked out, and the changes are applied back.
-      - if: github.ref_name != 'main' && steps.detect-changes.outputs.CHANGES_PRESENT == 'True'
+      - if: github.ref_name != 'main' && steps.git-test-for-changes.outputs.CHANGES_PRESENT == 'True'
         name: Git – Stash Changes
         run: git stash --include-untracked
 
-      - if: github.ref_name != 'main' && steps.detect-changes.outputs.CHANGES_PRESENT == 'True'
+      - if: github.ref_name != 'main' && steps.git-test-for-changes.outputs.CHANGES_PRESENT == 'True'
         name: Git – Checkout PR Branch
-        run: |
-          git fetch origin "$HEAD_REF"
-          git checkout "$HEAD_REF"
+        run: |-
+          git fetch origin $Env:HEAD_REF
+          git checkout $Env:HEAD_REF
         env:
           HEAD_REF: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref_name }}
 
-      - if: github.ref_name != 'main' && steps.detect-changes.outputs.CHANGES_PRESENT == 'True'
+      - if: github.ref_name != 'main' && steps.git-test-for-changes.outputs.CHANGES_PRESENT == 'True'
         name: Git – Apply Stashed Changes
         run: git stash pop
 
-      - if: github.ref_name != 'main' && steps.detect-changes.outputs.CHANGES_PRESENT == 'True'
+      - if: github.ref_name != 'main' && steps.git-test-for-changes.outputs.CHANGES_PRESENT == 'True'
         name: Git – Add Changed Files
         run: git add -A
 
-      - if: github.ref_name != 'main' && steps.detect-changes.outputs.CHANGES_PRESENT == 'True'
+      - if: github.ref_name != 'main' && steps.git-test-for-changes.outputs.CHANGES_PRESENT == 'True'
         name: Git – Commit & Push (Signed)
         uses: grafana/github-api-commit-action@cb4e7799d2cd77d607acf280ed70a0d03572d8bd # v1.0.0
         with:
