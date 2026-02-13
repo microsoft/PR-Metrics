@@ -49,7 +49,6 @@ jobs:
 
       - name: Set Version Environment Variable
         run: >-
-          Write-Host -Object
           "version=${{ env.major }}.${{ env.minor }}.${{ steps.release-version.outputs.PATCH }}"
           >> $Env:GITHUB_ENV
 
