@@ -2,7 +2,7 @@
 # Licensed under the MIT License.
 
 ---
-name: Release – Phase 1
+name: Release – Initiate
 
 on:
   schedule:

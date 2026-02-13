@@ -68,7 +68,7 @@ Update-FileContent -Path 'src/task/src/repos/gitHubReposInvoker.ts' -Replacement
 Update-FileContent -Path 'src/task/tests/repos/gitHubReposInvoker.spec.ts' -Replacements @($userAgentReplacement)
 
 # Release workflow defaults.
-Update-FileContent -Path '.github/workflows/release-phase-1.yml' -Replacements @(
+Update-FileContent -Path '.github/workflows/release-initiate.yml' -Replacements @(
     @{ Pattern = '(?<Yaml>major: )\d+'; Value = '${Yaml}' + $Major }
     @{ Pattern = '(?<Yaml>minor: )\d+'; Value = '${Yaml}' + $Minor }
     @{ Pattern = '(?<Yaml>patch: )\d+'; Value = '${Yaml}' + $Patch }
