@@ -1,4 +1,4 @@
-# Copyright (c) Microsoft Corporation.
+﻿# Copyright (c) Microsoft Corporation.
 # Licensed under the MIT License.
 
 # Constants.
@@ -36,8 +36,9 @@ function Get-PullRequestNumber
     throw 'Unable to determine the pull request.'
 }
 
-function Remove-OutdatedComments
+function Remove-OutdatedComment
 {
+    [CmdletBinding(SupportsShouldProcess)]
     param (
         [Parameter(Mandatory)]
         [int]$PullRequestNumber
@@ -48,7 +49,7 @@ function Remove-OutdatedComments
     $issueComments = Invoke-RestMethod -Uri "$repoApi/issues/$PullRequestNumber/comments?per_page=100" -Headers $gitHubHeaders
     foreach ($comment in $issueComments)
     {
-        if ($comment.body.Contains($marker))
+        if ($comment.body.Contains($marker) -and $PSCmdlet.ShouldProcess("Issue comment $($comment.id)", 'Delete'))
         {
             Invoke-RestMethod -Method Delete -Uri $comment.url -Headers $gitHubHeaders | Out-Null
             Write-Output -InputObject "Deleted outdated license issue comment: $($comment.id)"
@@ -58,7 +59,8 @@ function Remove-OutdatedComments
     $reviewComments = Invoke-RestMethod -Uri "$repoApi/pulls/$PullRequestNumber/comments?per_page=100" -Headers $gitHubHeaders
     foreach ($comment in $reviewComments)
     {
-        if ($comment.path -eq $licenseFilePath -and $comment.body.Contains($marker))
+        if ($comment.path -eq $licenseFilePath -and $comment.body.Contains($marker) -and
+            $PSCmdlet.ShouldProcess("Review comment $($comment.id)", 'Delete'))
         {
             Invoke-RestMethod -Method Delete -Uri $comment.url -Headers $gitHubHeaders | Out-Null
             Write-Output -InputObject "Deleted outdated license review comment: $($comment.id)"
@@ -135,7 +137,7 @@ $noticeRecord = (Invoke-RestMethod -Uri $timelineUrl -Headers $azureDevOpsHeader
     Where-Object { $_.name -eq 'License – Generate for Dependencies' }
 
 $prNumber = Get-PullRequestNumber
-Remove-OutdatedComments -PullRequestNumber $prNumber
+Remove-OutdatedComment -PullRequestNumber $prNumber
 if ($noticeRecord.errorCount -gt 0 -or $noticeRecord.warningCount -gt 0)
 {
     $templatePath = if ($noticeRecord.errorCount -gt 0) { $errorTemplatePath } else { $warningTemplatePath }

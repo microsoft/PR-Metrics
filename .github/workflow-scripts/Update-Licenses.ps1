@@ -27,7 +27,7 @@ function Test-LicensesPresent
     return @($nonBlankLines).Count -gt 0
 }
 
-function Remove-Licenses
+function Remove-License
 {
     [CmdletBinding(SupportsShouldProcess)]
     param(
@@ -55,7 +55,7 @@ if ($Truncate)
 {
     if ($hasLicenses)
     {
-        Remove-Licenses -Path $filePath
+        Remove-License -Path $filePath
         Write-Output -InputObject 'LICENSE.txt truncated.'
     }
     else
@@ -75,7 +75,7 @@ if ($hasLicenses)
         return
     }
 
-    Remove-Licenses -Path $filePath
+    Remove-License -Path $filePath
     Write-Output -InputObject 'Re-truncated LICENSE.txt for forced regeneration.'
 }
 

@@ -50,6 +50,7 @@ function Get-GitBlobSha
 
 function New-SignedCommit
 {
+    [CmdletBinding(SupportsShouldProcess)]
     param (
         [Parameter(Mandatory)]
         [string]$Branch,
@@ -112,6 +113,11 @@ mutation ($input: CreateCommitOnBranchInput!) {
         query     = $mutation
         variables = $variables
     } | ConvertTo-Json -Depth 10
+
+    if (-not $PSCmdlet.ShouldProcess($Branch, 'Create signed commit'))
+    {
+        return $null
+    }
 
     $response = Invoke-RestMethod -Method Post -Uri $graphqlUri -Headers $headers -Body $body -ContentType 'application/json'
     if ($response.errors)
