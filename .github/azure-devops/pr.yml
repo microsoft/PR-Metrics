@@ -2,6 +2,12 @@
 # Licensed under the MIT License.
 
 ---
+parameters:
+  - name: forceLicenseGeneration
+    type: boolean
+    default: false
+    displayName: Force License Generation
+
 trigger: none
 
 pr:
@@ -42,3 +48,4 @@ extends:
       - template: template.yml
         parameters:
           generateLicenses: true
+          forceLicenseGeneration: ${{ parameters.forceLicenseGeneration }}

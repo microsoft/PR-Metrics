@@ -11,6 +11,10 @@ parameters:
     type: boolean
     default: false
 
+  - name: forceLicenseGeneration
+    type: boolean
+    default: false
+
 stages:
   - stage: Build
     displayName: Build
@@ -149,7 +153,7 @@ stages:
 
           - ${{ if parameters.generateLicenses }}:
             - pwsh: |
-                if ('$(Build.Reason)' -eq 'Manual')
+                if ('${{ parameters.forceLicenseGeneration }}' -eq 'True')
                 {
                     .github/workflows/support/Update-Licenses.ps1 -Force
                 }

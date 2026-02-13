@@ -7,7 +7,6 @@ param(
 )
 
 $filePath = 'src/LICENSE.txt'
-$marker = 'NOTICES AND INFORMATION'
 
 function Test-NoticesPresent
 {
@@ -16,8 +15,24 @@ function Test-NoticesPresent
         [string]$Path
     )
 
-    $content = Get-Content -Path $Path -Raw
-    return $content.Contains($marker)
+    $lines = Get-Content -Path $Path
+    for ($i = 0; $i -lt $lines.Count; $i++)
+    {
+        if ($lines[$i] -match '^-+$')
+        {
+            for ($j = $i + 1; $j -lt $lines.Count; $j++)
+            {
+                if (-not [string]::IsNullOrWhiteSpace($lines[$j]))
+                {
+                    return $true
+                }
+            }
+
+            return $false
+        }
+    }
+
+    return $false
 }
 
 function Remove-Notices
@@ -28,12 +43,14 @@ function Remove-Notices
     )
 
     $lines = Get-Content -Path $Path
-    $index = [Array]::IndexOf(
-        $lines,
-        ($lines | Where-Object { $_ -match $marker })
-    )
-    $lines = $lines[0..($index - 2)]
-    Set-Content -Path $Path -Value $lines
+    for ($i = 0; $i -lt $lines.Count; $i++)
+    {
+        if ($lines[$i] -match '^-+$')
+        {
+            Set-Content -Path $Path -Value $lines[0..$i]
+            return
+        }
+    }
 }
 
 $hasNotices = Test-NoticesPresent -Path $filePath
