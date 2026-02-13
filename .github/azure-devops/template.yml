@@ -152,6 +152,17 @@ stages:
             displayName: Component Detection
 
           - ${{ if parameters.generateLicenses }}:
+              - pwsh: |
+                  Write-Output -InputObject "Working directory: $(Get-Location)"
+                  Write-Output -InputObject "File exists: $(Test-Path -Path 'src/LICENSE.txt')"
+                  if (Test-Path -Path 'src/LICENSE.txt')
+                  {
+                      $item = Get-Item -Path 'src/LICENSE.txt'
+                      Write-Output -InputObject "File size: $($item.Length) bytes"
+                      Write-Output -InputObject "First 3 lines: $(Get-Content -Path 'src/LICENSE.txt' -TotalCount 3 | ConvertTo-Json)"
+                  }
+                displayName: License – Diagnostics
+
               - pwsh: .github/workflow-scripts/Update-Licenses.ps1 -Force
                 displayName: License – Check State
                 name: licenseCheck
