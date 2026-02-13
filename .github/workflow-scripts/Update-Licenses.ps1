@@ -36,6 +36,8 @@ function Test-NoticesPresent
     )
 
     $lines = Get-Content -Path $Path
+    Write-Output -InputObject ($lines -join "`n")
+
     $separatorIndex = Get-SeparatorIndex -Lines $lines
     if ($separatorIndex -eq -1)
     {
