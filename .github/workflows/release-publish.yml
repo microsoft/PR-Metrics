@@ -2,14 +2,14 @@
 # Licensed under the MIT License.
 
 ---
-name: Release – Phase 2
+name: Release – Publish
 
 on:
   push:
     branches:
       - main
     paths:
-      - .github/workflows/support/release-phase-2-trigger.txt
+      - .github/workflows/support/release-publish-trigger.txt
   workflow_dispatch: null
 
 permissions: {}
@@ -72,7 +72,7 @@ jobs:
       - name: Get Version
         id: version
         run: |-
-          $version = Get-Content -Path '.github/workflows/support/release-phase-2-trigger.txt'
+          $version = Get-Content -Path '.github/workflows/support/release-publish-trigger.txt'
           "VERSION=v$version" >> $Env:GITHUB_OUTPUT
 
       - name: Generate Release Notes

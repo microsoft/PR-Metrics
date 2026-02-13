@@ -50,14 +50,14 @@ hasn't been tampered with and was built from the expected source code.
 
    sha256:... was attested by:
    REPO                PREDICATE_TYPE                  WORKFLOW
-   microsoft/PR-Metrics  https://slsa.dev/provenance/v1  .github/workflows/release-phase-2.yml@refs/heads/main
+   microsoft/PR-Metrics  https://slsa.dev/provenance/v1  .github/workflows/release-publish.yml@refs/heads/main
    ```
 
 ### What This Verifies via GitHub CLI
 
 The attestation verification confirms:
 
-- The artifact was built by the official `release-phase-2.yml` workflow in this
+- The artifact was built by the official `release-publish.yml` workflow in this
   repository
 - The build ran on GitHub Actions infrastructure
 - The artifact hasn't been modified since it was built
@@ -105,7 +105,7 @@ process and can be verified without needing to manage signing keys.
    ```batchfile
    cosign verify-blob ms-omex.PRMetrics.vsix ^
      --bundle ms-omex.PRMetrics.vsix.sigstore.json ^
-     --certificate-identity-regexp="^https://github.com/microsoft/PR-Metrics/\.github/workflows/release-phase-2\.yml@refs/heads/main$" ^
+     --certificate-identity-regexp="^https://github.com/microsoft/PR-Metrics/\.github/workflows/release-publish\.yml@refs/heads/main$" ^
      --certificate-oidc-issuer="https://token.actions.githubusercontent.com"
    ```
 
@@ -132,7 +132,7 @@ To verify additional details about the signature, you can use:
 ```batchfile
 cosign verify-blob ms-omex.PRMetrics.vsix ^
   --bundle ms-omex.PRMetrics.vsix.sigstore.json ^
-  --certificate-identity-regexp="^https://github.com/microsoft/PR-Metrics/\.github/workflows/release-phase-2\.yml@refs/heads/main$" ^
+  --certificate-identity-regexp="^https://github.com/microsoft/PR-Metrics/\.github/workflows/release-publish\.yml@refs/heads/main$" ^
   --certificate-oidc-issuer="https://token.actions.githubusercontent.com" ^
   --certificate-github-workflow-repository="microsoft/PR-Metrics"
 ```
@@ -205,7 +205,7 @@ To maximize security when using PR Metrics:
        gh attestation verify ms-omex.PRMetrics.vsix --repo microsoft/PR-Metrics
        cosign verify-blob ms-omex.PRMetrics.vsix \
          --bundle ms-omex.PRMetrics.vsix.sigstore.json \
-         --certificate-identity-regexp="^https://github.com/microsoft/PR-Metrics/.github/workflows/release-phase-2\.yml@refs/heads/main$" \
+         --certificate-identity-regexp="^https://github.com/microsoft/PR-Metrics/.github/workflows/release-publish\.yml@refs/heads/main$" \
          --certificate-oidc-issuer="https://token.actions.githubusercontent.com"
    ```
 

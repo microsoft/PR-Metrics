@@ -2,7 +2,7 @@
 # Licensed under the MIT License.
 
 ---
-name: Release – Phase 1
+name: Release – Prepare
 
 on:
   schedule:
@@ -62,8 +62,8 @@ jobs:
       - name: License – Truncate LICENSE.txt
         run: .github/workflows/support/Update-Licenses.ps1 -Truncate
 
-      - name: Version Number – release-phase-2-trigger.txt
-        run: Set-Content -Path '.github/workflows/support/release-phase-2-trigger.txt' -Value ${{ env.version }}
+      - name: Version Number – release-publish-trigger.txt
+        run: Set-Content -Path '.github/workflows/support/release-publish-trigger.txt' -Value ${{ env.version }}
 
       - name: Git – Create Branch
         run: git checkout -b release/v${{ env.version }}
