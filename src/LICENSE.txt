@@ -674,6 +674,62 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ---------------------------------------------------------
 
+azure-pipelines-task-lib 5.2.6 - Apache-2.0 AND BSD-3-Clause AND ISC AND LicenseRef-scancode-unknown AND MIT
+https://github.com/Microsoft/azure-pipelines-task-lib
+
+Copyright 2018 kumavis
+Copyright (c) 2013 Max Ogden
+Copyright (c) 2011 Yahoo! Inc.
+Copyright Node.js contributors
+Copyright (c) 2012, Joshua Bell
+Copyright (c) Isaac Z. Schlueter
+Copyright 2009-2014 Contributors
+Copyright (c) 2015 Calvin Metcalf
+Copyright (c) Feross Aboukhadijeh
+Copyright (c) 2014 Forbes Lindesay
+Copyright (c) Microsoft Corporation
+Copyright (c) 2010, Linden Research, Inc.
+Copyright 2009-2017 Kristopher Michael Kowal
+Copyright (c) Isaac Z. Schlueter and Contributors
+Copyright 2010 James Halliday (mail@substack.net)
+Copyright Mathias Bynens https://mathiasbynens.be
+Copyright (c) 2012, Artur Adib <aadib@mozilla.com>
+Copyright Joyent, Inc. and other Node contributors
+Copyright (c) 2013 Julian Gruber <julian@juliangruber.com>
+Copyright (c) 2014 Nathan Rajlich <nathan@tootallnate.net>
+Copyright (c) 2014 Nathan LaFreniere and other contributors
+Copyright (c) 2010-2016 Robert Kieffer and other contributors
+Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
+Copyright (c) 2011-2018 JS Foundation and contributors, https://js.foundation
+
+The MIT License (MIT)
+
+Copyright (c) Microsoft Corporation. All rights reserved.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+
+---------------------------------------------------------
+
+---------------------------------------------------------
+
 webidl-conversions 3.0.1 - BSD-2-Clause
 https://github.com/jsdom/webidl-conversions#readme
 
@@ -2440,6 +2496,33 @@ furnished to do so, subject to the following conditions:
 
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+---------------------------------------------------------
+
+---------------------------------------------------------
+
+encoding 0.1.13 - MIT
+https://github.com/andris9/encoding
+
+Copyright (c) 2012-2014 Andris Reinman
+
+Copyright (c) 2012-2014 Andris Reinman
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -4460,33 +4543,6 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
-
-
----------------------------------------------------------
-
----------------------------------------------------------
-
-encoding 0.1.13 - MIT AND MIT-0
-https://github.com/andris9/encoding#readme
-
-Copyright (c) 2012-2014 Andris Reinman
-
-Copyright (c) 2012-2014 Andris Reinman
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
 
 
 ---------------------------------------------------------

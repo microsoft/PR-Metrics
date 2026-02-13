@@ -12,7 +12,7 @@ param(
     [int]$Patch
 )
 
-$version = "$Major.$Minor.$Patch"=
+$version = "$Major.$Minor.$Patch"
 
 function Update-FileContent
 {
@@ -39,30 +39,35 @@ function Update-FileContent
 }
 
 # Define shared replacement patterns.
-$versionJsonReplacement = @{ Pattern = '"version": "\d+\.\d+\.\d+"'; Value = "`"version`": `"$version`"" }
-$friendlyNameReplacement = @{ Pattern = 'PR Metrics v\d+\.\d+\.\d+'; Value = "PR Metrics v$version" }
-$userAgentReplacement = @{ Pattern = 'PRMetrics\/v\d+\.\d+\.\d+'; Value = "PRMetrics/v$version" }
+$versionPattern = '\d+\.\d+\.\d+'
+$versionJsonReplacement = @{ Pattern = "\"version\": \"$versionPattern\""; Value = "`"version`": `"$version`"" }
+$friendlyNameReplacement = @{ Pattern = "PR Metrics v$versionPattern"; Value = "PR Metrics v$version" }
+$userAgentReplacement = @{ Pattern = "PRMetrics/v$versionPattern"; Value = "PRMetrics/v$version" }
 $versionComponentReplacements = @(
     @{ Pattern = '"Major": \d+'; Value = "`"Major`": $Major" }
     @{ Pattern = '"Minor": \d+'; Value = "`"Minor`": $Minor" }
     @{ Pattern = '"Patch": \d+'; Value = "`"Patch`": $Patch" }
 )
 
+# GitHub Action reference.
 Update-FileContent -Path 'README.md' -Replacements @(
-    @{ Pattern = 'PR-Metrics@v\d+\.\d+\.\d+'; Value = "PR-Metrics@v$version" }
+    @{ Pattern = "PR-Metrics@v$versionPattern"; Value = "PR-Metrics@v$version" }
 )
 
+# Package and extension manifests.
 Update-FileContent -Path 'package.json' -Replacements @($versionJsonReplacement)
 Update-FileContent -Path 'src/vss-extension.json' -Replacements @($versionJsonReplacement)
 
+# Azure DevOps task definitions.
 Update-FileContent -Path 'src/task/task.json' -Replacements (@($friendlyNameReplacement) + $versionComponentReplacements)
 Update-FileContent -Path 'src/task/task.loc.json' -Replacements $versionComponentReplacements
-
 Update-FileContent -Path 'src/task/Strings/resources.resjson/en-US/resources.resjson' -Replacements @($friendlyNameReplacement)
 
+# Source code user-agent.
 Update-FileContent -Path 'src/task/src/repos/gitHubReposInvoker.ts' -Replacements @($userAgentReplacement)
 Update-FileContent -Path 'src/task/tests/repos/gitHubReposInvoker.spec.ts' -Replacements @($userAgentReplacement)
 
+# Release workflow defaults.
 Update-FileContent -Path '.github/workflows/release-phase-1.yml' -Replacements @(
     @{ Pattern = '(?<Yaml>major: )\d+'; Value = '${Yaml}' + $Major }
     @{ Pattern = '(?<Yaml>minor: )\d+'; Value = '${Yaml}' + $Minor }

@@ -25,12 +25,20 @@ $commentHeaders = @{
 $prNumber = $Env:SYSTEM_PULLREQUEST_PULLREQUESTNUMBER
 if ([string]::IsNullOrWhiteSpace($prNumber))
 {
-    # Look up the PR from the branch name for manual runs.
-    $branch = $Env:BUILD_SOURCEBRANCH -replace '^refs/heads/', ''
-    $prs = @(Invoke-RestMethod -Uri "$repoApi/pulls?head=microsoft:$branch&state=open" -Headers $commentHeaders)
-    if ($prs.Count -gt 0)
+    if ($Env:BUILD_SOURCEBRANCH -match '^refs/pull/(\d+)/')
     {
-        $prNumber = [string]$prs[0].number
+        # Extract the PR number directly from the merge ref.
+        $prNumber = $Matches[1]
+    }
+    else
+    {
+        # Look up the PR from the branch name for manual runs.
+        $branch = $Env:BUILD_SOURCEBRANCH -replace '^refs/heads/', ''
+        $prs = @(Invoke-RestMethod -Uri "$repoApi/pulls?head=microsoft:$branch&state=open" -Headers $commentHeaders)
+        if ($prs.Count -gt 0)
+        {
+            $prNumber = [string]$prs[0].number
+        }
     }
 }
 
