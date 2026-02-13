@@ -27,14 +27,14 @@ if (-not [string]::IsNullOrWhiteSpace($prNumber))
 
     if ($errorCount -gt 0)
     {
-        $commentBody = Get-Content -Path '.github/workflows/support/license-generation-error.txt' -Raw
+        $commentBody = Get-Content -Path '.github/workflows/support/license-generation-error.md' -Raw
         $body = @{ body = $commentBody } | ConvertTo-Json
         Invoke-RestMethod -Method Post -Uri "$repoApi/issues/$prNumber/comments" -Headers $commentHeaders -Body $body -ContentType 'application/json'
         Write-Output -InputObject 'notice@0 failed. Posted error comment.'
     }
     elseif ($warningCount -gt 0)
     {
-        $commentBody = Get-Content -Path '.github/workflows/support/license-generation-warning.txt' -Raw
+        $commentBody = Get-Content -Path '.github/workflows/support/license-generation-warning.md' -Raw
         if ($noticeRecord.log.url)
         {
             $logContent = Invoke-RestMethod -Uri $noticeRecord.log.url -Headers $headers
