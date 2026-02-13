@@ -24,7 +24,7 @@ function Find-SeparatorIndex
         }
     }
 
-    return -1
+    throw 'No separator line found.'
 }
 
 function Test-NoticesPresent
@@ -76,16 +76,9 @@ function Remove-Notices
 # Read the file once and locate the separator.
 $lines = Get-Content -Path $filePath
 $separatorIndex = Find-SeparatorIndex -Lines $lines
-
-if ($separatorIndex -lt 0)
-{
-    Write-Error -Message 'No separator line found in LICENSE.txt.'
-    return
-}
-
 $hasNotices = Test-NoticesPresent -Lines $lines -SeparatorIndex $separatorIndex
 
-# Phase 1 mode: truncate third-party notices only.
+# If truncation requested, truncate dependency licenses only.
 if ($Truncate)
 {
     if ($hasNotices)
@@ -101,7 +94,7 @@ if ($Truncate)
     return
 }
 
-# ADO mode: guard check + optional re-truncation before license generation.
+# Optional re-truncation before license generation.
 if ($hasNotices -and -not $Force)
 {
     Write-Output -InputObject 'License notices present. Skipping generation.'
