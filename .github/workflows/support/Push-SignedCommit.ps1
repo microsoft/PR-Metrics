@@ -34,15 +34,53 @@ if ($localSha -eq $remoteSha)
     return
 }
 
-# Update the file via the GitHub API (creates a signed commit).
+# Get the branch HEAD OID for the commit mutation.
+$refInfo = Invoke-RestMethod -Uri "$repoApi/git/ref/heads/$branch" -Headers $headers
+$headOid = $refInfo.object.sha
+
+# Create a signed commit via the GraphQL API.
 $base64Content = [Convert]::ToBase64String($fileBytes)
+$query = @'
+mutation ($input: CreateCommitOnBranchInput!) {
+    createCommitOnBranch(input: $input) {
+        commit {
+            url
+        }
+    }
+}
+'@
+$variables = @{
+    input = @{
+        branch = @{
+            repositoryNameWithOwner = 'microsoft/PR-Metrics'
+            branchName              = $branch
+        }
+        message = @{
+            headline = 'chore: update licence notices'
+        }
+        fileChanges = @{
+            additions = @(
+                @{
+                    path     = $filePath
+                    contents = $base64Content
+                }
+            )
+        }
+        expectedHeadOid = $headOid
+    }
+}
 $body = @{
-    message = 'chore: update licence notices'
-    content = $base64Content
-    sha     = $remoteSha
-    branch  = $branch
-} | ConvertTo-Json
+    query     = $query
+    variables = $variables
+} | ConvertTo-Json -Depth 10
 
-Invoke-RestMethod -Method Put -Uri "$repoApi/contents/$filePath" -Headers $headers -Body $body -ContentType 'application/json'
+$response = Invoke-RestMethod -Method Post -Uri 'https://api.github.com/graphql' -Headers $headers -Body $body -ContentType 'application/json'
 
-Write-Output -InputObject 'Licence notices committed via GitHub API (signed).'
+if ($response.errors)
+{
+    $errorMessage = $response.errors | ConvertTo-Json -Depth 5
+    Write-Error -Message "GraphQL error: $errorMessage"
+    exit 1
+}
+
+Write-Output -InputObject "Licence notices committed via GitHub API (signed): $($response.data.createCommitOnBranch.commit.url)"

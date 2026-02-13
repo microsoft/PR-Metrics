@@ -183,6 +183,7 @@ stages:
 
               - pwsh: |
                   Get-Content -Path '$(System.DefaultWorkingDirectory)/obj/NOTICE' |
+                      ForEach-Object { $_.TrimEnd() } |
                       Add-Content -Path '$(Build.SourcesDirectory)/src/LICENSE.txt'
                 displayName: License – Append Notices
                 condition: >-
