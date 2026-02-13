@@ -1,4 +1,5 @@
 <!-- pr-metrics-license-comment -->
+
 # Required License Update
 
 <!-- markdownlint-disable MD013 -->
