@@ -43,16 +43,14 @@ function Remove-OutdatedComments
         [int]$PullRequestNumber
     )
 
-    $errorTemplate = (Get-Content -Path $errorTemplatePath -Raw).Trim()
-    $warningTemplate = (Get-Content -Path $warningTemplatePath -Raw).Trim()
+    $marker = '<!-- pr-metrics-license-comment -->'
 
     $issueComments = Invoke-RestMethod -Uri "$repoApi/issues/$PullRequestNumber/comments?per_page=100" -Headers $gitHubHeaders
     foreach ($comment in $issueComments)
     {
-        if ($comment.body.StartsWith($errorTemplate) -or
-            $comment.body.StartsWith($warningTemplate))
+        if ($comment.body.Contains($marker))
         {
-            Invoke-RestMethod -Method Delete -Uri $comment.url -Headers $gitHubHeaders
+            Invoke-RestMethod -Method Delete -Uri $comment.url -Headers $gitHubHeaders | Out-Null
             Write-Output -InputObject "Deleted outdated license issue comment: $($comment.id)"
         }
     }
@@ -60,10 +58,9 @@ function Remove-OutdatedComments
     $reviewComments = Invoke-RestMethod -Uri "$repoApi/pulls/$PullRequestNumber/comments?per_page=100" -Headers $gitHubHeaders
     foreach ($comment in $reviewComments)
     {
-        if ($comment.path -eq $licenseFilePath -and
-            ($comment.body.StartsWith($errorTemplate) -or $comment.body.StartsWith($warningTemplate)))
+        if ($comment.path -eq $licenseFilePath -and $comment.body.Contains($marker))
         {
-            Invoke-RestMethod -Method Delete -Uri $comment.url -Headers $gitHubHeaders
+            Invoke-RestMethod -Method Delete -Uri $comment.url -Headers $gitHubHeaders | Out-Null
             Write-Output -InputObject "Deleted outdated license review comment: $($comment.id)"
         }
     }
@@ -116,14 +113,14 @@ function Submit-LicenseComment
             path         = $licenseFilePath
             subject_type = 'file'
         } | ConvertTo-Json
-        Invoke-RestMethod -Method Post -Uri "$repoApi/pulls/$PullRequestNumber/comments" -Headers $gitHubHeaders -Body $body -ContentType 'application/json'
+        Invoke-RestMethod -Method Post -Uri "$repoApi/pulls/$PullRequestNumber/comments" -Headers $gitHubHeaders -Body $body -ContentType 'application/json' | Out-Null
         Write-Output -InputObject 'Added a license comment on LICENSE.txt.'
     }
     catch
     {
         Write-Output -InputObject 'LICENSE.txt not in PR diff. Falling back to PR comment.'
         $body = @{ body = $CommentBody } | ConvertTo-Json
-        Invoke-RestMethod -Method Post -Uri "$repoApi/issues/$PullRequestNumber/comments" -Headers $gitHubHeaders -Body $body -ContentType 'application/json'
+        Invoke-RestMethod -Method Post -Uri "$repoApi/issues/$PullRequestNumber/comments" -Headers $gitHubHeaders -Body $body -ContentType 'application/json' | Out-Null
         Write-Output -InputObject 'Added a license comment on PR.'
     }
 }
