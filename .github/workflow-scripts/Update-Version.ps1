@@ -12,7 +12,7 @@ param(
     [int]$Patch
 )
 
-$Version = "$Major.$Minor.$Patch"
+$version = "$Major.$Minor.$Patch"=
 
 function Update-FileContent
 {
@@ -39,29 +39,29 @@ function Update-FileContent
 }
 
 # Define shared replacement patterns.
-$VersionJsonReplacement = @{ Pattern = '"version": "\d+\.\d+\.\d+"'; Value = "`"version`": `"$Version`"" }
-$FriendlyNameReplacement = @{ Pattern = 'PR Metrics v\d+\.\d+\.\d+'; Value = "PR Metrics v$Version" }
-$UserAgentReplacement = @{ Pattern = 'PRMetrics\/v\d+\.\d+\.\d+'; Value = "PRMetrics/v$Version" }
-$VersionComponentReplacements = @(
+$versionJsonReplacement = @{ Pattern = '"version": "\d+\.\d+\.\d+"'; Value = "`"version`": `"$version`"" }
+$friendlyNameReplacement = @{ Pattern = 'PR Metrics v\d+\.\d+\.\d+'; Value = "PR Metrics v$version" }
+$userAgentReplacement = @{ Pattern = 'PRMetrics\/v\d+\.\d+\.\d+'; Value = "PRMetrics/v$version" }
+$versionComponentReplacements = @(
     @{ Pattern = '"Major": \d+'; Value = "`"Major`": $Major" }
     @{ Pattern = '"Minor": \d+'; Value = "`"Minor`": $Minor" }
     @{ Pattern = '"Patch": \d+'; Value = "`"Patch`": $Patch" }
 )
 
 Update-FileContent -Path 'README.md' -Replacements @(
-    @{ Pattern = 'PR-Metrics@v\d+\.\d+\.\d+'; Value = "PR-Metrics@v$Version" }
+    @{ Pattern = 'PR-Metrics@v\d+\.\d+\.\d+'; Value = "PR-Metrics@v$version" }
 )
 
-Update-FileContent -Path 'package.json' -Replacements @($VersionJsonReplacement)
-Update-FileContent -Path 'src/vss-extension.json' -Replacements @($VersionJsonReplacement)
+Update-FileContent -Path 'package.json' -Replacements @($versionJsonReplacement)
+Update-FileContent -Path 'src/vss-extension.json' -Replacements @($versionJsonReplacement)
 
-Update-FileContent -Path 'src/task/task.json' -Replacements (@($FriendlyNameReplacement) + $VersionComponentReplacements)
-Update-FileContent -Path 'src/task/task.loc.json' -Replacements $VersionComponentReplacements
+Update-FileContent -Path 'src/task/task.json' -Replacements (@($friendlyNameReplacement) + $versionComponentReplacements)
+Update-FileContent -Path 'src/task/task.loc.json' -Replacements $versionComponentReplacements
 
-Update-FileContent -Path 'src/task/Strings/resources.resjson/en-US/resources.resjson' -Replacements @($FriendlyNameReplacement)
+Update-FileContent -Path 'src/task/Strings/resources.resjson/en-US/resources.resjson' -Replacements @($friendlyNameReplacement)
 
-Update-FileContent -Path 'src/task/src/repos/gitHubReposInvoker.ts' -Replacements @($UserAgentReplacement)
-Update-FileContent -Path 'src/task/tests/repos/gitHubReposInvoker.spec.ts' -Replacements @($UserAgentReplacement)
+Update-FileContent -Path 'src/task/src/repos/gitHubReposInvoker.ts' -Replacements @($userAgentReplacement)
+Update-FileContent -Path 'src/task/tests/repos/gitHubReposInvoker.spec.ts' -Replacements @($userAgentReplacement)
 
 Update-FileContent -Path '.github/workflows/release-phase-1.yml' -Replacements @(
     @{ Pattern = '(?<Yaml>major: )\d+'; Value = '${Yaml}' + $Major }

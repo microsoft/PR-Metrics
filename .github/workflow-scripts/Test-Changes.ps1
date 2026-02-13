@@ -3,11 +3,5 @@
 
 $gitStatus = git status --porcelain
 Write-Output -InputObject $gitStatus
-if ($gitStatus)
-{
-    'CHANGES_PRESENT=True' >> $Env:GITHUB_OUTPUT
-}
-else
-{
-    'CHANGES_PRESENT=False' >> $Env:GITHUB_OUTPUT
-}
+$changesPresent = [bool]$gitStatus
+"CHANGES_PRESENT=$($changesPresent.ToString().ToLowerInvariant())" >> $Env:GITHUB_OUTPUT
