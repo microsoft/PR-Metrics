@@ -25,30 +25,63 @@ if (-not [string]::IsNullOrWhiteSpace($prNumber))
         Accept = 'application/vnd.github.v3+json'
     }
 
-    if ($errorCount -gt 0)
+    # Get the PR's HEAD SHA for file-level review comments.
+    $prInfo = Invoke-RestMethod -Uri "$repoApi/pulls/$prNumber" -Headers $commentHeaders
+    $headSha = $prInfo.head.sha
+
+    # Remove previous licence generation review comments on LICENSE.txt.
+    $errorTemplate = (Get-Content -Path '.github/workflows/support/license-generation-error.md' -Raw).Trim()
+    $warningTemplate = (Get-Content -Path '.github/workflows/support/license-generation-warning.md' -Raw).Trim()
+    $reviewComments = Invoke-RestMethod -Uri "$repoApi/pulls/$prNumber/comments?per_page=100" -Headers $commentHeaders
+    foreach ($comment in $reviewComments)
     {
-        $commentBody = Get-Content -Path '.github/workflows/support/license-generation-error.md' -Raw
-        $body = @{ body = $commentBody } | ConvertTo-Json
-        Invoke-RestMethod -Method Post -Uri "$repoApi/issues/$prNumber/comments" -Headers $commentHeaders -Body $body -ContentType 'application/json'
-        Write-Output -InputObject 'notice@0 failed. Posted error comment.'
+        if ($comment.path -eq 'src/LICENSE.txt' -and
+            ($comment.body.StartsWith($errorTemplate) -or $comment.body.StartsWith($warningTemplate)))
+        {
+            Invoke-RestMethod -Method Delete -Uri $comment.url -Headers $commentHeaders
+            Write-Output -InputObject "Deleted previous licence comment: $($comment.id)"
+        }
     }
-    elseif ($warningCount -gt 0)
+
+    # Fetch the task log if there are issues to report.
+    $logSuffix = ''
+    if ($errorCount -gt 0 -or $warningCount -gt 0)
     {
-        $commentBody = Get-Content -Path '.github/workflows/support/license-generation-warning.md' -Raw
         if ($noticeRecord.log.url)
         {
             $logContent = Invoke-RestMethod -Uri $noticeRecord.log.url -Headers $headers
             $logContent = $logContent -replace '(?m)^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d+Z ', ''
-            $commentBody += "`nBuild task output:`n" + '```text' + "`n" + $logContent + "`n" + '```'
+            $logSuffix = "`nBuild task output:`n" + '```text' + "`n" + $logContent + "`n" + '```'
         }
         else
         {
             Write-Output -InputObject 'notice@0 log URL not available on timeline record.'
         }
+    }
 
-        $body = @{ body = $commentBody } | ConvertTo-Json
-        Invoke-RestMethod -Method Post -Uri "$repoApi/issues/$prNumber/comments" -Headers $commentHeaders -Body $body -ContentType 'application/json'
-        Write-Output -InputObject "notice@0 had $warningCount warning(s). Posted comment."
+    if ($errorCount -gt 0)
+    {
+        $commentBody = (Get-Content -Path '.github/workflows/support/license-generation-error.md' -Raw) + $logSuffix
+        $body = @{
+            body         = $commentBody
+            commit_id    = $headSha
+            path         = 'src/LICENSE.txt'
+            subject_type = 'file'
+        } | ConvertTo-Json
+        Invoke-RestMethod -Method Post -Uri "$repoApi/pulls/$prNumber/comments" -Headers $commentHeaders -Body $body -ContentType 'application/json'
+        Write-Output -InputObject 'notice@0 failed. Posted error comment on LICENSE.txt.'
+    }
+    elseif ($warningCount -gt 0)
+    {
+        $commentBody = (Get-Content -Path '.github/workflows/support/license-generation-warning.md' -Raw) + $logSuffix
+        $body = @{
+            body         = $commentBody
+            commit_id    = $headSha
+            path         = 'src/LICENSE.txt'
+            subject_type = 'file'
+        } | ConvertTo-Json
+        Invoke-RestMethod -Method Post -Uri "$repoApi/pulls/$prNumber/comments" -Headers $commentHeaders -Body $body -ContentType 'application/json'
+        Write-Output -InputObject "notice@0 had $warningCount warning(s). Posted comment on LICENSE.txt."
     }
 }
 
