@@ -8,65 +8,89 @@ param(
 
 $filePath = 'src/LICENSE.txt'
 
+function Find-SeparatorIndex
+{
+    param(
+        [Parameter(Mandatory)]
+        [string[]]$Lines
+    )
+
+    # Find the index of the first all-hyphen separator line (e.g., '---------').
+    for ($i = 0; $i -lt $Lines.Count; $i++)
+    {
+        if ($Lines[$i] -match '^-+$')
+        {
+            return $i
+        }
+    }
+
+    return -1
+}
+
 function Test-NoticesPresent
 {
     param(
         [Parameter(Mandatory)]
-        [string]$Path
+        [string[]]$Lines,
+
+        [Parameter(Mandatory)]
+        [int]$SeparatorIndex
     )
 
-    $lines = Get-Content -Path $Path
-    for ($i = 0; $i -lt $lines.Count; $i++)
+    # Determine whether non-whitespace content exists after the separator line,
+    # indicating that dependency license notices are present.
+    for ($j = $SeparatorIndex + 1; $j -lt $Lines.Count; $j++)
     {
-        if ($lines[$i] -match '^-+$')
+        if (-not [string]::IsNullOrWhiteSpace($Lines[$j]))
         {
-            for ($j = $i + 1; $j -lt $lines.Count; $j++)
-            {
-                if (-not [string]::IsNullOrWhiteSpace($lines[$j]))
-                {
-                    return $true
-                }
-            }
-
-            return $false
+            return $true
         }
     }
 
     return $false
 }
 
-function Remove-Notice
+function Remove-Notices
 {
     [CmdletBinding(SupportsShouldProcess)]
     param(
         [Parameter(Mandatory)]
-        [string]$Path
+        [string]$Path,
+
+        [Parameter(Mandatory)]
+        [string[]]$Lines,
+
+        [Parameter(Mandatory)]
+        [int]$SeparatorIndex
     )
 
-    $lines = Get-Content -Path $Path
-    for ($i = 0; $i -lt $lines.Count; $i++)
+    # Remove all content after the separator line, trimming trailing whitespace
+    # from each retained line.
+    if ($PSCmdlet.ShouldProcess($Path, 'Remove notices'))
     {
-        if ($lines[$i] -match '^-+$')
-        {
-            if ($PSCmdlet.ShouldProcess($Path, 'Remove notices'))
-            {
-                $truncated = $lines[0..$i].ForEach({ $_.TrimEnd() }) + ''
-                Set-Content -Path $Path -Value $truncated
-            }
-
-            return
-        }
+        $truncated = $Lines[0..$SeparatorIndex].ForEach({ $_.TrimEnd() }) + ''
+        Set-Content -Path $Path -Value $truncated
     }
 }
 
-$hasNotices = Test-NoticesPresent -Path $filePath
+# Read the file once and locate the separator.
+$lines = Get-Content -Path $filePath
+$separatorIndex = Find-SeparatorIndex -Lines $lines
 
-# Phase 1 mode: truncate only.
+if ($separatorIndex -lt 0)
+{
+    Write-Error -Message 'No separator line found in LICENSE.txt.'
+    return
+}
+
+$hasNotices = Test-NoticesPresent -Lines $lines -SeparatorIndex $separatorIndex
+
+# Phase 1 mode: truncate third-party notices only.
 if ($Truncate)
 {
     if ($hasNotices)
     {
-        Remove-Notice -Path $filePath
+        Remove-Notices -Path $filePath -Lines $lines -SeparatorIndex $separatorIndex
         Write-Output -InputObject 'LICENSE.txt truncated.'
     }
     else
@@ -77,19 +101,19 @@ if ($Truncate)
     return
 }
 
-# ADO mode: guard check + optional re-truncation.
+# ADO mode: guard check + optional re-truncation before license generation.
 if ($hasNotices -and -not $Force)
 {
-    Write-Output -InputObject 'Licence notices present. Skipping generation.'
+    Write-Output -InputObject 'License notices present. Skipping generation.'
     Write-Output -InputObject '##vso[task.setvariable variable=GENERATE_LICENSES;isoutput=true]false'
     return
 }
 
 if ($hasNotices)
 {
-    Remove-Notice -Path $filePath
+    Remove-Notices -Path $filePath -Lines $lines -SeparatorIndex $separatorIndex
     Write-Output -InputObject 'Re-truncated LICENSE.txt for forced regeneration.'
 }
 
-Write-Output -InputObject 'Licence generation required.'
+Write-Output -InputObject 'License generation required.'
 Write-Output -InputObject '##vso[task.setvariable variable=GENERATE_LICENSES;isoutput=true]true'
