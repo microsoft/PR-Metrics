@@ -10,7 +10,7 @@ $timelineUrl = (
 $headers = @{ Authorization = "Bearer $Env:SYSTEM_ACCESSTOKEN" }
 $timeline = Invoke-RestMethod -Uri $timelineUrl -Headers $headers
 $noticeRecord = $timeline.records |
-    Where-Object { $_.name -eq 'Generate NOTICE File' }
+    Where-Object { $_.name -eq 'License – Generate for Dependencies' }
 
 $errorCount = $noticeRecord.errorCount
 $warningCount = $noticeRecord.warningCount
@@ -98,5 +98,5 @@ if (-not [string]::IsNullOrWhiteSpace($prNumber))
 }
 
 # Set output for downstream steps.
-$noticeOk = if ($errorCount -gt 0) { 'false' } else { 'true' }
-Write-Output -InputObject "##vso[task.setvariable variable=NOTICE_OK;isoutput=true]$noticeOk"
+$licensesOk = if ($errorCount -gt 0) { 'false' } else { 'true' }
+Write-Output -InputObject "##vso[task.setvariable variable=LICENSES_OK;isoutput=true]$licensesOk"

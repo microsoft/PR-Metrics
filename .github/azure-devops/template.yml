@@ -180,7 +180,7 @@ stages:
                 condition: >-
                   and(
                     eq(variables['licenseCheck.GENERATE_LICENSES'], 'true'),
-                    eq(variables['dependenciesCheck.NOTICE_OK'], 'true')
+                    eq(variables['dependenciesCheck.LICENSES_OK'], 'true')
                   )
 
               - pwsh: .github/workflow-scripts/Push-SignedCommit.ps1
@@ -188,7 +188,7 @@ stages:
                 condition: >-
                   and(
                     eq(variables['licenseCheck.GENERATE_LICENSES'], 'true'),
-                    eq(variables['dependenciesCheck.NOTICE_OK'], 'true')
+                    eq(variables['dependenciesCheck.LICENSES_OK'], 'true')
                   )
                 env:
                   GITHUB_TOKEN: $(ADOTOGITHUB)
