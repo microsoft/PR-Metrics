@@ -35,24 +35,24 @@ jobs:
       - name: gh – Log Version
         run: gh --version
 
-      - name: Validate Version Numbers
+      - name: Version Number – Validate
         run: |-
           [int]::Parse(${{ env.major }})
           [int]::Parse(${{ env.minor }})
           [int]::Parse(${{ env.patch }})
 
-      - name: Compute Release Version
+      - name: Version Number – Compute Release
         id: release-version
         run: |-
           $patch = [int]::Parse(${{ env.patch }}) + 1
           "PATCH=$patch" >> $Env:GITHUB_OUTPUT
 
-      - name: Set Version Environment Variable
+      - name: Version Number – Set Environment Variable
         run: >-
           "version=${{ env.major }}.${{ env.minor }}.${{ steps.release-version.outputs.PATCH }}"
           >> $Env:GITHUB_ENV
 
-      - name: Update Version Numbers
+      - name: Version Number – Update
         run: >-
           .github/workflow-scripts/Update-Version.ps1
           -Major ${{ env.major }}
@@ -92,11 +92,6 @@ jobs:
           --label "release"
         env:
           GITHUB_TOKEN: ${{ secrets.PR_METRICS_TOKEN }}
-
-      - name: PR – Comment
-        run: gh pr comment --body-file "./.github/workflows/support/release-comment.md"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install Node.js
         uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
