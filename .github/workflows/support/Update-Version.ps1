@@ -16,6 +16,7 @@ $Version = "$Major.$Minor.$Patch"
 
 function Update-FileContent
 {
+    [CmdletBinding(SupportsShouldProcess)]
     param(
         [Parameter(Mandatory)]
         [string]$Path,
@@ -31,7 +32,10 @@ function Update-FileContent
     }
 
     # Remove the trailing newline added by Get-Content -Raw.
-    Set-Content -Path $Path -Value $content.Substring(0, $content.Length - 1)
+    if ($PSCmdlet.ShouldProcess($Path, 'Update file content'))
+    {
+        Set-Content -Path $Path -Value $content.Substring(0, $content.Length - 1)
+    }
 }
 
 # Define shared replacement patterns.

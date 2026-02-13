@@ -38,6 +38,7 @@ if (-not [string]::IsNullOrWhiteSpace($prNumber))
         if ($noticeRecord.log.url)
         {
             $logContent = Invoke-RestMethod -Uri $noticeRecord.log.url -Headers $headers
+            $logContent = $logContent -replace '(?m)^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d+Z ', ''
             $commentBody += "`nBuild task output:`n" + '```text' + "`n" + $logContent + "`n" + '```'
         }
         else

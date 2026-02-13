@@ -35,8 +35,9 @@ function Test-NoticesPresent
     return $false
 }
 
-function Remove-Notices
+function Remove-Notice
 {
+    [CmdletBinding(SupportsShouldProcess)]
     param(
         [Parameter(Mandatory)]
         [string]$Path
@@ -47,7 +48,12 @@ function Remove-Notices
     {
         if ($lines[$i] -match '^-+$')
         {
-            Set-Content -Path $Path -Value $lines[0..$i]
+            if ($PSCmdlet.ShouldProcess($Path, 'Remove notices'))
+            {
+                $truncated = $lines[0..$i].ForEach({ $_.TrimEnd() }) + ''
+                Set-Content -Path $Path -Value $truncated
+            }
+
             return
         }
     }
@@ -60,7 +66,7 @@ if ($Truncate)
 {
     if ($hasNotices)
     {
-        Remove-Notices -Path $filePath
+        Remove-Notice -Path $filePath
         Write-Output -InputObject 'LICENSE.txt truncated.'
     }
     else
@@ -81,7 +87,7 @@ if ($hasNotices -and -not $Force)
 
 if ($hasNotices)
 {
-    Remove-Notices -Path $filePath
+    Remove-Notice -Path $filePath
     Write-Output -InputObject 'Re-truncated LICENSE.txt for forced regeneration.'
 }
 
