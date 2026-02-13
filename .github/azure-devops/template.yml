@@ -144,62 +144,62 @@ stages:
             - group: PR Metrics
         steps:
           - ${{ if parameters.generateLicenses }}:
-            - checkout: self
-              displayName: Checkout
-              persistCredentials: true
+              - checkout: self
+                displayName: Checkout
+                persistCredentials: true
 
           - task: ComponentGovernanceComponentDetection@0
             displayName: Component Detection
 
           - ${{ if parameters.generateLicenses }}:
-            - pwsh: |
-                if ('${{ parameters.forceLicenseGeneration }}' -eq 'True')
-                {
-                    .github/workflows/support/Update-Licenses.ps1 -Force
-                }
-                else
-                {
-                    .github/workflows/support/Update-Licenses.ps1
-                }
-              displayName: License – Check State
-              name: licenseCheck
+              - pwsh: |
+                  if ('${{ parameters.forceLicenseGeneration }}' -eq 'True')
+                  {
+                      .github/workflows/support/Update-Licenses.ps1 -Force
+                  }
+                  else
+                  {
+                      .github/workflows/support/Update-Licenses.ps1
+                  }
+                displayName: License – Check State
+                name: licenseCheck
 
-            - task: notice@0
-              displayName: Generate NOTICE File
-              continueOnError: true
-              name: noticeTask
-              condition: eq(variables['licenseCheck.GENERATE_LICENSES'], 'true')
-              inputs:
-                outputfile: $(System.DefaultWorkingDirectory)/obj/NOTICE
-                outputformat: text
+              - task: notice@0
+                displayName: Generate NOTICE File
+                continueOnError: true
+                name: noticeTask
+                condition: eq(variables['licenseCheck.GENERATE_LICENSES'], 'true')
+                inputs:
+                  outputfile: $(System.DefaultWorkingDirectory)/obj/NOTICE
+                  outputformat: text
 
-            - pwsh: .github/workflows/support/Test-NoticeResult.ps1
-              displayName: License – Check Notice Result
-              name: noticeCheck
-              condition: eq(variables['licenseCheck.GENERATE_LICENSES'], 'true')
-              env:
-                SYSTEM_ACCESSTOKEN: $(System.AccessToken)
-                GITHUB_TOKEN: $(ADOTOGITHUB)
+              - pwsh: .github/workflows/support/Test-NoticeResult.ps1
+                displayName: License – Check Notice Result
+                name: noticeCheck
+                condition: eq(variables['licenseCheck.GENERATE_LICENSES'], 'true')
+                env:
+                  SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+                  GITHUB_TOKEN: $(ADOTOGITHUB)
 
-            - pwsh: |
-                Get-Content -Path '$(System.DefaultWorkingDirectory)/obj/NOTICE' |
-                    Add-Content -Path '$(Build.SourcesDirectory)/src/LICENSE.txt'
-              displayName: License – Append Notices
-              condition: >-
-                and(
-                  eq(variables['licenseCheck.GENERATE_LICENSES'], 'true'),
-                  eq(variables['noticeCheck.NOTICE_OK'], 'true')
-                )
+              - pwsh: |
+                  Get-Content -Path '$(System.DefaultWorkingDirectory)/obj/NOTICE' |
+                      Add-Content -Path '$(Build.SourcesDirectory)/src/LICENSE.txt'
+                displayName: License – Append Notices
+                condition: >-
+                  and(
+                    eq(variables['licenseCheck.GENERATE_LICENSES'], 'true'),
+                    eq(variables['noticeCheck.NOTICE_OK'], 'true')
+                  )
 
-            - pwsh: .github/workflows/support/Push-SignedCommit.ps1
-              displayName: Git – Commit & Push (Signed)
-              condition: >-
-                and(
-                  eq(variables['licenseCheck.GENERATE_LICENSES'], 'true'),
-                  eq(variables['noticeCheck.NOTICE_OK'], 'true')
-                )
-              env:
-                GITHUB_TOKEN: $(ADOTOGITHUB)
+              - pwsh: .github/workflows/support/Push-SignedCommit.ps1
+                displayName: Git – Commit & Push (Signed)
+                condition: >-
+                  and(
+                    eq(variables['licenseCheck.GENERATE_LICENSES'], 'true'),
+                    eq(variables['noticeCheck.NOTICE_OK'], 'true')
+                  )
+                env:
+                  GITHUB_TOKEN: $(ADOTOGITHUB)
 
           - task: PoliCheck@2
             displayName: PoliCheck

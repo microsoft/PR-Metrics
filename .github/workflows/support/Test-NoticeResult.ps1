@@ -30,20 +30,27 @@ if (-not [string]::IsNullOrWhiteSpace($prNumber))
         $commentBody = Get-Content -Path '.github/workflows/support/license-generation-error.txt' -Raw
         $body = @{ body = $commentBody } | ConvertTo-Json
         Invoke-RestMethod -Method Post -Uri "$repoApi/issues/$prNumber/comments" -Headers $commentHeaders -Body $body -ContentType 'application/json'
-        Write-Host -Object 'notice@0 failed. Posted error comment.'
+        Write-Output -InputObject 'notice@0 failed. Posted error comment.'
     }
     elseif ($warningCount -gt 0)
     {
         $commentBody = Get-Content -Path '.github/workflows/support/license-generation-warning.txt' -Raw
-        $logUrl = $noticeRecord.log.url
-        $logContent = Invoke-RestMethod -Uri $logUrl -Headers $headers
-        $commentBody += "`n" + '```text' + "`n" + $logContent + "`n" + '```'
+        if ($noticeRecord.log.url)
+        {
+            $logContent = Invoke-RestMethod -Uri $noticeRecord.log.url -Headers $headers
+            $commentBody += "`nBuild task output:`n" + '```text' + "`n" + $logContent + "`n" + '```'
+        }
+        else
+        {
+            Write-Output -InputObject 'notice@0 log URL not available on timeline record.'
+        }
+
         $body = @{ body = $commentBody } | ConvertTo-Json
         Invoke-RestMethod -Method Post -Uri "$repoApi/issues/$prNumber/comments" -Headers $commentHeaders -Body $body -ContentType 'application/json'
-        Write-Host -Object "notice@0 had $warningCount warning(s). Posted comment."
+        Write-Output -InputObject "notice@0 had $warningCount warning(s). Posted comment."
     }
 }
 
 # Set output for downstream steps.
 $noticeOk = if ($errorCount -gt 0) { 'false' } else { 'true' }
-Write-Host -Object "##vso[task.setvariable variable=NOTICE_OK;isoutput=true]$noticeOk"
+Write-Output -InputObject "##vso[task.setvariable variable=NOTICE_OK;isoutput=true]$noticeOk"

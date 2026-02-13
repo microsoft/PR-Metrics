@@ -61,11 +61,11 @@ if ($Truncate)
     if ($hasNotices)
     {
         Remove-Notices -Path $filePath
-        Write-Host -Object 'LICENSE.txt truncated.'
+        Write-Output -InputObject 'LICENSE.txt truncated.'
     }
     else
     {
-        Write-Host -Object 'LICENSE.txt already truncated.'
+        Write-Output -InputObject 'LICENSE.txt already truncated.'
     }
 
     return
@@ -74,16 +74,16 @@ if ($Truncate)
 # ADO mode: guard check + optional re-truncation.
 if ($hasNotices -and -not $Force)
 {
-    Write-Host -Object 'Licence notices present. Skipping generation.'
-    Write-Host -Object '##vso[task.setvariable variable=GENERATE_LICENSES;isoutput=true]false'
+    Write-Output -InputObject 'Licence notices present. Skipping generation.'
+    Write-Output -InputObject '##vso[task.setvariable variable=GENERATE_LICENSES;isoutput=true]false'
     return
 }
 
 if ($hasNotices)
 {
     Remove-Notices -Path $filePath
-    Write-Host -Object 'Re-truncated LICENSE.txt for forced regeneration.'
+    Write-Output -InputObject 'Re-truncated LICENSE.txt for forced regeneration.'
 }
 
-Write-Host -Object 'Licence generation required.'
-Write-Host -Object '##vso[task.setvariable variable=GENERATE_LICENSES;isoutput=true]true'
+Write-Output -InputObject 'Licence generation required.'
+Write-Output -InputObject '##vso[task.setvariable variable=GENERATE_LICENSES;isoutput=true]true'

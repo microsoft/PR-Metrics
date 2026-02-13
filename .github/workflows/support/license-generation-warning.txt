@@ -1,5 +1,3 @@
 The LICENSE.txt file has been automatically updated with third-party licence notices,
 but warnings were encountered during generation. Please review the file to ensure all
 licence information is correct and complete.
-
-Build task output:

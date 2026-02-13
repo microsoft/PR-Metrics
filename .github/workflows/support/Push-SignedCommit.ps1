@@ -30,7 +30,7 @@ $remoteSha = $fileInfo.sha
 
 if ($localSha -eq $remoteSha)
 {
-    Write-Host -Object 'No licence changes to commit.'
+    Write-Output -InputObject 'No licence changes to commit.'
     return
 }
 
@@ -45,4 +45,4 @@ $body = @{
 
 Invoke-RestMethod -Method Put -Uri "$repoApi/contents/$filePath" -Headers $headers -Body $body -ContentType 'application/json'
 
-Write-Host -Object 'Licence notices committed via GitHub API (signed).'
+Write-Output -InputObject 'Licence notices committed via GitHub API (signed).'

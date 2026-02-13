@@ -2,7 +2,7 @@
 # Licensed under the MIT License.
 
 $gitStatus = git status --porcelain
-Write-Host -Object $gitStatus
+Write-Output -InputObject $gitStatus
 if ($gitStatus)
 {
     'CHANGES_PRESENT=True' >> $Env:GITHUB_OUTPUT
