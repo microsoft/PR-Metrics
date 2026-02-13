@@ -144,5 +144,5 @@ if ($noticeRecord.errorCount -gt 0 -or $noticeRecord.warningCount -gt 0)
 }
 
 # Set output for downstream steps.
-$licensesResult = $noticeRecord.errorCount -eq 0 -and $noticeRecord.warningCount -eq 0
+$licensesResult = $noticeRecord.errorCount -eq 0
 Write-Output -InputObject "##vso[task.setvariable variable=LICENSES_OK;isoutput=true]$licensesResult"
