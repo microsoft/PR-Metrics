@@ -152,7 +152,7 @@ stages:
             displayName: Component Detection
 
           - ${{ if parameters.generateLicenses }}:
-              - pwsh: .github/workflows/support/Update-Licenses.ps1 -Force:$${{ parameters.forceLicenseGeneration }}
+              - pwsh: .github/workflow-scripts/Update-Licenses.ps1 -Force:$${{ parameters.forceLicenseGeneration }}
                 displayName: License – Check State
                 name: licenseCheck
 
@@ -164,7 +164,7 @@ stages:
                   outputfile: $(System.DefaultWorkingDirectory)/temp/LICENSE.txt
                   outputformat: text
 
-              - pwsh: .github/workflows/azure-devops/support/Test-LicensesResult.ps1
+              - pwsh: .github/workflow-scripts/Test-LicensesResult.ps1
                 displayName: License – Check Dependencies Result
                 name: dependenciesCheck
                 condition: eq(variables['licenseCheck.GENERATE_LICENSES'], 'true')
@@ -183,7 +183,7 @@ stages:
                     eq(variables['dependenciesCheck.NOTICE_OK'], 'true')
                   )
 
-              - pwsh: .github/workflows/azure-devops/support/Push-SignedCommit.ps1
+              - pwsh: .github/workflow-scripts/Push-SignedCommit.ps1
                 displayName: Git – Commit & Push (Signed)
                 condition: >-
                   and(

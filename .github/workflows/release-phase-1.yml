@@ -54,13 +54,13 @@ jobs:
 
       - name: Update Version Numbers
         run: >-
-          .github/workflows/support/Update-Version.ps1
+          .github/workflow-scripts/Update-Version.ps1
           -Major ${{ env.major }}
           -Minor ${{ env.minor }}
           -Patch ${{ steps.release-version.outputs.PATCH }}
 
       - name: License – Truncate LICENSE.txt
-        run: .github/workflows/support/Update-Licenses.ps1 -Truncate
+        run: .github/workflow-scripts/Update-Licenses.ps1 -Truncate
 
       - name: Version Number – release-publish-trigger.txt
         run: Set-Content -Path '.github/workflows/support/release-publish-trigger.txt' -Value ${{ env.version }}

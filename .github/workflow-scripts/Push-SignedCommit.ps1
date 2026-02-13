@@ -9,7 +9,16 @@ $headers = @{
 }
 
 # Get the source branch name (strip refs/heads/ prefix).
-$branch = $Env:SYSTEM_PULLREQUEST_SOURCEBRANCH -replace '^refs/heads/', ''
+# SYSTEM_PULLREQUEST_SOURCEBRANCH is set for PR-triggered builds; BUILD_SOURCEBRANCH is the fallback for manual runs.
+$branchRef = if (-not [string]::IsNullOrWhiteSpace($Env:SYSTEM_PULLREQUEST_SOURCEBRANCH))
+{
+    $Env:SYSTEM_PULLREQUEST_SOURCEBRANCH
+}
+else
+{
+    $Env:BUILD_SOURCEBRANCH
+}
+$branch = $branchRef -replace '^refs/heads/', ''
 
 # Read the updated file.
 $fileBytes = [System.IO.File]::ReadAllBytes($filePath)

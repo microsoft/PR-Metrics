@@ -16,14 +16,26 @@ $errorCount = $noticeRecord.errorCount
 $warningCount = $noticeRecord.warningCount
 
 # Determine if we should post a PR comment.
+$repoApi = 'https://api.github.com/repos/microsoft/PR-Metrics'
+$commentHeaders = @{
+    Authorization = "token $Env:GITHUB_TOKEN"
+    Accept = 'application/vnd.github.v3+json'
+}
+
 $prNumber = $Env:SYSTEM_PULLREQUEST_PULLREQUESTNUMBER
+if ([string]::IsNullOrWhiteSpace($prNumber))
+{
+    # Look up the PR from the branch name for manual runs.
+    $branch = $Env:BUILD_SOURCEBRANCH -replace '^refs/heads/', ''
+    $prs = @(Invoke-RestMethod -Uri "$repoApi/pulls?head=microsoft:$branch&state=open" -Headers $commentHeaders)
+    if ($prs.Count -gt 0)
+    {
+        $prNumber = [string]$prs[0].number
+    }
+}
+
 if (-not [string]::IsNullOrWhiteSpace($prNumber))
 {
-    $repoApi = 'https://api.github.com/repos/microsoft/PR-Metrics'
-    $commentHeaders = @{
-        Authorization = "token $Env:GITHUB_TOKEN"
-        Accept = 'application/vnd.github.v3+json'
-    }
 
     # Get the PR's HEAD SHA for file-level review comments.
     $prInfo = Invoke-RestMethod -Uri "$repoApi/pulls/$prNumber" -Headers $commentHeaders

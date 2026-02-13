@@ -55,7 +55,7 @@ jobs:
       - if: github.ref_name != 'main'
         name: Git – Test for Changes
         id: git-test-for-changes
-        run: .github/workflows/support/Test-Changes.ps1
+        run: .github/workflow-scripts/Test-Changes.ps1
 
       - if: github.ref_name != 'main' && steps.git-test-for-changes.outputs.CHANGES_PRESENT == 'True'
         name: Git – Commit & Push (Signed)
@@ -200,7 +200,7 @@ jobs:
       - if: github.ref_name != 'main'
         name: Git – Test for Changes
         id: git-test-for-changes
-        run: .github/workflows/support/Test-Changes.ps1
+        run: .github/workflow-scripts/Test-Changes.ps1
 
       # Super-Linter must operate on the commit, but changes must be pushed to
       # the branch. To facilitate this, the changes are stashed, the branch is
