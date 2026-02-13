@@ -152,52 +152,43 @@ stages:
             displayName: Component Detection
 
           - ${{ if parameters.generateLicenses }}:
-              - pwsh: |
-                  if ('${{ parameters.forceLicenseGeneration }}' -eq 'True')
-                  {
-                      .github/workflows/support/Update-Licenses.ps1 -Force
-                  }
-                  else
-                  {
-                      .github/workflows/support/Update-Licenses.ps1
-                  }
+              - pwsh: .github/workflows/support/Update-Licenses.ps1 -Force:$${{ parameters.forceLicenseGeneration }}
                 displayName: License – Check State
                 name: licenseCheck
 
               - task: notice@0
-                displayName: Generate NOTICE File
+                displayName: License – Generate for Dependencies
                 continueOnError: true
-                name: noticeTask
                 condition: eq(variables['licenseCheck.GENERATE_LICENSES'], 'true')
                 inputs:
-                  outputfile: $(System.DefaultWorkingDirectory)/obj/NOTICE
+                  outputfile: $(System.DefaultWorkingDirectory)/temp/LICENSE.txt
                   outputformat: text
 
-              - pwsh: .github/workflows/support/Test-NoticeResult.ps1
-                displayName: License – Check Notice Result
-                name: noticeCheck
+              - pwsh: .github/workflows/azure-devops/support/Test-LicensesResult.ps1
+                displayName: License – Check Dependencies Result
+                name: dependenciesCheck
                 condition: eq(variables['licenseCheck.GENERATE_LICENSES'], 'true')
                 env:
                   SYSTEM_ACCESSTOKEN: $(System.AccessToken)
                   GITHUB_TOKEN: $(ADOTOGITHUB)
 
               - pwsh: |
-                  Get-Content -Path '$(System.DefaultWorkingDirectory)/obj/NOTICE' |
+                  Get-Content -Path '$(System.DefaultWorkingDirectory)/temp/LICENSE.txt' |
                       ForEach-Object { $_.TrimEnd() } |
                       Add-Content -Path '$(Build.SourcesDirectory)/src/LICENSE.txt'
-                displayName: License – Append Notices
+                displayName: License – Append Dependencies
                 condition: >-
                   and(
                     eq(variables['licenseCheck.GENERATE_LICENSES'], 'true'),
-                    eq(variables['noticeCheck.NOTICE_OK'], 'true')
+                    eq(variables['dependenciesCheck.NOTICE_OK'], 'true')
                   )
 
-              - pwsh: .github/workflows/support/Push-SignedCommit.ps1
+              - pwsh: .github/workflows/azure-devops/support/Push-SignedCommit.ps1
                 displayName: Git – Commit & Push (Signed)
                 condition: >-
                   and(
                     eq(variables['licenseCheck.GENERATE_LICENSES'], 'true'),
-                    eq(variables['noticeCheck.NOTICE_OK'], 'true')
+                    eq(variables['dependenciesCheck.NOTICE_OK'], 'true')
                   )
                 env:
                   GITHUB_TOKEN: $(ADOTOGITHUB)
