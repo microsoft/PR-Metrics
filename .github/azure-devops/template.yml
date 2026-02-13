@@ -147,6 +147,7 @@ stages:
               - checkout: self
                 displayName: Checkout
                 persistCredentials: true
+                clean: true
 
           - task: ComponentGovernanceComponentDetection@0
             displayName: Component Detection
