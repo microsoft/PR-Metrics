@@ -13,11 +13,6 @@ $headers = @{
 
 function Get-BranchName
 {
-    <#
-    .SYNOPSIS
-        Resolves the source branch name from Azure DevOps environment variables.
-    #>
-
     # SYSTEM_PULLREQUEST_SOURCEBRANCH is set for PR-triggered builds.
     # BUILD_SOURCEBRANCH may be refs/pull/{id}/merge for PR builds or refs/heads/{branch} for manual runs.
     $branchReference = if (-not [string]::IsNullOrWhiteSpace($Env:SYSTEM_PULLREQUEST_SOURCEBRANCH))
@@ -40,14 +35,6 @@ function Get-BranchName
 
 function Get-GitBlobSha
 {
-    <#
-    .SYNOPSIS
-        Computes the git blob SHA-1 hash for a byte array, matching git's
-        "blob <size>\0<content>" format.
-    .PARAMETER FileBytes
-        The raw file content as a byte array.
-    #>
-
     param (
         [Parameter(Mandatory)]
         [byte[]]$FileBytes
@@ -63,15 +50,6 @@ function Get-GitBlobSha
 
 function New-SignedCommit
 {
-    <#
-    .SYNOPSIS
-        Creates a signed commit on the specified branch via the GitHub GraphQL API.
-    .PARAMETER Branch
-        The branch name to commit to.
-    .PARAMETER FileBytes
-        The raw file content as a byte array.
-    #>
-
     param (
         [Parameter(Mandatory)]
         [string]$Branch,
@@ -146,10 +124,8 @@ mutation ($input: CreateCommitOnBranchInput!) {
     return $response.data.createCommitOnBranch.commit.url
 }
 
-# Main flow.
 $branch = Get-BranchName
 $fileBytes = [System.IO.File]::ReadAllBytes($filePath)
-
 $localSha = Get-GitBlobSha -FileBytes $fileBytes
 $fileInfo = Invoke-RestMethod -Uri "$repoApi/contents/$($filePath)?ref=$branch" -Headers $headers
 if ($localSha -eq $fileInfo.sha)

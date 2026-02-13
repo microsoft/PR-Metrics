@@ -5,7 +5,7 @@
 $timelineUrl = (
     "$Env:SYSTEM_TEAMFOUNDATIONCOLLECTIONURI" +
     "$Env:SYSTEM_TEAMPROJECTID/" +
-    "_apis/build/builds/$Env:BUILD_BUILDID/timeline?api-version=7.0"
+    "_apis/build/builds/$Env:BUILD_BUILDID/timeline?api-version=7.1"
 )
 $headers = @{ Authorization = "Bearer $Env:SYSTEM_ACCESSTOKEN" }
 $timeline = Invoke-RestMethod -Uri $timelineUrl -Headers $headers
@@ -27,7 +27,7 @@ if ([string]::IsNullOrWhiteSpace($prNumber))
 {
     if ($Env:BUILD_SOURCEBRANCH -match '^refs/pull/(\d+)/')
     {
-        # Extract the PR number directly from the merge ref.
+        # Extract the PR number directly from the merge reference.
         $prNumber = $Matches[1]
     }
     else
@@ -44,8 +44,7 @@ if ([string]::IsNullOrWhiteSpace($prNumber))
 
 if (-not [string]::IsNullOrWhiteSpace($prNumber))
 {
-
-    # Remove previous licence generation comments (both issue comments and review comments).
+    # Remove previous license generation comments (both issue comments and review comments).
     $errorTemplate = (Get-Content -Path '.github/workflows/support/license-generation-error.md' -Raw).Trim()
     $warningTemplate = (Get-Content -Path '.github/workflows/support/license-generation-warning.md' -Raw).Trim()
     $issueComments = Invoke-RestMethod -Uri "$repoApi/issues/$prNumber/comments?per_page=100" -Headers $commentHeaders
@@ -55,9 +54,10 @@ if (-not [string]::IsNullOrWhiteSpace($prNumber))
             $comment.body.StartsWith($warningTemplate))
         {
             Invoke-RestMethod -Method Delete -Uri $comment.url -Headers $commentHeaders
-            Write-Output -InputObject "Deleted previous licence issue comment: $($comment.id)"
+            Write-Output -InputObject "Deleted previous license issue comment: $($comment.id)"
         }
     }
+
     $reviewComments = Invoke-RestMethod -Uri "$repoApi/pulls/$prNumber/comments?per_page=100" -Headers $commentHeaders
     foreach ($comment in $reviewComments)
     {
@@ -65,7 +65,7 @@ if (-not [string]::IsNullOrWhiteSpace($prNumber))
             ($comment.body.StartsWith($errorTemplate) -or $comment.body.StartsWith($warningTemplate)))
         {
             Invoke-RestMethod -Method Delete -Uri $comment.url -Headers $commentHeaders
-            Write-Output -InputObject "Deleted previous licence review comment: $($comment.id)"
+            Write-Output -InputObject "Deleted previous license review comment: $($comment.id)"
         }
     }
 
@@ -77,7 +77,7 @@ if (-not [string]::IsNullOrWhiteSpace($prNumber))
         {
             $logContent = Invoke-RestMethod -Uri $noticeRecord.log.url -Headers $headers
             $logContent = $logContent -replace '(?m)^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d+Z ', ''
-            $logSuffix = "`nBuild task output:`n" + '```text' + "`n" + $logContent + "`n" + '```'
+            $logSuffix = "`n## Build Task Output`n`n`n" + '```text' + "`n" + $logContent + "`n" + '```'
         }
         else
         {
@@ -112,7 +112,7 @@ if (-not [string]::IsNullOrWhiteSpace($prNumber))
             } | ConvertTo-Json
             Invoke-RestMethod -Method Post -Uri "$repoApi/pulls/$prNumber/comments" -Headers $commentHeaders -Body $body -ContentType 'application/json'
             $posted = $true
-            Write-Output -InputObject 'Posted licence comment on LICENSE.txt.'
+            Write-Output -InputObject 'Posted license comment on LICENSE.txt.'
         }
         catch
         {
@@ -123,11 +123,11 @@ if (-not [string]::IsNullOrWhiteSpace($prNumber))
         {
             $body = @{ body = $commentBody } | ConvertTo-Json
             Invoke-RestMethod -Method Post -Uri "$repoApi/issues/$prNumber/comments" -Headers $commentHeaders -Body $body -ContentType 'application/json'
-            Write-Output -InputObject 'Posted licence comment on PR.'
+            Write-Output -InputObject 'Posted license comment on PR.'
         }
     }
 }
 
 # Set output for downstream steps.
-$licensesOk = if ($errorCount -gt 0) { 'false' } else { 'true' }
-Write-Output -InputObject "##vso[task.setvariable variable=LICENSES_OK;isoutput=true]$licensesOk"
+$licensesResult = $errorCount -le 0
+Write-Output -InputObject "##vso[task.setvariable variable=LICENSES_OK;isoutput=true]$licensesResult"
