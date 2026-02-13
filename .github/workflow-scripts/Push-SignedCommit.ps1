@@ -8,11 +8,18 @@ $headers = @{
     Accept        = 'application/vnd.github.v3+json'
 }
 
-# Get the source branch name (strip refs/heads/ prefix).
-# SYSTEM_PULLREQUEST_SOURCEBRANCH is set for PR-triggered builds; BUILD_SOURCEBRANCH is the fallback for manual runs.
+# Get the source branch name.
+# SYSTEM_PULLREQUEST_SOURCEBRANCH is set for PR-triggered builds.
+# BUILD_SOURCEBRANCH may be refs/pull/{id}/merge for PR builds or refs/heads/{branch} for manual runs.
 $branchRef = if (-not [string]::IsNullOrWhiteSpace($Env:SYSTEM_PULLREQUEST_SOURCEBRANCH))
 {
     $Env:SYSTEM_PULLREQUEST_SOURCEBRANCH
+}
+elseif ($Env:BUILD_SOURCEBRANCH -match '^refs/pull/(\d+)/')
+{
+    $prNumber = $Matches[1]
+    $prInfo = Invoke-RestMethod -Uri "$repoApi/pulls/$prNumber" -Headers $headers
+    "refs/heads/$($prInfo.head.ref)"
 }
 else
 {
@@ -20,7 +27,7 @@ else
 }
 $branch = $branchRef -replace '^refs/heads/', ''
 
-# Read the updated file.
+# Read the file.
 $fileBytes = [System.IO.File]::ReadAllBytes($filePath)
 
 # Compute the local file's git blob SHA to detect changes.
@@ -32,9 +39,7 @@ $hashBytes = [System.Security.Cryptography.SHA1]::Create().ComputeHash($blobByte
 $localSha = -join ($hashBytes | ForEach-Object { $_.ToString('x2') })
 
 # Get the remote file's blob SHA.
-$fileInfo = Invoke-RestMethod `
-    -Uri "$repoApi/contents/$($filePath)?ref=$branch" `
-    -Headers $headers
+$fileInfo = Invoke-RestMethod -Uri "$repoApi/contents/$($filePath)?ref=$branch" -Headers $headers
 $remoteSha = $fileInfo.sha
 
 if ($localSha -eq $remoteSha)
