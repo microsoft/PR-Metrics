@@ -6,7 +6,7 @@ param(
     [switch]$Truncate
 )
 
-$filePath = '../../src/LICENSE.txt'
+$filePath = 'src/LICENSE.txt'
 
 function Get-SeparatorIndex
 {
@@ -36,6 +36,9 @@ function Test-NoticesPresent
     )
 
     $lines = Get-Content -Path $Path
+    Write-Output -InputObject "Reading file from path: $Path"
+    Write-Output -InputObject "File contents:"
+    $lines | ForEach-Object { Write-Output -InputObject $_ }
     $separatorIndex = Get-SeparatorIndex -Lines $lines
     if ($separatorIndex -eq -1)
     {
