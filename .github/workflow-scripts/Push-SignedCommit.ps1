@@ -43,12 +43,26 @@ if ($localSha -eq $remoteSha)
     return
 }
 
-# Get the branch HEAD OID for the commit mutation.
-$refInfo = Invoke-RestMethod -Uri "$repoApi/git/ref/heads/$branch" -Headers $headers
-$headOid = $refInfo.object.sha
-
-# Create a signed commit via the GraphQL API.
+# Get the branch HEAD OID and create a signed commit via the GraphQL API.
 $base64Content = [Convert]::ToBase64String($fileBytes)
+$headQuery = @'
+query ($qualifiedName: String!) {
+    repository(owner: "microsoft", name: "PR-Metrics") {
+        ref(qualifiedName: $qualifiedName) {
+            target {
+                oid
+            }
+        }
+    }
+}
+'@
+$headBody = @{
+    query     = $headQuery
+    variables = @{ qualifiedName = "refs/heads/$branch" }
+} | ConvertTo-Json
+$headResponse = Invoke-RestMethod -Method Post -Uri 'https://api.github.com/graphql' -Headers $headers -Body $headBody -ContentType 'application/json'
+$headOid = $headResponse.data.repository.ref.target.oid
+
 $query = @'
 mutation ($input: CreateCommitOnBranchInput!) {
     createCommitOnBranch(input: $input) {

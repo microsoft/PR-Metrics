@@ -160,7 +160,7 @@ jobs:
           build-mode: none
           config-file: .github/linters/codeql.yml
           languages: javascript-typescript
-          queries: security-extended,security-and-quality
+          queries: code-quality,code-scanning,security-and-quality,security-experimental,security-extended
 
       - name: CodeQL – Analyze
         uses: github/codeql-action/analyze@e296a935590eb16afc0c0108289f68c87e2a89a5 # v3.29.5
