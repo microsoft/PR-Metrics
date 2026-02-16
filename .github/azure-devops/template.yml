@@ -7,6 +7,14 @@ parameters:
     type: boolean
     default: false
 
+  - name: generateLicenses
+    type: boolean
+    default: false
+
+  - name: forceLicenseGeneration
+    type: boolean
+    default: false
+
 stages:
   - stage: Build
     displayName: Build
@@ -131,9 +139,59 @@ stages:
           name: Azure-Pipelines-1ESPT-ExDShared-StaticIP
           os: windows
           image: windows-latest
+        ${{ if parameters.generateLicenses }}:
+          variables:
+            - group: PR Metrics
         steps:
+          - ${{ if parameters.generateLicenses }}:
+              - checkout: self
+                displayName: Checkout
+                persistCredentials: true
+
           - task: ComponentGovernanceComponentDetection@0
             displayName: Component Detection
+
+          - ${{ if parameters.generateLicenses }}:
+              - pwsh: .github/workflow-scripts/Update-Licenses.ps1 -Force:$${{ parameters.forceLicenseGeneration }}
+                displayName: License – Check State
+                name: licenseCheck
+
+              - task: notice@0
+                displayName: License – Generate for Dependencies
+                continueOnError: true
+                condition: eq(variables['licenseCheck.GENERATE_LICENSES'], 'true')
+                inputs:
+                  outputfile: $(System.DefaultWorkingDirectory)/temp/LICENSE.txt
+                  outputformat: text
+
+              - pwsh: .github/workflow-scripts/Test-LicensesResult.ps1
+                displayName: License – Check Dependencies Result
+                name: dependenciesCheck
+                condition: eq(variables['licenseCheck.GENERATE_LICENSES'], 'true')
+                env:
+                  SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+                  GITHUB_TOKEN: $(ADOTOGITHUB)
+
+              - pwsh: |
+                  Get-Content -Path '$(System.DefaultWorkingDirectory)/temp/LICENSE.txt' |
+                      ForEach-Object { $_.TrimEnd() } |
+                      Add-Content -Path '$(Build.SourcesDirectory)/src/LICENSE.txt'
+                displayName: License – Append Dependencies
+                condition: >-
+                  and(
+                    eq(variables['licenseCheck.GENERATE_LICENSES'], 'true'),
+                    eq(variables['dependenciesCheck.LICENSES_OK'], 'true')
+                  )
+
+              - pwsh: .github/workflow-scripts/Push-SignedCommit.ps1
+                displayName: Git – Commit & Push (Signed)
+                condition: >-
+                  and(
+                    eq(variables['licenseCheck.GENERATE_LICENSES'], 'true'),
+                    eq(variables['dependenciesCheck.LICENSES_OK'], 'true')
+                  )
+                env:
+                  GITHUB_TOKEN: $(ADOTOGITHUB)
 
           - task: PoliCheck@2
             displayName: PoliCheck
