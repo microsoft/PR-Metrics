@@ -9,7 +9,4 @@ aliveStatusCodes:
   - 206
   - 429
 ignorePatterns:
-  - pattern: ^https://aka.ms/opensource/security/
-  - pattern: ^https://azure.microsoft.com/services/devops/
-  - pattern: ^https://docs.github.com/
   - pattern: ^https://marketplace.visualstudio.com/manage/publishers/ms-omex$

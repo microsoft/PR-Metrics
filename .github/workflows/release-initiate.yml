@@ -5,8 +5,6 @@
 name: Release – Initiate
 
 on:
-  schedule:
-    - cron: 0 9 15 */3 * # Run every quarter on the 15th day.
   workflow_dispatch: null
 
 permissions: {}
