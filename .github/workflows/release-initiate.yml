@@ -100,10 +100,10 @@ jobs:
         run: npm install
 
       - name: npm – Update Dependencies
-        run: npx ncu -u
+        run: npm run update:versions
 
       - name: npm – Update Transitive Dependencies
-        run: npm update
+        run: npm run update:dependencies
 
       - name: Git – Commit & Push (Signed)
         uses: grafana/github-api-commit-action@cb4e7799d2cd77d607acf280ed70a0d03572d8bd # v1.0.0
