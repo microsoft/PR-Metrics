@@ -18,7 +18,9 @@
     "deploy": "npm run build:release && exitzero tfx build tasks delete --task-id 907d3b28-6b37-4ac7-ac75-9631ee53e512 --no-prompt && tfx build tasks upload --task-path release/task --no-prompt",
     "lint": "eslint --fix **/*.ts",
     "test": "npm run build:debug && cd debug/task && c8 --reporter=text --reporter=text-summary mocha tests/**/*.spec.js",
-    "test:fast": "mkdirp debug && ncp src debug && cd debug/task && tsc --sourceMap && c8 --reporter=text --reporter=text-summary mocha tests/**/*.spec.js"
+    "test:fast": "mkdirp debug && ncp src debug && cd debug/task && tsc --sourceMap && c8 --reporter=text --reporter=text-summary mocha tests/**/*.spec.js",
+    "update:dependencies": "npm update",
+    "update:versions": "ncu -u"
   },
   "repository": {
     "type": "git",

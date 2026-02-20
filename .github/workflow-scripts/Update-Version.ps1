@@ -67,9 +67,11 @@ Update-FileContent -Path 'src/task/Strings/resources.resjson/en-US/resources.res
 Update-FileContent -Path 'src/task/src/repos/gitHubReposInvoker.ts' -Replacements @($userAgentReplacement)
 Update-FileContent -Path 'src/task/tests/repos/gitHubReposInvoker.spec.ts' -Replacements @($userAgentReplacement)
 
-# Release workflow defaults.
+# Release workflow defaults. The env vars in release-initiate.yml represent the
+# next release version, so boost the patch by 1 beyond the version being released.
+$nextPatch = $Patch + 1
 Update-FileContent -Path '.github/workflows/release-initiate.yml' -Replacements @(
     @{ Pattern = '(?<Yaml>major: )\d+'; Value = '${Yaml}' + $Major }
     @{ Pattern = '(?<Yaml>minor: )\d+'; Value = '${Yaml}' + $Minor }
-    @{ Pattern = '(?<Yaml>patch: )\d+'; Value = '${Yaml}' + $Patch }
+    @{ Pattern = '(?<Yaml>patch: )\d+'; Value = '${Yaml}' + $nextPatch }
 )
