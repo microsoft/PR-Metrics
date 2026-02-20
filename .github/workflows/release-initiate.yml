@@ -9,10 +9,11 @@ on:
 
 permissions: {}
 
+# The version below is the upcoming release version, not the current one.
 env:
   major: 1
   minor: 7
-  patch: 11
+  patch: 12
 
 defaults:
   run:
@@ -39,15 +40,9 @@ jobs:
           [int]::Parse(${{ env.minor }})
           [int]::Parse(${{ env.patch }})
 
-      - name: Version Number – Compute Release
-        id: release-version
-        run: |-
-          $patch = [int]::Parse(${{ env.patch }}) + 1
-          "PATCH=$patch" >> $Env:GITHUB_OUTPUT
-
       - name: Version Number – Set Environment Variable
         run: >-
-          "version=${{ env.major }}.${{ env.minor }}.${{ steps.release-version.outputs.PATCH }}"
+          "version=${{ env.major }}.${{ env.minor }}.${{ env.patch }}"
           >> $Env:GITHUB_ENV
 
       - name: Version Number – Update
@@ -55,7 +50,7 @@ jobs:
           .github/workflow-scripts/Update-Version.ps1
           -Major ${{ env.major }}
           -Minor ${{ env.minor }}
-          -Patch ${{ steps.release-version.outputs.PATCH }}
+          -Patch ${{ env.patch }}
 
       - name: License – Truncate LICENSE.txt
         run: .github/workflow-scripts/Update-Licenses.ps1 -Truncate
