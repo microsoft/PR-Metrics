@@ -25,14 +25,20 @@ jobs:
   update-code:
     name: Update Code
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
+    permissions: {}
     steps:
+      - name: Generate GitHub App Token
+        id: app-token
+        uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf # v2.2.1
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
       - name: Checkout
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref_name }}
-          token: ${{ secrets.PR_METRICS_TOKEN }}
+          token: ${{ steps.app-token.outputs.token }}
 
       - name: Install Node.js
         uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
@@ -64,7 +70,7 @@ jobs:
           commit-message: "chore: fix linting, update dist folder"
           create-branch-on-remote: true
           stage-all-files: true
-          token: ${{ secrets.PR_METRICS_TOKEN }}
+          token: ${{ steps.app-token.outputs.token }}
 
   build:
     name: Build
@@ -104,10 +110,15 @@ jobs:
   test-github-action:
     name: Test GitHub Action
     runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
-      statuses: write
+    permissions: {}
     steps:
+      - name: Generate GitHub App Token
+        id: app-token
+        uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf # v2.2.1
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
       - name: Checkout
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
@@ -116,7 +127,7 @@ jobs:
       - name: PR Metrics
         uses: ./
         env:
-          PR_METRICS_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_METRICS_ACCESS_TOKEN: ${{ steps.app-token.outputs.token }}
         with:
           file-matching-patterns: |
             **/*
@@ -148,9 +159,15 @@ jobs:
   validate-linter:
     name: Validate – Linter
     runs-on: ubuntu-latest
-    permissions:
-      statuses: write
+    permissions: {}
     steps:
+      - name: Generate GitHub App Token
+        id: app-token
+        uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf # v2.2.1
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
       - name: Checkout
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
@@ -167,7 +184,7 @@ jobs:
           FIX_NATURAL_LANGUAGE: true
           FIX_TYPESCRIPT_PRETTIER: true
           FIX_YAML_PRETTIER: true
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
           GITLEAKS_CONFIG_FILE: gitleaks.toml
           MARKDOWN_CONFIG_FILE: ../../.markdownlint.json
           # Disable linters that conflict with other linters.
@@ -210,15 +227,20 @@ jobs:
           commit-message: "chore: fix linting"
           create-branch-on-remote: true
           stage-all-files: true
-          token: ${{ secrets.PR_METRICS_TOKEN }}
+          token: ${{ steps.app-token.outputs.token }}
 
   dependabot:
     name: Dependabot
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
+    permissions: {}
     steps:
+      - name: Generate GitHub App Token
+        id: app-token
+        uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf # v2.2.1
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
       - name: gh – Log Version
         run: gh --version
 
@@ -226,4 +248,4 @@ jobs:
         name: Enable Auto-Merge
         run: gh pr merge --auto --delete-branch --squash "${{ github.event.pull_request.html_url }}"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
