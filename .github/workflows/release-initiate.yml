@@ -12,8 +12,8 @@ permissions: {}
 # The version below is the upcoming release version, not the current one.
 env:
   major: 1
-  minor: 2
-  patch: 0
+  minor: 7
+  patch: 12
 
 defaults:
   run:
@@ -95,10 +95,10 @@ jobs:
         run: npm install
 
       - name: npm – Update Dependencies
-        run: npm run update:versions
+        run: npx ncu -u
 
       - name: npm – Update Transitive Dependencies
-        run: npm run update:dependencies
+        run: npm update
 
       - name: Git – Commit & Push (Signed)
         uses: grafana/github-api-commit-action@cb4e7799d2cd77d607acf280ed70a0d03572d8bd # v1.0.0
