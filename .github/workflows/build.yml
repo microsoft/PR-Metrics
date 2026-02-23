@@ -25,8 +25,7 @@ jobs:
   update-code:
     name: Update Code
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
+    permissions: {}
     steps:
       - name: Checkout
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
@@ -104,9 +103,7 @@ jobs:
   test-github-action:
     name: Test GitHub Action
     runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
-      statuses: write
+    permissions: {}
     steps:
       - name: Checkout
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
@@ -116,7 +113,7 @@ jobs:
       - name: PR Metrics
         uses: ./
         env:
-          PR_METRICS_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_METRICS_ACCESS_TOKEN: ${{ secrets.PR_METRICS_TOKEN }}
         with:
           file-matching-patterns: |
             **/*
@@ -148,8 +145,7 @@ jobs:
   validate-linter:
     name: Validate – Linter
     runs-on: ubuntu-latest
-    permissions:
-      statuses: write
+    permissions: {}
     steps:
       - name: Checkout
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
@@ -167,7 +163,7 @@ jobs:
           FIX_NATURAL_LANGUAGE: true
           FIX_TYPESCRIPT_PRETTIER: true
           FIX_YAML_PRETTIER: true
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PR_METRICS_TOKEN }}
           GITLEAKS_CONFIG_FILE: gitleaks.toml
           MARKDOWN_CONFIG_FILE: ../../.markdownlint.json
           # Disable linters that conflict with other linters.
@@ -215,9 +211,7 @@ jobs:
   dependabot:
     name: Dependabot
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
+    permissions: {}
     steps:
       - name: gh – Log Version
         run: gh --version
@@ -226,4 +220,4 @@ jobs:
         name: Enable Auto-Merge
         run: gh pr merge --auto --delete-branch --squash "${{ github.event.pull_request.html_url }}"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PR_METRICS_TOKEN }}

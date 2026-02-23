@@ -23,8 +23,7 @@ jobs:
   release:
     name: Release
     runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
+    permissions: {}
     steps:
       - name: Checkout
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
@@ -94,11 +93,11 @@ jobs:
       - name: npm – Install Dependencies
         run: npm install
 
-      - name: npm – Update Dependencies
-        run: npx ncu -u
+      - name: npm – Update Package Versions
+        run: npm run update:versions
 
       - name: npm – Update Transitive Dependencies
-        run: npm update
+        run: npm run update:dependencies
 
       - name: Git – Commit & Push (Signed)
         uses: grafana/github-api-commit-action@cb4e7799d2cd77d607acf280ed70a0d03572d8bd # v1.0.0
