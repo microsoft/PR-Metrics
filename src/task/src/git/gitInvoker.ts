@@ -230,7 +230,7 @@ export default class GitInvoker {
     }
 
     this._targetBranch = this.targetBranch;
-    if (/[\s\x00-\x1f\x7f]/u.test(this._targetBranch)) {
+    if (/[\p{Cc}\s]/u.test(this._targetBranch)) {
       throw new TypeError(
         `Target branch '${this._targetBranch}' contains whitespace or control characters, which is not allowed in command-line arguments.`,
       );
