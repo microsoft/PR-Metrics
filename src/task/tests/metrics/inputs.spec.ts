@@ -1417,7 +1417,7 @@ describe("inputs.ts", (): void => {
         // Arrange
         const patterns: string[] = Array.from(
           { length: 250 },
-          (_, i: number) => `pattern${String(i)}`,
+          (_value: string, index: number) => `pattern${String(index)}`,
         );
         when(
           runnerInvoker.getInput(deepEqual(["File", "Matching", "Patterns"])),
