@@ -1420,9 +1420,7 @@ describe("inputs.ts", (): void => {
           (_, i: number) => `pattern${String(i)}`,
         );
         when(
-          runnerInvoker.getInput(
-            deepEqual(["File", "Matching", "Patterns"]),
-          ),
+          runnerInvoker.getInput(deepEqual(["File", "Matching", "Patterns"])),
         ).thenReturn(patterns.join("\n"));
 
         // Act

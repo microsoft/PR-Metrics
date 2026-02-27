@@ -155,11 +155,7 @@ describe("validator.ts", (): void => {
         it(`should throw an error when passed invalid GUID value '${value}'`, (): void => {
           // Act
           const func: () => void = () =>
-            Validator.validateGuid(
-              value,
-              "guid test",
-              "guid test method name",
-            );
+            Validator.validateGuid(value, "guid test", "guid test method name");
 
           // Assert
           assert.throws(
