@@ -140,4 +140,50 @@ describe("validator.ts", (): void => {
       assert.equal(result, 1);
     });
   });
+
+  describe("validateGuid()", (): void => {
+    {
+      const testCases: string[] = [
+        "",
+        "not-a-guid",
+        "12345678",
+        "12345678-1234-1234-1234",
+        "zzzzzzzz-zzzz-zzzz-zzzz-zzzzzzzzzzzz",
+      ];
+
+      testCases.forEach((value: string): void => {
+        it(`should throw an error when passed invalid GUID value '${value}'`, (): void => {
+          // Act
+          const func: () => void = () =>
+            Validator.validateGuid(value, "guid test", "guid test method name");
+
+          // Assert
+          assert.throws(
+            func,
+            new TypeError(
+              `'guid test', accessed within 'guid test method name', is not a valid GUID '${value}'.`,
+            ),
+          );
+        });
+      });
+    }
+
+    it("should not throw an error when passed a valid lowercase GUID", (): void => {
+      // Act & Assert
+      Validator.validateGuid(
+        "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+        "guid test",
+        "guid test method name",
+      );
+    });
+
+    it("should not throw an error when passed a valid uppercase GUID", (): void => {
+      // Act & Assert
+      Validator.validateGuid(
+        "A1B2C3D4-E5F6-7890-ABCD-EF1234567890",
+        "guid test",
+        "guid test method name",
+      );
+    });
+  });
 });

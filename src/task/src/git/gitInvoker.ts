@@ -76,14 +76,22 @@ export default class GitInvoker {
     }
 
     const gitHubReferenceElements: string[] = gitHubReference.split("/");
-    if (typeof gitHubReferenceElements[2] === "undefined") {
+    const pullRequestId: string | undefined = gitHubReferenceElements[2];
+    if (typeof pullRequestId === "undefined") {
       this._logger.logWarning(
         `'GITHUB_REF' is in an incorrect format '${gitHubReference}'.`,
       );
       return "";
     }
 
-    return gitHubReferenceElements[2];
+    if (!/^\d+$/u.test(pullRequestId)) {
+      this._logger.logWarning(
+        `Pull request ID '${pullRequestId}' from 'GITHUB_REF' is not numeric.`,
+      );
+      return "";
+    }
+
+    return pullRequestId;
   }
 
   private get pullRequestIdForAzurePipelines(): string {
@@ -105,6 +113,13 @@ export default class GitInvoker {
         return "";
       }
 
+      if (!/^\d+$/u.test(result)) {
+        this._logger.logWarning(
+          `'SYSTEM_PULLREQUEST_PULLREQUESTNUMBER' is not numeric '${result}'.`,
+        );
+        return "";
+      }
+
       return result;
     }
 
@@ -113,6 +128,13 @@ export default class GitInvoker {
     if (typeof result === "undefined") {
       this._logger.logWarning(
         "'SYSTEM_PULLREQUEST_PULLREQUESTID' is undefined.",
+      );
+      return "";
+    }
+
+    if (!/^\d+$/u.test(result)) {
+      this._logger.logWarning(
+        `'SYSTEM_PULLREQUEST_PULLREQUESTID' is not numeric '${result}'.`,
       );
       return "";
     }
@@ -208,6 +230,12 @@ export default class GitInvoker {
     }
 
     this._targetBranch = this.targetBranch;
+    if (/[\p{Cc}\s]/u.test(this._targetBranch)) {
+      throw new TypeError(
+        `Target branch '${this._targetBranch}' contains whitespace or control characters, which is not allowed in command-line arguments.`,
+      );
+    }
+
     this._pullRequestIdInternal = this.pullRequestIdInternal;
     this._isInitialized = true;
   }
