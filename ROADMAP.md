@@ -22,6 +22,7 @@ maintenance and reliability rather than new feature development.
 
 ## Feature Requests
 
-If you have a feature request, please open a
-[GitHub issue](https://github.com/microsoft/PR-Metrics/issues). Feature
-requests will be evaluated on a case-by-case basis by the maintainers.
+If you have a feature request, please open a [GitHub issue][githubissues].
+Feature requests will be evaluated on a case-by-case basis by the maintainers.
+
+[githubissues]: https://github.com/microsoft/PR-Metrics/issues
