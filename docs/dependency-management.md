@@ -32,7 +32,7 @@ Dependencies are obtained from the [npm public registry][npmregistry] via
 `npm install`. The [`.npmrc`][npmrc] file configures the registry URL. All
 communication with the registry uses HTTPS.
 
-During CI/CD builds, `npm ci` resolves dependencies from the lock file, ensuring
+During CI/CD builds, `npm ci` resolves dependencies from the lockfile, ensuring
 reproducible builds.
 
 ## Tracking

@@ -57,7 +57,7 @@ All major changes to the project must include corresponding test updates:
 
 - **New features**: Must include unit tests covering the new functionality,
   including edge cases.
-- **Bug fixes**: Must include a regression test that fails without the fix and
+- **Bugfixes**: Must include a regression test that fails without the fix and
   passes with it.
 - **Refactoring**: Existing tests must continue to pass. If the refactoring
   changes internal interfaces, tests should be updated to reflect the new

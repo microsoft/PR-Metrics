@@ -70,7 +70,7 @@ pull requests or repository contents within the token's permission scope.
 
 ### 2. Injection via Untrusted PR Content
 
-**Threat**: Maliciously crafted PR titles, descriptions, or file names could
+**Threat**: Maliciously crafted PR titles, descriptions, or filenames could
 inject unexpected content when the task writes back to the PR.
 
 **Likelihood**: Low

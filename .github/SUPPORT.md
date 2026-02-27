@@ -11,7 +11,7 @@ commitments made as to their longevity.
 ## Support Lifecycle
 
 PR Metrics follows a rolling release model. Only the **latest release** is
-actively supported with bug fixes and security updates. Previous releases do not
+actively supported with bugfixes and security updates. Previous releases do not
 receive patches; consumers should upgrade to the latest version to receive
 fixes.
 

@@ -20,7 +20,7 @@ assessment within the PR Metrics project.
 All SCA findings are triaged using the following thresholds:
 
 | Severity | Remediation Target     |
-|----------|------------------------|
+| -------- | ---------------------- |
 | Critical | Next patch release     |
 | High     | Next patch release     |
 | Medium   | Next scheduled release |
@@ -30,7 +30,7 @@ Dependabot alerts classified as critical or high severity are treated as
 blocking and must be resolved before the next release. Medium and low severity
 findings are addressed in the next scheduled release cycle.
 
-### SCA Pre-Release Policy
+### SCA prerelease Policy
 
 Before any release, the following SCA requirements must be satisfied:
 
@@ -76,7 +76,7 @@ All changes to the codebase are automatically evaluated by:
 All SAST findings are triaged using the following thresholds:
 
 | Severity | Remediation Target       |
-|----------|--------------------------|
+| -------- | ------------------------ |
 | Critical | Immediate (blocks merge) |
 | High     | Immediate (blocks merge) |
 | Medium   | Before next release      |

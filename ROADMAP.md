@@ -10,7 +10,7 @@ maintenance and reliability rather than new feature development.
   versions.
 - **Platform Compatibility**: Continued support for both GitHub Actions and
   Azure DevOps Pipelines as these platforms evolve.
-- **Bug Fixes**: Resolution of any reported issues as they arise.
+- **Bugfixes**: Resolution of any reported issues as they arise.
 - **Community Support**: Responding to issues and reviewing community
   contributions.
 
