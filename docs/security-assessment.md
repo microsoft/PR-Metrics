@@ -1,13 +1,13 @@
 # Security Assessment
 
-This document describes the security assessment for
-[PR Metrics](https://github.com/microsoft/PR-Metrics), identifying the most
-likely and impactful potential security problems and the mitigations in place.
+This document describes the security assessment for [PR Metrics][prmetrics],
+identifying the most likely and impactful potential security problems and the
+mitigations in place.
 
 ## System Overview
 
 PR Metrics is a CI/CD task that runs within GitHub Actions or Azure DevOps
-Pipelines. It analyses pull request diffs to calculate code size and test
+Pipelines. It analyzes pull request diffs to calculate code size and test
 coverage metrics, then updates the PR title and adds a summary comment.
 
 The task operates within the CI/CD runner's execution environment and
@@ -38,12 +38,12 @@ graph TD
 
 ## Assets
 
-| Asset                  | Sensitivity | Description                                                  |
-| ---------------------- | ----------- | ------------------------------------------------------------ |
-| Access token           | High        | `GITHUB_TOKEN` or PAT granting PR read/write access          |
-| PR title & description | Low         | Attacker-controlled content read and partially written back   |
-| Git diff output        | Low         | Line counts parsed from `git diff --numstat` output          |
-| PR comments            | Low         | Metrics comments written to the PR                           |
+- **Access token** (High): `GITHUB_TOKEN` or PAT granting PR read/write access.
+- **PR title & description** (Low): Attacker-controlled content read and
+  partially written back.
+- **Git diff output** (Low): Line counts parsed from `git diff --numstat`
+  output.
+- **PR comments** (Low): Metrics comments written to the PR.
 
 ## Threat Analysis
 
@@ -54,7 +54,7 @@ exfiltrated by a compromised dependency.
 
 **Likelihood**: Low
 
-**Impact**: High -- an exposed token could allow unauthorised modifications to
+**Impact**: High – an exposed token could allow unauthorized modifications to
 pull requests or repository contents within the token's permission scope.
 
 **Mitigations**:
@@ -66,8 +66,7 @@ pull requests or repository contents within the token's permission scope.
 - The CI/CD workflows use `permissions: {}` at the top level, granting no
   permissions by default; each job requests only the specific permissions it
   needs.
-- [Gitleaks](https://github.com/gitleaks/gitleaks) scans prevent accidental
-  secret commits.
+- [Gitleaks][gitleaks] scans prevent accidental secret commits.
 
 ### 2. Injection via Untrusted PR Content
 
@@ -76,8 +75,8 @@ inject unexpected content when the task writes back to the PR.
 
 **Likelihood**: Low
 
-**Impact**: Medium -- could result in misleading PR metadata or unexpected
-API behaviour.
+**Impact**: Medium – could result in misleading PR metadata or unexpected API
+behavior.
 
 **Mitigations**:
 
@@ -97,25 +96,22 @@ execute arbitrary code within the CI/CD runner.
 
 **Likelihood**: Low
 
-**Impact**: High -- could lead to data exfiltration, token theft, or
-pipeline manipulation.
+**Impact**: High – could lead to data exfiltration, token theft, or pipeline
+manipulation.
 
 **Mitigations**:
 
 - The `package-lock.json` file pins exact dependency versions, preventing
   unexpected updates.
-- [CodeQL](https://codeql.github.com/) analyses the codebase for security
-  vulnerabilities on every pull request.
-- Dependencies are updated through a controlled process during releases,
-  using [npm-check-updates](https://www.npmjs.com/package/npm-check-updates),
-  with changes reviewed in a pull request.
+- [CodeQL][codeql] analyzes the codebase for security vulnerabilities on every
+  pull request.
+- Dependencies are updated through a controlled process during releases, using
+  [npm-check-updates][npmcheckupdates], with changes reviewed in a pull request.
 - The release build bundles all dependencies into a single file via
-  [@vercel/ncc](https://github.com/vercel/ncc), reducing the runtime
-  dependency surface.
-- Release artefacts are signed with
-  [Sigstore](https://www.sigstore.dev/) and include
-  [SLSA build provenance attestations](https://slsa.dev/), allowing
-  downstream consumers to verify artefact integrity.
+  [@vercel/ncc][vercelncc], reducing the runtime dependency surface.
+- Release artifacts are signed with [Sigstore][sigstore] and include
+  [SLSA build provenance attestations][slsa], allowing downstream consumers to
+  verify artifact integrity.
 
 ### 4. CI/CD Permission Escalation
 
@@ -124,7 +120,7 @@ unintended access to repository resources.
 
 **Likelihood**: Low
 
-**Impact**: Medium -- could allow modifications beyond the intended PR scope.
+**Impact**: Medium – could allow modifications beyond the intended PR scope.
 
 **Mitigations**:
 
@@ -141,33 +137,42 @@ unintended access to repository resources.
 **Threat**: The task executes
 `git diff --numstat --ignore-all-space origin/<target>...pull/<id>/merge`,
 where `<target>` and `<id>` are derived from the CI/CD environment. A
-manipulated branch name or PR identifier could inject additional Git
-arguments.
+manipulated branch name or PR identifier could inject additional Git arguments.
 
 **Likelihood**: Very low
 
-**Impact**: Medium -- could lead to unintended Git operations within the
-runner environment.
+**Impact**: Medium – could lead to unintended Git operations within the runner
+environment.
 
 **Mitigations**:
 
-- Branch names and PR identifiers are sourced from CI/CD environment
-  variables set by the platform, not from user-controlled input parameters.
+- Branch names and PR identifiers are sourced from CI/CD environment variables
+  set by the platform, not from customer-controlled input parameters.
 - The values are passed through the
-  [Azure Pipelines Task SDK](https://github.com/microsoft/azure-pipelines-task-lib)
-  or [@actions/exec](https://github.com/actions/toolkit/tree/main/packages/exec)
-  execution libraries, which handle argument escaping.
+  [Azure Pipelines Task SDK][azurepipelinestasksdk] or
+  [@actions/exec][actionsexec] execution libraries, which handle argument
+  escaping.
 
 ## Residual Risks
 
-- **Platform vulnerabilities**: The task depends on the security of the
-  GitHub Actions and Azure DevOps runner environments. Vulnerabilities in
-  these platforms are outside the project's control.
-- **Transitive dependency risks**: While direct dependencies are reviewed,
-  deep transitive dependencies may introduce vulnerabilities that are not
-  immediately apparent.
+- **Platform vulnerabilities**: The task depends on the security of the GitHub
+  Actions and Azure DevOps runner environments. Vulnerabilities in these
+  platforms are outside the project's control.
+- **Transitive dependency risks**: While direct dependencies are reviewed, deep
+  transitive dependencies may introduce vulnerabilities that are not immediately
+  apparent.
 
 ## Review Cadence
 
 This assessment should be reviewed and updated when significant new features
 are added, when the threat landscape changes, or at least annually.
+
+[actionsexec]: https://github.com/actions/toolkit/tree/main/packages/exec
+[azurepipelinestasksdk]: https://github.com/microsoft/azure-pipelines-task-lib
+[codeql]: https://codeql.github.com/
+[gitleaks]: https://github.com/gitleaks/gitleaks
+[npmcheckupdates]: https://www.npmjs.com/package/npm-check-updates
+[prmetrics]: https://github.com/microsoft/PR-Metrics
+[sigstore]: https://www.sigstore.dev/
+[slsa]: https://slsa.dev/
+[vercelncc]: https://github.com/vercel/ncc

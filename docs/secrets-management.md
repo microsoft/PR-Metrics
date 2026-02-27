@@ -8,12 +8,14 @@ the PR Metrics project.
 The following secrets and credentials are used across the project's CI/CD
 pipelines.
 
-| Secret                    | Purpose                                            | Scope                         |
-| ------------------------- | -------------------------------------------------- | ----------------------------- |
-| `GITHUB_TOKEN`            | GitHub-provided token for workflow operations       | Per-workflow run, auto-expires |
-| `PR_METRICS_TOKEN`        | PAT for operations requiring elevated permissions  | Repository-scoped             |
-| `PR_METRICS_ACCESS_TOKEN` | Access token passed to the PR Metrics action        | Per-workflow run               |
-| ESRP service connection   | Code signing for Azure DevOps marketplace releases | Azure DevOps pipeline-scoped  |
+- **`GITHUB_TOKEN`**: GitHub-provided token for workflow operations.
+  Per-workflow run, auto-expires.
+- **`PR_METRICS_TOKEN`**: PAT for operations requiring elevated permissions.
+  Repository-scoped.
+- **`PR_METRICS_ACCESS_TOKEN`**: Access token passed to the PR Metrics action.
+  Per-workflow run.
+- **ESRP service connection**: Code signing for Azure DevOps marketplace
+  releases. Azure DevOps pipeline-scoped.
 
 ## Storage
 
@@ -55,14 +57,17 @@ control. The `.gitignore` file excludes common environment file patterns
 
 ## Prevention
 
-The project employs multiple layers of defence to prevent accidental secret
+The project employs multiple layers of defense to prevent accidental secret
 exposure:
 
-- [Gitleaks](https://github.com/gitleaks/gitleaks) scans every pull request
-  for accidentally committed secrets via
-  [Super-Linter](https://github.com/super-linter/super-linter).
+- [Gitleaks][gitleaks] scans every pull request for accidentally committed
+  secrets via [Super-Linter][superlinter].
 - Secrets are passed to processes via environment variables, not command-line
   arguments, preventing exposure in process listings.
 - CI/CD pipeline logs are configured to mask secret values automatically.
-- The [security assessment](security-assessment.md) identifies access token
+- The [security assessment][securityassessment] identifies access token
   exposure as a tracked threat with specific mitigations.
+
+[gitleaks]: https://github.com/gitleaks/gitleaks
+[securityassessment]: security-assessment.md
+[superlinter]: https://github.com/super-linter/super-linter

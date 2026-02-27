@@ -7,9 +7,9 @@ common security weakness mitigations have been applied.
 
 ## Overview
 
-PR Metrics is a GitHub Action and Azure DevOps Pipelines task that augments
-pull request titles with size and test coverage indicators. It runs within
-CI/CD pipeline environments and interacts with Git platform APIs.
+PR Metrics is a GitHub Action and Azure DevOps Pipelines task that augments pull
+request titles with size and test coverage indicators. It runs within CI/CD
+pipeline environments and interacts with Git platform APIs.
 
 ## Trust Boundaries
 
@@ -23,8 +23,8 @@ graph TD
     E[Pipeline Configuration Inputs] -->|Trust Boundary 4| B
 ```
 
-1. **CI/CD Runner to Task**: The task runs within a CI/CD runner (GitHub
-   Actions or Azure Pipelines). The runner provides environment variables,
+1. **CI/CD Runner to Task**: The task runs within a CI/CD runner (GitHub Actions
+   or Azure Pipelines). The runner provides environment variables,
    authentication tokens, and the execution environment.
 1. **Task to Git Platform APIs**: The task communicates with GitHub or Azure
    DevOps APIs over HTTPS to read and modify pull request data.
@@ -36,15 +36,23 @@ graph TD
 
 ## Threat Model
 
-| Threat                        | Impact | Mitigation                                                                                                                     |
-| ----------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------ |
-| Malicious input injection     | Medium | All inputs validated with type checking, range validation, and safe defaults ([`inputs.ts`][inputs]).                           |
-| Supply chain compromise       | High   | Releases include build provenance attestation (SLSA) and cosign signatures. Dependencies monitored via Dependabot.             |
-| Credential exposure           | High   | Authentication tokens provided via environment variables only. Gitleaks scanning prevents accidental secret commits.           |
-| API injection via PR metadata | Medium | PR title and comment content constructed from validated metrics data, not raw external input.                                  |
-| Unauthorised API access       | Medium | Minimum required permissions enforced (`pull-requests: write`, `statuses: write`). Principle of least privilege applied.       |
-| Dependency vulnerabilities    | Medium | Dependabot monitors all dependencies. CodeQL scans for known vulnerability patterns on every PR.                               |
-| Code quality defects          | Medium | 100% test coverage enforced via [c8 configuration][c8rc]. ESLint with 150+ strict rules. CodeQL security analysis on each PR. |
+- **Malicious input injection** (Medium): All inputs validated with type
+  checking, range validation, and safe defaults ([`inputs.ts`][inputs]).
+- **Supply chain compromise** (High): Releases include build provenance
+  attestation (SLSA) and cosign signatures. Dependencies monitored via
+  Dependabot.
+- **Credential exposure** (High): Authentication tokens provided via environment
+  variables only. Gitleaks scanning prevents accidental secret commits.
+- **API injection via PR metadata** (Medium): Pull request title and comment
+  content constructed from validated metrics data, not raw external input.
+- **Unauthorized API access** (Medium): Minimum required permissions enforced
+  (`pull-requests: write`, `statuses: write`). Principle of least privilege
+  applied.
+- **Dependency vulnerabilities** (Medium): Dependabot monitors all dependencies.
+  CodeQL scans for known vulnerability patterns on every pull request.
+- **Code quality defects** (Medium): 100% test coverage enforced via
+  [c8 configuration][c8rc]. ESLint with 150+ strict rules. CodeQL security
+  analysis on each pull request.
 
 ## Secure Design Principles
 
@@ -52,18 +60,17 @@ The following secure design principles from Saltzer and Schroeder are applied:
 
 - **Economy of Mechanism**: The task has focused, limited functionality
   (calculating PR size metrics and updating PR titles and comments). Complexity
-  is minimised.
+  is minimized.
 - **Fail-Safe Defaults**: All inputs have safe default values. Invalid inputs
   fall back to defaults rather than causing failures. The task is designed to
   run with `continue-on-error: true`.
 - **Complete Mediation**: All API calls go through platform-specific wrappers
-  that handle authentication and authorisation consistently.
-- **Least Privilege**: The task requires only `pull-requests: write` and
-  `statuses: write` permissions. No elevated or administrative permissions are
-  needed.
+  that handle authentication and authorization consistently.
+- **Least Privilege**: The task requires only minimal, low-level permissions. No
+  elevated or administrative permissions are needed.
 - **Least Common Mechanism**: The task does not share state between pipeline
   runs or across repositories.
-- **Open Design**: The project is fully open source under the MIT licence. All
+- **Open Design**: The project is fully open source under the MIT license. All
   security mechanisms are transparent and auditable.
 
 ## Common Weakness Mitigations
@@ -77,11 +84,10 @@ Top 10 and CWE/SANS Top 25) are addressed:
 - **Broken Authentication (CWE-287)**: Authentication is delegated to the CI/CD
   platform. Tokens are provided via environment variables and never logged or
   stored persistently.
-- **Sensitive Data Exposure (CWE-200)**: Debug logging does not output
-  sensitive values. Gitleaks scanning in CI prevents accidental credential
-  commits.
-- **Security Misconfiguration (CWE-16)**: Secure defaults are enforced. The
-  task does not require complex security configuration from pipeline operators.
+- **Sensitive Data Exposure (CWE-200)**: Debug logging does not output sensitive
+  values. Gitleaks scanning in CI prevents accidental credential commits.
+- **Security Misconfiguration (CWE-16)**: Secure defaults are enforced. The task
+  does not require complex security configuration from pipeline operators.
 - **Using Components with Known Vulnerabilities (CWE-1035)**: Dependabot
   monitors all dependencies. CodeQL scans for known vulnerability patterns.
   Automated dependency updates are enabled via the CI/CD pipeline.
