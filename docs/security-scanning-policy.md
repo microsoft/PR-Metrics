@@ -101,7 +101,7 @@ All changes to the codebase are automatically evaluated by:
   DevOps pipelines.
 
 Findings declared as non-exploitable are suppressed with documented
-ustification in the relevant configuration files (e.g.,
+justification in the relevant configuration files (e.g.,
 [`CredScanSuppressions.json`][credscansuppressions],
 [`gitleaks.toml`][gitleakstoml]).
 

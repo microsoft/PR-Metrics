@@ -13,7 +13,9 @@ pipelines.
 - **`PR_METRICS_TOKEN`**: PAT for operations requiring elevated permissions.
   Repository-scoped.
 - **`PR_METRICS_ACCESS_TOKEN`**: Access token passed to the PR Metrics action.
-  Per-workflow run.
+  Environment variable scoped to the workflow/job run; the underlying token may
+  be short-lived (e.g., `GITHUB_TOKEN`) or long-lived (e.g., a PAT), depending
+  on pipeline configuration.
 - **ESRP service connection**: Code signing for Azure DevOps marketplace
   releases. Azure DevOps pipeline-scoped.
 

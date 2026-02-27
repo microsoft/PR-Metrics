@@ -1,6 +1,6 @@
 # Support
 
-PR Metrics provided via Microsoft DevLabs.
+PR Metrics is provided via Microsoft DevLabs.
 
 Microsoft DevLabs is an outlet for experiments from Microsoft. Experiments that
 represent some of the latest ideas around developer tools. Solutions in this

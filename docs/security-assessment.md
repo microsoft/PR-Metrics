@@ -59,8 +59,12 @@ pull requests or repository contents within the token's permission scope.
 
 **Mitigations**:
 
-- The task uses the platform-provided `GITHUB_TOKEN` by default, which is
-  scoped to the current repository and expires after the workflow run.
+- CI workflows are typically configured to pass the platform-provided
+  `secrets.GITHUB_TOKEN` (or an Azure DevOps PAT) into
+  `PR_METRICS_ACCESS_TOKEN`. When using `secrets.GITHUB_TOKEN`, the token is
+  scoped to the current repository and expires after the workflow run. The task
+  itself reads only the `PR_METRICS_ACCESS_TOKEN` environment variable and does
+  not automatically fall back to `GITHUB_TOKEN`.
 - Tokens are passed via environment variables (`PR_METRICS_ACCESS_TOKEN`), not
   command-line arguments, preventing exposure in process listings.
 - The CI/CD workflows use `permissions: {}` at the top level, granting no
