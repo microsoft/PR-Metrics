@@ -495,6 +495,7 @@ describe("inputs.ts", (): void => {
           "!2",
           "null",
           "undefined",
+          "Infinity",
         ];
 
         testCases.forEach((growthRate: string | null): void => {
@@ -706,6 +707,7 @@ describe("inputs.ts", (): void => {
           "!2",
           "null",
           "undefined",
+          "Infinity",
         ];
 
         testCases.forEach((testFactor: string | null): void => {
@@ -1409,6 +1411,35 @@ describe("inputs.ts", (): void => {
         verify(logger.logInfo(settingFileMatchingPatternsResource)).once();
         verify(logger.logInfo(settingTestMatchingPatternsResource)).never();
         verify(logger.logInfo(settingCodeFileExtensionsResource)).never();
+      });
+
+      it("should truncate patterns exceeding the maximum count", (): void => {
+        // Arrange
+        const patterns: string[] = Array.from(
+          { length: 250 },
+          (_, i: number) => `pattern${String(i)}`,
+        );
+        when(
+          runnerInvoker.getInput(
+            deepEqual(["File", "Matching", "Patterns"]),
+          ),
+        ).thenReturn(patterns.join("\n"));
+
+        // Act
+        const inputs: Inputs = new Inputs(
+          instance(logger),
+          instance(runnerInvoker),
+        );
+
+        // Assert
+        assert.equal(inputs.fileMatchingPatterns.length, 200);
+        assert.equal(inputs.fileMatchingPatterns[0], "pattern0");
+        assert.equal(inputs.fileMatchingPatterns[199], "pattern199");
+        verify(
+          logger.logWarning(
+            "The matching pattern count '250' exceeds the maximum '200'. Using only the first '200'.",
+          ),
+        ).once();
       });
     });
 
