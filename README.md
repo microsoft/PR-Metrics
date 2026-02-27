@@ -1,6 +1,7 @@
 # PR Metrics
 
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new?hide_repo_select=true&repo=309438703)
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/11987/badge)](https://www.bestpractices.dev/projects/11987)
 
 PR Metrics is a both a GitHub Action and [Azure DevOps Pipelines][azuredevops]
 task for adding size and test coverage indicators to the start of each Pull
