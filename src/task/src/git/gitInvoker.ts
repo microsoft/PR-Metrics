@@ -230,9 +230,9 @@ export default class GitInvoker {
     }
 
     this._targetBranch = this.targetBranch;
-    if (this._targetBranch.startsWith("-")) {
+    if (/[\s\x00-\x1f\x7f]/u.test(this._targetBranch)) {
       throw new TypeError(
-        `Target branch '${this._targetBranch}' starts with a hyphen, which could be interpreted as a command-line flag.`,
+        `Target branch '${this._targetBranch}' contains whitespace or control characters, which is not allowed in command-line arguments.`,
       );
     }
 

@@ -875,9 +875,9 @@ describe("gitInvoker.ts", (): void => {
       verify(logger.logDebug("* GitInvoker.targetBranch")).once();
     });
 
-    it("should throw an error when the target branch starts with a hyphen", async (): Promise<void> => {
+    it("should throw an error when the target branch contains whitespace", async (): Promise<void> => {
       // Arrange
-      process.env.SYSTEM_PULLREQUEST_TARGETBRANCH = "-malicious";
+      process.env.SYSTEM_PULLREQUEST_TARGETBRANCH = "refs/heads/main branch";
       const gitInvoker: GitInvoker = new GitInvoker(
         instance(logger),
         instance(runnerInvoker),
@@ -890,7 +890,7 @@ describe("gitInvoker.ts", (): void => {
       // Assert
       await AssertExtensions.toThrowAsync(
         func,
-        "Target branch '-malicious' starts with a hyphen, which could be interpreted as a command-line flag.",
+        "Target branch 'main branch' contains whitespace or control characters, which is not allowed in command-line arguments.",
       );
       verify(logger.logDebug("* GitInvoker.isGitHistoryAvailable()")).once();
       verify(logger.logDebug("* GitInvoker.initialize()")).once();
