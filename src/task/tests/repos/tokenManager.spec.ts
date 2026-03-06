@@ -71,10 +71,10 @@ describe("tokenManager.ts", (): void => {
         "Id",
         "serviceprincipalid",
       ),
-    ).thenReturn("ServicePrincipalId");
+    ).thenReturn("a1b2c3d4-e5f6-7890-abcd-ef1234567890");
     when(
       runnerInvoker.getEndpointAuthorizationParameter("Id", "tenantid"),
-    ).thenReturn("TenantId");
+    ).thenReturn("98765432-abcd-ef01-2345-678901234567");
     when(
       runnerInvoker.getEndpointAuthorization("SYSTEMVSSCONNECTION"),
     ).thenReturn({
@@ -87,7 +87,7 @@ describe("tokenManager.ts", (): void => {
     when(
       runnerInvoker.exec(
         "az",
-        "login --service-principal -u ServicePrincipalId --tenant TenantId --allow-no-subscriptions --federated-token OidcToken",
+        "login --service-principal -u a1b2c3d4-e5f6-7890-abcd-ef1234567890 --tenant 98765432-abcd-ef01-2345-678901234567 --allow-no-subscriptions --federated-token OidcToken",
       ),
     ).thenResolve({
       exitCode: 0,
@@ -220,6 +220,57 @@ describe("tokenManager.ts", (): void => {
       await AssertExtensions.toThrowAsync(
         func,
         "'tenantId', accessed within 'TokenManager.getAccessToken()', is invalid, null, or undefined 'null'.",
+      );
+      verify(logger.logDebug("* TokenManager.getToken()")).once();
+      verify(logger.logDebug("* TokenManager.getAccessToken()")).once();
+    });
+
+    it("throws an error when the service principal ID is not a valid GUID", async (): Promise<void> => {
+      // Arrange
+      const tokenManager: TokenManager = new TokenManager(
+        instance(azureDevOpsApiWrapper),
+        instance(logger),
+        instance(runnerInvoker),
+      );
+      when(
+        runnerInvoker.getEndpointAuthorizationParameter(
+          "Id",
+          "serviceprincipalid",
+        ),
+      ).thenReturn("NotAGuid");
+
+      // Act
+      const func: () => Promise<string | null> = async () =>
+        tokenManager.getToken();
+
+      // Assert
+      await AssertExtensions.toThrowAsync(
+        func,
+        "'servicePrincipalId', accessed within 'TokenManager.getAccessToken()', is not a valid GUID 'NotAGuid'.",
+      );
+      verify(logger.logDebug("* TokenManager.getToken()")).once();
+      verify(logger.logDebug("* TokenManager.getAccessToken()")).once();
+    });
+
+    it("throws an error when the tenant ID is not a valid GUID", async (): Promise<void> => {
+      // Arrange
+      const tokenManager: TokenManager = new TokenManager(
+        instance(azureDevOpsApiWrapper),
+        instance(logger),
+        instance(runnerInvoker),
+      );
+      when(
+        runnerInvoker.getEndpointAuthorizationParameter("Id", "tenantid"),
+      ).thenReturn("NotAGuid");
+
+      // Act
+      const func: () => Promise<string | null> = async () =>
+        tokenManager.getToken();
+
+      // Assert
+      await AssertExtensions.toThrowAsync(
+        func,
+        "'tenantId', accessed within 'TokenManager.getAccessToken()', is not a valid GUID 'NotAGuid'.",
       );
       verify(logger.logDebug("* TokenManager.getToken()")).once();
       verify(logger.logDebug("* TokenManager.getAccessToken()")).once();
@@ -501,7 +552,7 @@ describe("tokenManager.ts", (): void => {
     when(
       runnerInvoker.exec(
         "az",
-        "login --service-principal -u ServicePrincipalId --tenant TenantId --allow-no-subscriptions --federated-token OidcToken",
+        "login --service-principal -u a1b2c3d4-e5f6-7890-abcd-ef1234567890 --tenant 98765432-abcd-ef01-2345-678901234567 --allow-no-subscriptions --federated-token OidcToken",
       ),
     ).thenResolve({
       exitCode: 1,

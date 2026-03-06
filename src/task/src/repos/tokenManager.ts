@@ -4,7 +4,11 @@
  */
 
 import "reflect-metadata";
-import { validateString, validateVariable } from "../utilities/validator.js";
+import {
+  validateGuid,
+  validateString,
+  validateVariable,
+} from "../utilities/validator.js";
 import AzureDevOpsApiWrapper from "../wrappers/azureDevOpsApiWrapper.js";
 import { EndpointAuthorization } from "../runners/endpointAuthorization.js";
 import ExecOutput from "../runners/execOutput.js";
@@ -107,6 +111,13 @@ export default class TokenManager {
       "tenantId",
       "TokenManager.getAccessToken()",
     );
+
+    validateGuid(
+      servicePrincipalId,
+      "servicePrincipalId",
+      "TokenManager.getAccessToken()",
+    );
+    validateGuid(tenantId, "tenantId", "TokenManager.getAccessToken()");
 
     const federatedToken: string = await this.getFederatedToken(
       workloadIdentityFederation,

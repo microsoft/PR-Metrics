@@ -246,6 +246,36 @@ describe("gitInvoker.ts", (): void => {
       ).once();
     });
 
+    it("should throw an error when the Azure Pipelines runner is being used and SYSTEM_PULLREQUEST_PULLREQUESTID is not numeric", (): void => {
+      // Arrange
+      process.env.SYSTEM_PULLREQUEST_PULLREQUESTID = "abc";
+      const gitInvoker: GitInvoker = new GitInvoker(
+        instance(logger),
+        instance(runnerInvoker),
+      );
+
+      // Act
+      const func: () => void = () => gitInvoker.pullRequestId;
+
+      // Assert
+      assert.throws(
+        func,
+        new TypeError(
+          "'Pull Request ID', accessed within 'GitInvoker.pullRequestId', is invalid, null, or undefined 'NaN'.",
+        ),
+      );
+      verify(
+        logger.logWarning(
+          "'SYSTEM_PULLREQUEST_PULLREQUESTID' is not numeric 'abc'.",
+        ),
+      ).once();
+      verify(logger.logDebug("* GitInvoker.pullRequestId")).once();
+      verify(logger.logDebug("* GitInvoker.pullRequestIdInternal")).once();
+      verify(
+        logger.logDebug("* GitInvoker.pullRequestIdForAzurePipelines"),
+      ).once();
+    });
+
     {
       const testCases: string[] = ["GitHub", "GitHubEnterprise"];
 
@@ -304,6 +334,11 @@ describe("gitInvoker.ts", (): void => {
           "'Pull Request ID', accessed within 'GitInvoker.pullRequestId', is invalid, null, or undefined 'NaN'.",
         ),
       );
+      verify(
+        logger.logWarning(
+          "Pull request ID 'PullRequestID' from 'GITHUB_REF' is not numeric.",
+        ),
+      ).once();
       verify(logger.logDebug("* GitInvoker.pullRequestId")).once();
       verify(logger.logDebug("* GitInvoker.pullRequestIdInternal")).once();
       verify(logger.logDebug("* GitInvoker.pullRequestIdForGitHub")).once();
@@ -312,6 +347,47 @@ describe("gitInvoker.ts", (): void => {
       delete process.env.GITHUB_ACTION;
       delete process.env.GITHUB_REF;
     });
+
+    {
+      const testCases: string[] = ["GitHub", "GitHubEnterprise"];
+
+      testCases.forEach((buildRepositoryProvider: string): void => {
+        it(`should throw an error when the Azure Pipelines runner is being used and the PR is on '${buildRepositoryProvider}' and SYSTEM_PULLREQUEST_PULLREQUESTNUMBER is not numeric`, (): void => {
+          // Arrange
+          process.env.BUILD_REPOSITORY_PROVIDER = buildRepositoryProvider;
+          process.env.SYSTEM_PULLREQUEST_PULLREQUESTNUMBER = "abc";
+          const gitInvoker: GitInvoker = new GitInvoker(
+            instance(logger),
+            instance(runnerInvoker),
+          );
+
+          // Act
+          const func: () => void = () => gitInvoker.pullRequestId;
+
+          // Assert
+          assert.throws(
+            func,
+            new TypeError(
+              "'Pull Request ID', accessed within 'GitInvoker.pullRequestId', is invalid, null, or undefined 'NaN'.",
+            ),
+          );
+          verify(
+            logger.logWarning(
+              "'SYSTEM_PULLREQUEST_PULLREQUESTNUMBER' is not numeric 'abc'.",
+            ),
+          ).once();
+          verify(logger.logDebug("* GitInvoker.pullRequestId")).once();
+          verify(logger.logDebug("* GitInvoker.pullRequestIdInternal")).once();
+          verify(
+            logger.logDebug("* GitInvoker.pullRequestIdForAzurePipelines"),
+          ).once();
+
+          // Finalization
+          delete process.env.BUILD_REPOSITORY_PROVIDER;
+          delete process.env.SYSTEM_PULLREQUEST_PULLREQUESTNUMBER;
+        });
+      });
+    }
   });
 
   describe("isGitRepo()", (): void => {
@@ -793,6 +869,28 @@ describe("gitInvoker.ts", (): void => {
       await AssertExtensions.toThrowAsync(
         func,
         "'SYSTEM_PULLREQUEST_TARGETBRANCH', accessed within 'GitInvoker.targetBranch', is invalid, null, or undefined 'undefined'.",
+      );
+      verify(logger.logDebug("* GitInvoker.isGitHistoryAvailable()")).once();
+      verify(logger.logDebug("* GitInvoker.initialize()")).once();
+      verify(logger.logDebug("* GitInvoker.targetBranch")).once();
+    });
+
+    it("should throw an error when the target branch contains whitespace", async (): Promise<void> => {
+      // Arrange
+      process.env.SYSTEM_PULLREQUEST_TARGETBRANCH = "refs/heads/main branch";
+      const gitInvoker: GitInvoker = new GitInvoker(
+        instance(logger),
+        instance(runnerInvoker),
+      );
+
+      // Act
+      const func: () => Promise<boolean> = async () =>
+        gitInvoker.isGitHistoryAvailable();
+
+      // Assert
+      await AssertExtensions.toThrowAsync(
+        func,
+        "Target branch 'main branch' contains whitespace or control characters, which is not allowed in command-line arguments.",
       );
       verify(logger.logDebug("* GitInvoker.isGitHistoryAvailable()")).once();
       verify(logger.logDebug("* GitInvoker.initialize()")).once();

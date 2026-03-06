@@ -65,3 +65,25 @@ export const validateNumber = (
 
   return value;
 };
+
+/**
+ * Validates that a string value is a valid GUID and throws a `TypeError` if this condition is not met.
+ * @param value The value to validate.
+ * @param valueName The name of the value, for messaging purposes.
+ * @param methodName The name of the calling method, for messaging purposes.
+ */
+export const validateGuid = (
+  value: string,
+  valueName: string,
+  methodName: string,
+): void => {
+  if (
+    !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/iu.test(
+      value,
+    )
+  ) {
+    throw new TypeError(
+      `'${valueName}', accessed within '${methodName}', is not a valid GUID '${value}'.`,
+    );
+  }
+};

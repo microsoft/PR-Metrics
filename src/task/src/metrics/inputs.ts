@@ -4,9 +4,9 @@
  */
 
 import * as InputsDefault from "./inputsDefault.js";
+import { decimalRadix, maxPatternCount } from "../utilities/constants.js";
 import Logger from "../utilities/logger.js";
 import RunnerInvoker from "../runners/runnerInvoker.js";
-import { decimalRadix } from "../utilities/constants.js";
 import { singleton } from "tsyringe";
 
 /**
@@ -203,7 +203,11 @@ export default class Inputs {
 
     const convertedValue: number =
       growthRate === null ? NaN : parseFloat(growthRate);
-    if (!isNaN(convertedValue) && convertedValue > 1.0) {
+    if (
+      !isNaN(convertedValue) &&
+      isFinite(convertedValue) &&
+      convertedValue > 1.0
+    ) {
       this._growthRate = convertedValue;
       const growthRateString: string = this._growthRate.toLocaleString();
       this._logger.logInfo(
@@ -230,7 +234,11 @@ export default class Inputs {
 
     const convertedValue: number =
       testFactor === null ? NaN : parseFloat(testFactor);
-    if (!isNaN(convertedValue) && convertedValue >= 0.0) {
+    if (
+      !isNaN(convertedValue) &&
+      isFinite(convertedValue) &&
+      convertedValue >= 0.0
+    ) {
       if (convertedValue === 0.0) {
         this._testFactor = null;
         this._logger.logInfo(
@@ -336,6 +344,13 @@ export default class Inputs {
         .replace(/\\/gu, "/")
         .replace(/\n$/gu, "")
         .split("\n");
+      if (patterns.length > maxPatternCount) {
+        this._logger.logWarning(
+          `The matching pattern count '${patterns.length.toLocaleString()}' exceeds the maximum '${maxPatternCount.toLocaleString()}'. Using only the first '${maxPatternCount.toLocaleString()}'.`,
+        );
+        patterns.length = maxPatternCount;
+      }
+
       const patternsString: string = JSON.stringify(patterns);
       this._logger.logInfo(settingString(patternsString));
       return patterns;
