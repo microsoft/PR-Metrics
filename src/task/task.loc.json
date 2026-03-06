@@ -71,7 +71,7 @@
     }
   ],
   "execution": {
-    "Node20_1": {
+    "Node24": {
       "target": "index.mjs"
     }
   },

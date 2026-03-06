@@ -28,41 +28,9 @@ insulate the top-level code from the need to manage API differences.
 
 ## Building the Code
 
-Further issues arise during the building of the code. The GitHub runner uses
-relatively recent versions of Node.js, with
-[Node.js v16 is use since July 2023][nodejsmigration]. The in-built Azure DevOps
-runner only uses Node.js v10.24.1. v10 does not support all recent ECMAScript
-features, which creates a problem for some dependencies.
+The build process compiles TypeScript to ECMAScript and then bundles the result
+into a single file using [ncc][ncc]. Both the GitHub Action and Azure DevOps
+extension use the Node.js 24 execution handler.
 
-In particular, the [`@octokit/oauth-app`][octokitoauthapp] package, which is an
-indirect dependency of the Octokit APIs, uses ECMAScript constructs that will
-fail to be processed when the script is invoked. In other words, use of the
-constructs will result in a failure of PR Metrics even if the offending code is
-never reached.
-
-One solution would have been to prevent updates to the `@octokit/oauth-app`
-package being consumed by PR Metrics and to remain on v4.0.8 indefinitely. This
-was originally used as an interim solution. However, if a security flaw were
-detected in the old version of `@octokit/oauth-app`, it would not be possible to
-update the package to resolve it, leading to potential supply chain risks for
-those using PR Metrics. This solution would also mean that changes to the
-underlying Octokit APIs could not be easily accommodated.
-
-To resolve this, the build process was adapted.
-
-1. After compiling the TypeScript code in ECMAScript, the result is merged into
-   a single file by [ncc][ncc].
-1. The code is then processed using [Babel][babel] to transpile newer ECMAScript
-   concepts into older ones.
-1. The transpiled code includes unused dependencies, which are then removed by
-   another ncc execution.
-
-This process is only used for the Azure DevOps build. As GitHub does not require
-transpilation, the process was skipped for the GitHub code creation to keep code
-more modern and code sizes smaller.
-
-[babel]: https://babeljs.io/
 [ncc]: https://www.npmjs.com/package/@vercel/ncc
-[nodejsmigration]: https://github.blog/changelog/2023-07-17-github-actions-removal-of-node12-from-the-actions-runner/
 [octokitgitdiffparser]: ../src/task/src/git/octokitGitDiffParser.ts
-[octokitoauthapp]: https://www.npmjs.com/package/@octokit/oauth-app

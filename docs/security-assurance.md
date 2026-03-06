@@ -100,9 +100,9 @@ Top 10 and CWE/SANS Top 25) are addressed:
 
 ## Verification Mechanisms
 
-- **Static Analysis**: CodeQL with `security-and-quality`,
-  `security-experimental`, and `security-extended` query suites runs on every
-  pull request.
+- **Static Analysis**: CodeQL with `code-quality`, `code-scanning`,
+  `security-and-quality`, `security-experimental`, and `security-extended` query
+  suites runs on every pull request.
 - **Linting**: ESLint with strict TypeScript rules (150+ rules) enforced on
   every pull request via Super-Linter.
 - **Secret Scanning**: Gitleaks configuration prevents accidental secret

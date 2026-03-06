@@ -21,14 +21,14 @@ treated as such. For example, the task should not be used to replace
 comprehensive and thorough code coverage metrics. Instead, the task should
 merely be considered a guideline for influencing optimal PR behavior.
 
-The task can be built using `npm run build` from the `src/task`
-folder. `npm run clean` can be used to clean the build outputs.
+The task can be built using `npm run build` from the repository root.
+`npm run clean` can be used to clean the build outputs.
 
-The code formatting complies with the [ESLint][eslint] "Standard" rules. The
+The code formatting complies with strict [ESLint][eslint] TypeScript rules. The
 formatting can be checked and automatically fixed by running `npm run lint`
-from within the `src/task` folder. [TypeDoc][typedoc] comments are
-present on public methods and are converted to HTML during the `npm run build`
-process. [Dependency injection][depinjection] is used throughout the project to
+from the repository root. [TypeDoc][typedoc] comments are present on public
+methods and are converted to HTML during the `npm run build` process.
+[Dependency injection][depinjection] is used throughout the project to
 facilitate testability.
 
 ## Wrappers
@@ -76,15 +76,15 @@ interfaces to add additional methods, while retaining the same access pattern.
    by following the [PAT generation instructions][tfxpat]. This will only need
    to be performed the first time you use tfx-cli.
 
-1. To build and deploy, from within the `src/task` folder, run `npm run deploy`.
+1. To build and deploy, from the repository root, run `npm run deploy`.
 
 ## Testing
 
 This task is tested via unit tests constructed using the [Mocha][mocha] test
 framework and the [ts-mockito][tsmockito] mocking library. Tests follow the
-[Arrange-Act-Assert pattern][aaa], and they can be run using `npm test` from
-within the `src/task` folder. This command will output both the test results and
-code coverage metrics.
+[Arrange-Act-Assert pattern][aaa], and they can be run using `npm test` from the
+repository root. This command will output both the test results and code
+coverage metrics.
 
 The code coverage is currently extremely high, and a high rate of coverage
 should be maintained for all changes. There are a large number of edge cases
