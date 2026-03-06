@@ -30,7 +30,7 @@ insulate the top-level code from the need to manage API differences.
 
 The build process compiles TypeScript to ECMAScript and then bundles the result
 into a single file using [ncc][ncc]. Both the GitHub Action and Azure DevOps
-extension use the Node.js 24 execution handler.
+extension use the Node.js 20 execution handler.
 
 [ncc]: https://www.npmjs.com/package/@vercel/ncc
 [octokitgitdiffparser]: ../src/task/src/git/octokitGitDiffParser.ts
