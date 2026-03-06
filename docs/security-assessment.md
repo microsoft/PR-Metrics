@@ -152,10 +152,14 @@ environment.
 
 - Branch names and PR identifiers are sourced from CI/CD environment variables
   set by the platform, not from customer-controlled input parameters.
-- The values are passed through the
+- The Git command uses a fixed argument structure and Git ref format
+  constraints, limiting how these values can influence the final command line.
+  The values are executed via the
   [Azure Pipelines Task SDK][azurepipelinestasksdk] or
-  [@actions/exec][actionsexec] execution libraries, which handle argument
-  escaping.
+  [@actions/exec][actionsexec] libraries without invoking a shell, but in the
+  GitHub runner wrapper they are first combined into a single string and split
+  on spaces, so protection relies on the fixed argument pattern and ref
+  constraints rather than automatic argument escaping.
 
 ## Residual Risks
 
