@@ -86,7 +86,7 @@ extends:
               - task: TfxInstaller@5
                 displayName: Release – Install TFX CLI
                 inputs:
-                version: latest
+                  version: latest
 
               - bash: tfx extension create --manifest-globs vss-extension.json --output-path ../ms-omex.PRMetrics.vsix
                 displayName: Release – Create
