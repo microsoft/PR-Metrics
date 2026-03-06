@@ -43,6 +43,9 @@ jobs:
       - name: npm – Build Release
         run: npm run build:release
 
+      - name: npm – Generate SBOM
+        run: npm sbom --sbom-format cyclonedx --sbom-type library > "${{ github.workspace }}/ms-omex.PRMetrics.sbom.cdx.json"
+
       - name: Release – Create
         run: npx tfx-cli extension create --manifest-globs vss-extension.json --output-path ../ms-omex.PRMetrics.vsix
         working-directory: ${{ github.workspace }}/release
@@ -68,6 +71,7 @@ jobs:
           path: |
             ${{ github.workspace }}/ms-omex.PRMetrics.vsix
             ${{ github.workspace }}/ms-omex.PRMetrics.vsix.sigstore.json
+            ${{ github.workspace }}/ms-omex.PRMetrics.sbom.cdx.json
 
       - name: Get Version
         id: version
@@ -89,6 +93,7 @@ jobs:
           gh release create "${{ steps.version.outputs.VERSION }}"
           "${{ github.workspace }}/ms-omex.PRMetrics.vsix"
           "${{ github.workspace }}/ms-omex.PRMetrics.vsix.sigstore.json"
+          "${{ github.workspace }}/ms-omex.PRMetrics.sbom.cdx.json"
           --title "Release ${{ steps.version.outputs.VERSION }}"
           --target "${{ github.sha }}"
           --notes-file release-notes.md
