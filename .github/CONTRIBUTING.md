@@ -11,47 +11,65 @@ comment). Simply follow the instructions provided by the bot. You will only need
 to do this once across all repositories using our CLA.
 
 This project has adopted the
-[Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
-For more information see the
-[Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
-contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any
-additional questions or comments.
+[Microsoft Open Source Code of Conduct][codeofconduct]. For more information see
+the [Code of Conduct FAQ][codeofconductfaq] or contact
+[opencode@microsoft.com][opencode] with any additional questions or comments.
 
 ## Coding Style
 
-There is an [`.editorconfig`](../.editorconfig) file in the root of the project
-specifying some simple formatting guidelines. In addition to adhering to those,
-you should follow the pattern of what you see in existing code where possible.
+There is an [`.editorconfig`][editorconfig] file in the root of the project
+specifying formatting guidelines. In addition to adhering to those, you should
+follow the pattern of what you see in existing code where possible.
 
-## Code Overview
+## Testing
 
-The repository is organized into a set of different extensions, as outlined in
-the [Readme](../README.md).
+### Running Tests Locally
 
-## Updating an Extension
+Tests can be run locally using `npm test` from the repository root. This command
+builds the project in debug mode, runs the [Mocha][mocha] unit test suite, and
+outputs code coverage metrics via [c8][c8]. For faster iteration during
+development, `npm run test:fast` skips the full reinstallation step.
 
-Contributions to existing extensions are appreciated.
+### Running Tests in CI/CD
 
-Any update will need to increment the version in the task's `task.json` and
-`vss-extension.json` files. The version numbers follow the
-[Semantic Versioning](https://semver.org/) rules.
+Test validation is automatically performed whenever a pull request is opened
+against the `main` branch. The [`build.yml`][buildyml] workflow runs the full
+test suite as part of the `Build` job. Additionally:
 
-## Adding an Extension
+- **CodeQL** performs static analysis for security vulnerabilities.
+- **Super-Linter** validates code style, formatting, and secret scanning.
+- **PR Metrics** runs against itself in the `Test GitHub Action` job.
 
-If you wish to create a new extension, please discuss this beforehand using
-[GitHub issues](https://github.com/microsoft/PR-Metrics/issues).
+All automated checks must pass before a pull request can be merged.
 
-The following instructions can be used for adding an extension.
+### Interpreting Results
 
-1. If instances of the extension category do not already exist in the
-   repository, create a new folder for this category.
-1. Within the category folder, create a new folder with the name of the extension.
-1. Follow the existing examples as well as the instructions at
-   [Microsoft Docs](https://docs.microsoft.com/azure/devops/extend/develop/add-build-task).
-1. Add your custom logic.
-1. Update the
-   [GitHub Actions](https://github.com/microsoft/PR-Metrics/tree/main/.github/workflows)
-   to reference your new extension.
+The `npm test` command outputs:
+
+- **Test results**: Pass/fail status for each test case. All tests must pass.
+- **Code coverage**: Line, branch, and function coverage percentages. The
+  project maintains extremely high code coverage and contributions should
+  maintain or improve coverage levels.
+
+### Test Policy for Major Changes
+
+All major changes to the project must include corresponding test updates:
+
+- **New features**: Must include unit tests covering the new functionality,
+  including edge cases.
+- **Bugfixes**: Must include a regression test that fails without the fix and
+  passes with it.
+- **Refactoring**: Existing tests must continue to pass. If the refactoring
+  changes internal interfaces, tests should be updated to reflect the new
+  structure.
+
+A "major change" is any modification that alters the behavior of the extension,
+adds new configuration parameters, changes how metrics are calculated, or
+modifies interactions with the GitHub or Azure DevOps APIs. The
+[pull request template][pullrequesttemplate] includes a testing checklist to
+ensure compliance.
+
+For more details, see the [development documentation][development].
 
 ## Documentation
 
@@ -62,16 +80,33 @@ add new documentation, please add it to the `docs` folder.
 ## Communicating with the Team
 
 The easiest way to communicate with the team is via
-[GitHub issues](https://github.com/microsoft/PR-Metrics/issues).
-Feel free to file bug reports, feature requests, and suggestions.
+[GitHub issues][githubissues]. Feel free to file bug reports, feature requests,
+and suggestions.
 
 ## Useful References
 
-- [Azure DevOps REST SDK](https://docs.microsoft.com/rest/api/azure/devops)
-- [Built-in extensions](https://github.com/microsoft/azure-pipelines-tasks/tree/master/Tasks)
-- [Developing an extension](https://docs.microsoft.com/azure/devops/extend/get-started/node)
-- [Predefined variables](https://docs.microsoft.com/azure/devops/pipelines/build/variables)
-- [TypeScript SDK reference](https://github.com/microsoft/azure-pipelines-task-lib/blob/master/node/README.md)
-- [PowerShell SDK reference](https://github.com/microsoft/azure-pipelines-task-lib/blob/master/powershell/Docs/README.md)
-- [`vss-extension.json` details](https://docs.microsoft.com/azure/devops/extend/develop/manifest)
-- [`task.json` schema](https://github.com/microsoft/azure-pipelines-task-lib/blob/master/tasks.schema.json)
+- [Azure DevOps REST SDK][azuredevopsrestsdk]
+- [Built-in Azure DevOps extensions][builtinextensions]
+- [Developing an Azure DevOps extension][developingextension]
+- [Predefined Azure DevOps variables][predefinedvariables]
+- [Azure DevOps TypeScript SDK reference][typescriptsdk]
+- [`vss-extension.json` details][vssextension]
+- [`task.json` schema][taskjsonschema]
+
+[azuredevopsrestsdk]: https://docs.microsoft.com/rest/api/azure/devops
+[buildyml]: https://github.com/microsoft/PR-Metrics/blob/main/.github/workflows/build.yml
+[builtinextensions]: https://github.com/microsoft/azure-pipelines-tasks/tree/master/Tasks
+[c8]: https://github.com/bcoe/c8
+[codeofconduct]: https://opensource.microsoft.com/codeofconduct/
+[codeofconductfaq]: https://opensource.microsoft.com/codeofconduct/faq/
+[developingextension]: https://docs.microsoft.com/azure/devops/extend/get-started/node
+[development]: ../docs/development.md
+[editorconfig]: ../.editorconfig
+[githubissues]: https://github.com/microsoft/PR-Metrics/issues
+[mocha]: https://mochajs.org/
+[opencode]: mailto:opencode@microsoft.com
+[predefinedvariables]: https://docs.microsoft.com/azure/devops/pipelines/build/variables
+[pullrequesttemplate]: https://github.com/microsoft/PR-Metrics/blob/main/.github/pull_request_template.md
+[taskjsonschema]: https://github.com/microsoft/azure-pipelines-task-lib/blob/master/tasks.schema.json
+[typescriptsdk]: https://github.com/microsoft/azure-pipelines-task-lib/blob/master/node/README.md
+[vssextension]: https://docs.microsoft.com/azure/devops/extend/develop/manifest
