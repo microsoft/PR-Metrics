@@ -92,7 +92,7 @@ extends:
                 displayName: Release – Create
                 workingDirectory: $(Build.SourcesDirectory)/release
 
-              - task: EsrpCodeSigning@5
+              - task: EsrpCodeSigning@6
                 displayName: ESRP CodeSigning
                 inputs:
                   # Signing details are stored within the PR Metrics variable group.
