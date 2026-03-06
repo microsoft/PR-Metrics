@@ -91,7 +91,7 @@ jobs:
           node-version: 20.17.0
 
       - name: npm – Install Dependencies
-        run: npm install
+        run: npm ci
 
       - name: npm – Update Package Versions
         run: npm run update:versions
