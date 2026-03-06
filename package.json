@@ -64,6 +64,7 @@
     "tsyringe": "4.10.0"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@tsconfig/node20": "20.1.9",
     "@types/isomorphic-fetch": "0.0.39",
     "@types/mocha": "10.0.10",
@@ -76,6 +77,7 @@
     "exitzero": "1.0.1",
     "fast-check": "4.5.3",
     "glob": "13.0.6",
+    "globals": "^17.4.0",
     "mkdirp": "3.0.1",
     "mocha": "^11.7.5",
     "ncp": "2.0.0",
