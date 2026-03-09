@@ -42,7 +42,7 @@ stages:
             - task: NodeTool@0
               displayName: Install Node.js
               inputs:
-                versionSpec: 20.17.0
+                versionSpec: 20.20.0
 
             - task: Npm@1
               displayName: npm – Install Dependencies
@@ -55,10 +55,10 @@ stages:
                 command: custom
                 customCommand: run build:release
 
-            - task: TfxInstaller@4
+            - task: TfxInstaller@5
               displayName: Azure DevOps – Install TFX CLI
               inputs:
-                version: v0.x
+                version: latest
 
             - task: AzureCLI@2
               displayName: Azure DevOps – Sign-in

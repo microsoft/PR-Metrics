@@ -89,10 +89,12 @@ extensions defined in the [GitHub language detection logic][githublinguist].
 ## TypeScript
 
 - `ts`
+- `mts`
 
 ### TSX
 
 - `tsx`
+- `mtsx`
 
 ## C\#
 

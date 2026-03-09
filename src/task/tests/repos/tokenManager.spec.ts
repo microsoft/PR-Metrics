@@ -22,6 +22,10 @@ describe("tokenManager.ts", (): void => {
   let logger: Logger;
   let runnerInvoker: RunnerInvoker;
 
+  // Fabricated GUIDs for testing. These are not real identifiers.
+  const servicePrincipalId = "a1b2c3d4-e5f6-7890-abcd-ef1234567890";
+  const tenantId = "98765432-abcd-ef01-2345-678901234567";
+
   beforeEach((): void => {
     process.env.SYSTEM_COLLECTIONURI = "https://dev.azure.com/organization";
     process.env.SYSTEM_TEAMPROJECTID = "TeamProjectId";
@@ -71,10 +75,10 @@ describe("tokenManager.ts", (): void => {
         "Id",
         "serviceprincipalid",
       ),
-    ).thenReturn("a1b2c3d4-e5f6-7890-abcd-ef1234567890");
+    ).thenReturn(servicePrincipalId);
     when(
       runnerInvoker.getEndpointAuthorizationParameter("Id", "tenantid"),
-    ).thenReturn("98765432-abcd-ef01-2345-678901234567");
+    ).thenReturn(tenantId);
     when(
       runnerInvoker.getEndpointAuthorization("SYSTEMVSSCONNECTION"),
     ).thenReturn({
@@ -87,7 +91,7 @@ describe("tokenManager.ts", (): void => {
     when(
       runnerInvoker.exec(
         "az",
-        "login --service-principal -u a1b2c3d4-e5f6-7890-abcd-ef1234567890 --tenant 98765432-abcd-ef01-2345-678901234567 --allow-no-subscriptions --federated-token OidcToken",
+        `login --service-principal -u ${servicePrincipalId} --tenant ${tenantId} --allow-no-subscriptions --federated-token OidcToken`,
       ),
     ).thenResolve({
       exitCode: 0,
@@ -552,7 +556,7 @@ describe("tokenManager.ts", (): void => {
     when(
       runnerInvoker.exec(
         "az",
-        "login --service-principal -u a1b2c3d4-e5f6-7890-abcd-ef1234567890 --tenant 98765432-abcd-ef01-2345-678901234567 --allow-no-subscriptions --federated-token OidcToken",
+        `login --service-principal -u ${servicePrincipalId} --tenant ${tenantId} --allow-no-subscriptions --federated-token OidcToken`,
       ),
     ).thenResolve({
       exitCode: 1,

@@ -62,8 +62,9 @@ The following secure design principles from Saltzer and Schroeder are applied:
   (calculating PR size metrics and updating PR titles and comments). Complexity
   is minimized.
 - **Fail-Safe Defaults**: All inputs have safe default values. Invalid inputs
-  fall back to defaults rather than causing failures. The task is designed to
-  run with `continue-on-error: true`.
+  fall back to defaults rather than causing failures where possible. Workflows
+  may optionally configure this step with `continue-on-error: true` if they
+  prefer metrics failures not to fail the entire pipeline.
 - **Complete Mediation**: All API calls go through platform-specific wrappers
   that handle authentication and authorization consistently.
 - **Least Privilege**: The task requires only minimal, low-level permissions. No
@@ -78,9 +79,11 @@ The following secure design principles from Saltzer and Schroeder are applied:
 The following common implementation security weaknesses (referencing OWASP
 Top 10 and CWE/SANS Top 25) are addressed:
 
-- **Injection (CWE-79, CWE-89)**: The task does not construct shell commands
-  from external input. Git commands use fixed arguments. API calls use typed
-  SDK methods rather than string concatenation.
+- **Injection (CWE-79, CWE-89)**: The task does not execute arbitrary shell
+  commands constructed from untrusted input. Git commands use a fixed command
+  structure with only restricted, validated inputs (for example, CI-provided
+  Git refs constrained to valid ref formats). API calls use typed SDK methods
+  with parameterized arguments rather than manual string concatenation.
 - **Broken Authentication (CWE-287)**: Authentication is delegated to the CI/CD
   platform. Tokens are provided via environment variables and never logged or
   stored persistently.
@@ -97,9 +100,9 @@ Top 10 and CWE/SANS Top 25) are addressed:
 
 ## Verification Mechanisms
 
-- **Static Analysis**: CodeQL with `security-and-quality`,
-  `security-experimental`, and `security-extended` query suites runs on every
-  pull request.
+- **Static Analysis**: CodeQL with `code-quality`, `code-scanning`,
+  `security-and-quality`, `security-experimental`, and `security-extended` query
+  suites runs on every pull request.
 - **Linting**: ESLint with strict TypeScript rules (150+ rules) enforced on
   every pull request via Super-Linter.
 - **Secret Scanning**: Gitleaks configuration prevents accidental secret

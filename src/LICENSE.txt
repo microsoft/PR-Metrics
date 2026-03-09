@@ -555,7 +555,7 @@ END OF TERMS AND CONDITIONS
 
 ---------------------------------------------------------
 
-typed-rest-client 2.1.0 - Apache-2.0 AND BSD-3-Clause AND CC0-1.0 AND ISC AND LicenseRef-scancode-unknown AND MIT
+typed-rest-client 2.1.0 - Apache-2.0 AND BSD-2-Clause AND BSD-3-Clause AND CC0-1.0 AND ISC AND LicenseRef-scancode-unknown AND MIT
 https://github.com/Microsoft/typed-rest-client#readme
 
 Copyright (c) Microsoft
@@ -569,22 +569,22 @@ Copyright (c) Microsoft Corporation
 Copyright (c) Isaac Z. Schlueter 'Author
 Copyright (c) Isaac Z. Schlueter and Contributors
 Copyright 2010 James Halliday (mail@substack.net)
+Copyright Mathias Bynens https://mathiasbynens.be
 Copyright Joyent, Inc. and other Node contributors
 Copyright (c) 2012, Artur Adib <arturadib@gmail.com>
-Copyright Mathias Bynens <https://mathiasbynens.be/>
 Copyright (c) 2012 Joshua M. Clulow <josh@sysmgr.org>
 Copyright (c) 2011 TJ Holowaychuk <tj@vision-media.ca>
 Copyright (c) 2014 TJ Holowaychuk <tj@vision-media.ca>
 Copyright (c) 2009-2015, Kevin Decker <kpdecker@gmail.com>
 Copyright (c) 2013 Julian Gruber <julian@juliangruber.com>
 Copyright (c) 2012-2014 Kit Cambridge. http://kitcambridge.be
-Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
+Copyright 2012-2015 The Dojo Foundation http://dojofoundation.org
+Copyright jQuery Foundation and other contributors https://jquery.org
 Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
-Copyright jQuery Foundation and other contributors <https://jquery.org/>
 Copyright (c) 2011-2017 JS Foundation and contributors, https://js.foundation
 Copyright (c) 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
-copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors <http://underscorejs.org/>
-copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors <http://underscorejs.org/>
+copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors http://underscorejs.org
+copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors http://underscorejs.org
 
 Typed Rest Client for Node.js
 
@@ -674,7 +674,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ---------------------------------------------------------
 
-azure-pipelines-task-lib 5.2.6 - Apache-2.0 AND BSD-3-Clause AND ISC AND LicenseRef-scancode-unknown AND MIT
+azure-pipelines-task-lib 5.2.8 - Apache-2.0 AND BSD-3-Clause AND ISC AND LicenseRef-scancode-unknown AND MIT
 https://github.com/Microsoft/azure-pipelines-task-lib
 
 Copyright 2018 kumavis
@@ -753,7 +753,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 ---------------------------------------------------------
 
-qs 6.14.1 - BSD-3-Clause
+qs 6.15.0 - BSD-3-Clause
 https://github.com/ljharb/qs
 
 Copyright (c) 2014, Nathan LaFreniere and other contributors (https://github.com/ljharb/qs/graphs/contributors)
@@ -962,7 +962,7 @@ PERFORMANCE OF THIS SOFTWARE.
 
 ---------------------------------------------------------
 
-minimatch 3.0.5 - ISC
+minimatch 3.1.5 - ISC
 https://github.com/isaacs/minimatch#readme
 
 Copyright (c) Isaac Z. Schlueter and Contributors
@@ -1599,7 +1599,7 @@ THE SOFTWARE.
 
 ---------------------------------------------------------
 
-@octokit/endpoint 11.0.2 - MIT
+@octokit/endpoint 11.0.3 - MIT
 https://github.com/octokit/endpoint.js#readme
 
 Copyright (c) 2018 Octokit contributors
@@ -1824,7 +1824,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---------------------------------------------------------
 
-@octokit/plugin-retry 8.0.3 - MIT
+@octokit/plugin-retry 8.1.0 - MIT
 https://github.com/octokit/plugin-retry.js#readme
 
 Copyright (c) 2018 Octokit contributors
@@ -1888,7 +1888,7 @@ THE SOFTWARE.
 
 ---------------------------------------------------------
 
-@octokit/request 10.0.7 - MIT
+@octokit/request 10.0.8 - MIT
 https://github.com/octokit/request.js#readme
 
 Copyright (c) 2018 Octokit contributors
@@ -2021,7 +2021,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---------------------------------------------------------
 
-@types/aws-lambda 8.10.160 - MIT
+@types/aws-lambda 8.10.161 - MIT
 https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/aws-lambda
 
 Copyright (c) Microsoft Corporation
@@ -2123,9 +2123,10 @@ SOFTWARE.
 
 ---------------------------------------------------------
 
-axios 1.13.4 - MIT
+axios 1.13.6 - MIT
 https://axios-http.com/
 
+Copyright (c) 2014-present, Facebook, Inc.
 Copyright (c) 2026 Matt Zabriskie and contributors
 Copyright (c) 2014-present Matt Zabriskie & Collaborators
 
@@ -2142,14 +2143,17 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---------------------------------------------------------
 
-balanced-match 1.0.2 - MIT
-https://github.com/juliangruber/balanced-match
+balanced-match 4.0.4 - MIT
+https://github.com/juliangruber/balanced-match#readme
 
-Copyright (c) 2013 Julian Gruber <julian@juliangruber.com>
+Copyright Isaac Z. Schlueter <i@izs.me>
+Copyright Julian Gruber <julian@juliangruber.com>
 
 (MIT)
 
-Copyright (c) 2013 Julian Gruber &lt;julian@juliangruber.com&gt;
+Original code Copyright Julian Gruber <julian@juliangruber.com>
+
+Port to TypeScript Copyright Isaac Z. Schlueter <i@izs.me>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -2206,14 +2210,17 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ---------------------------------------------------------
 
-brace-expansion 2.0.2 - MIT
-https://github.com/juliangruber/brace-expansion
+brace-expansion 5.0.4 - MIT
+https://github.com/juliangruber/brace-expansion#readme
 
-Copyright (c) 2013 Julian Gruber <julian@juliangruber.com>
+Copyright Isaac Z. Schlueter <i@izs.me>
+Copyright Julian Gruber <julian@juliangruber.com>
 
 MIT License
 
-Copyright (c) 2013 Julian Gruber <julian@juliangruber.com>
+Copyright Julian Gruber <julian@juliangruber.com>
+
+TypeScript port Copyright Isaac Z. Schlueter <i@izs.me>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -2496,33 +2503,6 @@ furnished to do so, subject to the following conditions:
 
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-
----------------------------------------------------------
-
----------------------------------------------------------
-
-encoding 0.1.13 - MIT
-https://github.com/andris9/encoding
-
-Copyright (c) 2012-2014 Andris Reinman
-
-Copyright (c) 2012-2014 Andris Reinman
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -3743,7 +3723,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---------------------------------------------------------
 
-parse-git-diff 0.0.19 - MIT
+parse-git-diff 0.0.20 - MIT
 https://github.com/yeonjuan/parse-git-diff#readme
 
 Copyright (c) 2021 YeonJuan
@@ -4327,11 +4307,12 @@ THE SOFTWARE.
 
 ---------------------------------------------------------
 
-underscore 1.13.7 - MIT
+underscore 1.13.8 - MIT
 https://underscorejs.org/
 
+(c) && U (c) L (c)
 Copyright (c) 2009-2022 Jeremy Ashkenas, Julian Gonggrijp, and DocumentCloud and Investigative Reporters & Editors
-(c) 2009-2024 Jeremy Ashkenas, Julian Gonggrijp, and DocumentCloud and Investigative Reporters & Editors Underscore
+(c) 2009-2026 Jeremy Ashkenas, Julian Gonggrijp, and DocumentCloud and Investigative Reporters & Editors Underscore
 
 Copyright (c) 2009-2022 Jeremy Ashkenas, Julian Gonggrijp, and DocumentCloud and Investigative Reporters & Editors
 
@@ -4549,6 +4530,33 @@ THE SOFTWARE.
 
 ---------------------------------------------------------
 
+encoding 0.1.13 - MIT AND MIT-0
+https://github.com/andris9/encoding#readme
+
+Copyright (c) 2012-2014 Andris Reinman
+
+Copyright (c) 2012-2014 Andris Reinman
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+---------------------------------------------------------
+
+---------------------------------------------------------
+
 utf8-byte-length 1.0.5 - MIT OR WTFPL OR (MIT AND WTFPL)
 https://github.com/parshap/utf8-byte-length#readme
 
@@ -4581,3 +4589,33 @@ TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
 
 ---------------------------------------------------------
 
+---------------------------------------------------------
+
+json-with-bigint 3.5.7 - MIT
+https://github.com/Ivan-Korolenko/json-with-bigint#readme
+
+Copyright (c) 2023 Ivan Korolenko
+
+MIT License
+
+Copyright (c) 2023 Ivan Korolenko
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---------------------------------------------------------
