@@ -10,8 +10,8 @@ import PullRequestCommentData from "./pullRequestCommentData.js";
  * A wrapper grouping types of pull request comments.
  */
 export default class CommentData {
-  public _pullRequestComments: PullRequestCommentData[] = [];
-  public _fileComments: FileCommentData[] = [];
+  private readonly _pullRequestComments: PullRequestCommentData[] = [];
+  private readonly _fileComments: FileCommentData[] = [];
 
   /**
    * Gets the set of pull request comments, i.e. those comments associated with no file.

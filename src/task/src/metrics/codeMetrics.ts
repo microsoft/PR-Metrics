@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import * as minimatch from "minimatch";
+import { type MinimatchOptions, minimatch } from "minimatch";
 import { CodeFileMetricInterface } from "./codeFileMetricInterface.js";
 import CodeMetricsData from "./codeMetricsData.js";
 import { FixedLengthArrayInterface } from "../utilities/fixedLengthArrayInterface.js";
@@ -20,7 +20,7 @@ import { singleton } from "tsyringe";
  */
 @singleton()
 export default class CodeMetrics {
-  private static readonly _minimatchOptions: minimatch.MinimatchOptions = {
+  private static readonly _minimatchOptions: MinimatchOptions = {
     dot: true,
   };
 
@@ -186,34 +186,34 @@ export default class CodeMetrics {
     const codeFileMetrics: CodeFileMetricInterface[] =
       this.createFileMetricsMap(gitDiffSummary);
 
+    /*
+     * Classify patterns once before the per-file loop. First, check for positive matches. Next, if one of the positive
+     * matches is overridden by a negative match, remove it from consideration. Finally, check for double negative
+     * matches, which override the negative matches.
+     */
+    const positiveFileMatchingPatterns: string[] = [];
+    const negativeFileMatchingPatterns: string[] = [];
+    const doubleNegativeFileMatchingPatterns: string[] = [];
+    for (const fileMatchingPattern of this._inputs.fileMatchingPatterns) {
+      if (fileMatchingPattern.startsWith(notNotPattern)) {
+        doubleNegativeFileMatchingPatterns.push(
+          fileMatchingPattern.substring(notNotPattern.length),
+        );
+      } else if (fileMatchingPattern.startsWith(notPattern)) {
+        negativeFileMatchingPatterns.push(
+          fileMatchingPattern.substring(notPattern.length),
+        );
+      } else {
+        positiveFileMatchingPatterns.push(fileMatchingPattern);
+      }
+    }
+
     const matches: CodeFileMetricInterface[] = [];
     const nonMatches: CodeFileMetricInterface[] = [];
     const nonMatchesToComment: CodeFileMetricInterface[] = [];
 
     // Check for glob matches.
     for (const codeFileMetric of codeFileMetrics) {
-      /*
-       * Iterate through the list of patterns. First, check for positive matches. Next, if one of the positive matches
-       * is overridden by a negative match, remove it from consideration. Finally, check for double negative matches,
-       * which override the negative matches.
-       */
-      const positiveFileMatchingPatterns: string[] = [];
-      const negativeFileMatchingPatterns: string[] = [];
-      const doubleNegativeFileMatchingPatterns: string[] = [];
-      for (const fileMatchingPattern of this._inputs.fileMatchingPatterns) {
-        if (fileMatchingPattern.startsWith(notNotPattern)) {
-          doubleNegativeFileMatchingPatterns.push(
-            fileMatchingPattern.substring(notNotPattern.length),
-          );
-        } else if (fileMatchingPattern.startsWith(notPattern)) {
-          negativeFileMatchingPatterns.push(
-            fileMatchingPattern.substring(notPattern.length),
-          );
-        } else {
-          positiveFileMatchingPatterns.push(fileMatchingPattern);
-        }
-      }
-
       const isValidFilePattern: boolean = this.determineIfValidFilePattern(
         codeFileMetric,
         positiveFileMatchingPatterns,
@@ -243,31 +243,23 @@ export default class CodeMetrics {
   ): boolean {
     this._logger.logDebug("* CodeMetrics.determineIfValidFilePattern()");
 
-    let result = false;
-
-    for (const fileMatchingPattern of positiveFileMatchingPatterns) {
-      if (this.performGlobCheck(codeFileMetric.fileName, fileMatchingPattern)) {
-        result = true;
-      }
-    }
+    let result: boolean = positiveFileMatchingPatterns.some((pattern) =>
+      this.performGlobCheck(codeFileMetric.fileName, pattern),
+    );
 
     if (result) {
-      for (const fileMatchingPattern of negativeFileMatchingPatterns) {
-        if (
-          this.performGlobCheck(codeFileMetric.fileName, fileMatchingPattern)
-        ) {
-          result = false;
-        }
+      if (
+        negativeFileMatchingPatterns.some((pattern) =>
+          this.performGlobCheck(codeFileMetric.fileName, pattern),
+        )
+      ) {
+        result = false;
       }
 
       if (!result) {
-        for (const fileMatchingPattern of doubleNegativeFileMatchingPatterns) {
-          if (
-            this.performGlobCheck(codeFileMetric.fileName, fileMatchingPattern)
-          ) {
-            result = true;
-          }
-        }
+        result = doubleNegativeFileMatchingPatterns.some((pattern) =>
+          this.performGlobCheck(codeFileMetric.fileName, pattern),
+        );
       }
     }
 
@@ -280,13 +272,7 @@ export default class CodeMetrics {
   ): boolean {
     this._logger.logDebug("* CodeMetrics.performGlobCheck()");
 
-    return (
-      minimatch.match(
-        [fileName],
-        fileMatchingPattern,
-        CodeMetrics._minimatchOptions,
-      ).length > 0
-    );
+    return minimatch(fileName, fileMatchingPattern, CodeMetrics._minimatchOptions);
   }
 
   private matchFileExtension(fileName: string): boolean {
@@ -316,13 +302,9 @@ export default class CodeMetrics {
     let ignoredCode = 0;
 
     for (const entry of matches) {
-      let isTestFile = false;
-      for (const testMatchingPattern of this._inputs.testMatchingPatterns) {
-        if (this.performGlobCheck(entry.fileName, testMatchingPattern)) {
-          isTestFile = true;
-          break;
-        }
-      }
+      const isTestFile: boolean = this._inputs.testMatchingPatterns.some(
+        (pattern) => this.performGlobCheck(entry.fileName, pattern),
+      );
 
       if (isTestFile) {
         this._logger.logDebug(

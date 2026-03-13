@@ -63,9 +63,10 @@ Update-FileContent -Path 'src/task/task.json' -Replacements (@($friendlyNameRepl
 Update-FileContent -Path 'src/task/task.loc.json' -Replacements $versionComponentReplacements
 Update-FileContent -Path 'src/task/Strings/resources.resjson/en-US/resources.resjson' -Replacements @($friendlyNameReplacement)
 
-# Source code user-agent.
-Update-FileContent -Path 'src/task/src/repos/gitHubReposInvoker.ts' -Replacements @($userAgentReplacement)
-Update-FileContent -Path 'src/task/tests/repos/gitHubReposInvoker.spec.ts' -Replacements @($userAgentReplacement)
+# Centralised version constant (consumed by source and tests).
+Update-FileContent -Path 'src/task/src/utilities/version.ts' -Replacements @(
+    @{ Pattern = "version = `"$versionPattern`""; Value = "version = `"$version`"" }
+)
 
 # Release workflow defaults. The env vars in release-initiate.yml represent the
 # next release version, so boost the patch by 1 beyond the version being released.

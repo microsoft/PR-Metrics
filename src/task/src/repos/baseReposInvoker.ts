@@ -16,6 +16,12 @@ import { StatusCodes } from "http-status-codes";
 export default abstract class BaseReposInvoker
   implements ReposInvokerInterface
 {
+  private static readonly _accessErrorStatusCodes: readonly number[] = [
+    StatusCodes.UNAUTHORIZED,
+    StatusCodes.FORBIDDEN,
+    StatusCodes.NOT_FOUND,
+  ];
+
   /**
    * Invokes an API call, augmenting any errors that may be thrown due to insufficient access.
    * @typeParam Response The type of the response from the API call.
@@ -34,12 +40,10 @@ export default abstract class BaseReposInvoker
         error as ErrorWithStatusInterface;
       const statusCode: number | null =
         castedError.status ?? castedError.statusCode;
-      const accessErrorStatusCodes: number[] = [
-        StatusCodes.UNAUTHORIZED,
-        StatusCodes.FORBIDDEN,
-        StatusCodes.NOT_FOUND,
-      ];
-      if (statusCode !== null && accessErrorStatusCodes.includes(statusCode)) {
+      if (
+        statusCode !== null &&
+        BaseReposInvoker._accessErrorStatusCodes.includes(statusCode)
+      ) {
         castedError.internalMessage = castedError.message;
         castedError.message = accessErrorMessage;
       }

@@ -45,6 +45,8 @@ export const testMatchingPatterns: string[] = [
  * (https://github.com/github/linguist/blob/main/lib/linguist/languages.yml).
  */
 export const codeFileExtensions: string[] = [
+  // Extensions shared across multiple languages are listed once under the first language that uses them.
+
   // JavaScript
   "js",
   "_js",
@@ -73,7 +75,7 @@ export const codeFileExtensions: string[] = [
   // JavaScript: JavaScript+ERB
   "erb",
 
-  // Python
+  // Python (also: cgi, fcgi – shared with Shell/PHP/Ruby; spec – shared with Ruby)
   "py",
   "cgi",
   "fcgi",
@@ -123,11 +125,10 @@ export const codeFileExtensions: string[] = [
   "csx",
   "linq",
 
-  // PHP
+  // PHP (also: inc – shared with C++)
   "php",
   "aw",
   "ctp",
-  "fcgi",
   "inc",
   "php3",
   "php4",
@@ -135,7 +136,7 @@ export const codeFileExtensions: string[] = [
   "phps",
   "phpt",
 
-  // C++
+  // C++ (also: h – shared with C)
   "cpp",
   "c++",
   "cc",
@@ -146,7 +147,6 @@ export const codeFileExtensions: string[] = [
   "hh",
   "hpp",
   "hxx",
-  "inc",
   "inl",
   "ino",
   "ipp",
@@ -157,7 +157,6 @@ export const codeFileExtensions: string[] = [
   // C
   "c",
   "cats",
-  "h",
   "idc",
   // C: OpenCL
   "cl",
@@ -174,10 +173,8 @@ export const codeFileExtensions: string[] = [
   "sh",
   "bash",
   "bats",
-  "cgi",
   "command",
   "env",
-  "fcgi",
   "ksh",
   "tmux",
   "tool",
@@ -200,7 +197,6 @@ export const codeFileExtensions: string[] = [
   "rb",
   "builder",
   "eye",
-  "fcgi",
   "gemspec",
   "god",
   "jbuilder",
@@ -216,7 +212,6 @@ export const codeFileExtensions: string[] = [
   "rbx",
   "ru",
   "ruby",
-  "spec",
   "thor",
   "watchr",
 ];

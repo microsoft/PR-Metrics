@@ -29,6 +29,7 @@ import UpdateIssueCommentResponse from "../wrappers/octokitInterfaces/updateIssu
 import UpdatePullResponse from "../wrappers/octokitInterfaces/updatePullResponse.js";
 import { decimalRadix } from "../utilities/constants.js";
 import { singleton } from "tsyringe";
+import { version } from "../utilities/version.js";
 
 /**
  * A class for invoking GitHub Repos functionality.
@@ -72,7 +73,9 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
 
     if (typeof process.env.PR_METRICS_ACCESS_TOKEN === "undefined") {
       return Promise.resolve(
-        this._runnerInvoker.loc("repos.gitHubReposInvoker.noGitHubAccessToken"),
+        this._runnerInvoker.loc(
+          "repos.gitHubReposInvoker.noGitHubAccessToken",
+        ),
       );
     }
 
@@ -287,7 +290,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
           this._logger.logWarning(`Octokit – ${message}`);
         },
       },
-      userAgent: "PRMetrics/v1.7.12",
+      userAgent: `PRMetrics/v${version}`,
     };
 
     if (RunnerInvoker.isGitHub) {

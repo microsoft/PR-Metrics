@@ -273,7 +273,7 @@ export default class Inputs {
   ): void {
     this._logger.logDebug("* Inputs.initializeAlwaysCloseComment()");
 
-    const convertedValue: boolean | null =
+    const convertedValue: boolean =
       alwaysCloseComment?.toLowerCase() === "true";
     if (convertedValue) {
       this._alwaysCloseComment = convertedValue;
