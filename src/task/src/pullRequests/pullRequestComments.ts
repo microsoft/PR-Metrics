@@ -230,9 +230,7 @@ export default class PullRequestComments {
         )
       : this._runnerInvoker.loc(
           "pullRequests.pullRequestComments.largePullRequestComment",
-          (
-            this._inputs.baseSize * this._inputs.growthRate
-          ).toLocaleString(),
+          this._inputs.smallThreshold.toLocaleString(),
         );
     return `${result}\n`;
   }

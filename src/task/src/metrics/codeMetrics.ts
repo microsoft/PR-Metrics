@@ -140,10 +140,7 @@ export default class CodeMetrics {
     this._logger.logDebug("* CodeMetrics.isSmall()");
 
     await this.initialize();
-    return (
-      this._metrics.productCode <
-      this._inputs.baseSize * this._inputs.growthRate
-    );
+    return this._metrics.productCode < this._inputs.smallThreshold;
   }
 
   /**

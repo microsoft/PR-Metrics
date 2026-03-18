@@ -27,6 +27,9 @@ describe("codeMetrics.ts", (): void => {
     inputs = mock(Inputs);
     when(inputs.baseSize).thenReturn(InputsDefault.baseSize);
     when(inputs.growthRate).thenReturn(InputsDefault.growthRate);
+    when(inputs.smallThreshold).thenReturn(
+      InputsDefault.baseSize * InputsDefault.growthRate,
+    );
     when(inputs.testFactor).thenReturn(InputsDefault.testFactor);
     when(inputs.fileMatchingPatterns).thenReturn(
       InputsDefault.fileMatchingPatterns,
@@ -1339,6 +1342,7 @@ describe("codeMetrics.ts", (): void => {
           // Arrange
           when(inputs.baseSize).thenReturn(100);
           when(inputs.growthRate).thenReturn(1.5);
+          when(inputs.smallThreshold).thenReturn(150);
           when(inputs.testFactor).thenReturn(2.0);
           when(inputs.fileMatchingPatterns).thenReturn([
             "**/*",
@@ -1449,6 +1453,7 @@ describe("codeMetrics.ts", (): void => {
         // Arrange
         when(inputs.baseSize).thenReturn(100);
         when(inputs.growthRate).thenReturn(1.5);
+        when(inputs.smallThreshold).thenReturn(150);
         when(inputs.testFactor).thenReturn(2.0);
         when(inputs.fileMatchingPatterns).thenReturn([
           "**/*",
@@ -1521,6 +1526,7 @@ describe("codeMetrics.ts", (): void => {
     // Arrange
     when(inputs.baseSize).thenReturn(100);
     when(inputs.growthRate).thenReturn(1.5);
+    when(inputs.smallThreshold).thenReturn(150);
     when(inputs.testFactor).thenReturn(2.0);
     when(inputs.fileMatchingPatterns).thenReturn(["src/*.ts", "__test__/*.ts"]);
     when(inputs.codeFileExtensions).thenReturn(new Set<string>(["ts"]));
@@ -1576,6 +1582,7 @@ describe("codeMetrics.ts", (): void => {
     // Arrange
     when(inputs.baseSize).thenReturn(100);
     when(inputs.growthRate).thenReturn(1.5);
+    when(inputs.smallThreshold).thenReturn(150);
     when(inputs.testFactor).thenReturn(2.0);
     when(inputs.fileMatchingPatterns).thenReturn([
       "**/*",

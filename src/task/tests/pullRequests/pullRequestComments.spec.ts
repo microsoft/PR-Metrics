@@ -63,6 +63,7 @@ describe("pullRequestComments.ts", (): void => {
 
     inputs = mock(Inputs);
     when(inputs.baseSize).thenReturn(200);
+    when(inputs.smallThreshold).thenReturn(400);
 
     logger = mock(Logger);
 
@@ -712,6 +713,7 @@ describe("pullRequestComments.ts", (): void => {
           when(codeMetrics.isSmall()).thenResolve(false);
           when(inputs.baseSize).thenReturn(baseSize);
           when(inputs.growthRate).thenReturn(2);
+          when(inputs.smallThreshold).thenReturn(baseSize * 2);
           const pullRequestComments: PullRequestComments =
             new PullRequestComments(
               instance(codeMetrics),

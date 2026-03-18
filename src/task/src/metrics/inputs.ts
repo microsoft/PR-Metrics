@@ -115,6 +115,17 @@ export default class Inputs {
     return this._codeFileExtensions;
   }
 
+  /**
+   * Gets the small threshold, which is the maximum number of new lines in a small pull request.
+   * @returns The small threshold.
+   */
+  public get smallThreshold(): number {
+    this._logger.logDebug("* Inputs.smallThreshold");
+
+    this.initialize();
+    return this._baseSize * this._growthRate;
+  }
+
   private initialize(): void {
     this._logger.logDebug("* Inputs.initialize()");
 

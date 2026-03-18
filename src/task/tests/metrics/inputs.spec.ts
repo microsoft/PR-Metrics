@@ -2152,5 +2152,110 @@ describe("inputs.ts", (): void => {
         verify(logger.logInfo(settingCodeFileExtensionsResource)).once();
       });
     });
+
+    describe("smallThreshold", (): void => {
+      it("should return baseSize * growthRate when using defaults", (): void => {
+        // Act
+        const inputs: Inputs = new Inputs(
+          instance(logger),
+          instance(runnerInvoker),
+        );
+
+        // Assert
+        assert.equal(
+          inputs.smallThreshold,
+          InputsDefault.baseSize * InputsDefault.growthRate,
+        );
+        verify(logger.logDebug("* Inputs.initialize()")).once();
+        verify(logger.logDebug("* Inputs.initializeBaseSize()")).once();
+        verify(logger.logDebug("* Inputs.initializeGrowthRate()")).once();
+        verify(logger.logDebug("* Inputs.initializeTestFactor()")).once();
+        verify(
+          logger.logDebug("* Inputs.initializeAlwaysCloseComment()"),
+        ).once();
+        verify(
+          logger.logDebug("* Inputs.initializeFileMatchingPatterns()"),
+        ).once();
+        verify(
+          logger.logDebug("* Inputs.initializeTestMatchingPatterns()"),
+        ).once();
+        verify(
+          logger.logDebug("* Inputs.initializeMatchingPatterns()"),
+        ).twice();
+        verify(
+          logger.logDebug("* Inputs.initializeCodeFileExtensions()"),
+        ).once();
+        verify(logger.logDebug("* Inputs.smallThreshold")).once();
+        verify(logger.logInfo(adjustingAlwaysCloseComment)).once();
+        verify(logger.logInfo(adjustingBaseSizeResource)).once();
+        verify(logger.logInfo(adjustingGrowthRateResource)).once();
+        verify(logger.logInfo(adjustingTestFactorResource)).once();
+        verify(logger.logInfo(adjustingFileMatchingPatternsResource)).once();
+        verify(logger.logInfo(adjustingTestMatchingPatternsResource)).once();
+        verify(logger.logInfo(adjustingCodeFileExtensionsResource)).once();
+        verify(logger.logInfo(disablingTestFactorResource)).never();
+        verify(logger.logInfo(settingAlwaysCloseComment)).never();
+        verify(logger.logInfo(settingBaseSizeResource)).never();
+        verify(logger.logInfo(settingGrowthRateResource)).never();
+        verify(logger.logInfo(settingTestFactorResource)).never();
+        verify(logger.logInfo(settingFileMatchingPatternsResource)).never();
+        verify(logger.logInfo(settingTestMatchingPatternsResource)).never();
+        verify(logger.logInfo(settingCodeFileExtensionsResource)).never();
+      });
+
+      it("should return baseSize * growthRate when using custom values", (): void => {
+        // Arrange
+        when(runnerInvoker.getInput(deepEqual(["Base", "Size"]))).thenReturn(
+          "100",
+        );
+        when(runnerInvoker.getInput(deepEqual(["Growth", "Rate"]))).thenReturn(
+          "3.0",
+        );
+
+        // Act
+        const inputs: Inputs = new Inputs(
+          instance(logger),
+          instance(runnerInvoker),
+        );
+
+        // Assert
+        assert.equal(inputs.smallThreshold, 300);
+        verify(logger.logDebug("* Inputs.initialize()")).once();
+        verify(logger.logDebug("* Inputs.initializeBaseSize()")).once();
+        verify(logger.logDebug("* Inputs.initializeGrowthRate()")).once();
+        verify(logger.logDebug("* Inputs.initializeTestFactor()")).once();
+        verify(
+          logger.logDebug("* Inputs.initializeAlwaysCloseComment()"),
+        ).once();
+        verify(
+          logger.logDebug("* Inputs.initializeFileMatchingPatterns()"),
+        ).once();
+        verify(
+          logger.logDebug("* Inputs.initializeTestMatchingPatterns()"),
+        ).once();
+        verify(
+          logger.logDebug("* Inputs.initializeMatchingPatterns()"),
+        ).twice();
+        verify(
+          logger.logDebug("* Inputs.initializeCodeFileExtensions()"),
+        ).once();
+        verify(logger.logDebug("* Inputs.smallThreshold")).once();
+        verify(logger.logInfo(adjustingAlwaysCloseComment)).once();
+        verify(logger.logInfo(adjustingBaseSizeResource)).never();
+        verify(logger.logInfo(adjustingGrowthRateResource)).never();
+        verify(logger.logInfo(adjustingTestFactorResource)).once();
+        verify(logger.logInfo(adjustingFileMatchingPatternsResource)).once();
+        verify(logger.logInfo(adjustingTestMatchingPatternsResource)).once();
+        verify(logger.logInfo(adjustingCodeFileExtensionsResource)).once();
+        verify(logger.logInfo(disablingTestFactorResource)).never();
+        verify(logger.logInfo(settingAlwaysCloseComment)).never();
+        verify(logger.logInfo(settingBaseSizeResource)).once();
+        verify(logger.logInfo(settingGrowthRateResource)).once();
+        verify(logger.logInfo(settingTestFactorResource)).never();
+        verify(logger.logInfo(settingFileMatchingPatternsResource)).never();
+        verify(logger.logInfo(settingTestMatchingPatternsResource)).never();
+        verify(logger.logInfo(settingCodeFileExtensionsResource)).never();
+      });
+    });
   });
 });
