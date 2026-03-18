@@ -71,7 +71,6 @@
     "exitzero": "1.0.1",
     "fast-check": "4.6.0",
     "glob": "13.0.6",
-    "http-status-codes": "2.3.0",
     "globals": "17.4.0",
     "mkdirp": "3.0.1",
     "mocha": "^11.7.5",

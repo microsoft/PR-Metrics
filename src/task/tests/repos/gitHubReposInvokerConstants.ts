@@ -7,7 +7,7 @@ import GetIssueCommentsResponse from "../../src/wrappers/octokitInterfaces/getIs
 import GetPullResponse from "../../src/wrappers/octokitInterfaces/getPullResponse.js";
 import GetReviewCommentsResponse from "../../src/wrappers/octokitInterfaces/getReviewCommentsResponse.js";
 import ListCommitsResponse from "../../src/wrappers/octokitInterfaces/listCommitsResponse.js";
-import { StatusCodes } from "http-status-codes";
+import { httpOk } from "../testUtilities/httpStatusCodes.js";
 
 /* eslint-disable @typescript-eslint/naming-convention -- Required for alignment with Octokit. */
 
@@ -379,7 +379,7 @@ export const getPullResponse: GetPullResponse = {
     },
   },
   headers: {},
-  status: StatusCodes.OK,
+  status: httpOk,
   url: "",
 };
 
@@ -470,7 +470,7 @@ export const listCommitsResponse: ListCommitsResponse = {
     },
   ],
   headers: {},
-  status: StatusCodes.OK,
+  status: httpOk,
   url: "",
 };
 
@@ -524,7 +524,7 @@ export const getIssueCommentsResponse: GetIssueCommentsResponse = {
     },
   ],
   headers: {},
-  status: StatusCodes.OK,
+  status: httpOk,
   url: "",
 };
 
@@ -602,7 +602,7 @@ export const getReviewCommentsResponse: GetReviewCommentsResponse = {
     },
   ],
   headers: {},
-  status: StatusCodes.OK,
+  status: httpOk,
   url: "",
 };
 

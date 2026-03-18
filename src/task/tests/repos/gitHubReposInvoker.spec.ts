@@ -7,6 +7,14 @@ import "reflect-metadata";
 import * as AssertExtensions from "../testUtilities/assertExtensions.js";
 import * as GitHubReposInvokerConstants from "./gitHubReposInvokerConstants.js";
 import { any, anyNumber, anyString } from "../testUtilities/mockito.js";
+import {
+  httpBadRequest,
+  httpForbidden,
+  httpNotFound,
+  httpOk,
+  httpUnauthorized,
+  httpUnprocessableEntity,
+} from "../testUtilities/httpStatusCodes.js";
 import { instance, mock, verify, when } from "ts-mockito";
 import CommentData from "../../src/repos/interfaces/commentData.js";
 import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces.js";
@@ -23,7 +31,6 @@ import OctokitWrapper from "../../src/wrappers/octokitWrapper.js";
 import PullRequestDetailsInterface from "../../src/repos/interfaces/pullRequestDetailsInterface.js";
 import { RequestError } from "octokit";
 import RunnerInvoker from "../../src/runners/runnerInvoker.js";
-import { StatusCodes } from "http-status-codes";
 import assert from "node:assert/strict";
 import { createRequestError } from "../testUtilities/createRequestError.js";
 import { version } from "../../src/utilities/version.js";
@@ -701,13 +708,13 @@ describe("gitHubReposInvoker.ts", (): void => {
     });
 
     {
-      const testCases: StatusCodes[] = [
-        StatusCodes.UNAUTHORIZED,
-        StatusCodes.FORBIDDEN,
-        StatusCodes.NOT_FOUND,
+      const testCases: number[] = [
+        httpUnauthorized,
+        httpForbidden,
+        httpNotFound,
       ];
 
-      testCases.forEach((status: StatusCodes): void => {
+      testCases.forEach((status: number): void => {
         it(`should throw when the PAT has insufficient access and the API call returns status '${String(status)}'`, async (): Promise<void> => {
           // Arrange
           when(octokitWrapper.initialize(any())).thenCall(
@@ -1295,7 +1302,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       ).thenResolve({
         data: [],
         headers: {},
-        status: StatusCodes.OK,
+        status: httpOk,
         url: "",
       });
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
@@ -1346,7 +1353,7 @@ describe("gitHubReposInvoker.ts", (): void => {
         headers: {
           link: '<https://api.github.com/repositories/309438703/pulls/172/commits?page=2>; rel="next", <https://api.github.com/repositories/309438703/pulls/172/commits?page=24>; rel="last"',
         },
-        status: StatusCodes.OK,
+        status: httpOk,
         url: "",
       });
       when(
@@ -1406,7 +1413,7 @@ describe("gitHubReposInvoker.ts", (): void => {
         headers: {
           link: "non-matching",
         },
-        status: StatusCodes.OK,
+        status: httpOk,
         url: "",
       });
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
@@ -1564,7 +1571,7 @@ describe("gitHubReposInvoker.ts", (): void => {
           );
           const errorMessage = `Validation Failed: {"resource":"PullRequestReviewComment","code":"custom","field":"pull_request_review_thread.diff_entry","message":"${message}"}`;
           const error: RequestError = createRequestError(
-            StatusCodes.UNPROCESSABLE_ENTITY,
+            httpUnprocessableEntity,
             errorMessage,
           );
           when(
@@ -1625,10 +1632,10 @@ describe("gitHubReposInvoker.ts", (): void => {
     {
       const testCases: HttpError[] = [
         new HttpError(
-          StatusCodes.BAD_REQUEST,
+          httpBadRequest,
           'Validation Failed: {"resource":"PullRequestReviewComment","code":"custom","field":"pull_request_review_thread.diff_entry","message":"file.ts is too big"}',
         ),
-        new HttpError(StatusCodes.UNPROCESSABLE_ENTITY, "Unprocessable Entity"),
+        new HttpError(httpUnprocessableEntity, "Unprocessable Entity"),
       ];
 
       testCases.forEach((error: HttpError): void => {
