@@ -72,8 +72,7 @@ export default class AzureReposInvoker extends BaseReposInvoker {
   ): CommentData {
     const result: CommentData = new CommentData();
 
-    let index = 0;
-    for (const value of comments) {
+    for (const [index, value] of comments.entries()) {
       const id: number = Validator.validateNumber(
         value.id,
         `commentThread[${String(index)}].id`,
@@ -110,8 +109,6 @@ export default class AzureReposInvoker extends BaseReposInvoker {
           new FileCommentData(id, content, fileName.substring(1), status),
         );
       }
-
-      index += 1;
     }
 
     return result;

@@ -224,46 +224,36 @@ export default class PullRequestComments {
   private async addCommentSizeStatus(): Promise<string> {
     this._logger.logDebug("* PullRequestComments.addCommentSizeStatus()");
 
-    let result = "";
-    if (await this._codeMetrics.isSmall()) {
-      result += this._runnerInvoker.loc(
-        "pullRequests.pullRequestComments.smallPullRequestComment",
-      );
-    } else {
-      const size: string = (
-        this._inputs.baseSize * this._inputs.growthRate
-      ).toLocaleString();
-      result += this._runnerInvoker.loc(
-        "pullRequests.pullRequestComments.largePullRequestComment",
-        size,
-      );
-    }
-
-    result += "\n";
-    return result;
+    const result: string = (await this._codeMetrics.isSmall())
+      ? this._runnerInvoker.loc(
+          "pullRequests.pullRequestComments.smallPullRequestComment",
+        )
+      : this._runnerInvoker.loc(
+          "pullRequests.pullRequestComments.largePullRequestComment",
+          (
+            this._inputs.baseSize * this._inputs.growthRate
+          ).toLocaleString(),
+        );
+    return `${result}\n`;
   }
 
   private async addCommentTestStatus(): Promise<string> {
     this._logger.logDebug("* PullRequestComments.addCommentTestStatus()");
 
-    let result = "";
     const isSufficientlyTested: boolean | null =
       await this._codeMetrics.isSufficientlyTested();
-    if (isSufficientlyTested !== null) {
-      if (isSufficientlyTested) {
-        result += this._runnerInvoker.loc(
-          "pullRequests.pullRequestComments.testsSufficientComment",
-        );
-      } else {
-        result += this._runnerInvoker.loc(
-          "pullRequests.pullRequestComments.testsInsufficientComment",
-        );
-      }
-
-      result += "\n";
+    if (isSufficientlyTested === null) {
+      return "";
     }
 
-    return result;
+    const result: string = isSufficientlyTested
+      ? this._runnerInvoker.loc(
+          "pullRequests.pullRequestComments.testsSufficientComment",
+        )
+      : this._runnerInvoker.loc(
+          "pullRequests.pullRequestComments.testsInsufficientComment",
+        );
+    return `${result}\n`;
   }
 
   private addCommentMetrics(

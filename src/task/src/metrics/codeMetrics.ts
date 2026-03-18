@@ -398,13 +398,11 @@ export default class CodeMetrics {
   private initializeIsSufficientlyTested(): void {
     this._logger.logDebug("* CodeMetrics.initializeIsSufficientlyTested()");
 
-    if (this._inputs.testFactor === null) {
-      this._isSufficientlyTested = null;
-    } else {
-      this._isSufficientlyTested =
-        this._metrics.testCode >=
-        this._metrics.productCode * this._inputs.testFactor;
-    }
+    this._isSufficientlyTested =
+      this._inputs.testFactor === null
+        ? null
+        : this._metrics.testCode >=
+          this._metrics.productCode * this._inputs.testFactor;
   }
 
   private initializeSizeIndicator(): void {
@@ -412,16 +410,14 @@ export default class CodeMetrics {
 
     this._size = this.calculateSize();
     let testIndicator = "";
-    if (this._isSufficientlyTested !== null) {
-      if (this._isSufficientlyTested) {
-        testIndicator = this._runnerInvoker.loc(
-          "metrics.codeMetrics.titleTestsSufficient",
-        );
-      } else {
-        testIndicator = this._runnerInvoker.loc(
-          "metrics.codeMetrics.titleTestsInsufficient",
-        );
-      }
+    if (this._isSufficientlyTested === true) {
+      testIndicator = this._runnerInvoker.loc(
+        "metrics.codeMetrics.titleTestsSufficient",
+      );
+    } else if (this._isSufficientlyTested === false) {
+      testIndicator = this._runnerInvoker.loc(
+        "metrics.codeMetrics.titleTestsInsufficient",
+      );
     }
 
     this._sizeIndicator = this._runnerInvoker.loc(

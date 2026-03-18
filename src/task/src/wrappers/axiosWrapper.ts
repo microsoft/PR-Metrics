@@ -3,11 +3,10 @@
  * Licensed under the MIT License.
  */
 
-import axios, { AxiosResponse } from "axios";
 import { singleton } from "tsyringe";
 
 /**
- * A wrapper around Axios, to facilitate testability.
+ * A wrapper around the Fetch API, to facilitate testability.
  */
 @singleton()
 export default class AxiosWrapper {
@@ -17,7 +16,7 @@ export default class AxiosWrapper {
    * @returns The contents of the URL.
    */
   public async getUrl(url: string): Promise<string> {
-    const response: AxiosResponse<string, string> = await axios.get(url);
-    return response.data;
+    const response: Response = await fetch(url);
+    return response.text();
   }
 }
