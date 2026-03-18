@@ -3,16 +3,11 @@
  * Licensed under the MIT License.
  */
 
-import type { GetResponseTypeFromEndpointMethod } from "@octokit/types";
-import { Octokit } from "octokit";
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Required for constructing concrete Octokit types.
-const octokit: Octokit = new Octokit();
+import type { Endpoints } from "@octokit/types";
 
 /**
  * An interface representing the response from a get request to a GitHub pull request.
  */
-type GetPullResponse = GetResponseTypeFromEndpointMethod<
-  typeof octokit.rest.pulls.get
->;
+type GetPullResponse =
+  Endpoints["GET /repos/{owner}/{repo}/pulls/{pull_number}"]["response"];
 export default GetPullResponse;

@@ -6,7 +6,6 @@
 import eslint from "@eslint/js";
 import globals from "globals";
 import tseslint from "typescript-eslint";
-import typescriptParser from "@typescript-eslint/parser";
 
 export default tseslint.config(
   {
@@ -22,7 +21,7 @@ export default tseslint.config(
         ...globals.mocha,
         ...globals.node,
       },
-      parser: typescriptParser,
+      parser: tseslint.parser,
       parserOptions: {
         ecmaVersion: 2017,
         project: "./src/task/tsconfig.json",
