@@ -7,14 +7,13 @@ import "reflect-metadata";
 import * as AssertExtensions from "../testUtilities/assertExtensions.js";
 import * as GitHubReposInvokerConstants from "./gitHubReposInvokerConstants.js";
 import { any, anyNumber, anyString } from "../testUtilities/mockito.js";
+import { httpBadRequest, httpOk } from "../testUtilities/httpStatusCodes.js";
 import {
-  httpBadRequest,
   httpForbidden,
   httpNotFound,
-  httpOk,
   httpUnauthorized,
   httpUnprocessableEntity,
-} from "../testUtilities/httpStatusCodes.js";
+} from "../../src/utilities/constants.js";
 import { instance, mock, verify, when } from "ts-mockito";
 import CommentData from "../../src/repos/interfaces/commentData.js";
 import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces.js";

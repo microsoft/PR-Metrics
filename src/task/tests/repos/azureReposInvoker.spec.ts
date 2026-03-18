@@ -17,7 +17,7 @@ import {
   httpForbidden,
   httpNotFound,
   httpUnauthorized,
-} from "../testUtilities/httpStatusCodes.js";
+} from "../../src/utilities/constants.js";
 import AzureDevOpsApiWrapper from "../../src/wrappers/azureDevOpsApiWrapper.js";
 import AzureReposInvoker from "../../src/repos/azureReposInvoker.js";
 import CommentData from "../../src/repos/interfaces/commentData.js";

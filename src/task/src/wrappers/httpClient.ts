@@ -17,6 +17,12 @@ export default class HttpClientWrapper {
    */
   public async getUrl(url: string): Promise<string> {
     const response: Response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(
+        `HTTP request to '${url}' failed with status ${String(response.status)}.`,
+      );
+    }
+
     return response.text();
   }
 }

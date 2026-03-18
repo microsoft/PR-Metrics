@@ -27,17 +27,17 @@ export default class PullRequestCommentsData {
   /**
    * The collection of files not requiring review to which to add a comment.
    */
-  public filesNotRequiringReview: string[];
+  public readonly filesNotRequiringReview: string[];
 
   /**
    * The collection of deleted files not requiring review to which to add a comment.
    */
-  public deletedFilesNotRequiringReview: string[];
+  public readonly deletedFilesNotRequiringReview: string[];
 
   /**
    * The collection of comment thread IDs requiring deletion now that the associated file requires review.
    */
-  public commentThreadsRequiringDeletion: number[] = [];
+  public readonly commentThreadsRequiringDeletion: number[] = [];
 
   /**
    * Initializes a new instance of the `PullRequestCommentsData` class.

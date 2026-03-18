@@ -9,7 +9,7 @@ import ConsoleWrapper from "../../src/wrappers/consoleWrapper.js";
 import HttpError from "../testUtilities/httpError.js";
 import Logger from "../../src/utilities/logger.js";
 import RunnerInvoker from "../../src/runners/runnerInvoker.js";
-import { httpNotFound } from "../testUtilities/httpStatusCodes.js";
+import { httpNotFound } from "../../src/utilities/constants.js";
 
 describe("logger.ts", (): void => {
   let consoleWrapper: ConsoleWrapper;
