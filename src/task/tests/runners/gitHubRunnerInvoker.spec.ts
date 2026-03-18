@@ -5,7 +5,7 @@
 
 import "reflect-metadata";
 import * as actionsExec from "@actions/exec";
-import * as path from "path";
+import * as path from "node:path";
 import { deepEqual, instance, mock, verify, when } from "ts-mockito";
 import AzurePipelinesRunnerWrapper from "../../src/wrappers/azurePipelinesRunnerWrapper.js";
 import ConsoleWrapper from "../../src/wrappers/consoleWrapper.js";

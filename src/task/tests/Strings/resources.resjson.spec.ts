@@ -3,8 +3,8 @@
  * Licensed under the MIT License.
  */
 
-import * as fs from "fs";
-import * as path from "path";
+import * as fs from "node:fs";
+import * as path from "node:path";
 import ResourcesJsonInterface from "../../src/jsonTypes/resourcesJsonInterface.js";
 import TaskJsonInterface from "../jsonTypes/taskJsonInterface.js";
 import assert from "node:assert/strict";
