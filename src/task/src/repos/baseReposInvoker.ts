@@ -3,12 +3,16 @@
  * Licensed under the MIT License.
  */
 
+import {
+  httpForbidden,
+  httpNotFound,
+  httpUnauthorized,
+} from "../utilities/constants.js";
 import CommentData from "./interfaces/commentData.js";
-import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces.js";
+import type { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces.js";
 import ErrorWithStatusInterface from "./interfaces/errorWithStatusInterface.js";
 import PullRequestDetailsInterface from "./interfaces/pullRequestDetailsInterface.js";
 import ReposInvokerInterface from "./reposInvokerInterface.js";
-import { StatusCodes } from "http-status-codes";
 
 /**
  * A base class for invoking repository functionality.
@@ -17,9 +21,9 @@ export default abstract class BaseReposInvoker
   implements ReposInvokerInterface
 {
   private static readonly _accessErrorStatusCodes: readonly number[] = [
-    StatusCodes.UNAUTHORIZED,
-    StatusCodes.FORBIDDEN,
-    StatusCodes.NOT_FOUND,
+    httpUnauthorized,
+    httpForbidden,
+    httpNotFound,
   ];
 
   /**

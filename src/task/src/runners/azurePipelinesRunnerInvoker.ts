@@ -5,14 +5,14 @@
 
 import * as path from "path";
 import * as taskLib from "azure-pipelines-task-lib/task.js";
-import {
+import type {
   IExecOptions,
   IExecSyncResult,
 } from "azure-pipelines-task-lib/toolrunner.js";
 import AzurePipelinesRunnerWrapper from "../wrappers/azurePipelinesRunnerWrapper.js";
-import { EndpointAuthorization } from "./endpointAuthorization.js";
-import ExecOutput from "./execOutput.js";
-import RunnerInvokerInterface from "./runnerInvokerInterface.js";
+import type { EndpointAuthorization } from "./endpointAuthorization.js";
+import type ExecOutput from "./execOutput.js";
+import type RunnerInvokerInterface from "./runnerInvokerInterface.js";
 import { singleton } from "tsyringe";
 
 /**

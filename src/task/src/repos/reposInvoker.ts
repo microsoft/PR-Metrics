@@ -6,7 +6,7 @@
 import * as Validator from "../utilities/validator.js";
 import AzureReposInvoker from "./azureReposInvoker.js";
 import CommentData from "./interfaces/commentData.js";
-import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces.js";
+import type { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces.js";
 import GitHubReposInvoker from "./gitHubReposInvoker.js";
 import Logger from "../utilities/logger.js";
 import PullRequestDetailsInterface from "./interfaces/pullRequestDetailsInterface.js";

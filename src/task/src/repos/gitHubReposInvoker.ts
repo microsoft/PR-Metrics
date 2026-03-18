@@ -4,6 +4,7 @@
  */
 
 import * as Validator from "../utilities/validator.js";
+import { decimalRadix, httpUnprocessableEntity } from "../utilities/constants.js";
 import BaseReposInvoker from "./baseReposInvoker.js";
 import CommentData from "./interfaces/commentData.js";
 import type CreateIssueCommentResponse from "../wrappers/octokitInterfaces/createIssueCommentResponse.js";
@@ -22,10 +23,8 @@ import PullRequestCommentData from "./interfaces/pullRequestCommentData.js";
 import PullRequestDetailsInterface from "./interfaces/pullRequestDetailsInterface.js";
 import { RequestError } from "octokit";
 import RunnerInvoker from "../runners/runnerInvoker.js";
-import { StatusCodes } from "http-status-codes";
 import type UpdateIssueCommentResponse from "../wrappers/octokitInterfaces/updateIssueCommentResponse.js";
 import type UpdatePullResponse from "../wrappers/octokitInterfaces/updatePullResponse.js";
-import { decimalRadix } from "../utilities/constants.js";
 import { singleton } from "tsyringe";
 import { version } from "../utilities/version.js";
 
@@ -196,8 +195,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
         } catch (error: unknown) {
           if (
             error instanceof RequestError &&
-            (error.status as StatusCodes) ===
-              StatusCodes.UNPROCESSABLE_ENTITY &&
+            error.status === httpUnprocessableEntity &&
             (error.message.includes("is too big") ||
               error.message.includes("diff is too large"))
           ) {
