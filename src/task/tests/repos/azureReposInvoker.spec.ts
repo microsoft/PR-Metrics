@@ -399,7 +399,9 @@ describe("azureReposInvoker.ts", (): void => {
       ).once();
       verify(logger.logDebug("* AzureReposInvoker.getGitApi()")).once();
       verify(
-        logger.logDebug('{"description":"Description","title":"Title"}'),
+        logger.logDebugJson(
+          deepEqual({ description: "Description", title: "Title" }),
+        ),
       ).once();
     });
 
@@ -438,7 +440,9 @@ describe("azureReposInvoker.ts", (): void => {
       ).twice();
       verify(logger.logDebug("* AzureReposInvoker.getGitApi()")).twice();
       verify(
-        logger.logDebug('{"description":"Description","title":"Title"}'),
+        logger.logDebugJson(
+          deepEqual({ description: "Description", title: "Title" }),
+        ),
       ).twice();
     });
 
@@ -474,7 +478,9 @@ describe("azureReposInvoker.ts", (): void => {
         logger.logDebug("* AzureReposInvoker.getTitleAndDescription()"),
       ).once();
       verify(logger.logDebug("* AzureReposInvoker.getGitApi()")).once();
-      verify(logger.logDebug('{"title":"Title"}')).once();
+      verify(
+        logger.logDebugJson(deepEqual({ title: "Title" })),
+      ).once();
     });
 
     it("should throw when the title is unavailable", async (): Promise<void> => {
@@ -509,7 +515,7 @@ describe("azureReposInvoker.ts", (): void => {
         logger.logDebug("* AzureReposInvoker.getTitleAndDescription()"),
       ).once();
       verify(logger.logDebug("* AzureReposInvoker.getGitApi()")).once();
-      verify(logger.logDebug("{}")).once();
+      verify(logger.logDebugJson(deepEqual({}))).once();
     });
   });
 
@@ -597,8 +603,8 @@ describe("azureReposInvoker.ts", (): void => {
       verify(logger.logDebug("* AzureReposInvoker.getComments()")).once();
       verify(logger.logDebug("* AzureReposInvoker.getGitApi()")).once();
       verify(
-        logger.logDebug(
-          '[{"comments":[{"content":"Content"}],"id":1,"status":1}]',
+        logger.logDebugJson(
+          deepEqual([{ comments: [{ content: "Content" }], id: 1, status: 1 }]),
         ),
       ).once();
     });
@@ -644,8 +650,15 @@ describe("azureReposInvoker.ts", (): void => {
       verify(logger.logDebug("* AzureReposInvoker.getComments()")).once();
       verify(logger.logDebug("* AzureReposInvoker.getGitApi()")).once();
       verify(
-        logger.logDebug(
-          '[{"comments":[{"content":"Content"}],"id":1,"status":1,"threadContext":null}]',
+        logger.logDebugJson(
+          deepEqual([
+            {
+              comments: [{ content: "Content" }],
+              id: 1,
+              status: 1,
+              threadContext: null as unknown as undefined,
+            },
+          ]),
         ),
       ).once();
     });
@@ -689,8 +702,15 @@ describe("azureReposInvoker.ts", (): void => {
       verify(logger.logDebug("* AzureReposInvoker.getComments()")).once();
       verify(logger.logDebug("* AzureReposInvoker.getGitApi()")).once();
       verify(
-        logger.logDebug(
-          '[{"comments":[{"content":"Content"}],"id":1,"status":1,"threadContext":{"filePath":"/file.ts"}}]',
+        logger.logDebugJson(
+          deepEqual([
+            {
+              comments: [{ content: "Content" }],
+              id: 1,
+              status: 1,
+              threadContext: { filePath: "/file.ts" },
+            },
+          ]),
         ),
       ).once();
     });
@@ -741,8 +761,16 @@ describe("azureReposInvoker.ts", (): void => {
       verify(logger.logDebug("* AzureReposInvoker.getComments()")).once();
       verify(logger.logDebug("* AzureReposInvoker.getGitApi()")).once();
       verify(
-        logger.logDebug(
-          '[{"comments":[{"content":"PR Content"}],"id":1,"status":1},{"comments":[{"content":"File Content"}],"id":2,"status":1,"threadContext":{"filePath":"/file.ts"}}]',
+        logger.logDebugJson(
+          deepEqual([
+            { comments: [{ content: "PR Content" }], id: 1, status: 1 },
+            {
+              comments: [{ content: "File Content" }],
+              id: 2,
+              status: 1,
+              threadContext: { filePath: "/file.ts" },
+            },
+          ]),
         ),
       ).once();
     });
@@ -784,8 +812,8 @@ describe("azureReposInvoker.ts", (): void => {
       verify(logger.logDebug("* AzureReposInvoker.getComments()")).twice();
       verify(logger.logDebug("* AzureReposInvoker.getGitApi()")).twice();
       verify(
-        logger.logDebug(
-          '[{"comments":[{"content":"Content"}],"id":1,"status":1}]',
+        logger.logDebugJson(
+          deepEqual([{ comments: [{ content: "Content" }], id: 1, status: 1 }]),
         ),
       ).twice();
     });
@@ -823,7 +851,9 @@ describe("azureReposInvoker.ts", (): void => {
       verify(logger.logDebug("* AzureReposInvoker.getComments()")).once();
       verify(logger.logDebug("* AzureReposInvoker.getGitApi()")).once();
       verify(
-        logger.logDebug('[{"comments":[{"content":"Content"}],"status":1}]'),
+        logger.logDebugJson(
+          deepEqual([{ comments: [{ content: "Content" }], status: 1 }]),
+        ),
       ).once();
     });
 
@@ -874,7 +904,7 @@ describe("azureReposInvoker.ts", (): void => {
       verify(gitApi.getThreads("RepoID", 10, "Project")).once();
       verify(logger.logDebug("* AzureReposInvoker.getComments()")).once();
       verify(logger.logDebug("* AzureReposInvoker.getGitApi()")).once();
-      verify(logger.logDebug(JSON.stringify(getThreadsResult))).once();
+      verify(logger.logDebugJson(getThreadsResult)).once();
     });
 
     {
@@ -958,7 +988,7 @@ describe("azureReposInvoker.ts", (): void => {
           verify(gitApi.getThreads("RepoID", 10, "Project")).once();
           verify(logger.logDebug("* AzureReposInvoker.getComments()")).once();
           verify(logger.logDebug("* AzureReposInvoker.getGitApi()")).once();
-          verify(logger.logDebug(JSON.stringify(getThreadsResult))).once();
+          verify(logger.logDebugJson(getThreadsResult)).once();
         });
       });
     }
@@ -1092,7 +1122,7 @@ describe("azureReposInvoker.ts", (): void => {
         logger.logDebug("* AzureReposInvoker.setTitleAndDescription()"),
       ).once();
       verify(logger.logDebug("* AzureReposInvoker.getGitApi()")).once();
-      verify(logger.logDebug("{}")).once();
+      verify(logger.logDebugJson(deepEqual({}))).once();
     });
 
     it("should call the API when the description is valid", async (): Promise<void> => {
@@ -1139,7 +1169,7 @@ describe("azureReposInvoker.ts", (): void => {
         logger.logDebug("* AzureReposInvoker.setTitleAndDescription()"),
       ).once();
       verify(logger.logDebug("* AzureReposInvoker.getGitApi()")).once();
-      verify(logger.logDebug("{}")).once();
+      verify(logger.logDebugJson(deepEqual({}))).once();
     });
 
     it("should call the API when both the title and description are valid", async (): Promise<void> => {
@@ -1187,7 +1217,7 @@ describe("azureReposInvoker.ts", (): void => {
         logger.logDebug("* AzureReposInvoker.setTitleAndDescription()"),
       ).once();
       verify(logger.logDebug("* AzureReposInvoker.getGitApi()")).once();
-      verify(logger.logDebug("{}")).once();
+      verify(logger.logDebugJson(deepEqual({}))).once();
     });
 
     it("should call the API when both the title and description are valid and called multiple times", async (): Promise<void> => {
@@ -1236,7 +1266,7 @@ describe("azureReposInvoker.ts", (): void => {
         logger.logDebug("* AzureReposInvoker.setTitleAndDescription()"),
       ).twice();
       verify(logger.logDebug("* AzureReposInvoker.getGitApi()")).twice();
-      verify(logger.logDebug("{}")).twice();
+      verify(logger.logDebugJson(deepEqual({}))).twice();
     });
   });
 
@@ -1341,7 +1371,7 @@ describe("azureReposInvoker.ts", (): void => {
       ).once();
       verify(logger.logDebug("* AzureReposInvoker.createComment()")).once();
       verify(logger.logDebug("* AzureReposInvoker.getGitApi()")).once();
-      verify(logger.logDebug("{}")).once();
+      verify(logger.logDebugJson(deepEqual({}))).once();
     });
 
     it("should call the API for no file when called multiple times", async (): Promise<void> => {
@@ -1396,7 +1426,7 @@ describe("azureReposInvoker.ts", (): void => {
       ).twice();
       verify(logger.logDebug("* AzureReposInvoker.createComment()")).twice();
       verify(logger.logDebug("* AzureReposInvoker.getGitApi()")).twice();
-      verify(logger.logDebug("{}")).twice();
+      verify(logger.logDebugJson(deepEqual({}))).twice();
     });
 
     it("should call the API for a file", async (): Promise<void> => {
@@ -1457,7 +1487,7 @@ describe("azureReposInvoker.ts", (): void => {
       ).once();
       verify(logger.logDebug("* AzureReposInvoker.createComment()")).once();
       verify(logger.logDebug("* AzureReposInvoker.getGitApi()")).once();
-      verify(logger.logDebug("{}")).once();
+      verify(logger.logDebugJson(deepEqual({}))).once();
     });
 
     it("should call the API for a deleted file", async (): Promise<void> => {
@@ -1519,7 +1549,7 @@ describe("azureReposInvoker.ts", (): void => {
       ).once();
       verify(logger.logDebug("* AzureReposInvoker.createComment()")).once();
       verify(logger.logDebug("* AzureReposInvoker.getGitApi()")).once();
-      verify(logger.logDebug("{}")).once();
+      verify(logger.logDebugJson(deepEqual({}))).once();
     });
   });
 
@@ -1636,7 +1666,7 @@ describe("azureReposInvoker.ts", (): void => {
           ).once();
           verify(logger.logDebug("* AzureReposInvoker.updateComment()")).once();
           verify(logger.logDebug("* AzureReposInvoker.getGitApi()")).once();
-          verify(logger.logDebug("{}")).once();
+          verify(logger.logDebugJson(deepEqual({}))).once();
         });
       });
     }
@@ -1712,7 +1742,7 @@ describe("azureReposInvoker.ts", (): void => {
       ).once();
       verify(logger.logDebug("* AzureReposInvoker.updateComment()")).once();
       verify(logger.logDebug("* AzureReposInvoker.getGitApi()")).once();
-      verify(logger.logDebug("{}")).twice();
+      verify(logger.logDebugJson(deepEqual({}))).twice();
     });
 
     it("should call the API when the comment content is updated", async (): Promise<void> => {
@@ -1761,7 +1791,7 @@ describe("azureReposInvoker.ts", (): void => {
       ).once();
       verify(logger.logDebug("* AzureReposInvoker.updateComment()")).once();
       verify(logger.logDebug("* AzureReposInvoker.getGitApi()")).once();
-      verify(logger.logDebug("{}")).once();
+      verify(logger.logDebugJson(deepEqual({}))).once();
     });
 
     it("should call the API when the thread status is updated", async (): Promise<void> => {
@@ -1812,7 +1842,7 @@ describe("azureReposInvoker.ts", (): void => {
       ).once();
       verify(logger.logDebug("* AzureReposInvoker.updateComment()")).once();
       verify(logger.logDebug("* AzureReposInvoker.getGitApi()")).once();
-      verify(logger.logDebug("{}")).once();
+      verify(logger.logDebugJson(deepEqual({}))).once();
     });
 
     it("should call no APIs when neither the comment content nor the thread status are updated", async (): Promise<void> => {
@@ -1893,7 +1923,7 @@ describe("azureReposInvoker.ts", (): void => {
       ).twice();
       verify(logger.logDebug("* AzureReposInvoker.updateComment()")).twice();
       verify(logger.logDebug("* AzureReposInvoker.getGitApi()")).twice();
-      verify(logger.logDebug("{}")).twice();
+      verify(logger.logDebugJson(deepEqual({}))).twice();
     });
   });
 

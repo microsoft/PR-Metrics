@@ -459,9 +459,7 @@ describe("gitHubReposInvoker.ts", (): void => {
         logger.logDebug("* GitHubReposInvoker.initializeForAzureDevOps()"),
       ).once();
       verify(
-        logger.logDebug(
-          JSON.stringify(GitHubReposInvokerConstants.getPullResponse),
-        ),
+        logger.logDebugJson(GitHubReposInvokerConstants.getPullResponse),
       ).once();
     });
 
@@ -506,9 +504,7 @@ describe("gitHubReposInvoker.ts", (): void => {
         logger.logDebug("* GitHubReposInvoker.initializeForGitHub()"),
       ).once();
       verify(
-        logger.logDebug(
-          JSON.stringify(GitHubReposInvokerConstants.getPullResponse),
-        ),
+        logger.logDebugJson(GitHubReposInvokerConstants.getPullResponse),
       ).once();
 
       // Finalization
@@ -557,9 +553,7 @@ describe("gitHubReposInvoker.ts", (): void => {
         logger.logDebug("* GitHubReposInvoker.initializeForAzureDevOps()"),
       ).once();
       verify(
-        logger.logDebug(
-          JSON.stringify(GitHubReposInvokerConstants.getPullResponse),
-        ),
+        logger.logDebugJson(GitHubReposInvokerConstants.getPullResponse),
       ).once();
     });
 
@@ -611,9 +605,7 @@ describe("gitHubReposInvoker.ts", (): void => {
         ),
       ).once();
       verify(
-        logger.logDebug(
-          JSON.stringify(GitHubReposInvokerConstants.getPullResponse),
-        ),
+        logger.logDebugJson(GitHubReposInvokerConstants.getPullResponse),
       ).once();
     });
 
@@ -655,9 +647,7 @@ describe("gitHubReposInvoker.ts", (): void => {
         logger.logDebug("* GitHubReposInvoker.initializeForAzureDevOps()"),
       ).once();
       verify(
-        logger.logDebug(
-          JSON.stringify(GitHubReposInvokerConstants.getPullResponse),
-        ),
+        logger.logDebugJson(GitHubReposInvokerConstants.getPullResponse),
       ).twice();
     });
 
@@ -703,7 +693,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       verify(
         logger.logDebug("* GitHubReposInvoker.initializeForAzureDevOps()"),
       ).once();
-      verify(logger.logDebug(JSON.stringify(currentMockPullResponse))).once();
+      verify(logger.logDebugJson(currentMockPullResponse)).once();
     });
 
     {
@@ -888,7 +878,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       verify(
         logger.logDebug("* GitHubReposInvoker.convertPullRequestComments()"),
       ).once();
-      verify(logger.logDebug(JSON.stringify(response))).once();
+      verify(logger.logDebugJson(response)).once();
     });
 
     it("should return the result when called with a file comment", async (): Promise<void> => {
@@ -940,8 +930,8 @@ describe("gitHubReposInvoker.ts", (): void => {
         logger.logDebug("* GitHubReposInvoker.convertPullRequestComments()"),
       ).once();
       verify(
-        logger.logDebug(
-          JSON.stringify(GitHubReposInvokerConstants.getReviewCommentsResponse),
+        logger.logDebugJson(
+          GitHubReposInvokerConstants.getReviewCommentsResponse,
         ),
       ).once();
     });
@@ -1010,10 +1000,10 @@ describe("gitHubReposInvoker.ts", (): void => {
       verify(
         logger.logDebug("* GitHubReposInvoker.convertPullRequestComments()"),
       ).once();
-      verify(logger.logDebug(JSON.stringify(response))).once();
+      verify(logger.logDebugJson(response)).once();
       verify(
-        logger.logDebug(
-          JSON.stringify(GitHubReposInvokerConstants.getReviewCommentsResponse),
+        logger.logDebugJson(
+          GitHubReposInvokerConstants.getReviewCommentsResponse,
         ),
       ).once();
     });
@@ -1069,7 +1059,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       verify(
         logger.logDebug("* GitHubReposInvoker.convertPullRequestComments()"),
       ).once();
-      verify(logger.logDebug(JSON.stringify(response))).once();
+      verify(logger.logDebugJson(response)).once();
     });
   });
 
@@ -1135,9 +1125,7 @@ describe("gitHubReposInvoker.ts", (): void => {
         logger.logDebug("* GitHubReposInvoker.initializeForAzureDevOps()"),
       ).once();
       verify(
-        logger.logDebug(
-          JSON.stringify(GitHubReposInvokerConstants.getPullResponse),
-        ),
+        logger.logDebugJson(GitHubReposInvokerConstants.getPullResponse),
       ).once();
     });
 
@@ -1182,7 +1170,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       verify(
         logger.logDebug("* GitHubReposInvoker.initializeForAzureDevOps()"),
       ).once();
-      verify(logger.logDebug("null")).once();
+      verify(logger.logDebugJson(null)).once();
     });
 
     it("should succeed when the description is set", async (): Promise<void> => {
@@ -1226,7 +1214,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       verify(
         logger.logDebug("* GitHubReposInvoker.initializeForAzureDevOps()"),
       ).once();
-      verify(logger.logDebug("null")).once();
+      verify(logger.logDebugJson(null)).once();
     });
   });
 
@@ -1275,7 +1263,7 @@ describe("gitHubReposInvoker.ts", (): void => {
         logger.logDebug("* GitHubReposInvoker.initializeForAzureDevOps()"),
       ).once();
       verify(logger.logDebug("* GitHubReposInvoker.getCommitId()")).once();
-      verify(logger.logDebug("null")).once();
+      verify(logger.logDebugJson(null)).once();
     });
 
     it("should throw when the commit list is empty", async (): Promise<void> => {
@@ -1389,7 +1377,7 @@ describe("gitHubReposInvoker.ts", (): void => {
         logger.logDebug("* GitHubReposInvoker.initializeForAzureDevOps()"),
       ).once();
       verify(logger.logDebug("* GitHubReposInvoker.getCommitId()")).once();
-      verify(logger.logDebug("null")).once();
+      verify(logger.logDebugJson(null)).once();
     });
 
     it("should throw when the link header does not match the expected format", async (): Promise<void> => {
@@ -1488,7 +1476,7 @@ describe("gitHubReposInvoker.ts", (): void => {
         logger.logDebug("* GitHubReposInvoker.initializeForAzureDevOps()"),
       ).once();
       verify(logger.logDebug("* GitHubReposInvoker.getCommitId()")).once();
-      verify(logger.logDebug("null")).twice();
+      verify(logger.logDebugJson(null)).twice();
     });
 
     it("should succeed when createReviewComment() returns undefined", async (): Promise<void> => {
@@ -1545,7 +1533,7 @@ describe("gitHubReposInvoker.ts", (): void => {
         logger.logDebug("* GitHubReposInvoker.initializeForAzureDevOps()"),
       ).once();
       verify(logger.logDebug("* GitHubReposInvoker.getCommitId()")).once();
-      verify(logger.logDebug("null")).once();
+      verify(logger.logDebugJson(null)).once();
     });
 
     {
@@ -1740,7 +1728,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       verify(
         logger.logDebug("* GitHubReposInvoker.initializeForAzureDevOps()"),
       ).once();
-      verify(logger.logDebug("null")).once();
+      verify(logger.logDebugJson(null)).once();
     });
   });
 
@@ -1804,7 +1792,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       verify(
         logger.logDebug("* GitHubReposInvoker.initializeForAzureDevOps()"),
       ).once();
-      verify(logger.logDebug("null")).once();
+      verify(logger.logDebugJson(null)).once();
     });
   });
 
@@ -1844,7 +1832,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       verify(
         logger.logDebug("* GitHubReposInvoker.initializeForAzureDevOps()"),
       ).once();
-      verify(logger.logDebug("null")).once();
+      verify(logger.logDebugJson(null)).once();
     });
   });
 });

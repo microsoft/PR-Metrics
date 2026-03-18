@@ -91,7 +91,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
             this._repo,
             this._pullRequestId,
           );
-        this._logger.logDebug(JSON.stringify(internalResult));
+        this._logger.logDebugJson(internalResult);
 
         return internalResult;
       },
@@ -117,7 +117,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
           this._repo,
           this._pullRequestId,
         );
-        this._logger.logDebug(JSON.stringify(pullRequestComments));
+        this._logger.logDebugJson(pullRequestComments);
       }),
       this.invokeApiCall(async (): Promise<void> => {
         fileComments = await this._octokitWrapper.getReviewComments(
@@ -125,7 +125,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
           this._repo,
           this._pullRequestId,
         );
-        this._logger.logDebug(JSON.stringify(fileComments));
+        this._logger.logDebugJson(fileComments);
       }),
     ]);
 
@@ -152,7 +152,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
         title,
         description,
       );
-      this._logger.logDebug(JSON.stringify(result));
+      this._logger.logDebugJson(result);
     });
   }
 
@@ -173,7 +173,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
             this._pullRequestId,
             content,
           );
-        this._logger.logDebug(JSON.stringify(result));
+        this._logger.logDebugJson(result);
       });
     } else {
       if (this._commitId === "") {
@@ -191,7 +191,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
               fileName,
               this._commitId,
             );
-          this._logger.logDebug(JSON.stringify(result));
+          this._logger.logDebugJson(result);
         } catch (error: unknown) {
           if (
             error instanceof RequestError &&
@@ -232,7 +232,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
           commentThreadId,
           content,
         );
-      this._logger.logDebug(JSON.stringify(result));
+      this._logger.logDebugJson(result);
     });
   }
 
@@ -248,7 +248,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
           this._repo,
           commentThreadId,
         );
-      this._logger.logDebug(JSON.stringify(result));
+      this._logger.logDebugJson(result);
     });
   }
 
@@ -411,7 +411,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
             this._pullRequestId,
             1,
           );
-        this._logger.logDebug(JSON.stringify(internalResult));
+        this._logger.logDebugJson(internalResult);
         return internalResult;
       },
     );
@@ -439,7 +439,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
               this._pullRequestId,
               match,
             );
-          this._logger.logDebug(JSON.stringify(internalResult));
+          this._logger.logDebugJson(internalResult);
           return internalResult;
         },
       );

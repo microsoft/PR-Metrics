@@ -143,7 +143,7 @@ export default class AzureReposInvoker extends BaseReposInvoker {
           this._project,
         ),
     );
-    this._logger.logDebug(JSON.stringify(result));
+    this._logger.logDebugJson(result);
 
     const title: string = Validator.validateString(
       result.title,
@@ -168,7 +168,7 @@ export default class AzureReposInvoker extends BaseReposInvoker {
           this._project,
         ),
     );
-    this._logger.logDebug(JSON.stringify(result));
+    this._logger.logDebugJson(result);
     return AzureReposInvoker.convertPullRequestComments(result);
   }
 
@@ -201,7 +201,7 @@ export default class AzureReposInvoker extends BaseReposInvoker {
           this._project,
         ),
     );
-    this._logger.logDebug(JSON.stringify(result));
+    this._logger.logDebugJson(result);
   }
 
   public async createComment(
@@ -250,7 +250,7 @@ export default class AzureReposInvoker extends BaseReposInvoker {
           this._project,
         ),
     );
-    this._logger.logDebug(JSON.stringify(result));
+    this._logger.logDebugJson(result);
   }
 
   public async updateComment(
@@ -281,7 +281,7 @@ export default class AzureReposInvoker extends BaseReposInvoker {
             this._project,
           ),
       );
-      this._logger.logDebug(JSON.stringify(commentResult));
+      this._logger.logDebugJson(commentResult);
     }
 
     if (status !== null) {
@@ -300,7 +300,7 @@ export default class AzureReposInvoker extends BaseReposInvoker {
               this._project,
             ),
         );
-      this._logger.logDebug(JSON.stringify(threadResult));
+      this._logger.logDebugJson(threadResult);
     }
   }
 
