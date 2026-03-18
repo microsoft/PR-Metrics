@@ -30,8 +30,8 @@ export default class CodeMetrics {
   private readonly _runnerInvoker: RunnerInvoker;
 
   private _isInitialized = false;
-  private readonly _filesNotRequiringReview: string[] = [];
-  private readonly _deletedFilesNotRequiringReview: string[] = [];
+  private readonly _filesNotRequiringReview: Set<string> = new Set<string>();
+  private readonly _deletedFilesNotRequiringReview: Set<string> = new Set<string>();
   private _size = "";
   private _sizeIndicator = "";
   private _metrics: CodeMetricsData = new CodeMetricsData(0, 0, 0);
@@ -81,7 +81,7 @@ export default class CodeMetrics {
    * Gets the collection of files not requiring review to which to add a comment.
    * @returns A promise containing the collection of files not requiring review.
    */
-  public async getFilesNotRequiringReview(): Promise<string[]> {
+  public async getFilesNotRequiringReview(): Promise<Set<string>> {
     this._logger.logDebug("* CodeMetrics.getFilesNotRequiringReview()");
 
     await this.initialize();
@@ -92,7 +92,7 @@ export default class CodeMetrics {
    * Gets the collection of deleted files not requiring review to which to add a comment.
    * @returns A promise containing the collection of deleted files not requiring review.
    */
-  public async getDeletedFilesNotRequiringReview(): Promise<string[]> {
+  public async getDeletedFilesNotRequiringReview(): Promise<Set<string>> {
     this._logger.logDebug("* CodeMetrics.getDeletedFilesNotRequiringReview()");
 
     await this.initialize();
@@ -336,12 +336,12 @@ export default class CodeMetrics {
           `Ignored File: ${entry.fileName} (${String(entry.linesAdded)} lines), comment to be added`,
         );
         ignoredCode += entry.linesAdded;
-        this._filesNotRequiringReview.push(entry.fileName);
+        this._filesNotRequiringReview.add(entry.fileName);
       } else {
         this._logger.logDebug(
           `Ignored File: ${entry.fileName} (deleted), comment to be added`,
         );
-        this._deletedFilesNotRequiringReview.push(entry.fileName);
+        this._deletedFilesNotRequiringReview.add(entry.fileName);
       }
     }
 

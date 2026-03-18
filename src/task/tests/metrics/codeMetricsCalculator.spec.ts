@@ -420,8 +420,8 @@ describe("codeMetricsCalculator.ts", (): void => {
     it("should succeed when no comment updates are necessary", async (): Promise<void> => {
       // Arrange
       const commentData: PullRequestCommentsData = new PullRequestCommentsData(
-        [],
-        [],
+        new Set<string>(),
+        new Set<string>(),
       );
       commentData.metricsCommentThreadId = 1;
       when(pullRequestComments.getCommentData()).thenResolve(commentData);
@@ -447,8 +447,8 @@ describe("codeMetricsCalculator.ts", (): void => {
     it("should perform the expected actions when the metrics comment is to be updated", async (): Promise<void> => {
       // Arrange
       const commentData: PullRequestCommentsData = new PullRequestCommentsData(
-        [],
-        [],
+        new Set<string>(),
+        new Set<string>(),
       );
       commentData.metricsCommentThreadId = 1;
       when(pullRequestComments.getCommentData()).thenResolve(commentData);
@@ -488,8 +488,8 @@ describe("codeMetricsCalculator.ts", (): void => {
     it("should perform the expected actions when the metrics comment is to be updated and there is no existing thread", async (): Promise<void> => {
       // Arrange
       const commentData: PullRequestCommentsData = new PullRequestCommentsData(
-        [],
-        [],
+        new Set<string>(),
+        new Set<string>(),
       );
       when(pullRequestComments.getCommentData()).thenResolve(commentData);
       when(pullRequestComments.getMetricsComment()).thenResolve("Description");
@@ -564,7 +564,7 @@ describe("codeMetricsCalculator.ts", (): void => {
           it(`should succeed when comments are to be added to files not requiring review '${JSON.stringify(deletedFiles)}'`, async (): Promise<void> => {
             // Arrange
             const commentData: PullRequestCommentsData =
-              new PullRequestCommentsData(deletedFiles, []);
+              new PullRequestCommentsData(new Set(deletedFiles), new Set<string>());
             commentData.metricsCommentThreadId = 1;
             when(pullRequestComments.getCommentData()).thenResolve(commentData);
             when(pullRequestComments.noReviewRequiredComment).thenReturn(
@@ -621,7 +621,7 @@ describe("codeMetricsCalculator.ts", (): void => {
           it(`should succeed when comments are to be added to deleted files not requiring review '${JSON.stringify(deletedFiles)}'`, async (): Promise<void> => {
             // Arrange
             const commentData: PullRequestCommentsData =
-              new PullRequestCommentsData([], deletedFiles);
+              new PullRequestCommentsData(new Set<string>(), new Set(deletedFiles));
             commentData.metricsCommentThreadId = 1;
             when(pullRequestComments.getCommentData()).thenResolve(commentData);
             when(pullRequestComments.noReviewRequiredComment).thenReturn(
@@ -673,8 +673,8 @@ describe("codeMetricsCalculator.ts", (): void => {
     it("should succeed when comments are to be deleted from files ", async (): Promise<void> => {
       // Arrange
       const commentData: PullRequestCommentsData = new PullRequestCommentsData(
-        [],
-        [],
+        new Set<string>(),
+        new Set<string>(),
       );
       commentData.commentThreadsRequiringDeletion.push(1, 2);
       when(pullRequestComments.getCommentData()).thenResolve(commentData);

@@ -7,7 +7,6 @@ import parseGitDiff, {
   AddedFile,
   AnyChunk,
   ChangedFile,
-  Chunk,
   GitDiff,
   RenamedFile,
 } from "parse-git-diff";
@@ -151,11 +150,16 @@ export default class OctokitGitDiffParser {
           case "RenamedFile": {
             // For a renamed file, add the new file path and the first changed line.
             const fileCasted: RenamedFile = file;
-            if (fileCasted.chunks[0]) {
-              result.set(
-                fileCasted.pathAfter,
-                (fileCasted.chunks[0] as Chunk).toFileRange.start,
+            const [renamedChunk]: AnyChunk[] = fileCasted.chunks;
+            if (renamedChunk?.type === "BinaryFilesChunk") {
+              this._logger.logDebug(
+                `Skipping '${file.type}' '${fileCasted.pathAfter}' while performing diff parsing.`,
               );
+              break;
+            }
+
+            if (renamedChunk) {
+              result.set(fileCasted.pathAfter, renamedChunk.toFileRange.start);
             }
 
             break;

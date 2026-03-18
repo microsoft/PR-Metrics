@@ -27,12 +27,12 @@ export default class PullRequestCommentsData {
   /**
    * The collection of files not requiring review to which to add a comment.
    */
-  public readonly filesNotRequiringReview: string[];
+  public readonly filesNotRequiringReview: Set<string>;
 
   /**
    * The collection of deleted files not requiring review to which to add a comment.
    */
-  public readonly deletedFilesNotRequiringReview: string[];
+  public readonly deletedFilesNotRequiringReview: Set<string>;
 
   /**
    * The collection of comment thread IDs requiring deletion now that the associated file requires review.
@@ -45,8 +45,8 @@ export default class PullRequestCommentsData {
    * @param deletedFilesNotRequiringReview The collection of deleted files not requiring review to which to add a comment.
    */
   public constructor(
-    filesNotRequiringReview: string[],
-    deletedFilesNotRequiringReview: string[],
+    filesNotRequiringReview: Set<string>,
+    deletedFilesNotRequiringReview: Set<string>,
   ) {
     this.filesNotRequiringReview = filesNotRequiringReview;
     this.deletedFilesNotRequiringReview = deletedFilesNotRequiringReview;

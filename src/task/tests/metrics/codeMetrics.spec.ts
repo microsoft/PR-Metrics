@@ -724,10 +724,10 @@ describe("codeMetrics.ts", (): void => {
           );
 
           // Assert
-          assert.deepEqual(await codeMetrics.getFilesNotRequiringReview(), []);
+          assert.deepEqual(await codeMetrics.getFilesNotRequiringReview(), new Set<string>());
           assert.deepEqual(
             await codeMetrics.getDeletedFilesNotRequiringReview(),
-            [],
+            new Set<string>(),
           );
           assert.equal(await codeMetrics.getSize(), sizeIndicator);
           assert.equal(
@@ -785,8 +785,8 @@ describe("codeMetrics.ts", (): void => {
 
   {
     interface TestCaseType {
-      deletedFilesNotRequiringReview: string[];
-      filesNotRequiringReview: string[];
+      deletedFilesNotRequiringReview: Set<string>;
+      filesNotRequiringReview: Set<string>;
       gitResponse: string;
       globChecks: number;
       metrics: CodeMetricsData;
@@ -796,8 +796,8 @@ describe("codeMetrics.ts", (): void => {
 
     const testCases: TestCaseType[] = [
       {
-        deletedFilesNotRequiringReview: [],
-        filesNotRequiringReview: [],
+        deletedFilesNotRequiringReview: new Set<string>(),
+        filesNotRequiringReview: new Set<string>(),
         gitResponse: "0\t0\tfile.ts",
         globChecks: 6,
         metrics: new CodeMetricsData(0, 0, 0),
@@ -805,8 +805,8 @@ describe("codeMetrics.ts", (): void => {
         testCoverageIndicator: true,
       },
       {
-        deletedFilesNotRequiringReview: [],
-        filesNotRequiringReview: [],
+        deletedFilesNotRequiringReview: new Set<string>(),
+        filesNotRequiringReview: new Set<string>(),
         gitResponse: "1\t0\tfile.ts",
         globChecks: 6,
         metrics: new CodeMetricsData(1, 0, 0),
@@ -814,8 +814,8 @@ describe("codeMetrics.ts", (): void => {
         testCoverageIndicator: false,
       },
       {
-        deletedFilesNotRequiringReview: [],
-        filesNotRequiringReview: [],
+        deletedFilesNotRequiringReview: new Set<string>(),
+        filesNotRequiringReview: new Set<string>(),
         gitResponse: "1\t0\tfile.ts\n1\t0\ttest.ts",
         globChecks: 9,
         metrics: new CodeMetricsData(1, 1, 0),
@@ -823,8 +823,8 @@ describe("codeMetrics.ts", (): void => {
         testCoverageIndicator: false,
       },
       {
-        deletedFilesNotRequiringReview: [],
-        filesNotRequiringReview: [],
+        deletedFilesNotRequiringReview: new Set<string>(),
+        filesNotRequiringReview: new Set<string>(),
         gitResponse: "1\t0\tfile.ts\n2\t0\ttest.ts",
         globChecks: 9,
         metrics: new CodeMetricsData(1, 2, 0),
@@ -832,8 +832,8 @@ describe("codeMetrics.ts", (): void => {
         testCoverageIndicator: true,
       },
       {
-        deletedFilesNotRequiringReview: [],
-        filesNotRequiringReview: [],
+        deletedFilesNotRequiringReview: new Set<string>(),
+        filesNotRequiringReview: new Set<string>(),
         gitResponse: "99\t0\tfile.ts",
         globChecks: 6,
         metrics: new CodeMetricsData(99, 0, 0),
@@ -841,8 +841,8 @@ describe("codeMetrics.ts", (): void => {
         testCoverageIndicator: false,
       },
       {
-        deletedFilesNotRequiringReview: [],
-        filesNotRequiringReview: [],
+        deletedFilesNotRequiringReview: new Set<string>(),
+        filesNotRequiringReview: new Set<string>(),
         gitResponse: "99\t0\tfile.ts\n197\t0\ttest.ts",
         globChecks: 9,
         metrics: new CodeMetricsData(99, 197, 0),
@@ -850,8 +850,8 @@ describe("codeMetrics.ts", (): void => {
         testCoverageIndicator: false,
       },
       {
-        deletedFilesNotRequiringReview: [],
-        filesNotRequiringReview: [],
+        deletedFilesNotRequiringReview: new Set<string>(),
+        filesNotRequiringReview: new Set<string>(),
         gitResponse: "99\t0\tfile.ts\n198\t0\ttest.ts",
         globChecks: 9,
         metrics: new CodeMetricsData(99, 198, 0),
@@ -859,8 +859,8 @@ describe("codeMetrics.ts", (): void => {
         testCoverageIndicator: true,
       },
       {
-        deletedFilesNotRequiringReview: [],
-        filesNotRequiringReview: [],
+        deletedFilesNotRequiringReview: new Set<string>(),
+        filesNotRequiringReview: new Set<string>(),
         gitResponse: "100\t0\tfile.ts",
         globChecks: 6,
         metrics: new CodeMetricsData(100, 0, 0),
@@ -868,8 +868,8 @@ describe("codeMetrics.ts", (): void => {
         testCoverageIndicator: false,
       },
       {
-        deletedFilesNotRequiringReview: [],
-        filesNotRequiringReview: [],
+        deletedFilesNotRequiringReview: new Set<string>(),
+        filesNotRequiringReview: new Set<string>(),
         gitResponse: "100\t0\tfile.ts\n199\t0\ttest.ts",
         globChecks: 9,
         metrics: new CodeMetricsData(100, 199, 0),
@@ -877,8 +877,8 @@ describe("codeMetrics.ts", (): void => {
         testCoverageIndicator: false,
       },
       {
-        deletedFilesNotRequiringReview: [],
-        filesNotRequiringReview: [],
+        deletedFilesNotRequiringReview: new Set<string>(),
+        filesNotRequiringReview: new Set<string>(),
         gitResponse: "100\t0\tfile.ts\n200\t0\ttest.ts",
         globChecks: 9,
         metrics: new CodeMetricsData(100, 200, 0),
@@ -886,8 +886,8 @@ describe("codeMetrics.ts", (): void => {
         testCoverageIndicator: true,
       },
       {
-        deletedFilesNotRequiringReview: [],
-        filesNotRequiringReview: [],
+        deletedFilesNotRequiringReview: new Set<string>(),
+        filesNotRequiringReview: new Set<string>(),
         gitResponse: "149\t0\tfile.ts",
         globChecks: 6,
         metrics: new CodeMetricsData(149, 0, 0),
@@ -895,8 +895,8 @@ describe("codeMetrics.ts", (): void => {
         testCoverageIndicator: false,
       },
       {
-        deletedFilesNotRequiringReview: [],
-        filesNotRequiringReview: [],
+        deletedFilesNotRequiringReview: new Set<string>(),
+        filesNotRequiringReview: new Set<string>(),
         gitResponse: "149\t0\tfile.ts\n297\t0\ttest.ts",
         globChecks: 9,
         metrics: new CodeMetricsData(149, 297, 0),
@@ -904,8 +904,8 @@ describe("codeMetrics.ts", (): void => {
         testCoverageIndicator: false,
       },
       {
-        deletedFilesNotRequiringReview: [],
-        filesNotRequiringReview: [],
+        deletedFilesNotRequiringReview: new Set<string>(),
+        filesNotRequiringReview: new Set<string>(),
         gitResponse: "149\t0\tfile.ts\n298\t0\ttest.ts",
         globChecks: 9,
         metrics: new CodeMetricsData(149, 298, 0),
@@ -913,8 +913,8 @@ describe("codeMetrics.ts", (): void => {
         testCoverageIndicator: true,
       },
       {
-        deletedFilesNotRequiringReview: [],
-        filesNotRequiringReview: [],
+        deletedFilesNotRequiringReview: new Set<string>(),
+        filesNotRequiringReview: new Set<string>(),
         gitResponse: "150\t0\tfile.ts",
         globChecks: 6,
         metrics: new CodeMetricsData(150, 0, 0),
@@ -922,8 +922,8 @@ describe("codeMetrics.ts", (): void => {
         testCoverageIndicator: false,
       },
       {
-        deletedFilesNotRequiringReview: [],
-        filesNotRequiringReview: [],
+        deletedFilesNotRequiringReview: new Set<string>(),
+        filesNotRequiringReview: new Set<string>(),
         gitResponse: "150\t0\tfile.ts\n299\t0\ttest.ts",
         globChecks: 9,
         metrics: new CodeMetricsData(150, 299, 0),
@@ -931,8 +931,8 @@ describe("codeMetrics.ts", (): void => {
         testCoverageIndicator: false,
       },
       {
-        deletedFilesNotRequiringReview: [],
-        filesNotRequiringReview: [],
+        deletedFilesNotRequiringReview: new Set<string>(),
+        filesNotRequiringReview: new Set<string>(),
         gitResponse: "150\t0\tfile.ts\n300\t0\ttest.ts",
         globChecks: 9,
         metrics: new CodeMetricsData(150, 300, 0),
@@ -940,8 +940,8 @@ describe("codeMetrics.ts", (): void => {
         testCoverageIndicator: true,
       },
       {
-        deletedFilesNotRequiringReview: [],
-        filesNotRequiringReview: [],
+        deletedFilesNotRequiringReview: new Set<string>(),
+        filesNotRequiringReview: new Set<string>(),
         gitResponse: "224\t0\tfile.ts",
         globChecks: 6,
         metrics: new CodeMetricsData(224, 0, 0),
@@ -949,8 +949,8 @@ describe("codeMetrics.ts", (): void => {
         testCoverageIndicator: false,
       },
       {
-        deletedFilesNotRequiringReview: [],
-        filesNotRequiringReview: [],
+        deletedFilesNotRequiringReview: new Set<string>(),
+        filesNotRequiringReview: new Set<string>(),
         gitResponse: "224\t0\tfile.ts\n447\t0\ttest.ts",
         globChecks: 9,
         metrics: new CodeMetricsData(224, 447, 0),
@@ -958,8 +958,8 @@ describe("codeMetrics.ts", (): void => {
         testCoverageIndicator: false,
       },
       {
-        deletedFilesNotRequiringReview: [],
-        filesNotRequiringReview: [],
+        deletedFilesNotRequiringReview: new Set<string>(),
+        filesNotRequiringReview: new Set<string>(),
         gitResponse: "224\t0\tfile.ts\n448\t0\ttest.ts",
         globChecks: 9,
         metrics: new CodeMetricsData(224, 448, 0),
@@ -967,8 +967,8 @@ describe("codeMetrics.ts", (): void => {
         testCoverageIndicator: true,
       },
       {
-        deletedFilesNotRequiringReview: [],
-        filesNotRequiringReview: [],
+        deletedFilesNotRequiringReview: new Set<string>(),
+        filesNotRequiringReview: new Set<string>(),
         gitResponse: "225\t0\tfile.ts",
         globChecks: 6,
         metrics: new CodeMetricsData(225, 0, 0),
@@ -976,8 +976,8 @@ describe("codeMetrics.ts", (): void => {
         testCoverageIndicator: false,
       },
       {
-        deletedFilesNotRequiringReview: [],
-        filesNotRequiringReview: [],
+        deletedFilesNotRequiringReview: new Set<string>(),
+        filesNotRequiringReview: new Set<string>(),
         gitResponse: "225\t0\tfile.ts\n449\t0\ttest.ts",
         globChecks: 9,
         metrics: new CodeMetricsData(225, 449, 0),
@@ -985,8 +985,8 @@ describe("codeMetrics.ts", (): void => {
         testCoverageIndicator: false,
       },
       {
-        deletedFilesNotRequiringReview: [],
-        filesNotRequiringReview: [],
+        deletedFilesNotRequiringReview: new Set<string>(),
+        filesNotRequiringReview: new Set<string>(),
         gitResponse: "225\t0\tfile.ts\n450\t0\ttest.ts",
         globChecks: 9,
         metrics: new CodeMetricsData(225, 450, 0),
@@ -994,8 +994,8 @@ describe("codeMetrics.ts", (): void => {
         testCoverageIndicator: true,
       },
       {
-        deletedFilesNotRequiringReview: [],
-        filesNotRequiringReview: [],
+        deletedFilesNotRequiringReview: new Set<string>(),
+        filesNotRequiringReview: new Set<string>(),
         gitResponse: "337\t0\tfile.ts",
         globChecks: 6,
         metrics: new CodeMetricsData(337, 0, 0),
@@ -1003,8 +1003,8 @@ describe("codeMetrics.ts", (): void => {
         testCoverageIndicator: false,
       },
       {
-        deletedFilesNotRequiringReview: [],
-        filesNotRequiringReview: [],
+        deletedFilesNotRequiringReview: new Set<string>(),
+        filesNotRequiringReview: new Set<string>(),
         gitResponse: "337\t0\tfile.ts\n673\t0\ttest.ts",
         globChecks: 9,
         metrics: new CodeMetricsData(337, 673, 0),
@@ -1012,8 +1012,8 @@ describe("codeMetrics.ts", (): void => {
         testCoverageIndicator: false,
       },
       {
-        deletedFilesNotRequiringReview: [],
-        filesNotRequiringReview: [],
+        deletedFilesNotRequiringReview: new Set<string>(),
+        filesNotRequiringReview: new Set<string>(),
         gitResponse: "337\t0\tfile.ts\n674\t0\ttest.ts",
         globChecks: 9,
         metrics: new CodeMetricsData(337, 674, 0),
@@ -1021,8 +1021,8 @@ describe("codeMetrics.ts", (): void => {
         testCoverageIndicator: true,
       },
       {
-        deletedFilesNotRequiringReview: [],
-        filesNotRequiringReview: [],
+        deletedFilesNotRequiringReview: new Set<string>(),
+        filesNotRequiringReview: new Set<string>(),
         gitResponse: "338\t0\tfile.ts",
         globChecks: 6,
         metrics: new CodeMetricsData(338, 0, 0),
@@ -1030,8 +1030,8 @@ describe("codeMetrics.ts", (): void => {
         testCoverageIndicator: false,
       },
       {
-        deletedFilesNotRequiringReview: [],
-        filesNotRequiringReview: [],
+        deletedFilesNotRequiringReview: new Set<string>(),
+        filesNotRequiringReview: new Set<string>(),
         gitResponse: "338\t0\tfile.ts\n675\t0\ttest.ts",
         globChecks: 9,
         metrics: new CodeMetricsData(338, 675, 0),
@@ -1039,8 +1039,8 @@ describe("codeMetrics.ts", (): void => {
         testCoverageIndicator: false,
       },
       {
-        deletedFilesNotRequiringReview: [],
-        filesNotRequiringReview: [],
+        deletedFilesNotRequiringReview: new Set<string>(),
+        filesNotRequiringReview: new Set<string>(),
         gitResponse: "338\t0\tfile.ts\n676\t0\ttest.ts",
         globChecks: 9,
         metrics: new CodeMetricsData(338, 676, 0),
@@ -1048,8 +1048,8 @@ describe("codeMetrics.ts", (): void => {
         testCoverageIndicator: true,
       },
       {
-        deletedFilesNotRequiringReview: [],
-        filesNotRequiringReview: [],
+        deletedFilesNotRequiringReview: new Set<string>(),
+        filesNotRequiringReview: new Set<string>(),
         gitResponse: "506\t0\tfile.ts",
         globChecks: 6,
         metrics: new CodeMetricsData(506, 0, 0),
@@ -1057,8 +1057,8 @@ describe("codeMetrics.ts", (): void => {
         testCoverageIndicator: false,
       },
       {
-        deletedFilesNotRequiringReview: [],
-        filesNotRequiringReview: [],
+        deletedFilesNotRequiringReview: new Set<string>(),
+        filesNotRequiringReview: new Set<string>(),
         gitResponse: "506\t0\tfile.ts\n1011\t0\ttest.ts",
         globChecks: 9,
         metrics: new CodeMetricsData(506, 1011, 0),
@@ -1066,8 +1066,8 @@ describe("codeMetrics.ts", (): void => {
         testCoverageIndicator: false,
       },
       {
-        deletedFilesNotRequiringReview: [],
-        filesNotRequiringReview: [],
+        deletedFilesNotRequiringReview: new Set<string>(),
+        filesNotRequiringReview: new Set<string>(),
         gitResponse: "506\t0\tfile.ts\n1012\t0\ttest.ts",
         globChecks: 9,
         metrics: new CodeMetricsData(506, 1012, 0),
@@ -1075,8 +1075,8 @@ describe("codeMetrics.ts", (): void => {
         testCoverageIndicator: true,
       },
       {
-        deletedFilesNotRequiringReview: [],
-        filesNotRequiringReview: [],
+        deletedFilesNotRequiringReview: new Set<string>(),
+        filesNotRequiringReview: new Set<string>(),
         gitResponse: "507\t0\tfile.ts",
         globChecks: 6,
         metrics: new CodeMetricsData(507, 0, 0),
@@ -1084,8 +1084,8 @@ describe("codeMetrics.ts", (): void => {
         testCoverageIndicator: false,
       },
       {
-        deletedFilesNotRequiringReview: [],
-        filesNotRequiringReview: [],
+        deletedFilesNotRequiringReview: new Set<string>(),
+        filesNotRequiringReview: new Set<string>(),
         gitResponse: "507\t0\tfile.ts\n1013\t0\ttest.ts",
         globChecks: 9,
         metrics: new CodeMetricsData(507, 1013, 0),
@@ -1093,8 +1093,8 @@ describe("codeMetrics.ts", (): void => {
         testCoverageIndicator: false,
       },
       {
-        deletedFilesNotRequiringReview: [],
-        filesNotRequiringReview: [],
+        deletedFilesNotRequiringReview: new Set<string>(),
+        filesNotRequiringReview: new Set<string>(),
         gitResponse: "507\t0\tfile.ts\n1014\t0\ttest.ts",
         globChecks: 9,
         metrics: new CodeMetricsData(507, 1014, 0),
@@ -1102,8 +1102,8 @@ describe("codeMetrics.ts", (): void => {
         testCoverageIndicator: true,
       },
       {
-        deletedFilesNotRequiringReview: [],
-        filesNotRequiringReview: [],
+        deletedFilesNotRequiringReview: new Set<string>(),
+        filesNotRequiringReview: new Set<string>(),
         gitResponse: "759\t0\tfile.ts",
         globChecks: 6,
         metrics: new CodeMetricsData(759, 0, 0),
@@ -1111,8 +1111,8 @@ describe("codeMetrics.ts", (): void => {
         testCoverageIndicator: false,
       },
       {
-        deletedFilesNotRequiringReview: [],
-        filesNotRequiringReview: [],
+        deletedFilesNotRequiringReview: new Set<string>(),
+        filesNotRequiringReview: new Set<string>(),
         gitResponse: "759\t0\tfile.ts\n1517\t0\ttest.ts",
         globChecks: 9,
         metrics: new CodeMetricsData(759, 1517, 0),
@@ -1120,8 +1120,8 @@ describe("codeMetrics.ts", (): void => {
         testCoverageIndicator: false,
       },
       {
-        deletedFilesNotRequiringReview: [],
-        filesNotRequiringReview: [],
+        deletedFilesNotRequiringReview: new Set<string>(),
+        filesNotRequiringReview: new Set<string>(),
         gitResponse: "759\t0\tfile.ts\n1518\t0\ttest.ts",
         globChecks: 9,
         metrics: new CodeMetricsData(759, 1518, 0),
@@ -1129,8 +1129,8 @@ describe("codeMetrics.ts", (): void => {
         testCoverageIndicator: true,
       },
       {
-        deletedFilesNotRequiringReview: [],
-        filesNotRequiringReview: [],
+        deletedFilesNotRequiringReview: new Set<string>(),
+        filesNotRequiringReview: new Set<string>(),
         gitResponse: "760\t0\tfile.ts",
         globChecks: 6,
         metrics: new CodeMetricsData(760, 0, 0),
@@ -1138,8 +1138,8 @@ describe("codeMetrics.ts", (): void => {
         testCoverageIndicator: false,
       },
       {
-        deletedFilesNotRequiringReview: [],
-        filesNotRequiringReview: [],
+        deletedFilesNotRequiringReview: new Set<string>(),
+        filesNotRequiringReview: new Set<string>(),
         gitResponse: "760\t0\tfile.ts\n1519\t0\ttest.ts",
         globChecks: 9,
         metrics: new CodeMetricsData(760, 1519, 0),
@@ -1147,8 +1147,8 @@ describe("codeMetrics.ts", (): void => {
         testCoverageIndicator: false,
       },
       {
-        deletedFilesNotRequiringReview: [],
-        filesNotRequiringReview: [],
+        deletedFilesNotRequiringReview: new Set<string>(),
+        filesNotRequiringReview: new Set<string>(),
         gitResponse: "760\t0\tfile.ts\n1520\t0\ttest.ts",
         globChecks: 9,
         metrics: new CodeMetricsData(760, 1520, 0),
@@ -1156,8 +1156,8 @@ describe("codeMetrics.ts", (): void => {
         testCoverageIndicator: true,
       },
       {
-        deletedFilesNotRequiringReview: [],
-        filesNotRequiringReview: [],
+        deletedFilesNotRequiringReview: new Set<string>(),
+        filesNotRequiringReview: new Set<string>(),
         gitResponse: "1\t0\tfile.cs",
         globChecks: 2,
         metrics: new CodeMetricsData(0, 0, 1),
@@ -1165,8 +1165,8 @@ describe("codeMetrics.ts", (): void => {
         testCoverageIndicator: true,
       },
       {
-        deletedFilesNotRequiringReview: [],
-        filesNotRequiringReview: [],
+        deletedFilesNotRequiringReview: new Set<string>(),
+        filesNotRequiringReview: new Set<string>(),
         gitResponse: "1\t0\ttest.cs",
         globChecks: 2,
         metrics: new CodeMetricsData(0, 0, 1),
@@ -1174,8 +1174,8 @@ describe("codeMetrics.ts", (): void => {
         testCoverageIndicator: true,
       },
       {
-        deletedFilesNotRequiringReview: [],
-        filesNotRequiringReview: [],
+        deletedFilesNotRequiringReview: new Set<string>(),
+        filesNotRequiringReview: new Set<string>(),
         gitResponse: "1\t0\tfile.tst",
         globChecks: 2,
         metrics: new CodeMetricsData(0, 0, 1),
@@ -1183,8 +1183,8 @@ describe("codeMetrics.ts", (): void => {
         testCoverageIndicator: true,
       },
       {
-        deletedFilesNotRequiringReview: [],
-        filesNotRequiringReview: [],
+        deletedFilesNotRequiringReview: new Set<string>(),
+        filesNotRequiringReview: new Set<string>(),
         gitResponse: "1\t0\tfile.tts",
         globChecks: 2,
         metrics: new CodeMetricsData(0, 0, 1),
@@ -1192,8 +1192,8 @@ describe("codeMetrics.ts", (): void => {
         testCoverageIndicator: true,
       },
       {
-        deletedFilesNotRequiringReview: [],
-        filesNotRequiringReview: [],
+        deletedFilesNotRequiringReview: new Set<string>(),
+        filesNotRequiringReview: new Set<string>(),
         gitResponse: "1\t0\tfilets",
         globChecks: 2,
         metrics: new CodeMetricsData(0, 0, 1),
@@ -1201,8 +1201,8 @@ describe("codeMetrics.ts", (): void => {
         testCoverageIndicator: true,
       },
       {
-        deletedFilesNotRequiringReview: [],
-        filesNotRequiringReview: ["ignored.ts"],
+        deletedFilesNotRequiringReview: new Set<string>(),
+        filesNotRequiringReview: new Set(["ignored.ts"]),
         gitResponse: "1\t0\tignored.ts",
         globChecks: 2,
         metrics: new CodeMetricsData(0, 0, 1),
@@ -1210,8 +1210,8 @@ describe("codeMetrics.ts", (): void => {
         testCoverageIndicator: true,
       },
       {
-        deletedFilesNotRequiringReview: [],
-        filesNotRequiringReview: ["ignored.cs"],
+        deletedFilesNotRequiringReview: new Set<string>(),
+        filesNotRequiringReview: new Set(["ignored.cs"]),
         gitResponse: "1\t0\tignored.cs",
         globChecks: 2,
         metrics: new CodeMetricsData(0, 0, 1),
@@ -1219,8 +1219,8 @@ describe("codeMetrics.ts", (): void => {
         testCoverageIndicator: true,
       },
       {
-        deletedFilesNotRequiringReview: [],
-        filesNotRequiringReview: ["folder/ignored.ts"],
+        deletedFilesNotRequiringReview: new Set<string>(),
+        filesNotRequiringReview: new Set(["folder/ignored.ts"]),
         gitResponse: "1\t0\tfolder/ignored.ts",
         globChecks: 2,
         metrics: new CodeMetricsData(0, 0, 1),
@@ -1228,8 +1228,8 @@ describe("codeMetrics.ts", (): void => {
         testCoverageIndicator: true,
       },
       {
-        deletedFilesNotRequiringReview: [],
-        filesNotRequiringReview: ["folder/ignored.cs"],
+        deletedFilesNotRequiringReview: new Set<string>(),
+        filesNotRequiringReview: new Set(["folder/ignored.cs"]),
         gitResponse: "1\t0\tfolder/ignored.cs",
         globChecks: 2,
         metrics: new CodeMetricsData(0, 0, 1),
@@ -1237,8 +1237,8 @@ describe("codeMetrics.ts", (): void => {
         testCoverageIndicator: true,
       },
       {
-        deletedFilesNotRequiringReview: [],
-        filesNotRequiringReview: ["ignored.ts"],
+        deletedFilesNotRequiringReview: new Set<string>(),
+        filesNotRequiringReview: new Set(["ignored.ts"]),
         gitResponse: "0\t0\tignored.ts",
         globChecks: 2,
         metrics: new CodeMetricsData(0, 0, 0),
@@ -1246,8 +1246,8 @@ describe("codeMetrics.ts", (): void => {
         testCoverageIndicator: true,
       },
       {
-        deletedFilesNotRequiringReview: [],
-        filesNotRequiringReview: ["ignored.cs"],
+        deletedFilesNotRequiringReview: new Set<string>(),
+        filesNotRequiringReview: new Set(["ignored.cs"]),
         gitResponse: "0\t0\tignored.cs",
         globChecks: 2,
         metrics: new CodeMetricsData(0, 0, 0),
@@ -1255,8 +1255,8 @@ describe("codeMetrics.ts", (): void => {
         testCoverageIndicator: true,
       },
       {
-        deletedFilesNotRequiringReview: [],
-        filesNotRequiringReview: ["folder/ignored.ts"],
+        deletedFilesNotRequiringReview: new Set<string>(),
+        filesNotRequiringReview: new Set(["folder/ignored.ts"]),
         gitResponse: "0\t0\tfolder/ignored.ts",
         globChecks: 2,
         metrics: new CodeMetricsData(0, 0, 0),
@@ -1264,8 +1264,8 @@ describe("codeMetrics.ts", (): void => {
         testCoverageIndicator: true,
       },
       {
-        deletedFilesNotRequiringReview: [],
-        filesNotRequiringReview: ["folder/ignored.cs"],
+        deletedFilesNotRequiringReview: new Set<string>(),
+        filesNotRequiringReview: new Set(["folder/ignored.cs"]),
         gitResponse: "0\t0\tfolder/ignored.cs",
         globChecks: 2,
         metrics: new CodeMetricsData(0, 0, 0),
@@ -1273,8 +1273,8 @@ describe("codeMetrics.ts", (): void => {
         testCoverageIndicator: true,
       },
       {
-        deletedFilesNotRequiringReview: [],
-        filesNotRequiringReview: ["ignored.ts", "folder/ignored.ts"],
+        deletedFilesNotRequiringReview: new Set<string>(),
+        filesNotRequiringReview: new Set(["ignored.ts", "folder/ignored.ts"]),
         gitResponse: "1\t0\tignored.ts\n0\t0\tfolder/ignored.ts",
         globChecks: 4,
         metrics: new CodeMetricsData(0, 0, 1),
@@ -1282,8 +1282,8 @@ describe("codeMetrics.ts", (): void => {
         testCoverageIndicator: true,
       },
       {
-        deletedFilesNotRequiringReview: ["ignored.ts"],
-        filesNotRequiringReview: [],
+        deletedFilesNotRequiringReview: new Set(["ignored.ts"]),
+        filesNotRequiringReview: new Set<string>(),
         gitResponse: "0\t1\tignored.ts",
         globChecks: 2,
         metrics: new CodeMetricsData(0, 0, 0),
@@ -1291,8 +1291,8 @@ describe("codeMetrics.ts", (): void => {
         testCoverageIndicator: true,
       },
       {
-        deletedFilesNotRequiringReview: ["ignored.cs"],
-        filesNotRequiringReview: [],
+        deletedFilesNotRequiringReview: new Set(["ignored.cs"]),
+        filesNotRequiringReview: new Set<string>(),
         gitResponse: "0\t1\tignored.cs",
         globChecks: 2,
         metrics: new CodeMetricsData(0, 0, 0),
@@ -1300,8 +1300,8 @@ describe("codeMetrics.ts", (): void => {
         testCoverageIndicator: true,
       },
       {
-        deletedFilesNotRequiringReview: ["folder/ignored.ts"],
-        filesNotRequiringReview: [],
+        deletedFilesNotRequiringReview: new Set(["folder/ignored.ts"]),
+        filesNotRequiringReview: new Set<string>(),
         gitResponse: "0\t1\tfolder/ignored.ts",
         globChecks: 2,
         metrics: new CodeMetricsData(0, 0, 0),
@@ -1309,8 +1309,8 @@ describe("codeMetrics.ts", (): void => {
         testCoverageIndicator: true,
       },
       {
-        deletedFilesNotRequiringReview: ["folder/ignored.cs"],
-        filesNotRequiringReview: [],
+        deletedFilesNotRequiringReview: new Set(["folder/ignored.cs"]),
+        filesNotRequiringReview: new Set<string>(),
         gitResponse: "0\t1\tfolder/ignored.cs",
         globChecks: 2,
         metrics: new CodeMetricsData(0, 0, 0),
@@ -1318,8 +1318,8 @@ describe("codeMetrics.ts", (): void => {
         testCoverageIndicator: true,
       },
       {
-        deletedFilesNotRequiringReview: ["folder/ignored.ts"],
-        filesNotRequiringReview: ["ignored.ts"],
+        deletedFilesNotRequiringReview: new Set(["folder/ignored.ts"]),
+        filesNotRequiringReview: new Set(["ignored.ts"]),
         gitResponse: "1\t0\tignored.ts\n0\t1\tfolder/ignored.ts",
         globChecks: 4,
         metrics: new CodeMetricsData(0, 0, 1),
@@ -1473,13 +1473,13 @@ describe("codeMetrics.ts", (): void => {
         );
 
         // Assert
-        assert.deepEqual(await codeMetrics.getFilesNotRequiringReview(), [
+        assert.deepEqual(await codeMetrics.getFilesNotRequiringReview(), new Set([
           "ignored1.ts",
           "ignored2.ts",
-        ]);
+        ]));
         assert.deepEqual(
           await codeMetrics.getDeletedFilesNotRequiringReview(),
-          [],
+          new Set<string>(),
         );
         assert.equal(await codeMetrics.getSize(), "XS");
         assert.equal(await codeMetrics.getSizeIndicator(), "XS⚠️");
@@ -1543,10 +1543,10 @@ describe("codeMetrics.ts", (): void => {
     );
 
     // Assert
-    assert.deepEqual(await codeMetrics.getFilesNotRequiringReview(), [
+    assert.deepEqual(await codeMetrics.getFilesNotRequiringReview(), new Set([
       "file.ts",
-    ]);
-    assert.deepEqual(await codeMetrics.getDeletedFilesNotRequiringReview(), []);
+    ]));
+    assert.deepEqual(await codeMetrics.getDeletedFilesNotRequiringReview(), new Set<string>());
     assert.equal(await codeMetrics.getSize(), "XS");
     assert.equal(await codeMetrics.getSizeIndicator(), "XS⚠️");
     assert.deepEqual(
@@ -1603,11 +1603,11 @@ describe("codeMetrics.ts", (): void => {
     );
 
     // Assert
-    assert.deepEqual(await codeMetrics.getFilesNotRequiringReview(), [
+    assert.deepEqual(await codeMetrics.getFilesNotRequiringReview(), new Set([
       "ignored1.ts",
       "ignored3.ts",
-    ]);
-    assert.deepEqual(await codeMetrics.getDeletedFilesNotRequiringReview(), []);
+    ]));
+    assert.deepEqual(await codeMetrics.getDeletedFilesNotRequiringReview(), new Set<string>());
     assert.equal(await codeMetrics.getSize(), "XS");
     assert.equal(await codeMetrics.getSizeIndicator(), "XS⚠️");
     assert.deepEqual(
@@ -1655,8 +1655,8 @@ describe("codeMetrics.ts", (): void => {
     );
 
     // Assert
-    assert.deepEqual(await codeMetrics.getFilesNotRequiringReview(), []);
-    assert.deepEqual(await codeMetrics.getDeletedFilesNotRequiringReview(), []);
+    assert.deepEqual(await codeMetrics.getFilesNotRequiringReview(), new Set<string>());
+    assert.deepEqual(await codeMetrics.getDeletedFilesNotRequiringReview(), new Set<string>());
     assert.equal(await codeMetrics.getSize(), "XS");
     assert.equal(await codeMetrics.getSizeIndicator(), "XS✔");
     assert.deepEqual(
@@ -1702,8 +1702,8 @@ describe("codeMetrics.ts", (): void => {
     );
 
     // Assert
-    assert.deepEqual(await codeMetrics.getFilesNotRequiringReview(), []);
-    assert.deepEqual(await codeMetrics.getDeletedFilesNotRequiringReview(), []);
+    assert.deepEqual(await codeMetrics.getFilesNotRequiringReview(), new Set<string>());
+    assert.deepEqual(await codeMetrics.getDeletedFilesNotRequiringReview(), new Set<string>());
     assert.equal(await codeMetrics.getSize(), "XS");
     assert.equal(await codeMetrics.getSizeIndicator(), "XS");
     assert.deepEqual(
@@ -1751,7 +1751,7 @@ describe("codeMetrics.ts", (): void => {
           );
 
           // Act
-          const func: () => Promise<string[]> = async () =>
+          const func: () => Promise<Set<string>> = async () =>
             codeMetrics.getFilesNotRequiringReview();
 
           // Assert
@@ -1812,7 +1812,7 @@ describe("codeMetrics.ts", (): void => {
           );
 
           // Act
-          const func: () => Promise<string[]> = async () =>
+          const func: () => Promise<Set<string>> = async () =>
             codeMetrics.getFilesNotRequiringReview();
 
           // Assert
@@ -1842,7 +1842,7 @@ describe("codeMetrics.ts", (): void => {
       );
 
       // Act
-      const func: () => Promise<string[]> = async () =>
+      const func: () => Promise<Set<string>> = async () =>
         codeMetrics.getFilesNotRequiringReview();
 
       // Assert
@@ -1868,7 +1868,7 @@ describe("codeMetrics.ts", (): void => {
       );
 
       // Act
-      const func: () => Promise<string[]> = async () =>
+      const func: () => Promise<Set<string>> = async () =>
         codeMetrics.getFilesNotRequiringReview();
 
       // Assert
@@ -1896,7 +1896,7 @@ describe("codeMetrics.ts", (): void => {
       );
 
       // Act
-      const func: () => Promise<string[]> = async () =>
+      const func: () => Promise<Set<string>> = async () =>
         codeMetrics.getDeletedFilesNotRequiringReview();
 
       // Assert
@@ -1921,7 +1921,7 @@ describe("codeMetrics.ts", (): void => {
       );
 
       // Act
-      const func: () => Promise<string[]> = async () =>
+      const func: () => Promise<Set<string>> = async () =>
         codeMetrics.getDeletedFilesNotRequiringReview();
 
       // Assert
@@ -1947,7 +1947,7 @@ describe("codeMetrics.ts", (): void => {
       );
 
       // Act
-      const func: () => Promise<string[]> = async () =>
+      const func: () => Promise<Set<string>> = async () =>
         codeMetrics.getDeletedFilesNotRequiringReview();
 
       // Assert
@@ -1973,7 +1973,7 @@ describe("codeMetrics.ts", (): void => {
       );
 
       // Act
-      const func: () => Promise<string[]> = async () =>
+      const func: () => Promise<Set<string>> = async () =>
         codeMetrics.getDeletedFilesNotRequiringReview();
 
       // Assert

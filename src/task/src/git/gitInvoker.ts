@@ -107,43 +107,11 @@ export default class GitInvoker {
       return "";
     }
 
-    if (variable === repoProviderGitHub || variable === repoProviderGitHubEnterprise) {
-      const result: string | undefined =
-        process.env.SYSTEM_PULLREQUEST_PULLREQUESTNUMBER;
-      if (typeof result === "undefined") {
-        this._logger.logWarning(
-          "'SYSTEM_PULLREQUEST_PULLREQUESTNUMBER' is undefined.",
-        );
-        return "";
-      }
-
-      if (!/^\d+$/u.test(result)) {
-        this._logger.logWarning(
-          `'SYSTEM_PULLREQUEST_PULLREQUESTNUMBER' is not numeric '${result}'.`,
-        );
-        return "";
-      }
-
-      return result;
-    }
-
-    const result: string | undefined =
-      process.env.SYSTEM_PULLREQUEST_PULLREQUESTID;
-    if (typeof result === "undefined") {
-      this._logger.logWarning(
-        "'SYSTEM_PULLREQUEST_PULLREQUESTID' is undefined.",
-      );
-      return "";
-    }
-
-    if (!/^\d+$/u.test(result)) {
-      this._logger.logWarning(
-        `'SYSTEM_PULLREQUEST_PULLREQUESTID' is not numeric '${result}'.`,
-      );
-      return "";
-    }
-
-    return result;
+    const envVarName: string =
+      variable === repoProviderGitHub || variable === repoProviderGitHubEnterprise
+        ? "SYSTEM_PULLREQUEST_PULLREQUESTNUMBER"
+        : "SYSTEM_PULLREQUEST_PULLREQUESTID";
+    return this.getNumericEnvVar(envVarName);
   }
 
   private get targetBranch(): string {
@@ -242,6 +210,21 @@ export default class GitInvoker {
 
     this._pullRequestIdInternal = this.pullRequestIdInternal;
     this._isInitialized = true;
+  }
+
+  private getNumericEnvVar(name: string): string {
+    const value: string | undefined = process.env[name];
+    if (typeof value === "undefined") {
+      this._logger.logWarning(`'${name}' is undefined.`);
+      return "";
+    }
+
+    if (!/^\d+$/u.test(value)) {
+      this._logger.logWarning(`'${name}' is not numeric '${value}'.`);
+      return "";
+    }
+
+    return value;
   }
 
   private async invokeGit(parameters: string): Promise<string> {

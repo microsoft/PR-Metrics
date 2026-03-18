@@ -58,8 +58,8 @@ describe("pullRequestComments.ts", (): void => {
     when(codeMetrics.getMetrics()).thenResolve(
       new CodeMetricsData(1000, 1000, 1000),
     );
-    when(codeMetrics.getFilesNotRequiringReview()).thenResolve([]);
-    when(codeMetrics.getDeletedFilesNotRequiringReview()).thenResolve([]);
+    when(codeMetrics.getFilesNotRequiringReview()).thenResolve(new Set<string>());
+    when(codeMetrics.getDeletedFilesNotRequiringReview()).thenResolve(new Set<string>());
 
     inputs = mock(Inputs);
     when(inputs.baseSize).thenReturn(200);
@@ -183,8 +183,8 @@ describe("pullRequestComments.ts", (): void => {
       assert.equal(result.metricsCommentThreadId, null);
       assert.equal(result.metricsCommentThreadStatus, null);
       assert.equal(result.metricsCommentContent, null);
-      assert.deepEqual(result.filesNotRequiringReview, []);
-      assert.deepEqual(result.deletedFilesNotRequiringReview, []);
+      assert.deepEqual(result.filesNotRequiringReview, new Set<string>());
+      assert.deepEqual(result.deletedFilesNotRequiringReview, new Set<string>());
       assert.deepEqual(result.commentThreadsRequiringDeletion, []);
       verify(logger.logDebug("* PullRequestComments.getCommentData()")).once();
     });
@@ -224,8 +224,8 @@ describe("pullRequestComments.ts", (): void => {
             CommentThreadStatus.Unknown,
           );
           assert.equal(result.metricsCommentContent, "# PR Metrics\n");
-          assert.deepEqual(result.filesNotRequiringReview, []);
-          assert.deepEqual(result.deletedFilesNotRequiringReview, []);
+          assert.deepEqual(result.filesNotRequiringReview, new Set<string>());
+          assert.deepEqual(result.deletedFilesNotRequiringReview, new Set<string>());
           assert.deepEqual(result.commentThreadsRequiringDeletion, []);
           verify(
             logger.logDebug("* PullRequestComments.getCommentData()"),
@@ -289,11 +289,11 @@ describe("pullRequestComments.ts", (): void => {
             const comments: CommentData = new CommentData();
             comments.fileComments.push(...fileComments);
             when(reposInvoker.getComments()).thenResolve(comments);
-            when(codeMetrics.getFilesNotRequiringReview()).thenResolve([
+            when(codeMetrics.getFilesNotRequiringReview()).thenResolve(new Set([
               "folder/file1.ts",
               "file2.ts",
               "file3.ts",
-            ]);
+            ]));
             const pullRequestComments: PullRequestComments =
               new PullRequestComments(
                 instance(codeMetrics),
@@ -313,9 +313,9 @@ describe("pullRequestComments.ts", (): void => {
             assert.equal(result.metricsCommentContent, null);
             assert.deepEqual(
               result.filesNotRequiringReview,
-              filesNotRequiringReview,
+              new Set(filesNotRequiringReview),
             );
-            assert.deepEqual(result.deletedFilesNotRequiringReview, []);
+            assert.deepEqual(result.deletedFilesNotRequiringReview, new Set<string>());
             assert.deepEqual(result.commentThreadsRequiringDeletion, []);
             verify(
               logger.logDebug("* PullRequestComments.getCommentData()"),
@@ -385,11 +385,11 @@ describe("pullRequestComments.ts", (): void => {
             const comments: CommentData = new CommentData();
             comments.fileComments.push(...fileComments);
             when(reposInvoker.getComments()).thenResolve(comments);
-            when(codeMetrics.getDeletedFilesNotRequiringReview()).thenResolve([
+            when(codeMetrics.getDeletedFilesNotRequiringReview()).thenResolve(new Set([
               "folder/file1.ts",
               "file2.ts",
               "file3.ts",
-            ]);
+            ]));
             const pullRequestComments: PullRequestComments =
               new PullRequestComments(
                 instance(codeMetrics),
@@ -407,10 +407,10 @@ describe("pullRequestComments.ts", (): void => {
             assert.equal(result.metricsCommentThreadId, null);
             assert.equal(result.metricsCommentThreadStatus, null);
             assert.equal(result.metricsCommentContent, null);
-            assert.deepEqual(result.filesNotRequiringReview, []);
+            assert.deepEqual(result.filesNotRequiringReview, new Set<string>());
             assert.deepEqual(
               result.deletedFilesNotRequiringReview,
-              deletedFilesNotRequiringReview,
+              new Set(deletedFilesNotRequiringReview),
             );
             assert.deepEqual(result.commentThreadsRequiringDeletion, []);
             verify(
@@ -431,11 +431,11 @@ describe("pullRequestComments.ts", (): void => {
       when(reposInvoker.getComments()).thenResolve(
         complexGitPullRequestComments,
       );
-      when(codeMetrics.getFilesNotRequiringReview()).thenResolve([
+      when(codeMetrics.getFilesNotRequiringReview()).thenResolve(new Set([
         "folder/file1.ts",
         "file2.ts",
         "file5.ts",
-      ]);
+      ]));
       const pullRequestComments: PullRequestComments = new PullRequestComments(
         instance(codeMetrics),
         instance(inputs),
@@ -455,8 +455,8 @@ describe("pullRequestComments.ts", (): void => {
         CommentThreadStatus.Active,
       );
       assert.equal(result.metricsCommentContent, "# PR Metrics\n");
-      assert.deepEqual(result.filesNotRequiringReview, ["folder/file1.ts"]);
-      assert.deepEqual(result.deletedFilesNotRequiringReview, []);
+      assert.deepEqual(result.filesNotRequiringReview, new Set(["folder/file1.ts"]));
+      assert.deepEqual(result.deletedFilesNotRequiringReview, new Set<string>());
       assert.deepEqual(result.commentThreadsRequiringDeletion, []);
       verify(logger.logDebug("* PullRequestComments.getCommentData()")).once();
       verify(
@@ -474,11 +474,11 @@ describe("pullRequestComments.ts", (): void => {
       when(reposInvoker.getComments()).thenResolve(
         complexGitPullRequestComments,
       );
-      when(codeMetrics.getDeletedFilesNotRequiringReview()).thenResolve([
+      when(codeMetrics.getDeletedFilesNotRequiringReview()).thenResolve(new Set([
         "folder/file1.ts",
         "file2.ts",
         "file5.ts",
-      ]);
+      ]));
       const pullRequestComments: PullRequestComments = new PullRequestComments(
         instance(codeMetrics),
         instance(inputs),
@@ -498,10 +498,10 @@ describe("pullRequestComments.ts", (): void => {
         CommentThreadStatus.Active,
       );
       assert.equal(result.metricsCommentContent, "# PR Metrics\n");
-      assert.deepEqual(result.filesNotRequiringReview, []);
-      assert.deepEqual(result.deletedFilesNotRequiringReview, [
+      assert.deepEqual(result.filesNotRequiringReview, new Set<string>());
+      assert.deepEqual(result.deletedFilesNotRequiringReview, new Set([
         "folder/file1.ts",
-      ]);
+      ]));
       assert.deepEqual(result.commentThreadsRequiringDeletion, []);
       verify(logger.logDebug("* PullRequestComments.getCommentData()")).once();
       verify(
@@ -519,14 +519,14 @@ describe("pullRequestComments.ts", (): void => {
       when(reposInvoker.getComments()).thenResolve(
         complexGitPullRequestComments,
       );
-      when(codeMetrics.getFilesNotRequiringReview()).thenResolve([
+      when(codeMetrics.getFilesNotRequiringReview()).thenResolve(new Set([
         "folder/file1.ts",
         "file2.ts",
-      ]);
-      when(codeMetrics.getDeletedFilesNotRequiringReview()).thenResolve([
+      ]));
+      when(codeMetrics.getDeletedFilesNotRequiringReview()).thenResolve(new Set([
         "file3.ts",
         "file5.ts",
-      ]);
+      ]));
       const pullRequestComments: PullRequestComments = new PullRequestComments(
         instance(codeMetrics),
         instance(inputs),
@@ -546,8 +546,8 @@ describe("pullRequestComments.ts", (): void => {
         CommentThreadStatus.Active,
       );
       assert.equal(result.metricsCommentContent, "# PR Metrics\n");
-      assert.deepEqual(result.filesNotRequiringReview, ["folder/file1.ts"]);
-      assert.deepEqual(result.deletedFilesNotRequiringReview, ["file3.ts"]);
+      assert.deepEqual(result.filesNotRequiringReview, new Set(["folder/file1.ts"]));
+      assert.deepEqual(result.deletedFilesNotRequiringReview, new Set(["file3.ts"]));
       assert.deepEqual(result.commentThreadsRequiringDeletion, []);
       verify(logger.logDebug("* PullRequestComments.getCommentData()")).once();
       verify(
@@ -565,13 +565,13 @@ describe("pullRequestComments.ts", (): void => {
       when(reposInvoker.getComments()).thenResolve(
         complexGitPullRequestComments,
       );
-      when(codeMetrics.getFilesNotRequiringReview()).thenResolve([
+      when(codeMetrics.getFilesNotRequiringReview()).thenResolve(new Set([
         "folder/file1.ts",
         "file2.ts",
-      ]);
-      when(codeMetrics.getDeletedFilesNotRequiringReview()).thenResolve([
+      ]));
+      when(codeMetrics.getDeletedFilesNotRequiringReview()).thenResolve(new Set([
         "file3.ts",
-      ]);
+      ]));
       const pullRequestComments: PullRequestComments = new PullRequestComments(
         instance(codeMetrics),
         instance(inputs),
@@ -591,8 +591,8 @@ describe("pullRequestComments.ts", (): void => {
         CommentThreadStatus.Active,
       );
       assert.equal(result.metricsCommentContent, "# PR Metrics\n");
-      assert.deepEqual(result.filesNotRequiringReview, ["folder/file1.ts"]);
-      assert.deepEqual(result.deletedFilesNotRequiringReview, ["file3.ts"]);
+      assert.deepEqual(result.filesNotRequiringReview, new Set(["folder/file1.ts"]));
+      assert.deepEqual(result.deletedFilesNotRequiringReview, new Set(["file3.ts"]));
       assert.deepEqual(result.commentThreadsRequiringDeletion, [40]);
       verify(logger.logDebug("* PullRequestComments.getCommentData()")).once();
       verify(
@@ -618,7 +618,7 @@ describe("pullRequestComments.ts", (): void => {
       comments.pullRequestComments.push(pullRequestComment);
       comments.fileComments.push(fileComment);
       when(reposInvoker.getComments()).thenResolve(comments);
-      when(codeMetrics.getFilesNotRequiringReview()).thenResolve(["file.ts"]);
+      when(codeMetrics.getFilesNotRequiringReview()).thenResolve(new Set(["file.ts"]));
       const pullRequestComments: PullRequestComments = new PullRequestComments(
         instance(codeMetrics),
         instance(inputs),
@@ -635,7 +635,7 @@ describe("pullRequestComments.ts", (): void => {
       assert.equal(result.metricsCommentThreadId, null);
       assert.equal(result.metricsCommentThreadStatus, null);
       assert.equal(result.metricsCommentContent, null);
-      assert.deepEqual(result.filesNotRequiringReview, ["file.ts"]);
+      assert.deepEqual(result.filesNotRequiringReview, new Set(["file.ts"]));
       assert.deepEqual(result.commentThreadsRequiringDeletion, []);
       verify(logger.logDebug("* PullRequestComments.getCommentData()")).once();
       verify(

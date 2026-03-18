@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import * as path from "path";
+import * as path from "node:path";
 import * as taskLib from "azure-pipelines-task-lib/task.js";
 import type {
   IExecOptions,

@@ -12,22 +12,22 @@ describe("pullRequestCommentsData.ts", (): void => {
     it("should set the correct data", (): void => {
       // Act
       const result: PullRequestCommentsData = new PullRequestCommentsData(
-        ["file1.ts", "file2.ts"],
-        ["file3.ts", "file4.ts"],
+        new Set(["file1.ts", "file2.ts"]),
+        new Set(["file3.ts", "file4.ts"]),
       );
 
       // Assert
       assert.equal(result.metricsCommentThreadId, null);
       assert.equal(result.metricsCommentContent, null);
       assert.equal(result.metricsCommentThreadStatus, null);
-      assert.deepEqual(result.filesNotRequiringReview, [
+      assert.deepEqual(result.filesNotRequiringReview, new Set([
         "file1.ts",
         "file2.ts",
-      ]);
-      assert.deepEqual(result.deletedFilesNotRequiringReview, [
+      ]));
+      assert.deepEqual(result.deletedFilesNotRequiringReview, new Set([
         "file3.ts",
         "file4.ts",
-      ]);
+      ]));
       assert.deepEqual(result.commentThreadsRequiringDeletion, []);
     });
   });
@@ -36,8 +36,8 @@ describe("pullRequestCommentsData.ts", (): void => {
     it("should set the correct data", (): void => {
       // Arrange
       const result: PullRequestCommentsData = new PullRequestCommentsData(
-        ["file1.ts", "file2.ts"],
-        ["file3.ts", "file4.ts"],
+        new Set(["file1.ts", "file2.ts"]),
+        new Set(["file3.ts", "file4.ts"]),
       );
 
       // Act
@@ -47,14 +47,14 @@ describe("pullRequestCommentsData.ts", (): void => {
       assert.equal(result.metricsCommentThreadId, 1);
       assert.equal(result.metricsCommentContent, null);
       assert.equal(result.metricsCommentThreadStatus, null);
-      assert.deepEqual(result.filesNotRequiringReview, [
+      assert.deepEqual(result.filesNotRequiringReview, new Set([
         "file1.ts",
         "file2.ts",
-      ]);
-      assert.deepEqual(result.deletedFilesNotRequiringReview, [
+      ]));
+      assert.deepEqual(result.deletedFilesNotRequiringReview, new Set([
         "file3.ts",
         "file4.ts",
-      ]);
+      ]));
       assert.deepEqual(result.commentThreadsRequiringDeletion, []);
     });
   });
@@ -63,8 +63,8 @@ describe("pullRequestCommentsData.ts", (): void => {
     it("should set the correct data", (): void => {
       // Arrange
       const result: PullRequestCommentsData = new PullRequestCommentsData(
-        ["file1.ts", "file2.ts"],
-        ["file3.ts", "file4.ts"],
+        new Set(["file1.ts", "file2.ts"]),
+        new Set(["file3.ts", "file4.ts"]),
       );
 
       // Act
@@ -74,14 +74,14 @@ describe("pullRequestCommentsData.ts", (): void => {
       assert.equal(result.metricsCommentThreadId, null);
       assert.equal(result.metricsCommentContent, "Content");
       assert.equal(result.metricsCommentThreadStatus, null);
-      assert.deepEqual(result.filesNotRequiringReview, [
+      assert.deepEqual(result.filesNotRequiringReview, new Set([
         "file1.ts",
         "file2.ts",
-      ]);
-      assert.deepEqual(result.deletedFilesNotRequiringReview, [
+      ]));
+      assert.deepEqual(result.deletedFilesNotRequiringReview, new Set([
         "file3.ts",
         "file4.ts",
-      ]);
+      ]));
       assert.deepEqual(result.commentThreadsRequiringDeletion, []);
     });
   });
@@ -90,8 +90,8 @@ describe("pullRequestCommentsData.ts", (): void => {
     it("should set the correct data", (): void => {
       // Arrange
       const result: PullRequestCommentsData = new PullRequestCommentsData(
-        ["file1.ts", "file2.ts"],
-        ["file3.ts", "file4.ts"],
+        new Set(["file1.ts", "file2.ts"]),
+        new Set(["file3.ts", "file4.ts"]),
       );
 
       // Act
@@ -104,14 +104,14 @@ describe("pullRequestCommentsData.ts", (): void => {
         result.metricsCommentThreadStatus,
         CommentThreadStatus.Active,
       );
-      assert.deepEqual(result.filesNotRequiringReview, [
+      assert.deepEqual(result.filesNotRequiringReview, new Set([
         "file1.ts",
         "file2.ts",
-      ]);
-      assert.deepEqual(result.deletedFilesNotRequiringReview, [
+      ]));
+      assert.deepEqual(result.deletedFilesNotRequiringReview, new Set([
         "file3.ts",
         "file4.ts",
-      ]);
+      ]));
       assert.deepEqual(result.commentThreadsRequiringDeletion, []);
     });
   });
@@ -120,26 +120,26 @@ describe("pullRequestCommentsData.ts", (): void => {
     it("should set the correct data", (): void => {
       // Arrange
       const result: PullRequestCommentsData = new PullRequestCommentsData(
-        ["file1.ts", "file2.ts"],
-        ["file3.ts", "file4.ts"],
+        new Set(["file1.ts", "file2.ts"]),
+        new Set(["file3.ts", "file4.ts"]),
       );
 
       // Act
-      result.filesNotRequiringReview.push("file5.ts");
+      result.filesNotRequiringReview.add("file5.ts");
 
       // Assert
       assert.equal(result.metricsCommentThreadId, null);
       assert.equal(result.metricsCommentContent, null);
       assert.equal(result.metricsCommentThreadStatus, null);
-      assert.deepEqual(result.filesNotRequiringReview, [
+      assert.deepEqual(result.filesNotRequiringReview, new Set([
         "file1.ts",
         "file2.ts",
         "file5.ts",
-      ]);
-      assert.deepEqual(result.deletedFilesNotRequiringReview, [
+      ]));
+      assert.deepEqual(result.deletedFilesNotRequiringReview, new Set([
         "file3.ts",
         "file4.ts",
-      ]);
+      ]));
       assert.deepEqual(result.commentThreadsRequiringDeletion, []);
     });
   });
@@ -148,26 +148,26 @@ describe("pullRequestCommentsData.ts", (): void => {
     it("should set the correct data", (): void => {
       // Arrange
       const result: PullRequestCommentsData = new PullRequestCommentsData(
-        ["file1.ts", "file2.ts"],
-        ["file3.ts", "file4.ts"],
+        new Set(["file1.ts", "file2.ts"]),
+        new Set(["file3.ts", "file4.ts"]),
       );
 
       // Act
-      result.deletedFilesNotRequiringReview.push("file5.ts");
+      result.deletedFilesNotRequiringReview.add("file5.ts");
 
       // Assert
       assert.equal(result.metricsCommentThreadId, null);
       assert.equal(result.metricsCommentContent, null);
       assert.equal(result.metricsCommentThreadStatus, null);
-      assert.deepEqual(result.filesNotRequiringReview, [
+      assert.deepEqual(result.filesNotRequiringReview, new Set([
         "file1.ts",
         "file2.ts",
-      ]);
-      assert.deepEqual(result.deletedFilesNotRequiringReview, [
+      ]));
+      assert.deepEqual(result.deletedFilesNotRequiringReview, new Set([
         "file3.ts",
         "file4.ts",
         "file5.ts",
-      ]);
+      ]));
       assert.deepEqual(result.commentThreadsRequiringDeletion, []);
     });
   });
@@ -176,8 +176,8 @@ describe("pullRequestCommentsData.ts", (): void => {
     it("should set the correct data", (): void => {
       // Arrange
       const result: PullRequestCommentsData = new PullRequestCommentsData(
-        ["file1.ts", "file2.ts"],
-        ["file3.ts", "file4.ts"],
+        new Set(["file1.ts", "file2.ts"]),
+        new Set(["file3.ts", "file4.ts"]),
       );
 
       // Act
@@ -187,14 +187,14 @@ describe("pullRequestCommentsData.ts", (): void => {
       assert.equal(result.metricsCommentThreadId, null);
       assert.equal(result.metricsCommentContent, null);
       assert.equal(result.metricsCommentThreadStatus, null);
-      assert.deepEqual(result.filesNotRequiringReview, [
+      assert.deepEqual(result.filesNotRequiringReview, new Set([
         "file1.ts",
         "file2.ts",
-      ]);
-      assert.deepEqual(result.deletedFilesNotRequiringReview, [
+      ]));
+      assert.deepEqual(result.deletedFilesNotRequiringReview, new Set([
         "file3.ts",
         "file4.ts",
-      ]);
+      ]));
       assert.deepEqual(result.commentThreadsRequiringDeletion, [1, 2]);
     });
   });

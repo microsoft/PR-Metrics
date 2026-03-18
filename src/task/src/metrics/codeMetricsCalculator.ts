@@ -162,12 +162,14 @@ export default class CodeMetricsCalculator {
     await Promise.all(promises);
 
     /* eslint-disable no-await-in-loop -- Comment creation can cause problems when called in parallel on GitHub. Therefore, there must be a wait after each call to these APIs before continuing. */
+    const noReviewComment: string =
+      this._pullRequestComments.noReviewRequiredComment;
     for (const fileName of commentData.filesNotRequiringReview) {
-      await this.updateNoReviewRequiredComment(fileName, false);
+      await this.updateNoReviewRequiredComment(noReviewComment, fileName, false);
     }
 
     for (const fileName of commentData.deletedFilesNotRequiringReview) {
-      await this.updateNoReviewRequiredComment(fileName, true);
+      await this.updateNoReviewRequiredComment(noReviewComment, fileName, true);
     }
     /* eslint-enable no-await-in-loop */
   }
@@ -177,9 +179,10 @@ export default class CodeMetricsCalculator {
   ): Promise<void> {
     this._logger.logDebug("* CodeMetricsCalculator.updateMetricsComment()");
 
-    const content: string = await this._pullRequestComments.getMetricsComment();
-    const status: CommentThreadStatus =
-      await this._pullRequestComments.getMetricsCommentStatus();
+    const [content, status]: [string, CommentThreadStatus] = await Promise.all([
+      this._pullRequestComments.getMetricsComment(),
+      this._pullRequestComments.getMetricsCommentStatus(),
+    ]);
     if (commentData.metricsCommentThreadId === null) {
       await this._reposInvoker.createComment(content, null, status);
     } else {
@@ -192,6 +195,7 @@ export default class CodeMetricsCalculator {
   }
 
   private async updateNoReviewRequiredComment(
+    noReviewComment: string,
     fileName: string,
     isFileDeleted: boolean,
   ): Promise<void> {
@@ -200,7 +204,7 @@ export default class CodeMetricsCalculator {
     );
 
     await this._reposInvoker.createComment(
-      this._pullRequestComments.noReviewRequiredComment,
+      noReviewComment,
       fileName,
       CommentThreadStatus.Closed,
       isFileDeleted,

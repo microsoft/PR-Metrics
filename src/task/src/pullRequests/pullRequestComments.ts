@@ -27,6 +27,8 @@ export default class PullRequestComments {
   private readonly _reposInvoker: ReposInvoker;
   private readonly _runnerInvoker: RunnerInvoker;
 
+  private _commentTitle: string | null = null;
+
   /**
    * Initializes a new instance of the `PullRequestComments` class.
    * @param codeMetrics The code metrics calculation logic.
@@ -61,6 +63,13 @@ export default class PullRequestComments {
     );
   }
 
+  private get commentTitle(): string {
+    this._commentTitle ??= this._runnerInvoker.loc(
+      "pullRequests.pullRequestComments.commentTitle",
+    );
+    return this._commentTitle;
+  }
+
   /**
    * Gets the data used for constructing the comment within the pull request.
    * @returns A promise containing the data used for constructing the comment within the pull request.
@@ -68,9 +77,9 @@ export default class PullRequestComments {
   public async getCommentData(): Promise<PullRequestCommentsData> {
     this._logger.logDebug("* PullRequestComments.getCommentData()");
 
-    const filesNotRequiringReview: string[] =
+    const filesNotRequiringReview: Set<string> =
       await this._codeMetrics.getFilesNotRequiringReview();
-    const deletedFilesNotRequiringReview: string[] =
+    const deletedFilesNotRequiringReview: Set<string> =
       await this._codeMetrics.getDeletedFilesNotRequiringReview();
     let result: PullRequestCommentsData = new PullRequestCommentsData(
       filesNotRequiringReview,
@@ -102,7 +111,7 @@ export default class PullRequestComments {
 
     const metrics: CodeMetricsData = await this._codeMetrics.getMetrics();
 
-    let result = `${this._runnerInvoker.loc("pullRequests.pullRequestComments.commentTitle")}\n`;
+    let result = `${this.commentTitle}\n`;
     result += await this.addCommentSizeStatus();
     result += await this.addCommentTestStatus();
 
@@ -177,7 +186,7 @@ export default class PullRequestComments {
 
     if (
       !comment.content.startsWith(
-        `${this._runnerInvoker.loc("pullRequests.pullRequestComments.commentTitle")}\n`,
+        `${this.commentTitle}\n`,
       )
     ) {
       return result;
@@ -202,18 +211,13 @@ export default class PullRequestComments {
       return result;
     }
 
-    const fileIndex: number = result.filesNotRequiringReview.indexOf(
-      comment.fileName,
-    );
-    if (fileIndex >= 0) {
-      result.filesNotRequiringReview.splice(fileIndex, 1);
+    if (result.filesNotRequiringReview.has(comment.fileName)) {
+      result.filesNotRequiringReview.delete(comment.fileName);
       return result;
     }
 
-    const deletedFileIndex: number =
-      result.deletedFilesNotRequiringReview.indexOf(comment.fileName);
-    if (deletedFileIndex >= 0) {
-      result.deletedFilesNotRequiringReview.splice(deletedFileIndex, 1);
+    if (result.deletedFilesNotRequiringReview.has(comment.fileName)) {
+      result.deletedFilesNotRequiringReview.delete(comment.fileName);
       return result;
     }
 
