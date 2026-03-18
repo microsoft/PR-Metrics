@@ -67,10 +67,10 @@ extends:
               - checkout: self
                 displayName: Checkout
 
-              - task: NodeTool@0
+              - task: UseNode@1
                 displayName: Install Node.js
                 inputs:
-                  versionSpec: 20.20.0
+                  version: 20.20.0
 
               - task: Npm@1
                 displayName: npm – Install Dependencies
