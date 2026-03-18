@@ -200,19 +200,17 @@ export default class PullRequestComments {
       return result;
     }
 
-    const notFound = -1;
-
     const fileIndex: number = result.filesNotRequiringReview.indexOf(
       comment.fileName,
     );
-    if (fileIndex !== notFound) {
+    if (fileIndex >= 0) {
       result.filesNotRequiringReview.splice(fileIndex, 1);
       return result;
     }
 
     const deletedFileIndex: number =
       result.deletedFilesNotRequiringReview.indexOf(comment.fileName);
-    if (deletedFileIndex !== notFound) {
+    if (deletedFileIndex >= 0) {
       result.deletedFilesNotRequiringReview.splice(deletedFileIndex, 1);
       return result;
     }
