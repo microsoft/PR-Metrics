@@ -9,7 +9,7 @@ import { singleton } from "tsyringe";
  * A wrapper around the Fetch API, to facilitate testability.
  */
 @singleton()
-export default class AxiosWrapper {
+export default class HttpClientWrapper {
   /**
    * Gets the contents of a URL.
    * @param url The URL whose contents should be retrieved.

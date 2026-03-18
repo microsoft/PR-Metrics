@@ -5,8 +5,8 @@
 
 import "reflect-metadata";
 import { instance, mock, verify, when } from "ts-mockito";
-import AxiosWrapper from "../../src/wrappers/axiosWrapper.js";
 import GetPullResponse from "../../src/wrappers/octokitInterfaces/getPullResponse.js";
+import HttpClientWrapper from "../../src/wrappers/httpClient.js";
 import Logger from "../../src/utilities/logger.js";
 import OctokitGitDiffParser from "../../src/git/octokitGitDiffParser.js";
 import OctokitWrapper from "../../src/wrappers/octokitWrapper.js";
@@ -15,12 +15,12 @@ import assert from "node:assert/strict";
 /* eslint-disable @typescript-eslint/naming-convention -- Required for alignment with Octokit. */
 
 describe("octokitGitDiffParser.ts", (): void => {
-  let axiosWrapper: AxiosWrapper;
+  let httpClient: HttpClientWrapper;
   let logger: Logger;
   let octokitWrapper: OctokitWrapper;
 
   beforeEach((): void => {
-    axiosWrapper = mock(AxiosWrapper);
+    httpClient = mock(HttpClientWrapper);
     logger = mock(Logger);
     octokitWrapper = mock(OctokitWrapper);
   });
@@ -104,11 +104,11 @@ describe("octokitGitDiffParser.ts", (): void => {
                 } as GetPullResponse),
             );
             when(
-              axiosWrapper.getUrl("https://github.com/microsoft/PR-Metrics"),
+              httpClient.getUrl("https://github.com/microsoft/PR-Metrics"),
             ).thenCall(async (): Promise<string> => Promise.resolve(diff));
             const octokitGitDiffParser: OctokitGitDiffParser =
               new OctokitGitDiffParser(
-                instance(axiosWrapper),
+                instance(httpClient),
                 instance(logger),
               );
 
@@ -148,7 +148,7 @@ describe("octokitGitDiffParser.ts", (): void => {
           } as GetPullResponse),
       );
       when(
-        axiosWrapper.getUrl("https://github.com/microsoft/PR-Metrics"),
+        httpClient.getUrl("https://github.com/microsoft/PR-Metrics"),
       ).thenCall(
         async (): Promise<string> =>
           Promise.resolve(
@@ -165,7 +165,7 @@ describe("octokitGitDiffParser.ts", (): void => {
           ),
       );
       const octokitGitDiffParser: OctokitGitDiffParser =
-        new OctokitGitDiffParser(instance(axiosWrapper), instance(logger));
+        new OctokitGitDiffParser(instance(httpClient), instance(logger));
 
       // Act
       const result: number | null =
@@ -198,7 +198,7 @@ describe("octokitGitDiffParser.ts", (): void => {
           } as GetPullResponse),
       );
       when(
-        axiosWrapper.getUrl("https://github.com/microsoft/PR-Metrics"),
+        httpClient.getUrl("https://github.com/microsoft/PR-Metrics"),
       ).thenCall(
         async (): Promise<string> =>
           Promise.resolve(
@@ -209,7 +209,7 @@ describe("octokitGitDiffParser.ts", (): void => {
           ),
       );
       const octokitGitDiffParser: OctokitGitDiffParser =
-        new OctokitGitDiffParser(instance(axiosWrapper), instance(logger));
+        new OctokitGitDiffParser(instance(httpClient), instance(logger));
 
       // Act
       const result: number | null =
@@ -242,7 +242,7 @@ describe("octokitGitDiffParser.ts", (): void => {
           } as GetPullResponse),
       );
       when(
-        axiosWrapper.getUrl("https://github.com/microsoft/PR-Metrics"),
+        httpClient.getUrl("https://github.com/microsoft/PR-Metrics"),
       ).thenCall(
         async (): Promise<string> =>
           Promise.resolve(
@@ -257,7 +257,7 @@ describe("octokitGitDiffParser.ts", (): void => {
           ),
       );
       const octokitGitDiffParser: OctokitGitDiffParser =
-        new OctokitGitDiffParser(instance(axiosWrapper), instance(logger));
+        new OctokitGitDiffParser(instance(httpClient), instance(logger));
 
       // Act
       const result: number | null =
@@ -290,7 +290,7 @@ describe("octokitGitDiffParser.ts", (): void => {
           } as GetPullResponse),
       );
       when(
-        axiosWrapper.getUrl("https://github.com/microsoft/PR-Metrics"),
+        httpClient.getUrl("https://github.com/microsoft/PR-Metrics"),
       ).thenCall(
         async (): Promise<string> =>
           Promise.resolve(
@@ -304,7 +304,7 @@ describe("octokitGitDiffParser.ts", (): void => {
           ),
       );
       const octokitGitDiffParser: OctokitGitDiffParser =
-        new OctokitGitDiffParser(instance(axiosWrapper), instance(logger));
+        new OctokitGitDiffParser(instance(httpClient), instance(logger));
 
       // Act
       const result: number | null =
@@ -342,7 +342,7 @@ describe("octokitGitDiffParser.ts", (): void => {
           } as GetPullResponse),
       );
       when(
-        axiosWrapper.getUrl("https://github.com/microsoft/PR-Metrics"),
+        httpClient.getUrl("https://github.com/microsoft/PR-Metrics"),
       ).thenCall(
         async (): Promise<string> =>
           Promise.resolve(
@@ -353,7 +353,7 @@ describe("octokitGitDiffParser.ts", (): void => {
           ),
       );
       const octokitGitDiffParser: OctokitGitDiffParser =
-        new OctokitGitDiffParser(instance(axiosWrapper), instance(logger));
+        new OctokitGitDiffParser(instance(httpClient), instance(logger));
 
       // Act
       const result: number | null =
@@ -391,7 +391,7 @@ describe("octokitGitDiffParser.ts", (): void => {
           } as GetPullResponse),
       );
       when(
-        axiosWrapper.getUrl("https://github.com/microsoft/PR-Metrics"),
+        httpClient.getUrl("https://github.com/microsoft/PR-Metrics"),
       ).thenCall(
         async (): Promise<string> =>
           Promise.resolve(
@@ -401,7 +401,7 @@ describe("octokitGitDiffParser.ts", (): void => {
           ),
       );
       const octokitGitDiffParser: OctokitGitDiffParser =
-        new OctokitGitDiffParser(instance(axiosWrapper), instance(logger));
+        new OctokitGitDiffParser(instance(httpClient), instance(logger));
 
       // Act
       const result: number | null =
@@ -439,7 +439,7 @@ describe("octokitGitDiffParser.ts", (): void => {
           } as GetPullResponse),
       );
       when(
-        axiosWrapper.getUrl("https://github.com/microsoft/PR-Metrics"),
+        httpClient.getUrl("https://github.com/microsoft/PR-Metrics"),
       ).thenCall(
         async (): Promise<string> =>
           Promise.resolve(
@@ -453,7 +453,7 @@ describe("octokitGitDiffParser.ts", (): void => {
           ),
       );
       const octokitGitDiffParser: OctokitGitDiffParser =
-        new OctokitGitDiffParser(instance(axiosWrapper), instance(logger));
+        new OctokitGitDiffParser(instance(httpClient), instance(logger));
 
       // Act
       const result1: number | null =
@@ -495,7 +495,7 @@ describe("octokitGitDiffParser.ts", (): void => {
           } as GetPullResponse),
       );
       when(
-        axiosWrapper.getUrl("https://github.com/microsoft/PR-Metrics"),
+        httpClient.getUrl("https://github.com/microsoft/PR-Metrics"),
       ).thenCall(
         async (): Promise<string> =>
           Promise.resolve(
@@ -509,7 +509,7 @@ describe("octokitGitDiffParser.ts", (): void => {
           ),
       );
       const octokitGitDiffParser: OctokitGitDiffParser =
-        new OctokitGitDiffParser(instance(axiosWrapper), instance(logger));
+        new OctokitGitDiffParser(instance(httpClient), instance(logger));
 
       // Act
       const result: number | null =
