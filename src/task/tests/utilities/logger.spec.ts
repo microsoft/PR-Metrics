@@ -60,6 +60,23 @@ describe("logger.ts", (): void => {
     });
   });
 
+  describe("logDebugJson()", (): void => {
+    it("should log the JSON-serialized value", (): void => {
+      // Arrange
+      const logger: Logger = new Logger(
+        instance(consoleWrapper),
+        instance(runnerInvoker),
+      );
+      const value = { key: "value" };
+
+      // Act
+      logger.logDebugJson(value);
+
+      // Assert
+      verify(runnerInvoker.logDebug('{"key":"value"}')).once();
+    });
+  });
+
   describe("logInfo()", (): void => {
     {
       const testCases: string[] = [

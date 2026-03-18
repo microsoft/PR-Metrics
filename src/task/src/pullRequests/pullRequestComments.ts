@@ -85,8 +85,9 @@ export default class PullRequestComments {
     }
 
     // If the current comment thread is not applied to a specified file, check if it is the metrics comment thread.
+    const noReviewComment: string = this.noReviewRequiredComment;
     for (const comment of comments.fileComments) {
-      result = this.getFilesRequiringCommentUpdates(result, comment);
+      result = this.getFilesRequiringCommentUpdates(result, comment, noReviewComment);
     }
 
     return result;
@@ -191,12 +192,13 @@ export default class PullRequestComments {
   private getFilesRequiringCommentUpdates(
     result: PullRequestCommentsData,
     comment: FileCommentData,
+    noReviewComment: string,
   ): PullRequestCommentsData {
     this._logger.logDebug(
       "* PullRequestComments.getFilesRequiringCommentUpdates()",
     );
 
-    if (comment.content !== this.noReviewRequiredComment) {
+    if (comment.content !== noReviewComment) {
       return result;
     }
 

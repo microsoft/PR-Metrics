@@ -276,7 +276,7 @@ export default class Inputs {
     const convertedValue: boolean =
       alwaysCloseComment?.toLowerCase() === "true";
     if (convertedValue) {
-      this._alwaysCloseComment = convertedValue;
+      this._alwaysCloseComment = true;
       this._logger.logInfo(
         this._runnerInvoker.loc("metrics.inputs.settingAlwaysCloseComment"),
       );

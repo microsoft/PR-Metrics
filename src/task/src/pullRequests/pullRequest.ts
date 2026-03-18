@@ -4,6 +4,11 @@
  */
 
 import * as Validator from "../utilities/validator.js";
+import {
+  repoProviderGitHub,
+  repoProviderGitHubEnterprise,
+  repoProviderTfsGit,
+} from "../utilities/constants.js";
 import CodeMetrics from "../metrics/codeMetrics.js";
 import Logger from "../utilities/logger.js";
 import RunnerInvoker from "../runners/runnerInvoker.js";
@@ -64,9 +69,9 @@ export default class PullRequest {
       "PullRequest.isSupportedProvider",
     );
     if (
-      variable === "TfsGit" ||
-      variable === "GitHub" ||
-      variable === "GitHubEnterprise"
+      variable === repoProviderTfsGit ||
+      variable === repoProviderGitHub ||
+      variable === repoProviderGitHubEnterprise
     ) {
       return true;
     }

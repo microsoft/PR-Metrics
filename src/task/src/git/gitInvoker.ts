@@ -4,10 +4,14 @@
  */
 
 import * as Validator from "../utilities/validator.js";
+import {
+  decimalRadix,
+  repoProviderGitHub,
+  repoProviderGitHubEnterprise,
+} from "../utilities/constants.js";
 import ExecOutput from "../runners/execOutput.js";
 import Logger from "../utilities/logger.js";
 import RunnerInvoker from "../runners/runnerInvoker.js";
-import { decimalRadix } from "../utilities/constants.js";
 import { singleton } from "tsyringe";
 
 /**
@@ -103,7 +107,7 @@ export default class GitInvoker {
       return "";
     }
 
-    if (variable === "GitHub" || variable === "GitHubEnterprise") {
+    if (variable === repoProviderGitHub || variable === repoProviderGitHubEnterprise) {
       const result: string | undefined =
         process.env.SYSTEM_PULLREQUEST_PULLREQUESTNUMBER;
       if (typeof result === "undefined") {

@@ -50,6 +50,14 @@ export default class Logger {
   }
 
   /**
+   * Logs a debug message by serializing a value to JSON.
+   * @param value The value to serialize and log.
+   */
+  public logDebugJson(value: unknown): void {
+    this.logDebug(JSON.stringify(value));
+  }
+
+  /**
    * Logs an informational message.
    * @param message The message to log.
    */

@@ -37,3 +37,18 @@ export const httpNotFound = 404;
  * HTTP 422 Unprocessable Entity status code.
  */
 export const httpUnprocessableEntity = 422;
+
+/**
+ * Azure DevOps `BUILD_REPOSITORY_PROVIDER` value for Azure Repos (TFS Git).
+ */
+export const repoProviderTfsGit = "TfsGit";
+
+/**
+ * Azure DevOps `BUILD_REPOSITORY_PROVIDER` value for GitHub.
+ */
+export const repoProviderGitHub = "GitHub";
+
+/**
+ * Azure DevOps `BUILD_REPOSITORY_PROVIDER` value for GitHub Enterprise.
+ */
+export const repoProviderGitHubEnterprise = "GitHubEnterprise";

@@ -4,6 +4,11 @@
  */
 
 import * as Validator from "../utilities/validator.js";
+import {
+  repoProviderGitHub,
+  repoProviderGitHubEnterprise,
+  repoProviderTfsGit,
+} from "../utilities/constants.js";
 import AzureReposInvoker from "./azureReposInvoker.js";
 import CommentData from "./interfaces/commentData.js";
 import type { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces.js";
@@ -120,11 +125,11 @@ export default class ReposInvoker implements ReposInvokerInterface {
       "ReposInvoker.getReposInvoker()",
     );
     switch (repoProvider) {
-      case "TfsGit":
+      case repoProviderTfsGit:
         this._reposInvoker = this._azureReposInvoker;
         break;
-      case "GitHub":
-      case "GitHubEnterprise":
+      case repoProviderGitHub:
+      case repoProviderGitHubEnterprise:
         this._reposInvoker = this._gitHubReposInvoker;
         break;
       default:
