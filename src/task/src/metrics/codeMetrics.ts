@@ -327,10 +327,7 @@ export default class CodeMetrics {
     }
 
     for (const entry of nonMatchesToComment) {
-      if (
-        entry.linesAdded > 0 ||
-        (entry.linesAdded === 0 && entry.linesDeleted === 0)
-      ) {
+      if (entry.linesAdded > 0 || entry.linesDeleted === 0) {
         this._logger.logDebug(
           `Ignored File: ${entry.fileName} (${String(entry.linesAdded)} lines), comment to be added`,
         );
