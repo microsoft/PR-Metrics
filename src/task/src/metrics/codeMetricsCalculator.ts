@@ -149,17 +149,15 @@ export default class CodeMetricsCalculator {
   public async updateComments(): Promise<void> {
     this._logger.logDebug("* CodeMetricsCalculator.updateComments()");
 
-    const promises: Promise<void>[] = [];
-
     const commentData: PullRequestCommentsData =
       await this._pullRequestComments.getCommentData();
-    promises.push(this.updateMetricsComment(commentData));
-
-    for (const commentThreadId of commentData.commentThreadsRequiringDeletion) {
-      promises.push(this._reposInvoker.deleteCommentThread(commentThreadId));
-    }
-
-    await Promise.all(promises);
+    await Promise.all([
+      this.updateMetricsComment(commentData),
+      ...commentData.commentThreadsRequiringDeletion.map(
+        async (commentThreadId) =>
+          this._reposInvoker.deleteCommentThread(commentThreadId),
+      ),
+    ]);
 
     /* eslint-disable no-await-in-loop -- Comment creation can cause problems when called in parallel on GitHub. Therefore, there must be a wait after each call to these APIs before continuing. */
     const noReviewComment: string =
