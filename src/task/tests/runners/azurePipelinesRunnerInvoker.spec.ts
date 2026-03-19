@@ -6,7 +6,7 @@
 import "reflect-metadata";
 import * as path from "node:path";
 import * as taskLib from "azure-pipelines-task-lib/task.js";
-import {
+import type {
   IExecOptions,
   IExecSyncResult,
 } from "azure-pipelines-task-lib/toolrunner.js";
@@ -14,7 +14,7 @@ import { deepEqual, instance, mock, verify, when } from "ts-mockito";
 import AzurePipelinesRunnerInvoker from "../../src/runners/azurePipelinesRunnerInvoker.js";
 import AzurePipelinesRunnerWrapper from "../../src/wrappers/azurePipelinesRunnerWrapper.js";
 import type { EndpointAuthorization } from "../../src/runners/endpointAuthorization.js";
-import { ExecOutput } from "@actions/exec";
+import type { ExecOutput } from "@actions/exec";
 import { any } from "../testUtilities/mockito.js";
 import assert from "node:assert/strict";
 
