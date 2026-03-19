@@ -10,7 +10,6 @@ import CodeMetricsData from "../../src/metrics/codeMetricsData.js";
 import CommentData from "../../src/repos/interfaces/commentData.js";
 import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces.js";
 import FileCommentData from "../../src/repos/interfaces/fileCommentData.js";
-import type { FixedLengthArrayInterface } from "../../src/utilities/fixedLengthArrayInterface.js";
 import Inputs from "../../src/metrics/inputs.js";
 import Logger from "../../src/utilities/logger.js";
 import PullRequestCommentData from "../../src/repos/interfaces/pullRequestCommentData.js";
@@ -646,7 +645,7 @@ describe("pullRequestComments.ts", (): void => {
 
   describe("getMetricsComment()", (): void => {
     {
-      const testCases: FixedLengthArrayInterface<number, 5>[] = [
+      const testCases: [number, number, number, number, number][] = [
         [0, 0, 0, 0, 0],
         [1, 0, 1, 0, 1],
         [1, 1, 2, 1, 3],
@@ -654,7 +653,7 @@ describe("pullRequestComments.ts", (): void => {
         [1000000, 1000000, 2000000, 1000000, 3000000],
       ];
 
-      testCases.forEach((code: FixedLengthArrayInterface<number, 5>): void => {
+      testCases.forEach((code: [number, number, number, number, number]): void => {
         it(`should return the expected result for metrics '[${String(code[0])}, ${String(code[1])}, ${String(code[2])}, ${String(code[3])}, ${String(code[4])}]'`, async (): Promise<void> => {
           // Arrange
           when(codeMetrics.getMetrics()).thenResolve(

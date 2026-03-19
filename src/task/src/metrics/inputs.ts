@@ -21,7 +21,7 @@ export default class Inputs {
   private _isInitialized = false;
   private _baseSize = 0;
   private _growthRate = 0;
-  private _testFactor: number | null = 0;
+  private _testFactor: number | null = null;
   private _alwaysCloseComment = false;
   private _fileMatchingPatterns: string[] = [];
   private _testMatchingPatterns: string[] = [];

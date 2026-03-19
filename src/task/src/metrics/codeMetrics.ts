@@ -6,7 +6,6 @@
 import { type MinimatchOptions, minimatch } from "minimatch";
 import type { CodeFileMetricInterface } from "./codeFileMetricInterface.js";
 import CodeMetricsData from "./codeMetricsData.js";
-import type { FixedLengthArrayInterface } from "../utilities/fixedLengthArrayInterface.js";
 import GitInvoker from "../git/gitInvoker.js";
 import Inputs from "./inputs.js";
 import Logger from "../utilities/logger.js";
@@ -437,9 +436,13 @@ export default class CodeMetrics {
     const indexL = 3;
     const indexXL = 4;
 
-    // eslint-disable-next-line @typescript-eslint/no-magic-numbers -- Required to be a compile-time constant.
-    const indicators: FixedLengthArrayInterface<(prefix: string) => string, 5> =
-      [
+    const indicators: [
+      (prefix: string) => string,
+      (prefix: string) => string,
+      (prefix: string) => string,
+      (prefix: string) => string,
+      (prefix: string) => string,
+    ] = [
         (): string =>
           this._runnerInvoker.loc("metrics.codeMetrics.titleSizeXS"),
         (): string => this._runnerInvoker.loc("metrics.codeMetrics.titleSizeS"),

@@ -3,7 +3,6 @@
  * Licensed under the MIT License.
  */
 
-import "reflect-metadata";
 import CodeMetricsCalculator from "./metrics/codeMetricsCalculator.js";
 import Logger from "./utilities/logger.js";
 import RunnerInvoker from "./runners/runnerInvoker.js";
