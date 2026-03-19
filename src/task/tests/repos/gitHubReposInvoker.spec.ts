@@ -6,6 +6,7 @@
 import "reflect-metadata";
 import * as AssertExtensions from "../testUtilities/assertExtensions.js";
 import * as GitHubReposInvokerConstants from "./gitHubReposInvokerConstants.js";
+import type { GetIssueCommentsResponse, GetPullResponse } from "../../src/wrappers/octokitTypes.js";
 import { any, anyNumber, anyString } from "../testUtilities/mockito.js";
 import { httpBadRequest, httpOk } from "../testUtilities/httpStatusCodes.js";
 import {
@@ -18,8 +19,6 @@ import { instance, mock, verify, when } from "ts-mockito";
 import type CommentData from "../../src/repos/interfaces/commentData.js";
 import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces.js";
 import type ErrorWithStatusInterface from "../../src/repos/interfaces/errorWithStatusInterface.js";
-import type GetIssueCommentsResponse from "../../src/wrappers/octokitInterfaces/getIssueCommentsResponse.js";
-import type GetPullResponse from "../../src/wrappers/octokitInterfaces/getPullResponse.js";
 import GitHubReposInvoker from "../../src/repos/gitHubReposInvoker.js";
 import GitInvoker from "../../src/git/gitInvoker.js";
 import HttpError from "../testUtilities/httpError.js";

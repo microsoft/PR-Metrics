@@ -89,33 +89,24 @@ export default class CodeMetricsCalculator {
     }
 
     if (!(await this._gitInvoker.isGitRepo())) {
-      return RunnerInvoker.isGitHub
-        ? this._runnerInvoker.loc(
-            "metrics.codeMetricsCalculator.noGitRepoGitHub",
-          )
-        : this._runnerInvoker.loc(
-            "metrics.codeMetricsCalculator.noGitRepoAzureDevOps",
-          );
+      return this.platformLoc(
+        "metrics.codeMetricsCalculator.noGitRepoGitHub",
+        "metrics.codeMetricsCalculator.noGitRepoAzureDevOps",
+      );
     }
 
     if (!this._gitInvoker.isPullRequestIdAvailable()) {
-      return RunnerInvoker.isGitHub
-        ? this._runnerInvoker.loc(
-            "metrics.codeMetricsCalculator.noPullRequestIdGitHub",
-          )
-        : this._runnerInvoker.loc(
-            "metrics.codeMetricsCalculator.noPullRequestIdAzureDevOps",
-          );
+      return this.platformLoc(
+        "metrics.codeMetricsCalculator.noPullRequestIdGitHub",
+        "metrics.codeMetricsCalculator.noPullRequestIdAzureDevOps",
+      );
     }
 
     if (!(await this._gitInvoker.isGitHistoryAvailable())) {
-      return RunnerInvoker.isGitHub
-        ? this._runnerInvoker.loc(
-            "metrics.codeMetricsCalculator.noGitHistoryGitHub",
-          )
-        : this._runnerInvoker.loc(
-            "metrics.codeMetricsCalculator.noGitHistoryAzureDevOps",
-          );
+      return this.platformLoc(
+        "metrics.codeMetricsCalculator.noGitHistoryGitHub",
+        "metrics.codeMetricsCalculator.noGitHistoryAzureDevOps",
+      );
     }
 
     return null;
@@ -207,5 +198,11 @@ export default class CodeMetricsCalculator {
       CommentThreadStatus.Closed,
       isFileDeleted,
     );
+  }
+
+  private platformLoc(gitHubKey: string, azureDevOpsKey: string): string {
+    return RunnerInvoker.isGitHub
+      ? this._runnerInvoker.loc(gitHubKey)
+      : this._runnerInvoker.loc(azureDevOpsKey);
   }
 }

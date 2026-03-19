@@ -43,31 +43,26 @@ export default class RunnerInvoker implements RunnerInvokerInterface {
   }
 
   public async exec(tool: string, args: string): Promise<ExecOutput> {
-    const runner: RunnerInvokerInterface = this.getRunner();
-    return runner.exec(tool, args);
+    return this.getRunner().exec(tool, args);
   }
 
   public getInput(name: string[]): string | null {
-    const runner: RunnerInvokerInterface = this.getRunner();
-    return runner.getInput(name);
+    return this.getRunner().getInput(name);
   }
 
   public getEndpointAuthorization(id: string): EndpointAuthorization | null {
-    const runner: RunnerInvokerInterface = this.getRunner();
-    return runner.getEndpointAuthorization(id);
+    return this.getRunner().getEndpointAuthorization(id);
   }
 
   public getEndpointAuthorizationScheme(id: string): string | null {
-    const runner: RunnerInvokerInterface = this.getRunner();
-    return runner.getEndpointAuthorizationScheme(id);
+    return this.getRunner().getEndpointAuthorizationScheme(id);
   }
 
   public getEndpointAuthorizationParameter(
     id: string,
     key: string,
   ): string | null {
-    const runner: RunnerInvokerInterface = this.getRunner();
-    return runner.getEndpointAuthorizationParameter(id, key);
+    return this.getRunner().getEndpointAuthorizationParameter(id, key);
   }
 
   public locInitialize(folder: string): void {
@@ -78,8 +73,7 @@ export default class RunnerInvoker implements RunnerInvokerInterface {
     }
 
     this._localizationInitialized = true;
-    const runner: RunnerInvokerInterface = this.getRunner();
-    runner.locInitialize(folder);
+    this.getRunner().locInitialize(folder);
   }
 
   public loc(key: string, ...param: string[]): string {
@@ -89,43 +83,35 @@ export default class RunnerInvoker implements RunnerInvokerInterface {
       );
     }
 
-    const runner: RunnerInvokerInterface = this.getRunner();
-    return runner.loc(key, ...param);
+    return this.getRunner().loc(key, ...param);
   }
 
   public logDebug(message: string): void {
-    const runner: RunnerInvokerInterface = this.getRunner();
-    runner.logDebug(message);
+    this.getRunner().logDebug(message);
   }
 
   public logError(message: string): void {
-    const runner: RunnerInvokerInterface = this.getRunner();
-    runner.logError(message);
+    this.getRunner().logError(message);
   }
 
   public logWarning(message: string): void {
-    const runner: RunnerInvokerInterface = this.getRunner();
-    runner.logWarning(message);
+    this.getRunner().logWarning(message);
   }
 
   public setStatusFailed(message: string): void {
-    const runner: RunnerInvokerInterface = this.getRunner();
-    runner.setStatusFailed(message);
+    this.getRunner().setStatusFailed(message);
   }
 
   public setStatusSkipped(message: string): void {
-    const runner: RunnerInvokerInterface = this.getRunner();
-    runner.setStatusSkipped(message);
+    this.getRunner().setStatusSkipped(message);
   }
 
   public setStatusSucceeded(message: string): void {
-    const runner: RunnerInvokerInterface = this.getRunner();
-    runner.setStatusSucceeded(message);
+    this.getRunner().setStatusSucceeded(message);
   }
 
   public setSecret(value: string): void {
-    const runner: RunnerInvokerInterface = this.getRunner();
-    runner.setSecret(value);
+    this.getRunner().setSecret(value);
   }
 
   private getRunner(): RunnerInvokerInterface {

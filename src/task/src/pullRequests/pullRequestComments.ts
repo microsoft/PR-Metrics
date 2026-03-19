@@ -117,35 +117,20 @@ export default class PullRequestComments {
 
     result += `||${this._runnerInvoker.loc("pullRequests.pullRequestComments.tableLines")}\n`;
     result += "-|-:\n";
-    result += this.addCommentMetrics(
-      this._runnerInvoker.loc(
-        "pullRequests.pullRequestComments.tableProductCode",
-      ),
-      metrics.productCode,
-      false,
-    );
-    result += this.addCommentMetrics(
-      this._runnerInvoker.loc("pullRequests.pullRequestComments.tableTestCode"),
-      metrics.testCode,
-      false,
-    );
-    result += this.addCommentMetrics(
-      this._runnerInvoker.loc("pullRequests.pullRequestComments.tableSubtotal"),
-      metrics.subtotal,
-      true,
-    );
-    result += this.addCommentMetrics(
-      this._runnerInvoker.loc(
-        "pullRequests.pullRequestComments.tableIgnoredCode",
-      ),
-      metrics.ignoredCode,
-      false,
-    );
-    result += this.addCommentMetrics(
-      this._runnerInvoker.loc("pullRequests.pullRequestComments.tableTotal"),
-      metrics.total,
-      true,
-    );
+    const rows: [string, number, boolean][] = [
+      ["pullRequests.pullRequestComments.tableProductCode", metrics.productCode, false],
+      ["pullRequests.pullRequestComments.tableTestCode", metrics.testCode, false],
+      ["pullRequests.pullRequestComments.tableSubtotal", metrics.subtotal, true],
+      ["pullRequests.pullRequestComments.tableIgnoredCode", metrics.ignoredCode, false],
+      ["pullRequests.pullRequestComments.tableTotal", metrics.total, true],
+    ];
+    for (const [key, metric, highlight] of rows) {
+      result += this.addCommentMetrics(
+        this._runnerInvoker.loc(key),
+        metric,
+        highlight,
+      );
+    }
 
     result += "\n";
     result += this._runnerInvoker.loc(

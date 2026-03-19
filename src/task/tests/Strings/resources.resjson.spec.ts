@@ -178,15 +178,16 @@ describe("resources.resjson", (): void => {
     const typeScriptFiles: string[] = typeScriptFiles1.concat(typeScriptFiles2);
     const typeScriptResources: Map<string, number> = new Map<string, number>();
     const resourceRegExp = /loc\(\s*".+?".*?\)/gu;
+    const resourceKeyRegExp = /"(?<resourceKey>(?:metrics|pullRequestMetrics|pullRequests|repos)\.\w+\.\w+)"/gu;
     const parameterDelimiterRegExp = /,/gu;
     for (const file of typeScriptFiles) {
       const fileContents: string = fs
         .readFileSync(file, "utf8")
         .replace(/\s|\n|\r/gu, "");
-      const matches: RegExpMatchArray | null =
+      const locMatches: RegExpMatchArray | null =
         fileContents.match(resourceRegExp);
-      if (matches) {
-        for (const match of matches) {
+      if (locMatches) {
+        for (const match of locMatches) {
           const updatedMatch: string = match.replace(",)", ")");
           const firstQuoteIndex: number = updatedMatch.indexOf('"');
           const secondQuoteIndex: number = updatedMatch.indexOf(
@@ -207,6 +208,14 @@ describe("resources.resjson", (): void => {
           } else {
             assert.equal(value, existingValue);
           }
+        }
+      }
+
+      let keyMatch: RegExpExecArray | null;
+      while ((keyMatch = resourceKeyRegExp.exec(fileContents)) !== null) {
+        const key: string | undefined = keyMatch.groups?.resourceKey;
+        if (typeof key !== "undefined" && !typeScriptResources.has(key)) {
+          typeScriptResources.set(key, -1);
         }
       }
     }
@@ -235,7 +244,11 @@ describe("resources.resjson", (): void => {
       Array.from(relevantEntries.keys()).sort(),
     );
     for (const [key, value] of typeScriptResources) {
-      assert.equal(value, relevantEntries.get(key) ?? "");
+      // Bare keys (found as string literals, not in loc() calls) are validated
+      // For existence only; their placeholder count cannot be determined from context.
+      if (value !== -1) {
+        assert.equal(value, relevantEntries.get(key) ?? "");
+      }
     }
   });
 });

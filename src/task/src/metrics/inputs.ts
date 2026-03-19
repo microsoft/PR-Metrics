@@ -185,59 +185,27 @@ export default class Inputs {
   private initializeBaseSize(baseSize: string | null): void {
     this._logger.logDebug("* Inputs.initializeBaseSize()");
 
-    const convertedValue: number =
-      baseSize === null ? NaN : parseInt(baseSize, decimalRadix);
-    if (!isNaN(convertedValue) && convertedValue > 0) {
-      this._baseSize = convertedValue;
-      const baseSizeString: string = this._baseSize.toLocaleString();
-      this._logger.logInfo(
-        this._runnerInvoker.loc(
-          "metrics.inputs.settingBaseSize",
-          baseSizeString,
-        ),
-      );
-      return;
-    }
-
-    const baseSizeString: string = InputsDefault.baseSize.toLocaleString();
-    this._logger.logInfo(
-      this._runnerInvoker.loc(
-        "metrics.inputs.adjustingBaseSize",
-        baseSizeString,
-      ),
+    this._baseSize = this.initializeNumericInput(
+      baseSize,
+      (value: string): number => parseInt(value, decimalRadix),
+      (value: number): boolean => value > 0,
+      InputsDefault.baseSize,
+      "metrics.inputs.settingBaseSize",
+      "metrics.inputs.adjustingBaseSize",
     );
-    this._baseSize = InputsDefault.baseSize;
   }
 
   private initializeGrowthRate(growthRate: string | null): void {
     this._logger.logDebug("* Inputs.initializeGrowthRate()");
 
-    const convertedValue: number =
-      growthRate === null ? NaN : parseFloat(growthRate);
-    if (
-      !isNaN(convertedValue) &&
-      isFinite(convertedValue) &&
-      convertedValue > 1.0
-    ) {
-      this._growthRate = convertedValue;
-      const growthRateString: string = this._growthRate.toLocaleString();
-      this._logger.logInfo(
-        this._runnerInvoker.loc(
-          "metrics.inputs.settingGrowthRate",
-          growthRateString,
-        ),
-      );
-      return;
-    }
-
-    const growthRateString: string = InputsDefault.growthRate.toLocaleString();
-    this._logger.logInfo(
-      this._runnerInvoker.loc(
-        "metrics.inputs.adjustingGrowthRate",
-        growthRateString,
-      ),
+    this._growthRate = this.initializeNumericInput(
+      growthRate,
+      parseFloat,
+      (value: number): boolean => isFinite(value) && value > 1.0,
+      InputsDefault.growthRate,
+      "metrics.inputs.settingGrowthRate",
+      "metrics.inputs.adjustingGrowthRate",
     );
-    this._growthRate = InputsDefault.growthRate;
   }
 
   private initializeTestFactor(testFactor: string | null): void {
@@ -412,5 +380,32 @@ export default class Inputs {
     this._codeFileExtensions = new Set<string>(
       InputsDefault.codeFileExtensions,
     );
+  }
+
+  private initializeNumericInput(
+    rawValue: string | null,
+    parse: (value: string) => number,
+    validate: (value: number) => boolean,
+    defaultValue: number,
+    settingKey: string,
+    adjustingKey: string,
+  ): number {
+    this._logger.logDebug("* Inputs.initializeNumericInput()");
+
+    const convertedValue: number =
+      rawValue === null ? NaN : parse(rawValue);
+    if (!isNaN(convertedValue) && validate(convertedValue)) {
+      const valueString: string = convertedValue.toLocaleString();
+      this._logger.logInfo(
+        this._runnerInvoker.loc(settingKey, valueString),
+      );
+      return convertedValue;
+    }
+
+    const defaultString: string = defaultValue.toLocaleString();
+    this._logger.logInfo(
+      this._runnerInvoker.loc(adjustingKey, defaultString),
+    );
+    return defaultValue;
   }
 }

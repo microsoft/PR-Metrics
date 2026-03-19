@@ -4,18 +4,22 @@
  */
 
 import * as Validator from "../utilities/validator.js";
+import type {
+  CreateIssueCommentResponse,
+  CreateReviewCommentResponse,
+  DeleteReviewCommentResponse,
+  GetIssueCommentsResponse,
+  GetPullResponse,
+  GetReviewCommentsResponse,
+  ListCommitsResponse,
+  UpdateIssueCommentResponse,
+  UpdatePullResponse,
+} from "../wrappers/octokitTypes.js";
 import { decimalRadix, httpUnprocessableEntity } from "../utilities/constants.js";
 import BaseReposInvoker from "./baseReposInvoker.js";
 import CommentData from "./interfaces/commentData.js";
-import type CreateIssueCommentResponse from "../wrappers/octokitInterfaces/createIssueCommentResponse.js";
-import type CreateReviewCommentResponse from "../wrappers/octokitInterfaces/createReviewCommentResponse.js";
-import type DeleteReviewCommentResponse from "../wrappers/octokitInterfaces/deleteReviewCommentResponse.js";
 import FileCommentData from "./interfaces/fileCommentData.js";
-import type GetIssueCommentsResponse from "../wrappers/octokitInterfaces/getIssueCommentsResponse.js";
-import type GetPullResponse from "../wrappers/octokitInterfaces/getPullResponse.js";
-import type GetReviewCommentsResponse from "../wrappers/octokitInterfaces/getReviewCommentsResponse.js";
 import GitInvoker from "../git/gitInvoker.js";
-import type ListCommitsResponse from "../wrappers/octokitInterfaces/listCommitsResponse.js";
 import Logger from "../utilities/logger.js";
 import type { OctokitOptions } from "@octokit/core";
 import OctokitWrapper from "../wrappers/octokitWrapper.js";
@@ -23,8 +27,6 @@ import PullRequestCommentData from "./interfaces/pullRequestCommentData.js";
 import type PullRequestDetailsInterface from "./interfaces/pullRequestDetailsInterface.js";
 import { RequestError } from "octokit";
 import RunnerInvoker from "../runners/runnerInvoker.js";
-import type UpdateIssueCommentResponse from "../wrappers/octokitInterfaces/updateIssueCommentResponse.js";
-import type UpdatePullResponse from "../wrappers/octokitInterfaces/updatePullResponse.js";
 import { singleton } from "tsyringe";
 import { version } from "../utilities/version.js";
 
@@ -306,18 +308,20 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
   private initializeForGitHub(): string {
     this._logger.logDebug("* GitHubReposInvoker.initializeForGitHub()");
 
+    const method = "GitHubReposInvoker.initializeForGitHub()";
+
     const baseUrl: string = Validator.validateVariable(
       "GITHUB_API_URL",
-      "GitHubReposInvoker.initializeForGitHub()",
+      method,
     );
     this._owner = Validator.validateVariable(
       "GITHUB_REPOSITORY_OWNER",
-      "GitHubReposInvoker.initializeForGitHub()",
+      method,
     );
 
     const gitHubRepository: string = Validator.validateVariable(
       "GITHUB_REPOSITORY",
-      "GitHubReposInvoker.initializeForGitHub()",
+      method,
     );
     const gitHubRepositoryElements: string[] = gitHubRepository.split("/");
     if (typeof gitHubRepositoryElements[1] === "undefined") {

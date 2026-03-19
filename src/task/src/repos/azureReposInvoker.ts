@@ -338,26 +338,28 @@ export default class AzureReposInvoker extends BaseReposInvoker {
       return this._gitApi;
     }
 
+    const method = "AzureReposInvoker.getGitApi()";
+
     this._project = Validator.validateVariable(
       "SYSTEM_TEAMPROJECT",
-      "AzureReposInvoker.getGitApi()",
+      method,
     );
     this._repositoryId = Validator.validateVariable(
       "BUILD_REPOSITORY_ID",
-      "AzureReposInvoker.getGitApi()",
+      method,
     );
     this._pullRequestId = this._gitInvoker.pullRequestId;
 
     const accessToken: string = Validator.validateVariable(
       "PR_METRICS_ACCESS_TOKEN",
-      "AzureReposInvoker.getGitApi()",
+      method,
     );
     const authHandler: IRequestHandler =
       this._azureDevOpsApiWrapper.getPersonalAccessTokenHandler(accessToken);
 
     const defaultUrl: string = Validator.validateVariable(
       "SYSTEM_TEAMFOUNDATIONCOLLECTIONURI",
-      "AzureReposInvoker.getGitApi()",
+      method,
     );
     const connection: WebApi = this._azureDevOpsApiWrapper.getWebApiInstance(
       defaultUrl,

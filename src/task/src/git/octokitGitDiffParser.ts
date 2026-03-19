@@ -10,7 +10,7 @@ import parseGitDiff, {
   type GitDiff,
   type RenamedFile,
 } from "parse-git-diff";
-import type GetPullResponse from "../wrappers/octokitInterfaces/getPullResponse.js";
+import type { GetPullResponse } from "../wrappers/octokitTypes.js";
 import HttpClientWrapper from "../wrappers/httpClient.js";
 import Logger from "../utilities/logger.js";
 import type OctokitWrapper from "../wrappers/octokitWrapper.js";
