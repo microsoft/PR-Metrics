@@ -10,7 +10,7 @@ import CodeMetricsData from "../../src/metrics/codeMetricsData.js";
 import CommentData from "../../src/repos/interfaces/commentData.js";
 import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces.js";
 import FileCommentData from "../../src/repos/interfaces/fileCommentData.js";
-import { FixedLengthArrayInterface } from "../../src/utilities/fixedLengthArrayInterface.js";
+import type { FixedLengthArrayInterface } from "../../src/utilities/fixedLengthArrayInterface.js";
 import Inputs from "../../src/metrics/inputs.js";
 import Logger from "../../src/utilities/logger.js";
 import PullRequestCommentData from "../../src/repos/interfaces/pullRequestCommentData.js";

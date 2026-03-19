@@ -6,7 +6,7 @@
 import "reflect-metadata";
 import { deepEqual, instance, mock, verify, when } from "ts-mockito";
 import AzurePipelinesRunnerInvoker from "../../src/runners/azurePipelinesRunnerInvoker.js";
-import { EndpointAuthorization } from "azure-pipelines-task-lib";
+import type { EndpointAuthorization } from "azure-pipelines-task-lib";
 import ExecOutput from "../../src/runners/execOutput.js";
 import GitHubRunnerInvoker from "../../src/runners/gitHubRunnerInvoker.js";
 import RunnerInvoker from "../../src/runners/runnerInvoker.js";

@@ -6,10 +6,10 @@
 import "reflect-metadata";
 import * as AssertExtensions from "../testUtilities/assertExtensions.js";
 import {
-  Comment,
+  type Comment,
   CommentThreadStatus,
-  GitPullRequest,
-  GitPullRequestCommentThread,
+  type GitPullRequest,
+  type GitPullRequestCommentThread,
 } from "azure-devops-node-api/interfaces/GitInterfaces.js";
 import { any, anyNumber } from "../testUtilities/mockito.js";
 import { deepEqual, instance, mock, verify, when } from "ts-mockito";
@@ -20,13 +20,13 @@ import {
 } from "../../src/utilities/constants.js";
 import AzureDevOpsApiWrapper from "../../src/wrappers/azureDevOpsApiWrapper.js";
 import AzureReposInvoker from "../../src/repos/azureReposInvoker.js";
-import CommentData from "../../src/repos/interfaces/commentData.js";
+import type CommentData from "../../src/repos/interfaces/commentData.js";
 import ErrorWithStatus from "../wrappers/errorWithStatus.js";
 import GitInvoker from "../../src/git/gitInvoker.js";
-import { IGitApi } from "azure-devops-node-api/GitApi.js";
-import { IRequestHandler } from "azure-devops-node-api/interfaces/common/VsoBaseInterfaces.js";
+import type { IGitApi } from "azure-devops-node-api/GitApi.js";
+import type { IRequestHandler } from "azure-devops-node-api/interfaces/common/VsoBaseInterfaces.js";
 import Logger from "../../src/utilities/logger.js";
-import PullRequestDetailsInterface from "../../src/repos/interfaces/pullRequestDetailsInterface.js";
+import type PullRequestDetailsInterface from "../../src/repos/interfaces/pullRequestDetailsInterface.js";
 import RunnerInvoker from "../../src/runners/runnerInvoker.js";
 import TokenManager from "../../src/repos/tokenManager.js";
 import { WebApi } from "azure-devops-node-api";

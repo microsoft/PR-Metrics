@@ -15,20 +15,20 @@ import {
   httpUnprocessableEntity,
 } from "../../src/utilities/constants.js";
 import { instance, mock, verify, when } from "ts-mockito";
-import CommentData from "../../src/repos/interfaces/commentData.js";
+import type CommentData from "../../src/repos/interfaces/commentData.js";
 import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces.js";
-import ErrorWithStatusInterface from "../../src/repos/interfaces/errorWithStatusInterface.js";
-import GetIssueCommentsResponse from "../../src/wrappers/octokitInterfaces/getIssueCommentsResponse.js";
-import GetPullResponse from "../../src/wrappers/octokitInterfaces/getPullResponse.js";
+import type ErrorWithStatusInterface from "../../src/repos/interfaces/errorWithStatusInterface.js";
+import type GetIssueCommentsResponse from "../../src/wrappers/octokitInterfaces/getIssueCommentsResponse.js";
+import type GetPullResponse from "../../src/wrappers/octokitInterfaces/getPullResponse.js";
 import GitHubReposInvoker from "../../src/repos/gitHubReposInvoker.js";
 import GitInvoker from "../../src/git/gitInvoker.js";
 import HttpError from "../testUtilities/httpError.js";
 import Logger from "../../src/utilities/logger.js";
-import OctokitLogObjectInterface from "../wrappers/octokitLogObjectInterface.js";
-import { OctokitOptions } from "@octokit/core";
+import type OctokitLogObjectInterface from "../wrappers/octokitLogObjectInterface.js";
+import type { OctokitOptions } from "@octokit/core";
 import OctokitWrapper from "../../src/wrappers/octokitWrapper.js";
-import PullRequestDetailsInterface from "../../src/repos/interfaces/pullRequestDetailsInterface.js";
-import { RequestError } from "octokit";
+import type PullRequestDetailsInterface from "../../src/repos/interfaces/pullRequestDetailsInterface.js";
+import type { RequestError } from "octokit";
 import RunnerInvoker from "../../src/runners/runnerInvoker.js";
 import assert from "node:assert/strict";
 import { createRequestError } from "../testUtilities/createRequestError.js";

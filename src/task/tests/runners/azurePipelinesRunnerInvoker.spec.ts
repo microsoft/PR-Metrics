@@ -13,7 +13,7 @@ import {
 import { deepEqual, instance, mock, verify, when } from "ts-mockito";
 import AzurePipelinesRunnerInvoker from "../../src/runners/azurePipelinesRunnerInvoker.js";
 import AzurePipelinesRunnerWrapper from "../../src/wrappers/azurePipelinesRunnerWrapper.js";
-import { EndpointAuthorization } from "../../src/runners/endpointAuthorization.js";
+import type { EndpointAuthorization } from "../../src/runners/endpointAuthorization.js";
 import { ExecOutput } from "@actions/exec";
 import { any } from "../testUtilities/mockito.js";
 import assert from "node:assert/strict";
