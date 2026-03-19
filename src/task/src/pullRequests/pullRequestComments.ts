@@ -4,13 +4,13 @@
  */
 
 import CodeMetrics from "../metrics/codeMetrics.js";
-import CodeMetricsData from "../metrics/codeMetricsData.js";
-import CommentData from "../repos/interfaces/commentData.js";
+import type CodeMetricsData from "../metrics/codeMetricsData.js";
+import type CommentData from "../repos/interfaces/commentData.js";
 import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces.js";
-import FileCommentData from "../repos/interfaces/fileCommentData.js";
+import type FileCommentData from "../repos/interfaces/fileCommentData.js";
 import Inputs from "../metrics/inputs.js";
 import Logger from "../utilities/logger.js";
-import PullRequestComment from "../repos/interfaces/pullRequestCommentData.js";
+import type PullRequestComment from "../repos/interfaces/pullRequestCommentData.js";
 import PullRequestCommentsData from "./pullRequestCommentsData.js";
 import ReposInvoker from "../repos/reposInvoker.js";
 import RunnerInvoker from "../runners/runnerInvoker.js";

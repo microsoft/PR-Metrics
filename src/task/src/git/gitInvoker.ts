@@ -9,7 +9,7 @@ import {
   repoProviderGitHub,
   repoProviderGitHubEnterprise,
 } from "../utilities/constants.js";
-import ExecOutput from "../runners/execOutput.js";
+import type ExecOutput from "../runners/execOutput.js";
 import Logger from "../utilities/logger.js";
 import RunnerInvoker from "../runners/runnerInvoker.js";
 import { singleton } from "tsyringe";

@@ -20,7 +20,7 @@ import Logger from "../utilities/logger.js";
 import type { OctokitOptions } from "@octokit/core";
 import OctokitWrapper from "../wrappers/octokitWrapper.js";
 import PullRequestCommentData from "./interfaces/pullRequestCommentData.js";
-import PullRequestDetailsInterface from "./interfaces/pullRequestDetailsInterface.js";
+import type PullRequestDetailsInterface from "./interfaces/pullRequestDetailsInterface.js";
 import { RequestError } from "octokit";
 import RunnerInvoker from "../runners/runnerInvoker.js";
 import type UpdateIssueCommentResponse from "../wrappers/octokitInterfaces/updateIssueCommentResponse.js";

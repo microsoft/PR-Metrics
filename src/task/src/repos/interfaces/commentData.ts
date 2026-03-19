@@ -3,8 +3,8 @@
  * Licensed under the MIT License.
  */
 
-import FileCommentData from "./fileCommentData.js";
-import PullRequestCommentData from "./pullRequestCommentData.js";
+import type FileCommentData from "./fileCommentData.js";
+import type PullRequestCommentData from "./pullRequestCommentData.js";
 
 /**
  * A wrapper grouping types of pull request comments.

@@ -8,11 +8,11 @@ import {
   httpNotFound,
   httpUnauthorized,
 } from "../utilities/constants.js";
-import CommentData from "./interfaces/commentData.js";
+import type CommentData from "./interfaces/commentData.js";
 import type { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces.js";
-import ErrorWithStatusInterface from "./interfaces/errorWithStatusInterface.js";
-import PullRequestDetailsInterface from "./interfaces/pullRequestDetailsInterface.js";
-import ReposInvokerInterface from "./reposInvokerInterface.js";
+import type ErrorWithStatusInterface from "./interfaces/errorWithStatusInterface.js";
+import type PullRequestDetailsInterface from "./interfaces/pullRequestDetailsInterface.js";
+import type ReposInvokerInterface from "./reposInvokerInterface.js";
 
 /**
  * A base class for invoking repository functionality.

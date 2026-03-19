@@ -20,7 +20,7 @@ import type { IGitApi } from "azure-devops-node-api/GitApi.js";
 import type { IRequestHandler } from "azure-devops-node-api/interfaces/common/VsoBaseInterfaces.js";
 import Logger from "../utilities/logger.js";
 import PullRequestCommentData from "./interfaces/pullRequestCommentData.js";
-import PullRequestDetailsInterface from "./interfaces/pullRequestDetailsInterface.js";
+import type PullRequestDetailsInterface from "./interfaces/pullRequestDetailsInterface.js";
 import RunnerInvoker from "../runners/runnerInvoker.js";
 import TokenManager from "./tokenManager.js";
 import type { WebApi } from "azure-devops-node-api";
