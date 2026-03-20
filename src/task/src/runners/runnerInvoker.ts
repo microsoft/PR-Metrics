@@ -8,13 +8,11 @@ import type { EndpointAuthorization } from "./endpointAuthorization.js";
 import type ExecOutput from "./execOutput.js";
 import GitHubRunnerInvoker from "./gitHubRunnerInvoker.js";
 import type RunnerInvokerInterface from "./runnerInvokerInterface.js";
-import { singleton } from "tsyringe";
 
 /**
  * A wrapper around the runner functionality, to facilitate testability. This class cannot use logging functionality as
  * the logger forms part of the runner functionality, and using logging here could result in circular dependencies.
  */
-@singleton()
 export default class RunnerInvoker implements RunnerInvokerInterface {
   private readonly _azurePipelinesRunnerInvoker: AzurePipelinesRunnerInvoker;
   private readonly _gitHubRunnerInvoker: GitHubRunnerInvoker;

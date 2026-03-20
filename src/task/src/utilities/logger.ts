@@ -5,12 +5,10 @@
 
 import ConsoleWrapper from "../wrappers/consoleWrapper.js";
 import RunnerInvoker from "../runners/runnerInvoker.js";
-import { singleton } from "tsyringe";
 
 /**
  * A class for logging messages.
  */
-@singleton()
 export default class Logger {
   private readonly _consoleWrapper: ConsoleWrapper;
   private readonly _runnerInvoker: RunnerInvoker;

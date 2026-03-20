@@ -3,7 +3,6 @@
  * Licensed under the MIT License.
  */
 
-import "reflect-metadata";
 import * as InputsDefault from "../../src/metrics/inputsDefault.js";
 import { deepEqual, instance, mock, verify, when } from "ts-mockito";
 import Inputs from "../../src/metrics/inputs.js";

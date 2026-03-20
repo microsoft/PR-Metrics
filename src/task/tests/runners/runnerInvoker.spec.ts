@@ -3,7 +3,6 @@
  * Licensed under the MIT License.
  */
 
-import "reflect-metadata";
 import { deepEqual, instance, mock, verify, when } from "ts-mockito";
 import AzurePipelinesRunnerInvoker from "../../src/runners/azurePipelinesRunnerInvoker.js";
 import type { EndpointAuthorization } from "azure-pipelines-task-lib";

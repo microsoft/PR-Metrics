@@ -5,12 +5,10 @@
 
 import * as azureDevOpsApi from "azure-devops-node-api";
 import type { IRequestHandler } from "azure-devops-node-api/interfaces/common/VsoBaseInterfaces.js";
-import { singleton } from "tsyringe";
 
 /**
  * A wrapper around the Azure DevOps API, to facilitate testability.
  */
-@singleton()
 export default class AzureDevOpsApiWrapper {
   /**
    * Gets a personal access token handler.

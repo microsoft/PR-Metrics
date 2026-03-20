@@ -14,12 +14,10 @@ import type { GetPullResponse } from "../wrappers/octokitTypes.js";
 import HttpClientWrapper from "../wrappers/httpClient.js";
 import Logger from "../utilities/logger.js";
 import type OctokitWrapper from "../wrappers/octokitWrapper.js";
-import { singleton } from "tsyringe";
 
 /**
  * A parser for Git diffs read via Octokit.
  */
-@singleton()
 export default class OctokitGitDiffParser {
   private readonly _httpClient: HttpClientWrapper;
   private readonly _logger: Logger;

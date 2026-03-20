@@ -26,13 +26,11 @@ import OctokitWrapper from "../wrappers/octokitWrapper.js";
 import type PullRequestDetailsInterface from "./interfaces/pullRequestDetailsInterface.js";
 import { RequestError } from "octokit";
 import RunnerInvoker from "../runners/runnerInvoker.js";
-import { singleton } from "tsyringe";
 import { version } from "../utilities/version.js";
 
 /**
  * A class for invoking GitHub Repos functionality.
  */
-@singleton()
 export default class GitHubReposInvoker extends BaseReposInvoker {
   private readonly _gitInvoker: GitInvoker;
   private readonly _logger: Logger;

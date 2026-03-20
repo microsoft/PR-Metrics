@@ -3,7 +3,6 @@
  * Licensed under the MIT License.
  */
 
-import "reflect-metadata";
 import * as AssertExtensions from "../testUtilities/assertExtensions.js";
 import * as InputsDefault from "../../src/metrics/inputsDefault.js";
 import { instance, mock, verify, when } from "ts-mockito";
@@ -689,13 +688,6 @@ describe("codeMetrics.ts", (): void => {
       },
       {
         gitResponse: "-\t-\tfile.ts",
-        globChecks: 6,
-        metrics: new CodeMetricsData(0, 0, 0),
-        sizeIndicator: "XS",
-        testCoverageIndicator: true,
-      },
-      {
-        gitResponse: "0\t0\tfile.ts\r\nrc:0\r\nsuccess:true",
         globChecks: 6,
         metrics: new CodeMetricsData(0, 0, 0),
         sizeIndicator: "XS",

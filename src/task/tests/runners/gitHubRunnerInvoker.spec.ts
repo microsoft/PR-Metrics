@@ -3,7 +3,6 @@
  * Licensed under the MIT License.
  */
 
-import "reflect-metadata";
 import * as actionsExec from "@actions/exec";
 import * as path from "node:path";
 import { deepEqual, instance, mock, verify, when } from "ts-mockito";

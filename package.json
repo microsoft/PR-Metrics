@@ -54,9 +54,7 @@
     "azure-pipelines-task-lib": "5.2.8",
     "minimatch": "10.2.4",
     "octokit": "5.0.5",
-    "parse-git-diff": "0.0.20",
-    "reflect-metadata": "0.2.2",
-    "tsyringe": "4.10.0"
+    "parse-git-diff": "0.0.20"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",

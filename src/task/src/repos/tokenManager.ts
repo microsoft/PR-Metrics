@@ -17,13 +17,11 @@ import Logger from "../utilities/logger.js";
 import RunnerInvoker from "../runners/runnerInvoker.js";
 import type { TaskHubOidcToken } from "azure-devops-node-api/interfaces/TaskAgentInterfaces.js";
 import type { WebApi } from "azure-devops-node-api";
-import { singleton } from "tsyringe";
 
 /**
  * A class for invoking authorization token management functionality, used for retrieving identity information from a
  * workload identity federation.
  */
-@singleton()
 export default class TokenManager {
   private readonly _azureDevOpsApiWrapper: AzureDevOpsApiWrapper;
   private readonly _logger: Logger;

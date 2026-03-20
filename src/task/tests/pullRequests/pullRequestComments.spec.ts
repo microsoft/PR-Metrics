@@ -3,7 +3,6 @@
  * Licensed under the MIT License.
  */
 
-import "reflect-metadata";
 import { instance, mock, verify, when } from "ts-mockito";
 import CodeMetrics from "../../src/metrics/codeMetrics.js";
 import CodeMetricsData from "../../src/metrics/codeMetricsData.js";

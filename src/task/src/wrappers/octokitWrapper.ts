@@ -17,14 +17,12 @@ import type {
 import { Octokit } from "octokit";
 import OctokitGitDiffParser from "../git/octokitGitDiffParser.js";
 import type { OctokitOptions } from "@octokit/core";
-import { singleton } from "tsyringe";
 
 /* eslint-disable @typescript-eslint/naming-convention -- Required for alignment with Octokit. */
 
 /**
  * A wrapper around the Octokit (GitHub) API, to facilitate testability.
  */
-@singleton()
 export default class OctokitWrapper {
   private readonly _octokitGitDiffParser: OctokitGitDiffParser;
 

@@ -3,7 +3,6 @@
  * Licensed under the MIT License.
  */
 
-import "reflect-metadata";
 import * as AssertExtensions from "../testUtilities/assertExtensions.js";
 import { instance, mock, verify, when } from "ts-mockito";
 import type { ExecOutput } from "@actions/exec";

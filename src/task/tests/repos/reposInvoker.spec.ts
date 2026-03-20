@@ -3,7 +3,6 @@
  * Licensed under the MIT License.
  */
 
-import "reflect-metadata";
 import * as AssertExtensions from "../testUtilities/assertExtensions.js";
 import { instance, mock, verify } from "ts-mockito";
 import AzureReposInvoker from "../../src/repos/azureReposInvoker.js";

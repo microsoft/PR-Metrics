@@ -3,7 +3,6 @@
  * Licensed under the MIT License.
  */
 
-import "reflect-metadata";
 import { instance, mock, verify, when } from "ts-mockito";
 import CodeMetricsCalculator from "../../src/metrics/codeMetricsCalculator.js";
 import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces.js";

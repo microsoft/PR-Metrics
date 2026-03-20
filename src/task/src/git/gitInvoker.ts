@@ -12,13 +12,11 @@ import {
 import type ExecOutput from "../runners/execOutput.js";
 import Logger from "../utilities/logger.js";
 import RunnerInvoker from "../runners/runnerInvoker.js";
-import { singleton } from "tsyringe";
 
 /**
  * A class for invoking Git commands.
  * @remarks This class should not be used in a multithreaded context as it could lead to the initialization logic being invoked repeatedly.
  */
-@singleton()
 export default class GitInvoker {
   private readonly _logger: Logger;
   private readonly _runnerInvoker: RunnerInvoker;
