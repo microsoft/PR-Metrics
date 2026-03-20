@@ -10,7 +10,6 @@ import {
   type GitPullRequest,
   type GitPullRequestCommentThread,
 } from "azure-devops-node-api/interfaces/GitInterfaces.js";
-import { CommentThreadStatus } from "../../src/repos/interfaces/commentThreadStatus.js";
 import { any, anyNumber } from "../testUtilities/mockito.js";
 import { deepEqual, instance, mock, verify, when } from "ts-mockito";
 import {
@@ -21,6 +20,7 @@ import {
 import AzureDevOpsApiWrapper from "../../src/wrappers/azureDevOpsApiWrapper.js";
 import AzureReposInvoker from "../../src/repos/azureReposInvoker.js";
 import type CommentData from "../../src/repos/interfaces/commentData.js";
+import { CommentThreadStatus } from "../../src/repos/interfaces/commentThreadStatus.js";
 import ErrorWithStatus from "../wrappers/errorWithStatus.js";
 import GitInvoker from "../../src/git/gitInvoker.js";
 import type { IGitApi } from "azure-devops-node-api/GitApi.js";
@@ -589,7 +589,7 @@ describe("azureReposInvoker.ts", (): void => {
       assert.equal(result.pullRequestComments[0].content, "Content");
       assert.equal(
         result.pullRequestComments[0].status,
-        CommentThreadStatus.Active,
+        CommentThreadStatus.active,
       );
       assert.equal(result.fileComments.length, 0);
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler("PAT")).once();
@@ -636,7 +636,7 @@ describe("azureReposInvoker.ts", (): void => {
       assert.equal(result.pullRequestComments[0].content, "Content");
       assert.equal(
         result.pullRequestComments[0].status,
-        CommentThreadStatus.Active,
+        CommentThreadStatus.active,
       );
       assert.equal(result.fileComments.length, 0);
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler("PAT")).once();
@@ -689,7 +689,7 @@ describe("azureReposInvoker.ts", (): void => {
       assert.equal(result.fileComments.length, 1);
       assert.equal(result.fileComments[0]?.id, 1);
       assert.equal(result.fileComments[0].content, "Content");
-      assert.equal(result.fileComments[0].status, CommentThreadStatus.Active);
+      assert.equal(result.fileComments[0].status, CommentThreadStatus.active);
       assert.equal(result.fileComments[0].fileName, "file.ts");
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler("PAT")).once();
       verify(
@@ -743,12 +743,12 @@ describe("azureReposInvoker.ts", (): void => {
       assert.equal(result.pullRequestComments[0].content, "PR Content");
       assert.equal(
         result.pullRequestComments[0].status,
-        CommentThreadStatus.Active,
+        CommentThreadStatus.active,
       );
       assert.equal(result.fileComments.length, 1);
       assert.equal(result.fileComments[0]?.id, 2);
       assert.equal(result.fileComments[0].content, "File Content");
-      assert.equal(result.fileComments[0].status, CommentThreadStatus.Active);
+      assert.equal(result.fileComments[0].status, CommentThreadStatus.active);
       assert.equal(result.fileComments[0].fileName, "file.ts");
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler("PAT")).once();
       verify(
@@ -798,7 +798,7 @@ describe("azureReposInvoker.ts", (): void => {
       assert.equal(result.pullRequestComments[0].content, "Content");
       assert.equal(
         result.pullRequestComments[0].status,
-        CommentThreadStatus.Active,
+        CommentThreadStatus.active,
       );
       assert.equal(result.fileComments.length, 0);
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler("PAT")).once();
@@ -887,12 +887,12 @@ describe("azureReposInvoker.ts", (): void => {
       assert.equal(result.pullRequestComments[0].content, "PR Content");
       assert.equal(
         result.pullRequestComments[0].status,
-        CommentThreadStatus.Unknown,
+        CommentThreadStatus.unknown,
       );
       assert.equal(result.fileComments.length, 1);
       assert.equal(result.fileComments[0]?.id, 2);
       assert.equal(result.fileComments[0].content, "File Content");
-      assert.equal(result.fileComments[0].status, CommentThreadStatus.Unknown);
+      assert.equal(result.fileComments[0].status, CommentThreadStatus.unknown);
       assert.equal(result.fileComments[0].fileName, "file.ts");
       verify(azureDevOpsApiWrapper.getPersonalAccessTokenHandler("PAT")).once();
       verify(
@@ -927,7 +927,7 @@ describe("azureReposInvoker.ts", (): void => {
       assert.equal(result.pullRequestComments.length, 1);
       assert.equal(
         result.pullRequestComments[0]?.status,
-        CommentThreadStatus.Closed,
+        CommentThreadStatus.closed,
       );
     });
 
@@ -990,14 +990,14 @@ describe("azureReposInvoker.ts", (): void => {
           assert.equal(result.pullRequestComments[0].content, "PR Content");
           assert.equal(
             result.pullRequestComments[0].status,
-            CommentThreadStatus.Active,
+            CommentThreadStatus.active,
           );
           assert.equal(result.fileComments.length, 1);
           assert.equal(result.fileComments[0]?.id, 3);
           assert.equal(result.fileComments[0].content, "File Content");
           assert.equal(
             result.fileComments[0].status,
-            CommentThreadStatus.Active,
+            CommentThreadStatus.active,
           );
           assert.equal(result.fileComments[0].fileName, "file.ts");
           verify(
@@ -1323,7 +1323,7 @@ describe("azureReposInvoker.ts", (): void => {
             azureReposInvoker.createComment(
               "Comment Content",
               "file.ts",
-              CommentThreadStatus.Active,
+              CommentThreadStatus.active,
             );
 
           // Assert
@@ -1374,7 +1374,7 @@ describe("azureReposInvoker.ts", (): void => {
       await azureReposInvoker.createComment(
         "Comment Content",
         null,
-        CommentThreadStatus.Active,
+        CommentThreadStatus.active,
       );
 
       // Assert
@@ -1424,7 +1424,7 @@ describe("azureReposInvoker.ts", (): void => {
       await azureReposInvoker.createComment(
         "Comment Content",
         null,
-        CommentThreadStatus.Closed,
+        CommentThreadStatus.closed,
       );
 
       // Assert
@@ -1464,7 +1464,7 @@ describe("azureReposInvoker.ts", (): void => {
       await azureReposInvoker.createComment(
         "Comment Content",
         null,
-        CommentThreadStatus.Unknown,
+        CommentThreadStatus.unknown,
       );
 
       // Assert
@@ -1504,12 +1504,12 @@ describe("azureReposInvoker.ts", (): void => {
       await azureReposInvoker.createComment(
         "Comment Content",
         null,
-        CommentThreadStatus.Active,
+        CommentThreadStatus.active,
       );
       await azureReposInvoker.createComment(
         "Comment Content",
         null,
-        CommentThreadStatus.Active,
+        CommentThreadStatus.active,
       );
 
       // Assert
@@ -1570,7 +1570,7 @@ describe("azureReposInvoker.ts", (): void => {
       await azureReposInvoker.createComment(
         "Comment Content",
         "file.ts",
-        CommentThreadStatus.Active,
+        CommentThreadStatus.active,
       );
 
       // Assert
@@ -1631,7 +1631,7 @@ describe("azureReposInvoker.ts", (): void => {
       await azureReposInvoker.createComment(
         "Comment Content",
         "file.ts",
-        CommentThreadStatus.Active,
+        CommentThreadStatus.active,
         true,
       );
 
@@ -1686,7 +1686,7 @@ describe("azureReposInvoker.ts", (): void => {
             azureReposInvoker.updateComment(
               20,
               "Content",
-              CommentThreadStatus.Active,
+              CommentThreadStatus.active,
             );
 
           // Assert
@@ -1744,7 +1744,7 @@ describe("azureReposInvoker.ts", (): void => {
             azureReposInvoker.updateComment(
               20,
               "Content",
-              CommentThreadStatus.Active,
+              CommentThreadStatus.active,
             );
 
           // Assert
@@ -1814,7 +1814,7 @@ describe("azureReposInvoker.ts", (): void => {
       await azureReposInvoker.updateComment(
         20,
         "Content",
-        CommentThreadStatus.Active,
+        CommentThreadStatus.active,
       );
 
       // Assert
@@ -1924,7 +1924,7 @@ describe("azureReposInvoker.ts", (): void => {
       await azureReposInvoker.updateComment(
         20,
         null,
-        CommentThreadStatus.Active,
+        CommentThreadStatus.active,
       );
 
       // Assert

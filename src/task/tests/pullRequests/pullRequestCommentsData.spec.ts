@@ -95,14 +95,14 @@ describe("pullRequestCommentsData.ts", (): void => {
       );
 
       // Act
-      result.metricsCommentThreadStatus = CommentThreadStatus.Active;
+      result.metricsCommentThreadStatus = CommentThreadStatus.active;
 
       // Assert
       assert.equal(result.metricsCommentThreadId, null);
       assert.equal(result.metricsCommentContent, null);
       assert.equal(
         result.metricsCommentThreadStatus,
-        CommentThreadStatus.Active,
+        CommentThreadStatus.active,
       );
       assert.deepEqual(result.filesNotRequiringReview, new Set([
         "file1.ts",

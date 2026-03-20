@@ -145,6 +145,7 @@ export default tseslint.config(
           enforceConst: true,
           ignore: [0, 1],
           ignoreArrayIndexes: true,
+          ignoreEnums: true,
         },
       ],
       "@typescript-eslint/no-misused-new": "error",

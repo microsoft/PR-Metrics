@@ -146,7 +146,7 @@ export default class PullRequestComments {
     this._logger.logDebug("* PullRequestComments.getMetricsCommentStatus()");
 
     if (this._inputs.alwaysCloseComment) {
-      return CommentThreadStatus.Closed;
+      return CommentThreadStatus.closed;
     }
 
     if (await this._codeMetrics.isSmall()) {
@@ -154,11 +154,11 @@ export default class PullRequestComments {
         await this._codeMetrics.isSufficientlyTested();
 
       if (isSufficientlyTested ?? true) {
-        return CommentThreadStatus.Closed;
+        return CommentThreadStatus.closed;
       }
     }
 
-    return CommentThreadStatus.Active;
+    return CommentThreadStatus.active;
   }
 
   private getMetricsCommentData(

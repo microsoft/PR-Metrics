@@ -453,7 +453,7 @@ describe("codeMetricsCalculator.ts", (): void => {
       when(pullRequestComments.getCommentData()).thenResolve(commentData);
       when(pullRequestComments.getMetricsComment()).thenResolve("Description");
       when(pullRequestComments.getMetricsCommentStatus()).thenResolve(
-        CommentThreadStatus.Active,
+        CommentThreadStatus.active,
       );
       const codeMetricsCalculator: CodeMetricsCalculator =
         new CodeMetricsCalculator(
@@ -479,7 +479,7 @@ describe("codeMetricsCalculator.ts", (): void => {
         reposInvoker.updateComment(
           1,
           "Description",
-          CommentThreadStatus.Active,
+          CommentThreadStatus.active,
         ),
       ).once();
     });
@@ -493,7 +493,7 @@ describe("codeMetricsCalculator.ts", (): void => {
       when(pullRequestComments.getCommentData()).thenResolve(commentData);
       when(pullRequestComments.getMetricsComment()).thenResolve("Description");
       when(pullRequestComments.getMetricsCommentStatus()).thenResolve(
-        CommentThreadStatus.Active,
+        CommentThreadStatus.active,
       );
       const codeMetricsCalculator: CodeMetricsCalculator =
         new CodeMetricsCalculator(
@@ -519,7 +519,7 @@ describe("codeMetricsCalculator.ts", (): void => {
         reposInvoker.createComment(
           "Description",
           null,
-          CommentThreadStatus.Active,
+          CommentThreadStatus.active,
         ),
       ).once();
     });
@@ -595,7 +595,7 @@ describe("codeMetricsCalculator.ts", (): void => {
               reposInvoker.createComment(
                 "No Review Required",
                 "file1.ts",
-                CommentThreadStatus.Closed,
+                CommentThreadStatus.closed,
                 false,
               ),
             ).times(file1Comments);
@@ -603,7 +603,7 @@ describe("codeMetricsCalculator.ts", (): void => {
               reposInvoker.createComment(
                 "No Review Required",
                 "file2.ts",
-                CommentThreadStatus.Closed,
+                CommentThreadStatus.closed,
                 false,
               ),
             ).times(file2Comments);
@@ -652,7 +652,7 @@ describe("codeMetricsCalculator.ts", (): void => {
               reposInvoker.createComment(
                 "No Review Required",
                 "file1.ts",
-                CommentThreadStatus.Closed,
+                CommentThreadStatus.closed,
                 true,
               ),
             ).times(file1Comments);
@@ -660,7 +660,7 @@ describe("codeMetricsCalculator.ts", (): void => {
               reposInvoker.createComment(
                 "No Review Required",
                 "file2.ts",
-                CommentThreadStatus.Closed,
+                CommentThreadStatus.closed,
                 true,
               ),
             ).times(file2Comments);

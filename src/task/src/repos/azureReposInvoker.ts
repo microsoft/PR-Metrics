@@ -12,9 +12,9 @@ import {
   type GitPullRequestCommentThread,
 } from "azure-devops-node-api/interfaces/GitInterfaces.js";
 import AzureDevOpsApiWrapper from "../wrappers/azureDevOpsApiWrapper.js";
-import { CommentThreadStatus } from "./interfaces/commentThreadStatus.js";
 import BaseReposInvoker from "./baseReposInvoker.js";
 import type CommentData from "./interfaces/commentData.js";
+import { CommentThreadStatus } from "./interfaces/commentThreadStatus.js";
 import GitInvoker from "../git/gitInvoker.js";
 import type { IGitApi } from "azure-devops-node-api/GitApi.js";
 import type { IRequestHandler } from "azure-devops-node-api/interfaces/common/VsoBaseInterfaces.js";
@@ -68,10 +68,11 @@ export default class AzureReposInvoker extends BaseReposInvoker {
     status: CommentThreadStatus,
   ): AzureCommentThreadStatus {
     switch (status) {
-      case CommentThreadStatus.Active:
+      case CommentThreadStatus.active:
         return AzureCommentThreadStatus.Active;
-      case CommentThreadStatus.Closed:
+      case CommentThreadStatus.closed:
         return AzureCommentThreadStatus.Closed;
+      case CommentThreadStatus.unknown:
       default:
         return AzureCommentThreadStatus.Unknown;
     }
@@ -80,14 +81,15 @@ export default class AzureReposInvoker extends BaseReposInvoker {
   private static fromAzureStatus(
     status: AzureCommentThreadStatus | undefined,
   ): CommentThreadStatus {
-    switch (status) {
-      case AzureCommentThreadStatus.Active:
-        return CommentThreadStatus.Active;
-      case AzureCommentThreadStatus.Closed:
-        return CommentThreadStatus.Closed;
-      default:
-        return CommentThreadStatus.Unknown;
+    if (status === AzureCommentThreadStatus.Active) {
+      return CommentThreadStatus.active;
     }
+
+    if (status === AzureCommentThreadStatus.Closed) {
+      return CommentThreadStatus.closed;
+    }
+
+    return CommentThreadStatus.unknown;
   }
 
   private static convertPullRequestComments(

@@ -858,7 +858,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       assert.equal(result.pullRequestComments[0].content, "PR Content");
       assert.equal(
         result.pullRequestComments[0].status,
-        CommentThreadStatus.Unknown,
+        CommentThreadStatus.unknown,
       );
       assert.equal(result.fileComments.length, 0);
       verify(octokitWrapper.initialize(any())).once();
@@ -910,7 +910,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       assert.equal(result.fileComments.length, 1);
       assert.equal(result.fileComments[0]?.id, 2);
       assert.equal(result.fileComments[0].content, "File Content");
-      assert.equal(result.fileComments[0].status, CommentThreadStatus.Unknown);
+      assert.equal(result.fileComments[0].status, CommentThreadStatus.unknown);
       assert.equal(result.fileComments[0].fileName, "file.ts");
       verify(octokitWrapper.initialize(any())).once();
       verify(
@@ -976,12 +976,12 @@ describe("gitHubReposInvoker.ts", (): void => {
       assert.equal(result.pullRequestComments[0].content, "PR Content");
       assert.equal(
         result.pullRequestComments[0].status,
-        CommentThreadStatus.Unknown,
+        CommentThreadStatus.unknown,
       );
       assert.equal(result.fileComments.length, 1);
       assert.equal(result.fileComments[0]?.id, 2);
       assert.equal(result.fileComments[0].content, "File Content");
-      assert.equal(result.fileComments[0].status, CommentThreadStatus.Unknown);
+      assert.equal(result.fileComments[0].status, CommentThreadStatus.unknown);
       assert.equal(result.fileComments[0].fileName, "file.ts");
       verify(octokitWrapper.initialize(any())).once();
       verify(

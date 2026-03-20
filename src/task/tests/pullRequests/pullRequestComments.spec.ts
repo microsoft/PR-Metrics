@@ -30,11 +30,11 @@ describe("pullRequestComments.ts", (): void => {
     reposInvoker = mock(ReposInvoker);
     complexGitPullRequestComments = {
       fileComments: [
-        { content: "❗ **This file doesn't require review.**", fileName: "file2.ts", id: 30, status: CommentThreadStatus.Active },
-        { content: "❗ **This file doesn't require review.**", fileName: "file5.ts", id: 40, status: CommentThreadStatus.Active },
+        { content: "❗ **This file doesn't require review.**", fileName: "file2.ts", id: 30, status: CommentThreadStatus.active },
+        { content: "❗ **This file doesn't require review.**", fileName: "file5.ts", id: 40, status: CommentThreadStatus.active },
       ],
       pullRequestComments: [
-        { content: "# PR Metrics\n", id: 20, status: CommentThreadStatus.Active },
+        { content: "# PR Metrics\n", id: 20, status: CommentThreadStatus.active },
       ],
     };
 
@@ -177,10 +177,10 @@ describe("pullRequestComments.ts", (): void => {
 
     {
       const testCases: PullRequestCommentData[][] = [
-        [{ content: "# PR Metrics\n", id: 20, status: CommentThreadStatus.Unknown }],
+        [{ content: "# PR Metrics\n", id: 20, status: CommentThreadStatus.unknown }],
         [
-          { content: "# PR Metrics", id: 20, status: CommentThreadStatus.Unknown },
-          { content: "# PR Metrics\n", id: 20, status: CommentThreadStatus.Unknown },
+          { content: "# PR Metrics", id: 20, status: CommentThreadStatus.unknown },
+          { content: "# PR Metrics\n", id: 20, status: CommentThreadStatus.unknown },
         ],
       ];
 
@@ -206,7 +206,7 @@ describe("pullRequestComments.ts", (): void => {
           assert.equal(result.metricsCommentThreadId, 20);
           assert.equal(
             result.metricsCommentThreadStatus,
-            CommentThreadStatus.Unknown,
+            CommentThreadStatus.unknown,
           );
           assert.equal(result.metricsCommentContent, "# PR Metrics\n");
           assert.deepEqual(result.filesNotRequiringReview, new Set<string>());
@@ -231,21 +231,21 @@ describe("pullRequestComments.ts", (): void => {
       const testCases: TestCaseType[] = [
         {
           fileComments: [
-            { content: "❗ **This file doesn't require review.**", fileName: "file2.ts", id: 20, status: CommentThreadStatus.Unknown },
+            { content: "❗ **This file doesn't require review.**", fileName: "file2.ts", id: 20, status: CommentThreadStatus.unknown },
           ],
           filesNotRequiringReview: ["folder/file1.ts", "file3.ts"],
         },
         {
           fileComments: [
-            { content: "Content", fileName: "folder/file1.ts", id: 20, status: CommentThreadStatus.Unknown },
-            { content: "❗ **This file doesn't require review.**", fileName: "file2.ts", id: 20, status: CommentThreadStatus.Unknown },
+            { content: "Content", fileName: "folder/file1.ts", id: 20, status: CommentThreadStatus.unknown },
+            { content: "❗ **This file doesn't require review.**", fileName: "file2.ts", id: 20, status: CommentThreadStatus.unknown },
           ],
           filesNotRequiringReview: ["folder/file1.ts", "file3.ts"],
         },
         {
           fileComments: [
-            { content: "❗ **This file doesn't require review.**", fileName: "folder/file1.ts", id: 20, status: CommentThreadStatus.Unknown },
-            { content: "❗ **This file doesn't require review.**", fileName: "file2.ts", id: 20, status: CommentThreadStatus.Unknown },
+            { content: "❗ **This file doesn't require review.**", fileName: "folder/file1.ts", id: 20, status: CommentThreadStatus.unknown },
+            { content: "❗ **This file doesn't require review.**", fileName: "file2.ts", id: 20, status: CommentThreadStatus.unknown },
           ],
           filesNotRequiringReview: ["file3.ts"],
         },
@@ -308,21 +308,21 @@ describe("pullRequestComments.ts", (): void => {
         {
           deletedFilesNotRequiringReview: ["folder/file1.ts", "file3.ts"],
           fileComments: [
-            { content: "❗ **This file doesn't require review.**", fileName: "file2.ts", id: 0, status: CommentThreadStatus.Unknown },
+            { content: "❗ **This file doesn't require review.**", fileName: "file2.ts", id: 0, status: CommentThreadStatus.unknown },
           ],
         },
         {
           deletedFilesNotRequiringReview: ["folder/file1.ts", "file3.ts"],
           fileComments: [
-            { content: "Content", fileName: "folder/file1.ts", id: 0, status: CommentThreadStatus.Unknown },
-            { content: "❗ **This file doesn't require review.**", fileName: "file2.ts", id: 0, status: CommentThreadStatus.Unknown },
+            { content: "Content", fileName: "folder/file1.ts", id: 0, status: CommentThreadStatus.unknown },
+            { content: "❗ **This file doesn't require review.**", fileName: "file2.ts", id: 0, status: CommentThreadStatus.unknown },
           ],
         },
         {
           deletedFilesNotRequiringReview: ["file3.ts"],
           fileComments: [
-            { content: "❗ **This file doesn't require review.**", fileName: "folder/file1.ts", id: 0, status: CommentThreadStatus.Unknown },
-            { content: "❗ **This file doesn't require review.**", fileName: "file2.ts", id: 0, status: CommentThreadStatus.Unknown },
+            { content: "❗ **This file doesn't require review.**", fileName: "folder/file1.ts", id: 0, status: CommentThreadStatus.unknown },
+            { content: "❗ **This file doesn't require review.**", fileName: "file2.ts", id: 0, status: CommentThreadStatus.unknown },
           ],
         },
       ];
@@ -403,7 +403,7 @@ describe("pullRequestComments.ts", (): void => {
       assert.equal(result.metricsCommentThreadId, 20);
       assert.equal(
         result.metricsCommentThreadStatus,
-        CommentThreadStatus.Active,
+        CommentThreadStatus.active,
       );
       assert.equal(result.metricsCommentContent, "# PR Metrics\n");
       assert.deepEqual(result.filesNotRequiringReview, new Set(["folder/file1.ts"]));
@@ -446,7 +446,7 @@ describe("pullRequestComments.ts", (): void => {
       assert.equal(result.metricsCommentThreadId, 20);
       assert.equal(
         result.metricsCommentThreadStatus,
-        CommentThreadStatus.Active,
+        CommentThreadStatus.active,
       );
       assert.equal(result.metricsCommentContent, "# PR Metrics\n");
       assert.deepEqual(result.filesNotRequiringReview, new Set<string>());
@@ -494,7 +494,7 @@ describe("pullRequestComments.ts", (): void => {
       assert.equal(result.metricsCommentThreadId, 20);
       assert.equal(
         result.metricsCommentThreadStatus,
-        CommentThreadStatus.Active,
+        CommentThreadStatus.active,
       );
       assert.equal(result.metricsCommentContent, "# PR Metrics\n");
       assert.deepEqual(result.filesNotRequiringReview, new Set(["folder/file1.ts"]));
@@ -539,7 +539,7 @@ describe("pullRequestComments.ts", (): void => {
       assert.equal(result.metricsCommentThreadId, 20);
       assert.equal(
         result.metricsCommentThreadStatus,
-        CommentThreadStatus.Active,
+        CommentThreadStatus.active,
       );
       assert.equal(result.metricsCommentContent, "# PR Metrics\n");
       assert.deepEqual(result.filesNotRequiringReview, new Set(["folder/file1.ts"]));
@@ -560,10 +560,10 @@ describe("pullRequestComments.ts", (): void => {
       // Arrange
       const comments: CommentData = {
         fileComments: [
-          { content: "", fileName: "file.ts", id: 0, status: CommentThreadStatus.Unknown },
+          { content: "", fileName: "file.ts", id: 0, status: CommentThreadStatus.unknown },
         ],
         pullRequestComments: [
-          { content: "", id: 0, status: CommentThreadStatus.Unknown },
+          { content: "", id: 0, status: CommentThreadStatus.unknown },
         ],
       };
       when(reposInvoker.getComments()).thenResolve(comments);
@@ -812,7 +812,7 @@ describe("pullRequestComments.ts", (): void => {
         await pullRequestComments.getMetricsCommentStatus();
 
       // Assert
-      assert.equal(result, CommentThreadStatus.Closed);
+      assert.equal(result, CommentThreadStatus.closed);
       verify(
         logger.logDebug("* PullRequestComments.getMetricsCommentStatus()"),
       ).once();
@@ -842,7 +842,7 @@ describe("pullRequestComments.ts", (): void => {
             await pullRequestComments.getMetricsCommentStatus();
 
           // Assert
-          assert.equal(result, CommentThreadStatus.Closed);
+          assert.equal(result, CommentThreadStatus.closed);
           verify(
             logger.logDebug("* PullRequestComments.getMetricsCommentStatus()"),
           ).once();
@@ -897,7 +897,7 @@ describe("pullRequestComments.ts", (): void => {
               await pullRequestComments.getMetricsCommentStatus();
 
             // Assert
-            assert.equal(result, CommentThreadStatus.Active);
+            assert.equal(result, CommentThreadStatus.active);
             verify(
               logger.logDebug(
                 "* PullRequestComments.getMetricsCommentStatus()",

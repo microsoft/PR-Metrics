@@ -385,7 +385,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
           result.pullRequestComments.push({
             content,
             id: value.id,
-            status: CommentThreadStatus.Unknown,
+            status: CommentThreadStatus.unknown,
           });
         }
       }
@@ -399,7 +399,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
           content,
           fileName: file,
           id: value.id,
-          status: CommentThreadStatus.Unknown,
+          status: CommentThreadStatus.unknown,
         });
       }
     }

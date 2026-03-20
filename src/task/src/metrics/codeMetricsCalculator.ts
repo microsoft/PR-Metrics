@@ -193,7 +193,7 @@ export default class CodeMetricsCalculator {
     await this._reposInvoker.createComment(
       noReviewComment,
       fileName,
-      CommentThreadStatus.Closed,
+      CommentThreadStatus.closed,
       isFileDeleted,
     );
   }

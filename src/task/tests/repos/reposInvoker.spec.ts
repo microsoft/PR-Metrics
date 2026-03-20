@@ -587,7 +587,7 @@ describe("reposInvoker.ts", (): void => {
       await reposInvoker.createComment(
         "",
         "",
-        CommentThreadStatus.Active,
+        CommentThreadStatus.active,
         false,
       );
 
@@ -596,7 +596,7 @@ describe("reposInvoker.ts", (): void => {
         azureReposInvoker.createComment(
           "",
           "",
-          CommentThreadStatus.Active,
+          CommentThreadStatus.active,
           false,
         ),
       ).once();
@@ -605,7 +605,7 @@ describe("reposInvoker.ts", (): void => {
           "",
           "",
           // @ts-expect-error -- Interface is called with additional parameters not present in implementation.
-          CommentThreadStatus.Active,
+          CommentThreadStatus.active,
           false,
         ),
       ).never();
@@ -629,7 +629,7 @@ describe("reposInvoker.ts", (): void => {
       await reposInvoker.createComment(
         "",
         "",
-        CommentThreadStatus.Active,
+        CommentThreadStatus.active,
         false,
       );
 
@@ -638,7 +638,7 @@ describe("reposInvoker.ts", (): void => {
         azureReposInvoker.createComment(
           "",
           "",
-          CommentThreadStatus.Active,
+          CommentThreadStatus.active,
           false,
         ),
       ).never();
@@ -647,7 +647,7 @@ describe("reposInvoker.ts", (): void => {
           "",
           "",
           // @ts-expect-error -- Interface is called with additional parameters not present in implementation.
-          CommentThreadStatus.Active,
+          CommentThreadStatus.active,
           false,
         ),
       ).once();
@@ -675,7 +675,7 @@ describe("reposInvoker.ts", (): void => {
           await reposInvoker.createComment(
             "",
             "",
-            CommentThreadStatus.Active,
+            CommentThreadStatus.active,
             false,
           );
 
@@ -684,7 +684,7 @@ describe("reposInvoker.ts", (): void => {
             azureReposInvoker.createComment(
               "",
               "",
-              CommentThreadStatus.Active,
+              CommentThreadStatus.active,
               false,
             ),
           ).never();
@@ -693,7 +693,7 @@ describe("reposInvoker.ts", (): void => {
               "",
               "",
               // @ts-expect-error -- Interface is called with additional parameters not present in implementation.
-              CommentThreadStatus.Active,
+              CommentThreadStatus.active,
               false,
             ),
           ).once();
@@ -717,7 +717,7 @@ describe("reposInvoker.ts", (): void => {
 
       // Act
       const func: () => Promise<void> = async () =>
-        reposInvoker.createComment("", "", CommentThreadStatus.Active, false);
+        reposInvoker.createComment("", "", CommentThreadStatus.active, false);
 
       // Assert
       await AssertExtensions.toThrowAsync(
@@ -728,7 +728,7 @@ describe("reposInvoker.ts", (): void => {
         azureReposInvoker.createComment(
           "",
           "",
-          CommentThreadStatus.Active,
+          CommentThreadStatus.active,
           false,
         ),
       ).never();
@@ -737,7 +737,7 @@ describe("reposInvoker.ts", (): void => {
           "",
           "",
           // @ts-expect-error -- Interface is called with additional parameters not present in implementation.
-          CommentThreadStatus.Active,
+          CommentThreadStatus.active,
           false,
         ),
       ).never();
@@ -756,7 +756,7 @@ describe("reposInvoker.ts", (): void => {
 
       // Act
       const func: () => Promise<void> = async () =>
-        reposInvoker.createComment("", "", CommentThreadStatus.Active, false);
+        reposInvoker.createComment("", "", CommentThreadStatus.active, false);
 
       // Assert
       await AssertExtensions.toThrowAsync(
@@ -767,7 +767,7 @@ describe("reposInvoker.ts", (): void => {
         azureReposInvoker.createComment(
           "",
           "",
-          CommentThreadStatus.Active,
+          CommentThreadStatus.active,
           false,
         ),
       ).never();
@@ -776,7 +776,7 @@ describe("reposInvoker.ts", (): void => {
           "",
           "",
           // @ts-expect-error -- Interface is called with additional parameters not present in implementation.
-          CommentThreadStatus.Active,
+          CommentThreadStatus.active,
           false,
         ),
       ).never();
