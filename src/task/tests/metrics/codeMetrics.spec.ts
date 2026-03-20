@@ -1754,16 +1754,12 @@ describe("codeMetrics.ts", (): void => {
           ).once();
           verify(logger.logDebug("* CodeMetrics.initialize()")).once();
           verify(
-            logger.logDebug(
-              "* CodeMetrics.initializeIsSufficientlyTested()",
-            ),
+            logger.logDebug("* CodeMetrics.initializeIsSufficientlyTested()"),
           ).once();
           verify(
             logger.logDebug("* CodeMetrics.initializeSizeIndicator()"),
           ).once();
-          verify(
-            logger.logDebug("* CodeMetrics.calculateSize()"),
-          ).once();
+          verify(logger.logDebug("* CodeMetrics.calculateSize()")).once();
         });
       });
     }
@@ -1909,9 +1905,7 @@ describe("codeMetrics.ts", (): void => {
       verify(
         logger.logDebug("* CodeMetrics.initializeIsSufficientlyTested()"),
       ).once();
-      verify(
-        logger.logDebug("* CodeMetrics.initializeSizeIndicator()"),
-      ).once();
+      verify(logger.logDebug("* CodeMetrics.initializeSizeIndicator()")).once();
       verify(logger.logDebug("* CodeMetrics.calculateSize()")).once();
     });
 
