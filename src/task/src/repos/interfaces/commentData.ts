@@ -7,25 +7,16 @@ import type FileCommentData from "./fileCommentData.js";
 import type PullRequestCommentData from "./pullRequestCommentData.js";
 
 /**
- * A wrapper grouping types of pull request comments.
+ * An interface grouping types of pull request comments.
  */
-export default class CommentData {
-  private readonly _pullRequestComments: PullRequestCommentData[] = [];
-  private readonly _fileComments: FileCommentData[] = [];
+export default interface CommentData {
+  /**
+   * The set of pull request comments, i.e. those comments associated with no file.
+   */
+  pullRequestComments: PullRequestCommentData[];
 
   /**
-   * Gets the set of pull request comments, i.e. those comments associated with no file.
-   * @returns The pull request comments.
+   * The set of file comments, i.e. those comments associated with a specific file.
    */
-  public get pullRequestComments(): PullRequestCommentData[] {
-    return this._pullRequestComments;
-  }
-
-  /**
-   * Gets the set of file comments, i.e. those comments associated with a specific file.
-   * @returns The file comments.
-   */
-  public get fileComments(): FileCommentData[] {
-    return this._fileComments;
-  }
+  fileComments: FileCommentData[];
 }

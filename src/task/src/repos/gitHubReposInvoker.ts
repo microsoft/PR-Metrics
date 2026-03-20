@@ -17,13 +17,12 @@ import type {
 } from "../wrappers/octokitTypes.js";
 import { decimalRadix, httpUnprocessableEntity } from "../utilities/constants.js";
 import BaseReposInvoker from "./baseReposInvoker.js";
-import CommentData from "./interfaces/commentData.js";
-import FileCommentData from "./interfaces/fileCommentData.js";
+import type CommentData from "./interfaces/commentData.js";
+import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces.js";
 import GitInvoker from "../git/gitInvoker.js";
 import Logger from "../utilities/logger.js";
 import type { OctokitOptions } from "@octokit/core";
 import OctokitWrapper from "../wrappers/octokitWrapper.js";
-import PullRequestCommentData from "./interfaces/pullRequestCommentData.js";
 import type PullRequestDetailsInterface from "./interfaces/pullRequestDetailsInterface.js";
 import { RequestError } from "octokit";
 import RunnerInvoker from "../runners/runnerInvoker.js";
@@ -379,15 +378,17 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
   ): CommentData {
     this._logger.logDebug("* GitHubReposInvoker.convertPullRequestComments()");
 
-    const result: CommentData = new CommentData();
+    const result: CommentData = { fileComments: [], pullRequestComments: [] };
 
     if (pullRequestComments !== null) {
       for (const value of pullRequestComments.data) {
         const content: string | undefined = value.body;
         if (typeof content !== "undefined") {
-          result.pullRequestComments.push(
-            new PullRequestCommentData(value.id, content),
-          );
+          result.pullRequestComments.push({
+            content,
+            id: value.id,
+            status: CommentThreadStatus.Unknown,
+          });
         }
       }
     }
@@ -396,7 +397,12 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
       for (const value of fileComments.data) {
         const content: string = value.body;
         const file: string = value.path;
-        result.fileComments.push(new FileCommentData(value.id, content, file));
+        result.fileComments.push({
+          content,
+          fileName: file,
+          id: value.id,
+          status: CommentThreadStatus.Unknown,
+        });
       }
     }
 

@@ -3,7 +3,9 @@
  * Licensed under the MIT License.
  */
 
+import packageJson from "../../../../package.json" with { type: "json" };
+
 /**
- * The current version of PR Metrics.
+ * The current version of PR Metrics, derived from package.json.
  */
-export const version = "1.7.12";
+export const version: string = packageJson.version;

@@ -7,12 +7,12 @@ import "reflect-metadata";
 import { instance, mock, verify, when } from "ts-mockito";
 import CodeMetrics from "../../src/metrics/codeMetrics.js";
 import CodeMetricsData from "../../src/metrics/codeMetricsData.js";
-import CommentData from "../../src/repos/interfaces/commentData.js";
+import type CommentData from "../../src/repos/interfaces/commentData.js";
 import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces.js";
-import FileCommentData from "../../src/repos/interfaces/fileCommentData.js";
+import type FileCommentData from "../../src/repos/interfaces/fileCommentData.js";
 import Inputs from "../../src/metrics/inputs.js";
 import Logger from "../../src/utilities/logger.js";
-import PullRequestCommentData from "../../src/repos/interfaces/pullRequestCommentData.js";
+import type PullRequestCommentData from "../../src/repos/interfaces/pullRequestCommentData.js";
 import PullRequestComments from "../../src/pullRequests/pullRequestComments.js";
 import PullRequestCommentsData from "../../src/pullRequests/pullRequestCommentsData.js";
 import ReposInvoker from "../../src/repos/reposInvoker.js";
@@ -29,27 +29,15 @@ describe("pullRequestComments.ts", (): void => {
 
   beforeEach((): void => {
     reposInvoker = mock(ReposInvoker);
-    const pullRequestComment: PullRequestCommentData =
-      new PullRequestCommentData(
-        20,
-        "# PR Metrics\n",
-        CommentThreadStatus.Active,
-      );
-    const fileComment1: FileCommentData = new FileCommentData(
-      30,
-      "❗ **This file doesn't require review.**",
-      "file2.ts",
-      CommentThreadStatus.Active,
-    );
-    const fileComment2: FileCommentData = new FileCommentData(
-      40,
-      "❗ **This file doesn't require review.**",
-      "file5.ts",
-      CommentThreadStatus.Active,
-    );
-    complexGitPullRequestComments = new CommentData();
-    complexGitPullRequestComments.pullRequestComments.push(pullRequestComment);
-    complexGitPullRequestComments.fileComments.push(fileComment1, fileComment2);
+    complexGitPullRequestComments = {
+      fileComments: [
+        { content: "❗ **This file doesn't require review.**", fileName: "file2.ts", id: 30, status: CommentThreadStatus.Active },
+        { content: "❗ **This file doesn't require review.**", fileName: "file5.ts", id: 40, status: CommentThreadStatus.Active },
+      ],
+      pullRequestComments: [
+        { content: "# PR Metrics\n", id: 20, status: CommentThreadStatus.Active },
+      ],
+    };
 
     codeMetrics = mock(CodeMetrics);
     when(codeMetrics.isSmall()).thenResolve(true);
@@ -164,7 +152,7 @@ describe("pullRequestComments.ts", (): void => {
   describe("getCommentData()", (): void => {
     it("should return the expected result when no comment is present", async (): Promise<void> => {
       // Arrange
-      const comments: CommentData = new CommentData();
+      const comments: CommentData = { fileComments: [], pullRequestComments: [] };
       when(reposInvoker.getComments()).thenResolve(comments);
       const pullRequestComments: PullRequestComments = new PullRequestComments(
         instance(codeMetrics),
@@ -190,18 +178,17 @@ describe("pullRequestComments.ts", (): void => {
 
     {
       const testCases: PullRequestCommentData[][] = [
-        [new PullRequestCommentData(20, "# PR Metrics\n")],
+        [{ content: "# PR Metrics\n", id: 20, status: CommentThreadStatus.Unknown }],
         [
-          new PullRequestCommentData(20, "# PR Metrics"),
-          new PullRequestCommentData(20, "# PR Metrics\n"),
+          { content: "# PR Metrics", id: 20, status: CommentThreadStatus.Unknown },
+          { content: "# PR Metrics\n", id: 20, status: CommentThreadStatus.Unknown },
         ],
       ];
 
       testCases.forEach((data: PullRequestCommentData[]): void => {
         it("should return the expected result when the metrics comment is present", async (): Promise<void> => {
           // Arrange
-          const comments: CommentData = new CommentData();
-          comments.pullRequestComments.push(...data);
+          const comments: CommentData = { fileComments: [], pullRequestComments: [...data] };
           when(reposInvoker.getComments()).thenResolve(comments);
           const pullRequestComments: PullRequestComments =
             new PullRequestComments(
@@ -245,37 +232,21 @@ describe("pullRequestComments.ts", (): void => {
       const testCases: TestCaseType[] = [
         {
           fileComments: [
-            new FileCommentData(
-              20,
-              "❗ **This file doesn't require review.**",
-              "file2.ts",
-            ),
+            { content: "❗ **This file doesn't require review.**", fileName: "file2.ts", id: 20, status: CommentThreadStatus.Unknown },
           ],
           filesNotRequiringReview: ["folder/file1.ts", "file3.ts"],
         },
         {
           fileComments: [
-            new FileCommentData(20, "Content", "folder/file1.ts"),
-            new FileCommentData(
-              20,
-              "❗ **This file doesn't require review.**",
-              "file2.ts",
-            ),
+            { content: "Content", fileName: "folder/file1.ts", id: 20, status: CommentThreadStatus.Unknown },
+            { content: "❗ **This file doesn't require review.**", fileName: "file2.ts", id: 20, status: CommentThreadStatus.Unknown },
           ],
           filesNotRequiringReview: ["folder/file1.ts", "file3.ts"],
         },
         {
           fileComments: [
-            new FileCommentData(
-              20,
-              "❗ **This file doesn't require review.**",
-              "folder/file1.ts",
-            ),
-            new FileCommentData(
-              20,
-              "❗ **This file doesn't require review.**",
-              "file2.ts",
-            ),
+            { content: "❗ **This file doesn't require review.**", fileName: "folder/file1.ts", id: 20, status: CommentThreadStatus.Unknown },
+            { content: "❗ **This file doesn't require review.**", fileName: "file2.ts", id: 20, status: CommentThreadStatus.Unknown },
           ],
           filesNotRequiringReview: ["file3.ts"],
         },
@@ -285,8 +256,7 @@ describe("pullRequestComments.ts", (): void => {
         ({ fileComments, filesNotRequiringReview }: TestCaseType): void => {
           it(`should return the expected result for files not requiring review when the comment is present with files '${JSON.stringify(fileComments)}'`, async (): Promise<void> => {
             // Arrange
-            const comments: CommentData = new CommentData();
-            comments.fileComments.push(...fileComments);
+            const comments: CommentData = { fileComments: [...fileComments], pullRequestComments: [] };
             when(reposInvoker.getComments()).thenResolve(comments);
             when(codeMetrics.getFilesNotRequiringReview()).thenResolve(new Set([
               "folder/file1.ts",
@@ -339,37 +309,21 @@ describe("pullRequestComments.ts", (): void => {
         {
           deletedFilesNotRequiringReview: ["folder/file1.ts", "file3.ts"],
           fileComments: [
-            new FileCommentData(
-              0,
-              "❗ **This file doesn't require review.**",
-              "file2.ts",
-            ),
+            { content: "❗ **This file doesn't require review.**", fileName: "file2.ts", id: 0, status: CommentThreadStatus.Unknown },
           ],
         },
         {
           deletedFilesNotRequiringReview: ["folder/file1.ts", "file3.ts"],
           fileComments: [
-            new FileCommentData(0, "Content", "folder/file1.ts"),
-            new FileCommentData(
-              0,
-              "❗ **This file doesn't require review.**",
-              "file2.ts",
-            ),
+            { content: "Content", fileName: "folder/file1.ts", id: 0, status: CommentThreadStatus.Unknown },
+            { content: "❗ **This file doesn't require review.**", fileName: "file2.ts", id: 0, status: CommentThreadStatus.Unknown },
           ],
         },
         {
           deletedFilesNotRequiringReview: ["file3.ts"],
           fileComments: [
-            new FileCommentData(
-              0,
-              "❗ **This file doesn't require review.**",
-              "folder/file1.ts",
-            ),
-            new FileCommentData(
-              0,
-              "❗ **This file doesn't require review.**",
-              "file2.ts",
-            ),
+            { content: "❗ **This file doesn't require review.**", fileName: "folder/file1.ts", id: 0, status: CommentThreadStatus.Unknown },
+            { content: "❗ **This file doesn't require review.**", fileName: "file2.ts", id: 0, status: CommentThreadStatus.Unknown },
           ],
         },
       ];
@@ -381,8 +335,7 @@ describe("pullRequestComments.ts", (): void => {
         }: TestCaseType): void => {
           it(`should return the expected result for deleted files not requiring review when the comment is present with files '${JSON.stringify(fileComments)}'`, async (): Promise<void> => {
             // Arrange
-            const comments: CommentData = new CommentData();
-            comments.fileComments.push(...fileComments);
+            const comments: CommentData = { fileComments: [...fileComments], pullRequestComments: [] };
             when(reposInvoker.getComments()).thenResolve(comments);
             when(codeMetrics.getDeletedFilesNotRequiringReview()).thenResolve(new Set([
               "folder/file1.ts",
@@ -606,16 +559,14 @@ describe("pullRequestComments.ts", (): void => {
 
     it("should continue when no comment content is present", async (): Promise<void> => {
       // Arrange
-      const pullRequestComment: PullRequestCommentData =
-        new PullRequestCommentData(0, "");
-      const fileComment: FileCommentData = new FileCommentData(
-        0,
-        "",
-        "file.ts",
-      );
-      const comments: CommentData = new CommentData();
-      comments.pullRequestComments.push(pullRequestComment);
-      comments.fileComments.push(fileComment);
+      const comments: CommentData = {
+        fileComments: [
+          { content: "", fileName: "file.ts", id: 0, status: CommentThreadStatus.Unknown },
+        ],
+        pullRequestComments: [
+          { content: "", id: 0, status: CommentThreadStatus.Unknown },
+        ],
+      };
       when(reposInvoker.getComments()).thenResolve(comments);
       when(codeMetrics.getFilesNotRequiringReview()).thenResolve(new Set(["file.ts"]));
       const pullRequestComments: PullRequestComments = new PullRequestComments(

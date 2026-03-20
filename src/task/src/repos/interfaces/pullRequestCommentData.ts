@@ -3,40 +3,24 @@
  * Licensed under the MIT License.
  */
 
-import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces.js";
+import type { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces.js";
 
 /**
- * A class representing a pull request comment.
+ * An interface representing a pull request comment.
  */
-export default class PullRequestCommentData {
+export default interface PullRequestCommentData {
   /**
    * The ID associated with the comment.
    */
-  public readonly id: number;
+  readonly id: number;
 
   /**
    * The content (i.e., the text) associated with the comment.
    */
-  public readonly content: string;
+  readonly content: string;
 
   /**
    * The status associated with the comment.
    */
-  public readonly status: CommentThreadStatus;
-
-  /**
-   * Initializes a new instance of the `PullRequestCommentData` class.
-   * @param id The comment ID.
-   * @param content The content (i.e., the text) associated with the comment.
-   * @param status The status associated with the comment.
-   */
-  public constructor(
-    id: number,
-    content: string,
-    status?: CommentThreadStatus,
-  ) {
-    this.id = id;
-    this.content = content;
-    this.status = status ?? CommentThreadStatus.Unknown;
-  }
+  readonly status: CommentThreadStatus;
 }

@@ -13,13 +13,11 @@ import {
 } from "azure-devops-node-api/interfaces/GitInterfaces.js";
 import AzureDevOpsApiWrapper from "../wrappers/azureDevOpsApiWrapper.js";
 import BaseReposInvoker from "./baseReposInvoker.js";
-import CommentData from "./interfaces/commentData.js";
-import FileCommentData from "./interfaces/fileCommentData.js";
+import type CommentData from "./interfaces/commentData.js";
 import GitInvoker from "../git/gitInvoker.js";
 import type { IGitApi } from "azure-devops-node-api/GitApi.js";
 import type { IRequestHandler } from "azure-devops-node-api/interfaces/common/VsoBaseInterfaces.js";
 import Logger from "../utilities/logger.js";
-import PullRequestCommentData from "./interfaces/pullRequestCommentData.js";
 import type PullRequestDetailsInterface from "./interfaces/pullRequestDetailsInterface.js";
 import RunnerInvoker from "../runners/runnerInvoker.js";
 import TokenManager from "./tokenManager.js";
@@ -70,7 +68,7 @@ export default class AzureReposInvoker extends BaseReposInvoker {
   private static convertPullRequestComments(
     comments: GitPullRequestCommentThread[],
   ): CommentData {
-    const result: CommentData = new CommentData();
+    const result: CommentData = { fileComments: [], pullRequestComments: [] };
 
     for (const [index, value] of comments.entries()) {
       const id: number = Validator.validateNumber(
@@ -96,18 +94,19 @@ export default class AzureReposInvoker extends BaseReposInvoker {
         value.threadContext === null ||
         typeof value.threadContext === "undefined"
       ) {
-        result.pullRequestComments.push(
-          new PullRequestCommentData(id, content, status),
-        );
+        result.pullRequestComments.push({ content, id, status });
       } else {
         const fileName: string | undefined = value.threadContext.filePath;
         if (typeof fileName === "undefined" || fileName.length <= 1) {
           continue;
         }
 
-        result.fileComments.push(
-          new FileCommentData(id, content, fileName.substring(1), status),
-        );
+        result.fileComments.push({
+          content,
+          fileName: fileName.substring(1),
+          id,
+          status,
+        });
       }
     }
 
