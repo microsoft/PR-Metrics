@@ -44,15 +44,12 @@ stages:
               inputs:
                 versionSpec: 20.20.0
 
-            - task: npmAuthenticate@0
-              displayName: npm – Authenticate
-              inputs:
-                workingFile: .npmrc
-
             - task: Npm@1
               displayName: npm – Install Dependencies
               inputs:
                 command: ci
+                customRegistry: useFeed
+                customFeed: Office
 
             - task: Npm@1
               displayName: npm – Build Release
