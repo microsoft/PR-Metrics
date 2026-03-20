@@ -1733,7 +1733,7 @@ describe("codeMetrics.ts", (): void => {
       const testCases: string[] = ["", "   ", "\t", "\n", "\t\n"];
 
       testCases.forEach((gitDiffSummary: string): void => {
-        it(`should throw when the Git diff summary '${gitDiffSummary}' is empty`, async (): Promise<void> => {
+        it(`should return an empty array when the Git diff summary '${gitDiffSummary}' is empty`, async (): Promise<void> => {
           // Arrange
           when(gitInvoker.getDiffSummary()).thenResolve(gitDiffSummary);
           const codeMetrics: CodeMetrics = new CodeMetrics(
@@ -1744,18 +1744,26 @@ describe("codeMetrics.ts", (): void => {
           );
 
           // Act
-          const func: () => Promise<string[]> = async () =>
-            codeMetrics.getFilesNotRequiringReview();
+          const result: string[] =
+            await codeMetrics.getFilesNotRequiringReview();
 
           // Assert
-          await AssertExtensions.toThrowAsync(
-            func,
-            "The Git diff summary is empty.",
-          );
+          assert.deepEqual(result, []);
           verify(
             logger.logDebug("* CodeMetrics.getFilesNotRequiringReview()"),
           ).once();
           verify(logger.logDebug("* CodeMetrics.initialize()")).once();
+          verify(
+            logger.logDebug(
+              "* CodeMetrics.initializeIsSufficientlyTested()",
+            ),
+          ).once();
+          verify(
+            logger.logDebug("* CodeMetrics.initializeSizeIndicator()"),
+          ).once();
+          verify(
+            logger.logDebug("* CodeMetrics.calculateSize()"),
+          ).once();
         });
       });
     }
@@ -1878,7 +1886,7 @@ describe("codeMetrics.ts", (): void => {
   });
 
   describe("getDeletedFilesNotRequiringReview()", (): void => {
-    it("should throw when the Git diff summary '' is empty", async (): Promise<void> => {
+    it("should return an empty array when the Git diff summary '' is empty", async (): Promise<void> => {
       // Arrange
       when(gitInvoker.getDiffSummary()).thenResolve("");
       const codeMetrics: CodeMetrics = new CodeMetrics(
@@ -1889,18 +1897,22 @@ describe("codeMetrics.ts", (): void => {
       );
 
       // Act
-      const func: () => Promise<string[]> = async () =>
-        codeMetrics.getDeletedFilesNotRequiringReview();
+      const result: string[] =
+        await codeMetrics.getDeletedFilesNotRequiringReview();
 
       // Assert
-      await AssertExtensions.toThrowAsync(
-        func,
-        "The Git diff summary is empty.",
-      );
+      assert.deepEqual(result, []);
       verify(
         logger.logDebug("* CodeMetrics.getDeletedFilesNotRequiringReview()"),
       ).once();
       verify(logger.logDebug("* CodeMetrics.initialize()")).once();
+      verify(
+        logger.logDebug("* CodeMetrics.initializeIsSufficientlyTested()"),
+      ).once();
+      verify(
+        logger.logDebug("* CodeMetrics.initializeSizeIndicator()"),
+      ).once();
+      verify(logger.logDebug("* CodeMetrics.calculateSize()")).once();
     });
 
     it("should throw when the file name in the Git diff summary '0' cannot be parsed", async (): Promise<void> => {
