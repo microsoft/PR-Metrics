@@ -16,7 +16,7 @@ import {
 } from "../../src/utilities/constants.js";
 import { instance, mock, verify, when } from "ts-mockito";
 import type CommentData from "../../src/repos/interfaces/commentData.js";
-import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces.js";
+import { CommentThreadStatus } from "../../src/repos/interfaces/commentThreadStatus.js";
 import type ErrorWithStatusInterface from "../../src/repos/interfaces/errorWithStatusInterface.js";
 import GitHubReposInvoker from "../../src/repos/gitHubReposInvoker.js";
 import GitInvoker from "../../src/git/gitInvoker.js";

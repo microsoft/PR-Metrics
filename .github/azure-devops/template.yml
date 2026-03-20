@@ -48,6 +48,8 @@ stages:
               displayName: npm – Install Dependencies
               inputs:
                 command: ci
+                customRegistry: useFeed
+                customFeed: Office
 
             - task: Npm@1
               displayName: npm – Build Release
@@ -55,10 +57,13 @@ stages:
                 command: custom
                 customCommand: run build:release
 
-            - task: TfxInstaller@5
+            - task: Npm@1
               displayName: Azure DevOps – Install TFX CLI
               inputs:
-                version: latest
+                command: custom
+                customCommand: install -g tfx-cli
+                customRegistry: useFeed
+                customFeed: Office
 
             - task: AzureCLI@2
               displayName: Azure DevOps – Sign-in

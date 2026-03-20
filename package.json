@@ -59,6 +59,7 @@
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
+    "@octokit/core": "7.0.6",
     "@octokit/types": "16.0.0",
     "@tsconfig/node24": "24.0.4",
     "@types/mocha": "10.0.10",

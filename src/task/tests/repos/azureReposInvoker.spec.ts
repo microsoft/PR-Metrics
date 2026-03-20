@@ -5,11 +5,12 @@
 
 import * as AssertExtensions from "../testUtilities/assertExtensions.js";
 import {
+  CommentThreadStatus as AzureCommentThreadStatus,
   type Comment,
-  CommentThreadStatus,
   type GitPullRequest,
   type GitPullRequestCommentThread,
 } from "azure-devops-node-api/interfaces/GitInterfaces.js";
+import { CommentThreadStatus } from "../../src/repos/interfaces/commentThreadStatus.js";
 import { any, anyNumber } from "../testUtilities/mockito.js";
 import { deepEqual, instance, mock, verify, when } from "ts-mockito";
 import {
@@ -906,6 +907,30 @@ describe("azureReposInvoker.ts", (): void => {
       verify(logger.logDebugJson(getThreadsResult)).once();
     });
 
+    it("should map Closed status from Azure DevOps", async (): Promise<void> => {
+      // Arrange
+      when(gitApi.getThreads("RepoID", 10, "Project")).thenResolve([
+        { comments: [{ content: "Content" }], id: 1, status: 4 },
+      ]);
+      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(
+        instance(azureDevOpsApiWrapper),
+        instance(gitInvoker),
+        instance(logger),
+        instance(runnerInvoker),
+        instance(tokenManager),
+      );
+
+      // Act
+      const result: CommentData = await azureReposInvoker.getComments();
+
+      // Assert
+      assert.equal(result.pullRequestComments.length, 1);
+      assert.equal(
+        result.pullRequestComments[0]?.status,
+        CommentThreadStatus.Closed,
+      );
+    });
+
     {
       const testCases: GitPullRequestCommentThread[] = [
         { id: 1, status: 1 },
@@ -1327,7 +1352,7 @@ describe("azureReposInvoker.ts", (): void => {
       // Arrange
       const expectedComment: GitPullRequestCommentThread = {
         comments: [{ content: "Comment Content" }],
-        status: CommentThreadStatus.Active,
+        status: AzureCommentThreadStatus.Active,
       };
       when(
         gitApi.createThread(
@@ -1373,11 +1398,91 @@ describe("azureReposInvoker.ts", (): void => {
       verify(logger.logDebugJson(deepEqual({}))).once();
     });
 
+    it("should map Closed status to Azure DevOps", async (): Promise<void> => {
+      // Arrange
+      const expectedComment: GitPullRequestCommentThread = {
+        comments: [{ content: "Comment Content" }],
+        status: AzureCommentThreadStatus.Closed,
+      };
+      when(
+        gitApi.createThread(
+          deepEqual(expectedComment),
+          "RepoID",
+          10,
+          "Project",
+        ),
+      ).thenResolve({});
+      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(
+        instance(azureDevOpsApiWrapper),
+        instance(gitInvoker),
+        instance(logger),
+        instance(runnerInvoker),
+        instance(tokenManager),
+      );
+
+      // Act
+      await azureReposInvoker.createComment(
+        "Comment Content",
+        null,
+        CommentThreadStatus.Closed,
+      );
+
+      // Assert
+      verify(
+        gitApi.createThread(
+          deepEqual(expectedComment),
+          "RepoID",
+          10,
+          "Project",
+        ),
+      ).once();
+    });
+
+    it("should map Unknown status to Azure DevOps", async (): Promise<void> => {
+      // Arrange
+      const expectedComment: GitPullRequestCommentThread = {
+        comments: [{ content: "Comment Content" }],
+        status: AzureCommentThreadStatus.Unknown,
+      };
+      when(
+        gitApi.createThread(
+          deepEqual(expectedComment),
+          "RepoID",
+          10,
+          "Project",
+        ),
+      ).thenResolve({});
+      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(
+        instance(azureDevOpsApiWrapper),
+        instance(gitInvoker),
+        instance(logger),
+        instance(runnerInvoker),
+        instance(tokenManager),
+      );
+
+      // Act
+      await azureReposInvoker.createComment(
+        "Comment Content",
+        null,
+        CommentThreadStatus.Unknown,
+      );
+
+      // Assert
+      verify(
+        gitApi.createThread(
+          deepEqual(expectedComment),
+          "RepoID",
+          10,
+          "Project",
+        ),
+      ).once();
+    });
+
     it("should call the API for no file when called multiple times", async (): Promise<void> => {
       // Arrange
       const expectedComment: GitPullRequestCommentThread = {
         comments: [{ content: "Comment Content" }],
-        status: CommentThreadStatus.Active,
+        status: AzureCommentThreadStatus.Active,
       };
       when(
         gitApi.createThread(
@@ -1432,7 +1537,7 @@ describe("azureReposInvoker.ts", (): void => {
       // Arrange
       const expectedComment: GitPullRequestCommentThread = {
         comments: [{ content: "Comment Content" }],
-        status: CommentThreadStatus.Active,
+        status: AzureCommentThreadStatus.Active,
         threadContext: {
           filePath: "/file.ts",
           rightFileEnd: {
@@ -1493,7 +1598,7 @@ describe("azureReposInvoker.ts", (): void => {
       // Arrange
       const expectedComment: GitPullRequestCommentThread = {
         comments: [{ content: "Comment Content" }],
-        status: CommentThreadStatus.Active,
+        status: AzureCommentThreadStatus.Active,
         threadContext: {
           filePath: "/file.ts",
           leftFileEnd: {
@@ -1686,7 +1791,7 @@ describe("azureReposInvoker.ts", (): void => {
         ),
       ).thenResolve({});
       const expectedCommentThread: GitPullRequestCommentThread = {
-        status: CommentThreadStatus.Active,
+        status: AzureCommentThreadStatus.Active,
       };
       when(
         gitApi.updateThread(
@@ -1796,7 +1901,7 @@ describe("azureReposInvoker.ts", (): void => {
     it("should call the API when the thread status is updated", async (): Promise<void> => {
       // Arrange
       const expectedComment: GitPullRequestCommentThread = {
-        status: CommentThreadStatus.Active,
+        status: AzureCommentThreadStatus.Active,
       };
       when(
         gitApi.updateThread(

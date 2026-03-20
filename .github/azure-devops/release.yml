@@ -76,6 +76,8 @@ extends:
                 displayName: npm – Install Dependencies
                 inputs:
                   command: ci
+                  customRegistry: useFeed
+                  customFeed: Office
 
               - task: Npm@1
                 displayName: npm – Build Release
@@ -83,10 +85,13 @@ extends:
                   command: custom
                   customCommand: run build:release
 
-              - task: TfxInstaller@5
+              - task: Npm@1
                 displayName: Release – Install TFX CLI
                 inputs:
-                  version: latest
+                  command: custom
+                  customCommand: install -g tfx-cli
+                  customRegistry: useFeed
+                  customFeed: Office
 
               - bash: tfx extension create --manifest-globs vss-extension.json --output-path ../ms-omex.PRMetrics.vsix
                 displayName: Release – Create

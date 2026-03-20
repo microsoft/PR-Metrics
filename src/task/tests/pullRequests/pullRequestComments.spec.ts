@@ -7,7 +7,7 @@ import { instance, mock, verify, when } from "ts-mockito";
 import CodeMetrics from "../../src/metrics/codeMetrics.js";
 import CodeMetricsData from "../../src/metrics/codeMetricsData.js";
 import type CommentData from "../../src/repos/interfaces/commentData.js";
-import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces.js";
+import { CommentThreadStatus } from "../../src/repos/interfaces/commentThreadStatus.js";
 import type FileCommentData from "../../src/repos/interfaces/fileCommentData.js";
 import Inputs from "../../src/metrics/inputs.js";
 import Logger from "../../src/utilities/logger.js";

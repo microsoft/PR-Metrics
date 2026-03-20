@@ -4,7 +4,7 @@
  */
 
 import type CommentData from "./interfaces/commentData.js";
-import type { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces.js";
+import type { CommentThreadStatus } from "./interfaces/commentThreadStatus.js";
 import type PullRequestDetailsInterface from "./interfaces/pullRequestDetailsInterface.js";
 
 /**

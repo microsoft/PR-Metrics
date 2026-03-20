@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces.js";
+import { CommentThreadStatus } from "../../src/repos/interfaces/commentThreadStatus.js";
 import PullRequestCommentsData from "../../src/pullRequests/pullRequestCommentsData.js";
 import assert from "node:assert/strict";
 

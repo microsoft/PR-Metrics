@@ -18,7 +18,7 @@ import type {
 import { decimalRadix, httpUnprocessableEntity } from "../utilities/constants.js";
 import BaseReposInvoker from "./baseReposInvoker.js";
 import type CommentData from "./interfaces/commentData.js";
-import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces.js";
+import { CommentThreadStatus } from "./interfaces/commentThreadStatus.js";
 import GitInvoker from "../git/gitInvoker.js";
 import Logger from "../utilities/logger.js";
 import type { OctokitOptions } from "@octokit/core";

@@ -6,7 +6,7 @@
 import CodeMetrics from "../metrics/codeMetrics.js";
 import type CodeMetricsData from "../metrics/codeMetricsData.js";
 import type CommentData from "../repos/interfaces/commentData.js";
-import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces.js";
+import { CommentThreadStatus } from "../repos/interfaces/commentThreadStatus.js";
 import type FileCommentData from "../repos/interfaces/fileCommentData.js";
 import Inputs from "../metrics/inputs.js";
 import Logger from "../utilities/logger.js";

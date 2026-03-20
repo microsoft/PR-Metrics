@@ -5,13 +5,14 @@
 
 import * as Validator from "../utilities/validator.js";
 import {
+  CommentThreadStatus as AzureCommentThreadStatus,
   type Comment,
   type CommentPosition,
-  CommentThreadStatus,
   type GitPullRequest,
   type GitPullRequestCommentThread,
 } from "azure-devops-node-api/interfaces/GitInterfaces.js";
 import AzureDevOpsApiWrapper from "../wrappers/azureDevOpsApiWrapper.js";
+import { CommentThreadStatus } from "./interfaces/commentThreadStatus.js";
 import BaseReposInvoker from "./baseReposInvoker.js";
 import type CommentData from "./interfaces/commentData.js";
 import GitInvoker from "../git/gitInvoker.js";
@@ -63,6 +64,32 @@ export default class AzureReposInvoker extends BaseReposInvoker {
     this._tokenManager = tokenManager;
   }
 
+  private static toAzureStatus(
+    status: CommentThreadStatus,
+  ): AzureCommentThreadStatus {
+    switch (status) {
+      case CommentThreadStatus.Active:
+        return AzureCommentThreadStatus.Active;
+      case CommentThreadStatus.Closed:
+        return AzureCommentThreadStatus.Closed;
+      default:
+        return AzureCommentThreadStatus.Unknown;
+    }
+  }
+
+  private static fromAzureStatus(
+    status: AzureCommentThreadStatus | undefined,
+  ): CommentThreadStatus {
+    switch (status) {
+      case AzureCommentThreadStatus.Active:
+        return CommentThreadStatus.Active;
+      case AzureCommentThreadStatus.Closed:
+        return CommentThreadStatus.Closed;
+      default:
+        return CommentThreadStatus.Unknown;
+    }
+  }
+
   private static convertPullRequestComments(
     comments: GitPullRequestCommentThread[],
   ): CommentData {
@@ -85,7 +112,7 @@ export default class AzureReposInvoker extends BaseReposInvoker {
       }
 
       const status: CommentThreadStatus =
-        value.status ?? CommentThreadStatus.Unknown;
+        AzureReposInvoker.fromAzureStatus(value.status);
 
       if (
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- The type definition is incorrect.
@@ -212,7 +239,7 @@ export default class AzureReposInvoker extends BaseReposInvoker {
     const gitApiPromise: Promise<IGitApi> = this.getGitApi();
     const commentThread: GitPullRequestCommentThread = {
       comments: [{ content }],
-      status,
+      status: AzureReposInvoker.toAzureStatus(status),
     };
 
     if (fileName !== null) {
@@ -283,7 +310,7 @@ export default class AzureReposInvoker extends BaseReposInvoker {
 
     if (status !== null) {
       const commentThread: GitPullRequestCommentThread = {
-        status,
+        status: AzureReposInvoker.toAzureStatus(status),
       };
 
       const threadResult: GitPullRequestCommentThread =

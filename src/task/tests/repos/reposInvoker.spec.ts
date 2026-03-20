@@ -7,7 +7,7 @@ import * as AssertExtensions from "../testUtilities/assertExtensions.js";
 import { instance, mock, verify } from "ts-mockito";
 import AzureReposInvoker from "../../src/repos/azureReposInvoker.js";
 import type CommentData from "../../src/repos/interfaces/commentData.js";
-import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces.js";
+import { CommentThreadStatus } from "../../src/repos/interfaces/commentThreadStatus.js";
 import GitHubReposInvoker from "../../src/repos/gitHubReposInvoker.js";
 import Logger from "../../src/utilities/logger.js";
 import type PullRequestDetailsInterface from "../../src/repos/interfaces/pullRequestDetailsInterface.js";
