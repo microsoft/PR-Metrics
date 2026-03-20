@@ -26,7 +26,7 @@ import type OctokitLogObjectInterface from "../wrappers/octokitLogObjectInterfac
 import type { OctokitOptions } from "@octokit/core";
 import OctokitWrapper from "../../src/wrappers/octokitWrapper.js";
 import type PullRequestDetailsInterface from "../../src/repos/interfaces/pullRequestDetailsInterface.js";
-import type { RequestError } from "octokit";
+import type { RequestError } from "@octokit/request-error";
 import RunnerInvoker from "../../src/runners/runnerInvoker.js";
 import assert from "node:assert/strict";
 import { createRequestError } from "../testUtilities/createRequestError.js";

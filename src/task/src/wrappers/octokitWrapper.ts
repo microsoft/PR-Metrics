@@ -14,7 +14,7 @@ import type {
   UpdateIssueCommentResponse,
   UpdatePullResponse,
 } from "./octokitTypes.js";
-import { Octokit } from "octokit";
+import { Octokit } from "@octokit/rest";
 import OctokitGitDiffParser from "../git/octokitGitDiffParser.js";
 import type { OctokitOptions } from "@octokit/core";
 

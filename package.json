@@ -53,7 +53,8 @@
     "azure-devops-node-api": "15.1.2",
     "azure-pipelines-task-lib": "5.2.8",
     "minimatch": "10.2.4",
-    "octokit": "5.0.5",
+    "@octokit/request-error": "7.1.0",
+    "@octokit/rest": "22.0.1",
     "parse-git-diff": "0.0.20"
   },
   "devDependencies": {
