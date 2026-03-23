@@ -50,6 +50,7 @@ jobs:
       - name: License – Update LICENSE.txt
         run: |-
           $generatedContent = Get-Content -Path './third-party-licenses.txt' -Raw
+          $generatedContent = $generatedContent -replace '(?m)[^\S\n]+$', ''
           $generatedContent = $generatedContent -replace '(?m)-+\r?\nThis file was generated with generate-license-file!.*$', ''
           $generatedContent = $generatedContent.TrimEnd()
           Add-Content -Path 'src/LICENSE.txt' -Value $generatedContent
