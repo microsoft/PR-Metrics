@@ -42,18 +42,16 @@ jobs:
         run: npm ci
 
       - name: License – Truncate
-        run: .github/workflow-scripts/Update-Licenses.ps1 -Truncate
+        run: .github/workflow-scripts/Update-Licenses.ps1
 
       - name: License – Generate Third-Party Licenses
-        uses: TobyAndToby/generate-license-file-github-action@780d4e34ef9c231e8a31c0d65b326ae5c62944b7 # v1
-        with:
-          input: ./package.json
-          output: ./third-party-licenses.txt
-          lineEnding: posix
+        run: npx generate-license-file --input package.json --output third-party-licenses.txt --overwrite --eol lf --ci --no-spinner
 
       - name: License – Update LICENSE.txt
         run: |-
           $generatedContent = Get-Content -Path './third-party-licenses.txt' -Raw
+          $generatedContent = $generatedContent -replace '(?m)-+\r?\nThis file was generated with generate-license-file!.*$', ''
+          $generatedContent = $generatedContent.TrimEnd()
           Add-Content -Path 'src/LICENSE.txt' -Value $generatedContent
           Remove-Item -Path './third-party-licenses.txt'
 
