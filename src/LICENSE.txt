@@ -24,8 +24,6 @@ SOFTWARE.
 
 ---------------------------------------------------------
 
-This file was generated with the generate-license-file npm package!
-https://www.npmjs.com/package/generate-license-file
 
 The following npm package may be included in this product:
 
@@ -3116,6 +3114,3 @@ This package contains the following license:
 WTFPL
 
 -----------
-
-This file was generated with the generate-license-file npm package!
-https://www.npmjs.com/package/generate-license-file
