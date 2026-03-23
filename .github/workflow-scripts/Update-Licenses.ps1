@@ -18,6 +18,6 @@ if (@($nonBlankLines).Count -eq 0)
     return
 }
 
-$truncated = $lines[0..($separatorIndex - 1)] + ''
+$truncated = $lines[0..($separatorIndex - 1)]
 Set-Content -Path $filePath -Value $truncated
 Write-Output -InputObject 'LICENSE.txt truncated.'
