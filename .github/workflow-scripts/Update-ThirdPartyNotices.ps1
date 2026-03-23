@@ -3,7 +3,7 @@
 
 $inputFile = './third-party-licenses.txt'
 $outputFile = 'src/LICENSE.txt'
-$marker = 'This file was generated with generate-license-file'
+$marker = 'This file was generated with'
 
 $lines = Get-Content -Path $inputFile
 $lines = $lines | ForEach-Object { $_.TrimEnd() }

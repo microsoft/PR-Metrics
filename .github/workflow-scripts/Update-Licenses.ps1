@@ -4,7 +4,7 @@
 $filePath = 'src/LICENSE.txt'
 
 $lines = Get-Content -Path $filePath
-$separatorIndex = ($lines | Select-String -Pattern '^-+$' | Select-Object -First 1).LineNumber
+$separatorIndex = ($lines | Select-String -Pattern '^-+$' | Select-Object -Skip 1 -First 1).LineNumber
 if ($null -eq $separatorIndex)
 {
     throw 'No separator line.'
