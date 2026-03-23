@@ -41,6 +41,22 @@ jobs:
       - name: npm – Install Dependencies
         run: npm ci
 
+      - name: License – Truncate
+        run: .github/workflow-scripts/Update-Licenses.ps1 -Truncate
+
+      - name: License – Generate Third-Party Licenses
+        uses: TobyAndToby/generate-license-file-github-action@780d4e34ef9c231e8a31c0d65b326ae5c62944b7 # v1
+        with:
+          input: ./package.json
+          output: ./third-party-licenses.txt
+          lineEnding: posix
+
+      - name: License – Update LICENSE.txt
+        run: |-
+          $generatedContent = Get-Content -Path './third-party-licenses.txt' -Raw
+          Add-Content -Path 'src/LICENSE.txt' -Value $generatedContent
+          Remove-Item -Path './third-party-licenses.txt'
+
       - name: npm – Lint
         run: npm run lint
 
