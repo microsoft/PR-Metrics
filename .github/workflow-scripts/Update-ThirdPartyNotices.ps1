@@ -20,6 +20,11 @@ if ($start -lt $lines.Count -and $lines[$start].StartsWith('https://www.npmjs.co
     $start++
 }
 
+while ($start -lt $lines.Count -and [string]::IsNullOrWhiteSpace($lines[$start]))
+{
+    $start++
+}
+
 # Remove footer (separator + marker line + URL line).
 $end = $lines.Count - 1
 if ($lines[$end].StartsWith('https://www.npmjs.com/'))
