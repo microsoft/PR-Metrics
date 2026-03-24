@@ -8,7 +8,7 @@ import type {
   GetPullResponse,
   GetReviewCommentsResponse,
   ListCommitsResponse,
-} from "../../src/wrappers/octokitTypes.js";
+} from "../../src/wrappers/octokitWrapper.js";
 import { httpOk } from "../testUtilities/httpStatusCodes.js";
 
 /* eslint-disable @typescript-eslint/naming-convention -- Required for alignment with Octokit. */

@@ -5,7 +5,7 @@
 
 import * as AssertExtensions from "../testUtilities/assertExtensions.js";
 import * as GitHubReposInvokerConstants from "./gitHubReposInvokerConstants.js";
-import type { GetIssueCommentsResponse, GetPullResponse } from "../../src/wrappers/octokitTypes.js";
+import OctokitWrapper, { type GetIssueCommentsResponse, type GetPullResponse } from "../../src/wrappers/octokitWrapper.js";
 import { any, anyNumber, anyString } from "../testUtilities/mockito.js";
 import { httpBadRequest, httpOk } from "../testUtilities/httpStatusCodes.js";
 import {
@@ -24,7 +24,6 @@ import HttpError from "../testUtilities/httpError.js";
 import Logger from "../../src/utilities/logger.js";
 import type OctokitLogObjectInterface from "../wrappers/octokitLogObjectInterface.js";
 import type { OctokitOptions } from "@octokit/core";
-import OctokitWrapper from "../../src/wrappers/octokitWrapper.js";
 import type PullRequestDetailsInterface from "../../src/repos/interfaces/pullRequestDetailsInterface.js";
 import type { RequestError } from "@octokit/request-error";
 import RunnerInvoker from "../../src/runners/runnerInvoker.js";

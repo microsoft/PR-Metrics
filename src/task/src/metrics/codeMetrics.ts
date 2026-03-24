@@ -3,7 +3,6 @@
  * Licensed under the MIT License.
  */
 
-import { type MinimatchOptions, minimatch } from "minimatch";
 import type { CodeFileMetricInterface } from "./codeFileMetricInterface.js";
 import CodeMetricsData from "./codeMetricsData.js";
 import GitInvoker from "../git/gitInvoker.js";
@@ -11,6 +10,7 @@ import Inputs from "./inputs.js";
 import Logger from "../utilities/logger.js";
 import RunnerInvoker from "../runners/runnerInvoker.js";
 import { decimalRadix } from "../utilities/constants.js";
+import path from "node:path";
 
 /**
  * A class for computing metrics for software code in pull requests.
@@ -387,7 +387,7 @@ export default class CodeMetrics {
       this._inputs.testFactor === null
         ? null
         : this._metrics.testCode >=
-          this._metrics.productCode * this._inputs.testFactor;
+        this._metrics.productCode * this._inputs.testFactor;
   }
 
   private initializeSizeIndicator(): void {

@@ -4,17 +4,17 @@
  */
 
 import * as Validator from "../utilities/validator.js";
-import type {
-  CreateIssueCommentResponse,
-  CreateReviewCommentResponse,
-  DeleteReviewCommentResponse,
-  GetIssueCommentsResponse,
-  GetPullResponse,
-  GetReviewCommentsResponse,
-  ListCommitsResponse,
-  UpdateIssueCommentResponse,
-  UpdatePullResponse,
-} from "../wrappers/octokitTypes.js";
+import OctokitWrapper, {
+  type CreateIssueCommentResponse,
+  type CreateReviewCommentResponse,
+  type DeleteReviewCommentResponse,
+  type GetIssueCommentsResponse,
+  type GetPullResponse,
+  type GetReviewCommentsResponse,
+  type ListCommitsResponse,
+  type UpdateIssueCommentResponse,
+  type UpdatePullResponse,
+} from "../wrappers/octokitWrapper.js";
 import { decimalRadix, httpUnprocessableEntity } from "../utilities/constants.js";
 import BaseReposInvoker from "./baseReposInvoker.js";
 import type CommentData from "./interfaces/commentData.js";
@@ -22,7 +22,6 @@ import { CommentThreadStatus } from "./interfaces/commentThreadStatus.js";
 import GitInvoker from "../git/gitInvoker.js";
 import Logger from "../utilities/logger.js";
 import type { OctokitOptions } from "@octokit/core";
-import OctokitWrapper from "../wrappers/octokitWrapper.js";
 import type PullRequestDetailsInterface from "./interfaces/pullRequestDetailsInterface.js";
 import { RequestError } from "@octokit/request-error";
 import RunnerInvoker from "../runners/runnerInvoker.js";

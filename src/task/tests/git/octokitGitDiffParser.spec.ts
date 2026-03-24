@@ -3,12 +3,11 @@
  * Licensed under the MIT License.
  */
 
+import OctokitWrapper, { type GetPullResponse } from "../../src/wrappers/octokitWrapper.js";
 import { instance, mock, verify, when } from "ts-mockito";
-import type { GetPullResponse } from "../../src/wrappers/octokitTypes.js";
 import HttpClientWrapper from "../../src/wrappers/httpClient.js";
 import Logger from "../../src/utilities/logger.js";
 import OctokitGitDiffParser from "../../src/git/octokitGitDiffParser.js";
-import OctokitWrapper from "../../src/wrappers/octokitWrapper.js";
 import assert from "node:assert/strict";
 
 /* eslint-disable @typescript-eslint/naming-convention -- Required for alignment with Octokit. */
@@ -531,6 +530,45 @@ describe("octokitGitDiffParser.ts", (): void => {
       verify(
         logger.logDebug("* OctokitGitDiffParser.getFirstChangedLines()"),
       ).twice();
+      verify(logger.logDebug("* OctokitGitDiffParser.getDiffs()")).once();
+      verify(logger.logDebug("* OctokitGitDiffParser.processDiffs()")).once();
+    });
+
+    it("should return null when a diff has no extractable file path", async (): Promise<void> => {
+      // Arrange
+      when(octokitWrapper.getPull("owner", "repo", 1)).thenCall(
+        async (): Promise<GetPullResponse> =>
+          Promise.resolve({
+            data: { diff_url: "https://github.com/microsoft/PR-Metrics" },
+          } as GetPullResponse),
+      );
+      when(
+        httpClient.getUrl("https://github.com/microsoft/PR-Metrics"),
+      ).thenCall(
+        async (): Promise<string> =>
+          Promise.resolve("diff --git\nindex 6b76988..47f1131b 100646"),
+      );
+      const octokitGitDiffParser: OctokitGitDiffParser =
+        new OctokitGitDiffParser(instance(httpClient), instance(logger));
+
+      // Act
+      const result: number | null =
+        await octokitGitDiffParser.getFirstChangedLine(
+          instance(octokitWrapper),
+          "owner",
+          "repo",
+          1,
+          "file.ts",
+        );
+
+      // Assert
+      assert.equal(result, null);
+      verify(
+        logger.logDebug("* OctokitGitDiffParser.getFirstChangedLine()"),
+      ).once();
+      verify(
+        logger.logDebug("* OctokitGitDiffParser.getFirstChangedLines()"),
+      ).once();
       verify(logger.logDebug("* OctokitGitDiffParser.getDiffs()")).once();
       verify(logger.logDebug("* OctokitGitDiffParser.processDiffs()")).once();
     });

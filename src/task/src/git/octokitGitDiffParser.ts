@@ -3,17 +3,10 @@
  * Licensed under the MIT License.
  */
 
-import parseGitDiff, {
-  type AddedFile,
-  type AnyChunk,
-  type ChangedFile,
-  type GitDiff,
-  type RenamedFile,
-} from "parse-git-diff";
-import type { GetPullResponse } from "../wrappers/octokitTypes.js";
+import type { GetPullResponse, default as OctokitWrapper } from "../wrappers/octokitWrapper.js";
 import HttpClientWrapper from "../wrappers/httpClient.js";
 import Logger from "../utilities/logger.js";
-import type OctokitWrapper from "../wrappers/octokitWrapper.js";
+import { decimalRadix } from "../utilities/constants.js";
 
 /**
  * A parser for Git diffs read via Octokit.
@@ -120,58 +113,88 @@ export default class OctokitGitDiffParser {
 
     const result: Map<string, number> = new Map<string, number>();
 
-    // Process the diff for each file.
     for (const diff of diffs) {
-      const diffParsed: GitDiff = parseGitDiff(diff);
-
-      // Process the diff for a single file.
-      for (const file of diffParsed.files) {
-        switch (file.type) {
-          case "AddedFile":
-          case "ChangedFile": {
-            // For an added or changed file, add the file path and the first changed line.
-            const fileCasted: AddedFile | ChangedFile = file;
-            const [chunk]: AnyChunk[] = fileCasted.chunks;
-            if (chunk?.type === "BinaryFilesChunk") {
-              this._logger.logDebug(
-                `Skipping '${file.type}' '${fileCasted.path}' while performing diff parsing.`,
-              );
-              break;
-            }
-
-            if (chunk) {
-              result.set(fileCasted.path, chunk.toFileRange.start);
-            }
-
-            break;
-          }
-          case "RenamedFile": {
-            // For a renamed file, add the new file path and the first changed line.
-            const fileCasted: RenamedFile = file;
-            const [renamedChunk]: AnyChunk[] = fileCasted.chunks;
-            if (renamedChunk?.type === "BinaryFilesChunk") {
-              this._logger.logDebug(
-                `Skipping '${file.type}' '${fileCasted.pathAfter}' while performing diff parsing.`,
-              );
-              break;
-            }
-
-            if (renamedChunk) {
-              result.set(fileCasted.pathAfter, renamedChunk.toFileRange.start);
-            }
-
-            break;
-          }
-          case "DeletedFile":
-          default:
-            this._logger.logDebug(
-              `Skipping file type '${file.type}' while performing diff parsing.`,
-            );
-            break;
-        }
-      }
+      this.processSingleDiff(diff, result);
     }
 
     return result;
+  }
+
+  private processSingleDiff(
+    diff: string,
+    result: Map<string, number>,
+  ): void {
+    const isBinary: boolean = /^Binary files /mu.test(diff);
+    const isDeleted: boolean =
+      diff.includes("+++ /dev/null") || diff.includes("deleted file mode");
+    const isAdded: boolean = diff.includes("new file mode");
+    const renameMatch: RegExpExecArray | null =
+      /^rename to (?<renamePath>.+)$/mu.exec(diff);
+    const isRenamed: boolean = renameMatch !== null;
+
+    if (isDeleted) {
+      this._logger.logDebug(
+        "Skipping file type 'DeletedFile' while performing diff parsing.",
+      );
+      return;
+    }
+
+    const filePath: string | null = this.extractFilePath(
+      diff,
+      isRenamed,
+      renameMatch,
+    );
+    if (filePath === null) {
+      return;
+    }
+
+    let fileType: string;
+    if (isAdded) {
+      fileType = "AddedFile";
+    } else if (isRenamed) {
+      fileType = "RenamedFile";
+    } else {
+      fileType = "ChangedFile";
+    }
+
+    if (isBinary) {
+      this._logger.logDebug(
+        `Skipping '${fileType}' '${filePath}' while performing diff parsing.`,
+      );
+      return;
+    }
+
+    const hunkMatch: RegExpExecArray | null =
+      /@@ .+? \+(?<startLine>\d+)(?:,\d+)? @@/u.exec(diff);
+    const startLine: string | undefined = hunkMatch?.groups?.startLine;
+    if (typeof startLine !== "undefined") {
+      result.set(filePath, parseInt(startLine, decimalRadix));
+    }
+  }
+
+  private extractFilePath(
+    diff: string,
+    isRenamed: boolean,
+    renameMatch: RegExpExecArray | null,
+  ): string | null {
+    if (isRenamed) {
+      const renamePath: string | undefined = renameMatch?.groups?.renamePath;
+      if (typeof renamePath !== "undefined") {
+        return renamePath;
+      }
+    }
+
+    // Try the +++ line first (present in text diffs).
+    const plusMatch: RegExpExecArray | null =
+      /^\+\+\+ (?:b\/)?(?<filePath>.+)$/mu.exec(diff);
+    const filePath: string | undefined = plusMatch?.groups?.filePath;
+    if (typeof filePath !== "undefined") {
+      return filePath;
+    }
+
+    // Fall back to the diff --git header (needed for binary diffs which lack +++ lines).
+    const headerMatch: RegExpExecArray | null =
+      /^diff --git\s+(?:a\/)?\S+\s+(?:b\/)?(?<headerPath>\S+)$/mu.exec(diff);
+    return headerMatch?.groups?.headerPath ?? null;
   }
 }
