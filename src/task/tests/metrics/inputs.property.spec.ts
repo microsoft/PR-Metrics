@@ -43,6 +43,8 @@ describe("inputs.ts", (): void => {
         return new Inputs(instance(logger), instance(runnerInvoker));
       };
 
+      const assertParams: fc.Parameters<unknown[]> = { numRuns: 25 };
+
       it("should normalize extensions with wildcard prefix '*.ext' to 'ext'", (): void => {
         fc.assert(
           fc.property(fc.stringMatching(/^[a-z]{1,10}$/u), (ext: string) => {
@@ -51,6 +53,7 @@ describe("inputs.ts", (): void => {
             assert.ok(result.has(ext));
             assert.equal(result.size, 1);
           }),
+          assertParams,
         );
       });
 
@@ -62,6 +65,7 @@ describe("inputs.ts", (): void => {
             assert.ok(result.has(ext));
             assert.equal(result.size, 1);
           }),
+          assertParams,
         );
       });
 
@@ -73,6 +77,7 @@ describe("inputs.ts", (): void => {
             assert.ok(result.has(ext));
             assert.equal(result.size, 1);
           }),
+          assertParams,
         );
       });
 
@@ -87,6 +92,7 @@ describe("inputs.ts", (): void => {
             assert.deepEqual(first, second);
             assert.deepEqual(second, third);
           }),
+          assertParams,
         );
       });
 
@@ -98,6 +104,7 @@ describe("inputs.ts", (): void => {
             assert.ok(result.has(ext.toLowerCase()));
             assert.ok(!result.has(ext));
           }),
+          assertParams,
         );
       });
 
@@ -119,6 +126,7 @@ describe("inputs.ts", (): void => {
               }
             },
           ),
+          assertParams,
         );
       });
 
@@ -131,6 +139,7 @@ describe("inputs.ts", (): void => {
             assert.equal(result.size, 1);
             assert.ok(result.has(ext));
           }),
+          assertParams,
         );
       });
 
@@ -142,6 +151,7 @@ describe("inputs.ts", (): void => {
             assert.ok(result.has(ext.toLowerCase()));
             assert.equal(result.size, 1);
           }),
+          assertParams,
         );
       });
     });

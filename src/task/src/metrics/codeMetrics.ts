@@ -10,17 +10,13 @@ import Inputs from "./inputs.js";
 import Logger from "../utilities/logger.js";
 import RunnerInvoker from "../runners/runnerInvoker.js";
 import { decimalRadix } from "../utilities/constants.js";
-import path from "node:path";
+import picomatch from "picomatch";
 
 /**
  * A class for computing metrics for software code in pull requests.
  * @remarks This class should not be used in a multithreaded context as it could lead to the initialization logic being invoked repeatedly.
  */
 export default class CodeMetrics {
-  private static readonly _minimatchOptions: MinimatchOptions = {
-    dot: true,
-  };
-
   private readonly _gitInvoker: GitInvoker;
   private readonly _inputs: Inputs;
   private readonly _logger: Logger;
@@ -269,7 +265,7 @@ export default class CodeMetrics {
   ): boolean {
     this._logger.logDebug("* CodeMetrics.performGlobCheck()");
 
-    return minimatch(fileName, fileMatchingPattern, CodeMetrics._minimatchOptions);
+    return picomatch.isMatch(fileName, fileMatchingPattern, { dot: true });
   }
 
   private matchFileExtension(fileName: string): boolean {

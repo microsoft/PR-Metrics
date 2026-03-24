@@ -23,7 +23,6 @@ import GitInvoker from "../git/gitInvoker.js";
 import Logger from "../utilities/logger.js";
 import type { OctokitOptions } from "@octokit/core";
 import type PullRequestDetailsInterface from "./interfaces/pullRequestDetailsInterface.js";
-import { RequestError } from "@octokit/request-error";
 import RunnerInvoker from "../runners/runnerInvoker.js";
 import { version } from "../utilities/version.js";
 
@@ -61,6 +60,16 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     this._logger = logger;
     this._octokitWrapper = octokitWrapper;
     this._runnerInvoker = runnerInvoker;
+  }
+
+  private static isHttpError(
+    error: unknown,
+  ): error is Error & { status: number } {
+    return (
+      error instanceof Error &&
+      "status" in error &&
+      typeof error.status === "number"
+    );
   }
 
   public async isAccessTokenAvailable(): Promise<string | null> {
@@ -192,7 +201,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
           this._logger.logDebugJson(result);
         } catch (error: unknown) {
           if (
-            error instanceof RequestError &&
+            GitHubReposInvoker.isHttpError(error) &&
             error.status === httpUnprocessableEntity &&
             (error.message.includes("is too big") ||
               error.message.includes("diff is too large"))

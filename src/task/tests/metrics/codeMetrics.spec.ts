@@ -14,6 +14,33 @@ import Logger from "../../src/utilities/logger.js";
 import RunnerInvoker from "../../src/runners/runnerInvoker.js";
 import assert from "node:assert/strict";
 
+// Formats a raw git diff string for readable test names.
+const formatGitDiff = (value: string): string => {
+  if (value.trim().length === 0) {
+    // Preserve visibility for whitespace-only inputs.
+    return value
+      .replace(/\r\n/gu, "\\n")
+      .replace(/\t/gu, "\\t")
+      .replace(/\n/gu, "\\n")
+      .replace(/\r/gu, "\\r");
+  }
+
+  // Replace separators with readable alternatives.
+  const formatted: string = value
+    .replace(/\r\n/gu, " | ")
+    .replace(/[\n\r]/gu, " | ")
+    .replace(/\t/gu, " ");
+
+  const trimmed: string = formatted.trim();
+
+  // Preserve trailing separator visibility when present.
+  if (formatted !== trimmed) {
+    return `${trimmed} (trailing whitespace)`;
+  }
+
+  return trimmed;
+};
+
 describe("codeMetrics.ts", (): void => {
   let gitInvoker: GitInvoker;
   let inputs: Inputs;
@@ -703,7 +730,7 @@ describe("codeMetrics.ts", (): void => {
         sizeIndicator,
         testCoverageIndicator,
       }: TestCaseType): void => {
-        it(`with default inputs and git diff '${gitResponse.replace(/\n/gu, "\\n").replace(/\r/gu, "\\r")}', returns '${sizeIndicator}' size and '${String(testCoverageIndicator)}' test coverage`, async (): Promise<void> => {
+        it(`with default inputs and git diff '${formatGitDiff(gitResponse)}', returns '${sizeIndicator}' size and '${String(testCoverageIndicator)}' test coverage`, async (): Promise<void> => {
           // Arrange
           when(gitInvoker.getDiffSummary()).thenResolve(gitResponse);
 
@@ -1330,7 +1357,7 @@ describe("codeMetrics.ts", (): void => {
         sizeIndicator,
         testCoverageIndicator,
       }: TestCaseType): void => {
-        it(`with non-default inputs and git diff '${gitResponse.replace(/\n/gu, "\\n")}', returns '${sizeIndicator}' size and '${String(testCoverageIndicator)}' test coverage`, async (): Promise<void> => {
+        it(`with non-default inputs and git diff '${formatGitDiff(gitResponse)}', returns '${sizeIndicator}' size and '${String(testCoverageIndicator)}' test coverage`, async (): Promise<void> => {
           // Arrange
           when(inputs.baseSize).thenReturn(100);
           when(inputs.growthRate).thenReturn(1.5);
@@ -1441,7 +1468,7 @@ describe("codeMetrics.ts", (): void => {
     ];
 
     testCases.forEach(({ gitResponse, globChecks }: TestCaseType): void => {
-      it(`with multiple ignore patterns and git diff '${gitResponse}' ignores the appropriate files`, async (): Promise<void> => {
+      it(`with multiple ignore patterns and git diff '${formatGitDiff(gitResponse)}' ignores the appropriate files`, async (): Promise<void> => {
         // Arrange
         when(inputs.baseSize).thenReturn(100);
         when(inputs.growthRate).thenReturn(1.5);
@@ -1732,7 +1759,7 @@ describe("codeMetrics.ts", (): void => {
       const testCases: string[] = ["", "   ", "\t", "\n", "\t\n"];
 
       testCases.forEach((gitDiffSummary: string): void => {
-        it(`should return an empty set when the Git diff summary '${gitDiffSummary}' is empty`, async (): Promise<void> => {
+        it(`should return an empty set when the Git diff summary '${formatGitDiff(gitDiffSummary)}' is empty`, async (): Promise<void> => {
           // Arrange
           when(gitInvoker.getDiffSummary()).thenResolve(gitDiffSummary);
           const codeMetrics: CodeMetrics = new CodeMetrics(
@@ -1797,7 +1824,7 @@ describe("codeMetrics.ts", (): void => {
       ];
 
       testCases.forEach(({ elements, summary }: TestCaseType): void => {
-        it(`should throw when the file name in the Git diff summary '${summary}' cannot be parsed`, async (): Promise<void> => {
+        it(`should throw when the file name in the Git diff summary '${formatGitDiff(summary)}' cannot be parsed`, async (): Promise<void> => {
           // Arrange
           when(gitInvoker.getDiffSummary()).thenResolve(summary);
           const codeMetrics: CodeMetrics = new CodeMetrics(
