@@ -4,6 +4,7 @@
 $filePath = 'src/LICENSE.txt'
 
 $lines = Get-Content -Path $filePath
+# .LineNumber is 1-based, so $separatorIndex naturally points one past the separator in 0-based indexing.
 $separatorIndex = ($lines | Select-String -Pattern '^-+$' | Select-Object -Skip 1 -First 1).LineNumber
 if ($null -eq $separatorIndex)
 {
