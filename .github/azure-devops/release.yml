@@ -76,6 +76,8 @@ extends:
                 displayName: npm – Install Dependencies
                 inputs:
                   command: ci
+                  customRegistry: useFeed
+                  customFeed: Office
 
               - task: Npm@1
                 displayName: npm – Build Release
@@ -83,12 +85,7 @@ extends:
                   command: custom
                   customCommand: run build:release
 
-              - task: TfxInstaller@5
-                displayName: Release – Install TFX CLI
-                inputs:
-                  version: latest
-
-              - bash: tfx extension create --manifest-globs vss-extension.json --output-path ../ms-omex.PRMetrics.vsix
+              - bash: npx tfx extension create --manifest-globs vss-extension.json --output-path ../ms-omex.PRMetrics.vsix
                 displayName: Release – Create
                 workingDirectory: $(Build.SourcesDirectory)/release
 
@@ -133,4 +130,4 @@ extends:
                   scriptLocation: inlineScript
                   inlineScript: |
                     $AccessToken = az account get-access-token --query accessToken --resource 499b84ac-1321-427f-aa17-267ca6975798 -o tsv
-                    tfx extension publish --service-url https://marketplace.visualstudio.com/ --token $AccessToken --vsix ms-omex.PRMetrics.vsix
+                    npx tfx extension publish --service-url https://marketplace.visualstudio.com/ --token $AccessToken --vsix ms-omex.PRMetrics.vsix
