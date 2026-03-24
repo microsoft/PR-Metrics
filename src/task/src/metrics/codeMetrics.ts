@@ -167,12 +167,12 @@ export default class CodeMetrics {
     const gitDiffSummary: string = (
       await this._gitInvoker.getDiffSummary()
     ).trim();
-    if (gitDiffSummary === "") {
-      throw new Error("The Git diff summary is empty.");
-    }
 
     this._isInitialized = true;
-    this.initializeMetrics(gitDiffSummary);
+    if (gitDiffSummary !== "") {
+      this.initializeMetrics(gitDiffSummary);
+    }
+
     this.initializeIsSufficientlyTested();
     this.initializeSizeIndicator();
   }
