@@ -48,17 +48,14 @@ stages:
               displayName: npm – Install Dependencies
               inputs:
                 command: ci
+                customRegistry: useFeed
+                customFeed: Office
 
             - task: Npm@1
               displayName: npm – Build Release
               inputs:
                 command: custom
                 customCommand: run build:release
-
-            - task: TfxInstaller@5
-              displayName: Azure DevOps – Install TFX CLI
-              inputs:
-                version: latest
 
             - task: AzureCLI@2
               displayName: Azure DevOps – Sign-in
@@ -68,15 +65,15 @@ stages:
                 scriptLocation: inlineScript
                 inlineScript: |
                   $AccessToken = az account get-access-token --query accessToken --resource 499b84ac-1321-427f-aa17-267ca6975798 -o tsv
-                  tfx login --service-url https://dev.azure.com/$($env:ADOACCOUNT) --token $AccessToken
+                  npx tfx login --service-url https://dev.azure.com/$($env:ADOACCOUNT) --token $AccessToken
               env:
                 ADOACCOUNT: $(ADOACCOUNT)
 
-            - bash: tfx build tasks delete --task-id 907d3b28-6b37-4ac7-ac75-9631ee53e512 --no-prompt
+            - bash: npx tfx build tasks delete --task-id 907d3b28-6b37-4ac7-ac75-9631ee53e512 --no-prompt
               displayName: Azure DevOps – Delete Old Task
               continueOnError: true
 
-            - bash: tfx build tasks upload --task-path release/task --no-prompt
+            - bash: npx tfx build tasks upload --task-path release/task --no-prompt
               displayName: Azure DevOps – Deploy
 
       - job: PRMetrics_Ubuntu
