@@ -1,4 +1,4 @@
-﻿# Copyright (c) Microsoft Corporation.
+# Copyright (c) Microsoft Corporation.
 # Licensed under the MIT License.
 
 # Constants.
@@ -134,7 +134,7 @@ $timelineUrl = (
     "_apis/build/builds/$Env:BUILD_BUILDID/timeline?api-version=7.1"
 )
 $noticeRecord = (Invoke-RestMethod -Uri $timelineUrl -Headers $azureDevOpsHeaders).records |
-    Where-Object { $_.name -eq 'License – Generate for Dependencies' }
+    Where-Object { $_.name -eq "License `u{2013} Generate for Dependencies" }
 
 $prNumber = Get-PullRequestNumber
 Remove-OutdatedComment -PullRequestNumber $prNumber
