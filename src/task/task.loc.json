@@ -9,7 +9,7 @@
   "author": "Microsoft Corporation",
   "category": "Azure Pipelines",
   "visibility": ["Build"],
-  "minimumAgentVersion": "4.268.0",
+  "minimumAgentVersion": "4.269.0",
   "version": {
     "Major": 1,
     "Minor": 7,
@@ -71,7 +71,7 @@
     }
   ],
   "execution": {
-    "Node20_1": {
+    "Node24": {
       "target": "index.mjs"
     }
   },
