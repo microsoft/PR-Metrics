@@ -175,7 +175,6 @@ jobs:
           # Disable linters that conflict with other linters or are not needed.
           VALIDATE_BIOME_FORMAT: false
           VALIDATE_JSON: false
-
           VALIDATE_TYPESCRIPT_ES: false
           VALIDATE_TYPESCRIPT_STANDARD: false
 
