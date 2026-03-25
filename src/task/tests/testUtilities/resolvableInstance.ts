@@ -15,7 +15,7 @@ import { instance } from "ts-mockito";
 export const resolvableInstance = <Type extends NonNullable<unknown>>(
   mock: Type,
 ): Type =>
-  new Proxy(instance(mock), {
+  new Proxy<Type>(instance(mock), {
     get(target: Type, name: string): Type | null {
       if (["Symbol(Symbol.toPrimitive)", "then", "catch"].includes(name)) {
         return null;
