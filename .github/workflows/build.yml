@@ -216,6 +216,8 @@ jobs:
       - name: gh – Log Version
         run: gh --version
 
+      # zizmor: ignore[bot-conditions] – this workflow only triggers on
+      # pull_request events, where actor_id is not spoofable.
       - if: github.actor_id == '49699333'
         name: Enable Auto-Merge
         run: gh pr merge --auto --delete-branch --squash "$PULL_REQUEST_URL"

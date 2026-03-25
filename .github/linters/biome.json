@@ -5,6 +5,6 @@
     "indentWidth": 2
   },
   "files": {
-    "ignore": ["dist/**", "debug/**", "release/**", "node_modules/**"]
+    "includes": ["!dist/**", "!debug/**", "!release/**", "!node_modules/**"]
   }
 }
