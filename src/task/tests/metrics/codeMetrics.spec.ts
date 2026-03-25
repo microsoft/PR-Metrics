@@ -4,16 +4,16 @@
  */
 
 import "reflect-metadata";
-import assert from "node:assert/strict";
+import * as AssertExtensions from "../testUtilities/assertExtensions.js";
+import * as InputsDefault from "../../src/metrics/inputsDefault.js";
 import { instance, mock, verify, when } from "ts-mockito";
-import GitInvoker from "../../src/git/gitInvoker.js";
 import CodeMetrics from "../../src/metrics/codeMetrics.js";
 import CodeMetricsData from "../../src/metrics/codeMetricsData.js";
+import GitInvoker from "../../src/git/gitInvoker.js";
 import Inputs from "../../src/metrics/inputs.js";
-import * as InputsDefault from "../../src/metrics/inputsDefault.js";
-import RunnerInvoker from "../../src/runners/runnerInvoker.js";
 import Logger from "../../src/utilities/logger.js";
-import * as AssertExtensions from "../testUtilities/assertExtensions.js";
+import RunnerInvoker from "../../src/runners/runnerInvoker.js";
+import assert from "node:assert/strict";
 
 describe("codeMetrics.ts", (): void => {
   let gitInvoker: GitInvoker;

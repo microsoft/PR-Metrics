@@ -3,18 +3,18 @@
  * Licensed under the MIT License.
  */
 
+import type * as actionsExec from "@actions/exec";
 import * as fs from "node:fs";
 import * as path from "node:path";
 import * as util from "node:util";
-import type * as actionsExec from "@actions/exec";
-import { singleton } from "tsyringe";
-import type ResourcesJsonInterface from "../jsonTypes/resourcesJsonInterface.js";
 import type AzurePipelinesRunnerWrapper from "../wrappers/azurePipelinesRunnerWrapper.js";
 import type ConsoleWrapper from "../wrappers/consoleWrapper.js";
-import type GitHubRunnerWrapper from "../wrappers/gitHubRunnerWrapper.js";
 import type { EndpointAuthorization } from "./endpointAuthorization.js";
 import type ExecOutput from "./execOutput.js";
+import type GitHubRunnerWrapper from "../wrappers/gitHubRunnerWrapper.js";
+import type ResourcesJsonInterface from "../jsonTypes/resourcesJsonInterface.js";
 import type RunnerInvokerInterface from "./runnerInvokerInterface.js";
+import { singleton } from "tsyringe";
 
 /**
  * A class for invoking GitHub runner functionality.

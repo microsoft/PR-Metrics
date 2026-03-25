@@ -4,15 +4,15 @@
  */
 
 import "reflect-metadata";
-import assert from "node:assert/strict";
+import * as Converter from "../../src/utilities/converter.js";
+import * as InputsDefault from "../../src/metrics/inputsDefault.js";
 import { deepEqual, instance, mock, verify, when } from "ts-mockito";
 import Inputs from "../../src/metrics/inputs.js";
-import * as InputsDefault from "../../src/metrics/inputsDefault.js";
-import RunnerInvoker from "../../src/runners/runnerInvoker.js";
-import { decimalRadix } from "../../src/utilities/constants.js";
-import * as Converter from "../../src/utilities/converter.js";
 import Logger from "../../src/utilities/logger.js";
+import RunnerInvoker from "../../src/runners/runnerInvoker.js";
 import { anyString } from "../testUtilities/mockito.js";
+import assert from "node:assert/strict";
+import { decimalRadix } from "../../src/utilities/constants.js";
 
 describe("inputs.ts", (): void => {
   const adjustingAlwaysCloseComment =

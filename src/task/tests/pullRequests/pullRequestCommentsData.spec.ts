@@ -3,9 +3,9 @@
  * Licensed under the MIT License.
  */
 
-import assert from "node:assert/strict";
 import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces.js";
 import PullRequestCommentsData from "../../src/pullRequests/pullRequestCommentsData.js";
+import assert from "node:assert/strict";
 
 describe("pullRequestCommentsData.ts", (): void => {
   describe("constructor()", (): void => {

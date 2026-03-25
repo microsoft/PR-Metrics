@@ -4,10 +4,10 @@
  */
 
 import "reflect-metadata";
-import { singleton } from "tsyringe";
 import type CodeMetricsCalculator from "./metrics/codeMetricsCalculator.js";
-import type RunnerInvoker from "./runners/runnerInvoker.js";
 import type Logger from "./utilities/logger.js";
+import type RunnerInvoker from "./runners/runnerInvoker.js";
+import { singleton } from "tsyringe";
 
 /**
  * A class for managing the overall PR Metrics task.

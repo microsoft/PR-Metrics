@@ -4,18 +4,18 @@
  */
 
 import "reflect-metadata";
-import assert from "node:assert/strict";
-import * as path from "node:path";
-import { fileURLToPath } from "node:url";
 import type * as actionsExec from "@actions/exec";
-import type { EndpointAuthorization } from "azure-pipelines-task-lib";
+import * as path from "node:path";
 import { deepEqual, instance, mock, verify, when } from "ts-mockito";
-import type ExecOutput from "../../src/runners/execOutput.js";
-import GitHubRunnerInvoker from "../../src/runners/gitHubRunnerInvoker.js";
 import AzurePipelinesRunnerWrapper from "../../src/wrappers/azurePipelinesRunnerWrapper.js";
 import ConsoleWrapper from "../../src/wrappers/consoleWrapper.js";
+import type { EndpointAuthorization } from "azure-pipelines-task-lib";
+import type ExecOutput from "../../src/runners/execOutput.js";
+import GitHubRunnerInvoker from "../../src/runners/gitHubRunnerInvoker.js";
 import GitHubRunnerWrapper from "../../src/wrappers/gitHubRunnerWrapper.js";
 import { any } from "../testUtilities/mockito.js";
+import assert from "node:assert/strict";
+import { fileURLToPath } from "node:url";
 
 describe("gitHubRunnerInvoker.js", (): void => {
   const resourcePath: string = path.join(

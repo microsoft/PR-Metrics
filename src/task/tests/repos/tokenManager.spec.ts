@@ -3,17 +3,17 @@
  * Licensed under the MIT License.
  */
 
-import assert from "node:assert/strict";
-import { WebApi } from "azure-devops-node-api";
+import * as AssertExtensions from "../testUtilities/assertExtensions.js";
+import { deepEqual, instance, mock, verify, when } from "ts-mockito";
+import AzureDevOpsApiWrapper from "../../src/wrappers/azureDevOpsApiWrapper.js";
+import type { EndpointAuthorization } from "azure-pipelines-task-lib";
 import type { IRequestHandler } from "azure-devops-node-api/interfaces/common/VsoBaseInterfaces.js";
 import type { ITaskApi } from "azure-devops-node-api/TaskApi.js";
-import type { EndpointAuthorization } from "azure-pipelines-task-lib";
-import { deepEqual, instance, mock, verify, when } from "ts-mockito";
-import TokenManager from "../../src/repos/tokenManager.js";
-import RunnerInvoker from "../../src/runners/runnerInvoker.js";
 import Logger from "../../src/utilities/logger.js";
-import AzureDevOpsApiWrapper from "../../src/wrappers/azureDevOpsApiWrapper.js";
-import * as AssertExtensions from "../testUtilities/assertExtensions.js";
+import RunnerInvoker from "../../src/runners/runnerInvoker.js";
+import TokenManager from "../../src/repos/tokenManager.js";
+import { WebApi } from "azure-devops-node-api";
+import assert from "node:assert/strict";
 import { resolvableInstance } from "../testUtilities/resolvableInstance.js";
 
 describe("tokenManager.ts", (): void => {

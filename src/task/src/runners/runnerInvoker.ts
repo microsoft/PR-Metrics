@@ -3,12 +3,12 @@
  * Licensed under the MIT License.
  */
 
-import { singleton } from "tsyringe";
 import type AzurePipelinesRunnerInvoker from "./azurePipelinesRunnerInvoker.js";
 import type { EndpointAuthorization } from "./endpointAuthorization.js";
 import type ExecOutput from "./execOutput.js";
 import type GitHubRunnerInvoker from "./gitHubRunnerInvoker.js";
 import type RunnerInvokerInterface from "./runnerInvokerInterface.js";
+import { singleton } from "tsyringe";
 
 /**
  * A wrapper around the runner functionality, to facilitate testability. This class cannot use logging functionality as

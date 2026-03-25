@@ -9,11 +9,11 @@ import type {
   IExecOptions,
   IExecSyncResult,
 } from "azure-pipelines-task-lib/toolrunner.js";
-import { singleton } from "tsyringe";
 import type AzurePipelinesRunnerWrapper from "../wrappers/azurePipelinesRunnerWrapper.js";
 import type { EndpointAuthorization } from "./endpointAuthorization.js";
 import type ExecOutput from "./execOutput.js";
 import type RunnerInvokerInterface from "./runnerInvokerInterface.js";
+import { singleton } from "tsyringe";
 
 /**
  * A class for invoking Azure Pipelines runner functionality.

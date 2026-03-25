@@ -3,12 +3,12 @@
  * Licensed under the MIT License.
  */
 
-import { singleton } from "tsyringe";
+import * as Validator from "../utilities/validator.js";
 import type ExecOutput from "../runners/execOutput.js";
+import type Logger from "../utilities/logger.js";
 import RunnerInvoker from "../runners/runnerInvoker.js";
 import { decimalRadix } from "../utilities/constants.js";
-import type Logger from "../utilities/logger.js";
-import * as Validator from "../utilities/validator.js";
+import { singleton } from "tsyringe";
 
 /**
  * A class for invoking Git commands.

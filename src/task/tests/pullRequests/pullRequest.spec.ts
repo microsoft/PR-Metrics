@@ -4,13 +4,13 @@
  */
 
 import "reflect-metadata";
-import assert from "node:assert/strict";
+import * as Converter from "../../src/utilities/converter.js";
 import { instance, mock, verify, when } from "ts-mockito";
 import CodeMetrics from "../../src/metrics/codeMetrics.js";
+import Logger from "../../src/utilities/logger.js";
 import PullRequest from "../../src/pullRequests/pullRequest.js";
 import RunnerInvoker from "../../src/runners/runnerInvoker.js";
-import * as Converter from "../../src/utilities/converter.js";
-import Logger from "../../src/utilities/logger.js";
+import assert from "node:assert/strict";
 
 describe("pullRequest.ts", (): void => {
   let codeMetrics: CodeMetrics;

@@ -4,9 +4,7 @@
  */
 
 import "reflect-metadata";
-import assert from "node:assert/strict";
 import * as path from "node:path";
-import type { ExecOutput } from "@actions/exec";
 import * as taskLib from "azure-pipelines-task-lib/task.js";
 import type {
   IExecOptions,
@@ -14,9 +12,11 @@ import type {
 } from "azure-pipelines-task-lib/toolrunner.js";
 import { deepEqual, instance, mock, verify, when } from "ts-mockito";
 import AzurePipelinesRunnerInvoker from "../../src/runners/azurePipelinesRunnerInvoker.js";
-import type { EndpointAuthorization } from "../../src/runners/endpointAuthorization.js";
 import AzurePipelinesRunnerWrapper from "../../src/wrappers/azurePipelinesRunnerWrapper.js";
+import type { EndpointAuthorization } from "../../src/runners/endpointAuthorization.js";
+import type { ExecOutput } from "@actions/exec";
 import { any } from "../testUtilities/mockito.js";
+import assert from "node:assert/strict";
 
 describe("azurePipelinesRunnerInvoker.ts", (): void => {
   let azurePipelinesRunnerWrapper: AzurePipelinesRunnerWrapper;

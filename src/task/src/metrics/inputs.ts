@@ -3,11 +3,11 @@
  * Licensed under the MIT License.
  */
 
-import { singleton } from "tsyringe";
-import type RunnerInvoker from "../runners/runnerInvoker.js";
+import * as InputsDefault from "./inputsDefault.js";
 import { decimalRadix, maxPatternCount } from "../utilities/constants.js";
 import type Logger from "../utilities/logger.js";
-import * as InputsDefault from "./inputsDefault.js";
+import type RunnerInvoker from "../runners/runnerInvoker.js";
+import { singleton } from "tsyringe";
 
 /**
  * A class representing inputs passed to the task.

@@ -3,9 +3,9 @@
  * Licensed under the MIT License.
  */
 
-import assert from "node:assert/strict";
-import * as fc from "fast-check";
 import * as Converter from "../../src/utilities/converter.js";
+import * as fc from "fast-check";
+import assert from "node:assert/strict";
 
 describe("converter.ts", (): void => {
   describe("Property-Based Tests", (): void => {

@@ -3,10 +3,6 @@
  * Licensed under the MIT License.
  */
 
-import type { OctokitOptions } from "@octokit/core";
-import { Octokit } from "octokit";
-import { singleton } from "tsyringe";
-import type OctokitGitDiffParser from "../git/octokitGitDiffParser.js";
 import type CreateIssueCommentResponse from "./octokitInterfaces/createIssueCommentResponse.js";
 import type CreateReviewCommentResponse from "./octokitInterfaces/createReviewCommentResponse.js";
 import type DeleteReviewCommentResponse from "./octokitInterfaces/deleteReviewCommentResponse.js";
@@ -14,8 +10,12 @@ import type GetIssueCommentsResponse from "./octokitInterfaces/getIssueCommentsR
 import type GetPullResponse from "./octokitInterfaces/getPullResponse.js";
 import type GetReviewCommentsResponse from "./octokitInterfaces/getReviewCommentsResponse.js";
 import type ListCommitsResponse from "./octokitInterfaces/listCommitsResponse.js";
+import { Octokit } from "octokit";
+import type OctokitGitDiffParser from "../git/octokitGitDiffParser.js";
+import type { OctokitOptions } from "@octokit/core";
 import type UpdateIssueCommentResponse from "./octokitInterfaces/updateIssueCommentResponse.js";
 import type UpdatePullResponse from "./octokitInterfaces/updatePullResponse.js";
+import { singleton } from "tsyringe";
 
 /* eslint-disable @typescript-eslint/naming-convention -- Required for alignment with Octokit. */
 

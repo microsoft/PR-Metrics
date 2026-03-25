@@ -11,11 +11,11 @@ import parseGitDiff, {
   type GitDiff,
   type RenamedFile,
 } from "parse-git-diff";
-import { singleton } from "tsyringe";
-import type Logger from "../utilities/logger.js";
 import type AxiosWrapper from "../wrappers/axiosWrapper.js";
 import type GetPullResponse from "../wrappers/octokitInterfaces/getPullResponse.js";
+import type Logger from "../utilities/logger.js";
 import type OctokitWrapper from "../wrappers/octokitWrapper.js";
+import { singleton } from "tsyringe";
 
 /**
  * A parser for Git diffs read via Octokit.
@@ -163,6 +163,7 @@ export default class OctokitGitDiffParser {
 
             break;
           }
+          case "DeletedFile":
           default:
             this._logger.logDebug(
               `Skipping file type '${file.type}' while performing diff parsing.`,

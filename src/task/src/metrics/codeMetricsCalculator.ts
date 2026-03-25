@@ -4,15 +4,15 @@
  */
 
 import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces.js";
-import { injectable } from "tsyringe";
 import type GitInvoker from "../git/gitInvoker.js";
+import type Logger from "../utilities/logger.js";
 import type PullRequest from "../pullRequests/pullRequest.js";
 import type PullRequestComments from "../pullRequests/pullRequestComments.js";
 import type PullRequestCommentsData from "../pullRequests/pullRequestCommentsData.js";
 import type PullRequestDetailsInterface from "../repos/interfaces/pullRequestDetailsInterface.js";
 import type ReposInvoker from "../repos/reposInvoker.js";
 import RunnerInvoker from "../runners/runnerInvoker.js";
-import type Logger from "../utilities/logger.js";
+import { injectable } from "tsyringe";
 
 /**
  * A class for calculating and updating the code metrics within pull requests.

@@ -3,16 +3,16 @@
  * Licensed under the MIT License.
  */
 
-import type { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces.js";
-import { singleton } from "tsyringe";
-import RunnerInvoker from "../runners/runnerInvoker.js";
-import type Logger from "../utilities/logger.js";
 import * as Validator from "../utilities/validator.js";
 import type AzureReposInvoker from "./azureReposInvoker.js";
-import type GitHubReposInvoker from "./gitHubReposInvoker.js";
 import type CommentData from "./interfaces/commentData.js";
+import type { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces.js";
+import type GitHubReposInvoker from "./gitHubReposInvoker.js";
+import type Logger from "../utilities/logger.js";
 import type PullRequestDetailsInterface from "./interfaces/pullRequestDetailsInterface.js";
 import type ReposInvokerInterface from "./reposInvokerInterface.js";
+import RunnerInvoker from "../runners/runnerInvoker.js";
+import { singleton } from "tsyringe";
 
 /**
  * A class for invoking repository functionality with any underlying repository store.

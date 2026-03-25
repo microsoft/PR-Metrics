@@ -3,8 +3,8 @@
  * Licensed under the MIT License.
  */
 
-import assert from "node:assert/strict";
 import * as Converter from "../../src/utilities/converter.js";
+import assert from "node:assert/strict";
 
 describe("converter.ts", (): void => {
   describe("toString()", (): void => {
