@@ -28,8 +28,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-        with:
-          persist-credentials: false
 
       - name: gh – Log Version
         run: gh --version
@@ -83,24 +81,22 @@ jobs:
 
       - name: Generate Release Notes
         run: >-
-          gh api "repos/$Env:GITHUB_REPOSITORY/releases/generate-notes"
-          -f "tag_name=$Env:VERSION"
-          -f "target_commitish=$Env:GITHUB_SHA"
+          gh api repos/${{ github.repository }}/releases/generate-notes
+          -f tag_name="${{ steps.version.outputs.VERSION }}"
+          -f target_commitish=${{ github.sha }}
           --jq '.body' > release-notes.md
         env:
           GITHUB_TOKEN: ${{ secrets.PR_METRICS_TOKEN }}
-          VERSION: ${{ steps.version.outputs.VERSION }}
 
       - name: GitHub Release
         run: >-
-          gh release create "$Env:VERSION"
-          "$Env:GITHUB_WORKSPACE/ms-omex.PRMetrics.vsix"
-          "$Env:GITHUB_WORKSPACE/ms-omex.PRMetrics.vsix.sigstore.json"
-          "$Env:GITHUB_WORKSPACE/ms-omex.PRMetrics.sbom.cdx.json"
-          --title "Release $Env:VERSION"
-          --target "$Env:GITHUB_SHA"
+          gh release create "${{ steps.version.outputs.VERSION }}"
+          "${{ github.workspace }}/ms-omex.PRMetrics.vsix"
+          "${{ github.workspace }}/ms-omex.PRMetrics.vsix.sigstore.json"
+          "${{ github.workspace }}/ms-omex.PRMetrics.sbom.cdx.json"
+          --title "Release ${{ steps.version.outputs.VERSION }}"
+          --target "${{ github.sha }}"
           --notes-file release-notes.md
           --discussion-category "Releases"
         env:
           GITHUB_TOKEN: ${{ secrets.PR_METRICS_TOKEN }}
-          VERSION: ${{ steps.version.outputs.VERSION }}
