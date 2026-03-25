@@ -55,6 +55,10 @@ indent_size = 2
 [*.{cmd,bat}]
 end_of_line = crlf
 
+# PowerShell Files
+[*.ps1]
+charset = utf-8-bom
+
 # Bash Files
 [*.sh]
 end_of_line = lf
