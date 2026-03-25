@@ -12,7 +12,7 @@ updates:
       interval: cron
       cronjob: 0 0 10 */3 * # Run every quarter on the 10th day.
     cooldown:
-      default-days: 3
+      default-days: 7
     labels:
       - dependencies
       - github-actions
