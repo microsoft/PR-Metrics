@@ -3,13 +3,13 @@
  * Licensed under the MIT License.
  */
 
-import * as fs from "fs";
-import * as path from "path";
-import ResourcesJsonInterface from "../../src/jsonTypes/resourcesJsonInterface.js";
-import TaskJsonInterface from "../jsonTypes/taskJsonInterface.js";
 import assert from "node:assert/strict";
+import * as fs from "node:fs";
+import * as path from "node:path";
 import { fileURLToPath } from "node:url";
 import { globSync } from "glob";
+import type ResourcesJsonInterface from "../../src/jsonTypes/resourcesJsonInterface.js";
+import type TaskJsonInterface from "../jsonTypes/taskJsonInterface.js";
 
 describe("resources.resjson", (): void => {
   const basePath: string = path.join(

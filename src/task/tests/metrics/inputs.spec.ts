@@ -4,15 +4,15 @@
  */
 
 import "reflect-metadata";
-import * as Converter from "../../src/utilities/converter.js";
-import * as InputsDefault from "../../src/metrics/inputsDefault.js";
+import assert from "node:assert/strict";
 import { deepEqual, instance, mock, verify, when } from "ts-mockito";
 import Inputs from "../../src/metrics/inputs.js";
-import Logger from "../../src/utilities/logger.js";
+import * as InputsDefault from "../../src/metrics/inputsDefault.js";
 import RunnerInvoker from "../../src/runners/runnerInvoker.js";
-import { anyString } from "../testUtilities/mockito.js";
-import assert from "node:assert/strict";
 import { decimalRadix } from "../../src/utilities/constants.js";
+import * as Converter from "../../src/utilities/converter.js";
+import Logger from "../../src/utilities/logger.js";
+import { anyString } from "../testUtilities/mockito.js";
 
 describe("inputs.ts", (): void => {
   const adjustingAlwaysCloseComment =
@@ -304,7 +304,7 @@ describe("inputs.ts", (): void => {
         ];
 
         testCases.forEach((baseSize: string | null): void => {
-          it(`should set the default when the input '${Converter.toString(baseSize)}' is invalid`, (): void => {
+          it(`should set the default when the input '${Converter.convertToString(baseSize)}' is invalid`, (): void => {
             // Arrange
             when(
               runnerInvoker.getInput(deepEqual(["Base", "Size"])),
@@ -499,7 +499,7 @@ describe("inputs.ts", (): void => {
         ];
 
         testCases.forEach((growthRate: string | null): void => {
-          it(`should set the default when the input '${Converter.toString(growthRate)}' is invalid`, (): void => {
+          it(`should set the default when the input '${Converter.convertToString(growthRate)}' is invalid`, (): void => {
             // Arrange
             when(
               runnerInvoker.getInput(deepEqual(["Growth", "Rate"])),
@@ -711,7 +711,7 @@ describe("inputs.ts", (): void => {
         ];
 
         testCases.forEach((testFactor: string | null): void => {
-          it(`should set the default when the input '${Converter.toString(testFactor)}' is invalid`, (): void => {
+          it(`should set the default when the input '${Converter.convertToString(testFactor)}' is invalid`, (): void => {
             // Arrange
             when(
               runnerInvoker.getInput(deepEqual(["Test", "Factor"])),
@@ -983,7 +983,7 @@ describe("inputs.ts", (): void => {
         ];
 
         testCases.forEach((alwaysCloseComment: string | null): void => {
-          it(`should set the default when the input is '${Converter.toString(alwaysCloseComment)}'`, (): void => {
+          it(`should set the default when the input is '${Converter.convertToString(alwaysCloseComment)}'`, (): void => {
             // Arrange
             when(
               runnerInvoker.getInput(deepEqual(["Always", "Close", "Comment"])),
@@ -1110,7 +1110,7 @@ describe("inputs.ts", (): void => {
         const testCases: (string | null)[] = [null, "", " ", "     ", "\n"];
 
         testCases.forEach((fileMatchingPatterns: string | null): void => {
-          it(`should set the default when the input '${Converter.toString(fileMatchingPatterns?.replace(/\n/gu, "\\n"))}' is invalid`, (): void => {
+          it(`should set the default when the input '${Converter.convertToString(fileMatchingPatterns?.replace(/\n/gu, "\\n"))}' is invalid`, (): void => {
             // Arrange
             when(
               runnerInvoker.getInput(
@@ -1446,7 +1446,7 @@ describe("inputs.ts", (): void => {
         const testCases: (string | null)[] = [null, "", " ", "     ", "\n"];
 
         testCases.forEach((testMatchingPatterns: string | null): void => {
-          it(`should set the default when the input '${Converter.toString(testMatchingPatterns?.replace(/\n/gu, "\\n"))}' is invalid`, (): void => {
+          it(`should set the default when the input '${Converter.convertToString(testMatchingPatterns?.replace(/\n/gu, "\\n"))}' is invalid`, (): void => {
             // Arrange
             when(
               runnerInvoker.getInput(
@@ -1758,7 +1758,7 @@ describe("inputs.ts", (): void => {
         const testCases: (string | null)[] = [null, "", " ", "     ", "\n"];
 
         testCases.forEach((codeFileExtensions: string | null): void => {
-          it(`should set the default when the input '${Converter.toString(codeFileExtensions?.replace(/\n/gu, "\\n"))}' is invalid`, (): void => {
+          it(`should set the default when the input '${Converter.convertToString(codeFileExtensions?.replace(/\n/gu, "\\n"))}' is invalid`, (): void => {
             // Arrange
             when(
               runnerInvoker.getInput(deepEqual(["Code", "File", "Extensions"])),

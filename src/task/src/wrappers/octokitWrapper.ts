@@ -3,19 +3,19 @@
  * Licensed under the MIT License.
  */
 
-import CreateIssueCommentResponse from "./octokitInterfaces/createIssueCommentResponse.js";
-import CreateReviewCommentResponse from "./octokitInterfaces/createReviewCommentResponse.js";
-import DeleteReviewCommentResponse from "./octokitInterfaces/deleteReviewCommentResponse.js";
-import GetIssueCommentsResponse from "./octokitInterfaces/getIssueCommentsResponse.js";
-import GetPullResponse from "./octokitInterfaces/getPullResponse.js";
-import GetReviewCommentsResponse from "./octokitInterfaces/getReviewCommentsResponse.js";
-import ListCommitsResponse from "./octokitInterfaces/listCommitsResponse.js";
+import type { OctokitOptions } from "@octokit/core";
 import { Octokit } from "octokit";
-import OctokitGitDiffParser from "../git/octokitGitDiffParser.js";
-import { OctokitOptions } from "@octokit/core";
-import UpdateIssueCommentResponse from "./octokitInterfaces/updateIssueCommentResponse.js";
-import UpdatePullResponse from "./octokitInterfaces/updatePullResponse.js";
 import { singleton } from "tsyringe";
+import type OctokitGitDiffParser from "../git/octokitGitDiffParser.js";
+import type CreateIssueCommentResponse from "./octokitInterfaces/createIssueCommentResponse.js";
+import type CreateReviewCommentResponse from "./octokitInterfaces/createReviewCommentResponse.js";
+import type DeleteReviewCommentResponse from "./octokitInterfaces/deleteReviewCommentResponse.js";
+import type GetIssueCommentsResponse from "./octokitInterfaces/getIssueCommentsResponse.js";
+import type GetPullResponse from "./octokitInterfaces/getPullResponse.js";
+import type GetReviewCommentsResponse from "./octokitInterfaces/getReviewCommentsResponse.js";
+import type ListCommitsResponse from "./octokitInterfaces/listCommitsResponse.js";
+import type UpdateIssueCommentResponse from "./octokitInterfaces/updateIssueCommentResponse.js";
+import type UpdatePullResponse from "./octokitInterfaces/updatePullResponse.js";
 
 /* eslint-disable @typescript-eslint/naming-convention -- Required for alignment with Octokit. */
 

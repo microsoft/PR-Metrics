@@ -3,9 +3,9 @@
  * Licensed under the MIT License.
  */
 
+import assert from "node:assert/strict";
 import * as Converter from "../../src/utilities/converter.js";
 import * as Validator from "../../src/utilities/validator.js";
-import assert from "node:assert/strict";
 
 describe("validator.ts", (): void => {
   describe("validateString()", (): void => {
@@ -13,7 +13,7 @@ describe("validator.ts", (): void => {
       const testCases: (string | null | undefined)[] = ["", null, undefined];
 
       testCases.forEach((value: string | null | undefined): void => {
-        it(`should throw an error when passed invalid string value '${Converter.toString(value)}'`, (): void => {
+        it(`should throw an error when passed invalid string value '${Converter.convertToString(value)}'`, (): void => {
           // Act
           const func: () => void = () =>
             Validator.validateString(
@@ -26,7 +26,7 @@ describe("validator.ts", (): void => {
           assert.throws(
             func,
             new TypeError(
-              `'string test', accessed within 'string test method name', is invalid, null, or undefined '${Converter.toString(value)}'.`,
+              `'string test', accessed within 'string test method name', is invalid, null, or undefined '${Converter.convertToString(value)}'.`,
             ),
           );
         });
@@ -51,7 +51,7 @@ describe("validator.ts", (): void => {
       const testCases: (string | undefined)[] = ["", undefined];
 
       testCases.forEach((value: string | undefined): void => {
-        it(`should throw an error when passed invalid string value '${Converter.toString(value)}'`, (): void => {
+        it(`should throw an error when passed invalid string value '${Converter.convertToString(value)}'`, (): void => {
           // Arrange
           if (typeof value === "undefined") {
             delete process.env.TEST_VARIABLE;
@@ -70,7 +70,7 @@ describe("validator.ts", (): void => {
           assert.throws(
             func,
             new TypeError(
-              `'TEST_VARIABLE', accessed within 'string test method name', is invalid, null, or undefined '${Converter.toString(value)}'.`,
+              `'TEST_VARIABLE', accessed within 'string test method name', is invalid, null, or undefined '${Converter.convertToString(value)}'.`,
             ),
           );
 
@@ -108,7 +108,7 @@ describe("validator.ts", (): void => {
       ];
 
       testCases.forEach((value: number | null | undefined): void => {
-        it(`should throw an error when passed invalid number value '${Converter.toString(value)}'`, (): void => {
+        it(`should throw an error when passed invalid number value '${Converter.convertToString(value)}'`, (): void => {
           // Act
           const func: () => void = () =>
             Validator.validateNumber(
@@ -121,7 +121,7 @@ describe("validator.ts", (): void => {
           assert.throws(
             func,
             new TypeError(
-              `'number test', accessed within 'number test method name', is invalid, null, or undefined '${Converter.toString(value)}'.`,
+              `'number test', accessed within 'number test method name', is invalid, null, or undefined '${Converter.convertToString(value)}'.`,
             ),
           );
         });

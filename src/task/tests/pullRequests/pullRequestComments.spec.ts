@@ -4,22 +4,22 @@
  */
 
 import "reflect-metadata";
-import * as Converter from "../../src/utilities/converter.js";
+import assert from "node:assert/strict";
+import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces.js";
 import { instance, mock, verify, when } from "ts-mockito";
 import CodeMetrics from "../../src/metrics/codeMetrics.js";
 import CodeMetricsData from "../../src/metrics/codeMetricsData.js";
-import CommentData from "../../src/repos/interfaces/commentData.js";
-import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces.js";
-import FileCommentData from "../../src/repos/interfaces/fileCommentData.js";
-import { FixedLengthArrayInterface } from "../../src/utilities/fixedLengthArrayInterface.js";
 import Inputs from "../../src/metrics/inputs.js";
-import Logger from "../../src/utilities/logger.js";
-import PullRequestCommentData from "../../src/repos/interfaces/pullRequestCommentData.js";
 import PullRequestComments from "../../src/pullRequests/pullRequestComments.js";
-import PullRequestCommentsData from "../../src/pullRequests/pullRequestCommentsData.js";
+import type PullRequestCommentsData from "../../src/pullRequests/pullRequestCommentsData.js";
+import CommentData from "../../src/repos/interfaces/commentData.js";
+import FileCommentData from "../../src/repos/interfaces/fileCommentData.js";
+import PullRequestCommentData from "../../src/repos/interfaces/pullRequestCommentData.js";
 import ReposInvoker from "../../src/repos/reposInvoker.js";
 import RunnerInvoker from "../../src/runners/runnerInvoker.js";
-import assert from "node:assert/strict";
+import * as Converter from "../../src/utilities/converter.js";
+import type { FixedLengthArrayInterface } from "../../src/utilities/fixedLengthArrayInterface.js";
+import Logger from "../../src/utilities/logger.js";
 
 describe("pullRequestComments.ts", (): void => {
   let complexGitPullRequestComments: CommentData;
@@ -872,7 +872,7 @@ describe("pullRequestComments.ts", (): void => {
       const testCases: (boolean | null)[] = [true, null];
 
       testCases.forEach((sufficientlyTested: boolean | null): void => {
-        it(`should return Closed when the pull request is small and has sufficient test coverage '${Converter.toString(sufficientlyTested)}'`, async (): Promise<void> => {
+        it(`should return Closed when the pull request is small and has sufficient test coverage '${Converter.convertToString(sufficientlyTested)}'`, async (): Promise<void> => {
           // Arrange
           when(codeMetrics.isSmall()).thenResolve(true);
           when(codeMetrics.isSufficientlyTested()).thenResolve(
@@ -927,7 +927,7 @@ describe("pullRequestComments.ts", (): void => {
 
       testCases.forEach(
         ({ isSmall, isSufficientlyTested }: TestCaseType): void => {
-          it(`should return Active when the pull request small status is '${String(isSmall)}' and the sufficient test coverage status is '${Converter.toString(isSufficientlyTested)}'`, async (): Promise<void> => {
+          it(`should return Active when the pull request small status is '${String(isSmall)}' and the sufficient test coverage status is '${Converter.convertToString(isSufficientlyTested)}'`, async (): Promise<void> => {
             // Arrange
             when(codeMetrics.isSmall()).thenResolve(isSmall);
             when(codeMetrics.isSufficientlyTested()).thenResolve(

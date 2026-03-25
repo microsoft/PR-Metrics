@@ -4,29 +4,29 @@
  */
 
 import "reflect-metadata";
-import * as AssertExtensions from "../testUtilities/assertExtensions.js";
-import * as Converter from "../../src/utilities/converter.js";
-import * as GitHubReposInvokerConstants from "./gitHubReposInvokerConstants.js";
-import { any, anyNumber, anyString } from "../testUtilities/mockito.js";
-import { instance, mock, verify, when } from "ts-mockito";
-import CommentData from "../../src/repos/interfaces/commentData.js";
-import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces.js";
-import ErrorWithStatusInterface from "../../src/repos/interfaces/errorWithStatusInterface.js";
-import GetIssueCommentsResponse from "../../src/wrappers/octokitInterfaces/getIssueCommentsResponse.js";
-import GetPullResponse from "../../src/wrappers/octokitInterfaces/getPullResponse.js";
-import GitHubReposInvoker from "../../src/repos/gitHubReposInvoker.js";
-import GitInvoker from "../../src/git/gitInvoker.js";
-import HttpError from "../testUtilities/httpError.js";
-import Logger from "../../src/utilities/logger.js";
-import OctokitLogObjectInterface from "../wrappers/octokitLogObjectInterface.js";
-import { OctokitOptions } from "@octokit/core";
-import OctokitWrapper from "../../src/wrappers/octokitWrapper.js";
-import PullRequestDetailsInterface from "../../src/repos/interfaces/pullRequestDetailsInterface.js";
-import { RequestError } from "octokit";
-import RunnerInvoker from "../../src/runners/runnerInvoker.js";
-import { StatusCodes } from "http-status-codes";
 import assert from "node:assert/strict";
+import type { OctokitOptions } from "@octokit/core";
+import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces.js";
+import { StatusCodes } from "http-status-codes";
+import type { RequestError } from "octokit";
+import { instance, mock, verify, when } from "ts-mockito";
+import GitInvoker from "../../src/git/gitInvoker.js";
+import GitHubReposInvoker from "../../src/repos/gitHubReposInvoker.js";
+import type CommentData from "../../src/repos/interfaces/commentData.js";
+import type ErrorWithStatusInterface from "../../src/repos/interfaces/errorWithStatusInterface.js";
+import type PullRequestDetailsInterface from "../../src/repos/interfaces/pullRequestDetailsInterface.js";
+import RunnerInvoker from "../../src/runners/runnerInvoker.js";
+import * as Converter from "../../src/utilities/converter.js";
+import Logger from "../../src/utilities/logger.js";
+import type GetIssueCommentsResponse from "../../src/wrappers/octokitInterfaces/getIssueCommentsResponse.js";
+import type GetPullResponse from "../../src/wrappers/octokitInterfaces/getPullResponse.js";
+import OctokitWrapper from "../../src/wrappers/octokitWrapper.js";
+import * as AssertExtensions from "../testUtilities/assertExtensions.js";
 import { createRequestError } from "../testUtilities/createRequestError.js";
+import HttpError from "../testUtilities/httpError.js";
+import { any, anyNumber, anyString } from "../testUtilities/mockito.js";
+import type OctokitLogObjectInterface from "../wrappers/octokitLogObjectInterface.js";
+import * as GitHubReposInvokerConstants from "./gitHubReposInvokerConstants.js";
 
 describe("gitHubReposInvoker.ts", (): void => {
   let gitInvoker: GitInvoker;
@@ -165,7 +165,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       const testCases: (string | undefined)[] = [undefined, ""];
 
       testCases.forEach((variable: string | undefined): void => {
-        it(`should throw when SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI is set to the invalid value '${Converter.toString(variable)}' and the task is running on Azure Pipelines`, async (): Promise<void> => {
+        it(`should throw when SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI is set to the invalid value '${Converter.convertToString(variable)}' and the task is running on Azure Pipelines`, async (): Promise<void> => {
           // Arrange
           if (typeof variable === "undefined") {
             delete process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI;
@@ -187,7 +187,7 @@ describe("gitHubReposInvoker.ts", (): void => {
           // Assert
           await AssertExtensions.toThrowAsync(
             func,
-            `'SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI', accessed within 'GitHubReposInvoker.initializeForAzureDevOps()', is invalid, null, or undefined '${Converter.toString(variable)}'.`,
+            `'SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI', accessed within 'GitHubReposInvoker.initializeForAzureDevOps()', is invalid, null, or undefined '${Converter.convertToString(variable)}'.`,
           );
           verify(
             logger.logDebug("* GitHubReposInvoker.getTitleAndDescription()"),
@@ -233,7 +233,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       const testCases: (string | undefined)[] = [undefined, ""];
 
       testCases.forEach((variable: string | undefined): void => {
-        it(`should throw when GITHUB_API_URL is set to the invalid value '${Converter.toString(variable)}' and the task is running on GitHub`, async (): Promise<void> => {
+        it(`should throw when GITHUB_API_URL is set to the invalid value '${Converter.convertToString(variable)}' and the task is running on GitHub`, async (): Promise<void> => {
           // Arrange
           delete process.env.PR_METRICS_ACCESS_TOKEN;
           process.env.PR_METRICS_ACCESS_TOKEN = "PAT";
@@ -258,7 +258,7 @@ describe("gitHubReposInvoker.ts", (): void => {
           // Assert
           await AssertExtensions.toThrowAsync(
             func,
-            `'GITHUB_API_URL', accessed within 'GitHubReposInvoker.initializeForGitHub()', is invalid, null, or undefined '${Converter.toString(variable)}'.`,
+            `'GITHUB_API_URL', accessed within 'GitHubReposInvoker.initializeForGitHub()', is invalid, null, or undefined '${Converter.convertToString(variable)}'.`,
           );
           verify(
             logger.logDebug("* GitHubReposInvoker.getTitleAndDescription()"),
@@ -280,7 +280,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       const testCases: (string | undefined)[] = [undefined, ""];
 
       testCases.forEach((variable: string | undefined): void => {
-        it(`should throw when GITHUB_REPOSITORY_OWNER is set to the invalid value '${Converter.toString(variable)}' and the task is running on GitHub`, async (): Promise<void> => {
+        it(`should throw when GITHUB_REPOSITORY_OWNER is set to the invalid value '${Converter.convertToString(variable)}' and the task is running on GitHub`, async (): Promise<void> => {
           // Arrange
           delete process.env.PR_METRICS_ACCESS_TOKEN;
           process.env.PR_METRICS_ACCESS_TOKEN = "PAT";
@@ -306,7 +306,7 @@ describe("gitHubReposInvoker.ts", (): void => {
           // Assert
           await AssertExtensions.toThrowAsync(
             func,
-            `'GITHUB_REPOSITORY_OWNER', accessed within 'GitHubReposInvoker.initializeForGitHub()', is invalid, null, or undefined '${Converter.toString(variable)}'.`,
+            `'GITHUB_REPOSITORY_OWNER', accessed within 'GitHubReposInvoker.initializeForGitHub()', is invalid, null, or undefined '${Converter.convertToString(variable)}'.`,
           );
           verify(
             logger.logDebug("* GitHubReposInvoker.getTitleAndDescription()"),
@@ -329,7 +329,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       const testCases: (string | undefined)[] = [undefined, ""];
 
       testCases.forEach((variable: string | undefined): void => {
-        it(`should throw when GITHUB_REPOSITORY is set to the invalid value '${Converter.toString(variable)}' and the task is running on GitHub`, async (): Promise<void> => {
+        it(`should throw when GITHUB_REPOSITORY is set to the invalid value '${Converter.convertToString(variable)}' and the task is running on GitHub`, async (): Promise<void> => {
           // Arrange
           delete process.env.PR_METRICS_ACCESS_TOKEN;
           process.env.PR_METRICS_ACCESS_TOKEN = "PAT";
@@ -356,7 +356,7 @@ describe("gitHubReposInvoker.ts", (): void => {
           // Assert
           await AssertExtensions.toThrowAsync(
             func,
-            `'GITHUB_REPOSITORY', accessed within 'GitHubReposInvoker.initializeForGitHub()', is invalid, null, or undefined '${Converter.toString(variable)}'.`,
+            `'GITHUB_REPOSITORY', accessed within 'GitHubReposInvoker.initializeForGitHub()', is invalid, null, or undefined '${Converter.convertToString(variable)}'.`,
           );
           verify(
             logger.logDebug("* GitHubReposInvoker.getTitleAndDescription()"),

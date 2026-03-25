@@ -3,14 +3,14 @@
  * Licensed under the MIT License.
  */
 
-import * as fs from "fs";
-import * as path from "path";
-import PackageJsonInterface from "./jsonTypes/packageJsonInterface.js";
-import ResourcesJsonInterface from "../src/jsonTypes/resourcesJsonInterface.js";
-import TaskJsonInterface from "./jsonTypes/taskJsonInterface.js";
-import VssExtensionJsonInterface from "./jsonTypes/vssExtensionJsonInterface.js";
 import assert from "node:assert/strict";
+import * as fs from "node:fs";
+import * as path from "node:path";
 import { fileURLToPath } from "node:url";
+import type ResourcesJsonInterface from "../src/jsonTypes/resourcesJsonInterface.js";
+import type PackageJsonInterface from "./jsonTypes/packageJsonInterface.js";
+import type TaskJsonInterface from "./jsonTypes/taskJsonInterface.js";
+import type VssExtensionJsonInterface from "./jsonTypes/vssExtensionJsonInterface.js";
 
 describe("task.json", (): void => {
   const basePath: string = path.join(

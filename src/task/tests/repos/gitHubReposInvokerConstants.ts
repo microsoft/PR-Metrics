@@ -3,11 +3,11 @@
  * Licensed under the MIT License.
  */
 
-import GetIssueCommentsResponse from "../../src/wrappers/octokitInterfaces/getIssueCommentsResponse.js";
-import GetPullResponse from "../../src/wrappers/octokitInterfaces/getPullResponse.js";
-import GetReviewCommentsResponse from "../../src/wrappers/octokitInterfaces/getReviewCommentsResponse.js";
-import ListCommitsResponse from "../../src/wrappers/octokitInterfaces/listCommitsResponse.js";
 import { StatusCodes } from "http-status-codes";
+import type GetIssueCommentsResponse from "../../src/wrappers/octokitInterfaces/getIssueCommentsResponse.js";
+import type GetPullResponse from "../../src/wrappers/octokitInterfaces/getPullResponse.js";
+import type GetReviewCommentsResponse from "../../src/wrappers/octokitInterfaces/getReviewCommentsResponse.js";
+import type ListCommitsResponse from "../../src/wrappers/octokitInterfaces/listCommitsResponse.js";
 
 /* eslint-disable @typescript-eslint/naming-convention -- Required for alignment with Octokit. */
 

@@ -3,8 +3,8 @@
  * Licensed under the MIT License.
  */
 
-import CodeMetricsData from "../../src/metrics/codeMetricsData.js";
 import assert from "node:assert/strict";
+import CodeMetricsData from "../../src/metrics/codeMetricsData.js";
 
 describe("codeMetricsData.ts", (): void => {
   describe("constructor()", (): void => {

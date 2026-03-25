@@ -3,8 +3,8 @@
  * Licensed under the MIT License.
  */
 
-import ResolvableInstanceTargetInterface from "./resolvableInstanceTargetInterface.js";
 import { instance } from "ts-mockito";
+import type ResolvableInstanceTargetInterface from "./resolvableInstanceTargetInterface.js";
 
 /**
  * Gets a resolvable instance of the specified mock object.

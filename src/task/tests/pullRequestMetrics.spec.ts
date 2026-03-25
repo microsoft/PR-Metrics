@@ -5,9 +5,9 @@
 
 import { instance, mock, verify, when } from "ts-mockito";
 import CodeMetricsCalculator from "../src/metrics/codeMetricsCalculator.js";
-import Logger from "../src/utilities/logger.js";
 import PullRequestMetrics from "../src/pullRequestMetrics.js";
 import RunnerInvoker from "../src/runners/runnerInvoker.js";
+import Logger from "../src/utilities/logger.js";
 
 describe("pullRequestMetrics.ts", (): void => {
   let codeMetricsCalculator: CodeMetricsCalculator;

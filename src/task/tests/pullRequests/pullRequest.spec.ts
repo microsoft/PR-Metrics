@@ -4,13 +4,13 @@
  */
 
 import "reflect-metadata";
-import * as Converter from "../../src/utilities/converter.js";
+import assert from "node:assert/strict";
 import { instance, mock, verify, when } from "ts-mockito";
 import CodeMetrics from "../../src/metrics/codeMetrics.js";
-import Logger from "../../src/utilities/logger.js";
 import PullRequest from "../../src/pullRequests/pullRequest.js";
 import RunnerInvoker from "../../src/runners/runnerInvoker.js";
-import assert from "node:assert/strict";
+import * as Converter from "../../src/utilities/converter.js";
+import Logger from "../../src/utilities/logger.js";
 
 describe("pullRequest.ts", (): void => {
   let codeMetrics: CodeMetrics;
@@ -310,7 +310,7 @@ describe("pullRequest.ts", (): void => {
       const testCases: (string | null)[] = [null, "", " "];
 
       testCases.forEach((currentDescription: string | null): void => {
-        it(`should return the default description when the current description '${Converter.toString(currentDescription)}' is empty`, (): void => {
+        it(`should return the default description when the current description '${Converter.convertToString(currentDescription)}' is empty`, (): void => {
           // Arrange
           const pullRequest: PullRequest = new PullRequest(
             instance(codeMetrics),

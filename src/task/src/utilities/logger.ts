@@ -3,9 +3,9 @@
  * Licensed under the MIT License.
  */
 
-import ConsoleWrapper from "../wrappers/consoleWrapper.js";
-import RunnerInvoker from "../runners/runnerInvoker.js";
 import { singleton } from "tsyringe";
+import type RunnerInvoker from "../runners/runnerInvoker.js";
+import type ConsoleWrapper from "../wrappers/consoleWrapper.js";
 
 /**
  * A class for logging messages.

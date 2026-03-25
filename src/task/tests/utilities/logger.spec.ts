@@ -4,12 +4,12 @@
  */
 
 import "reflect-metadata";
+import { StatusCodes } from "http-status-codes";
 import { instance, mock, verify } from "ts-mockito";
+import RunnerInvoker from "../../src/runners/runnerInvoker.js";
+import Logger from "../../src/utilities/logger.js";
 import ConsoleWrapper from "../../src/wrappers/consoleWrapper.js";
 import HttpError from "../testUtilities/httpError.js";
-import Logger from "../../src/utilities/logger.js";
-import RunnerInvoker from "../../src/runners/runnerInvoker.js";
-import { StatusCodes } from "http-status-codes";
 
 describe("logger.ts", (): void => {
   let consoleWrapper: ConsoleWrapper;

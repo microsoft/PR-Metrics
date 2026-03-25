@@ -19,7 +19,7 @@ export const validateString = (
 ): string => {
   if (value === null || typeof value === "undefined" || value === "") {
     throw new TypeError(
-      `'${valueName}', accessed within '${methodName}', is invalid, null, or undefined '${Converter.toString(value)}'.`,
+      `'${valueName}', accessed within '${methodName}', is invalid, null, or undefined '${Converter.convertToString(value)}'.`,
     );
   }
 
@@ -56,10 +56,11 @@ export const validateNumber = (
     value === null ||
     typeof value === "undefined" ||
     value === 0 ||
+    Number.
     isNaN(value)
   ) {
     throw new TypeError(
-      `'${valueName}', accessed within '${methodName}', is invalid, null, or undefined '${Converter.toString(value)}'.`,
+      `'${valueName}', accessed within '${methodName}', is invalid, null, or undefined '${Converter.convertToString(value)}'.`,
     );
   }
 

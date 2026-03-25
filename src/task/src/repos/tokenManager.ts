@@ -4,21 +4,21 @@
  */
 
 import "reflect-metadata";
+import type { WebApi } from "azure-devops-node-api";
+import type { IRequestHandler } from "azure-devops-node-api/interfaces/common/VsoBaseInterfaces.js";
+import type { TaskHubOidcToken } from "azure-devops-node-api/interfaces/TaskAgentInterfaces.js";
+import type { ITaskApi } from "azure-devops-node-api/TaskApi.js";
+import { singleton } from "tsyringe";
+import type { EndpointAuthorization } from "../runners/endpointAuthorization.js";
+import type ExecOutput from "../runners/execOutput.js";
+import type RunnerInvoker from "../runners/runnerInvoker.js";
+import type Logger from "../utilities/logger.js";
 import {
   validateGuid,
   validateString,
   validateVariable,
 } from "../utilities/validator.js";
-import AzureDevOpsApiWrapper from "../wrappers/azureDevOpsApiWrapper.js";
-import { EndpointAuthorization } from "../runners/endpointAuthorization.js";
-import ExecOutput from "../runners/execOutput.js";
-import { IRequestHandler } from "azure-devops-node-api/interfaces/common/VsoBaseInterfaces.js";
-import { ITaskApi } from "azure-devops-node-api/TaskApi.js";
-import Logger from "../utilities/logger.js";
-import RunnerInvoker from "../runners/runnerInvoker.js";
-import { TaskHubOidcToken } from "azure-devops-node-api/interfaces/TaskAgentInterfaces.js";
-import { WebApi } from "azure-devops-node-api";
-import { singleton } from "tsyringe";
+import type AzureDevOpsApiWrapper from "../wrappers/azureDevOpsApiWrapper.js";
 
 /**
  * A class for invoking authorization token management functionality, used for retrieving identity information from a
