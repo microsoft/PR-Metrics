@@ -4,8 +4,8 @@
  */
 
 import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces.js";
-import GitInvoker from "../git/gitInvoker.js";
-import Logger from "../utilities/logger.js";
+import type GitInvoker from "../git/gitInvoker.js";
+import type Logger from "../utilities/logger.js";
 import PullRequest from "../pullRequests/pullRequest.js";
 import PullRequestComments from "../pullRequests/pullRequestComments.js";
 import PullRequestCommentsData from "../pullRequests/pullRequestCommentsData.js";
