@@ -10,7 +10,7 @@ import {
   repoProviderGitHubEnterprise,
 } from "../utilities/constants.js";
 import type ExecOutput from "../runners/execOutput.js";
-import Logger from "../utilities/logger.js";
+import type Logger from "../utilities/logger.js";
 import RunnerInvoker from "../runners/runnerInvoker.js";
 
 /**
@@ -157,7 +157,7 @@ export default class GitInvoker {
   public isPullRequestIdAvailable(): boolean {
     this._logger.logDebug("* GitInvoker.isPullRequestIdAvailable()");
 
-    return !isNaN(parseInt(this.pullRequestIdInternal, decimalRadix));
+    return !Number.isNaN(parseInt(this.pullRequestIdInternal, decimalRadix));
   }
 
   /**

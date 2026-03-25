@@ -4,8 +4,8 @@
  */
 
 import type { GetPullResponse, default as OctokitWrapper } from "../wrappers/octokitWrapper.js";
-import HttpClientWrapper from "../wrappers/httpClient.js";
-import Logger from "../utilities/logger.js";
+import type HttpClientWrapper from "../wrappers/httpClient.js";
+import type Logger from "../utilities/logger.js";
 import { decimalRadix } from "../utilities/constants.js";
 
 /**
