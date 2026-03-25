@@ -19,9 +19,7 @@ import { singleton } from "tsyringe";
  * A class for invoking Azure Pipelines runner functionality.
  */
 @singleton()
-export default class AzurePipelinesRunnerInvoker
-  implements RunnerInvokerInterface
-{
+export default class AzurePipelinesRunnerInvoker implements RunnerInvokerInterface {
   private readonly _azurePipelinesRunnerWrapper: AzurePipelinesRunnerWrapper;
 
   /**

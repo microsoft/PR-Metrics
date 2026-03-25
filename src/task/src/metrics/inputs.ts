@@ -205,8 +205,7 @@ export default class Inputs {
       growthRate === null ? NaN : parseFloat(growthRate);
     if (
       !Number.isNaN(convertedValue) &&
-      Number.
-      isFinite(convertedValue) &&
+      Number.isFinite(convertedValue) &&
       convertedValue > 1.0
     ) {
       this._growthRate = convertedValue;
@@ -237,8 +236,7 @@ export default class Inputs {
       testFactor === null ? NaN : parseFloat(testFactor);
     if (
       !Number.isNaN(convertedValue) &&
-      Number.
-      isFinite(convertedValue) &&
+      Number.isFinite(convertedValue) &&
       convertedValue >= 0.0
     ) {
       if (convertedValue === 0.0) {

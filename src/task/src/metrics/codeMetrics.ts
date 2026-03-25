@@ -483,7 +483,11 @@ export default class CodeMetrics {
       currentSize *= this._inputs.growthRate;
       index += 1;
 
-      if (index === indexMedium || index === indexLarge || index === indexExtraLarge) {
+      if (
+        index === indexMedium ||
+        index === indexLarge ||
+        index === indexExtraLarge
+      ) {
         result = indicators[index]("");
       } else {
         result = indicators[indexExtraLarge](
