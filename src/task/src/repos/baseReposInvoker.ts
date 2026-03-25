@@ -13,9 +13,7 @@ import { StatusCodes } from "http-status-codes";
 /**
  * A base class for invoking repository functionality.
  */
-export default abstract class BaseReposInvoker
-  implements ReposInvokerInterface
-{
+export default abstract class BaseReposInvoker implements ReposInvokerInterface {
   /**
    * Invokes an API call, augmenting any errors that may be thrown due to insufficient access.
    * @typeParam Response The type of the response from the API call.
