@@ -1,0 +1,3 @@
+[codespell]
+skip = ./src/LICENSE.txt,./dist
+ignore-words-list = sXL,indexS,atLeast,FileTest,Savin

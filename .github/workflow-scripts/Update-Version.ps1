@@ -42,7 +42,6 @@ function Update-FileContent
 $versionPattern = '\d+\.\d+\.\d+'
 $versionJsonReplacement = @{ Pattern = "`"version`": `"$versionPattern`""; Value = "`"version`": `"$version`"" }
 $friendlyNameReplacement = @{ Pattern = "PR Metrics v$versionPattern"; Value = "PR Metrics v$version" }
-$userAgentReplacement = @{ Pattern = "PRMetrics/v$versionPattern"; Value = "PRMetrics/v$version" }
 $versionComponentReplacements = @(
     @{ Pattern = '"Major": \d+'; Value = "`"Major`": $Major" }
     @{ Pattern = '"Minor": \d+'; Value = "`"Minor`": $Minor" }
