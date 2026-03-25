@@ -1,0 +1,3 @@
+[codespell]
+skip = */LICENSE.txt,*/package-lock.json
+ignore-words-list = sXL,atleast,fale
