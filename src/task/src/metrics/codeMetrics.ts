@@ -60,7 +60,7 @@ export default class CodeMetrics {
       result = 0;
     } else {
       result = parseInt(element, decimalRadix);
-      if (isNaN(result)) {
+      if (Number.isNaN(result)) {
         throw new Error(
           `Could not parse ${category} lines '${element}' from line '${line}'.`,
         );

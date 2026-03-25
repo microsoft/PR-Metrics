@@ -5,8 +5,8 @@
 
 import * as InputsDefault from "./inputsDefault.js";
 import { decimalRadix, maxPatternCount } from "../utilities/constants.js";
-import Logger from "../utilities/logger.js";
-import RunnerInvoker from "../runners/runnerInvoker.js";
+import type Logger from "../utilities/logger.js";
+import type RunnerInvoker from "../runners/runnerInvoker.js";
 
 /**
  * A class representing inputs passed to the task.
@@ -199,7 +199,7 @@ export default class Inputs {
     this._growthRate = this.initializeNumericInput(
       growthRate,
       parseFloat,
-      (value: number): boolean => isFinite(value) && value > 1.0,
+      (value: number): boolean => Number.isFinite(value) && value > 1.0,
       InputsDefault.growthRate,
       "metrics.inputs.settingGrowthRate",
       "metrics.inputs.adjustingGrowthRate",
@@ -212,8 +212,8 @@ export default class Inputs {
     const convertedValue: number =
       testFactor === null ? NaN : parseFloat(testFactor);
     if (
-      !isNaN(convertedValue) &&
-      isFinite(convertedValue) &&
+      !Number.isNaN(convertedValue) &&
+      Number.isFinite(convertedValue) &&
       convertedValue >= 0.0
     ) {
       if (convertedValue === 0.0) {
@@ -392,7 +392,7 @@ export default class Inputs {
 
     const convertedValue: number =
       rawValue === null ? NaN : parse(rawValue);
-    if (!isNaN(convertedValue) && validate(convertedValue)) {
+    if (!Number.isNaN(convertedValue) && validate(convertedValue)) {
       const valueString: string = convertedValue.toLocaleString();
       this._logger.logInfo(
         this._runnerInvoker.loc(settingKey, valueString),

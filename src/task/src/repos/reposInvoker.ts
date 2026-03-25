@@ -9,10 +9,10 @@ import {
   repoProviderGitHubEnterprise,
   repoProviderTfsGit,
 } from "../utilities/constants.js";
-import AzureReposInvoker from "./azureReposInvoker.js";
+import type AzureReposInvoker from "./azureReposInvoker.js";
 import type CommentData from "./interfaces/commentData.js";
 import type { CommentThreadStatus } from "./interfaces/commentThreadStatus.js";
-import GitHubReposInvoker from "./gitHubReposInvoker.js";
+import type GitHubReposInvoker from "./gitHubReposInvoker.js";
 import Logger from "../utilities/logger.js";
 import type PullRequestDetailsInterface from "./interfaces/pullRequestDetailsInterface.js";
 import type ReposInvokerInterface from "./reposInvokerInterface.js";

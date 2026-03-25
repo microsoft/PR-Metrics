@@ -3,17 +3,17 @@
  * Licensed under the MIT License.
  */
 
-import CodeMetrics from "../metrics/codeMetrics.js";
+import type CodeMetrics from "../metrics/codeMetrics.js";
 import type CodeMetricsData from "../metrics/codeMetricsData.js";
 import type CommentData from "../repos/interfaces/commentData.js";
 import { CommentThreadStatus } from "../repos/interfaces/commentThreadStatus.js";
 import type FileCommentData from "../repos/interfaces/fileCommentData.js";
-import Inputs from "../metrics/inputs.js";
-import Logger from "../utilities/logger.js";
+import type Inputs from "../metrics/inputs.js";
+import type Logger from "../utilities/logger.js";
 import type PullRequestComment from "../repos/interfaces/pullRequestCommentData.js";
 import PullRequestCommentsData from "./pullRequestCommentsData.js";
-import ReposInvoker from "../repos/reposInvoker.js";
-import RunnerInvoker from "../runners/runnerInvoker.js";
+import type ReposInvoker from "../repos/reposInvoker.js";
+import type RunnerInvoker from "../runners/runnerInvoker.js";
 
 /**
  * A class for managing pull requests comments.
