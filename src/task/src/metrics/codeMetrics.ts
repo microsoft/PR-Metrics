@@ -394,7 +394,7 @@ export default class CodeMetrics {
         );
       }
 
-      // Condense file and folder names that were renamed, e.g., "F{a => i}leT{b => e}st.d{c => l}l" or "FaleTbst.dcl => FileTest.dll".
+      // Condense file and folder names that were renamed, e.g., "F{a => i}le.d{c => l}l" or "Fale.dcl => File.dll".
       const fileName: string = elements[2]
         .replace(/\{.*? => (?<newName>[^}]+?)\}/gu, "$<newName>")
         .replace(/.*? => (?<newName>[^}]+?)/gu, "$<newName>");
@@ -452,11 +452,11 @@ export default class CodeMetrics {
   private calculateSize(): string {
     this._logger.logDebug("* CodeMetrics.calculateSize()");
 
-    const indexXS = 0;
-    const indexS = 1;
-    const indexM = 2;
-    const indexL = 3;
-    const indexXL = 4;
+    const indexExtraSmall = 0;
+    const indexSmall = 1;
+    const indexMedium = 2;
+    const indexLarge = 3;
+    const indexExtraLarge = 4;
 
     // eslint-disable-next-line @typescript-eslint/no-magic-numbers -- Required to be a compile-time constant.
     const indicators: FixedLengthArrayInterface<(prefix: string) => string, 5> =
@@ -472,22 +472,22 @@ export default class CodeMetrics {
 
     // Calculate the smaller size.
     if (this._metrics.productCode < this._inputs.baseSize) {
-      return indicators[indexXS]("");
+      return indicators[indexExtraSmall]("");
     }
 
     // Calculate the larger sizes.
-    let index = indexS;
-    let result: string = indicators[indexS]("");
+    let index = indexSmall;
+    let result: string = indicators[indexSmall]("");
     let currentSize: number = this._inputs.baseSize * this._inputs.growthRate;
     while (this._metrics.productCode >= currentSize) {
       currentSize *= this._inputs.growthRate;
       index += 1;
 
-      if (index === indexM || index === indexL || index === indexXL) {
+      if (index === indexMedium || index === indexLarge || index === indexExtraLarge) {
         result = indicators[index]("");
       } else {
-        result = indicators[indexXL](
-          (index - indicators.length + indexM).toLocaleString(),
+        result = indicators[indexExtraLarge](
+          (index - indicators.length + indexMedium).toLocaleString(),
         );
       }
     }

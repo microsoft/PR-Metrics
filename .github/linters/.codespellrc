@@ -1,0 +1,3 @@
+[codespell]
+skip = src/LICENSE.txt
+ignore-words-list = sXL,atleast
