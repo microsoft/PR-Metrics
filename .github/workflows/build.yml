@@ -173,6 +173,7 @@ jobs:
           GITLEAKS_CONFIG_FILE: gitleaks.toml
           MARKDOWN_CONFIG_FILE: ../../.markdownlint.json
           # Disable linters that conflict with other linters or are not needed.
+          VALIDATE_BIOME: false
           VALIDATE_JSON: false
           VALIDATE_TRIVY: false
           VALIDATE_TYPESCRIPT_ES: false
