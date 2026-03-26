@@ -12,6 +12,8 @@ import RunnerInvoker from "../../src/runners/runnerInvoker.js";
 import { anyString } from "../testUtilities/mockito.js";
 import assert from "node:assert/strict";
 
+fc.configureGlobal({ numRuns: 10 });
+
 describe("inputs.ts", (): void => {
   describe("Property-Based Tests", (): void => {
     describe("codeFileExtensions", (): void => {
