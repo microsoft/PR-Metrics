@@ -41,6 +41,15 @@ jobs:
       - name: npm – Install Dependencies
         run: npm ci
 
+      - name: License – Truncate
+        run: .github/workflow-scripts/Update-Licenses.ps1
+
+      - name: License – Generate Third-Party Licenses
+        run: npx generate-license-file --input package.json --output third-party-licenses.txt --overwrite --eol lf --ci --no-spinner
+
+      - name: License – Update LICENSE.txt
+        run: .github/workflow-scripts/Update-ThirdPartyNotices.ps1
+
       - name: npm – Lint
         run: npm run lint
 
