@@ -60,8 +60,8 @@ describe("resources.resjson", (): void => {
   const typeScriptFiles: string[] = globSync(
     `${globBasePath}!(node_modules|tests)/**/*.ts`,
   ).concat(globSync(`${globBasePath}*.ts`));
-  const typeScriptFileContents: string[] = typeScriptFiles.map(
-    (file: string) => fs.readFileSync(file, "utf8").replace(/\s|\n|\r/gu, ""),
+  const typeScriptFileContents: string[] = typeScriptFiles.map((file: string) =>
+    fs.readFileSync(file, "utf8").replace(/\s|\n|\r/gu, ""),
   );
 
   testCases.forEach((value: ResourcesJsonInterface, language: string): void => {
