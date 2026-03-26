@@ -2,12 +2,6 @@
 # Licensed under the MIT License.
 
 ---
-parameters:
-  - name: forceLicenseGeneration
-    type: boolean
-    default: false
-    displayName: Force License Generation
-
 trigger: none
 
 pr:
@@ -46,6 +40,3 @@ extends:
         exclusionPatterns: "*.js"
     stages:
       - template: template.yml
-        parameters:
-          generateLicenses: true
-          forceLicenseGeneration: ${{ parameters.forceLicenseGeneration }}
