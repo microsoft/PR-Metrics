@@ -153,9 +153,8 @@ jobs:
           fetch-depth: 0
 
       - name: Super-Linter
-        uses: github/super-linter@b807e99ddd37e444d189cfd2c2ca1274d8ae8ef1 # v7
+        uses: super-linter/super-linter@61abc07d755095a68f4987d1c2c3d1d64408f1f9 # v8.5.0
         env:
-          EDITORCONFIG_FILE_NAME: ../../.editorconfig
           FILTER_REGEX_EXCLUDE: .*dist/.*
           FIX_JSON_PRETTIER: true
           FIX_MARKDOWN_PRETTIER: true
@@ -167,7 +166,12 @@ jobs:
           GITLEAKS_CONFIG_FILE: gitleaks.toml
           MARKDOWN_CONFIG_FILE: ../../.markdownlint.json
           # Disable linters that conflict with other linters.
+          VALIDATE_BIOME_FORMAT: false
+          VALIDATE_BIOME_LINT: false
+          VALIDATE_GITHUB_ACTIONS_ZIZMOR: false
           VALIDATE_JSON: false
+          VALIDATE_SPELL_CODESPELL: false
+          VALIDATE_TRIVY: false
           VALIDATE_TYPESCRIPT_ES: false
           VALIDATE_TYPESCRIPT_STANDARD: false
 
