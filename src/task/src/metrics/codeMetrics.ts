@@ -490,7 +490,7 @@ export default class CodeMetrics {
         result = indicators[index]("");
       } else {
         result = indicators[extraLargeIndex](
-          (index - indicators.length + mediumIndex).toLocaleString(),
+          String(index - indicators.length + mediumIndex),
         );
       }
     }
