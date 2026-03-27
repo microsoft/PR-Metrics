@@ -3,9 +3,17 @@
  * Licensed under the MIT License.
  */
 
-import { copyFileSync, cpSync, mkdirSync, rmSync } from "node:fs";
+import { copyFileSync, cpSync, mkdirSync, renameSync, rmSync } from "node:fs";
 
-const [, , command, ...args] = process.argv;
+const argv = process.argv.slice(2);
+let cwd;
+if (argv[0] === "-C") {
+  argv.shift();
+  cwd = argv.shift();
+  process.chdir(cwd);
+}
+
+const [command, ...args] = argv;
 
 switch (command) {
   case "cp":
@@ -16,6 +24,9 @@ switch (command) {
     break;
   case "mkdir":
     mkdirSync(args[0], { recursive: true });
+    break;
+  case "mv":
+    renameSync(args[0], args[1]);
     break;
   case "rm":
     for (const path of args) {
