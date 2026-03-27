@@ -6,7 +6,7 @@
 import "reflect-metadata";
 import * as AssertExtensions from "../testUtilities/assertExtensions.js";
 import * as InputsDefault from "../../src/metrics/inputsDefault.js";
-import { anything, instance, mock, verify, when } from "ts-mockito";
+import { anyString, instance, mock, verify, when } from "ts-mockito";
 import CodeMetrics from "../../src/metrics/codeMetrics.js";
 import CodeMetricsData from "../../src/metrics/codeMetricsData.js";
 import GitInvoker from "../../src/git/gitInvoker.js";
@@ -1988,8 +1988,8 @@ describe("codeMetrics.ts", (): void => {
     when(
       runnerInvoker.loc(
         "metrics.codeMetrics.titleSizeIndicatorFormat",
-        anything(),
-        anything(),
+        anyString() as string,
+        anyString() as string,
       ),
     ).thenReturn("");
     const codeMetrics: CodeMetrics = new CodeMetrics(
