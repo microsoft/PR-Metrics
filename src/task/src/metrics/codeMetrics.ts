@@ -378,7 +378,6 @@ export default class CodeMetrics {
       );
     }
 
-    // Condense file and folder names that were renamed, e.g., F{a => i}leT{b => e}st.d{c => l}l".
     const lines: string[] = modifiedInput.split("\n");
 
     const result: CodeFileMetricInterface[] = [];
