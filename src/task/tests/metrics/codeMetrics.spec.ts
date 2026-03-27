@@ -45,18 +45,7 @@ describe("codeMetrics.ts", (): void => {
     when(runnerInvoker.loc("metrics.codeMetrics.titleSizeS")).thenReturn("S");
     when(runnerInvoker.loc("metrics.codeMetrics.titleSizeM")).thenReturn("M");
     when(runnerInvoker.loc("metrics.codeMetrics.titleSizeL")).thenReturn("L");
-    when(runnerInvoker.loc("metrics.codeMetrics.titleSizeXL", "")).thenReturn(
-      "XL",
-    );
-    when(runnerInvoker.loc("metrics.codeMetrics.titleSizeXL", "2")).thenReturn(
-      "2XL",
-    );
-    when(runnerInvoker.loc("metrics.codeMetrics.titleSizeXL", "3")).thenReturn(
-      "3XL",
-    );
-    when(runnerInvoker.loc("metrics.codeMetrics.titleSizeXL", "10")).thenReturn(
-      "10XL",
-    );
+    when(runnerInvoker.loc("metrics.codeMetrics.titleSizeXL")).thenReturn("XL");
     when(
       runnerInvoker.loc("metrics.codeMetrics.titleTestsSufficient"),
     ).thenReturn("✔");
