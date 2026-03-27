@@ -26,7 +26,7 @@ jobs:
     permissions: {}
     steps:
       - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           token: ${{ secrets.PR_METRICS_TOKEN }}
 
@@ -61,7 +61,7 @@ jobs:
         run: git add -A
 
       - name: Git – Commit & Push (Signed)
-        uses: grafana/github-api-commit-action@b1d81091e8480dd11fcea8bc1f0ab977a0376ca5 # v1.0.0
+        uses: grafana/github-api-commit-action@cb4e7799d2cd77d607acf280ed70a0d03572d8bd # v1.0.0
         with:
           commit-message: "feat: release v${{ env.version }}"
           create-branch-on-remote: true
@@ -83,9 +83,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.PR_METRICS_TOKEN }}
 
       - name: Install Node.js
-        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
         with:
-          node-version: 24.13.0
+          node-version: 20.20.0
 
       - name: npm – Install Dependencies
         run: npm ci
@@ -97,7 +97,7 @@ jobs:
         run: npm run update:dependencies
 
       - name: Git – Commit & Push (Signed)
-        uses: grafana/github-api-commit-action@b1d81091e8480dd11fcea8bc1f0ab977a0376ca5 # v1.0.0
+        uses: grafana/github-api-commit-action@cb4e7799d2cd77d607acf280ed70a0d03572d8bd # v1.0.0
         with:
           commit-message: "chore: update dependencies"
           create-branch-on-remote: true

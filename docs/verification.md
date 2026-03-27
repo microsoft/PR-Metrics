@@ -96,6 +96,7 @@ process and can be verified without needing to manage signing keys.
    ```
 
    This will download:
+
    - `ms-omex.PRMetrics.vsix` (the artifact)
    - `ms-omex.PRMetrics.vsix.sigstore.json` (the signature bundle)
 

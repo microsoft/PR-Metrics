@@ -55,7 +55,7 @@
   },
   "homepage": "https://github.com/microsoft/PR-Metrics#readme",
   "engines": {
-    "node": ">=24.13.0"
+    "node": ">=20.20.0"
   },
   "dependencies": {
     "@actions/core": "3.0.0",
