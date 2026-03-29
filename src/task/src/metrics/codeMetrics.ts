@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import * as minimatch from "minimatch";
+import picomatch from "picomatch";
 import { CodeFileMetricInterface } from "./codeFileMetricInterface.js";
 import CodeMetricsData from "./codeMetricsData.js";
 import { FixedLengthArrayInterface } from "../utilities/fixedLengthArrayInterface.js";
@@ -20,7 +20,7 @@ import { singleton } from "tsyringe";
  */
 @singleton()
 export default class CodeMetrics {
-  private static readonly _minimatchOptions: minimatch.MinimatchOptions = {
+  private static readonly _picomatchOptions: picomatch.PicomatchOptions = {
     dot: true,
   };
 
@@ -280,12 +280,10 @@ export default class CodeMetrics {
   ): boolean {
     this._logger.logDebug("* CodeMetrics.performGlobCheck()");
 
-    return (
-      minimatch.match(
-        [fileName],
-        fileMatchingPattern,
-        CodeMetrics._minimatchOptions,
-      ).length > 0
+    return picomatch.isMatch(
+      fileName,
+      fileMatchingPattern,
+      CodeMetrics._picomatchOptions,
     );
   }
 
