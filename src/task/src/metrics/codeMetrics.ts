@@ -3,7 +3,6 @@
  * Licensed under the MIT License.
  */
 
-import picomatch from "picomatch";
 import { CodeFileMetricInterface } from "./codeFileMetricInterface.js";
 import CodeMetricsData from "./codeMetricsData.js";
 import { FixedLengthArrayInterface } from "../utilities/fixedLengthArrayInterface.js";
@@ -12,6 +11,7 @@ import Inputs from "./inputs.js";
 import Logger from "../utilities/logger.js";
 import RunnerInvoker from "../runners/runnerInvoker.js";
 import { decimalRadix } from "../utilities/constants.js";
+import picomatch from "picomatch";
 import { singleton } from "tsyringe";
 
 /**
