@@ -7,7 +7,7 @@ import * as Converter from "../../src/utilities/converter.js";
 import assert from "node:assert/strict";
 
 describe("converter.ts", (): void => {
-  describe("toString()", (): void => {
+  describe("convertToString()", (): void => {
     interface TestCaseType {
       input: string | number | boolean | null | undefined;
       output: string;

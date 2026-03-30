@@ -9,7 +9,7 @@ import assert from "node:assert/strict";
 
 describe("converter.ts", (): void => {
   describe("Property-Based Tests", (): void => {
-    describe("toString()", (): void => {
+    describe("convertToString()", (): void => {
       it("should return 'null' for null input", (): void => {
         assert.equal(Converter.convertToString(null), "null");
       });
