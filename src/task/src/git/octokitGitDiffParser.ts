@@ -164,13 +164,10 @@ export default class OctokitGitDiffParser {
             break;
           }
           case "DeletedFile":
+          default:
             this._logger.logDebug(
               `Skipping file type '${file.type}' while performing diff parsing.`,
             );
-            break;
-          // eslint-disable-next-line capitalized-comments
-          /* c8 ignore next 2 */
-          default:
             break;
         }
       }
