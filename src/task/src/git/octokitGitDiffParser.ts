@@ -4,17 +4,17 @@
  */
 
 import parseGitDiff, {
-  AddedFile,
-  AnyChunk,
-  ChangedFile,
-  Chunk,
-  GitDiff,
-  RenamedFile,
+  type AddedFile,
+  type AnyChunk,
+  type ChangedFile,
+  type Chunk,
+  type GitDiff,
+  type RenamedFile,
 } from "parse-git-diff";
-import AxiosWrapper from "../wrappers/axiosWrapper.js";
-import GetPullResponse from "../wrappers/octokitInterfaces/getPullResponse.js";
-import Logger from "../utilities/logger.js";
-import OctokitWrapper from "../wrappers/octokitWrapper.js";
+import type AxiosWrapper from "../wrappers/axiosWrapper.js";
+import type GetPullResponse from "../wrappers/octokitInterfaces/getPullResponse.js";
+import type Logger from "../utilities/logger.js";
+import type OctokitWrapper from "../wrappers/octokitWrapper.js";
 import { singleton } from "tsyringe";
 
 /**
@@ -164,10 +164,13 @@ export default class OctokitGitDiffParser {
             break;
           }
           case "DeletedFile":
-          default:
             this._logger.logDebug(
               `Skipping file type '${file.type}' while performing diff parsing.`,
             );
+            break;
+          // eslint-disable-next-line capitalized-comments
+          /* c8 ignore next 2 */
+          default:
             break;
         }
       }

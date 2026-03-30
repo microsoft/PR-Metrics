@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import { GetResponseTypeFromEndpointMethod } from "@octokit/types";
+import type { GetResponseTypeFromEndpointMethod } from "@octokit/types";
 import { Octokit } from "octokit";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Required for constructing concrete Octokit types.

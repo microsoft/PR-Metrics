@@ -6,7 +6,7 @@
 import "reflect-metadata";
 import { instance, mock, verify, when } from "ts-mockito";
 import AxiosWrapper from "../../src/wrappers/axiosWrapper.js";
-import GetPullResponse from "../../src/wrappers/octokitInterfaces/getPullResponse.js";
+import type GetPullResponse from "../../src/wrappers/octokitInterfaces/getPullResponse.js";
 import Logger from "../../src/utilities/logger.js";
 import OctokitGitDiffParser from "../../src/git/octokitGitDiffParser.js";
 import OctokitWrapper from "../../src/wrappers/octokitWrapper.js";

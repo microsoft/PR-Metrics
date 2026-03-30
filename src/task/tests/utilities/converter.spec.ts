@@ -45,9 +45,9 @@ describe("converter.ts", (): void => {
     ];
 
     testCases.forEach(({ input, output }: TestCaseType): void => {
-      it(`should return '${output}' when passed '${Converter.toString(input)}'`, (): void => {
+      it(`should return '${output}' when passed '${Converter.convertToString(input)}'`, (): void => {
         // Act
-        const result: string = Converter.toString(input);
+        const result: string = Converter.convertToString(input);
 
         // Assert
         assert.equal(result, output);

@@ -7,8 +7,8 @@ import "reflect-metadata";
 import PullRequestMetrics from "./src/pullRequestMetrics.js";
 import { container } from "tsyringe";
 import { exitCodeForFailure } from "./src/utilities/constants.js";
-import { fileURLToPath } from "url";
-import path from "path";
+import { fileURLToPath } from "node:url";
+import path from "node:path";
 
 const run = async (): Promise<void> => {
   const pullRequestMetrics: PullRequestMetrics =

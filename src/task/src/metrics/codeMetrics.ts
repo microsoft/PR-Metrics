@@ -4,13 +4,13 @@
  */
 
 import * as minimatch from "minimatch";
-import { CodeFileMetricInterface } from "./codeFileMetricInterface.js";
+import type { CodeFileMetricInterface } from "./codeFileMetricInterface.js";
 import CodeMetricsData from "./codeMetricsData.js";
-import { FixedLengthArrayInterface } from "../utilities/fixedLengthArrayInterface.js";
-import GitInvoker from "../git/gitInvoker.js";
-import Inputs from "./inputs.js";
-import Logger from "../utilities/logger.js";
-import RunnerInvoker from "../runners/runnerInvoker.js";
+import type { FixedLengthArrayInterface } from "../utilities/fixedLengthArrayInterface.js";
+import type GitInvoker from "../git/gitInvoker.js";
+import type Inputs from "./inputs.js";
+import type Logger from "../utilities/logger.js";
+import type RunnerInvoker from "../runners/runnerInvoker.js";
 import { decimalRadix } from "../utilities/constants.js";
 import { singleton } from "tsyringe";
 
@@ -67,7 +67,7 @@ export default class CodeMetrics {
       result = 0;
     } else {
       result = parseInt(element, decimalRadix);
-      if (isNaN(result)) {
+      if (Number.isNaN(result)) {
         throw new Error(
           `Could not parse ${category} lines '${element}' from line '${line}'.`,
         );

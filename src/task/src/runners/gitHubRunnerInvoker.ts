@@ -3,17 +3,17 @@
  * Licensed under the MIT License.
  */
 
-import * as actionsExec from "@actions/exec";
-import * as fs from "fs";
-import * as path from "path";
-import * as util from "util";
-import AzurePipelinesRunnerWrapper from "../wrappers/azurePipelinesRunnerWrapper.js";
-import ConsoleWrapper from "../wrappers/consoleWrapper.js";
-import { EndpointAuthorization } from "./endpointAuthorization.js";
-import ExecOutput from "./execOutput.js";
-import GitHubRunnerWrapper from "../wrappers/gitHubRunnerWrapper.js";
-import ResourcesJsonInterface from "../jsonTypes/resourcesJsonInterface.js";
-import RunnerInvokerInterface from "./runnerInvokerInterface.js";
+import type * as actionsExec from "@actions/exec";
+import * as fs from "node:fs";
+import * as path from "node:path";
+import * as util from "node:util";
+import type AzurePipelinesRunnerWrapper from "../wrappers/azurePipelinesRunnerWrapper.js";
+import type ConsoleWrapper from "../wrappers/consoleWrapper.js";
+import type { EndpointAuthorization } from "./endpointAuthorization.js";
+import type ExecOutput from "./execOutput.js";
+import type GitHubRunnerWrapper from "../wrappers/gitHubRunnerWrapper.js";
+import type ResourcesJsonInterface from "../jsonTypes/resourcesJsonInterface.js";
+import type RunnerInvokerInterface from "./runnerInvokerInterface.js";
 import { singleton } from "tsyringe";
 
 /**
