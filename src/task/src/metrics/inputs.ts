@@ -5,8 +5,8 @@
 
 import * as InputsDefault from "./inputsDefault.js";
 import { decimalRadix, maxPatternCount } from "../utilities/constants.js";
-import type Logger from "../utilities/logger.js";
-import type RunnerInvoker from "../runners/runnerInvoker.js";
+import Logger from "../utilities/logger.js";
+import RunnerInvoker from "../runners/runnerInvoker.js";
 import { singleton } from "tsyringe";
 
 /**
@@ -205,8 +205,7 @@ export default class Inputs {
       growthRate === null ? NaN : parseFloat(growthRate);
     if (
       !Number.isNaN(convertedValue) &&
-      Number.
-      isFinite(convertedValue) &&
+      Number.isFinite(convertedValue) &&
       convertedValue > 1.0
     ) {
       this._growthRate = convertedValue;
@@ -237,8 +236,7 @@ export default class Inputs {
       testFactor === null ? NaN : parseFloat(testFactor);
     if (
       !Number.isNaN(convertedValue) &&
-      Number.
-      isFinite(convertedValue) &&
+      Number.isFinite(convertedValue) &&
       convertedValue >= 0.0
     ) {
       if (convertedValue === 0.0) {

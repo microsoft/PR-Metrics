@@ -11,9 +11,9 @@ import parseGitDiff, {
   type GitDiff,
   type RenamedFile,
 } from "parse-git-diff";
-import type AxiosWrapper from "../wrappers/axiosWrapper.js";
+import AxiosWrapper from "../wrappers/axiosWrapper.js";
 import type GetPullResponse from "../wrappers/octokitInterfaces/getPullResponse.js";
-import type Logger from "../utilities/logger.js";
+import Logger from "../utilities/logger.js";
 import type OctokitWrapper from "../wrappers/octokitWrapper.js";
 import { singleton } from "tsyringe";
 

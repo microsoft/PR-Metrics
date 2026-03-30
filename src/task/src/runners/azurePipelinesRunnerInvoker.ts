@@ -9,7 +9,7 @@ import type {
   IExecOptions,
   IExecSyncResult,
 } from "azure-pipelines-task-lib/toolrunner.js";
-import type AzurePipelinesRunnerWrapper from "../wrappers/azurePipelinesRunnerWrapper.js";
+import AzurePipelinesRunnerWrapper from "../wrappers/azurePipelinesRunnerWrapper.js";
 import type { EndpointAuthorization } from "./endpointAuthorization.js";
 import type ExecOutput from "./execOutput.js";
 import type RunnerInvokerInterface from "./runnerInvokerInterface.js";

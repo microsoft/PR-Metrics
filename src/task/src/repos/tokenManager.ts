@@ -9,13 +9,13 @@ import {
   validateString,
   validateVariable,
 } from "../utilities/validator.js";
-import type AzureDevOpsApiWrapper from "../wrappers/azureDevOpsApiWrapper.js";
+import AzureDevOpsApiWrapper from "../wrappers/azureDevOpsApiWrapper.js";
 import type { EndpointAuthorization } from "../runners/endpointAuthorization.js";
 import type ExecOutput from "../runners/execOutput.js";
 import type { IRequestHandler } from "azure-devops-node-api/interfaces/common/VsoBaseInterfaces.js";
 import type { ITaskApi } from "azure-devops-node-api/TaskApi.js";
-import type Logger from "../utilities/logger.js";
-import type RunnerInvoker from "../runners/runnerInvoker.js";
+import Logger from "../utilities/logger.js";
+import RunnerInvoker from "../runners/runnerInvoker.js";
 import type { TaskHubOidcToken } from "azure-devops-node-api/interfaces/TaskAgentInterfaces.js";
 import type { WebApi } from "azure-devops-node-api";
 import { singleton } from "tsyringe";

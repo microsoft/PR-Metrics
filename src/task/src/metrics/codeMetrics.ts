@@ -7,10 +7,10 @@ import * as minimatch from "minimatch";
 import type { CodeFileMetricInterface } from "./codeFileMetricInterface.js";
 import CodeMetricsData from "./codeMetricsData.js";
 import type { FixedLengthArrayInterface } from "../utilities/fixedLengthArrayInterface.js";
-import type GitInvoker from "../git/gitInvoker.js";
-import type Inputs from "./inputs.js";
-import type Logger from "../utilities/logger.js";
-import type RunnerInvoker from "../runners/runnerInvoker.js";
+import GitInvoker from "../git/gitInvoker.js";
+import Inputs from "./inputs.js";
+import Logger from "../utilities/logger.js";
+import RunnerInvoker from "../runners/runnerInvoker.js";
 import { decimalRadix } from "../utilities/constants.js";
 import { singleton } from "tsyringe";
 
