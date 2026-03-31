@@ -11,8 +11,8 @@ import parseGitDiff, {
   GitDiff,
   RenamedFile,
 } from "parse-git-diff";
-import HttpWrapper from "../wrappers/httpWrapper.js";
 import GetPullResponse from "../wrappers/octokitInterfaces/getPullResponse.js";
+import HttpWrapper from "../wrappers/httpWrapper.js";
 import Logger from "../utilities/logger.js";
 import OctokitWrapper from "../wrappers/octokitWrapper.js";
 import { singleton } from "tsyringe";
