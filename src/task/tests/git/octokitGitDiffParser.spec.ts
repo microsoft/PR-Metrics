@@ -107,10 +107,7 @@ describe("octokitGitDiffParser.ts", (): void => {
               httpWrapper.getUrl("https://github.com/microsoft/PR-Metrics"),
             ).thenCall(async (): Promise<string> => Promise.resolve(diff));
             const octokitGitDiffParser: OctokitGitDiffParser =
-              new OctokitGitDiffParser(
-                instance(httpWrapper),
-                instance(logger),
-              );
+              new OctokitGitDiffParser(instance(httpWrapper), instance(logger));
 
             // Act
             const result: number | null =
