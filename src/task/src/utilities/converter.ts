@@ -12,6 +12,5 @@ interface StringConvertible {
  * @param value The value to convert.
  * @returns The converted value.
  */
-export const toString = (
-  value: StringConvertible | null | undefined,
-): string => String(value);
+export const toString = (value: StringConvertible | null | undefined): string =>
+  String(value);
