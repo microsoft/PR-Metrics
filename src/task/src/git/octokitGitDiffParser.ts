@@ -14,7 +14,7 @@ import parseGitDiff, {
 import AxiosWrapper from "../wrappers/axiosWrapper.js";
 import GetPullResponse from "../wrappers/octokitInterfaces/getPullResponse.js";
 import Logger from "../utilities/logger.js";
-import type OctokitWrapper from "../wrappers/octokitWrapper.js";
+import OctokitWrapper from "../wrappers/octokitWrapper.js";
 
 /**
  * A parser for Git diffs read via Octokit.
