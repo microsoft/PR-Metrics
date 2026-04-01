@@ -57,9 +57,7 @@
     "http-status-codes": "2.3.0",
     "isomorphic-fetch": "3.0.0",
     "octokit": "5.0.5",
-    "parse-git-diff": "0.0.20",
-    "reflect-metadata": "0.2.2",
-    "tsyringe": "4.10.0"
+    "parse-git-diff": "0.0.20"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
