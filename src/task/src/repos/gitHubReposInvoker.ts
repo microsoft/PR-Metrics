@@ -359,12 +359,8 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
       baseUrl = `https://${baseUrlTemporary}/api/v3`;
     }
 
-    const gitEnding = ".git";
-    if (this._repo.endsWith(gitEnding)) {
-      this._repo = this._repo.substring(
-        0,
-        this._repo.length - gitEnding.length,
-      );
+    if (this._repo.endsWith(".git")) {
+      this._repo = this._repo.substring(0, this._repo.length - ".git".length);
     }
 
     return baseUrl;
