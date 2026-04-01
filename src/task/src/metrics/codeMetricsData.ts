@@ -7,9 +7,9 @@
  * A class representing code metrics data.
  */
 export default class CodeMetricsData {
-  private readonly _productCode: number;
-  private readonly _testCode: number;
-  private readonly _ignoredCode: number;
+  public readonly productCode: number;
+  public readonly testCode: number;
+  public readonly ignoredCode: number;
 
   /**
    * Initializes a new instance of the `CodeMetricsData` class.
@@ -38,33 +38,9 @@ export default class CodeMetricsData {
       );
     }
 
-    this._productCode = productCode;
-    this._testCode = testCode;
-    this._ignoredCode = ignoredCode;
-  }
-
-  /**
-   * Gets the number of lines of product code.
-   * @returns The number of lines of product code.
-   */
-  public get productCode(): number {
-    return this._productCode;
-  }
-
-  /**
-   * Gets the number of lines of test code.
-   * @returns The number of lines of test code.
-   */
-  public get testCode(): number {
-    return this._testCode;
-  }
-
-  /**
-   * Gets the number of lines of ignored code.
-   * @returns The number of lines of ignored code.
-   */
-  public get ignoredCode(): number {
-    return this._ignoredCode;
+    this.productCode = productCode;
+    this.testCode = testCode;
+    this.ignoredCode = ignoredCode;
   }
 
   /**
