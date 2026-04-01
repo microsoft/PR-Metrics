@@ -10,11 +10,10 @@ import ResourcesJsonInterface from "../src/jsonTypes/resourcesJsonInterface.js";
 import TaskJsonInterface from "./jsonTypes/taskJsonInterface.js";
 import VssExtensionJsonInterface from "./jsonTypes/vssExtensionJsonInterface.js";
 import assert from "node:assert/strict";
-import { fileURLToPath } from "node:url";
 
 describe("task.json", (): void => {
   const basePath: string = path.join(
-    path.dirname(fileURLToPath(import.meta.url)),
+    import.meta.dirname,
     "..",
   );
   const taskJsonFile: string = path.join(basePath, "task.json");
