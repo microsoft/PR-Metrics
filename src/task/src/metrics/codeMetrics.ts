@@ -280,12 +280,10 @@ export default class CodeMetrics {
   ): boolean {
     this._logger.logDebug("* CodeMetrics.performGlobCheck()");
 
-    return (
-      minimatch.match(
-        [fileName],
-        fileMatchingPattern,
-        CodeMetrics._minimatchOptions,
-      ).length > 0
+    return minimatch.minimatch(
+      fileName,
+      fileMatchingPattern,
+      CodeMetrics._minimatchOptions,
     );
   }
 
