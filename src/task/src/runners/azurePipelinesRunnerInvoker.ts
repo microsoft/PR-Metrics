@@ -13,12 +13,10 @@ import AzurePipelinesRunnerWrapper from "../wrappers/azurePipelinesRunnerWrapper
 import { EndpointAuthorization } from "./endpointAuthorization.js";
 import ExecOutput from "./execOutput.js";
 import RunnerInvokerInterface from "./runnerInvokerInterface.js";
-import { singleton } from "tsyringe";
 
 /**
  * A class for invoking Azure Pipelines runner functionality.
  */
-@singleton()
 export default class AzurePipelinesRunnerInvoker
   implements RunnerInvokerInterface
 {

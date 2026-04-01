@@ -12,13 +12,11 @@ import Inputs from "./inputs.js";
 import Logger from "../utilities/logger.js";
 import RunnerInvoker from "../runners/runnerInvoker.js";
 import { decimalRadix } from "../utilities/constants.js";
-import { singleton } from "tsyringe";
 
 /**
  * A class for computing metrics for software code in pull requests.
  * @remarks This class should not be used in a multithreaded context as it could lead to the initialization logic being invoked repeatedly.
  */
-@singleton()
 export default class CodeMetrics {
   private static readonly _minimatchOptions: minimatch.MinimatchOptions = {
     dot: true,
