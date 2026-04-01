@@ -3,11 +3,11 @@
  * Licensed under the MIT License.
  */
 
+import AxiosWrapper from "./src/wrappers/axiosWrapper.js";
 import AzureDevOpsApiWrapper from "./src/wrappers/azureDevOpsApiWrapper.js";
 import AzurePipelinesRunnerInvoker from "./src/runners/azurePipelinesRunnerInvoker.js";
 import AzurePipelinesRunnerWrapper from "./src/wrappers/azurePipelinesRunnerWrapper.js";
 import AzureReposInvoker from "./src/repos/azureReposInvoker.js";
-import AxiosWrapper from "./src/wrappers/axiosWrapper.js";
 import CodeMetrics from "./src/metrics/codeMetrics.js";
 import CodeMetricsCalculator from "./src/metrics/codeMetricsCalculator.js";
 import ConsoleWrapper from "./src/wrappers/consoleWrapper.js";
