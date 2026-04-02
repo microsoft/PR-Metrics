@@ -295,9 +295,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
       options.baseUrl = this.initializeForAzureDevOps();
     }
 
-    this._logger.logDebug(
-      `Using Base URL '${options.baseUrl}'.`,
-    );
+    this._logger.logDebug(`Using Base URL '${options.baseUrl}'.`);
     this._octokitWrapper.initialize(options);
     this._pullRequestId = this._gitInvoker.pullRequestId;
     this._isInitialized = true;
