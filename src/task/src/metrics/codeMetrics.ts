@@ -191,9 +191,10 @@ export default class CodeMetrics {
      * Next, if one of the positive matches is overridden by a negative match, remove it from consideration. Finally,
      * check for double negative matches, which override the negative matches.
      */
-    const grouped: Partial<Record<string, string[]>> = Object.groupBy(
+    type PatternGroup = "doubleNegative" | "negative" | "positive";
+    const grouped: Partial<Record<PatternGroup, string[]>> = Object.groupBy(
       this._inputs.fileMatchingPatterns,
-      (pattern: string): string => {
+      (pattern: string): PatternGroup => {
         if (pattern.startsWith(notNotPattern)) {
           return "doubleNegative";
         }
