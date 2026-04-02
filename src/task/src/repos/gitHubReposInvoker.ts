@@ -4,7 +4,6 @@
  */
 
 import "isomorphic-fetch";
-import * as Converter from "../utilities/converter.js";
 import * as Validator from "../utilities/validator.js";
 import BaseReposInvoker from "./baseReposInvoker.js";
 import CommentData from "./interfaces/commentData.js";
@@ -297,7 +296,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     }
 
     this._logger.logDebug(
-      `Using Base URL '${Converter.toString(options.baseUrl)}'.`,
+      `Using Base URL '${options.baseUrl}'.`,
     );
     this._octokitWrapper.initialize(options);
     this._pullRequestId = this._gitInvoker.pullRequestId;
