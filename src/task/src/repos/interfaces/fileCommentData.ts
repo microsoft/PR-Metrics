@@ -10,6 +10,9 @@ import PullRequestCommentData from "./pullRequestCommentData.js";
  * A class representing a file comment.
  */
 export default class FileCommentData extends PullRequestCommentData {
+  /**
+   * The full file name and path associated with the comment.
+   */
   public readonly fileName: string;
 
   /**
