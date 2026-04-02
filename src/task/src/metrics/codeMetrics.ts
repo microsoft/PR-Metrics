@@ -206,16 +206,12 @@ export default class CodeMetrics {
       },
     );
     const positiveFileMatchingPatterns: string[] = grouped.positive ?? [];
-    const negativeFileMatchingPatterns: string[] = (
-      grouped.negative ?? []
-    ).map(
+    const negativeFileMatchingPatterns: string[] = (grouped.negative ?? []).map(
       (element: string): string => element.substring(notPattern.length),
     );
     const doubleNegativeFileMatchingPatterns: string[] = (
       grouped.doubleNegative ?? []
-    ).map(
-      (element: string): string => element.substring(notNotPattern.length),
-    );
+    ).map((element: string): string => element.substring(notNotPattern.length));
 
     const matches: CodeFileMetricInterface[] = [];
     const nonMatches: CodeFileMetricInterface[] = [];
