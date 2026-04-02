@@ -8,5 +8,5 @@
  * This can be removed once TypeScript ships native `Error.isError()` typings.
  */
 interface ErrorConstructor {
-  isError(value: unknown): value is Error;
+  isError: (value: unknown) => value is Error;
 }
