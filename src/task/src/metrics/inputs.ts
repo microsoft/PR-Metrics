@@ -176,7 +176,7 @@ export default class Inputs {
 
     const convertedValue: number =
       baseSize === null ? NaN : parseInt(baseSize, decimalRadix);
-    if (!isNaN(convertedValue) && convertedValue > 0) {
+    if (!Number.isNaN(convertedValue) && convertedValue > 0) {
       this._baseSize = convertedValue;
       const baseSizeString: string = this._baseSize.toLocaleString();
       this._logger.logInfo(
@@ -204,8 +204,8 @@ export default class Inputs {
     const convertedValue: number =
       growthRate === null ? NaN : parseFloat(growthRate);
     if (
-      !isNaN(convertedValue) &&
-      isFinite(convertedValue) &&
+      !Number.isNaN(convertedValue) &&
+      Number.isFinite(convertedValue) &&
       convertedValue > 1.0
     ) {
       this._growthRate = convertedValue;
@@ -235,8 +235,8 @@ export default class Inputs {
     const convertedValue: number =
       testFactor === null ? NaN : parseFloat(testFactor);
     if (
-      !isNaN(convertedValue) &&
-      isFinite(convertedValue) &&
+      !Number.isNaN(convertedValue) &&
+      Number.isFinite(convertedValue) &&
       convertedValue >= 0.0
     ) {
       if (convertedValue === 0.0) {

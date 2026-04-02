@@ -9,19 +9,19 @@ import assert from "node:assert/strict";
 
 describe("converter.ts", (): void => {
   describe("Property-Based Tests", (): void => {
-    describe("toString()", (): void => {
+    describe("convertToString()", (): void => {
       it("should return 'null' for null input", (): void => {
-        assert.equal(Converter.toString(null), "null");
+        assert.equal(Converter.convertToString(null), "null");
       });
 
       it("should return 'undefined' for undefined input", (): void => {
-        assert.equal(Converter.toString(undefined), "undefined");
+        assert.equal(Converter.convertToString(undefined), "undefined");
       });
 
       it("should return the string representation for any string", (): void => {
         fc.assert(
           fc.property(fc.string(), (value: string) => {
-            assert.equal(Converter.toString(value), value);
+            assert.equal(Converter.convertToString(value), value);
           }),
         );
       });
@@ -29,7 +29,7 @@ describe("converter.ts", (): void => {
       it("should return the string representation for any integer", (): void => {
         fc.assert(
           fc.property(fc.integer(), (value: number) => {
-            assert.equal(Converter.toString(value), String(value));
+            assert.equal(Converter.convertToString(value), String(value));
           }),
         );
       });
@@ -39,7 +39,7 @@ describe("converter.ts", (): void => {
           fc.property(
             fc.float({ noDefaultInfinity: true, noNaN: true }),
             (value: number) => {
-              assert.equal(Converter.toString(value), String(value));
+              assert.equal(Converter.convertToString(value), String(value));
             },
           ),
         );
@@ -48,7 +48,7 @@ describe("converter.ts", (): void => {
       it("should return the string representation for any boolean", (): void => {
         fc.assert(
           fc.property(fc.boolean(), (value: boolean) => {
-            assert.equal(Converter.toString(value), String(value));
+            assert.equal(Converter.convertToString(value), String(value));
           }),
         );
       });
@@ -56,8 +56,8 @@ describe("converter.ts", (): void => {
       it("should be idempotent for string values", (): void => {
         fc.assert(
           fc.property(fc.string(), (value: string) => {
-            const firstCall: string = Converter.toString(value);
-            const secondCall: string = Converter.toString(firstCall);
+            const firstCall: string = Converter.convertToString(value);
+            const secondCall: string = Converter.convertToString(firstCall);
             assert.equal(firstCall, secondCall);
           }),
         );
@@ -74,7 +74,7 @@ describe("converter.ts", (): void => {
               fc.constant(undefined),
             ),
             (value: string | number | boolean | null | undefined) => {
-              const result: string = Converter.toString(value);
+              const result: string = Converter.convertToString(value);
               assert.notEqual(result, null);
               assert.notEqual(typeof result, "undefined");
               assert.equal(typeof result, "string");
@@ -89,7 +89,7 @@ describe("converter.ts", (): void => {
             const obj = {
               toString: (): string => customValue,
             };
-            assert.equal(Converter.toString(obj), customValue);
+            assert.equal(Converter.convertToString(obj), customValue);
           }),
         );
       });

@@ -4,9 +4,9 @@
  */
 
 import * as minimatch from "minimatch";
-import { CodeFileMetricInterface } from "./codeFileMetricInterface.js";
+import type { CodeFileMetricInterface } from "./codeFileMetricInterface.js";
 import CodeMetricsData from "./codeMetricsData.js";
-import { FixedLengthArrayInterface } from "../utilities/fixedLengthArrayInterface.js";
+import type { FixedLengthArrayInterface } from "../utilities/fixedLengthArrayInterface.js";
 import GitInvoker from "../git/gitInvoker.js";
 import Inputs from "./inputs.js";
 import Logger from "../utilities/logger.js";
@@ -67,7 +67,7 @@ export default class CodeMetrics {
       result = 0;
     } else {
       result = parseInt(element, decimalRadix);
-      if (isNaN(result)) {
+      if (Number.isNaN(result)) {
         throw new Error(
           `Could not parse ${category} lines '${element}' from line '${line}'.`,
         );

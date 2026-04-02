@@ -310,7 +310,7 @@ describe("pullRequest.ts", (): void => {
       const testCases: (string | null)[] = [null, "", " "];
 
       testCases.forEach((currentDescription: string | null): void => {
-        it(`should return the default description when the current description '${Converter.toString(currentDescription)}' is empty`, (): void => {
+        it(`should return the default description when the current description '${Converter.convertToString(currentDescription)}' is empty`, (): void => {
           // Arrange
           const pullRequest: PullRequest = new PullRequest(
             instance(codeMetrics),

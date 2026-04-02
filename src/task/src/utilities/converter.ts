@@ -12,7 +12,7 @@ interface StringConvertible {
  * @param value The value to convert.
  * @returns The converted value.
  */
-export const toString = (
+export const convertToString = (
   value: StringConvertible | null | undefined,
 ): string => {
   if (value === null) {

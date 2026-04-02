@@ -7,7 +7,7 @@ import * as Converter from "../../src/utilities/converter.js";
 import assert from "node:assert/strict";
 
 describe("converter.ts", (): void => {
-  describe("toString()", (): void => {
+  describe("convertToString()", (): void => {
     interface TestCaseType {
       input: string | number | boolean | null | undefined;
       output: string;
@@ -45,9 +45,9 @@ describe("converter.ts", (): void => {
     ];
 
     testCases.forEach(({ input, output }: TestCaseType): void => {
-      it(`should return '${output}' when passed '${Converter.toString(input)}'`, (): void => {
+      it(`should return '${output}' when passed '${Converter.convertToString(input)}'`, (): void => {
         // Act
-        const result: string = Converter.toString(input);
+        const result: string = Converter.convertToString(input);
 
         // Assert
         assert.equal(result, output);

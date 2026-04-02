@@ -4,7 +4,7 @@
  */
 
 import * as Validator from "../utilities/validator.js";
-import ExecOutput from "../runners/execOutput.js";
+import type ExecOutput from "../runners/execOutput.js";
 import Logger from "../utilities/logger.js";
 import RunnerInvoker from "../runners/runnerInvoker.js";
 import { decimalRadix } from "../utilities/constants.js";
@@ -187,7 +187,7 @@ export default class GitInvoker {
   public isPullRequestIdAvailable(): boolean {
     this._logger.logDebug("* GitInvoker.isPullRequestIdAvailable()");
 
-    return !isNaN(parseInt(this.pullRequestIdInternal, decimalRadix));
+    return !Number.isNaN(parseInt(this.pullRequestIdInternal, decimalRadix));
   }
 
   /**

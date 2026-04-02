@@ -4,10 +4,10 @@
  */
 
 import AzurePipelinesRunnerInvoker from "./azurePipelinesRunnerInvoker.js";
-import { EndpointAuthorization } from "./endpointAuthorization.js";
-import ExecOutput from "./execOutput.js";
+import type { EndpointAuthorization } from "./endpointAuthorization.js";
+import type ExecOutput from "./execOutput.js";
 import GitHubRunnerInvoker from "./gitHubRunnerInvoker.js";
-import RunnerInvokerInterface from "./runnerInvokerInterface.js";
+import type RunnerInvokerInterface from "./runnerInvokerInterface.js";
 import { singleton } from "tsyringe";
 
 /**
