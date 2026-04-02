@@ -51,7 +51,6 @@
     "@actions/core": "3.0.0",
     "@actions/exec": "3.0.0",
     "@octokit/types": "16.0.0",
-    "axios": "1.13.6",
     "azure-devops-node-api": "15.1.2",
     "azure-pipelines-task-lib": "5.2.8",
     "http-status-codes": "2.3.0",
