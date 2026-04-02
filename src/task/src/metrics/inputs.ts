@@ -386,7 +386,7 @@ export default class Inputs {
       this._logger.logInfo(
         this._runnerInvoker.loc(
           "metrics.inputs.settingCodeFileExtensions",
-          JSON.stringify(Array.from(this._codeFileExtensions)),
+          JSON.stringify([...this._codeFileExtensions]),
         ),
       );
       return;

@@ -14,12 +14,4 @@ interface StringConvertible {
  */
 export const toString = (
   value: StringConvertible | null | undefined,
-): string => {
-  if (value === null) {
-    return "null";
-  } else if (typeof value === "undefined") {
-    return "undefined";
-  }
-
-  return String(value);
-};
+): string => String(value);
