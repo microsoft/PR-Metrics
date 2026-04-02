@@ -70,8 +70,10 @@ export default class PullRequestMetrics {
         this._logger.replay();
         this._runnerInvoker.setStatusFailed(error.message);
       } else {
+        const errorMessage = String(error);
+        this._logger.logErrorObject(new Error(errorMessage));
         this._logger.replay();
-        this._runnerInvoker.setStatusFailed(String(error));
+        this._runnerInvoker.setStatusFailed(errorMessage);
       }
     }
   }

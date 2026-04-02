@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import { instance, mock, verify, when } from "ts-mockito";
+import { anything, instance, mock, verify, when } from "ts-mockito";
 import CodeMetricsCalculator from "../src/metrics/codeMetricsCalculator.js";
 import Logger from "../src/utilities/logger.js";
 import PullRequestMetrics from "../src/pullRequestMetrics.js";
@@ -95,6 +95,28 @@ describe("pullRequestMetrics.ts", (): void => {
       verify(logger.logErrorObject(error)).once();
       verify(logger.replay()).once();
       verify(runnerInvoker.setStatusFailed("Error Message")).once();
+    });
+
+    it("should catch and log non-Error throws", async (): Promise<void> => {
+      // Arrange
+      const pullRequestMetrics: PullRequestMetrics = new PullRequestMetrics(
+        instance(codeMetricsCalculator),
+        instance(logger),
+        instance(runnerInvoker),
+      );
+      when(codeMetricsCalculator.shouldSkip).thenReturn(null);
+      when(codeMetricsCalculator.shouldStop()).thenCall((): never => {
+        throw "string error";
+      });
+
+      // Act
+      await pullRequestMetrics.run("Folder");
+
+      // Assert
+      verify(runnerInvoker.locInitialize("Folder")).once();
+      verify(logger.logErrorObject(anything())).once();
+      verify(logger.replay()).once();
+      verify(runnerInvoker.setStatusFailed("string error")).once();
     });
   });
 });
