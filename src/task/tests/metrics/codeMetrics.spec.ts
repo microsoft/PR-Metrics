@@ -6,7 +6,7 @@
 import "reflect-metadata";
 import * as AssertExtensions from "../testUtilities/assertExtensions.js";
 import * as InputsDefault from "../../src/metrics/inputsDefault.js";
-import { instance, mock, verify, when } from "ts-mockito";
+import { anyString, instance, mock, verify, when } from "ts-mockito";
 import CodeMetrics from "../../src/metrics/codeMetrics.js";
 import CodeMetricsData from "../../src/metrics/codeMetricsData.js";
 import GitInvoker from "../../src/git/gitInvoker.js";
@@ -45,18 +45,7 @@ describe("codeMetrics.ts", (): void => {
     when(runnerInvoker.loc("metrics.codeMetrics.titleSizeS")).thenReturn("S");
     when(runnerInvoker.loc("metrics.codeMetrics.titleSizeM")).thenReturn("M");
     when(runnerInvoker.loc("metrics.codeMetrics.titleSizeL")).thenReturn("L");
-    when(runnerInvoker.loc("metrics.codeMetrics.titleSizeXL", "")).thenReturn(
-      "XL",
-    );
-    when(runnerInvoker.loc("metrics.codeMetrics.titleSizeXL", "2")).thenReturn(
-      "2XL",
-    );
-    when(runnerInvoker.loc("metrics.codeMetrics.titleSizeXL", "3")).thenReturn(
-      "3XL",
-    );
-    when(runnerInvoker.loc("metrics.codeMetrics.titleSizeXL", "10")).thenReturn(
-      "10XL",
-    );
+    when(runnerInvoker.loc("metrics.codeMetrics.titleSizeXL")).thenReturn("XL");
     when(
       runnerInvoker.loc("metrics.codeMetrics.titleTestsSufficient"),
     ).thenReturn("✔");
@@ -1986,5 +1975,36 @@ describe("codeMetrics.ts", (): void => {
       verify(logger.logDebug("* CodeMetrics.initialize()")).once();
       verify(logger.logDebug("* CodeMetrics.createFileMetricsMap()")).once();
     });
+  });
+
+  it("with a size multiplier exceeding 1000, returns a size without thousands separators", async (): Promise<void> => {
+    // ARRANGE
+    when(inputs.baseSize).thenReturn(1);
+    when(inputs.growthRate).thenReturn(1.001);
+    when(inputs.testFactor).thenReturn(1.0);
+    when(inputs.fileMatchingPatterns).thenReturn(["**/*"]);
+    when(inputs.codeFileExtensions).thenReturn(new Set<string>(["ts"]));
+    when(gitInvoker.getDiffSummary()).thenResolve("3\t0\tfile.ts");
+    when(
+      runnerInvoker.loc(
+        "metrics.codeMetrics.titleSizeIndicatorFormat",
+        anyString() as string,
+        anyString() as string,
+      ),
+    ).thenReturn("");
+    const codeMetrics: CodeMetrics = new CodeMetrics(
+      instance(gitInvoker),
+      instance(inputs),
+      instance(logger),
+      instance(runnerInvoker),
+    );
+
+    // ACT
+    const size: string = await codeMetrics.getSize();
+
+    // ASSERT
+    assert.match(size, /^\d+XL$/u);
+    const multiplier: number = Number.parseInt(size.replace("XL", ""), 10);
+    assert.ok(multiplier >= 1000);
   });
 });
