@@ -186,34 +186,40 @@ export default class CodeMetrics {
     const codeFileMetrics: CodeFileMetricInterface[] =
       this.createFileMetricsMap(gitDiffSummary);
 
+    /*
+     * Categorise patterns into positive, negative, and double-negative groups. First, check for positive matches.
+     * Next, if one of the positive matches is overridden by a negative match, remove it from consideration. Finally,
+     * check for double negative matches, which override the negative matches.
+     */
+    type PatternGroup = "doubleNegative" | "negative" | "positive";
+    const grouped: Partial<Record<PatternGroup, string[]>> = Object.groupBy(
+      this._inputs.fileMatchingPatterns,
+      (pattern: string): PatternGroup => {
+        if (pattern.startsWith(notNotPattern)) {
+          return "doubleNegative";
+        }
+
+        if (pattern.startsWith(notPattern)) {
+          return "negative";
+        }
+
+        return "positive";
+      },
+    );
+    const positiveFileMatchingPatterns: string[] = grouped.positive ?? [];
+    const negativeFileMatchingPatterns: string[] = (grouped.negative ?? []).map(
+      (element: string): string => element.substring(notPattern.length),
+    );
+    const doubleNegativeFileMatchingPatterns: string[] = (
+      grouped.doubleNegative ?? []
+    ).map((element: string): string => element.substring(notNotPattern.length));
+
     const matches: CodeFileMetricInterface[] = [];
     const nonMatches: CodeFileMetricInterface[] = [];
     const nonMatchesToComment: CodeFileMetricInterface[] = [];
 
     // Check for glob matches.
     for (const codeFileMetric of codeFileMetrics) {
-      /*
-       * Iterate through the list of patterns. First, check for positive matches. Next, if one of the positive matches
-       * is overridden by a negative match, remove it from consideration. Finally, check for double negative matches,
-       * which override the negative matches.
-       */
-      const positiveFileMatchingPatterns: string[] = [];
-      const negativeFileMatchingPatterns: string[] = [];
-      const doubleNegativeFileMatchingPatterns: string[] = [];
-      for (const fileMatchingPattern of this._inputs.fileMatchingPatterns) {
-        if (fileMatchingPattern.startsWith(notNotPattern)) {
-          doubleNegativeFileMatchingPatterns.push(
-            fileMatchingPattern.substring(notNotPattern.length),
-          );
-        } else if (fileMatchingPattern.startsWith(notPattern)) {
-          negativeFileMatchingPatterns.push(
-            fileMatchingPattern.substring(notPattern.length),
-          );
-        } else {
-          positiveFileMatchingPatterns.push(fileMatchingPattern);
-        }
-      }
-
       const isValidFilePattern: boolean = this.determineIfValidFilePattern(
         codeFileMetric,
         positiveFileMatchingPatterns,
