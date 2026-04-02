@@ -38,7 +38,9 @@ export default class OctokitWrapper {
 
   private get octokit(): Octokit {
     if (this._octokit === null) {
-      throw new Error("OctokitWrapper was not initialized. Call OctokitWrapper.initialize() before calling other methods.");
+      throw new Error(
+        "OctokitWrapper was not initialized. Call OctokitWrapper.initialize() before calling other methods.",
+      );
     }
 
     return this._octokit;
