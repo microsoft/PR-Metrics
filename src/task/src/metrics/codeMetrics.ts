@@ -250,9 +250,8 @@ export default class CodeMetrics {
 
     if (result) {
       if (
-        negativeFileMatchingPatterns.some(
-          (pattern: string): boolean =>
-            this.performGlobCheck(codeFileMetric.fileName, pattern),
+        negativeFileMatchingPatterns.some((pattern: string): boolean =>
+          this.performGlobCheck(codeFileMetric.fileName, pattern),
         )
       ) {
         result = doubleNegativeFileMatchingPatterns.some(
