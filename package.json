@@ -55,7 +55,6 @@
     "azure-devops-node-api": "15.1.2",
     "azure-pipelines-task-lib": "5.2.8",
     "http-status-codes": "2.3.0",
-    "isomorphic-fetch": "3.0.0",
     "octokit": "5.0.5",
     "parse-git-diff": "0.0.20",
     "reflect-metadata": "0.2.2",
@@ -64,7 +63,6 @@
   "devDependencies": {
     "@eslint/js": "10.0.1",
     "@tsconfig/node24": "24.0.4",
-    "@types/isomorphic-fetch": "0.0.39",
     "@types/mocha": "10.0.10",
     "@types/node": "25.5.0",
     "@typescript-eslint/parser": "8.57.2",
