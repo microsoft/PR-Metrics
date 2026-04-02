@@ -12,10 +12,7 @@ import VssExtensionJsonInterface from "./jsonTypes/vssExtensionJsonInterface.js"
 import assert from "node:assert/strict";
 
 describe("task.json", (): void => {
-  const basePath: string = path.join(
-    import.meta.dirname,
-    "..",
-  );
+  const basePath: string = path.join(import.meta.dirname, "..");
   const taskJsonFile: string = path.join(basePath, "task.json");
   const taskJsonContents: string = fs.readFileSync(taskJsonFile, "utf8");
   const taskJson: TaskJsonInterface = JSON.parse(

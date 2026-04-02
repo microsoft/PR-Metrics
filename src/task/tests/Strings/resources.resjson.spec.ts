@@ -11,11 +11,7 @@ import assert from "node:assert/strict";
 import { globSync } from "glob";
 
 describe("resources.resjson", (): void => {
-  const basePath: string = path.join(
-    import.meta.dirname,
-    "..",
-    "..",
-  );
+  const basePath: string = path.join(import.meta.dirname, "..", "..");
 
   const languagesPath: string = path.join(
     basePath,
