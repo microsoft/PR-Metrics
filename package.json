@@ -57,6 +57,7 @@
     "isomorphic-fetch": "3.0.0",
     "octokit": "5.0.5",
     "parse-git-diff": "0.0.20",
+    "picomatch": "4.0.2",
     "reflect-metadata": "0.2.2",
     "tsyringe": "4.10.0"
   },
@@ -66,6 +67,7 @@
     "@tsconfig/node20": "20.1.9",
     "@types/isomorphic-fetch": "0.0.39",
     "@types/mocha": "10.0.10",
+    "@types/picomatch": "4.0.2",
     "@types/node": "25.5.0",
     "@typescript-eslint/parser": "8.57.2",
     "@vercel/ncc": "0.38.4",
