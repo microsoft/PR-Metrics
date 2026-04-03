@@ -3,7 +3,6 @@
  * Licensed under the MIT License.
  */
 
-import "reflect-metadata";
 import { instance, mock, verify } from "ts-mockito";
 import ConsoleWrapper from "../../src/wrappers/consoleWrapper.js";
 import HttpError from "../testUtilities/httpError.js";
