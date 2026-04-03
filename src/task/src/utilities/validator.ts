@@ -3,8 +3,6 @@
  * Licensed under the MIT License.
  */
 
-import * as Converter from "./converter.js";
-
 /**
  * Validates that a string value is not invalid, `null`, or `undefined` and throws an `TypeError` if this condition is not met.
  * @param value The value to validate.
@@ -19,7 +17,7 @@ export const validateString = (
 ): string => {
   if (value === null || typeof value === "undefined" || value === "") {
     throw new TypeError(
-      `'${valueName}', accessed within '${methodName}', is invalid, null, or undefined '${Converter.toString(value)}'.`,
+      `'${valueName}', accessed within '${methodName}', is invalid, null, or undefined '${String(value)}'.`,
     );
   }
 
@@ -59,7 +57,7 @@ export const validateNumber = (
     isNaN(value)
   ) {
     throw new TypeError(
-      `'${valueName}', accessed within '${methodName}', is invalid, null, or undefined '${Converter.toString(value)}'.`,
+      `'${valueName}', accessed within '${methodName}', is invalid, null, or undefined '${String(value)}'.`,
     );
   }
 
