@@ -8,15 +8,10 @@ import * as path from "path";
 import ResourcesJsonInterface from "../../src/jsonTypes/resourcesJsonInterface.js";
 import TaskJsonInterface from "../jsonTypes/taskJsonInterface.js";
 import assert from "node:assert/strict";
-import { fileURLToPath } from "node:url";
 import { globSync } from "glob";
 
 describe("resources.resjson", (): void => {
-  const basePath: string = path.join(
-    path.dirname(fileURLToPath(import.meta.url)),
-    "..",
-    "..",
-  );
+  const basePath: string = path.join(import.meta.dirname, "..", "..");
 
   const languagesPath: string = path.join(
     basePath,
