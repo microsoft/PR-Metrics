@@ -45,7 +45,7 @@
   },
   "homepage": "https://github.com/microsoft/PR-Metrics#readme",
   "engines": {
-    "node": ">=20.20.0"
+    "node": ">=24.13.0"
   },
   "dependencies": {
     "@actions/core": "3.0.0",
@@ -63,7 +63,7 @@
   "devDependencies": {
     "@octokit/types": "16.0.0",
     "@eslint/js": "10.0.1",
-    "@tsconfig/node20": "20.1.9",
+    "@tsconfig/node24": "24.0.4",
     "@types/isomorphic-fetch": "0.0.39",
     "@types/mocha": "10.0.10",
     "@types/node": "25.5.0",
