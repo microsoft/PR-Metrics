@@ -56,6 +56,14 @@ describe("resources.resjson", (): void => {
     taskLocJsonContents,
   ) as TaskJsonInterface;
 
+  const globBasePath = `${basePath.replace(/\\/gu, "/")}/`;
+  const typeScriptFiles: string[] = globSync(
+    `${globBasePath}!(node_modules|tests)/**/*.ts`,
+  ).concat(globSync(`${globBasePath}*.ts`));
+  const typeScriptFileContents: string[] = typeScriptFiles.map((file: string) =>
+    fs.readFileSync(file, "utf8").replace(/\s|\n|\r/gu, ""),
+  );
+
   testCases.forEach((value: ResourcesJsonInterface, language: string): void => {
     it(`should contain a comment for every resource in language '${language}'`, (): void => {
       // Arrange
@@ -171,19 +179,10 @@ describe("resources.resjson", (): void => {
 
   it("should have the same number of placeholders across the TypeScript code and resources file", (): void => {
     // Arrange
-    const globBasePath = `${basePath.replace(/\\/gu, "/")}/`;
-    const typeScriptFiles1: string[] = globSync(
-      `${globBasePath}!(node_modules|tests)/**/*.ts`,
-    );
-    const typeScriptFiles2: string[] = globSync(`${globBasePath}*.ts`);
-    const typeScriptFiles: string[] = typeScriptFiles1.concat(typeScriptFiles2);
     const typeScriptResources: Map<string, number> = new Map<string, number>();
     const resourceRegExp = /loc\(\s*".+?".*?\)/gu;
     const parameterDelimiterRegExp = /,/gu;
-    for (const file of typeScriptFiles) {
-      const fileContents: string = fs
-        .readFileSync(file, "utf8")
-        .replace(/\s|\n|\r/gu, "");
+    for (const fileContents of typeScriptFileContents) {
       const matches: RegExpMatchArray | null =
         fileContents.match(resourceRegExp);
       if (matches) {
