@@ -26,6 +26,7 @@ switch (command) {
     mkdirSync(args[0], { recursive: true });
     break;
   case "mv":
+    rmSync(args[1], { recursive: true, force: true });
     renameSync(args[0], args[1]);
     break;
   case "rm":
