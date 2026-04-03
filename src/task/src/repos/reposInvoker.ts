@@ -39,68 +39,7 @@ export default class ReposInvoker implements ReposInvokerInterface {
     this._logger = logger;
   }
 
-  public async isAccessTokenAvailable(): Promise<string | null> {
-    this._logger.logDebug("* ReposInvoker.isAccessTokenAvailable()");
-
-    const reposInvoker: ReposInvokerInterface = this.getReposInvoker();
-    return reposInvoker.isAccessTokenAvailable();
-  }
-
-  public async getTitleAndDescription(): Promise<PullRequestDetailsInterface> {
-    this._logger.logDebug("* ReposInvoker.getTitleAndDescription()");
-
-    const reposInvoker: ReposInvokerInterface = this.getReposInvoker();
-    return reposInvoker.getTitleAndDescription();
-  }
-
-  public async getComments(): Promise<CommentData> {
-    this._logger.logDebug("* ReposInvoker.getComments()");
-
-    const reposInvoker: ReposInvokerInterface = this.getReposInvoker();
-    return reposInvoker.getComments();
-  }
-
-  public async setTitleAndDescription(
-    title: string | null,
-    description: string | null,
-  ): Promise<void> {
-    this._logger.logDebug("* ReposInvoker.setTitleAndDescription()");
-
-    const reposInvoker: ReposInvokerInterface = this.getReposInvoker();
-    return reposInvoker.setTitleAndDescription(title, description);
-  }
-
-  public async createComment(
-    content: string,
-    fileName: string | null,
-    status: CommentThreadStatus,
-    isFileDeleted?: boolean,
-  ): Promise<void> {
-    this._logger.logDebug("* ReposInvoker.createComment()");
-
-    const reposInvoker: ReposInvokerInterface = this.getReposInvoker();
-    return reposInvoker.createComment(content, fileName, status, isFileDeleted);
-  }
-
-  public async updateComment(
-    commentThreadId: number,
-    content: string | null,
-    status: CommentThreadStatus | null,
-  ): Promise<void> {
-    this._logger.logDebug("* ReposInvoker.updateComment()");
-
-    const reposInvoker: ReposInvokerInterface = this.getReposInvoker();
-    return reposInvoker.updateComment(commentThreadId, content, status);
-  }
-
-  public async deleteCommentThread(commentThreadId: number): Promise<void> {
-    this._logger.logDebug("* ReposInvoker.deleteCommentThread()");
-
-    const reposInvoker: ReposInvokerInterface = this.getReposInvoker();
-    return reposInvoker.deleteCommentThread(commentThreadId);
-  }
-
-  private getReposInvoker(): ReposInvokerInterface {
+  private get reposInvoker(): ReposInvokerInterface {
     this._logger.logDebug("* ReposInvoker.getReposInvoker()");
 
     if (this._reposInvoker !== null) {
@@ -132,5 +71,64 @@ export default class ReposInvoker implements ReposInvokerInterface {
     }
 
     return this._reposInvoker;
+  }
+
+  public async isAccessTokenAvailable(): Promise<string | null> {
+    this._logger.logDebug("* ReposInvoker.isAccessTokenAvailable()");
+
+    return this.reposInvoker.isAccessTokenAvailable();
+  }
+
+  public async getTitleAndDescription(): Promise<PullRequestDetailsInterface> {
+    this._logger.logDebug("* ReposInvoker.getTitleAndDescription()");
+
+    return this.reposInvoker.getTitleAndDescription();
+  }
+
+  public async getComments(): Promise<CommentData> {
+    this._logger.logDebug("* ReposInvoker.getComments()");
+
+    return this.reposInvoker.getComments();
+  }
+
+  public async setTitleAndDescription(
+    title: string | null,
+    description: string | null,
+  ): Promise<void> {
+    this._logger.logDebug("* ReposInvoker.setTitleAndDescription()");
+
+    return this.reposInvoker.setTitleAndDescription(title, description);
+  }
+
+  public async createComment(
+    content: string,
+    fileName: string | null,
+    status: CommentThreadStatus,
+    isFileDeleted?: boolean,
+  ): Promise<void> {
+    this._logger.logDebug("* ReposInvoker.createComment()");
+
+    return this.reposInvoker.createComment(
+      content,
+      fileName,
+      status,
+      isFileDeleted,
+    );
+  }
+
+  public async updateComment(
+    commentThreadId: number,
+    content: string | null,
+    status: CommentThreadStatus | null,
+  ): Promise<void> {
+    this._logger.logDebug("* ReposInvoker.updateComment()");
+
+    return this.reposInvoker.updateComment(commentThreadId, content, status);
+  }
+
+  public async deleteCommentThread(commentThreadId: number): Promise<void> {
+    this._logger.logDebug("* ReposInvoker.deleteCommentThread()");
+
+    return this.reposInvoker.deleteCommentThread(commentThreadId);
   }
 }

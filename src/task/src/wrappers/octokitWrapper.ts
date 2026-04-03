@@ -34,6 +34,16 @@ export default class OctokitWrapper {
     this._octokitGitDiffParser = octokitGitDiffParser;
   }
 
+  private get octokit(): Octokit {
+    if (this._octokit === null) {
+      throw new Error(
+        "OctokitWrapper was not initialized. Call OctokitWrapper.initialize() before calling other methods.",
+      );
+    }
+
+    return this._octokit;
+  }
+
   /**
    * Initializes a new instance of the `OctokitWrapper` class.
    * @param options The Octokit options including the authentication details.
@@ -60,13 +70,7 @@ export default class OctokitWrapper {
     repo: string,
     pullRequestId: number,
   ): Promise<GetPullResponse> {
-    if (this._octokit === null) {
-      throw new Error(
-        "OctokitWrapper was not initialized prior to calling OctokitWrapper.getPull().",
-      );
-    }
-
-    return this._octokit.rest.pulls.get({
+    return this.octokit.rest.pulls.get({
       owner,
       pull_number: pullRequestId,
       repo,
@@ -89,13 +93,7 @@ export default class OctokitWrapper {
     title: string | null,
     description: string | null,
   ): Promise<UpdatePullResponse> {
-    if (this._octokit === null) {
-      throw new Error(
-        "OctokitWrapper was not initialized prior to calling OctokitWrapper.updatePull().",
-      );
-    }
-
-    const request: Parameters<typeof this._octokit.rest.pulls.update>[0] = {
+    const request: Parameters<typeof this.octokit.rest.pulls.update>[0] = {
       owner,
       pull_number: pullRequestId,
       repo,
@@ -109,7 +107,7 @@ export default class OctokitWrapper {
       request.body = description;
     }
 
-    return this._octokit.rest.pulls.update(request);
+    return this.octokit.rest.pulls.update(request);
   }
 
   /**
@@ -124,13 +122,7 @@ export default class OctokitWrapper {
     repo: string,
     pullRequestId: number,
   ): Promise<GetIssueCommentsResponse> {
-    if (this._octokit === null) {
-      throw new Error(
-        "OctokitWrapper was not initialized prior to calling OctokitWrapper.getIssueComments().",
-      );
-    }
-
-    return this._octokit.rest.issues.listComments({
+    return this.octokit.rest.issues.listComments({
       issue_number: pullRequestId,
       owner,
       repo,
@@ -149,13 +141,7 @@ export default class OctokitWrapper {
     repo: string,
     pullRequestId: number,
   ): Promise<GetReviewCommentsResponse> {
-    if (this._octokit === null) {
-      throw new Error(
-        "OctokitWrapper was not initialized prior to calling OctokitWrapper.getReviewComments().",
-      );
-    }
-
-    return this._octokit.rest.pulls.listReviewComments({
+    return this.octokit.rest.pulls.listReviewComments({
       owner,
       pull_number: pullRequestId,
       repo,
@@ -176,13 +162,7 @@ export default class OctokitWrapper {
     pullRequestId: number,
     content: string,
   ): Promise<CreateIssueCommentResponse> {
-    if (this._octokit === null) {
-      throw new Error(
-        "OctokitWrapper was not initialized prior to calling OctokitWrapper.createIssueComment().",
-      );
-    }
-
-    return this._octokit.rest.issues.createComment({
+    return this.octokit.rest.issues.createComment({
       body: content,
       issue_number: pullRequestId,
       owner,
@@ -204,13 +184,7 @@ export default class OctokitWrapper {
     pullRequestId: number,
     page: number,
   ): Promise<ListCommitsResponse> {
-    if (this._octokit === null) {
-      throw new Error(
-        "OctokitWrapper was not initialized prior to calling OctokitWrapper.listCommits().",
-      );
-    }
-
-    return this._octokit.rest.pulls.listCommits({
+    return this.octokit.rest.pulls.listCommits({
       owner,
       page,
       pull_number: pullRequestId,
@@ -236,12 +210,6 @@ export default class OctokitWrapper {
     fileName: string,
     commitId: string,
   ): Promise<CreateReviewCommentResponse | null> {
-    if (this._octokit === null) {
-      throw new Error(
-        "OctokitWrapper was not initialized prior to calling OctokitWrapper.createReviewComment().",
-      );
-    }
-
     const lineNumber: number | null =
       await this._octokitGitDiffParser.getFirstChangedLine(
         this,
@@ -254,7 +222,7 @@ export default class OctokitWrapper {
       return null;
     }
 
-    return this._octokit.rest.pulls.createReviewComment({
+    return this.octokit.rest.pulls.createReviewComment({
       body: content,
       commit_id: commitId,
       line: lineNumber,
@@ -281,13 +249,7 @@ export default class OctokitWrapper {
     commentThreadId: number,
     content: string,
   ): Promise<UpdateIssueCommentResponse> {
-    if (this._octokit === null) {
-      throw new Error(
-        "OctokitWrapper was not initialized prior to calling OctokitWrapper.updateIssueComment().",
-      );
-    }
-
-    return this._octokit.rest.issues.updateComment({
+    return this.octokit.rest.issues.updateComment({
       body: content,
       comment_id: commentThreadId,
       issue_number: pullRequestId,
@@ -308,13 +270,7 @@ export default class OctokitWrapper {
     repo: string,
     commentThreadId: number,
   ): Promise<DeleteReviewCommentResponse> {
-    if (this._octokit === null) {
-      throw new Error(
-        "OctokitWrapper was not initialized prior to calling OctokitWrapper.deleteReviewComment().",
-      );
-    }
-
-    return this._octokit.rest.pulls.deleteReviewComment({
+    return this.octokit.rest.pulls.deleteReviewComment({
       comment_id: commentThreadId,
       owner,
       repo,

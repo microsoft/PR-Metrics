@@ -241,31 +241,21 @@ export default class CodeMetrics {
   ): boolean {
     this._logger.logDebug("* CodeMetrics.determineIfValidFilePattern()");
 
-    let result = false;
-
-    for (const fileMatchingPattern of positiveFileMatchingPatterns) {
-      if (this.performGlobCheck(codeFileMetric.fileName, fileMatchingPattern)) {
-        result = true;
-      }
-    }
+    let result: boolean = positiveFileMatchingPatterns.some(
+      (pattern: string): boolean =>
+        this.performGlobCheck(codeFileMetric.fileName, pattern),
+    );
 
     if (result) {
-      for (const fileMatchingPattern of negativeFileMatchingPatterns) {
-        if (
-          this.performGlobCheck(codeFileMetric.fileName, fileMatchingPattern)
-        ) {
-          result = false;
-        }
-      }
-
-      if (!result) {
-        for (const fileMatchingPattern of doubleNegativeFileMatchingPatterns) {
-          if (
-            this.performGlobCheck(codeFileMetric.fileName, fileMatchingPattern)
-          ) {
-            result = true;
-          }
-        }
+      if (
+        negativeFileMatchingPatterns.some((pattern: string): boolean =>
+          this.performGlobCheck(codeFileMetric.fileName, pattern),
+        )
+      ) {
+        result = doubleNegativeFileMatchingPatterns.some(
+          (pattern: string): boolean =>
+            this.performGlobCheck(codeFileMetric.fileName, pattern),
+        );
       }
     }
 
@@ -278,12 +268,10 @@ export default class CodeMetrics {
   ): boolean {
     this._logger.logDebug("* CodeMetrics.performGlobCheck()");
 
-    return (
-      minimatch.match(
-        [fileName],
-        fileMatchingPattern,
-        CodeMetrics._minimatchOptions,
-      ).length > 0
+    return minimatch.minimatch(
+      fileName,
+      fileMatchingPattern,
+      CodeMetrics._minimatchOptions,
     );
   }
 
@@ -314,13 +302,10 @@ export default class CodeMetrics {
     let ignoredCode = 0;
 
     for (const entry of matches) {
-      let isTestFile = false;
-      for (const testMatchingPattern of this._inputs.testMatchingPatterns) {
-        if (this.performGlobCheck(entry.fileName, testMatchingPattern)) {
-          isTestFile = true;
-          break;
-        }
-      }
+      const isTestFile: boolean = this._inputs.testMatchingPatterns.some(
+        (pattern: string): boolean =>
+          this.performGlobCheck(entry.fileName, pattern),
+      );
 
       if (isTestFile) {
         this._logger.logDebug(

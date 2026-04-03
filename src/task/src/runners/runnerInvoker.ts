@@ -40,32 +40,38 @@ export default class RunnerInvoker implements RunnerInvokerInterface {
     return typeof process.env.GITHUB_ACTION !== "undefined";
   }
 
+  private get runner(): RunnerInvokerInterface {
+    if (this._runnerInvoker !== null) {
+      return this._runnerInvoker;
+    }
+
+    this._runnerInvoker = RunnerInvoker.isGitHub
+      ? this._gitHubRunnerInvoker
+      : this._azurePipelinesRunnerInvoker;
+    return this._runnerInvoker;
+  }
+
   public async exec(tool: string, args: string): Promise<ExecOutput> {
-    const runner: RunnerInvokerInterface = this.getRunner();
-    return runner.exec(tool, args);
+    return this.runner.exec(tool, args);
   }
 
   public getInput(name: string[]): string | null {
-    const runner: RunnerInvokerInterface = this.getRunner();
-    return runner.getInput(name);
+    return this.runner.getInput(name);
   }
 
   public getEndpointAuthorization(id: string): EndpointAuthorization | null {
-    const runner: RunnerInvokerInterface = this.getRunner();
-    return runner.getEndpointAuthorization(id);
+    return this.runner.getEndpointAuthorization(id);
   }
 
   public getEndpointAuthorizationScheme(id: string): string | null {
-    const runner: RunnerInvokerInterface = this.getRunner();
-    return runner.getEndpointAuthorizationScheme(id);
+    return this.runner.getEndpointAuthorizationScheme(id);
   }
 
   public getEndpointAuthorizationParameter(
     id: string,
     key: string,
   ): string | null {
-    const runner: RunnerInvokerInterface = this.getRunner();
-    return runner.getEndpointAuthorizationParameter(id, key);
+    return this.runner.getEndpointAuthorizationParameter(id, key);
   }
 
   public locInitialize(folder: string): void {
@@ -76,8 +82,7 @@ export default class RunnerInvoker implements RunnerInvokerInterface {
     }
 
     this._localizationInitialized = true;
-    const runner: RunnerInvokerInterface = this.getRunner();
-    runner.locInitialize(folder);
+    this.runner.locInitialize(folder);
   }
 
   public loc(key: string, ...param: string[]): string {
@@ -87,53 +92,34 @@ export default class RunnerInvoker implements RunnerInvokerInterface {
       );
     }
 
-    const runner: RunnerInvokerInterface = this.getRunner();
-    return runner.loc(key, ...param);
+    return this.runner.loc(key, ...param);
   }
 
   public logDebug(message: string): void {
-    const runner: RunnerInvokerInterface = this.getRunner();
-    runner.logDebug(message);
+    this.runner.logDebug(message);
   }
 
   public logError(message: string): void {
-    const runner: RunnerInvokerInterface = this.getRunner();
-    runner.logError(message);
+    this.runner.logError(message);
   }
 
   public logWarning(message: string): void {
-    const runner: RunnerInvokerInterface = this.getRunner();
-    runner.logWarning(message);
+    this.runner.logWarning(message);
   }
 
   public setStatusFailed(message: string): void {
-    const runner: RunnerInvokerInterface = this.getRunner();
-    runner.setStatusFailed(message);
+    this.runner.setStatusFailed(message);
   }
 
   public setStatusSkipped(message: string): void {
-    const runner: RunnerInvokerInterface = this.getRunner();
-    runner.setStatusSkipped(message);
+    this.runner.setStatusSkipped(message);
   }
 
   public setStatusSucceeded(message: string): void {
-    const runner: RunnerInvokerInterface = this.getRunner();
-    runner.setStatusSucceeded(message);
+    this.runner.setStatusSucceeded(message);
   }
 
   public setSecret(value: string): void {
-    const runner: RunnerInvokerInterface = this.getRunner();
-    runner.setSecret(value);
-  }
-
-  private getRunner(): RunnerInvokerInterface {
-    if (this._runnerInvoker !== null) {
-      return this._runnerInvoker;
-    }
-
-    this._runnerInvoker = RunnerInvoker.isGitHub
-      ? this._gitHubRunnerInvoker
-      : this._azurePipelinesRunnerInvoker;
-    return this._runnerInvoker;
+    this.runner.setSecret(value);
   }
 }

@@ -271,10 +271,7 @@ export default class PullRequestComments {
   ): string {
     this._logger.logDebug("* PullRequestComments.addCommentMetrics()");
 
-    let surround = "";
-    if (highlight) {
-      surround = "**";
-    }
+    const surround: string = highlight ? "**" : "";
 
     let metricString = metric.toLocaleString();
     if (metricString === "0") {
