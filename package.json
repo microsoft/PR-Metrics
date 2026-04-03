@@ -50,7 +50,6 @@
   "dependencies": {
     "@actions/core": "3.0.0",
     "@actions/exec": "3.0.0",
-    "@octokit/types": "16.0.0",
     "axios": "1.13.6",
     "azure-devops-node-api": "15.1.2",
     "azure-pipelines-task-lib": "5.2.8",
@@ -63,6 +62,7 @@
     "tsyringe": "4.10.0"
   },
   "devDependencies": {
+    "@octokit/types": "16.0.0",
     "@eslint/js": "10.0.1",
     "@tsconfig/node20": "20.1.9",
     "@types/isomorphic-fetch": "0.0.39",
