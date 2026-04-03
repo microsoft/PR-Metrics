@@ -4,7 +4,6 @@
  */
 
 import "reflect-metadata";
-import * as Converter from "../../src/utilities/converter.js";
 import { instance, mock, verify, when } from "ts-mockito";
 import CodeMetrics from "../../src/metrics/codeMetrics.js";
 import Logger from "../../src/utilities/logger.js";
@@ -310,7 +309,7 @@ describe("pullRequest.ts", (): void => {
       const testCases: (string | null)[] = [null, "", " "];
 
       testCases.forEach((currentDescription: string | null): void => {
-        it(`should return the default description when the current description '${Converter.toString(currentDescription)}' is empty`, (): void => {
+        it(`should return the default description when the current description '${String(currentDescription)}' is empty`, (): void => {
           // Arrange
           const pullRequest: PullRequest = new PullRequest(
             instance(codeMetrics),
