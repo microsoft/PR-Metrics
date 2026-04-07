@@ -32,12 +32,11 @@ export default abstract class BaseReposInvoker implements ReposInvokerInterface 
         error as ErrorWithStatusInterface;
       const statusCode: number | null =
         castedError.status ?? castedError.statusCode;
-      const accessErrorStatusCodes: number[] = [
-        StatusCodes.UNAUTHORIZED,
-        StatusCodes.FORBIDDEN,
-        StatusCodes.NOT_FOUND,
-      ];
-      if (statusCode !== null && accessErrorStatusCodes.includes(statusCode)) {
+      if (
+        statusCode === StatusCodes.UNAUTHORIZED ||
+        statusCode === StatusCodes.FORBIDDEN ||
+        statusCode === StatusCodes.NOT_FOUND
+      ) {
         castedError.internalMessage = castedError.message;
         castedError.message = accessErrorMessage;
       }

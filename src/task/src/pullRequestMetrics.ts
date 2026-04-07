@@ -3,16 +3,13 @@
  * Licensed under the MIT License.
  */
 
-import "reflect-metadata";
 import CodeMetricsCalculator from "./metrics/codeMetricsCalculator.js";
 import Logger from "./utilities/logger.js";
 import RunnerInvoker from "./runners/runnerInvoker.js";
-import { singleton } from "tsyringe";
 
 /**
  * A class for managing the overall PR Metrics task.
  */
-@singleton()
 export default class PullRequestMetrics {
   private readonly _codeMetricsCalculator: CodeMetricsCalculator;
   private readonly _logger: Logger;

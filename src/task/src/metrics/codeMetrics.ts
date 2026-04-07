@@ -3,7 +3,6 @@
  * Licensed under the MIT License.
  */
 
-import * as minimatch from "minimatch";
 import { CodeFileMetricInterface } from "./codeFileMetricInterface.js";
 import CodeMetricsData from "./codeMetricsData.js";
 import { FixedLengthArrayInterface } from "../utilities/fixedLengthArrayInterface.js";
@@ -12,15 +11,14 @@ import Inputs from "./inputs.js";
 import Logger from "../utilities/logger.js";
 import RunnerInvoker from "../runners/runnerInvoker.js";
 import { decimalRadix } from "../utilities/constants.js";
-import { singleton } from "tsyringe";
+import picomatch from "picomatch";
 
 /**
  * A class for computing metrics for software code in pull requests.
  * @remarks This class should not be used in a multithreaded context as it could lead to the initialization logic being invoked repeatedly.
  */
-@singleton()
 export default class CodeMetrics {
-  private static readonly _minimatchOptions: minimatch.MinimatchOptions = {
+  private static readonly _picomatchOptions: picomatch.PicomatchOptions = {
     dot: true,
   };
 
@@ -249,31 +247,21 @@ export default class CodeMetrics {
   ): boolean {
     this._logger.logDebug("* CodeMetrics.determineIfValidFilePattern()");
 
-    let result = false;
-
-    for (const fileMatchingPattern of positiveFileMatchingPatterns) {
-      if (this.performGlobCheck(codeFileMetric.fileName, fileMatchingPattern)) {
-        result = true;
-      }
-    }
+    let result: boolean = positiveFileMatchingPatterns.some(
+      (pattern: string): boolean =>
+        this.performGlobCheck(codeFileMetric.fileName, pattern),
+    );
 
     if (result) {
-      for (const fileMatchingPattern of negativeFileMatchingPatterns) {
-        if (
-          this.performGlobCheck(codeFileMetric.fileName, fileMatchingPattern)
-        ) {
-          result = false;
-        }
-      }
-
-      if (!result) {
-        for (const fileMatchingPattern of doubleNegativeFileMatchingPatterns) {
-          if (
-            this.performGlobCheck(codeFileMetric.fileName, fileMatchingPattern)
-          ) {
-            result = true;
-          }
-        }
+      if (
+        negativeFileMatchingPatterns.some((pattern: string): boolean =>
+          this.performGlobCheck(codeFileMetric.fileName, pattern),
+        )
+      ) {
+        result = doubleNegativeFileMatchingPatterns.some(
+          (pattern: string): boolean =>
+            this.performGlobCheck(codeFileMetric.fileName, pattern),
+        );
       }
     }
 
@@ -286,12 +274,10 @@ export default class CodeMetrics {
   ): boolean {
     this._logger.logDebug("* CodeMetrics.performGlobCheck()");
 
-    return (
-      minimatch.match(
-        [fileName],
-        fileMatchingPattern,
-        CodeMetrics._minimatchOptions,
-      ).length > 0
+    return picomatch.isMatch(
+      fileName,
+      fileMatchingPattern,
+      CodeMetrics._picomatchOptions,
     );
   }
 
@@ -322,13 +308,10 @@ export default class CodeMetrics {
     let ignoredCode = 0;
 
     for (const entry of matches) {
-      let isTestFile = false;
-      for (const testMatchingPattern of this._inputs.testMatchingPatterns) {
-        if (this.performGlobCheck(entry.fileName, testMatchingPattern)) {
-          isTestFile = true;
-          break;
-        }
-      }
+      const isTestFile: boolean = this._inputs.testMatchingPatterns.some(
+        (pattern: string): boolean =>
+          this.performGlobCheck(entry.fileName, pattern),
+      );
 
       if (isTestFile) {
         this._logger.logDebug(

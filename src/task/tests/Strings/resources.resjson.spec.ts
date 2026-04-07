@@ -8,15 +8,10 @@ import * as path from "path";
 import ResourcesJsonInterface from "../../src/jsonTypes/resourcesJsonInterface.js";
 import TaskJsonInterface from "../jsonTypes/taskJsonInterface.js";
 import assert from "node:assert/strict";
-import { fileURLToPath } from "node:url";
 import { globSync } from "glob";
 
 describe("resources.resjson", (): void => {
-  const basePath: string = path.join(
-    path.dirname(fileURLToPath(import.meta.url)),
-    "..",
-    "..",
-  );
+  const basePath: string = path.join(import.meta.dirname, "..", "..");
 
   const languagesPath: string = path.join(
     basePath,
@@ -55,6 +50,14 @@ describe("resources.resjson", (): void => {
   const taskLocJson: TaskJsonInterface = JSON.parse(
     taskLocJsonContents,
   ) as TaskJsonInterface;
+
+  const globBasePath = `${basePath.replace(/\\/gu, "/")}/`;
+  const typeScriptFiles: string[] = globSync(
+    `${globBasePath}!(node_modules|tests)/**/*.ts`,
+  ).concat(globSync(`${globBasePath}*.ts`));
+  const typeScriptFileContents: string[] = typeScriptFiles.map((file: string) =>
+    fs.readFileSync(file, "utf8").replace(/\s|\n|\r/gu, ""),
+  );
 
   testCases.forEach((value: ResourcesJsonInterface, language: string): void => {
     it(`should contain a comment for every resource in language '${language}'`, (): void => {
@@ -171,19 +174,10 @@ describe("resources.resjson", (): void => {
 
   it("should have the same number of placeholders across the TypeScript code and resources file", (): void => {
     // Arrange
-    const globBasePath = `${basePath.replace(/\\/gu, "/")}/`;
-    const typeScriptFiles1: string[] = globSync(
-      `${globBasePath}!(node_modules|tests)/**/*.ts`,
-    );
-    const typeScriptFiles2: string[] = globSync(`${globBasePath}*.ts`);
-    const typeScriptFiles: string[] = typeScriptFiles1.concat(typeScriptFiles2);
     const typeScriptResources: Map<string, number> = new Map<string, number>();
     const resourceRegExp = /loc\(\s*".+?".*?\)/gu;
     const parameterDelimiterRegExp = /,/gu;
-    for (const file of typeScriptFiles) {
-      const fileContents: string = fs
-        .readFileSync(file, "utf8")
-        .replace(/\s|\n|\r/gu, "");
+    for (const fileContents of typeScriptFileContents) {
       const matches: RegExpMatchArray | null =
         fileContents.match(resourceRegExp);
       if (matches) {

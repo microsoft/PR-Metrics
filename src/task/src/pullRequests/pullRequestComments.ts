@@ -14,12 +14,10 @@ import PullRequestComment from "../repos/interfaces/pullRequestCommentData.js";
 import PullRequestCommentsData from "./pullRequestCommentsData.js";
 import ReposInvoker from "../repos/reposInvoker.js";
 import RunnerInvoker from "../runners/runnerInvoker.js";
-import { injectable } from "tsyringe";
 
 /**
  * A class for managing pull requests comments.
  */
-@injectable()
 export default class PullRequestComments {
   private readonly _codeMetrics: CodeMetrics;
   private readonly _inputs: Inputs;
@@ -273,10 +271,7 @@ export default class PullRequestComments {
   ): string {
     this._logger.logDebug("* PullRequestComments.addCommentMetrics()");
 
-    let surround = "";
-    if (highlight) {
-      surround = "**";
-    }
+    const surround: string = highlight ? "**" : "";
 
     let metricString = metric.toLocaleString();
     if (metricString === "0") {

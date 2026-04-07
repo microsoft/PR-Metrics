@@ -8,12 +8,10 @@ import {
   IExecOptions,
   IExecSyncResult,
 } from "azure-pipelines-task-lib/toolrunner.js";
-import { singleton } from "tsyringe";
 
 /**
  * A wrapper around the Azure Pipelines runner, to facilitate testability.
  */
-@singleton()
 export default class AzurePipelinesRunnerWrapper {
   /**
    * Logs a debug message.
