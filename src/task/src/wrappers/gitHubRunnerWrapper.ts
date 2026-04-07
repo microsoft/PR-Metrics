@@ -5,12 +5,10 @@
 
 import * as actionsCore from "@actions/core";
 import * as actionsExec from "@actions/exec";
-import { singleton } from "tsyringe";
 
 /**
  * A wrapper around the GitHub runner, to facilitate testability.
  */
-@singleton()
 export default class GitHubRunnerWrapper {
   /**
    * Logs a debug message.

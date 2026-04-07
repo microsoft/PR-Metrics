@@ -12,12 +12,10 @@ import PullRequestCommentsData from "../pullRequests/pullRequestCommentsData.js"
 import PullRequestDetailsInterface from "../repos/interfaces/pullRequestDetailsInterface.js";
 import ReposInvoker from "../repos/reposInvoker.js";
 import RunnerInvoker from "../runners/runnerInvoker.js";
-import { injectable } from "tsyringe";
 
 /**
  * A class for calculating and updating the code metrics within pull requests.
  */
-@injectable()
 export default class CodeMetricsCalculator {
   private readonly _gitInvoker: GitInvoker;
   private readonly _logger: Logger;

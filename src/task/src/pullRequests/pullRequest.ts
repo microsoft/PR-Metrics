@@ -7,12 +7,10 @@ import * as Validator from "../utilities/validator.js";
 import CodeMetrics from "../metrics/codeMetrics.js";
 import Logger from "../utilities/logger.js";
 import RunnerInvoker from "../runners/runnerInvoker.js";
-import { injectable } from "tsyringe";
 
 /**
  * A class for managing pull requests.
  */
-@injectable()
 export default class PullRequest {
   private readonly _codeMetrics: CodeMetrics;
   private readonly _logger: Logger;

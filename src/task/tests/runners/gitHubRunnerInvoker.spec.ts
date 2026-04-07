@@ -3,7 +3,6 @@
  * Licensed under the MIT License.
  */
 
-import "reflect-metadata";
 import * as actionsExec from "@actions/exec";
 import * as path from "path";
 import { deepEqual, instance, mock, verify, when } from "ts-mockito";
@@ -15,11 +14,10 @@ import GitHubRunnerInvoker from "../../src/runners/gitHubRunnerInvoker.js";
 import GitHubRunnerWrapper from "../../src/wrappers/gitHubRunnerWrapper.js";
 import { any } from "../testUtilities/mockito.js";
 import assert from "node:assert/strict";
-import { fileURLToPath } from "node:url";
 
 describe("gitHubRunnerInvoker.js", (): void => {
   const resourcePath: string = path.join(
-    path.dirname(fileURLToPath(import.meta.url)),
+    import.meta.dirname,
     "../../Strings/resources.resjson/en-US/",
   );
 
