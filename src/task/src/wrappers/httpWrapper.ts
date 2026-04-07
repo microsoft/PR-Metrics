@@ -3,12 +3,10 @@
  * Licensed under the MIT License.
  */
 
-import { singleton } from "tsyringe";
 
 /**
  * A wrapper around the Fetch API, to facilitate testability.
  */
-@singleton()
 export default class HttpWrapper {
   /**
    * Gets the contents of a URL.

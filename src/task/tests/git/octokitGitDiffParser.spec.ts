@@ -3,7 +3,6 @@
  * Licensed under the MIT License.
  */
 
-import "reflect-metadata";
 import { instance, mock, verify, when } from "ts-mockito";
 import GetPullResponse from "../../src/wrappers/octokitInterfaces/getPullResponse.js";
 import HttpWrapper from "../../src/wrappers/httpWrapper.js";

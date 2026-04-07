@@ -3,8 +3,6 @@
  * Licensed under the MIT License.
  */
 
-import "reflect-metadata";
-import * as Converter from "../../src/utilities/converter.js";
 import { instance, mock, verify, when } from "ts-mockito";
 import CodeMetrics from "../../src/metrics/codeMetrics.js";
 import CodeMetricsData from "../../src/metrics/codeMetricsData.js";
@@ -872,7 +870,7 @@ describe("pullRequestComments.ts", (): void => {
       const testCases: (boolean | null)[] = [true, null];
 
       testCases.forEach((sufficientlyTested: boolean | null): void => {
-        it(`should return Closed when the pull request is small and has sufficient test coverage '${Converter.toString(sufficientlyTested)}'`, async (): Promise<void> => {
+        it(`should return Closed when the pull request is small and has sufficient test coverage '${String(sufficientlyTested)}'`, async (): Promise<void> => {
           // Arrange
           when(codeMetrics.isSmall()).thenResolve(true);
           when(codeMetrics.isSufficientlyTested()).thenResolve(
@@ -927,7 +925,7 @@ describe("pullRequestComments.ts", (): void => {
 
       testCases.forEach(
         ({ isSmall, isSufficientlyTested }: TestCaseType): void => {
-          it(`should return Active when the pull request small status is '${String(isSmall)}' and the sufficient test coverage status is '${Converter.toString(isSufficientlyTested)}'`, async (): Promise<void> => {
+          it(`should return Active when the pull request small status is '${String(isSmall)}' and the sufficient test coverage status is '${String(isSufficientlyTested)}'`, async (): Promise<void> => {
             // Arrange
             when(codeMetrics.isSmall()).thenResolve(isSmall);
             when(codeMetrics.isSufficientlyTested()).thenResolve(

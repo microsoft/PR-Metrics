@@ -24,13 +24,11 @@ import PullRequestDetailsInterface from "./interfaces/pullRequestDetailsInterfac
 import RunnerInvoker from "../runners/runnerInvoker.js";
 import TokenManager from "./tokenManager.js";
 import { WebApi } from "azure-devops-node-api";
-import { singleton } from "tsyringe";
 
 /**
  * A class for invoking Azure Repos functionality.
  * @remarks This class should not be used in a multithreaded context as it could lead to the initialization logic being invoked repeatedly.
  */
-@singleton()
 export default class AzureReposInvoker extends BaseReposInvoker {
   private readonly _azureDevOpsApiWrapper: AzureDevOpsApiWrapper;
   private readonly _gitInvoker: GitInvoker;
