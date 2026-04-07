@@ -3,7 +3,6 @@
  * Licensed under the MIT License.
  */
 
-
 /**
  * A wrapper around the Fetch API, to facilitate testability.
  */
