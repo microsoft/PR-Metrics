@@ -3,8 +3,8 @@
  * Licensed under the MIT License.
  */
 
-import type ResolvableInstanceTargetInterface from "./resolvableInstanceTargetInterface.js";
 import { instance } from "ts-mockito";
+import type ResolvableInstanceTargetInterface from "./resolvableInstanceTargetInterface.js";
 
 /**
  * Gets a resolvable instance of the specified mock object.
@@ -13,14 +13,14 @@ import { instance } from "ts-mockito";
  * @returns The resolvable instance.
  */
 export const resolvableInstance = <Type extends NonNullable<unknown>>(
-  mock: Type,
+	mock: Type,
 ): Type =>
-  new Proxy(instance(mock), {
-    get(target: Type, name: string): Type | null {
-      if (["Symbol(Symbol.toPrimitive)", "then", "catch"].includes(name)) {
-        return null;
-      }
+	new Proxy(instance(mock), {
+		get(target: Type, name: string): Type | null {
+			if (["Symbol(Symbol.toPrimitive)", "then", "catch"].includes(name)) {
+				return null;
+			}
 
-      return (target as ResolvableInstanceTargetInterface<Type>)[name] ?? null;
-    },
-  });
+			return (target as ResolvableInstanceTargetInterface<Type>)[name] ?? null;
+		},
+	});

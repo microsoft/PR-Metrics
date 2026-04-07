@@ -7,8 +7,8 @@
  * An interface defining the format of Azure Pipelines extension JSON files.
  */
 export default interface VssExtensionJsonInterface {
-  /**
-   * The version number of the extension.
-   */
-  version: string;
+	/**
+	 * The version number of the extension.
+	 */
+	version: string;
 }

@@ -7,18 +7,18 @@
  * An interface defining the output of external tool execution.
  */
 export default interface ExecOutput {
-  /**
-   * The exit code.
-   */
-  exitCode: number;
+	/**
+	 * The exit code.
+	 */
+	exitCode: number;
 
-  /**
-   * The standard output text.
-   */
-  stdout: string;
+	/**
+	 * The standard output text.
+	 */
+	stdout: string;
 
-  /**
-   * The standard error text.
-   */
-  stderr: string;
+	/**
+	 * The standard error text.
+	 */
+	stderr: string;
 }

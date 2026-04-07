@@ -4,138 +4,122 @@
  */
 
 import AzurePipelinesRunnerInvoker from "./azurePipelinesRunnerInvoker.js";
-import type { EndpointAuthorization } from "./endpointAuthorization.js";
-import type ExecOutput from "./execOutput.js";
+import { EndpointAuthorization } from "./endpointAuthorization.js";
+import ExecOutput from "./execOutput.js";
 import GitHubRunnerInvoker from "./gitHubRunnerInvoker.js";
-import type RunnerInvokerInterface from "./runnerInvokerInterface.js";
-import { singleton } from "tsyringe";
+import RunnerInvokerInterface from "./runnerInvokerInterface.js";
 
 /**
  * A wrapper around the runner functionality, to facilitate testability. This class cannot use logging functionality as
  * the logger forms part of the runner functionality, and using logging here could result in circular dependencies.
  */
-@singleton()
 export default class RunnerInvoker implements RunnerInvokerInterface {
-  private readonly _azurePipelinesRunnerInvoker: AzurePipelinesRunnerInvoker;
-  private readonly _gitHubRunnerInvoker: GitHubRunnerInvoker;
+	private readonly _azurePipelinesRunnerInvoker: AzurePipelinesRunnerInvoker;
+	private readonly _gitHubRunnerInvoker: GitHubRunnerInvoker;
 
-  private _runnerInvoker: RunnerInvokerInterface | null = null;
-  private _localizationInitialized = false;
+	private _runnerInvoker: RunnerInvokerInterface | null = null;
+	private _localizationInitialized = false;
 
-  /**
-   * Initializes a new instance of the `RunnerInvoker` class.
-   * @param azurePipelinesRunnerInvoker The Azure Pipelines runner logic.
-   * @param gitHubRunnerInvoker The GitHub runner logic.
-   */
-  public constructor(
-    azurePipelinesRunnerInvoker: AzurePipelinesRunnerInvoker,
-    gitHubRunnerInvoker: GitHubRunnerInvoker,
-  ) {
-    this._azurePipelinesRunnerInvoker = azurePipelinesRunnerInvoker;
-    this._gitHubRunnerInvoker = gitHubRunnerInvoker;
-  }
+	/**
+	 * Initializes a new instance of the `RunnerInvoker` class.
+	 * @param azurePipelinesRunnerInvoker The Azure Pipelines runner logic.
+	 * @param gitHubRunnerInvoker The GitHub runner logic.
+	 */
+	public constructor(
+		azurePipelinesRunnerInvoker: AzurePipelinesRunnerInvoker,
+		gitHubRunnerInvoker: GitHubRunnerInvoker,
+	) {
+		this._azurePipelinesRunnerInvoker = azurePipelinesRunnerInvoker;
+		this._gitHubRunnerInvoker = gitHubRunnerInvoker;
+	}
 
-  /**
-   * Gets a value indicating whether a GitHub runner is in use.
-   */
-  public static get isGitHub(): boolean {
-    return typeof process.env.GITHUB_ACTION !== "undefined";
-  }
+	/**
+	 * Gets a value indicating whether a GitHub runner is in use.
+	 */
+	public static get isGitHub(): boolean {
+		return typeof process.env.GITHUB_ACTION !== "undefined";
+	}
 
-  public async exec(tool: string, args: string): Promise<ExecOutput> {
-    const runner: RunnerInvokerInterface = this.getRunner();
-    return runner.exec(tool, args);
-  }
+	private get runner(): RunnerInvokerInterface {
+		if (this._runnerInvoker !== null) {
+			return this._runnerInvoker;
+		}
 
-  public getInput(name: string[]): string | null {
-    const runner: RunnerInvokerInterface = this.getRunner();
-    return runner.getInput(name);
-  }
+		this._runnerInvoker = RunnerInvoker.isGitHub
+			? this._gitHubRunnerInvoker
+			: this._azurePipelinesRunnerInvoker;
+		return this._runnerInvoker;
+	}
 
-  public getEndpointAuthorization(id: string): EndpointAuthorization | null {
-    const runner: RunnerInvokerInterface = this.getRunner();
-    return runner.getEndpointAuthorization(id);
-  }
+	public async exec(tool: string, args: string): Promise<ExecOutput> {
+		return this.runner.exec(tool, args);
+	}
 
-  public getEndpointAuthorizationScheme(id: string): string | null {
-    const runner: RunnerInvokerInterface = this.getRunner();
-    return runner.getEndpointAuthorizationScheme(id);
-  }
+	public getInput(name: string[]): string | null {
+		return this.runner.getInput(name);
+	}
 
-  public getEndpointAuthorizationParameter(
-    id: string,
-    key: string,
-  ): string | null {
-    const runner: RunnerInvokerInterface = this.getRunner();
-    return runner.getEndpointAuthorizationParameter(id, key);
-  }
+	public getEndpointAuthorization(id: string): EndpointAuthorization | null {
+		return this.runner.getEndpointAuthorization(id);
+	}
 
-  public locInitialize(folder: string): void {
-    if (this._localizationInitialized) {
-      throw new Error(
-        "RunnerInvoker.locInitialize must not be called multiple times.",
-      );
-    }
+	public getEndpointAuthorizationScheme(id: string): string | null {
+		return this.runner.getEndpointAuthorizationScheme(id);
+	}
 
-    this._localizationInitialized = true;
-    const runner: RunnerInvokerInterface = this.getRunner();
-    runner.locInitialize(folder);
-  }
+	public getEndpointAuthorizationParameter(
+		id: string,
+		key: string,
+	): string | null {
+		return this.runner.getEndpointAuthorizationParameter(id, key);
+	}
 
-  public loc(key: string, ...param: string[]): string {
-    if (!this._localizationInitialized) {
-      throw new Error(
-        "RunnerInvoker.locInitialize must be called before RunnerInvoker.loc.",
-      );
-    }
+	public locInitialize(folder: string): void {
+		if (this._localizationInitialized) {
+			throw new Error(
+				"RunnerInvoker.locInitialize must not be called multiple times.",
+			);
+		}
 
-    const runner: RunnerInvokerInterface = this.getRunner();
-    return runner.loc(key, ...param);
-  }
+		this._localizationInitialized = true;
+		this.runner.locInitialize(folder);
+	}
 
-  public logDebug(message: string): void {
-    const runner: RunnerInvokerInterface = this.getRunner();
-    runner.logDebug(message);
-  }
+	public loc(key: string, ...param: string[]): string {
+		if (!this._localizationInitialized) {
+			throw new Error(
+				"RunnerInvoker.locInitialize must be called before RunnerInvoker.loc.",
+			);
+		}
 
-  public logError(message: string): void {
-    const runner: RunnerInvokerInterface = this.getRunner();
-    runner.logError(message);
-  }
+		return this.runner.loc(key, ...param);
+	}
 
-  public logWarning(message: string): void {
-    const runner: RunnerInvokerInterface = this.getRunner();
-    runner.logWarning(message);
-  }
+	public logDebug(message: string): void {
+		this.runner.logDebug(message);
+	}
 
-  public setStatusFailed(message: string): void {
-    const runner: RunnerInvokerInterface = this.getRunner();
-    runner.setStatusFailed(message);
-  }
+	public logError(message: string): void {
+		this.runner.logError(message);
+	}
 
-  public setStatusSkipped(message: string): void {
-    const runner: RunnerInvokerInterface = this.getRunner();
-    runner.setStatusSkipped(message);
-  }
+	public logWarning(message: string): void {
+		this.runner.logWarning(message);
+	}
 
-  public setStatusSucceeded(message: string): void {
-    const runner: RunnerInvokerInterface = this.getRunner();
-    runner.setStatusSucceeded(message);
-  }
+	public setStatusFailed(message: string): void {
+		this.runner.setStatusFailed(message);
+	}
 
-  public setSecret(value: string): void {
-    const runner: RunnerInvokerInterface = this.getRunner();
-    runner.setSecret(value);
-  }
+	public setStatusSkipped(message: string): void {
+		this.runner.setStatusSkipped(message);
+	}
 
-  private getRunner(): RunnerInvokerInterface {
-    if (this._runnerInvoker !== null) {
-      return this._runnerInvoker;
-    }
+	public setStatusSucceeded(message: string): void {
+		this.runner.setStatusSucceeded(message);
+	}
 
-    this._runnerInvoker = RunnerInvoker.isGitHub
-      ? this._gitHubRunnerInvoker
-      : this._azurePipelinesRunnerInvoker;
-    return this._runnerInvoker;
-  }
+	public setSecret(value: string): void {
+		this.runner.setSecret(value);
+	}
 }

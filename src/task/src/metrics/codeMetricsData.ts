@@ -7,79 +7,66 @@
  * A class representing code metrics data.
  */
 export default class CodeMetricsData {
-  private readonly _productCode: number;
-  private readonly _testCode: number;
-  private readonly _ignoredCode: number;
+	/**
+	 * The number of lines of product code.
+	 */
+	public readonly productCode: number;
 
-  /**
-   * Initializes a new instance of the `CodeMetricsData` class.
-   * @param productCode The number of lines of product code.
-   * @param testCode The number of lines of test code.
-   * @param ignoredCode The number of lines of ignored code.
-   */
-  public constructor(
-    productCode: number,
-    testCode: number,
-    ignoredCode: number,
-  ) {
-    if (productCode < 0) {
-      throw new RangeError(
-        `Product code '${String(productCode)}' must be >= 0.`,
-      );
-    }
+	/**
+	 * The number of lines of test code.
+	 */
+	public readonly testCode: number;
 
-    if (testCode < 0) {
-      throw new RangeError(`Test code '${String(testCode)}' must be >= 0.`);
-    }
+	/**
+	 * The number of lines of ignored code.
+	 */
+	public readonly ignoredCode: number;
 
-    if (ignoredCode < 0) {
-      throw new RangeError(
-        `Ignored code '${String(ignoredCode)}' must be >= 0.`,
-      );
-    }
+	/**
+	 * Initializes a new instance of the `CodeMetricsData` class.
+	 * @param productCode The number of lines of product code.
+	 * @param testCode The number of lines of test code.
+	 * @param ignoredCode The number of lines of ignored code.
+	 */
+	public constructor(
+		productCode: number,
+		testCode: number,
+		ignoredCode: number,
+	) {
+		if (productCode < 0) {
+			throw new RangeError(
+				`Product code '${String(productCode)}' must be >= 0.`,
+			);
+		}
 
-    this._productCode = productCode;
-    this._testCode = testCode;
-    this._ignoredCode = ignoredCode;
-  }
+		if (testCode < 0) {
+			throw new RangeError(`Test code '${String(testCode)}' must be >= 0.`);
+		}
 
-  /**
-   * Gets the number of lines of product code.
-   * @returns The number of lines of product code.
-   */
-  public get productCode(): number {
-    return this._productCode;
-  }
+		if (ignoredCode < 0) {
+			throw new RangeError(
+				`Ignored code '${String(ignoredCode)}' must be >= 0.`,
+			);
+		}
 
-  /**
-   * Gets the number of lines of test code.
-   * @returns The number of lines of test code.
-   */
-  public get testCode(): number {
-    return this._testCode;
-  }
+		this.productCode = productCode;
+		this.testCode = testCode;
+		this.ignoredCode = ignoredCode;
+	}
 
-  /**
-   * Gets the number of lines of ignored code.
-   * @returns The number of lines of ignored code.
-   */
-  public get ignoredCode(): number {
-    return this._ignoredCode;
-  }
+	/**
+	 * Gets the subtotal number of lines of code, comprising the number of lines of product and test code.
+	 * @returns The subtotal number of lines of code.
+	 */
+	public get subtotal(): number {
+		return this.productCode + this.testCode;
+	}
 
-  /**
-   * Gets the subtotal number of lines of code, comprising the number of lines of product and test code.
-   * @returns The subtotal number of lines of code.
-   */
-  public get subtotal(): number {
-    return this.productCode + this.testCode;
-  }
-
-  /**
-   * Gets the total number of lines of code, comprising the number of lines of product, test and ignored code.
-   * @returns The total number of lines of code.
-   */
-  public get total(): number {
-    return this.subtotal + this.ignoredCode;
-  }
+	/**
+	 * Gets the total number of lines of code, comprising the number of lines of product, test and ignored code.
+	 * @returns The total number of lines of code.
+	 */
+	public get total(): number {
+		return this.subtotal + this.ignoredCode;
+	}
 }

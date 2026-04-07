@@ -3,106 +3,104 @@
  * Licensed under the MIT License.
  */
 
-import ConsoleWrapper from "../wrappers/consoleWrapper.js";
 import RunnerInvoker from "../runners/runnerInvoker.js";
-import { singleton } from "tsyringe";
+import ConsoleWrapper from "../wrappers/consoleWrapper.js";
 
 /**
  * A class for logging messages.
  */
-@singleton()
 export default class Logger {
-  private readonly _consoleWrapper: ConsoleWrapper;
-  private readonly _runnerInvoker: RunnerInvoker;
+	private readonly _consoleWrapper: ConsoleWrapper;
+	private readonly _runnerInvoker: RunnerInvoker;
 
-  private readonly _messages: string[] = [];
+	private readonly _messages: string[] = [];
 
-  /**
-   * Initializes a new instance of the `Logger` class.
-   * @param consoleWrapper The wrapper around the console.
-   * @param runnerInvoker The runner invoker logic.
-   */
-  public constructor(
-    consoleWrapper: ConsoleWrapper,
-    runnerInvoker: RunnerInvoker,
-  ) {
-    this._consoleWrapper = consoleWrapper;
-    this._runnerInvoker = runnerInvoker;
-  }
+	/**
+	 * Initializes a new instance of the `Logger` class.
+	 * @param consoleWrapper The wrapper around the console.
+	 * @param runnerInvoker The runner invoker logic.
+	 */
+	public constructor(
+		consoleWrapper: ConsoleWrapper,
+		runnerInvoker: RunnerInvoker,
+	) {
+		this._consoleWrapper = consoleWrapper;
+		this._runnerInvoker = runnerInvoker;
+	}
 
-  /**
-   * Filter messages so that control strings are not printed to `stdout`.
-   * @param message The message to filter.
-   * @returns The filtered message.
-   */
-  private static filterMessage(message: string): string {
-    return message.replace(/##(?:vso)?\[/giu, "");
-  }
+	/**
+	 * Filter messages so that control strings are not printed to `stdout`.
+	 * @param message The message to filter.
+	 * @returns The filtered message.
+	 */
+	private static filterMessage(message: string): string {
+		return message.replace(/##(?:vso)?\[/giu, "");
+	}
 
-  /**
-   * Logs a debug message.
-   * @param message The message to log.
-   */
-  public logDebug(message: string): void {
-    const filteredMessage: string = Logger.filterMessage(message);
-    this._messages.push(`debug   – ${filteredMessage}`);
-    this._runnerInvoker.logDebug(filteredMessage);
-  }
+	/**
+	 * Logs a debug message.
+	 * @param message The message to log.
+	 */
+	public logDebug(message: string): void {
+		const filteredMessage: string = Logger.filterMessage(message);
+		this._messages.push(`debug   – ${filteredMessage}`);
+		this._runnerInvoker.logDebug(filteredMessage);
+	}
 
-  /**
-   * Logs an informational message.
-   * @param message The message to log.
-   */
-  public logInfo(message: string): void {
-    const filteredMessage: string = Logger.filterMessage(message);
-    this._messages.push(`info    – ${filteredMessage}`);
-    this._consoleWrapper.log(filteredMessage);
-  }
+	/**
+	 * Logs an informational message.
+	 * @param message The message to log.
+	 */
+	public logInfo(message: string): void {
+		const filteredMessage: string = Logger.filterMessage(message);
+		this._messages.push(`info    – ${filteredMessage}`);
+		this._consoleWrapper.log(filteredMessage);
+	}
 
-  /**
-   * Logs a warning message.
-   * @param message The message to log.
-   */
-  public logWarning(message: string): void {
-    const filteredMessage: string = Logger.filterMessage(message);
-    this._messages.push(`warning – ${filteredMessage}`);
-    this._runnerInvoker.logWarning(filteredMessage);
-  }
+	/**
+	 * Logs a warning message.
+	 * @param message The message to log.
+	 */
+	public logWarning(message: string): void {
+		const filteredMessage: string = Logger.filterMessage(message);
+		this._messages.push(`warning – ${filteredMessage}`);
+		this._runnerInvoker.logWarning(filteredMessage);
+	}
 
-  /**
-   * Logs an error message.
-   * @param message The message to log.
-   */
-  public logError(message: string): void {
-    const filteredMessage: string = Logger.filterMessage(message);
-    this._messages.push(`error   – ${filteredMessage}`);
-    this._runnerInvoker.logError(filteredMessage);
-  }
+	/**
+	 * Logs an error message.
+	 * @param message The message to log.
+	 */
+	public logError(message: string): void {
+		const filteredMessage: string = Logger.filterMessage(message);
+		this._messages.push(`error   – ${filteredMessage}`);
+		this._runnerInvoker.logError(filteredMessage);
+	}
 
-  /**
-   * Logs an error object.
-   * @param error The error object to log.
-   */
-  public logErrorObject(error: Error): void {
-    const { name } = error;
-    const properties: string[] = Object.getOwnPropertyNames(error);
-    const errorRecord: Record<string, unknown> = error as unknown as Record<
-      string,
-      unknown
-    >;
-    for (const property of properties) {
-      this.logInfo(
-        `${name} – ${property}: ${JSON.stringify(errorRecord[property])}`,
-      );
-    }
-  }
+	/**
+	 * Logs an error object.
+	 * @param error The error object to log.
+	 */
+	public logErrorObject(error: Error): void {
+		const { name } = error;
+		const properties: string[] = Object.getOwnPropertyNames(error);
+		const errorRecord: Record<string, unknown> = error as unknown as Record<
+			string,
+			unknown
+		>;
+		for (const property of properties) {
+			this.logInfo(
+				`${name} – ${property}: ${JSON.stringify(errorRecord[property])}`,
+			);
+		}
+	}
 
-  /**
-   * Replays the messages logged.
-   */
-  public replay(): void {
-    for (const message of this._messages) {
-      this._consoleWrapper.log(`🔁 ${message}`);
-    }
-  }
+	/**
+	 * Replays the messages logged.
+	 */
+	public replay(): void {
+		for (const message of this._messages) {
+			this._consoleWrapper.log(`🔁 ${message}`);
+		}
+	}
 }

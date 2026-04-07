@@ -1,0 +1,131 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ * Licensed under the MIT License.
+ */
+
+import GitInvoker from "./git/gitInvoker.js";
+import OctokitGitDiffParser from "./git/octokitGitDiffParser.js";
+import CodeMetrics from "./metrics/codeMetrics.js";
+import CodeMetricsCalculator from "./metrics/codeMetricsCalculator.js";
+import Inputs from "./metrics/inputs.js";
+import PullRequestMetrics from "./pullRequestMetrics.js";
+import PullRequest from "./pullRequests/pullRequest.js";
+import PullRequestComments from "./pullRequests/pullRequestComments.js";
+import AzureReposInvoker from "./repos/azureReposInvoker.js";
+import GitHubReposInvoker from "./repos/gitHubReposInvoker.js";
+import ReposInvoker from "./repos/reposInvoker.js";
+import TokenManager from "./repos/tokenManager.js";
+import AzurePipelinesRunnerInvoker from "./runners/azurePipelinesRunnerInvoker.js";
+import GitHubRunnerInvoker from "./runners/gitHubRunnerInvoker.js";
+import RunnerInvoker from "./runners/runnerInvoker.js";
+import Logger from "./utilities/logger.js";
+import AxiosWrapper from "./wrappers/axiosWrapper.js";
+import AzureDevOpsApiWrapper from "./wrappers/azureDevOpsApiWrapper.js";
+import AzurePipelinesRunnerWrapper from "./wrappers/azurePipelinesRunnerWrapper.js";
+import ConsoleWrapper from "./wrappers/consoleWrapper.js";
+import GitHubRunnerWrapper from "./wrappers/gitHubRunnerWrapper.js";
+import OctokitWrapper from "./wrappers/octokitWrapper.js";
+
+/**
+ * Creates a fully wired `PullRequestMetrics` instance with all dependencies.
+ * @returns A ready-to-run `PullRequestMetrics` instance.
+ */
+const createPullRequestMetrics = (): PullRequestMetrics => {
+	// Wrappers (leaf nodes).
+	const axiosWrapper: AxiosWrapper = new AxiosWrapper();
+	const azureDevOpsApiWrapper: AzureDevOpsApiWrapper =
+		new AzureDevOpsApiWrapper();
+	const azurePipelinesRunnerWrapper: AzurePipelinesRunnerWrapper =
+		new AzurePipelinesRunnerWrapper();
+	const consoleWrapper: ConsoleWrapper = new ConsoleWrapper();
+	const gitHubRunnerWrapper: GitHubRunnerWrapper = new GitHubRunnerWrapper();
+
+	// Runners.
+	const azurePipelinesRunnerInvoker: AzurePipelinesRunnerInvoker =
+		new AzurePipelinesRunnerInvoker(azurePipelinesRunnerWrapper);
+	const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(
+		azurePipelinesRunnerWrapper,
+		consoleWrapper,
+		gitHubRunnerWrapper,
+	);
+	const runnerInvoker: RunnerInvoker = new RunnerInvoker(
+		azurePipelinesRunnerInvoker,
+		gitHubRunnerInvoker,
+	);
+
+	// Utilities.
+	const logger: Logger = new Logger(consoleWrapper, runnerInvoker);
+
+	// Git.
+	const gitInvoker: GitInvoker = new GitInvoker(logger, runnerInvoker);
+	const octokitGitDiffParser: OctokitGitDiffParser = new OctokitGitDiffParser(
+		axiosWrapper,
+		logger,
+	);
+
+	// Metrics inputs.
+	const inputs: Inputs = new Inputs(logger, runnerInvoker);
+	const codeMetrics: CodeMetrics = new CodeMetrics(
+		gitInvoker,
+		inputs,
+		logger,
+		runnerInvoker,
+	);
+
+	// Repository access.
+	const octokitWrapper: OctokitWrapper = new OctokitWrapper(
+		octokitGitDiffParser,
+	);
+	const tokenManager: TokenManager = new TokenManager(
+		azureDevOpsApiWrapper,
+		logger,
+		runnerInvoker,
+	);
+	const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(
+		azureDevOpsApiWrapper,
+		gitInvoker,
+		logger,
+		runnerInvoker,
+		tokenManager,
+	);
+	const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
+		gitInvoker,
+		logger,
+		octokitWrapper,
+		runnerInvoker,
+	);
+	const reposInvoker: ReposInvoker = new ReposInvoker(
+		azureReposInvoker,
+		gitHubReposInvoker,
+		logger,
+	);
+
+	// Pull request layer.
+	const pullRequest: PullRequest = new PullRequest(
+		codeMetrics,
+		logger,
+		runnerInvoker,
+	);
+	const pullRequestComments: PullRequestComments = new PullRequestComments(
+		codeMetrics,
+		inputs,
+		logger,
+		reposInvoker,
+		runnerInvoker,
+	);
+
+	// Orchestration.
+	const codeMetricsCalculator: CodeMetricsCalculator =
+		new CodeMetricsCalculator(
+			gitInvoker,
+			logger,
+			pullRequest,
+			pullRequestComments,
+			reposInvoker,
+			runnerInvoker,
+		);
+
+	return new PullRequestMetrics(codeMetricsCalculator, logger, runnerInvoker);
+};
+
+export default createPullRequestMetrics;

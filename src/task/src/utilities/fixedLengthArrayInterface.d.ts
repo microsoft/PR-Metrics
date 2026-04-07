@@ -4,12 +4,12 @@
  */
 
 type FixedLengthArrayInternal<
-  Type,
-  Length extends number,
-  Recursion extends Type[],
+	Type,
+	Length extends number,
+	Recursion extends Type[],
 > = Recursion["length"] extends Length
-  ? Recursion
-  : FixedLengthArrayInternal<Type, Length, [Type, ...Recursion]>;
+	? Recursion
+	: FixedLengthArrayInternal<Type, Length, [Type, ...Recursion]>;
 
 /**
  * A type definition reflecting an array of a fixed length.
@@ -17,10 +17,10 @@ type FixedLengthArrayInternal<
  * @typeParam Length The length of the array.
  */
 export type FixedLengthArrayInterface<
-  Type,
-  Length extends number,
+	Type,
+	Length extends number,
 > = Length extends Length
-  ? number extends Length
-    ? Type[]
-    : FixedLengthArrayInternal<Type, Length, []>
-  : never;
+	? number extends Length
+		? Type[]
+		: FixedLengthArrayInternal<Type, Length, []>
+	: never;

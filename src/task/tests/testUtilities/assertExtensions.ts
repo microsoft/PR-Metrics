@@ -13,17 +13,17 @@ import assert from "node:assert/strict";
  * @returns The error object.
  */
 export const toThrowAsync = async <ErrorType extends Error>(
-  func: () => Promise<unknown>,
-  errorMessage: string,
+	func: () => Promise<unknown>,
+	errorMessage: string,
 ): Promise<ErrorType> => {
-  let error: unknown = null;
-  try {
-    await func();
-  } catch (err) {
-    error = err;
-  }
+	let error: unknown = null;
+	try {
+		await func();
+	} catch (err) {
+		error = err;
+	}
 
-  assert(error instanceof Error);
-  assert.equal(error.message, errorMessage);
-  return error as ErrorType;
+	assert(error instanceof Error);
+	assert.equal(error.message, errorMessage);
+	return error as ErrorType;
 };
