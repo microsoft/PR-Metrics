@@ -3,7 +3,6 @@
  * Licensed under the MIT License.
  */
 
-import "reflect-metadata";
 import * as fc from "fast-check";
 import { deepEqual, instance, mock, when } from "ts-mockito";
 import Inputs from "../../src/metrics/inputs.js";

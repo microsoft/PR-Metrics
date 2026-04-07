@@ -67,9 +67,7 @@
     "isomorphic-fetch": "3.0.0",
     "octokit": "5.0.5",
     "parse-git-diff": "0.0.20",
-    "picomatch": "4.0.2",
-    "reflect-metadata": "0.2.2",
-    "tsyringe": "4.10.0"
+    "picomatch": "4.0.2"
   },
   "devDependencies": {
     "@octokit/types": "16.0.0",

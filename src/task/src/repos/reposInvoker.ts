@@ -12,12 +12,10 @@ import Logger from "../utilities/logger.js";
 import PullRequestDetailsInterface from "./interfaces/pullRequestDetailsInterface.js";
 import ReposInvokerInterface from "./reposInvokerInterface.js";
 import RunnerInvoker from "../runners/runnerInvoker.js";
-import { singleton } from "tsyringe";
 
 /**
  * A class for invoking repository functionality with any underlying repository store.
  */
-@singleton()
 export default class ReposInvoker implements ReposInvokerInterface {
   private readonly _azureReposInvoker: AzureReposInvoker;
   private readonly _gitHubReposInvoker: GitHubReposInvoker;

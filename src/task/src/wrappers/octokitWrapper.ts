@@ -15,14 +15,12 @@ import OctokitGitDiffParser from "../git/octokitGitDiffParser.js";
 import { OctokitOptions } from "@octokit/core";
 import UpdateIssueCommentResponse from "./octokitInterfaces/updateIssueCommentResponse.js";
 import UpdatePullResponse from "./octokitInterfaces/updatePullResponse.js";
-import { singleton } from "tsyringe";
 
 /* eslint-disable @typescript-eslint/naming-convention -- Required for alignment with Octokit. */
 
 /**
  * A wrapper around the Octokit (GitHub) API, to facilitate testability.
  */
-@singleton()
 export default class OctokitWrapper {
   private readonly _octokitGitDiffParser: OctokitGitDiffParser;
 

@@ -15,12 +15,10 @@ import AxiosWrapper from "../wrappers/axiosWrapper.js";
 import GetPullResponse from "../wrappers/octokitInterfaces/getPullResponse.js";
 import Logger from "../utilities/logger.js";
 import OctokitWrapper from "../wrappers/octokitWrapper.js";
-import { singleton } from "tsyringe";
 
 /**
  * A parser for Git diffs read via Octokit.
  */
-@singleton()
 export default class OctokitGitDiffParser {
   private readonly _axiosWrapper: AxiosWrapper;
   private readonly _logger: Logger;

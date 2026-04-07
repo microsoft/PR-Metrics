@@ -3,7 +3,6 @@
  * Licensed under the MIT License.
  */
 
-import "reflect-metadata";
 import { instance, mock, verify, when } from "ts-mockito";
 import AxiosWrapper from "../../src/wrappers/axiosWrapper.js";
 import GetPullResponse from "../../src/wrappers/octokitInterfaces/getPullResponse.js";

@@ -12,13 +12,11 @@ import Logger from "../utilities/logger.js";
 import RunnerInvoker from "../runners/runnerInvoker.js";
 import { decimalRadix } from "../utilities/constants.js";
 import picomatch from "picomatch";
-import { singleton } from "tsyringe";
 
 /**
  * A class for computing metrics for software code in pull requests.
  * @remarks This class should not be used in a multithreaded context as it could lead to the initialization logic being invoked repeatedly.
  */
-@singleton()
 export default class CodeMetrics {
   private static readonly _picomatchOptions: picomatch.PicomatchOptions = {
     dot: true,
