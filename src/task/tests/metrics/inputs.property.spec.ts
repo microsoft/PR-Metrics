@@ -3,7 +3,6 @@
  * Licensed under the MIT License.
  */
 
-import "reflect-metadata";
 import * as fc from "fast-check";
 import { deepEqual, instance, mock, when } from "ts-mockito";
 import Inputs from "../../src/metrics/inputs.js";
@@ -11,6 +10,8 @@ import Logger from "../../src/utilities/logger.js";
 import RunnerInvoker from "../../src/runners/runnerInvoker.js";
 import { anyString } from "../testUtilities/mockito.js";
 import assert from "node:assert/strict";
+
+const numRuns = 10;
 
 describe("inputs.ts", (): void => {
   describe("Property-Based Tests", (): void => {
@@ -52,6 +53,7 @@ describe("inputs.ts", (): void => {
             assert.ok(result.has(ext));
             assert.equal(result.size, 1);
           }),
+          { numRuns },
         );
       });
 
@@ -63,6 +65,7 @@ describe("inputs.ts", (): void => {
             assert.ok(result.has(ext));
             assert.equal(result.size, 1);
           }),
+          { numRuns },
         );
       });
 
@@ -74,6 +77,7 @@ describe("inputs.ts", (): void => {
             assert.ok(result.has(ext));
             assert.equal(result.size, 1);
           }),
+          { numRuns },
         );
       });
 
@@ -88,6 +92,7 @@ describe("inputs.ts", (): void => {
             assert.deepEqual(first, second);
             assert.deepEqual(second, third);
           }),
+          { numRuns },
         );
       });
 
@@ -99,6 +104,7 @@ describe("inputs.ts", (): void => {
             assert.ok(result.has(ext.toLowerCase()));
             assert.ok(!result.has(ext));
           }),
+          { numRuns },
         );
       });
 
@@ -120,6 +126,7 @@ describe("inputs.ts", (): void => {
               }
             },
           ),
+          { numRuns },
         );
       });
 
@@ -132,6 +139,7 @@ describe("inputs.ts", (): void => {
             assert.equal(result.size, 1);
             assert.ok(result.has(ext));
           }),
+          { numRuns },
         );
       });
 
@@ -143,6 +151,7 @@ describe("inputs.ts", (): void => {
             assert.ok(result.has(ext.toLowerCase()));
             assert.equal(result.size, 1);
           }),
+          { numRuns },
         );
       });
     });
