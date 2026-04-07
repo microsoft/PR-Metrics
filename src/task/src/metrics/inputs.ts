@@ -7,13 +7,11 @@ import * as InputsDefault from "./inputsDefault.js";
 import { decimalRadix, maxPatternCount } from "../utilities/constants.js";
 import Logger from "../utilities/logger.js";
 import RunnerInvoker from "../runners/runnerInvoker.js";
-import { singleton } from "tsyringe";
 
 /**
  * A class representing inputs passed to the task.
  * @remarks This class should not be used in a multithreaded context as it could lead to the initialization logic being invoked repeatedly.
  */
-@singleton()
 export default class Inputs {
   private readonly _logger: Logger;
   private readonly _runnerInvoker: RunnerInvoker;

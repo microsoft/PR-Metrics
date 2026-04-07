@@ -27,12 +27,10 @@ import { StatusCodes } from "http-status-codes";
 import UpdateIssueCommentResponse from "../wrappers/octokitInterfaces/updateIssueCommentResponse.js";
 import UpdatePullResponse from "../wrappers/octokitInterfaces/updatePullResponse.js";
 import { decimalRadix } from "../utilities/constants.js";
-import { singleton } from "tsyringe";
 
 /**
  * A class for invoking GitHub Repos functionality.
  */
-@singleton()
 export default class GitHubReposInvoker extends BaseReposInvoker {
   private readonly _gitInvoker: GitInvoker;
   private readonly _logger: Logger;

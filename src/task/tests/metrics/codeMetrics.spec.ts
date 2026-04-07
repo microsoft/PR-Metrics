@@ -3,7 +3,6 @@
  * Licensed under the MIT License.
  */
 
-import "reflect-metadata";
 import * as AssertExtensions from "../testUtilities/assertExtensions.js";
 import * as InputsDefault from "../../src/metrics/inputsDefault.js";
 import { instance, mock, verify, when } from "ts-mockito";
@@ -1445,7 +1444,7 @@ describe("codeMetrics.ts", (): void => {
     ];
 
     testCases.forEach(({ gitResponse, globChecks }: TestCaseType): void => {
-      it(`with multiple ignore patterns and git diff '${gitResponse}' ignores the appropriate files`, async (): Promise<void> => {
+      it(`with multiple ignore patterns and git diff '${gitResponse.replace(/\n/gu, "\\n").replace(/\r/gu, "\\r")}' ignores the appropriate files`, async (): Promise<void> => {
         // Arrange
         when(inputs.baseSize).thenReturn(100);
         when(inputs.growthRate).thenReturn(1.5);

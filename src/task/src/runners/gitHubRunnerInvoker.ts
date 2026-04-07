@@ -14,12 +14,10 @@ import ExecOutput from "./execOutput.js";
 import GitHubRunnerWrapper from "../wrappers/gitHubRunnerWrapper.js";
 import ResourcesJsonInterface from "../jsonTypes/resourcesJsonInterface.js";
 import RunnerInvokerInterface from "./runnerInvokerInterface.js";
-import { singleton } from "tsyringe";
 
 /**
  * A class for invoking GitHub runner functionality.
  */
-@singleton()
 export default class GitHubRunnerInvoker implements RunnerInvokerInterface {
   private readonly _azurePipelinesRunnerWrapper: AzurePipelinesRunnerWrapper;
   private readonly _consoleWrapper: ConsoleWrapper;
