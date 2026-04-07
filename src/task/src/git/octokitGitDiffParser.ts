@@ -126,13 +126,6 @@ export default class OctokitGitDiffParser {
 
     // Process the diff for each file.
     for (const diff of diffs) {
-      if (!diff.startsWith("diff --git ")) {
-        this._logger.logDebug(
-          "Skipping malformed diff entry during diff parsing.",
-        );
-        continue;
-      }
-
       const diffParsed: GitDiff = parseGitDiff(diff);
 
       // Process the diff for a single file.
