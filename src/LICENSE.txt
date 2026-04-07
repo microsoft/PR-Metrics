@@ -2374,10 +2374,7 @@ SOFTWARE.
 
 -----------
 
-The following npm package may be included in this product:
-
 The following npm packages may be included in this product:
-
 
  - picomatch@2.3.2
  - picomatch@4.0.2
