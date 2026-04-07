@@ -4,7 +4,6 @@
  */
 
 import "isomorphic-fetch";
-import * as Converter from "../utilities/converter.js";
 import * as Validator from "../utilities/validator.js";
 import BaseReposInvoker from "./baseReposInvoker.js";
 import CommentData from "./interfaces/commentData.js";
@@ -28,12 +27,10 @@ import { StatusCodes } from "http-status-codes";
 import UpdateIssueCommentResponse from "../wrappers/octokitInterfaces/updateIssueCommentResponse.js";
 import UpdatePullResponse from "../wrappers/octokitInterfaces/updatePullResponse.js";
 import { decimalRadix } from "../utilities/constants.js";
-import { singleton } from "tsyringe";
 
 /**
  * A class for invoking GitHub Repos functionality.
  */
-@singleton()
 export default class GitHubReposInvoker extends BaseReposInvoker {
   private readonly _gitInvoker: GitInvoker;
   private readonly _logger: Logger;
@@ -296,9 +293,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
       options.baseUrl = this.initializeForAzureDevOps();
     }
 
-    this._logger.logDebug(
-      `Using Base URL '${Converter.toString(options.baseUrl)}'.`,
-    );
+    this._logger.logDebug(`Using Base URL '${options.baseUrl}'.`);
     this._octokitWrapper.initialize(options);
     this._pullRequestId = this._gitInvoker.pullRequestId;
     this._isInitialized = true;
@@ -359,12 +354,8 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
       baseUrl = `https://${baseUrlTemporary}/api/v3`;
     }
 
-    const gitEnding = ".git";
-    if (this._repo.endsWith(gitEnding)) {
-      this._repo = this._repo.substring(
-        0,
-        this._repo.length - gitEnding.length,
-      );
+    if (this._repo.endsWith(".git")) {
+      this._repo = this._repo.substring(0, this._repo.length - ".git".length);
     }
 
     return baseUrl;

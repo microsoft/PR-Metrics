@@ -4,12 +4,10 @@
  */
 
 import axios, { AxiosResponse } from "axios";
-import { singleton } from "tsyringe";
 
 /**
  * A wrapper around Axios, to facilitate testability.
  */
-@singleton()
 export default class AxiosWrapper {
   /**
    * Gets the contents of a URL.
