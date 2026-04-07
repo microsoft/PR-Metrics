@@ -3,7 +3,6 @@
  * Licensed under the MIT License.
  */
 
-import HttpWrapper from "./wrappers/httpWrapper.js";
 import AzureDevOpsApiWrapper from "./wrappers/azureDevOpsApiWrapper.js";
 import AzurePipelinesRunnerInvoker from "./runners/azurePipelinesRunnerInvoker.js";
 import AzurePipelinesRunnerWrapper from "./wrappers/azurePipelinesRunnerWrapper.js";
@@ -15,6 +14,7 @@ import GitHubReposInvoker from "./repos/gitHubReposInvoker.js";
 import GitHubRunnerInvoker from "./runners/gitHubRunnerInvoker.js";
 import GitHubRunnerWrapper from "./wrappers/gitHubRunnerWrapper.js";
 import GitInvoker from "./git/gitInvoker.js";
+import HttpWrapper from "./wrappers/httpWrapper.js";
 import Inputs from "./metrics/inputs.js";
 import Logger from "./utilities/logger.js";
 import OctokitGitDiffParser from "./git/octokitGitDiffParser.js";
