@@ -2,15 +2,13 @@
  * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT License.
  */
-
-import assert from "node:assert/strict";
-import type { ExecOutput } from "@actions/exec";
-import { instance, mock, verify, when } from "ts-mockito";
-import GitInvoker from "../../src/git/gitInvoker.js";
-import RunnerInvoker from "../../src/runners/runnerInvoker.js";
-import Logger from "../../src/utilities/logger.js";
 import * as AssertExtensions from "../testUtilities/assertExtensions.js";
-
+import { instance, mock, verify, when } from "ts-mockito";
+import type { ExecOutput } from "@actions/exec";
+import GitInvoker from "../../src/git/gitInvoker.js";
+import Logger from "../../src/utilities/logger.js";
+import RunnerInvoker from "../../src/runners/runnerInvoker.js";
+import assert from "node:assert/strict";
 describe("gitInvoker.ts", (): void => {
 	let logger: Logger;
 	let runnerInvoker: RunnerInvoker;

@@ -2,13 +2,11 @@
  * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT License.
  */
-
+import * as Validator from "../utilities/validator.js";
 import type ExecOutput from "../runners/execOutput.js";
+import type Logger from "../utilities/logger.js";
 import RunnerInvoker from "../runners/runnerInvoker.js";
 import { decimalRadix } from "../utilities/constants.js";
-import Logger from "../utilities/logger.js";
-import * as Validator from "../utilities/validator.js";
-
 /**
  * A class for invoking Git commands.
  * @remarks This class should not be used in a multithreaded context as it could lead to the initialization logic being invoked repeatedly.

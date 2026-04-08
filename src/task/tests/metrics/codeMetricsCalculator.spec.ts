@@ -2,19 +2,17 @@
  * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT License.
  */
-
-import assert from "node:assert/strict";
-import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces.js";
 import { instance, mock, verify, when } from "ts-mockito";
-import GitInvoker from "../../src/git/gitInvoker.js";
 import CodeMetricsCalculator from "../../src/metrics/codeMetricsCalculator.js";
+import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces.js";
+import GitInvoker from "../../src/git/gitInvoker.js";
+import Logger from "../../src/utilities/logger.js";
 import PullRequest from "../../src/pullRequests/pullRequest.js";
 import PullRequestComments from "../../src/pullRequests/pullRequestComments.js";
 import PullRequestCommentsData from "../../src/pullRequests/pullRequestCommentsData.js";
 import ReposInvoker from "../../src/repos/reposInvoker.js";
 import RunnerInvoker from "../../src/runners/runnerInvoker.js";
-import Logger from "../../src/utilities/logger.js";
-
+import assert from "node:assert/strict";
 describe("codeMetricsCalculator.ts", (): void => {
 	let gitInvoker: GitInvoker;
 	let logger: Logger;

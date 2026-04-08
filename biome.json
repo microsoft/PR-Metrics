@@ -10,35 +10,5 @@
         "noUselessSwitchCase": "off"
       }
     }
-  },
-  "overrides": [
-    {
-      "includes": [
-        "src/task/src/git/gitInvoker.ts",
-        "src/task/src/git/octokitGitDiffParser.ts",
-        "src/task/src/metrics/codeMetrics.ts",
-        "src/task/src/metrics/codeMetricsCalculator.ts",
-        "src/task/src/metrics/inputs.ts",
-        "src/task/src/pullRequestMetrics.ts",
-        "src/task/src/pullRequests/pullRequest.ts",
-        "src/task/src/pullRequests/pullRequestComments.ts",
-        "src/task/src/repos/azureReposInvoker.ts",
-        "src/task/src/repos/gitHubReposInvoker.ts",
-        "src/task/src/repos/reposInvoker.ts",
-        "src/task/src/repos/tokenManager.ts",
-        "src/task/src/runners/azurePipelinesRunnerInvoker.ts",
-        "src/task/src/runners/gitHubRunnerInvoker.ts",
-        "src/task/src/runners/runnerInvoker.ts",
-        "src/task/src/utilities/logger.ts",
-        "src/task/src/wrappers/octokitWrapper.ts"
-      ],
-      "linter": {
-        "rules": {
-          "style": {
-            "useImportType": "off"
-          }
-        }
-      }
-    }
-  ]
+  }
 }

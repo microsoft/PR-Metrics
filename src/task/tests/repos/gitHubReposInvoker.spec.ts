@@ -2,30 +2,28 @@
  * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT License.
  */
-
-import assert from "node:assert/strict";
-import type { OctokitOptions } from "@octokit/core";
-import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces.js";
-import { StatusCodes } from "http-status-codes";
-import type { RequestError } from "octokit";
+import * as AssertExtensions from "../testUtilities/assertExtensions.js";
+import * as GitHubReposInvokerConstants from "./gitHubReposInvokerConstants.js";
+import { any, anyNumber, anyString } from "../testUtilities/mockito.js";
 import { instance, mock, verify, when } from "ts-mockito";
-import GitInvoker from "../../src/git/gitInvoker.js";
-import GitHubReposInvoker from "../../src/repos/gitHubReposInvoker.js";
 import type CommentData from "../../src/repos/interfaces/commentData.js";
+import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces.js";
 import type ErrorWithStatusInterface from "../../src/repos/interfaces/errorWithStatusInterface.js";
-import type PullRequestDetailsInterface from "../../src/repos/interfaces/pullRequestDetailsInterface.js";
-import RunnerInvoker from "../../src/runners/runnerInvoker.js";
-import Logger from "../../src/utilities/logger.js";
 import type GetIssueCommentsResponse from "../../src/wrappers/octokitInterfaces/getIssueCommentsResponse.js";
 import type GetPullResponse from "../../src/wrappers/octokitInterfaces/getPullResponse.js";
-import OctokitWrapper from "../../src/wrappers/octokitWrapper.js";
-import * as AssertExtensions from "../testUtilities/assertExtensions.js";
-import { createRequestError } from "../testUtilities/createRequestError.js";
+import GitHubReposInvoker from "../../src/repos/gitHubReposInvoker.js";
+import GitInvoker from "../../src/git/gitInvoker.js";
 import HttpError from "../testUtilities/httpError.js";
-import { any, anyNumber, anyString } from "../testUtilities/mockito.js";
+import Logger from "../../src/utilities/logger.js";
 import type OctokitLogObjectInterface from "../wrappers/octokitLogObjectInterface.js";
-import * as GitHubReposInvokerConstants from "./gitHubReposInvokerConstants.js";
-
+import type { OctokitOptions } from "@octokit/core";
+import OctokitWrapper from "../../src/wrappers/octokitWrapper.js";
+import type PullRequestDetailsInterface from "../../src/repos/interfaces/pullRequestDetailsInterface.js";
+import type { RequestError } from "octokit";
+import RunnerInvoker from "../../src/runners/runnerInvoker.js";
+import { StatusCodes } from "http-status-codes";
+import assert from "node:assert/strict";
+import { createRequestError } from "../testUtilities/createRequestError.js";
 describe("gitHubReposInvoker.ts", (): void => {
 	let gitInvoker: GitInvoker;
 	let logger: Logger;

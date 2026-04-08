@@ -2,11 +2,9 @@
  * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT License.
  */
-
-import assert from "node:assert/strict";
 import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces.js";
 import FileCommentData from "../../../src/repos/interfaces/fileCommentData.js";
-
+import assert from "node:assert/strict";
 describe("fileCommentData.ts", (): void => {
 	describe("constructor()", (): void => {
 		it("should set the correct data when the status is not specified", (): void => {

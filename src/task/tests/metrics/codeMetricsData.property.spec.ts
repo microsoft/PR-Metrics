@@ -2,11 +2,9 @@
  * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT License.
  */
-
-import assert from "node:assert/strict";
 import * as fc from "fast-check";
 import CodeMetricsData from "../../src/metrics/codeMetricsData.js";
-
+import assert from "node:assert/strict";
 describe("codeMetricsData.ts", (): void => {
 	describe("Property-Based Tests", (): void => {
 		describe("constructor()", (): void => {

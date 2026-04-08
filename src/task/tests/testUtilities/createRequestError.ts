@@ -2,10 +2,8 @@
  * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT License.
  */
-
-import type { StatusCodes } from "http-status-codes";
 import { RequestError } from "octokit";
-
+import type { StatusCodes } from "http-status-codes";
 /**
  * Creates a `RequestError` object.
  * @param status The HTTP status code.

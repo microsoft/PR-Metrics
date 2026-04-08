@@ -2,15 +2,13 @@
  * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT License.
  */
-
-import assert from "node:assert/strict";
-import type { EndpointAuthorization } from "azure-pipelines-task-lib";
 import { deepEqual, instance, mock, verify, when } from "ts-mockito";
 import AzurePipelinesRunnerInvoker from "../../src/runners/azurePipelinesRunnerInvoker.js";
+import type { EndpointAuthorization } from "azure-pipelines-task-lib";
 import type ExecOutput from "../../src/runners/execOutput.js";
 import GitHubRunnerInvoker from "../../src/runners/gitHubRunnerInvoker.js";
 import RunnerInvoker from "../../src/runners/runnerInvoker.js";
-
+import assert from "node:assert/strict";
 describe("runnerInvoker.ts", (): void => {
 	let azurePipelinesRunnerInvoker: AzurePipelinesRunnerInvoker;
 	let gitHubRunnerInvoker: GitHubRunnerInvoker;

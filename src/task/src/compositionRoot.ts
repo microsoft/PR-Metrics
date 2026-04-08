@@ -2,30 +2,28 @@
  * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT License.
  */
-
-import GitInvoker from "./git/gitInvoker.js";
-import OctokitGitDiffParser from "./git/octokitGitDiffParser.js";
-import CodeMetrics from "./metrics/codeMetrics.js";
-import CodeMetricsCalculator from "./metrics/codeMetricsCalculator.js";
-import Inputs from "./metrics/inputs.js";
-import PullRequestMetrics from "./pullRequestMetrics.js";
-import PullRequest from "./pullRequests/pullRequest.js";
-import PullRequestComments from "./pullRequests/pullRequestComments.js";
-import AzureReposInvoker from "./repos/azureReposInvoker.js";
-import GitHubReposInvoker from "./repos/gitHubReposInvoker.js";
-import ReposInvoker from "./repos/reposInvoker.js";
-import TokenManager from "./repos/tokenManager.js";
-import AzurePipelinesRunnerInvoker from "./runners/azurePipelinesRunnerInvoker.js";
-import GitHubRunnerInvoker from "./runners/gitHubRunnerInvoker.js";
-import RunnerInvoker from "./runners/runnerInvoker.js";
-import Logger from "./utilities/logger.js";
 import AxiosWrapper from "./wrappers/axiosWrapper.js";
 import AzureDevOpsApiWrapper from "./wrappers/azureDevOpsApiWrapper.js";
+import AzurePipelinesRunnerInvoker from "./runners/azurePipelinesRunnerInvoker.js";
 import AzurePipelinesRunnerWrapper from "./wrappers/azurePipelinesRunnerWrapper.js";
+import AzureReposInvoker from "./repos/azureReposInvoker.js";
+import CodeMetrics from "./metrics/codeMetrics.js";
+import CodeMetricsCalculator from "./metrics/codeMetricsCalculator.js";
 import ConsoleWrapper from "./wrappers/consoleWrapper.js";
+import GitHubReposInvoker from "./repos/gitHubReposInvoker.js";
+import GitHubRunnerInvoker from "./runners/gitHubRunnerInvoker.js";
 import GitHubRunnerWrapper from "./wrappers/gitHubRunnerWrapper.js";
+import GitInvoker from "./git/gitInvoker.js";
+import Inputs from "./metrics/inputs.js";
+import Logger from "./utilities/logger.js";
+import OctokitGitDiffParser from "./git/octokitGitDiffParser.js";
 import OctokitWrapper from "./wrappers/octokitWrapper.js";
-
+import PullRequest from "./pullRequests/pullRequest.js";
+import PullRequestComments from "./pullRequests/pullRequestComments.js";
+import PullRequestMetrics from "./pullRequestMetrics.js";
+import ReposInvoker from "./repos/reposInvoker.js";
+import RunnerInvoker from "./runners/runnerInvoker.js";
+import TokenManager from "./repos/tokenManager.js";
 /**
  * Creates a fully wired `PullRequestMetrics` instance with all dependencies.
  * @returns A ready-to-run `PullRequestMetrics` instance.

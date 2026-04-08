@@ -2,14 +2,12 @@
  * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT License.
  */
-
-import assert from "node:assert/strict";
 import * as fs from "node:fs";
 import * as path from "node:path";
-import { globSync } from "glob";
 import type ResourcesJsonInterface from "../../src/jsonTypes/resourcesJsonInterface.js";
 import type TaskJsonInterface from "../jsonTypes/taskJsonInterface.js";
-
+import assert from "node:assert/strict";
+import { globSync } from "glob";
 describe("resources.resjson", (): void => {
 	const basePath: string = path.join(import.meta.dirname, "..", "..");
 

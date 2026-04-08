@@ -2,22 +2,20 @@
  * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT License.
  */
-
-import { WebApi } from "azure-devops-node-api";
-import { IRequestHandler } from "azure-devops-node-api/interfaces/common/VsoBaseInterfaces.js";
-import { TaskHubOidcToken } from "azure-devops-node-api/interfaces/TaskAgentInterfaces.js";
-import { ITaskApi } from "azure-devops-node-api/TaskApi.js";
-import { EndpointAuthorization } from "../runners/endpointAuthorization.js";
-import ExecOutput from "../runners/execOutput.js";
-import RunnerInvoker from "../runners/runnerInvoker.js";
-import Logger from "../utilities/logger.js";
 import {
 	validateGuid,
 	validateString,
 	validateVariable,
 } from "../utilities/validator.js";
-import AzureDevOpsApiWrapper from "../wrappers/azureDevOpsApiWrapper.js";
-
+import type AzureDevOpsApiWrapper from "../wrappers/azureDevOpsApiWrapper.js";
+import type { EndpointAuthorization } from "../runners/endpointAuthorization.js";
+import type ExecOutput from "../runners/execOutput.js";
+import type { IRequestHandler } from "azure-devops-node-api/interfaces/common/VsoBaseInterfaces.js";
+import type { ITaskApi } from "azure-devops-node-api/TaskApi.js";
+import type Logger from "../utilities/logger.js";
+import type RunnerInvoker from "../runners/runnerInvoker.js";
+import type { TaskHubOidcToken } from "azure-devops-node-api/interfaces/TaskAgentInterfaces.js";
+import type { WebApi } from "azure-devops-node-api";
 /**
  * A class for invoking authorization token management functionality, used for retrieving identity information from a
  * workload identity federation.

@@ -2,18 +2,16 @@
  * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT License.
  */
-
-import assert from "node:assert/strict";
-import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces.js";
+import * as AssertExtensions from "../testUtilities/assertExtensions.js";
 import { instance, mock, verify } from "ts-mockito";
 import AzureReposInvoker from "../../src/repos/azureReposInvoker.js";
-import GitHubReposInvoker from "../../src/repos/gitHubReposInvoker.js";
 import type CommentData from "../../src/repos/interfaces/commentData.js";
+import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces.js";
+import GitHubReposInvoker from "../../src/repos/gitHubReposInvoker.js";
+import Logger from "../../src/utilities/logger.js";
 import type PullRequestDetailsInterface from "../../src/repos/interfaces/pullRequestDetailsInterface.js";
 import ReposInvoker from "../../src/repos/reposInvoker.js";
-import Logger from "../../src/utilities/logger.js";
-import * as AssertExtensions from "../testUtilities/assertExtensions.js";
-
+import assert from "node:assert/strict";
 describe("reposInvoker.ts", (): void => {
 	let azureReposInvoker: AzureReposInvoker;
 	let gitHubReposInvoker: GitHubReposInvoker;

@@ -2,23 +2,21 @@
  * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT License.
  */
-
-import assert from "node:assert/strict";
-import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces.js";
 import { instance, mock, verify, when } from "ts-mockito";
 import CodeMetrics from "../../src/metrics/codeMetrics.js";
 import CodeMetricsData from "../../src/metrics/codeMetricsData.js";
+import CommentData from "../../src/repos/interfaces/commentData.js";
+import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces.js";
+import FileCommentData from "../../src/repos/interfaces/fileCommentData.js";
+import type { FixedLengthArrayInterface } from "../../src/utilities/fixedLengthArrayInterface.js";
 import Inputs from "../../src/metrics/inputs.js";
+import Logger from "../../src/utilities/logger.js";
+import PullRequestCommentData from "../../src/repos/interfaces/pullRequestCommentData.js";
 import PullRequestComments from "../../src/pullRequests/pullRequestComments.js";
 import type PullRequestCommentsData from "../../src/pullRequests/pullRequestCommentsData.js";
-import CommentData from "../../src/repos/interfaces/commentData.js";
-import FileCommentData from "../../src/repos/interfaces/fileCommentData.js";
-import PullRequestCommentData from "../../src/repos/interfaces/pullRequestCommentData.js";
 import ReposInvoker from "../../src/repos/reposInvoker.js";
 import RunnerInvoker from "../../src/runners/runnerInvoker.js";
-import type { FixedLengthArrayInterface } from "../../src/utilities/fixedLengthArrayInterface.js";
-import Logger from "../../src/utilities/logger.js";
-
+import assert from "node:assert/strict";
 describe("pullRequestComments.ts", (): void => {
 	let complexGitPullRequestComments: CommentData;
 	let codeMetrics: CodeMetrics;

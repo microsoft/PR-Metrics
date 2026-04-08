@@ -2,32 +2,30 @@
  * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT License.
  */
-
-import assert from "node:assert/strict";
-import { WebApi } from "azure-devops-node-api";
-import type { IGitApi } from "azure-devops-node-api/GitApi.js";
-import type { IRequestHandler } from "azure-devops-node-api/interfaces/common/VsoBaseInterfaces.js";
+import * as AssertExtensions from "../testUtilities/assertExtensions.js";
 import {
 	type Comment,
 	CommentThreadStatus,
 	type GitPullRequest,
 	type GitPullRequestCommentThread,
 } from "azure-devops-node-api/interfaces/GitInterfaces.js";
-import { StatusCodes } from "http-status-codes";
+import { any, anyNumber } from "../testUtilities/mockito.js";
 import { deepEqual, instance, mock, verify, when } from "ts-mockito";
-import GitInvoker from "../../src/git/gitInvoker.js";
+import AzureDevOpsApiWrapper from "../../src/wrappers/azureDevOpsApiWrapper.js";
 import AzureReposInvoker from "../../src/repos/azureReposInvoker.js";
 import type CommentData from "../../src/repos/interfaces/commentData.js";
-import type PullRequestDetailsInterface from "../../src/repos/interfaces/pullRequestDetailsInterface.js";
-import TokenManager from "../../src/repos/tokenManager.js";
-import RunnerInvoker from "../../src/runners/runnerInvoker.js";
-import Logger from "../../src/utilities/logger.js";
-import AzureDevOpsApiWrapper from "../../src/wrappers/azureDevOpsApiWrapper.js";
-import * as AssertExtensions from "../testUtilities/assertExtensions.js";
-import { any, anyNumber } from "../testUtilities/mockito.js";
-import { resolvableInstance } from "../testUtilities/resolvableInstance.js";
 import ErrorWithStatus from "../wrappers/errorWithStatus.js";
-
+import GitInvoker from "../../src/git/gitInvoker.js";
+import type { IGitApi } from "azure-devops-node-api/GitApi.js";
+import type { IRequestHandler } from "azure-devops-node-api/interfaces/common/VsoBaseInterfaces.js";
+import Logger from "../../src/utilities/logger.js";
+import type PullRequestDetailsInterface from "../../src/repos/interfaces/pullRequestDetailsInterface.js";
+import RunnerInvoker from "../../src/runners/runnerInvoker.js";
+import { StatusCodes } from "http-status-codes";
+import TokenManager from "../../src/repos/tokenManager.js";
+import { WebApi } from "azure-devops-node-api";
+import assert from "node:assert/strict";
+import { resolvableInstance } from "../testUtilities/resolvableInstance.js";
 describe("azureReposInvoker.ts", (): void => {
 	let gitApi: IGitApi;
 	let azureDevOpsApiWrapper: AzureDevOpsApiWrapper;

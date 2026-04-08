@@ -2,11 +2,9 @@
  * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT License.
  */
-
-import CodeMetricsCalculator from "./metrics/codeMetricsCalculator.js";
-import RunnerInvoker from "./runners/runnerInvoker.js";
-import Logger from "./utilities/logger.js";
-
+import type CodeMetricsCalculator from "./metrics/codeMetricsCalculator.js";
+import type Logger from "./utilities/logger.js";
+import type RunnerInvoker from "./runners/runnerInvoker.js";
 /**
  * A class for managing the overall PR Metrics task.
  */

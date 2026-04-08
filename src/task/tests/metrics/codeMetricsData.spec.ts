@@ -2,10 +2,8 @@
  * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT License.
  */
-
-import assert from "node:assert/strict";
 import CodeMetricsData from "../../src/metrics/codeMetricsData.js";
-
+import assert from "node:assert/strict";
 describe("codeMetricsData.ts", (): void => {
 	describe("constructor()", (): void => {
 		it("should throw when the product code is less than zero", (): void => {

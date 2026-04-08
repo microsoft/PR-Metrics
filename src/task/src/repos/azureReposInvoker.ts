@@ -2,29 +2,27 @@
  * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT License.
  */
-
-import { WebApi } from "azure-devops-node-api";
-import { IGitApi } from "azure-devops-node-api/GitApi.js";
-import { IRequestHandler } from "azure-devops-node-api/interfaces/common/VsoBaseInterfaces.js";
-import {
-	Comment,
-	CommentPosition,
-	CommentThreadStatus,
-	GitPullRequest,
-	GitPullRequestCommentThread,
-} from "azure-devops-node-api/interfaces/GitInterfaces.js";
-import GitInvoker from "../git/gitInvoker.js";
-import RunnerInvoker from "../runners/runnerInvoker.js";
-import Logger from "../utilities/logger.js";
 import * as Validator from "../utilities/validator.js";
-import AzureDevOpsApiWrapper from "../wrappers/azureDevOpsApiWrapper.js";
+import {
+	type Comment,
+	type CommentPosition,
+	CommentThreadStatus,
+	type GitPullRequest,
+	type GitPullRequestCommentThread,
+} from "azure-devops-node-api/interfaces/GitInterfaces.js";
+import type AzureDevOpsApiWrapper from "../wrappers/azureDevOpsApiWrapper.js";
 import BaseReposInvoker from "./baseReposInvoker.js";
 import CommentData from "./interfaces/commentData.js";
 import FileCommentData from "./interfaces/fileCommentData.js";
+import type GitInvoker from "../git/gitInvoker.js";
+import type { IGitApi } from "azure-devops-node-api/GitApi.js";
+import type { IRequestHandler } from "azure-devops-node-api/interfaces/common/VsoBaseInterfaces.js";
+import type Logger from "../utilities/logger.js";
 import PullRequestCommentData from "./interfaces/pullRequestCommentData.js";
-import PullRequestDetailsInterface from "./interfaces/pullRequestDetailsInterface.js";
-import TokenManager from "./tokenManager.js";
-
+import type PullRequestDetailsInterface from "./interfaces/pullRequestDetailsInterface.js";
+import type RunnerInvoker from "../runners/runnerInvoker.js";
+import type TokenManager from "./tokenManager.js";
+import type { WebApi } from "azure-devops-node-api";
 /**
  * A class for invoking Azure Repos functionality.
  * @remarks This class should not be used in a multithreaded context as it could lead to the initialization logic being invoked repeatedly.
