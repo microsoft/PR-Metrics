@@ -14,328 +14,328 @@ import GitHubRunnerWrapper from "../../src/wrappers/gitHubRunnerWrapper.js";
 import { any } from "../testUtilities/mockito.js";
 import assert from "node:assert/strict";
 describe("gitHubRunnerInvoker.js", (): void => {
-	const resourcePath: string = path.join(
-		import.meta.dirname,
-		"../../Strings/resources.resjson/en-US/",
-	);
+  const resourcePath: string = path.join(
+    import.meta.dirname,
+    "../../Strings/resources.resjson/en-US/",
+  );
 
-	let azurePipelinesRunnerWrapper: AzurePipelinesRunnerWrapper;
-	let consoleWrapper: ConsoleWrapper;
-	let gitHubRunnerWrapper: GitHubRunnerWrapper;
+  let azurePipelinesRunnerWrapper: AzurePipelinesRunnerWrapper;
+  let consoleWrapper: ConsoleWrapper;
+  let gitHubRunnerWrapper: GitHubRunnerWrapper;
 
-	beforeEach((): void => {
-		azurePipelinesRunnerWrapper = mock(AzurePipelinesRunnerWrapper);
-		consoleWrapper = mock(ConsoleWrapper);
-		gitHubRunnerWrapper = mock(GitHubRunnerWrapper);
-	});
+  beforeEach((): void => {
+    azurePipelinesRunnerWrapper = mock(AzurePipelinesRunnerWrapper);
+    consoleWrapper = mock(ConsoleWrapper);
+    gitHubRunnerWrapper = mock(GitHubRunnerWrapper);
+  });
 
-	describe("exec()", (): void => {
-		it("should call the underlying method", async (): Promise<void> => {
-			// Arrange
-			const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(
-				instance(azurePipelinesRunnerWrapper),
-				instance(consoleWrapper),
-				instance(gitHubRunnerWrapper),
-			);
-			const execResult: actionsExec.ExecOutput = {
-				exitCode: 1,
-				stderr: "Error",
-				stdout: "Output",
-			};
-			when(
-				gitHubRunnerWrapper.exec("TOOL", "Argument1 Argument2", any()),
-			).thenResolve(execResult);
+  describe("exec()", (): void => {
+    it("should call the underlying method", async (): Promise<void> => {
+      // Arrange
+      const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(
+        instance(azurePipelinesRunnerWrapper),
+        instance(consoleWrapper),
+        instance(gitHubRunnerWrapper),
+      );
+      const execResult: actionsExec.ExecOutput = {
+        exitCode: 1,
+        stderr: "Error",
+        stdout: "Output",
+      };
+      when(
+        gitHubRunnerWrapper.exec("TOOL", "Argument1 Argument2", any()),
+      ).thenResolve(execResult);
 
-			// Act
-			const result: ExecOutput = await gitHubRunnerInvoker.exec(
-				"TOOL",
-				"Argument1 Argument2",
-			);
+      // Act
+      const result: ExecOutput = await gitHubRunnerInvoker.exec(
+        "TOOL",
+        "Argument1 Argument2",
+      );
 
-			// Assert
-			assert.equal(result.exitCode, 1);
-			assert.equal(result.stderr, "Error");
-			assert.equal(result.stdout, "Output");
-			const options: actionsExec.ExecOptions = {
-				failOnStdErr: true,
-				silent: true,
-			};
-			verify(
-				gitHubRunnerWrapper.exec(
-					"TOOL",
-					"Argument1 Argument2",
-					deepEqual(options),
-				),
-			).once();
-		});
-	});
+      // Assert
+      assert.equal(result.exitCode, 1);
+      assert.equal(result.stderr, "Error");
+      assert.equal(result.stdout, "Output");
+      const options: actionsExec.ExecOptions = {
+        failOnStdErr: true,
+        silent: true,
+      };
+      verify(
+        gitHubRunnerWrapper.exec(
+          "TOOL",
+          "Argument1 Argument2",
+          deepEqual(options),
+        ),
+      ).once();
+    });
+  });
 
-	describe("getInput()", (): void => {
-		it("should call the underlying method", (): void => {
-			// Arrange
-			const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(
-				instance(azurePipelinesRunnerWrapper),
-				instance(consoleWrapper),
-				instance(gitHubRunnerWrapper),
-			);
-			when(azurePipelinesRunnerWrapper.getInput("TEST-SUFFIX")).thenReturn(
-				"VALUE",
-			);
+  describe("getInput()", (): void => {
+    it("should call the underlying method", (): void => {
+      // Arrange
+      const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(
+        instance(azurePipelinesRunnerWrapper),
+        instance(consoleWrapper),
+        instance(gitHubRunnerWrapper),
+      );
+      when(azurePipelinesRunnerWrapper.getInput("TEST-SUFFIX")).thenReturn(
+        "VALUE",
+      );
 
-			// Act
-			const result: string | null = gitHubRunnerInvoker.getInput([
-				"Test",
-				"Suffix",
-			]);
+      // Act
+      const result: string | null = gitHubRunnerInvoker.getInput([
+        "Test",
+        "Suffix",
+      ]);
 
-			// Assert
-			assert.equal(result, "VALUE");
-			verify(azurePipelinesRunnerWrapper.getInput("TEST-SUFFIX")).once();
-		});
-	});
+      // Assert
+      assert.equal(result, "VALUE");
+      verify(azurePipelinesRunnerWrapper.getInput("TEST-SUFFIX")).once();
+    });
+  });
 
-	describe("getEndpointAuthorization()", (): void => {
-		it("should result in an exception", (): void => {
-			// Arrange
-			const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(
-				instance(azurePipelinesRunnerWrapper),
-				instance(consoleWrapper),
-				instance(gitHubRunnerWrapper),
-			);
+  describe("getEndpointAuthorization()", (): void => {
+    it("should result in an exception", (): void => {
+      // Arrange
+      const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(
+        instance(azurePipelinesRunnerWrapper),
+        instance(consoleWrapper),
+        instance(gitHubRunnerWrapper),
+      );
 
-			// Act
-			const func: () => EndpointAuthorization | null = () =>
-				gitHubRunnerInvoker.getEndpointAuthorization();
+      // Act
+      const func: () => EndpointAuthorization | null = () =>
+        gitHubRunnerInvoker.getEndpointAuthorization();
 
-			// Assert
-			assert.throws(
-				func,
-				Error("getEndpointAuthorization() unavailable in GitHub."),
-			);
-		});
-	});
+      // Assert
+      assert.throws(
+        func,
+        Error("getEndpointAuthorization() unavailable in GitHub."),
+      );
+    });
+  });
 
-	describe("getEndpointAuthorizationScheme()", (): void => {
-		it("should result in an exception", (): void => {
-			// Arrange
-			const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(
-				instance(azurePipelinesRunnerWrapper),
-				instance(consoleWrapper),
-				instance(gitHubRunnerWrapper),
-			);
+  describe("getEndpointAuthorizationScheme()", (): void => {
+    it("should result in an exception", (): void => {
+      // Arrange
+      const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(
+        instance(azurePipelinesRunnerWrapper),
+        instance(consoleWrapper),
+        instance(gitHubRunnerWrapper),
+      );
 
-			// Act
-			const func: () => string | null = () =>
-				gitHubRunnerInvoker.getEndpointAuthorizationScheme();
+      // Act
+      const func: () => string | null = () =>
+        gitHubRunnerInvoker.getEndpointAuthorizationScheme();
 
-			// Assert
-			assert.throws(
-				func,
-				Error("getEndpointAuthorizationScheme() unavailable in GitHub."),
-			);
-		});
-	});
+      // Assert
+      assert.throws(
+        func,
+        Error("getEndpointAuthorizationScheme() unavailable in GitHub."),
+      );
+    });
+  });
 
-	describe("getEndpointAuthorizationParameter()", (): void => {
-		it("should result in an exception", (): void => {
-			// Arrange
-			const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(
-				instance(azurePipelinesRunnerWrapper),
-				instance(consoleWrapper),
-				instance(gitHubRunnerWrapper),
-			);
+  describe("getEndpointAuthorizationParameter()", (): void => {
+    it("should result in an exception", (): void => {
+      // Arrange
+      const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(
+        instance(azurePipelinesRunnerWrapper),
+        instance(consoleWrapper),
+        instance(gitHubRunnerWrapper),
+      );
 
-			// Act
-			const func: () => string | null = () =>
-				gitHubRunnerInvoker.getEndpointAuthorizationParameter();
+      // Act
+      const func: () => string | null = () =>
+        gitHubRunnerInvoker.getEndpointAuthorizationParameter();
 
-			// Assert
-			assert.throws(
-				func,
-				Error("getEndpointAuthorizationParameter() unavailable in GitHub."),
-			);
-		});
-	});
+      // Assert
+      assert.throws(
+        func,
+        Error("getEndpointAuthorizationParameter() unavailable in GitHub."),
+      );
+    });
+  });
 
-	describe("locInitialize()", (): void => {
-		it("should succeed", (): void => {
-			// Arrange
-			const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(
-				instance(azurePipelinesRunnerWrapper),
-				instance(consoleWrapper),
-				instance(gitHubRunnerWrapper),
-			);
+  describe("locInitialize()", (): void => {
+    it("should succeed", (): void => {
+      // Arrange
+      const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(
+        instance(azurePipelinesRunnerWrapper),
+        instance(consoleWrapper),
+        instance(gitHubRunnerWrapper),
+      );
 
-			// Act
-			const func: () => void = () => {
-				gitHubRunnerInvoker.locInitialize(resourcePath);
-			};
+      // Act
+      const func: () => void = () => {
+        gitHubRunnerInvoker.locInitialize(resourcePath);
+      };
 
-			// Assert
-			try {
-				func();
-			} catch {
-				assert.fail("Function should not have thrown an error");
-			}
-		});
-	});
+      // Assert
+      try {
+        func();
+      } catch {
+        assert.fail("Function should not have thrown an error");
+      }
+    });
+  });
 
-	describe("loc()", (): void => {
-		it("should retrieve the correct resource when no placeholders are present", (): void => {
-			// Arrange
-			const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(
-				instance(azurePipelinesRunnerWrapper),
-				instance(consoleWrapper),
-				instance(gitHubRunnerWrapper),
-			);
-			gitHubRunnerInvoker.locInitialize(resourcePath);
+  describe("loc()", (): void => {
+    it("should retrieve the correct resource when no placeholders are present", (): void => {
+      // Arrange
+      const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(
+        instance(azurePipelinesRunnerWrapper),
+        instance(consoleWrapper),
+        instance(gitHubRunnerWrapper),
+      );
+      gitHubRunnerInvoker.locInitialize(resourcePath);
 
-			// Act
-			const result: string = gitHubRunnerInvoker.loc(
-				"metrics.codeMetrics.titleSizeL",
-			);
+      // Act
+      const result: string = gitHubRunnerInvoker.loc(
+        "metrics.codeMetrics.titleSizeL",
+      );
 
-			// Assert
-			assert.equal(result, "L");
-		});
+      // Assert
+      assert.equal(result, "L");
+    });
 
-		it("should retrieve and format the correct resource when placeholders are present", (): void => {
-			// Arrange
-			const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(
-				instance(azurePipelinesRunnerWrapper),
-				instance(consoleWrapper),
-				instance(gitHubRunnerWrapper),
-			);
-			gitHubRunnerInvoker.locInitialize(resourcePath);
+    it("should retrieve and format the correct resource when placeholders are present", (): void => {
+      // Arrange
+      const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(
+        instance(azurePipelinesRunnerWrapper),
+        instance(consoleWrapper),
+        instance(gitHubRunnerWrapper),
+      );
+      gitHubRunnerInvoker.locInitialize(resourcePath);
 
-			// Act
-			const result: string = gitHubRunnerInvoker.loc(
-				"metrics.codeMetrics.titleSizeIndicatorFormat",
-				"Parameter 1",
-				"[Parameter 2]",
-			);
+      // Act
+      const result: string = gitHubRunnerInvoker.loc(
+        "metrics.codeMetrics.titleSizeIndicatorFormat",
+        "Parameter 1",
+        "[Parameter 2]",
+      );
 
-			// Assert
-			assert.equal(result, "Parameter 1[Parameter 2]");
-		});
-	});
+      // Assert
+      assert.equal(result, "Parameter 1[Parameter 2]");
+    });
+  });
 
-	describe("logDebug()", (): void => {
-		it("should call the underlying method", (): void => {
-			// Arrange
-			const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(
-				instance(azurePipelinesRunnerWrapper),
-				instance(consoleWrapper),
-				instance(gitHubRunnerWrapper),
-			);
+  describe("logDebug()", (): void => {
+    it("should call the underlying method", (): void => {
+      // Arrange
+      const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(
+        instance(azurePipelinesRunnerWrapper),
+        instance(consoleWrapper),
+        instance(gitHubRunnerWrapper),
+      );
 
-			// Act
-			gitHubRunnerInvoker.logDebug("TEST");
+      // Act
+      gitHubRunnerInvoker.logDebug("TEST");
 
-			// Assert
-			verify(gitHubRunnerWrapper.debug("TEST")).once();
-		});
-	});
+      // Assert
+      verify(gitHubRunnerWrapper.debug("TEST")).once();
+    });
+  });
 
-	describe("logError()", (): void => {
-		it("should call the underlying method", (): void => {
-			// Arrange
-			const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(
-				instance(azurePipelinesRunnerWrapper),
-				instance(consoleWrapper),
-				instance(gitHubRunnerWrapper),
-			);
+  describe("logError()", (): void => {
+    it("should call the underlying method", (): void => {
+      // Arrange
+      const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(
+        instance(azurePipelinesRunnerWrapper),
+        instance(consoleWrapper),
+        instance(gitHubRunnerWrapper),
+      );
 
-			// Act
-			gitHubRunnerInvoker.logError("TEST");
+      // Act
+      gitHubRunnerInvoker.logError("TEST");
 
-			// Assert
-			verify(gitHubRunnerWrapper.error("TEST")).once();
-		});
-	});
+      // Assert
+      verify(gitHubRunnerWrapper.error("TEST")).once();
+    });
+  });
 
-	describe("logWarning()", (): void => {
-		it("should call the underlying method", (): void => {
-			// Arrange
-			const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(
-				instance(azurePipelinesRunnerWrapper),
-				instance(consoleWrapper),
-				instance(gitHubRunnerWrapper),
-			);
+  describe("logWarning()", (): void => {
+    it("should call the underlying method", (): void => {
+      // Arrange
+      const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(
+        instance(azurePipelinesRunnerWrapper),
+        instance(consoleWrapper),
+        instance(gitHubRunnerWrapper),
+      );
 
-			// Act
-			gitHubRunnerInvoker.logWarning("TEST");
+      // Act
+      gitHubRunnerInvoker.logWarning("TEST");
 
-			// Assert
-			verify(gitHubRunnerWrapper.warning("TEST")).once();
-		});
-	});
+      // Assert
+      verify(gitHubRunnerWrapper.warning("TEST")).once();
+    });
+  });
 
-	describe("setStatusFailed()", (): void => {
-		it("should call the underlying method", (): void => {
-			// Arrange
-			const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(
-				instance(azurePipelinesRunnerWrapper),
-				instance(consoleWrapper),
-				instance(gitHubRunnerWrapper),
-			);
+  describe("setStatusFailed()", (): void => {
+    it("should call the underlying method", (): void => {
+      // Arrange
+      const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(
+        instance(azurePipelinesRunnerWrapper),
+        instance(consoleWrapper),
+        instance(gitHubRunnerWrapper),
+      );
 
-			// Act
-			gitHubRunnerInvoker.setStatusFailed("TEST");
+      // Act
+      gitHubRunnerInvoker.setStatusFailed("TEST");
 
-			// Assert
-			verify(gitHubRunnerWrapper.setFailed("TEST")).once();
-		});
-	});
+      // Assert
+      verify(gitHubRunnerWrapper.setFailed("TEST")).once();
+    });
+  });
 
-	describe("setStatusSkipped()", (): void => {
-		it("should call the underlying method", (): void => {
-			// Arrange
-			const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(
-				instance(azurePipelinesRunnerWrapper),
-				instance(consoleWrapper),
-				instance(gitHubRunnerWrapper),
-			);
+  describe("setStatusSkipped()", (): void => {
+    it("should call the underlying method", (): void => {
+      // Arrange
+      const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(
+        instance(azurePipelinesRunnerWrapper),
+        instance(consoleWrapper),
+        instance(gitHubRunnerWrapper),
+      );
 
-			// Act
-			gitHubRunnerInvoker.setStatusSkipped("TEST");
+      // Act
+      gitHubRunnerInvoker.setStatusSkipped("TEST");
 
-			// Assert
-			verify(consoleWrapper.log("TEST")).once();
-		});
-	});
+      // Assert
+      verify(consoleWrapper.log("TEST")).once();
+    });
+  });
 
-	describe("setStatusSucceeded()", (): void => {
-		it("should call the underlying method", (): void => {
-			// Arrange
-			const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(
-				instance(azurePipelinesRunnerWrapper),
-				instance(consoleWrapper),
-				instance(gitHubRunnerWrapper),
-			);
+  describe("setStatusSucceeded()", (): void => {
+    it("should call the underlying method", (): void => {
+      // Arrange
+      const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(
+        instance(azurePipelinesRunnerWrapper),
+        instance(consoleWrapper),
+        instance(gitHubRunnerWrapper),
+      );
 
-			// Act
-			gitHubRunnerInvoker.setStatusSucceeded("TEST");
+      // Act
+      gitHubRunnerInvoker.setStatusSucceeded("TEST");
 
-			// Assert
-			verify(consoleWrapper.log("TEST")).once();
-		});
-	});
+      // Assert
+      verify(consoleWrapper.log("TEST")).once();
+    });
+  });
 
-	describe("setSecret()", (): void => {
-		it("should call the underlying method", (): void => {
-			// Arrange
-			const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(
-				instance(azurePipelinesRunnerWrapper),
-				instance(consoleWrapper),
-				instance(gitHubRunnerWrapper),
-			);
+  describe("setSecret()", (): void => {
+    it("should call the underlying method", (): void => {
+      // Arrange
+      const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(
+        instance(azurePipelinesRunnerWrapper),
+        instance(consoleWrapper),
+        instance(gitHubRunnerWrapper),
+      );
 
-			// Act
-			gitHubRunnerInvoker.setSecret("value");
+      // Act
+      gitHubRunnerInvoker.setSecret("value");
 
-			// Assert
-			verify(gitHubRunnerWrapper.setSecret("value")).once();
-		});
-	});
+      // Assert
+      verify(gitHubRunnerWrapper.setSecret("value")).once();
+    });
+  });
 });

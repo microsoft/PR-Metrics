@@ -13,6 +13,6 @@ const octokit: Octokit = new Octokit();
  * An interface representing the response from a request to list the commits for a GitHub pull request review.
  */
 type ListCommitsResponse = GetResponseTypeFromEndpointMethod<
-	typeof octokit.rest.pulls.listCommits
+  typeof octokit.rest.pulls.listCommits
 >;
 export default ListCommitsResponse;

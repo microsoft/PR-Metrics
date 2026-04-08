@@ -15,8 +15,7 @@ import type RunnerInvokerInterface from "./runnerInvokerInterface.js";
 /**
  * A class for invoking Azure Pipelines runner functionality.
  */
-export default class AzurePipelinesRunnerInvoker
-  implements RunnerInvokerInterface {
+export default class AzurePipelinesRunnerInvoker implements RunnerInvokerInterface {
   private readonly _azurePipelinesRunnerWrapper: AzurePipelinesRunnerWrapper;
 
   /**

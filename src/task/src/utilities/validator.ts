@@ -11,17 +11,17 @@
  * @returns The validated value.
  */
 export const validateString = (
-	value: string | null | undefined,
-	valueName: string,
-	methodName: string,
+  value: string | null | undefined,
+  valueName: string,
+  methodName: string,
 ): string => {
-	if (value === null || typeof value === "undefined" || value === "") {
-		throw new TypeError(
-			`'${valueName}', accessed within '${methodName}', is invalid, null, or undefined '${String(value)}'.`,
-		);
-	}
+  if (value === null || typeof value === "undefined" || value === "") {
+    throw new TypeError(
+      `'${valueName}', accessed within '${methodName}', is invalid, null, or undefined '${String(value)}'.`,
+    );
+  }
 
-	return value;
+  return value;
 };
 
 /**
@@ -31,11 +31,11 @@ export const validateString = (
  * @returns The validated value.
  */
 export const validateVariable = (
-	variableName: string,
-	methodName: string,
+  variableName: string,
+  methodName: string,
 ): string => {
-	const value: string | undefined = process.env[variableName];
-	return validateString(value, variableName, methodName);
+  const value: string | undefined = process.env[variableName];
+  return validateString(value, variableName, methodName);
 };
 
 /**
@@ -46,22 +46,22 @@ export const validateVariable = (
  * @returns The validated value.
  */
 export const validateNumber = (
-	value: number | null | undefined,
-	valueName: string,
-	methodName: string,
+  value: number | null | undefined,
+  valueName: string,
+  methodName: string,
 ): number => {
-	if (
-		value === null ||
-		typeof value === "undefined" ||
-		value === 0 ||
-		Number.isNaN(value)
-	) {
-		throw new TypeError(
-			`'${valueName}', accessed within '${methodName}', is invalid, null, or undefined '${String(value)}'.`,
-		);
-	}
+  if (
+    value === null ||
+    typeof value === "undefined" ||
+    value === 0 ||
+    Number.isNaN(value)
+  ) {
+    throw new TypeError(
+      `'${valueName}', accessed within '${methodName}', is invalid, null, or undefined '${String(value)}'.`,
+    );
+  }
 
-	return value;
+  return value;
 };
 
 /**
@@ -71,17 +71,17 @@ export const validateNumber = (
  * @param methodName The name of the calling method, for messaging purposes.
  */
 export const validateGuid = (
-	value: string,
-	valueName: string,
-	methodName: string,
+  value: string,
+  valueName: string,
+  methodName: string,
 ): void => {
-	if (
-		!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/iu.test(
-			value,
-		)
-	) {
-		throw new TypeError(
-			`'${valueName}', accessed within '${methodName}', is not a valid GUID '${value}'.`,
-		);
-	}
+  if (
+    !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/iu.test(
+      value,
+    )
+  ) {
+    throw new TypeError(
+      `'${valueName}', accessed within '${methodName}', is not a valid GUID '${value}'.`,
+    );
+  }
 };

@@ -32,10 +32,10 @@ export const fileMatchingPatterns: string[] = ["**/*", "!**/package-lock.json"];
  * The default test matching patterns, which is the set of globs specifying the files and folders to consider tests.
  */
 export const testMatchingPatterns: string[] = [
-	"**/*{{t,T}est,TEST}*",
-	"**/*{{t,T}est,TEST}*/**",
-	"**/*.{{s,S}pec,SPEC}.*",
-	"**/*.{{s,S}pec,SPEC}.*/**",
+  "**/*{{t,T}est,TEST}*",
+  "**/*{{t,T}est,TEST}*/**",
+  "**/*.{{s,S}pec,SPEC}.*",
+  "**/*.{{s,S}pec,SPEC}.*/**",
 ];
 
 /**
@@ -45,178 +45,178 @@ export const testMatchingPatterns: string[] = [
  * (https://github.com/github/linguist/blob/main/lib/linguist/languages.yml).
  */
 export const codeFileExtensions: string[] = [
-	// JavaScript
-	"js",
-	"_js",
-	"bones",
-	"cjs",
-	"es",
-	"es6",
-	"frag",
-	"gs",
-	"jake",
-	"jsb",
-	"jscad",
-	"jsfl",
-	"jsm",
-	"jss",
-	"jsx",
-	"mjs",
-	"njs",
-	"pac",
-	"sjs",
-	"ssjs",
-	"xsjs",
-	"xsjslib",
-	// JavaScript: Ecere Projects
-	"epj",
-	// JavaScript: JavaScript+ERB
-	"erb",
+  // JavaScript
+  "js",
+  "_js",
+  "bones",
+  "cjs",
+  "es",
+  "es6",
+  "frag",
+  "gs",
+  "jake",
+  "jsb",
+  "jscad",
+  "jsfl",
+  "jsm",
+  "jss",
+  "jsx",
+  "mjs",
+  "njs",
+  "pac",
+  "sjs",
+  "ssjs",
+  "xsjs",
+  "xsjslib",
+  // JavaScript: Ecere Projects
+  "epj",
+  // JavaScript: JavaScript+ERB
+  "erb",
 
-	// Python
-	"py",
-	"cgi",
-	"fcgi",
-	"gyp",
-	"gypi",
-	"lmi",
-	"py3",
-	"pyde",
-	"pyi",
-	"pyp",
-	"pyt",
-	"pyw",
-	"rpy",
-	"smk",
-	"spec",
-	"tac",
-	"wsgi",
-	"xpy",
-	// Python: Cython
-	"pyx",
-	"pxd",
-	"pxi",
-	// Python: Easybuild
-	"eb",
-	// Python: NumPy
-	"numpy",
-	"numpyw",
-	"numsc",
-	// Python: Python traceback
-	"pytb",
+  // Python
+  "py",
+  "cgi",
+  "fcgi",
+  "gyp",
+  "gypi",
+  "lmi",
+  "py3",
+  "pyde",
+  "pyi",
+  "pyp",
+  "pyt",
+  "pyw",
+  "rpy",
+  "smk",
+  "spec",
+  "tac",
+  "wsgi",
+  "xpy",
+  // Python: Cython
+  "pyx",
+  "pxd",
+  "pxi",
+  // Python: Easybuild
+  "eb",
+  // Python: NumPy
+  "numpy",
+  "numpyw",
+  "numsc",
+  // Python: Python traceback
+  "pytb",
 
-	// Java
-	"java",
-	// Java: Java Server Pages
-	"jsp",
+  // Java
+  "java",
+  // Java: Java Server Pages
+  "jsp",
 
-	// TypeScript
-	"ts",
-	"mts",
-	// TypeScript: TSX
-	"tsx",
-	"mtsx",
+  // TypeScript
+  "ts",
+  "mts",
+  // TypeScript: TSX
+  "tsx",
+  "mtsx",
 
-	// C#
-	"cs",
-	"cake",
-	"csx",
-	"linq",
+  // C#
+  "cs",
+  "cake",
+  "csx",
+  "linq",
 
-	// PHP
-	"php",
-	"aw",
-	"ctp",
-	"fcgi",
-	"inc",
-	"php3",
-	"php4",
-	"php5",
-	"phps",
-	"phpt",
+  // PHP
+  "php",
+  "aw",
+  "ctp",
+  "fcgi",
+  "inc",
+  "php3",
+  "php4",
+  "php5",
+  "phps",
+  "phpt",
 
-	// C++
-	"cpp",
-	"c++",
-	"cc",
-	"cp",
-	"cxx",
-	"h",
-	"h++",
-	"hh",
-	"hpp",
-	"hxx",
-	"inc",
-	"inl",
-	"ino",
-	"ipp",
-	"re",
-	"tcc",
-	"tpp",
+  // C++
+  "cpp",
+  "c++",
+  "cc",
+  "cp",
+  "cxx",
+  "h",
+  "h++",
+  "hh",
+  "hpp",
+  "hxx",
+  "inc",
+  "inl",
+  "ino",
+  "ipp",
+  "re",
+  "tcc",
+  "tpp",
 
-	// C
-	"c",
-	"cats",
-	"h",
-	"idc",
-	// C: OpenCL
-	"cl",
-	"opencl",
-	// C: Unified Parallel C
-	"upc",
-	// C: X BitMap
-	"xbm",
-	// C: X PixMap
-	"xpm",
-	"pm",
+  // C
+  "c",
+  "cats",
+  "h",
+  "idc",
+  // C: OpenCL
+  "cl",
+  "opencl",
+  // C: Unified Parallel C
+  "upc",
+  // C: X BitMap
+  "xbm",
+  // C: X PixMap
+  "xpm",
+  "pm",
 
-	// Shell
-	"sh",
-	"bash",
-	"bats",
-	"cgi",
-	"command",
-	"env",
-	"fcgi",
-	"ksh",
-	"tmux",
-	"tool",
-	"zsh",
-	// Shell: fish
-	"fish",
-	// Shell: Gentoo Ebuild
-	"ebuild",
-	// Shell: Gentoo Eclass
-	"eclass",
-	// Shell: PowerShell
-	"ps1",
-	"psd1",
-	"psm1",
-	// Shell: Tcsh
-	"tcsh",
-	"csh",
+  // Shell
+  "sh",
+  "bash",
+  "bats",
+  "cgi",
+  "command",
+  "env",
+  "fcgi",
+  "ksh",
+  "tmux",
+  "tool",
+  "zsh",
+  // Shell: fish
+  "fish",
+  // Shell: Gentoo Ebuild
+  "ebuild",
+  // Shell: Gentoo Eclass
+  "eclass",
+  // Shell: PowerShell
+  "ps1",
+  "psd1",
+  "psm1",
+  // Shell: Tcsh
+  "tcsh",
+  "csh",
 
-	// Ruby
-	"rb",
-	"builder",
-	"eye",
-	"fcgi",
-	"gemspec",
-	"god",
-	"jbuilder",
-	"mspec",
-	"pluginspec",
-	"podspec",
-	"prawn",
-	"rabl",
-	"rake",
-	"rbi",
-	"rbuild",
-	"rbw",
-	"rbx",
-	"ru",
-	"ruby",
-	"spec",
-	"thor",
-	"watchr",
+  // Ruby
+  "rb",
+  "builder",
+  "eye",
+  "fcgi",
+  "gemspec",
+  "god",
+  "jbuilder",
+  "mspec",
+  "pluginspec",
+  "podspec",
+  "prawn",
+  "rabl",
+  "rake",
+  "rbi",
+  "rbuild",
+  "rbw",
+  "rbx",
+  "ru",
+  "ruby",
+  "spec",
+  "thor",
+  "watchr",
 ];
