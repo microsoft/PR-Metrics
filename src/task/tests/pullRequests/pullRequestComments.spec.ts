@@ -2,6 +2,7 @@
  * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT License.
  */
+
 import { instance, mock, verify, when } from "ts-mockito";
 import CodeMetrics from "../../src/metrics/codeMetrics.js";
 import CodeMetricsData from "../../src/metrics/codeMetricsData.js";
@@ -17,6 +18,7 @@ import type PullRequestCommentsData from "../../src/pullRequests/pullRequestComm
 import ReposInvoker from "../../src/repos/reposInvoker.js";
 import RunnerInvoker from "../../src/runners/runnerInvoker.js";
 import assert from "node:assert/strict";
+
 describe("pullRequestComments.ts", (): void => {
   let complexGitPullRequestComments: CommentData;
   let codeMetrics: CodeMetrics;

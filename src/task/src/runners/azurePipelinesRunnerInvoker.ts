@@ -2,6 +2,7 @@
  * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT License.
  */
+
 import * as path from "node:path";
 import * as taskLib from "azure-pipelines-task-lib/task.js";
 import type {
@@ -12,6 +13,7 @@ import type AzurePipelinesRunnerWrapper from "../wrappers/azurePipelinesRunnerWr
 import type { EndpointAuthorization } from "./endpointAuthorization.js";
 import type ExecOutput from "./execOutput.js";
 import type RunnerInvokerInterface from "./runnerInvokerInterface.js";
+
 /**
  * A class for invoking Azure Pipelines runner functionality.
  */

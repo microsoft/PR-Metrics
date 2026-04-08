@@ -2,11 +2,13 @@
  * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT License.
  */
+
 import type GetIssueCommentsResponse from "../../src/wrappers/octokitInterfaces/getIssueCommentsResponse.js";
 import type GetPullResponse from "../../src/wrappers/octokitInterfaces/getPullResponse.js";
 import type GetReviewCommentsResponse from "../../src/wrappers/octokitInterfaces/getReviewCommentsResponse.js";
 import type ListCommitsResponse from "../../src/wrappers/octokitInterfaces/listCommitsResponse.js";
 import { StatusCodes } from "http-status-codes";
+
 /* eslint-disable @typescript-eslint/naming-convention -- Required for alignment with Octokit. */
 
 /**

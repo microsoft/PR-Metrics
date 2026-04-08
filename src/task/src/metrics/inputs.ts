@@ -2,10 +2,12 @@
  * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT License.
  */
+
 import * as InputsDefault from "./inputsDefault.js";
 import { decimalRadix, maxPatternCount } from "../utilities/constants.js";
 import type Logger from "../utilities/logger.js";
 import type RunnerInvoker from "../runners/runnerInvoker.js";
+
 /**
  * A class representing inputs passed to the task.
  * @remarks This class should not be used in a multithreaded context as it could lead to the initialization logic being invoked repeatedly.

@@ -2,6 +2,7 @@
  * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT License.
  */
+
 import * as InputsDefault from "../../src/metrics/inputsDefault.js";
 import { deepEqual, instance, mock, verify, when } from "ts-mockito";
 import Inputs from "../../src/metrics/inputs.js";
@@ -10,6 +11,7 @@ import RunnerInvoker from "../../src/runners/runnerInvoker.js";
 import { anyString } from "../testUtilities/mockito.js";
 import assert from "node:assert/strict";
 import { decimalRadix } from "../../src/utilities/constants.js";
+
 describe("inputs.ts", (): void => {
   const adjustingAlwaysCloseComment =
     "Adjusting the always-close-comment mode input to 'false'.";

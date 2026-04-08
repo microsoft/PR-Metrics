@@ -2,10 +2,12 @@
  * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT License.
  */
+
 import CommentData from "../../../src/repos/interfaces/commentData.js";
 import FileCommentData from "../../../src/repos/interfaces/fileCommentData.js";
 import PullRequestCommentData from "../../../src/repos/interfaces/pullRequestCommentData.js";
 import assert from "node:assert/strict";
+
 describe("commentData.ts", (): void => {
   describe("constructor()", (): void => {
     it("should set the correct data", (): void => {

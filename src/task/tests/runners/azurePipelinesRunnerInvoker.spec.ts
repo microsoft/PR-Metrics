@@ -2,6 +2,7 @@
  * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT License.
  */
+
 import * as path from "node:path";
 import * as taskLib from "azure-pipelines-task-lib/task.js";
 import type {
@@ -15,6 +16,7 @@ import type { EndpointAuthorization } from "../../src/runners/endpointAuthorizat
 import type { ExecOutput } from "@actions/exec";
 import { any } from "../testUtilities/mockito.js";
 import assert from "node:assert/strict";
+
 describe("azurePipelinesRunnerInvoker.ts", (): void => {
   let azurePipelinesRunnerWrapper: AzurePipelinesRunnerWrapper;
 

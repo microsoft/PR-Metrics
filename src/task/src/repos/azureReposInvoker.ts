@@ -2,6 +2,7 @@
  * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT License.
  */
+
 import * as Validator from "../utilities/validator.js";
 import {
   type Comment,
@@ -23,6 +24,7 @@ import type PullRequestDetailsInterface from "./interfaces/pullRequestDetailsInt
 import type RunnerInvoker from "../runners/runnerInvoker.js";
 import type TokenManager from "./tokenManager.js";
 import type { WebApi } from "azure-devops-node-api";
+
 /**
  * A class for invoking Azure Repos functionality.
  * @remarks This class should not be used in a multithreaded context as it could lead to the initialization logic being invoked repeatedly.

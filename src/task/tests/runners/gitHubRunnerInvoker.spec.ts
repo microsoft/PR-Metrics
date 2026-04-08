@@ -2,6 +2,7 @@
  * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT License.
  */
+
 import type * as actionsExec from "@actions/exec";
 import * as path from "node:path";
 import { deepEqual, instance, mock, verify, when } from "ts-mockito";
@@ -13,6 +14,7 @@ import GitHubRunnerInvoker from "../../src/runners/gitHubRunnerInvoker.js";
 import GitHubRunnerWrapper from "../../src/wrappers/gitHubRunnerWrapper.js";
 import { any } from "../testUtilities/mockito.js";
 import assert from "node:assert/strict";
+
 describe("gitHubRunnerInvoker.js", (): void => {
   const resourcePath: string = path.join(
     import.meta.dirname,

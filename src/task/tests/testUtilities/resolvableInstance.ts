@@ -2,8 +2,10 @@
  * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT License.
  */
+
 import type ResolvableInstanceTargetInterface from "./resolvableInstanceTargetInterface.js";
 import { instance } from "ts-mockito";
+
 /**
  * Gets a resolvable instance of the specified mock object.
  * @typeParam Type The type of the mock object.

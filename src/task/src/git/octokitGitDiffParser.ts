@@ -2,6 +2,7 @@
  * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT License.
  */
+
 import parseGitDiff, {
   type AddedFile,
   type AnyChunk,
@@ -14,6 +15,7 @@ import type AxiosWrapper from "../wrappers/axiosWrapper.js";
 import type GetPullResponse from "../wrappers/octokitInterfaces/getPullResponse.js";
 import type Logger from "../utilities/logger.js";
 import type OctokitWrapper from "../wrappers/octokitWrapper.js";
+
 /**
  * A parser for Git diffs read via Octokit.
  */

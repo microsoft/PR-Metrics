@@ -2,8 +2,10 @@
  * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT License.
  */
+
 import * as Validator from "../../src/utilities/validator.js";
 import assert from "node:assert/strict";
+
 describe("validator.ts", (): void => {
   describe("validateString()", (): void => {
     {

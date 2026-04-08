@@ -2,6 +2,7 @@
  * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT License.
  */
+
 import type * as actionsExec from "@actions/exec";
 import * as fs from "node:fs";
 import * as path from "node:path";

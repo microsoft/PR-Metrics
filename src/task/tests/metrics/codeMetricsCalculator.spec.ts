@@ -2,6 +2,7 @@
  * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT License.
  */
+
 import { instance, mock, verify, when } from "ts-mockito";
 import CodeMetricsCalculator from "../../src/metrics/codeMetricsCalculator.js";
 import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces.js";
@@ -13,6 +14,7 @@ import PullRequestCommentsData from "../../src/pullRequests/pullRequestCommentsD
 import ReposInvoker from "../../src/repos/reposInvoker.js";
 import RunnerInvoker from "../../src/runners/runnerInvoker.js";
 import assert from "node:assert/strict";
+
 describe("codeMetricsCalculator.ts", (): void => {
   let gitInvoker: GitInvoker;
   let logger: Logger;

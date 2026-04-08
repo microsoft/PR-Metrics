@@ -2,6 +2,7 @@
  * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT License.
  */
+
 import * as AssertExtensions from "../testUtilities/assertExtensions.js";
 import {
   type Comment,
@@ -26,6 +27,7 @@ import TokenManager from "../../src/repos/tokenManager.js";
 import { WebApi } from "azure-devops-node-api";
 import assert from "node:assert/strict";
 import { resolvableInstance } from "../testUtilities/resolvableInstance.js";
+
 describe("azureReposInvoker.ts", (): void => {
   let gitApi: IGitApi;
   let azureDevOpsApiWrapper: AzureDevOpsApiWrapper;

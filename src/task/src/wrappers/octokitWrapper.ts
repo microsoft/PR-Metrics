@@ -2,6 +2,7 @@
  * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT License.
  */
+
 import type CreateIssueCommentResponse from "./octokitInterfaces/createIssueCommentResponse.js";
 import type CreateReviewCommentResponse from "./octokitInterfaces/createReviewCommentResponse.js";
 import type DeleteReviewCommentResponse from "./octokitInterfaces/deleteReviewCommentResponse.js";
@@ -14,6 +15,7 @@ import type OctokitGitDiffParser from "../git/octokitGitDiffParser.js";
 import type { OctokitOptions } from "@octokit/core";
 import type UpdateIssueCommentResponse from "./octokitInterfaces/updateIssueCommentResponse.js";
 import type UpdatePullResponse from "./octokitInterfaces/updatePullResponse.js";
+
 /* eslint-disable @typescript-eslint/naming-convention -- Required for alignment with Octokit. */
 
 /**

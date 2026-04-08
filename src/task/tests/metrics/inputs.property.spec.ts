@@ -2,6 +2,7 @@
  * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT License.
  */
+
 import * as fc from "fast-check";
 import { deepEqual, instance, mock, when } from "ts-mockito";
 import Inputs from "../../src/metrics/inputs.js";
@@ -9,6 +10,7 @@ import Logger from "../../src/utilities/logger.js";
 import RunnerInvoker from "../../src/runners/runnerInvoker.js";
 import { anyString } from "../testUtilities/mockito.js";
 import assert from "node:assert/strict";
+
 const numRuns = 10;
 
 describe("inputs.ts", (): void => {

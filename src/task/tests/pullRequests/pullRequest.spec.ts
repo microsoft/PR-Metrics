@@ -2,12 +2,14 @@
  * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT License.
  */
+
 import { instance, mock, verify, when } from "ts-mockito";
 import CodeMetrics from "../../src/metrics/codeMetrics.js";
 import Logger from "../../src/utilities/logger.js";
 import PullRequest from "../../src/pullRequests/pullRequest.js";
 import RunnerInvoker from "../../src/runners/runnerInvoker.js";
 import assert from "node:assert/strict";
+
 describe("pullRequest.ts", (): void => {
   let codeMetrics: CodeMetrics;
   let logger: Logger;

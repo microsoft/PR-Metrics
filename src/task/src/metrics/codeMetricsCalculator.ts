@@ -2,6 +2,7 @@
  * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT License.
  */
+
 import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces.js";
 import type GitInvoker from "../git/gitInvoker.js";
 import type Logger from "../utilities/logger.js";
@@ -11,6 +12,7 @@ import type PullRequestCommentsData from "../pullRequests/pullRequestCommentsDat
 import type PullRequestDetailsInterface from "../repos/interfaces/pullRequestDetailsInterface.js";
 import type ReposInvoker from "../repos/reposInvoker.js";
 import RunnerInvoker from "../runners/runnerInvoker.js";
+
 /**
  * A class for calculating and updating the code metrics within pull requests.
  */

@@ -2,6 +2,7 @@
  * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT License.
  */
+
 import type { CodeFileMetricInterface } from "./codeFileMetricInterface.js";
 import CodeMetricsData from "./codeMetricsData.js";
 import type { FixedLengthArrayInterface } from "../utilities/fixedLengthArrayInterface.js";
@@ -11,6 +12,7 @@ import type Logger from "../utilities/logger.js";
 import type RunnerInvoker from "../runners/runnerInvoker.js";
 import { decimalRadix } from "../utilities/constants.js";
 import picomatch from "picomatch";
+
 /**
  * A class for computing metrics for software code in pull requests.
  * @remarks This class should not be used in a multithreaded context as it could lead to the initialization logic being invoked repeatedly.

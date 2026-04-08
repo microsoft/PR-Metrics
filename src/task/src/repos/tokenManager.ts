@@ -2,6 +2,7 @@
  * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT License.
  */
+
 import {
   validateGuid,
   validateString,
@@ -16,6 +17,7 @@ import type Logger from "../utilities/logger.js";
 import type RunnerInvoker from "../runners/runnerInvoker.js";
 import type { TaskHubOidcToken } from "azure-devops-node-api/interfaces/TaskAgentInterfaces.js";
 import type { WebApi } from "azure-devops-node-api";
+
 /**
  * A class for invoking authorization token management functionality, used for retrieving identity information from a
  * workload identity federation.

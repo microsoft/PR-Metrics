@@ -2,6 +2,7 @@
  * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT License.
  */
+
 import type CodeMetrics from "../metrics/codeMetrics.js";
 import type CodeMetricsData from "../metrics/codeMetricsData.js";
 import type CommentData from "../repos/interfaces/commentData.js";
@@ -13,6 +14,7 @@ import type PullRequestComment from "../repos/interfaces/pullRequestCommentData.
 import PullRequestCommentsData from "./pullRequestCommentsData.js";
 import type ReposInvoker from "../repos/reposInvoker.js";
 import type RunnerInvoker from "../runners/runnerInvoker.js";
+
 /**
  * A class for managing pull requests comments.
  */

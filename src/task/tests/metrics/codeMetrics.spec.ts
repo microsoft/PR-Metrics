@@ -2,6 +2,7 @@
  * Copyright (c) Microsoft Corporation.
  * Licensed under the MIT License.
  */
+
 import * as AssertExtensions from "../testUtilities/assertExtensions.js";
 import * as InputsDefault from "../../src/metrics/inputsDefault.js";
 import { anyString, instance, mock, verify, when } from "ts-mockito";
@@ -12,6 +13,7 @@ import Inputs from "../../src/metrics/inputs.js";
 import Logger from "../../src/utilities/logger.js";
 import RunnerInvoker from "../../src/runners/runnerInvoker.js";
 import assert from "node:assert/strict";
+
 describe("codeMetrics.ts", (): void => {
   let gitInvoker: GitInvoker;
   let inputs: Inputs;
