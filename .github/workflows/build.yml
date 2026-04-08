@@ -30,6 +30,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
+          persist-credentials: false
           ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref_name }}
           token: ${{ secrets.PR_METRICS_TOKEN }}
 
@@ -81,6 +82,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
 
       - name: Install Node.js
         uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
@@ -118,6 +121,7 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: PR Metrics
         uses: ./
@@ -137,9 +141,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
 
       - name: CodeQL – Initialize
-        uses: github/codeql-action/init@38697555549f1db7851b81482ff19f1fa5c4fedc # v4.34.1
+        uses: github/codeql-action/init@c10b8064de6f491fea524254123dbe5e09572f13 # v4.35.1
         with:
           build-mode: none
           config-file: .github/linters/codeql.yml
@@ -147,7 +153,7 @@ jobs:
           queries: code-quality,code-scanning,security-and-quality,security-experimental,security-extended
 
       - name: CodeQL – Analyze
-        uses: github/codeql-action/analyze@38697555549f1db7851b81482ff19f1fa5c4fedc # v4.34.1
+        uses: github/codeql-action/analyze@c10b8064de6f491fea524254123dbe5e09572f13 # v4.35.1
         with:
           category: TypeScript
 
@@ -160,6 +166,7 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Super-Linter
         uses: super-linter/super-linter@61abc07d755095a68f4987d1c2c3d1d64408f1f9 # v8.5.0
@@ -174,11 +181,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.PR_METRICS_TOKEN }}
           GITLEAKS_CONFIG_FILE: gitleaks.toml
           MARKDOWN_CONFIG_FILE: ../../.markdownlint.json
+          SPELL_CODESPELL_CONFIG_FILE: .codespellrc
           # Disable linters that conflict with other linters.
           VALIDATE_BIOME_FORMAT: false
-          VALIDATE_GITHUB_ACTIONS_ZIZMOR: false
           VALIDATE_JSON: false
-          VALIDATE_SPELL_CODESPELL: false
           VALIDATE_TYPESCRIPT_ES: false
           VALIDATE_TYPESCRIPT_STANDARD: false
 
@@ -227,8 +233,9 @@ jobs:
       - name: gh – Log Version
         run: gh --version
 
-      - if: github.actor == 'dependabot[bot]'
+      - if: github.event.pull_request.user.login == 'dependabot[bot]'
         name: Enable Auto-Merge
-        run: gh pr merge --auto --delete-branch --squash "${{ github.event.pull_request.html_url }}"
+        run: gh pr merge --auto --delete-branch --squash "$env:PR_URL"
         env:
           GITHUB_TOKEN: ${{ secrets.PR_METRICS_TOKEN }}
+          PR_URL: ${{ github.event.pull_request.html_url }}

@@ -4,7 +4,7 @@
  */
 import * as AssertExtensions from "../testUtilities/assertExtensions.js";
 import * as InputsDefault from "../../src/metrics/inputsDefault.js";
-import { instance, mock, verify, when } from "ts-mockito";
+import { anyString, instance, mock, verify, when } from "ts-mockito";
 import CodeMetrics from "../../src/metrics/codeMetrics.js";
 import CodeMetricsData from "../../src/metrics/codeMetricsData.js";
 import GitInvoker from "../../src/git/gitInvoker.js";
@@ -42,18 +42,7 @@ describe("codeMetrics.ts", (): void => {
     when(runnerInvoker.loc("metrics.codeMetrics.titleSizeS")).thenReturn("S");
     when(runnerInvoker.loc("metrics.codeMetrics.titleSizeM")).thenReturn("M");
     when(runnerInvoker.loc("metrics.codeMetrics.titleSizeL")).thenReturn("L");
-    when(runnerInvoker.loc("metrics.codeMetrics.titleSizeXL", "")).thenReturn(
-      "XL",
-    );
-    when(runnerInvoker.loc("metrics.codeMetrics.titleSizeXL", "2")).thenReturn(
-      "2XL",
-    );
-    when(runnerInvoker.loc("metrics.codeMetrics.titleSizeXL", "3")).thenReturn(
-      "3XL",
-    );
-    when(runnerInvoker.loc("metrics.codeMetrics.titleSizeXL", "10")).thenReturn(
-      "10XL",
-    );
+    when(runnerInvoker.loc("metrics.codeMetrics.titleSizeXL")).thenReturn("XL");
     when(
       runnerInvoker.loc("metrics.codeMetrics.titleTestsSufficient"),
     ).thenReturn("✔");
@@ -1569,6 +1558,62 @@ describe("codeMetrics.ts", (): void => {
     verify(logger.logDebug("* CodeMetrics.calculateSize()")).once();
   });
 
+  it("with only negative patterns, treats all files as non-matching", async (): Promise<void> => {
+    // Arrange
+    when(inputs.baseSize).thenReturn(100);
+    when(inputs.growthRate).thenReturn(1.5);
+    when(inputs.testFactor).thenReturn(2.0);
+    when(inputs.fileMatchingPatterns).thenReturn(["!**/ignored.ts"]);
+    when(inputs.codeFileExtensions).thenReturn(new Set<string>(["ts"]));
+    when(gitInvoker.getDiffSummary()).thenResolve(
+      "1\t1\tfile.ts\n1\t1\tignored.ts",
+    );
+
+    // Act
+    const codeMetrics: CodeMetrics = new CodeMetrics(
+      instance(gitInvoker),
+      instance(inputs),
+      instance(logger),
+      instance(runnerInvoker),
+    );
+
+    // Assert
+    assert.deepEqual(await codeMetrics.getFilesNotRequiringReview(), [
+      "file.ts",
+      "ignored.ts",
+    ]);
+    assert.deepEqual(await codeMetrics.getDeletedFilesNotRequiringReview(), []);
+    assert.equal(await codeMetrics.getSize(), "XS");
+    assert.equal(await codeMetrics.getSizeIndicator(), "XS✔");
+    assert.deepEqual(
+      await codeMetrics.getMetrics(),
+      new CodeMetricsData(0, 0, 2),
+    );
+    assert.equal(await codeMetrics.isSmall(), true);
+    assert.equal(await codeMetrics.isSufficientlyTested(), true);
+    verify(
+      logger.logDebug("* CodeMetrics.getFilesNotRequiringReview()"),
+    ).once();
+    verify(
+      logger.logDebug("* CodeMetrics.getDeletedFilesNotRequiringReview()"),
+    ).once();
+    verify(logger.logDebug("* CodeMetrics.getSize()")).once();
+    verify(logger.logDebug("* CodeMetrics.initialize()")).times(7);
+    verify(logger.logDebug("* CodeMetrics.initializeMetrics()")).once();
+    verify(
+      logger.logDebug("* CodeMetrics.determineIfValidFilePattern()"),
+    ).times(2);
+    verify(logger.logDebug("* CodeMetrics.performGlobCheck()")).never();
+    verify(logger.logDebug("* CodeMetrics.matchFileExtension()")).times(2);
+    verify(logger.logDebug("* CodeMetrics.constructMetrics()")).once();
+    verify(logger.logDebug("* CodeMetrics.createFileMetricsMap()")).once();
+    verify(
+      logger.logDebug("* CodeMetrics.initializeIsSufficientlyTested()"),
+    ).once();
+    verify(logger.logDebug("* CodeMetrics.initializeSizeIndicator()")).once();
+    verify(logger.logDebug("* CodeMetrics.calculateSize()")).once();
+  });
+
   it("with double exclusion ignore patterns ignores the appropriate files", async (): Promise<void> => {
     // Arrange
     when(inputs.baseSize).thenReturn(100);
@@ -1983,5 +2028,36 @@ describe("codeMetrics.ts", (): void => {
       verify(logger.logDebug("* CodeMetrics.initialize()")).once();
       verify(logger.logDebug("* CodeMetrics.createFileMetricsMap()")).once();
     });
+  });
+
+  it("with a size multiplier exceeding 1000, returns a size without thousands separators", async (): Promise<void> => {
+    // ARRANGE
+    when(inputs.baseSize).thenReturn(1);
+    when(inputs.growthRate).thenReturn(1.001);
+    when(inputs.testFactor).thenReturn(1.0);
+    when(inputs.fileMatchingPatterns).thenReturn(["**/*"]);
+    when(inputs.codeFileExtensions).thenReturn(new Set<string>(["ts"]));
+    when(gitInvoker.getDiffSummary()).thenResolve("3\t0\tfile.ts");
+    when(
+      runnerInvoker.loc(
+        "metrics.codeMetrics.titleSizeIndicatorFormat",
+        anyString() as string,
+        anyString() as string,
+      ),
+    ).thenReturn("");
+    const codeMetrics: CodeMetrics = new CodeMetrics(
+      instance(gitInvoker),
+      instance(inputs),
+      instance(logger),
+      instance(runnerInvoker),
+    );
+
+    // ACT
+    const size: string = await codeMetrics.getSize();
+
+    // ASSERT
+    assert.match(size, /^\d+XL$/u);
+    const multiplier: number = Number.parseInt(size.replace("XL", ""), 10);
+    assert.ok(multiplier >= 1000);
   });
 });

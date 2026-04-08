@@ -113,7 +113,7 @@ export default class PullRequest {
       `|${this._runnerInvoker.loc("metrics.codeMetrics.titleSizeS")}` +
       `|${this._runnerInvoker.loc("metrics.codeMetrics.titleSizeM")}` +
       `|${this._runnerInvoker.loc("metrics.codeMetrics.titleSizeL")}` +
-      `|${this._runnerInvoker.loc("metrics.codeMetrics.titleSizeXL", "\\d*")})`;
+      `|\\d*${this._runnerInvoker.loc("metrics.codeMetrics.titleSizeXL")})`;
     const testsRegExp: string =
       `(${this._runnerInvoker.loc("metrics.codeMetrics.titleTestsSufficient")}` +
       `|${this._runnerInvoker.loc("metrics.codeMetrics.titleTestsInsufficient")})?`;

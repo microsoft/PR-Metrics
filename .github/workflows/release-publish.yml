@@ -28,6 +28,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
 
       - name: gh – Log Version
         run: gh --version
@@ -56,7 +58,7 @@ jobs:
           subject-path: ${{ github.workspace }}/ms-omex.PRMetrics.vsix
 
       - name: cosign – Install
-        uses: sigstore/cosign-installer@ba7bc0a3fef59531c69a25acd34668d6d3fe6f22 # v4.1.0
+        uses: sigstore/cosign-installer@cad07c2e89fa2edd6e2d7bab4c1aa38e53f76003 # v4.1.1
 
       - name: cosign – Sign VSIX
         run: >-
@@ -82,21 +84,23 @@ jobs:
       - name: Generate Release Notes
         run: >-
           gh api repos/${{ github.repository }}/releases/generate-notes
-          -f tag_name="${{ steps.version.outputs.VERSION }}"
+          -f tag_name="$env:VERSION"
           -f target_commitish=${{ github.sha }}
           --jq '.body' > release-notes.md
         env:
           GITHUB_TOKEN: ${{ secrets.PR_METRICS_TOKEN }}
+          VERSION: ${{ steps.version.outputs.VERSION }}
 
       - name: GitHub Release
         run: >-
-          gh release create "${{ steps.version.outputs.VERSION }}"
+          gh release create "$env:VERSION"
           "${{ github.workspace }}/ms-omex.PRMetrics.vsix"
           "${{ github.workspace }}/ms-omex.PRMetrics.vsix.sigstore.json"
           "${{ github.workspace }}/ms-omex.PRMetrics.sbom.cdx.json"
-          --title "Release ${{ steps.version.outputs.VERSION }}"
+          --title "Release $env:VERSION"
           --target "${{ github.sha }}"
           --notes-file release-notes.md
           --discussion-category "Releases"
         env:
           GITHUB_TOKEN: ${{ secrets.PR_METRICS_TOKEN }}
+          VERSION: ${{ steps.version.outputs.VERSION }}

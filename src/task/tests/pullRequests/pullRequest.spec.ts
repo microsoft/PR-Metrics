@@ -30,9 +30,7 @@ describe("pullRequest.ts", (): void => {
     when(runnerInvoker.loc("metrics.codeMetrics.titleSizeL")).thenReturn("L");
     when(runnerInvoker.loc("metrics.codeMetrics.titleSizeM")).thenReturn("M");
     when(runnerInvoker.loc("metrics.codeMetrics.titleSizeS")).thenReturn("S");
-    when(
-      runnerInvoker.loc("metrics.codeMetrics.titleSizeXL", "\\d*"),
-    ).thenReturn("\\d*XL");
+    when(runnerInvoker.loc("metrics.codeMetrics.titleSizeXL")).thenReturn("XL");
     when(runnerInvoker.loc("metrics.codeMetrics.titleSizeXS")).thenReturn("XS");
     when(
       runnerInvoker.loc("metrics.codeMetrics.titleTestsInsufficient"),
