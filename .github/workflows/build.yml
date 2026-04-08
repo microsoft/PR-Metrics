@@ -25,6 +25,7 @@ jobs:
   update-code:
     name: Update Code
     runs-on: ubuntu-latest
+    environment: production
     permissions: {}
     steps:
       - name: Checkout
@@ -115,6 +116,7 @@ jobs:
   test-github-action:
     name: Test GitHub Action
     runs-on: ubuntu-latest
+    environment: production
     permissions: {}
     steps:
       - name: Checkout
@@ -160,6 +162,7 @@ jobs:
   validate-linter:
     name: Validate – Linter
     runs-on: ubuntu-latest
+    environment: production
     permissions: {}
     steps:
       - name: Checkout
@@ -229,6 +232,7 @@ jobs:
   dependabot:
     name: Dependabot
     runs-on: ubuntu-latest
+    environment: production
     permissions: {}
     steps:
       - name: gh – Log Version
