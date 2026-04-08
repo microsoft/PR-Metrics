@@ -367,7 +367,6 @@ export default class CodeMetrics {
       );
     }
 
-    // Condense file and folder names that were renamed, e.g., F{a => i}leT{b => e}st.d{c => l}l".
     const lines: string[] = modifiedInput.split("\n");
 
     const result: CodeFileMetricInterface[] = [];
@@ -383,7 +382,7 @@ export default class CodeMetrics {
         );
       }
 
-      // Condense file and folder names that were renamed, e.g., "F{a => i}leT{b => e}st.d{c => l}l" or "FaleTbst.dcl => FileTest.dll".
+      // Condense file and folder names that were renamed, e.g., "F{a => i}leN{b => a}me.d{c => l}l" or "FaleNbme.dcl => FileName.dll".
       const fileName: string = elements[2]
         .replace(/\{.*? => (?<newName>[^}]+?)\}/gu, "$<newName>")
         .replace(/.*? => (?<newName>[^}]+?)/gu, "$<newName>");
@@ -441,11 +440,11 @@ export default class CodeMetrics {
   private calculateSize(): string {
     this._logger.logDebug("* CodeMetrics.calculateSize()");
 
-    const indexXS = 0;
-    const indexS = 1;
-    const indexM = 2;
-    const indexL = 3;
-    const indexXL = 4;
+    const extraSmallIndex = 0;
+    const smallIndex = 1;
+    const mediumIndex = 2;
+    const largeIndex = 3;
+    const extraLargeIndex = 4;
 
     // eslint-disable-next-line @typescript-eslint/no-magic-numbers -- Required to be a compile-time constant.
     const indicators: FixedLengthArrayInterface<(prefix: string) => string, 5> =
@@ -456,27 +455,31 @@ export default class CodeMetrics {
         (): string => this._runnerInvoker.loc("metrics.codeMetrics.titleSizeM"),
         (): string => this._runnerInvoker.loc("metrics.codeMetrics.titleSizeL"),
         (prefix: string): string =>
-          this._runnerInvoker.loc("metrics.codeMetrics.titleSizeXL", prefix),
+          `${prefix}${this._runnerInvoker.loc("metrics.codeMetrics.titleSizeXL")}`,
       ];
 
     // Calculate the smaller size.
     if (this._metrics.productCode < this._inputs.baseSize) {
-      return indicators[indexXS]("");
+      return indicators[extraSmallIndex]("");
     }
 
     // Calculate the larger sizes.
-    let index = indexS;
-    let result: string = indicators[indexS]("");
+    let index = smallIndex;
+    let result: string = indicators[smallIndex]("");
     let currentSize: number = this._inputs.baseSize * this._inputs.growthRate;
     while (this._metrics.productCode >= currentSize) {
       currentSize *= this._inputs.growthRate;
       index += 1;
 
-      if (index === indexM || index === indexL || index === indexXL) {
+      if (
+        index === mediumIndex ||
+        index === largeIndex ||
+        index === extraLargeIndex
+      ) {
         result = indicators[index]("");
       } else {
-        result = indicators[indexXL](
-          (index - indicators.length + indexM).toLocaleString(),
+        result = indicators[extraLargeIndex](
+          String(index - indicators.length + mediumIndex),
         );
       }
     }

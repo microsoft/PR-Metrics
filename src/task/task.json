@@ -80,7 +80,7 @@
     "metrics.codeMetrics.titleSizeL": "L",
     "metrics.codeMetrics.titleSizeM": "M",
     "metrics.codeMetrics.titleSizeS": "S",
-    "metrics.codeMetrics.titleSizeXL": "%sXL",
+    "metrics.codeMetrics.titleSizeXL": "XL",
     "metrics.codeMetrics.titleSizeXS": "XS",
     "metrics.codeMetrics.titleTestsInsufficient": "⚠️",
     "metrics.codeMetrics.titleTestsSufficient": "✔",
