@@ -25,6 +25,7 @@ jobs:
   update-code:
     name: Update Code
     runs-on: ubuntu-latest
+    environment: production
     permissions: {}
     steps:
       - name: Checkout
@@ -115,6 +116,7 @@ jobs:
   test-github-action:
     name: Test GitHub Action
     runs-on: ubuntu-latest
+    environment: production
     permissions: {}
     steps:
       - name: Checkout
@@ -160,6 +162,7 @@ jobs:
   validate-linter:
     name: Validate – Linter
     runs-on: ubuntu-latest
+    environment: production
     permissions: {}
     steps:
       - name: Checkout
@@ -169,7 +172,7 @@ jobs:
           persist-credentials: false
 
       - name: Super-Linter
-        uses: super-linter/super-linter@61abc07d755095a68f4987d1c2c3d1d64408f1f9 # v8.5.0
+        uses: super-linter/super-linter@9e863354e3ff62e0727d37183162c4a88873df41 # v8.6.0
         env:
           FILTER_REGEX_EXCLUDE: .*dist/.*
           FIX_JSON_PRETTIER: true
@@ -229,6 +232,7 @@ jobs:
   dependabot:
     name: Dependabot
     runs-on: ubuntu-latest
+    environment: production
     permissions: {}
     steps:
       - name: gh – Log Version
