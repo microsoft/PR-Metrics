@@ -11,8 +11,8 @@ import parseGitDiff, {
   type GitDiff,
   type RenamedFile,
 } from "parse-git-diff";
-import type AxiosWrapper from "../wrappers/axiosWrapper.js";
 import type GetPullResponse from "../wrappers/octokitInterfaces/getPullResponse.js";
+import type HttpWrapper from "../wrappers/httpWrapper.js";
 import type Logger from "../utilities/logger.js";
 import type OctokitWrapper from "../wrappers/octokitWrapper.js";
 
@@ -20,18 +20,18 @@ import type OctokitWrapper from "../wrappers/octokitWrapper.js";
  * A parser for Git diffs read via Octokit.
  */
 export default class OctokitGitDiffParser {
-  private readonly _axiosWrapper: AxiosWrapper;
+  private readonly _httpWrapper: HttpWrapper;
   private readonly _logger: Logger;
 
   private _firstLineOfFiles: Map<string, number> | null = null;
 
   /**
    * Initializes a new instance of the `OctokitGitDiffParser` class.
-   * @param axiosWrapper The Axios wrapper.
+   * @param httpWrapper The HTTP wrapper.
    * @param logger The logger.
    */
-  public constructor(axiosWrapper: AxiosWrapper, logger: Logger) {
-    this._axiosWrapper = axiosWrapper;
+  public constructor(httpWrapper: HttpWrapper, logger: Logger) {
+    this._httpWrapper = httpWrapper;
     this._logger = logger;
   }
 
@@ -100,7 +100,7 @@ export default class OctokitGitDiffParser {
       repo,
       pullRequestId,
     );
-    const diffResponse: string = await this._axiosWrapper.getUrl(
+    const diffResponse: string = await this._httpWrapper.getUrl(
       pullRequestInfo.data.diff_url,
     );
 

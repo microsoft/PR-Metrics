@@ -3,7 +3,6 @@
  * Licensed under the MIT License.
  */
 
-import AxiosWrapper from "./wrappers/axiosWrapper.js";
 import AzureDevOpsApiWrapper from "./wrappers/azureDevOpsApiWrapper.js";
 import AzurePipelinesRunnerInvoker from "./runners/azurePipelinesRunnerInvoker.js";
 import AzurePipelinesRunnerWrapper from "./wrappers/azurePipelinesRunnerWrapper.js";
@@ -15,6 +14,7 @@ import GitHubReposInvoker from "./repos/gitHubReposInvoker.js";
 import GitHubRunnerInvoker from "./runners/gitHubRunnerInvoker.js";
 import GitHubRunnerWrapper from "./wrappers/gitHubRunnerWrapper.js";
 import GitInvoker from "./git/gitInvoker.js";
+import HttpWrapper from "./wrappers/httpWrapper.js";
 import Inputs from "./metrics/inputs.js";
 import Logger from "./utilities/logger.js";
 import OctokitGitDiffParser from "./git/octokitGitDiffParser.js";
@@ -32,7 +32,7 @@ import TokenManager from "./repos/tokenManager.js";
  */
 const createPullRequestMetrics = (): PullRequestMetrics => {
   // Wrappers (leaf nodes).
-  const axiosWrapper: AxiosWrapper = new AxiosWrapper();
+  const httpWrapper: HttpWrapper = new HttpWrapper();
   const azureDevOpsApiWrapper: AzureDevOpsApiWrapper =
     new AzureDevOpsApiWrapper();
   const azurePipelinesRunnerWrapper: AzurePipelinesRunnerWrapper =
@@ -59,7 +59,7 @@ const createPullRequestMetrics = (): PullRequestMetrics => {
   // Git.
   const gitInvoker: GitInvoker = new GitInvoker(logger, runnerInvoker);
   const octokitGitDiffParser: OctokitGitDiffParser = new OctokitGitDiffParser(
-    axiosWrapper,
+    httpWrapper,
     logger,
   );
 
