@@ -4,7 +4,7 @@
  */
 
 import { RequestError } from "octokit";
-import { StatusCodes } from "http-status-codes";
+import type { StatusCodes } from "http-status-codes";
 
 /**
  * Creates a `RequestError` object.

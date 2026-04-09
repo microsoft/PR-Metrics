@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import axios, { AxiosResponse } from "axios";
+import axios, { type AxiosResponse } from "axios";
 
 /**
  * A wrapper around Axios, to facilitate testability.

@@ -4,8 +4,8 @@
  */
 
 import * as Validator from "../utilities/validator.js";
-import CodeMetrics from "../metrics/codeMetrics.js";
-import Logger from "../utilities/logger.js";
+import type CodeMetrics from "../metrics/codeMetrics.js";
+import type Logger from "../utilities/logger.js";
 import RunnerInvoker from "../runners/runnerInvoker.js";
 
 /**

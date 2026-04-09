@@ -5,7 +5,7 @@
 
 import * as AssertExtensions from "../testUtilities/assertExtensions.js";
 import { instance, mock, verify, when } from "ts-mockito";
-import { ExecOutput } from "@actions/exec";
+import type { ExecOutput } from "@actions/exec";
 import GitInvoker from "../../src/git/gitInvoker.js";
 import Logger from "../../src/utilities/logger.js";
 import RunnerInvoker from "../../src/runners/runnerInvoker.js";

@@ -4,17 +4,17 @@
  */
 
 import parseGitDiff, {
-  AddedFile,
-  AnyChunk,
-  ChangedFile,
-  Chunk,
-  GitDiff,
-  RenamedFile,
+  type AddedFile,
+  type AnyChunk,
+  type ChangedFile,
+  type Chunk,
+  type GitDiff,
+  type RenamedFile,
 } from "parse-git-diff";
-import AxiosWrapper from "../wrappers/axiosWrapper.js";
-import GetPullResponse from "../wrappers/octokitInterfaces/getPullResponse.js";
-import Logger from "../utilities/logger.js";
-import OctokitWrapper from "../wrappers/octokitWrapper.js";
+import type AxiosWrapper from "../wrappers/axiosWrapper.js";
+import type GetPullResponse from "../wrappers/octokitInterfaces/getPullResponse.js";
+import type Logger from "../utilities/logger.js";
+import type OctokitWrapper from "../wrappers/octokitWrapper.js";
 
 /**
  * A parser for Git diffs read via Octokit.

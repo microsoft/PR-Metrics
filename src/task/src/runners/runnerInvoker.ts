@@ -3,11 +3,11 @@
  * Licensed under the MIT License.
  */
 
-import AzurePipelinesRunnerInvoker from "./azurePipelinesRunnerInvoker.js";
-import { EndpointAuthorization } from "./endpointAuthorization.js";
-import ExecOutput from "./execOutput.js";
-import GitHubRunnerInvoker from "./gitHubRunnerInvoker.js";
-import RunnerInvokerInterface from "./runnerInvokerInterface.js";
+import type AzurePipelinesRunnerInvoker from "./azurePipelinesRunnerInvoker.js";
+import type { EndpointAuthorization } from "./endpointAuthorization.js";
+import type ExecOutput from "./execOutput.js";
+import type GitHubRunnerInvoker from "./gitHubRunnerInvoker.js";
+import type RunnerInvokerInterface from "./runnerInvokerInterface.js";
 
 /**
  * A wrapper around the runner functionality, to facilitate testability. This class cannot use logging functionality as

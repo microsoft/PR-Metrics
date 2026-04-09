@@ -5,8 +5,8 @@
 
 import * as InputsDefault from "./inputsDefault.js";
 import { decimalRadix, maxPatternCount } from "../utilities/constants.js";
-import Logger from "../utilities/logger.js";
-import RunnerInvoker from "../runners/runnerInvoker.js";
+import type Logger from "../utilities/logger.js";
+import type RunnerInvoker from "../runners/runnerInvoker.js";
 
 /**
  * A class representing inputs passed to the task.
@@ -174,7 +174,7 @@ export default class Inputs {
 
     const convertedValue: number =
       baseSize === null ? NaN : parseInt(baseSize, decimalRadix);
-    if (!isNaN(convertedValue) && convertedValue > 0) {
+    if (!Number.isNaN(convertedValue) && convertedValue > 0) {
       this._baseSize = convertedValue;
       const baseSizeString: string = this._baseSize.toLocaleString();
       this._logger.logInfo(
@@ -202,8 +202,8 @@ export default class Inputs {
     const convertedValue: number =
       growthRate === null ? NaN : parseFloat(growthRate);
     if (
-      !isNaN(convertedValue) &&
-      isFinite(convertedValue) &&
+      !Number.isNaN(convertedValue) &&
+      Number.isFinite(convertedValue) &&
       convertedValue > 1.0
     ) {
       this._growthRate = convertedValue;
@@ -233,8 +233,8 @@ export default class Inputs {
     const convertedValue: number =
       testFactor === null ? NaN : parseFloat(testFactor);
     if (
-      !isNaN(convertedValue) &&
-      isFinite(convertedValue) &&
+      !Number.isNaN(convertedValue) &&
+      Number.isFinite(convertedValue) &&
       convertedValue >= 0.0
     ) {
       if (convertedValue === 0.0) {

@@ -6,9 +6,9 @@
 import * as AssertExtensions from "../testUtilities/assertExtensions.js";
 import { deepEqual, instance, mock, verify, when } from "ts-mockito";
 import AzureDevOpsApiWrapper from "../../src/wrappers/azureDevOpsApiWrapper.js";
-import { EndpointAuthorization } from "azure-pipelines-task-lib";
-import { IRequestHandler } from "azure-devops-node-api/interfaces/common/VsoBaseInterfaces.js";
-import { ITaskApi } from "azure-devops-node-api/TaskApi.js";
+import type { EndpointAuthorization } from "azure-pipelines-task-lib";
+import type { IRequestHandler } from "azure-devops-node-api/interfaces/common/VsoBaseInterfaces.js";
+import type { ITaskApi } from "azure-devops-node-api/TaskApi.js";
 import Logger from "../../src/utilities/logger.js";
 import RunnerInvoker from "../../src/runners/runnerInvoker.js";
 import TokenManager from "../../src/repos/tokenManager.js";

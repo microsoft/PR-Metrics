@@ -54,7 +54,7 @@ export const validateNumber = (
     value === null ||
     typeof value === "undefined" ||
     value === 0 ||
-    isNaN(value)
+    Number.isNaN(value)
   ) {
     throw new TypeError(
       `'${valueName}', accessed within '${methodName}', is invalid, null, or undefined '${String(value)}'.`,
