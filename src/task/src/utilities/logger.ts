@@ -3,8 +3,8 @@
  * Licensed under the MIT License.
  */
 
-import ConsoleWrapper from "../wrappers/consoleWrapper.js";
-import RunnerInvoker from "../runners/runnerInvoker.js";
+import type ConsoleWrapper from "../wrappers/consoleWrapper.js";
+import type RunnerInvoker from "../runners/runnerInvoker.js";
 
 /**
  * A class for logging messages.

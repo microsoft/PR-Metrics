@@ -1,0 +1,14 @@
+{
+  "$schema": "https://biomejs.dev/schemas/latest/schema.json",
+  "files": {
+    "includes": ["src/**/*.ts"]
+  },
+  "linter": {
+    "rules": {
+      "recommended": true,
+      "complexity": {
+        "noUselessSwitchCase": "off"
+      }
+    }
+  }
+}

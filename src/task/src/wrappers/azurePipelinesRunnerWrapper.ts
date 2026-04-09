@@ -4,7 +4,7 @@
  */
 
 import * as taskLib from "azure-pipelines-task-lib/task.js";
-import {
+import type {
   IExecOptions,
   IExecSyncResult,
 } from "azure-pipelines-task-lib/toolrunner.js";

@@ -4,7 +4,7 @@
  */
 
 import * as azureDevOpsApi from "azure-devops-node-api";
-import { IRequestHandler } from "azure-devops-node-api/interfaces/common/VsoBaseInterfaces.js";
+import type { IRequestHandler } from "azure-devops-node-api/interfaces/common/VsoBaseInterfaces.js";
 
 /**
  * A wrapper around the Azure DevOps API, to facilitate testability.
