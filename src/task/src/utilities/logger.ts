@@ -10,6 +10,14 @@ import type RunnerInvoker from "../runners/runnerInvoker.js";
  * A class for logging messages.
  */
 export default class Logger {
+  private static readonly _sensitiveProperties: Set<string> = new Set<string>([
+    "AUTHORIZATION",
+    "COOKIE",
+    "PASSWORD",
+    "SECRET",
+    "TOKEN",
+  ]);
+
   private readonly _consoleWrapper: ConsoleWrapper;
   private readonly _runnerInvoker: RunnerInvoker;
 
@@ -36,6 +44,17 @@ export default class Logger {
   private static filterMessage(message: string): string {
     return message.replace(/##(?:vso)?\[/giu, "").replace(/[\n\r]/gu, " ");
   }
+
+  private static readonly _redactReplacer = (
+    key: string,
+    value: unknown,
+  ): unknown => {
+    if (key !== "" && Logger._sensitiveProperties.has(key.toUpperCase())) {
+      return "[REDACTED]";
+    }
+
+    return value;
+  };
 
   /**
    * Logs a debug message.
@@ -82,14 +101,6 @@ export default class Logger {
    * @param error The error object to log.
    */
   public logErrorObject(error: Error): void {
-    const sensitiveProperties: Set<string> = new Set<string>([
-      "AUTHORIZATION",
-      "COOKIE",
-      "PASSWORD",
-      "SECRET",
-      "TOKEN",
-    ]);
-
     const { name } = error;
     const properties: string[] = Object.getOwnPropertyNames(error);
     const errorRecord: Record<string, unknown> = error as unknown as Record<
@@ -97,12 +108,12 @@ export default class Logger {
       unknown
     >;
     for (const property of properties) {
-      if (sensitiveProperties.has(property.toUpperCase())) {
+      if (Logger._sensitiveProperties.has(property.toUpperCase())) {
         this.logInfo(`${name} – ${property}: [REDACTED]`);
       } else {
         try {
           this.logInfo(
-            `${name} – ${property}: ${JSON.stringify(errorRecord[property])}`,
+            `${name} – ${property}: ${JSON.stringify(errorRecord[property], Logger._redactReplacer)}`,
           );
         } catch {
           this.logInfo(`${name} – ${property}: [COULD NOT SERIALIZE]`);

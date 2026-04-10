@@ -247,6 +247,33 @@ describe("logger.ts", (): void => {
       verify(consoleWrapper.log("Error – token: [REDACTED]")).once();
     });
 
+    it("should redact nested sensitive properties of the error object", (): void => {
+      // Arrange
+      const logger: Logger = new Logger(
+        instance(consoleWrapper),
+        instance(runnerInvoker),
+      );
+      const error: Error = new Error("Message");
+      error.name = "Error";
+      (error as unknown as Record<string, unknown>).request = {
+        headers: { authorization: "secret-token" },
+        method: "GET",
+        url: "https://api.github.com",
+      };
+
+      // Act
+      logger.logErrorObject(error);
+
+      // Assert
+      verify(consoleWrapper.log('Error – name: "Error"')).once();
+      verify(consoleWrapper.log('Error – message: "Message"')).once();
+      verify(
+        consoleWrapper.log(
+          'Error – request: {"headers":{"authorization":"[REDACTED]"},"method":"GET","url":"https://api.github.com"}',
+        ),
+      ).once();
+    });
+
     it("should handle non-serializable properties of the error object", (): void => {
       // Arrange
       const logger: Logger = new Logger(
