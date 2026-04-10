@@ -45,13 +45,13 @@ describe("gitHubRunnerInvoker.js", (): void => {
         stdout: "Output",
       };
       when(
-        gitHubRunnerWrapper.exec("TOOL", "Argument1 Argument2", any()),
+        gitHubRunnerWrapper.exec("TOOL", deepEqual(["Argument1", "Argument2"]), any()),
       ).thenResolve(execResult);
 
       // Act
       const result: ExecOutput = await gitHubRunnerInvoker.exec(
         "TOOL",
-        "Argument1 Argument2",
+        ["Argument1", "Argument2"],
       );
 
       // Assert
@@ -65,7 +65,7 @@ describe("gitHubRunnerInvoker.js", (): void => {
       verify(
         gitHubRunnerWrapper.exec(
           "TOOL",
-          "Argument1 Argument2",
+          deepEqual(["Argument1", "Argument2"]),
           deepEqual(options),
         ),
       ).once();

@@ -91,7 +91,7 @@ describe("tokenManager.ts", (): void => {
     when(
       runnerInvoker.exec(
         "az",
-        `login --service-principal -u ${servicePrincipalId} --tenant ${tenantId} --allow-no-subscriptions --federated-token OidcToken`,
+        deepEqual(["login", "--service-principal", "-u", servicePrincipalId, "--tenant", tenantId, "--allow-no-subscriptions", "--federated-token", "OidcToken"]),
       ),
     ).thenResolve({
       exitCode: 0,
@@ -101,7 +101,7 @@ describe("tokenManager.ts", (): void => {
     when(
       runnerInvoker.exec(
         "az",
-        "account get-access-token --query accessToken --resource 499b84ac-1321-427f-aa17-267ca6975798 -o tsv",
+        deepEqual(["account", "get-access-token", "--query", "accessToken", "--resource", "499b84ac-1321-427f-aa17-267ca6975798", "-o", "tsv"]),
       ),
     ).thenResolve({
       exitCode: 0,
@@ -556,7 +556,7 @@ describe("tokenManager.ts", (): void => {
     when(
       runnerInvoker.exec(
         "az",
-        `login --service-principal -u ${servicePrincipalId} --tenant ${tenantId} --allow-no-subscriptions --federated-token OidcToken`,
+        deepEqual(["login", "--service-principal", "-u", servicePrincipalId, "--tenant", tenantId, "--allow-no-subscriptions", "--federated-token", "OidcToken"]),
       ),
     ).thenResolve({
       exitCode: 1,
@@ -592,7 +592,7 @@ describe("tokenManager.ts", (): void => {
     when(
       runnerInvoker.exec(
         "az",
-        "account get-access-token --query accessToken --resource 499b84ac-1321-427f-aa17-267ca6975798 -o tsv",
+        deepEqual(["account", "get-access-token", "--query", "accessToken", "--resource", "499b84ac-1321-427f-aa17-267ca6975798", "-o", "tsv"]),
       ),
     ).thenResolve({
       exitCode: 1,

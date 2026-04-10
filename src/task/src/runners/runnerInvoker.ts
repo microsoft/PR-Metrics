@@ -51,7 +51,7 @@ export default class RunnerInvoker implements RunnerInvokerInterface {
     return this._runnerInvoker;
   }
 
-  public async exec(tool: string, args: string): Promise<ExecOutput> {
+  public async exec(tool: string, args: string[]): Promise<ExecOutput> {
     return this.runner.exec(tool, args);
   }
 

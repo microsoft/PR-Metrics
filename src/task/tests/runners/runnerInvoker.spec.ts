@@ -57,13 +57,13 @@ describe("runnerInvoker.ts", (): void => {
         stdout: "Output",
       };
       when(
-        azurePipelinesRunnerInvoker.exec("TOOL", "Argument1 Argument2"),
+        azurePipelinesRunnerInvoker.exec("TOOL", deepEqual(["Argument1", "Argument2"])),
       ).thenResolve(execResult);
 
       // Act
       const result: ExecOutput = await runnerInvoker.exec(
         "TOOL",
-        "Argument1 Argument2",
+        ["Argument1", "Argument2"],
       );
 
       // Assert
@@ -71,9 +71,9 @@ describe("runnerInvoker.ts", (): void => {
       assert.equal(result.stderr, "Error");
       assert.equal(result.stdout, "Output");
       verify(
-        azurePipelinesRunnerInvoker.exec("TOOL", "Argument1 Argument2"),
+        azurePipelinesRunnerInvoker.exec("TOOL", deepEqual(["Argument1", "Argument2"])),
       ).once();
-      verify(gitHubRunnerInvoker.exec("TOOL", "Argument1 Argument2")).never();
+      verify(gitHubRunnerInvoker.exec("TOOL", deepEqual(["Argument1", "Argument2"]))).never();
     });
 
     it("should call the underlying method when running on GitHub", async (): Promise<void> => {
@@ -88,14 +88,14 @@ describe("runnerInvoker.ts", (): void => {
         stderr: "Error",
         stdout: "Output",
       };
-      when(gitHubRunnerInvoker.exec("TOOL", "Argument1 Argument2")).thenResolve(
+      when(gitHubRunnerInvoker.exec("TOOL", deepEqual(["Argument1", "Argument2"]))).thenResolve(
         execResult,
       );
 
       // Act
       const result: ExecOutput = await runnerInvoker.exec(
         "TOOL",
-        "Argument1 Argument2",
+        ["Argument1", "Argument2"],
       );
 
       // Assert
@@ -103,9 +103,9 @@ describe("runnerInvoker.ts", (): void => {
       assert.equal(result.stderr, "Error");
       assert.equal(result.stdout, "Output");
       verify(
-        azurePipelinesRunnerInvoker.exec("TOOL", "Argument1 Argument2"),
+        azurePipelinesRunnerInvoker.exec("TOOL", deepEqual(["Argument1", "Argument2"])),
       ).never();
-      verify(gitHubRunnerInvoker.exec("TOOL", "Argument1 Argument2")).once();
+      verify(gitHubRunnerInvoker.exec("TOOL", deepEqual(["Argument1", "Argument2"]))).once();
 
       // Finalization
       delete process.env.GITHUB_ACTION;
@@ -123,18 +123,18 @@ describe("runnerInvoker.ts", (): void => {
         stderr: "Error",
         stdout: "Output",
       };
-      when(gitHubRunnerInvoker.exec("TOOL", "Argument1 Argument2")).thenResolve(
+      when(gitHubRunnerInvoker.exec("TOOL", deepEqual(["Argument1", "Argument2"]))).thenResolve(
         execResult,
       );
 
       // Act
       const result1: ExecOutput = await runnerInvoker.exec(
         "TOOL",
-        "Argument1 Argument2",
+        ["Argument1", "Argument2"],
       );
       const result2: ExecOutput = await runnerInvoker.exec(
         "TOOL",
-        "Argument1 Argument2",
+        ["Argument1", "Argument2"],
       );
 
       // Assert
@@ -145,9 +145,9 @@ describe("runnerInvoker.ts", (): void => {
       assert.equal(result2.stderr, "Error");
       assert.equal(result2.stdout, "Output");
       verify(
-        azurePipelinesRunnerInvoker.exec("TOOL", "Argument1 Argument2"),
+        azurePipelinesRunnerInvoker.exec("TOOL", deepEqual(["Argument1", "Argument2"])),
       ).never();
-      verify(gitHubRunnerInvoker.exec("TOOL", "Argument1 Argument2")).twice();
+      verify(gitHubRunnerInvoker.exec("TOOL", deepEqual(["Argument1", "Argument2"]))).twice();
 
       // Finalization
       delete process.env.GITHUB_ACTION;

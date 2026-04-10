@@ -171,7 +171,7 @@ export default class GitInvoker {
     this._logger.logDebug("* GitInvoker.isGitRepo()");
 
     try {
-      await this.invokeGit("rev-parse --is-inside-work-tree");
+      await this.invokeGit(["rev-parse", "--is-inside-work-tree"]);
       return true;
     } catch {
       return false;
@@ -198,9 +198,11 @@ export default class GitInvoker {
     this.initialize();
 
     try {
-      await this.invokeGit(
-        `rev-parse --branch origin/${this._targetBranch}...pull/${this._pullRequestIdInternal}/merge`,
-      );
+      await this.invokeGit([
+        "rev-parse",
+        "--branch",
+        `origin/${this._targetBranch}...pull/${this._pullRequestIdInternal}/merge`,
+      ]);
       return true;
     } catch {
       return false;
@@ -215,9 +217,12 @@ export default class GitInvoker {
     this._logger.logDebug("* GitInvoker.getDiffSummary()");
 
     this.initialize();
-    return this.invokeGit(
-      `diff --numstat --ignore-all-space origin/${this._targetBranch}...pull/${this._pullRequestIdInternal}/merge`,
-    );
+    return this.invokeGit([
+      "diff",
+      "--numstat",
+      "--ignore-all-space",
+      `origin/${this._targetBranch}...pull/${this._pullRequestIdInternal}/merge`,
+    ]);
   }
 
   private initialize(): void {
@@ -238,7 +243,7 @@ export default class GitInvoker {
     this._isInitialized = true;
   }
 
-  private async invokeGit(parameters: string): Promise<string> {
+  private async invokeGit(parameters: string[]): Promise<string> {
     this._logger.logDebug("* GitInvoker.invokeGit()");
 
     const result: ExecOutput = await this._runnerInvoker.exec(

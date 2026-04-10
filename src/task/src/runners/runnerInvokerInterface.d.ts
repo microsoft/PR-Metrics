@@ -16,7 +16,7 @@ export default interface RunnerInvokerInterface {
    * @param args The arguments to pass to the tool.
    * @returns A promise containing the result of the execution.
    */
-  exec: (tool: string, args: string) => Promise<ExecOutput>;
+  exec: (tool: string, args: string[]) => Promise<ExecOutput>;
 
   /**
    * Gets the value of an input.
