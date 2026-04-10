@@ -3,6 +3,7 @@
  * Licensed under the MIT License.
  */
 
+import * as path from "node:path";
 import type { CodeFileMetricInterface } from "./codeFileMetricInterface.js";
 import CodeMetricsData from "./codeMetricsData.js";
 import type { FixedLengthArrayInterface } from "../utilities/fixedLengthArrayInterface.js";
@@ -27,7 +28,7 @@ export default class CodeMetrics {
   private readonly _logger: Logger;
   private readonly _runnerInvoker: RunnerInvoker;
 
-  private _isInitialized = false;
+  private _initializePromise: Promise<void> | null = null;
   private readonly _filesNotRequiringReview: string[] = [];
   private readonly _deletedFilesNotRequiringReview: string[] = [];
   private _size = "";
@@ -83,7 +84,7 @@ export default class CodeMetrics {
     this._logger.logDebug("* CodeMetrics.getFilesNotRequiringReview()");
 
     await this.initialize();
-    return this._filesNotRequiringReview;
+    return [...this._filesNotRequiringReview];
   }
 
   /**
@@ -94,7 +95,7 @@ export default class CodeMetrics {
     this._logger.logDebug("* CodeMetrics.getDeletedFilesNotRequiringReview()");
 
     await this.initialize();
-    return this._deletedFilesNotRequiringReview;
+    return [...this._deletedFilesNotRequiringReview];
   }
 
   /**
@@ -158,15 +159,18 @@ export default class CodeMetrics {
   private async initialize(): Promise<void> {
     this._logger.logDebug("* CodeMetrics.initialize()");
 
-    if (this._isInitialized) {
-      return;
-    }
+    this._initializePromise ??= this.performInitialization();
+
+    return this._initializePromise;
+  }
+
+  private async performInitialization(): Promise<void> {
+    this._logger.logDebug("* CodeMetrics.performInitialization()");
 
     const gitDiffSummary: string = (
       await this._gitInvoker.getDiffSummary()
     ).trim();
 
-    this._isInitialized = true;
     if (gitDiffSummary !== "") {
       this.initializeMetrics(gitDiffSummary);
     }
@@ -284,10 +288,7 @@ export default class CodeMetrics {
   private matchFileExtension(fileName: string): boolean {
     this._logger.logDebug("* CodeMetrics.matchFileExtension()");
 
-    const fileExtensionIndex: number = fileName.lastIndexOf(".");
-    const fileExtension: string = fileName
-      .substring(fileExtensionIndex + 1)
-      .toLowerCase();
+    const fileExtension: string = path.extname(fileName).slice(1).toLowerCase();
     const result: boolean = this._inputs.codeFileExtensions.has(fileExtension);
 
     this._logger.logDebug(

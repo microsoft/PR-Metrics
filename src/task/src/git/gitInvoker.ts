@@ -102,42 +102,18 @@ export default class GitInvoker {
     }
 
     if (variable === "GitHub" || variable === "GitHubEnterprise") {
-      const result: string | undefined =
-        process.env.SYSTEM_PULLREQUEST_PULLREQUESTNUMBER;
-      if (typeof result === "undefined") {
-        this._logger.logWarning(
-          "'SYSTEM_PULLREQUEST_PULLREQUESTNUMBER' is undefined.",
-        );
-        return "";
-      }
-
-      if (!/^\d+$/u.test(result)) {
-        this._logger.logWarning(
-          `'SYSTEM_PULLREQUEST_PULLREQUESTNUMBER' is not numeric '${result}'.`,
-        );
-        return "";
-      }
-
-      return result;
-    }
-
-    const result: string | undefined =
-      process.env.SYSTEM_PULLREQUEST_PULLREQUESTID;
-    if (typeof result === "undefined") {
-      this._logger.logWarning(
-        "'SYSTEM_PULLREQUEST_PULLREQUESTID' is undefined.",
+      return (
+        this.getNumericEnvironmentVariable(
+          "SYSTEM_PULLREQUEST_PULLREQUESTNUMBER",
+        ) ?? ""
       );
-      return "";
     }
 
-    if (!/^\d+$/u.test(result)) {
-      this._logger.logWarning(
-        `'SYSTEM_PULLREQUEST_PULLREQUESTID' is not numeric '${result}'.`,
-      );
-      return "";
-    }
-
-    return result;
+    return (
+      this.getNumericEnvironmentVariable(
+        "SYSTEM_PULLREQUEST_PULLREQUESTID",
+      ) ?? ""
+    );
   }
 
   private get targetBranch(): string {
@@ -218,6 +194,25 @@ export default class GitInvoker {
     return this.invokeGit(
       `diff --numstat --ignore-all-space origin/${this._targetBranch}...pull/${this._pullRequestIdInternal}/merge`,
     );
+  }
+
+  private getNumericEnvironmentVariable(variableName: string): string | null {
+    this._logger.logDebug("* GitInvoker.getNumericEnvironmentVariable()");
+
+    const value: string | undefined = process.env[variableName];
+    if (typeof value === "undefined") {
+      this._logger.logWarning(`'${variableName}' is undefined.`);
+      return null;
+    }
+
+    if (!/^\d+$/u.test(value)) {
+      this._logger.logWarning(
+        `'${variableName}' is not numeric '${value}'.`,
+      );
+      return null;
+    }
+
+    return value;
   }
 
   private initialize(): void {

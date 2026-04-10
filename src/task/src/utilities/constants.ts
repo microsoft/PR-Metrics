@@ -17,3 +17,8 @@ export const exitCodeForFailure = 1;
  * The maximum number of matching patterns that can be specified for file or test matching.
  */
 export const maxPatternCount = 200;
+
+/**
+ * The user agent string used for GitHub API requests.
+ */
+export const userAgent = "PRMetrics/v1.7.13";

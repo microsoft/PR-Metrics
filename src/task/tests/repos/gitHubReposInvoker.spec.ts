@@ -198,7 +198,35 @@ describe("gitHubReposInvoker.ts", (): void => {
       });
     }
 
-    it("should throw when SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI is set to an invalid URL and the task is running on Azure Pipelines", async (): Promise<void> => {
+    it("should throw when SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI is set to a non-parseable URL and the task is running on Azure Pipelines", async (): Promise<void> => {
+      // Arrange
+      process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI = "not-a-valid-url";
+      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
+        instance(gitInvoker),
+        instance(logger),
+        instance(octokitWrapper),
+        instance(runnerInvoker),
+      );
+
+      // Act
+      const func: () => Promise<PullRequestDetailsInterface> = async () =>
+        gitHubReposInvoker.getTitleAndDescription();
+
+      // Assert
+      await AssertExtensions.toThrowAsync(
+        func,
+        "SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI 'not-a-valid-url' is in an unexpected format.",
+      );
+      verify(
+        logger.logDebug("* GitHubReposInvoker.getTitleAndDescription()"),
+      ).once();
+      verify(logger.logDebug("* GitHubReposInvoker.initialize()")).once();
+      verify(
+        logger.logDebug("* GitHubReposInvoker.initializeForAzureDevOps()"),
+      ).once();
+    });
+
+    it("should throw when SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI is set to a URL with insufficient path segments and the task is running on Azure Pipelines", async (): Promise<void> => {
       // Arrange
       process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI =
         "https://github.com/microsoft";

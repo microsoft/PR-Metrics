@@ -99,48 +99,54 @@ export default class PullRequestComments {
 
     const metrics: CodeMetricsData = await this._codeMetrics.getMetrics();
 
-    let result = `${this._runnerInvoker.loc("pullRequests.pullRequestComments.commentTitle")}\n`;
-    result += await this.addCommentSizeStatus();
-    result += await this.addCommentTestStatus();
-
-    result += `||${this._runnerInvoker.loc("pullRequests.pullRequestComments.tableLines")}\n`;
-    result += "-|-:\n";
-    result += this.addCommentMetrics(
-      this._runnerInvoker.loc(
-        "pullRequests.pullRequestComments.tableProductCode",
+    const parts: string[] = [
+      `${this._runnerInvoker.loc("pullRequests.pullRequestComments.commentTitle")}\n`,
+      await this.addCommentSizeStatus(),
+      await this.addCommentTestStatus(),
+      `||${this._runnerInvoker.loc("pullRequests.pullRequestComments.tableLines")}\n`,
+      "-|-:\n",
+      this.addCommentMetrics(
+        this._runnerInvoker.loc(
+          "pullRequests.pullRequestComments.tableProductCode",
+        ),
+        metrics.productCode,
+        false,
       ),
-      metrics.productCode,
-      false,
-    );
-    result += this.addCommentMetrics(
-      this._runnerInvoker.loc("pullRequests.pullRequestComments.tableTestCode"),
-      metrics.testCode,
-      false,
-    );
-    result += this.addCommentMetrics(
-      this._runnerInvoker.loc("pullRequests.pullRequestComments.tableSubtotal"),
-      metrics.subtotal,
-      true,
-    );
-    result += this.addCommentMetrics(
-      this._runnerInvoker.loc(
-        "pullRequests.pullRequestComments.tableIgnoredCode",
+      this.addCommentMetrics(
+        this._runnerInvoker.loc(
+          "pullRequests.pullRequestComments.tableTestCode",
+        ),
+        metrics.testCode,
+        false,
       ),
-      metrics.ignoredCode,
-      false,
-    );
-    result += this.addCommentMetrics(
-      this._runnerInvoker.loc("pullRequests.pullRequestComments.tableTotal"),
-      metrics.total,
-      true,
-    );
+      this.addCommentMetrics(
+        this._runnerInvoker.loc(
+          "pullRequests.pullRequestComments.tableSubtotal",
+        ),
+        metrics.subtotal,
+        true,
+      ),
+      this.addCommentMetrics(
+        this._runnerInvoker.loc(
+          "pullRequests.pullRequestComments.tableIgnoredCode",
+        ),
+        metrics.ignoredCode,
+        false,
+      ),
+      this.addCommentMetrics(
+        this._runnerInvoker.loc(
+          "pullRequests.pullRequestComments.tableTotal",
+        ),
+        metrics.total,
+        true,
+      ),
+      "\n",
+      this._runnerInvoker.loc(
+        "pullRequests.pullRequestComments.commentFooter",
+      ),
+    ];
 
-    result += "\n";
-    result += this._runnerInvoker.loc(
-      "pullRequests.pullRequestComments.commentFooter",
-    );
-
-    return result;
+    return parts.join("");
   }
 
   /**
