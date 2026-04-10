@@ -29,9 +29,9 @@ export default class Logger {
   }
 
   /**
-   * Filter messages so that control strings are not printed to `stdout`.
+   * Filter messages so that control strings and newlines are not printed to `stdout`.
    * @param message The message to filter.
-   * @returns The filtered message.
+   * @returns The filtered message with control prefixes removed and newlines replaced by spaces.
    */
   private static filterMessage(message: string): string {
     return message.replace(/##(?:vso)?\[/giu, "").replace(/[\n\r]/gu, " ");

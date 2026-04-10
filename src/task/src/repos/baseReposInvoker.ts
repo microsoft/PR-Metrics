@@ -15,10 +15,11 @@ import { StatusCodes } from "http-status-codes";
  */
 export default abstract class BaseReposInvoker implements ReposInvokerInterface {
   /**
-   * Invokes an API call, augmenting any errors that may be thrown due to insufficient access.
+   * Invokes an API call, augmenting any errors that may be thrown due to insufficient access or missing resources.
    * @typeParam Response The type of the response from the API call.
    * @param action The action defining the API call to invoke.
    * @param accessErrorMessage The error message to insert if a caught error is due to insufficient access.
+   * @param notFoundErrorMessage The error message to insert if a caught error is due to a missing resource.
    * @returns A promise containing the response from the API call.
    */
   protected static async invokeApiCall<Response>(
