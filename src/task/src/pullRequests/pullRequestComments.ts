@@ -134,16 +134,12 @@ export default class PullRequestComments {
         false,
       ),
       this.addCommentMetrics(
-        this._runnerInvoker.loc(
-          "pullRequests.pullRequestComments.tableTotal",
-        ),
+        this._runnerInvoker.loc("pullRequests.pullRequestComments.tableTotal"),
         metrics.total,
         true,
       ),
       "\n",
-      this._runnerInvoker.loc(
-        "pullRequests.pullRequestComments.commentFooter",
-      ),
+      this._runnerInvoker.loc("pullRequests.pullRequestComments.commentFooter"),
     ];
 
     return parts.join("");

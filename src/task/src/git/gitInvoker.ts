@@ -110,9 +110,8 @@ export default class GitInvoker {
     }
 
     return (
-      this.getNumericEnvironmentVariable(
-        "SYSTEM_PULLREQUEST_PULLREQUESTID",
-      ) ?? ""
+      this.getNumericEnvironmentVariable("SYSTEM_PULLREQUEST_PULLREQUESTID") ??
+      ""
     );
   }
 
@@ -206,9 +205,7 @@ export default class GitInvoker {
     }
 
     if (!/^\d+$/u.test(value)) {
-      this._logger.logWarning(
-        `'${variableName}' is not numeric '${value}'.`,
-      );
+      this._logger.logWarning(`'${variableName}' is not numeric '${value}'.`);
       return null;
     }
 
