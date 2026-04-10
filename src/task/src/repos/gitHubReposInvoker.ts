@@ -260,9 +260,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
       this._runnerInvoker.loc(
         "repos.gitHubReposInvoker.insufficientGitHubAccessTokenPermissions",
       ),
-      this._runnerInvoker.loc(
-        "repos.baseReposInvoker.resourceNotFound",
-      ),
+      this._runnerInvoker.loc("repos.baseReposInvoker.resourceNotFound"),
     );
   }
 
