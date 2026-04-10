@@ -77,6 +77,11 @@ describe("azureReposInvoker.ts", (): void => {
     ).thenReturn(
       "Could not access the Workload Identity Federation or Personal Access Token (PAT). Add the 'WorkloadIdentityFederation' input or 'PR_Metrics_Access_Token' as a secret environment variable.",
     );
+    when(
+      runnerInvoker.loc("repos.baseReposInvoker.resourceNotFound"),
+    ).thenReturn(
+      "The resource could not be found. Verify the repository and pull request exist.",
+    );
 
     tokenManager = mock(TokenManager);
   });

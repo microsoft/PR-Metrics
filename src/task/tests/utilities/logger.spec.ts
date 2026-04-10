@@ -267,7 +267,7 @@ describe("logger.ts", (): void => {
       // Assert
       verify(consoleWrapper.log('Error – name: "Error"')).once();
       verify(consoleWrapper.log('Error – message: "Message"')).once();
-      verify(consoleWrapper.log("Error – data: [Could not serialize]")).once();
+      verify(consoleWrapper.log("Error – data: [COULD NOT SERIALIZE]")).once();
     });
 
     it("should log all properties of a complex error object", (): void => {

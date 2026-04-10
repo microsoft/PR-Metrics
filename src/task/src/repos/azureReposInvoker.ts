@@ -332,6 +332,9 @@ export default class AzureReposInvoker extends BaseReposInvoker {
       this._runnerInvoker.loc(
         "repos.azureReposInvoker.insufficientAzureReposAccessTokenPermissions",
       ),
+      this._runnerInvoker.loc(
+        "repos.baseReposInvoker.resourceNotFound",
+      ),
     );
   }
 

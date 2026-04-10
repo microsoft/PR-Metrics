@@ -79,6 +79,11 @@ describe("gitHubReposInvoker.ts", (): void => {
     ).thenReturn(
       "Could not access the Personal Access Token (PAT). Add 'PR_Metrics_Access_Token' as a secret environment variable with Read and Write access to Pull Requests (or access to 'repos' if using a Classic PAT, or write access to 'pull-requests' and 'statuses' if specified within the workflow YAML).",
     );
+    when(
+      runnerInvoker.loc("repos.baseReposInvoker.resourceNotFound"),
+    ).thenReturn(
+      "The resource could not be found. Verify the repository and pull request exist.",
+    );
   });
 
   afterEach((): void => {

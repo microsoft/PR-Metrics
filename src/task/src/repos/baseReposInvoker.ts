@@ -24,6 +24,7 @@ export default abstract class BaseReposInvoker implements ReposInvokerInterface 
   protected static async invokeApiCall<Response>(
     action: () => Promise<Response>,
     accessErrorMessage: string,
+    notFoundErrorMessage: string,
   ): Promise<Response> {
     try {
       return await action();
@@ -40,7 +41,7 @@ export default abstract class BaseReposInvoker implements ReposInvokerInterface 
         castedError.message = accessErrorMessage;
       } else if (statusCode === StatusCodes.NOT_FOUND) {
         castedError.internalMessage = castedError.message;
-        castedError.message = `The resource could not be found. Verify the repository and pull request exist. Original error: ${castedError.message}`;
+        castedError.message = `${notFoundErrorMessage} Original error: ${castedError.internalMessage}`;
       }
 
       throw castedError;
