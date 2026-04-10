@@ -20,7 +20,7 @@ import type { OctokitOptions } from "@octokit/core";
 import type OctokitWrapper from "../wrappers/octokitWrapper.js";
 import PullRequestCommentData from "./interfaces/pullRequestCommentData.js";
 import type PullRequestDetailsInterface from "./interfaces/pullRequestDetailsInterface.js";
-import { RequestError } from "octokit";
+import { RequestError } from "@octokit/request-error";
 import RunnerInvoker from "../runners/runnerInvoker.js";
 import { StatusCodes } from "http-status-codes";
 import type UpdateIssueCommentResponse from "../wrappers/octokitInterfaces/updateIssueCommentResponse.js";
