@@ -66,7 +66,10 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
   public async isAccessTokenAvailable(): Promise<string | null> {
     this._logger.logDebug("* GitHubReposInvoker.isAccessTokenAvailable()");
 
-    if (typeof process.env.PR_METRICS_ACCESS_TOKEN === "undefined" || process.env.PR_METRICS_ACCESS_TOKEN === "") {
+    if (
+      typeof process.env.PR_METRICS_ACCESS_TOKEN === "undefined" ||
+      process.env.PR_METRICS_ACCESS_TOKEN === ""
+    ) {
       return Promise.resolve(
         this._runnerInvoker.loc("repos.gitHubReposInvoker.noGitHubAccessToken"),
       );
@@ -411,9 +414,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     if (typeof result.headers.link !== "undefined") {
       const commitsLink: string = result.headers.link;
       const matches: RegExpMatchArray | null =
-        /<.+?page=(?<pageNumber>\d+)>;\s*rel="last"/u.exec(
-          commitsLink,
-        );
+        /<.+?page=(?<pageNumber>\d+)>;\s*rel="last"/u.exec(commitsLink);
       if (typeof matches?.groups?.pageNumber === "undefined") {
         throw new Error(
           `The regular expression did not match '${commitsLink}'.`,

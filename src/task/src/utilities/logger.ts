@@ -105,9 +105,7 @@ export default class Logger {
             `${name} – ${property}: ${JSON.stringify(errorRecord[property])}`,
           );
         } catch {
-          this.logInfo(
-            `${name} – ${property}: [Could not serialize]`,
-          );
+          this.logInfo(`${name} – ${property}: [Could not serialize]`);
         }
       }
     }

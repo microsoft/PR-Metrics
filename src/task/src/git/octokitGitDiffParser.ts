@@ -111,9 +111,11 @@ export default class OctokitGitDiffParser {
      * For each diff, reinstate the "diff --git" prefix that was removed by the split. The first diff is excluded as it
      * will always be the empty string.
      */
-    return diffResponseLines.slice(1).map(
-      (diffResponseLine: string): string => `diff --git ${diffResponseLine}`,
-    );
+    return diffResponseLines
+      .slice(1)
+      .map(
+        (diffResponseLine: string): string => `diff --git ${diffResponseLine}`,
+      );
   }
 
   private processDiffs(diffs: string[]): Map<string, number> {
@@ -158,7 +160,10 @@ export default class OctokitGitDiffParser {
             }
 
             if (chunk) {
-              result.set(fileCasted.pathAfter, (chunk as Chunk).toFileRange.start);
+              result.set(
+                fileCasted.pathAfter,
+                (chunk as Chunk).toFileRange.start,
+              );
             }
 
             break;

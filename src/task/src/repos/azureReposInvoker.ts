@@ -124,7 +124,10 @@ export default class AzureReposInvoker extends BaseReposInvoker {
       return tokenManagerResult;
     }
 
-    if (typeof process.env.PR_METRICS_ACCESS_TOKEN === "undefined" || process.env.PR_METRICS_ACCESS_TOKEN === "") {
+    if (
+      typeof process.env.PR_METRICS_ACCESS_TOKEN === "undefined" ||
+      process.env.PR_METRICS_ACCESS_TOKEN === ""
+    ) {
       return this._runnerInvoker.loc(
         "repos.azureReposInvoker.noAzureReposAccessToken",
       );

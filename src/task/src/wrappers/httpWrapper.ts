@@ -15,9 +15,13 @@ export default class HttpWrapper {
    * @returns The contents of the URL.
    */
   public async getUrl(url: string): Promise<string> {
-    const response: Response = await fetch(url, { signal: AbortSignal.timeout(httpTimeoutMs) });
+    const response: Response = await fetch(url, {
+      signal: AbortSignal.timeout(httpTimeoutMs),
+    });
     if (!response.ok) {
-      throw new Error(`HTTP request to '${url}' failed with status ${String(response.status)} (${response.statusText}).`);
+      throw new Error(
+        `HTTP request to '${url}' failed with status ${String(response.status)} (${response.statusText}).`,
+      );
     }
 
     return response.text();

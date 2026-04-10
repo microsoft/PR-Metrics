@@ -40,7 +40,8 @@ export default class PullRequest {
     this._logger.logDebug("* PullRequest.isPullRequest");
 
     return RunnerInvoker.isGitHub
-      ? typeof process.env.GITHUB_BASE_REF !== "undefined" && process.env.GITHUB_BASE_REF !== ""
+      ? typeof process.env.GITHUB_BASE_REF !== "undefined" &&
+          process.env.GITHUB_BASE_REF !== ""
       : typeof process.env.SYSTEM_PULLREQUEST_PULLREQUESTID !== "undefined";
   }
 
