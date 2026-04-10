@@ -4,7 +4,7 @@
  */
 
 import * as AssertExtensions from "../testUtilities/assertExtensions.js";
-import { instance, mock, verify, when } from "ts-mockito";
+import { deepEqual, instance, mock, verify, when } from "ts-mockito";
 import type { ExecOutput } from "@actions/exec";
 import GitInvoker from "../../src/git/gitInvoker.js";
 import Logger from "../../src/utilities/logger.js";
@@ -26,7 +26,11 @@ describe("gitInvoker.ts", (): void => {
     when(
       runnerInvoker.exec(
         "git",
-        "rev-parse --branch origin/develop...pull/12345/merge",
+        deepEqual([
+          "rev-parse",
+          "--branch",
+          "origin/develop...pull/12345/merge",
+        ]),
       ),
     ).thenCall(async (): Promise<ExecOutput> => {
       const testCommitId = "7235cb16e5e6ac83e3cbecae66bab557e9e2cee6";
@@ -39,7 +43,12 @@ describe("gitInvoker.ts", (): void => {
     when(
       runnerInvoker.exec(
         "git",
-        "diff --numstat --ignore-all-space origin/develop...pull/12345/merge",
+        deepEqual([
+          "diff",
+          "--numstat",
+          "--ignore-all-space",
+          "origin/develop...pull/12345/merge",
+        ]),
       ),
     ).thenCall(
       async (): Promise<ExecOutput> =>
@@ -397,7 +406,10 @@ describe("gitInvoker.ts", (): void => {
         it(`should return true when called from a Git repo returning '${response.replace(/\n/gu, "\\n")}'`, async (): Promise<void> => {
           // Arrange
           when(
-            runnerInvoker.exec("git", "rev-parse --is-inside-work-tree"),
+            runnerInvoker.exec(
+              "git",
+              deepEqual(["rev-parse", "--is-inside-work-tree"]),
+            ),
           ).thenCall(
             async (): Promise<ExecOutput> =>
               Promise.resolve({
@@ -425,7 +437,10 @@ describe("gitInvoker.ts", (): void => {
     it("should return false when not called from a Git repo", async (): Promise<void> => {
       // Arrange
       when(
-        runnerInvoker.exec("git", "rev-parse --is-inside-work-tree"),
+        runnerInvoker.exec(
+          "git",
+          deepEqual(["rev-parse", "--is-inside-work-tree"]),
+        ),
       ).thenCall(
         async (): Promise<ExecOutput> =>
           Promise.resolve({
@@ -797,7 +812,11 @@ describe("gitInvoker.ts", (): void => {
       when(
         runnerInvoker.exec(
           "git",
-          "rev-parse --branch origin/develop...pull/12345/merge",
+          deepEqual([
+            "rev-parse",
+            "--branch",
+            "origin/develop...pull/12345/merge",
+          ]),
         ),
       ).thenCall(
         async (): Promise<ExecOutput> =>
@@ -993,7 +1012,12 @@ describe("gitInvoker.ts", (): void => {
       when(
         runnerInvoker.exec(
           "git",
-          "diff --numstat --ignore-all-space origin/develop...pull/12345/merge",
+          deepEqual([
+            "diff",
+            "--numstat",
+            "--ignore-all-space",
+            "origin/develop...pull/12345/merge",
+          ]),
         ),
       ).thenCall(
         async (): Promise<ExecOutput> =>

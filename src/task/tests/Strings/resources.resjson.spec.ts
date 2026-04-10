@@ -8,7 +8,6 @@ import * as path from "node:path";
 import type ResourcesJsonInterface from "../../src/jsonTypes/resourcesJsonInterface.js";
 import type TaskJsonInterface from "../jsonTypes/taskJsonInterface.js";
 import assert from "node:assert/strict";
-import { globSync } from "glob";
 
 describe("resources.resjson", (): void => {
   const basePath: string = path.join(import.meta.dirname, "..", "..");
@@ -51,10 +50,10 @@ describe("resources.resjson", (): void => {
     taskLocJsonContents,
   ) as TaskJsonInterface;
 
-  const globBasePath = `${basePath.replace(/\\/gu, "/")}/`;
-  const typeScriptFiles: string[] = globSync(
-    `${globBasePath}!(node_modules|tests)/**/*.ts`,
-  ).concat(globSync(`${globBasePath}*.ts`));
+  const typeScriptFiles: string[] = [
+    ...fs.globSync("!(node_modules|tests)/**/*.ts", { cwd: basePath }),
+    ...fs.globSync("*.ts", { cwd: basePath }),
+  ].map((file: string): string => path.join(basePath, file));
   const typeScriptFileContents: string[] = typeScriptFiles.map((file: string) =>
     fs.readFileSync(file, "utf8").replace(/\s|\n|\r/gu, ""),
   );

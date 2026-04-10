@@ -10,7 +10,7 @@ import type GetIssueCommentsResponse from "./octokitInterfaces/getIssueCommentsR
 import type GetPullResponse from "./octokitInterfaces/getPullResponse.js";
 import type GetReviewCommentsResponse from "./octokitInterfaces/getReviewCommentsResponse.js";
 import type ListCommitsResponse from "./octokitInterfaces/listCommitsResponse.js";
-import { Octokit } from "octokit";
+import { Octokit } from "@octokit/rest";
 import type OctokitGitDiffParser from "../git/octokitGitDiffParser.js";
 import type { OctokitOptions } from "@octokit/core";
 import type UpdateIssueCommentResponse from "./octokitInterfaces/updateIssueCommentResponse.js";
