@@ -34,9 +34,7 @@ export default class Logger {
    * @returns The filtered message.
    */
   private static filterMessage(message: string): string {
-    return message
-      .replace(/##(?:vso)?\[/giu, "")
-      .replace(/[\n\r]/gu, " ");
+    return message.replace(/##(?:vso)?\[/giu, "").replace(/[\n\r]/gu, " ");
   }
 
   /**
