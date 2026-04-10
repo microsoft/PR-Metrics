@@ -83,11 +83,11 @@ export default class Logger {
    */
   public logErrorObject(error: Error): void {
     const sensitiveProperties: Set<string> = new Set<string>([
-      "authorization",
-      "cookie",
-      "password",
-      "secret",
-      "token",
+      "AUTHORIZATION",
+      "COOKIE",
+      "PASSWORD",
+      "SECRET",
+      "TOKEN",
     ]);
 
     const { name } = error;
@@ -97,7 +97,7 @@ export default class Logger {
       unknown
     >;
     for (const property of properties) {
-      if (sensitiveProperties.has(property.toLowerCase())) {
+      if (sensitiveProperties.has(property.toUpperCase())) {
         this.logInfo(`${name} – ${property}: [REDACTED]`);
       } else {
         try {
