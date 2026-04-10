@@ -742,7 +742,7 @@ describe("gitHubReposInvoker.ts", (): void => {
           // Assert
           const expectedMessage: string =
             status === StatusCodes.NOT_FOUND
-              ? "The resource could not be found. Verify the repository and pull request exist. Original error: Test"
+              ? "The resource could not be found. Verify the repository and pull request exist."
               : "Could not access the resources. Ensure the 'PR_Metrics_Access_Token' secret environment variable has Read and Write access to pull requests (or access to 'repos' if using a Classic PAT).";
           const result: ErrorWithStatusInterface =
             await AssertExtensions.toThrowAsync(func, expectedMessage);

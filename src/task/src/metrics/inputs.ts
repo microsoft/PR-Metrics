@@ -342,7 +342,8 @@ export default class Inputs {
         .replace(/\\/gu, "/")
         .replace(/\n$/gu, "")
         .split("\n")
-        .map((line: string): string => line.trim());
+        .map((line: string): string => line.trim())
+        .filter((line: string): boolean => line !== "");
       if (patterns.length > maxPatternCount) {
         this._logger.logWarning(
           `The matching pattern count '${patterns.length.toLocaleString()}' exceeds the maximum '${maxPatternCount.toLocaleString()}'. Using only the first '${maxPatternCount.toLocaleString()}'.`,
@@ -372,7 +373,8 @@ export default class Inputs {
       const codeFileExtensionsArray: string[] = codeFileExtensions
         .replace(/\n$/gu, "")
         .split("\n")
-        .map((line: string): string => line.trim());
+        .map((line: string): string => line.trim())
+        .filter((line: string): boolean => line !== "");
       for (const value of codeFileExtensionsArray) {
         let modifiedValue = value;
         if (modifiedValue.startsWith(wildcardStart)) {

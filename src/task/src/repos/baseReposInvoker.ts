@@ -41,7 +41,7 @@ export default abstract class BaseReposInvoker implements ReposInvokerInterface 
         castedError.message = accessErrorMessage;
       } else if (statusCode === StatusCodes.NOT_FOUND) {
         castedError.internalMessage = castedError.message;
-        castedError.message = `${notFoundErrorMessage} Original error: ${castedError.internalMessage}`;
+        castedError.message = notFoundErrorMessage;
       }
 
       throw castedError;

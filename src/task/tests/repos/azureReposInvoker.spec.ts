@@ -344,7 +344,7 @@ describe("azureReposInvoker.ts", (): void => {
           // Assert
           const expectedMessage: string =
             statusCode === StatusCodes.NOT_FOUND
-              ? "The resource could not be found. Verify the repository and pull request exist. Original error: Test"
+              ? "The resource could not be found. Verify the repository and pull request exist."
               : "Could not access the resources. Ensure the 'PR_Metrics_Access_Token' secret environment variable has access to 'Code' > 'Read' and 'Pull Request Threads' > 'Read & write'.";
           const result: ErrorWithStatus = await AssertExtensions.toThrowAsync(
             func,
@@ -546,7 +546,7 @@ describe("azureReposInvoker.ts", (): void => {
           // Assert
           const expectedMessage: string =
             statusCode === StatusCodes.NOT_FOUND
-              ? "The resource could not be found. Verify the repository and pull request exist. Original error: Test"
+              ? "The resource could not be found. Verify the repository and pull request exist."
               : "Could not access the resources. Ensure the 'PR_Metrics_Access_Token' secret environment variable has access to 'Code' > 'Read' and 'Pull Request Threads' > 'Read & write'.";
           const result: ErrorWithStatus = await AssertExtensions.toThrowAsync(
             func,
@@ -1003,7 +1003,7 @@ describe("azureReposInvoker.ts", (): void => {
           // Assert
           const expectedMessage: string =
             statusCode === StatusCodes.NOT_FOUND
-              ? "The resource could not be found. Verify the repository and pull request exist. Original error: Test"
+              ? "The resource could not be found. Verify the repository and pull request exist."
               : "Could not access the resources. Ensure the 'PR_Metrics_Access_Token' secret environment variable has access to 'Code' > 'Read' and 'Pull Request Threads' > 'Read & write'.";
           const result: ErrorWithStatus = await AssertExtensions.toThrowAsync(
             func,
@@ -1287,7 +1287,7 @@ describe("azureReposInvoker.ts", (): void => {
           // Assert
           const expectedMessage: string =
             statusCode === StatusCodes.NOT_FOUND
-              ? "The resource could not be found. Verify the repository and pull request exist. Original error: Test"
+              ? "The resource could not be found. Verify the repository and pull request exist."
               : "Could not access the resources. Ensure the 'PR_Metrics_Access_Token' secret environment variable has access to 'Code' > 'Read' and 'Pull Request Threads' > 'Read & write'.";
           const result: ErrorWithStatus = await AssertExtensions.toThrowAsync(
             func,
@@ -1574,7 +1574,7 @@ describe("azureReposInvoker.ts", (): void => {
           // Assert
           const expectedMessage: string =
             statusCode === StatusCodes.NOT_FOUND
-              ? "The resource could not be found. Verify the repository and pull request exist. Original error: Test"
+              ? "The resource could not be found. Verify the repository and pull request exist."
               : "Could not access the resources. Ensure the 'PR_Metrics_Access_Token' secret environment variable has access to 'Code' > 'Read' and 'Pull Request Threads' > 'Read & write'.";
           const result: ErrorWithStatus = await AssertExtensions.toThrowAsync(
             func,
@@ -1636,7 +1636,7 @@ describe("azureReposInvoker.ts", (): void => {
           // Assert
           const expectedMessage: string =
             status === StatusCodes.NOT_FOUND
-              ? "The resource could not be found. Verify the repository and pull request exist. Original error: Test"
+              ? "The resource could not be found. Verify the repository and pull request exist."
               : "Could not access the resources. Ensure the 'PR_Metrics_Access_Token' secret environment variable has access to 'Code' > 'Read' and 'Pull Request Threads' > 'Read & write'.";
           const result: ErrorWithStatus = await AssertExtensions.toThrowAsync(
             func,
@@ -1952,7 +1952,7 @@ describe("azureReposInvoker.ts", (): void => {
           // Assert
           const expectedMessage: string =
             statusCode === StatusCodes.NOT_FOUND
-              ? "The resource could not be found. Verify the repository and pull request exist. Original error: Test"
+              ? "The resource could not be found. Verify the repository and pull request exist."
               : "Could not access the resources. Ensure the 'PR_Metrics_Access_Token' secret environment variable has access to 'Code' > 'Read' and 'Pull Request Threads' > 'Read & write'.";
           const result: ErrorWithStatus = await AssertExtensions.toThrowAsync(
             func,
