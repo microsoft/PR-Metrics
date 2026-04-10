@@ -82,6 +82,14 @@ export default class Logger {
    * @param error The error object to log.
    */
   public logErrorObject(error: Error): void {
+    const sensitiveProperties: Set<string> = new Set<string>([
+      "authorization",
+      "cookie",
+      "password",
+      "secret",
+      "token",
+    ]);
+
     const { name } = error;
     const properties: string[] = Object.getOwnPropertyNames(error);
     const errorRecord: Record<string, unknown> = error as unknown as Record<
@@ -89,9 +97,19 @@ export default class Logger {
       unknown
     >;
     for (const property of properties) {
-      this.logInfo(
-        `${name} – ${property}: ${JSON.stringify(errorRecord[property])}`,
-      );
+      if (sensitiveProperties.has(property.toLowerCase())) {
+        this.logInfo(`${name} – ${property}: [REDACTED]`);
+      } else {
+        try {
+          this.logInfo(
+            `${name} – ${property}: ${JSON.stringify(errorRecord[property])}`,
+          );
+        } catch {
+          this.logInfo(
+            `${name} – ${property}: [Could not serialize]`,
+          );
+        }
+      }
     }
   }
 

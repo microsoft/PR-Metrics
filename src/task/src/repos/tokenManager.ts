@@ -56,7 +56,6 @@ export default class TokenManager {
       return null;
     }
 
-    this._previouslyInvoked = true;
     const workloadIdentityFederation: string | null =
       this._runnerInvoker.getInput(["Workload", "Identity", "Federation"]);
     if (workloadIdentityFederation === null) {
@@ -84,6 +83,7 @@ export default class TokenManager {
     process.env.PR_METRICS_ACCESS_TOKEN = await this.getAccessToken(
       workloadIdentityFederation,
     );
+    this._previouslyInvoked = true;
     return null;
   }
 

@@ -24,6 +24,9 @@ inputs:
   code-file-extensions:
     description: "Code file extensions: Extensions for files containing code so that non-code files can be excluded. If left blank, a default set of file extensions will be used."
     required: false
+  always-close-comment:
+    description: "Always close comment: Set to 'true' to always close the size and test comment, instead of leaving it open when requiring attention. If left blank, a default of 'false' will be used."
+    required: false
 runs:
   using: node24
   main: dist/index.mjs

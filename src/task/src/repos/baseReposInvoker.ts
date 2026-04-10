@@ -34,11 +34,13 @@ export default abstract class BaseReposInvoker implements ReposInvokerInterface 
         castedError.status ?? castedError.statusCode;
       if (
         statusCode === StatusCodes.UNAUTHORIZED ||
-        statusCode === StatusCodes.FORBIDDEN ||
-        statusCode === StatusCodes.NOT_FOUND
+        statusCode === StatusCodes.FORBIDDEN
       ) {
         castedError.internalMessage = castedError.message;
         castedError.message = accessErrorMessage;
+      } else if (statusCode === StatusCodes.NOT_FOUND) {
+        castedError.internalMessage = castedError.message;
+        castedError.message = `The resource could not be found. Verify the repository and pull request exist. Original error: ${castedError.message}`;
       }
 
       throw castedError;

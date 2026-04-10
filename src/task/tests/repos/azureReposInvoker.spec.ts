@@ -337,9 +337,12 @@ describe("azureReposInvoker.ts", (): void => {
             azureReposInvoker.getTitleAndDescription();
 
           // Assert
+          const expectedMessage: string = statusCode === StatusCodes.NOT_FOUND
+            ? "The resource could not be found. Verify the repository and pull request exist. Original error: Test"
+            : "Could not access the resources. Ensure the 'PR_Metrics_Access_Token' secret environment variable has access to 'Code' > 'Read' and 'Pull Request Threads' > 'Read & write'.";
           const result: ErrorWithStatus = await AssertExtensions.toThrowAsync(
             func,
-            "Could not access the resources. Ensure the 'PR_Metrics_Access_Token' secret environment variable has access to 'Code' > 'Read' and 'Pull Request Threads' > 'Read & write'.",
+            expectedMessage,
           );
           assert.equal(result.internalMessage, "Test");
           verify(
@@ -535,9 +538,12 @@ describe("azureReposInvoker.ts", (): void => {
             azureReposInvoker.getComments();
 
           // Assert
+          const expectedMessage: string = statusCode === StatusCodes.NOT_FOUND
+            ? "The resource could not be found. Verify the repository and pull request exist. Original error: Test"
+            : "Could not access the resources. Ensure the 'PR_Metrics_Access_Token' secret environment variable has access to 'Code' > 'Read' and 'Pull Request Threads' > 'Read & write'.";
           const result: ErrorWithStatus = await AssertExtensions.toThrowAsync(
             func,
-            "Could not access the resources. Ensure the 'PR_Metrics_Access_Token' secret environment variable has access to 'Code' > 'Read' and 'Pull Request Threads' > 'Read & write'.",
+            expectedMessage,
           );
           assert.equal(result.internalMessage, "Test");
           verify(
@@ -988,9 +994,12 @@ describe("azureReposInvoker.ts", (): void => {
             azureReposInvoker.setTitleAndDescription("Title", "Description");
 
           // Assert
+          const expectedMessage: string = statusCode === StatusCodes.NOT_FOUND
+            ? "The resource could not be found. Verify the repository and pull request exist. Original error: Test"
+            : "Could not access the resources. Ensure the 'PR_Metrics_Access_Token' secret environment variable has access to 'Code' > 'Read' and 'Pull Request Threads' > 'Read & write'.";
           const result: ErrorWithStatus = await AssertExtensions.toThrowAsync(
             func,
-            "Could not access the resources. Ensure the 'PR_Metrics_Access_Token' secret environment variable has access to 'Code' > 'Read' and 'Pull Request Threads' > 'Read & write'.",
+            expectedMessage,
           );
           assert.equal(result.internalMessage, "Test");
           verify(
@@ -1268,9 +1277,12 @@ describe("azureReposInvoker.ts", (): void => {
             );
 
           // Assert
+          const expectedMessage: string = statusCode === StatusCodes.NOT_FOUND
+            ? "The resource could not be found. Verify the repository and pull request exist. Original error: Test"
+            : "Could not access the resources. Ensure the 'PR_Metrics_Access_Token' secret environment variable has access to 'Code' > 'Read' and 'Pull Request Threads' > 'Read & write'.";
           const result: ErrorWithStatus = await AssertExtensions.toThrowAsync(
             func,
-            "Could not access the resources. Ensure the 'PR_Metrics_Access_Token' secret environment variable has access to 'Code' > 'Read' and 'Pull Request Threads' > 'Read & write'.",
+            expectedMessage,
           );
           assert.equal(result.internalMessage, "Test");
           verify(
@@ -1551,9 +1563,12 @@ describe("azureReposInvoker.ts", (): void => {
             );
 
           // Assert
+          const expectedMessage: string = statusCode === StatusCodes.NOT_FOUND
+            ? "The resource could not be found. Verify the repository and pull request exist. Original error: Test"
+            : "Could not access the resources. Ensure the 'PR_Metrics_Access_Token' secret environment variable has access to 'Code' > 'Read' and 'Pull Request Threads' > 'Read & write'.";
           const result: ErrorWithStatus = await AssertExtensions.toThrowAsync(
             func,
-            "Could not access the resources. Ensure the 'PR_Metrics_Access_Token' secret environment variable has access to 'Code' > 'Read' and 'Pull Request Threads' > 'Read & write'.",
+            expectedMessage,
           );
           assert.equal(result.internalMessage, "Test");
           verify(
@@ -1609,9 +1624,12 @@ describe("azureReposInvoker.ts", (): void => {
             );
 
           // Assert
+          const expectedMessage: string = status === StatusCodes.NOT_FOUND
+            ? "The resource could not be found. Verify the repository and pull request exist. Original error: Test"
+            : "Could not access the resources. Ensure the 'PR_Metrics_Access_Token' secret environment variable has access to 'Code' > 'Read' and 'Pull Request Threads' > 'Read & write'.";
           const result: ErrorWithStatus = await AssertExtensions.toThrowAsync(
             func,
-            "Could not access the resources. Ensure the 'PR_Metrics_Access_Token' secret environment variable has access to 'Code' > 'Read' and 'Pull Request Threads' > 'Read & write'.",
+            expectedMessage,
           );
           assert.equal(result.internalMessage, "Test");
           verify(
@@ -1921,9 +1939,12 @@ describe("azureReposInvoker.ts", (): void => {
             azureReposInvoker.deleteCommentThread(20);
 
           // Assert
+          const expectedMessage: string = statusCode === StatusCodes.NOT_FOUND
+            ? "The resource could not be found. Verify the repository and pull request exist. Original error: Test"
+            : "Could not access the resources. Ensure the 'PR_Metrics_Access_Token' secret environment variable has access to 'Code' > 'Read' and 'Pull Request Threads' > 'Read & write'.";
           const result: ErrorWithStatus = await AssertExtensions.toThrowAsync(
             func,
-            "Could not access the resources. Ensure the 'PR_Metrics_Access_Token' secret environment variable has access to 'Code' > 'Read' and 'Pull Request Threads' > 'Read & write'.",
+            expectedMessage,
           );
           assert.equal(result.internalMessage, "Test");
           verify(

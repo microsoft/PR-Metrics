@@ -96,5 +96,25 @@ describe("pullRequestMetrics.ts", (): void => {
       verify(logger.replay()).once();
       verify(runnerInvoker.setStatusFailed("Error Message")).once();
     });
+
+    it("should handle non-Error thrown values", async (): Promise<void> => {
+      // Arrange
+      const pullRequestMetrics: PullRequestMetrics = new PullRequestMetrics(
+        instance(codeMetricsCalculator),
+        instance(logger),
+        instance(runnerInvoker),
+      );
+      when(codeMetricsCalculator.shouldSkip).thenCall((): string | null => {
+        // eslint-disable-next-line @typescript-eslint/only-throw-error -- Testing non-Error throw.
+        throw "String error";
+      });
+
+      // Act
+      await pullRequestMetrics.run("Folder");
+
+      // Assert
+      verify(runnerInvoker.locInitialize("Folder")).once();
+      verify(runnerInvoker.setStatusFailed("String error")).once();
+    });
   });
 });

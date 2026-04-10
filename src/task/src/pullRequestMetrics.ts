@@ -62,11 +62,13 @@ export default class PullRequestMetrics {
         this._runnerInvoker.loc("pullRequestMetrics.succeeded"),
       );
     } catch (error: unknown) {
-      const errorObject: Error = error as Error;
-      this._logger.logErrorObject(errorObject);
-      this._logger.replay();
-
-      this._runnerInvoker.setStatusFailed(errorObject.message);
+      if (error instanceof Error) {
+        this._logger.logErrorObject(error);
+        this._logger.replay();
+        this._runnerInvoker.setStatusFailed(error.message);
+      } else {
+        this._runnerInvoker.setStatusFailed(String(error));
+      }
     }
   }
 }

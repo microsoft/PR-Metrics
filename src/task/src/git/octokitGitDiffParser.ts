@@ -111,12 +111,9 @@ export default class OctokitGitDiffParser {
      * For each diff, reinstate the "diff --git" prefix that was removed by the split. The first diff is excluded as it
      * will always be the empty string.
      */
-    const result: string[] = [];
-    for (const diffResponseLine of diffResponseLines.slice(1)) {
-      result.push(`diff --git ${diffResponseLine}`);
-    }
-
-    return result;
+    return diffResponseLines.slice(1).map(
+      (diffResponseLine: string): string => `diff --git ${diffResponseLine}`,
+    );
   }
 
   private processDiffs(diffs: string[]): Map<string, number> {
@@ -152,11 +149,16 @@ export default class OctokitGitDiffParser {
           case "RenamedFile": {
             // For a renamed file, add the new file path and the first changed line.
             const fileCasted: RenamedFile = file;
-            if (fileCasted.chunks[0]) {
-              result.set(
-                fileCasted.pathAfter,
-                (fileCasted.chunks[0] as Chunk).toFileRange.start,
+            const [chunk]: AnyChunk[] = fileCasted.chunks;
+            if (chunk?.type === "BinaryFilesChunk") {
+              this._logger.logDebug(
+                `Skipping '${file.type}' '${fileCasted.pathAfter}' while performing diff parsing.`,
               );
+              break;
+            }
+
+            if (chunk) {
+              result.set(fileCasted.pathAfter, (chunk as Chunk).toFileRange.start);
             }
 
             break;

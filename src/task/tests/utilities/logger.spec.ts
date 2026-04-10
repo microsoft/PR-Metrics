@@ -228,6 +228,48 @@ describe("logger.ts", (): void => {
       verify(consoleWrapper.log('Error – stack: "Stack contents"')).once();
     });
 
+    it("should redact sensitive properties of the error object", (): void => {
+      // Arrange
+      const logger: Logger = new Logger(
+        instance(consoleWrapper),
+        instance(runnerInvoker),
+      );
+      const error: Error = new Error("Message");
+      error.name = "Error";
+      (error as unknown as Record<string, unknown>).token = "secret-value";
+
+      // Act
+      logger.logErrorObject(error);
+
+      // Assert
+      verify(consoleWrapper.log('Error – name: "Error"')).once();
+      verify(consoleWrapper.log('Error – message: "Message"')).once();
+      verify(consoleWrapper.log("Error – token: [REDACTED]")).once();
+    });
+
+    it("should handle non-serializable properties of the error object", (): void => {
+      // Arrange
+      const logger: Logger = new Logger(
+        instance(consoleWrapper),
+        instance(runnerInvoker),
+      );
+      const error: Error = new Error("Message");
+      error.name = "Error";
+      error.stack = undefined;
+
+      const circular: Record<string, unknown> = {};
+      circular.self = circular;
+      (error as unknown as Record<string, unknown>).data = circular;
+
+      // Act
+      logger.logErrorObject(error);
+
+      // Assert
+      verify(consoleWrapper.log('Error – name: "Error"')).once();
+      verify(consoleWrapper.log('Error – message: "Message"')).once();
+      verify(consoleWrapper.log("Error – data: [Could not serialize]")).once();
+    });
+
     it("should log all properties of a complex error object", (): void => {
       // Arrange
       const logger: Logger = new Logger(
