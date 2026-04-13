@@ -38,7 +38,7 @@ describe("azurePipelinesRunnerInvoker.ts", (): void => {
       when(
         azurePipelinesRunnerWrapper.execSync(
           "TOOL",
-          "Argument1 Argument2",
+          deepEqual(["Argument1", "Argument2"]),
           any(),
         ),
       ).thenReturn(execResult);
@@ -46,7 +46,7 @@ describe("azurePipelinesRunnerInvoker.ts", (): void => {
       // Act
       const result: ExecOutput = await azurePipelinesRunnerInvoker.exec(
         "TOOL",
-        "Argument1 Argument2",
+        ["Argument1", "Argument2"],
       );
 
       // Assert
@@ -60,7 +60,7 @@ describe("azurePipelinesRunnerInvoker.ts", (): void => {
       verify(
         azurePipelinesRunnerWrapper.execSync(
           "TOOL",
-          "Argument1 Argument2",
+          deepEqual(["Argument1", "Argument2"]),
           deepEqual(options),
         ),
       ).once();

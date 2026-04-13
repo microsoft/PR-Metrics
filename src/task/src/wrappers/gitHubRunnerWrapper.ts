@@ -35,10 +35,10 @@ export default class GitHubRunnerWrapper {
    */
   public async exec(
     tool: string,
-    args: string,
+    args: string[],
     options: actionsExec.ExecOptions,
   ): Promise<actionsExec.ExecOutput> {
-    return actionsExec.getExecOutput(tool, args.split(" "), options);
+    return actionsExec.getExecOutput(tool, args, options);
   }
 
   /**

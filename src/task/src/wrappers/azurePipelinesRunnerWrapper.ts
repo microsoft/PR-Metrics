@@ -38,7 +38,7 @@ export default class AzurePipelinesRunnerWrapper {
    */
   public execSync(
     tool: string,
-    args: string,
+    args: string[],
     options: IExecOptions,
   ): IExecSyncResult {
     return taskLib.execSync(tool, args, options);

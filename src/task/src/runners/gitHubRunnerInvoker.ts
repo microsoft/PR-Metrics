@@ -41,7 +41,7 @@ export default class GitHubRunnerInvoker implements RunnerInvokerInterface {
     this._gitHubRunnerWrapper = gitHubRunnerWrapper;
   }
 
-  public async exec(tool: string, args: string): Promise<ExecOutput> {
+  public async exec(tool: string, args: string[]): Promise<ExecOutput> {
     const options: actionsExec.ExecOptions = {
       failOnStdErr: true,
       silent: true,

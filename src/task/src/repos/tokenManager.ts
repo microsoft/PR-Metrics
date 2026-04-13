@@ -122,10 +122,17 @@ export default class TokenManager {
     this._runnerInvoker.setSecret(federatedToken);
 
     // Sign in to Azure using the federated token.
-    const signInResult: ExecOutput = await this._runnerInvoker.exec(
-      "az",
-      `login --service-principal -u ${servicePrincipalId} --tenant ${tenantId} --allow-no-subscriptions --federated-token ${federatedToken}`,
-    );
+    const signInResult: ExecOutput = await this._runnerInvoker.exec("az", [
+      "login",
+      "--service-principal",
+      "-u",
+      servicePrincipalId,
+      "--tenant",
+      tenantId,
+      "--allow-no-subscriptions",
+      "--federated-token",
+      federatedToken,
+    ]);
     if (signInResult.exitCode !== 0) {
       throw new Error(signInResult.stderr);
     }
@@ -135,10 +142,16 @@ export default class TokenManager {
      * 499b84ac-1321-427f-aa17-267ca6975798, as documented at https://learn.microsoft.com/rest/api/azure/devops/tokens/
      * and https://learn.microsoft.com/azure/devops/integrate/get-started/authentication/service-principal-managed-identity.
      */
-    const accessTokenResult: ExecOutput = await this._runnerInvoker.exec(
-      "az",
-      "account get-access-token --query accessToken --resource 499b84ac-1321-427f-aa17-267ca6975798 -o tsv",
-    );
+    const accessTokenResult: ExecOutput = await this._runnerInvoker.exec("az", [
+      "account",
+      "get-access-token",
+      "--query",
+      "accessToken",
+      "--resource",
+      "499b84ac-1321-427f-aa17-267ca6975798",
+      "-o",
+      "tsv",
+    ]);
     if (accessTokenResult.exitCode !== 0) {
       throw new Error(accessTokenResult.stderr);
     }
