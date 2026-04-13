@@ -16,7 +16,6 @@ import picomatch from "picomatch";
 
 /**
  * A class for computing metrics for software code in pull requests.
- * @remarks This class should not be used in a multithreaded context as it could lead to the initialization logic being invoked repeatedly.
  */
 export default class CodeMetrics {
   private static readonly _picomatchOptions: picomatch.PicomatchOptions = {

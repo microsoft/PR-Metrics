@@ -27,7 +27,6 @@ import type { WebApi } from "azure-devops-node-api";
 
 /**
  * A class for invoking Azure Repos functionality.
- * @remarks This class should not be used in a multithreaded context as it could lead to the initialization logic being invoked repeatedly.
  */
 export default class AzureReposInvoker extends BaseReposInvoker {
   private readonly _azureDevOpsApiWrapper: AzureDevOpsApiWrapper;

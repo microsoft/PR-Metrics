@@ -10,7 +10,6 @@ import type RunnerInvoker from "../runners/runnerInvoker.js";
 
 /**
  * A class representing inputs passed to the task.
- * @remarks This class should not be used in a multithreaded context as it could lead to the initialization logic being invoked repeatedly.
  */
 export default class Inputs {
   private readonly _logger: Logger;
