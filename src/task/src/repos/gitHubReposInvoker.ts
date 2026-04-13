@@ -68,9 +68,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
 
     if (typeof process.env.PR_METRICS_ACCESS_TOKEN === "undefined") {
       return Promise.resolve(
-        this._runnerInvoker.loc(
-          "repos.gitHubReposInvoker.noGitHubAccessToken",
-        ),
+        this._runnerInvoker.loc("repos.gitHubReposInvoker.noGitHubAccessToken"),
       );
     }
 
