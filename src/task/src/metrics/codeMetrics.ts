@@ -288,7 +288,13 @@ export default class CodeMetrics {
   private matchFileExtension(fileName: string): boolean {
     this._logger.logDebug("* CodeMetrics.matchFileExtension()");
 
-    const fileExtension: string = path.extname(fileName).slice(1).toLowerCase();
+    let fileExtension: string = path.extname(fileName).slice(1).toLowerCase();
+    if (fileExtension === "") {
+      const baseName: string = path.basename(fileName);
+      if (baseName.startsWith(".")) {
+        fileExtension = baseName.slice(1).toLowerCase();
+      }
+    }
     const result: boolean = this._inputs.codeFileExtensions.has(fileExtension);
 
     this._logger.logDebug(
