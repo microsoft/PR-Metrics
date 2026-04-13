@@ -63,17 +63,18 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     this._runnerInvoker = runnerInvoker;
   }
 
-  // eslint-disable-next-line @typescript-eslint/require-await -- Satisfies the abstract method's Promise return type without needing await.
   public async isAccessTokenAvailable(): Promise<string | null> {
     this._logger.logDebug("* GitHubReposInvoker.isAccessTokenAvailable()");
 
     if (typeof process.env.PR_METRICS_ACCESS_TOKEN === "undefined") {
-      return this._runnerInvoker.loc(
-        "repos.gitHubReposInvoker.noGitHubAccessToken",
+      return Promise.resolve(
+        this._runnerInvoker.loc(
+          "repos.gitHubReposInvoker.noGitHubAccessToken",
+        ),
       );
     }
 
-    return null;
+    return Promise.resolve(null);
   }
 
   public async getTitleAndDescription(): Promise<PullRequestDetailsInterface> {

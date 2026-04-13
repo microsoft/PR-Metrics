@@ -28,7 +28,6 @@ export default class AzurePipelinesRunnerInvoker implements RunnerInvokerInterfa
     this._azurePipelinesRunnerWrapper = azurePipelinesRunnerWrapper;
   }
 
-  // eslint-disable-next-line @typescript-eslint/require-await -- Satisfies the interface's Promise return type without needing await.
   public async exec(tool: string, args: string[]): Promise<ExecOutput> {
     const options: IExecOptions = {
       failOnStdErr: true,
@@ -40,11 +39,11 @@ export default class AzurePipelinesRunnerInvoker implements RunnerInvokerInterfa
       args,
       options,
     );
-    return {
+    return Promise.resolve({
       exitCode: result.code,
       stderr: result.stderr,
       stdout: result.stdout,
-    };
+    });
   }
 
   public getInput(name: string[]): string | null {

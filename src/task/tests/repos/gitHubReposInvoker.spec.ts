@@ -25,14 +25,13 @@ import RunnerInvoker from "../../src/runners/runnerInvoker.js";
 import { StatusCodes } from "http-status-codes";
 import assert from "node:assert/strict";
 import { createRequestError } from "../testUtilities/createRequestError.js";
+import { userAgent } from "../../src/utilities/constants.js";
 
 describe("gitHubReposInvoker.ts", (): void => {
   let gitInvoker: GitInvoker;
   let logger: Logger;
   let octokitWrapper: OctokitWrapper;
   let runnerInvoker: RunnerInvoker;
-
-  const expectedUserAgent = "PRMetrics/v1.7.13";
 
   beforeEach((): void => {
     process.env.PR_METRICS_ACCESS_TOKEN = "PAT";
@@ -447,7 +446,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       when(octokitWrapper.initialize(any())).thenCall(
         (options: OctokitOptions): void => {
           assert.equal(options.auth, "PAT");
-          assert.equal(options.userAgent, expectedUserAgent);
+          assert.equal(options.userAgent, userAgent);
           assert.notEqual(options.log, null);
           assert.notEqual(options.log?.debug, null);
           assert.notEqual(options.log?.info, null);
@@ -494,7 +493,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       when(octokitWrapper.initialize(any())).thenCall(
         (options: OctokitOptions): void => {
           assert.equal(options.auth, "PAT");
-          assert.equal(options.userAgent, expectedUserAgent);
+          assert.equal(options.userAgent, userAgent);
           assert.notEqual(options.log, null);
           assert.notEqual(options.log?.debug, null);
           assert.notEqual(options.log?.info, null);
@@ -545,7 +544,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       when(octokitWrapper.initialize(any())).thenCall(
         (options: OctokitOptions): void => {
           assert.equal(options.auth, "PAT");
-          assert.equal(options.userAgent, expectedUserAgent);
+          assert.equal(options.userAgent, userAgent);
           assert.notEqual(options.log, null);
           assert.notEqual(options.log?.debug, null);
           assert.notEqual(options.log?.info, null);
@@ -590,7 +589,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       when(octokitWrapper.initialize(any())).thenCall(
         (options: OctokitOptions): void => {
           assert.equal(options.auth, "PAT");
-          assert.equal(options.userAgent, expectedUserAgent);
+          assert.equal(options.userAgent, userAgent);
           assert.equal(
             options.baseUrl,
             "https://organization.githubenterprise.com/api/v3",
@@ -642,7 +641,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       when(octokitWrapper.initialize(any())).thenCall(
         (options: OctokitOptions): void => {
           assert.equal(options.auth, "PAT");
-          assert.equal(options.userAgent, expectedUserAgent);
+          assert.equal(options.userAgent, userAgent);
           assert.notEqual(options.log, null);
           assert.notEqual(options.log?.debug, null);
           assert.notEqual(options.log?.info, null);
@@ -689,7 +688,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       when(octokitWrapper.initialize(any())).thenCall(
         (options: OctokitOptions): void => {
           assert.equal(options.auth, "PAT");
-          assert.equal(options.userAgent, expectedUserAgent);
+          assert.equal(options.userAgent, userAgent);
           assert.notEqual(options.log, null);
           assert.notEqual(options.log?.debug, null);
           assert.notEqual(options.log?.info, null);
@@ -739,7 +738,7 @@ describe("gitHubReposInvoker.ts", (): void => {
           when(octokitWrapper.initialize(any())).thenCall(
             (options: OctokitOptions): void => {
               assert.equal(options.auth, "PAT");
-              assert.equal(options.userAgent, expectedUserAgent);
+              assert.equal(options.userAgent, userAgent);
               assert.notEqual(options.log, null);
               assert.notEqual(options.log?.debug, null);
               assert.notEqual(options.log?.info, null);
@@ -786,7 +785,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       when(octokitWrapper.initialize(any())).thenCall(
         (options: OctokitOptions): void => {
           assert.equal(options.auth, "PAT");
-          assert.equal(options.userAgent, expectedUserAgent);
+          assert.equal(options.userAgent, userAgent);
           assert.notEqual(options.log, null);
           assert.notEqual(options.log?.debug, null);
           assert.notEqual(options.log?.info, null);
@@ -856,7 +855,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       when(octokitWrapper.initialize(any())).thenCall(
         (options: OctokitOptions): void => {
           assert.equal(options.auth, "PAT");
-          assert.equal(options.userAgent, expectedUserAgent);
+          assert.equal(options.userAgent, userAgent);
           assert.notEqual(options.log, null);
           assert.notEqual(options.log?.debug, null);
           assert.notEqual(options.log?.info, null);
@@ -916,7 +915,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       when(octokitWrapper.initialize(any())).thenCall(
         (options: OctokitOptions): void => {
           assert.equal(options.auth, "PAT");
-          assert.equal(options.userAgent, expectedUserAgent);
+          assert.equal(options.userAgent, userAgent);
           assert.notEqual(options.log, null);
           assert.notEqual(options.log?.debug, null);
           assert.notEqual(options.log?.info, null);
@@ -971,7 +970,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       when(octokitWrapper.initialize(any())).thenCall(
         (options: OctokitOptions): void => {
           assert.equal(options.auth, "PAT");
-          assert.equal(options.userAgent, expectedUserAgent);
+          assert.equal(options.userAgent, userAgent);
           assert.notEqual(options.log, null);
           assert.notEqual(options.log?.debug, null);
           assert.notEqual(options.log?.info, null);
@@ -1043,7 +1042,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       when(octokitWrapper.initialize(any())).thenCall(
         (options: OctokitOptions): void => {
           assert.equal(options.auth, "PAT");
-          assert.equal(options.userAgent, expectedUserAgent);
+          assert.equal(options.userAgent, userAgent);
           assert.notEqual(options.log, null);
           assert.notEqual(options.log?.debug, null);
           assert.notEqual(options.log?.info, null);
@@ -1118,7 +1117,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       when(octokitWrapper.initialize(any())).thenCall(
         (options: OctokitOptions): void => {
           assert.equal(options.auth, "PAT");
-          assert.equal(options.userAgent, expectedUserAgent);
+          assert.equal(options.userAgent, userAgent);
           assert.notEqual(options.log, null);
           assert.notEqual(options.log?.debug, null);
           assert.notEqual(options.log?.info, null);
@@ -1166,7 +1165,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       when(octokitWrapper.initialize(any())).thenCall(
         (options: OctokitOptions): void => {
           assert.equal(options.auth, "PAT");
-          assert.equal(options.userAgent, expectedUserAgent);
+          assert.equal(options.userAgent, userAgent);
           assert.notEqual(options.log, null);
           assert.notEqual(options.log?.debug, null);
           assert.notEqual(options.log?.info, null);
@@ -1210,7 +1209,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       when(octokitWrapper.initialize(any())).thenCall(
         (options: OctokitOptions): void => {
           assert.equal(options.auth, "PAT");
-          assert.equal(options.userAgent, expectedUserAgent);
+          assert.equal(options.userAgent, userAgent);
           assert.notEqual(options.log, null);
           assert.notEqual(options.log?.debug, null);
           assert.notEqual(options.log?.info, null);
@@ -1256,7 +1255,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       when(octokitWrapper.initialize(any())).thenCall(
         (options: OctokitOptions): void => {
           assert.equal(options.auth, "PAT");
-          assert.equal(options.userAgent, expectedUserAgent);
+          assert.equal(options.userAgent, userAgent);
           assert.notEqual(options.log, null);
           assert.notEqual(options.log?.debug, null);
           assert.notEqual(options.log?.info, null);
@@ -1303,7 +1302,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       when(octokitWrapper.initialize(any())).thenCall(
         (options: OctokitOptions): void => {
           assert.equal(options.auth, "PAT");
-          assert.equal(options.userAgent, expectedUserAgent);
+          assert.equal(options.userAgent, userAgent);
           assert.notEqual(options.log, null);
           assert.notEqual(options.log?.debug, null);
           assert.notEqual(options.log?.info, null);
@@ -1357,7 +1356,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       when(octokitWrapper.initialize(any())).thenCall(
         (options: OctokitOptions): void => {
           assert.equal(options.auth, "PAT");
-          assert.equal(options.userAgent, expectedUserAgent);
+          assert.equal(options.userAgent, userAgent);
           assert.notEqual(options.log, null);
           assert.notEqual(options.log?.debug, null);
           assert.notEqual(options.log?.info, null);
@@ -1417,7 +1416,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       when(octokitWrapper.initialize(any())).thenCall(
         (options: OctokitOptions): void => {
           assert.equal(options.auth, "PAT");
-          assert.equal(options.userAgent, expectedUserAgent);
+          assert.equal(options.userAgent, userAgent);
           assert.notEqual(options.log, null);
           assert.notEqual(options.log?.debug, null);
           assert.notEqual(options.log?.info, null);
@@ -1468,7 +1467,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       when(octokitWrapper.initialize(any())).thenCall(
         (options: OctokitOptions): void => {
           assert.equal(options.auth, "PAT");
-          assert.equal(options.userAgent, expectedUserAgent);
+          assert.equal(options.userAgent, userAgent);
           assert.notEqual(options.log, null);
           assert.notEqual(options.log?.debug, null);
           assert.notEqual(options.log?.info, null);
@@ -1516,7 +1515,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       when(octokitWrapper.initialize(any())).thenCall(
         (options: OctokitOptions): void => {
           assert.equal(options.auth, "PAT");
-          assert.equal(options.userAgent, expectedUserAgent);
+          assert.equal(options.userAgent, userAgent);
           assert.notEqual(options.log, null);
           assert.notEqual(options.log?.debug, null);
           assert.notEqual(options.log?.info, null);
@@ -1580,7 +1579,7 @@ describe("gitHubReposInvoker.ts", (): void => {
           when(octokitWrapper.initialize(any())).thenCall(
             (options: OctokitOptions): void => {
               assert.equal(options.auth, "PAT");
-              assert.equal(options.userAgent, expectedUserAgent);
+              assert.equal(options.userAgent, userAgent);
               assert.notEqual(options.log, null);
               assert.notEqual(options.log?.debug, null);
               assert.notEqual(options.log?.info, null);
@@ -1663,7 +1662,7 @@ describe("gitHubReposInvoker.ts", (): void => {
           when(octokitWrapper.initialize(any())).thenCall(
             (options: OctokitOptions): void => {
               assert.equal(options.auth, "PAT");
-              assert.equal(options.userAgent, expectedUserAgent);
+              assert.equal(options.userAgent, userAgent);
               assert.notEqual(options.log, null);
               assert.notEqual(options.log?.debug, null);
               assert.notEqual(options.log?.info, null);
@@ -1727,7 +1726,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       when(octokitWrapper.initialize(any())).thenCall(
         (options: OctokitOptions): void => {
           assert.equal(options.auth, "PAT");
-          assert.equal(options.userAgent, expectedUserAgent);
+          assert.equal(options.userAgent, userAgent);
           assert.notEqual(options.log, null);
           assert.notEqual(options.log?.debug, null);
           assert.notEqual(options.log?.info, null);
@@ -1790,7 +1789,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       when(octokitWrapper.initialize(any())).thenCall(
         (options: OctokitOptions): void => {
           assert.equal(options.auth, "PAT");
-          assert.equal(options.userAgent, expectedUserAgent);
+          assert.equal(options.userAgent, userAgent);
           assert.notEqual(options.log, null);
           assert.notEqual(options.log?.debug, null);
           assert.notEqual(options.log?.info, null);
@@ -1834,7 +1833,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       when(octokitWrapper.initialize(any())).thenCall(
         (options: OctokitOptions): void => {
           assert.equal(options.auth, "PAT");
-          assert.equal(options.userAgent, expectedUserAgent);
+          assert.equal(options.userAgent, userAgent);
           assert.notEqual(options.log, null);
           assert.notEqual(options.log?.debug, null);
           assert.notEqual(options.log?.info, null);

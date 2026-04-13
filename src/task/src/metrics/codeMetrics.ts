@@ -295,8 +295,8 @@ export default class CodeMetrics {
         fileExtension = baseName.slice(1).toLowerCase();
       }
     }
-    const result: boolean = this._inputs.codeFileExtensions.has(fileExtension);
 
+    const result: boolean = this._inputs.codeFileExtensions.has(fileExtension);
     this._logger.logDebug(
       `File name '${fileName}' has extension '${fileExtension}', which is ${result ? "in" : "ex"}cluded.`,
     );

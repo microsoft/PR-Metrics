@@ -277,6 +277,8 @@ export default class Inputs {
     defaultValue: number,
     adjustingMessage: (valueString: string) => void,
   ): void {
+    this._logger.logDebug("* Inputs.initializeNumeric()");
+
     const convertedValue: number =
       inputValue === null ? NaN : parser(inputValue);
     if (!Number.isNaN(convertedValue) && validator(convertedValue)) {
