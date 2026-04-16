@@ -680,7 +680,7 @@ describe("codeMetrics.ts", (): void => {
         testCoverageIndicator: true,
       },
       {
-        gitResponse: "0\t0\tfile.ts\r\nrc:0\r\nsuccess:true",
+        gitResponse: "0\t0\tfile.ts",
         globChecks: 6,
         metrics: new CodeMetricsData(0, 0, 0),
         sizeIndicator: "XS",

@@ -426,6 +426,57 @@ describe("octokitGitDiffParser.ts", (): void => {
       ).once();
     });
 
+    it("should return null when considering a renamed binary file", async (): Promise<void> => {
+      // Arrange
+      when(octokitWrapper.getPull("owner", "repo", 1)).thenCall(
+        async (): Promise<GetPullResponse> =>
+          Promise.resolve({
+            data: { diff_url: "https://github.com/microsoft/PR-Metrics" },
+          } as GetPullResponse),
+      );
+      when(
+        httpWrapper.getUrl("https://github.com/microsoft/PR-Metrics"),
+      ).thenCall(
+        async (): Promise<string> =>
+          Promise.resolve(
+            "diff --git a/oldFile.png b/file.png\n" +
+              "similarity index 99%\n" +
+              "rename from oldFile.png\n" +
+              "rename to file.png\n" +
+              "index fec24ae2..86ffe12a 100644\n" +
+              "Binary files a/oldFile.png and b/file.png differ",
+          ),
+      );
+      const octokitGitDiffParser: OctokitGitDiffParser =
+        new OctokitGitDiffParser(instance(httpWrapper), instance(logger));
+
+      // Act
+      const result: number | null =
+        await octokitGitDiffParser.getFirstChangedLine(
+          instance(octokitWrapper),
+          "owner",
+          "repo",
+          1,
+          "file.png",
+        );
+
+      // Assert
+      assert.equal(result, null);
+      verify(
+        logger.logDebug("* OctokitGitDiffParser.getFirstChangedLine()"),
+      ).once();
+      verify(
+        logger.logDebug("* OctokitGitDiffParser.getFirstChangedLines()"),
+      ).once();
+      verify(logger.logDebug("* OctokitGitDiffParser.getDiffs()")).once();
+      verify(logger.logDebug("* OctokitGitDiffParser.processDiffs()")).once();
+      verify(
+        logger.logDebug(
+          "Skipping 'RenamedFile' 'file.png' while performing diff parsing.",
+        ),
+      ).once();
+    });
+
     it("should return the correct line number when called twice", async (): Promise<void> => {
       // Arrange
       when(octokitWrapper.getPull("owner", "repo", 1)).thenCall(

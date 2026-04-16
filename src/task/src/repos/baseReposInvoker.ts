@@ -15,15 +15,17 @@ import { StatusCodes } from "http-status-codes";
  */
 export default abstract class BaseReposInvoker implements ReposInvokerInterface {
   /**
-   * Invokes an API call, augmenting any errors that may be thrown due to insufficient access.
+   * Invokes an API call, augmenting any errors that may be thrown due to insufficient access or missing resources.
    * @typeParam Response The type of the response from the API call.
    * @param action The action defining the API call to invoke.
    * @param accessErrorMessage The error message to insert if a caught error is due to insufficient access.
+   * @param notFoundErrorMessage The error message to insert if a caught error is due to a missing resource.
    * @returns A promise containing the response from the API call.
    */
   protected static async invokeApiCall<Response>(
     action: () => Promise<Response>,
     accessErrorMessage: string,
+    notFoundErrorMessage: string,
   ): Promise<Response> {
     try {
       return await action();
@@ -34,11 +36,13 @@ export default abstract class BaseReposInvoker implements ReposInvokerInterface 
         castedError.status ?? castedError.statusCode;
       if (
         statusCode === StatusCodes.UNAUTHORIZED ||
-        statusCode === StatusCodes.FORBIDDEN ||
-        statusCode === StatusCodes.NOT_FOUND
+        statusCode === StatusCodes.FORBIDDEN
       ) {
         castedError.internalMessage = castedError.message;
         castedError.message = accessErrorMessage;
+      } else if (statusCode === StatusCodes.NOT_FOUND) {
+        castedError.internalMessage = castedError.message;
+        castedError.message = notFoundErrorMessage;
       }
 
       throw castedError;

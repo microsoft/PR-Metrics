@@ -138,6 +138,8 @@
   "loc.messages.repos.azureReposInvoker.insufficientAzureReposAccessTokenPermissions.comment": "The message to display when terminating as the Azure Repos Personal Access Token (PAT) does not have sufficient access.",
   "loc.messages.repos.azureReposInvoker.noAzureReposAccessToken": "Could not access the Workload Identity Federation or Personal Access Token (PAT). Add the 'WorkloadIdentityFederation' input or 'PR_Metrics_Access_Token' as a secret environment variable.",
   "loc.messages.repos.azureReposInvoker.noAzureReposAccessToken.comment": "The message to display when terminating as no access token is available.",
+  "loc.messages.repos.baseReposInvoker.resourceNotFound": "The resource could not be found. Verify the repository and pull request exist.",
+  "loc.messages.repos.baseReposInvoker.resourceNotFound.comment": "The message to display when an API call returns HTTP 404.",
   "loc.messages.repos.gitHubReposInvoker.insufficientGitHubAccessTokenPermissions": "Could not access the resources. Ensure the 'PR_Metrics_Access_Token' secret environment variable has Read and Write access to pull requests (or access to 'repos' if using a Classic PAT).",
   "loc.messages.repos.gitHubReposInvoker.insufficientGitHubAccessTokenPermissions.comment": "The message to display when terminating as the GitHub Personal Access Token (PAT) does not have sufficient access.",
   "loc.messages.repos.gitHubReposInvoker.noGitHubAccessToken": "Could not access the Personal Access Token (PAT). Add 'PR_Metrics_Access_Token' as a secret environment variable with Read and Write access to Pull Requests (or access to 'repos' if using a Classic PAT, or write access to 'pull-requests' and 'statuses' if specified within the workflow YAML).",

@@ -125,6 +125,7 @@
     "pullRequests.pullRequestComments.testsSufficientComment": "ms-resource:loc.messages.pullRequests.pullRequestComments.testsSufficientComment",
     "repos.azureReposInvoker.insufficientAzureReposAccessTokenPermissions": "ms-resource:loc.messages.repos.azureReposInvoker.insufficientAzureReposAccessTokenPermissions",
     "repos.azureReposInvoker.noAzureReposAccessToken": "ms-resource:loc.messages.repos.azureReposInvoker.noAzureReposAccessToken",
+    "repos.baseReposInvoker.resourceNotFound": "ms-resource:loc.messages.repos.baseReposInvoker.resourceNotFound",
     "repos.gitHubReposInvoker.insufficientGitHubAccessTokenPermissions": "ms-resource:loc.messages.repos.gitHubReposInvoker.insufficientGitHubAccessTokenPermissions",
     "repos.gitHubReposInvoker.noGitHubAccessToken": "ms-resource:loc.messages.repos.gitHubReposInvoker.noGitHubAccessToken",
     "repos.tokenManager.incorrectAuthorizationScheme": "ms-resource:loc.messages.repos.tokenManager.incorrectAuthorizationScheme"

@@ -79,6 +79,11 @@ describe("gitHubReposInvoker.ts", (): void => {
     ).thenReturn(
       "Could not access the Personal Access Token (PAT). Add 'PR_Metrics_Access_Token' as a secret environment variable with Read and Write access to Pull Requests (or access to 'repos' if using a Classic PAT, or write access to 'pull-requests' and 'statuses' if specified within the workflow YAML).",
     );
+    when(
+      runnerInvoker.loc("repos.baseReposInvoker.resourceNotFound"),
+    ).thenReturn(
+      "The resource could not be found. Verify the repository and pull request exist.",
+    );
   });
 
   afterEach((): void => {
@@ -735,11 +740,12 @@ describe("gitHubReposInvoker.ts", (): void => {
             gitHubReposInvoker.getTitleAndDescription();
 
           // Assert
+          const expectedMessage: string =
+            status === StatusCodes.NOT_FOUND
+              ? "The resource could not be found. Verify the repository and pull request exist."
+              : "Could not access the resources. Ensure the 'PR_Metrics_Access_Token' secret environment variable has Read and Write access to pull requests (or access to 'repos' if using a Classic PAT).";
           const result: ErrorWithStatusInterface =
-            await AssertExtensions.toThrowAsync(
-              func,
-              "Could not access the resources. Ensure the 'PR_Metrics_Access_Token' secret environment variable has Read and Write access to pull requests (or access to 'repos' if using a Classic PAT).",
-            );
+            await AssertExtensions.toThrowAsync(func, expectedMessage);
           assert.equal(result.internalMessage, "Test");
           verify(octokitWrapper.initialize(any())).once();
           verify(
