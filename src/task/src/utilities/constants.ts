@@ -14,6 +14,11 @@ export const decimalRadix = 10;
 export const exitCodeForFailure = 1;
 
 /**
+ * The timeout in milliseconds for HTTP requests.
+ */
+export const httpTimeoutMs = 30_000;
+
+/**
  * The maximum number of matching patterns that can be specified for file or test matching.
  */
 export const maxPatternCount = 200;

@@ -363,17 +363,7 @@ export default class CodeMetrics {
   private createFileMetricsMap(input: string): CodeFileMetricInterface[] {
     this._logger.logDebug("* CodeMetrics.createFileMetricsMap()");
 
-    // Removing the ending that can be created by test mocks.
-    const endingToRemove = "\r\nrc:0\r\nsuccess:true";
-    let modifiedInput: string = input;
-    if (modifiedInput.endsWith(endingToRemove)) {
-      modifiedInput = modifiedInput.substring(
-        0,
-        input.length - endingToRemove.length,
-      );
-    }
-
-    const lines: string[] = modifiedInput.split("\n");
+    const lines: string[] = input.split("\n");
 
     const result: CodeFileMetricInterface[] = [];
     for (const line of lines) {
@@ -384,7 +374,7 @@ export default class CodeMetrics {
         typeof elements[2] === "undefined"
       ) {
         throw new RangeError(
-          `The number of elements '${String(elements.length)}' in '${line}' in input '${modifiedInput}' did not match the expected 3.`,
+          `The number of elements '${String(elements.length)}' in '${line}' in input '${input}' did not match the expected 3.`,
         );
       }
 

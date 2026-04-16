@@ -10,6 +10,14 @@ import type RunnerInvoker from "../runners/runnerInvoker.js";
  * A class for logging messages.
  */
 export default class Logger {
+  private static readonly _sensitiveProperties: Set<string> = new Set<string>([
+    "AUTHORIZATION",
+    "COOKIE",
+    "PASSWORD",
+    "SECRET",
+    "TOKEN",
+  ]);
+
   private readonly _consoleWrapper: ConsoleWrapper;
   private readonly _runnerInvoker: RunnerInvoker;
 
@@ -29,13 +37,24 @@ export default class Logger {
   }
 
   /**
-   * Filter messages so that control strings are not printed to `stdout`.
+   * Filter messages so that control strings and newlines are not printed to `stdout`.
    * @param message The message to filter.
-   * @returns The filtered message.
+   * @returns The filtered message with control prefixes removed and newlines replaced by spaces.
    */
   private static filterMessage(message: string): string {
-    return message.replace(/##(?:vso)?\[/giu, "");
+    return message.replace(/##(?:vso)?\[/giu, "").replace(/[\n\r]/gu, " ");
   }
+
+  private static readonly _redactReplacer = (
+    key: string,
+    value: unknown,
+  ): unknown => {
+    if (key !== "" && Logger._sensitiveProperties.has(key.toUpperCase())) {
+      return "[REDACTED]";
+    }
+
+    return value;
+  };
 
   /**
    * Logs a debug message.
@@ -89,9 +108,17 @@ export default class Logger {
       unknown
     >;
     for (const property of properties) {
-      this.logInfo(
-        `${name} – ${property}: ${JSON.stringify(errorRecord[property])}`,
-      );
+      if (Logger._sensitiveProperties.has(property.toUpperCase())) {
+        this.logInfo(`${name} – ${property}: [REDACTED]`);
+      } else {
+        try {
+          this.logInfo(
+            `${name} – ${property}: ${JSON.stringify(errorRecord[property], Logger._redactReplacer)}`,
+          );
+        } catch {
+          this.logInfo(`${name} – ${property}: [COULD NOT SERIALIZE]`);
+        }
+      }
     }
   }
 

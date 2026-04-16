@@ -9,12 +9,14 @@
 
 export default class ConsoleWrapper {
   /**
-   * Logs a message to `stdout` suffixed with a new line character.
-   * @param message The optional message to log.
+   * Logs a sanitized message to `stdout` suffixed with a new line character. Newline and carriage-return characters in
+   * the message are replaced with spaces to prevent log injection.
+   * @param message The message to log.
    * @param optionalParams Optional parameters to insert into the message.
    */
   public log(message: string, ...optionalParams: string[]): void {
+    const sanitizedMessage: string = message.replace(/[\n\r]/gu, " ");
     /* eslint-disable-next-line no-console -- This is a wrapper around the console. */
-    console.log(message, ...optionalParams);
+    console.log(sanitizedMessage, ...optionalParams);
   }
 }

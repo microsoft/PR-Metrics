@@ -1411,6 +1411,26 @@ describe("inputs.ts", (): void => {
         verify(logger.logInfo(settingCodeFileExtensionsResource)).never();
       });
 
+      it("should trim whitespace and filter empty lines", (): void => {
+        // Arrange
+        when(
+          runnerInvoker.getInput(deepEqual(["File", "Matching", "Patterns"])),
+        ).thenReturn("  pattern1  \n\n  pattern2  \n   \npattern3");
+
+        // Act
+        const inputs: Inputs = new Inputs(
+          instance(logger),
+          instance(runnerInvoker),
+        );
+
+        // Assert
+        assert.deepEqual(inputs.fileMatchingPatterns, [
+          "pattern1",
+          "pattern2",
+          "pattern3",
+        ]);
+      });
+
       it("should truncate patterns exceeding the maximum count", (): void => {
         // Arrange
         const patterns: string[] = Array.from(
