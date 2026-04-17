@@ -3,7 +3,9 @@
  * Licensed under the MIT License.
  */
 
-import { anyString, instance, when } from "ts-mockito";
+
+import { anyString, when } from "ts-mockito";
+import { createCodeMetricsMocks, createSut } from "./codeMetricsTestSetup.js";
 import CodeMetrics from "../../src/metrics/codeMetrics.js";
 import CodeMetricsData from "../../src/metrics/codeMetricsData.js";
 import GitInvoker from "../../src/git/gitInvoker.js";
@@ -11,7 +13,7 @@ import Inputs from "../../src/metrics/inputs.js";
 import Logger from "../../src/utilities/logger.js";
 import RunnerInvoker from "../../src/runners/runnerInvoker.js";
 import assert from "node:assert/strict";
-import { createCodeMetricsMocks } from "./codeMetricsTestSetup.js";
+
 
 describe("codeMetrics.ts", (): void => {
   let gitInvoker: GitInvoker;
@@ -34,12 +36,7 @@ describe("codeMetrics.ts", (): void => {
     when(gitInvoker.getDiffSummary()).thenResolve("1\t0\tfile.ts");
 
     // Act
-    const codeMetrics: CodeMetrics = new CodeMetrics(
-      instance(gitInvoker),
-      instance(inputs),
-      instance(logger),
-      instance(runnerInvoker),
-    );
+    const codeMetrics: CodeMetrics = createSut(gitInvoker, inputs, logger, runnerInvoker);
 
     // Assert
     assert.deepEqual(await codeMetrics.getFilesNotRequiringReview(), []);
@@ -69,12 +66,7 @@ describe("codeMetrics.ts", (): void => {
         anyString() as string,
       ),
     ).thenReturn("");
-    const codeMetrics: CodeMetrics = new CodeMetrics(
-      instance(gitInvoker),
-      instance(inputs),
-      instance(logger),
-      instance(runnerInvoker),
-    );
+    const codeMetrics: CodeMetrics = createSut(gitInvoker, inputs, logger, runnerInvoker);
 
     // ACT
     const size: string = await codeMetrics.getSize();

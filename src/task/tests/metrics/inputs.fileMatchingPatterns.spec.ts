@@ -3,17 +3,20 @@
  * Licensed under the MIT License.
  */
 
+
 import * as InputsDefault from "../../src/metrics/inputsDefault.js";
 import {
   adjustingFileMatchingPatternsResource,
   createInputsMocks,
+  createSut,
   settingFileMatchingPatternsResource,
 } from "./inputsTestSetup.js";
-import { deepEqual, instance, verify, when } from "ts-mockito";
+import { deepEqual, verify, when } from "ts-mockito";
 import Inputs from "../../src/metrics/inputs.js";
 import Logger from "../../src/utilities/logger.js";
 import RunnerInvoker from "../../src/runners/runnerInvoker.js";
 import assert from "node:assert/strict";
+
 
 describe("inputs.ts", (): void => {
   let logger: Logger;
@@ -38,10 +41,7 @@ describe("inputs.ts", (): void => {
             ).thenReturn(fileMatchingPatterns);
 
             // Act
-            const inputs: Inputs = new Inputs(
-              instance(logger),
-              instance(runnerInvoker),
-            );
+            const inputs: Inputs = createSut(logger, runnerInvoker);
 
             // Assert
             assert.deepEqual(
@@ -72,10 +72,7 @@ describe("inputs.ts", (): void => {
             ).thenReturn(fileMatchingPatterns);
 
             // Act
-            const inputs: Inputs = new Inputs(
-              instance(logger),
-              instance(runnerInvoker),
-            );
+            const inputs: Inputs = createSut(logger, runnerInvoker);
 
             // Assert
             assert.deepEqual(inputs.fileMatchingPatterns, [
@@ -106,10 +103,7 @@ describe("inputs.ts", (): void => {
             ).thenReturn(fileMatchingPatterns);
 
             // Act
-            const inputs: Inputs = new Inputs(
-              instance(logger),
-              instance(runnerInvoker),
-            );
+            const inputs: Inputs = createSut(logger, runnerInvoker);
 
             // Assert
             assert.deepEqual(inputs.fileMatchingPatterns, expectedOutput);
@@ -128,10 +122,7 @@ describe("inputs.ts", (): void => {
         ).thenReturn("folder1\\file.js\nfolder2\\*.js");
 
         // Act
-        const inputs: Inputs = new Inputs(
-          instance(logger),
-          instance(runnerInvoker),
-        );
+        const inputs: Inputs = createSut(logger, runnerInvoker);
 
         // Assert
         assert.deepEqual(inputs.fileMatchingPatterns, [
@@ -148,10 +139,7 @@ describe("inputs.ts", (): void => {
         ).thenReturn("file.js\n");
 
         // Act
-        const inputs: Inputs = new Inputs(
-          instance(logger),
-          instance(runnerInvoker),
-        );
+        const inputs: Inputs = createSut(logger, runnerInvoker);
 
         // Assert
         assert.deepEqual(inputs.fileMatchingPatterns, ["file.js"]);
@@ -165,10 +153,7 @@ describe("inputs.ts", (): void => {
         ).thenReturn("  pattern1  \n\n  pattern2  \n   \npattern3");
 
         // Act
-        const inputs: Inputs = new Inputs(
-          instance(logger),
-          instance(runnerInvoker),
-        );
+        const inputs: Inputs = createSut(logger, runnerInvoker);
 
         // Assert
         assert.deepEqual(inputs.fileMatchingPatterns, [
@@ -189,10 +174,7 @@ describe("inputs.ts", (): void => {
         ).thenReturn(patterns.join("\n"));
 
         // Act
-        const inputs: Inputs = new Inputs(
-          instance(logger),
-          instance(runnerInvoker),
-        );
+        const inputs: Inputs = createSut(logger, runnerInvoker);
 
         // Assert
         assert.equal(inputs.fileMatchingPatterns.length, 200);

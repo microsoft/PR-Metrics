@@ -3,7 +3,8 @@
  * Licensed under the MIT License.
  */
 
-import { instance, when } from "ts-mockito";
+
+import { createCodeMetricsMocks, createSut } from "./codeMetricsTestSetup.js";
 import CodeMetrics from "../../src/metrics/codeMetrics.js";
 import CodeMetricsData from "../../src/metrics/codeMetricsData.js";
 import GitInvoker from "../../src/git/gitInvoker.js";
@@ -11,7 +12,8 @@ import Inputs from "../../src/metrics/inputs.js";
 import Logger from "../../src/utilities/logger.js";
 import RunnerInvoker from "../../src/runners/runnerInvoker.js";
 import assert from "node:assert/strict";
-import { createCodeMetricsMocks } from "./codeMetricsTestSetup.js";
+import { when } from "ts-mockito";
+
 
 describe("codeMetrics.ts", (): void => {
   let gitInvoker: GitInvoker;
@@ -471,12 +473,7 @@ describe("codeMetrics.ts", (): void => {
           when(gitInvoker.getDiffSummary()).thenResolve(gitResponse);
 
           // Act
-          const codeMetrics: CodeMetrics = new CodeMetrics(
-            instance(gitInvoker),
-            instance(inputs),
-            instance(logger),
-            instance(runnerInvoker),
-          );
+          const codeMetrics: CodeMetrics = createSut(gitInvoker, inputs, logger, runnerInvoker);
 
           // Assert
           assert.deepEqual(await codeMetrics.getFilesNotRequiringReview(), []);

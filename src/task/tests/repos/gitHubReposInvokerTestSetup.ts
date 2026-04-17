@@ -5,7 +5,8 @@
 
 import * as GitHubReposInvokerConstants from "./gitHubReposInvokerConstants.js";
 import { anyNumber, anyString } from "../testUtilities/mockito.js";
-import { mock, when } from "ts-mockito";
+import { instance, mock, when } from "ts-mockito";
+import GitHubReposInvoker from "../../src/repos/gitHubReposInvoker.js";
 import GitInvoker from "../../src/git/gitInvoker.js";
 import Logger from "../../src/utilities/logger.js";
 import OctokitWrapper from "../../src/wrappers/octokitWrapper.js";
@@ -70,3 +71,24 @@ export const createGitHubReposInvokerMocks = (): GitHubReposInvokerMocks => {
 
   return { gitInvoker, logger, octokitWrapper, runnerInvoker };
 };
+
+/**
+ * Constructs a `GitHubReposInvoker` instance from the supplied mocks.
+ * @param gitInvoker The mocked git invoker.
+ * @param logger The mocked logger.
+ * @param octokitWrapper The mocked octokit wrapper.
+ * @param runnerInvoker The mocked runner invoker.
+ * @returns The constructed `GitHubReposInvoker` instance.
+ */
+export const createSut = (
+  gitInvoker: GitInvoker,
+  logger: Logger,
+  octokitWrapper: OctokitWrapper,
+  runnerInvoker: RunnerInvoker,
+): GitHubReposInvoker =>
+  new GitHubReposInvoker(
+    instance(gitInvoker),
+    instance(logger),
+    instance(octokitWrapper),
+    instance(runnerInvoker),
+  );

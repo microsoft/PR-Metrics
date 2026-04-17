@@ -3,18 +3,21 @@
  * Licensed under the MIT License.
  */
 
+
 import * as InputsDefault from "../../src/metrics/inputsDefault.js";
 import {
   adjustingBaseSizeResource,
   createInputsMocks,
+  createSut,
   settingBaseSizeResource,
 } from "./inputsTestSetup.js";
-import { deepEqual, instance, verify, when } from "ts-mockito";
+import { deepEqual, verify, when } from "ts-mockito";
 import Inputs from "../../src/metrics/inputs.js";
 import Logger from "../../src/utilities/logger.js";
 import RunnerInvoker from "../../src/runners/runnerInvoker.js";
 import assert from "node:assert/strict";
 import { decimalRadix } from "../../src/utilities/constants.js";
+
 
 describe("inputs.ts", (): void => {
   let logger: Logger;
@@ -46,10 +49,7 @@ describe("inputs.ts", (): void => {
             ).thenReturn(baseSize);
 
             // Act
-            const inputs: Inputs = new Inputs(
-              instance(logger),
-              instance(runnerInvoker),
-            );
+            const inputs: Inputs = createSut(logger, runnerInvoker);
 
             // Assert
             assert.equal(inputs.baseSize, InputsDefault.baseSize);
@@ -69,10 +69,7 @@ describe("inputs.ts", (): void => {
             ).thenReturn(baseSize);
 
             // Act
-            const inputs: Inputs = new Inputs(
-              instance(logger),
-              instance(runnerInvoker),
-            );
+            const inputs: Inputs = createSut(logger, runnerInvoker);
 
             // Assert
             assert.equal(inputs.baseSize, InputsDefault.baseSize);
@@ -92,10 +89,7 @@ describe("inputs.ts", (): void => {
             ).thenReturn(baseSize);
 
             // Act
-            const inputs: Inputs = new Inputs(
-              instance(logger),
-              instance(runnerInvoker),
-            );
+            const inputs: Inputs = createSut(logger, runnerInvoker);
 
             // Assert
             assert.equal(inputs.baseSize, parseInt(baseSize, decimalRadix));

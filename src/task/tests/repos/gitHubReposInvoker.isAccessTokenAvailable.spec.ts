@@ -3,15 +3,17 @@
  * Licensed under the MIT License.
  */
 
+
+import { createGitHubReposInvokerMocks, createSut } from "./gitHubReposInvokerTestSetup.js";
 import GitHubReposInvoker from "../../src/repos/gitHubReposInvoker.js";
 import GitInvoker from "../../src/git/gitInvoker.js";
 import Logger from "../../src/utilities/logger.js";
 import OctokitWrapper from "../../src/wrappers/octokitWrapper.js";
 import RunnerInvoker from "../../src/runners/runnerInvoker.js";
 import assert from "node:assert/strict";
-import { createGitHubReposInvokerMocks } from "./gitHubReposInvokerTestSetup.js";
-import { instance } from "ts-mockito";
 import { stubEnv } from "../testUtilities/stubEnv.js";
+
+
 
 describe("gitHubReposInvoker.ts", (): void => {
   let gitInvoker: GitInvoker;
@@ -31,12 +33,7 @@ describe("gitHubReposInvoker.ts", (): void => {
   describe("isAccessTokenAvailable()", (): void => {
     it("should return null when the token exists on Azure DevOps", async (): Promise<void> => {
       // Arrange
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
-        instance(gitInvoker),
-        instance(logger),
-        instance(octokitWrapper),
-        instance(runnerInvoker),
-      );
+      const gitHubReposInvoker: GitHubReposInvoker = createSut(gitInvoker, logger, octokitWrapper, runnerInvoker);
 
       // Act
       const result: string | null =
@@ -50,12 +47,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       // Arrange
       stubEnv(["PR_METRICS_ACCESS_TOKEN", "PAT"]);
       stubEnv(["GITHUB_ACTION", "PR-Metrics"]);
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
-        instance(gitInvoker),
-        instance(logger),
-        instance(octokitWrapper),
-        instance(runnerInvoker),
-      );
+      const gitHubReposInvoker: GitHubReposInvoker = createSut(gitInvoker, logger, octokitWrapper, runnerInvoker);
 
       // Act
       const result: string | null =
@@ -69,12 +61,7 @@ describe("gitHubReposInvoker.ts", (): void => {
     it("should return a string when the token does not exist", async (): Promise<void> => {
       // Arrange
       stubEnv(["PR_METRICS_ACCESS_TOKEN", undefined]);
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
-        instance(gitInvoker),
-        instance(logger),
-        instance(octokitWrapper),
-        instance(runnerInvoker),
-      );
+      const gitHubReposInvoker: GitHubReposInvoker = createSut(gitInvoker, logger, octokitWrapper, runnerInvoker);
 
       // Act
       const result: string | null =

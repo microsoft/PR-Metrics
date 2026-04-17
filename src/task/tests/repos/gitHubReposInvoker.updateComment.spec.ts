@@ -3,8 +3,9 @@
  * Licensed under the MIT License.
  */
 
-import { createGitHubReposInvokerMocks, expectedUserAgent } from "./gitHubReposInvokerTestSetup.js";
-import { instance, verify, when } from "ts-mockito";
+
+import { createGitHubReposInvokerMocks, createSut, expectedUserAgent } from "./gitHubReposInvokerTestSetup.js";
+import { verify, when } from "ts-mockito";
 import GitHubReposInvoker from "../../src/repos/gitHubReposInvoker.js";
 import GitInvoker from "../../src/git/gitInvoker.js";
 import Logger from "../../src/utilities/logger.js";
@@ -13,6 +14,7 @@ import OctokitWrapper from "../../src/wrappers/octokitWrapper.js";
 import RunnerInvoker from "../../src/runners/runnerInvoker.js";
 import { any } from "../testUtilities/mockito.js";
 import assert from "node:assert/strict";
+
 
 describe("gitHubReposInvoker.ts", (): void => {
   let gitInvoker: GitInvoker;
@@ -32,12 +34,7 @@ describe("gitHubReposInvoker.ts", (): void => {
   describe("updateComment()", (): void => {
     it("should succeed when the content is null", async (): Promise<void> => {
       // Arrange
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
-        instance(gitInvoker),
-        instance(logger),
-        instance(octokitWrapper),
-        instance(runnerInvoker),
-      );
+      const gitHubReposInvoker: GitHubReposInvoker = createSut(gitInvoker, logger, octokitWrapper, runnerInvoker);
 
       // Act
       await gitHubReposInvoker.updateComment(54321, null);
@@ -58,12 +55,7 @@ describe("gitHubReposInvoker.ts", (): void => {
           assert.notEqual(options.log?.error, null);
         },
       );
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
-        instance(gitInvoker),
-        instance(logger),
-        instance(octokitWrapper),
-        instance(runnerInvoker),
-      );
+      const gitHubReposInvoker: GitHubReposInvoker = createSut(gitInvoker, logger, octokitWrapper, runnerInvoker);
 
       // Act
       await gitHubReposInvoker.updateComment(54321, "Content");

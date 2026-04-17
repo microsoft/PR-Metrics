@@ -4,7 +4,8 @@
  */
 
 import * as InputsDefault from "../../src/metrics/inputsDefault.js";
-import { mock, when } from "ts-mockito";
+import { instance, mock, when } from "ts-mockito";
+import CodeMetrics from "../../src/metrics/codeMetrics.js";
 import GitInvoker from "../../src/git/gitInvoker.js";
 import Inputs from "../../src/metrics/inputs.js";
 import Logger from "../../src/utilities/logger.js";
@@ -48,3 +49,24 @@ export const createCodeMetricsMocks = (): CodeMetricsMocks => {
 
   return { gitInvoker, inputs, logger, runnerInvoker };
 };
+
+/**
+ * Constructs a `CodeMetrics` instance from the supplied mocks.
+ * @param gitInvoker The mocked git invoker.
+ * @param inputs The mocked inputs.
+ * @param logger The mocked logger.
+ * @param runnerInvoker The mocked runner invoker.
+ * @returns The constructed `CodeMetrics` instance.
+ */
+export const createSut = (
+  gitInvoker: GitInvoker,
+  inputs: Inputs,
+  logger: Logger,
+  runnerInvoker: RunnerInvoker,
+): CodeMetrics =>
+  new CodeMetrics(
+    instance(gitInvoker),
+    instance(inputs),
+    instance(logger),
+    instance(runnerInvoker),
+  );

@@ -3,14 +3,11 @@
  * Licensed under the MIT License.
  */
 
+
 import * as AssertExtensions from "../testUtilities/assertExtensions.js";
 import { CommentThreadStatus, type GitPullRequestCommentThread } from "azure-devops-node-api/interfaces/GitInterfaces.js";
-import {
-  deepEqual,
-  instance,
-  verify,
-  when,
-} from "ts-mockito";
+import { createAzureReposInvokerMocks, createSut } from "./azureReposInvokerTestSetup.js";
+import { deepEqual, verify, when } from "ts-mockito";
 import AzureDevOpsApiWrapper from "../../src/wrappers/azureDevOpsApiWrapper.js";
 import AzureReposInvoker from "../../src/repos/azureReposInvoker.js";
 import ErrorWithStatus from "../wrappers/errorWithStatus.js";
@@ -22,7 +19,7 @@ import { StatusCodes } from "http-status-codes";
 import TokenManager from "../../src/repos/tokenManager.js";
 import { any } from "../testUtilities/mockito.js";
 import assert from "node:assert/strict";
-import { createAzureReposInvokerMocks } from "./azureReposInvokerTestSetup.js";
+
 
 describe("azureReposInvoker.ts", (): void => {
   let gitApi: IGitApi;
@@ -59,13 +56,7 @@ describe("azureReposInvoker.ts", (): void => {
           when(gitApi.createThread(any(), "RepoID", 10, "Project")).thenThrow(
             error,
           );
-          const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(
-            instance(azureDevOpsApiWrapper),
-            instance(gitInvoker),
-            instance(logger),
-            instance(runnerInvoker),
-            instance(tokenManager),
-          );
+          const azureReposInvoker: AzureReposInvoker = createSut(azureDevOpsApiWrapper, gitInvoker, logger, runnerInvoker, tokenManager);
 
           // Act
           const func: () => Promise<void> = async () =>
@@ -113,13 +104,7 @@ describe("azureReposInvoker.ts", (): void => {
           "Project",
         ),
       ).thenResolve({});
-      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(
-        instance(azureDevOpsApiWrapper),
-        instance(gitInvoker),
-        instance(logger),
-        instance(runnerInvoker),
-        instance(tokenManager),
-      );
+      const azureReposInvoker: AzureReposInvoker = createSut(azureDevOpsApiWrapper, gitInvoker, logger, runnerInvoker, tokenManager);
 
       // Act
       await azureReposInvoker.createComment(
@@ -160,13 +145,7 @@ describe("azureReposInvoker.ts", (): void => {
           "Project",
         ),
       ).thenResolve({});
-      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(
-        instance(azureDevOpsApiWrapper),
-        instance(gitInvoker),
-        instance(logger),
-        instance(runnerInvoker),
-        instance(tokenManager),
-      );
+      const azureReposInvoker: AzureReposInvoker = createSut(azureDevOpsApiWrapper, gitInvoker, logger, runnerInvoker, tokenManager);
 
       // Act
       await azureReposInvoker.createComment(
@@ -223,13 +202,7 @@ describe("azureReposInvoker.ts", (): void => {
           "Project",
         ),
       ).thenResolve({});
-      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(
-        instance(azureDevOpsApiWrapper),
-        instance(gitInvoker),
-        instance(logger),
-        instance(runnerInvoker),
-        instance(tokenManager),
-      );
+      const azureReposInvoker: AzureReposInvoker = createSut(azureDevOpsApiWrapper, gitInvoker, logger, runnerInvoker, tokenManager);
 
       // Act
       await azureReposInvoker.createComment(
@@ -281,13 +254,7 @@ describe("azureReposInvoker.ts", (): void => {
           "Project",
         ),
       ).thenResolve({});
-      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(
-        instance(azureDevOpsApiWrapper),
-        instance(gitInvoker),
-        instance(logger),
-        instance(runnerInvoker),
-        instance(tokenManager),
-      );
+      const azureReposInvoker: AzureReposInvoker = createSut(azureDevOpsApiWrapper, gitInvoker, logger, runnerInvoker, tokenManager);
 
       // Act
       await azureReposInvoker.createComment(

@@ -3,11 +3,12 @@
  * Licensed under the MIT License.
  */
 
+
 import * as AssertExtensions from "../testUtilities/assertExtensions.js";
 import * as GitHubReposInvokerConstants from "./gitHubReposInvokerConstants.js";
 import { any, anyNumber, anyString } from "../testUtilities/mockito.js";
-import { createGitHubReposInvokerMocks, expectedUserAgent } from "./gitHubReposInvokerTestSetup.js";
-import { instance, verify, when } from "ts-mockito";
+import { createGitHubReposInvokerMocks, createSut, expectedUserAgent } from "./gitHubReposInvokerTestSetup.js";
+import { verify, when } from "ts-mockito";
 import type ErrorWithStatusInterface from "../../src/repos/interfaces/errorWithStatusInterface.js";
 import type GetPullResponse from "../../src/wrappers/octokitInterfaces/getPullResponse.js";
 import GitHubReposInvoker from "../../src/repos/gitHubReposInvoker.js";
@@ -23,6 +24,7 @@ import { StatusCodes } from "http-status-codes";
 import assert from "node:assert/strict";
 import { createRequestError } from "../testUtilities/createRequestError.js";
 import { stubEnv } from "../testUtilities/stubEnv.js";
+
 
 describe("gitHubReposInvoker.ts", (): void => {
   let gitInvoker: GitInvoker;
@@ -52,12 +54,7 @@ describe("gitHubReposInvoker.ts", (): void => {
             stubEnv(["SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI", variable]);
           }
 
-          const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
-            instance(gitInvoker),
-            instance(logger),
-            instance(octokitWrapper),
-            instance(runnerInvoker),
-          );
+          const gitHubReposInvoker: GitHubReposInvoker = createSut(gitInvoker, logger, octokitWrapper, runnerInvoker);
 
           // Act
           const func: () => Promise<PullRequestDetailsInterface> = async () =>
@@ -77,12 +74,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       stubEnv(
         ["SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI", "https://github.com/microsoft"],
       );
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
-        instance(gitInvoker),
-        instance(logger),
-        instance(octokitWrapper),
-        instance(runnerInvoker),
-      );
+      const gitHubReposInvoker: GitHubReposInvoker = createSut(gitInvoker, logger, octokitWrapper, runnerInvoker);
 
       // Act
       const func: () => Promise<PullRequestDetailsInterface> = async () =>
@@ -110,12 +102,7 @@ describe("gitHubReposInvoker.ts", (): void => {
             stubEnv(["GITHUB_API_URL", variable]);
           }
 
-          const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
-            instance(gitInvoker),
-            instance(logger),
-            instance(octokitWrapper),
-            instance(runnerInvoker),
-          );
+          const gitHubReposInvoker: GitHubReposInvoker = createSut(gitInvoker, logger, octokitWrapper, runnerInvoker);
 
           // Act
           const func: () => Promise<PullRequestDetailsInterface> = async () =>
@@ -147,12 +134,7 @@ describe("gitHubReposInvoker.ts", (): void => {
             stubEnv(["GITHUB_REPOSITORY_OWNER", variable]);
           }
 
-          const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
-            instance(gitInvoker),
-            instance(logger),
-            instance(octokitWrapper),
-            instance(runnerInvoker),
-          );
+          const gitHubReposInvoker: GitHubReposInvoker = createSut(gitInvoker, logger, octokitWrapper, runnerInvoker);
 
           // Act
           const func: () => Promise<PullRequestDetailsInterface> = async () =>
@@ -185,12 +167,7 @@ describe("gitHubReposInvoker.ts", (): void => {
             stubEnv(["GITHUB_REPOSITORY", variable]);
           }
 
-          const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
-            instance(gitInvoker),
-            instance(logger),
-            instance(octokitWrapper),
-            instance(runnerInvoker),
-          );
+          const gitHubReposInvoker: GitHubReposInvoker = createSut(gitInvoker, logger, octokitWrapper, runnerInvoker);
 
           // Act
           const func: () => Promise<PullRequestDetailsInterface> = async () =>
@@ -214,12 +191,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       stubEnv(["GITHUB_API_URL", "https://api.github.com"]);
       stubEnv(["GITHUB_REPOSITORY_OWNER", "microsoft"]);
       stubEnv(["GITHUB_REPOSITORY", "microsoft"]);
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
-        instance(gitInvoker),
-        instance(logger),
-        instance(octokitWrapper),
-        instance(runnerInvoker),
-      );
+      const gitHubReposInvoker: GitHubReposInvoker = createSut(gitInvoker, logger, octokitWrapper, runnerInvoker);
 
       // Act
       const func: () => Promise<PullRequestDetailsInterface> = async () =>
@@ -246,12 +218,7 @@ describe("gitHubReposInvoker.ts", (): void => {
           assert.notEqual(options.log?.error, null);
         },
       );
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
-        instance(gitInvoker),
-        instance(logger),
-        instance(octokitWrapper),
-        instance(runnerInvoker),
-      );
+      const gitHubReposInvoker: GitHubReposInvoker = createSut(gitInvoker, logger, octokitWrapper, runnerInvoker);
 
       // Act
       const result: PullRequestDetailsInterface =
@@ -281,12 +248,7 @@ describe("gitHubReposInvoker.ts", (): void => {
           assert.notEqual(options.log?.error, null);
         },
       );
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
-        instance(gitInvoker),
-        instance(logger),
-        instance(octokitWrapper),
-        instance(runnerInvoker),
-      );
+      const gitHubReposInvoker: GitHubReposInvoker = createSut(gitInvoker, logger, octokitWrapper, runnerInvoker);
 
       // Act
       const result: PullRequestDetailsInterface =
@@ -317,12 +279,7 @@ describe("gitHubReposInvoker.ts", (): void => {
           assert.notEqual(options.log?.error, null);
         },
       );
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
-        instance(gitInvoker),
-        instance(logger),
-        instance(octokitWrapper),
-        instance(runnerInvoker),
-      );
+      const gitHubReposInvoker: GitHubReposInvoker = createSut(gitInvoker, logger, octokitWrapper, runnerInvoker);
 
       // Act
       const result: PullRequestDetailsInterface =
@@ -356,12 +313,7 @@ describe("gitHubReposInvoker.ts", (): void => {
           assert.notEqual(options.log?.error, null);
         },
       );
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
-        instance(gitInvoker),
-        instance(logger),
-        instance(octokitWrapper),
-        instance(runnerInvoker),
-      );
+      const gitHubReposInvoker: GitHubReposInvoker = createSut(gitInvoker, logger, octokitWrapper, runnerInvoker);
 
       // Act
       const result: PullRequestDetailsInterface =
@@ -387,12 +339,7 @@ describe("gitHubReposInvoker.ts", (): void => {
           assert.notEqual(options.log?.error, null);
         },
       );
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
-        instance(gitInvoker),
-        instance(logger),
-        instance(octokitWrapper),
-        instance(runnerInvoker),
-      );
+      const gitHubReposInvoker: GitHubReposInvoker = createSut(gitInvoker, logger, octokitWrapper, runnerInvoker);
 
       // Act
       await gitHubReposInvoker.getTitleAndDescription();
@@ -425,12 +372,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       when(
         octokitWrapper.getPull(anyString(), anyString(), anyNumber()),
       ).thenResolve(currentMockPullResponse);
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
-        instance(gitInvoker),
-        instance(logger),
-        instance(octokitWrapper),
-        instance(runnerInvoker),
-      );
+      const gitHubReposInvoker: GitHubReposInvoker = createSut(gitInvoker, logger, octokitWrapper, runnerInvoker);
 
       // Act
       const result: PullRequestDetailsInterface =
@@ -468,12 +410,7 @@ describe("gitHubReposInvoker.ts", (): void => {
           when(
             octokitWrapper.getPull(anyString(), anyString(), anyNumber()),
           ).thenThrow(error);
-          const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
-            instance(gitInvoker),
-            instance(logger),
-            instance(octokitWrapper),
-            instance(runnerInvoker),
-          );
+          const gitHubReposInvoker: GitHubReposInvoker = createSut(gitInvoker, logger, octokitWrapper, runnerInvoker);
 
           // Act
           const func: () => Promise<PullRequestDetailsInterface> = async () =>
@@ -508,12 +445,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       when(
         octokitWrapper.getPull(anyString(), anyString(), anyNumber()),
       ).thenThrow(Error("Error"));
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
-        instance(gitInvoker),
-        instance(logger),
-        instance(octokitWrapper),
-        instance(runnerInvoker),
-      );
+      const gitHubReposInvoker: GitHubReposInvoker = createSut(gitInvoker, logger, octokitWrapper, runnerInvoker);
 
       // Act
       const func: () => Promise<PullRequestDetailsInterface> = async () =>
@@ -532,12 +464,7 @@ describe("gitHubReposInvoker.ts", (): void => {
           logObject = options.log;
         },
       );
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
-        instance(gitInvoker),
-        instance(logger),
-        instance(octokitWrapper),
-        instance(runnerInvoker),
-      );
+      const gitHubReposInvoker: GitHubReposInvoker = createSut(gitInvoker, logger, octokitWrapper, runnerInvoker);
       await gitHubReposInvoker.getTitleAndDescription();
 
       // Act

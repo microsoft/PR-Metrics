@@ -3,10 +3,11 @@
  * Licensed under the MIT License.
  */
 
+
 import * as GitHubReposInvokerConstants from "./gitHubReposInvokerConstants.js";
 import { any, anyNumber, anyString } from "../testUtilities/mockito.js";
-import { createGitHubReposInvokerMocks, expectedUserAgent } from "./gitHubReposInvokerTestSetup.js";
-import { instance, verify, when } from "ts-mockito";
+import { createGitHubReposInvokerMocks, createSut, expectedUserAgent } from "./gitHubReposInvokerTestSetup.js";
+import { verify, when } from "ts-mockito";
 import type CommentData from "../../src/repos/interfaces/commentData.js";
 import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces.js";
 import type GetIssueCommentsResponse from "../../src/wrappers/octokitInterfaces/getIssueCommentsResponse.js";
@@ -17,6 +18,7 @@ import type { OctokitOptions } from "@octokit/core";
 import OctokitWrapper from "../../src/wrappers/octokitWrapper.js";
 import RunnerInvoker from "../../src/runners/runnerInvoker.js";
 import assert from "node:assert/strict";
+
 
 describe("gitHubReposInvoker.ts", (): void => {
   let gitInvoker: GitInvoker;
@@ -57,12 +59,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       when(
         octokitWrapper.getIssueComments(anyString(), anyString(), anyNumber()),
       ).thenResolve(response);
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
-        instance(gitInvoker),
-        instance(logger),
-        instance(octokitWrapper),
-        instance(runnerInvoker),
-      );
+      const gitHubReposInvoker: GitHubReposInvoker = createSut(gitInvoker, logger, octokitWrapper, runnerInvoker);
 
       // Act
       const result: CommentData = await gitHubReposInvoker.getComments();
@@ -101,12 +98,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       when(
         octokitWrapper.getReviewComments(anyString(), anyString(), anyNumber()),
       ).thenResolve(GitHubReposInvokerConstants.getReviewCommentsResponse);
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
-        instance(gitInvoker),
-        instance(logger),
-        instance(octokitWrapper),
-        instance(runnerInvoker),
-      );
+      const gitHubReposInvoker: GitHubReposInvoker = createSut(gitInvoker, logger, octokitWrapper, runnerInvoker);
 
       // Act
       const result: CommentData = await gitHubReposInvoker.getComments();
@@ -153,12 +145,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       when(
         octokitWrapper.getReviewComments(anyString(), anyString(), anyNumber()),
       ).thenResolve(GitHubReposInvokerConstants.getReviewCommentsResponse);
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
-        instance(gitInvoker),
-        instance(logger),
-        instance(octokitWrapper),
-        instance(runnerInvoker),
-      );
+      const gitHubReposInvoker: GitHubReposInvoker = createSut(gitInvoker, logger, octokitWrapper, runnerInvoker);
 
       // Act
       const result: CommentData = await gitHubReposInvoker.getComments();
@@ -208,12 +195,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       when(
         octokitWrapper.getIssueComments(anyString(), anyString(), anyNumber()),
       ).thenResolve(response);
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
-        instance(gitInvoker),
-        instance(logger),
-        instance(octokitWrapper),
-        instance(runnerInvoker),
-      );
+      const gitHubReposInvoker: GitHubReposInvoker = createSut(gitInvoker, logger, octokitWrapper, runnerInvoker);
 
       // Act
       const result: CommentData = await gitHubReposInvoker.getComments();

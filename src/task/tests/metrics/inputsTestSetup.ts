@@ -4,7 +4,8 @@
  */
 
 import * as InputsDefault from "../../src/metrics/inputsDefault.js";
-import { deepEqual, mock, when } from "ts-mockito";
+import { deepEqual, instance, mock, when } from "ts-mockito";
+import Inputs from "../../src/metrics/inputs.js";
 import Logger from "../../src/utilities/logger.js";
 import RunnerInvoker from "../../src/runners/runnerInvoker.js";
 import { anyString } from "../testUtilities/mockito.js";
@@ -129,3 +130,15 @@ export const createInputsMocks = (): InputsMocks => {
 
   return { logger, runnerInvoker };
 };
+
+/**
+ * Constructs an `Inputs` instance from the supplied mocks. Tests use this in
+ * place of inline `new Inputs(instance(...), ...)` calls.
+ * @param logger The mocked logger.
+ * @param runnerInvoker The mocked runner invoker.
+ * @returns The constructed `Inputs` instance.
+ */
+export const createSut = (
+  logger: Logger,
+  runnerInvoker: RunnerInvoker,
+): Inputs => new Inputs(instance(logger), instance(runnerInvoker));

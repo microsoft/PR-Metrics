@@ -3,11 +3,12 @@
  * Licensed under the MIT License.
  */
 
+
 import * as AssertExtensions from "../testUtilities/assertExtensions.js";
 import * as GitHubReposInvokerConstants from "./gitHubReposInvokerConstants.js";
 import { any, anyNumber, anyString } from "../testUtilities/mockito.js";
-import { createGitHubReposInvokerMocks, expectedUserAgent } from "./gitHubReposInvokerTestSetup.js";
-import { instance, verify, when } from "ts-mockito";
+import { createGitHubReposInvokerMocks, createSut, expectedUserAgent } from "./gitHubReposInvokerTestSetup.js";
+import { verify, when } from "ts-mockito";
 import GitHubReposInvoker from "../../src/repos/gitHubReposInvoker.js";
 import GitInvoker from "../../src/git/gitInvoker.js";
 import HttpError from "../testUtilities/httpError.js";
@@ -19,6 +20,7 @@ import RunnerInvoker from "../../src/runners/runnerInvoker.js";
 import { StatusCodes } from "http-status-codes";
 import assert from "node:assert/strict";
 import { createRequestError } from "../testUtilities/createRequestError.js";
+
 
 describe("gitHubReposInvoker.ts", (): void => {
   let gitInvoker: GitInvoker;
@@ -49,12 +51,7 @@ describe("gitHubReposInvoker.ts", (): void => {
           assert.notEqual(options.log?.error, null);
         },
       );
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
-        instance(gitInvoker),
-        instance(logger),
-        instance(octokitWrapper),
-        instance(runnerInvoker),
-      );
+      const gitHubReposInvoker: GitHubReposInvoker = createSut(gitInvoker, logger, octokitWrapper, runnerInvoker);
 
       // Act
       await gitHubReposInvoker.createComment("Content", "file.ts");
@@ -102,12 +99,7 @@ describe("gitHubReposInvoker.ts", (): void => {
         status: StatusCodes.OK,
         url: "",
       });
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
-        instance(gitInvoker),
-        instance(logger),
-        instance(octokitWrapper),
-        instance(runnerInvoker),
-      );
+      const gitHubReposInvoker: GitHubReposInvoker = createSut(gitInvoker, logger, octokitWrapper, runnerInvoker);
 
       // Act
       const func: () => Promise<void> = async () =>
@@ -150,12 +142,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       when(
         octokitWrapper.listCommits(anyString(), anyString(), anyNumber(), 24),
       ).thenResolve(GitHubReposInvokerConstants.listCommitsResponse);
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
-        instance(gitInvoker),
-        instance(logger),
-        instance(octokitWrapper),
-        instance(runnerInvoker),
-      );
+      const gitHubReposInvoker: GitHubReposInvoker = createSut(gitInvoker, logger, octokitWrapper, runnerInvoker);
 
       // Act
       await gitHubReposInvoker.createComment("Content", "file.ts");
@@ -200,12 +187,7 @@ describe("gitHubReposInvoker.ts", (): void => {
         status: StatusCodes.OK,
         url: "",
       });
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
-        instance(gitInvoker),
-        instance(logger),
-        instance(octokitWrapper),
-        instance(runnerInvoker),
-      );
+      const gitHubReposInvoker: GitHubReposInvoker = createSut(gitInvoker, logger, octokitWrapper, runnerInvoker);
 
       // Act
       const func: () => Promise<void> = async () =>
@@ -235,12 +217,7 @@ describe("gitHubReposInvoker.ts", (): void => {
           assert.notEqual(options.log?.error, null);
         },
       );
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
-        instance(gitInvoker),
-        instance(logger),
-        instance(octokitWrapper),
-        instance(runnerInvoker),
-      );
+      const gitHubReposInvoker: GitHubReposInvoker = createSut(gitInvoker, logger, octokitWrapper, runnerInvoker);
 
       // Act
       await gitHubReposInvoker.createComment("Content", "file.ts");
@@ -286,12 +263,7 @@ describe("gitHubReposInvoker.ts", (): void => {
           "sha54321",
         ),
       ).thenResolve(null);
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
-        instance(gitInvoker),
-        instance(logger),
-        instance(octokitWrapper),
-        instance(runnerInvoker),
-      );
+      const gitHubReposInvoker: GitHubReposInvoker = createSut(gitInvoker, logger, octokitWrapper, runnerInvoker);
 
       // Act
       await gitHubReposInvoker.createComment("Content", "file.ts");
@@ -350,12 +322,7 @@ describe("gitHubReposInvoker.ts", (): void => {
           ).thenCall((): void => {
             throw error;
           });
-          const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
-            instance(gitInvoker),
-            instance(logger),
-            instance(octokitWrapper),
-            instance(runnerInvoker),
-          );
+          const gitHubReposInvoker: GitHubReposInvoker = createSut(gitInvoker, logger, octokitWrapper, runnerInvoker);
 
           // Act
           await gitHubReposInvoker.createComment("Content", "file.ts");
@@ -420,12 +387,7 @@ describe("gitHubReposInvoker.ts", (): void => {
           ).thenCall((): void => {
             throw error;
           });
-          const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
-            instance(gitInvoker),
-            instance(logger),
-            instance(octokitWrapper),
-            instance(runnerInvoker),
-          );
+          const gitHubReposInvoker: GitHubReposInvoker = createSut(gitInvoker, logger, octokitWrapper, runnerInvoker);
 
           // Act
           const func: () => Promise<void> = async () =>
@@ -464,12 +426,7 @@ describe("gitHubReposInvoker.ts", (): void => {
           assert.notEqual(options.log?.error, null);
         },
       );
-      const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
-        instance(gitInvoker),
-        instance(logger),
-        instance(octokitWrapper),
-        instance(runnerInvoker),
-      );
+      const gitHubReposInvoker: GitHubReposInvoker = createSut(gitInvoker, logger, octokitWrapper, runnerInvoker);
 
       // Act
       await gitHubReposInvoker.createComment("Content", null);

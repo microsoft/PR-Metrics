@@ -3,7 +3,8 @@
  * Licensed under the MIT License.
  */
 
-import { instance, when } from "ts-mockito";
+
+import { createAzureReposInvokerMocks, createSut } from "./azureReposInvokerTestSetup.js";
 import AzureDevOpsApiWrapper from "../../src/wrappers/azureDevOpsApiWrapper.js";
 import AzureReposInvoker from "../../src/repos/azureReposInvoker.js";
 import GitInvoker from "../../src/git/gitInvoker.js";
@@ -11,8 +12,9 @@ import Logger from "../../src/utilities/logger.js";
 import RunnerInvoker from "../../src/runners/runnerInvoker.js";
 import TokenManager from "../../src/repos/tokenManager.js";
 import assert from "node:assert/strict";
-import { createAzureReposInvokerMocks } from "./azureReposInvokerTestSetup.js";
 import { stubEnv } from "../testUtilities/stubEnv.js";
+import { when } from "ts-mockito";
+
 
 describe("azureReposInvoker.ts", (): void => {
   let azureDevOpsApiWrapper: AzureDevOpsApiWrapper;
@@ -34,13 +36,7 @@ describe("azureReposInvoker.ts", (): void => {
   describe("isAccessTokenAvailable()", (): void => {
     it("should return null when the token exists", async (): Promise<void> => {
       // Arrange
-      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(
-        instance(azureDevOpsApiWrapper),
-        instance(gitInvoker),
-        instance(logger),
-        instance(runnerInvoker),
-        instance(tokenManager),
-      );
+      const azureReposInvoker: AzureReposInvoker = createSut(azureDevOpsApiWrapper, gitInvoker, logger, runnerInvoker, tokenManager);
 
       // Act
       const result: string | null =
@@ -53,13 +49,7 @@ describe("azureReposInvoker.ts", (): void => {
     it("should return a string when the token manager fails", async (): Promise<void> => {
       // Arrange
       stubEnv(["PR_METRICS_ACCESS_TOKEN", undefined]);
-      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(
-        instance(azureDevOpsApiWrapper),
-        instance(gitInvoker),
-        instance(logger),
-        instance(runnerInvoker),
-        instance(tokenManager),
-      );
+      const azureReposInvoker: AzureReposInvoker = createSut(azureDevOpsApiWrapper, gitInvoker, logger, runnerInvoker, tokenManager);
       when(tokenManager.getToken()).thenResolve("Failure");
 
       // Act
@@ -73,13 +63,7 @@ describe("azureReposInvoker.ts", (): void => {
     it("should return a string when the token does not exist", async (): Promise<void> => {
       // Arrange
       stubEnv(["PR_METRICS_ACCESS_TOKEN", undefined]);
-      const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(
-        instance(azureDevOpsApiWrapper),
-        instance(gitInvoker),
-        instance(logger),
-        instance(runnerInvoker),
-        instance(tokenManager),
-      );
+      const azureReposInvoker: AzureReposInvoker = createSut(azureDevOpsApiWrapper, gitInvoker, logger, runnerInvoker, tokenManager);
 
       // Act
       const result: string | null =

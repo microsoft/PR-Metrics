@@ -5,6 +5,7 @@
 
 import { deepEqual, instance, mock, when } from "ts-mockito";
 import AzureDevOpsApiWrapper from "../../src/wrappers/azureDevOpsApiWrapper.js";
+import AzureReposInvoker from "../../src/repos/azureReposInvoker.js";
 import GitInvoker from "../../src/git/gitInvoker.js";
 import type { IGitApi } from "azure-devops-node-api/GitApi.js";
 import type { IRequestHandler } from "azure-devops-node-api/interfaces/common/VsoBaseInterfaces.js";
@@ -77,3 +78,27 @@ export const createAzureReposInvokerMocks = (): AzureReposInvokerMocks => {
     tokenManager,
   };
 };
+
+/**
+ * Constructs an `AzureReposInvoker` instance from the supplied mocks.
+ * @param azureDevOpsApiWrapper The mocked Azure DevOps API wrapper.
+ * @param gitInvoker The mocked git invoker.
+ * @param logger The mocked logger.
+ * @param runnerInvoker The mocked runner invoker.
+ * @param tokenManager The mocked token manager.
+ * @returns The constructed `AzureReposInvoker` instance.
+ */
+export const createSut = (
+  azureDevOpsApiWrapper: AzureDevOpsApiWrapper,
+  gitInvoker: GitInvoker,
+  logger: Logger,
+  runnerInvoker: RunnerInvoker,
+  tokenManager: TokenManager,
+): AzureReposInvoker =>
+  new AzureReposInvoker(
+    instance(azureDevOpsApiWrapper),
+    instance(gitInvoker),
+    instance(logger),
+    instance(runnerInvoker),
+    instance(tokenManager),
+  );

@@ -3,17 +3,20 @@
  * Licensed under the MIT License.
  */
 
+
 import * as InputsDefault from "../../src/metrics/inputsDefault.js";
 import {
   adjustingCodeFileExtensionsResource,
   createInputsMocks,
+  createSut,
   settingCodeFileExtensionsResource,
 } from "./inputsTestSetup.js";
-import { deepEqual, instance, verify, when } from "ts-mockito";
+import { deepEqual, verify, when } from "ts-mockito";
 import Inputs from "../../src/metrics/inputs.js";
 import Logger from "../../src/utilities/logger.js";
 import RunnerInvoker from "../../src/runners/runnerInvoker.js";
 import assert from "node:assert/strict";
+
 
 describe("inputs.ts", (): void => {
   let logger: Logger;
@@ -36,10 +39,7 @@ describe("inputs.ts", (): void => {
             ).thenReturn(codeFileExtensions);
 
             // Act
-            const inputs: Inputs = new Inputs(
-              instance(logger),
-              instance(runnerInvoker),
-            );
+            const inputs: Inputs = createSut(logger, runnerInvoker);
 
             // Assert
             assert.deepEqual(
@@ -69,10 +69,7 @@ describe("inputs.ts", (): void => {
             ).thenReturn(codeFileExtensions);
 
             // Act
-            const inputs: Inputs = new Inputs(
-              instance(logger),
-              instance(runnerInvoker),
-            );
+            const inputs: Inputs = createSut(logger, runnerInvoker);
 
             // Assert
             assert.deepEqual(inputs.codeFileExtensions, expectedResult);
@@ -88,10 +85,7 @@ describe("inputs.ts", (): void => {
         ).thenReturn("ada\nada");
 
         // Act
-        const inputs: Inputs = new Inputs(
-          instance(logger),
-          instance(runnerInvoker),
-        );
+        const inputs: Inputs = createSut(logger, runnerInvoker);
 
         // Assert
         assert.deepEqual(inputs.codeFileExtensions, new Set<string>(["ada"]));
@@ -105,10 +99,7 @@ describe("inputs.ts", (): void => {
         ).thenReturn("ADA\ncS\nTxT");
 
         // Act
-        const inputs: Inputs = new Inputs(
-          instance(logger),
-          instance(runnerInvoker),
-        );
+        const inputs: Inputs = createSut(logger, runnerInvoker);
 
         // Assert
         assert.deepEqual(
@@ -125,10 +116,7 @@ describe("inputs.ts", (): void => {
         ).thenReturn("*.ada\n.txt");
 
         // Act
-        const inputs: Inputs = new Inputs(
-          instance(logger),
-          instance(runnerInvoker),
-        );
+        const inputs: Inputs = createSut(logger, runnerInvoker);
 
         // Assert
         assert.deepEqual(
@@ -145,10 +133,7 @@ describe("inputs.ts", (): void => {
         ).thenReturn("ADA\ncS\nTxT");
 
         // Act
-        const inputs: Inputs = new Inputs(
-          instance(logger),
-          instance(runnerInvoker),
-        );
+        const inputs: Inputs = createSut(logger, runnerInvoker);
 
         // Assert
         assert.deepEqual(
@@ -165,10 +150,7 @@ describe("inputs.ts", (): void => {
         ).thenReturn("ada\ncs\ntxt\n");
 
         // Act
-        const inputs: Inputs = new Inputs(
-          instance(logger),
-          instance(runnerInvoker),
-        );
+        const inputs: Inputs = createSut(logger, runnerInvoker);
 
         // Assert
         assert.deepEqual(
