@@ -9,6 +9,7 @@ import Logger from "../../src/utilities/logger.js";
 import PullRequest from "../../src/pullRequests/pullRequest.js";
 import RunnerInvoker from "../../src/runners/runnerInvoker.js";
 import assert from "node:assert/strict";
+import { stubLocalization } from "../testUtilities/stubLocalization.js";
 
 describe("pullRequest.ts", (): void => {
   let codeMetrics: CodeMetrics;
@@ -22,92 +23,7 @@ describe("pullRequest.ts", (): void => {
     logger = mock(Logger);
 
     runnerInvoker = mock(RunnerInvoker);
-    when(
-      runnerInvoker.loc(
-        "metrics.codeMetrics.titleSizeIndicatorFormat",
-        "(XS|S|M|L|\\d*XL)",
-        "(✔|⚠️)?",
-      ),
-    ).thenReturn("(XS|S|M|L|\\d*XL)(✔|⚠️)?");
-    when(runnerInvoker.loc("metrics.codeMetrics.titleSizeL")).thenReturn("L");
-    when(runnerInvoker.loc("metrics.codeMetrics.titleSizeM")).thenReturn("M");
-    when(runnerInvoker.loc("metrics.codeMetrics.titleSizeS")).thenReturn("S");
-    when(runnerInvoker.loc("metrics.codeMetrics.titleSizeXL")).thenReturn("XL");
-    when(runnerInvoker.loc("metrics.codeMetrics.titleSizeXS")).thenReturn("XS");
-    when(
-      runnerInvoker.loc("metrics.codeMetrics.titleTestsInsufficient"),
-    ).thenReturn("⚠️");
-    when(
-      runnerInvoker.loc("metrics.codeMetrics.titleTestsSufficient"),
-    ).thenReturn("✔");
-    when(
-      runnerInvoker.loc("pullRequests.pullRequest.addDescription"),
-    ).thenReturn("❌ **Add a description.**");
-    when(
-      runnerInvoker.loc("pullRequests.pullRequest.titleFormat", "S✔", ""),
-    ).thenReturn("S✔ ◾ ");
-    when(
-      runnerInvoker.loc("pullRequests.pullRequest.titleFormat", "PREFIX", ""),
-    ).thenReturn("PREFIX ◾ ");
-    when(
-      runnerInvoker.loc("pullRequests.pullRequest.titleFormat", "S✔", "Title"),
-    ).thenReturn("S✔ ◾ Title");
-    when(
-      runnerInvoker.loc(
-        "pullRequests.pullRequest.titleFormat",
-        "PREFIX",
-        "Title",
-      ),
-    ).thenReturn("PREFIX ◾ Title");
-    when(
-      runnerInvoker.loc(
-        "pullRequests.pullRequest.titleFormat",
-        "S✔",
-        "PREFIX ◾ Title",
-      ),
-    ).thenReturn("S✔ ◾ PREFIX ◾ Title");
-    when(
-      runnerInvoker.loc(
-        "pullRequests.pullRequest.titleFormat",
-        "S✔",
-        "PREFIX✔ ◾ Title",
-      ),
-    ).thenReturn("S✔ ◾ PREFIX✔ ◾ Title");
-    when(
-      runnerInvoker.loc(
-        "pullRequests.pullRequest.titleFormat",
-        "S✔",
-        "PREFIX⚠️ ◾ Title",
-      ),
-    ).thenReturn("S✔ ◾ PREFIX⚠️ ◾ Title");
-    when(
-      runnerInvoker.loc(
-        "pullRequests.pullRequest.titleFormat",
-        "S✔",
-        "PS ◾ Title",
-      ),
-    ).thenReturn("S✔ ◾ PS ◾ Title");
-    when(
-      runnerInvoker.loc(
-        "pullRequests.pullRequest.titleFormat",
-        "S✔",
-        "PS✔ ◾ Title",
-      ),
-    ).thenReturn("S✔ ◾ PS✔ ◾ Title");
-    when(
-      runnerInvoker.loc(
-        "pullRequests.pullRequest.titleFormat",
-        "S✔",
-        "PS⚠️ ◾ Title",
-      ),
-    ).thenReturn("S✔ ◾ PS⚠️ ◾ Title");
-    when(
-      runnerInvoker.loc(
-        "pullRequests.pullRequest.titleFormat",
-        "(XS|S|M|L|\\d*XL)(✔|⚠️)?",
-        "(?<originalTitle>.*)",
-      ),
-    ).thenReturn("(XS|S|M|L|\\d*XL)(✔|⚠️)? ◾ (?<originalTitle>.*)");
+    stubLocalization(runnerInvoker);
   });
 
   describe("isPullRequest", (): void => {

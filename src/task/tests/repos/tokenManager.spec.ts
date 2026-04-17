@@ -15,6 +15,7 @@ import TokenManager from "../../src/repos/tokenManager.js";
 import { WebApi } from "azure-devops-node-api";
 import assert from "node:assert/strict";
 import { resolvableInstance } from "../testUtilities/resolvableInstance.js";
+import { stubLocalization } from "../testUtilities/stubLocalization.js";
 
 describe("tokenManager.ts", (): void => {
   let taskApi: ITaskApi;
@@ -64,6 +65,7 @@ describe("tokenManager.ts", (): void => {
     logger = mock(Logger);
 
     runnerInvoker = mock(RunnerInvoker);
+    stubLocalization(runnerInvoker);
     when(
       runnerInvoker.getInput(deepEqual(["Workload", "Identity", "Federation"])),
     ).thenReturn("Id");
@@ -168,21 +170,15 @@ describe("tokenManager.ts", (): void => {
       when(runnerInvoker.getEndpointAuthorizationScheme("Id")).thenReturn(
         "Other",
       );
-      when(
-        runnerInvoker.loc(
-          "repos.tokenManager.incorrectAuthorizationScheme",
-          "WorkloadIdentityFederation",
-          "Other",
-        ),
-      ).thenReturn(
-        "Authorization scheme of workload identity federation 'Id' must be 'WorkloadIdentityFederation' instead of 'Other'.",
-      );
 
       // Act
       const result: string | null = await tokenManager.getToken();
 
       // Assert
-      assert.equal(result, null);
+      assert.equal(
+        result,
+        "Authorization scheme of workload identity federation 'Id' must be 'WorkloadIdentityFederation' instead of 'Other'.",
+      );
     });
 
     it("throws an error when the service principal ID is null", async (): Promise<void> => {
