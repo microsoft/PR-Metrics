@@ -17,6 +17,7 @@ import Logger from "../../src/utilities/logger.js";
 import RunnerInvoker from "../../src/runners/runnerInvoker.js";
 import assert from "node:assert/strict";
 import { decimalRadix } from "../../src/utilities/constants.js";
+import { invalidNumericStrings } from "../testUtilities/fixtures/invalidInputs.js";
 
 
 describe("inputs.ts", (): void => {
@@ -29,34 +30,21 @@ describe("inputs.ts", (): void => {
 
   describe("initialize()", (): void => {
     describe("baseSize", (): void => {
-      {
-        const testCases: (string | null)[] = [
-          null,
-          "",
-          " ",
-          "abc",
-          "===",
-          "!2",
-          "null",
-          "undefined",
-        ];
+      invalidNumericStrings.forEach((baseSize: string | null): void => {
+        it(`should set the default when the input '${String(baseSize)}' is invalid`, (): void => {
+          // Arrange
+          when(
+            runnerInvoker.getInput(deepEqual(["Base", "Size"])),
+          ).thenReturn(baseSize);
 
-        testCases.forEach((baseSize: string | null): void => {
-          it(`should set the default when the input '${String(baseSize)}' is invalid`, (): void => {
-            // Arrange
-            when(
-              runnerInvoker.getInput(deepEqual(["Base", "Size"])),
-            ).thenReturn(baseSize);
+          // Act
+          const inputs: Inputs = createSut(logger, runnerInvoker);
 
-            // Act
-            const inputs: Inputs = createSut(logger, runnerInvoker);
-
-            // Assert
-            assert.equal(inputs.baseSize, InputsDefault.baseSize);
-            verify(logger.logInfo(adjustingBaseSizeResource)).once();
-          });
+          // Assert
+          assert.equal(inputs.baseSize, InputsDefault.baseSize);
+          verify(logger.logInfo(adjustingBaseSizeResource)).once();
         });
-      }
+      });
 
       {
         const testCases: string[] = ["0", "-1", "-1000", "-5"];

@@ -16,6 +16,7 @@ import Inputs from "../../src/metrics/inputs.js";
 import Logger from "../../src/utilities/logger.js";
 import RunnerInvoker from "../../src/runners/runnerInvoker.js";
 import assert from "node:assert/strict";
+import { invalidPatternStrings } from "../testUtilities/fixtures/invalidInputs.js";
 
 
 describe("inputs.ts", (): void => {
@@ -28,32 +29,28 @@ describe("inputs.ts", (): void => {
 
   describe("initialize()", (): void => {
     describe("testMatchingPatterns", (): void => {
-      {
-        const testCases: (string | null)[] = [null, "", " ", "     ", "\n"];
+      invalidPatternStrings.forEach((testMatchingPatterns: string | null): void => {
+        it(`should set the default when the input '${String(testMatchingPatterns?.replace(/\n/gu, "\\n"))}' is invalid`, (): void => {
+          // Arrange
+          when(
+            runnerInvoker.getInput(
+              deepEqual(["Test", "Matching", "Patterns"]),
+            ),
+          ).thenReturn(testMatchingPatterns);
 
-        testCases.forEach((testMatchingPatterns: string | null): void => {
-          it(`should set the default when the input '${String(testMatchingPatterns?.replace(/\n/gu, "\\n"))}' is invalid`, (): void => {
-            // Arrange
-            when(
-              runnerInvoker.getInput(
-                deepEqual(["Test", "Matching", "Patterns"]),
-              ),
-            ).thenReturn(testMatchingPatterns);
+          // Act
+          const inputs: Inputs = createSut(logger, runnerInvoker);
 
-            // Act
-            const inputs: Inputs = createSut(logger, runnerInvoker);
-
-            // Assert
-            assert.deepEqual(
-              inputs.testMatchingPatterns,
-              InputsDefault.testMatchingPatterns,
-            );
-            verify(
-              logger.logInfo(adjustingTestMatchingPatternsResource),
-            ).once();
-          });
+          // Assert
+          assert.deepEqual(
+            inputs.testMatchingPatterns,
+            InputsDefault.testMatchingPatterns,
+          );
+          verify(
+            logger.logInfo(adjustingTestMatchingPatternsResource),
+          ).once();
         });
-      }
+      });
 
       {
         const testCases: string[] = [

@@ -17,6 +17,7 @@ import Inputs from "../../src/metrics/inputs.js";
 import Logger from "../../src/utilities/logger.js";
 import RunnerInvoker from "../../src/runners/runnerInvoker.js";
 import assert from "node:assert/strict";
+import { invalidNumericStrings } from "../testUtilities/fixtures/invalidInputs.js";
 
 
 describe("inputs.ts", (): void => {
@@ -31,14 +32,7 @@ describe("inputs.ts", (): void => {
     describe("testFactor", (): void => {
       {
         const testCases: (string | null)[] = [
-          null,
-          "",
-          " ",
-          "abc",
-          "===",
-          "!2",
-          "null",
-          "undefined",
+          ...invalidNumericStrings,
           "Infinity",
         ];
 
