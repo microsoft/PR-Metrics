@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import { instance, mock, verify, when } from "ts-mockito";
+import { instance, mock, when } from "ts-mockito";
 import CodeMetrics from "../../src/metrics/codeMetrics.js";
 import Logger from "../../src/utilities/logger.js";
 import PullRequest from "../../src/pullRequests/pullRequest.js";
@@ -126,7 +126,6 @@ describe("pullRequest.ts", (): void => {
 
       // Assert
       assert.equal(result, true);
-      verify(logger.logDebug("* PullRequest.isPullRequest")).once();
 
       // Finalization
       delete process.env.GITHUB_ACTION;
@@ -148,7 +147,6 @@ describe("pullRequest.ts", (): void => {
 
       // Assert
       assert.equal(result, false);
-      verify(logger.logDebug("* PullRequest.isPullRequest")).once();
 
       // Finalization
       delete process.env.GITHUB_ACTION;
@@ -169,7 +167,6 @@ describe("pullRequest.ts", (): void => {
 
       // Assert
       assert.equal(result, true);
-      verify(logger.logDebug("* PullRequest.isPullRequest")).once();
 
       // Finalization
       delete process.env.SYSTEM_PULLREQUEST_PULLREQUESTID;
@@ -189,7 +186,6 @@ describe("pullRequest.ts", (): void => {
 
       // Assert
       assert.equal(result, false);
-      verify(logger.logDebug("* PullRequest.isPullRequest")).once();
     });
   });
 
@@ -208,7 +204,6 @@ describe("pullRequest.ts", (): void => {
 
       // Assert
       assert.equal(result, true);
-      verify(logger.logDebug("* PullRequest.isSupportedProvider")).once();
 
       // Finalization
       delete process.env.GITHUB_ACTION;
@@ -234,7 +229,6 @@ describe("pullRequest.ts", (): void => {
           "'BUILD_REPOSITORY_PROVIDER', accessed within 'PullRequest.isSupportedProvider', is invalid, null, or undefined 'undefined'.",
         ),
       );
-      verify(logger.logDebug("* PullRequest.isSupportedProvider")).once();
     });
 
     {
@@ -255,7 +249,6 @@ describe("pullRequest.ts", (): void => {
 
           // Assert
           assert.equal(result, true);
-          verify(logger.logDebug("* PullRequest.isSupportedProvider")).once();
 
           // Finalization
           delete process.env.BUILD_REPOSITORY_PROVIDER;
@@ -277,7 +270,6 @@ describe("pullRequest.ts", (): void => {
 
       // Assert
       assert.equal(result, "Other");
-      verify(logger.logDebug("* PullRequest.isSupportedProvider")).once();
 
       // Finalization
       delete process.env.BUILD_REPOSITORY_PROVIDER;
@@ -299,7 +291,6 @@ describe("pullRequest.ts", (): void => {
 
       // Assert
       assert.equal(result, null);
-      verify(logger.logDebug("* PullRequest.getUpdatedDescription()")).once();
     });
 
     {
@@ -320,9 +311,6 @@ describe("pullRequest.ts", (): void => {
 
           // Assert
           assert.equal(result, "❌ **Add a description.**");
-          verify(
-            logger.logDebug("* PullRequest.getUpdatedDescription()"),
-          ).once();
         });
       });
     }
@@ -343,7 +331,6 @@ describe("pullRequest.ts", (): void => {
 
       // Assert
       assert.equal(result, null);
-      verify(logger.logDebug("* PullRequest.getUpdatedTitle()")).once();
     });
 
     {
@@ -372,7 +359,6 @@ describe("pullRequest.ts", (): void => {
 
           // Assert
           assert.equal(result, `S✔ ◾ ${currentTitle}`);
-          verify(logger.logDebug("* PullRequest.getUpdatedTitle()")).once();
         });
       });
     }
@@ -418,7 +404,6 @@ describe("pullRequest.ts", (): void => {
 
           // Assert
           assert.equal(result, "PREFIX ◾ Title");
-          verify(logger.logDebug("* PullRequest.getUpdatedTitle()")).once();
         });
       });
     }

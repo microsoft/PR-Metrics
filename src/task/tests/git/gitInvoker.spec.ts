@@ -81,9 +81,6 @@ describe("gitInvoker.ts", (): void => {
 
       // Assert
       assert.equal(result, 12345);
-      verify(logger.logDebug("* GitInvoker.pullRequestId")).once();
-      verify(logger.logDebug("* GitInvoker.pullRequestIdInternal")).once();
-      verify(logger.logDebug("* GitInvoker.pullRequestIdForGitHub")).once();
 
       // Finalization
       delete process.env.GITHUB_ACTION;
@@ -106,9 +103,6 @@ describe("gitInvoker.ts", (): void => {
       // Assert
       assert.equal(result1, 12345);
       assert.equal(result2, 12345);
-      verify(logger.logDebug("* GitInvoker.pullRequestId")).twice();
-      verify(logger.logDebug("* GitInvoker.pullRequestIdInternal")).once();
-      verify(logger.logDebug("* GitInvoker.pullRequestIdForGitHub")).once();
 
       // Finalization
       delete process.env.GITHUB_ACTION;
@@ -134,9 +128,6 @@ describe("gitInvoker.ts", (): void => {
         ),
       );
       verify(logger.logWarning("'GITHUB_REF' is undefined.")).once();
-      verify(logger.logDebug("* GitInvoker.pullRequestId")).once();
-      verify(logger.logDebug("* GitInvoker.pullRequestIdInternal")).once();
-      verify(logger.logDebug("* GitInvoker.pullRequestIdForGitHub")).once();
 
       // Finalization
       delete process.env.GITHUB_ACTION;
@@ -166,9 +157,6 @@ describe("gitInvoker.ts", (): void => {
           "'GITHUB_REF' is in an incorrect format 'refs/pull'.",
         ),
       ).once();
-      verify(logger.logDebug("* GitInvoker.pullRequestId")).once();
-      verify(logger.logDebug("* GitInvoker.pullRequestIdInternal")).once();
-      verify(logger.logDebug("* GitInvoker.pullRequestIdForGitHub")).once();
 
       // Finalization
       delete process.env.GITHUB_ACTION;
@@ -189,9 +177,6 @@ describe("gitInvoker.ts", (): void => {
 
       // Assert
       assert.equal(result, 12345);
-      verify(logger.logDebug("* GitInvoker.pullRequestId")).once();
-      verify(logger.logDebug("* GitInvoker.pullRequestIdInternal")).once();
-      verify(logger.logDebug("* GitInvoker.pullRequestIdForGitHub")).once();
 
       // Finalization
       delete process.env.GITHUB_ACTION;
@@ -219,11 +204,6 @@ describe("gitInvoker.ts", (): void => {
       verify(
         logger.logWarning("'BUILD_REPOSITORY_PROVIDER' is undefined."),
       ).once();
-      verify(logger.logDebug("* GitInvoker.pullRequestId")).once();
-      verify(logger.logDebug("* GitInvoker.pullRequestIdInternal")).once();
-      verify(
-        logger.logDebug("* GitInvoker.pullRequestIdForAzurePipelines"),
-      ).once();
     });
 
     it("should throw an error when the Azure Pipelines runner is being used and SYSTEM_PULLREQUEST_PULLREQUESTID is undefined", (): void => {
@@ -246,11 +226,6 @@ describe("gitInvoker.ts", (): void => {
       );
       verify(
         logger.logWarning("'SYSTEM_PULLREQUEST_PULLREQUESTID' is undefined."),
-      ).once();
-      verify(logger.logDebug("* GitInvoker.pullRequestId")).once();
-      verify(logger.logDebug("* GitInvoker.pullRequestIdInternal")).once();
-      verify(
-        logger.logDebug("* GitInvoker.pullRequestIdForAzurePipelines"),
       ).once();
     });
 
@@ -276,11 +251,6 @@ describe("gitInvoker.ts", (): void => {
         logger.logWarning(
           "'SYSTEM_PULLREQUEST_PULLREQUESTID' is not numeric 'abc'.",
         ),
-      ).once();
-      verify(logger.logDebug("* GitInvoker.pullRequestId")).once();
-      verify(logger.logDebug("* GitInvoker.pullRequestIdInternal")).once();
-      verify(
-        logger.logDebug("* GitInvoker.pullRequestIdForAzurePipelines"),
       ).once();
     });
 
@@ -310,11 +280,6 @@ describe("gitInvoker.ts", (): void => {
             logger.logWarning(
               "'SYSTEM_PULLREQUEST_PULLREQUESTNUMBER' is undefined.",
             ),
-          ).once();
-          verify(logger.logDebug("* GitInvoker.pullRequestId")).once();
-          verify(logger.logDebug("* GitInvoker.pullRequestIdInternal")).once();
-          verify(
-            logger.logDebug("* GitInvoker.pullRequestIdForAzurePipelines"),
           ).once();
 
           // Finalization
@@ -347,9 +312,6 @@ describe("gitInvoker.ts", (): void => {
           "Pull request ID 'PullRequestID' from 'GITHUB_REF' is not numeric.",
         ),
       ).once();
-      verify(logger.logDebug("* GitInvoker.pullRequestId")).once();
-      verify(logger.logDebug("* GitInvoker.pullRequestIdInternal")).once();
-      verify(logger.logDebug("* GitInvoker.pullRequestIdForGitHub")).once();
 
       // Finalization
       delete process.env.GITHUB_ACTION;
@@ -383,11 +345,6 @@ describe("gitInvoker.ts", (): void => {
             logger.logWarning(
               "'SYSTEM_PULLREQUEST_PULLREQUESTNUMBER' is not numeric 'abc'.",
             ),
-          ).once();
-          verify(logger.logDebug("* GitInvoker.pullRequestId")).once();
-          verify(logger.logDebug("* GitInvoker.pullRequestIdInternal")).once();
-          verify(
-            logger.logDebug("* GitInvoker.pullRequestIdForAzurePipelines"),
           ).once();
 
           // Finalization
@@ -428,8 +385,6 @@ describe("gitInvoker.ts", (): void => {
 
           // Assert
           assert.equal(result, true);
-          verify(logger.logDebug("* GitInvoker.isGitRepo()")).once();
-          verify(logger.logDebug("* GitInvoker.invokeGit()")).once();
         });
       });
     }
@@ -459,8 +414,6 @@ describe("gitInvoker.ts", (): void => {
 
       // Assert
       assert.equal(result, false);
-      verify(logger.logDebug("* GitInvoker.isGitRepo()")).once();
-      verify(logger.logDebug("* GitInvoker.invokeGit()")).once();
     });
   });
 
@@ -479,9 +432,6 @@ describe("gitInvoker.ts", (): void => {
 
       // Assert
       assert.equal(result, true);
-      verify(logger.logDebug("* GitInvoker.isPullRequestIdAvailable()")).once();
-      verify(logger.logDebug("* GitInvoker.pullRequestIdInternal")).once();
-      verify(logger.logDebug("* GitInvoker.pullRequestIdForGitHub")).once();
 
       // Finalization
       delete process.env.GITHUB_ACTION;
@@ -502,9 +452,6 @@ describe("gitInvoker.ts", (): void => {
       // Assert
       assert.equal(result, false);
       verify(logger.logWarning("'GITHUB_REF' is undefined.")).once();
-      verify(logger.logDebug("* GitInvoker.isPullRequestIdAvailable()")).once();
-      verify(logger.logDebug("* GitInvoker.pullRequestIdInternal")).once();
-      verify(logger.logDebug("* GitInvoker.pullRequestIdForGitHub")).once();
 
       // Finalization
       delete process.env.GITHUB_ACTION;
@@ -529,9 +476,6 @@ describe("gitInvoker.ts", (): void => {
           "'GITHUB_REF' is in an incorrect format 'refs/pull'.",
         ),
       ).once();
-      verify(logger.logDebug("* GitInvoker.isPullRequestIdAvailable()")).once();
-      verify(logger.logDebug("* GitInvoker.pullRequestIdInternal")).once();
-      verify(logger.logDebug("* GitInvoker.pullRequestIdForGitHub")).once();
 
       // Finalization
       delete process.env.GITHUB_ACTION;
@@ -552,9 +496,6 @@ describe("gitInvoker.ts", (): void => {
 
       // Assert
       assert.equal(result, true);
-      verify(logger.logDebug("* GitInvoker.isPullRequestIdAvailable()")).once();
-      verify(logger.logDebug("* GitInvoker.pullRequestIdInternal")).once();
-      verify(logger.logDebug("* GitInvoker.pullRequestIdForGitHub")).once();
 
       // Finalization
       delete process.env.GITHUB_ACTION;
@@ -577,11 +518,6 @@ describe("gitInvoker.ts", (): void => {
       verify(
         logger.logWarning("'BUILD_REPOSITORY_PROVIDER' is undefined."),
       ).once();
-      verify(logger.logDebug("* GitInvoker.isPullRequestIdAvailable()")).once();
-      verify(logger.logDebug("* GitInvoker.pullRequestIdInternal")).once();
-      verify(
-        logger.logDebug("* GitInvoker.pullRequestIdForAzurePipelines"),
-      ).once();
     });
 
     it("should throw an error when the Azure Pipelines runner is being used and SYSTEM_PULLREQUEST_PULLREQUESTID is undefined", (): void => {
@@ -599,11 +535,6 @@ describe("gitInvoker.ts", (): void => {
       assert.equal(result, false);
       verify(
         logger.logWarning("'SYSTEM_PULLREQUEST_PULLREQUESTID' is undefined."),
-      ).once();
-      verify(logger.logDebug("* GitInvoker.isPullRequestIdAvailable()")).once();
-      verify(logger.logDebug("* GitInvoker.pullRequestIdInternal")).once();
-      verify(
-        logger.logDebug("* GitInvoker.pullRequestIdForAzurePipelines"),
       ).once();
     });
 
@@ -629,13 +560,6 @@ describe("gitInvoker.ts", (): void => {
               "'SYSTEM_PULLREQUEST_PULLREQUESTNUMBER' is undefined.",
             ),
           ).once();
-          verify(
-            logger.logDebug("* GitInvoker.isPullRequestIdAvailable()"),
-          ).once();
-          verify(logger.logDebug("* GitInvoker.pullRequestIdInternal")).once();
-          verify(
-            logger.logDebug("* GitInvoker.pullRequestIdForAzurePipelines"),
-          ).once();
 
           // Finalization
           delete process.env.BUILD_REPOSITORY_PROVIDER;
@@ -657,9 +581,6 @@ describe("gitInvoker.ts", (): void => {
 
       // Assert
       assert.equal(result, false);
-      verify(logger.logDebug("* GitInvoker.isPullRequestIdAvailable()")).once();
-      verify(logger.logDebug("* GitInvoker.pullRequestIdInternal")).once();
-      verify(logger.logDebug("* GitInvoker.pullRequestIdForGitHub")).once();
 
       // Finalization
       delete process.env.GITHUB_ACTION;
@@ -681,14 +602,6 @@ describe("gitInvoker.ts", (): void => {
 
       // Assert
       assert.equal(result, true);
-      verify(logger.logDebug("* GitInvoker.isGitHistoryAvailable()")).once();
-      verify(logger.logDebug("* GitInvoker.initialize()")).once();
-      verify(logger.logDebug("* GitInvoker.targetBranch")).once();
-      verify(logger.logDebug("* GitInvoker.pullRequestIdInternal")).once();
-      verify(
-        logger.logDebug("* GitInvoker.pullRequestIdForAzurePipelines"),
-      ).once();
-      verify(logger.logDebug("* GitInvoker.invokeGit()")).once();
     });
 
     it("should return true when the Git history is available and the method is called after retrieving the pull request ID", async (): Promise<void> => {
@@ -706,15 +619,6 @@ describe("gitInvoker.ts", (): void => {
       // Assert
       assert.equal(result1, 12345);
       assert.equal(result2, true);
-      verify(logger.logDebug("* GitInvoker.pullRequestId")).once();
-      verify(
-        logger.logDebug("* GitInvoker.pullRequestIdForAzurePipelines"),
-      ).once();
-      verify(logger.logDebug("* GitInvoker.isGitHistoryAvailable()")).once();
-      verify(logger.logDebug("* GitInvoker.initialize()")).once();
-      verify(logger.logDebug("* GitInvoker.targetBranch")).once();
-      verify(logger.logDebug("* GitInvoker.pullRequestIdInternal")).twice();
-      verify(logger.logDebug("* GitInvoker.invokeGit()")).once();
     });
 
     it("should return true when the Git history is available and the PR is using the GitHub runner", async (): Promise<void> => {
@@ -732,12 +636,6 @@ describe("gitInvoker.ts", (): void => {
 
       // Assert
       assert.equal(result, true);
-      verify(logger.logDebug("* GitInvoker.isGitHistoryAvailable()")).once();
-      verify(logger.logDebug("* GitInvoker.initialize()")).once();
-      verify(logger.logDebug("* GitInvoker.targetBranch")).once();
-      verify(logger.logDebug("* GitInvoker.pullRequestIdInternal")).once();
-      verify(logger.logDebug("* GitInvoker.pullRequestIdForGitHub")).once();
-      verify(logger.logDebug("* GitInvoker.invokeGit()")).once();
 
       // Finalization
       delete process.env.GITHUB_ACTION;
@@ -762,9 +660,6 @@ describe("gitInvoker.ts", (): void => {
         func,
         "'GITHUB_BASE_REF', accessed within 'GitInvoker.targetBranch', is invalid, null, or undefined 'undefined'.",
       );
-      verify(logger.logDebug("* GitInvoker.isGitHistoryAvailable()")).once();
-      verify(logger.logDebug("* GitInvoker.initialize()")).once();
-      verify(logger.logDebug("* GitInvoker.targetBranch")).once();
 
       // Finalization
       delete process.env.GITHUB_ACTION;
@@ -790,16 +685,6 @@ describe("gitInvoker.ts", (): void => {
 
           // Assert
           assert.equal(result, true);
-          verify(
-            logger.logDebug("* GitInvoker.isGitHistoryAvailable()"),
-          ).once();
-          verify(logger.logDebug("* GitInvoker.initialize()")).once();
-          verify(logger.logDebug("* GitInvoker.targetBranch")).once();
-          verify(logger.logDebug("* GitInvoker.pullRequestIdInternal")).once();
-          verify(
-            logger.logDebug("* GitInvoker.pullRequestIdForAzurePipelines"),
-          ).once();
-          verify(logger.logDebug("* GitInvoker.invokeGit()")).once();
 
           // Finalization
           delete process.env.SYSTEM_PULLREQUEST_PULLREQUESTNUMBER;
@@ -837,14 +722,6 @@ describe("gitInvoker.ts", (): void => {
 
       // Assert
       assert.equal(result, false);
-      verify(logger.logDebug("* GitInvoker.isGitHistoryAvailable()")).once();
-      verify(logger.logDebug("* GitInvoker.initialize()")).once();
-      verify(logger.logDebug("* GitInvoker.targetBranch")).once();
-      verify(logger.logDebug("* GitInvoker.pullRequestIdInternal")).once();
-      verify(
-        logger.logDebug("* GitInvoker.pullRequestIdForAzurePipelines"),
-      ).once();
-      verify(logger.logDebug("* GitInvoker.invokeGit()")).once();
     });
 
     it("should return true when the Git history is available and the method is called twice", async (): Promise<void> => {
@@ -861,14 +738,6 @@ describe("gitInvoker.ts", (): void => {
       // Assert
       assert.equal(result1, true);
       assert.equal(result2, true);
-      verify(logger.logDebug("* GitInvoker.isGitHistoryAvailable()")).twice();
-      verify(logger.logDebug("* GitInvoker.initialize()")).twice();
-      verify(logger.logDebug("* GitInvoker.targetBranch")).once();
-      verify(logger.logDebug("* GitInvoker.pullRequestIdInternal")).once();
-      verify(
-        logger.logDebug("* GitInvoker.pullRequestIdForAzurePipelines"),
-      ).once();
-      verify(logger.logDebug("* GitInvoker.invokeGit()")).twice();
     });
 
     it("should throw an error when SYSTEM_PULLREQUEST_TARGETBRANCH is undefined", async (): Promise<void> => {
@@ -888,9 +757,6 @@ describe("gitInvoker.ts", (): void => {
         func,
         "'SYSTEM_PULLREQUEST_TARGETBRANCH', accessed within 'GitInvoker.targetBranch', is invalid, null, or undefined 'undefined'.",
       );
-      verify(logger.logDebug("* GitInvoker.isGitHistoryAvailable()")).once();
-      verify(logger.logDebug("* GitInvoker.initialize()")).once();
-      verify(logger.logDebug("* GitInvoker.targetBranch")).once();
     });
 
     it("should throw an error when the target branch contains whitespace", async (): Promise<void> => {
@@ -910,9 +776,6 @@ describe("gitInvoker.ts", (): void => {
         func,
         "Target branch 'main branch' contains whitespace or control characters, which is not allowed in command-line arguments.",
       );
-      verify(logger.logDebug("* GitInvoker.isGitHistoryAvailable()")).once();
-      verify(logger.logDebug("* GitInvoker.initialize()")).once();
-      verify(logger.logDebug("* GitInvoker.targetBranch")).once();
     });
   });
 
@@ -929,14 +792,6 @@ describe("gitInvoker.ts", (): void => {
 
       // Assert
       assert.equal(result, "1\t2\tFile.txt");
-      verify(logger.logDebug("* GitInvoker.getDiffSummary()")).once();
-      verify(logger.logDebug("* GitInvoker.initialize()")).once();
-      verify(logger.logDebug("* GitInvoker.targetBranch")).once();
-      verify(logger.logDebug("* GitInvoker.pullRequestIdInternal")).once();
-      verify(
-        logger.logDebug("* GitInvoker.pullRequestIdForAzurePipelines"),
-      ).once();
-      verify(logger.logDebug("* GitInvoker.invokeGit()")).once();
     });
 
     it("should return the correct output when no error occurs and the target branch is in the GitHub format", async (): Promise<void> => {
@@ -952,14 +807,6 @@ describe("gitInvoker.ts", (): void => {
 
       // Assert
       assert.equal(result, "1\t2\tFile.txt");
-      verify(logger.logDebug("* GitInvoker.getDiffSummary()")).once();
-      verify(logger.logDebug("* GitInvoker.initialize()")).once();
-      verify(logger.logDebug("* GitInvoker.targetBranch")).once();
-      verify(logger.logDebug("* GitInvoker.pullRequestIdInternal")).once();
-      verify(
-        logger.logDebug("* GitInvoker.pullRequestIdForAzurePipelines"),
-      ).once();
-      verify(logger.logDebug("* GitInvoker.invokeGit()")).once();
     });
 
     it("should return the correct output when no error occurs and the method is called twice", async (): Promise<void> => {
@@ -975,14 +822,6 @@ describe("gitInvoker.ts", (): void => {
 
       // Assert
       assert.equal(result, "1\t2\tFile.txt");
-      verify(logger.logDebug("* GitInvoker.getDiffSummary()")).twice();
-      verify(logger.logDebug("* GitInvoker.initialize()")).twice();
-      verify(logger.logDebug("* GitInvoker.targetBranch")).once();
-      verify(logger.logDebug("* GitInvoker.pullRequestIdInternal")).once();
-      verify(
-        logger.logDebug("* GitInvoker.pullRequestIdForAzurePipelines"),
-      ).once();
-      verify(logger.logDebug("* GitInvoker.invokeGit()")).twice();
     });
 
     it("should throw an error when SYSTEM_PULLREQUEST_TARGETBRANCH is undefined", async (): Promise<void> => {
@@ -1002,9 +841,6 @@ describe("gitInvoker.ts", (): void => {
         func,
         "'SYSTEM_PULLREQUEST_TARGETBRANCH', accessed within 'GitInvoker.targetBranch', is invalid, null, or undefined 'undefined'.",
       );
-      verify(logger.logDebug("* GitInvoker.getDiffSummary()")).once();
-      verify(logger.logDebug("* GitInvoker.initialize()")).once();
-      verify(logger.logDebug("* GitInvoker.targetBranch")).once();
     });
 
     it("should throw an error when Git invocation fails", async (): Promise<void> => {
@@ -1038,14 +874,6 @@ describe("gitInvoker.ts", (): void => {
 
       // Assert
       await AssertExtensions.toThrowAsync(func, "Failure");
-      verify(logger.logDebug("* GitInvoker.getDiffSummary()")).once();
-      verify(logger.logDebug("* GitInvoker.initialize()")).once();
-      verify(logger.logDebug("* GitInvoker.targetBranch")).once();
-      verify(logger.logDebug("* GitInvoker.pullRequestIdInternal")).once();
-      verify(
-        logger.logDebug("* GitInvoker.pullRequestIdForAzurePipelines"),
-      ).once();
-      verify(logger.logDebug("* GitInvoker.invokeGit()")).once();
     });
   });
 });

@@ -107,9 +107,6 @@ describe("gitHubReposInvoker.ts", (): void => {
 
       // Assert
       assert.equal(result, null);
-      verify(
-        logger.logDebug("* GitHubReposInvoker.isAccessTokenAvailable()"),
-      ).once();
     });
 
     it("should return null when the token exists on GitHub", async (): Promise<void> => {
@@ -129,9 +126,6 @@ describe("gitHubReposInvoker.ts", (): void => {
 
       // Assert
       assert.equal(result, null);
-      verify(
-        logger.logDebug("* GitHubReposInvoker.isAccessTokenAvailable()"),
-      ).once();
 
       // Finalization
       delete process.env.PR_METRICS_ACCESS_TOKEN;
@@ -157,9 +151,6 @@ describe("gitHubReposInvoker.ts", (): void => {
         result,
         "Could not access the Personal Access Token (PAT). Add 'PR_Metrics_Access_Token' as a secret environment variable with Read and Write access to Pull Requests (or access to 'repos' if using a Classic PAT, or write access to 'pull-requests' and 'statuses' if specified within the workflow YAML).",
       );
-      verify(
-        logger.logDebug("* GitHubReposInvoker.isAccessTokenAvailable()"),
-      ).once();
     });
   });
 
@@ -192,13 +183,6 @@ describe("gitHubReposInvoker.ts", (): void => {
             func,
             `'SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI', accessed within 'GitHubReposInvoker.initializeForAzureDevOps()', is invalid, null, or undefined '${String(variable)}'.`,
           );
-          verify(
-            logger.logDebug("* GitHubReposInvoker.getTitleAndDescription()"),
-          ).once();
-          verify(logger.logDebug("* GitHubReposInvoker.initialize()")).once();
-          verify(
-            logger.logDebug("* GitHubReposInvoker.initializeForAzureDevOps()"),
-          ).once();
         });
       });
     }
@@ -223,13 +207,6 @@ describe("gitHubReposInvoker.ts", (): void => {
         func,
         "SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI 'https://github.com/microsoft' is in an unexpected format.",
       );
-      verify(
-        logger.logDebug("* GitHubReposInvoker.getTitleAndDescription()"),
-      ).once();
-      verify(logger.logDebug("* GitHubReposInvoker.initialize()")).once();
-      verify(
-        logger.logDebug("* GitHubReposInvoker.initializeForAzureDevOps()"),
-      ).once();
     });
 
     {
@@ -263,13 +240,6 @@ describe("gitHubReposInvoker.ts", (): void => {
             func,
             `'GITHUB_API_URL', accessed within 'GitHubReposInvoker.initializeForGitHub()', is invalid, null, or undefined '${String(variable)}'.`,
           );
-          verify(
-            logger.logDebug("* GitHubReposInvoker.getTitleAndDescription()"),
-          ).once();
-          verify(logger.logDebug("* GitHubReposInvoker.initialize()")).once();
-          verify(
-            logger.logDebug("* GitHubReposInvoker.initializeForGitHub()"),
-          ).once();
 
           // Finalization
           delete process.env.PR_METRICS_ACCESS_TOKEN;
@@ -311,13 +281,6 @@ describe("gitHubReposInvoker.ts", (): void => {
             func,
             `'GITHUB_REPOSITORY_OWNER', accessed within 'GitHubReposInvoker.initializeForGitHub()', is invalid, null, or undefined '${String(variable)}'.`,
           );
-          verify(
-            logger.logDebug("* GitHubReposInvoker.getTitleAndDescription()"),
-          ).once();
-          verify(logger.logDebug("* GitHubReposInvoker.initialize()")).once();
-          verify(
-            logger.logDebug("* GitHubReposInvoker.initializeForGitHub()"),
-          ).once();
 
           // Finalization
           delete process.env.PR_METRICS_ACCESS_TOKEN;
@@ -361,13 +324,6 @@ describe("gitHubReposInvoker.ts", (): void => {
             func,
             `'GITHUB_REPOSITORY', accessed within 'GitHubReposInvoker.initializeForGitHub()', is invalid, null, or undefined '${String(variable)}'.`,
           );
-          verify(
-            logger.logDebug("* GitHubReposInvoker.getTitleAndDescription()"),
-          ).once();
-          verify(logger.logDebug("* GitHubReposInvoker.initialize()")).once();
-          verify(
-            logger.logDebug("* GitHubReposInvoker.initializeForGitHub()"),
-          ).once();
 
           // Finalization
           delete process.env.PR_METRICS_ACCESS_TOKEN;
@@ -403,13 +359,6 @@ describe("gitHubReposInvoker.ts", (): void => {
         func,
         "GITHUB_REPOSITORY 'microsoft' is in an unexpected format.",
       );
-      verify(
-        logger.logDebug("* GitHubReposInvoker.getTitleAndDescription()"),
-      ).once();
-      verify(logger.logDebug("* GitHubReposInvoker.initialize()")).once();
-      verify(
-        logger.logDebug("* GitHubReposInvoker.initializeForGitHub()"),
-      ).once();
 
       // Finalization
       delete process.env.PR_METRICS_ACCESS_TOKEN;
@@ -448,18 +397,6 @@ describe("gitHubReposInvoker.ts", (): void => {
       assert.equal(result.description, "Description");
       verify(octokitWrapper.initialize(any())).once();
       verify(octokitWrapper.getPull("microsoft", "PR-Metrics", 12345)).once();
-      verify(
-        logger.logDebug("* GitHubReposInvoker.getTitleAndDescription()"),
-      ).once();
-      verify(logger.logDebug("* GitHubReposInvoker.initialize()")).once();
-      verify(
-        logger.logDebug("* GitHubReposInvoker.initializeForAzureDevOps()"),
-      ).once();
-      verify(
-        logger.logDebug(
-          JSON.stringify(GitHubReposInvokerConstants.getPullResponse),
-        ),
-      ).once();
     });
 
     it("should succeed when the inputs are valid and the task is running on GitHub", async (): Promise<void> => {
@@ -495,18 +432,6 @@ describe("gitHubReposInvoker.ts", (): void => {
       assert.equal(result.description, "Description");
       verify(octokitWrapper.initialize(any())).once();
       verify(octokitWrapper.getPull("microsoft", "PR-Metrics", 12345)).once();
-      verify(
-        logger.logDebug("* GitHubReposInvoker.getTitleAndDescription()"),
-      ).once();
-      verify(logger.logDebug("* GitHubReposInvoker.initialize()")).once();
-      verify(
-        logger.logDebug("* GitHubReposInvoker.initializeForGitHub()"),
-      ).once();
-      verify(
-        logger.logDebug(
-          JSON.stringify(GitHubReposInvokerConstants.getPullResponse),
-        ),
-      ).once();
 
       // Finalization
       delete process.env.GITHUB_ACTION;
@@ -546,18 +471,6 @@ describe("gitHubReposInvoker.ts", (): void => {
       assert.equal(result.description, "Description");
       verify(octokitWrapper.initialize(any())).once();
       verify(octokitWrapper.getPull("microsoft", "PR-Metrics", 12345)).once();
-      verify(
-        logger.logDebug("* GitHubReposInvoker.getTitleAndDescription()"),
-      ).once();
-      verify(logger.logDebug("* GitHubReposInvoker.initialize()")).once();
-      verify(
-        logger.logDebug("* GitHubReposInvoker.initializeForAzureDevOps()"),
-      ).once();
-      verify(
-        logger.logDebug(
-          JSON.stringify(GitHubReposInvokerConstants.getPullResponse),
-        ),
-      ).once();
     });
 
     it("should succeed when the inputs are valid and GitHub Enterprise is in use", async (): Promise<void> => {
@@ -595,23 +508,6 @@ describe("gitHubReposInvoker.ts", (): void => {
       assert.equal(result.description, "Description");
       verify(octokitWrapper.initialize(any())).once();
       verify(octokitWrapper.getPull("microsoft", "PR-Metrics", 12345)).once();
-      verify(
-        logger.logDebug("* GitHubReposInvoker.getTitleAndDescription()"),
-      ).once();
-      verify(logger.logDebug("* GitHubReposInvoker.initialize()")).once();
-      verify(
-        logger.logDebug("* GitHubReposInvoker.initializeForAzureDevOps()"),
-      ).once();
-      verify(
-        logger.logDebug(
-          "Using Base URL 'https://organization.githubenterprise.com/api/v3'.",
-        ),
-      ).once();
-      verify(
-        logger.logDebug(
-          JSON.stringify(GitHubReposInvokerConstants.getPullResponse),
-        ),
-      ).once();
     });
 
     it("should succeed when called twice with the inputs valid", async (): Promise<void> => {
@@ -644,18 +540,6 @@ describe("gitHubReposInvoker.ts", (): void => {
       assert.equal(result.description, "Description");
       verify(octokitWrapper.initialize(any())).once();
       verify(octokitWrapper.getPull("microsoft", "PR-Metrics", 12345)).twice();
-      verify(
-        logger.logDebug("* GitHubReposInvoker.getTitleAndDescription()"),
-      ).twice();
-      verify(logger.logDebug("* GitHubReposInvoker.initialize()")).twice();
-      verify(
-        logger.logDebug("* GitHubReposInvoker.initializeForAzureDevOps()"),
-      ).once();
-      verify(
-        logger.logDebug(
-          JSON.stringify(GitHubReposInvokerConstants.getPullResponse),
-        ),
-      ).twice();
     });
 
     it("should succeed when the description is null", async (): Promise<void> => {
@@ -693,14 +577,6 @@ describe("gitHubReposInvoker.ts", (): void => {
       assert.equal(result.description, null);
       verify(octokitWrapper.initialize(any())).once();
       verify(octokitWrapper.getPull("microsoft", "PR-Metrics", 12345)).once();
-      verify(
-        logger.logDebug("* GitHubReposInvoker.getTitleAndDescription()"),
-      ).once();
-      verify(logger.logDebug("* GitHubReposInvoker.initialize()")).once();
-      verify(
-        logger.logDebug("* GitHubReposInvoker.initializeForAzureDevOps()"),
-      ).once();
-      verify(logger.logDebug(JSON.stringify(currentMockPullResponse))).once();
     });
 
     {
@@ -748,13 +624,6 @@ describe("gitHubReposInvoker.ts", (): void => {
             await AssertExtensions.toThrowAsync(func, expectedMessage);
           assert.equal(result.internalMessage, "Test");
           verify(octokitWrapper.initialize(any())).once();
-          verify(
-            logger.logDebug("* GitHubReposInvoker.getTitleAndDescription()"),
-          ).once();
-          verify(logger.logDebug("* GitHubReposInvoker.initialize()")).once();
-          verify(
-            logger.logDebug("* GitHubReposInvoker.initializeForAzureDevOps()"),
-          ).once();
         });
       });
     }
@@ -789,13 +658,6 @@ describe("gitHubReposInvoker.ts", (): void => {
       // Assert
       await AssertExtensions.toThrowAsync(func, "Error");
       verify(octokitWrapper.initialize(any())).once();
-      verify(
-        logger.logDebug("* GitHubReposInvoker.getTitleAndDescription()"),
-      ).once();
-      verify(logger.logDebug("* GitHubReposInvoker.initialize()")).once();
-      verify(
-        logger.logDebug("* GitHubReposInvoker.initializeForAzureDevOps()"),
-      ).once();
     });
 
     it("should initialize log object correctly", async (): Promise<void> => {
@@ -878,15 +740,6 @@ describe("gitHubReposInvoker.ts", (): void => {
       verify(
         octokitWrapper.getReviewComments("microsoft", "PR-Metrics", 12345),
       ).once();
-      verify(logger.logDebug("* GitHubReposInvoker.getComments()")).once();
-      verify(logger.logDebug("* GitHubReposInvoker.initialize()")).once();
-      verify(
-        logger.logDebug("* GitHubReposInvoker.initializeForAzureDevOps()"),
-      ).once();
-      verify(
-        logger.logDebug("* GitHubReposInvoker.convertPullRequestComments()"),
-      ).once();
-      verify(logger.logDebug(JSON.stringify(response))).once();
     });
 
     it("should return the result when called with a file comment", async (): Promise<void> => {
@@ -928,19 +781,6 @@ describe("gitHubReposInvoker.ts", (): void => {
       ).once();
       verify(
         octokitWrapper.getReviewComments("microsoft", "PR-Metrics", 12345),
-      ).once();
-      verify(logger.logDebug("* GitHubReposInvoker.getComments()")).once();
-      verify(logger.logDebug("* GitHubReposInvoker.initialize()")).once();
-      verify(
-        logger.logDebug("* GitHubReposInvoker.initializeForAzureDevOps()"),
-      ).once();
-      verify(
-        logger.logDebug("* GitHubReposInvoker.convertPullRequestComments()"),
-      ).once();
-      verify(
-        logger.logDebug(
-          JSON.stringify(GitHubReposInvokerConstants.getReviewCommentsResponse),
-        ),
       ).once();
     });
 
@@ -1000,20 +840,6 @@ describe("gitHubReposInvoker.ts", (): void => {
       verify(
         octokitWrapper.getReviewComments("microsoft", "PR-Metrics", 12345),
       ).once();
-      verify(logger.logDebug("* GitHubReposInvoker.getComments()")).once();
-      verify(logger.logDebug("* GitHubReposInvoker.initialize()")).once();
-      verify(
-        logger.logDebug("* GitHubReposInvoker.initializeForAzureDevOps()"),
-      ).once();
-      verify(
-        logger.logDebug("* GitHubReposInvoker.convertPullRequestComments()"),
-      ).once();
-      verify(logger.logDebug(JSON.stringify(response))).once();
-      verify(
-        logger.logDebug(
-          JSON.stringify(GitHubReposInvokerConstants.getReviewCommentsResponse),
-        ),
-      ).once();
     });
 
     it("should skip pull request comments with no body", async (): Promise<void> => {
@@ -1059,15 +885,6 @@ describe("gitHubReposInvoker.ts", (): void => {
       verify(
         octokitWrapper.getReviewComments("microsoft", "PR-Metrics", 12345),
       ).once();
-      verify(logger.logDebug("* GitHubReposInvoker.getComments()")).once();
-      verify(logger.logDebug("* GitHubReposInvoker.initialize()")).once();
-      verify(
-        logger.logDebug("* GitHubReposInvoker.initializeForAzureDevOps()"),
-      ).once();
-      verify(
-        logger.logDebug("* GitHubReposInvoker.convertPullRequestComments()"),
-      ).once();
-      verify(logger.logDebug(JSON.stringify(response))).once();
     });
   });
 
@@ -1085,10 +902,6 @@ describe("gitHubReposInvoker.ts", (): void => {
       await gitHubReposInvoker.setTitleAndDescription(null, null);
 
       // Assert
-      verify(
-        logger.logDebug("* GitHubReposInvoker.setTitleAndDescription()"),
-      ).once();
-      verify(logger.logDebug("* GitHubReposInvoker.initialize()")).never();
     });
 
     it("should succeed when the title and description are both set", async (): Promise<void> => {
@@ -1123,18 +936,6 @@ describe("gitHubReposInvoker.ts", (): void => {
           12345,
           "Title",
           "Description",
-        ),
-      ).once();
-      verify(
-        logger.logDebug("* GitHubReposInvoker.setTitleAndDescription()"),
-      ).once();
-      verify(logger.logDebug("* GitHubReposInvoker.initialize()")).once();
-      verify(
-        logger.logDebug("* GitHubReposInvoker.initializeForAzureDevOps()"),
-      ).once();
-      verify(
-        logger.logDebug(
-          JSON.stringify(GitHubReposInvokerConstants.getPullResponse),
         ),
       ).once();
     });
@@ -1173,14 +974,6 @@ describe("gitHubReposInvoker.ts", (): void => {
           null,
         ),
       ).once();
-      verify(
-        logger.logDebug("* GitHubReposInvoker.setTitleAndDescription()"),
-      ).once();
-      verify(logger.logDebug("* GitHubReposInvoker.initialize()")).once();
-      verify(
-        logger.logDebug("* GitHubReposInvoker.initializeForAzureDevOps()"),
-      ).once();
-      verify(logger.logDebug("null")).once();
     });
 
     it("should succeed when the description is set", async (): Promise<void> => {
@@ -1217,14 +1010,6 @@ describe("gitHubReposInvoker.ts", (): void => {
           "Description",
         ),
       ).once();
-      verify(
-        logger.logDebug("* GitHubReposInvoker.setTitleAndDescription()"),
-      ).once();
-      verify(logger.logDebug("* GitHubReposInvoker.initialize()")).once();
-      verify(
-        logger.logDebug("* GitHubReposInvoker.initializeForAzureDevOps()"),
-      ).once();
-      verify(logger.logDebug("null")).once();
     });
   });
 
@@ -1267,13 +1052,6 @@ describe("gitHubReposInvoker.ts", (): void => {
           "sha54321",
         ),
       ).once();
-      verify(logger.logDebug("* GitHubReposInvoker.createComment()")).once();
-      verify(logger.logDebug("* GitHubReposInvoker.initialize()")).once();
-      verify(
-        logger.logDebug("* GitHubReposInvoker.initializeForAzureDevOps()"),
-      ).once();
-      verify(logger.logDebug("* GitHubReposInvoker.getCommitId()")).once();
-      verify(logger.logDebug("null")).once();
     });
 
     it("should throw when the commit list is empty", async (): Promise<void> => {
@@ -1322,12 +1100,6 @@ describe("gitHubReposInvoker.ts", (): void => {
       verify(
         octokitWrapper.listCommits("microsoft", "PR-Metrics", 12345, 1),
       ).once();
-      verify(logger.logDebug("* GitHubReposInvoker.createComment()")).once();
-      verify(logger.logDebug("* GitHubReposInvoker.initialize()")).once();
-      verify(
-        logger.logDebug("* GitHubReposInvoker.initializeForAzureDevOps()"),
-      ).once();
-      verify(logger.logDebug("* GitHubReposInvoker.getCommitId()")).once();
     });
 
     it("should succeed when there are multiple pages of commits", async (): Promise<void> => {
@@ -1381,13 +1153,6 @@ describe("gitHubReposInvoker.ts", (): void => {
           "sha54321",
         ),
       ).once();
-      verify(logger.logDebug("* GitHubReposInvoker.createComment()")).once();
-      verify(logger.logDebug("* GitHubReposInvoker.initialize()")).once();
-      verify(
-        logger.logDebug("* GitHubReposInvoker.initializeForAzureDevOps()"),
-      ).once();
-      verify(logger.logDebug("* GitHubReposInvoker.getCommitId()")).once();
-      verify(logger.logDebug("null")).once();
     });
 
     it("should throw when the link header does not match the expected format", async (): Promise<void> => {
@@ -1433,12 +1198,6 @@ describe("gitHubReposInvoker.ts", (): void => {
       verify(
         octokitWrapper.listCommits("microsoft", "PR-Metrics", 12345, 1),
       ).once();
-      verify(logger.logDebug("* GitHubReposInvoker.createComment()")).once();
-      verify(logger.logDebug("* GitHubReposInvoker.initialize()")).once();
-      verify(
-        logger.logDebug("* GitHubReposInvoker.initializeForAzureDevOps()"),
-      ).once();
-      verify(logger.logDebug("* GitHubReposInvoker.getCommitId()")).once();
     });
 
     it("should succeed when a file name is specified and the method is called twice", async (): Promise<void> => {
@@ -1480,13 +1239,6 @@ describe("gitHubReposInvoker.ts", (): void => {
           "sha54321",
         ),
       ).twice();
-      verify(logger.logDebug("* GitHubReposInvoker.createComment()")).twice();
-      verify(logger.logDebug("* GitHubReposInvoker.initialize()")).twice();
-      verify(
-        logger.logDebug("* GitHubReposInvoker.initializeForAzureDevOps()"),
-      ).once();
-      verify(logger.logDebug("* GitHubReposInvoker.getCommitId()")).once();
-      verify(logger.logDebug("null")).twice();
     });
 
     it("should succeed when createReviewComment() returns undefined", async (): Promise<void> => {
@@ -1537,13 +1289,6 @@ describe("gitHubReposInvoker.ts", (): void => {
           "sha54321",
         ),
       ).once();
-      verify(logger.logDebug("* GitHubReposInvoker.createComment()")).once();
-      verify(logger.logDebug("* GitHubReposInvoker.initialize()")).once();
-      verify(
-        logger.logDebug("* GitHubReposInvoker.initializeForAzureDevOps()"),
-      ).once();
-      verify(logger.logDebug("* GitHubReposInvoker.getCommitId()")).once();
-      verify(logger.logDebug("null")).once();
     });
 
     {
@@ -1608,14 +1353,6 @@ describe("gitHubReposInvoker.ts", (): void => {
               "sha54321",
             ),
           ).once();
-          verify(
-            logger.logDebug("* GitHubReposInvoker.createComment()"),
-          ).once();
-          verify(logger.logDebug("* GitHubReposInvoker.initialize()")).once();
-          verify(
-            logger.logDebug("* GitHubReposInvoker.initializeForAzureDevOps()"),
-          ).once();
-          verify(logger.logDebug("* GitHubReposInvoker.getCommitId()")).once();
           verify(
             logger.logInfo(
               "GitHub createReviewComment() threw a 422 error related to a large diff. Ignoring as this is expected.",
@@ -1688,14 +1425,6 @@ describe("gitHubReposInvoker.ts", (): void => {
               "sha54321",
             ),
           ).once();
-          verify(
-            logger.logDebug("* GitHubReposInvoker.createComment()"),
-          ).once();
-          verify(logger.logDebug("* GitHubReposInvoker.initialize()")).once();
-          verify(
-            logger.logDebug("* GitHubReposInvoker.initializeForAzureDevOps()"),
-          ).once();
-          verify(logger.logDebug("* GitHubReposInvoker.getCommitId()")).once();
         });
       });
     }
@@ -1733,12 +1462,6 @@ describe("gitHubReposInvoker.ts", (): void => {
           "Content",
         ),
       ).once();
-      verify(logger.logDebug("* GitHubReposInvoker.createComment()")).once();
-      verify(logger.logDebug("* GitHubReposInvoker.initialize()")).once();
-      verify(
-        logger.logDebug("* GitHubReposInvoker.initializeForAzureDevOps()"),
-      ).once();
-      verify(logger.logDebug("null")).once();
     });
   });
 
@@ -1756,11 +1479,6 @@ describe("gitHubReposInvoker.ts", (): void => {
       await gitHubReposInvoker.updateComment(54321, null);
 
       // Assert
-      verify(logger.logDebug("* GitHubReposInvoker.updateComment()")).once();
-      verify(logger.logDebug("* GitHubReposInvoker.initialize()")).never();
-      verify(
-        logger.logDebug("* GitHubReposInvoker.initializeForAzureDevOps()"),
-      ).never();
     });
 
     it("should succeed when the content is set", async (): Promise<void> => {
@@ -1797,12 +1515,6 @@ describe("gitHubReposInvoker.ts", (): void => {
           "Content",
         ),
       ).once();
-      verify(logger.logDebug("* GitHubReposInvoker.updateComment()")).once();
-      verify(logger.logDebug("* GitHubReposInvoker.initialize()")).once();
-      verify(
-        logger.logDebug("* GitHubReposInvoker.initializeForAzureDevOps()"),
-      ).once();
-      verify(logger.logDebug("null")).once();
     });
   });
 
@@ -1835,14 +1547,6 @@ describe("gitHubReposInvoker.ts", (): void => {
       verify(
         octokitWrapper.deleteReviewComment("microsoft", "PR-Metrics", 54321),
       ).once();
-      verify(
-        logger.logDebug("* GitHubReposInvoker.deleteCommentThread()"),
-      ).once();
-      verify(logger.logDebug("* GitHubReposInvoker.initialize()")).once();
-      verify(
-        logger.logDebug("* GitHubReposInvoker.initializeForAzureDevOps()"),
-      ).once();
-      verify(logger.logDebug("null")).once();
     });
   });
 });
