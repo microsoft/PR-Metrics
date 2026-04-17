@@ -27,6 +27,7 @@ import TokenManager from "../../src/repos/tokenManager.js";
 import { WebApi } from "azure-devops-node-api";
 import assert from "node:assert/strict";
 import { resolvableInstance } from "../testUtilities/resolvableInstance.js";
+import { stubEnv } from "../testUtilities/stubEnv.js";
 import { stubLocalization } from "../testUtilities/stubLocalization.js";
 
 describe("azureReposInvoker.ts", (): void => {
@@ -38,11 +39,12 @@ describe("azureReposInvoker.ts", (): void => {
   let tokenManager: TokenManager;
 
   beforeEach((): void => {
-    process.env.SYSTEM_TEAMFOUNDATIONCOLLECTIONURI =
-      "https://dev.azure.com/organization";
-    process.env.SYSTEM_TEAMPROJECT = "Project";
-    process.env.BUILD_REPOSITORY_ID = "RepoID";
-    process.env.PR_METRICS_ACCESS_TOKEN = "PAT";
+    stubEnv(
+      ["BUILD_REPOSITORY_ID", "RepoID"],
+      ["PR_METRICS_ACCESS_TOKEN", "PAT"],
+      ["SYSTEM_TEAMFOUNDATIONCOLLECTIONURI", "https://dev.azure.com/organization"],
+      ["SYSTEM_TEAMPROJECT", "Project"],
+    );
 
     gitApi = mock<IGitApi>();
     const requestHandler: IRequestHandler = mock<IRequestHandler>();
@@ -71,13 +73,6 @@ describe("azureReposInvoker.ts", (): void => {
     tokenManager = mock(TokenManager);
   });
 
-  after(() => {
-    delete process.env.SYSTEM_TEAMFOUNDATIONCOLLECTIONURI;
-    delete process.env.SYSTEM_TEAMPROJECT;
-    delete process.env.BUILD_REPOSITORY_ID;
-    delete process.env.PR_METRICS_ACCESS_TOKEN;
-  });
-
   describe("isAccessTokenAvailable()", (): void => {
     it("should return null when the token exists", async (): Promise<void> => {
       // Arrange
@@ -99,7 +94,7 @@ describe("azureReposInvoker.ts", (): void => {
 
     it("should return a string when the token manager fails", async (): Promise<void> => {
       // Arrange
-      delete process.env.PR_METRICS_ACCESS_TOKEN;
+      stubEnv(["PR_METRICS_ACCESS_TOKEN", undefined]);
       const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(
         instance(azureDevOpsApiWrapper),
         instance(gitInvoker),
@@ -119,7 +114,7 @@ describe("azureReposInvoker.ts", (): void => {
 
     it("should return a string when the token does not exist", async (): Promise<void> => {
       // Arrange
-      delete process.env.PR_METRICS_ACCESS_TOKEN;
+      stubEnv(["PR_METRICS_ACCESS_TOKEN", undefined]);
       const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(
         instance(azureDevOpsApiWrapper),
         instance(gitInvoker),
@@ -148,9 +143,9 @@ describe("azureReposInvoker.ts", (): void => {
         it(`should throw when SYSTEM_TEAMPROJECT is set to the invalid value '${String(variable)}'`, async (): Promise<void> => {
           // Arrange
           if (typeof variable === "undefined") {
-            delete process.env.SYSTEM_TEAMPROJECT;
+            stubEnv(["SYSTEM_TEAMPROJECT", undefined]);
           } else {
-            process.env.SYSTEM_TEAMPROJECT = variable;
+            stubEnv(["SYSTEM_TEAMPROJECT", variable]);
           }
 
           const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(
@@ -181,9 +176,9 @@ describe("azureReposInvoker.ts", (): void => {
         it(`should throw when BUILD_REPOSITORY_ID is set to the invalid value '${String(variable)}'`, async (): Promise<void> => {
           // Arrange
           if (typeof variable === "undefined") {
-            delete process.env.BUILD_REPOSITORY_ID;
+            stubEnv(["BUILD_REPOSITORY_ID", undefined]);
           } else {
-            process.env.BUILD_REPOSITORY_ID = variable;
+            stubEnv(["BUILD_REPOSITORY_ID", variable]);
           }
 
           const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(
@@ -214,9 +209,9 @@ describe("azureReposInvoker.ts", (): void => {
         it(`should throw when PR_METRICS_ACCESS_TOKEN is set to the invalid value '${String(variable)}'`, async (): Promise<void> => {
           // Arrange
           if (typeof variable === "undefined") {
-            delete process.env.PR_METRICS_ACCESS_TOKEN;
+            stubEnv(["PR_METRICS_ACCESS_TOKEN", undefined]);
           } else {
-            process.env.PR_METRICS_ACCESS_TOKEN = variable;
+            stubEnv(["PR_METRICS_ACCESS_TOKEN", variable]);
           }
 
           const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(
@@ -247,9 +242,9 @@ describe("azureReposInvoker.ts", (): void => {
         it(`should throw when SYSTEM_TEAMFOUNDATIONCOLLECTIONURI is set to the invalid value '${String(variable)}'`, async (): Promise<void> => {
           // Arrange
           if (typeof variable === "undefined") {
-            delete process.env.SYSTEM_TEAMFOUNDATIONCOLLECTIONURI;
+            stubEnv(["SYSTEM_TEAMFOUNDATIONCOLLECTIONURI", undefined]);
           } else {
-            process.env.SYSTEM_TEAMFOUNDATIONCOLLECTIONURI = variable;
+            stubEnv(["SYSTEM_TEAMFOUNDATIONCOLLECTIONURI", variable]);
           }
 
           const azureReposInvoker: AzureReposInvoker = new AzureReposInvoker(

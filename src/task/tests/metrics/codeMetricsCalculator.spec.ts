@@ -14,6 +14,7 @@ import PullRequestCommentsData from "../../src/pullRequests/pullRequestCommentsD
 import ReposInvoker from "../../src/repos/reposInvoker.js";
 import RunnerInvoker from "../../src/runners/runnerInvoker.js";
 import assert from "node:assert/strict";
+import { stubEnv } from "../testUtilities/stubEnv.js";
 import { stubLocalization } from "../testUtilities/stubLocalization.js";
 
 describe("codeMetricsCalculator.ts", (): void => {
@@ -176,7 +177,7 @@ describe("codeMetricsCalculator.ts", (): void => {
 
     it("should return the appropriate message when not called from a Git repo on GitHub", async (): Promise<void> => {
       // Arrange
-      process.env.GITHUB_ACTION = "PR-Metrics";
+      stubEnv(["GITHUB_ACTION", "PR-Metrics"]);
       when(gitInvoker.isGitRepo()).thenResolve(false);
       const codeMetricsCalculator: CodeMetricsCalculator =
         new CodeMetricsCalculator(
@@ -197,8 +198,6 @@ describe("codeMetricsCalculator.ts", (): void => {
         "No Git repo present. Run the 'actions/checkout' action prior to PR Metrics.",
       );
 
-      // Finalization
-      delete process.env.GITHUB_ACTION;
     });
 
     it("should return the appropriate message when the pull request ID is not available on Azure DevOps", async (): Promise<void> => {
@@ -223,7 +222,7 @@ describe("codeMetricsCalculator.ts", (): void => {
 
     it("should return the appropriate message when the pull request ID is not available on GitHub", async (): Promise<void> => {
       // Arrange
-      process.env.GITHUB_ACTION = "PR-Metrics";
+      stubEnv(["GITHUB_ACTION", "PR-Metrics"]);
       when(gitInvoker.isPullRequestIdAvailable()).thenReturn(false);
       const codeMetricsCalculator: CodeMetricsCalculator =
         new CodeMetricsCalculator(
@@ -244,8 +243,6 @@ describe("codeMetricsCalculator.ts", (): void => {
         "Could not determine the Pull Request ID. Ensure 'pull_request' is the pipeline trigger.",
       );
 
-      // Finalization
-      delete process.env.GITHUB_ACTION;
     });
 
     it("should return the appropriate message when the Git history is unavailable on Azure DevOps", async (): Promise<void> => {
@@ -273,7 +270,7 @@ describe("codeMetricsCalculator.ts", (): void => {
 
     it("should return the appropriate message when the Git history is unavailable on GitHub", async (): Promise<void> => {
       // Arrange
-      process.env.GITHUB_ACTION = "PR-Metrics";
+      stubEnv(["GITHUB_ACTION", "PR-Metrics"]);
       when(gitInvoker.isGitHistoryAvailable()).thenResolve(false);
       const codeMetricsCalculator: CodeMetricsCalculator =
         new CodeMetricsCalculator(
@@ -294,8 +291,6 @@ describe("codeMetricsCalculator.ts", (): void => {
         "Could not access sufficient Git history. Add 'fetch-depth: 0' as a parameter to the 'actions/checkout' action.",
       );
 
-      // Finalization
-      delete process.env.GITHUB_ACTION;
     });
   });
 

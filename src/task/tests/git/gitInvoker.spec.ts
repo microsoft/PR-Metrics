@@ -10,15 +10,16 @@ import GitInvoker from "../../src/git/gitInvoker.js";
 import Logger from "../../src/utilities/logger.js";
 import RunnerInvoker from "../../src/runners/runnerInvoker.js";
 import assert from "node:assert/strict";
+import { stubEnv } from "../testUtilities/stubEnv.js";
 
 describe("gitInvoker.ts", (): void => {
   let logger: Logger;
   let runnerInvoker: RunnerInvoker;
 
   beforeEach((): void => {
-    process.env.BUILD_REPOSITORY_PROVIDER = "TfsGit";
-    process.env.SYSTEM_PULLREQUEST_TARGETBRANCH = "refs/heads/develop";
-    process.env.SYSTEM_PULLREQUEST_PULLREQUESTID = "12345";
+    stubEnv(["BUILD_REPOSITORY_PROVIDER", "TfsGit"]);
+    stubEnv(["SYSTEM_PULLREQUEST_TARGETBRANCH", "refs/heads/develop"]);
+    stubEnv(["SYSTEM_PULLREQUEST_PULLREQUESTID", "12345"]);
 
     logger = mock(Logger);
 
@@ -60,17 +61,11 @@ describe("gitInvoker.ts", (): void => {
     );
   });
 
-  afterEach((): void => {
-    delete process.env.BUILD_REPOSITORY_PROVIDER;
-    delete process.env.SYSTEM_PULLREQUEST_TARGETBRANCH;
-    delete process.env.SYSTEM_PULLREQUEST_PULLREQUESTID;
-  });
-
   describe("pullRequestId", (): void => {
     it("should return the correct output when the GitHub runner is being used", (): void => {
       // Arrange
-      process.env.GITHUB_ACTION = "PR-Metrics";
-      process.env.GITHUB_REF = "refs/pull/12345/merge";
+      stubEnv(["GITHUB_ACTION", "PR-Metrics"]);
+      stubEnv(["GITHUB_REF", "refs/pull/12345/merge"]);
       const gitInvoker: GitInvoker = new GitInvoker(
         instance(logger),
         instance(runnerInvoker),
@@ -82,15 +77,12 @@ describe("gitInvoker.ts", (): void => {
       // Assert
       assert.equal(result, 12345);
 
-      // Finalization
-      delete process.env.GITHUB_ACTION;
-      delete process.env.GITHUB_REF;
     });
 
     it("should return the correct output when the GitHub runner is being used and it is called multiple times", (): void => {
       // Arrange
-      process.env.GITHUB_ACTION = "PR-Metrics";
-      process.env.GITHUB_REF = "refs/pull/12345/merge";
+      stubEnv(["GITHUB_ACTION", "PR-Metrics"]);
+      stubEnv(["GITHUB_REF", "refs/pull/12345/merge"]);
       const gitInvoker: GitInvoker = new GitInvoker(
         instance(logger),
         instance(runnerInvoker),
@@ -104,14 +96,11 @@ describe("gitInvoker.ts", (): void => {
       assert.equal(result1, 12345);
       assert.equal(result2, 12345);
 
-      // Finalization
-      delete process.env.GITHUB_ACTION;
-      delete process.env.GITHUB_REF;
     });
 
     it("should throw an error when the GitHub runner is being used and GITHUB_REF is undefined", (): void => {
       // Arrange
-      process.env.GITHUB_ACTION = "PR-Metrics";
+      stubEnv(["GITHUB_ACTION", "PR-Metrics"]);
       const gitInvoker: GitInvoker = new GitInvoker(
         instance(logger),
         instance(runnerInvoker),
@@ -129,14 +118,12 @@ describe("gitInvoker.ts", (): void => {
       );
       verify(logger.logWarning("'GITHUB_REF' is undefined.")).once();
 
-      // Finalization
-      delete process.env.GITHUB_ACTION;
     });
 
     it("should throw an error when the GitHub runner is being used and GITHUB_REF is in the incorrect format", (): void => {
       // Arrange
-      process.env.GITHUB_ACTION = "PR-Metrics";
-      process.env.GITHUB_REF = "refs/pull";
+      stubEnv(["GITHUB_ACTION", "PR-Metrics"]);
+      stubEnv(["GITHUB_REF", "refs/pull"]);
       const gitInvoker: GitInvoker = new GitInvoker(
         instance(logger),
         instance(runnerInvoker),
@@ -158,15 +145,12 @@ describe("gitInvoker.ts", (): void => {
         ),
       ).once();
 
-      // Finalization
-      delete process.env.GITHUB_ACTION;
-      delete process.env.GITHUB_REF;
     });
 
     it("should return the correct output when the Azure Pipelines runner is being used", (): void => {
       // Arrange
-      process.env.GITHUB_ACTION = "PR-Metrics";
-      process.env.GITHUB_REF = "refs/pull/12345/merge";
+      stubEnv(["GITHUB_ACTION", "PR-Metrics"]);
+      stubEnv(["GITHUB_REF", "refs/pull/12345/merge"]);
       const gitInvoker: GitInvoker = new GitInvoker(
         instance(logger),
         instance(runnerInvoker),
@@ -178,14 +162,11 @@ describe("gitInvoker.ts", (): void => {
       // Assert
       assert.equal(result, 12345);
 
-      // Finalization
-      delete process.env.GITHUB_ACTION;
-      delete process.env.GITHUB_REF;
     });
 
     it("should throw an error when the Azure Pipelines runner is being used and BUILD_REPOSITORY_PROVIDER is undefined", (): void => {
       // Arrange
-      delete process.env.BUILD_REPOSITORY_PROVIDER;
+      stubEnv(["BUILD_REPOSITORY_PROVIDER", undefined]);
       const gitInvoker: GitInvoker = new GitInvoker(
         instance(logger),
         instance(runnerInvoker),
@@ -208,7 +189,7 @@ describe("gitInvoker.ts", (): void => {
 
     it("should throw an error when the Azure Pipelines runner is being used and SYSTEM_PULLREQUEST_PULLREQUESTID is undefined", (): void => {
       // Arrange
-      delete process.env.SYSTEM_PULLREQUEST_PULLREQUESTID;
+      stubEnv(["SYSTEM_PULLREQUEST_PULLREQUESTID", undefined]);
       const gitInvoker: GitInvoker = new GitInvoker(
         instance(logger),
         instance(runnerInvoker),
@@ -231,7 +212,7 @@ describe("gitInvoker.ts", (): void => {
 
     it("should throw an error when the Azure Pipelines runner is being used and SYSTEM_PULLREQUEST_PULLREQUESTID is not numeric", (): void => {
       // Arrange
-      process.env.SYSTEM_PULLREQUEST_PULLREQUESTID = "abc";
+      stubEnv(["SYSTEM_PULLREQUEST_PULLREQUESTID", "abc"]);
       const gitInvoker: GitInvoker = new GitInvoker(
         instance(logger),
         instance(runnerInvoker),
@@ -260,7 +241,7 @@ describe("gitInvoker.ts", (): void => {
       testCases.forEach((buildRepositoryProvider: string): void => {
         it(`should throw an error when the Azure Pipelines runner is being used and the PR is on '${buildRepositoryProvider}' and SYSTEM_PULLREQUEST_PULLREQUESTNUMBER is undefined`, (): void => {
           // Arrange
-          process.env.BUILD_REPOSITORY_PROVIDER = buildRepositoryProvider;
+          stubEnv(["BUILD_REPOSITORY_PROVIDER", buildRepositoryProvider]);
           const gitInvoker: GitInvoker = new GitInvoker(
             instance(logger),
             instance(runnerInvoker),
@@ -282,16 +263,14 @@ describe("gitInvoker.ts", (): void => {
             ),
           ).once();
 
-          // Finalization
-          delete process.env.BUILD_REPOSITORY_PROVIDER;
         });
       });
     }
 
     it("should throw an error when the ID cannot be parsed as an integer", (): void => {
       // Arrange
-      process.env.GITHUB_ACTION = "PR-Metrics";
-      process.env.GITHUB_REF = "refs/pull/PullRequestID/merge";
+      stubEnv(["GITHUB_ACTION", "PR-Metrics"]);
+      stubEnv(["GITHUB_REF", "refs/pull/PullRequestID/merge"]);
       const gitInvoker: GitInvoker = new GitInvoker(
         instance(logger),
         instance(runnerInvoker),
@@ -313,9 +292,6 @@ describe("gitInvoker.ts", (): void => {
         ),
       ).once();
 
-      // Finalization
-      delete process.env.GITHUB_ACTION;
-      delete process.env.GITHUB_REF;
     });
 
     {
@@ -324,8 +300,8 @@ describe("gitInvoker.ts", (): void => {
       testCases.forEach((buildRepositoryProvider: string): void => {
         it(`should throw an error when the Azure Pipelines runner is being used and the PR is on '${buildRepositoryProvider}' and SYSTEM_PULLREQUEST_PULLREQUESTNUMBER is not numeric`, (): void => {
           // Arrange
-          process.env.BUILD_REPOSITORY_PROVIDER = buildRepositoryProvider;
-          process.env.SYSTEM_PULLREQUEST_PULLREQUESTNUMBER = "abc";
+          stubEnv(["BUILD_REPOSITORY_PROVIDER", buildRepositoryProvider]);
+          stubEnv(["SYSTEM_PULLREQUEST_PULLREQUESTNUMBER", "abc"]);
           const gitInvoker: GitInvoker = new GitInvoker(
             instance(logger),
             instance(runnerInvoker),
@@ -347,9 +323,6 @@ describe("gitInvoker.ts", (): void => {
             ),
           ).once();
 
-          // Finalization
-          delete process.env.BUILD_REPOSITORY_PROVIDER;
-          delete process.env.SYSTEM_PULLREQUEST_PULLREQUESTNUMBER;
         });
       });
     }
@@ -420,8 +393,8 @@ describe("gitInvoker.ts", (): void => {
   describe("isPullRequestIdAvailable()", (): void => {
     it("should return true when the GitHub runner is being used", (): void => {
       // Arrange
-      process.env.GITHUB_ACTION = "PR-Metrics";
-      process.env.GITHUB_REF = "refs/pull/12345/merge";
+      stubEnv(["GITHUB_ACTION", "PR-Metrics"]);
+      stubEnv(["GITHUB_REF", "refs/pull/12345/merge"]);
       const gitInvoker: GitInvoker = new GitInvoker(
         instance(logger),
         instance(runnerInvoker),
@@ -433,14 +406,11 @@ describe("gitInvoker.ts", (): void => {
       // Assert
       assert.equal(result, true);
 
-      // Finalization
-      delete process.env.GITHUB_ACTION;
-      delete process.env.GITHUB_REF;
     });
 
     it("should return false when the GitHub runner is being used and GITHUB_REF is undefined", (): void => {
       // Arrange
-      process.env.GITHUB_ACTION = "PR-Metrics";
+      stubEnv(["GITHUB_ACTION", "PR-Metrics"]);
       const gitInvoker: GitInvoker = new GitInvoker(
         instance(logger),
         instance(runnerInvoker),
@@ -453,14 +423,12 @@ describe("gitInvoker.ts", (): void => {
       assert.equal(result, false);
       verify(logger.logWarning("'GITHUB_REF' is undefined.")).once();
 
-      // Finalization
-      delete process.env.GITHUB_ACTION;
     });
 
     it("should return false when the GitHub runner is being used and GITHUB_REF is in the incorrect format", (): void => {
       // Arrange
-      process.env.GITHUB_ACTION = "PR-Metrics";
-      process.env.GITHUB_REF = "refs/pull";
+      stubEnv(["GITHUB_ACTION", "PR-Metrics"]);
+      stubEnv(["GITHUB_REF", "refs/pull"]);
       const gitInvoker: GitInvoker = new GitInvoker(
         instance(logger),
         instance(runnerInvoker),
@@ -477,15 +445,12 @@ describe("gitInvoker.ts", (): void => {
         ),
       ).once();
 
-      // Finalization
-      delete process.env.GITHUB_ACTION;
-      delete process.env.GITHUB_REF;
     });
 
     it("should return true when the Azure Pipelines runner is being used", (): void => {
       // Arrange
-      process.env.GITHUB_ACTION = "PR-Metrics";
-      process.env.GITHUB_REF = "refs/pull/12345/merge";
+      stubEnv(["GITHUB_ACTION", "PR-Metrics"]);
+      stubEnv(["GITHUB_REF", "refs/pull/12345/merge"]);
       const gitInvoker: GitInvoker = new GitInvoker(
         instance(logger),
         instance(runnerInvoker),
@@ -497,14 +462,11 @@ describe("gitInvoker.ts", (): void => {
       // Assert
       assert.equal(result, true);
 
-      // Finalization
-      delete process.env.GITHUB_ACTION;
-      delete process.env.GITHUB_REF;
     });
 
     it("should throw an error when the Azure Pipelines runner is being used and BUILD_REPOSITORY_PROVIDER is undefined", (): void => {
       // Arrange
-      delete process.env.BUILD_REPOSITORY_PROVIDER;
+      stubEnv(["BUILD_REPOSITORY_PROVIDER", undefined]);
       const gitInvoker: GitInvoker = new GitInvoker(
         instance(logger),
         instance(runnerInvoker),
@@ -522,7 +484,7 @@ describe("gitInvoker.ts", (): void => {
 
     it("should throw an error when the Azure Pipelines runner is being used and SYSTEM_PULLREQUEST_PULLREQUESTID is undefined", (): void => {
       // Arrange
-      delete process.env.SYSTEM_PULLREQUEST_PULLREQUESTID;
+      stubEnv(["SYSTEM_PULLREQUEST_PULLREQUESTID", undefined]);
       const gitInvoker: GitInvoker = new GitInvoker(
         instance(logger),
         instance(runnerInvoker),
@@ -544,7 +506,7 @@ describe("gitInvoker.ts", (): void => {
       testCases.forEach((buildRepositoryProvider: string): void => {
         it(`should throw an error when the Azure Pipelines runner is being used and the PR is on '${buildRepositoryProvider}' and SYSTEM_PULLREQUEST_PULLREQUESTNUMBER is undefined`, (): void => {
           // Arrange
-          process.env.BUILD_REPOSITORY_PROVIDER = buildRepositoryProvider;
+          stubEnv(["BUILD_REPOSITORY_PROVIDER", buildRepositoryProvider]);
           const gitInvoker: GitInvoker = new GitInvoker(
             instance(logger),
             instance(runnerInvoker),
@@ -561,16 +523,14 @@ describe("gitInvoker.ts", (): void => {
             ),
           ).once();
 
-          // Finalization
-          delete process.env.BUILD_REPOSITORY_PROVIDER;
         });
       });
     }
 
     it("should throw an error when the ID cannot be parsed as an integer", (): void => {
       // Arrange
-      process.env.GITHUB_ACTION = "PR-Metrics";
-      process.env.GITHUB_REF = "refs/pull/PullRequestID/merge";
+      stubEnv(["GITHUB_ACTION", "PR-Metrics"]);
+      stubEnv(["GITHUB_REF", "refs/pull/PullRequestID/merge"]);
       const gitInvoker: GitInvoker = new GitInvoker(
         instance(logger),
         instance(runnerInvoker),
@@ -582,16 +542,13 @@ describe("gitInvoker.ts", (): void => {
       // Assert
       assert.equal(result, false);
 
-      // Finalization
-      delete process.env.GITHUB_ACTION;
-      delete process.env.GITHUB_REF;
     });
   });
 
   describe("isGitHistoryAvailable()", (): void => {
     it("should return true when the Git history is available", async (): Promise<void> => {
       // Arrange
-      delete process.env.GITHUB_ACTION;
+      stubEnv(["GITHUB_ACTION", undefined]);
       const gitInvoker: GitInvoker = new GitInvoker(
         instance(logger),
         instance(runnerInvoker),
@@ -606,7 +563,7 @@ describe("gitInvoker.ts", (): void => {
 
     it("should return true when the Git history is available and the method is called after retrieving the pull request ID", async (): Promise<void> => {
       // Arrange
-      delete process.env.GITHUB_ACTION;
+      stubEnv(["GITHUB_ACTION", undefined]);
       const gitInvoker: GitInvoker = new GitInvoker(
         instance(logger),
         instance(runnerInvoker),
@@ -623,9 +580,9 @@ describe("gitInvoker.ts", (): void => {
 
     it("should return true when the Git history is available and the PR is using the GitHub runner", async (): Promise<void> => {
       // Arrange
-      process.env.GITHUB_ACTION = "PR-Metrics";
-      process.env.GITHUB_BASE_REF = "develop";
-      process.env.GITHUB_REF = "refs/pull/12345/merge";
+      stubEnv(["GITHUB_ACTION", "PR-Metrics"]);
+      stubEnv(["GITHUB_BASE_REF", "develop"]);
+      stubEnv(["GITHUB_REF", "refs/pull/12345/merge"]);
       const gitInvoker: GitInvoker = new GitInvoker(
         instance(logger),
         instance(runnerInvoker),
@@ -637,15 +594,11 @@ describe("gitInvoker.ts", (): void => {
       // Assert
       assert.equal(result, true);
 
-      // Finalization
-      delete process.env.GITHUB_ACTION;
-      delete process.env.GITHUB_BASE_REF;
-      delete process.env.GITHUB_REF;
     });
 
     it("should throw an error when the PR is using the GitHub runner and GITHUB_BASE_REF is undefined", async (): Promise<void> => {
       // Arrange
-      process.env.GITHUB_ACTION = "PR-Metrics";
+      stubEnv(["GITHUB_ACTION", "PR-Metrics"]);
       const gitInvoker: GitInvoker = new GitInvoker(
         instance(logger),
         instance(runnerInvoker),
@@ -661,8 +614,6 @@ describe("gitInvoker.ts", (): void => {
         "'GITHUB_BASE_REF', accessed within 'GitInvoker.targetBranch', is invalid, null, or undefined 'undefined'.",
       );
 
-      // Finalization
-      delete process.env.GITHUB_ACTION;
     });
 
     {
@@ -671,10 +622,14 @@ describe("gitInvoker.ts", (): void => {
       testCases.forEach((buildRepositoryProvider: string): void => {
         it(`should return true when the Git history is available and the PR is on '${buildRepositoryProvider}'`, async (): Promise<void> => {
           // Arrange
-          process.env.BUILD_REPOSITORY_PROVIDER = buildRepositoryProvider;
-          process.env.SYSTEM_PULLREQUEST_PULLREQUESTNUMBER =
-            process.env.SYSTEM_PULLREQUEST_PULLREQUESTID;
-          delete process.env.SYSTEM_PULLREQUEST_PULLREQUESTID;
+          stubEnv(
+            ["BUILD_REPOSITORY_PROVIDER", buildRepositoryProvider],
+            ["SYSTEM_PULLREQUEST_PULLREQUESTID", undefined],
+            [
+              "SYSTEM_PULLREQUEST_PULLREQUESTNUMBER",
+              process.env.SYSTEM_PULLREQUEST_PULLREQUESTID,
+            ],
+          );
           const gitInvoker: GitInvoker = new GitInvoker(
             instance(logger),
             instance(runnerInvoker),
@@ -686,8 +641,6 @@ describe("gitInvoker.ts", (): void => {
           // Assert
           assert.equal(result, true);
 
-          // Finalization
-          delete process.env.SYSTEM_PULLREQUEST_PULLREQUESTNUMBER;
         });
       });
     }
@@ -742,7 +695,7 @@ describe("gitInvoker.ts", (): void => {
 
     it("should throw an error when SYSTEM_PULLREQUEST_TARGETBRANCH is undefined", async (): Promise<void> => {
       // Arrange
-      delete process.env.SYSTEM_PULLREQUEST_TARGETBRANCH;
+      stubEnv(["SYSTEM_PULLREQUEST_TARGETBRANCH", undefined]);
       const gitInvoker: GitInvoker = new GitInvoker(
         instance(logger),
         instance(runnerInvoker),
@@ -761,7 +714,7 @@ describe("gitInvoker.ts", (): void => {
 
     it("should throw an error when the target branch contains whitespace", async (): Promise<void> => {
       // Arrange
-      process.env.SYSTEM_PULLREQUEST_TARGETBRANCH = "refs/heads/main branch";
+      stubEnv(["SYSTEM_PULLREQUEST_TARGETBRANCH", "refs/heads/main branch"]);
       const gitInvoker: GitInvoker = new GitInvoker(
         instance(logger),
         instance(runnerInvoker),
@@ -796,7 +749,7 @@ describe("gitInvoker.ts", (): void => {
 
     it("should return the correct output when no error occurs and the target branch is in the GitHub format", async (): Promise<void> => {
       // Arrange
-      process.env.SYSTEM_PULLREQUEST_TARGETBRANCH = "develop";
+      stubEnv(["SYSTEM_PULLREQUEST_TARGETBRANCH", "develop"]);
       const gitInvoker: GitInvoker = new GitInvoker(
         instance(logger),
         instance(runnerInvoker),
@@ -826,7 +779,7 @@ describe("gitInvoker.ts", (): void => {
 
     it("should throw an error when SYSTEM_PULLREQUEST_TARGETBRANCH is undefined", async (): Promise<void> => {
       // Arrange
-      delete process.env.SYSTEM_PULLREQUEST_TARGETBRANCH;
+      stubEnv(["SYSTEM_PULLREQUEST_TARGETBRANCH", undefined]);
       const gitInvoker: GitInvoker = new GitInvoker(
         instance(logger),
         instance(runnerInvoker),

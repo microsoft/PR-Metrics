@@ -15,6 +15,7 @@ import TokenManager from "../../src/repos/tokenManager.js";
 import { WebApi } from "azure-devops-node-api";
 import assert from "node:assert/strict";
 import { resolvableInstance } from "../testUtilities/resolvableInstance.js";
+import { stubEnv } from "../testUtilities/stubEnv.js";
 import { stubLocalization } from "../testUtilities/stubLocalization.js";
 
 describe("tokenManager.ts", (): void => {
@@ -28,11 +29,13 @@ describe("tokenManager.ts", (): void => {
   const tenantId = "98765432-abcd-ef01-2345-678901234567";
 
   beforeEach((): void => {
-    process.env.SYSTEM_COLLECTIONURI = "https://dev.azure.com/organization";
-    process.env.SYSTEM_TEAMPROJECTID = "TeamProjectId";
-    process.env.SYSTEM_HOSTTYPE = "HostType";
-    process.env.SYSTEM_PLANID = "PlanId";
-    process.env.SYSTEM_JOBID = "JobId";
+    stubEnv(
+      ["SYSTEM_COLLECTIONURI", "https://dev.azure.com/organization"],
+      ["SYSTEM_HOSTTYPE", "HostType"],
+      ["SYSTEM_JOBID", "JobId"],
+      ["SYSTEM_PLANID", "PlanId"],
+      ["SYSTEM_TEAMPROJECTID", "TeamProjectId"],
+    );
 
     taskApi = mock<ITaskApi>();
     const requestHandler: IRequestHandler = mock<IRequestHandler>();
@@ -129,14 +132,6 @@ describe("tokenManager.ts", (): void => {
       stderr: "",
       stdout: " AccessToken ",
     });
-  });
-
-  after(() => {
-    delete process.env.SYSTEM_COLLECTIONURI;
-    delete process.env.SYSTEM_TEAMPROJECTID;
-    delete process.env.SYSTEM_HOSTTYPE;
-    delete process.env.SYSTEM_PLANID;
-    delete process.env.SYSTEM_JOBID;
   });
 
   describe("getToken()", (): void => {
@@ -343,7 +338,7 @@ describe("tokenManager.ts", (): void => {
 
   it("throws an error when the collection URI is undefined", async (): Promise<void> => {
     // Arrange
-    delete process.env.SYSTEM_COLLECTIONURI;
+    stubEnv(["SYSTEM_COLLECTIONURI", undefined]);
     const tokenManager: TokenManager = new TokenManager(
       instance(azureDevOpsApiWrapper),
       instance(logger),
@@ -363,7 +358,7 @@ describe("tokenManager.ts", (): void => {
 
   it("throws an error when the team project URI is undefined", async (): Promise<void> => {
     // Arrange
-    delete process.env.SYSTEM_TEAMPROJECTID;
+    stubEnv(["SYSTEM_TEAMPROJECTID", undefined]);
     const tokenManager: TokenManager = new TokenManager(
       instance(azureDevOpsApiWrapper),
       instance(logger),
@@ -383,7 +378,7 @@ describe("tokenManager.ts", (): void => {
 
   it("throws an error when the host type is undefined", async (): Promise<void> => {
     // Arrange
-    delete process.env.SYSTEM_HOSTTYPE;
+    stubEnv(["SYSTEM_HOSTTYPE", undefined]);
     const tokenManager: TokenManager = new TokenManager(
       instance(azureDevOpsApiWrapper),
       instance(logger),
@@ -403,7 +398,7 @@ describe("tokenManager.ts", (): void => {
 
   it("throws an error when the plan ID is undefined", async (): Promise<void> => {
     // Arrange
-    delete process.env.SYSTEM_PLANID;
+    stubEnv(["SYSTEM_PLANID", undefined]);
     const tokenManager: TokenManager = new TokenManager(
       instance(azureDevOpsApiWrapper),
       instance(logger),
@@ -423,7 +418,7 @@ describe("tokenManager.ts", (): void => {
 
   it("throws an error when the job ID is undefined", async (): Promise<void> => {
     // Arrange
-    delete process.env.SYSTEM_JOBID;
+    stubEnv(["SYSTEM_JOBID", undefined]);
     const tokenManager: TokenManager = new TokenManager(
       instance(azureDevOpsApiWrapper),
       instance(logger),

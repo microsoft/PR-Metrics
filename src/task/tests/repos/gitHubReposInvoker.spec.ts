@@ -25,6 +25,7 @@ import RunnerInvoker from "../../src/runners/runnerInvoker.js";
 import { StatusCodes } from "http-status-codes";
 import assert from "node:assert/strict";
 import { createRequestError } from "../testUtilities/createRequestError.js";
+import { stubEnv } from "../testUtilities/stubEnv.js";
 import { stubLocalization } from "../testUtilities/stubLocalization.js";
 
 describe("gitHubReposInvoker.ts", (): void => {
@@ -36,9 +37,13 @@ describe("gitHubReposInvoker.ts", (): void => {
   const expectedUserAgent = "PRMetrics/v1.7.13";
 
   beforeEach((): void => {
-    process.env.PR_METRICS_ACCESS_TOKEN = "PAT";
-    process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI =
-      "https://github.com/microsoft/PR-Metrics";
+    stubEnv(
+      ["PR_METRICS_ACCESS_TOKEN", "PAT"],
+      [
+        "SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI",
+        "https://github.com/microsoft/PR-Metrics",
+      ],
+    );
 
     gitInvoker = mock(GitInvoker);
     when(gitInvoker.pullRequestId).thenReturn(12345);
@@ -71,11 +76,6 @@ describe("gitHubReposInvoker.ts", (): void => {
     stubLocalization(runnerInvoker);
   });
 
-  afterEach((): void => {
-    delete process.env.PR_METRICS_ACCESS_TOKEN;
-    delete process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI;
-  });
-
   describe("isAccessTokenAvailable()", (): void => {
     it("should return null when the token exists on Azure DevOps", async (): Promise<void> => {
       // Arrange
@@ -96,8 +96,8 @@ describe("gitHubReposInvoker.ts", (): void => {
 
     it("should return null when the token exists on GitHub", async (): Promise<void> => {
       // Arrange
-      process.env.PR_METRICS_ACCESS_TOKEN = "PAT";
-      process.env.GITHUB_ACTION = "PR-Metrics";
+      stubEnv(["PR_METRICS_ACCESS_TOKEN", "PAT"]);
+      stubEnv(["GITHUB_ACTION", "PR-Metrics"]);
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
         instance(gitInvoker),
         instance(logger),
@@ -112,14 +112,11 @@ describe("gitHubReposInvoker.ts", (): void => {
       // Assert
       assert.equal(result, null);
 
-      // Finalization
-      delete process.env.PR_METRICS_ACCESS_TOKEN;
-      delete process.env.GITHUB_ACTION;
     });
 
     it("should return a string when the token does not exist", async (): Promise<void> => {
       // Arrange
-      delete process.env.PR_METRICS_ACCESS_TOKEN;
+      stubEnv(["PR_METRICS_ACCESS_TOKEN", undefined]);
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
         instance(gitInvoker),
         instance(logger),
@@ -147,9 +144,9 @@ describe("gitHubReposInvoker.ts", (): void => {
         it(`should throw when SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI is set to the invalid value '${String(variable)}' and the task is running on Azure Pipelines`, async (): Promise<void> => {
           // Arrange
           if (typeof variable === "undefined") {
-            delete process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI;
+            stubEnv(["SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI", undefined]);
           } else {
-            process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI = variable;
+            stubEnv(["SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI", variable]);
           }
 
           const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
@@ -174,8 +171,9 @@ describe("gitHubReposInvoker.ts", (): void => {
 
     it("should throw when SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI is set to an invalid URL and the task is running on Azure Pipelines", async (): Promise<void> => {
       // Arrange
-      process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI =
-        "https://github.com/microsoft";
+      stubEnv(
+        ["SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI", "https://github.com/microsoft"],
+      );
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
         instance(gitInvoker),
         instance(logger),
@@ -200,13 +198,13 @@ describe("gitHubReposInvoker.ts", (): void => {
       testCases.forEach((variable: string | undefined): void => {
         it(`should throw when GITHUB_API_URL is set to the invalid value '${String(variable)}' and the task is running on GitHub`, async (): Promise<void> => {
           // Arrange
-          delete process.env.PR_METRICS_ACCESS_TOKEN;
-          process.env.PR_METRICS_ACCESS_TOKEN = "PAT";
-          process.env.GITHUB_ACTION = "PR-Metrics";
+          stubEnv(["PR_METRICS_ACCESS_TOKEN", undefined]);
+          stubEnv(["PR_METRICS_ACCESS_TOKEN", "PAT"]);
+          stubEnv(["GITHUB_ACTION", "PR-Metrics"]);
           if (typeof variable === "undefined") {
-            delete process.env.GITHUB_API_URL;
+            stubEnv(["GITHUB_API_URL", undefined]);
           } else {
-            process.env.GITHUB_API_URL = variable;
+            stubEnv(["GITHUB_API_URL", variable]);
           }
 
           const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
@@ -226,10 +224,6 @@ describe("gitHubReposInvoker.ts", (): void => {
             `'GITHUB_API_URL', accessed within 'GitHubReposInvoker.initializeForGitHub()', is invalid, null, or undefined '${String(variable)}'.`,
           );
 
-          // Finalization
-          delete process.env.PR_METRICS_ACCESS_TOKEN;
-          delete process.env.GITHUB_ACTION;
-          delete process.env.GITHUB_API_URL;
         });
       });
     }
@@ -240,14 +234,14 @@ describe("gitHubReposInvoker.ts", (): void => {
       testCases.forEach((variable: string | undefined): void => {
         it(`should throw when GITHUB_REPOSITORY_OWNER is set to the invalid value '${String(variable)}' and the task is running on GitHub`, async (): Promise<void> => {
           // Arrange
-          delete process.env.PR_METRICS_ACCESS_TOKEN;
-          process.env.PR_METRICS_ACCESS_TOKEN = "PAT";
-          process.env.GITHUB_ACTION = "PR-Metrics";
-          process.env.GITHUB_API_URL = "https://api.github.com";
+          stubEnv(["PR_METRICS_ACCESS_TOKEN", undefined]);
+          stubEnv(["PR_METRICS_ACCESS_TOKEN", "PAT"]);
+          stubEnv(["GITHUB_ACTION", "PR-Metrics"]);
+          stubEnv(["GITHUB_API_URL", "https://api.github.com"]);
           if (typeof variable === "undefined") {
-            delete process.env.GITHUB_REPOSITORY_OWNER;
+            stubEnv(["GITHUB_REPOSITORY_OWNER", undefined]);
           } else {
-            process.env.GITHUB_REPOSITORY_OWNER = variable;
+            stubEnv(["GITHUB_REPOSITORY_OWNER", variable]);
           }
 
           const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
@@ -267,11 +261,6 @@ describe("gitHubReposInvoker.ts", (): void => {
             `'GITHUB_REPOSITORY_OWNER', accessed within 'GitHubReposInvoker.initializeForGitHub()', is invalid, null, or undefined '${String(variable)}'.`,
           );
 
-          // Finalization
-          delete process.env.PR_METRICS_ACCESS_TOKEN;
-          delete process.env.GITHUB_ACTION;
-          delete process.env.GITHUB_API_URL;
-          delete process.env.GITHUB_REPOSITORY_OWNER;
         });
       });
     }
@@ -282,15 +271,15 @@ describe("gitHubReposInvoker.ts", (): void => {
       testCases.forEach((variable: string | undefined): void => {
         it(`should throw when GITHUB_REPOSITORY is set to the invalid value '${String(variable)}' and the task is running on GitHub`, async (): Promise<void> => {
           // Arrange
-          delete process.env.PR_METRICS_ACCESS_TOKEN;
-          process.env.PR_METRICS_ACCESS_TOKEN = "PAT";
-          process.env.GITHUB_ACTION = "PR-Metrics";
-          process.env.GITHUB_API_URL = "https://api.github.com";
-          process.env.GITHUB_REPOSITORY_OWNER = "microsoft";
+          stubEnv(["PR_METRICS_ACCESS_TOKEN", undefined]);
+          stubEnv(["PR_METRICS_ACCESS_TOKEN", "PAT"]);
+          stubEnv(["GITHUB_ACTION", "PR-Metrics"]);
+          stubEnv(["GITHUB_API_URL", "https://api.github.com"]);
+          stubEnv(["GITHUB_REPOSITORY_OWNER", "microsoft"]);
           if (typeof variable === "undefined") {
-            delete process.env.GITHUB_REPOSITORY;
+            stubEnv(["GITHUB_REPOSITORY", undefined]);
           } else {
-            process.env.GITHUB_REPOSITORY = variable;
+            stubEnv(["GITHUB_REPOSITORY", variable]);
           }
 
           const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
@@ -310,24 +299,18 @@ describe("gitHubReposInvoker.ts", (): void => {
             `'GITHUB_REPOSITORY', accessed within 'GitHubReposInvoker.initializeForGitHub()', is invalid, null, or undefined '${String(variable)}'.`,
           );
 
-          // Finalization
-          delete process.env.PR_METRICS_ACCESS_TOKEN;
-          delete process.env.GITHUB_ACTION;
-          delete process.env.GITHUB_API_URL;
-          delete process.env.GITHUB_REPOSITORY_OWNER;
-          delete process.env.GITHUB_REPOSITORY;
         });
       });
     }
 
     it("should throw when GITHUB_REPOSITORY is in an incorrect format and the task is running on GitHub", async (): Promise<void> => {
       // Arrange
-      delete process.env.PR_METRICS_ACCESS_TOKEN;
-      process.env.PR_METRICS_ACCESS_TOKEN = "PAT";
-      process.env.GITHUB_ACTION = "PR-Metrics";
-      process.env.GITHUB_API_URL = "https://api.github.com";
-      process.env.GITHUB_REPOSITORY_OWNER = "microsoft";
-      process.env.GITHUB_REPOSITORY = "microsoft";
+      stubEnv(["PR_METRICS_ACCESS_TOKEN", undefined]);
+      stubEnv(["PR_METRICS_ACCESS_TOKEN", "PAT"]);
+      stubEnv(["GITHUB_ACTION", "PR-Metrics"]);
+      stubEnv(["GITHUB_API_URL", "https://api.github.com"]);
+      stubEnv(["GITHUB_REPOSITORY_OWNER", "microsoft"]);
+      stubEnv(["GITHUB_REPOSITORY", "microsoft"]);
       const gitHubReposInvoker: GitHubReposInvoker = new GitHubReposInvoker(
         instance(gitInvoker),
         instance(logger),
@@ -345,12 +328,6 @@ describe("gitHubReposInvoker.ts", (): void => {
         "GITHUB_REPOSITORY 'microsoft' is in an unexpected format.",
       );
 
-      // Finalization
-      delete process.env.PR_METRICS_ACCESS_TOKEN;
-      delete process.env.GITHUB_ACTION;
-      delete process.env.GITHUB_API_URL;
-      delete process.env.GITHUB_REPOSITORY_OWNER;
-      delete process.env.GITHUB_REPOSITORY;
     });
 
     it("should succeed when the inputs are valid and the task is running on Azure Pipelines", async (): Promise<void> => {
@@ -386,10 +363,10 @@ describe("gitHubReposInvoker.ts", (): void => {
 
     it("should succeed when the inputs are valid and the task is running on GitHub", async (): Promise<void> => {
       // Arrange
-      process.env.GITHUB_ACTION = "PR-Metrics";
-      process.env.GITHUB_API_URL = "https://api.github.com";
-      process.env.GITHUB_REPOSITORY_OWNER = "microsoft";
-      process.env.GITHUB_REPOSITORY = "microsoft/PR-Metrics";
+      stubEnv(["GITHUB_ACTION", "PR-Metrics"]);
+      stubEnv(["GITHUB_API_URL", "https://api.github.com"]);
+      stubEnv(["GITHUB_REPOSITORY_OWNER", "microsoft"]);
+      stubEnv(["GITHUB_REPOSITORY", "microsoft/PR-Metrics"]);
       when(octokitWrapper.initialize(any())).thenCall(
         (options: OctokitOptions): void => {
           assert.equal(options.auth, "PAT");
@@ -418,17 +395,14 @@ describe("gitHubReposInvoker.ts", (): void => {
       verify(octokitWrapper.initialize(any())).once();
       verify(octokitWrapper.getPull("microsoft", "PR-Metrics", 12345)).once();
 
-      // Finalization
-      delete process.env.GITHUB_ACTION;
-      delete process.env.GITHUB_API_URL;
-      delete process.env.GITHUB_REPOSITORY_OWNER;
-      delete process.env.GITHUB_REPOSITORY;
     });
 
     it("should succeed when the inputs are valid and the URL ends with '.git'", async (): Promise<void> => {
       // Arrange
-      process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI =
-        "https://github.com/microsoft/PR-Metrics.git";
+      stubEnv([
+        "SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI",
+        "https://github.com/microsoft/PR-Metrics.git",
+      ]);
       when(octokitWrapper.initialize(any())).thenCall(
         (options: OctokitOptions): void => {
           assert.equal(options.auth, "PAT");
@@ -460,8 +434,10 @@ describe("gitHubReposInvoker.ts", (): void => {
 
     it("should succeed when the inputs are valid and GitHub Enterprise is in use", async (): Promise<void> => {
       // Arrange
-      process.env.SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI =
-        "https://organization.githubenterprise.com/microsoft/PR-Metrics";
+      stubEnv([
+        "SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI",
+        "https://organization.githubenterprise.com/microsoft/PR-Metrics",
+      ]);
       when(octokitWrapper.initialize(any())).thenCall(
         (options: OctokitOptions): void => {
           assert.equal(options.auth, "PAT");
