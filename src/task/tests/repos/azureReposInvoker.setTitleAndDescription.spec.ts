@@ -11,7 +11,7 @@ import type AzureDevOpsApiWrapper from "../../src/wrappers/azureDevOpsApiWrapper
 import type AzureReposInvoker from "../../src/repos/azureReposInvoker.js";
 import ErrorWithStatus from "../wrappers/errorWithStatus.js";
 import type GitInvoker from "../../src/git/gitInvoker.js";
-import { type GitPullRequest } from "azure-devops-node-api/interfaces/GitInterfaces.js";
+import type { GitPullRequest } from "azure-devops-node-api/interfaces/GitInterfaces.js";
 import type { IGitApi } from "azure-devops-node-api/GitApi.js";
 import type Logger from "../../src/utilities/logger.js";
 import type RunnerInvoker from "../../src/runners/runnerInvoker.js";
