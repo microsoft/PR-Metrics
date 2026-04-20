@@ -43,6 +43,16 @@ describe("gitHubReposInvoker.ts", (): void => {
       await gitHubReposInvoker.updateComment(54321, null);
 
       // Assert
+      verify(octokitWrapper.initialize(any())).never();
+      verify(
+        octokitWrapper.updateIssueComment(
+          any(),
+          any(),
+          any(),
+          any(),
+          any(),
+        ),
+      ).never();
     });
 
     it("should succeed when the content is set", async (): Promise<void> => {

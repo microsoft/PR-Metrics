@@ -30,6 +30,7 @@ describe("tokenManager.ts", (): void => {
 
   beforeEach((): void => {
     stubEnv(
+      ["PR_METRICS_ACCESS_TOKEN", undefined],
       ["SYSTEM_COLLECTIONURI", "https://dev.azure.com/organization"],
       ["SYSTEM_HOSTTYPE", "HostType"],
       ["SYSTEM_JOBID", "JobId"],

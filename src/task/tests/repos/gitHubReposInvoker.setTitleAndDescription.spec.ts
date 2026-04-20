@@ -43,6 +43,10 @@ describe("gitHubReposInvoker.ts", (): void => {
       await gitHubReposInvoker.setTitleAndDescription(null, null);
 
       // Assert
+      verify(octokitWrapper.initialize(any())).never();
+      verify(
+        octokitWrapper.updatePull(any(), any(), any(), any(), any()),
+      ).never();
     });
 
     it("should succeed when the title and description are both set", async (): Promise<void> => {
