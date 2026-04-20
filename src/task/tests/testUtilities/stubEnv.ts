@@ -10,9 +10,44 @@ interface PendingChange {
 
 const pending: PendingChange[] = [];
 
+/**
+ * Environment variables that tests expect to be unset unless explicitly
+ * stubbed. Clearing them at suite start prevents values inherited from the
+ * host environment (notably GitHub Actions' auto-populated `GITHUB_*` vars)
+ * from being restored mid-suite and leaking into unrelated tests.
+ */
+const managedEnvVars: readonly string[] = [
+  "BUILD_REPOSITORY_ID",
+  "BUILD_REPOSITORY_PROVIDER",
+  "GITHUB_ACTION",
+  "GITHUB_API_URL",
+  "GITHUB_BASE_REF",
+  "GITHUB_REF",
+  "GITHUB_REPOSITORY",
+  "GITHUB_REPOSITORY_OWNER",
+  "PR_METRICS_ACCESS_TOKEN",
+  "SYSTEM_COLLECTIONURI",
+  "SYSTEM_HOSTTYPE",
+  "SYSTEM_JOBID",
+  "SYSTEM_PLANID",
+  "SYSTEM_PULLREQUEST_PULLREQUESTID",
+  "SYSTEM_PULLREQUEST_PULLREQUESTNUMBER",
+  "SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI",
+  "SYSTEM_PULLREQUEST_TARGETBRANCH",
+  "SYSTEM_TEAMFOUNDATIONCOLLECTIONURI",
+  "SYSTEM_TEAMPROJECT",
+  "SYSTEM_TEAMPROJECTID",
+];
+
 const unset = (key: string): void => {
   Reflect.deleteProperty(process.env, key);
 };
+
+before((): void => {
+  for (const key of managedEnvVars) {
+    unset(key);
+  }
+});
 
 /**
  * Sets one or more environment variables for the duration of the current test.
