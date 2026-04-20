@@ -43,7 +43,6 @@ describe("pullRequest.ts", (): void => {
 
       // Assert
       assert.equal(result, true);
-
     });
 
     it("should return false when the GitHub runner is being used and GITHUB_BASE_REF is the empty string", (): void => {
@@ -61,7 +60,6 @@ describe("pullRequest.ts", (): void => {
 
       // Assert
       assert.equal(result, false);
-
     });
 
     it("should return true when the Azure Pipelines runner is being used and SYSTEM_PULLREQUEST_PULLREQUESTID is defined", (): void => {
@@ -78,7 +76,6 @@ describe("pullRequest.ts", (): void => {
 
       // Assert
       assert.equal(result, true);
-
     });
 
     it("should return false when the Azure Pipelines runner is being used and SYSTEM_PULLREQUEST_PULLREQUESTID is not defined", (): void => {
@@ -113,7 +110,6 @@ describe("pullRequest.ts", (): void => {
 
       // Assert
       assert.equal(result, true);
-
     });
 
     it("should throw an error when the Azure Pipelines runner is being used and BUILD_REPOSITORY_PROVIDER is undefined", (): void => {
@@ -156,7 +152,6 @@ describe("pullRequest.ts", (): void => {
 
           // Assert
           assert.equal(result, true);
-
         });
       });
     }
@@ -175,7 +170,6 @@ describe("pullRequest.ts", (): void => {
 
       // Assert
       assert.equal(result, "Other");
-
     });
   });
 

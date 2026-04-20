@@ -3,7 +3,6 @@
  * Licensed under the MIT License.
  */
 
-
 import * as InputsDefault from "../../src/metrics/inputsDefault.js";
 import {
   adjustingAlwaysCloseComment,
@@ -16,7 +15,6 @@ import type Inputs from "../../src/metrics/inputs.js";
 import type Logger from "../../src/utilities/logger.js";
 import type RunnerInvoker from "../../src/runners/runnerInvoker.js";
 import assert from "node:assert/strict";
-
 
 describe("inputs.ts", (): void => {
   let logger: Logger;

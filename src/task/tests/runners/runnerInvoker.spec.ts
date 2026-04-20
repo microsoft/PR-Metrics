@@ -39,7 +39,6 @@ describe("runnerInvoker.ts", (): void => {
 
       // Assert
       assert.equal(result, true);
-
     });
   });
 
@@ -118,7 +117,6 @@ describe("runnerInvoker.ts", (): void => {
       verify(
         gitHubRunnerInvoker.exec("TOOL", deepEqual(["Argument1", "Argument2"])),
       ).once();
-
     });
 
     it("should call the underlying method each time when running on GitHub", async (): Promise<void> => {
@@ -163,7 +161,6 @@ describe("runnerInvoker.ts", (): void => {
       verify(
         gitHubRunnerInvoker.exec("TOOL", deepEqual(["Argument1", "Argument2"])),
       ).twice();
-
     });
   });
 
@@ -213,7 +210,6 @@ describe("runnerInvoker.ts", (): void => {
       verify(
         gitHubRunnerInvoker.getInput(deepEqual(["Test", "Suffix"])),
       ).once();
-
     });
   });
 
@@ -274,7 +270,6 @@ describe("runnerInvoker.ts", (): void => {
       ).never();
       // @ts-expect-error -- Interface is called with additional parameters not present in implementation.
       verify(gitHubRunnerInvoker.getEndpointAuthorization("id")).once();
-
     });
   });
 
@@ -325,7 +320,6 @@ describe("runnerInvoker.ts", (): void => {
       ).never();
       // @ts-expect-error -- Interface is called with additional parameters not present in implementation.
       verify(gitHubRunnerInvoker.getEndpointAuthorizationScheme("id")).once();
-
     });
   });
 
@@ -389,7 +383,6 @@ describe("runnerInvoker.ts", (): void => {
         // @ts-expect-error -- Interface is called with additional parameters not present in implementation.
         gitHubRunnerInvoker.getEndpointAuthorizationParameter("id", "key"),
       ).once();
-
     });
   });
 
@@ -423,7 +416,6 @@ describe("runnerInvoker.ts", (): void => {
       // Assert
       verify(azurePipelinesRunnerInvoker.locInitialize("TEST")).never();
       verify(gitHubRunnerInvoker.locInitialize("TEST")).once();
-
     });
 
     it("should throw when locInitialize is called twice", (): void => {
@@ -502,7 +494,6 @@ describe("runnerInvoker.ts", (): void => {
       assert.equal(result, "VALUE");
       verify(azurePipelinesRunnerInvoker.loc("TEST")).never();
       verify(gitHubRunnerInvoker.loc("TEST")).once();
-
     });
   });
 
@@ -536,7 +527,6 @@ describe("runnerInvoker.ts", (): void => {
       // Assert
       verify(azurePipelinesRunnerInvoker.logDebug("TEST")).never();
       verify(gitHubRunnerInvoker.logDebug("TEST")).once();
-
     });
   });
 
@@ -570,7 +560,6 @@ describe("runnerInvoker.ts", (): void => {
       // Assert
       verify(azurePipelinesRunnerInvoker.logError("TEST")).never();
       verify(gitHubRunnerInvoker.logError("TEST")).once();
-
     });
   });
 
@@ -604,7 +593,6 @@ describe("runnerInvoker.ts", (): void => {
       // Assert
       verify(azurePipelinesRunnerInvoker.logWarning("TEST")).never();
       verify(gitHubRunnerInvoker.logWarning("TEST")).once();
-
     });
   });
 
@@ -638,7 +626,6 @@ describe("runnerInvoker.ts", (): void => {
       // Assert
       verify(azurePipelinesRunnerInvoker.setStatusFailed("TEST")).never();
       verify(gitHubRunnerInvoker.setStatusFailed("TEST")).once();
-
     });
   });
 
@@ -672,7 +659,6 @@ describe("runnerInvoker.ts", (): void => {
       // Assert
       verify(azurePipelinesRunnerInvoker.setStatusSkipped("TEST")).never();
       verify(gitHubRunnerInvoker.setStatusSkipped("TEST")).once();
-
     });
   });
 
@@ -706,7 +692,6 @@ describe("runnerInvoker.ts", (): void => {
       // Assert
       verify(azurePipelinesRunnerInvoker.setStatusSucceeded("TEST")).never();
       verify(gitHubRunnerInvoker.setStatusSucceeded("TEST")).once();
-
     });
   });
 
@@ -740,7 +725,6 @@ describe("runnerInvoker.ts", (): void => {
       // Assert
       verify(azurePipelinesRunnerInvoker.setSecret("id")).never();
       verify(gitHubRunnerInvoker.setSecret("id")).once();
-
     });
   });
 });

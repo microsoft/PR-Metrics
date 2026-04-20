@@ -43,7 +43,6 @@ describe("reposInvoker.ts", (): void => {
       verify(azureReposInvoker.isAccessTokenAvailable()).once();
       verify(gitHubReposInvoker.isAccessTokenAvailable()).never();
       assert.equal(result, null);
-
     });
 
     it("should invoke Azure Repos when called from an appropriate repo twice", async (): Promise<void> => {
@@ -66,7 +65,6 @@ describe("reposInvoker.ts", (): void => {
       verify(gitHubReposInvoker.isAccessTokenAvailable()).never();
       assert.equal(result1, null);
       assert.equal(result2, null);
-
     });
 
     it("should invoke GitHub when called from a GitHub runner", async (): Promise<void> => {
@@ -85,7 +83,6 @@ describe("reposInvoker.ts", (): void => {
       verify(azureReposInvoker.isAccessTokenAvailable()).never();
       verify(gitHubReposInvoker.isAccessTokenAvailable()).once();
       assert.equal(result, null);
-
     });
 
     {
@@ -109,7 +106,6 @@ describe("reposInvoker.ts", (): void => {
           verify(azureReposInvoker.isAccessTokenAvailable()).never();
           verify(gitHubReposInvoker.isAccessTokenAvailable()).once();
           assert.equal(result, null);
-
         });
       });
     }
@@ -156,7 +152,6 @@ describe("reposInvoker.ts", (): void => {
       );
       verify(azureReposInvoker.isAccessTokenAvailable()).never();
       verify(gitHubReposInvoker.isAccessTokenAvailable()).never();
-
     });
   });
 
@@ -178,7 +173,6 @@ describe("reposInvoker.ts", (): void => {
       verify(azureReposInvoker.getTitleAndDescription()).once();
       verify(gitHubReposInvoker.getTitleAndDescription()).never();
       assert.equal(result, null);
-
     });
 
     it("should invoke GitHub when called from a GitHub runner", async (): Promise<void> => {
@@ -198,7 +192,6 @@ describe("reposInvoker.ts", (): void => {
       verify(azureReposInvoker.getTitleAndDescription()).never();
       verify(gitHubReposInvoker.getTitleAndDescription()).once();
       assert.equal(result, null);
-
     });
 
     {
@@ -222,7 +215,6 @@ describe("reposInvoker.ts", (): void => {
           verify(azureReposInvoker.getTitleAndDescription()).never();
           verify(gitHubReposInvoker.getTitleAndDescription()).once();
           assert.equal(result, null);
-
         });
       });
     }
@@ -269,7 +261,6 @@ describe("reposInvoker.ts", (): void => {
       );
       verify(azureReposInvoker.getTitleAndDescription()).never();
       verify(gitHubReposInvoker.getTitleAndDescription()).never();
-
     });
   });
 
@@ -290,7 +281,6 @@ describe("reposInvoker.ts", (): void => {
       verify(azureReposInvoker.getComments()).once();
       verify(gitHubReposInvoker.getComments()).never();
       assert.equal(result, null);
-
     });
 
     it("should invoke GitHub when called from a GitHub runner", async (): Promise<void> => {
@@ -309,7 +299,6 @@ describe("reposInvoker.ts", (): void => {
       verify(azureReposInvoker.getComments()).never();
       verify(gitHubReposInvoker.getComments()).once();
       assert.equal(result, null);
-
     });
 
     {
@@ -332,7 +321,6 @@ describe("reposInvoker.ts", (): void => {
           verify(azureReposInvoker.getComments()).never();
           verify(gitHubReposInvoker.getComments()).once();
           assert.equal(result, null);
-
         });
       });
     }
@@ -379,7 +367,6 @@ describe("reposInvoker.ts", (): void => {
       );
       verify(azureReposInvoker.getComments()).never();
       verify(gitHubReposInvoker.getComments()).never();
-
     });
   });
 
@@ -399,7 +386,6 @@ describe("reposInvoker.ts", (): void => {
       // Assert
       verify(azureReposInvoker.setTitleAndDescription(null, null)).once();
       verify(gitHubReposInvoker.setTitleAndDescription(null, null)).never();
-
     });
 
     it("should invoke GitHub when called from a GitHub runner", async (): Promise<void> => {
@@ -417,7 +403,6 @@ describe("reposInvoker.ts", (): void => {
       // Assert
       verify(azureReposInvoker.setTitleAndDescription(null, null)).never();
       verify(gitHubReposInvoker.setTitleAndDescription(null, null)).once();
-
     });
 
     {
@@ -439,7 +424,6 @@ describe("reposInvoker.ts", (): void => {
           // Assert
           verify(azureReposInvoker.setTitleAndDescription(null, null)).never();
           verify(gitHubReposInvoker.setTitleAndDescription(null, null)).once();
-
         });
       });
     }
@@ -486,7 +470,6 @@ describe("reposInvoker.ts", (): void => {
       );
       verify(azureReposInvoker.setTitleAndDescription(null, null)).never();
       verify(gitHubReposInvoker.setTitleAndDescription(null, null)).never();
-
     });
   });
 
@@ -526,7 +509,6 @@ describe("reposInvoker.ts", (): void => {
           false,
         ),
       ).never();
-
     });
 
     it("should invoke GitHub when called from a GitHub runner", async (): Promise<void> => {
@@ -564,7 +546,6 @@ describe("reposInvoker.ts", (): void => {
           false,
         ),
       ).once();
-
     });
 
     {
@@ -606,7 +587,6 @@ describe("reposInvoker.ts", (): void => {
               false,
             ),
           ).once();
-
         });
       });
     }
@@ -683,7 +663,6 @@ describe("reposInvoker.ts", (): void => {
           false,
         ),
       ).never();
-
     });
   });
 
@@ -704,7 +683,6 @@ describe("reposInvoker.ts", (): void => {
       verify(azureReposInvoker.updateComment(0, null, null)).once();
       // @ts-expect-error -- Interface is called with additional parameters not present in implementation.
       verify(gitHubReposInvoker.updateComment(0, null, null)).never();
-
     });
 
     it("should invoke GitHub when called from a GitHub runner", async (): Promise<void> => {
@@ -723,7 +701,6 @@ describe("reposInvoker.ts", (): void => {
       verify(azureReposInvoker.updateComment(0, null, null)).never();
       // @ts-expect-error -- Interface is called with additional parameters not present in implementation.
       verify(gitHubReposInvoker.updateComment(0, null, null)).once();
-
     });
 
     {
@@ -746,7 +723,6 @@ describe("reposInvoker.ts", (): void => {
           verify(azureReposInvoker.updateComment(0, null, null)).never();
           // @ts-expect-error -- Interface is called with additional parameters not present in implementation.
           verify(gitHubReposInvoker.updateComment(0, null, null)).once();
-
         });
       });
     }
@@ -795,7 +771,6 @@ describe("reposInvoker.ts", (): void => {
       verify(azureReposInvoker.updateComment(0, null, null)).never();
       // @ts-expect-error -- Interface is called with additional parameters not present in implementation.
       verify(gitHubReposInvoker.updateComment(0, null, null)).never();
-
     });
   });
 
@@ -815,7 +790,6 @@ describe("reposInvoker.ts", (): void => {
       // Assert
       verify(azureReposInvoker.deleteCommentThread(20)).once();
       verify(gitHubReposInvoker.deleteCommentThread(20)).never();
-
     });
 
     it("should invoke GitHub when called from a GitHub runner", async (): Promise<void> => {
@@ -833,7 +807,6 @@ describe("reposInvoker.ts", (): void => {
       // Assert
       verify(azureReposInvoker.deleteCommentThread(20)).never();
       verify(gitHubReposInvoker.deleteCommentThread(20)).once();
-
     });
 
     {
@@ -855,7 +828,6 @@ describe("reposInvoker.ts", (): void => {
           // Assert
           verify(azureReposInvoker.deleteCommentThread(20)).never();
           verify(gitHubReposInvoker.deleteCommentThread(20)).once();
-
         });
       });
     }
@@ -902,7 +874,6 @@ describe("reposInvoker.ts", (): void => {
       );
       verify(azureReposInvoker.deleteCommentThread(20)).never();
       verify(gitHubReposInvoker.deleteCommentThread(20)).never();
-
     });
   });
 });

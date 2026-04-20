@@ -3,7 +3,6 @@
  * Licensed under the MIT License.
  */
 
-
 import * as InputsDefault from "../../src/metrics/inputsDefault.js";
 import {
   adjustingTestMatchingPatternsResource,
@@ -18,7 +17,6 @@ import type RunnerInvoker from "../../src/runners/runnerInvoker.js";
 import assert from "node:assert/strict";
 import { invalidPatternStrings } from "../testUtilities/fixtures/invalidInputs.js";
 
-
 describe("inputs.ts", (): void => {
   let logger: Logger;
   let runnerInvoker: RunnerInvoker;
@@ -29,28 +27,30 @@ describe("inputs.ts", (): void => {
 
   describe("initialize()", (): void => {
     describe("testMatchingPatterns", (): void => {
-      invalidPatternStrings.forEach((testMatchingPatterns: string | null): void => {
-        it(`should set the default when the input '${String(testMatchingPatterns?.replace(/\n/gu, "\\n"))}' is invalid`, (): void => {
-          // Arrange
-          when(
-            runnerInvoker.getInput(
-              deepEqual(["Test", "Matching", "Patterns"]),
-            ),
-          ).thenReturn(testMatchingPatterns);
+      invalidPatternStrings.forEach(
+        (testMatchingPatterns: string | null): void => {
+          it(`should set the default when the input '${String(testMatchingPatterns?.replace(/\n/gu, "\\n"))}' is invalid`, (): void => {
+            // Arrange
+            when(
+              runnerInvoker.getInput(
+                deepEqual(["Test", "Matching", "Patterns"]),
+              ),
+            ).thenReturn(testMatchingPatterns);
 
-          // Act
-          const inputs: Inputs = createSut(logger, runnerInvoker);
+            // Act
+            const inputs: Inputs = createSut(logger, runnerInvoker);
 
-          // Assert
-          assert.deepEqual(
-            inputs.testMatchingPatterns,
-            InputsDefault.testMatchingPatterns,
-          );
-          verify(
-            logger.logInfo(adjustingTestMatchingPatternsResource),
-          ).once();
-        });
-      });
+            // Assert
+            assert.deepEqual(
+              inputs.testMatchingPatterns,
+              InputsDefault.testMatchingPatterns,
+            );
+            verify(
+              logger.logInfo(adjustingTestMatchingPatternsResource),
+            ).once();
+          });
+        },
+      );
 
       {
         const testCases: string[] = [

@@ -3,8 +3,11 @@
  * Licensed under the MIT License.
  */
 
-
-import { createGitHubReposInvokerMocks, createSut, expectedUserAgent } from "./gitHubReposInvokerTestSetup.js";
+import {
+  createGitHubReposInvokerMocks,
+  createSut,
+  expectedUserAgent,
+} from "./gitHubReposInvokerTestSetup.js";
 import { verify, when } from "ts-mockito";
 import type GitHubReposInvoker from "../../src/repos/gitHubReposInvoker.js";
 import type GitInvoker from "../../src/git/gitInvoker.js";
@@ -15,7 +18,6 @@ import type RunnerInvoker from "../../src/runners/runnerInvoker.js";
 import { any } from "../testUtilities/mockito.js";
 import assert from "node:assert/strict";
 
-
 describe("gitHubReposInvoker.ts", (): void => {
   let gitInvoker: GitInvoker;
   let logger: Logger;
@@ -23,12 +25,8 @@ describe("gitHubReposInvoker.ts", (): void => {
   let runnerInvoker: RunnerInvoker;
 
   beforeEach((): void => {
-    ({
-      gitInvoker,
-      logger,
-      octokitWrapper,
-      runnerInvoker,
-    } = createGitHubReposInvokerMocks());
+    ({ gitInvoker, logger, octokitWrapper, runnerInvoker } =
+      createGitHubReposInvokerMocks());
   });
 
   describe("deleteCommentThread()", (): void => {
@@ -45,7 +43,12 @@ describe("gitHubReposInvoker.ts", (): void => {
           assert.notEqual(options.log?.error, null);
         },
       );
-      const gitHubReposInvoker: GitHubReposInvoker = createSut(gitInvoker, logger, octokitWrapper, runnerInvoker);
+      const gitHubReposInvoker: GitHubReposInvoker = createSut(
+        gitInvoker,
+        logger,
+        octokitWrapper,
+        runnerInvoker,
+      );
 
       // Act
       await gitHubReposInvoker.deleteCommentThread(54321);

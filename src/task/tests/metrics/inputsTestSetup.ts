@@ -22,7 +22,8 @@ export const disablingTestFactorResource =
   "Disabling the test factor validation.";
 export const settingAlwaysCloseComment =
   "Setting the always-close-comment mode input to 'true'.";
-export const settingBaseSizeResource = "Setting the base size input to 'VALUE'.";
+export const settingBaseSizeResource =
+  "Setting the base size input to 'VALUE'.";
 export const settingGrowthRateResource =
   "Setting the growth rate input to 'VALUE'.";
 export const settingTestFactorResource =
@@ -119,10 +120,16 @@ export const createInputsMocks = (): InputsMocks => {
     runnerInvoker.loc("metrics.inputs.settingTestFactor", anyString()),
   ).thenReturn(settingTestFactorResource);
   when(
-    runnerInvoker.loc("metrics.inputs.settingFileMatchingPatterns", anyString()),
+    runnerInvoker.loc(
+      "metrics.inputs.settingFileMatchingPatterns",
+      anyString(),
+    ),
   ).thenReturn(settingFileMatchingPatternsResource);
   when(
-    runnerInvoker.loc("metrics.inputs.settingTestMatchingPatterns", anyString()),
+    runnerInvoker.loc(
+      "metrics.inputs.settingTestMatchingPatterns",
+      anyString(),
+    ),
   ).thenReturn(settingTestMatchingPatternsResource);
   when(
     runnerInvoker.loc("metrics.inputs.settingCodeFileExtensions", anyString()),

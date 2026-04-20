@@ -3,7 +3,6 @@
  * Licensed under the MIT License.
  */
 
-
 import * as InputsDefault from "../../src/metrics/inputsDefault.js";
 import {
   adjustingCodeFileExtensionsResource,
@@ -18,7 +17,6 @@ import type RunnerInvoker from "../../src/runners/runnerInvoker.js";
 import assert from "node:assert/strict";
 import { invalidPatternStrings } from "../testUtilities/fixtures/invalidInputs.js";
 
-
 describe("inputs.ts", (): void => {
   let logger: Logger;
   let runnerInvoker: RunnerInvoker;
@@ -29,24 +27,26 @@ describe("inputs.ts", (): void => {
 
   describe("initialize()", (): void => {
     describe("codeFileExtensions", (): void => {
-      invalidPatternStrings.forEach((codeFileExtensions: string | null): void => {
-        it(`should set the default when the input '${String(codeFileExtensions?.replace(/\n/gu, "\\n"))}' is invalid`, (): void => {
-          // Arrange
-          when(
-            runnerInvoker.getInput(deepEqual(["Code", "File", "Extensions"])),
-          ).thenReturn(codeFileExtensions);
+      invalidPatternStrings.forEach(
+        (codeFileExtensions: string | null): void => {
+          it(`should set the default when the input '${String(codeFileExtensions?.replace(/\n/gu, "\\n"))}' is invalid`, (): void => {
+            // Arrange
+            when(
+              runnerInvoker.getInput(deepEqual(["Code", "File", "Extensions"])),
+            ).thenReturn(codeFileExtensions);
 
-          // Act
-          const inputs: Inputs = createSut(logger, runnerInvoker);
+            // Act
+            const inputs: Inputs = createSut(logger, runnerInvoker);
 
-          // Assert
-          assert.deepEqual(
-            inputs.codeFileExtensions,
-            new Set<string>(InputsDefault.codeFileExtensions),
-          );
-          verify(logger.logInfo(adjustingCodeFileExtensionsResource)).once();
-        });
-      });
+            // Assert
+            assert.deepEqual(
+              inputs.codeFileExtensions,
+              new Set<string>(InputsDefault.codeFileExtensions),
+            );
+            verify(logger.logInfo(adjustingCodeFileExtensionsResource)).once();
+          });
+        },
+      );
 
       {
         const testCases: string[] = [

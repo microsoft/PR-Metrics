@@ -36,7 +36,10 @@ export const createAzureReposInvokerMocks = (): AzureReposInvokerMocks => {
   stubEnv(
     ["BUILD_REPOSITORY_ID", "RepoID"],
     ["PR_METRICS_ACCESS_TOKEN", "PAT"],
-    ["SYSTEM_TEAMFOUNDATIONCOLLECTIONURI", "https://dev.azure.com/organization"],
+    [
+      "SYSTEM_TEAMFOUNDATIONCOLLECTIONURI",
+      "https://dev.azure.com/organization",
+    ],
     ["SYSTEM_TEAMPROJECT", "Project"],
   );
 

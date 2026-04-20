@@ -3,10 +3,12 @@
  * Licensed under the MIT License.
  */
 
-
 import * as AssertExtensions from "../testUtilities/assertExtensions.js";
 import { any, anyNumber } from "../testUtilities/mockito.js";
-import { createAzureReposInvokerMocks, createSut } from "./azureReposInvokerTestSetup.js";
+import {
+  createAzureReposInvokerMocks,
+  createSut,
+} from "./azureReposInvokerTestSetup.js";
 import { verify, when } from "ts-mockito";
 import type AzureDevOpsApiWrapper from "../../src/wrappers/azureDevOpsApiWrapper.js";
 import type AzureReposInvoker from "../../src/repos/azureReposInvoker.js";
@@ -18,7 +20,6 @@ import type RunnerInvoker from "../../src/runners/runnerInvoker.js";
 import { StatusCodes } from "http-status-codes";
 import type TokenManager from "../../src/repos/tokenManager.js";
 import assert from "node:assert/strict";
-
 
 describe("azureReposInvoker.ts", (): void => {
   let gitApi: IGitApi;
@@ -55,7 +56,13 @@ describe("azureReposInvoker.ts", (): void => {
           when(gitApi.deleteComment("RepoID", 10, 20, 1, "Project")).thenThrow(
             error,
           );
-          const azureReposInvoker: AzureReposInvoker = createSut(azureDevOpsApiWrapper, gitInvoker, logger, runnerInvoker, tokenManager);
+          const azureReposInvoker: AzureReposInvoker = createSut(
+            azureDevOpsApiWrapper,
+            gitInvoker,
+            logger,
+            runnerInvoker,
+            tokenManager,
+          );
 
           // Act
           const func: () => Promise<void> = async () =>
@@ -88,7 +95,13 @@ describe("azureReposInvoker.ts", (): void => {
     it("should call the API for a single comment", async (): Promise<void> => {
       // Arrange
       when(gitApi.deleteComment("RepoID", 10, 20, 1, "Project")).thenResolve();
-      const azureReposInvoker: AzureReposInvoker = createSut(azureDevOpsApiWrapper, gitInvoker, logger, runnerInvoker, tokenManager);
+      const azureReposInvoker: AzureReposInvoker = createSut(
+        azureDevOpsApiWrapper,
+        gitInvoker,
+        logger,
+        runnerInvoker,
+        tokenManager,
+      );
 
       // Act
       await azureReposInvoker.deleteCommentThread(20);
@@ -109,7 +122,13 @@ describe("azureReposInvoker.ts", (): void => {
       when(
         gitApi.deleteComment("RepoID", 10, anyNumber(), 1, "Project"),
       ).thenResolve();
-      const azureReposInvoker: AzureReposInvoker = createSut(azureDevOpsApiWrapper, gitInvoker, logger, runnerInvoker, tokenManager);
+      const azureReposInvoker: AzureReposInvoker = createSut(
+        azureDevOpsApiWrapper,
+        gitInvoker,
+        logger,
+        runnerInvoker,
+        tokenManager,
+      );
 
       // Act
       await azureReposInvoker.deleteCommentThread(20);

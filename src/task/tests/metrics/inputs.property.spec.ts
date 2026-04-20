@@ -228,7 +228,9 @@ describe("inputs.ts", (): void => {
               const inputs: Inputs = createInputs({
                 fileMatchingPatterns: `${head}\\${tail}`,
               });
-              assert.deepEqual(inputs.fileMatchingPatterns, [`${head}/${tail}`]);
+              assert.deepEqual(inputs.fileMatchingPatterns, [
+                `${head}/${tail}`,
+              ]);
             },
           ),
           { numRuns },

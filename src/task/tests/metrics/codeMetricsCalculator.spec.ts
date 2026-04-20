@@ -197,7 +197,6 @@ describe("codeMetricsCalculator.ts", (): void => {
         result,
         "No Git repo present. Run the 'actions/checkout' action prior to PR Metrics.",
       );
-
     });
 
     it("should return the appropriate message when the pull request ID is not available on Azure DevOps", async (): Promise<void> => {
@@ -242,7 +241,6 @@ describe("codeMetricsCalculator.ts", (): void => {
         result,
         "Could not determine the Pull Request ID. Ensure 'pull_request' is the pipeline trigger.",
       );
-
     });
 
     it("should return the appropriate message when the Git history is unavailable on Azure DevOps", async (): Promise<void> => {
@@ -290,7 +288,6 @@ describe("codeMetricsCalculator.ts", (): void => {
         result,
         "Could not access sufficient Git history. Add 'fetch-depth: 0' as a parameter to the 'actions/checkout' action.",
       );
-
     });
   });
 

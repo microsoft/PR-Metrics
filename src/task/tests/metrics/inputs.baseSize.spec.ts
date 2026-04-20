@@ -3,7 +3,6 @@
  * Licensed under the MIT License.
  */
 
-
 import * as InputsDefault from "../../src/metrics/inputsDefault.js";
 import {
   adjustingBaseSizeResource,
@@ -19,7 +18,6 @@ import assert from "node:assert/strict";
 import { decimalRadix } from "../../src/utilities/constants.js";
 import { invalidNumericStrings } from "../testUtilities/fixtures/invalidInputs.js";
 
-
 describe("inputs.ts", (): void => {
   let logger: Logger;
   let runnerInvoker: RunnerInvoker;
@@ -33,9 +31,9 @@ describe("inputs.ts", (): void => {
       invalidNumericStrings.forEach((baseSize: string | null): void => {
         it(`should set the default when the input '${String(baseSize)}' is invalid`, (): void => {
           // Arrange
-          when(
-            runnerInvoker.getInput(deepEqual(["Base", "Size"])),
-          ).thenReturn(baseSize);
+          when(runnerInvoker.getInput(deepEqual(["Base", "Size"]))).thenReturn(
+            baseSize,
+          );
 
           // Act
           const inputs: Inputs = createSut(logger, runnerInvoker);

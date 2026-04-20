@@ -3,7 +3,6 @@
  * Licensed under the MIT License.
  */
 
-
 import { createCodeMetricsMocks, createSut } from "./codeMetricsTestSetup.js";
 import type CodeMetrics from "../../src/metrics/codeMetrics.js";
 import CodeMetricsData from "../../src/metrics/codeMetricsData.js";
@@ -14,7 +13,6 @@ import type RunnerInvoker from "../../src/runners/runnerInvoker.js";
 import assert from "node:assert/strict";
 import { when } from "ts-mockito";
 
-
 describe("codeMetrics.ts", (): void => {
   let gitInvoker: GitInvoker;
   let inputs: Inputs;
@@ -22,12 +20,7 @@ describe("codeMetrics.ts", (): void => {
   let runnerInvoker: RunnerInvoker;
 
   beforeEach((): void => {
-    ({
-      gitInvoker,
-      inputs,
-      logger,
-      runnerInvoker,
-    } = createCodeMetricsMocks());
+    ({ gitInvoker, inputs, logger, runnerInvoker } = createCodeMetricsMocks());
   });
 
   {
@@ -538,7 +531,12 @@ describe("codeMetrics.ts", (): void => {
           when(gitInvoker.getDiffSummary()).thenResolve(gitResponse);
 
           // Act
-          const codeMetrics: CodeMetrics = createSut(gitInvoker, inputs, logger, runnerInvoker);
+          const codeMetrics: CodeMetrics = createSut(
+            gitInvoker,
+            inputs,
+            logger,
+            runnerInvoker,
+          );
 
           // Assert
           assert.deepEqual(

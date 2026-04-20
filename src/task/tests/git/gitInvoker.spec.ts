@@ -76,7 +76,6 @@ describe("gitInvoker.ts", (): void => {
 
       // Assert
       assert.equal(result, 12345);
-
     });
 
     it("should return the correct output when the GitHub runner is being used and it is called multiple times", (): void => {
@@ -95,7 +94,6 @@ describe("gitInvoker.ts", (): void => {
       // Assert
       assert.equal(result1, 12345);
       assert.equal(result2, 12345);
-
     });
 
     it("should throw an error when the GitHub runner is being used and GITHUB_REF is undefined", (): void => {
@@ -117,7 +115,6 @@ describe("gitInvoker.ts", (): void => {
         ),
       );
       verify(logger.logWarning("'GITHUB_REF' is undefined.")).once();
-
     });
 
     it("should throw an error when the GitHub runner is being used and GITHUB_REF is in the incorrect format", (): void => {
@@ -144,7 +141,6 @@ describe("gitInvoker.ts", (): void => {
           "'GITHUB_REF' is in an incorrect format 'refs/pull'.",
         ),
       ).once();
-
     });
 
     it("should return the correct output when the Azure Pipelines runner is being used", (): void => {
@@ -161,7 +157,6 @@ describe("gitInvoker.ts", (): void => {
 
       // Assert
       assert.equal(result, 12345);
-
     });
 
     it("should throw an error when the Azure Pipelines runner is being used and BUILD_REPOSITORY_PROVIDER is undefined", (): void => {
@@ -262,7 +257,6 @@ describe("gitInvoker.ts", (): void => {
               "'SYSTEM_PULLREQUEST_PULLREQUESTNUMBER' is undefined.",
             ),
           ).once();
-
         });
       });
     }
@@ -291,7 +285,6 @@ describe("gitInvoker.ts", (): void => {
           "Pull request ID 'PullRequestID' from 'GITHUB_REF' is not numeric.",
         ),
       ).once();
-
     });
 
     {
@@ -322,7 +315,6 @@ describe("gitInvoker.ts", (): void => {
               "'SYSTEM_PULLREQUEST_PULLREQUESTNUMBER' is not numeric 'abc'.",
             ),
           ).once();
-
         });
       });
     }
@@ -405,7 +397,6 @@ describe("gitInvoker.ts", (): void => {
 
       // Assert
       assert.equal(result, true);
-
     });
 
     it("should return false when the GitHub runner is being used and GITHUB_REF is undefined", (): void => {
@@ -422,7 +413,6 @@ describe("gitInvoker.ts", (): void => {
       // Assert
       assert.equal(result, false);
       verify(logger.logWarning("'GITHUB_REF' is undefined.")).once();
-
     });
 
     it("should return false when the GitHub runner is being used and GITHUB_REF is in the incorrect format", (): void => {
@@ -444,7 +434,6 @@ describe("gitInvoker.ts", (): void => {
           "'GITHUB_REF' is in an incorrect format 'refs/pull'.",
         ),
       ).once();
-
     });
 
     it("should return true when the Azure Pipelines runner is being used", (): void => {
@@ -461,7 +450,6 @@ describe("gitInvoker.ts", (): void => {
 
       // Assert
       assert.equal(result, true);
-
     });
 
     it("should throw an error when the Azure Pipelines runner is being used and BUILD_REPOSITORY_PROVIDER is undefined", (): void => {
@@ -522,7 +510,6 @@ describe("gitInvoker.ts", (): void => {
               "'SYSTEM_PULLREQUEST_PULLREQUESTNUMBER' is undefined.",
             ),
           ).once();
-
         });
       });
     }
@@ -541,7 +528,6 @@ describe("gitInvoker.ts", (): void => {
 
       // Assert
       assert.equal(result, false);
-
     });
   });
 
@@ -593,7 +579,6 @@ describe("gitInvoker.ts", (): void => {
 
       // Assert
       assert.equal(result, true);
-
     });
 
     it("should throw an error when the PR is using the GitHub runner and GITHUB_BASE_REF is undefined", async (): Promise<void> => {
@@ -613,7 +598,6 @@ describe("gitInvoker.ts", (): void => {
         func,
         "'GITHUB_BASE_REF', accessed within 'GitInvoker.targetBranch', is invalid, null, or undefined 'undefined'.",
       );
-
     });
 
     {
@@ -640,7 +624,6 @@ describe("gitInvoker.ts", (): void => {
 
           // Assert
           assert.equal(result, true);
-
         });
       });
     }

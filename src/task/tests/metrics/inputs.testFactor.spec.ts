@@ -3,7 +3,6 @@
  * Licensed under the MIT License.
  */
 
-
 import * as InputsDefault from "../../src/metrics/inputsDefault.js";
 import {
   adjustingTestFactorResource,
@@ -18,7 +17,6 @@ import type Logger from "../../src/utilities/logger.js";
 import type RunnerInvoker from "../../src/runners/runnerInvoker.js";
 import assert from "node:assert/strict";
 import { invalidNumericStrings } from "../testUtilities/fixtures/invalidInputs.js";
-
 
 describe("inputs.ts", (): void => {
   let logger: Logger;
