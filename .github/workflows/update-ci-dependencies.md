@@ -40,12 +40,12 @@ tools:
 
 checkout:
   fetch:
-    - *
+    - "*"
   fetch-depth: 0
 
 safe-outputs:
   push-to-pull-request-branch:
-    target: *
+    target: "*"
     labels:
       - release
     max: 1
