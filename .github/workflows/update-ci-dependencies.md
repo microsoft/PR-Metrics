@@ -166,13 +166,13 @@ file changed most recently). Do not change the value itself.
 - **Never Hard-Pin a 1ES Template Ref Without Justification**: The `release` tag
   is intentionally moving.
 - **Never Modify Files Outside the Allowed Set**: Only
- `.github/workflows/*.yml`, `.github/azure-devops/*.yml`, `package.json`, and
- `.nvmrc` may be edited.
+  `.github/workflows/*.yml`, `.github/azure-devops/*.yml`, `package.json`, and
+  `.nvmrc` may be edited.
 
 ## Quick Reference
 
 | Dependency Type   | Files                        | Update Source          |
-|-------------------|------------------------------|------------------------|
+| ----------------- | ---------------------------- | ---------------------- |
 | GitHub Action     | `.github/workflows/*.yml`    | `gh api` latest tag    |
 | Azure DevOps Task | `.github/azure-devops/*.yml` | ADO task reference     |
 | 1ES Template Ref  | `.github/azure-devops/*.yml` | `git ls-remote --tags` |
