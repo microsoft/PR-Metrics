@@ -47,8 +47,9 @@ describe("gitHubReposInvoker.ts", (): void => {
           assert.notEqual(options.log?.error, null);
         },
       );
-      const response: GetIssueCommentsResponse =
-        GitHubReposInvokerConstants.getIssueCommentsResponse;
+      const response: GetIssueCommentsResponse = structuredClone(
+        GitHubReposInvokerConstants.getIssueCommentsResponse,
+      );
       if (typeof response.data[0] === "undefined") {
         throw new Error("response.data[0] is undefined");
       }
@@ -140,8 +141,9 @@ describe("gitHubReposInvoker.ts", (): void => {
           assert.notEqual(options.log?.error, null);
         },
       );
-      const response: GetIssueCommentsResponse =
-        GitHubReposInvokerConstants.getIssueCommentsResponse;
+      const response: GetIssueCommentsResponse = structuredClone(
+        GitHubReposInvokerConstants.getIssueCommentsResponse,
+      );
       if (typeof response.data[0] === "undefined") {
         throw new Error("response.data[0] is undefined");
       }
@@ -198,8 +200,9 @@ describe("gitHubReposInvoker.ts", (): void => {
           assert.notEqual(options.log?.error, null);
         },
       );
-      const response: GetIssueCommentsResponse =
-        GitHubReposInvokerConstants.getIssueCommentsResponse;
+      const response: GetIssueCommentsResponse = structuredClone(
+        GitHubReposInvokerConstants.getIssueCommentsResponse,
+      );
       if (typeof response.data[0] === "undefined") {
         throw new Error("response.data[0] is undefined");
       }
