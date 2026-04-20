@@ -1,4 +1,7 @@
 ---
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+
 name: Update CI Dependencies
 description: >-
   Refreshes pinned CI/CD dependencies – SHA-pinned GitHub Actions in
