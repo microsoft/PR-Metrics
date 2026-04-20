@@ -80,7 +80,7 @@ describe("pullRequest.ts", (): void => {
 
     it("should return false when the Azure Pipelines runner is being used and SYSTEM_PULLREQUEST_PULLREQUESTID is not defined", (): void => {
       // Arrange
-      stubEnv(["SYSTEM_PULLREQUEST_TARGETBRANCH", undefined]);
+      stubEnv(["SYSTEM_PULLREQUEST_PULLREQUESTID", undefined]);
       const pullRequest: PullRequest = new PullRequest(
         instance(codeMetrics),
         instance(logger),
