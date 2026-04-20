@@ -45,13 +45,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       // Assert
       verify(octokitWrapper.initialize(any())).never();
       verify(
-        octokitWrapper.updateIssueComment(
-          any(),
-          any(),
-          any(),
-          any(),
-          any(),
-        ),
+        octokitWrapper.updateIssueComment(any(), any(), any(), any(), any()),
       ).never();
     });
 
