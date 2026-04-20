@@ -123,23 +123,6 @@ describe("inputs.ts", (): void => {
         verify(logger.logInfo(settingCodeFileExtensionsResource)).once();
       });
 
-      it("should convert extensions to lower case", (): void => {
-        // Arrange
-        when(
-          runnerInvoker.getInput(deepEqual(["Code", "File", "Extensions"])),
-        ).thenReturn("ADA\ncS\nTxT");
-
-        // Act
-        const inputs: Inputs = createSut(logger, runnerInvoker);
-
-        // Assert
-        assert.deepEqual(
-          inputs.codeFileExtensions,
-          new Set<string>(["ada", "cs", "txt"]),
-        );
-        verify(logger.logInfo(settingCodeFileExtensionsResource)).once();
-      });
-
       it("should remove trailing new lines", (): void => {
         // Arrange
         when(

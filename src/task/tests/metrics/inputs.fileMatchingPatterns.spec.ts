@@ -16,6 +16,7 @@ import type Logger from "../../src/utilities/logger.js";
 import type RunnerInvoker from "../../src/runners/runnerInvoker.js";
 import assert from "node:assert/strict";
 import { invalidPatternStrings } from "../testUtilities/fixtures/invalidInputs.js";
+import { maxPatternCount } from "../../src/utilities/constants.js";
 
 describe("inputs.ts", (): void => {
   let logger: Logger;
@@ -162,10 +163,12 @@ describe("inputs.ts", (): void => {
 
       it("should truncate patterns exceeding the maximum count", (): void => {
         // Arrange
+        const excessCount: number = maxPatternCount + 50;
         const patterns: string[] = Array.from(
-          { length: 250 },
+          { length: excessCount },
           (_value: string, index: number) => `pattern${String(index)}`,
         );
+        const maxPatternCountString: string = maxPatternCount.toLocaleString();
         when(
           runnerInvoker.getInput(deepEqual(["File", "Matching", "Patterns"])),
         ).thenReturn(patterns.join("\n"));
@@ -174,12 +177,15 @@ describe("inputs.ts", (): void => {
         const inputs: Inputs = createSut(logger, runnerInvoker);
 
         // Assert
-        assert.equal(inputs.fileMatchingPatterns.length, 200);
+        assert.equal(inputs.fileMatchingPatterns.length, maxPatternCount);
         assert.equal(inputs.fileMatchingPatterns[0], "pattern0");
-        assert.equal(inputs.fileMatchingPatterns[199], "pattern199");
+        assert.equal(
+          inputs.fileMatchingPatterns[maxPatternCount - 1],
+          `pattern${String(maxPatternCount - 1)}`,
+        );
         verify(
           logger.logWarning(
-            "The matching pattern count '250' exceeds the maximum '200'. Using only the first '200'.",
+            `The matching pattern count '${excessCount.toLocaleString()}' exceeds the maximum '${maxPatternCountString}'. Using only the first '${maxPatternCountString}'.`,
           ),
         ).once();
       });
