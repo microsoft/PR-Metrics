@@ -7,16 +7,16 @@
 import * as AssertExtensions from "../testUtilities/assertExtensions.js";
 import { createAzureReposInvokerMocks, createSut } from "./azureReposInvokerTestSetup.js";
 import { deepEqual, verify, when } from "ts-mockito";
-import AzureDevOpsApiWrapper from "../../src/wrappers/azureDevOpsApiWrapper.js";
-import AzureReposInvoker from "../../src/repos/azureReposInvoker.js";
+import type AzureDevOpsApiWrapper from "../../src/wrappers/azureDevOpsApiWrapper.js";
+import type AzureReposInvoker from "../../src/repos/azureReposInvoker.js";
 import ErrorWithStatus from "../wrappers/errorWithStatus.js";
-import GitInvoker from "../../src/git/gitInvoker.js";
+import type GitInvoker from "../../src/git/gitInvoker.js";
 import { type GitPullRequest } from "azure-devops-node-api/interfaces/GitInterfaces.js";
 import type { IGitApi } from "azure-devops-node-api/GitApi.js";
-import Logger from "../../src/utilities/logger.js";
-import RunnerInvoker from "../../src/runners/runnerInvoker.js";
+import type Logger from "../../src/utilities/logger.js";
+import type RunnerInvoker from "../../src/runners/runnerInvoker.js";
 import { StatusCodes } from "http-status-codes";
-import TokenManager from "../../src/repos/tokenManager.js";
+import type TokenManager from "../../src/repos/tokenManager.js";
 import { any } from "../testUtilities/mockito.js";
 import assert from "node:assert/strict";
 

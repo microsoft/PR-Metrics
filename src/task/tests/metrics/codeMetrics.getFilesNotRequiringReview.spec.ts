@@ -6,11 +6,11 @@
 
 import * as AssertExtensions from "../testUtilities/assertExtensions.js";
 import { createCodeMetricsMocks, createSut } from "./codeMetricsTestSetup.js";
-import CodeMetrics from "../../src/metrics/codeMetrics.js";
-import GitInvoker from "../../src/git/gitInvoker.js";
-import Inputs from "../../src/metrics/inputs.js";
-import Logger from "../../src/utilities/logger.js";
-import RunnerInvoker from "../../src/runners/runnerInvoker.js";
+import type CodeMetrics from "../../src/metrics/codeMetrics.js";
+import type GitInvoker from "../../src/git/gitInvoker.js";
+import type Inputs from "../../src/metrics/inputs.js";
+import type Logger from "../../src/utilities/logger.js";
+import type RunnerInvoker from "../../src/runners/runnerInvoker.js";
 import assert from "node:assert/strict";
 import { when } from "ts-mockito";
 

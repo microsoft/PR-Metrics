@@ -5,11 +5,11 @@
 
 
 import { createGitHubReposInvokerMocks, createSut } from "./gitHubReposInvokerTestSetup.js";
-import GitHubReposInvoker from "../../src/repos/gitHubReposInvoker.js";
-import GitInvoker from "../../src/git/gitInvoker.js";
-import Logger from "../../src/utilities/logger.js";
-import OctokitWrapper from "../../src/wrappers/octokitWrapper.js";
-import RunnerInvoker from "../../src/runners/runnerInvoker.js";
+import type GitHubReposInvoker from "../../src/repos/gitHubReposInvoker.js";
+import type GitInvoker from "../../src/git/gitInvoker.js";
+import type Logger from "../../src/utilities/logger.js";
+import type OctokitWrapper from "../../src/wrappers/octokitWrapper.js";
+import type RunnerInvoker from "../../src/runners/runnerInvoker.js";
 import assert from "node:assert/strict";
 import { stubEnv } from "../testUtilities/stubEnv.js";
 

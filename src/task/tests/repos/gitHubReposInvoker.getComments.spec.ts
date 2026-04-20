@@ -11,12 +11,12 @@ import { verify, when } from "ts-mockito";
 import type CommentData from "../../src/repos/interfaces/commentData.js";
 import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces.js";
 import type GetIssueCommentsResponse from "../../src/wrappers/octokitInterfaces/getIssueCommentsResponse.js";
-import GitHubReposInvoker from "../../src/repos/gitHubReposInvoker.js";
-import GitInvoker from "../../src/git/gitInvoker.js";
-import Logger from "../../src/utilities/logger.js";
+import type GitHubReposInvoker from "../../src/repos/gitHubReposInvoker.js";
+import type GitInvoker from "../../src/git/gitInvoker.js";
+import type Logger from "../../src/utilities/logger.js";
 import type { OctokitOptions } from "@octokit/core";
-import OctokitWrapper from "../../src/wrappers/octokitWrapper.js";
-import RunnerInvoker from "../../src/runners/runnerInvoker.js";
+import type OctokitWrapper from "../../src/wrappers/octokitWrapper.js";
+import type RunnerInvoker from "../../src/runners/runnerInvoker.js";
 import assert from "node:assert/strict";
 
 

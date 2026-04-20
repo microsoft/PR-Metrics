@@ -13,9 +13,9 @@ import {
   settingTestFactorResource,
 } from "./inputsTestSetup.js";
 import { deepEqual, verify, when } from "ts-mockito";
-import Inputs from "../../src/metrics/inputs.js";
-import Logger from "../../src/utilities/logger.js";
-import RunnerInvoker from "../../src/runners/runnerInvoker.js";
+import type Inputs from "../../src/metrics/inputs.js";
+import type Logger from "../../src/utilities/logger.js";
+import type RunnerInvoker from "../../src/runners/runnerInvoker.js";
 import assert from "node:assert/strict";
 import { invalidNumericStrings } from "../testUtilities/fixtures/invalidInputs.js";
 

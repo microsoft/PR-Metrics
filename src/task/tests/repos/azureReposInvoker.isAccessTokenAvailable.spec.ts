@@ -5,12 +5,12 @@
 
 
 import { createAzureReposInvokerMocks, createSut } from "./azureReposInvokerTestSetup.js";
-import AzureDevOpsApiWrapper from "../../src/wrappers/azureDevOpsApiWrapper.js";
-import AzureReposInvoker from "../../src/repos/azureReposInvoker.js";
-import GitInvoker from "../../src/git/gitInvoker.js";
-import Logger from "../../src/utilities/logger.js";
-import RunnerInvoker from "../../src/runners/runnerInvoker.js";
-import TokenManager from "../../src/repos/tokenManager.js";
+import type AzureDevOpsApiWrapper from "../../src/wrappers/azureDevOpsApiWrapper.js";
+import type AzureReposInvoker from "../../src/repos/azureReposInvoker.js";
+import type GitInvoker from "../../src/git/gitInvoker.js";
+import type Logger from "../../src/utilities/logger.js";
+import type RunnerInvoker from "../../src/runners/runnerInvoker.js";
+import type TokenManager from "../../src/repos/tokenManager.js";
 import assert from "node:assert/strict";
 import { stubEnv } from "../testUtilities/stubEnv.js";
 import { when } from "ts-mockito";
