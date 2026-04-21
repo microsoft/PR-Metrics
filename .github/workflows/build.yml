@@ -174,7 +174,7 @@ jobs:
       - name: Super-Linter
         uses: super-linter/super-linter@9e863354e3ff62e0727d37183162c4a88873df41 # v8.6.0
         env:
-          CHECKOV_CONFIG_FILE: .checkov.yaml
+          CHECKOV_FILE_NAME: .github/linters/.checkov.yaml
           FILTER_REGEX_EXCLUDE: .*(dist/|\.github/agents/|\.github/workflows/.*\.lock\.yml).*
           FIX_JSON_PRETTIER: true
           FIX_MARKDOWN_PRETTIER: true
