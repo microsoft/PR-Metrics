@@ -1,0 +1,3 @@
+# Checkov configuration for Super-Linter.
+skip-path:
+  - .*\.lock\.yml$
