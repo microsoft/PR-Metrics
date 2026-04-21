@@ -190,7 +190,6 @@ jobs:
           VALIDATE_BIOME_FORMAT: false
           VALIDATE_JSON: false
           VALIDATE_TYPESCRIPT_ES: false
-          VALIDATE_TYPESCRIPT_STANDARD: false
 
       - if: github.ref_name != 'main'
         name: Git – Test for Changes
