@@ -52,7 +52,9 @@ safe-outputs:
     if-no-changes: ignore
     protected-files: allowed
     allowed-files:
-      - .github/workflows/*.yml
+      - .github/workflows/build.yml
+      - .github/workflows/release-initiate.yml
+      - .github/workflows/release-publish.yml
       - .github/azure-devops/*.yml
       - package.json
       - .nvmrc
@@ -127,8 +129,10 @@ Files under `.github/azure-devops/*.yml`:
    git ls-remote --tags <repo-url>
    ```
 
-   The 1ES templates are hosted in Azure DevOps; authenticate via `az` if the
-   listing is restricted.
+   The 1ES templates are hosted in Azure DevOps. Use the credentials already
+   available to `git`. If tag listing is restricted with those credentials,
+   leave the current ref unchanged and report that the latest tag could not be
+   verified with the available access.
 
 1. Save changes while preserving formatting: trailing newlines, comment spacing,
    and two-space indentation.
