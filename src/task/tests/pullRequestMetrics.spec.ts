@@ -77,7 +77,9 @@ describe("pullRequestMetrics.ts", (): void => {
       verify(codeMetricsCalculator.updateDetails()).once();
       verify(codeMetricsCalculator.updateComments()).once();
       verify(
-        runnerInvoker.setStatusSucceeded(localize("pullRequestMetrics.succeeded")),
+        runnerInvoker.setStatusSucceeded(
+          localize("pullRequestMetrics.succeeded"),
+        ),
       ).once();
     });
 
