@@ -13,6 +13,7 @@ import type Logger from "../../src/utilities/logger.js";
 import type OctokitWrapper from "../../src/wrappers/octokitWrapper.js";
 import type RunnerInvoker from "../../src/runners/runnerInvoker.js";
 import assert from "node:assert/strict";
+import { localize } from "../testUtilities/stubLocalization.js";
 import { stubEnv } from "../testUtilities/stubEnv.js";
 
 describe("gitHubReposInvoker.ts", (): void => {
@@ -80,7 +81,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       // Assert
       assert.equal(
         result,
-        "Could not access the Personal Access Token (PAT). Add 'PR_Metrics_Access_Token' as a secret environment variable with Read and Write access to Pull Requests (or access to 'repos' if using a Classic PAT, or write access to 'pull-requests' and 'statuses' if specified within the workflow YAML).",
+        localize("repos.gitHubReposInvoker.noGitHubAccessToken"),
       );
     });
   });

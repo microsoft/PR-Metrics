@@ -4,11 +4,14 @@
  */
 
 import { instance, mock, verify, when } from "ts-mockito";
+import {
+  localize,
+  stubLocalization,
+} from "./testUtilities/stubLocalization.js";
 import CodeMetricsCalculator from "../src/metrics/codeMetricsCalculator.js";
 import Logger from "../src/utilities/logger.js";
 import PullRequestMetrics from "../src/pullRequestMetrics.js";
 import RunnerInvoker from "../src/runners/runnerInvoker.js";
-import { stubLocalization } from "./testUtilities/stubLocalization.js";
 
 describe("pullRequestMetrics.ts", (): void => {
   let codeMetricsCalculator: CodeMetricsCalculator;
@@ -73,7 +76,9 @@ describe("pullRequestMetrics.ts", (): void => {
       verify(runnerInvoker.locInitialize("Folder")).once();
       verify(codeMetricsCalculator.updateDetails()).once();
       verify(codeMetricsCalculator.updateComments()).once();
-      verify(runnerInvoker.setStatusSucceeded("PR Metrics succeeded")).once();
+      verify(
+        runnerInvoker.setStatusSucceeded(localize("pullRequestMetrics.succeeded")),
+      ).once();
     });
 
     it("should catch and log errors", async (): Promise<void> => {

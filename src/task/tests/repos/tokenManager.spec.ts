@@ -5,6 +5,10 @@
 
 import * as AssertExtensions from "../testUtilities/assertExtensions.js";
 import { deepEqual, instance, mock, verify, when } from "ts-mockito";
+import {
+  localize,
+  stubLocalization,
+} from "../testUtilities/stubLocalization.js";
 import AzureDevOpsApiWrapper from "../../src/wrappers/azureDevOpsApiWrapper.js";
 import type { EndpointAuthorization } from "azure-pipelines-task-lib";
 import type { IRequestHandler } from "azure-devops-node-api/interfaces/common/VsoBaseInterfaces.js";
@@ -16,7 +20,6 @@ import { WebApi } from "azure-devops-node-api";
 import assert from "node:assert/strict";
 import { resolvableInstance } from "../testUtilities/resolvableInstance.js";
 import { stubEnv } from "../testUtilities/stubEnv.js";
-import { stubLocalization } from "../testUtilities/stubLocalization.js";
 
 describe("tokenManager.ts", (): void => {
   let taskApi: ITaskApi;
@@ -173,7 +176,11 @@ describe("tokenManager.ts", (): void => {
       // Assert
       assert.equal(
         result,
-        "Authorization scheme of workload identity federation 'Id' must be 'WorkloadIdentityFederation' instead of 'Other'.",
+        localize(
+          "repos.tokenManager.incorrectAuthorizationScheme",
+          "Id",
+          "Other",
+        ),
       );
     });
 

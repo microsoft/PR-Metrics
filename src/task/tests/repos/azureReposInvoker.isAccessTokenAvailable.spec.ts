@@ -14,6 +14,7 @@ import type Logger from "../../src/utilities/logger.js";
 import type RunnerInvoker from "../../src/runners/runnerInvoker.js";
 import type TokenManager from "../../src/repos/tokenManager.js";
 import assert from "node:assert/strict";
+import { localize } from "../testUtilities/stubLocalization.js";
 import { stubEnv } from "../testUtilities/stubEnv.js";
 import { when } from "ts-mockito";
 
@@ -91,7 +92,7 @@ describe("azureReposInvoker.ts", (): void => {
       // Assert
       assert.equal(
         result,
-        "Could not access the Workload Identity Federation or Personal Access Token (PAT). Add the 'WorkloadIdentityFederation' input or 'PR_Metrics_Access_Token' as a secret environment variable.",
+        localize("repos.azureReposInvoker.noAzureReposAccessToken"),
       );
     });
   });
