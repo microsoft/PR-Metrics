@@ -263,7 +263,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       ).twice();
     });
 
-    it("should succeed when createReviewComment() returns undefined", async (): Promise<void> => {
+    it("should succeed when createReviewComment() returns null", async (): Promise<void> => {
       // Arrange
       when(octokitWrapper.initialize(any())).thenCall(
         (options: OctokitOptions): void => {
