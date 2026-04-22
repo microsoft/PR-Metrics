@@ -110,12 +110,30 @@ describe("inputs.ts", (): void => {
           new Set<string>(["js", "ts"]),
         );
         verify(logger.logInfo(settingAlwaysCloseComment)).once();
-        verify(logger.logInfo(settingBaseSizeResource)).once();
-        verify(logger.logInfo(settingGrowthRateResource)).once();
-        verify(logger.logInfo(settingTestFactorResource)).once();
-        verify(logger.logInfo(settingFileMatchingPatternsResource)).once();
-        verify(logger.logInfo(settingTestMatchingPatternsResource)).once();
-        verify(logger.logInfo(settingCodeFileExtensionsResource)).once();
+        verify(
+          logger.logInfo(settingBaseSizeResource((5).toLocaleString())),
+        ).once();
+        verify(
+          logger.logInfo(settingGrowthRateResource((4.4).toLocaleString())),
+        ).once();
+        verify(
+          logger.logInfo(settingTestFactorResource((2.7).toLocaleString())),
+        ).once();
+        verify(
+          logger.logInfo(
+            settingFileMatchingPatternsResource(JSON.stringify(["aa", "bb"])),
+          ),
+        ).once();
+        verify(
+          logger.logInfo(
+            settingTestMatchingPatternsResource(JSON.stringify(["cc", "dd"])),
+          ),
+        ).once();
+        verify(
+          logger.logInfo(
+            settingCodeFileExtensionsResource(JSON.stringify(["js", "ts"])),
+          ),
+        ).once();
       });
     });
   });

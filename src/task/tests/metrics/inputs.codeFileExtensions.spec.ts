@@ -70,7 +70,13 @@ describe("inputs.ts", (): void => {
 
             // Assert
             assert.deepEqual(inputs.codeFileExtensions, expectedResult);
-            verify(logger.logInfo(settingCodeFileExtensionsResource)).once();
+            verify(
+              logger.logInfo(
+                settingCodeFileExtensionsResource(
+                  JSON.stringify([...expectedResult]),
+                ),
+              ),
+            ).once();
           });
         });
       }
@@ -86,7 +92,11 @@ describe("inputs.ts", (): void => {
 
         // Assert
         assert.deepEqual(inputs.codeFileExtensions, new Set<string>(["ada"]));
-        verify(logger.logInfo(settingCodeFileExtensionsResource)).once();
+        verify(
+          logger.logInfo(
+            settingCodeFileExtensionsResource(JSON.stringify(["ada"])),
+          ),
+        ).once();
       });
 
       it("should convert extensions to lower case", (): void => {
@@ -103,7 +113,13 @@ describe("inputs.ts", (): void => {
           inputs.codeFileExtensions,
           new Set<string>(["ada", "cs", "txt"]),
         );
-        verify(logger.logInfo(settingCodeFileExtensionsResource)).once();
+        verify(
+          logger.logInfo(
+            settingCodeFileExtensionsResource(
+              JSON.stringify(["ada", "cs", "txt"]),
+            ),
+          ),
+        ).once();
       });
 
       it("should remove . and * from extension names", (): void => {
@@ -120,7 +136,11 @@ describe("inputs.ts", (): void => {
           inputs.codeFileExtensions,
           new Set<string>(["ada", "txt"]),
         );
-        verify(logger.logInfo(settingCodeFileExtensionsResource)).once();
+        verify(
+          logger.logInfo(
+            settingCodeFileExtensionsResource(JSON.stringify(["ada", "txt"])),
+          ),
+        ).once();
       });
 
       it("should remove trailing new lines", (): void => {
@@ -137,7 +157,13 @@ describe("inputs.ts", (): void => {
           inputs.codeFileExtensions,
           new Set<string>(["ada", "cs", "txt"]),
         );
-        verify(logger.logInfo(settingCodeFileExtensionsResource)).once();
+        verify(
+          logger.logInfo(
+            settingCodeFileExtensionsResource(
+              JSON.stringify(["ada", "cs", "txt"]),
+            ),
+          ),
+        ).once();
       });
     });
   });

@@ -8,6 +8,7 @@ import CodeMetricsCalculator from "../src/metrics/codeMetricsCalculator.js";
 import Logger from "../src/utilities/logger.js";
 import PullRequestMetrics from "../src/pullRequestMetrics.js";
 import RunnerInvoker from "../src/runners/runnerInvoker.js";
+import { stubLocalization } from "./testUtilities/stubLocalization.js";
 
 describe("pullRequestMetrics.ts", (): void => {
   let codeMetricsCalculator: CodeMetricsCalculator;
@@ -19,9 +20,7 @@ describe("pullRequestMetrics.ts", (): void => {
     logger = mock(Logger);
 
     runnerInvoker = mock(RunnerInvoker);
-    when(runnerInvoker.loc("pullRequestMetrics.succeeded")).thenReturn(
-      "PR Metrics succeeded",
-    );
+    stubLocalization(runnerInvoker);
   });
 
   describe("run()", (): void => {

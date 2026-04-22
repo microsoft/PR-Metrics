@@ -3,7 +3,6 @@
  * Licensed under the MIT License.
  */
 
-import { anyString, when } from "ts-mockito";
 import { createCodeMetricsMocks, createSut } from "./codeMetricsTestSetup.js";
 import type CodeMetrics from "../../src/metrics/codeMetrics.js";
 import CodeMetricsData from "../../src/metrics/codeMetricsData.js";
@@ -12,6 +11,7 @@ import type Inputs from "../../src/metrics/inputs.js";
 import type Logger from "../../src/utilities/logger.js";
 import type RunnerInvoker from "../../src/runners/runnerInvoker.js";
 import assert from "node:assert/strict";
+import { when } from "ts-mockito";
 
 describe("codeMetrics.ts", (): void => {
   let gitInvoker: GitInvoker;
@@ -57,13 +57,6 @@ describe("codeMetrics.ts", (): void => {
     when(inputs.fileMatchingPatterns).thenReturn(["**/*"]);
     when(inputs.codeFileExtensions).thenReturn(new Set<string>(["ts"]));
     when(gitInvoker.getDiffSummary()).thenResolve("3\t0\tfile.ts");
-    when(
-      runnerInvoker.loc(
-        "metrics.codeMetrics.titleSizeIndicatorFormat",
-        anyString() as string,
-        anyString() as string,
-      ),
-    ).thenReturn("");
     const codeMetrics: CodeMetrics = createSut(
       gitInvoker,
       inputs,

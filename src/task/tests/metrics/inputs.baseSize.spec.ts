@@ -79,7 +79,13 @@ describe("inputs.ts", (): void => {
 
             // Assert
             assert.equal(inputs.baseSize, parseInt(baseSize, decimalRadix));
-            verify(logger.logInfo(settingBaseSizeResource)).once();
+            verify(
+              logger.logInfo(
+                settingBaseSizeResource(
+                  parseInt(baseSize, decimalRadix).toLocaleString(),
+                ),
+              ),
+            ).once();
           });
         });
       }

@@ -79,7 +79,13 @@ describe("inputs.ts", (): void => {
             verify(
               logger.logInfo(adjustingFileMatchingPatternsResource),
             ).never();
-            verify(logger.logInfo(settingFileMatchingPatternsResource)).once();
+            verify(
+              logger.logInfo(
+                settingFileMatchingPatternsResource(
+                  JSON.stringify([fileMatchingPatterns]),
+                ),
+              ),
+            ).once();
           });
         });
       }
@@ -108,7 +114,13 @@ describe("inputs.ts", (): void => {
             verify(
               logger.logInfo(adjustingFileMatchingPatternsResource),
             ).never();
-            verify(logger.logInfo(settingFileMatchingPatternsResource)).once();
+            verify(
+              logger.logInfo(
+                settingFileMatchingPatternsResource(
+                  JSON.stringify(expectedOutput),
+                ),
+              ),
+            ).once();
           });
         });
       }
@@ -127,7 +139,13 @@ describe("inputs.ts", (): void => {
           "folder1/file.js",
           "folder2/*.js",
         ]);
-        verify(logger.logInfo(settingFileMatchingPatternsResource)).once();
+        verify(
+          logger.logInfo(
+            settingFileMatchingPatternsResource(
+              JSON.stringify(["folder1/file.js", "folder2/*.js"]),
+            ),
+          ),
+        ).once();
       });
 
       it("should remove trailing new lines", (): void => {
@@ -141,7 +159,11 @@ describe("inputs.ts", (): void => {
 
         // Assert
         assert.deepEqual(inputs.fileMatchingPatterns, ["file.js"]);
-        verify(logger.logInfo(settingFileMatchingPatternsResource)).once();
+        verify(
+          logger.logInfo(
+            settingFileMatchingPatternsResource(JSON.stringify(["file.js"])),
+          ),
+        ).once();
       });
 
       it("should trim whitespace and filter empty lines", (): void => {

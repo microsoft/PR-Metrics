@@ -63,8 +63,7 @@ Update-FileContent -Path 'src/task/task.json' -Replacements (@($friendlyNameRepl
 Update-FileContent -Path 'src/task/task.loc.json' -Replacements $versionComponentReplacements
 Update-FileContent -Path 'src/task/Strings/resources.resjson/en-US/resources.resjson' -Replacements @($friendlyNameReplacement)
 
-# Source code user-agent. The test setup re-exports this constant, so only the
-# production file needs updating.
+# Source code user-agent.
 Update-FileContent -Path 'src/task/src/repos/gitHubReposInvoker.ts' -Replacements @($userAgentReplacement)
 
 # Release workflow defaults. The env vars in release-initiate.yml represent the

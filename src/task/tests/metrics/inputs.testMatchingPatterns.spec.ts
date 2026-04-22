@@ -78,7 +78,13 @@ describe("inputs.ts", (): void => {
             verify(
               logger.logInfo(adjustingTestMatchingPatternsResource),
             ).never();
-            verify(logger.logInfo(settingTestMatchingPatternsResource)).once();
+            verify(
+              logger.logInfo(
+                settingTestMatchingPatternsResource(
+                  JSON.stringify([testMatchingPatterns]),
+                ),
+              ),
+            ).once();
           });
         });
       }
@@ -107,7 +113,13 @@ describe("inputs.ts", (): void => {
             verify(
               logger.logInfo(adjustingTestMatchingPatternsResource),
             ).never();
-            verify(logger.logInfo(settingTestMatchingPatternsResource)).once();
+            verify(
+              logger.logInfo(
+                settingTestMatchingPatternsResource(
+                  JSON.stringify(expectedOutput),
+                ),
+              ),
+            ).once();
           });
         });
       }
@@ -126,7 +138,13 @@ describe("inputs.ts", (): void => {
           "folder1/file.js",
           "folder2/*.js",
         ]);
-        verify(logger.logInfo(settingTestMatchingPatternsResource)).once();
+        verify(
+          logger.logInfo(
+            settingTestMatchingPatternsResource(
+              JSON.stringify(["folder1/file.js", "folder2/*.js"]),
+            ),
+          ),
+        ).once();
       });
 
       it("should remove trailing new lines", (): void => {
@@ -140,7 +158,11 @@ describe("inputs.ts", (): void => {
 
         // Assert
         assert.deepEqual(inputs.testMatchingPatterns, ["file.js"]);
-        verify(logger.logInfo(settingTestMatchingPatternsResource)).once();
+        verify(
+          logger.logInfo(
+            settingTestMatchingPatternsResource(JSON.stringify(["file.js"])),
+          ),
+        ).once();
       });
     });
   });

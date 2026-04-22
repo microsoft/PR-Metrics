@@ -5,35 +5,60 @@
 
 import * as InputsDefault from "../../src/metrics/inputsDefault.js";
 import { deepEqual, instance, mock, when } from "ts-mockito";
+import {
+  localize,
+  stubLocalization,
+} from "../testUtilities/stubLocalization.js";
 import Inputs from "../../src/metrics/inputs.js";
 import Logger from "../../src/utilities/logger.js";
 import RunnerInvoker from "../../src/runners/runnerInvoker.js";
-import { anyString } from "../testUtilities/mockito.js";
 
-export const adjustingAlwaysCloseComment =
-  "Adjusting the always-close-comment mode input to 'false'.";
-export const adjustingBaseSizeResource = `Adjusting the base size input to '${String(InputsDefault.baseSize)}'.`;
-export const adjustingGrowthRateResource = `Adjusting the growth rate input to '${String(InputsDefault.growthRate)}'.`;
-export const adjustingTestFactorResource = `Adjusting the test factor input to '${String(InputsDefault.testFactor)}'.`;
-export const adjustingFileMatchingPatternsResource = `Adjusting the file matching patterns input to '${JSON.stringify(InputsDefault.fileMatchingPatterns)}'.`;
-export const adjustingTestMatchingPatternsResource = `Adjusting the test matching patterns input to '${JSON.stringify(InputsDefault.testMatchingPatterns)}'.`;
-export const adjustingCodeFileExtensionsResource = `Adjusting the code file extensions input to '${JSON.stringify(InputsDefault.codeFileExtensions)}'.`;
-export const disablingTestFactorResource =
-  "Disabling the test factor validation.";
-export const settingAlwaysCloseComment =
-  "Setting the always-close-comment mode input to 'true'.";
-export const settingBaseSizeResource =
-  "Setting the base size input to 'VALUE'.";
-export const settingGrowthRateResource =
-  "Setting the growth rate input to 'VALUE'.";
-export const settingTestFactorResource =
-  "Setting the test factor input to 'VALUE'.";
-export const settingFileMatchingPatternsResource =
-  "Setting the file matching patterns input to 'VALUE'.";
-export const settingTestMatchingPatternsResource =
-  "Setting the test matching patterns input to 'VALUE'.";
-export const settingCodeFileExtensionsResource =
-  "Setting the code file extensions input to 'VALUE'.";
+export const adjustingAlwaysCloseComment = localize(
+  "metrics.inputs.adjustingAlwaysCloseComment",
+);
+export const adjustingBaseSizeResource = localize(
+  "metrics.inputs.adjustingBaseSize",
+  InputsDefault.baseSize.toLocaleString(),
+);
+export const adjustingGrowthRateResource = localize(
+  "metrics.inputs.adjustingGrowthRate",
+  InputsDefault.growthRate.toLocaleString(),
+);
+export const adjustingTestFactorResource = localize(
+  "metrics.inputs.adjustingTestFactor",
+  InputsDefault.testFactor.toLocaleString(),
+);
+export const adjustingFileMatchingPatternsResource = localize(
+  "metrics.inputs.adjustingFileMatchingPatterns",
+  JSON.stringify(InputsDefault.fileMatchingPatterns),
+);
+export const adjustingTestMatchingPatternsResource = localize(
+  "metrics.inputs.adjustingTestMatchingPatterns",
+  JSON.stringify(InputsDefault.testMatchingPatterns),
+);
+export const adjustingCodeFileExtensionsResource = localize(
+  "metrics.inputs.adjustingCodeFileExtensions",
+  JSON.stringify(InputsDefault.codeFileExtensions),
+);
+export const disablingTestFactorResource = localize(
+  "metrics.inputs.disablingTestFactor",
+);
+export const settingAlwaysCloseComment = localize(
+  "metrics.inputs.settingAlwaysCloseComment",
+);
+
+export const settingBaseSizeResource = (value: string): string =>
+  localize("metrics.inputs.settingBaseSize", value);
+export const settingGrowthRateResource = (value: string): string =>
+  localize("metrics.inputs.settingGrowthRate", value);
+export const settingTestFactorResource = (value: string): string =>
+  localize("metrics.inputs.settingTestFactor", value);
+export const settingFileMatchingPatternsResource = (value: string): string =>
+  localize("metrics.inputs.settingFileMatchingPatterns", value);
+export const settingTestMatchingPatternsResource = (value: string): string =>
+  localize("metrics.inputs.settingTestMatchingPatterns", value);
+export const settingCodeFileExtensionsResource = (value: string): string =>
+  localize("metrics.inputs.settingCodeFileExtensions", value);
 
 export interface InputsMocks {
   logger: Logger;
@@ -65,75 +90,7 @@ export const createInputsMocks = (): InputsMocks => {
   when(
     runnerInvoker.getInput(deepEqual(["Code", "File", "Extensions"])),
   ).thenReturn("");
-  when(
-    runnerInvoker.loc("metrics.inputs.adjustingAlwaysCloseComment"),
-  ).thenReturn(adjustingAlwaysCloseComment);
-  when(
-    runnerInvoker.loc(
-      "metrics.inputs.adjustingBaseSize",
-      InputsDefault.baseSize.toLocaleString(),
-    ),
-  ).thenReturn(adjustingBaseSizeResource);
-  when(
-    runnerInvoker.loc(
-      "metrics.inputs.adjustingGrowthRate",
-      InputsDefault.growthRate.toLocaleString(),
-    ),
-  ).thenReturn(adjustingGrowthRateResource);
-  when(
-    runnerInvoker.loc(
-      "metrics.inputs.adjustingTestFactor",
-      InputsDefault.testFactor.toLocaleString(),
-    ),
-  ).thenReturn(adjustingTestFactorResource);
-  when(
-    runnerInvoker.loc(
-      "metrics.inputs.adjustingFileMatchingPatterns",
-      JSON.stringify(InputsDefault.fileMatchingPatterns),
-    ),
-  ).thenReturn(adjustingFileMatchingPatternsResource);
-  when(
-    runnerInvoker.loc(
-      "metrics.inputs.adjustingTestMatchingPatterns",
-      JSON.stringify(InputsDefault.testMatchingPatterns),
-    ),
-  ).thenReturn(adjustingTestMatchingPatternsResource);
-  when(
-    runnerInvoker.loc(
-      "metrics.inputs.adjustingCodeFileExtensions",
-      JSON.stringify(InputsDefault.codeFileExtensions),
-    ),
-  ).thenReturn(adjustingCodeFileExtensionsResource);
-  when(runnerInvoker.loc("metrics.inputs.disablingTestFactor")).thenReturn(
-    disablingTestFactorResource,
-  );
-  when(
-    runnerInvoker.loc("metrics.inputs.settingAlwaysCloseComment"),
-  ).thenReturn(settingAlwaysCloseComment);
-  when(
-    runnerInvoker.loc("metrics.inputs.settingBaseSize", anyString()),
-  ).thenReturn(settingBaseSizeResource);
-  when(
-    runnerInvoker.loc("metrics.inputs.settingGrowthRate", anyString()),
-  ).thenReturn(settingGrowthRateResource);
-  when(
-    runnerInvoker.loc("metrics.inputs.settingTestFactor", anyString()),
-  ).thenReturn(settingTestFactorResource);
-  when(
-    runnerInvoker.loc(
-      "metrics.inputs.settingFileMatchingPatterns",
-      anyString(),
-    ),
-  ).thenReturn(settingFileMatchingPatternsResource);
-  when(
-    runnerInvoker.loc(
-      "metrics.inputs.settingTestMatchingPatterns",
-      anyString(),
-    ),
-  ).thenReturn(settingTestMatchingPatternsResource);
-  when(
-    runnerInvoker.loc("metrics.inputs.settingCodeFileExtensions", anyString()),
-  ).thenReturn(settingCodeFileExtensionsResource);
+  stubLocalization(runnerInvoker);
 
   return { logger, runnerInvoker };
 };

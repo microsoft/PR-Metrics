@@ -102,7 +102,13 @@ describe("inputs.ts", (): void => {
 
             // Assert
             assert.equal(inputs.growthRate, parseFloat(growthRate));
-            verify(logger.logInfo(settingGrowthRateResource)).once();
+            verify(
+              logger.logInfo(
+                settingGrowthRateResource(
+                  parseFloat(growthRate).toLocaleString(),
+                ),
+              ),
+            ).once();
           });
         });
       }

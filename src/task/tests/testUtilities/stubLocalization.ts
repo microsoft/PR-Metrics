@@ -45,29 +45,36 @@ const loadResources = (): Map<string, string> => {
 };
 
 /**
+ * Resolves a localization key against the real `resources.resjson` file and
+ * applies parameter substitution via `util.format`. Tests use this to compute
+ * expected `logger` assertions without duplicating English text from the
+ * resource file.
+ * @param key The localization key (without the `loc.messages.` prefix).
+ * @param params The values to substitute into the template.
+ * @returns The formatted string.
+ */
+export const localize = (key: string, ...params: string[]): string => {
+  const template: string | undefined = loadResources().get(key);
+  if (typeof template === "undefined") {
+    throw new Error(`Unknown localization key: '${key}'.`);
+  }
+
+  return params.length > 0 ? util.format(template, ...params) : template;
+};
+
+/**
  * Wires the `loc()` method on a mocked `RunnerInvoker` to return values read
  * from the real `resources.resjson` file, with parameter substitution via
  * `util.format`.
  * @param runnerInvoker The mocked runner invoker.
  */
 export const stubLocalization = (runnerInvoker: RunnerInvoker): void => {
-  const resources: Map<string, string> = loadResources();
-
-  const lookup = (key: string, ...params: string[]): string => {
-    const template: string | undefined = resources.get(key);
-    if (typeof template === "undefined") {
-      throw new Error(`Unknown localization key: '${key}'.`);
-    }
-
-    return params.length > 0 ? util.format(template, ...params) : template;
-  };
-
-  when(runnerInvoker.loc(anyString())).thenCall(lookup);
-  when(runnerInvoker.loc(anyString(), anyString())).thenCall(lookup);
+  when(runnerInvoker.loc(anyString())).thenCall(localize);
+  when(runnerInvoker.loc(anyString(), anyString())).thenCall(localize);
   when(runnerInvoker.loc(anyString(), anyString(), anyString())).thenCall(
-    lookup,
+    localize,
   );
   when(
     runnerInvoker.loc(anyString(), anyString(), anyString(), anyString()),
-  ).thenCall(lookup);
+  ).thenCall(localize);
 };

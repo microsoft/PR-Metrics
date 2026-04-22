@@ -101,7 +101,13 @@ describe("inputs.ts", (): void => {
 
             // Assert
             assert.equal(inputs.testFactor, parseFloat(testFactor));
-            verify(logger.logInfo(settingTestFactorResource)).once();
+            verify(
+              logger.logInfo(
+                settingTestFactorResource(
+                  parseFloat(testFactor).toLocaleString(),
+                ),
+              ),
+            ).once();
           });
         });
       }
