@@ -28,6 +28,14 @@ import type UpdatePullResponse from "../wrappers/octokitInterfaces/updatePullRes
 import { decimalRadix } from "../utilities/constants.js";
 
 /**
+ * The user agent sent with every GitHub API request originating from PR
+ * Metrics. Exported so that tests can assert against the same value the
+ * production code uses, preventing drift between production and tests when
+ * the version is bumped.
+ */
+export const userAgent = "PRMetrics/v1.7.13";
+
+/**
  * A class for invoking GitHub Repos functionality.
  */
 export default class GitHubReposInvoker extends BaseReposInvoker {
@@ -287,7 +295,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
           this._logger.logWarning(`Octokit – ${message}`);
         },
       },
-      userAgent: "PRMetrics/v1.7.13",
+      userAgent,
     };
 
     if (RunnerInvoker.isGitHub) {

@@ -7,8 +7,8 @@
   "main": "dist/index.mjs",
   "type": "module",
   "scripts": {
-    "build:initialization:debug": "npm ci && node scripts/fs-helpers.mjs cp src debug",
-    "build:initialization:release": "npm ci && node scripts/fs-helpers.mjs cp src release",
+    "build:initialization:debug": "npm ci && node scripts/fs-helpers.mjs rm debug && node scripts/fs-helpers.mjs cp src debug",
+    "build:initialization:release": "npm ci && node scripts/fs-helpers.mjs rm release && node scripts/fs-helpers.mjs cp src release",
     "build:debug": "npm run build:initialization:debug && cd debug/task && tsc --sourceMap",
     "build:release": "npm run build:initialization:release && npm run build:release:compile && npm run build:release:clean && npm run build:release:package",
     "build:release:compile": "cd release/task && tsc && ncc build index.js --out . --minify",
@@ -28,7 +28,7 @@
     "deploy:upload": "tfx build tasks upload --task-path release/task --no-prompt",
     "lint": "eslint --fix **/*.ts",
     "test": "npm run build:debug && cd debug/task && c8 --reporter=text --reporter=text-summary mocha tests/**/*.spec.js",
-    "test:fast": "node scripts/fs-helpers.mjs cp src debug && cd debug/task && tsc --sourceMap && c8 --reporter=text --reporter=text-summary mocha tests/**/*.spec.js",
+    "test:fast": "node scripts/fs-helpers.mjs rm debug && node scripts/fs-helpers.mjs cp src debug && cd debug/task && tsc --sourceMap && c8 --reporter=text --reporter=text-summary mocha tests/**/*.spec.js",
     "update:dependencies": "npm update",
     "update:versions": "ncu -u"
   },

@@ -3,8 +3,8 @@
  * Licensed under the MIT License.
  */
 
-import { EndpointAuthorization } from "./endpointAuthorization.js";
-import ExecOutput from "./execOutput.js";
+import type { EndpointAuthorization } from "./endpointAuthorization.js";
+import type ExecOutput from "./execOutput.js";
 
 /**
  * An interface for invoking runner functionality with any underlying runner.

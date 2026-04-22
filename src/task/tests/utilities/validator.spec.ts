@@ -5,6 +5,7 @@
 
 import * as Validator from "../../src/utilities/validator.js";
 import assert from "node:assert/strict";
+import { stubEnv } from "../testUtilities/stubEnv.js";
 
 describe("validator.ts", (): void => {
   describe("validateString()", (): void => {
@@ -52,11 +53,7 @@ describe("validator.ts", (): void => {
       testCases.forEach((value: string | undefined): void => {
         it(`should throw an error when passed invalid string value '${String(value)}'`, (): void => {
           // Arrange
-          if (typeof value === "undefined") {
-            delete process.env.TEST_VARIABLE;
-          } else {
-            process.env.TEST_VARIABLE = value;
-          }
+          stubEnv(["TEST_VARIABLE", value]);
 
           // Act
           const func: () => void = () =>
@@ -72,16 +69,13 @@ describe("validator.ts", (): void => {
               `'TEST_VARIABLE', accessed within 'string test method name', is invalid, null, or undefined '${String(value)}'.`,
             ),
           );
-
-          // Finalization
-          delete process.env.TEST_VARIABLE;
         });
       });
     }
 
     it("should not throw an error when passed a valid string value", (): void => {
       // Arrange
-      process.env.TEST_VARIABLE = "value";
+      stubEnv(["TEST_VARIABLE", "value"]);
 
       // Act
       const result: string = Validator.validateVariable(
@@ -91,9 +85,6 @@ describe("validator.ts", (): void => {
 
       // Assert
       assert.equal(result, "value");
-
-      // Finalization
-      delete process.env.TEST_VARIABLE;
     });
   });
 
