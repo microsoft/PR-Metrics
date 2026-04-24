@@ -10,7 +10,6 @@ import type RunnerInvoker from "../runners/runnerInvoker.js";
 
 /**
  * A class representing inputs passed to the task.
- * @remarks This class should not be used in a multithreaded context as it could lead to the initialization logic being invoked repeatedly.
  */
 export default class Inputs {
   private readonly _logger: Logger;
@@ -172,59 +171,61 @@ export default class Inputs {
   private initializeBaseSize(baseSize: string | null): void {
     this._logger.logDebug("* Inputs.initializeBaseSize()");
 
-    const convertedValue: number =
-      baseSize === null ? NaN : parseInt(baseSize, decimalRadix);
-    if (!Number.isNaN(convertedValue) && convertedValue > 0) {
-      this._baseSize = convertedValue;
-      const baseSizeString: string = this._baseSize.toLocaleString();
-      this._logger.logInfo(
-        this._runnerInvoker.loc(
-          "metrics.inputs.settingBaseSize",
-          baseSizeString,
-        ),
-      );
-      return;
-    }
-
-    const baseSizeString: string = InputsDefault.baseSize.toLocaleString();
-    this._logger.logInfo(
-      this._runnerInvoker.loc(
-        "metrics.inputs.adjustingBaseSize",
-        baseSizeString,
-      ),
+    this.initializeNumeric(
+      baseSize,
+      (value: string): number => parseInt(value, decimalRadix),
+      (value: number): boolean => value > 0,
+      (value: number): void => {
+        this._baseSize = value;
+      },
+      (valueString: string): void => {
+        this._logger.logInfo(
+          this._runnerInvoker.loc(
+            "metrics.inputs.settingBaseSize",
+            valueString,
+          ),
+        );
+      },
+      InputsDefault.baseSize,
+      (valueString: string): void => {
+        this._logger.logInfo(
+          this._runnerInvoker.loc(
+            "metrics.inputs.adjustingBaseSize",
+            valueString,
+          ),
+        );
+      },
     );
-    this._baseSize = InputsDefault.baseSize;
   }
 
   private initializeGrowthRate(growthRate: string | null): void {
     this._logger.logDebug("* Inputs.initializeGrowthRate()");
 
-    const convertedValue: number =
-      growthRate === null ? NaN : parseFloat(growthRate);
-    if (
-      !Number.isNaN(convertedValue) &&
-      Number.isFinite(convertedValue) &&
-      convertedValue > 1.0
-    ) {
-      this._growthRate = convertedValue;
-      const growthRateString: string = this._growthRate.toLocaleString();
-      this._logger.logInfo(
-        this._runnerInvoker.loc(
-          "metrics.inputs.settingGrowthRate",
-          growthRateString,
-        ),
-      );
-      return;
-    }
-
-    const growthRateString: string = InputsDefault.growthRate.toLocaleString();
-    this._logger.logInfo(
-      this._runnerInvoker.loc(
-        "metrics.inputs.adjustingGrowthRate",
-        growthRateString,
-      ),
+    this.initializeNumeric(
+      growthRate,
+      (value: string): number => parseFloat(value),
+      (value: number): boolean => Number.isFinite(value) && value > 1.0,
+      (value: number): void => {
+        this._growthRate = value;
+      },
+      (valueString: string): void => {
+        this._logger.logInfo(
+          this._runnerInvoker.loc(
+            "metrics.inputs.settingGrowthRate",
+            valueString,
+          ),
+        );
+      },
+      InputsDefault.growthRate,
+      (valueString: string): void => {
+        this._logger.logInfo(
+          this._runnerInvoker.loc(
+            "metrics.inputs.adjustingGrowthRate",
+            valueString,
+          ),
+        );
+      },
     );
-    this._growthRate = InputsDefault.growthRate;
   }
 
   private initializeTestFactor(testFactor: string | null): void {
@@ -264,6 +265,29 @@ export default class Inputs {
       ),
     );
     this._testFactor = InputsDefault.testFactor;
+  }
+
+  private initializeNumeric(
+    inputValue: string | null,
+    parser: (value: string) => number,
+    validator: (value: number) => boolean,
+    setter: (value: number) => void,
+    settingMessage: (valueString: string) => void,
+    defaultValue: number,
+    adjustingMessage: (valueString: string) => void,
+  ): void {
+    this._logger.logDebug("* Inputs.initializeNumeric()");
+
+    const convertedValue: number =
+      inputValue === null ? NaN : parser(inputValue);
+    if (!Number.isNaN(convertedValue) && validator(convertedValue)) {
+      setter(convertedValue);
+      settingMessage(convertedValue.toLocaleString());
+      return;
+    }
+
+    adjustingMessage(defaultValue.toLocaleString());
+    setter(defaultValue);
   }
 
   private initializeAlwaysCloseComment(
