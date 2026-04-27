@@ -27,6 +27,8 @@ permissions:
   pull-requests: read
   actions: read
 
+environment: production
+
 engine: copilot
 
 tools:
