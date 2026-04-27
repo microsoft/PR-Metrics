@@ -1,5 +1,13 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+
+---
 scan:
   scanners:
     - misconfig
     - secret
     - license
+license:
+  # WTFPL on transitive dep (truncate-utf8-bytes) — accepted for this repo.
+  ignored:
+    - WTFPL

@@ -4,17 +4,16 @@
  */
 
 import * as GitHubReposInvokerConstants from "./gitHubReposInvokerConstants.js";
-import GitHubReposInvoker, {
-  userAgent,
-} from "../../src/repos/gitHubReposInvoker.js";
 import { anyNumber, anyString } from "../testUtilities/mockito.js";
 import { instance, mock, when } from "ts-mockito";
+import GitHubReposInvoker from "../../src/repos/gitHubReposInvoker.js";
 import GitInvoker from "../../src/git/gitInvoker.js";
 import Logger from "../../src/utilities/logger.js";
 import OctokitWrapper from "../../src/wrappers/octokitWrapper.js";
 import RunnerInvoker from "../../src/runners/runnerInvoker.js";
 import { stubEnv } from "../testUtilities/stubEnv.js";
 import { stubLocalization } from "../testUtilities/stubLocalization.js";
+import { userAgent } from "../../src/utilities/constants.js";
 
 export const expectedUserAgent = userAgent;
 

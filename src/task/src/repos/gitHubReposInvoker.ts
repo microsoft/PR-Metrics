@@ -4,6 +4,7 @@
  */
 
 import * as Validator from "../utilities/validator.js";
+import { decimalRadix, userAgent } from "../utilities/constants.js";
 import BaseReposInvoker from "./baseReposInvoker.js";
 import CommentData from "./interfaces/commentData.js";
 import type CreateIssueCommentResponse from "../wrappers/octokitInterfaces/createIssueCommentResponse.js";
@@ -25,15 +26,6 @@ import RunnerInvoker from "../runners/runnerInvoker.js";
 import { StatusCodes } from "http-status-codes";
 import type UpdateIssueCommentResponse from "../wrappers/octokitInterfaces/updateIssueCommentResponse.js";
 import type UpdatePullResponse from "../wrappers/octokitInterfaces/updatePullResponse.js";
-import { decimalRadix } from "../utilities/constants.js";
-
-/**
- * The user agent sent with every GitHub API request originating from PR
- * Metrics. Exported so that tests can assert against the same value the
- * production code uses, preventing drift between production and tests when
- * the version is bumped.
- */
-export const userAgent = "PRMetrics/v1.7.13";
 
 /**
  * A class for invoking GitHub Repos functionality.
@@ -344,32 +336,40 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
       "SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI",
       "GitHubReposInvoker.initializeForAzureDevOps()",
     );
-    const sourceRepositoryUriElements: string[] =
-      sourceRepositoryUri.split("/");
-    if (
-      typeof sourceRepositoryUriElements[2] === "undefined" ||
-      typeof sourceRepositoryUriElements[3] === "undefined" ||
-      typeof sourceRepositoryUriElements[4] === "undefined"
-    ) {
+
+    let parsedUrl: URL;
+    try {
+      parsedUrl = new URL(sourceRepositoryUri);
+    } catch {
       throw new Error(
         `SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI '${sourceRepositoryUri}' is in an unexpected format.`,
       );
     }
 
-    // Handle GitHub Enterprise invocations.
-    let baseUrl = "";
-    let baseUrlTemporary: string;
-    [, , baseUrlTemporary, this._owner, this._repo] =
-      sourceRepositoryUriElements;
-    if (baseUrlTemporary !== "github.com") {
-      baseUrl = `https://${baseUrlTemporary}/api/v3`;
+    const pathSegments: string[] = parsedUrl.pathname
+      .split("/")
+      .filter(Boolean);
+    const owner: string | undefined = pathSegments[0];
+    const repo: string | undefined = pathSegments[1];
+    if (typeof owner === "undefined" || typeof repo === "undefined") {
+      throw new Error(
+        `SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI '${sourceRepositoryUri}' is in an unexpected format.`,
+      );
     }
+
+    this._owner = owner;
+    this._repo = repo;
 
     if (this._repo.endsWith(".git")) {
       this._repo = this._repo.substring(0, this._repo.length - ".git".length);
     }
 
-    return baseUrl;
+    // Handle GitHub Enterprise invocations.
+    if (parsedUrl.hostname !== "github.com") {
+      return `${parsedUrl.origin}/api/v3`;
+    }
+
+    return "";
   }
 
   private convertPullRequestComments(

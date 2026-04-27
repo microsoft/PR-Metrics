@@ -96,6 +96,27 @@ describe("gitHubReposInvoker.ts", (): void => {
       );
     });
 
+    it("should throw when SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI is set to a non-parseable URL and the task is running on Azure Pipelines", async (): Promise<void> => {
+      // Arrange
+      stubEnv(["SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI", "not-a-valid-url"]);
+      const gitHubReposInvoker: GitHubReposInvoker = createSut(
+        gitInvoker,
+        logger,
+        octokitWrapper,
+        runnerInvoker,
+      );
+
+      // Act
+      const func: () => Promise<PullRequestDetailsInterface> = async () =>
+        gitHubReposInvoker.getTitleAndDescription();
+
+      // Assert
+      await AssertExtensions.toThrowAsync(
+        func,
+        "SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI 'not-a-valid-url' is in an unexpected format.",
+      );
+    });
+
     {
       const testCases: (string | undefined)[] = [undefined, ""];
 

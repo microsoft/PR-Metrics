@@ -222,4 +222,29 @@ describe("codeMetrics.ts", (): void => {
     assert.equal(await codeMetrics.isSmall(), true);
     assert.equal(await codeMetrics.isSufficientlyTested(), true);
   });
+
+  it("matches dotfiles by extracting extension from basename", async (): Promise<void> => {
+    // Arrange
+    when(gitInvoker.getDiffSummary()).thenResolve("1\t0\t.env");
+
+    // Act
+    const codeMetrics: CodeMetrics = createSut(
+      gitInvoker,
+      inputs,
+      logger,
+      runnerInvoker,
+    );
+
+    // Assert
+    assert.deepEqual(await codeMetrics.getFilesNotRequiringReview(), []);
+    assert.deepEqual(await codeMetrics.getDeletedFilesNotRequiringReview(), []);
+    assert.equal(await codeMetrics.getSize(), "XS");
+    assert.equal(await codeMetrics.getSizeIndicator(), "XS⚠️");
+    assert.deepEqual(
+      await codeMetrics.getMetrics(),
+      new CodeMetricsData(1, 0, 0),
+    );
+    assert.equal(await codeMetrics.isSmall(), true);
+    assert.equal(await codeMetrics.isSufficientlyTested(), false);
+  });
 });

@@ -139,3 +139,6 @@ typedocs
 # GitHub Actions Temporary Files
 github_conf/
 super-linter-output/
+
+# gh-aw Trial Artifacts
+trials/
