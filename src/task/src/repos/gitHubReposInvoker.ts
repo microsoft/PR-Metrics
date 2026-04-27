@@ -194,8 +194,8 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
         } catch (error: unknown) {
           if (
             error instanceof RequestError &&
-            (error.status as StatusCodes) ===
-              StatusCodes.UNPROCESSABLE_ENTITY &&
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- error.status is typed as number; comparing against the StatusCodes enum value is the intent.
+            error.status === StatusCodes.UNPROCESSABLE_ENTITY &&
             (error.message.includes("is too big") ||
               error.message.includes("diff is too large"))
           ) {
