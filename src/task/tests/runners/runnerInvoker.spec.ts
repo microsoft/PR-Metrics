@@ -10,6 +10,7 @@ import type ExecOutput from "../../src/runners/execOutput.js";
 import GitHubRunnerInvoker from "../../src/runners/gitHubRunnerInvoker.js";
 import RunnerInvoker from "../../src/runners/runnerInvoker.js";
 import assert from "node:assert/strict";
+import { stubEnv } from "../testUtilities/stubEnv.js";
 
 describe("runnerInvoker.ts", (): void => {
   let azurePipelinesRunnerInvoker: AzurePipelinesRunnerInvoker;
@@ -31,16 +32,13 @@ describe("runnerInvoker.ts", (): void => {
 
     it("should return true when running on GitHub", (): void => {
       // Arrange
-      process.env.GITHUB_ACTION = "PR-Metrics";
+      stubEnv(["GITHUB_ACTION", "PR-Metrics"]);
 
       // Act
       const result: boolean = RunnerInvoker.isGitHub;
 
       // Assert
       assert.equal(result, true);
-
-      // Finalization
-      delete process.env.GITHUB_ACTION;
     });
   });
 
@@ -86,7 +84,7 @@ describe("runnerInvoker.ts", (): void => {
 
     it("should call the underlying method when running on GitHub", async (): Promise<void> => {
       // Arrange
-      process.env.GITHUB_ACTION = "PR-Metrics";
+      stubEnv(["GITHUB_ACTION", "PR-Metrics"]);
       const runnerInvoker: RunnerInvoker = new RunnerInvoker(
         instance(azurePipelinesRunnerInvoker),
         instance(gitHubRunnerInvoker),
@@ -119,14 +117,11 @@ describe("runnerInvoker.ts", (): void => {
       verify(
         gitHubRunnerInvoker.exec("TOOL", deepEqual(["Argument1", "Argument2"])),
       ).once();
-
-      // Finalization
-      delete process.env.GITHUB_ACTION;
     });
 
     it("should call the underlying method each time when running on GitHub", async (): Promise<void> => {
       // Arrange
-      process.env.GITHUB_ACTION = "PR-Metrics";
+      stubEnv(["GITHUB_ACTION", "PR-Metrics"]);
       const runnerInvoker: RunnerInvoker = new RunnerInvoker(
         instance(azurePipelinesRunnerInvoker),
         instance(gitHubRunnerInvoker),
@@ -166,9 +161,6 @@ describe("runnerInvoker.ts", (): void => {
       verify(
         gitHubRunnerInvoker.exec("TOOL", deepEqual(["Argument1", "Argument2"])),
       ).twice();
-
-      // Finalization
-      delete process.env.GITHUB_ACTION;
     });
   });
 
@@ -198,7 +190,7 @@ describe("runnerInvoker.ts", (): void => {
 
     it("should call the underlying method when running on GitHub", (): void => {
       // Arrange
-      process.env.GITHUB_ACTION = "PR-Metrics";
+      stubEnv(["GITHUB_ACTION", "PR-Metrics"]);
       const runnerInvoker: RunnerInvoker = new RunnerInvoker(
         instance(azurePipelinesRunnerInvoker),
         instance(gitHubRunnerInvoker),
@@ -218,9 +210,6 @@ describe("runnerInvoker.ts", (): void => {
       verify(
         gitHubRunnerInvoker.getInput(deepEqual(["Test", "Suffix"])),
       ).once();
-
-      // Finalization
-      delete process.env.GITHUB_ACTION;
     });
   });
 
@@ -254,7 +243,7 @@ describe("runnerInvoker.ts", (): void => {
 
     it("should call the underlying method when running on GitHub", (): void => {
       // Arrange
-      process.env.GITHUB_ACTION = "PR-Metrics";
+      stubEnv(["GITHUB_ACTION", "PR-Metrics"]);
       const runnerInvoker: RunnerInvoker = new RunnerInvoker(
         instance(azurePipelinesRunnerInvoker),
         instance(gitHubRunnerInvoker),
@@ -281,9 +270,6 @@ describe("runnerInvoker.ts", (): void => {
       ).never();
       // @ts-expect-error -- Interface is called with additional parameters not present in implementation.
       verify(gitHubRunnerInvoker.getEndpointAuthorization("id")).once();
-
-      // Finalization
-      delete process.env.GITHUB_ACTION;
     });
   });
 
@@ -313,7 +299,7 @@ describe("runnerInvoker.ts", (): void => {
 
     it("should call the underlying method when running on GitHub", (): void => {
       // Arrange
-      process.env.GITHUB_ACTION = "PR-Metrics";
+      stubEnv(["GITHUB_ACTION", "PR-Metrics"]);
       const runnerInvoker: RunnerInvoker = new RunnerInvoker(
         instance(azurePipelinesRunnerInvoker),
         instance(gitHubRunnerInvoker),
@@ -334,9 +320,6 @@ describe("runnerInvoker.ts", (): void => {
       ).never();
       // @ts-expect-error -- Interface is called with additional parameters not present in implementation.
       verify(gitHubRunnerInvoker.getEndpointAuthorizationScheme("id")).once();
-
-      // Finalization
-      delete process.env.GITHUB_ACTION;
     });
   });
 
@@ -374,7 +357,7 @@ describe("runnerInvoker.ts", (): void => {
 
     it("should call the underlying method when running on GitHub", (): void => {
       // Arrange
-      process.env.GITHUB_ACTION = "PR-Metrics";
+      stubEnv(["GITHUB_ACTION", "PR-Metrics"]);
       const runnerInvoker: RunnerInvoker = new RunnerInvoker(
         instance(azurePipelinesRunnerInvoker),
         instance(gitHubRunnerInvoker),
@@ -400,9 +383,6 @@ describe("runnerInvoker.ts", (): void => {
         // @ts-expect-error -- Interface is called with additional parameters not present in implementation.
         gitHubRunnerInvoker.getEndpointAuthorizationParameter("id", "key"),
       ).once();
-
-      // Finalization
-      delete process.env.GITHUB_ACTION;
     });
   });
 
@@ -424,7 +404,7 @@ describe("runnerInvoker.ts", (): void => {
 
     it("should call the underlying method when running on GitHub", (): void => {
       // Arrange
-      process.env.GITHUB_ACTION = "PR-Metrics";
+      stubEnv(["GITHUB_ACTION", "PR-Metrics"]);
       const runnerInvoker: RunnerInvoker = new RunnerInvoker(
         instance(azurePipelinesRunnerInvoker),
         instance(gitHubRunnerInvoker),
@@ -436,9 +416,6 @@ describe("runnerInvoker.ts", (): void => {
       // Assert
       verify(azurePipelinesRunnerInvoker.locInitialize("TEST")).never();
       verify(gitHubRunnerInvoker.locInitialize("TEST")).once();
-
-      // Finalization
-      delete process.env.GITHUB_ACTION;
     });
 
     it("should throw when locInitialize is called twice", (): void => {
@@ -502,7 +479,7 @@ describe("runnerInvoker.ts", (): void => {
 
     it("should call the underlying method when running on GitHub", (): void => {
       // Arrange
-      process.env.GITHUB_ACTION = "PR-Metrics";
+      stubEnv(["GITHUB_ACTION", "PR-Metrics"]);
       const runnerInvoker: RunnerInvoker = new RunnerInvoker(
         instance(azurePipelinesRunnerInvoker),
         instance(gitHubRunnerInvoker),
@@ -517,9 +494,6 @@ describe("runnerInvoker.ts", (): void => {
       assert.equal(result, "VALUE");
       verify(azurePipelinesRunnerInvoker.loc("TEST")).never();
       verify(gitHubRunnerInvoker.loc("TEST")).once();
-
-      // Finalization
-      delete process.env.GITHUB_ACTION;
     });
   });
 
@@ -541,7 +515,7 @@ describe("runnerInvoker.ts", (): void => {
 
     it("should call the underlying method when running on GitHub", (): void => {
       // Arrange
-      process.env.GITHUB_ACTION = "PR-Metrics";
+      stubEnv(["GITHUB_ACTION", "PR-Metrics"]);
       const runnerInvoker: RunnerInvoker = new RunnerInvoker(
         instance(azurePipelinesRunnerInvoker),
         instance(gitHubRunnerInvoker),
@@ -553,9 +527,6 @@ describe("runnerInvoker.ts", (): void => {
       // Assert
       verify(azurePipelinesRunnerInvoker.logDebug("TEST")).never();
       verify(gitHubRunnerInvoker.logDebug("TEST")).once();
-
-      // Finalization
-      delete process.env.GITHUB_ACTION;
     });
   });
 
@@ -577,7 +548,7 @@ describe("runnerInvoker.ts", (): void => {
 
     it("should call the underlying method when running on GitHub", (): void => {
       // Arrange
-      process.env.GITHUB_ACTION = "PR-Metrics";
+      stubEnv(["GITHUB_ACTION", "PR-Metrics"]);
       const runnerInvoker: RunnerInvoker = new RunnerInvoker(
         instance(azurePipelinesRunnerInvoker),
         instance(gitHubRunnerInvoker),
@@ -589,9 +560,6 @@ describe("runnerInvoker.ts", (): void => {
       // Assert
       verify(azurePipelinesRunnerInvoker.logError("TEST")).never();
       verify(gitHubRunnerInvoker.logError("TEST")).once();
-
-      // Finalization
-      delete process.env.GITHUB_ACTION;
     });
   });
 
@@ -613,7 +581,7 @@ describe("runnerInvoker.ts", (): void => {
 
     it("should call the underlying method when running on GitHub", (): void => {
       // Arrange
-      process.env.GITHUB_ACTION = "PR-Metrics";
+      stubEnv(["GITHUB_ACTION", "PR-Metrics"]);
       const runnerInvoker: RunnerInvoker = new RunnerInvoker(
         instance(azurePipelinesRunnerInvoker),
         instance(gitHubRunnerInvoker),
@@ -625,9 +593,6 @@ describe("runnerInvoker.ts", (): void => {
       // Assert
       verify(azurePipelinesRunnerInvoker.logWarning("TEST")).never();
       verify(gitHubRunnerInvoker.logWarning("TEST")).once();
-
-      // Finalization
-      delete process.env.GITHUB_ACTION;
     });
   });
 
@@ -649,7 +614,7 @@ describe("runnerInvoker.ts", (): void => {
 
     it("should call the underlying method when running on GitHub", (): void => {
       // Arrange
-      process.env.GITHUB_ACTION = "PR-Metrics";
+      stubEnv(["GITHUB_ACTION", "PR-Metrics"]);
       const runnerInvoker: RunnerInvoker = new RunnerInvoker(
         instance(azurePipelinesRunnerInvoker),
         instance(gitHubRunnerInvoker),
@@ -661,9 +626,6 @@ describe("runnerInvoker.ts", (): void => {
       // Assert
       verify(azurePipelinesRunnerInvoker.setStatusFailed("TEST")).never();
       verify(gitHubRunnerInvoker.setStatusFailed("TEST")).once();
-
-      // Finalization
-      delete process.env.GITHUB_ACTION;
     });
   });
 
@@ -685,7 +647,7 @@ describe("runnerInvoker.ts", (): void => {
 
     it("should call the underlying method when running on GitHub", (): void => {
       // Arrange
-      process.env.GITHUB_ACTION = "PR-Metrics";
+      stubEnv(["GITHUB_ACTION", "PR-Metrics"]);
       const runnerInvoker: RunnerInvoker = new RunnerInvoker(
         instance(azurePipelinesRunnerInvoker),
         instance(gitHubRunnerInvoker),
@@ -697,9 +659,6 @@ describe("runnerInvoker.ts", (): void => {
       // Assert
       verify(azurePipelinesRunnerInvoker.setStatusSkipped("TEST")).never();
       verify(gitHubRunnerInvoker.setStatusSkipped("TEST")).once();
-
-      // Finalization
-      delete process.env.GITHUB_ACTION;
     });
   });
 
@@ -721,7 +680,7 @@ describe("runnerInvoker.ts", (): void => {
 
     it("should call the underlying method when running on GitHub", (): void => {
       // Arrange
-      process.env.GITHUB_ACTION = "PR-Metrics";
+      stubEnv(["GITHUB_ACTION", "PR-Metrics"]);
       const runnerInvoker: RunnerInvoker = new RunnerInvoker(
         instance(azurePipelinesRunnerInvoker),
         instance(gitHubRunnerInvoker),
@@ -733,9 +692,6 @@ describe("runnerInvoker.ts", (): void => {
       // Assert
       verify(azurePipelinesRunnerInvoker.setStatusSucceeded("TEST")).never();
       verify(gitHubRunnerInvoker.setStatusSucceeded("TEST")).once();
-
-      // Finalization
-      delete process.env.GITHUB_ACTION;
     });
   });
 
@@ -757,7 +713,7 @@ describe("runnerInvoker.ts", (): void => {
 
     it("should call the underlying method when running on GitHub", (): void => {
       // Arrange
-      process.env.GITHUB_ACTION = "PR-Metrics";
+      stubEnv(["GITHUB_ACTION", "PR-Metrics"]);
       const runnerInvoker: RunnerInvoker = new RunnerInvoker(
         instance(azurePipelinesRunnerInvoker),
         instance(gitHubRunnerInvoker),
@@ -769,9 +725,6 @@ describe("runnerInvoker.ts", (): void => {
       // Assert
       verify(azurePipelinesRunnerInvoker.setSecret("id")).never();
       verify(gitHubRunnerInvoker.setSecret("id")).once();
-
-      // Finalization
-      delete process.env.GITHUB_ACTION;
     });
   });
 });

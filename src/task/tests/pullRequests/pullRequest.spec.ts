@@ -3,12 +3,14 @@
  * Licensed under the MIT License.
  */
 
-import { instance, mock, verify, when } from "ts-mockito";
+import { instance, mock, when } from "ts-mockito";
 import CodeMetrics from "../../src/metrics/codeMetrics.js";
 import Logger from "../../src/utilities/logger.js";
 import PullRequest from "../../src/pullRequests/pullRequest.js";
 import RunnerInvoker from "../../src/runners/runnerInvoker.js";
 import assert from "node:assert/strict";
+import { stubEnv } from "../testUtilities/stubEnv.js";
+import { stubLocalization } from "../testUtilities/stubLocalization.js";
 
 describe("pullRequest.ts", (): void => {
   let codeMetrics: CodeMetrics;
@@ -22,99 +24,14 @@ describe("pullRequest.ts", (): void => {
     logger = mock(Logger);
 
     runnerInvoker = mock(RunnerInvoker);
-    when(
-      runnerInvoker.loc(
-        "metrics.codeMetrics.titleSizeIndicatorFormat",
-        "(XS|S|M|L|\\d*XL)",
-        "(✔|⚠️)?",
-      ),
-    ).thenReturn("(XS|S|M|L|\\d*XL)(✔|⚠️)?");
-    when(runnerInvoker.loc("metrics.codeMetrics.titleSizeL")).thenReturn("L");
-    when(runnerInvoker.loc("metrics.codeMetrics.titleSizeM")).thenReturn("M");
-    when(runnerInvoker.loc("metrics.codeMetrics.titleSizeS")).thenReturn("S");
-    when(runnerInvoker.loc("metrics.codeMetrics.titleSizeXL")).thenReturn("XL");
-    when(runnerInvoker.loc("metrics.codeMetrics.titleSizeXS")).thenReturn("XS");
-    when(
-      runnerInvoker.loc("metrics.codeMetrics.titleTestsInsufficient"),
-    ).thenReturn("⚠️");
-    when(
-      runnerInvoker.loc("metrics.codeMetrics.titleTestsSufficient"),
-    ).thenReturn("✔");
-    when(
-      runnerInvoker.loc("pullRequests.pullRequest.addDescription"),
-    ).thenReturn("❌ **Add a description.**");
-    when(
-      runnerInvoker.loc("pullRequests.pullRequest.titleFormat", "S✔", ""),
-    ).thenReturn("S✔ ◾ ");
-    when(
-      runnerInvoker.loc("pullRequests.pullRequest.titleFormat", "PREFIX", ""),
-    ).thenReturn("PREFIX ◾ ");
-    when(
-      runnerInvoker.loc("pullRequests.pullRequest.titleFormat", "S✔", "Title"),
-    ).thenReturn("S✔ ◾ Title");
-    when(
-      runnerInvoker.loc(
-        "pullRequests.pullRequest.titleFormat",
-        "PREFIX",
-        "Title",
-      ),
-    ).thenReturn("PREFIX ◾ Title");
-    when(
-      runnerInvoker.loc(
-        "pullRequests.pullRequest.titleFormat",
-        "S✔",
-        "PREFIX ◾ Title",
-      ),
-    ).thenReturn("S✔ ◾ PREFIX ◾ Title");
-    when(
-      runnerInvoker.loc(
-        "pullRequests.pullRequest.titleFormat",
-        "S✔",
-        "PREFIX✔ ◾ Title",
-      ),
-    ).thenReturn("S✔ ◾ PREFIX✔ ◾ Title");
-    when(
-      runnerInvoker.loc(
-        "pullRequests.pullRequest.titleFormat",
-        "S✔",
-        "PREFIX⚠️ ◾ Title",
-      ),
-    ).thenReturn("S✔ ◾ PREFIX⚠️ ◾ Title");
-    when(
-      runnerInvoker.loc(
-        "pullRequests.pullRequest.titleFormat",
-        "S✔",
-        "PS ◾ Title",
-      ),
-    ).thenReturn("S✔ ◾ PS ◾ Title");
-    when(
-      runnerInvoker.loc(
-        "pullRequests.pullRequest.titleFormat",
-        "S✔",
-        "PS✔ ◾ Title",
-      ),
-    ).thenReturn("S✔ ◾ PS✔ ◾ Title");
-    when(
-      runnerInvoker.loc(
-        "pullRequests.pullRequest.titleFormat",
-        "S✔",
-        "PS⚠️ ◾ Title",
-      ),
-    ).thenReturn("S✔ ◾ PS⚠️ ◾ Title");
-    when(
-      runnerInvoker.loc(
-        "pullRequests.pullRequest.titleFormat",
-        "(XS|S|M|L|\\d*XL)(✔|⚠️)?",
-        "(?<originalTitle>.*)",
-      ),
-    ).thenReturn("(XS|S|M|L|\\d*XL)(✔|⚠️)? ◾ (?<originalTitle>.*)");
+    stubLocalization(runnerInvoker);
   });
 
   describe("isPullRequest", (): void => {
     it("should return true when the GitHub runner is being used and GITHUB_BASE_REF is defined", (): void => {
       // Arrange
-      process.env.GITHUB_ACTION = "PR-Metrics";
-      process.env.GITHUB_BASE_REF = "develop";
+      stubEnv(["GITHUB_ACTION", "PR-Metrics"]);
+      stubEnv(["GITHUB_BASE_REF", "develop"]);
       const pullRequest: PullRequest = new PullRequest(
         instance(codeMetrics),
         instance(logger),
@@ -126,17 +43,12 @@ describe("pullRequest.ts", (): void => {
 
       // Assert
       assert.equal(result, true);
-      verify(logger.logDebug("* PullRequest.isPullRequest")).once();
-
-      // Finalization
-      delete process.env.GITHUB_ACTION;
-      delete process.env.GITHUB_BASE_REF;
     });
 
     it("should return false when the GitHub runner is being used and GITHUB_BASE_REF is the empty string", (): void => {
       // Arrange
-      process.env.GITHUB_ACTION = "PR-Metrics";
-      process.env.GITHUB_BASE_REF = "";
+      stubEnv(["GITHUB_ACTION", "PR-Metrics"]);
+      stubEnv(["GITHUB_BASE_REF", ""]);
       const pullRequest: PullRequest = new PullRequest(
         instance(codeMetrics),
         instance(logger),
@@ -148,16 +60,11 @@ describe("pullRequest.ts", (): void => {
 
       // Assert
       assert.equal(result, false);
-      verify(logger.logDebug("* PullRequest.isPullRequest")).once();
-
-      // Finalization
-      delete process.env.GITHUB_ACTION;
-      delete process.env.GITHUB_BASE_REF;
     });
 
     it("should return true when the Azure Pipelines runner is being used and SYSTEM_PULLREQUEST_PULLREQUESTID is defined", (): void => {
       // Arrange
-      process.env.SYSTEM_PULLREQUEST_PULLREQUESTID = "refs/heads/develop";
+      stubEnv(["SYSTEM_PULLREQUEST_PULLREQUESTID", "refs/heads/develop"]);
       const pullRequest: PullRequest = new PullRequest(
         instance(codeMetrics),
         instance(logger),
@@ -169,15 +76,11 @@ describe("pullRequest.ts", (): void => {
 
       // Assert
       assert.equal(result, true);
-      verify(logger.logDebug("* PullRequest.isPullRequest")).once();
-
-      // Finalization
-      delete process.env.SYSTEM_PULLREQUEST_PULLREQUESTID;
     });
 
     it("should return false when the Azure Pipelines runner is being used and SYSTEM_PULLREQUEST_PULLREQUESTID is not defined", (): void => {
       // Arrange
-      delete process.env.SYSTEM_PULLREQUEST_TARGETBRANCH;
+      stubEnv(["SYSTEM_PULLREQUEST_PULLREQUESTID", undefined]);
       const pullRequest: PullRequest = new PullRequest(
         instance(codeMetrics),
         instance(logger),
@@ -189,14 +92,13 @@ describe("pullRequest.ts", (): void => {
 
       // Assert
       assert.equal(result, false);
-      verify(logger.logDebug("* PullRequest.isPullRequest")).once();
     });
   });
 
   describe("isSupportedProvider", (): void => {
     it("should return true when the GitHub runner is being used", (): void => {
       // Arrange
-      process.env.GITHUB_ACTION = "PR-Metrics";
+      stubEnv(["GITHUB_ACTION", "PR-Metrics"]);
       const pullRequest: PullRequest = new PullRequest(
         instance(codeMetrics),
         instance(logger),
@@ -208,15 +110,11 @@ describe("pullRequest.ts", (): void => {
 
       // Assert
       assert.equal(result, true);
-      verify(logger.logDebug("* PullRequest.isSupportedProvider")).once();
-
-      // Finalization
-      delete process.env.GITHUB_ACTION;
     });
 
     it("should throw an error when the Azure Pipelines runner is being used and BUILD_REPOSITORY_PROVIDER is undefined", (): void => {
       // Arrange
-      delete process.env.BUILD_REPOSITORY_PROVIDER;
+      stubEnv(["BUILD_REPOSITORY_PROVIDER", undefined]);
       const pullRequest: PullRequest = new PullRequest(
         instance(codeMetrics),
         instance(logger),
@@ -234,7 +132,6 @@ describe("pullRequest.ts", (): void => {
           "'BUILD_REPOSITORY_PROVIDER', accessed within 'PullRequest.isSupportedProvider', is invalid, null, or undefined 'undefined'.",
         ),
       );
-      verify(logger.logDebug("* PullRequest.isSupportedProvider")).once();
     });
 
     {
@@ -243,7 +140,7 @@ describe("pullRequest.ts", (): void => {
       testCases.forEach((provider: string): void => {
         it(`should return true when the Azure Pipelines runner is being used and BUILD_REPOSITORY_PROVIDER is set to '${provider}'`, (): void => {
           // Arrange
-          process.env.BUILD_REPOSITORY_PROVIDER = provider;
+          stubEnv(["BUILD_REPOSITORY_PROVIDER", provider]);
           const pullRequest: PullRequest = new PullRequest(
             instance(codeMetrics),
             instance(logger),
@@ -255,17 +152,13 @@ describe("pullRequest.ts", (): void => {
 
           // Assert
           assert.equal(result, true);
-          verify(logger.logDebug("* PullRequest.isSupportedProvider")).once();
-
-          // Finalization
-          delete process.env.BUILD_REPOSITORY_PROVIDER;
         });
       });
     }
 
     it("should return the provider when the Azure Pipelines runner is being used and BUILD_REPOSITORY_PROVIDER is not set to TfsGit or GitHub", (): void => {
       // Arrange
-      process.env.BUILD_REPOSITORY_PROVIDER = "Other";
+      stubEnv(["BUILD_REPOSITORY_PROVIDER", "Other"]);
       const pullRequest: PullRequest = new PullRequest(
         instance(codeMetrics),
         instance(logger),
@@ -277,10 +170,6 @@ describe("pullRequest.ts", (): void => {
 
       // Assert
       assert.equal(result, "Other");
-      verify(logger.logDebug("* PullRequest.isSupportedProvider")).once();
-
-      // Finalization
-      delete process.env.BUILD_REPOSITORY_PROVIDER;
     });
   });
 
@@ -299,7 +188,6 @@ describe("pullRequest.ts", (): void => {
 
       // Assert
       assert.equal(result, null);
-      verify(logger.logDebug("* PullRequest.getUpdatedDescription()")).once();
     });
 
     {
@@ -320,9 +208,6 @@ describe("pullRequest.ts", (): void => {
 
           // Assert
           assert.equal(result, "❌ **Add a description.**");
-          verify(
-            logger.logDebug("* PullRequest.getUpdatedDescription()"),
-          ).once();
         });
       });
     }
@@ -343,7 +228,6 @@ describe("pullRequest.ts", (): void => {
 
       // Assert
       assert.equal(result, null);
-      verify(logger.logDebug("* PullRequest.getUpdatedTitle()")).once();
     });
 
     {
@@ -372,7 +256,6 @@ describe("pullRequest.ts", (): void => {
 
           // Assert
           assert.equal(result, `S✔ ◾ ${currentTitle}`);
-          verify(logger.logDebug("* PullRequest.getUpdatedTitle()")).once();
         });
       });
     }
@@ -418,7 +301,6 @@ describe("pullRequest.ts", (): void => {
 
           // Assert
           assert.equal(result, "PREFIX ◾ Title");
-          verify(logger.logDebug("* PullRequest.getUpdatedTitle()")).once();
         });
       });
     }

@@ -14,6 +14,8 @@ import PullRequestCommentsData from "../../src/pullRequests/pullRequestCommentsD
 import ReposInvoker from "../../src/repos/reposInvoker.js";
 import RunnerInvoker from "../../src/runners/runnerInvoker.js";
 import assert from "node:assert/strict";
+import { stubEnv } from "../testUtilities/stubEnv.js";
+import { stubLocalization } from "../testUtilities/stubLocalization.js";
 
 describe("codeMetricsCalculator.ts", (): void => {
   let gitInvoker: GitInvoker;
@@ -41,49 +43,7 @@ describe("codeMetricsCalculator.ts", (): void => {
     pullRequestComments = mock(PullRequestComments);
 
     runnerInvoker = mock(RunnerInvoker);
-    when(
-      runnerInvoker.loc("metrics.codeMetricsCalculator.noGitRepoAzureDevOps"),
-    ).thenReturn(
-      "No Git repo present. Remove 'checkout: none' (YAML) or disable 'Don't sync sources' under the build process phase settings (classic).",
-    );
-    when(
-      runnerInvoker.loc("metrics.codeMetricsCalculator.noGitRepoGitHub"),
-    ).thenReturn(
-      "No Git repo present. Run the 'actions/checkout' action prior to PR Metrics.",
-    );
-    when(
-      runnerInvoker.loc(
-        "metrics.codeMetricsCalculator.noGitHistoryAzureDevOps",
-      ),
-    ).thenReturn(
-      "Could not access sufficient Git history. Set 'fetchDepth: 0' as a parameter to the 'checkout' task (YAML) or disable 'Shallow fetch' under the build process phase settings (classic).",
-    );
-    when(
-      runnerInvoker.loc("metrics.codeMetricsCalculator.noGitHistoryGitHub"),
-    ).thenReturn(
-      "Could not access sufficient Git history. Add 'fetch-depth: 0' as a parameter to the 'actions/checkout' action.",
-    );
-    when(
-      runnerInvoker.loc(
-        "metrics.codeMetricsCalculator.noPullRequestIdAzureDevOps",
-      ),
-    ).thenReturn("Could not determine the Pull Request ID.");
-    when(
-      runnerInvoker.loc("metrics.codeMetricsCalculator.noPullRequestIdGitHub"),
-    ).thenReturn(
-      "Could not determine the Pull Request ID. Ensure 'pull_request' is the pipeline trigger.",
-    );
-    when(
-      runnerInvoker.loc("metrics.codeMetricsCalculator.noPullRequest"),
-    ).thenReturn("The build is not running against a pull request.");
-    when(
-      runnerInvoker.loc(
-        "metrics.codeMetricsCalculator.unsupportedProvider",
-        "Other",
-      ),
-    ).thenReturn(
-      "The build is running against a pull request from 'Other', which is not a supported provider.",
-    );
+    stubLocalization(runnerInvoker);
   });
 
   describe("shouldSkipWithUnsupportedProvider", (): void => {
@@ -104,7 +64,6 @@ describe("codeMetricsCalculator.ts", (): void => {
 
       // Assert
       assert.equal(result, null);
-      verify(logger.logDebug("* CodeMetricsCalculator.shouldSkip")).once();
     });
 
     it("should return the appropriate message when not a supported provider", (): void => {
@@ -125,7 +84,6 @@ describe("codeMetricsCalculator.ts", (): void => {
 
       // Assert
       assert.equal(result, "The build is not running against a pull request.");
-      verify(logger.logDebug("* CodeMetricsCalculator.shouldSkip")).once();
     });
 
     it("should return null when the task should not be skipped", (): void => {
@@ -149,7 +107,6 @@ describe("codeMetricsCalculator.ts", (): void => {
         result,
         "The build is running against a pull request from 'Other', which is not a supported provider.",
       );
-      verify(logger.logDebug("* CodeMetricsCalculator.shouldSkip")).once();
     });
   });
 
@@ -171,7 +128,6 @@ describe("codeMetricsCalculator.ts", (): void => {
 
       // Assert
       assert.equal(result, null);
-      verify(logger.logDebug("* CodeMetricsCalculator.shouldStop()")).once();
     });
 
     it("should return the appropriate message when no access token is available", async (): Promise<void> => {
@@ -194,7 +150,6 @@ describe("codeMetricsCalculator.ts", (): void => {
 
       // Assert
       assert.equal(result, "No Access Token");
-      verify(logger.logDebug("* CodeMetricsCalculator.shouldStop()")).once();
     });
 
     it("should return the appropriate message when not called from a Git repo on Azure DevOps", async (): Promise<void> => {
@@ -218,12 +173,11 @@ describe("codeMetricsCalculator.ts", (): void => {
         result,
         "No Git repo present. Remove 'checkout: none' (YAML) or disable 'Don't sync sources' under the build process phase settings (classic).",
       );
-      verify(logger.logDebug("* CodeMetricsCalculator.shouldStop()")).once();
     });
 
     it("should return the appropriate message when not called from a Git repo on GitHub", async (): Promise<void> => {
       // Arrange
-      process.env.GITHUB_ACTION = "PR-Metrics";
+      stubEnv(["GITHUB_ACTION", "PR-Metrics"]);
       when(gitInvoker.isGitRepo()).thenResolve(false);
       const codeMetricsCalculator: CodeMetricsCalculator =
         new CodeMetricsCalculator(
@@ -243,10 +197,6 @@ describe("codeMetricsCalculator.ts", (): void => {
         result,
         "No Git repo present. Run the 'actions/checkout' action prior to PR Metrics.",
       );
-      verify(logger.logDebug("* CodeMetricsCalculator.shouldStop()")).once();
-
-      // Finalization
-      delete process.env.GITHUB_ACTION;
     });
 
     it("should return the appropriate message when the pull request ID is not available on Azure DevOps", async (): Promise<void> => {
@@ -267,12 +217,11 @@ describe("codeMetricsCalculator.ts", (): void => {
 
       // Assert
       assert.equal(result, "Could not determine the Pull Request ID.");
-      verify(logger.logDebug("* CodeMetricsCalculator.shouldStop()")).once();
     });
 
     it("should return the appropriate message when the pull request ID is not available on GitHub", async (): Promise<void> => {
       // Arrange
-      process.env.GITHUB_ACTION = "PR-Metrics";
+      stubEnv(["GITHUB_ACTION", "PR-Metrics"]);
       when(gitInvoker.isPullRequestIdAvailable()).thenReturn(false);
       const codeMetricsCalculator: CodeMetricsCalculator =
         new CodeMetricsCalculator(
@@ -292,10 +241,6 @@ describe("codeMetricsCalculator.ts", (): void => {
         result,
         "Could not determine the Pull Request ID. Ensure 'pull_request' is the pipeline trigger.",
       );
-      verify(logger.logDebug("* CodeMetricsCalculator.shouldStop()")).once();
-
-      // Finalization
-      delete process.env.GITHUB_ACTION;
     });
 
     it("should return the appropriate message when the Git history is unavailable on Azure DevOps", async (): Promise<void> => {
@@ -319,12 +264,11 @@ describe("codeMetricsCalculator.ts", (): void => {
         result,
         "Could not access sufficient Git history. Set 'fetchDepth: 0' as a parameter to the 'checkout' task (YAML) or disable 'Shallow fetch' under the build process phase settings (classic).",
       );
-      verify(logger.logDebug("* CodeMetricsCalculator.shouldStop()")).once();
     });
 
     it("should return the appropriate message when the Git history is unavailable on GitHub", async (): Promise<void> => {
       // Arrange
-      process.env.GITHUB_ACTION = "PR-Metrics";
+      stubEnv(["GITHUB_ACTION", "PR-Metrics"]);
       when(gitInvoker.isGitHistoryAvailable()).thenResolve(false);
       const codeMetricsCalculator: CodeMetricsCalculator =
         new CodeMetricsCalculator(
@@ -344,10 +288,6 @@ describe("codeMetricsCalculator.ts", (): void => {
         result,
         "Could not access sufficient Git history. Add 'fetch-depth: 0' as a parameter to the 'actions/checkout' action.",
       );
-      verify(logger.logDebug("* CodeMetricsCalculator.shouldStop()")).once();
-
-      // Finalization
-      delete process.env.GITHUB_ACTION;
     });
   });
 
@@ -376,7 +316,6 @@ describe("codeMetricsCalculator.ts", (): void => {
       await codeMetricsCalculator.updateDetails();
 
       // Assert
-      verify(logger.logDebug("* CodeMetricsCalculator.updateDetails()")).once();
       verify(pullRequest.getUpdatedTitle("Title")).once();
       verify(pullRequest.getUpdatedDescription("Description")).once();
       verify(
@@ -406,7 +345,6 @@ describe("codeMetricsCalculator.ts", (): void => {
       await codeMetricsCalculator.updateDetails();
 
       // Assert
-      verify(logger.logDebug("* CodeMetricsCalculator.updateDetails()")).once();
       verify(pullRequest.getUpdatedTitle("Title")).once();
       verify(pullRequest.getUpdatedDescription(null)).once();
       verify(
@@ -438,9 +376,6 @@ describe("codeMetricsCalculator.ts", (): void => {
       await codeMetricsCalculator.updateComments();
 
       // Assert
-      verify(
-        logger.logDebug("* CodeMetricsCalculator.updateComments()"),
-      ).once();
     });
 
     it("should perform the expected actions when the metrics comment is to be updated", async (): Promise<void> => {
@@ -469,12 +404,6 @@ describe("codeMetricsCalculator.ts", (): void => {
       await codeMetricsCalculator.updateComments();
 
       // Assert
-      verify(
-        logger.logDebug("* CodeMetricsCalculator.updateComments()"),
-      ).once();
-      verify(
-        logger.logDebug("* CodeMetricsCalculator.updateMetricsComment()"),
-      ).once();
       verify(
         reposInvoker.updateComment(
           1,
@@ -509,12 +438,6 @@ describe("codeMetricsCalculator.ts", (): void => {
       await codeMetricsCalculator.updateComments();
 
       // Assert
-      verify(
-        logger.logDebug("* CodeMetricsCalculator.updateComments()"),
-      ).once();
-      verify(
-        logger.logDebug("* CodeMetricsCalculator.updateMetricsComment()"),
-      ).once();
       verify(
         reposInvoker.createComment(
           "Description",
@@ -584,14 +507,6 @@ describe("codeMetricsCalculator.ts", (): void => {
 
             // Assert
             verify(
-              logger.logDebug("* CodeMetricsCalculator.updateComments()"),
-            ).once();
-            verify(
-              logger.logDebug(
-                "* CodeMetricsCalculator.updateNoReviewRequiredComment()",
-              ),
-            ).times(file1Comments + file2Comments);
-            verify(
               reposInvoker.createComment(
                 "No Review Required",
                 "file1.ts",
@@ -641,14 +556,6 @@ describe("codeMetricsCalculator.ts", (): void => {
 
             // Assert
             verify(
-              logger.logDebug("* CodeMetricsCalculator.updateComments()"),
-            ).once();
-            verify(
-              logger.logDebug(
-                "* CodeMetricsCalculator.updateNoReviewRequiredComment()",
-              ),
-            ).times(file1Comments + file2Comments);
-            verify(
               reposInvoker.createComment(
                 "No Review Required",
                 "file1.ts",
@@ -691,9 +598,6 @@ describe("codeMetricsCalculator.ts", (): void => {
       await codeMetricsCalculator.updateComments();
 
       // Assert
-      verify(
-        logger.logDebug("* CodeMetricsCalculator.updateComments()"),
-      ).once();
       verify(reposInvoker.deleteCommentThread(1)).once();
       verify(reposInvoker.deleteCommentThread(2)).once();
     });

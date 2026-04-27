@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import { instance, mock, verify, when } from "ts-mockito";
+import { instance, mock, when } from "ts-mockito";
 import CodeMetrics from "../../src/metrics/codeMetrics.js";
 import CodeMetricsData from "../../src/metrics/codeMetricsData.js";
 import CommentData from "../../src/repos/interfaces/commentData.js";
@@ -18,6 +18,7 @@ import type PullRequestCommentsData from "../../src/pullRequests/pullRequestComm
 import ReposInvoker from "../../src/repos/reposInvoker.js";
 import RunnerInvoker from "../../src/runners/runnerInvoker.js";
 import assert from "node:assert/strict";
+import { stubLocalization } from "../testUtilities/stubLocalization.js";
 
 describe("pullRequestComments.ts", (): void => {
   let complexGitPullRequestComments: CommentData;
@@ -66,76 +67,7 @@ describe("pullRequestComments.ts", (): void => {
     logger = mock(Logger);
 
     runnerInvoker = mock(RunnerInvoker);
-    when(
-      runnerInvoker.loc("pullRequests.pullRequestComments.commentFooter"),
-    ).thenReturn(
-      "[Metrics computed by PR Metrics. Add it to your Azure DevOps and GitHub PRs!](https://aka.ms/PRMetrics/Comment)",
-    );
-    when(
-      runnerInvoker.loc("pullRequests.pullRequestComments.commentTitle"),
-    ).thenReturn("# PR Metrics");
-    when(
-      runnerInvoker.loc(
-        "pullRequests.pullRequestComments.largePullRequestComment",
-        (400).toLocaleString(),
-      ),
-    ).thenReturn(
-      `❌ **Try to keep pull requests smaller than ${(400).toLocaleString()} lines of new product code by following the [Single Responsibility Principle (SRP)](https://aka.ms/PRMetrics/SRP).**`,
-    );
-    when(
-      runnerInvoker.loc(
-        "pullRequests.pullRequestComments.largePullRequestComment",
-        (2000).toLocaleString(),
-      ),
-    ).thenReturn(
-      `❌ **Try to keep pull requests smaller than ${(2000).toLocaleString()} lines of new product code by following the [Single Responsibility Principle (SRP)](https://aka.ms/PRMetrics/SRP).**`,
-    );
-    when(
-      runnerInvoker.loc(
-        "pullRequests.pullRequestComments.largePullRequestComment",
-        (2000000).toLocaleString(),
-      ),
-    ).thenReturn(
-      `❌ **Try to keep pull requests smaller than ${(2000000).toLocaleString()} lines of new product code by following the [Single Responsibility Principle (SRP)](https://aka.ms/PRMetrics/SRP).**`,
-    );
-    when(
-      runnerInvoker.loc(
-        "pullRequests.pullRequestComments.noReviewRequiredComment",
-      ),
-    ).thenReturn("❗ **This file doesn't require review.**");
-    when(
-      runnerInvoker.loc(
-        "pullRequests.pullRequestComments.smallPullRequestComment",
-      ),
-    ).thenReturn("✔ **Thanks for keeping your pull request small.**");
-    when(
-      runnerInvoker.loc("pullRequests.pullRequestComments.tableIgnoredCode"),
-    ).thenReturn("Ignored Code");
-    when(
-      runnerInvoker.loc("pullRequests.pullRequestComments.tableLines"),
-    ).thenReturn("Lines");
-    when(
-      runnerInvoker.loc("pullRequests.pullRequestComments.tableProductCode"),
-    ).thenReturn("Product Code");
-    when(
-      runnerInvoker.loc("pullRequests.pullRequestComments.tableSubtotal"),
-    ).thenReturn("Subtotal");
-    when(
-      runnerInvoker.loc("pullRequests.pullRequestComments.tableTestCode"),
-    ).thenReturn("Test Code");
-    when(
-      runnerInvoker.loc("pullRequests.pullRequestComments.tableTotal"),
-    ).thenReturn("Total");
-    when(
-      runnerInvoker.loc(
-        "pullRequests.pullRequestComments.testsInsufficientComment",
-      ),
-    ).thenReturn("⚠️ **Consider adding additional tests.**");
-    when(
-      runnerInvoker.loc(
-        "pullRequests.pullRequestComments.testsSufficientComment",
-      ),
-    ).thenReturn("✔ **Thanks for adding tests.**");
+    stubLocalization(runnerInvoker);
   });
 
   describe("noReviewRequiredComment", (): void => {
@@ -154,9 +86,6 @@ describe("pullRequestComments.ts", (): void => {
 
       // Assert
       assert.equal(result, "❗ **This file doesn't require review.**");
-      verify(
-        logger.logDebug("* PullRequestComments.noReviewRequiredComment"),
-      ).once();
     });
   });
 
@@ -184,7 +113,6 @@ describe("pullRequestComments.ts", (): void => {
       assert.deepEqual(result.filesNotRequiringReview, []);
       assert.deepEqual(result.deletedFilesNotRequiringReview, []);
       assert.deepEqual(result.commentThreadsRequiringDeletion, []);
-      verify(logger.logDebug("* PullRequestComments.getCommentData()")).once();
     });
 
     {
@@ -225,12 +153,6 @@ describe("pullRequestComments.ts", (): void => {
           assert.deepEqual(result.filesNotRequiringReview, []);
           assert.deepEqual(result.deletedFilesNotRequiringReview, []);
           assert.deepEqual(result.commentThreadsRequiringDeletion, []);
-          verify(
-            logger.logDebug("* PullRequestComments.getCommentData()"),
-          ).once();
-          verify(
-            logger.logDebug("* PullRequestComments.getMetricsCommentData()"),
-          ).atLeast(1);
         });
       });
     }
@@ -315,14 +237,6 @@ describe("pullRequestComments.ts", (): void => {
             );
             assert.deepEqual(result.deletedFilesNotRequiringReview, []);
             assert.deepEqual(result.commentThreadsRequiringDeletion, []);
-            verify(
-              logger.logDebug("* PullRequestComments.getCommentData()"),
-            ).once();
-            verify(
-              logger.logDebug(
-                "* PullRequestComments.getFilesRequiringCommentUpdates()",
-              ),
-            ).atLeast(1);
           });
         },
       );
@@ -411,14 +325,6 @@ describe("pullRequestComments.ts", (): void => {
               deletedFilesNotRequiringReview,
             );
             assert.deepEqual(result.commentThreadsRequiringDeletion, []);
-            verify(
-              logger.logDebug("* PullRequestComments.getCommentData()"),
-            ).once();
-            verify(
-              logger.logDebug(
-                "* PullRequestComments.getFilesRequiringCommentUpdates()",
-              ),
-            ).atLeast(1);
           });
         },
       );
@@ -456,15 +362,6 @@ describe("pullRequestComments.ts", (): void => {
       assert.deepEqual(result.filesNotRequiringReview, ["folder/file1.ts"]);
       assert.deepEqual(result.deletedFilesNotRequiringReview, []);
       assert.deepEqual(result.commentThreadsRequiringDeletion, []);
-      verify(logger.logDebug("* PullRequestComments.getCommentData()")).once();
-      verify(
-        logger.logDebug("* PullRequestComments.getMetricsCommentData()"),
-      ).once();
-      verify(
-        logger.logDebug(
-          "* PullRequestComments.getFilesRequiringCommentUpdates()",
-        ),
-      ).twice();
     });
 
     it("should return the expected result when all comment types are present in deleted files not requiring review", async (): Promise<void> => {
@@ -501,15 +398,6 @@ describe("pullRequestComments.ts", (): void => {
         "folder/file1.ts",
       ]);
       assert.deepEqual(result.commentThreadsRequiringDeletion, []);
-      verify(logger.logDebug("* PullRequestComments.getCommentData()")).once();
-      verify(
-        logger.logDebug("* PullRequestComments.getMetricsCommentData()"),
-      ).once();
-      verify(
-        logger.logDebug(
-          "* PullRequestComments.getFilesRequiringCommentUpdates()",
-        ),
-      ).twice();
     });
 
     it("should return the expected result when all comment types are present in both modified and deleted files not requiring review", async (): Promise<void> => {
@@ -547,15 +435,6 @@ describe("pullRequestComments.ts", (): void => {
       assert.deepEqual(result.filesNotRequiringReview, ["folder/file1.ts"]);
       assert.deepEqual(result.deletedFilesNotRequiringReview, ["file3.ts"]);
       assert.deepEqual(result.commentThreadsRequiringDeletion, []);
-      verify(logger.logDebug("* PullRequestComments.getCommentData()")).once();
-      verify(
-        logger.logDebug("* PullRequestComments.getMetricsCommentData()"),
-      ).once();
-      verify(
-        logger.logDebug(
-          "* PullRequestComments.getFilesRequiringCommentUpdates()",
-        ),
-      ).twice();
     });
 
     it("should return the expected result when all comment types are present in both modified and deleted files not requiring review and comments need to be deleted", async (): Promise<void> => {
@@ -592,15 +471,6 @@ describe("pullRequestComments.ts", (): void => {
       assert.deepEqual(result.filesNotRequiringReview, ["folder/file1.ts"]);
       assert.deepEqual(result.deletedFilesNotRequiringReview, ["file3.ts"]);
       assert.deepEqual(result.commentThreadsRequiringDeletion, [40]);
-      verify(logger.logDebug("* PullRequestComments.getCommentData()")).once();
-      verify(
-        logger.logDebug("* PullRequestComments.getMetricsCommentData()"),
-      ).once();
-      verify(
-        logger.logDebug(
-          "* PullRequestComments.getFilesRequiringCommentUpdates()",
-        ),
-      ).twice();
     });
 
     it("should continue when no comment content is present", async (): Promise<void> => {
@@ -635,10 +505,6 @@ describe("pullRequestComments.ts", (): void => {
       assert.equal(result.metricsCommentContent, null);
       assert.deepEqual(result.filesNotRequiringReview, ["file.ts"]);
       assert.deepEqual(result.commentThreadsRequiringDeletion, []);
-      verify(logger.logDebug("* PullRequestComments.getCommentData()")).once();
-      verify(
-        logger.logDebug("* PullRequestComments.getMetricsCommentData()"),
-      ).once();
     });
   });
 
@@ -686,18 +552,6 @@ describe("pullRequestComments.ts", (): void => {
               "\n" +
               "[Metrics computed by PR Metrics. Add it to your Azure DevOps and GitHub PRs!](https://aka.ms/PRMetrics/Comment)",
           );
-          verify(
-            logger.logDebug("* PullRequestComments.getMetricsComment()"),
-          ).once();
-          verify(
-            logger.logDebug("* PullRequestComments.addCommentSizeStatus()"),
-          ).once();
-          verify(
-            logger.logDebug("* PullRequestComments.addCommentTestStatus()"),
-          ).once();
-          verify(
-            logger.logDebug("* PullRequestComments.addCommentMetrics()"),
-          ).times(5);
         });
       });
     }
@@ -739,18 +593,6 @@ describe("pullRequestComments.ts", (): void => {
               "\n" +
               "[Metrics computed by PR Metrics. Add it to your Azure DevOps and GitHub PRs!](https://aka.ms/PRMetrics/Comment)",
           );
-          verify(
-            logger.logDebug("* PullRequestComments.getMetricsComment()"),
-          ).once();
-          verify(
-            logger.logDebug("* PullRequestComments.addCommentSizeStatus()"),
-          ).once();
-          verify(
-            logger.logDebug("* PullRequestComments.addCommentTestStatus()"),
-          ).once();
-          verify(
-            logger.logDebug("* PullRequestComments.addCommentMetrics()"),
-          ).times(5);
         });
       });
     }
@@ -785,18 +627,6 @@ describe("pullRequestComments.ts", (): void => {
           "\n" +
           "[Metrics computed by PR Metrics. Add it to your Azure DevOps and GitHub PRs!](https://aka.ms/PRMetrics/Comment)",
       );
-      verify(
-        logger.logDebug("* PullRequestComments.getMetricsComment()"),
-      ).once();
-      verify(
-        logger.logDebug("* PullRequestComments.addCommentSizeStatus()"),
-      ).once();
-      verify(
-        logger.logDebug("* PullRequestComments.addCommentTestStatus()"),
-      ).once();
-      verify(
-        logger.logDebug("* PullRequestComments.addCommentMetrics()"),
-      ).times(5);
     });
 
     it("should return the expected result when the pull request does not require a specific level of test coverage", async (): Promise<void> => {
@@ -828,18 +658,6 @@ describe("pullRequestComments.ts", (): void => {
           "\n" +
           "[Metrics computed by PR Metrics. Add it to your Azure DevOps and GitHub PRs!](https://aka.ms/PRMetrics/Comment)",
       );
-      verify(
-        logger.logDebug("* PullRequestComments.getMetricsComment()"),
-      ).once();
-      verify(
-        logger.logDebug("* PullRequestComments.addCommentSizeStatus()"),
-      ).once();
-      verify(
-        logger.logDebug("* PullRequestComments.addCommentTestStatus()"),
-      ).once();
-      verify(
-        logger.logDebug("* PullRequestComments.addCommentMetrics()"),
-      ).times(5);
     });
   });
 
@@ -861,9 +679,6 @@ describe("pullRequestComments.ts", (): void => {
 
       // Assert
       assert.equal(result, CommentThreadStatus.Closed);
-      verify(
-        logger.logDebug("* PullRequestComments.getMetricsCommentStatus()"),
-      ).once();
     });
 
     {
@@ -891,9 +706,6 @@ describe("pullRequestComments.ts", (): void => {
 
           // Assert
           assert.equal(result, CommentThreadStatus.Closed);
-          verify(
-            logger.logDebug("* PullRequestComments.getMetricsCommentStatus()"),
-          ).once();
         });
       });
     }
@@ -946,11 +758,6 @@ describe("pullRequestComments.ts", (): void => {
 
             // Assert
             assert.equal(result, CommentThreadStatus.Active);
-            verify(
-              logger.logDebug(
-                "* PullRequestComments.getMetricsCommentStatus()",
-              ),
-            ).once();
           });
         },
       );

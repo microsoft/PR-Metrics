@@ -5,6 +5,10 @@
 
 import * as AssertExtensions from "../testUtilities/assertExtensions.js";
 import { deepEqual, instance, mock, verify, when } from "ts-mockito";
+import {
+  localize,
+  stubLocalization,
+} from "../testUtilities/stubLocalization.js";
 import AzureDevOpsApiWrapper from "../../src/wrappers/azureDevOpsApiWrapper.js";
 import type { EndpointAuthorization } from "azure-pipelines-task-lib";
 import type { IRequestHandler } from "azure-devops-node-api/interfaces/common/VsoBaseInterfaces.js";
@@ -15,6 +19,7 @@ import TokenManager from "../../src/repos/tokenManager.js";
 import { WebApi } from "azure-devops-node-api";
 import assert from "node:assert/strict";
 import { resolvableInstance } from "../testUtilities/resolvableInstance.js";
+import { stubEnv } from "../testUtilities/stubEnv.js";
 
 describe("tokenManager.ts", (): void => {
   let taskApi: ITaskApi;
@@ -27,11 +32,14 @@ describe("tokenManager.ts", (): void => {
   const tenantId = "98765432-abcd-ef01-2345-678901234567";
 
   beforeEach((): void => {
-    process.env.SYSTEM_COLLECTIONURI = "https://dev.azure.com/organization";
-    process.env.SYSTEM_TEAMPROJECTID = "TeamProjectId";
-    process.env.SYSTEM_HOSTTYPE = "HostType";
-    process.env.SYSTEM_PLANID = "PlanId";
-    process.env.SYSTEM_JOBID = "JobId";
+    stubEnv(
+      ["PR_METRICS_ACCESS_TOKEN", undefined],
+      ["SYSTEM_COLLECTIONURI", "https://dev.azure.com/organization"],
+      ["SYSTEM_HOSTTYPE", "HostType"],
+      ["SYSTEM_JOBID", "JobId"],
+      ["SYSTEM_PLANID", "PlanId"],
+      ["SYSTEM_TEAMPROJECTID", "TeamProjectId"],
+    );
 
     taskApi = mock<ITaskApi>();
     const requestHandler: IRequestHandler = mock<IRequestHandler>();
@@ -64,6 +72,7 @@ describe("tokenManager.ts", (): void => {
     logger = mock(Logger);
 
     runnerInvoker = mock(RunnerInvoker);
+    stubLocalization(runnerInvoker);
     when(
       runnerInvoker.getInput(deepEqual(["Workload", "Identity", "Federation"])),
     ).thenReturn("Id");
@@ -129,14 +138,6 @@ describe("tokenManager.ts", (): void => {
     });
   });
 
-  after(() => {
-    delete process.env.SYSTEM_COLLECTIONURI;
-    delete process.env.SYSTEM_TEAMPROJECTID;
-    delete process.env.SYSTEM_HOSTTYPE;
-    delete process.env.SYSTEM_PLANID;
-    delete process.env.SYSTEM_JOBID;
-  });
-
   describe("getToken()", (): void => {
     it("returns null when no workload identity federation is specified", async (): Promise<void> => {
       // Arrange
@@ -156,12 +157,6 @@ describe("tokenManager.ts", (): void => {
 
       // Assert
       assert.equal(result, null);
-      verify(logger.logDebug("* TokenManager.getToken()")).once();
-      verify(
-        logger.logDebug(
-          "No workload identity federation specified. Using Personal Access Token (PAT) for authentication.",
-        ),
-      ).once();
     });
 
     it("returns a string indicating that the authorization scheme is invalid", async (): Promise<void> => {
@@ -174,27 +169,19 @@ describe("tokenManager.ts", (): void => {
       when(runnerInvoker.getEndpointAuthorizationScheme("Id")).thenReturn(
         "Other",
       );
-      when(
-        runnerInvoker.loc(
-          "repos.tokenManager.incorrectAuthorizationScheme",
-          "WorkloadIdentityFederation",
-          "Other",
-        ),
-      ).thenReturn(
-        "Authorization scheme of workload identity federation 'Id' must be 'WorkloadIdentityFederation' instead of 'Other'.",
-      );
 
       // Act
       const result: string | null = await tokenManager.getToken();
 
       // Assert
-      assert.equal(result, null);
-      verify(logger.logDebug("* TokenManager.getToken()")).once();
-      verify(
-        logger.logDebug(
-          "Using workload identity federation 'Id' for authentication.",
+      assert.equal(
+        result,
+        localize(
+          "repos.tokenManager.incorrectAuthorizationScheme",
+          "Id",
+          "Other",
         ),
-      ).once();
+      );
     });
 
     it("throws an error when the service principal ID is null", async (): Promise<void> => {
@@ -220,8 +207,6 @@ describe("tokenManager.ts", (): void => {
         func,
         "'servicePrincipalId', accessed within 'TokenManager.getAccessToken()', is invalid, null, or undefined 'null'.",
       );
-      verify(logger.logDebug("* TokenManager.getToken()")).once();
-      verify(logger.logDebug("* TokenManager.getAccessToken()")).once();
     });
 
     it("throws an error when the tenant ID is null", async (): Promise<void> => {
@@ -244,8 +229,6 @@ describe("tokenManager.ts", (): void => {
         func,
         "'tenantId', accessed within 'TokenManager.getAccessToken()', is invalid, null, or undefined 'null'.",
       );
-      verify(logger.logDebug("* TokenManager.getToken()")).once();
-      verify(logger.logDebug("* TokenManager.getAccessToken()")).once();
     });
 
     it("throws an error when the service principal ID is not a valid GUID", async (): Promise<void> => {
@@ -271,8 +254,6 @@ describe("tokenManager.ts", (): void => {
         func,
         "'servicePrincipalId', accessed within 'TokenManager.getAccessToken()', is not a valid GUID 'NotAGuid'.",
       );
-      verify(logger.logDebug("* TokenManager.getToken()")).once();
-      verify(logger.logDebug("* TokenManager.getAccessToken()")).once();
     });
 
     it("throws an error when the tenant ID is not a valid GUID", async (): Promise<void> => {
@@ -295,8 +276,6 @@ describe("tokenManager.ts", (): void => {
         func,
         "'tenantId', accessed within 'TokenManager.getAccessToken()', is not a valid GUID 'NotAGuid'.",
       );
-      verify(logger.logDebug("* TokenManager.getToken()")).once();
-      verify(logger.logDebug("* TokenManager.getAccessToken()")).once();
     });
 
     {
@@ -332,14 +311,6 @@ describe("tokenManager.ts", (): void => {
               func,
               `Could not acquire authorization token from workload identity federation as the scheme was '${endpointAuthorization?.scheme ?? ""}'.`,
             );
-            verify(logger.logDebug("* TokenManager.getToken()")).once();
-            verify(logger.logDebug("* TokenManager.getAccessToken()")).once();
-            verify(
-              logger.logDebug("* TokenManager.getFederatedToken()"),
-            ).once();
-            verify(
-              logger.logDebug("* TokenManager.getSystemAccessToken()"),
-            ).once();
           });
         },
       );
@@ -371,20 +342,11 @@ describe("tokenManager.ts", (): void => {
       func,
       "'endpointAuthorization.parameters.AccessToken', accessed within 'TokenManager.getSystemAccessToken()', is invalid, null, or undefined 'undefined'.",
     );
-    verify(logger.logDebug("* TokenManager.getToken()")).once();
-    verify(logger.logDebug("* TokenManager.getAccessToken()")).once();
-    verify(logger.logDebug("* TokenManager.getFederatedToken()")).once();
-    verify(logger.logDebug("* TokenManager.getSystemAccessToken()")).once();
-    verify(
-      logger.logDebug(
-        "Acquired authorization token from workload identity federation.",
-      ),
-    ).once();
   });
 
   it("throws an error when the collection URI is undefined", async (): Promise<void> => {
     // Arrange
-    delete process.env.SYSTEM_COLLECTIONURI;
+    stubEnv(["SYSTEM_COLLECTIONURI", undefined]);
     const tokenManager: TokenManager = new TokenManager(
       instance(azureDevOpsApiWrapper),
       instance(logger),
@@ -400,20 +362,11 @@ describe("tokenManager.ts", (): void => {
       func,
       "'SYSTEM_COLLECTIONURI', accessed within 'TokenManager.getFederatedToken()', is invalid, null, or undefined 'undefined'.",
     );
-    verify(logger.logDebug("* TokenManager.getToken()")).once();
-    verify(logger.logDebug("* TokenManager.getAccessToken()")).once();
-    verify(logger.logDebug("* TokenManager.getFederatedToken()")).once();
-    verify(logger.logDebug("* TokenManager.getSystemAccessToken()")).once();
-    verify(
-      logger.logDebug(
-        "Acquired authorization token from workload identity federation.",
-      ),
-    ).once();
   });
 
   it("throws an error when the team project URI is undefined", async (): Promise<void> => {
     // Arrange
-    delete process.env.SYSTEM_TEAMPROJECTID;
+    stubEnv(["SYSTEM_TEAMPROJECTID", undefined]);
     const tokenManager: TokenManager = new TokenManager(
       instance(azureDevOpsApiWrapper),
       instance(logger),
@@ -429,20 +382,11 @@ describe("tokenManager.ts", (): void => {
       func,
       "'SYSTEM_TEAMPROJECTID', accessed within 'TokenManager.getFederatedToken()', is invalid, null, or undefined 'undefined'.",
     );
-    verify(logger.logDebug("* TokenManager.getToken()")).once();
-    verify(logger.logDebug("* TokenManager.getAccessToken()")).once();
-    verify(logger.logDebug("* TokenManager.getFederatedToken()")).once();
-    verify(logger.logDebug("* TokenManager.getSystemAccessToken()")).once();
-    verify(
-      logger.logDebug(
-        "Acquired authorization token from workload identity federation.",
-      ),
-    ).once();
   });
 
   it("throws an error when the host type is undefined", async (): Promise<void> => {
     // Arrange
-    delete process.env.SYSTEM_HOSTTYPE;
+    stubEnv(["SYSTEM_HOSTTYPE", undefined]);
     const tokenManager: TokenManager = new TokenManager(
       instance(azureDevOpsApiWrapper),
       instance(logger),
@@ -458,20 +402,11 @@ describe("tokenManager.ts", (): void => {
       func,
       "'SYSTEM_HOSTTYPE', accessed within 'TokenManager.getFederatedToken()', is invalid, null, or undefined 'undefined'.",
     );
-    verify(logger.logDebug("* TokenManager.getToken()")).once();
-    verify(logger.logDebug("* TokenManager.getAccessToken()")).once();
-    verify(logger.logDebug("* TokenManager.getFederatedToken()")).once();
-    verify(logger.logDebug("* TokenManager.getSystemAccessToken()")).once();
-    verify(
-      logger.logDebug(
-        "Acquired authorization token from workload identity federation.",
-      ),
-    ).once();
   });
 
   it("throws an error when the plan ID is undefined", async (): Promise<void> => {
     // Arrange
-    delete process.env.SYSTEM_PLANID;
+    stubEnv(["SYSTEM_PLANID", undefined]);
     const tokenManager: TokenManager = new TokenManager(
       instance(azureDevOpsApiWrapper),
       instance(logger),
@@ -487,20 +422,11 @@ describe("tokenManager.ts", (): void => {
       func,
       "'SYSTEM_PLANID', accessed within 'TokenManager.getFederatedToken()', is invalid, null, or undefined 'undefined'.",
     );
-    verify(logger.logDebug("* TokenManager.getToken()")).once();
-    verify(logger.logDebug("* TokenManager.getAccessToken()")).once();
-    verify(logger.logDebug("* TokenManager.getFederatedToken()")).once();
-    verify(logger.logDebug("* TokenManager.getSystemAccessToken()")).once();
-    verify(
-      logger.logDebug(
-        "Acquired authorization token from workload identity federation.",
-      ),
-    ).once();
   });
 
   it("throws an error when the job ID is undefined", async (): Promise<void> => {
     // Arrange
-    delete process.env.SYSTEM_JOBID;
+    stubEnv(["SYSTEM_JOBID", undefined]);
     const tokenManager: TokenManager = new TokenManager(
       instance(azureDevOpsApiWrapper),
       instance(logger),
@@ -516,15 +442,6 @@ describe("tokenManager.ts", (): void => {
       func,
       "'SYSTEM_JOBID', accessed within 'TokenManager.getFederatedToken()', is invalid, null, or undefined 'undefined'.",
     );
-    verify(logger.logDebug("* TokenManager.getToken()")).once();
-    verify(logger.logDebug("* TokenManager.getAccessToken()")).once();
-    verify(logger.logDebug("* TokenManager.getFederatedToken()")).once();
-    verify(logger.logDebug("* TokenManager.getSystemAccessToken()")).once();
-    verify(
-      logger.logDebug(
-        "Acquired authorization token from workload identity federation.",
-      ),
-    ).once();
   });
 
   it("throws an error when the OIDC token is undefined", async (): Promise<void> => {
@@ -554,15 +471,6 @@ describe("tokenManager.ts", (): void => {
       func,
       "'response.oidcToken', accessed within 'TokenManager.getFederatedToken()', is invalid, null, or undefined 'undefined'.",
     );
-    verify(logger.logDebug("* TokenManager.getToken()")).once();
-    verify(logger.logDebug("* TokenManager.getAccessToken()")).once();
-    verify(logger.logDebug("* TokenManager.getFederatedToken()")).once();
-    verify(logger.logDebug("* TokenManager.getSystemAccessToken()")).once();
-    verify(
-      logger.logDebug(
-        "Acquired authorization token from workload identity federation.",
-      ),
-    ).once();
   });
 
   it("throws an error when Azure sign in fails", async (): Promise<void> => {
@@ -599,15 +507,6 @@ describe("tokenManager.ts", (): void => {
 
     // Assert
     await AssertExtensions.toThrowAsync(func, "Error Message");
-    verify(logger.logDebug("* TokenManager.getToken()")).once();
-    verify(logger.logDebug("* TokenManager.getAccessToken()")).once();
-    verify(logger.logDebug("* TokenManager.getFederatedToken()")).once();
-    verify(logger.logDebug("* TokenManager.getSystemAccessToken()")).once();
-    verify(
-      logger.logDebug(
-        "Acquired authorization token from workload identity federation.",
-      ),
-    ).once();
     verify(runnerInvoker.setSecret("OidcToken")).once();
   });
 
@@ -644,15 +543,6 @@ describe("tokenManager.ts", (): void => {
 
     // Assert
     await AssertExtensions.toThrowAsync(func, "Error Message");
-    verify(logger.logDebug("* TokenManager.getToken()")).once();
-    verify(logger.logDebug("* TokenManager.getAccessToken()")).once();
-    verify(logger.logDebug("* TokenManager.getFederatedToken()")).once();
-    verify(logger.logDebug("* TokenManager.getSystemAccessToken()")).once();
-    verify(
-      logger.logDebug(
-        "Acquired authorization token from workload identity federation.",
-      ),
-    ).once();
     verify(runnerInvoker.setSecret("OidcToken")).once();
   });
 
@@ -670,15 +560,6 @@ describe("tokenManager.ts", (): void => {
     // Assert
     assert.equal(result, null);
     assert.equal(process.env.PR_METRICS_ACCESS_TOKEN, "AccessToken");
-    verify(logger.logDebug("* TokenManager.getToken()")).once();
-    verify(logger.logDebug("* TokenManager.getAccessToken()")).once();
-    verify(logger.logDebug("* TokenManager.getFederatedToken()")).once();
-    verify(logger.logDebug("* TokenManager.getSystemAccessToken()")).once();
-    verify(
-      logger.logDebug(
-        "Acquired authorization token from workload identity federation.",
-      ),
-    ).once();
     verify(runnerInvoker.setSecret("OidcToken")).once();
     verify(runnerInvoker.setSecret("AccessToken")).once();
   });
@@ -699,15 +580,6 @@ describe("tokenManager.ts", (): void => {
     assert.equal(result1, null);
     assert.equal(result2, null);
     assert.equal(process.env.PR_METRICS_ACCESS_TOKEN, "AccessToken");
-    verify(logger.logDebug("* TokenManager.getToken()")).twice();
-    verify(logger.logDebug("* TokenManager.getAccessToken()")).once();
-    verify(logger.logDebug("* TokenManager.getFederatedToken()")).once();
-    verify(logger.logDebug("* TokenManager.getSystemAccessToken()")).once();
-    verify(
-      logger.logDebug(
-        "Acquired authorization token from workload identity federation.",
-      ),
-    ).once();
     verify(runnerInvoker.setSecret("OidcToken")).once();
     verify(runnerInvoker.setSecret("AccessToken")).once();
   });

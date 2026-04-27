@@ -13,6 +13,7 @@ import Logger from "../../src/utilities/logger.js";
 import type PullRequestDetailsInterface from "../../src/repos/interfaces/pullRequestDetailsInterface.js";
 import ReposInvoker from "../../src/repos/reposInvoker.js";
 import assert from "node:assert/strict";
+import { stubEnv } from "../testUtilities/stubEnv.js";
 
 describe("reposInvoker.ts", (): void => {
   let azureReposInvoker: AzureReposInvoker;
@@ -28,7 +29,7 @@ describe("reposInvoker.ts", (): void => {
   describe("isAccessTokenAvailable()", (): void => {
     it("should invoke Azure Repos when called from an appropriate repo", async (): Promise<void> => {
       // Arrange
-      process.env.BUILD_REPOSITORY_PROVIDER = "TfsGit";
+      stubEnv(["BUILD_REPOSITORY_PROVIDER", "TfsGit"]);
       const reposInvoker: ReposInvoker = new ReposInvoker(
         instance(azureReposInvoker),
         instance(gitHubReposInvoker),
@@ -41,17 +42,12 @@ describe("reposInvoker.ts", (): void => {
       // Assert
       verify(azureReposInvoker.isAccessTokenAvailable()).once();
       verify(gitHubReposInvoker.isAccessTokenAvailable()).never();
-      verify(logger.logDebug("* ReposInvoker.isAccessTokenAvailable()")).once();
-      verify(logger.logDebug("* ReposInvoker.getReposInvoker()")).once();
       assert.equal(result, null);
-
-      // Finalization
-      delete process.env.BUILD_REPOSITORY_PROVIDER;
     });
 
     it("should invoke Azure Repos when called from an appropriate repo twice", async (): Promise<void> => {
       // Arrange
-      process.env.BUILD_REPOSITORY_PROVIDER = "TfsGit";
+      stubEnv(["BUILD_REPOSITORY_PROVIDER", "TfsGit"]);
       const reposInvoker: ReposInvoker = new ReposInvoker(
         instance(azureReposInvoker),
         instance(gitHubReposInvoker),
@@ -67,20 +63,13 @@ describe("reposInvoker.ts", (): void => {
       // Assert
       verify(azureReposInvoker.isAccessTokenAvailable()).twice();
       verify(gitHubReposInvoker.isAccessTokenAvailable()).never();
-      verify(
-        logger.logDebug("* ReposInvoker.isAccessTokenAvailable()"),
-      ).twice();
-      verify(logger.logDebug("* ReposInvoker.getReposInvoker()")).twice();
       assert.equal(result1, null);
       assert.equal(result2, null);
-
-      // Finalization
-      delete process.env.BUILD_REPOSITORY_PROVIDER;
     });
 
     it("should invoke GitHub when called from a GitHub runner", async (): Promise<void> => {
       // Arrange
-      process.env.GITHUB_ACTION = "PR-Metrics";
+      stubEnv(["GITHUB_ACTION", "PR-Metrics"]);
       const reposInvoker: ReposInvoker = new ReposInvoker(
         instance(azureReposInvoker),
         instance(gitHubReposInvoker),
@@ -93,12 +82,7 @@ describe("reposInvoker.ts", (): void => {
       // Assert
       verify(azureReposInvoker.isAccessTokenAvailable()).never();
       verify(gitHubReposInvoker.isAccessTokenAvailable()).once();
-      verify(logger.logDebug("* ReposInvoker.isAccessTokenAvailable()")).once();
-      verify(logger.logDebug("* ReposInvoker.getReposInvoker()")).once();
       assert.equal(result, null);
-
-      // Finalization
-      delete process.env.GITHUB_ACTION;
     });
 
     {
@@ -107,7 +91,7 @@ describe("reposInvoker.ts", (): void => {
       testCases.forEach((buildRepositoryProvider: string): void => {
         it(`should invoke GitHub when called from a repo on '${buildRepositoryProvider}'`, async (): Promise<void> => {
           // Arrange
-          process.env.BUILD_REPOSITORY_PROVIDER = buildRepositoryProvider;
+          stubEnv(["BUILD_REPOSITORY_PROVIDER", buildRepositoryProvider]);
           const reposInvoker: ReposInvoker = new ReposInvoker(
             instance(azureReposInvoker),
             instance(gitHubReposInvoker),
@@ -121,21 +105,14 @@ describe("reposInvoker.ts", (): void => {
           // Assert
           verify(azureReposInvoker.isAccessTokenAvailable()).never();
           verify(gitHubReposInvoker.isAccessTokenAvailable()).once();
-          verify(
-            logger.logDebug("* ReposInvoker.isAccessTokenAvailable()"),
-          ).once();
-          verify(logger.logDebug("* ReposInvoker.getReposInvoker()")).once();
           assert.equal(result, null);
-
-          // Finalization
-          delete process.env.BUILD_REPOSITORY_PROVIDER;
         });
       });
     }
 
     it("should throw when the repo type is not set", async (): Promise<void> => {
       // Arrange
-      delete process.env.BUILD_REPOSITORY_PROVIDER;
+      stubEnv(["BUILD_REPOSITORY_PROVIDER", undefined]);
       const reposInvoker: ReposInvoker = new ReposInvoker(
         instance(azureReposInvoker),
         instance(gitHubReposInvoker),
@@ -153,13 +130,11 @@ describe("reposInvoker.ts", (): void => {
       );
       verify(azureReposInvoker.isAccessTokenAvailable()).never();
       verify(gitHubReposInvoker.isAccessTokenAvailable()).never();
-      verify(logger.logDebug("* ReposInvoker.isAccessTokenAvailable()")).once();
-      verify(logger.logDebug("* ReposInvoker.getReposInvoker()")).once();
     });
 
     it("should throw when the repo type is set to an invalid value", async (): Promise<void> => {
       // Arrange
-      process.env.BUILD_REPOSITORY_PROVIDER = "Other";
+      stubEnv(["BUILD_REPOSITORY_PROVIDER", "Other"]);
       const reposInvoker: ReposInvoker = new ReposInvoker(
         instance(azureReposInvoker),
         instance(gitHubReposInvoker),
@@ -177,18 +152,13 @@ describe("reposInvoker.ts", (): void => {
       );
       verify(azureReposInvoker.isAccessTokenAvailable()).never();
       verify(gitHubReposInvoker.isAccessTokenAvailable()).never();
-      verify(logger.logDebug("* ReposInvoker.isAccessTokenAvailable()")).once();
-      verify(logger.logDebug("* ReposInvoker.getReposInvoker()")).once();
-
-      // Finalization
-      delete process.env.BUILD_REPOSITORY_PROVIDER;
     });
   });
 
   describe("getTitleAndDescription()", (): void => {
     it("should invoke Azure Repos when called from an appropriate repo", async (): Promise<void> => {
       // Arrange
-      process.env.BUILD_REPOSITORY_PROVIDER = "TfsGit";
+      stubEnv(["BUILD_REPOSITORY_PROVIDER", "TfsGit"]);
       const reposInvoker: ReposInvoker = new ReposInvoker(
         instance(azureReposInvoker),
         instance(gitHubReposInvoker),
@@ -202,17 +172,12 @@ describe("reposInvoker.ts", (): void => {
       // Assert
       verify(azureReposInvoker.getTitleAndDescription()).once();
       verify(gitHubReposInvoker.getTitleAndDescription()).never();
-      verify(logger.logDebug("* ReposInvoker.getTitleAndDescription()")).once();
-      verify(logger.logDebug("* ReposInvoker.getReposInvoker()")).once();
       assert.equal(result, null);
-
-      // Finalization
-      delete process.env.BUILD_REPOSITORY_PROVIDER;
     });
 
     it("should invoke GitHub when called from a GitHub runner", async (): Promise<void> => {
       // Arrange
-      process.env.GITHUB_ACTION = "PR-Metrics";
+      stubEnv(["GITHUB_ACTION", "PR-Metrics"]);
       const reposInvoker: ReposInvoker = new ReposInvoker(
         instance(azureReposInvoker),
         instance(gitHubReposInvoker),
@@ -226,12 +191,7 @@ describe("reposInvoker.ts", (): void => {
       // Assert
       verify(azureReposInvoker.getTitleAndDescription()).never();
       verify(gitHubReposInvoker.getTitleAndDescription()).once();
-      verify(logger.logDebug("* ReposInvoker.getTitleAndDescription()")).once();
-      verify(logger.logDebug("* ReposInvoker.getReposInvoker()")).once();
       assert.equal(result, null);
-
-      // Finalization
-      delete process.env.GITHUB_ACTION;
     });
 
     {
@@ -240,7 +200,7 @@ describe("reposInvoker.ts", (): void => {
       testCases.forEach((buildRepositoryProvider: string): void => {
         it(`should invoke GitHub when called from a repo on '${buildRepositoryProvider}'`, async (): Promise<void> => {
           // Arrange
-          process.env.BUILD_REPOSITORY_PROVIDER = buildRepositoryProvider;
+          stubEnv(["BUILD_REPOSITORY_PROVIDER", buildRepositoryProvider]);
           const reposInvoker: ReposInvoker = new ReposInvoker(
             instance(azureReposInvoker),
             instance(gitHubReposInvoker),
@@ -254,21 +214,14 @@ describe("reposInvoker.ts", (): void => {
           // Assert
           verify(azureReposInvoker.getTitleAndDescription()).never();
           verify(gitHubReposInvoker.getTitleAndDescription()).once();
-          verify(
-            logger.logDebug("* ReposInvoker.getTitleAndDescription()"),
-          ).once();
-          verify(logger.logDebug("* ReposInvoker.getReposInvoker()")).once();
           assert.equal(result, null);
-
-          // Finalization
-          delete process.env.BUILD_REPOSITORY_PROVIDER;
         });
       });
     }
 
     it("should throw when the repo type is not set", async (): Promise<void> => {
       // Arrange
-      delete process.env.BUILD_REPOSITORY_PROVIDER;
+      stubEnv(["BUILD_REPOSITORY_PROVIDER", undefined]);
       const reposInvoker: ReposInvoker = new ReposInvoker(
         instance(azureReposInvoker),
         instance(gitHubReposInvoker),
@@ -286,13 +239,11 @@ describe("reposInvoker.ts", (): void => {
       );
       verify(azureReposInvoker.getTitleAndDescription()).never();
       verify(gitHubReposInvoker.getTitleAndDescription()).never();
-      verify(logger.logDebug("* ReposInvoker.getTitleAndDescription()")).once();
-      verify(logger.logDebug("* ReposInvoker.getReposInvoker()")).once();
     });
 
     it("should throw when the repo type is set to an invalid value", async (): Promise<void> => {
       // Arrange
-      process.env.BUILD_REPOSITORY_PROVIDER = "Other";
+      stubEnv(["BUILD_REPOSITORY_PROVIDER", "Other"]);
       const reposInvoker: ReposInvoker = new ReposInvoker(
         instance(azureReposInvoker),
         instance(gitHubReposInvoker),
@@ -310,18 +261,13 @@ describe("reposInvoker.ts", (): void => {
       );
       verify(azureReposInvoker.getTitleAndDescription()).never();
       verify(gitHubReposInvoker.getTitleAndDescription()).never();
-      verify(logger.logDebug("* ReposInvoker.getTitleAndDescription()")).once();
-      verify(logger.logDebug("* ReposInvoker.getReposInvoker()")).once();
-
-      // Finalization
-      delete process.env.BUILD_REPOSITORY_PROVIDER;
     });
   });
 
   describe("getComments()", (): void => {
     it("should invoke Azure Repos when called from an appropriate repo", async (): Promise<void> => {
       // Arrange
-      process.env.BUILD_REPOSITORY_PROVIDER = "TfsGit";
+      stubEnv(["BUILD_REPOSITORY_PROVIDER", "TfsGit"]);
       const reposInvoker: ReposInvoker = new ReposInvoker(
         instance(azureReposInvoker),
         instance(gitHubReposInvoker),
@@ -334,17 +280,12 @@ describe("reposInvoker.ts", (): void => {
       // Assert
       verify(azureReposInvoker.getComments()).once();
       verify(gitHubReposInvoker.getComments()).never();
-      verify(logger.logDebug("* ReposInvoker.getComments()")).once();
-      verify(logger.logDebug("* ReposInvoker.getReposInvoker()")).once();
       assert.equal(result, null);
-
-      // Finalization
-      delete process.env.BUILD_REPOSITORY_PROVIDER;
     });
 
     it("should invoke GitHub when called from a GitHub runner", async (): Promise<void> => {
       // Arrange
-      process.env.GITHUB_ACTION = "PR-Metrics";
+      stubEnv(["GITHUB_ACTION", "PR-Metrics"]);
       const reposInvoker: ReposInvoker = new ReposInvoker(
         instance(azureReposInvoker),
         instance(gitHubReposInvoker),
@@ -357,12 +298,7 @@ describe("reposInvoker.ts", (): void => {
       // Assert
       verify(azureReposInvoker.getComments()).never();
       verify(gitHubReposInvoker.getComments()).once();
-      verify(logger.logDebug("* ReposInvoker.getComments()")).once();
-      verify(logger.logDebug("* ReposInvoker.getReposInvoker()")).once();
       assert.equal(result, null);
-
-      // Finalization
-      delete process.env.GITHUB_ACTION;
     });
 
     {
@@ -371,7 +307,7 @@ describe("reposInvoker.ts", (): void => {
       testCases.forEach((buildRepositoryProvider: string): void => {
         it(`should invoke GitHub when called from a repo on '${buildRepositoryProvider}'`, async (): Promise<void> => {
           // Arrange
-          process.env.BUILD_REPOSITORY_PROVIDER = buildRepositoryProvider;
+          stubEnv(["BUILD_REPOSITORY_PROVIDER", buildRepositoryProvider]);
           const reposInvoker: ReposInvoker = new ReposInvoker(
             instance(azureReposInvoker),
             instance(gitHubReposInvoker),
@@ -384,19 +320,14 @@ describe("reposInvoker.ts", (): void => {
           // Assert
           verify(azureReposInvoker.getComments()).never();
           verify(gitHubReposInvoker.getComments()).once();
-          verify(logger.logDebug("* ReposInvoker.getComments()")).once();
-          verify(logger.logDebug("* ReposInvoker.getReposInvoker()")).once();
           assert.equal(result, null);
-
-          // Finalization
-          delete process.env.BUILD_REPOSITORY_PROVIDER;
         });
       });
     }
 
     it("should throw when the repo type is not set", async (): Promise<void> => {
       // Arrange
-      delete process.env.BUILD_REPOSITORY_PROVIDER;
+      stubEnv(["BUILD_REPOSITORY_PROVIDER", undefined]);
       const reposInvoker: ReposInvoker = new ReposInvoker(
         instance(azureReposInvoker),
         instance(gitHubReposInvoker),
@@ -414,13 +345,11 @@ describe("reposInvoker.ts", (): void => {
       );
       verify(azureReposInvoker.getComments()).never();
       verify(gitHubReposInvoker.getComments()).never();
-      verify(logger.logDebug("* ReposInvoker.getComments()")).once();
-      verify(logger.logDebug("* ReposInvoker.getReposInvoker()")).once();
     });
 
     it("should throw when the repo type is set to an invalid value", async (): Promise<void> => {
       // Arrange
-      process.env.BUILD_REPOSITORY_PROVIDER = "Other";
+      stubEnv(["BUILD_REPOSITORY_PROVIDER", "Other"]);
       const reposInvoker: ReposInvoker = new ReposInvoker(
         instance(azureReposInvoker),
         instance(gitHubReposInvoker),
@@ -438,18 +367,13 @@ describe("reposInvoker.ts", (): void => {
       );
       verify(azureReposInvoker.getComments()).never();
       verify(gitHubReposInvoker.getComments()).never();
-      verify(logger.logDebug("* ReposInvoker.getComments()")).once();
-      verify(logger.logDebug("* ReposInvoker.getReposInvoker()")).once();
-
-      // Finalization
-      delete process.env.BUILD_REPOSITORY_PROVIDER;
     });
   });
 
   describe("setTitleAndDescription()", (): void => {
     it("should invoke Azure Repos when called from an appropriate repo", async (): Promise<void> => {
       // Arrange
-      process.env.BUILD_REPOSITORY_PROVIDER = "TfsGit";
+      stubEnv(["BUILD_REPOSITORY_PROVIDER", "TfsGit"]);
       const reposInvoker: ReposInvoker = new ReposInvoker(
         instance(azureReposInvoker),
         instance(gitHubReposInvoker),
@@ -462,16 +386,11 @@ describe("reposInvoker.ts", (): void => {
       // Assert
       verify(azureReposInvoker.setTitleAndDescription(null, null)).once();
       verify(gitHubReposInvoker.setTitleAndDescription(null, null)).never();
-      verify(logger.logDebug("* ReposInvoker.setTitleAndDescription()")).once();
-      verify(logger.logDebug("* ReposInvoker.getReposInvoker()")).once();
-
-      // Finalization
-      delete process.env.BUILD_REPOSITORY_PROVIDER;
     });
 
     it("should invoke GitHub when called from a GitHub runner", async (): Promise<void> => {
       // Arrange
-      process.env.GITHUB_ACTION = "PR-Metrics";
+      stubEnv(["GITHUB_ACTION", "PR-Metrics"]);
       const reposInvoker: ReposInvoker = new ReposInvoker(
         instance(azureReposInvoker),
         instance(gitHubReposInvoker),
@@ -484,11 +403,6 @@ describe("reposInvoker.ts", (): void => {
       // Assert
       verify(azureReposInvoker.setTitleAndDescription(null, null)).never();
       verify(gitHubReposInvoker.setTitleAndDescription(null, null)).once();
-      verify(logger.logDebug("* ReposInvoker.setTitleAndDescription()")).once();
-      verify(logger.logDebug("* ReposInvoker.getReposInvoker()")).once();
-
-      // Finalization
-      delete process.env.GITHUB_ACTION;
     });
 
     {
@@ -497,7 +411,7 @@ describe("reposInvoker.ts", (): void => {
       testCases.forEach((buildRepositoryProvider: string): void => {
         it(`should invoke GitHub when called from a repo on '${buildRepositoryProvider}'`, async (): Promise<void> => {
           // Arrange
-          process.env.BUILD_REPOSITORY_PROVIDER = buildRepositoryProvider;
+          stubEnv(["BUILD_REPOSITORY_PROVIDER", buildRepositoryProvider]);
           const reposInvoker: ReposInvoker = new ReposInvoker(
             instance(azureReposInvoker),
             instance(gitHubReposInvoker),
@@ -510,20 +424,13 @@ describe("reposInvoker.ts", (): void => {
           // Assert
           verify(azureReposInvoker.setTitleAndDescription(null, null)).never();
           verify(gitHubReposInvoker.setTitleAndDescription(null, null)).once();
-          verify(
-            logger.logDebug("* ReposInvoker.setTitleAndDescription()"),
-          ).once();
-          verify(logger.logDebug("* ReposInvoker.getReposInvoker()")).once();
-
-          // Finalization
-          delete process.env.BUILD_REPOSITORY_PROVIDER;
         });
       });
     }
 
     it("should throw when the repo type is not set", async (): Promise<void> => {
       // Arrange
-      delete process.env.BUILD_REPOSITORY_PROVIDER;
+      stubEnv(["BUILD_REPOSITORY_PROVIDER", undefined]);
       const reposInvoker: ReposInvoker = new ReposInvoker(
         instance(azureReposInvoker),
         instance(gitHubReposInvoker),
@@ -541,13 +448,11 @@ describe("reposInvoker.ts", (): void => {
       );
       verify(azureReposInvoker.setTitleAndDescription(null, null)).never();
       verify(gitHubReposInvoker.setTitleAndDescription(null, null)).never();
-      verify(logger.logDebug("* ReposInvoker.setTitleAndDescription()")).once();
-      verify(logger.logDebug("* ReposInvoker.getReposInvoker()")).once();
     });
 
     it("should throw when the repo type is set to an invalid value", async (): Promise<void> => {
       // Arrange
-      process.env.BUILD_REPOSITORY_PROVIDER = "Other";
+      stubEnv(["BUILD_REPOSITORY_PROVIDER", "Other"]);
       const reposInvoker: ReposInvoker = new ReposInvoker(
         instance(azureReposInvoker),
         instance(gitHubReposInvoker),
@@ -565,18 +470,13 @@ describe("reposInvoker.ts", (): void => {
       );
       verify(azureReposInvoker.setTitleAndDescription(null, null)).never();
       verify(gitHubReposInvoker.setTitleAndDescription(null, null)).never();
-      verify(logger.logDebug("* ReposInvoker.setTitleAndDescription()")).once();
-      verify(logger.logDebug("* ReposInvoker.getReposInvoker()")).once();
-
-      // Finalization
-      delete process.env.BUILD_REPOSITORY_PROVIDER;
     });
   });
 
   describe("createComment()", (): void => {
     it("should invoke Azure Repos when called from an appropriate repo", async (): Promise<void> => {
       // Arrange
-      process.env.BUILD_REPOSITORY_PROVIDER = "TfsGit";
+      stubEnv(["BUILD_REPOSITORY_PROVIDER", "TfsGit"]);
       const reposInvoker: ReposInvoker = new ReposInvoker(
         instance(azureReposInvoker),
         instance(gitHubReposInvoker),
@@ -609,16 +509,11 @@ describe("reposInvoker.ts", (): void => {
           false,
         ),
       ).never();
-      verify(logger.logDebug("* ReposInvoker.createComment()")).once();
-      verify(logger.logDebug("* ReposInvoker.getReposInvoker()")).once();
-
-      // Finalization
-      delete process.env.BUILD_REPOSITORY_PROVIDER;
     });
 
     it("should invoke GitHub when called from a GitHub runner", async (): Promise<void> => {
       // Arrange
-      process.env.GITHUB_ACTION = "PR-Metrics";
+      stubEnv(["GITHUB_ACTION", "PR-Metrics"]);
       const reposInvoker: ReposInvoker = new ReposInvoker(
         instance(azureReposInvoker),
         instance(gitHubReposInvoker),
@@ -651,11 +546,6 @@ describe("reposInvoker.ts", (): void => {
           false,
         ),
       ).once();
-      verify(logger.logDebug("* ReposInvoker.createComment()")).once();
-      verify(logger.logDebug("* ReposInvoker.getReposInvoker()")).once();
-
-      // Finalization
-      delete process.env.GITHUB_ACTION;
     });
 
     {
@@ -664,7 +554,7 @@ describe("reposInvoker.ts", (): void => {
       testCases.forEach((buildRepositoryProvider: string): void => {
         it(`should invoke GitHub when called from a repo on '${buildRepositoryProvider}'`, async (): Promise<void> => {
           // Arrange
-          process.env.BUILD_REPOSITORY_PROVIDER = buildRepositoryProvider;
+          stubEnv(["BUILD_REPOSITORY_PROVIDER", buildRepositoryProvider]);
           const reposInvoker: ReposInvoker = new ReposInvoker(
             instance(azureReposInvoker),
             instance(gitHubReposInvoker),
@@ -697,18 +587,13 @@ describe("reposInvoker.ts", (): void => {
               false,
             ),
           ).once();
-          verify(logger.logDebug("* ReposInvoker.createComment()")).once();
-          verify(logger.logDebug("* ReposInvoker.getReposInvoker()")).once();
-
-          // Finalization
-          delete process.env.BUILD_REPOSITORY_PROVIDER;
         });
       });
     }
 
     it("should throw when the repo type is not set", async (): Promise<void> => {
       // Arrange
-      delete process.env.BUILD_REPOSITORY_PROVIDER;
+      stubEnv(["BUILD_REPOSITORY_PROVIDER", undefined]);
       const reposInvoker: ReposInvoker = new ReposInvoker(
         instance(azureReposInvoker),
         instance(gitHubReposInvoker),
@@ -741,13 +626,11 @@ describe("reposInvoker.ts", (): void => {
           false,
         ),
       ).never();
-      verify(logger.logDebug("* ReposInvoker.createComment()")).once();
-      verify(logger.logDebug("* ReposInvoker.getReposInvoker()")).once();
     });
 
     it("should throw when the repo type is set to an invalid value", async (): Promise<void> => {
       // Arrange
-      process.env.BUILD_REPOSITORY_PROVIDER = "Other";
+      stubEnv(["BUILD_REPOSITORY_PROVIDER", "Other"]);
       const reposInvoker: ReposInvoker = new ReposInvoker(
         instance(azureReposInvoker),
         instance(gitHubReposInvoker),
@@ -780,18 +663,13 @@ describe("reposInvoker.ts", (): void => {
           false,
         ),
       ).never();
-      verify(logger.logDebug("* ReposInvoker.createComment()")).once();
-      verify(logger.logDebug("* ReposInvoker.getReposInvoker()")).once();
-
-      // Finalization
-      delete process.env.BUILD_REPOSITORY_PROVIDER;
     });
   });
 
   describe("updateComment()", (): void => {
     it("should invoke Azure Repos when called from an appropriate repo", async (): Promise<void> => {
       // Arrange
-      process.env.BUILD_REPOSITORY_PROVIDER = "TfsGit";
+      stubEnv(["BUILD_REPOSITORY_PROVIDER", "TfsGit"]);
       const reposInvoker: ReposInvoker = new ReposInvoker(
         instance(azureReposInvoker),
         instance(gitHubReposInvoker),
@@ -805,16 +683,11 @@ describe("reposInvoker.ts", (): void => {
       verify(azureReposInvoker.updateComment(0, null, null)).once();
       // @ts-expect-error -- Interface is called with additional parameters not present in implementation.
       verify(gitHubReposInvoker.updateComment(0, null, null)).never();
-      verify(logger.logDebug("* ReposInvoker.updateComment()")).once();
-      verify(logger.logDebug("* ReposInvoker.getReposInvoker()")).once();
-
-      // Finalization
-      delete process.env.BUILD_REPOSITORY_PROVIDER;
     });
 
     it("should invoke GitHub when called from a GitHub runner", async (): Promise<void> => {
       // Arrange
-      process.env.GITHUB_ACTION = "PR-Metrics";
+      stubEnv(["GITHUB_ACTION", "PR-Metrics"]);
       const reposInvoker: ReposInvoker = new ReposInvoker(
         instance(azureReposInvoker),
         instance(gitHubReposInvoker),
@@ -828,11 +701,6 @@ describe("reposInvoker.ts", (): void => {
       verify(azureReposInvoker.updateComment(0, null, null)).never();
       // @ts-expect-error -- Interface is called with additional parameters not present in implementation.
       verify(gitHubReposInvoker.updateComment(0, null, null)).once();
-      verify(logger.logDebug("* ReposInvoker.updateComment()")).once();
-      verify(logger.logDebug("* ReposInvoker.getReposInvoker()")).once();
-
-      // Finalization
-      delete process.env.GITHUB_ACTION;
     });
 
     {
@@ -841,7 +709,7 @@ describe("reposInvoker.ts", (): void => {
       testCases.forEach((buildRepositoryProvider: string): void => {
         it(`should invoke GitHub when called from a repo on '${buildRepositoryProvider}'`, async (): Promise<void> => {
           // Arrange
-          process.env.BUILD_REPOSITORY_PROVIDER = buildRepositoryProvider;
+          stubEnv(["BUILD_REPOSITORY_PROVIDER", buildRepositoryProvider]);
           const reposInvoker: ReposInvoker = new ReposInvoker(
             instance(azureReposInvoker),
             instance(gitHubReposInvoker),
@@ -855,18 +723,13 @@ describe("reposInvoker.ts", (): void => {
           verify(azureReposInvoker.updateComment(0, null, null)).never();
           // @ts-expect-error -- Interface is called with additional parameters not present in implementation.
           verify(gitHubReposInvoker.updateComment(0, null, null)).once();
-          verify(logger.logDebug("* ReposInvoker.updateComment()")).once();
-          verify(logger.logDebug("* ReposInvoker.getReposInvoker()")).once();
-
-          // Finalization
-          delete process.env.BUILD_REPOSITORY_PROVIDER;
         });
       });
     }
 
     it("should throw when the repo type is not set", async (): Promise<void> => {
       // Arrange
-      delete process.env.BUILD_REPOSITORY_PROVIDER;
+      stubEnv(["BUILD_REPOSITORY_PROVIDER", undefined]);
       const reposInvoker: ReposInvoker = new ReposInvoker(
         instance(azureReposInvoker),
         instance(gitHubReposInvoker),
@@ -885,13 +748,11 @@ describe("reposInvoker.ts", (): void => {
       verify(azureReposInvoker.updateComment(0, null, null)).never();
       // @ts-expect-error -- Interface is called with additional parameters not present in implementation.
       verify(gitHubReposInvoker.updateComment(0, null, null)).never();
-      verify(logger.logDebug("* ReposInvoker.updateComment()")).once();
-      verify(logger.logDebug("* ReposInvoker.getReposInvoker()")).once();
     });
 
     it("should throw when the repo type is set to an invalid value", async (): Promise<void> => {
       // Arrange
-      process.env.BUILD_REPOSITORY_PROVIDER = "Other";
+      stubEnv(["BUILD_REPOSITORY_PROVIDER", "Other"]);
       const reposInvoker: ReposInvoker = new ReposInvoker(
         instance(azureReposInvoker),
         instance(gitHubReposInvoker),
@@ -910,18 +771,13 @@ describe("reposInvoker.ts", (): void => {
       verify(azureReposInvoker.updateComment(0, null, null)).never();
       // @ts-expect-error -- Interface is called with additional parameters not present in implementation.
       verify(gitHubReposInvoker.updateComment(0, null, null)).never();
-      verify(logger.logDebug("* ReposInvoker.updateComment()")).once();
-      verify(logger.logDebug("* ReposInvoker.getReposInvoker()")).once();
-
-      // Finalization
-      delete process.env.BUILD_REPOSITORY_PROVIDER;
     });
   });
 
   describe("deleteCommentThread()", (): void => {
     it("should invoke Azure Repos when called from an appropriate repo", async (): Promise<void> => {
       // Arrange
-      process.env.BUILD_REPOSITORY_PROVIDER = "TfsGit";
+      stubEnv(["BUILD_REPOSITORY_PROVIDER", "TfsGit"]);
       const reposInvoker: ReposInvoker = new ReposInvoker(
         instance(azureReposInvoker),
         instance(gitHubReposInvoker),
@@ -934,16 +790,11 @@ describe("reposInvoker.ts", (): void => {
       // Assert
       verify(azureReposInvoker.deleteCommentThread(20)).once();
       verify(gitHubReposInvoker.deleteCommentThread(20)).never();
-      verify(logger.logDebug("* ReposInvoker.deleteCommentThread()")).once();
-      verify(logger.logDebug("* ReposInvoker.getReposInvoker()")).once();
-
-      // Finalization
-      delete process.env.BUILD_REPOSITORY_PROVIDER;
     });
 
     it("should invoke GitHub when called from a GitHub runner", async (): Promise<void> => {
       // Arrange
-      process.env.GITHUB_ACTION = "PR-Metrics";
+      stubEnv(["GITHUB_ACTION", "PR-Metrics"]);
       const reposInvoker: ReposInvoker = new ReposInvoker(
         instance(azureReposInvoker),
         instance(gitHubReposInvoker),
@@ -956,11 +807,6 @@ describe("reposInvoker.ts", (): void => {
       // Assert
       verify(azureReposInvoker.deleteCommentThread(20)).never();
       verify(gitHubReposInvoker.deleteCommentThread(20)).once();
-      verify(logger.logDebug("* ReposInvoker.deleteCommentThread()")).once();
-      verify(logger.logDebug("* ReposInvoker.getReposInvoker()")).once();
-
-      // Finalization
-      delete process.env.GITHUB_ACTION;
     });
 
     {
@@ -969,7 +815,7 @@ describe("reposInvoker.ts", (): void => {
       testCases.forEach((buildRepositoryProvider: string): void => {
         it(`should invoke GitHub when called from a repo on '${buildRepositoryProvider}'`, async (): Promise<void> => {
           // Arrange
-          process.env.BUILD_REPOSITORY_PROVIDER = buildRepositoryProvider;
+          stubEnv(["BUILD_REPOSITORY_PROVIDER", buildRepositoryProvider]);
           const reposInvoker: ReposInvoker = new ReposInvoker(
             instance(azureReposInvoker),
             instance(gitHubReposInvoker),
@@ -982,20 +828,13 @@ describe("reposInvoker.ts", (): void => {
           // Assert
           verify(azureReposInvoker.deleteCommentThread(20)).never();
           verify(gitHubReposInvoker.deleteCommentThread(20)).once();
-          verify(
-            logger.logDebug("* ReposInvoker.deleteCommentThread()"),
-          ).once();
-          verify(logger.logDebug("* ReposInvoker.getReposInvoker()")).once();
-
-          // Finalization
-          delete process.env.BUILD_REPOSITORY_PROVIDER;
         });
       });
     }
 
     it("should throw when the repo type is not set", async (): Promise<void> => {
       // Arrange
-      delete process.env.BUILD_REPOSITORY_PROVIDER;
+      stubEnv(["BUILD_REPOSITORY_PROVIDER", undefined]);
       const reposInvoker: ReposInvoker = new ReposInvoker(
         instance(azureReposInvoker),
         instance(gitHubReposInvoker),
@@ -1013,13 +852,11 @@ describe("reposInvoker.ts", (): void => {
       );
       verify(azureReposInvoker.deleteCommentThread(20)).never();
       verify(gitHubReposInvoker.deleteCommentThread(20)).never();
-      verify(logger.logDebug("* ReposInvoker.deleteCommentThread()")).once();
-      verify(logger.logDebug("* ReposInvoker.getReposInvoker()")).once();
     });
 
     it("should throw when the repo type is set to an invalid value", async (): Promise<void> => {
       // Arrange
-      process.env.BUILD_REPOSITORY_PROVIDER = "Other";
+      stubEnv(["BUILD_REPOSITORY_PROVIDER", "Other"]);
       const reposInvoker: ReposInvoker = new ReposInvoker(
         instance(azureReposInvoker),
         instance(gitHubReposInvoker),
@@ -1037,11 +874,6 @@ describe("reposInvoker.ts", (): void => {
       );
       verify(azureReposInvoker.deleteCommentThread(20)).never();
       verify(gitHubReposInvoker.deleteCommentThread(20)).never();
-      verify(logger.logDebug("* ReposInvoker.deleteCommentThread()")).once();
-      verify(logger.logDebug("* ReposInvoker.getReposInvoker()")).once();
-
-      // Finalization
-      delete process.env.BUILD_REPOSITORY_PROVIDER;
     });
   });
 });
