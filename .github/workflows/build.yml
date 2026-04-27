@@ -174,7 +174,8 @@ jobs:
       - name: Super-Linter
         uses: super-linter/super-linter@9e863354e3ff62e0727d37183162c4a88873df41 # v8.6.0
         env:
-          FILTER_REGEX_EXCLUDE: .*dist/.*
+          CHECKOV_FILE_NAME: .checkov.yaml
+          FILTER_REGEX_EXCLUDE: .*(dist/|\.github/agents/|\.github/workflows/.*\.lock\.yml).*
           FIX_JSON_PRETTIER: true
           FIX_MARKDOWN_PRETTIER: true
           FIX_MARKDOWN: true
@@ -184,12 +185,14 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.PR_METRICS_TOKEN }}
           GITLEAKS_CONFIG_FILE: gitleaks.toml
           MARKDOWN_CONFIG_FILE: ../../.markdownlint.json
+          SAVE_SUPER_LINTER_SUMMARY: true
           SPELL_CODESPELL_CONFIG_FILE: .codespellrc
           # Disable linters that conflict with other linters.
           VALIDATE_BIOME_FORMAT: false
+          VALIDATE_BIOME_LINT: false
           VALIDATE_JSON: false
+          VALIDATE_PYTHON_BLACK: false
           VALIDATE_TYPESCRIPT_ES: false
-          VALIDATE_TYPESCRIPT_STANDARD: false
 
       - if: github.ref_name != 'main'
         name: Git – Test for Changes
