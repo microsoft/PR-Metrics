@@ -15,6 +15,6 @@
     "strict": true,
     "types": ["node"]
   },
-  "exclude": ["tests/**/*"],
+  "exclude": ["tests/**/*", "**/node_modules"],
   "extends": "@tsconfig/node24/tsconfig.json"
 }
