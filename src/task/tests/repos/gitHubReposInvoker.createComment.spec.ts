@@ -391,7 +391,10 @@ describe("gitHubReposInvoker.ts", (): void => {
           httpStatusCodes.badRequest,
           'Validation Failed: {"resource":"PullRequestReviewComment","code":"custom","field":"pull_request_review_thread.diff_entry","message":"file.ts is too big"}',
         ),
-        new HttpError(httpStatusCodes.unprocessableEntity, "Unprocessable Entity"),
+        new HttpError(
+          httpStatusCodes.unprocessableEntity,
+          "Unprocessable Entity",
+        ),
       ];
 
       testCases.forEach((error: HttpError): void => {
