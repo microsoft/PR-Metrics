@@ -64,7 +64,6 @@
     "@octokit/rest": "22.0.1",
     "azure-devops-node-api": "15.1.2",
     "azure-pipelines-task-lib": "5.2.10",
-    "http-status-codes": "2.3.0",
     "parse-git-diff": "0.0.20",
     "picomatch": "4.0.4"
   },

@@ -8,7 +8,7 @@ import ConsoleWrapper from "../../src/wrappers/consoleWrapper.js";
 import HttpError from "../testUtilities/httpError.js";
 import Logger from "../../src/utilities/logger.js";
 import RunnerInvoker from "../../src/runners/runnerInvoker.js";
-import { StatusCodes } from "http-status-codes";
+import { httpStatusCodes } from "../../src/utilities/httpStatusCodes.js";
 
 describe("logger.ts", (): void => {
   let consoleWrapper: ConsoleWrapper;
@@ -304,7 +304,7 @@ describe("logger.ts", (): void => {
         instance(runnerInvoker),
       );
       const error: HttpError = new HttpError(
-        StatusCodes.NOT_FOUND,
+        httpStatusCodes.notFound,
         "Not Found",
       );
       error.stack = "Stack contents";

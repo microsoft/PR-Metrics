@@ -4,7 +4,6 @@
  */
 
 import { RequestError } from "@octokit/request-error";
-import type { StatusCodes } from "http-status-codes";
 
 /**
  * Creates a `RequestError` object.
@@ -13,7 +12,7 @@ import type { StatusCodes } from "http-status-codes";
  * @returns The `RequestError` object.
  */
 export const createRequestError = (
-  status: StatusCodes,
+  status: number,
   content: string,
 ): RequestError => {
   const url = "https://api.github.com/api";

@@ -8,7 +8,7 @@ import type { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitIn
 import type ErrorWithStatusInterface from "./interfaces/errorWithStatusInterface.js";
 import type PullRequestDetailsInterface from "./interfaces/pullRequestDetailsInterface.js";
 import type ReposInvokerInterface from "./reposInvokerInterface.js";
-import { StatusCodes } from "http-status-codes";
+import { httpStatusCodes } from "../utilities/httpStatusCodes.js";
 
 /**
  * A base class for invoking repository functionality.
@@ -35,12 +35,12 @@ export default abstract class BaseReposInvoker implements ReposInvokerInterface 
       const statusCode: number | null =
         castedError.status ?? castedError.statusCode;
       if (
-        statusCode === StatusCodes.UNAUTHORIZED ||
-        statusCode === StatusCodes.FORBIDDEN
+        statusCode === httpStatusCodes.unauthorized ||
+        statusCode === httpStatusCodes.forbidden
       ) {
         castedError.internalMessage = castedError.message;
         castedError.message = accessErrorMessage;
-      } else if (statusCode === StatusCodes.NOT_FOUND) {
+      } else if (statusCode === httpStatusCodes.notFound) {
         castedError.internalMessage = castedError.message;
         castedError.message = notFoundErrorMessage;
       }

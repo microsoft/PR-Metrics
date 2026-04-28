@@ -17,10 +17,10 @@ import type { IGitApi } from "azure-devops-node-api/GitApi.js";
 import type Logger from "../../src/utilities/logger.js";
 import type PullRequestDetailsInterface from "../../src/repos/interfaces/pullRequestDetailsInterface.js";
 import type RunnerInvoker from "../../src/runners/runnerInvoker.js";
-import { StatusCodes } from "http-status-codes";
 import type TokenManager from "../../src/repos/tokenManager.js";
 import { any } from "../testUtilities/mockito.js";
 import assert from "node:assert/strict";
+import { httpStatusCodes } from "../../src/utilities/httpStatusCodes.js";
 import { stubEnv } from "../testUtilities/stubEnv.js";
 
 describe("azureReposInvoker.ts", (): void => {
@@ -179,13 +179,13 @@ describe("azureReposInvoker.ts", (): void => {
     }
 
     {
-      const testCases: StatusCodes[] = [
-        StatusCodes.UNAUTHORIZED,
-        StatusCodes.FORBIDDEN,
-        StatusCodes.NOT_FOUND,
+      const testCases: number[] = [
+        httpStatusCodes.unauthorized,
+        httpStatusCodes.forbidden,
+        httpStatusCodes.notFound,
       ];
 
-      testCases.forEach((statusCode: StatusCodes): void => {
+      testCases.forEach((statusCode: number): void => {
         it(`should throw when the access token has insufficient access and the API call returns status code '${String(statusCode)}'`, async (): Promise<void> => {
           // Arrange
           const error: ErrorWithStatus = new ErrorWithStatus("Test");
@@ -205,7 +205,7 @@ describe("azureReposInvoker.ts", (): void => {
 
           // Assert
           const expectedMessage: string =
-            statusCode === StatusCodes.NOT_FOUND
+            statusCode === httpStatusCodes.notFound
               ? "The resource could not be found. Verify the repository and pull request exist."
               : "Could not access the resources. Ensure the 'PR_Metrics_Access_Token' secret environment variable has access to 'Code' > 'Read & write' and 'Pull Request Threads' > 'Read & write'.";
           const result: ErrorWithStatus = await AssertExtensions.toThrowAsync(
