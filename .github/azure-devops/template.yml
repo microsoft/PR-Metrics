@@ -40,8 +40,6 @@ stages:
               displayName: npm – Install Dependencies
               inputs:
                 command: ci
-                customRegistry: useFeed
-                customFeed: Office
 
             - task: Npm@1
               displayName: npm – Build Release

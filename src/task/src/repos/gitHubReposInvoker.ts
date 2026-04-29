@@ -23,9 +23,9 @@ import PullRequestCommentData from "./interfaces/pullRequestCommentData.js";
 import type PullRequestDetailsInterface from "./interfaces/pullRequestDetailsInterface.js";
 import { RequestError } from "@octokit/request-error";
 import RunnerInvoker from "../runners/runnerInvoker.js";
-import { StatusCodes } from "http-status-codes";
 import type UpdateIssueCommentResponse from "../wrappers/octokitInterfaces/updateIssueCommentResponse.js";
 import type UpdatePullResponse from "../wrappers/octokitInterfaces/updatePullResponse.js";
+import { httpStatusCodes } from "../utilities/httpStatusCodes.js";
 
 /**
  * A class for invoking GitHub Repos functionality.
@@ -194,8 +194,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
         } catch (error: unknown) {
           if (
             error instanceof RequestError &&
-            (error.status as StatusCodes) ===
-              StatusCodes.UNPROCESSABLE_ENTITY &&
+            error.status === httpStatusCodes.unprocessableEntity &&
             (error.message.includes("is too big") ||
               error.message.includes("diff is too large"))
           ) {

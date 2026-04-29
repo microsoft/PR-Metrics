@@ -20,9 +20,9 @@ import type { OctokitOptions } from "@octokit/core";
 import type OctokitWrapper from "../../src/wrappers/octokitWrapper.js";
 import type { RequestError } from "@octokit/request-error";
 import type RunnerInvoker from "../../src/runners/runnerInvoker.js";
-import { StatusCodes } from "http-status-codes";
 import assert from "node:assert/strict";
 import { createRequestError } from "../testUtilities/createRequestError.js";
+import { httpStatusCodes } from "../../src/utilities/httpStatusCodes.js";
 
 describe("gitHubReposInvoker.ts", (): void => {
   let gitInvoker: GitInvoker;
@@ -99,7 +99,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       ).thenResolve({
         data: [],
         headers: {},
-        status: StatusCodes.OK,
+        status: httpStatusCodes.ok,
         url: "",
       });
       const gitHubReposInvoker: GitHubReposInvoker = createSut(
@@ -144,7 +144,7 @@ describe("gitHubReposInvoker.ts", (): void => {
         headers: {
           link: '<https://api.github.com/repositories/309438703/pulls/172/commits?page=2>; rel="next", <https://api.github.com/repositories/309438703/pulls/172/commits?page=24>; rel="last"',
         },
-        status: StatusCodes.OK,
+        status: httpStatusCodes.ok,
         url: "",
       });
       when(
@@ -197,7 +197,7 @@ describe("gitHubReposInvoker.ts", (): void => {
         headers: {
           link: "non-matching",
         },
-        status: StatusCodes.OK,
+        status: httpStatusCodes.ok,
         url: "",
       });
       const gitHubReposInvoker: GitHubReposInvoker = createSut(
@@ -335,7 +335,7 @@ describe("gitHubReposInvoker.ts", (): void => {
           );
           const errorMessage = `Validation Failed: {"resource":"PullRequestReviewComment","code":"custom","field":"pull_request_review_thread.diff_entry","message":"${message}"}`;
           const error: RequestError = createRequestError(
-            StatusCodes.UNPROCESSABLE_ENTITY,
+            httpStatusCodes.unprocessableEntity,
             errorMessage,
           );
           when(
@@ -388,10 +388,13 @@ describe("gitHubReposInvoker.ts", (): void => {
     {
       const testCases: HttpError[] = [
         new HttpError(
-          StatusCodes.BAD_REQUEST,
+          httpStatusCodes.badRequest,
           'Validation Failed: {"resource":"PullRequestReviewComment","code":"custom","field":"pull_request_review_thread.diff_entry","message":"file.ts is too big"}',
         ),
-        new HttpError(StatusCodes.UNPROCESSABLE_ENTITY, "Unprocessable Entity"),
+        new HttpError(
+          httpStatusCodes.unprocessableEntity,
+          "Unprocessable Entity",
+        ),
       ];
 
       testCases.forEach((error: HttpError): void => {

@@ -12,7 +12,9 @@
     "noUnusedParameters": true,
     "removeComments": true,
     "skipLibCheck": true,
-    "strict": true
+    "strict": true,
+    "types": ["node"]
   },
+  "exclude": ["tests/**/*", "**/node_modules"],
   "extends": "@tsconfig/node24/tsconfig.json"
 }

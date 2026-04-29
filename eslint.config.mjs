@@ -25,7 +25,10 @@ export default tseslint.config(
       parser: typescriptParser,
       parserOptions: {
         ecmaVersion: 2017,
-        project: "./src/task/tsconfig.json",
+        project: [
+          "./src/task/tsconfig.json",
+          "./src/task/tsconfig.test.json",
+        ],
       },
     },
     rules: {

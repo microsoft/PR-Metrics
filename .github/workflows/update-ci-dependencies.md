@@ -27,6 +27,8 @@ permissions:
   pull-requests: read
   actions: read
 
+environment: production
+
 engine: copilot
 
 tools:
@@ -83,7 +85,9 @@ Catalog every pinned version before editing. Use `grep` to locate each pattern.
 
 ### GitHub Workflows
 
-Files under `.github/workflows/*.yml`:
+Editable files in `.github/workflows/`: `build.yml`, `release-initiate.yml`,
+`release-publish.yml`. lockfiles (`*.lock.yml`) are gh-aw-generated and out
+of scope.
 
 - **SHA-Pinned Actions**: `uses: owner/repo@<40-char SHA> # vX.Y.Z`. The SHA and
   the trailing version comment must stay in sync.
@@ -145,7 +149,9 @@ but it flags and resolves inconsistencies.
 
 Locate every occurrence with `grep`:
 
-- `.github/workflows/*.yml` – `node-version: X.Y.Z` under `actions/setup-node`.
+- `.github/workflows/build.yml`, `.github/workflows/release-initiate.yml`,
+  `.github/workflows/release-publish.yml` – `node-version: X.Y.Z` under
+  `actions/setup-node`.
 - `.github/azure-devops/*.yml` – `UseNode@1` with `version: X.Y.Z`.
 - `package.json` – `engines.node`.
 - `.nvmrc` if present.
@@ -177,16 +183,19 @@ file changed most recently). Do not change the value itself.
 - **Never Hard-Pin a 1ES Template Ref Without Justification**: The `release` tag
   is intentionally moving.
 - **Never Modify Files Outside the Allowed Set**: Only
-  `.github/workflows/*.yml`, `.github/azure-devops/*.yml`, `package.json`, and
-  `.nvmrc` may be edited.
+  `.github/workflows/build.yml`, `.github/workflows/release-initiate.yml`,
+  `.github/workflows/release-publish.yml`, `.github/azure-devops/*.yml`,
+  `package.json`, and `.nvmrc` may be edited. Lockfiles (`*.lock.yml`) are
+  gh-aw-generated and must not be edited.
 
 ## Quick Reference
 
-| Dependency Type   | Files                        | Update Source          |
-| ----------------- | ---------------------------- | ---------------------- |
-| GitHub Action     | `.github/workflows/*.yml`    | `gh api` latest tag    |
-| Azure DevOps Task | `.github/azure-devops/*.yml` | ADO task reference     |
-| 1ES Template Ref  | `.github/azure-devops/*.yml` | `git ls-remote --tags` |
+- **GitHub Action**: `.github/workflows/build.yml`, `release-initiate.yml`,
+  `release-publish.yml` — update from `gh api` latest tag
+- **Azure DevOps Task**: `.github/azure-devops/*.yml` — update from ADO task
+  reference
+- **1ES Template Ref**: `.github/azure-devops/*.yml` — update from
+  `git ls-remote --tags`
 
 ## Verification
 

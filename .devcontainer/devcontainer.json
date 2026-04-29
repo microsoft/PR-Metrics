@@ -1,9 +1,5 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/vscode/main/extensions/configuration-editing/schemas/devContainer.codespaces.schema.json",
-  "name": "PR Metrics",
-  "imageContainer": {
-    "image": "mcr.microsoft.com/devcontainers/typescript-node:24"
-  },
   "customizations": {
     "vscode": {
       "extensions": [
@@ -11,22 +7,31 @@
         "DavidAnson.vscode-markdownlint",
         "dbaeumer.vscode-eslint",
         "EditorConfig.EditorConfig",
+        "fcrespo82.markdown-table-formatter",
         "streetsidesoftware.code-spell-checker"
       ],
       "settings": {
+        "[javascript][typescript]": {
+          "editor.defaultFormatter": "vscode.typescript-language-features"
+        },
+        "[markdown]": {
+          "editor.codeActionsOnSave": {
+            "source.fixAll.markdownlint": "explicit"
+          },
+          "editor.defaultFormatter": "fcrespo82.markdown-table-formatter",
+          "editor.formatOnSave": true
+        },
         "cSpell.caseSensitive": true,
         "cSpell.language": "en-US",
         "editor.codeActionsOnSave": {
-          "source.fixAll.eslint": true
+          "source.fixAll.eslint": "always"
         },
-        "editor.formatOnPaste": true,
         "editor.formatOnSave": true,
-        "editor.formatOnType": true,
         "editor.inlineSuggest.enabled": true,
         "editor.quickSuggestions": {
           "comments": "on",
-          "strings": "on",
-          "other": "on"
+          "other": "on",
+          "strings": "on"
         },
         "editor.renderWhitespace": "all",
         "editor.rulers": [80],
@@ -39,13 +44,53 @@
         "git.autofetch": true,
         "git.confirmSync": false,
         "git.enableSmartCommit": true,
-        "[markdown]": {
-          "editor.defaultFormatter": "DavidAnson.vscode-markdownlint"
-        },
-        "[typescript]": {
-          "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+        "markdownlint.config": {
+          "MD003": {
+            "style": "atx"
+          },
+          "MD004": {
+            "style": "dash"
+          },
+          "MD009": {
+            "code_blocks": true,
+            "strict": true
+          },
+          "MD010": {
+            "spaces_per_tab": 2
+          },
+          "MD024": {
+            "siblings_only": true
+          },
+          "MD029": {
+            "style": "one"
+          },
+          "MD040": {
+            "language_only": true
+          },
+          "MD046": {
+            "style": "fenced"
+          },
+          "MD048": {
+            "style": "backtick"
+          },
+          "MD049": {
+            "style": "underscore"
+          },
+          "MD050": {
+            "style": "asterisk"
+          },
+          "MD055": {
+            "style": "leading_and_trailing"
+          },
+          "MD060": {
+            "style": "aligned"
+          }
         }
       }
     }
-  }
+  },
+  "imageContainer": {
+    "image": "mcr.microsoft.com/devcontainers/typescript-node:24"
+  },
+  "name": "PR Metrics"
 }

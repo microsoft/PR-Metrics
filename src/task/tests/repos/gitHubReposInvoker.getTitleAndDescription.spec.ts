@@ -23,9 +23,9 @@ import type OctokitWrapper from "../../src/wrappers/octokitWrapper.js";
 import type PullRequestDetailsInterface from "../../src/repos/interfaces/pullRequestDetailsInterface.js";
 import type { RequestError } from "@octokit/request-error";
 import type RunnerInvoker from "../../src/runners/runnerInvoker.js";
-import { StatusCodes } from "http-status-codes";
 import assert from "node:assert/strict";
 import { createRequestError } from "../testUtilities/createRequestError.js";
+import { httpStatusCodes } from "../../src/utilities/httpStatusCodes.js";
 import { stubEnv } from "../testUtilities/stubEnv.js";
 
 describe("gitHubReposInvoker.ts", (): void => {
@@ -461,13 +461,13 @@ describe("gitHubReposInvoker.ts", (): void => {
     });
 
     {
-      const testCases: StatusCodes[] = [
-        StatusCodes.UNAUTHORIZED,
-        StatusCodes.FORBIDDEN,
-        StatusCodes.NOT_FOUND,
+      const testCases: number[] = [
+        httpStatusCodes.unauthorized,
+        httpStatusCodes.forbidden,
+        httpStatusCodes.notFound,
       ];
 
-      testCases.forEach((status: StatusCodes): void => {
+      testCases.forEach((status: number): void => {
         it(`should throw when the PAT has insufficient access and the API call returns status '${String(status)}'`, async (): Promise<void> => {
           // Arrange
           when(octokitWrapper.initialize(any())).thenCall(
@@ -498,7 +498,7 @@ describe("gitHubReposInvoker.ts", (): void => {
 
           // Assert
           const expectedMessage: string =
-            status === StatusCodes.NOT_FOUND
+            status === httpStatusCodes.notFound
               ? "The resource could not be found. Verify the repository and pull request exist."
               : "Could not access the resources. Ensure the 'PR_Metrics_Access_Token' secret environment variable has Read and Write access to pull requests (or access to 'repos' if using a Classic PAT).";
           const result: ErrorWithStatusInterface =
