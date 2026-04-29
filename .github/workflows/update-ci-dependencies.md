@@ -86,7 +86,7 @@ Catalog every pinned version before editing. Use `grep` to locate each pattern.
 ### GitHub Workflows
 
 Editable files in `.github/workflows/`: `build.yml`, `release-initiate.yml`,
-`release-publish.yml`. Lock files (`*.lock.yml`) are gh-aw-generated and out
+`release-publish.yml`. lockfiles (`*.lock.yml`) are gh-aw-generated and out
 of scope.
 
 - **SHA-Pinned Actions**: `uses: owner/repo@<40-char SHA> # vX.Y.Z`. The SHA and
@@ -185,7 +185,7 @@ file changed most recently). Do not change the value itself.
 - **Never Modify Files Outside the Allowed Set**: Only
   `.github/workflows/build.yml`, `.github/workflows/release-initiate.yml`,
   `.github/workflows/release-publish.yml`, `.github/azure-devops/*.yml`,
-  `package.json`, and `.nvmrc` may be edited. Lock files (`*.lock.yml`) are
+  `package.json`, and `.nvmrc` may be edited. Lockfiles (`*.lock.yml`) are
   gh-aw-generated and must not be edited.
 
 ## Quick Reference
