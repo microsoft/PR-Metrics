@@ -193,7 +193,7 @@ export default class CodeMetrics {
      * check for double negative matches, which override the negative matches.
      */
     type PatternGroup = "doubleNegative" | "negative" | "positive";
-    // Manual grouping instead of Object.groupBy so the task runs under Node 20 handlers that some Azure DevOps Server agents still select even when Node24 is declared.
+    // Manual grouping instead of Object.groupBy so the task runs under Node 20 handlers that some Azure DevOps Server agents still select even when Node 24 is declared.
     const grouped: Partial<Record<PatternGroup, string[]>> = {};
     for (const pattern of this._inputs.fileMatchingPatterns) {
       let key: PatternGroup;
