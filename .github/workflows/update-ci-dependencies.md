@@ -7,10 +7,10 @@ description: >-
   Refreshes pinned CI/CD dependencies – SHA-pinned GitHub Actions in
   .github/workflows/, task versions and 1ES template refs in
   .github/azure-devops/ – and audits Node.js runtime consistency across
-  workflows, pipelines, package.json, and .nvmrc. Triggered when
-  Release – Initiate completes so updates land on the release pull request
-  it opens; workflow_dispatch is available as a manual retrigger while a
-  release pull request is open.
+  workflows, pipelines, package.json, and .nvmrc. Triggered when Release –
+  Initiate completes so updates land on the release pull request it opens;
+  workflow_dispatch is available as a manual retrigger while a release pull
+  request is open.
 
 on:
   workflow_run:
@@ -61,8 +61,8 @@ safe-outputs:
       - package.json
       - .nvmrc
   github-app:
-    client-id: ${{ vars.PR_METRICS_APP_CLIENT_ID }}
-    private-key: ${{ secrets.PR_METRICS_APP_PRIVATE_KEY }}
+    client-id: Iv23lilx6AekMDUze7ss
+    private-key: ${{ secrets.PRIVATE_KEY }}
 ---
 
 # Update CI Dependencies

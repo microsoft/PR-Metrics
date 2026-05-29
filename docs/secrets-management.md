@@ -13,26 +13,18 @@ pipelines.
 - **`pr-metrics-access-app` GitHub App installation token**: One-hour
   installation token minted at job start for operations requiring elevated
   permissions on `microsoft/PR-Metrics`. Minted by
-  `actions/create-github-app-token` from the App private key
-  (`PR_METRICS_APP_PRIVATE_KEY`); the agentic `Update CI Dependencies` workflow
-  mints the same token through gh-aw's native `github-app:` block.
-- **`PR_METRICS_APP_PRIVATE_KEY`**: GitHub Actions secret holding the App's RSA
-  private key. Every workflow that needs the App installation token reads this
-  secret via `actions/create-github-app-token`.
+  `actions/create-github-app-token` using the App's Client ID (inlined in the
+  workflows, since it is a public identifier) and the App's private key
+  (`PRIVATE_KEY`); the agentic `Update CI Dependencies` workflow mints the same
+  token through gh-aw's native `github-app:` block.
+- **`PRIVATE_KEY`**: GitHub Actions secret holding the App's RSA private key.
+  Every workflow that needs the App installation token reads this secret via
+  `actions/create-github-app-token`.
 - **`PR_METRICS_ACCESS_TOKEN`**: Access token passed to the PR Metrics action.
   Environment variable scoped to the workflow/job run; populated with the
   short-lived App installation token described above.
 - **ESRP service connection**: Code signing for Azure DevOps marketplace
   releases. Azure DevOps pipeline-scoped.
-
-### Repository variables
-
-Non-secret references used when minting the App installation token:
-
-- `PR_METRICS_APP_CLIENT_ID` – GitHub App client ID
-
-This is stored as an Actions *variable* rather than a secret because the client
-ID is not itself a credential.
 
 ## Storage
 
@@ -68,9 +60,9 @@ control. The `.gitignore` file excludes common environment file patterns
   No manual rotation is required.
 - **App installation tokens**: Minted per job with a one-hour lifetime and
   discarded at job end. No standing token exists to rotate.
-- **`PR_METRICS_APP_PRIVATE_KEY`**: The App's RSA private key. Rotate by
-  generating a new key for the App and updating the GitHub Actions secret, with
-  a recommended cadence of annually or on suspected compromise.
+- **`PRIVATE_KEY`**: The App's RSA private key. Rotate by generating a new key
+  for the App and updating the GitHub Actions secret, with a recommended cadence
+  of annually or on suspected compromise.
 - **ESRP Credentials**: Managed by the Microsoft ESRP service and rotated
   according to Microsoft's internal policies.
 

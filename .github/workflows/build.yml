@@ -32,8 +32,8 @@ jobs:
         id: app-token
         uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
         with:
-          client-id: ${{ vars.PR_METRICS_APP_CLIENT_ID }}
-          private-key: ${{ secrets.PR_METRICS_APP_PRIVATE_KEY }}
+          client-id: Iv23lilx6AekMDUze7ss
+          private-key: ${{ secrets.PRIVATE_KEY }}
 
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -136,8 +136,8 @@ jobs:
         id: app-token
         uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
         with:
-          client-id: ${{ vars.PR_METRICS_APP_CLIENT_ID }}
-          private-key: ${{ secrets.PR_METRICS_APP_PRIVATE_KEY }}
+          client-id: Iv23lilx6AekMDUze7ss
+          private-key: ${{ secrets.PRIVATE_KEY }}
 
       - name: PR Metrics
         uses: ./
@@ -189,8 +189,8 @@ jobs:
         id: app-token
         uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
         with:
-          client-id: ${{ vars.PR_METRICS_APP_CLIENT_ID }}
-          private-key: ${{ secrets.PR_METRICS_APP_PRIVATE_KEY }}
+          client-id: Iv23lilx6AekMDUze7ss
+          private-key: ${{ secrets.PRIVATE_KEY }}
 
       - name: Super-Linter
         uses: super-linter/super-linter@9e863354e3ff62e0727d37183162c4a88873df41 # v8.6.0
@@ -267,8 +267,8 @@ jobs:
         id: app-token
         uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
         with:
-          client-id: ${{ vars.PR_METRICS_APP_CLIENT_ID }}
-          private-key: ${{ secrets.PR_METRICS_APP_PRIVATE_KEY }}
+          client-id: Iv23lilx6AekMDUze7ss
+          private-key: ${{ secrets.PRIVATE_KEY }}
 
       - if: github.event.pull_request.user.login == 'dependabot[bot]'
         name: Enable Auto-Merge
