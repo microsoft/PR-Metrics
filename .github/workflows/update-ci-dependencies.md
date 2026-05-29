@@ -54,14 +54,17 @@ safe-outputs:
     if-no-changes: ignore
     protected-files: allowed
     allowed-files:
+      - .github/actions/**/action.yml
       - .github/workflows/build.yml
       - .github/workflows/release-initiate.yml
       - .github/workflows/release-publish.yml
       - .github/azure-devops/*.yml
       - package.json
       - .nvmrc
-    github-token: ${{ secrets.PR_METRICS_TOKEN }}
-    github-token-for-extra-empty-commit: ${{ secrets.PR_METRICS_TOKEN }}
+  github-app:
+    app-id: ${{ vars.PR_METRICS_APP_ID }}
+    private-key: ${{ secrets.PR_METRICS_APP_PRIVATE_KEY }}
+    installation-id: ${{ vars.PR_METRICS_APP_INSTALLATION_ID }}
 ---
 
 # Update CI Dependencies
@@ -88,6 +91,9 @@ Catalog every pinned version before editing. Use `grep` to locate each pattern.
 Editable files in `.github/workflows/`: `build.yml`, `release-initiate.yml`,
 `release-publish.yml`. lockfiles (`*.lock.yml`) are gh-aw-generated and out
 of scope.
+
+Editable files in `.github/actions/`: every `action.yml` under
+`.github/actions/**/`.
 
 - **SHA-Pinned Actions**: `uses: owner/repo@<40-char SHA> # vX.Y.Z`. The SHA and
   the trailing version comment must stay in sync.
@@ -183,7 +189,8 @@ file changed most recently). Do not change the value itself.
 - **Never Hard-Pin a 1ES Template Ref Without Justification**: The `release` tag
   is intentionally moving.
 - **Never Modify Files Outside the Allowed Set**: Only
-  `.github/workflows/build.yml`, `.github/workflows/release-initiate.yml`,
+  `.github/actions/**/action.yml`, `.github/workflows/build.yml`,
+  `.github/workflows/release-initiate.yml`,
   `.github/workflows/release-publish.yml`, `.github/azure-devops/*.yml`,
   `package.json`, and `.nvmrc` may be edited. Lockfiles (`*.lock.yml`) are
   gh-aw-generated and must not be edited.
@@ -200,7 +207,7 @@ file changed most recently). Do not change the value itself.
 ## Verification
 
 No manual verification is required. After the push, the `Build` workflow reruns
-automatically (via the empty commit made with `PR_METRICS_TOKEN`) and
+automatically (via the empty commit made with the App installation token) and
 re-executes Super-Linter against the modified files. Any lint or typing failure
 surfaces there.
 

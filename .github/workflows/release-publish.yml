@@ -32,6 +32,18 @@ jobs:
         with:
           persist-credentials: false
 
+      - name: App Token – Mint
+        id: app-token
+        uses: ./.github/actions/mint-app-token
+        with:
+          app-id: ${{ vars.PR_METRICS_APP_ID }}
+          installation-id: ${{ vars.PR_METRICS_APP_INSTALLATION_ID }}
+          azure-client-id: ${{ vars.AZURE_CLIENT_ID }}
+          azure-tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          azure-subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+          keyvault-name: ${{ vars.AZURE_KEYVAULT_NAME }}
+          keyvault-key-name: ${{ vars.AZURE_KEYVAULT_KEY_NAME }}
+
       - name: gh – Log Version
         run: gh --version
 
@@ -89,7 +101,7 @@ jobs:
           -f target_commitish=${{ github.sha }}
           --jq '.body' > release-notes.md
         env:
-          GITHUB_TOKEN: ${{ secrets.PR_METRICS_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
           VERSION: ${{ steps.version.outputs.VERSION }}
 
       - name: GitHub Release
@@ -103,5 +115,5 @@ jobs:
           --notes-file release-notes.md
           --discussion-category "Releases"
         env:
-          GITHUB_TOKEN: ${{ secrets.PR_METRICS_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
           VERSION: ${{ steps.version.outputs.VERSION }}

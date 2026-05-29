@@ -10,14 +10,37 @@ pipelines.
 
 - **`GITHUB_TOKEN`**: GitHub-provided token for workflow operations.
   Per-workflow run, auto-expires.
-- **`PR_METRICS_TOKEN`**: PAT for operations requiring elevated permissions.
-  Repository-scoped.
+- **`pr-metrics-access-app` GitHub App installation token**: One-hour
+  installation token minted at job start for operations requiring elevated
+  permissions on `microsoft/PR-Metrics`. Replaces the former
+  `PR_METRICS_TOKEN` Personal Access Token. Minted via Azure Key Vault key
+  signing in GitHub-hosted workflows (private key never leaves Key Vault) and
+  via the gh-aw native `github-app:` block in the agentic
+  `Update CI Dependencies` workflow.
+- **`PR_METRICS_APP_PRIVATE_KEY`**: GitHub Actions secret holding a mirror of
+  the App's RSA private key, used only by the agentic
+  `Update CI Dependencies` workflow (gh-aw does not natively support Key Vault
+  signing). The Key Vault copy is the source of truth; this mirror is rotated
+  manually when the App key rotates.
 - **`PR_METRICS_ACCESS_TOKEN`**: Access token passed to the PR Metrics action.
-  Environment variable scoped to the workflow/job run; the underlying token may
-  be short-lived (e.g., `GITHUB_TOKEN`) or long-lived (e.g., a PAT), depending
-  on pipeline configuration.
+  Environment variable scoped to the workflow/job run; populated with the
+  short-lived App installation token described above.
 - **ESRP service connection**: Code signing for Azure DevOps marketplace
   releases. Azure DevOps pipeline-scoped.
+
+### Repository variables
+
+Non-secret references used by the App-token-minting composite action:
+
+- `PR_METRICS_APP_ID` – GitHub App ID
+- `PR_METRICS_APP_INSTALLATION_ID` – Installation ID on `microsoft/PR-Metrics`
+- `AZURE_CLIENT_ID` – Federated identity client ID
+- `AZURE_TENANT_ID`, `AZURE_SUBSCRIPTION_ID`
+- `AZURE_KEYVAULT_NAME`, `AZURE_KEYVAULT_KEY_NAME`
+
+These are stored as Actions *variables* rather than secrets because they are
+not themselves credentials; only the federated identity acting via OIDC can
+exercise the corresponding Azure resources.
 
 ## Storage
 
@@ -51,9 +74,15 @@ control. The `.gitignore` file excludes common environment file patterns
 
 - **`GITHUB_TOKEN`**: Rotated automatically by GitHub for each workflow run.
   No manual rotation is required.
-- **`PR_METRICS_TOKEN`**: Reviewed and rotated periodically by the repository
-  maintainer. The token is scoped to the minimum permissions required for its
-  purpose.
+- **App installation tokens**: Minted per job with a one-hour lifetime and
+  discarded at job end. No standing token exists to rotate.
+- **App private key (Key Vault)**: Rotated by the repository maintainer when
+  required, with a recommended cadence of annually or on suspected compromise.
+  Rotation is performed in Key Vault; no GitHub-side change is needed for the
+  conventional workflows.
+- **`PR_METRICS_APP_PRIVATE_KEY` (mirror)**: When the Key Vault key rotates,
+  the mirrored copy in GitHub Actions secrets must be updated by hand so the
+  agentic workflow continues to function.
 - **ESRP Credentials**: Managed by the Microsoft ESRP service and rotated
   according to Microsoft's internal policies.
 
