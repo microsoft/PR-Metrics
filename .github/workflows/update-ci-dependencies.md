@@ -54,7 +54,6 @@ safe-outputs:
     if-no-changes: ignore
     protected-files: allowed
     allowed-files:
-      - .github/actions/**/action.yml
       - .github/workflows/build.yml
       - .github/workflows/release-initiate.yml
       - .github/workflows/release-publish.yml
@@ -90,9 +89,6 @@ Catalog every pinned version before editing. Use `grep` to locate each pattern.
 Editable files in `.github/workflows/`: `build.yml`, `release-initiate.yml`,
 `release-publish.yml`. lockfiles (`*.lock.yml`) are gh-aw-generated and out of
 scope.
-
-Editable files in `.github/actions/`: every `action.yml` under
-`.github/actions/**/`.
 
 - **SHA-Pinned Actions**: `uses: owner/repo@<40-char SHA> # vX.Y.Z`. The SHA and
   the trailing version comment must stay in sync.
@@ -188,8 +184,7 @@ file changed most recently). Do not change the value itself.
 - **Never Hard-Pin a 1ES Template Ref Without Justification**: The `release` tag
   is intentionally moving.
 - **Never Modify Files Outside the Allowed Set**: Only
-  `.github/actions/**/action.yml`, `.github/workflows/build.yml`,
-  `.github/workflows/release-initiate.yml`,
+  `.github/workflows/build.yml`, `.github/workflows/release-initiate.yml`,
   `.github/workflows/release-publish.yml`, `.github/azure-devops/*.yml`,
   `package.json`, and `.nvmrc` may be edited. Lockfiles (`*.lock.yml`) are
   gh-aw-generated and must not be edited.

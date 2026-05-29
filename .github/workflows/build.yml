@@ -26,28 +26,14 @@ jobs:
     name: Update Code
     runs-on: ubuntu-latest
     environment: production
-    permissions:
-      id-token: write
+    permissions: {}
     steps:
-      - name: Checkout – Bootstrap (Mint App Token Action)
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-        with:
-          persist-credentials: false
-          sparse-checkout: .github/actions/mint-app-token
-          sparse-checkout-cone-mode: false
-          fetch-depth: 1
-
       - name: App Token – Mint
         id: app-token
-        uses: ./.github/actions/mint-app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
         with:
           client-id: ${{ vars.PR_METRICS_APP_CLIENT_ID }}
-          installation-id: ${{ vars.PR_METRICS_APP_INSTALLATION_ID }}
-          azure-client-id: ${{ vars.AZURE_CLIENT_ID }}
-          azure-tenant-id: ${{ vars.AZURE_TENANT_ID }}
-          azure-subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-          keyvault-name: ${{ vars.AZURE_KEYVAULT_NAME }}
-          keyvault-key-name: ${{ vars.AZURE_KEYVAULT_KEY_NAME }}
+          private-key: ${{ secrets.PR_METRICS_APP_PRIVATE_KEY }}
 
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -138,8 +124,7 @@ jobs:
     name: Test GitHub Action
     runs-on: ubuntu-latest
     environment: production
-    permissions:
-      id-token: write
+    permissions: {}
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -149,15 +134,10 @@ jobs:
 
       - name: App Token – Mint
         id: app-token
-        uses: ./.github/actions/mint-app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
         with:
           client-id: ${{ vars.PR_METRICS_APP_CLIENT_ID }}
-          installation-id: ${{ vars.PR_METRICS_APP_INSTALLATION_ID }}
-          azure-client-id: ${{ vars.AZURE_CLIENT_ID }}
-          azure-tenant-id: ${{ vars.AZURE_TENANT_ID }}
-          azure-subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-          keyvault-name: ${{ vars.AZURE_KEYVAULT_NAME }}
-          keyvault-key-name: ${{ vars.AZURE_KEYVAULT_KEY_NAME }}
+          private-key: ${{ secrets.PR_METRICS_APP_PRIVATE_KEY }}
 
       - name: PR Metrics
         uses: ./
@@ -197,8 +177,7 @@ jobs:
     name: Validate – Linter
     runs-on: ubuntu-latest
     environment: production
-    permissions:
-      id-token: write
+    permissions: {}
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -208,15 +187,10 @@ jobs:
 
       - name: App Token – Mint
         id: app-token
-        uses: ./.github/actions/mint-app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
         with:
           client-id: ${{ vars.PR_METRICS_APP_CLIENT_ID }}
-          installation-id: ${{ vars.PR_METRICS_APP_INSTALLATION_ID }}
-          azure-client-id: ${{ vars.AZURE_CLIENT_ID }}
-          azure-tenant-id: ${{ vars.AZURE_TENANT_ID }}
-          azure-subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-          keyvault-name: ${{ vars.AZURE_KEYVAULT_NAME }}
-          keyvault-key-name: ${{ vars.AZURE_KEYVAULT_KEY_NAME }}
+          private-key: ${{ secrets.PR_METRICS_APP_PRIVATE_KEY }}
 
       - name: Super-Linter
         uses: super-linter/super-linter@9e863354e3ff62e0727d37183162c4a88873df41 # v8.6.0
@@ -283,33 +257,18 @@ jobs:
     name: Dependabot
     runs-on: ubuntu-latest
     environment: production
-    permissions:
-      id-token: write
+    permissions: {}
     steps:
       - name: gh – Log Version
         run: gh --version
 
       - if: github.event.pull_request.user.login == 'dependabot[bot]'
-        name: Checkout – Bootstrap (Mint App Token Action)
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-        with:
-          persist-credentials: false
-          sparse-checkout: .github/actions/mint-app-token
-          sparse-checkout-cone-mode: false
-          fetch-depth: 1
-
-      - if: github.event.pull_request.user.login == 'dependabot[bot]'
         name: App Token – Mint
         id: app-token
-        uses: ./.github/actions/mint-app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
         with:
           client-id: ${{ vars.PR_METRICS_APP_CLIENT_ID }}
-          installation-id: ${{ vars.PR_METRICS_APP_INSTALLATION_ID }}
-          azure-client-id: ${{ vars.AZURE_CLIENT_ID }}
-          azure-tenant-id: ${{ vars.AZURE_TENANT_ID }}
-          azure-subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-          keyvault-name: ${{ vars.AZURE_KEYVAULT_NAME }}
-          keyvault-key-name: ${{ vars.AZURE_KEYVAULT_KEY_NAME }}
+          private-key: ${{ secrets.PR_METRICS_APP_PRIVATE_KEY }}
 
       - if: github.event.pull_request.user.login == 'dependabot[bot]'
         name: Enable Auto-Merge
