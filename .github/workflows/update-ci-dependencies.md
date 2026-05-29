@@ -88,8 +88,8 @@ Catalog every pinned version before editing. Use `grep` to locate each pattern.
 ### GitHub Workflows
 
 Editable files in `.github/workflows/`: `build.yml`, `release-initiate.yml`,
-`release-publish.yml`. lockfiles (`*.lock.yml`) are gh-aw-generated and out
-of scope.
+`release-publish.yml`. lockfiles (`*.lock.yml`) are gh-aw-generated and out of
+scope.
 
 Editable files in `.github/actions/`: every `action.yml` under
 `.github/actions/**/`.

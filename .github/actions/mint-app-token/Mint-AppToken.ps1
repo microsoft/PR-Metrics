@@ -10,13 +10,16 @@
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 
-foreach ($name in 'CLIENT_ID', 'INSTALLATION_ID', 'KV_NAME', 'KEY_NAME', 'GITHUB_OUTPUT') {
-    if ([string]::IsNullOrWhiteSpace([Environment]::GetEnvironmentVariable($name))) {
+foreach ($name in 'CLIENT_ID', 'INSTALLATION_ID', 'KV_NAME', 'KEY_NAME', 'GITHUB_OUTPUT')
+{
+    if ([string]::IsNullOrWhiteSpace([Environment]::GetEnvironmentVariable($name)))
+    {
         throw "Required environment variable '$name' is not set."
     }
 }
 
-function ConvertTo-Base64Url {
+function ConvertTo-Base64Url
+{
     param([Parameter(Mandatory)][byte[]] $Bytes)
     [Convert]::ToBase64String($Bytes) -replace '\+', '-' -replace '/', '_' -replace '=+$', ''
 }
@@ -28,10 +31,10 @@ function ConvertTo-Base64Url {
 $now = [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()
 $headerJson = '{"alg":"RS256","typ":"JWT"}'
 $payloadJson = ConvertTo-Json -Compress -InputObject ([ordered] @{
-    iat = $now - 60
-    exp = $now + 540
-    iss = $env:CLIENT_ID
-})
+        iat = $now - 60
+        exp = $now + 540
+        iss = $env:CLIENT_ID
+    })
 
 $headerB64 = ConvertTo-Base64Url ([Text.Encoding]::UTF8.GetBytes($headerJson))
 $payloadB64 = ConvertTo-Base64Url ([Text.Encoding]::UTF8.GetBytes($payloadJson))
@@ -51,7 +54,8 @@ $signatureB64 = az keyvault key sign `
     --query value `
     --output tsv
 
-if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($signatureB64)) {
+if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($signatureB64))
+{
     throw 'Key Vault signing operation failed.'
 }
 
@@ -62,10 +66,10 @@ $response = Invoke-RestMethod `
     -Method Post `
     -Uri "https://api.github.com/app/installations/$env:INSTALLATION_ID/access_tokens" `
     -Headers @{
-        Authorization = "Bearer $jwt"
-        Accept = 'application/vnd.github+json'
-        'X-GitHub-Api-Version' = '2022-11-28'
-    }
+    Authorization          = "Bearer $jwt"
+    Accept                 = 'application/vnd.github+json'
+    'X-GitHub-Api-Version' = '2022-11-28'
+}
 
 # Mask the token in logs before exposing it as a step output.
 "::add-mask::$($response.token)" | Write-Output

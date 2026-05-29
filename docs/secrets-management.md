@@ -17,10 +17,10 @@ pipelines.
   via the gh-aw native `github-app:` block in the agentic
   `Update CI Dependencies` workflow.
 - **`PR_METRICS_APP_PRIVATE_KEY`**: GitHub Actions secret holding a mirror of
-  the App's RSA private key, used only by the agentic
-  `Update CI Dependencies` workflow (gh-aw does not natively support Key Vault
-  signing). The Key Vault copy is the source of truth; this mirror is rotated
-  manually when the App key rotates.
+  the App's RSA private key, used only by the agentic `Update CI Dependencies`
+  workflow (gh-aw does not natively support Key Vault signing). The Key Vault
+  copy is the source of truth; this mirror is rotated manually when the App key
+  rotates.
 - **`PR_METRICS_ACCESS_TOKEN`**: Access token passed to the PR Metrics action.
   Environment variable scoped to the workflow/job run; populated with the
   short-lived App installation token described above.
@@ -75,13 +75,13 @@ control. The `.gitignore` file excludes common environment file patterns
   No manual rotation is required.
 - **App installation tokens**: Minted per job with a one-hour lifetime and
   discarded at job end. No standing token exists to rotate.
-- **App private key (Key Vault)**: Rotated by the repository maintainer when
-  required, with a recommended cadence of annually or on suspected compromise.
-  Rotation is performed in Key Vault; no GitHub-side change is needed for the
-  conventional workflows.
-- **`PR_METRICS_APP_PRIVATE_KEY` (mirror)**: When the Key Vault key rotates,
-  the mirrored copy in GitHub Actions secrets must be updated by hand so the
-  agentic workflow continues to function.
+- **App private key (Key Vault)**: Rotated automatically when required, with a
+  recommended cadence of annually or on suspected compromise. Rotation is
+  performed in Key Vault; no GitHub-side change is needed for the conventional
+  workflows.
+- **`PR_METRICS_APP_PRIVATE_KEY` (mirror)**: When the Key Vault key rotates, the
+  mirrored copy in GitHub Actions secrets must be updated by hand so the agentic
+  workflow continues to function.
 - **ESRP Credentials**: Managed by the Microsoft ESRP service and rotated
   according to Microsoft's internal policies.
 
