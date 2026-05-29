@@ -48,7 +48,7 @@ checkout:
 safe-outputs:
   push-to-pull-request-branch:
     target: "*"
-    labels:
+    required-labels:
       - release
     max: 1
     if-no-changes: ignore
@@ -62,9 +62,8 @@ safe-outputs:
       - package.json
       - .nvmrc
   github-app:
-    app-id: ${{ vars.PR_METRICS_APP_ID }}
+    client-id: ${{ vars.PR_METRICS_APP_CLIENT_ID }}
     private-key: ${{ secrets.PR_METRICS_APP_PRIVATE_KEY }}
-    installation-id: ${{ vars.PR_METRICS_APP_INSTALLATION_ID }}
 ---
 
 # Update CI Dependencies

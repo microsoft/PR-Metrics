@@ -10,7 +10,7 @@
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 
-foreach ($name in 'APP_ID', 'INSTALLATION_ID', 'KV_NAME', 'KEY_NAME', 'GITHUB_OUTPUT') {
+foreach ($name in 'CLIENT_ID', 'INSTALLATION_ID', 'KV_NAME', 'KEY_NAME', 'GITHUB_OUTPUT') {
     if ([string]::IsNullOrWhiteSpace([Environment]::GetEnvironmentVariable($name))) {
         throw "Required environment variable '$name' is not set."
     }
@@ -23,13 +23,14 @@ function ConvertTo-Base64Url {
 
 # JWT header and payload. The 60-second backdated `iat` absorbs minor clock
 # skew between the runner and GitHub. The 9-minute `exp` is well within
-# GitHub's 10-minute ceiling for App JWTs.
+# GitHub's 10-minute ceiling for App JWTs. GitHub accepts the App's client ID
+# as the `iss` claim.
 $now = [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()
 $headerJson = '{"alg":"RS256","typ":"JWT"}'
 $payloadJson = ConvertTo-Json -Compress -InputObject ([ordered] @{
     iat = $now - 60
     exp = $now + 540
-    iss = $env:APP_ID
+    iss = $env:CLIENT_ID
 })
 
 $headerB64 = ConvertTo-Base64Url ([Text.Encoding]::UTF8.GetBytes($headerJson))

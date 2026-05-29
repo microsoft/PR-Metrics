@@ -9,8 +9,8 @@ description: >-
   installation token. The private key never leaves Key Vault.
 
 inputs:
-  app-id:
-    description: GitHub App ID.
+  client-id:
+    description: GitHub App client ID.
     required: true
   installation-id:
     description: GitHub App installation ID on the target repository.
@@ -50,7 +50,7 @@ runs:
       id: mint
       shell: pwsh
       env:
-        APP_ID: ${{ inputs.app-id }}
+        CLIENT_ID: ${{ inputs.client-id }}
         INSTALLATION_ID: ${{ inputs.installation-id }}
         KV_NAME: ${{ inputs.keyvault-name }}
         KEY_NAME: ${{ inputs.keyvault-key-name }}

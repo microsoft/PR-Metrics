@@ -32,7 +32,7 @@ pipelines.
 
 Non-secret references used by the App-token-minting composite action:
 
-- `PR_METRICS_APP_ID` – GitHub App ID
+- `PR_METRICS_APP_CLIENT_ID` – GitHub App client ID
 - `PR_METRICS_APP_INSTALLATION_ID` – Installation ID on `microsoft/PR-Metrics`
 - `AZURE_CLIENT_ID` – Federated identity client ID
 - `AZURE_TENANT_ID`, `AZURE_SUBSCRIPTION_ID`
