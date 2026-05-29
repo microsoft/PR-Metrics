@@ -12,8 +12,7 @@ pipelines.
   Per-workflow run, auto-expires.
 - **`pr-metrics-access-app` GitHub App installation token**: One-hour
   installation token minted at job start for operations requiring elevated
-  permissions on `microsoft/PR-Metrics`. Replaces the former
-  `PR_METRICS_TOKEN` Personal Access Token. Minted via Azure Key Vault key
+  permissions on `microsoft/PR-Metrics`. Minted via Azure Key Vault key
   signing in GitHub-hosted workflows (private key never leaves Key Vault) and
   via the gh-aw native `github-app:` block in the agentic
   `Update CI Dependencies` workflow.
