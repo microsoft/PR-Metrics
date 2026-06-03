@@ -27,6 +27,19 @@ function ConvertTo-Base64Url
     return [System.Convert]::ToBase64String($Bytes).TrimEnd('=').Replace('+', '-').Replace('/', '_')
 }
 
+function ConvertFrom-Base64Url
+{
+    param
+    (
+        [Parameter(Mandatory = $true)]
+        [string] $Text
+    )
+
+    $base64 = $Text.Replace('-', '+').Replace('_', '/')
+    $base64 = $base64.PadRight([int][System.Math]::Ceiling($base64.Length / 4.0) * 4, '=')
+    return [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($base64))
+}
+
 function Get-DecodedPem
 {
     param
@@ -162,7 +175,19 @@ if ([string]::IsNullOrWhiteSpace($privateKey))
 
 $jwt = Get-JsonWebToken -ClientId $clientId -PrivateKey $privateKey
 
-$installation = Invoke-GitHubApi -Uri "$apiUrl/repos/$repository/installation" -Jwt $jwt -Method 'Get'
+try
+{
+    $installation = Invoke-GitHubApi -Uri "$apiUrl/repos/$repository/installation" -Jwt $jwt -Method 'Get'
+}
+catch
+{
+    # The JWT header and payload are not secret; decode them to confirm the
+    # token's shape and claims (alg, iss, iat, exp) when GitHub rejects it.
+    $segments = $jwt.Split('.')
+    $claims = ($segments | Select-Object -First 2 | ForEach-Object { ConvertFrom-Base64Url -Text $_ }) -join ' '
+    throw "$($_.Exception.Message) [JWT segments=$($segments.Count); claims=$claims]"
+}
+
 if ($null -eq $installation.id)
 {
     throw "Could not determine the App installation for '$repository'."
