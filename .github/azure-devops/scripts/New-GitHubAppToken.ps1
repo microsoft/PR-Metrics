@@ -25,7 +25,7 @@ function ConvertTo-Base64Url
     return [System.Convert]::ToBase64String($Bytes).TrimEnd('=').Replace('+', '-').Replace('/', '_')
 }
 
-function New-JsonWebToken
+function Get-JsonWebToken
 {
     param
     (
@@ -121,7 +121,7 @@ if ([string]::IsNullOrWhiteSpace($privateKey))
     throw "The 'GITHUB_APP_PRIVATE_KEY' environment variable is not set."
 }
 
-$jwt = New-JsonWebToken -ClientId $clientId -PrivateKey $privateKey
+$jwt = Get-JsonWebToken -ClientId $clientId -PrivateKey $privateKey
 
 $installation = Invoke-GitHubApi -Uri "$apiUrl/repos/$repository/installation" -Jwt $jwt -Method 'Get'
 if ($null -eq $installation.id)
@@ -137,5 +137,5 @@ if ([string]::IsNullOrWhiteSpace($accessToken.token))
 
 # Register the token as a secret so it is masked in the logs, then expose it to
 # the subsequent PR Metrics step via the output variable.
-Write-Host "##vso[task.setvariable variable=$outputVariable;issecret=true]$($accessToken.token)"
-Write-Host "Minted an installation token for '$repository' (installation $($installation.id))."
+Write-Output -InputObject "##vso[task.setvariable variable=$outputVariable;issecret=true]$($accessToken.token)"
+Write-Output -InputObject "Minted an installation token for '$repository' (installation $($installation.id))."
