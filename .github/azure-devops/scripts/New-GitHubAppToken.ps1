@@ -44,7 +44,13 @@ function Get-DecodedPem
     }
     catch
     {
-        throw 'The GITHUB_APP_PRIVATE_KEY secret is not valid Base64. Store the Base64 encoding of the App private key PEM file.'
+        # Report non-sensitive shape details (never the key) to pinpoint the cause.
+        $shape = "rawLength=$($Value.Length)" +
+            ", strippedLength=$($candidate.Length)" +
+            ", lengthMod4=$($candidate.Length % 4)" +
+            ", nonBase64Chars=$(([regex]::Matches($candidate, '[^A-Za-z0-9+/=]')).Count)" +
+            ", looksLikePem=$([bool]($Value -match '-----BEGIN '))"
+        throw "The GITHUB_APP_PRIVATE_KEY secret is not valid Base64. Store the Base64 encoding of the App private key PEM file. Diagnostics: $shape"
     }
 
     return [System.Text.Encoding]::UTF8.GetString($bytes)
