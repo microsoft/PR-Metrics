@@ -27,19 +27,6 @@ function ConvertTo-Base64Url
     return [System.Convert]::ToBase64String($Bytes).TrimEnd('=').Replace('+', '-').Replace('/', '_')
 }
 
-function ConvertFrom-Base64Url
-{
-    param
-    (
-        [Parameter(Mandatory = $true)]
-        [string] $Text
-    )
-
-    $base64 = $Text.Replace('-', '+').Replace('_', '/')
-    $base64 = $base64.PadRight([int][System.Math]::Ceiling($base64.Length / 4.0) * 4, '=')
-    return [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($base64))
-}
-
 function Get-DecodedPem
 {
     param
@@ -57,13 +44,7 @@ function Get-DecodedPem
     }
     catch
     {
-        # Report non-sensitive shape details (never the key) to pinpoint the cause.
-        $shape = "rawLength=$($Value.Length)" +
-            ", strippedLength=$($candidate.Length)" +
-            ", lengthMod4=$($candidate.Length % 4)" +
-            ", nonBase64Chars=$(([regex]::Matches($candidate, '[^A-Za-z0-9+/=]')).Count)" +
-            ", looksLikePem=$([bool]($Value -match '-----BEGIN '))"
-        throw "The GITHUB_APP_PRIVATE_KEY secret is not valid Base64. Store the Base64 encoding of the App private key PEM file. Diagnostics: $shape"
+        throw 'The GITHUB_APP_PRIVATE_KEY secret is not valid Base64. Store the Base64 encoding of the App private key PEM file.'
     }
 
     return [System.Text.Encoding]::UTF8.GetString($bytes)
@@ -175,19 +156,7 @@ if ([string]::IsNullOrWhiteSpace($privateKey))
 
 $jwt = Get-JsonWebToken -ClientId $clientId -PrivateKey $privateKey
 
-try
-{
-    $installation = Invoke-GitHubApi -Uri "$apiUrl/repos/$repository/installation" -Jwt $jwt -Method 'Get'
-}
-catch
-{
-    # The JWT header and payload are not secret; decode them to confirm the
-    # token's shape and claims (alg, iss, iat, exp) when GitHub rejects it.
-    $segments = $jwt.Split('.')
-    $claims = ($segments | Select-Object -First 2 | ForEach-Object { ConvertFrom-Base64Url -Text $_ }) -join ' '
-    throw "$($_.Exception.Message) [JWT segments=$($segments.Count); claims=$claims]"
-}
-
+$installation = Invoke-GitHubApi -Uri "$apiUrl/repos/$repository/installation" -Jwt $jwt -Method 'Get'
 if ($null -eq $installation.id)
 {
     throw "Could not determine the App installation for '$repository'."
