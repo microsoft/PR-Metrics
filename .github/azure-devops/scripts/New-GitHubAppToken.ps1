@@ -25,6 +25,33 @@ function ConvertTo-Base64Url
     return [System.Convert]::ToBase64String($Bytes).TrimEnd('=').Replace('+', '-').Replace('/', '_')
 }
 
+function Get-NormalizedPem
+{
+    param
+    (
+        [Parameter(Mandatory = $true)]
+        [string] $Value
+    )
+
+    # A Key Vault secret consumed through an Azure DevOps variable group often
+    # loses its line breaks, so rebuild the PEM envelope with correctly wrapped
+    # Base64. This tolerates real, escaped, spaced, or stripped newlines.
+    $text = $Value -replace '\\r', '' -replace '\\n', "`n"
+    $match = [regex]::Match(
+        $text,
+        '-----BEGIN (?<label>[A-Z0-9 ]+?)-----(?<body>.*?)-----END \k<label>-----',
+        [System.Text.RegularExpressions.RegexOptions]::Singleline)
+    if (-not $match.Success)
+    {
+        return $text
+    }
+
+    $label = $match.Groups['label'].Value.Trim()
+    $body = $match.Groups['body'].Value -replace '[^A-Za-z0-9+/=]', ''
+    $wrapped = [regex]::Replace($body, '.{1,64}', "`$0`n").TrimEnd("`n")
+    return "-----BEGIN $label-----`n$wrapped`n-----END $label-----`n"
+}
+
 function Get-JsonWebToken
 {
     param
@@ -53,8 +80,7 @@ function Get-JsonWebToken
     $rsa = [System.Security.Cryptography.RSA]::Create()
     try
     {
-        # Normalize keys that arrive with escaped newlines from the secret store.
-        $rsa.ImportFromPem(($PrivateKey -replace '\\n', "`n"))
+        $rsa.ImportFromPem((Get-NormalizedPem -Value $PrivateKey))
         $signature = $rsa.SignData(
             [System.Text.Encoding]::ASCII.GetBytes($signingInput),
             [System.Security.Cryptography.HashAlgorithmName]::SHA256,
