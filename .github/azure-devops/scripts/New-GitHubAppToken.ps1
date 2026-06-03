@@ -162,7 +162,11 @@ if ($null -eq $installation.id)
     throw "Could not determine the App installation for '$repository'."
 }
 
-$accessToken = Invoke-GitHubApi -Uri "$apiUrl/app/installations/$($installation.id)/access_tokens" -Jwt $jwt -Method 'Post' -Body @{ permissions = @{ pull_requests = 'write' } }
+$body = @{
+    repositories = @(($repository -split '/')[1])
+    permissions  = @{ pull_requests = 'write' }
+}
+$accessToken = Invoke-GitHubApi -Uri "$apiUrl/app/installations/$($installation.id)/access_tokens" -Jwt $jwt -Method 'Post' -Body $body
 if ([string]::IsNullOrWhiteSpace($accessToken.token))
 {
     throw 'The GitHub App installation token could not be minted.'
