@@ -82,11 +82,18 @@ stages:
             displayName: Checkout
             fetchDepth: 0
 
+          - task: PowerShell@2
+            displayName: App Token – Mint
+            inputs:
+              pwsh: true
+              filePath: .github/azure-devops/scripts/New-GitHubAppToken.ps1
+            env:
+              GITHUB_APP_PRIVATE_KEY: $(private-key)
+
           - task: PRMetrics@1
             displayName: PR Metrics
             env:
-              # Classic Personal Access Token (PAT) with the public_repo scope.
-              PR_METRICS_ACCESS_TOKEN: $(ADOTOGITHUB)
+              PR_METRICS_ACCESS_TOKEN: $(GitHubAppToken)
             inputs:
               file-matching-patterns: |
                 **/*
@@ -109,11 +116,18 @@ stages:
             displayName: Checkout
             fetchDepth: 0
 
+          - task: PowerShell@2
+            displayName: App Token – Mint
+            inputs:
+              pwsh: true
+              filePath: .github/azure-devops/scripts/New-GitHubAppToken.ps1
+            env:
+              GITHUB_APP_PRIVATE_KEY: $(private-key)
+
           - task: PRMetrics@1
             displayName: PR Metrics
             env:
-              # Classic Personal Access Token (PAT) with the public_repo scope.
-              PR_METRICS_ACCESS_TOKEN: $(ADOTOGITHUB)
+              PR_METRICS_ACCESS_TOKEN: $(GitHubAppToken)
             inputs:
               file-matching-patterns: |
                 **/*
