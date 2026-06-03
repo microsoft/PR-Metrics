@@ -7,10 +7,10 @@ description: >-
   Refreshes pinned CI/CD dependencies – SHA-pinned GitHub Actions in
   .github/workflows/, task versions and 1ES template refs in
   .github/azure-devops/ – and audits Node.js runtime consistency across
-  workflows, pipelines, package.json, and .nvmrc. Triggered when
-  Release – Initiate completes so updates land on the release pull request
-  it opens; workflow_dispatch is available as a manual retrigger while a
-  release pull request is open.
+  workflows, pipelines, package.json, and .nvmrc. Triggered when Release –
+  Initiate completes so updates land on the release pull request it opens;
+  workflow_dispatch is available as a manual retrigger while a release pull
+  request is open.
 
 on:
   workflow_run:
@@ -48,7 +48,7 @@ checkout:
 safe-outputs:
   push-to-pull-request-branch:
     target: "*"
-    labels:
+    required-labels:
       - release
     max: 1
     if-no-changes: ignore
@@ -60,8 +60,9 @@ safe-outputs:
       - .github/azure-devops/*.yml
       - package.json
       - .nvmrc
-    github-token: ${{ secrets.PR_METRICS_TOKEN }}
-    github-token-for-extra-empty-commit: ${{ secrets.PR_METRICS_TOKEN }}
+  github-app:
+    client-id: Iv23lilx6AekMDUze7ss
+    private-key: ${{ secrets.PRIVATE_KEY }}
 ---
 
 # Update CI Dependencies
@@ -86,8 +87,8 @@ Catalog every pinned version before editing. Use `grep` to locate each pattern.
 ### GitHub Workflows
 
 Editable files in `.github/workflows/`: `build.yml`, `release-initiate.yml`,
-`release-publish.yml`. lockfiles (`*.lock.yml`) are gh-aw-generated and out
-of scope.
+`release-publish.yml`. lockfiles (`*.lock.yml`) are gh-aw-generated and out of
+scope.
 
 - **SHA-Pinned Actions**: `uses: owner/repo@<40-char SHA> # vX.Y.Z`. The SHA and
   the trailing version comment must stay in sync.
@@ -200,7 +201,7 @@ file changed most recently). Do not change the value itself.
 ## Verification
 
 No manual verification is required. After the push, the `Build` workflow reruns
-automatically (via the empty commit made with `PR_METRICS_TOKEN`) and
+automatically (via the empty commit made with the App installation token) and
 re-executes Super-Linter against the modified files. Any lint or typing failure
 surfaces there.
 

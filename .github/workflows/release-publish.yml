@@ -32,6 +32,13 @@ jobs:
         with:
           persist-credentials: false
 
+      - name: App Token – Mint
+        id: app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          client-id: Iv23lilx6AekMDUze7ss
+          private-key: ${{ secrets.PRIVATE_KEY }}
+
       - name: gh – Log Version
         run: gh --version
 
@@ -89,7 +96,7 @@ jobs:
           -f target_commitish=${{ github.sha }}
           --jq '.body' > release-notes.md
         env:
-          GITHUB_TOKEN: ${{ secrets.PR_METRICS_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
           VERSION: ${{ steps.version.outputs.VERSION }}
 
       - name: GitHub Release
@@ -103,5 +110,5 @@ jobs:
           --notes-file release-notes.md
           --discussion-category "Releases"
         env:
-          GITHUB_TOKEN: ${{ secrets.PR_METRICS_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
           VERSION: ${{ steps.version.outputs.VERSION }}

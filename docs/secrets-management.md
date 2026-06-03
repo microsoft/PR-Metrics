@@ -10,12 +10,19 @@ pipelines.
 
 - **`GITHUB_TOKEN`**: GitHub-provided token for workflow operations.
   Per-workflow run, auto-expires.
-- **`PR_METRICS_TOKEN`**: PAT for operations requiring elevated permissions.
-  Repository-scoped.
+- **`pr-metrics-access-app` GitHub App installation token**: One-hour
+  installation token minted at job start for operations requiring elevated
+  permissions on `microsoft/PR-Metrics`. Minted by
+  `actions/create-github-app-token` using the App's Client ID (inlined in the
+  workflows, since it is a public identifier) and the App's private key
+  (`PRIVATE_KEY`); the agentic `Update CI Dependencies` workflow mints the same
+  token through gh-aw's native `github-app:` block.
+- **`PRIVATE_KEY`**: GitHub Actions secret holding the App's RSA private key.
+  Every workflow that needs the App installation token reads this secret via
+  `actions/create-github-app-token`.
 - **`PR_METRICS_ACCESS_TOKEN`**: Access token passed to the PR Metrics action.
-  Environment variable scoped to the workflow/job run; the underlying token may
-  be short-lived (e.g., `GITHUB_TOKEN`) or long-lived (e.g., a PAT), depending
-  on pipeline configuration.
+  Environment variable scoped to the workflow/job run; populated with the
+  short-lived App installation token described above.
 - **ESRP service connection**: Code signing for Azure DevOps marketplace
   releases. Azure DevOps pipeline-scoped.
 
@@ -51,9 +58,11 @@ control. The `.gitignore` file excludes common environment file patterns
 
 - **`GITHUB_TOKEN`**: Rotated automatically by GitHub for each workflow run.
   No manual rotation is required.
-- **`PR_METRICS_TOKEN`**: Reviewed and rotated periodically by the repository
-  maintainer. The token is scoped to the minimum permissions required for its
-  purpose.
+- **App installation tokens**: Minted per job with a one-hour lifetime and
+  discarded at job end. No standing token exists to rotate.
+- **`PRIVATE_KEY`**: The App's RSA private key. Rotate by generating a new key
+  for the App and updating the GitHub Actions secret, with a recommended cadence
+  of annually or on suspected compromise.
 - **ESRP Credentials**: Managed by the Microsoft ESRP service and rotated
   according to Microsoft's internal policies.
 
