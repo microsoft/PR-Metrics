@@ -4,8 +4,10 @@
 # Mints a short-lived 'pr-metrics-access-app' installation token, scoped to
 # 'Pull requests: write', and publishes it to the job as a secret variable so PR
 # Metrics can update the originating GitHub pull request. Only the private key is
-# a secret, read from the GITHUB_APP_PRIVATE_KEY environment variable; the App's
-# client ID, repository, and endpoints are fixed below.
+# a secret, read from the GITHUB_APP_PRIVATE_KEY environment variable as the
+# Base64 encoding of the PEM file. Base64 keeps the key on a single line so the
+# variable group cannot mangle its line breaks. The App's client ID, repository,
+# and endpoints are fixed below.
 
 $ErrorActionPreference = 'Stop'
 
@@ -25,7 +27,7 @@ function ConvertTo-Base64Url
     return [System.Convert]::ToBase64String($Bytes).TrimEnd('=').Replace('+', '-').Replace('/', '_')
 }
 
-function Get-NormalizedPem
+function Get-DecodedPem
 {
     param
     (
@@ -33,23 +35,19 @@ function Get-NormalizedPem
         [string] $Value
     )
 
-    # A Key Vault secret consumed through an Azure DevOps variable group often
-    # loses its line breaks, so rebuild the PEM envelope with correctly wrapped
-    # Base64. This tolerates real, escaped, spaced, or stripped newlines.
-    $text = $Value -replace '\\r', '' -replace '\\n', "`n"
-    $match = [regex]::Match(
-        $text,
-        '-----BEGIN (?<label>[A-Z0-9 ]+?)-----(?<body>.*?)-----END \k<label>-----',
-        [System.Text.RegularExpressions.RegexOptions]::Singleline)
-    if (-not $match.Success)
+    # The secret holds the PEM file Base64-encoded, which keeps it on a single
+    # line so the variable group cannot mangle its line breaks.
+    $candidate = $Value -replace '\s', ''
+    try
     {
-        return $text
+        $bytes = [System.Convert]::FromBase64String($candidate)
+    }
+    catch
+    {
+        throw 'The GITHUB_APP_PRIVATE_KEY secret is not valid Base64. Store the Base64 encoding of the App private key PEM file.'
     }
 
-    $label = $match.Groups['label'].Value.Trim()
-    $body = $match.Groups['body'].Value -replace '[^A-Za-z0-9+/=]', ''
-    $wrapped = [regex]::Replace($body, '.{1,64}', "`$0`n").TrimEnd("`n")
-    return "-----BEGIN $label-----`n$wrapped`n-----END $label-----`n"
+    return [System.Text.Encoding]::UTF8.GetString($bytes)
 }
 
 function Get-JsonWebToken
@@ -80,7 +78,16 @@ function Get-JsonWebToken
     $rsa = [System.Security.Cryptography.RSA]::Create()
     try
     {
-        $rsa.ImportFromPem((Get-NormalizedPem -Value $PrivateKey))
+        $pem = Get-DecodedPem -Value $PrivateKey
+        try
+        {
+            $rsa.ImportFromPem($pem)
+        }
+        catch
+        {
+            throw "The decoded GITHUB_APP_PRIVATE_KEY is not a valid PEM key: $($_.Exception.Message)"
+        }
+
         $signature = $rsa.SignData(
             [System.Text.Encoding]::ASCII.GetBytes($signingInput),
             [System.Security.Cryptography.HashAlgorithmName]::SHA256,
