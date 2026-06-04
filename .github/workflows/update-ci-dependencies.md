@@ -60,6 +60,8 @@ safe-outputs:
       - .github/azure-devops/*.yml
       - package.json
       - .nvmrc
+  noop:
+    report-as-issue: false
   github-app:
     client-id: Iv23lilx6AekMDUze7ss
     private-key: ${{ secrets.PRIVATE_KEY }}
