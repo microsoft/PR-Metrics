@@ -30,6 +30,7 @@ stages:
           steps:
             - checkout: self
               displayName: Checkout
+              persistCredentials: false
 
             - task: UseNode@1
               displayName: Install Node.js
@@ -81,6 +82,7 @@ stages:
           - checkout: self
             displayName: Checkout
             fetchDepth: 0
+            persistCredentials: false
 
           - task: PowerShell@2
             displayName: App Token – Mint
@@ -115,6 +117,7 @@ stages:
           - checkout: self
             displayName: Checkout
             fetchDepth: 0
+            persistCredentials: false
 
           - task: PowerShell@2
             displayName: App Token – Mint
