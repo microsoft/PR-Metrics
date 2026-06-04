@@ -193,6 +193,7 @@ jobs:
         with:
           client-id: Iv23lilx6AekMDUze7ss
           permission-contents: write
+          permission-statuses: write
           private-key: ${{ secrets.PRIVATE_KEY }}
 
       - name: Super-Linter
