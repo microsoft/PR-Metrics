@@ -9,7 +9,7 @@ on:
     branches:
       - main
     paths:
-      - .github/workflows/support/release-publish-trigger.txt
+      - .github/release-publish-trigger.txt
   workflow_dispatch: null
 
 permissions: {}
@@ -87,7 +87,7 @@ jobs:
       - name: Get Version
         id: version
         run: |-
-          $version = Get-Content -Path '.github/workflows/support/release-publish-trigger.txt'
+          $version = Get-Content -Path '.github/release-publish-trigger.txt'
           "VERSION=v$version" >> $Env:GITHUB_OUTPUT
 
       - name: Generate Release Notes

@@ -66,11 +66,11 @@ Update-FileContent -Path 'src/task/Strings/resources.resjson/en-US/resources.res
 # Source code user-agent.
 Update-FileContent -Path 'src/task/src/utilities/constants.ts' -Replacements @($userAgentReplacement)
 
-# Release workflow defaults. The env vars in release-initiate.yml represent the
-# next release version, so boost the patch by 1 beyond the version being released.
+# Release version file. The values represent the next release version, so boost
+# the patch by 1 beyond the version being released.
 $nextPatch = $Patch + 1
-Update-FileContent -Path '.github/workflows/release-initiate.yml' -Replacements @(
-    @{ Pattern = '(?<Yaml>major: )\d+'; Value = '${Yaml}' + $Major }
-    @{ Pattern = '(?<Yaml>minor: )\d+'; Value = '${Yaml}' + $Minor }
-    @{ Pattern = '(?<Yaml>patch: )\d+'; Value = '${Yaml}' + $nextPatch }
+Update-FileContent -Path '.github/release-version.json' -Replacements @(
+    @{ Pattern = '"major": \d+'; Value = "`"major`": $Major" }
+    @{ Pattern = '"minor": \d+'; Value = "`"minor`": $Minor" }
+    @{ Pattern = '"patch": \d+'; Value = "`"patch`": $nextPatch" }
 )
