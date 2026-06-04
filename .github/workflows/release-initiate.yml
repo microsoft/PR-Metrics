@@ -52,9 +52,9 @@ jobs:
       - name: Version Number – Update
         run: >-
           .github/workflow-scripts/Update-Version.ps1
-          -Major ${{ env.major }}
-          -Minor ${{ env.minor }}
-          -Patch ${{ env.patch }}
+          -Major $env:major
+          -Minor $env:minor
+          -Patch $env:patch
 
       - name: Version Number – release-publish-trigger.txt
         run: Set-Content -Path '.github/release-publish-trigger.txt' -Value $env:version
