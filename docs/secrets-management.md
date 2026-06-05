@@ -18,8 +18,7 @@ pipelines.
   (`PRIVATE_KEY`); the agentic `Update CI Dependencies` workflow mints the same
   token through gh-aw's native `github-app:` block. Each job requests only the
   permissions it needs – for example, `contents: write` for branch pushes or
-  `pull-requests: write` for PR comments – mirroring the per-job least-privilege
-  model already applied to `GITHUB_TOKEN`.
+  `pull-requests: write` for PR comments.
 - **`PRIVATE_KEY`**: GitHub Actions secret holding the App's RSA private key.
   Every workflow that needs the App installation token reads this secret via
   `actions/create-github-app-token`. A GitHub App key is also surfaced through
