@@ -33,6 +33,7 @@ jobs:
         uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
         with:
           client-id: Iv23lilx6AekMDUze7ss
+          permission-contents: write
           private-key: ${{ secrets.PRIVATE_KEY }}
 
       - name: Checkout
@@ -137,6 +138,7 @@ jobs:
         uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
         with:
           client-id: Iv23lilx6AekMDUze7ss
+          permission-pull-requests: write
           private-key: ${{ secrets.PRIVATE_KEY }}
 
       - name: PR Metrics
@@ -190,6 +192,8 @@ jobs:
         uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
         with:
           client-id: Iv23lilx6AekMDUze7ss
+          permission-contents: write
+          permission-statuses: write
           private-key: ${{ secrets.PRIVATE_KEY }}
 
       - name: Super-Linter
@@ -268,6 +272,7 @@ jobs:
         uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
         with:
           client-id: Iv23lilx6AekMDUze7ss
+          permission-pull-requests: write
           private-key: ${{ secrets.PRIVATE_KEY }}
 
       - if: github.event.pull_request.user.login == 'dependabot[bot]'

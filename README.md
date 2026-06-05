@@ -63,7 +63,6 @@ If using `GITHUB_TOKEN`, the following permissions are required:
 ```yaml
 permissions:
   pull-requests: write
-  statuses: write
 ```
 
 [GitHub token permissions][github-token-pemissions] can be set for an individual

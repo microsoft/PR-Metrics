@@ -9,12 +9,6 @@ on:
 
 permissions: {}
 
-# The version below is the upcoming release version, not the current one.
-env:
-  major: 1
-  minor: 7
-  patch: 16
-
 defaults:
   run:
     shell: pwsh
@@ -31,6 +25,8 @@ jobs:
         uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
         with:
           client-id: Iv23lilx6AekMDUze7ss
+          permission-contents: write
+          permission-pull-requests: write
           private-key: ${{ secrets.PRIVATE_KEY }}
 
       - name: Checkout
@@ -42,26 +38,26 @@ jobs:
       - name: gh – Log Version
         run: gh --version
 
-      - name: Version Number – Validate
+      - name: Version Number – Read
         run: |-
-          [int]::Parse(${{ env.major }})
-          [int]::Parse(${{ env.minor }})
-          [int]::Parse(${{ env.patch }})
-
-      - name: Version Number – Set Environment Variable
-        run: >-
-          "version=${{ env.major }}.${{ env.minor }}.${{ env.patch }}"
-          >> $Env:GITHUB_ENV
+          $release = Get-Content -Path '.github/release-version.json' -Raw | ConvertFrom-Json
+          $major = [int] $release.major
+          $minor = [int] $release.minor
+          $patch = [int] $release.patch
+          "major=$major" >> $Env:GITHUB_ENV
+          "minor=$minor" >> $Env:GITHUB_ENV
+          "patch=$patch" >> $Env:GITHUB_ENV
+          "version=$major.$minor.$patch" >> $Env:GITHUB_ENV
 
       - name: Version Number – Update
         run: >-
           .github/workflow-scripts/Update-Version.ps1
-          -Major ${{ env.major }}
-          -Minor ${{ env.minor }}
-          -Patch ${{ env.patch }}
+          -Major $env:major
+          -Minor $env:minor
+          -Patch $env:patch
 
       - name: Version Number – release-publish-trigger.txt
-        run: Set-Content -Path '.github/workflows/support/release-publish-trigger.txt' -Value $env:version
+        run: Set-Content -Path '.github/release-publish-trigger.txt' -Value $env:version
 
       - name: Git – Create Branch
         run: git checkout -b release/v$env:version
