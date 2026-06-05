@@ -1012,8 +1012,6 @@ jobs:
           permission-administration: read
           permission-contents: write
           permission-pull-requests: write
-          # Manual: gh aw compile omits this (github/gh-aw#25767); re-add after recompile.
-          permission-workflows: write
       - name: Download agent output artifact
         id: download-agent-output
         continue-on-error: true
@@ -1464,8 +1462,6 @@ jobs:
           permission-administration: read
           permission-contents: write
           permission-pull-requests: write
-          # Manual: gh aw compile omits this (github/gh-aw#25767); re-add after recompile.
-          permission-workflows: write
       - name: Extract base branch from agent output
         id: extract-base-branch
         if: steps.download-agent-output.outcome == 'success'
