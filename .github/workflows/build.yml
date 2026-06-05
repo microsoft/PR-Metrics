@@ -26,15 +26,25 @@ jobs:
     name: Update Code
     runs-on: ubuntu-latest
     environment: production
-    permissions: {}
+    permissions:
+      id-token: write
     steps:
+      - name: Checkout – Action
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+          sparse-checkout: .github/actions
+
       - name: App Token – Mint
         id: app-token
-        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        uses: ./.github/actions/mint-github-app-token
         with:
-          client-id: Iv23lilx6AekMDUze7ss
-          permission-contents: write
-          private-key: ${{ secrets.PRIVATE_KEY }}
+          azure-client-id: ${{ vars.AZURE_CLIENT_ID }}
+          azure-tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          azure-subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+          key-vault-name: ${{ vars.KEY_VAULT_NAME }}
+          key-vault-key-name: ${{ vars.KEY_VAULT_KEY_NAME }}
+          permissions: '{"contents":"write"}'
 
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -125,7 +135,8 @@ jobs:
     name: Test GitHub Action
     runs-on: ubuntu-latest
     environment: production
-    permissions: {}
+    permissions:
+      id-token: write
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -135,11 +146,14 @@ jobs:
 
       - name: App Token – Mint
         id: app-token
-        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        uses: ./.github/actions/mint-github-app-token
         with:
-          client-id: Iv23lilx6AekMDUze7ss
-          permission-pull-requests: write
-          private-key: ${{ secrets.PRIVATE_KEY }}
+          azure-client-id: ${{ vars.AZURE_CLIENT_ID }}
+          azure-tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          azure-subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+          key-vault-name: ${{ vars.KEY_VAULT_NAME }}
+          key-vault-key-name: ${{ vars.KEY_VAULT_KEY_NAME }}
+          permissions: '{"pull_requests":"write"}'
 
       - name: PR Metrics
         uses: ./
@@ -179,7 +193,8 @@ jobs:
     name: Validate – Linter
     runs-on: ubuntu-latest
     environment: production
-    permissions: {}
+    permissions:
+      id-token: write
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -189,12 +204,14 @@ jobs:
 
       - name: App Token – Mint
         id: app-token
-        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        uses: ./.github/actions/mint-github-app-token
         with:
-          client-id: Iv23lilx6AekMDUze7ss
-          permission-contents: write
-          permission-statuses: write
-          private-key: ${{ secrets.PRIVATE_KEY }}
+          azure-client-id: ${{ vars.AZURE_CLIENT_ID }}
+          azure-tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          azure-subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+          key-vault-name: ${{ vars.KEY_VAULT_NAME }}
+          key-vault-key-name: ${{ vars.KEY_VAULT_KEY_NAME }}
+          permissions: '{"contents":"write","statuses":"write"}'
 
       - name: Super-Linter
         uses: super-linter/super-linter@9e863354e3ff62e0727d37183162c4a88873df41 # v8.6.0

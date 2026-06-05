@@ -84,13 +84,16 @@ stages:
             fetchDepth: 0
             persistCredentials: false
 
-          - task: PowerShell@2
+          - task: AzureCLI@2
             displayName: App Token – Mint
             inputs:
-              pwsh: true
-              filePath: .github/azure-devops/scripts/New-GitHubAppToken.ps1
+              azureSubscription: PR Metrics
+              scriptType: pscore
+              scriptLocation: scriptPath
+              scriptPath: .github/actions/mint-github-app-token/New-GitHubAppToken.ps1
             env:
-              GITHUB_APP_PRIVATE_KEY: $(private-key)
+              KEY_VAULT_NAME: VAULT_NAME
+              KEY_VAULT_KEY_NAME: KEY_NAME
 
           - task: PRMetrics@1
             displayName: PR Metrics
@@ -119,13 +122,16 @@ stages:
             fetchDepth: 0
             persistCredentials: false
 
-          - task: PowerShell@2
+          - task: AzureCLI@2
             displayName: App Token – Mint
             inputs:
-              pwsh: true
-              filePath: .github/azure-devops/scripts/New-GitHubAppToken.ps1
+              azureSubscription: PR Metrics
+              scriptType: pscore
+              scriptLocation: scriptPath
+              scriptPath: .github/actions/mint-github-app-token/New-GitHubAppToken.ps1
             env:
-              GITHUB_APP_PRIVATE_KEY: $(private-key)
+              KEY_VAULT_NAME: VAULT_NAME
+              KEY_VAULT_KEY_NAME: KEY_NAME
 
           - task: PRMetrics@1
             displayName: PR Metrics
