@@ -26,8 +26,8 @@ pipelines.
   `github-app-signing-key`. Key Vault performs the RS256 signing of the App JWT,
   so the private key is never read by CI. The signing identities – a GitHub OIDC
   federated identity for GitHub Actions and the `PR Metrics` workload identity
-  federation service connection for Azure DevOps – hold the `Key Vault Crypto
-  User` role on the vault.
+  federation service connection for Azure DevOps – hold the
+  `Key Vault Crypto User` role on the vault.
 - **`PR_METRICS_ACCESS_TOKEN`**: Access token passed to the PR Metrics action.
   Environment variable scoped to the workflow/job run; populated with the
   short-lived App installation token described above, in both GitHub Actions and
