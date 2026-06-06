@@ -20,7 +20,7 @@ pipelines.
   it through the shared `New-GitHubAppToken.ps1` under its workload identity
   federation service connection. Each job requests only the permissions it needs
   – for example, `contents: write` for branch pushes or `pull-requests: write`
-  for PR comments. One consumer is an exception (see `PRIVATE_KEY`).
+  for PR comments.
 - **App signing key (Azure Key Vault)**: The App's RSA private key, imported
   into the `PRMetrics-KeyVault` Azure Key Vault as a non-exportable key named
   `github-app-signing-key`. Key Vault performs the RS256 signing of the App JWT,
@@ -28,11 +28,6 @@ pipelines.
   federated identity for GitHub Actions and the `PR Metrics` workload identity
   federation service connection for Azure DevOps – hold the `Key Vault Crypto
   User` role on the vault.
-- **`PRIVATE_KEY`**: GitHub Actions secret holding the App's RSA private key,
-  scoped to the `production` environment. Retained only for the agentic `Update
-  CI Dependencies` workflow, where gh-aw's native `github-app:` block mints the
-  token before any custom step can run. Every other consumer – including the
-  Dependabot auto-merge job – signs in Key Vault.
 - **`PR_METRICS_ACCESS_TOKEN`**: Access token passed to the PR Metrics action.
   Environment variable scoped to the workflow/job run; populated with the
   short-lived App installation token described above, in both GitHub Actions and
@@ -82,10 +77,8 @@ control. The `.gitignore` file excludes common environment file patterns
   automatic: generate a new private key in the GitHub App settings (the App may
   hold up to 25 keys, so the current key stays valid for a zero-downtime swap),
   import it as a new version of the Key Vault key, confirm a pipeline run
-  succeeds on it, refresh the environment-scoped `PRIVATE_KEY` secret used by the
-  `Update CI Dependencies` workflow, then delete the superseded
-  key in the GitHub App settings. Rotate at least quarterly or immediately on
-  suspected compromise.
+  succeeds on it, then delete the superseded key in the GitHub App settings.
+  Rotate at least quarterly or immediately on suspected compromise.
 - **ESRP Credentials**: Managed by the Microsoft ESRP service and rotated
   according to Microsoft's internal policies.
 
