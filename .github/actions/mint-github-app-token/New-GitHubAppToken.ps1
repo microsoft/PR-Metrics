@@ -165,6 +165,19 @@ function Invoke-GitHubApi
 }
 
 $vaultAccessToken = Get-KeyVaultAccessToken
+
+# Mask the data-plane token on whichever host before it is used, so the bearer
+# token cannot surface in verbose or debug logs – the installation token is
+# masked the same way once minted.
+if ($env:GITHUB_ACTIONS -eq 'true')
+{
+    Write-Output -InputObject "::add-mask::$vaultAccessToken"
+}
+elseif (-not [string]::IsNullOrWhiteSpace($env:TF_BUILD))
+{
+    Write-Output -InputObject "##vso[task.setvariable variable=KeyVaultAccessToken;issecret=true]$vaultAccessToken"
+}
+
 $jwt = Get-JsonWebToken -ClientId $clientId -VaultName $vaultName -KeyName $keyName -VaultAccessToken $vaultAccessToken
 
 $installation = Invoke-GitHubApi -Uri "$apiUrl/repos/$owner/$repositoryName/installation" -Jwt $jwt -Method 'Get'
