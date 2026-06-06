@@ -92,8 +92,8 @@ stages:
               scriptLocation: scriptPath
               scriptPath: .github/actions/mint-github-app-token/New-GitHubAppToken.ps1
             env:
-              KEY_VAULT_NAME: VAULT_NAME
-              KEY_VAULT_KEY_NAME: KEY_NAME
+              KEY_VAULT_NAME: PRMetrics-KeyVault
+              KEY_VAULT_KEY_NAME: github-app-signing-key
 
           - task: PRMetrics@1
             displayName: PR Metrics
@@ -130,8 +130,8 @@ stages:
               scriptLocation: scriptPath
               scriptPath: .github/actions/mint-github-app-token/New-GitHubAppToken.ps1
             env:
-              KEY_VAULT_NAME: VAULT_NAME
-              KEY_VAULT_KEY_NAME: KEY_NAME
+              KEY_VAULT_NAME: PRMetrics-KeyVault
+              KEY_VAULT_KEY_NAME: github-app-signing-key
 
           - task: PRMetrics@1
             displayName: PR Metrics

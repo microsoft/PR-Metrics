@@ -20,19 +20,19 @@ pipelines.
   it through the shared `New-GitHubAppToken.ps1` under its workload identity
   federation service connection. Each job requests only the permissions it needs
   – for example, `contents: write` for branch pushes or `pull-requests: write`
-  for PR comments. Two consumers are exceptions (see `PRIVATE_KEY`).
+  for PR comments. One consumer is an exception (see `PRIVATE_KEY`).
 - **App signing key (Azure Key Vault)**: The App's RSA private key, imported
-  into Azure Key Vault as a non-exportable key. Key Vault performs the RS256
-  signing of the App JWT, so the private key is never read by CI. The signing
-  identities – a GitHub OIDC federated identity for GitHub Actions and the
-  `PR Metrics` workload identity federation service connection for Azure DevOps –
-  hold the `Key Vault Crypto User` role on the vault.
+  into the `PRMetrics-KeyVault` Azure Key Vault as a non-exportable key named
+  `github-app-signing-key`. Key Vault performs the RS256 signing of the App JWT,
+  so the private key is never read by CI. The signing identities – a GitHub OIDC
+  federated identity for GitHub Actions and the `PR Metrics` workload identity
+  federation service connection for Azure DevOps – hold the `Key Vault Crypto
+  User` role on the vault.
 - **`PRIVATE_KEY`**: GitHub Actions secret holding the App's RSA private key,
-  scoped to the `production` environment. Retained only for the two consumers
-  that cannot use Key Vault signing: the Dependabot auto-merge job in `build.yml`
-  (Dependabot-triggered runs cannot use Azure OIDC) and the agentic `Update CI
-  Dependencies` workflow (gh-aw's native `github-app:` block mints the token
-  before any custom step can run).
+  scoped to the `production` environment. Retained only for the agentic `Update
+  CI Dependencies` workflow, where gh-aw's native `github-app:` block mints the
+  token before any custom step can run. Every other consumer – including the
+  Dependabot auto-merge job – signs in Key Vault.
 - **`PR_METRICS_ACCESS_TOKEN`**: Access token passed to the PR Metrics action.
   Environment variable scoped to the workflow/job run; populated with the
   short-lived App installation token described above, in both GitHub Actions and
@@ -50,9 +50,10 @@ All secrets are stored exclusively in platform-managed secret stores:
 - **Azure DevOps Variable Groups and Service Connections**: Pipeline-scoped
   secrets for Azure DevOps builds and releases. Managed through Azure DevOps
   project settings with role-based access controls.
-- **Azure Key Vault**: The App signing key, stored as a non-exportable key so
-  the private key material cannot be exported. Access is governed by Azure
-  role-based access control.
+- **Azure Key Vault**: The App signing key (`github-app-signing-key` in the
+  `PRMetrics-KeyVault` vault), stored as a non-exportable key so the private key
+  material cannot be exported. Access is governed by Azure role-based access
+  control.
 
 Secrets are **never** stored in source code, configuration files, or version
 control. The `.gitignore` file excludes common environment file patterns
@@ -82,9 +83,9 @@ control. The `.gitignore` file excludes common environment file patterns
   hold up to 25 keys, so the current key stays valid for a zero-downtime swap),
   import it as a new version of the Key Vault key, confirm a pipeline run
   succeeds on it, refresh the environment-scoped `PRIVATE_KEY` secret used by the
-  Dependabot and `Update CI Dependencies` workflows, then delete the superseded
-  key in the GitHub App settings. Rotate at least quarterly, per Microsoft OSS
-  guidance, or immediately on suspected compromise.
+  `Update CI Dependencies` workflow, then delete the superseded
+  key in the GitHub App settings. Rotate at least quarterly or immediately on
+  suspected compromise.
 - **ESRP Credentials**: Managed by the Microsoft ESRP service and rotated
   according to Microsoft's internal policies.
 
