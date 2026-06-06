@@ -34,8 +34,6 @@ jobs:
           azure-client-id: ${{ vars.AZURE_CLIENT_ID }}
           azure-tenant-id: ${{ vars.AZURE_TENANT_ID }}
           azure-subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-          key-vault-name: ${{ vars.KEY_VAULT_NAME }}
-          key-vault-key-name: ${{ vars.KEY_VAULT_KEY_NAME }}
           permissions: '{"contents":"write","pull_requests":"write"}'
 
       - name: Checkout
@@ -101,20 +99,13 @@ jobs:
           $body = @'
           **Action required before merging**
 
-          The `Update CI Dependencies` workflow that previously refreshed CI/CD
-          pins automatically has been removed – it required a standing personal
-          access token. Refresh them manually instead.
-
           Check out this branch, then run the GitHub Copilot CLI agent:
 
           ```bash
           copilot --agent refresh-ci-dependencies --prompt "Refresh the pinned CI/CD dependencies on this release branch."
           ```
 
-          This updates SHA-pinned GitHub Actions, Azure DevOps task versions, and
-          Node.js runtime consistency – the pins the automated dependency updates
-          do not cover – then commits and pushes to this branch. See
-          `.github/agents/refresh-ci-dependencies.agent.md`.
+          This updates SHA-pinned GitHub Actions, Azure DevOps task versions, and Node.js runtime consistency – the pins the automated dependency updates do not cover – then commits and pushes to this branch. See `.github/agents/refresh-ci-dependencies.agent.md`.
           '@
           gh pr comment "release/v$env:version" --body $body
         env:

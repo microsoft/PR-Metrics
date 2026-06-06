@@ -10,7 +10,7 @@ pipelines.
 
 - **`GITHUB_TOKEN`**: GitHub-provided token for workflow operations.
   Per-workflow run, auto-expires.
-- **`pr-metrics-access-app` GitHub App installation token**: One-hour
+- **`microsoft-pr-metrics` GitHub App installation token**: One-hour
   installation token minted at job start for operations requiring elevated
   permissions on `microsoft/PR-Metrics`. The App JWT is signed by Azure Key
   Vault – the App private key lives in the vault as a non-exportable key and is

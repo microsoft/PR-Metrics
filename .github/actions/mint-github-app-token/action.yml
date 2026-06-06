@@ -4,8 +4,8 @@
 ---
 name: Mint GitHub App Token
 description: >-
-  Mints a short-lived pr-metrics-access-app installation token by signing the
-  App JWT in Azure Key Vault, so the App private key is never stored in GitHub.
+  Mints a short-lived microsoft-pr-metrics installation token by signing the App
+  JWT in Azure Key Vault, so the App private key is never stored in GitHub.
 
 inputs:
   azure-client-id:
@@ -17,29 +17,11 @@ inputs:
   azure-subscription-id:
     description: Azure subscription ID.
     required: true
-  key-vault-name:
-    description: Name of the Azure Key Vault that holds the App signing key.
-    required: true
-  key-vault-key-name:
-    description: Name of the Key Vault key used to sign the App JWT.
-    required: true
   permissions:
     description: >-
       JSON object of installation-token permissions, for example
       '{"contents":"write"}'.
     required: true
-  client-id:
-    description: GitHub App client ID.
-    required: false
-    default: Iv23lilx6AekMDUze7ss
-  owner:
-    description: Owner of the repository the installation token targets.
-    required: false
-    default: ${{ github.repository_owner }}
-  repository:
-    description: Name of the repository the installation token targets.
-    required: false
-    default: ${{ github.event.repository.name }}
 
 outputs:
   token:
@@ -61,9 +43,4 @@ runs:
       shell: pwsh
       run: '& "$Env:GITHUB_ACTION_PATH/New-GitHubAppToken.ps1"'
       env:
-        GITHUB_APP_CLIENT_ID: ${{ inputs.client-id }}
-        GITHUB_APP_OWNER: ${{ inputs.owner }}
-        GITHUB_APP_REPOSITORY: ${{ inputs.repository }}
         GITHUB_APP_PERMISSIONS: ${{ inputs.permissions }}
-        KEY_VAULT_NAME: ${{ inputs.key-vault-name }}
-        KEY_VAULT_KEY_NAME: ${{ inputs.key-vault-key-name }}

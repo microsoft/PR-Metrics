@@ -42,8 +42,6 @@ jobs:
           azure-client-id: ${{ vars.AZURE_CLIENT_ID }}
           azure-tenant-id: ${{ vars.AZURE_TENANT_ID }}
           azure-subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-          key-vault-name: ${{ vars.KEY_VAULT_NAME }}
-          key-vault-key-name: ${{ vars.KEY_VAULT_KEY_NAME }}
           permissions: '{"contents":"write"}'
 
       - name: Checkout
@@ -151,8 +149,6 @@ jobs:
           azure-client-id: ${{ vars.AZURE_CLIENT_ID }}
           azure-tenant-id: ${{ vars.AZURE_TENANT_ID }}
           azure-subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-          key-vault-name: ${{ vars.KEY_VAULT_NAME }}
-          key-vault-key-name: ${{ vars.KEY_VAULT_KEY_NAME }}
           permissions: '{"pull_requests":"write"}'
 
       - name: PR Metrics
@@ -209,8 +205,6 @@ jobs:
           azure-client-id: ${{ vars.AZURE_CLIENT_ID }}
           azure-tenant-id: ${{ vars.AZURE_TENANT_ID }}
           azure-subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-          key-vault-name: ${{ vars.KEY_VAULT_NAME }}
-          key-vault-key-name: ${{ vars.KEY_VAULT_KEY_NAME }}
           permissions: '{"contents":"write","statuses":"write"}'
 
       - name: Super-Linter
@@ -298,8 +292,6 @@ jobs:
           azure-client-id: ${{ vars.AZURE_CLIENT_ID }}
           azure-tenant-id: ${{ vars.AZURE_TENANT_ID }}
           azure-subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-          key-vault-name: ${{ vars.KEY_VAULT_NAME }}
-          key-vault-key-name: ${{ vars.KEY_VAULT_KEY_NAME }}
           permissions: '{"pull_requests":"write"}'
 
       - if: github.event.pull_request.user.login == 'dependabot[bot]'

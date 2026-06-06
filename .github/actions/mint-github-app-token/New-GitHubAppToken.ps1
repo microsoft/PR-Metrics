@@ -1,55 +1,31 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT License.
 
-# Mints a short-lived 'pr-metrics-access-app' installation token by signing the
+# Mints a short-lived 'microsoft-pr-metrics' installation token by signing the
 # App JWT remotely in Azure Key Vault, so the App private key is never exported.
-# Shared by the 'mint-github-app-token' composite action (GitHub Actions) and the
-# Azure DevOps pipeline. The signing identity is whoever the caller is signed in
-# as – the GitHub OIDC federated identity (azure/login) or the Azure DevOps
-# workload identity federation service connection (AzureCLI@2) – which must hold
-# 'Key Vault Crypto User' on the vault. Configuration is read from the
+# Shared by the 'mint-github-app-token' composite action (GitHub Actions) and
+# the Azure DevOps pipeline. The signing identity is whoever the caller is
+# signed in as – the GitHub OIDC federated identity (azure/login) or the Azure
+# DevOps workload identity federation service connection (AzureCLI@2) – which
+# must hold 'Key Vault Crypto User' on the vault. Configuration is read from the
 # environment, and the token is published in the form the host CI understands.
 
 $ErrorActionPreference = 'Stop'
 
 $apiUrl = 'https://api.github.com'
-$keyVaultApiVersion = '7.4'
+$keyVaultApiVersion = '2025-07-01'
 $outputVariable = 'GitHubAppToken'
 
-$clientId = $env:GITHUB_APP_CLIENT_ID
-if ([string]::IsNullOrWhiteSpace($clientId))
-{
-    $clientId = 'Iv23lilx6AekMDUze7ss'
-}
-
-$owner = $env:GITHUB_APP_OWNER
-if ([string]::IsNullOrWhiteSpace($owner))
-{
-    $owner = 'microsoft'
-}
-
-$repositoryName = $env:GITHUB_APP_REPOSITORY
-if ([string]::IsNullOrWhiteSpace($repositoryName))
-{
-    $repositoryName = 'PR-Metrics'
-}
+$clientId = 'Iv23lilx6AekMDUze7ss'
+$owner = 'microsoft'
+$repositoryName = 'PR-Metrics'
+$vaultName = 'PRMetrics-KeyVault'
+$keyName = 'github-app-signing-key'
 
 $permissionsJson = $env:GITHUB_APP_PERMISSIONS
 if ([string]::IsNullOrWhiteSpace($permissionsJson))
 {
-    $permissionsJson = '{"pull_requests":"write"}'
-}
-
-$vaultName = $env:KEY_VAULT_NAME
-if ([string]::IsNullOrWhiteSpace($vaultName))
-{
-    throw "The 'KEY_VAULT_NAME' environment variable is not set."
-}
-
-$keyName = $env:KEY_VAULT_KEY_NAME
-if ([string]::IsNullOrWhiteSpace($keyName))
-{
-    throw "The 'KEY_VAULT_KEY_NAME' environment variable is not set."
+    throw "The 'GITHUB_APP_PERMISSIONS' environment variable is not set."
 }
 
 function ConvertTo-Base64Url
