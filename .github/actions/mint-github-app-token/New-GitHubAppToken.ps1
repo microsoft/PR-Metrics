@@ -5,8 +5,8 @@
 # App JWT remotely in Azure Key Vault, so the App private key is never exported.
 # Shared by the 'mint-github-app-token' composite action (GitHub Actions) and
 # the Azure DevOps pipeline. The signing identity is whoever the caller is
-# signed in as – the GitHub OIDC federated identity (azure/login) or the Azure
-# DevOps workload identity federation service connection (AzureCLI@2) – which
+# signed in as - the GitHub OIDC federated identity (azure/login) or the Azure
+# DevOps workload identity federation service connection (AzureCLI@2) - which
 # must hold 'Key Vault Crypto User' on the vault. Configuration is read from the
 # environment, and the token is published in the form the host CI understands.
 
@@ -167,7 +167,7 @@ function Invoke-GitHubApi
 $vaultAccessToken = Get-KeyVaultAccessToken
 
 # Mask the data-plane token on whichever host before it is used, so the bearer
-# token cannot surface in verbose or debug logs – the installation token is
+# token cannot surface in verbose or debug logs - the installation token is
 # masked the same way once minted.
 if ($env:GITHUB_ACTIONS -eq 'true')
 {
