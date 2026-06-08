@@ -25,6 +25,7 @@ jobs:
     environment: production
     permissions:
       attestations: write
+      contents: read
       id-token: write
     steps:
       - name: Checkout

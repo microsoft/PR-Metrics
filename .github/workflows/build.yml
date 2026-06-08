@@ -27,6 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     permissions:
+      contents: read
       id-token: write
     steps:
       - name: Checkout – Action
@@ -134,6 +135,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     permissions:
+      contents: read
       id-token: write
     steps:
       - name: Checkout
@@ -190,6 +192,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     permissions:
+      contents: read
       id-token: write
     steps:
       - name: Checkout
@@ -272,6 +275,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     permissions:
+      contents: read
       id-token: write
     steps:
       - name: gh – Log Version
