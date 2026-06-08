@@ -6,7 +6,9 @@ version: 2
 
 updates:
   - package-ecosystem: github-actions
-    directory: /
+    directories:
+      - /
+      - /.github/actions/mint-github-app-token
     open-pull-requests-limit: 100
     schedule:
       interval: cron
