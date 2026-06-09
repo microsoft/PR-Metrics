@@ -23,6 +23,8 @@ resources:
 extends:
   template: v1/Office.Official.PipelineTemplate.yml@OfficePipelineTemplates
   parameters:
+    settings:
+      networkIsolationPolicy: Permissive,CFSClean,CFSClean2,CFSClean3
     sdl:
       sourceAnalysisPool:
         name: Azure-Pipelines-1ESPT-ExDShared
@@ -72,12 +74,23 @@ extends:
                 inputs:
                   version: 24.13.0
 
+              - bash: |
+                  {
+                    echo "ignore-scripts=true"
+                    echo "registry=https://pkgs.dev.azure.com/office/_packaging/Office/npm/registry/"
+                    echo "always-auth=true"
+                  } > "$(Build.SourcesDirectory)/.npmrc"
+                displayName: npm – Point at Office Feed
+
+              - task: npmAuthenticate@0
+                displayName: npm – Authenticate
+                inputs:
+                  workingFile: $(Build.SourcesDirectory)/.npmrc
+
               - task: Npm@1
                 displayName: npm – Install Dependencies
                 inputs:
                   command: ci
-                  customRegistry: useFeed
-                  customFeed: Office
 
               - task: Npm@1
                 displayName: npm – Build Release
