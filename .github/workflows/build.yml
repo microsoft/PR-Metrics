@@ -296,7 +296,7 @@ jobs:
           azure-client-id: ${{ vars.AZURE_CLIENT_ID }}
           azure-tenant-id: ${{ vars.AZURE_TENANT_ID }}
           azure-subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-          permissions: '{"pull_requests":"write"}'
+          permissions: '{"contents":"write","pull_requests":"write","workflows":"write"}'
 
       - if: github.event.pull_request.user.login == 'dependabot[bot]'
         name: Enable Auto-Merge
