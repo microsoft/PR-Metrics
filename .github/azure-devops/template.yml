@@ -37,6 +37,19 @@ stages:
               inputs:
                 version: 24.13.0
 
+            - bash: |
+                {
+                  echo "ignore-scripts=true"
+                  echo "registry=https://pkgs.dev.azure.com/office/_packaging/Office/npm/registry/"
+                  echo "always-auth=true"
+                } > "$(Build.SourcesDirectory)/.npmrc"
+              displayName: npm – Point at Office Feed
+
+            - task: npmAuthenticate@0
+              displayName: npm – Authenticate
+              inputs:
+                workingFile: $(Build.SourcesDirectory)/.npmrc
+
             - task: Npm@1
               displayName: npm – Install Dependencies
               inputs:
