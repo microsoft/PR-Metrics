@@ -25,6 +25,7 @@ jobs:
     environment: production
     permissions:
       attestations: write
+      contents: read
       id-token: write
     steps:
       - name: Checkout
@@ -34,12 +35,12 @@ jobs:
 
       - name: App Token – Mint
         id: app-token
-        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        uses: ./.github/actions/mint-github-app-token
         with:
-          client-id: Iv23lilx6AekMDUze7ss
-          permission-contents: write
-          permission-discussions: write
-          private-key: ${{ secrets.PRIVATE_KEY }}
+          azure-client-id: ${{ vars.AZURE_CLIENT_ID }}
+          azure-tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          azure-subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+          permissions: '{"contents":"write","discussions":"write"}'
 
       - name: gh – Log Version
         run: gh --version

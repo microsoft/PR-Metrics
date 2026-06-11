@@ -10,21 +10,24 @@ pipelines.
 
 - **`GITHUB_TOKEN`**: GitHub-provided token for workflow operations.
   Per-workflow run, auto-expires.
-- **`pr-metrics-access-app` GitHub App installation token**: One-hour
+- **`microsoft-pr-metrics` GitHub App installation token**: One-hour
   installation token minted at job start for operations requiring elevated
-  permissions on `microsoft/PR-Metrics`. Minted by
-  `actions/create-github-app-token` using the App's Client ID (inlined in the
-  workflows, since it is a public identifier) and the App's private key
-  (`PRIVATE_KEY`); the agentic `Update CI Dependencies` workflow mints the same
-  token through gh-aw's native `github-app:` block. Each job requests only the
-  permissions it needs – for example, `contents: write` for branch pushes or
-  `pull-requests: write` for PR comments.
-- **`PRIVATE_KEY`**: GitHub Actions secret holding the App's RSA private key.
-  Every workflow that needs the App installation token reads this secret via
-  `actions/create-github-app-token`. A GitHub App key is also surfaced through
-  the `PR Metrics` Azure DevOps variable group, so the Azure DevOps test
-  pipeline can mint its own installation token with the script at
-  `.github/azure-devops/scripts/New-GitHubAppToken.ps1`.
+  permissions on `microsoft/PR-Metrics`. The App JWT is signed by Azure Key
+  Vault – the App private key lives in the vault as a non-exportable key and is
+  never exported – then exchanged for the installation token. GitHub Actions
+  workflows mint it through the `mint-github-app-token` composite action
+  (`azure/login` OIDC, then Key Vault signing); the Azure DevOps pipeline mints
+  it through the shared `New-GitHubAppToken.ps1` under its workload identity
+  federation service connection. Each job requests only the permissions it needs
+  – for example, `contents: write` for branch pushes or `pull-requests: write`
+  for PR comments.
+- **App signing key (Azure Key Vault)**: The App's RSA private key, imported
+  into the `PRMetrics-KeyVault` Azure Key Vault as a non-exportable key named
+  `github-app-signing-key`. Key Vault performs the RS256 signing of the App JWT,
+  so the private key is never read by CI. The signing identities – a GitHub OIDC
+  federated identity for GitHub Actions and the `PR Metrics` workload identity
+  federation service connection for Azure DevOps – hold the
+  `Key Vault Crypto User` role on the vault.
 - **`PR_METRICS_ACCESS_TOKEN`**: Access token passed to the PR Metrics action.
   Environment variable scoped to the workflow/job run; populated with the
   short-lived App installation token described above, in both GitHub Actions and
@@ -42,6 +45,10 @@ All secrets are stored exclusively in platform-managed secret stores:
 - **Azure DevOps Variable Groups and Service Connections**: Pipeline-scoped
   secrets for Azure DevOps builds and releases. Managed through Azure DevOps
   project settings with role-based access controls.
+- **Azure Key Vault**: The App signing key (`github-app-signing-key` in the
+  `PRMetrics-KeyVault` vault), stored as a non-exportable key so the private key
+  material cannot be exported. Access is governed by Azure role-based access
+  control.
 
 Secrets are **never** stored in source code, configuration files, or version
 control. The `.gitignore` file excludes common environment file patterns
@@ -66,9 +73,12 @@ control. The `.gitignore` file excludes common environment file patterns
   No manual rotation is required.
 - **App installation tokens**: Minted per job with a one-hour lifetime and
   discarded at job end. No standing token exists to rotate.
-- **`PRIVATE_KEY`**: The App's RSA private key. Rotate by generating a new key
-  for the App and updating both the GitHub Actions secret and the key vault
-  secret, with a recommended cadence of annually or on suspected compromise.
+- **App signing key**: The App's RSA private key. Rotation is a runbook, not
+  automatic: generate a new private key in the GitHub App settings (the App may
+  hold up to 25 keys, so the current key stays valid for a zero-downtime swap),
+  import it as a new version of the Key Vault key, confirm a pipeline run
+  succeeds on it, then delete the superseded key in the GitHub App settings.
+  Rotate at least quarterly or immediately on suspected compromise.
 - **ESRP Credentials**: Managed by the Microsoft ESRP service and rotated
   according to Microsoft's internal policies.
 
