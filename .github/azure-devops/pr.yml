@@ -23,6 +23,8 @@ resources:
 extends:
   template: v1/Office.Unofficial.PipelineTemplate.yml@OfficePipelineTemplates
   parameters:
+    featureFlags:
+      scanAllEslintScriptExtensions: true
     settings:
       networkIsolationPolicy: Permissive,CFSClean,CFSClean2,CFSClean3
     sdl:
@@ -37,6 +39,7 @@ extends:
         useV3: true
         customconfigfile: $(Build.SourcesDirectory)/eslint.config.mjs
         npmci: true
+        targetsESLint: $(Build.SourcesDirectory)/src/task/**/*.ts
         break: true
         severity: Error
         enableExclusions: true
