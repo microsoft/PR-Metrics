@@ -33,13 +33,15 @@ extends:
       credscan:
         suppressionsFile: $(Build.SourcesDirectory)\.github\azure-devops\CredScanSuppressions.json
       eslint:
-        environmentsEs2017: true
-        environmentsMocha: true
-        environmentsNode: true
-        parser: "@typescript-eslint/parser"
-        parserOptions: ecmaVersion:2018
+        enabled: true
+        useV3: true
+        customconfigfile: $(Build.SourcesDirectory)/eslint.config.mjs
+        npmci: true
+        break: true
+        severity: Error
         enableExclusions: true
-        exclusionPatterns: "*.js"
+        exclusionPatterns: |
+          **/*.js
     stages:
       - template: template.yml
         parameters:
