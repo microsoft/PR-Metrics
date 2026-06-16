@@ -37,9 +37,7 @@ extends:
       eslint:
         enabled: true
         useV3: true
-        customconfigfile: $(Build.SourcesDirectory)/eslint.config.mjs
-        npmci: true
-        targetsESLint: $(Build.SourcesDirectory)/src/task/**/*.ts
+        targetsESLint: src/task/**/*.ts
         break: true
         severity: Error
         enableExclusions: true
