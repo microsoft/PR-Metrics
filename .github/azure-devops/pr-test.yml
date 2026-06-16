@@ -23,8 +23,6 @@ resources:
 extends:
   template: v1/1ES.Unofficial.PipelineTemplate.yml@1ESPipelineTemplates
   parameters:
-    featureFlags:
-      scanAllEslintScriptExtensions: true
     settings:
       networkIsolationPolicy: Permissive,CFSClean,CFSClean2,CFSClean3
     sdl:
@@ -37,7 +35,6 @@ extends:
       eslint:
         enabled: true
         useV3: true
-        targetsESLint: src/task/**/*.ts
         break: true
         severity: Error
         enableExclusions: true
