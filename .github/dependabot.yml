@@ -10,6 +10,10 @@ updates:
       - /
       - /.github/actions/mint-github-app-token
     open-pull-requests-limit: 100
+    groups:
+      codeql-action:
+        patterns:
+          - github/codeql-action*
     schedule:
       interval: cron
       cronjob: 0 0 10 */3 * # Run every quarter on the 10th day.
