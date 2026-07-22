@@ -30,7 +30,7 @@
     "test": "npm run build:debug && cd debug/task && c8 --reporter=text --reporter=text-summary mocha tests/**/*.spec.js",
     "test:fast": "node scripts/fs-helpers.mjs rm debug && node scripts/fs-helpers.mjs cp src debug && cd debug/task && tsc --sourceMap -p tsconfig.test.json && c8 --reporter=text --reporter=text-summary mocha tests/**/*.spec.js",
     "update:dependencies": "npm update",
-    "update:versions": "ncu -u --peer"
+    "update:versions": "ncu -u --peer --reject @types/node"
   },
   "repository": {
     "type": "git",
@@ -72,7 +72,7 @@
     "@octokit/types": "16.0.0",
     "@tsconfig/node24": "24.0.4",
     "@types/mocha": "10.0.10",
-    "@types/node": "26.1.1",
+    "@types/node": "24.13.3",
     "@types/picomatch": "4.0.3",
     "@typescript-eslint/parser": "8.64.0",
     "@vercel/ncc": "0.44.1",
