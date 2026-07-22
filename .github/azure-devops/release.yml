@@ -135,9 +135,10 @@ extends:
                     ]
                   SessionTimeout: 30
 
-              - task: AzureCLI@2
+              - task: AzureCLI@3
                 displayName: Release – Publish
                 inputs:
+                  connectionType: azureRM
                   azureSubscription: PR Metrics
                   scriptType: pscore
                   scriptLocation: inlineScript

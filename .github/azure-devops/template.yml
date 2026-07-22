@@ -61,9 +61,10 @@ stages:
                 command: custom
                 customCommand: run build:release
 
-            - task: AzureCLI@2
+            - task: AzureCLI@3
               displayName: Azure DevOps – Sign-in
               inputs:
+                connectionType: azureRM
                 azureSubscription: PR Metrics
                 scriptType: pscore
                 scriptLocation: inlineScript
@@ -97,9 +98,10 @@ stages:
             fetchDepth: 0
             persistCredentials: false
 
-          - task: AzureCLI@2
+          - task: AzureCLI@3
             displayName: App Token – Mint
             inputs:
+              connectionType: azureRM
               azureSubscription: PR Metrics
               scriptType: pscore
               scriptLocation: scriptPath
@@ -134,9 +136,10 @@ stages:
             fetchDepth: 0
             persistCredentials: false
 
-          - task: AzureCLI@2
+          - task: AzureCLI@3
             displayName: App Token – Mint
             inputs:
+              connectionType: azureRM
               azureSubscription: PR Metrics
               scriptType: pscore
               scriptLocation: scriptPath
