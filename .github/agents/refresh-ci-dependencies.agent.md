@@ -77,11 +77,15 @@ tasks – `EsrpCodeSigning`, `PoliCheck`, `PublishSecurityAnalysisLogs`,
 `PostAnalysis`, and `ComponentGovernanceComponentDetection` – are in neither
 source; leave them unless you can review their release notes. Never bump this
 product's own `PRMetrics@N` task here. Bump a major version only after reviewing
-its release notes and adjusting inputs accordingly; adopt any renamed or newly
-required inputs, preferring the new canonical input name over a deprecated alias
-(for example, `AzureCLI@3` adds a required `connectionType: azureRM`). This
-includes the `UseNode@1` task version itself, but never the `version:` input it
-receives.
+its release notes and adjusting inputs accordingly. Add any newly required
+inputs, and when an input is genuinely renamed, switch to its replacement.
+Prefer the input name the task's [reference docs][ado-tasks] show in their YAML
+syntax, which is not always the task.json `name`; do not replace a
+still-supported input with an alias when neither is deprecated. For example,
+`AzureCLI@3` adds a required `connectionType: azureRM` but keeps
+`azureSubscription` – the documented input – even though its task.json `name`
+is the older `connectedServiceNameARM`. This includes the `UseNode@1` task
+version itself, but never the `version:` input it receives.
 
 ## Node.js Version Consistency
 
