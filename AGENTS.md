@@ -81,11 +81,12 @@ The core functionality relies on:
 ### Release Versioning
 
 `.github/workflow-scripts/Update-Version.ps1` (run by the `release-initiate.yml`
-workflow) updates every version-bearing file. Most of them carry the version
+workflow) updates the version-bearing manifests and docs to the version
 **being released** (for example, `1.7.16`): `package.json`,
 `src/vss-extension.json`, the `task.json` and `task.loc.json` task definitions,
-the `resources.resjson` strings, `constants.ts`, `README.md`, and
-`.github/release-publish-trigger.txt`.
+the `resources.resjson` strings, `constants.ts`, and `README.md`. A separate
+`release-initiate.yml` step, not the script, writes
+`.github/release-publish-trigger.txt` with that same release version.
 
 `.github/release-version.json` is the deliberate exception. It holds the
 **next** release version, so the script sets its `patch` one higher than the
