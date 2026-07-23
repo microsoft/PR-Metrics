@@ -40,13 +40,25 @@ Edit only these files:
 
 In `.github/workflows/build.yml`, `release-initiate.yml`, and
 `release-publish.yml`, each action is pinned as
-`uses: owner/repo@<40-char SHA> # vX.Y.Z`. For each one, resolve the latest
-release and its tag SHA, then update the SHA and the trailing `# vX.Y.Z` comment
-together – never one without the other:
+`uses: owner/repo@<40-char SHA> # vX.Y.Z`. Some actions live in a subpath –
+`uses: owner/repo/subpath@<40-char SHA> # vX.Y.Z`, such as
+`github/codeql-action/init` and `github/codeql-action/analyze`; subpaths of the
+same repository share one release and one SHA, so update them together. For each
+action, resolve the latest release and its tag SHA, then update the SHA and the
+trailing `# vX.Y.Z` comment together – never one without the other:
 
 ```bash
 gh api repos/<owner>/<repo>/releases/latest --jq '.tag_name'
 gh api repos/<owner>/<repo>/git/refs/tags/<tag> --jq '.object.sha'
+```
+
+`releases/latest` can return a tag that is not the action's version – for
+example, `github/codeql-action` returns a `codeql-bundle-vX.Y.Z` tag. When the
+latest tag does not match `vX.Y.Z`, list releases and take the newest `vX.Y.Z`
+tag instead:
+
+```bash
+gh api 'repos/<owner>/<repo>/releases?per_page=100' --jq '[.[].tag_name | select(test("^v[0-9]+\\.[0-9]+\\.[0-9]+$"))] | first'
 ```
 
 If the tag points to an annotated tag object, dereference it with a second
@@ -57,10 +69,23 @@ If the tag points to an annotated tag object, dereference it with a second
 In `.github/azure-devops/*.yml`, tasks are pinned by major version as
 `task: TaskName@N` – for example, `Npm@1`, `UseNode@1`, or `EsrpCodeSigning@6`.
 Only the major version is declared; the latest minor or patch resolves at
-runtime. Check each task's latest major version in the
-[Azure Pipelines task reference][ado-tasks]. Bump a major version only after
-reviewing its release notes and adjusting inputs accordingly. This includes the
-`UseNode@1` task version itself, but never the `version:` input it receives.
+runtime. For built-in tasks, confirm the latest major from the `Tasks/` folders
+of the [`microsoft/azure-pipelines-tasks`][ado-tasks-repo] repository – an
+`AzureCLIV3` folder means `@3` exists – and cross-check the
+[Azure Pipelines task reference][ado-tasks] for inputs. Internal-extension
+tasks – `EsrpCodeSigning`, `PoliCheck`, `PublishSecurityAnalysisLogs`,
+`PostAnalysis`, and `ComponentGovernanceComponentDetection` – are in neither
+source; leave them unless you can review their release notes. Never bump this
+product's own `PRMetrics@N` task here. Bump a major version only after reviewing
+its release notes and adjusting inputs accordingly. Add any newly required
+inputs, and when an input is genuinely renamed, switch to its replacement.
+Prefer the input name the task's [reference docs][ado-tasks] show in their YAML
+syntax, which is not always the task.json `name`; do not replace a
+still-supported input with an alias when neither is deprecated. For example,
+`AzureCLI@3` adds a required `connectionType: azureRM` but keeps
+`azureSubscription` – the documented input – even though its task.json `name`
+is the older `connectedServiceNameARM`. This includes the `UseNode@1` task
+version itself, but never the `version:` input it receives.
 
 ## Node.js Version Consistency
 
@@ -95,9 +120,16 @@ most recently. Do not change the value itself.
 
 1. Preserve formatting: trailing newlines, comment spacing, and two-space
    indentation.
+1. Before committing, integrate the remote branch. While you work, the `Build`
+   workflow may auto-commit linting and `dist` updates to this branch, so the
+   local branch can fall behind. Run `git fetch`, then fast-forward or rebase
+   onto `origin/release/vX.Y.Z`, preserving any unrelated working-tree changes.
+   Stage only the files this agent changed.
 1. Commit with the message `chore: refresh CI pins`.
-1. Push to the release pull request branch.
+1. Push to the release pull request branch with a plain fast-forward push –
+   never `--force`. Confirm exactly one new commit is added.
 1. No manual verification is required. The `Build` workflow reruns on the push
    and re-lints the modified files; any failure surfaces there.
 
 [ado-tasks]: https://learn.microsoft.com/azure/devops/pipelines/tasks/reference/
+[ado-tasks-repo]: https://github.com/microsoft/azure-pipelines-tasks
