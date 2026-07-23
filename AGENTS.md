@@ -78,6 +78,25 @@ npm run test:fast      # Quick test run during development
 The core functionality relies on:
 `git diff --numstat --ignore-all-space origin/<target>...pull/<pull_request_id>/merge`
 
+### Release Versioning
+
+`.github/workflow-scripts/Update-Version.ps1` (run by the `release-initiate.yml`
+workflow) updates every version-bearing file. Most of them carry the version
+**being released** (for example, `1.7.16`): `package.json`,
+`src/vss-extension.json`, the `task.json` and `task.loc.json` task definitions,
+the `resources.resjson` strings, `constants.ts`, `README.md`, and
+`.github/release-publish-trigger.txt`.
+
+`.github/release-version.json` is the deliberate exception. It holds the
+**next** release version, so the script sets its `patch` one higher than the
+release (for example, `17` while everything else is `1.7.16`).
+
+So on a release pull request, `.github/release-version.json` reading one patch
+ahead of every other version reference is **expected**, not a mismatch, drift,
+or inconsistency. Do not flag it or try to "align" the patch numbers; lowering
+it would break the next release. See the "next release version" comment in
+`Update-Version.ps1`.
+
 ## Code Standards
 
 ### TypeScript Conventions
