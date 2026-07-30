@@ -67,6 +67,11 @@
     "parse-git-diff": "0.0.20",
     "picomatch": "4.0.5"
   },
+  "overrides": {
+    "azure-pipelines-task-lib": {
+      "minimatch": "10.2.6"
+    }
+  },
   "devDependencies": {
     "@eslint/js": "10.0.1",
     "@octokit/types": "16.0.0",
