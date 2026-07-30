@@ -273,34 +273,7 @@ jobs:
   dependabot:
     name: Dependabot
     runs-on: ubuntu-latest
-    environment: production
-    permissions:
-      contents: read
-      id-token: write
+    permissions: {}
     steps:
       - name: gh – Log Version
         run: gh --version
-
-      - if: github.event.pull_request.user.login == 'dependabot[bot]'
-        name: Checkout – Action
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-          sparse-checkout: .github/actions
-
-      - if: github.event.pull_request.user.login == 'dependabot[bot]'
-        name: App Token – Mint
-        id: app-token
-        uses: ./.github/actions/mint-github-app-token
-        with:
-          azure-client-id: ${{ vars.AZURE_CLIENT_ID }}
-          azure-tenant-id: ${{ vars.AZURE_TENANT_ID }}
-          azure-subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-          permissions: '{"pull_requests":"write"}'
-
-      - if: github.event.pull_request.user.login == 'dependabot[bot]'
-        name: Auto-Approve
-        run: gh pr review --approve "$env:PR_URL"
-        env:
-          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
-          PR_URL: ${{ github.event.pull_request.html_url }}
