@@ -986,7 +986,7 @@ MIT
 
 The following npm package may be included in this product:
 
- - adm-zip@0.5.18
+ - adm-zip@0.6.0
 
 This package contains the following license:
 
@@ -2071,7 +2071,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 The following npm package may be included in this product:
 
- - azure-pipelines-task-lib@5.277.0
+ - azure-pipelines-task-lib@5.278.0
 
 This package contains the following license:
 

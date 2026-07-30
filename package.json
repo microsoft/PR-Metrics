@@ -63,7 +63,7 @@
     "@octokit/request-error": "7.1.0",
     "@octokit/rest": "22.0.1",
     "azure-devops-node-api": "15.1.2",
-    "azure-pipelines-task-lib": "5.277.0",
+    "azure-pipelines-task-lib": "5.278.0",
     "parse-git-diff": "0.0.20",
     "picomatch": "4.0.5"
   },
