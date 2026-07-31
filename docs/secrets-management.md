@@ -89,8 +89,22 @@ exposure:
 
 - [Gitleaks][gitleaks] scans every pull request for accidentally committed
   secrets via [Super-Linter][superlinter].
-- Secrets are passed to processes via environment variables, not command-line
-  arguments, preventing exposure in process listings.
+- Secrets are passed to processes via environment variables wherever
+  practical: `GITHUB_TOKEN`, the GitHub App installation token, and
+  `PR_METRICS_ACCESS_TOKEN` are all provided to the task process this way, not
+  as command-line arguments. This is not an absolute guarantee for every
+  credential in the pipeline: when Azure Pipelines workload identity
+  federation is used (see
+  [Workload Identity Federation][workloadidentityfederation]), the federated
+  OIDC assertion and the resulting Azure access token are passed as `az` CLI
+  arguments during `az login` and `az account get-access-token`, so they
+  appear in that process's argv and memory for its lifetime and may be
+  written to the Azure CLI's local token cache on disk. Other tooling invoked
+  by the pipelines, such as `tfx`, may also accept tokens via command-line
+  arguments. Runner masking (GitHub Actions `setSecret` / Azure Pipelines
+  `##vso[task.setvariable issecret=true]`) redacts registered values from logs
+  and console output, but it does not remove them from the OS process table,
+  process memory, or any local credential cache.
 - CI/CD pipeline logs are configured to mask secret values automatically.
 - The [security assessment][securityassessment] identifies access token
   exposure as a tracked threat with specific mitigations.
@@ -98,3 +112,4 @@ exposure:
 [gitleaks]: https://github.com/gitleaks/gitleaks
 [securityassessment]: security-assessment.md
 [superlinter]: https://github.com/super-linter/super-linter
+[workloadidentityfederation]: workload-identity-federation.md

@@ -41,8 +41,17 @@ graph TD
 - **Supply chain compromise** (High): Releases include build provenance
   attestation (SLSA) and cosign signatures. Dependencies monitored via
   Dependabot.
-- **Credential exposure** (High): Authentication tokens provided via environment
-  variables only. Gitleaks scanning prevents accidental secret commits.
+- **Credential exposure** (High): `GITHUB_TOKEN`, the GitHub App installation
+  token, and `PR_METRICS_ACCESS_TOKEN` are provided to the task process via
+  environment variables. This does not extend to every credential in the
+  pipeline: when Azure Pipelines workload identity federation is used, the
+  federated OIDC assertion and resulting Azure access token are passed as `az`
+  CLI arguments (see [Secrets Management][secretsmanagement] and
+  [Workload Identity Federation][workloadidentityfederation]), so they are
+  present in that process's argv and memory for its lifetime. Runner masking
+  redacts registered secret values from logs, but does not remove them from
+  the OS process table, process memory, or the Azure CLI's local token cache.
+  Gitleaks scanning prevents accidental secret commits.
 - **API injection via PR metadata** (Medium): Pull request title and comment
   content constructed from validated metrics data, not raw external input.
 - **Unauthorized API access** (Medium): Minimum required permissions enforced
@@ -85,8 +94,12 @@ Top 10 and CWE/SANS Top 25) are addressed:
   Git refs constrained to valid ref formats). API calls use typed SDK methods
   with parameterized arguments rather than manual string concatenation.
 - **Broken Authentication (CWE-287)**: Authentication is delegated to the CI/CD
-  platform. Tokens are provided via environment variables and never logged or
-  stored persistently.
+  platform. `GITHUB_TOKEN`, the GitHub App installation token, and
+  `PR_METRICS_ACCESS_TOKEN` are provided via environment variables and never
+  logged or stored persistently. Where workload identity federation is used in
+  Azure Pipelines, the federated OIDC assertion and Azure access token are
+  instead passed as `az` CLI arguments, as described in
+  [Secrets Management][secretsmanagement].
 - **Sensitive Data Exposure (CWE-200)**: Debug logging does not output sensitive
   values. Gitleaks scanning in CI prevents accidental credential commits.
 - **Security Misconfiguration (CWE-16)**: Secure defaults are enforced. The task
@@ -115,4 +128,6 @@ Top 10 and CWE/SANS Top 25) are addressed:
 
 [c8rc]: ../.c8rc.json
 [inputs]: ../src/task/src/metrics/inputs.ts
+[secretsmanagement]: secrets-management.md
 [verification]: verification.md
+[workloadidentityfederation]: workload-identity-federation.md

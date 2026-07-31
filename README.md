@@ -174,8 +174,10 @@ fetch Git history during checkout. This can be done by updating the
 `actions/checkout` step:
 
 ```yaml
-- uses: actions/checkout@4.1.7
-  fetch-depth: 0
+- uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+  with:
+    fetch-depth: 0
+    persist-credentials: false
 ```
 
 In many cases, `fetch-depth` will not be required so it is recommended not to

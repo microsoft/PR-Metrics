@@ -65,8 +65,15 @@ pull requests or repository contents within the token's permission scope.
   scoped to the current repository and expires after the workflow run. The task
   itself reads only the `PR_METRICS_ACCESS_TOKEN` environment variable and does
   not automatically fall back to `GITHUB_TOKEN`.
-- Tokens are passed via environment variables (`PR_METRICS_ACCESS_TOKEN`), not
-  command-line arguments, preventing exposure in process listings.
+- The task's own `PR_METRICS_ACCESS_TOKEN` input is read from an environment
+  variable rather than a command-line argument. This is not an absolute
+  guarantee across every credential in the pipeline: when Azure Pipelines
+  workload identity federation is used, the federated OIDC assertion and the
+  resulting Azure access token are passed as `az` CLI arguments in
+  `tokenManager.ts`, so they appear in that process's argv and memory for its
+  lifetime. See [Secrets Management][secretsmanagement] and
+  [Workload Identity Federation][workloadidentityfederation] for the
+  authoritative description of this flow.
 - The CI/CD workflows use `permissions: {}` at the top level, granting no
   permissions by default; each job requests only the specific permissions it
   needs.
@@ -151,15 +158,20 @@ environment.
 **Mitigations**:
 
 - Branch names and PR identifiers are sourced from CI/CD environment variables
-  set by the platform, not from customer-controlled input parameters.
-- The Git command uses a fixed argument structure and Git ref format
-  constraints, limiting how these values can influence the final command line.
-  The values are executed via the
-  [Azure Pipelines Task SDK][azurepipelinestasksdk] or
-  [@actions/exec][actionsexec] libraries without invoking a shell, but in the
-  GitHub runner wrapper they are first combined into a single string and split
-  on spaces, so protection relies on the fixed argument pattern and ref
-  constraints rather than automatic argument escaping.
+  set by the platform, not from customer-controlled input parameters. The
+  target branch is additionally validated to reject whitespace and control
+  characters before use (`GitInvoker.initialize()`), and the pull request ID
+  is validated as numeric (`Validator.validateNumber()`).
+- The Git command uses a fixed argument array (for example,
+  `["diff", "--numstat", "--ignore-all-space", <ref>]`) rather than a
+  concatenated command-line string. Both runner paths – the
+  [Azure Pipelines Task SDK][azurepipelinestasksdk] and
+  [@actions/exec][actionsexec] – preserve this argument array intact through to
+  the underlying `child_process.spawn` call and resolve the `git` executable
+  path before spawning, without invoking a shell. Neither library combines the
+  arguments into a single string and re-splits them on spaces; protection
+  therefore relies on the fixed argument structure and the branch/ref
+  validation described above, not on automatic argument escaping.
 
 ## Residual Risks
 
@@ -181,6 +193,8 @@ are added, when the threat landscape changes, or at least annually.
 [gitleaks]: https://github.com/gitleaks/gitleaks
 [npmcheckupdates]: https://www.npmjs.com/package/npm-check-updates
 [prmetrics]: https://github.com/microsoft/PR-Metrics
+[secretsmanagement]: secrets-management.md
 [sigstore]: https://www.sigstore.dev/
 [slsa]: https://slsa.dev/
 [vercelncc]: https://github.com/vercel/ncc
+[workloadidentityfederation]: workload-identity-federation.md
