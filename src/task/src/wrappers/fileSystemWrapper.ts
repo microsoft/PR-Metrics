@@ -4,12 +4,29 @@
  */
 
 import * as fsPromises from "node:fs/promises";
+import {
+  azureCliConfigDirectoryCleanupMaxRetries,
+  azureCliConfigDirectoryCleanupRetryDelayMs,
+} from "../utilities/constants.js";
 import type { Stats } from "node:fs";
+
+type FileSystemPromises = Pick<
+  typeof fsPromises,
+  "chmod" | "mkdtemp" | "rm" | "stat"
+>;
 
 /**
  * A wrapper around the file system, to facilitate testability.
  */
 export default class FileSystemWrapper {
+  private readonly _fsPromises: FileSystemPromises;
+
+  public constructor(
+    fsPromisesImplementation: FileSystemPromises = fsPromises,
+  ) {
+    this._fsPromises = fsPromisesImplementation;
+  }
+
   /**
    * Gets a value indicating whether the specified path exists and refers to a directory.
    * @param path The path to check.
@@ -17,7 +34,7 @@ export default class FileSystemWrapper {
    */
   public async directoryExists(path: string): Promise<boolean> {
     try {
-      const stats: Stats = await fsPromises.stat(path);
+      const stats: Stats = await this._fsPromises.stat(path);
       return stats.isDirectory();
     } catch {
       return false;
@@ -30,7 +47,7 @@ export default class FileSystemWrapper {
    * @returns A promise containing the path of the created directory.
    */
   public async mkdtemp(prefix: string): Promise<string> {
-    return fsPromises.mkdtemp(prefix);
+    return this._fsPromises.mkdtemp(prefix);
   }
 
   /**
@@ -39,7 +56,7 @@ export default class FileSystemWrapper {
    * @param mode The permissions mode to apply.
    */
   public async chmod(path: string, mode: number): Promise<void> {
-    await fsPromises.chmod(path, mode);
+    await this._fsPromises.chmod(path, mode);
   }
 
   /**
@@ -47,9 +64,11 @@ export default class FileSystemWrapper {
    * @param path The path to remove.
    */
   public async rm(path: string): Promise<void> {
-    await fsPromises.rm(path, {
+    await this._fsPromises.rm(path, {
       force: true,
+      maxRetries: azureCliConfigDirectoryCleanupMaxRetries,
       recursive: true,
+      retryDelay: azureCliConfigDirectoryCleanupRetryDelayMs,
     });
   }
 }

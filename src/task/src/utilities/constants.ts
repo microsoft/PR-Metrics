@@ -30,6 +30,16 @@ export const httpTimeoutMs = 30_000;
 export const maxPatternCount = 200;
 
 /**
+ * The maximum number of retries used when removing the isolated Azure CLI configuration directory.
+ */
+export const azureCliConfigDirectoryCleanupMaxRetries = 5;
+
+/**
+ * The delay in milliseconds between retries when removing the isolated Azure CLI configuration directory.
+ */
+export const azureCliConfigDirectoryCleanupRetryDelayMs = 200;
+
+/**
  * The user agent string used for GitHub API requests.
  */
 export const userAgent = "PRMetrics/v1.7.16";

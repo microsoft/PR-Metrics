@@ -6,6 +6,10 @@
 import * as fsPromises from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
+import {
+  azureCliConfigDirectoryCleanupMaxRetries,
+  azureCliConfigDirectoryCleanupRetryDelayMs,
+} from "../../src/utilities/constants.js";
 import FileSystemWrapper from "../../src/wrappers/fileSystemWrapper.js";
 import type { Stats } from "node:fs";
 import assert from "node:assert/strict";
@@ -123,6 +127,48 @@ describe("fileSystemWrapper.ts", (): void => {
       const exists: boolean =
         await fileSystemWrapper.directoryExists(directory);
       assert.equal(exists, false);
+    });
+
+    it("passes bounded retry options to the underlying recursive removal", async (): Promise<void> => {
+      // Arrange
+      type RmOptions = NonNullable<Parameters<typeof fsPromises.rm>[1]>;
+
+      const rmCalls: { path: string; options: RmOptions | undefined }[] = [];
+      const fileSystemWrapper: FileSystemWrapper = new FileSystemWrapper({
+        chmod: async (): Promise<void> => Promise.resolve(),
+        mkdtemp: async (): Promise<string> => Promise.resolve(""),
+        rm: async (pathName: string, options?: RmOptions): Promise<void> => {
+          rmCalls.push({
+            options,
+            path: pathName,
+          });
+          return Promise.resolve();
+        },
+        stat: async (): Promise<Stats> =>
+          Promise.resolve({
+            isDirectory: (): boolean => true,
+          } as Stats),
+      } as never);
+      const directory: string = path.join(
+        os.tmpdir(),
+        `pr-metrics-rm-options-${String(Date.now())}`,
+      );
+
+      // Act
+      await fileSystemWrapper.rm(directory);
+
+      // Assert
+      assert.deepEqual(rmCalls, [
+        {
+          options: {
+            force: true,
+            maxRetries: azureCliConfigDirectoryCleanupMaxRetries,
+            recursive: true,
+            retryDelay: azureCliConfigDirectoryCleanupRetryDelayMs,
+          },
+          path: directory,
+        },
+      ]);
     });
 
     it("does not throw when the path does not exist", async (): Promise<void> => {
