@@ -3,13 +3,13 @@
  * Licensed under the MIT License.
  */
 
-import { mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import GitClient from "../src/gitClient.js";
 import GitCommandRunner from "../src/gitCommandRunner.js";
 import type StagedChangeInterface from "../src/interfaces/stagedChangeInterface.js";
 import assert from "node:assert/strict";
 import { join } from "node:path";
-import { randomUUID } from "node:crypto";
+import { tmpdir } from "node:os";
 
 const hostilePaths: string[] = [
   "a file with spaces.txt",
@@ -36,12 +36,7 @@ const hostilePaths: string[] = [
   "Ünïcödé-文件.txt",
 ];
 
-const repositoryPath: string = join(
-  import.meta.dirname,
-  "..",
-  "integration",
-  randomUUID(),
-);
+let repositoryPath = "";
 const binaryContents: Buffer = Buffer.from([
   0x00, 0xff, 0xfe, 0x80, 0x0a, 0x00,
 ]);
@@ -58,40 +53,50 @@ const findChange = (path: string): StagedChangeInterface => {
 
 describe("gitClient.ts – integration", (): void => {
   before(async (): Promise<void> => {
-    mkdirSync(repositoryPath, { recursive: true });
-    const commandRunner: GitCommandRunner = new GitCommandRunner(
-      repositoryPath,
-    );
-    await commandRunner.run(["init", "-b", "main"]);
-    await commandRunner.run(["config", "user.email", "test@example.com"]);
-    await commandRunner.run(["config", "user.name", "Test User"]);
-    await commandRunner.run(["config", "core.autocrlf", "false"]);
-    await commandRunner.run(["config", "commit.gpgsign", "false"]);
+    // The scratch repository is created outside the checkout, in a uniquely named directory under the OS temporary
+    // Directory, so that no untracked directory is ever left behind in the worktree, and so that concurrent test
+    // Runs cannot collide.
+    repositoryPath = mkdtempSync(join(tmpdir(), "commit-to-branch-"));
+    try {
+      const commandRunner: GitCommandRunner = new GitCommandRunner(
+        repositoryPath,
+      );
+      await commandRunner.run(["init", "-b", "main"]);
+      await commandRunner.run(["config", "user.email", "test@example.com"]);
+      await commandRunner.run(["config", "user.name", "Test User"]);
+      await commandRunner.run(["config", "core.autocrlf", "false"]);
+      await commandRunner.run(["config", "commit.gpgsign", "false"]);
 
-    writeFileSync(join(repositoryPath, "modified.txt"), "original\n");
-    writeFileSync(join(repositoryPath, "deleted.txt"), "obsolete\n");
-    writeFileSync(join(repositoryPath, "untouched.txt"), "untouched\n");
-    await commandRunner.run(["add", "-A"]);
-    await commandRunner.run(["commit", "-m", "Initial commit"]);
+      writeFileSync(join(repositoryPath, "modified.txt"), "original\n");
+      writeFileSync(join(repositoryPath, "deleted.txt"), "obsolete\n");
+      writeFileSync(join(repositoryPath, "untouched.txt"), "untouched\n");
+      await commandRunner.run(["add", "-A"]);
+      await commandRunner.run(["commit", "-m", "Initial commit"]);
 
-    writeFileSync(join(repositoryPath, "modified.txt"), "staged\n");
-    rmSync(join(repositoryPath, "deleted.txt"));
-    writeFileSync(join(repositoryPath, "binary.bin"), binaryContents);
-    writeFileSync(join(repositoryPath, "empty.txt"), "");
-    hostilePaths.forEach((value: string): void => {
-      writeFileSync(join(repositoryPath, value), `contents of ${value}\n`);
-    });
+      writeFileSync(join(repositoryPath, "modified.txt"), "staged\n");
+      rmSync(join(repositoryPath, "deleted.txt"));
+      writeFileSync(join(repositoryPath, "binary.bin"), binaryContents);
+      writeFileSync(join(repositoryPath, "empty.txt"), "");
+      hostilePaths.forEach((value: string): void => {
+        writeFileSync(join(repositoryPath, value), `contents of ${value}\n`);
+      });
 
-    gitClient = new GitClient(commandRunner);
-    await gitClient.stageAll();
+      gitClient = new GitClient(commandRunner);
+      await gitClient.stageAll();
 
-    writeFileSync(
-      join(repositoryPath, "modified.txt"),
-      "working tree divergence\n",
-    );
-    writeFileSync(join(repositoryPath, "untouched.txt"), "unstaged change\n");
+      writeFileSync(
+        join(repositoryPath, "modified.txt"),
+        "working tree divergence\n",
+      );
+      writeFileSync(join(repositoryPath, "untouched.txt"), "unstaged change\n");
 
-    stagedChanges = await gitClient.getStagedChanges();
+      stagedChanges = await gitClient.getStagedChanges();
+    } catch (error) {
+      // Cleanup runs here too, deterministically, in case a later `after` hook is never reached as a result of this
+      // Hook throwing.
+      rmSync(repositoryPath, { force: true, maxRetries: 3, recursive: true });
+      throw error;
+    }
   });
 
   after((): void => {

@@ -15,8 +15,10 @@ import {
   buildDeletion,
   buildModification,
   buildOutput,
+  buildRecord,
   commitObjectId,
   headObjectId,
+  objectIdOne,
   objectIdThree,
   objectIdTwo,
 } from "./testUtilities/rawIndex.js";
@@ -191,6 +193,64 @@ describe("commitCreator.ts", (): void => {
           message: { headline: commitMessage },
         },
       });
+    });
+
+    it("should throw when an executable file is added, as GraphQL FileAddition cannot preserve the file mode", async (): Promise<void> => {
+      // Arrange
+      const commandRunner: FakeCommandRunner = new FakeCommandRunner();
+      commandRunner.setResponse(headArgs, `${headObjectId}\n`);
+      commandRunner.setResponse(
+        stagedChangesArgs,
+        buildOutput([
+          buildRecord(
+            `:000000 100755 0000000000000000000000000000000000000000 ${objectIdTwo} A`,
+            "scripts/run.sh",
+          ),
+        ]),
+      );
+      const client: FakeGraphQlClient = new FakeGraphQlClient();
+      const logger: FakeLogger = new FakeLogger();
+      const creator: CommitCreator = buildCreator(
+        commandRunner,
+        client,
+        logger,
+      );
+
+      // Act & Assert
+      await AssertExtensions.toThrowAsync(
+        async (): Promise<unknown> => creator.create(defaultOptions),
+        `The Git index record for "scripts/run.sh" uses the unsupported file mode '100755'.`,
+      );
+      assert.equal(client.requests.length, 0);
+    });
+
+    it("should throw for a mode-only change to an executable file, as GraphQL FileAddition cannot preserve the file mode", async (): Promise<void> => {
+      // Arrange
+      const commandRunner: FakeCommandRunner = new FakeCommandRunner();
+      commandRunner.setResponse(headArgs, `${headObjectId}\n`);
+      commandRunner.setResponse(
+        stagedChangesArgs,
+        buildOutput([
+          buildRecord(
+            `:100644 100755 ${objectIdOne} ${objectIdOne} M`,
+            "scripts/run.sh",
+          ),
+        ]),
+      );
+      const client: FakeGraphQlClient = new FakeGraphQlClient();
+      const logger: FakeLogger = new FakeLogger();
+      const creator: CommitCreator = buildCreator(
+        commandRunner,
+        client,
+        logger,
+      );
+
+      // Act & Assert
+      await AssertExtensions.toThrowAsync(
+        async (): Promise<unknown> => creator.create(defaultOptions),
+        `The Git index record for "scripts/run.sh" uses the unsupported file mode '100755'.`,
+      );
+      assert.equal(client.requests.length, 0);
     });
 
     it("should encode binary and empty blobs without alteration", async (): Promise<void> => {

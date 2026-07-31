@@ -11,7 +11,7 @@ const nulCharacter = 0;
 const metadataExpression =
   /^:(?<sourceMode>\d{6}) (?<destinationMode>\d{6}) (?<sourceObjectId>(?:[0-9a-f]{40}|[0-9a-f]{64})) (?<destinationObjectId>(?:[0-9a-f]{40}|[0-9a-f]{64})) (?<status>[A-Z]\d*)$/u;
 const emptyObjectIdExpression = /^0+$/u;
-const regularFileModes: string[] = ["100644", "100755"];
+const regularFileModes: string[] = ["100644"];
 const additionStatuses: string[] = ["A", "M"];
 const deletionStatus = "D";
 const unmergedStatus = "U";

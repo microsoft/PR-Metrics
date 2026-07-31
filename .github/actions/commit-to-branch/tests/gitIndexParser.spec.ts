@@ -72,7 +72,7 @@ describe("gitIndexParser.ts", (): void => {
       assert.deepEqual(result, [{ objectId: null, path: "obsolete.txt" }]);
     });
 
-    it("should parse an executable file", (): void => {
+    it("should throw when an executable file is added", (): void => {
       // Arrange
       const output: Buffer = buildOutput([
         buildRecord(
@@ -81,16 +81,30 @@ describe("gitIndexParser.ts", (): void => {
         ),
       ]);
 
-      // Act
-      const result: unknown = parseStagedChanges(output);
-
-      // Assert
-      assert.deepEqual(result, [
-        { objectId: objectIdTwo, path: "scripts/run.sh" },
-      ]);
+      // Act & Assert
+      AssertExtensions.toThrow(
+        (): unknown => parseStagedChanges(output),
+        `The Git index record for "scripts/run.sh" uses the unsupported file mode '100755'.`,
+      );
     });
 
-    it("should parse a mode change from a regular file to an executable file", (): void => {
+    it("should throw for a mode-only change from a regular file to an executable file", (): void => {
+      // Arrange
+      const output: Buffer = buildOutput([
+        buildRecord(
+          `:100644 100755 ${objectIdOne} ${objectIdOne} M`,
+          "scripts/run.sh",
+        ),
+      ]);
+
+      // Act & Assert
+      AssertExtensions.toThrow(
+        (): unknown => parseStagedChanges(output),
+        `The Git index record for "scripts/run.sh" uses the unsupported file mode '100755'.`,
+      );
+    });
+
+    it("should throw for a mode change from a regular file to an executable file with new content", (): void => {
       // Arrange
       const output: Buffer = buildOutput([
         buildRecord(
@@ -99,13 +113,11 @@ describe("gitIndexParser.ts", (): void => {
         ),
       ]);
 
-      // Act
-      const result: unknown = parseStagedChanges(output);
-
-      // Assert
-      assert.deepEqual(result, [
-        { objectId: objectIdTwo, path: "scripts/run.sh" },
-      ]);
+      // Act & Assert
+      AssertExtensions.toThrow(
+        (): unknown => parseStagedChanges(output),
+        `The Git index record for "scripts/run.sh" uses the unsupported file mode '100755'.`,
+      );
     });
 
     it("should parse SHA-256 object IDs", (): void => {
@@ -310,7 +322,13 @@ describe("gitIndexParser.ts", (): void => {
     }
 
     {
-      const testCases: string[] = ["120000", "160000", "040000", "100664"];
+      const testCases: string[] = [
+        "120000",
+        "160000",
+        "040000",
+        "100664",
+        "100755",
+      ];
 
       testCases.forEach((value: string): void => {
         it(`should throw when a file is added with the unsupported mode '${value}'`, (): void => {
