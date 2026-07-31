@@ -5,12 +5,6 @@
 
 import { httpTimeoutMs } from "../utilities/constants.js";
 
-/* eslint-disable @typescript-eslint/naming-convention -- Required for alignment with the OAuth 2.0 token response schema. */
-interface AccessTokenResponse {
-  access_token?: string;
-}
-/* eslint-enable @typescript-eslint/naming-convention */
-
 /**
  * A wrapper around the Fetch API, to facilitate testability.
  */
@@ -78,10 +72,12 @@ export default class HttpWrapper {
       );
     }
 
-    const accessToken: string | null =
+    const accessTokenValue: unknown =
       typeof payload === "object" && payload !== null
-        ? ((payload as AccessTokenResponse).access_token ?? null)
+        ? Reflect.get(payload, "access_token")
         : null;
+    const accessToken: string | null =
+      typeof accessTokenValue === "string" ? accessTokenValue : null;
     if (accessToken === null || accessToken.length === 0) {
       throw new Error(
         `HTTP POST request to '${url}' did not return a valid access token.`,

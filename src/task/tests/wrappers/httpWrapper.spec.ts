@@ -198,6 +198,52 @@ describe("httpWrapper.ts", (): void => {
       );
     });
 
+    it("throws a sanitized error when the access token field is not a string number", async (): Promise<void> => {
+      // Arrange
+      const form: URLSearchParams = new URLSearchParams();
+      stubFetch(
+        async (): Promise<Response> =>
+          Promise.resolve(
+            new Response(JSON.stringify({ access_token: 123 }), {
+              status: 200,
+            }),
+          ),
+      );
+
+      // Act
+      const func: () => Promise<string> = async () =>
+        httpWrapper.postForm("https://login.microsoftonline.com/x", form);
+
+      // Assert
+      await AssertExtensions.toThrowAsync(
+        func,
+        "HTTP POST request to 'https://login.microsoftonline.com/x' did not return a valid access token.",
+      );
+    });
+
+    it("throws a sanitized error when the access token field is not a string object", async (): Promise<void> => {
+      // Arrange
+      const form: URLSearchParams = new URLSearchParams();
+      stubFetch(
+        async (): Promise<Response> =>
+          Promise.resolve(
+            new Response(JSON.stringify({ access_token: {} }), {
+              status: 200,
+            }),
+          ),
+      );
+
+      // Act
+      const func: () => Promise<string> = async () =>
+        httpWrapper.postForm("https://login.microsoftonline.com/x", form);
+
+      // Assert
+      await AssertExtensions.toThrowAsync(
+        func,
+        "HTTP POST request to 'https://login.microsoftonline.com/x' did not return a valid access token.",
+      );
+    });
+
     it("throws a sanitized error when the response body is not a JSON object", async (): Promise<void> => {
       // Arrange
       const form: URLSearchParams = new URLSearchParams();
