@@ -126,6 +126,12 @@ describe("scripts/normalize-package-lock-registry.mjs", (): void => {
     // Assert
     assert.equal(outcome.status, 0, outcome.stderr);
     assert.equal(
+      outcome.stdout.startsWith(
+        `Rewrote 1 resolved URL(s) of '${path.join(scratchPath, "package-lock.json")}' to '${mirrorPrefix}'.`,
+      ),
+      true,
+    );
+    assert.equal(
       outcome.contents,
       createLockfile(createEntry("example", `${mirrorPrefix}${packageSuffix}`)),
     );
@@ -181,6 +187,10 @@ describe("scripts/normalize-package-lock-registry.mjs", (): void => {
 
     // Assert
     assert.equal(outcome.status, 0, outcome.stderr);
+    assert.equal(
+      outcome.stdout.startsWith("Rewrote 2 resolved URL(s)"),
+      true,
+    );
     assert.equal(
       outcome.contents,
       createLockfile(

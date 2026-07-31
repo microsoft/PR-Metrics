@@ -39,14 +39,13 @@ reproducible builds.
 The committed [`package-lock.json`][packagelockjson] deliberately differs from
 `.npmrc`: every `resolved` URL names the anonymous 1ES public npm mirror
 (`ms-feed-2`, `ms-feed-12`, and `ms-feed-25` under
-`1es-public/_packaging/npm-public`) rather than the public registry. The Azure
-DevOps pull request pipelines run under the CFSClean network isolation policy,
-which approves that mirror and not the public registry, so `npm ci` restores
-each package anonymously from the exact mirror URL recorded in the lockfile.
-The mirror proxies the same npm packages, and every package remains verified
-against its integrity hash, so `.npmrc` continues to resolve identical content
-for developers and for the GitHub Actions workflows. This difference is
-deliberate policy rather than a misconfiguration.
+`1es-public/_packaging/npm-public`) rather than the public registry. Azure
+production and release pipelines temporarily replace the repository `.npmrc`
+with an authenticated Office feed, but `npm ci` still fetches each package from
+the exact mirror URL recorded in the lockfile. The mirror proxies the same npm
+packages, and every package remains verified against its integrity hash, so
+the developer `.npmrc` and the Azure feeds still resolve identical content.
+This difference is deliberate policy rather than a misconfiguration.
 
 ## Tracking
 
@@ -69,16 +68,15 @@ Dependencies are updated through two mechanisms:
   `package-lock.json` are committed as part of the release pull request, after
   the lockfile registry is normalized back to the approved mirror as described
   below. [Component Governance][componentgovernance] tracks every npm
-  dependency internally within the Azure DevOps pipeline, so no
-  ecosystem-specific [Dependabot][dependabot] configuration is required for
-  npm.
+  dependency internally within the Azure DevOps pipelines, so no npm-specific
+  [Dependabot][dependabot] configuration is required.
 
 ## Registry Normalization
 
 `npm update` and `ncu` regenerate the lockfile `resolved` URLs against the
 registry `.npmrc` names, so a dependency update would otherwise replace the
-1ES public mirror with the public registry and strand the Azure DevOps pull
-request pipelines behind the CFSClean network isolation policy.
+1ES public mirror with the public registry and strand the Azure DevOps
+production and release pipelines behind the CFSClean network isolation policy.
 
 The [`normalize-package-lock-registry.mjs`][normalizescript] script restores
 the policy. It rewrites only `https://registry.npmjs.org/` prefixes to the
