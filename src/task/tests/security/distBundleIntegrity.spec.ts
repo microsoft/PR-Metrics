@@ -178,11 +178,11 @@ describe("committed dist bundle integrity", (): void => {
       const checkoutIndex: number = getStepIndex(jobLines, "actions/checkout@");
       const buildIndex: number = getStepIndex(
         jobLines,
-        "run: npm run build:package",
+        "run: node scripts/build-committed-bundles.mjs",
       );
       const diffIndex: number = getStepIndex(
         jobLines,
-        "run: git diff --exit-code -- dist",
+        "git diff --exit-code -- dist",
       );
       const mintIndex: number = getStepIndex(
         jobLines,
@@ -196,17 +196,70 @@ describe("committed dist bundle integrity", (): void => {
       assert.equal(mintIndex < actionIndex, true);
     });
 
+    it("builds every committed bundle through the shared helper script", (): void => {
+      const buildIndex: number = getStepIndex(
+        jobLines,
+        "run: node scripts/build-committed-bundles.mjs",
+      );
+
+      assert.equal(
+        jobLines[buildIndex - 1]?.trim(),
+        "- name: npm – Build Committed Bundles",
+      );
+      assert.equal(
+        jobLines.some((line: string): boolean =>
+          line.includes("npm run build:package"),
+        ),
+        false,
+      );
+    });
+
     it("detects generated files that are absent from the commit", (): void => {
       const trackIndex: number = getStepIndex(
         jobLines,
-        "run: git add --intent-to-add --ignore-removal -- dist",
+        "git add --intent-to-add --ignore-removal -- dist",
       );
       const diffIndex: number = getStepIndex(
         jobLines,
-        "run: git diff --exit-code -- dist",
+        "git diff --exit-code -- dist",
       );
 
       assert.equal(trackIndex < diffIndex, true);
+    });
+
+    it("also tracks and diffs any repository-owned local action bundle when present", (): void => {
+      const trackJobLines: string[] = jobLines.slice(
+        getStepIndex(jobLines, "name: Git – Track Generated Files"),
+        getStepIndex(jobLines, "name: Git – Verify Bundle Reproducibility"),
+      );
+      const diffJobLines: string[] = jobLines.slice(
+        getStepIndex(jobLines, "name: Git – Verify Bundle Reproducibility"),
+      );
+
+      for (const stepLines of [trackJobLines, diffJobLines]) {
+        const stepText: string = stepLines.join("\n");
+
+        assert.equal(stepText.includes(".github/actions"), true);
+        assert.equal(stepText.includes("dist"), true);
+        assert.equal(
+          /if\s*\(\$actionDistPaths\)/u.test(stepText),
+          true,
+          "Expected the local action bundle paths to be guarded so a repository with none does not fail the step.",
+        );
+      }
+    });
+
+    it("propagates a non-zero exit code from either diff so the job fails on any difference", (): void => {
+      const diffStepStart: number = getStepIndex(
+        jobLines,
+        "name: Git – Verify Bundle Reproducibility",
+      );
+      const diffStepLines: string[] = jobLines.slice(diffStepStart);
+      const exitCodeChecks: number = diffStepLines.filter((line: string): boolean =>
+        line.includes("$LASTEXITCODE"),
+      ).length;
+
+      assert.equal(exitCodeChecks >= 2, true);
     });
   });
 

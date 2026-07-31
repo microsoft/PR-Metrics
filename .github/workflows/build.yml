@@ -149,17 +149,43 @@ jobs:
         with:
           node-version: 24.13.0
 
-      # The committed bundle is rebuilt and compared against the commit before
-      # any credential is minted, so a bundle that does not correspond to its
-      # source can never observe a write token nor execute with one.
-      - name: npm – Build Package
-        run: npm run build:package
+      # Every committed bundle is rebuilt and compared against the commit
+      # before any credential is minted, so a bundle that does not correspond
+      # to its source can never observe a write token nor execute with one.
+      # 'build-committed-bundles.mjs' always rebuilds the root 'dist' bundle
+      # and additionally rebuilds a repository-owned GitHub Action bundle
+      # under '.github/actions' once a 'build:actions' package script exists
+      # for it, so this gate keeps covering such bundles without changing.
+      - name: npm – Build Committed Bundles
+        run: node scripts/build-committed-bundles.mjs
 
       - name: Git – Track Generated Files
-        run: git add --intent-to-add --ignore-removal -- dist
+        run: |
+          git add --intent-to-add --ignore-removal -- dist
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+          $actionDistPaths = Get-ChildItem -Path '.github/actions' -Directory -ErrorAction SilentlyContinue |
+            ForEach-Object { Join-Path '.github/actions' $_.Name 'dist' } |
+            Where-Object { Test-Path $_ -PathType Container }
+
+          if ($actionDistPaths) {
+            git add --intent-to-add --ignore-removal -- $actionDistPaths
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          }
 
       - name: Git – Verify Bundle Reproducibility
-        run: git diff --exit-code -- dist
+        run: |
+          git diff --exit-code -- dist
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+          $actionDistPaths = Get-ChildItem -Path '.github/actions' -Directory -ErrorAction SilentlyContinue |
+            ForEach-Object { Join-Path '.github/actions' $_.Name 'dist' } |
+            Where-Object { Test-Path $_ -PathType Container }
+
+          if ($actionDistPaths) {
+            git diff --exit-code -- $actionDistPaths
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          }
 
       - name: App Token – Mint
         id: app-token

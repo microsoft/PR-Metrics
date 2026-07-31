@@ -74,9 +74,13 @@ npm run test:fast      # Quick test run during development
   GitHub Action)
 - **Committed Bundle**: `npm run build:package` empties `dist/` via
   `scripts/clean-dist.mjs`, preserving only the authored `dist/README.md`,
-  before `ncc build` regenerates it. The `Test GitHub Action` job rebuilds
-  `dist/` and runs `git diff --exit-code -- dist` before it mints a token, so
-  a bundle that does not match its source fails the build.
+  before `ncc build` regenerates it. The `Test GitHub Action` job runs
+  `scripts/build-committed-bundles.mjs` (which always runs `build:package` and
+  additionally runs a `build:actions` package script once one exists, so a
+  future repository-owned GitHub Action bundle under `.github/actions` is
+  rebuilt automatically) and then runs `git diff --exit-code` over `dist` and,
+  when present, every `.github/actions/*/dist` before it mints a token, so a
+  bundle that does not match its source fails the build.
 
 ### Critical Git Command
 
