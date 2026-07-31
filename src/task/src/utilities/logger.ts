@@ -5,6 +5,7 @@
 
 import type ConsoleWrapper from "../wrappers/consoleWrapper.js";
 import type RunnerInvoker from "../runners/runnerInvoker.js";
+import { sanitizePlainTextForLogging } from "./logSanitizer.js";
 
 /**
  * A class for logging messages.
@@ -36,15 +37,6 @@ export default class Logger {
     this._runnerInvoker = runnerInvoker;
   }
 
-  /**
-   * Filter messages so that control strings and newlines are not printed to `stdout`.
-   * @param message The message to filter.
-   * @returns The filtered message with control prefixes removed and newlines replaced by spaces.
-   */
-  private static filterMessage(message: string): string {
-    return message.replace(/##(?:vso)?\[/giu, "").replace(/[\n\r]/gu, " ");
-  }
-
   private static readonly _redactReplacer = (
     key: string,
     value: unknown,
@@ -61,7 +53,7 @@ export default class Logger {
    * @param message The message to log.
    */
   public logDebug(message: string): void {
-    const filteredMessage: string = Logger.filterMessage(message);
+    const filteredMessage: string = sanitizePlainTextForLogging(message);
     this._messages.push(`debug   – ${filteredMessage}`);
     this._runnerInvoker.logDebug(filteredMessage);
   }
@@ -71,7 +63,7 @@ export default class Logger {
    * @param message The message to log.
    */
   public logInfo(message: string): void {
-    const filteredMessage: string = Logger.filterMessage(message);
+    const filteredMessage: string = sanitizePlainTextForLogging(message);
     this._messages.push(`info    – ${filteredMessage}`);
     this._consoleWrapper.log(filteredMessage);
   }
@@ -81,7 +73,7 @@ export default class Logger {
    * @param message The message to log.
    */
   public logWarning(message: string): void {
-    const filteredMessage: string = Logger.filterMessage(message);
+    const filteredMessage: string = sanitizePlainTextForLogging(message);
     this._messages.push(`warning – ${filteredMessage}`);
     this._runnerInvoker.logWarning(filteredMessage);
   }
@@ -91,7 +83,7 @@ export default class Logger {
    * @param message The message to log.
    */
   public logError(message: string): void {
-    const filteredMessage: string = Logger.filterMessage(message);
+    const filteredMessage: string = sanitizePlainTextForLogging(message);
     this._messages.push(`error   – ${filteredMessage}`);
     this._runnerInvoker.logError(filteredMessage);
   }

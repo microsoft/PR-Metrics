@@ -179,6 +179,48 @@ describe("logger.ts", (): void => {
     });
   });
 
+  describe("workflow command sanitization", (): void => {
+    it("should sanitize workflow commands at the start of logical lines for each log level", (): void => {
+      // Arrange
+      const logger: Logger = new Logger(
+        instance(consoleWrapper),
+        instance(runnerInvoker),
+      );
+      const message =
+        "::warning::First line\n  ::add-mask::Second line\r##[::stop-commands::third line\r\nKeep inline::marker and https://example.test/path::value";
+      const expectedMessage =
+        ": :warning::First line   : :add-mask::Second line : :stop-commands::third line Keep inline::marker and https://example.test/path::value";
+
+      // Act
+      logger.logDebug(message);
+      logger.logInfo(message);
+      logger.logWarning(message);
+      logger.logError(message);
+
+      // Assert
+      verify(runnerInvoker.logDebug(expectedMessage)).once();
+      verify(consoleWrapper.log(expectedMessage)).once();
+      verify(runnerInvoker.logWarning(expectedMessage)).once();
+      verify(runnerInvoker.logError(expectedMessage)).once();
+    });
+
+    it("should replay sanitized messages without changing already-neutralized text", (): void => {
+      // Arrange
+      const logger: Logger = new Logger(
+        instance(consoleWrapper),
+        instance(runnerInvoker),
+      );
+
+      // Act
+      logger.logInfo("::warning::Replay me");
+      logger.replay();
+
+      // Assert
+      verify(consoleWrapper.log(": :warning::Replay me")).once();
+      verify(consoleWrapper.log("🔁 info    – : :warning::Replay me")).once();
+    });
+  });
+
   describe("logErrorObject()", (): void => {
     {
       const testCases: string[] = ["##[test]", "##vso[test]", "##VSO[test]"];
