@@ -180,14 +180,15 @@ environment.
   value; it is not itself the injection guard.
 - The Git command uses a fixed argument array (for example,
   `["diff", "--numstat", "--ignore-all-space", <ref>]`) rather than a
-  concatenated command-line string. Both runner paths – the
-  [Azure Pipelines Task SDK][azurepipelinestasksdk] and
-  [@actions/exec][actionsexec] – preserve this argument array intact through to
-  the underlying `child_process.spawn` call and resolve the `git` executable
-  path before spawning, without invoking a shell. Neither library combines the
-  arguments into a single string and re-splits them on spaces; protection
-  therefore relies on the fixed argument structure and the branch/ref
-  validation described above, not on automatic argument escaping.
+  concatenated command-line string. The GitHub path uses
+  [@actions/exec][actionsexec], which resolves the `git` executable path and
+  invokes `child_process.spawn` without a shell; the Azure Pipelines path uses
+  the task SDK, which resolves the `git` executable path and invokes
+  `child_process.spawnSync` without a shell. Both paths preserve the original
+  argument array intact instead of combining it into a single string and
+  re-splitting it on spaces; protection therefore relies on the fixed argument
+  structure and the branch/ref validation described above, not on automatic
+  argument escaping.
 
 ## Residual Risks
 
@@ -204,7 +205,6 @@ This assessment should be reviewed and updated when significant new features
 are added, when the threat landscape changes, or at least annually.
 
 [actionsexec]: https://github.com/actions/toolkit/tree/main/packages/exec
-[azurepipelinestasksdk]: https://github.com/microsoft/azure-pipelines-task-lib
 [codeql]: https://codeql.github.com/
 [gitleaks]: https://github.com/gitleaks/gitleaks
 [npmcheckupdates]: https://www.npmjs.com/package/npm-check-updates

@@ -117,9 +117,10 @@ exposure:
   and the GitHub App installation token above. Other tooling invoked by the
   pipelines, such as `tfx`, may also accept tokens via command-line arguments.
   Runner masking (GitHub Actions `setSecret` / Azure Pipelines
-  `##vso[task.setvariable issecret=true]`) redacts registered values from logs
-  and console output, but it does not remove them from the OS process table,
-  process memory, or environment variables.
+  `##vso[task.setsecret]`; pipeline scripts can also mark variables secret via
+  `##vso[task.setvariable variable=...;issecret=true]`) redacts registered
+  values from logs and console output, but it does not remove them from the OS
+  process table, process memory, or environment variables.
 - CI/CD pipeline logs are configured to mask secret values automatically.
 - The [security assessment][securityassessment] identifies access token
   exposure as a tracked threat with specific mitigations.
