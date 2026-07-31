@@ -126,15 +126,6 @@ jobs:
       - name: npm – Update Transitive Dependencies
         run: npm run update:dependencies
 
-      # The dependency update regenerates package-lock.json against the
-      # registry named by .npmrc, which is the public npm registry. The Azure
-      # DevOps pull request pipelines restore anonymously from the 1ES public
-      # mirror approved by the network isolation policy, so the resolved URLs
-      # are normalized back to that mirror before the update is committed. This
-      # rewrites a repository file only and requires no credential.
-      - name: npm – Normalize Lockfile Registry
-        run: node scripts/normalize-package-lock-registry.mjs
-
       - name: Git – Commit & Push (Signed)
         uses: grafana/github-api-commit-action@b1d81091e8480dd11fcea8bc1f0ab977a0376ca5 # v1.0.0
         with:
