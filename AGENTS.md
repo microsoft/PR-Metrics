@@ -72,6 +72,11 @@ npm run test:fast      # Quick test run during development
 - **Interfaces**: Separate `.d.ts` files for all major interfaces
 - **Build Outputs**: `debug/`, `release/` (git-ignored), `dist/` (committed for
   GitHub Action)
+- **Committed Bundle**: `npm run build:package` empties `dist/` via
+  `scripts/clean-dist.mjs`, preserving only the authored `dist/README.md`,
+  before `ncc build` regenerates it. The `Test GitHub Action` job rebuilds
+  `dist/` and runs `git diff --exit-code -- dist` before it mints a token, so
+  a bundle that does not match its source fails the build.
 
 ### Critical Git Command
 

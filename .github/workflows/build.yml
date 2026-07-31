@@ -144,6 +144,23 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
+      - name: Install Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24.13.0
+
+      # The committed bundle is rebuilt and compared against the commit before
+      # any credential is minted, so a bundle that does not correspond to its
+      # source can never observe a write token nor execute with one.
+      - name: npm – Build Package
+        run: npm run build:package
+
+      - name: Git – Track Generated Files
+        run: git add --intent-to-add --ignore-removal -- dist
+
+      - name: Git – Verify Bundle Reproducibility
+        run: git diff --exit-code -- dist
+
       - name: App Token – Mint
         id: app-token
         uses: ./.github/actions/mint-github-app-token
@@ -269,6 +286,31 @@ jobs:
           create-branch-on-remote: true
           stage-all-files: true
           token: ${{ steps.app-token.outputs.token }}
+
+  validate-dist-secrets:
+    name: Validate – Dist Secrets
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      # The 'Validate – Linter' job excludes the generated bundle from every
+      # linter, so this job scans that bundle for secrets. Only Gitleaks is
+      # enabled, and status reporting is disabled, so this run neither duplicates
+      # the status contexts that 'Validate – Linter' publishes nor needs a token.
+      - name: Super-Linter – Gitleaks
+        uses: super-linter/super-linter@4ce20838b8ab83717e78138c5b3a1407148e0918 # v8.7.0
+        env:
+          ENABLE_GITHUB_PULL_REQUEST_SUMMARY_COMMENT: false
+          FILTER_REGEX_INCLUDE: .*dist/.*
+          GITLEAKS_CONFIG_FILE: gitleaks.toml
+          MULTI_STATUS: false
+          VALIDATE_ALL_CODEBASE: true
+          VALIDATE_GITLEAKS: true
 
   dependabot:
     name: Dependabot

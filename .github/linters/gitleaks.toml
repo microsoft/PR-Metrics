@@ -4,7 +4,14 @@
 [extend]
 useDefault = true
 
+# The Azure DevOps client library declares a public resource area identifier for
+# each of its APIs, and Gitleaks reads those constants as generic API keys. The
+# constants are allowed by their exact shape rather than by excluding the files
+# that contain them, so every other value of the scanned files, including those
+# of the committed action bundle, is still reported.
 [allowlist]
-paths = [
-    '''dist''',
+description = "Azure DevOps resource area identifiers"
+regexTarget = "match"
+regexes = [
+    '''RESOURCE_AREA_ID\s*=\s*"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"''',
 ]
