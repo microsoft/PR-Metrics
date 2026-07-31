@@ -106,11 +106,18 @@ manipulation.
 **Mitigations**:
 
 - The `package-lock.json` file pins exact dependency versions, preventing
-  unexpected updates.
+  unexpected updates. Every resolved URL is deliberately normalized to the
+  anonymous 1ES public mirror the CFSClean network isolation policy approves –
+  see [Dependency Management][dependencymanagement] – so the Azure DevOps pull
+  request pipelines restore from a known-good, pinned mirror rather than the
+  public registry.
 - [CodeQL][codeql] analyzes the codebase for security vulnerabilities on every
   pull request.
 - Dependencies are updated through a controlled process during releases, using
-  [npm-check-updates][npmcheckupdates], with changes reviewed in a pull request.
+  [npm-check-updates][npmcheckupdates], with changes reviewed in a pull
+  request. [Component Governance][componentgovernance] tracks every npm
+  dependency internally, regardless of which host serves the anonymous
+  restore.
 - The release build bundles all dependencies into a single file via
   [@vercel/ncc][vercelncc], reducing the runtime dependency surface.
 - Release artifacts are signed with [Sigstore][sigstore] and include
@@ -178,6 +185,8 @@ are added, when the threat landscape changes, or at least annually.
 [actionsexec]: https://github.com/actions/toolkit/tree/main/packages/exec
 [azurepipelinestasksdk]: https://github.com/microsoft/azure-pipelines-task-lib
 [codeql]: https://codeql.github.com/
+[componentgovernance]: https://docs.opensource.microsoft.com/tools/cg/
+[dependencymanagement]: dependency-management.md
 [gitleaks]: https://github.com/gitleaks/gitleaks
 [npmcheckupdates]: https://www.npmjs.com/package/npm-check-updates
 [prmetrics]: https://github.com/microsoft/PR-Metrics
