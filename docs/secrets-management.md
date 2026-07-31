@@ -34,6 +34,12 @@ pipelines.
   the Azure DevOps production pipeline.
 - **ESRP service connection**: Code signing for Azure DevOps marketplace
   releases. Azure DevOps pipeline-scoped.
+- **Office Azure Artifacts feed token**: Build identity token that
+  `npmAuthenticate@0` writes into a temporary npm configuration so dependencies
+  can be restored from the approved feed required by the network isolation
+  policy. No variable group or service connection is involved. In the pull
+  request pipelines the configuration lives under `$(Agent.TempDirectory)`,
+  outside the checkout, and is deleted immediately after the restore.
 
 ## Storage
 
@@ -63,14 +69,28 @@ control. The `.gitignore` file excludes common environment file patterns
   connections. Access is restricted by Azure DevOps project-level role-based
   access controls.
 - **Azure DevOps pull request pipelines**: `pr.yml` and `pr-test.yml` extend
-  `pr-validation-template.yml`, which is credential-free. These pipelines build
-  untrusted pull request code, so they reference no variable groups, service
-  connections, authenticated feeds, key vaults or App tokens, and they perform
-  no task deployment. Privileged operations are reachable only from `prod.yml`
-  and `release.yml`, neither of which is pull request triggered. Enforcement is
-  automated by
-  [`azurePipelinesTrustBoundary.spec.ts`][azurepipelinestrustboundary].
-- **`GITHUB_TOKEN`**: Automatically provisioned by GitHub for each workflow
+  `pr-validation-template.yml`, which holds no standing credentials. These
+  pipelines build untrusted pull request code, so they reference no variable
+  groups, service connections, key vaults or App tokens, and they perform no
+  task deployment. The sole credential is the build identity token that
+  `npmAuthenticate@0` writes for the approved Office Azure Artifacts feed, which
+  the network isolation policy (CFSClean) requires for dependency restore. It is
+  confined to a restore boundary that each agent job repeats independently: the
+  YAML generates a temporary npm configuration under `$(Agent.TempDirectory)`
+  and never inside the checkout; `npmAuthenticate@0` adds a path scoped
+  `//<feed>/:_authToken` entry for that feed alone, so the credential cannot be
+  replayed against another host; only
+  `npm ci --ignore-scripts --no-audit --userconfig <temporary>` runs while the
+  credential exists, so no pull request controlled `package.json` script
+  executes; and a step running on every outcome then deletes the temporary
+  configuration. Only `npm run lint` and `npm run test:fast` run afterwards, and
+  neither reinstalls dependencies, so no nested `npm ci` can resurrect the feed.
+  Privileged operations remain reachable only from `prod.yml` and `release.yml`,
+  neither of which is pull request triggered. Enforcement is automated by
+  [`azurePipelinesTrustBoundary.spec.ts`][azurepipelinestrustboundary], which
+  walks the template graph, resolves `@self` qualified references as local,
+  rejects undeclared repository aliases, and pins the exact step order of every
+  job.- **`GITHUB_TOKEN`**: Automatically provisioned by GitHub for each workflow
   run. Each workflow sets `permissions: {}` at the top level, granting no
   permissions by default; individual jobs request only the minimum permissions
   required.
