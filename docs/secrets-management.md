@@ -9,7 +9,11 @@ The following secrets and credentials are used across the project's CI/CD
 pipelines.
 
 - **`GITHUB_TOKEN`**: GitHub-provided token for workflow operations.
-  Per-workflow run, auto-expires.
+  Per-workflow run, auto-expires. Automatically scoped to, and available only
+  within, the workflow run that generated it; the PR Metrics task never
+  receives it automatically – a workflow step must explicitly map it into
+  `PR_METRICS_ACCESS_TOKEN` (below) for the task to use it, and there is no
+  automatic fallback.
 - **`microsoft-pr-metrics` GitHub App installation token**: One-hour
   installation token minted at job start for operations requiring elevated
   permissions on `microsoft/PR-Metrics`. The App JWT is signed by Azure Key
@@ -93,18 +97,26 @@ exposure:
   practical: `GITHUB_TOKEN`, the GitHub App installation token, and
   `PR_METRICS_ACCESS_TOKEN` are all provided to the task process this way, not
   as command-line arguments. This is not an absolute guarantee for every
-  credential in the pipeline: when Azure Pipelines workload identity
-  federation is used (see
-  [Workload Identity Federation][workloadidentityfederation]), the federated
-  OIDC assertion and the resulting Azure access token are passed as `az` CLI
-  arguments during `az login` and `az account get-access-token`, so they
-  appear in that process's argv and memory for its lifetime and may be
-  written to the Azure CLI's local token cache on disk. Other tooling invoked
-  by the pipelines, such as `tfx`, may also accept tokens via command-line
-  arguments. Runner masking (GitHub Actions `setSecret` / Azure Pipelines
+  credential in the pipeline: workload identity federation (WIF) is an
+  additional, opt-in authentication path available only to the Azure
+  Pipelines task (see
+  [Workload Identity Federation][workloadidentityfederation]) – it is used
+  alongside, not instead of, the environment-variable transport above, since
+  its output is ultimately still written into the `PR_METRICS_ACCESS_TOKEN`
+  environment variable. Within that flow, `TokenManager.getAccessToken()`
+  passes only the federated OIDC assertion as an argument to
+  `az login --federated-token`, so that assertion appears in that process's
+  argv and memory for its lifetime. The resulting Azure access token is not
+  passed as a CLI argument: it is returned on the stdout of
+  `az account get-access-token`, masked via the runner's `setSecret()`, and
+  then assigned to `PR_METRICS_ACCESS_TOKEN`. Independently of what appears in
+  argv, the Azure CLI also persists its own local sign-in state and token
+  cache on disk once `az login` succeeds. Other tooling invoked by the
+  pipelines, such as `tfx`, may also accept tokens via command-line arguments.
+  Runner masking (GitHub Actions `setSecret` / Azure Pipelines
   `##vso[task.setvariable issecret=true]`) redacts registered values from logs
   and console output, but it does not remove them from the OS process table,
-  process memory, or any local credential cache.
+  process memory, or any local credential cache, including the Azure CLI's.
 - CI/CD pipeline logs are configured to mask secret values automatically.
 - The [security assessment][securityassessment] identifies access token
   exposure as a tracked threat with specific mitigations.

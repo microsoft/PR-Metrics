@@ -58,6 +58,12 @@ scope. Instructions on creating a new PAT can be found
 [in the GitHub documentation][githubpat]. Alternatively, you can use the
 in-built `GITHUB_TOKEN`.
 
+`GITHUB_TOKEN` is generated fresh for, and scoped to, the workflow run that
+uses it. It is only available to PR Metrics once a workflow step explicitly
+maps it into `PR_METRICS_ACCESS_TOKEN` (see the "Example Usage" section
+below) – the task never reads `GITHUB_TOKEN` directly and has no automatic
+fallback to it.
+
 If using `GITHUB_TOKEN`, the following permissions are required:
 
 ```yaml

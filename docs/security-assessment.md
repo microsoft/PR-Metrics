@@ -61,17 +61,26 @@ pull requests or repository contents within the token's permission scope.
 
 - CI workflows are typically configured to pass the platform-provided
   `secrets.GITHUB_TOKEN` (or an Azure DevOps PAT) into
-  `PR_METRICS_ACCESS_TOKEN`. When using `secrets.GITHUB_TOKEN`, the token is
-  scoped to the current repository and expires after the workflow run. The task
-  itself reads only the `PR_METRICS_ACCESS_TOKEN` environment variable and does
-  not automatically fall back to `GITHUB_TOKEN`.
+  `PR_METRICS_ACCESS_TOKEN`. `GITHUB_TOKEN` itself is generated fresh for, and
+  scoped to, the workflow run that produced it; it reaches the task only when a
+  workflow step explicitly maps it into `PR_METRICS_ACCESS_TOKEN`. The task
+  itself reads only the `PR_METRICS_ACCESS_TOKEN` environment variable and has
+  no automatic fallback to `GITHUB_TOKEN`.
 - The task's own `PR_METRICS_ACCESS_TOKEN` input is read from an environment
   variable rather than a command-line argument. This is not an absolute
-  guarantee across every credential in the pipeline: when Azure Pipelines
-  workload identity federation is used, the federated OIDC assertion and the
-  resulting Azure access token are passed as `az` CLI arguments in
-  `tokenManager.ts`, so they appear in that process's argv and memory for its
-  lifetime. See [Secrets Management][secretsmanagement] and
+  guarantee across every credential in the pipeline: workload identity
+  federation is an additional, opt-in authentication path for Azure Pipelines,
+  not a replacement for the environment-variable transport above, since its
+  output still ends up in `PR_METRICS_ACCESS_TOKEN`. Within that flow,
+  `TokenManager.getAccessToken()` (`tokenManager.ts`) passes only the
+  federated OIDC assertion as an argument to `az login --federated-token`, so
+  that assertion appears in that process's argv and memory for its lifetime.
+  The resulting Azure access token is not passed as a CLI argument: it is
+  returned on the stdout of `az account get-access-token`, masked via the
+  runner's `setSecret()`, and then assigned to `PR_METRICS_ACCESS_TOKEN`.
+  Independently of what appears in argv, the Azure CLI also persists its own
+  local sign-in state and token cache on disk once `az login` succeeds. See
+  [Secrets Management][secretsmanagement] and
   [Workload Identity Federation][workloadidentityfederation] for the
   authoritative description of this flow.
 - The CI/CD workflows use `permissions: {}` at the top level, granting no
@@ -161,7 +170,12 @@ environment.
   set by the platform, not from customer-controlled input parameters. The
   target branch is additionally validated to reject whitespace and control
   characters before use (`GitInvoker.initialize()`), and the pull request ID
-  is validated as numeric (`Validator.validateNumber()`).
+  is validated as numeric via the `/^\d+$/u` regular expression guards in
+  `GitInvoker.pullRequestIdForGitHub()` and
+  `GitInvoker.getNumericEnvironmentVariable()`, which run before the value is
+  ever incorporated into the Git argument array. `Validator.validateNumber()`
+  only performs a subsequent not-`NaN`/not-zero check on that already-validated
+  value; it is not itself the injection guard.
 - The Git command uses a fixed argument array (for example,
   `["diff", "--numstat", "--ignore-all-space", <ref>]`) rather than a
   concatenated command-line string. Both runner paths – the
