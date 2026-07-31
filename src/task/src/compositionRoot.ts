@@ -78,6 +78,7 @@ const createPullRequestMetrics = (): PullRequestMetrics => {
   );
   const tokenManager: TokenManager = new TokenManager(
     azureDevOpsApiWrapper,
+    httpWrapper,
     logger,
     runnerInvoker,
   );

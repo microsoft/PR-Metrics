@@ -10,7 +10,7 @@ import {
 } from "../utilities/validator.js";
 import type AzureDevOpsApiWrapper from "../wrappers/azureDevOpsApiWrapper.js";
 import type { EndpointAuthorization } from "../runners/endpointAuthorization.js";
-import type ExecOutput from "../runners/execOutput.js";
+import type HttpWrapper from "../wrappers/httpWrapper.js";
 import type { IRequestHandler } from "azure-devops-node-api/interfaces/common/VsoBaseInterfaces.js";
 import type { ITaskApi } from "azure-devops-node-api/TaskApi.js";
 import type Logger from "../utilities/logger.js";
@@ -19,11 +19,29 @@ import type { TaskHubOidcToken } from "azure-devops-node-api/interfaces/TaskAgen
 import type { WebApi } from "azure-devops-node-api";
 
 /**
+ * The Microsoft Entra public cloud authority. Sovereign cloud authorities are not supported.
+ */
+const microsoftEntraPublicCloudAuthority = "https://login.microsoftonline.com";
+
+/**
+ * The Microsoft Entra resource ID for Azure DevOps, as documented at
+ * https://learn.microsoft.com/rest/api/azure/devops/tokens/ and
+ * https://learn.microsoft.com/azure/devops/integrate/get-started/authentication/service-principal-managed-identity.
+ */
+const azureDevOpsResourceId = "499b84ac-1321-427f-aa17-267ca6975798";
+
+/**
  * A class for invoking authorization token management functionality, used for retrieving identity information from a
  * workload identity federation.
+ *
+ * Access tokens are acquired by exchanging the workload identity federation's OIDC assertion directly with the
+ * Microsoft Entra OAuth 2.0 v2 token endpoint over HTTPS – the assertion is never passed to a subprocess and no
+ * Azure CLI state is created. Only the Microsoft Entra public cloud authority is supported; sovereign clouds are
+ * out of scope.
  */
 export default class TokenManager {
   private readonly _azureDevOpsApiWrapper: AzureDevOpsApiWrapper;
+  private readonly _httpWrapper: HttpWrapper;
   private readonly _logger: Logger;
   private readonly _runnerInvoker: RunnerInvoker;
 
@@ -32,15 +50,18 @@ export default class TokenManager {
   /**
    * Initializes a new instance of the `TokenManager` class.
    * @param azureDevOpsApiWrapper The wrapper around the Azure DevOps API.
+   * @param httpWrapper The wrapper around the Fetch API.
    * @param logger The logger.
    * @param runnerInvoker The runner invoker logic.
    */
   public constructor(
     azureDevOpsApiWrapper: AzureDevOpsApiWrapper,
+    httpWrapper: HttpWrapper,
     logger: Logger,
     runnerInvoker: RunnerInvoker,
   ) {
     this._azureDevOpsApiWrapper = azureDevOpsApiWrapper;
+    this._httpWrapper = httpWrapper;
     this._logger = logger;
     this._runnerInvoker = runnerInvoker;
   }
@@ -121,44 +142,29 @@ export default class TokenManager {
     );
     this._runnerInvoker.setSecret(federatedToken);
 
-    // Sign in to Azure using the federated token.
-    const signInResult: ExecOutput = await this._runnerInvoker.exec("az", [
-      "login",
-      "--service-principal",
-      "-u",
-      servicePrincipalId,
-      "--tenant",
-      tenantId,
-      "--allow-no-subscriptions",
-      "--federated-token",
-      federatedToken,
-    ]);
-    if (signInResult.exitCode !== 0) {
-      throw new Error(signInResult.stderr);
-    }
-
     /*
-     * Acquire an access token for the Azure DevOps API. This uses the resource ID for Azure DevOps in Microsoft Entra,
-     * 499b84ac-1321-427f-aa17-267ca6975798, as documented at https://learn.microsoft.com/rest/api/azure/devops/tokens/
-     * and https://learn.microsoft.com/azure/devops/integrate/get-started/authentication/service-principal-managed-identity.
+     * Exchange the federated assertion directly with the Microsoft Entra OAuth 2.0 v2 token endpoint for the
+     * validated tenant. The tenant ID is path-encoded even though `validateGuid()` already restricts it to GUID
+     * characters, so that this remains safe if that validation is ever loosened.
      */
-    const accessTokenResult: ExecOutput = await this._runnerInvoker.exec("az", [
-      "account",
-      "get-access-token",
-      "--query",
-      "accessToken",
-      "--resource",
-      "499b84ac-1321-427f-aa17-267ca6975798",
-      "-o",
-      "tsv",
-    ]);
-    if (accessTokenResult.exitCode !== 0) {
-      throw new Error(accessTokenResult.stderr);
-    }
+    const tokenEndpoint = `${microsoftEntraPublicCloudAuthority}/${encodeURIComponent(tenantId)}/oauth2/v2.0/token`;
 
-    const result: string = accessTokenResult.stdout.trim();
-    this._runnerInvoker.setSecret(result);
-    return result;
+    const form: URLSearchParams = new URLSearchParams();
+    form.set("client_id", servicePrincipalId);
+    form.set("grant_type", "client_credentials");
+    form.set(
+      "client_assertion_type",
+      "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
+    );
+    form.set("client_assertion", federatedToken);
+    form.set("scope", `${azureDevOpsResourceId}/.default`);
+
+    const accessToken: string = await this._httpWrapper.postForm(
+      tokenEndpoint,
+      form,
+    );
+    this._runnerInvoker.setSecret(accessToken);
+    return accessToken;
   }
 
   private async getFederatedToken(

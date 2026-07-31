@@ -10,6 +10,11 @@ Identity.
 Pipelines. PR Metrics running within GitHub Actions do not support workload
 identity federation.**
 
+**The Microsoft Entra public cloud authority (`https://login.microsoftonline.com`)
+is the only authority supported for the access token exchange. Sovereign cloud
+tenants (for example, Azure Government or Azure operated by 21Vianet) are not
+currently supported.**
+
 Setting up the workload identity federation involves some effort, but it should
 save ongoing maintenance.
 
@@ -22,10 +27,9 @@ save ongoing maintenance.
 If you don't have sufficient access, you should reach out to the appropriate
 admin and provide them with these instructions.
 
-The build agent where the PR Metrics task runs must have Azure CLI installed,
-which is often already the case. If you encounter issues related to the `az`
-command being unavailable, check the
-[Azure CLI installation instructions][azurecli].
+The PR Metrics task exchanges the workload identity federation's assertion for
+an access token directly over HTTPS, so no additional tooling (such as the
+Azure CLI) needs to be installed on the build agent.
 
 ## Instructions
 
@@ -143,5 +147,4 @@ Specify the name of the Service Connection within Azure DevOps as the
 `WorkloadIdentityFederation` input. You can add any other `inputs` you wish to
 specify.
 
-[azurecli]: https://learn.microsoft.com/cli/azure/install-azure-cli
 [azureportal]: https://portal.azure.com/
