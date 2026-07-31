@@ -5,6 +5,7 @@
 
 import type AzurePipelinesRunnerInvoker from "./azurePipelinesRunnerInvoker.js";
 import type { EndpointAuthorization } from "./endpointAuthorization.js";
+import type ExecOptions from "./execOptions.js";
 import type ExecOutput from "./execOutput.js";
 import type GitHubRunnerInvoker from "./gitHubRunnerInvoker.js";
 import type RunnerInvokerInterface from "./runnerInvokerInterface.js";
@@ -51,8 +52,12 @@ export default class RunnerInvoker implements RunnerInvokerInterface {
     return this._runnerInvoker;
   }
 
-  public async exec(tool: string, args: string[]): Promise<ExecOutput> {
-    return this.runner.exec(tool, args);
+  public async exec(
+    tool: string,
+    args: string[],
+    options?: ExecOptions,
+  ): Promise<ExecOutput> {
+    return this.runner.exec(tool, args, options);
   }
 
   public getInput(name: string[]): string | null {

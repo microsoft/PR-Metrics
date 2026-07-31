@@ -74,6 +74,56 @@ describe("gitHubRunnerInvoker.js", (): void => {
         ),
       ).once();
     });
+
+    it("should forward the environment when options are specified", async (): Promise<void> => {
+      // Arrange
+      const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(
+        instance(azurePipelinesRunnerWrapper),
+        instance(consoleWrapper),
+        instance(gitHubRunnerWrapper),
+      );
+      const execResult: actionsExec.ExecOutput = {
+        exitCode: 0,
+        stderr: "",
+        stdout: "Output",
+      };
+      when(
+        gitHubRunnerWrapper.exec(
+          "TOOL",
+          deepEqual(["Argument1", "Argument2"]),
+          any(),
+        ),
+      ).thenResolve(execResult);
+
+      const childOnlyEnvironment: Record<string, string> = {};
+      childOnlyEnvironment.CHILD_ONLY_VARIABLE = "Value";
+
+      // Act
+      const result: ExecOutput = await gitHubRunnerInvoker.exec(
+        "TOOL",
+        ["Argument1", "Argument2"],
+        {
+          env: childOnlyEnvironment,
+        },
+      );
+
+      // Assert
+      assert.equal(result.exitCode, 0);
+      assert.equal(result.stderr, "");
+      assert.equal(result.stdout, "Output");
+      const options: actionsExec.ExecOptions = {
+        env: childOnlyEnvironment,
+        failOnStdErr: true,
+        silent: true,
+      };
+      verify(
+        gitHubRunnerWrapper.exec(
+          "TOOL",
+          deepEqual(["Argument1", "Argument2"]),
+          deepEqual(options),
+        ),
+      ).once();
+    });
   });
 
   describe("getInput()", (): void => {

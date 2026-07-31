@@ -11,6 +11,7 @@ import type {
 } from "azure-pipelines-task-lib/toolrunner.js";
 import type AzurePipelinesRunnerWrapper from "../wrappers/azurePipelinesRunnerWrapper.js";
 import type { EndpointAuthorization } from "./endpointAuthorization.js";
+import type ExecOptions from "./execOptions.js";
 import type ExecOutput from "./execOutput.js";
 import type RunnerInvokerInterface from "./runnerInvokerInterface.js";
 
@@ -28,16 +29,27 @@ export default class AzurePipelinesRunnerInvoker implements RunnerInvokerInterfa
     this._azurePipelinesRunnerWrapper = azurePipelinesRunnerWrapper;
   }
 
-  public async exec(tool: string, args: string[]): Promise<ExecOutput> {
-    const options: IExecOptions = {
-      failOnStdErr: true,
-      silent: true,
-    };
+  public async exec(
+    tool: string,
+    args: string[],
+    options?: ExecOptions,
+  ): Promise<ExecOutput> {
+    const execOptions: IExecOptions =
+      typeof options?.env === "undefined"
+        ? {
+            failOnStdErr: true,
+            silent: true,
+          }
+        : {
+            env: options.env,
+            failOnStdErr: true,
+            silent: true,
+          };
 
     const result: IExecSyncResult = this._azurePipelinesRunnerWrapper.execSync(
       tool,
       args,
-      options,
+      execOptions,
     );
     return Promise.resolve({
       exitCode: result.code,

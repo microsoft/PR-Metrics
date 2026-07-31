@@ -6,9 +6,11 @@
 import { deepEqual, instance, mock, verify, when } from "ts-mockito";
 import AzurePipelinesRunnerInvoker from "../../src/runners/azurePipelinesRunnerInvoker.js";
 import type { EndpointAuthorization } from "azure-pipelines-task-lib";
+import type ExecOptions from "../../src/runners/execOptions.js";
 import type ExecOutput from "../../src/runners/execOutput.js";
 import GitHubRunnerInvoker from "../../src/runners/gitHubRunnerInvoker.js";
 import RunnerInvoker from "../../src/runners/runnerInvoker.js";
+import { any } from "../testUtilities/mockito.js";
 import assert from "node:assert/strict";
 import { stubEnv } from "../testUtilities/stubEnv.js";
 
@@ -58,6 +60,7 @@ describe("runnerInvoker.ts", (): void => {
         azurePipelinesRunnerInvoker.exec(
           "TOOL",
           deepEqual(["Argument1", "Argument2"]),
+          any(),
         ),
       ).thenResolve(execResult);
 
@@ -75,6 +78,7 @@ describe("runnerInvoker.ts", (): void => {
         azurePipelinesRunnerInvoker.exec(
           "TOOL",
           deepEqual(["Argument1", "Argument2"]),
+          any(),
         ),
       ).once();
       verify(
@@ -95,7 +99,11 @@ describe("runnerInvoker.ts", (): void => {
         stdout: "Output",
       };
       when(
-        gitHubRunnerInvoker.exec("TOOL", deepEqual(["Argument1", "Argument2"])),
+        gitHubRunnerInvoker.exec(
+          "TOOL",
+          deepEqual(["Argument1", "Argument2"]),
+          any(),
+        ),
       ).thenResolve(execResult);
 
       // Act
@@ -115,7 +123,11 @@ describe("runnerInvoker.ts", (): void => {
         ),
       ).never();
       verify(
-        gitHubRunnerInvoker.exec("TOOL", deepEqual(["Argument1", "Argument2"])),
+        gitHubRunnerInvoker.exec(
+          "TOOL",
+          deepEqual(["Argument1", "Argument2"]),
+          any(),
+        ),
       ).once();
     });
 
@@ -132,7 +144,11 @@ describe("runnerInvoker.ts", (): void => {
         stdout: "Output",
       };
       when(
-        gitHubRunnerInvoker.exec("TOOL", deepEqual(["Argument1", "Argument2"])),
+        gitHubRunnerInvoker.exec(
+          "TOOL",
+          deepEqual(["Argument1", "Argument2"]),
+          any(),
+        ),
       ).thenResolve(execResult);
 
       // Act
@@ -159,8 +175,55 @@ describe("runnerInvoker.ts", (): void => {
         ),
       ).never();
       verify(
-        gitHubRunnerInvoker.exec("TOOL", deepEqual(["Argument1", "Argument2"])),
+        gitHubRunnerInvoker.exec(
+          "TOOL",
+          deepEqual(["Argument1", "Argument2"]),
+          any(),
+        ),
       ).twice();
+    });
+
+    it("should forward the optional exec options to the underlying method", async (): Promise<void> => {
+      // Arrange
+      const runnerInvoker: RunnerInvoker = new RunnerInvoker(
+        instance(azurePipelinesRunnerInvoker),
+        instance(gitHubRunnerInvoker),
+      );
+      const execResult: ExecOutput = {
+        exitCode: 0,
+        stderr: "",
+        stdout: "Output",
+      };
+      const childOnlyEnvironment: Record<string, string> = {};
+      childOnlyEnvironment.CHILD_ONLY_VARIABLE = "Value";
+      const options: ExecOptions = {
+        env: childOnlyEnvironment,
+      };
+      when(
+        azurePipelinesRunnerInvoker.exec(
+          "TOOL",
+          deepEqual(["Argument1", "Argument2"]),
+          deepEqual(options),
+        ),
+      ).thenResolve(execResult);
+
+      // Act
+      const result: ExecOutput = await runnerInvoker.exec(
+        "TOOL",
+        ["Argument1", "Argument2"],
+        options,
+      );
+
+      // Assert
+      assert.equal(result.exitCode, 0);
+      assert.equal(result.stdout, "Output");
+      verify(
+        azurePipelinesRunnerInvoker.exec(
+          "TOOL",
+          deepEqual(["Argument1", "Argument2"]),
+          deepEqual(options),
+        ),
+      ).once();
     });
   });
 

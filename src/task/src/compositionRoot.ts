@@ -10,6 +10,7 @@ import AzureReposInvoker from "./repos/azureReposInvoker.js";
 import CodeMetrics from "./metrics/codeMetrics.js";
 import CodeMetricsCalculator from "./metrics/codeMetricsCalculator.js";
 import ConsoleWrapper from "./wrappers/consoleWrapper.js";
+import FileSystemWrapper from "./wrappers/fileSystemWrapper.js";
 import GitHubReposInvoker from "./repos/gitHubReposInvoker.js";
 import GitHubRunnerInvoker from "./runners/gitHubRunnerInvoker.js";
 import GitHubRunnerWrapper from "./wrappers/gitHubRunnerWrapper.js";
@@ -38,6 +39,7 @@ const createPullRequestMetrics = (): PullRequestMetrics => {
   const azurePipelinesRunnerWrapper: AzurePipelinesRunnerWrapper =
     new AzurePipelinesRunnerWrapper();
   const consoleWrapper: ConsoleWrapper = new ConsoleWrapper();
+  const fileSystemWrapper: FileSystemWrapper = new FileSystemWrapper();
   const gitHubRunnerWrapper: GitHubRunnerWrapper = new GitHubRunnerWrapper();
 
   // Runners.
@@ -78,6 +80,7 @@ const createPullRequestMetrics = (): PullRequestMetrics => {
   );
   const tokenManager: TokenManager = new TokenManager(
     azureDevOpsApiWrapper,
+    fileSystemWrapper,
     logger,
     runnerInvoker,
   );

@@ -4,6 +4,12 @@
  */
 
 /**
+ * The permissions mode applied to the isolated Azure CLI configuration directory, restricting access to the owner
+ * only, where supported by the underlying operating system.
+ */
+export const azureCliConfigDirectoryMode = 0o700;
+
+/**
  * The radix to use when parsing a decimal integer using `parseInt()`.
  */
 export const decimalRadix = 10;

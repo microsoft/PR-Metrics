@@ -10,6 +10,7 @@ import * as util from "node:util";
 import type AzurePipelinesRunnerWrapper from "../wrappers/azurePipelinesRunnerWrapper.js";
 import type ConsoleWrapper from "../wrappers/consoleWrapper.js";
 import type { EndpointAuthorization } from "./endpointAuthorization.js";
+import type ExecOptions from "./execOptions.js";
 import type ExecOutput from "./execOutput.js";
 import type GitHubRunnerWrapper from "../wrappers/gitHubRunnerWrapper.js";
 import type ResourcesJsonInterface from "../jsonTypes/resourcesJsonInterface.js";
@@ -41,16 +42,27 @@ export default class GitHubRunnerInvoker implements RunnerInvokerInterface {
     this._gitHubRunnerWrapper = gitHubRunnerWrapper;
   }
 
-  public async exec(tool: string, args: string[]): Promise<ExecOutput> {
-    const options: actionsExec.ExecOptions = {
-      failOnStdErr: true,
-      silent: true,
-    };
+  public async exec(
+    tool: string,
+    args: string[],
+    options?: ExecOptions,
+  ): Promise<ExecOutput> {
+    const execOptions: actionsExec.ExecOptions =
+      typeof options?.env === "undefined"
+        ? {
+            failOnStdErr: true,
+            silent: true,
+          }
+        : {
+            env: options.env,
+            failOnStdErr: true,
+            silent: true,
+          };
 
     const result: actionsExec.ExecOutput = await this._gitHubRunnerWrapper.exec(
       tool,
       args,
-      options,
+      execOptions,
     );
     return {
       exitCode: result.exitCode,

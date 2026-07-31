@@ -4,6 +4,7 @@
  */
 
 import type { EndpointAuthorization } from "./endpointAuthorization.js";
+import type ExecOptions from "./execOptions.js";
 import type ExecOutput from "./execOutput.js";
 
 /**
@@ -14,9 +15,14 @@ export default interface RunnerInvokerInterface {
    * Asynchronously executes an external tool.
    * @param tool The tool executable to run.
    * @param args The arguments to pass to the tool.
+   * @param options The optional execution options, including a child-only environment variable map.
    * @returns A promise containing the result of the execution.
    */
-  exec: (tool: string, args: string[]) => Promise<ExecOutput>;
+  exec: (
+    tool: string,
+    args: string[],
+    options?: ExecOptions,
+  ) => Promise<ExecOutput>;
 
   /**
    * Gets the value of an input.

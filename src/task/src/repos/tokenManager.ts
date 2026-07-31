@@ -3,6 +3,7 @@
  * Licensed under the MIT License.
  */
 
+import * as path from "node:path";
 import {
   validateGuid,
   validateString,
@@ -10,20 +11,29 @@ import {
 } from "../utilities/validator.js";
 import type AzureDevOpsApiWrapper from "../wrappers/azureDevOpsApiWrapper.js";
 import type { EndpointAuthorization } from "../runners/endpointAuthorization.js";
+import type ExecOptions from "../runners/execOptions.js";
 import type ExecOutput from "../runners/execOutput.js";
+import type FileSystemWrapper from "../wrappers/fileSystemWrapper.js";
 import type { IRequestHandler } from "azure-devops-node-api/interfaces/common/VsoBaseInterfaces.js";
 import type { ITaskApi } from "azure-devops-node-api/TaskApi.js";
 import type Logger from "../utilities/logger.js";
 import type RunnerInvoker from "../runners/runnerInvoker.js";
 import type { TaskHubOidcToken } from "azure-devops-node-api/interfaces/TaskAgentInterfaces.js";
 import type { WebApi } from "azure-devops-node-api";
+import { azureCliConfigDirectoryMode } from "../utilities/constants.js";
 
 /**
  * A class for invoking authorization token management functionality, used for retrieving identity information from a
  * workload identity federation.
  */
 export default class TokenManager {
+  private static readonly _azureConfigDirEnvironmentVariable =
+    "AZURE_CONFIG_DIR";
+  private static readonly _isolatedAzureCliConfigDirectoryPrefix =
+    "azure-cli-config-";
+
   private readonly _azureDevOpsApiWrapper: AzureDevOpsApiWrapper;
+  private readonly _fileSystemWrapper: FileSystemWrapper;
   private readonly _logger: Logger;
   private readonly _runnerInvoker: RunnerInvoker;
 
@@ -32,15 +42,18 @@ export default class TokenManager {
   /**
    * Initializes a new instance of the `TokenManager` class.
    * @param azureDevOpsApiWrapper The wrapper around the Azure DevOps API.
+   * @param fileSystemWrapper The wrapper around the file system.
    * @param logger The logger.
    * @param runnerInvoker The runner invoker logic.
    */
   public constructor(
     azureDevOpsApiWrapper: AzureDevOpsApiWrapper,
+    fileSystemWrapper: FileSystemWrapper,
     logger: Logger,
     runnerInvoker: RunnerInvoker,
   ) {
     this._azureDevOpsApiWrapper = azureDevOpsApiWrapper;
+    this._fileSystemWrapper = fileSystemWrapper;
     this._logger = logger;
     this._runnerInvoker = runnerInvoker;
   }
@@ -121,18 +134,133 @@ export default class TokenManager {
     );
     this._runnerInvoker.setSecret(federatedToken);
 
+    /*
+     * Isolate the Azure CLI configuration state in a unique, ephemeral directory for the duration of this
+     * invocation only, so that self-hosted agent jobs cannot read or reuse credentials cached by other jobs.
+     */
+    const isolatedConfigDirectory: string =
+      await this.createIsolatedAzureCliConfigDirectory();
+    const isolatedEnvironment: Record<string, string> =
+      this.buildIsolatedEnvironment(isolatedConfigDirectory);
+
+    let accessToken: string;
+    try {
+      accessToken = await this.authenticateWithAzureCli(
+        servicePrincipalId,
+        tenantId,
+        federatedToken,
+        isolatedEnvironment,
+      );
+    } catch (authenticationError: unknown) {
+      await this.cleanUpIsolatedAzureCliConfigDirectoryAfterFailure(
+        isolatedConfigDirectory,
+      );
+      throw authenticationError instanceof Error
+        ? authenticationError
+        : new Error(String(authenticationError));
+    }
+
+    // Cleanup failure after a successful authentication is treated as a security failure: the token is not released.
+    await this.cleanUpIsolatedAzureCliConfigDirectoryAfterSuccess(
+      isolatedConfigDirectory,
+    );
+
+    this._runnerInvoker.setSecret(accessToken);
+    return accessToken;
+  }
+
+  private buildIsolatedEnvironment(
+    isolatedConfigDirectory: string,
+  ): Record<string, string> {
+    const environment: Record<string, string> = {};
+    for (const [key, value] of Object.entries(process.env)) {
+      // Remove any inherited AZURE_CONFIG_DIR entries case-insensitively, which matters on Windows.
+      if (
+        typeof value === "string" &&
+        key.toUpperCase() !== TokenManager._azureConfigDirEnvironmentVariable
+      ) {
+        environment[key] = value;
+      }
+    }
+
+    environment[TokenManager._azureConfigDirEnvironmentVariable] =
+      isolatedConfigDirectory;
+    return environment;
+  }
+
+  private async createIsolatedAzureCliConfigDirectory(): Promise<string> {
+    this._logger.logDebug(
+      "* TokenManager.createIsolatedAzureCliConfigDirectory()",
+    );
+
+    const agentTempDirectory: string = validateVariable(
+      "AGENT_TEMPDIRECTORY",
+      "TokenManager.createIsolatedAzureCliConfigDirectory()",
+    );
+    if (!path.isAbsolute(agentTempDirectory)) {
+      throw new Error(
+        "'AGENT_TEMPDIRECTORY' must be an absolute path to isolate the Azure CLI configuration state.",
+      );
+    }
+
+    const agentTempDirectoryExists: boolean =
+      await this._fileSystemWrapper.directoryExists(agentTempDirectory);
+    if (!agentTempDirectoryExists) {
+      throw new Error(
+        "'AGENT_TEMPDIRECTORY' must reference an existing directory to isolate the Azure CLI configuration state.",
+      );
+    }
+
+    const isolatedConfigDirectory: string =
+      await this._fileSystemWrapper.mkdtemp(
+        path.join(
+          agentTempDirectory,
+          TokenManager._isolatedAzureCliConfigDirectoryPrefix,
+        ),
+      );
+
+    try {
+      await this._fileSystemWrapper.chmod(
+        isolatedConfigDirectory,
+        azureCliConfigDirectoryMode,
+      );
+    } catch {
+      this._logger.logDebug(
+        "Failed to restrict permissions on the isolated Azure CLI configuration directory.",
+      );
+    }
+
+    return isolatedConfigDirectory;
+  }
+
+  private async authenticateWithAzureCli(
+    servicePrincipalId: string,
+    tenantId: string,
+    federatedToken: string,
+    isolatedEnvironment: Record<string, string>,
+  ): Promise<string> {
+    this._logger.logDebug("* TokenManager.authenticateWithAzureCli()");
+
+    const execOptions: ExecOptions = {
+      env: isolatedEnvironment,
+    };
+
     // Sign in to Azure using the federated token.
-    const signInResult: ExecOutput = await this._runnerInvoker.exec("az", [
-      "login",
-      "--service-principal",
-      "-u",
-      servicePrincipalId,
-      "--tenant",
-      tenantId,
-      "--allow-no-subscriptions",
-      "--federated-token",
-      federatedToken,
-    ]);
+    const signInResult: ExecOutput = await this._runnerInvoker.exec(
+      "az",
+      [
+        "login",
+        "--service-principal",
+        "-u",
+        servicePrincipalId,
+        "--tenant",
+        tenantId,
+        "--allow-no-subscriptions",
+        "--federated-token",
+        federatedToken,
+      ],
+      execOptions,
+    );
     if (signInResult.exitCode !== 0) {
       throw new Error(signInResult.stderr);
     }
@@ -142,23 +270,68 @@ export default class TokenManager {
      * 499b84ac-1321-427f-aa17-267ca6975798, as documented at https://learn.microsoft.com/rest/api/azure/devops/tokens/
      * and https://learn.microsoft.com/azure/devops/integrate/get-started/authentication/service-principal-managed-identity.
      */
-    const accessTokenResult: ExecOutput = await this._runnerInvoker.exec("az", [
-      "account",
-      "get-access-token",
-      "--query",
-      "accessToken",
-      "--resource",
-      "499b84ac-1321-427f-aa17-267ca6975798",
-      "-o",
-      "tsv",
-    ]);
+    const accessTokenResult: ExecOutput = await this._runnerInvoker.exec(
+      "az",
+      [
+        "account",
+        "get-access-token",
+        "--query",
+        "accessToken",
+        "--resource",
+        "499b84ac-1321-427f-aa17-267ca6975798",
+        "-o",
+        "tsv",
+      ],
+      execOptions,
+    );
     if (accessTokenResult.exitCode !== 0) {
       throw new Error(accessTokenResult.stderr);
     }
 
-    const result: string = accessTokenResult.stdout.trim();
-    this._runnerInvoker.setSecret(result);
-    return result;
+    return accessTokenResult.stdout.trim();
+  }
+
+  private async cleanUpIsolatedAzureCliConfigDirectoryAfterFailure(
+    isolatedConfigDirectory: string,
+  ): Promise<void> {
+    this._logger.logDebug(
+      "* TokenManager.cleanUpIsolatedAzureCliConfigDirectoryAfterFailure()",
+    );
+
+    try {
+      await this._fileSystemWrapper.rm(isolatedConfigDirectory);
+    } catch (cleanupError: unknown) {
+      const cleanupMessage: string =
+        cleanupError instanceof Error
+          ? cleanupError.message
+          : String(cleanupError);
+      this._logger.logWarning(
+        `Azure CLI authentication failed and the isolated configuration state could not be cleaned up: ${cleanupMessage}`,
+      );
+    }
+  }
+
+  private async cleanUpIsolatedAzureCliConfigDirectoryAfterSuccess(
+    isolatedConfigDirectory: string,
+  ): Promise<void> {
+    this._logger.logDebug(
+      "* TokenManager.cleanUpIsolatedAzureCliConfigDirectoryAfterSuccess()",
+    );
+
+    try {
+      await this._fileSystemWrapper.rm(isolatedConfigDirectory);
+    } catch (cleanupError: unknown) {
+      const cleanupMessage: string =
+        cleanupError instanceof Error
+          ? cleanupError.message
+          : String(cleanupError);
+      throw new Error(
+        `Azure CLI authentication succeeded, but the isolated configuration state could not be cleaned up, so the access token cannot be trusted: ${cleanupMessage}`,
+        {
+          cause: cleanupError,
+        },
+      );
+    }
   }
 
   private async getFederatedToken(
