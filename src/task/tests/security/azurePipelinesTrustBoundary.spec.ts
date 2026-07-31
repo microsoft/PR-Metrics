@@ -33,6 +33,11 @@ interface RepositoryResource {
   properties: Map<string, string>;
 }
 
+interface WorkflowStep {
+  contents: string;
+  name: string;
+}
+
 describe("azure-devops pipelines", (): void => {
   const repositoryPath: string = path.join(
     import.meta.dirname,
@@ -45,6 +50,11 @@ describe("azure-devops pipelines", (): void => {
     repositoryPath,
     ".github",
     "azure-devops",
+  );
+  const workflowsPath: string = path.join(
+    repositoryPath,
+    ".github",
+    "workflows",
   );
 
   const validationTemplateFile = "pr-validation-template.yml";
@@ -65,6 +75,19 @@ describe("azure-devops pipelines", (): void => {
     "ms-feed-25.pkgs.visualstudio.com",
   ];
   const approvedFeedPath = "/1es-public/_packaging/npm-public/npm/registry/";
+
+  /*
+   * A dependency update regenerates the lockfile against whichever registry
+   * npm is configured with, which is the public registry, so the release
+   * workflow normalizes the resolved URLs back to the approved mirror before
+   * the update is committed. Without that step every subsequent pull request
+   * would restore from a registry the network isolation policy forbids.
+   */
+  const releaseWorkflowFile = "release-initiate.yml";
+  const dependencyUpdateCommand = "npm run update:dependencies";
+  const normalizationScript = "scripts/normalize-package-lock-registry.mjs";
+  const normalizationCommand = `node ${normalizationScript}`;
+  const commitAction = "grafana/github-api-commit-action";
 
   /*
    * The mirror supplies SHA-1 Subresource Integrity hashes for the packages it
@@ -258,6 +281,55 @@ describe("azure-devops pipelines", (): void => {
 
   const readPipeline = (fileName: string): string =>
     removeComments(fs.readFileSync(path.join(pipelinesPath, fileName), "utf8"));
+
+  const readWorkflow = (fileName: string): string =>
+    fs.readFileSync(path.join(workflowsPath, fileName), "utf8");
+
+  /*
+   * Every step of a GitHub Actions workflow begins with a property at an
+   * indentation of six spaces and carries its own properties at eight, so the
+   * step boundaries can be recovered without a YAML parser.
+   */
+  const getWorkflowSteps = (contents: string): WorkflowStep[] => {
+    const result: WorkflowStep[] = [];
+    let current: WorkflowStep | null = null;
+    let currentLines: string[] = [];
+    const flush = (): void => {
+      if (current !== null) {
+        current.contents = currentLines.join("\n");
+        result.push(current);
+      }
+    };
+
+    for (const line of contents.split(/\r?\n/u)) {
+      const start: RegExpExecArray | null =
+        /^[ ]{6}-[ ]+(?<property>[A-Za-z]+):(?<value>.*)$/u.exec(line);
+      if (start !== null) {
+        flush();
+        current = { contents: "", name: "" };
+        currentLines = [line];
+        if (start.groups?.property === "name") {
+          current.name = (start.groups.value ?? "").trim();
+        }
+
+        continue;
+      }
+
+      if (current === null) {
+        continue;
+      }
+
+      currentLines.push(line);
+      const property: RegExpExecArray | null =
+        /^[ ]{8}name:(?<value>.*)$/u.exec(line);
+      if (property !== null) {
+        current.name = (property.groups?.value ?? "").trim();
+      }
+    }
+
+    flush();
+    return result;
+  };
 
   const getPipelineFiles = (): string[] =>
     fs
@@ -1304,6 +1376,100 @@ describe("azure-devops pipelines", (): void => {
           );
         }
       });
+    });
+  });
+
+  describe(releaseWorkflowFile, (): void => {
+    it("should normalize the lockfile registry immediately after the dependency update", (): void => {
+      // Arrange
+      const steps: WorkflowStep[] = getWorkflowSteps(
+        readWorkflow(releaseWorkflowFile),
+      );
+
+      // Act
+      const updateIndex: number = steps.findIndex(
+        (step: WorkflowStep): boolean =>
+          step.contents.includes(dependencyUpdateCommand),
+      );
+      const normalization: WorkflowStep | undefined = steps[updateIndex + 1];
+
+      // Assert
+      assert.notEqual(updateIndex, -1);
+      assert.notEqual(normalization, undefined);
+      assert.notEqual(normalization?.name, "");
+      assert.equal(
+        normalization?.contents.includes(normalizationCommand),
+        true,
+        `'${releaseWorkflowFile}' does not run '${normalizationCommand}' immediately after '${dependencyUpdateCommand}'.`,
+      );
+    });
+
+    it("should normalize the lockfile registry before the dependency update is committed", (): void => {
+      // Arrange
+      const steps: WorkflowStep[] = getWorkflowSteps(
+        readWorkflow(releaseWorkflowFile),
+      );
+
+      // Act
+      const updateIndex: number = steps.findIndex(
+        (step: WorkflowStep): boolean =>
+          step.contents.includes(dependencyUpdateCommand),
+      );
+      const normalizationIndex: number = steps.findIndex(
+        (step: WorkflowStep): boolean =>
+          step.contents.includes(normalizationCommand),
+      );
+      const commitIndex: number = steps.findIndex(
+        (step: WorkflowStep, index: number): boolean =>
+          index > updateIndex && step.contents.includes(commitAction),
+      );
+
+      // Assert
+      assert.notEqual(commitIndex, -1);
+      assert.equal(normalizationIndex > updateIndex, true);
+      assert.equal(normalizationIndex < commitIndex, true);
+    });
+
+    it("should normalize the lockfile registry exactly once", (): void => {
+      // Arrange
+      const contents: string = readWorkflow(releaseWorkflowFile);
+
+      // Act
+      const actual: number = contents.split(normalizationCommand).length - 1;
+
+      // Assert
+      assert.equal(actual, 1);
+    });
+
+    it("should require no credential to normalize the lockfile registry", (): void => {
+      // Arrange
+      const steps: WorkflowStep[] = getWorkflowSteps(
+        readWorkflow(releaseWorkflowFile),
+      );
+
+      // Act
+      const normalization: WorkflowStep | undefined = steps.find(
+        (step: WorkflowStep): boolean =>
+          step.contents.includes(normalizationCommand),
+      );
+
+      // Assert
+      assert.notEqual(normalization, undefined);
+      assert.equal(
+        /secrets\.|vars\.|token/iu.test(normalization?.contents ?? ""),
+        false,
+      );
+      assert.equal((normalization?.contents ?? "").includes("uses:"), false);
+    });
+
+    it("should reference a normalization script that exists", (): void => {
+      // Act
+      const actual: boolean = fs.existsSync(
+        path.join(repositoryPath, ...normalizationScript.split("/")),
+      );
+
+      // Assert
+      assert.equal(actual, true);
     });
   });
 

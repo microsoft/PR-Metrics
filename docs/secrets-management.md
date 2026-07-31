@@ -81,7 +81,14 @@ control. The `.gitignore` file excludes common environment file patterns
   fetches each package from the exact lockfile URL – no registry configuration,
   including one a pull request adds to `.npmrc`, can redirect the restore – npm
   contacts no audit endpoint, no `package.json` script executes during the
-  restore, and each package is verified against its integrity hash. Only
+  restore, and each package is verified against its integrity hash. The
+  repository `.npmrc` deliberately continues to name the public npm registry,
+  as it is the developer and default configuration; the committed lockfile,
+  not `.npmrc`, is what pins the anonymous mirror, and
+  [`release-initiate.yml`][releaseinitiate] normalizes the resolved URLs back
+  to that mirror immediately after every dependency update and before the
+  update is committed, so the difference between the two files is deliberate
+  policy rather than a misconfiguration. Only
   `npm run lint` and `npm run test:fast` run afterwards, and neither reinstalls
   dependencies, so no nested `npm ci` can reach an unpinned registry. Privileged
   operations remain reachable only from `prod.yml` and `release.yml`, neither of
@@ -89,8 +96,9 @@ control. The `.gitignore` file excludes common environment file patterns
   [`azurePipelinesTrustBoundary.spec.ts`][azurepipelinestrustboundary], which
   walks the template graph, resolves `@self` qualified references as local,
   rejects undeclared repository aliases, pins the full alias, type, name and ref
-  of every remote template resource, pins the exact step order of every job, and
-  verifies every lockfile URL against the approved feed.
+  of every remote template resource, pins the exact step order of every job,
+  verifies every lockfile URL against the approved feed, and requires the
+  release workflow to normalize the lockfile after each dependency update.
 - **`GITHUB_TOKEN`**: Automatically provisioned by GitHub for each workflow
   run. Each workflow sets `permissions: {}` at the top level, granting no
   permissions by default; individual jobs request only the minimum permissions
@@ -126,5 +134,6 @@ exposure:
 
 [azurepipelinestrustboundary]: ../src/task/tests/security/azurePipelinesTrustBoundary.spec.ts
 [gitleaks]: https://github.com/gitleaks/gitleaks
+[releaseinitiate]: ../.github/workflows/release-initiate.yml
 [securityassessment]: security-assessment.md
 [superlinter]: https://github.com/super-linter/super-linter
