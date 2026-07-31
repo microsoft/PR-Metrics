@@ -41,6 +41,12 @@ const writePackageJson = (
   );
 };
 
+const createLocalActionDist = (targetPath: string): void => {
+  fs.mkdirSync(path.join(targetPath, ".github", "actions", "local-action", "dist"), {
+    recursive: true,
+  });
+};
+
 const runScript = (
   targetPath: string,
 ): { output: string; status: number } => {
@@ -135,6 +141,35 @@ describe("scripts/build-committed-bundles.mjs", (): void => {
     );
     assert.equal(output.toLowerCase().includes("build:actions"), true);
     assert.equal(output.toLowerCase().includes("skip"), true);
+  });
+
+  it("fails when local action dist exists but 'build:actions' is missing", (): void => {
+    writePackageJson(workingDirectory, [
+      ["build:package", "node write-marker.mjs build-package.marker"],
+    ]);
+    createLocalActionDist(workingDirectory);
+
+    const { output, status } = runScript(workingDirectory);
+
+    assert.notEqual(status, 0);
+    assert.equal(output.includes("build:actions"), true);
+    assert.equal(output.includes("dist"), true);
+  });
+
+  it("runs 'build:actions' when local action dist exists and the script is present", (): void => {
+    writePackageJson(workingDirectory, [
+      ["build:package", "node write-marker.mjs build-package.marker"],
+      ["build:actions", "node write-marker.mjs build-actions.marker"],
+    ]);
+    createLocalActionDist(workingDirectory);
+
+    const { status } = runScript(workingDirectory);
+
+    assert.equal(status, 0);
+    assert.equal(
+      fs.existsSync(path.join(workingDirectory, "build-actions.marker")),
+      true,
+    );
   });
 
   it("does not run 'build:actions' when 'build:package' fails, and reports failure", (): void => {
