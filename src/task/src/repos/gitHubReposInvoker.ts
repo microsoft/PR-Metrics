@@ -27,6 +27,14 @@ import type UpdateIssueCommentResponse from "../wrappers/octokitInterfaces/updat
 import type UpdatePullResponse from "../wrappers/octokitInterfaces/updatePullResponse.js";
 import { httpStatusCodes } from "../utilities/httpStatusCodes.js";
 
+interface ParsedAzureDevOpsTargetRepository {
+  owner: string;
+  repo: string;
+  baseUrl: string;
+}
+
+const repositoryPathSegmentCount = 3;
+
 /**
  * A class for invoking GitHub Repos functionality.
  */
@@ -331,44 +339,123 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
   private initializeForAzureDevOps(): string {
     this._logger.logDebug("* GitHubReposInvoker.initializeForAzureDevOps()");
 
-    const sourceRepositoryUri: string = Validator.validateVariable(
-      "SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI",
+    const targetRepositoryUri: string = Validator.validateVariable(
+      "BUILD_REPOSITORY_URI",
       "GitHubReposInvoker.initializeForAzureDevOps()",
     );
+    const parsedTargetRepository: ParsedAzureDevOpsTargetRepository =
+      this.parseAzureDevOpsTargetRepository(targetRepositoryUri);
 
+    this._owner = parsedTargetRepository.owner;
+    this._repo = parsedTargetRepository.repo;
+
+    return parsedTargetRepository.baseUrl;
+  }
+
+  private parseAzureDevOpsTargetRepository(
+    targetRepositoryUri: string,
+  ): ParsedAzureDevOpsTargetRepository {
     let parsedUrl: URL;
     try {
-      parsedUrl = new URL(sourceRepositoryUri);
+      parsedUrl = new URL(targetRepositoryUri);
     } catch {
-      throw new Error(
-        `SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI '${sourceRepositoryUri}' is in an unexpected format.`,
-      );
+      this.throwInvalidAzureRepositoryUri(targetRepositoryUri);
     }
 
-    const pathSegments: string[] = parsedUrl.pathname
-      .split("/")
-      .filter(Boolean);
-    const owner: string | undefined = pathSegments[0];
-    const repo: string | undefined = pathSegments[1];
-    if (typeof owner === "undefined" || typeof repo === "undefined") {
-      throw new Error(
-        `SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI '${sourceRepositoryUri}' is in an unexpected format.`,
-      );
+    this.validateAzureDevOpsTargetUrl(parsedUrl, targetRepositoryUri);
+    const [owner, rawRepo]: [string, string] =
+      this.getAzureDevOpsTargetPathSegments(targetRepositoryUri);
+    const repo: string = this.normalizeAzureDevOpsTargetRepo(
+      rawRepo,
+      targetRepositoryUri,
+    );
+
+    if (parsedUrl.hostname === "github.com") {
+      if (parsedUrl.port !== "") {
+        this.throwInvalidAzureRepositoryUri(targetRepositoryUri);
+      }
+
+      return { baseUrl: "", owner, repo };
     }
 
-    this._owner = owner;
-    this._repo = repo;
+    return {
+      baseUrl: `${parsedUrl.origin}/api/v3`,
+      owner,
+      repo,
+    };
+  }
 
-    if (this._repo.endsWith(".git")) {
-      this._repo = this._repo.substring(0, this._repo.length - ".git".length);
+  private validateAzureDevOpsTargetUrl(
+    parsedUrl: URL,
+    targetRepositoryUri: string,
+  ): void {
+    if (
+      parsedUrl.protocol !== "https:" ||
+      parsedUrl.username !== "" ||
+      parsedUrl.password !== "" ||
+      parsedUrl.search !== "" ||
+      parsedUrl.hash !== ""
+    ) {
+      this.throwInvalidAzureRepositoryUri(targetRepositoryUri);
+    }
+  }
+
+  private getAzureDevOpsTargetPathSegments(
+    targetRepositoryUri: string,
+  ): [string, string] {
+    const rawPath: string = this.getRawPath(targetRepositoryUri);
+    if (/%2f|%5c/iu.test(rawPath) || rawPath.includes("\\")) {
+      this.throwInvalidAzureRepositoryUri(targetRepositoryUri);
     }
 
-    // Handle GitHub Enterprise invocations.
-    if (parsedUrl.hostname !== "github.com") {
-      return `${parsedUrl.origin}/api/v3`;
+    const pathSegments: string[] = rawPath.split("/");
+    if (
+      pathSegments.length !== repositoryPathSegmentCount ||
+      pathSegments[0] !== ""
+    ) {
+      this.throwInvalidAzureRepositoryUri(targetRepositoryUri);
     }
 
-    return "";
+    const [, owner, rawRepo] = pathSegments as [string, string, string];
+    if (
+      owner === "" ||
+      rawRepo === "" ||
+      owner === "." ||
+      owner === ".." ||
+      rawRepo === "." ||
+      rawRepo === ".."
+    ) {
+      this.throwInvalidAzureRepositoryUri(targetRepositoryUri);
+    }
+
+    return [owner, rawRepo];
+  }
+
+  private normalizeAzureDevOpsTargetRepo(
+    rawRepo: string,
+    targetRepositoryUri: string,
+  ): string {
+    const repo: string = rawRepo.endsWith(".git")
+      ? rawRepo.substring(0, rawRepo.length - ".git".length)
+      : rawRepo;
+    if (repo === "") {
+      this.throwInvalidAzureRepositoryUri(targetRepositoryUri);
+    }
+
+    return repo;
+  }
+
+  private getRawPath(targetRepositoryUri: string): string {
+    return targetRepositoryUri.replace(
+      /^[A-Za-z][A-Za-z0-9+.-]*:\/\/[^/]+/u,
+      "",
+    );
+  }
+
+  private throwInvalidAzureRepositoryUri(targetRepositoryUri: string): never {
+    throw new Error(
+      `BUILD_REPOSITORY_URI '${targetRepositoryUri}' is in an unexpected format.`,
+    );
   }
 
   private convertPullRequestComments(
