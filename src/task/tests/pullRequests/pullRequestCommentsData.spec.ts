@@ -20,6 +20,7 @@ describe("pullRequestCommentsData.ts", (): void => {
       assert.equal(result.metricsCommentThreadId, null);
       assert.equal(result.metricsCommentContent, null);
       assert.equal(result.metricsCommentThreadStatus, null);
+      assert.equal(result.isMetricsCommentAmbiguous, false);
       assert.deepEqual(result.filesNotRequiringReview, [
         "file1.ts",
         "file2.ts",
@@ -28,6 +29,26 @@ describe("pullRequestCommentsData.ts", (): void => {
         "file3.ts",
         "file4.ts",
       ]);
+      assert.deepEqual(result.commentThreadsRequiringDeletion, []);
+    });
+  });
+
+  describe("isMetricsCommentAmbiguous", (): void => {
+    it("should set the correct data", (): void => {
+      // Arrange
+      const result: PullRequestCommentsData = new PullRequestCommentsData(
+        ["file1.ts", "file2.ts"],
+        ["file3.ts", "file4.ts"],
+      );
+
+      // Act
+      result.isMetricsCommentAmbiguous = true;
+
+      // Assert
+      assert.equal(result.metricsCommentThreadId, null);
+      assert.equal(result.metricsCommentContent, null);
+      assert.equal(result.metricsCommentThreadStatus, null);
+      assert.equal(result.isMetricsCommentAmbiguous, true);
       assert.deepEqual(result.commentThreadsRequiringDeletion, []);
     });
   });

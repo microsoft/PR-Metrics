@@ -66,6 +66,27 @@ export const createGitHubReposInvokerMocks = (): GitHubReposInvokerMocks => {
       anyNumber(),
     ),
   ).thenResolve(GitHubReposInvokerConstants.listCommitsResponse);
+  when(octokitWrapper.getAuthenticatedUser()).thenResolve(
+    GitHubReposInvokerConstants.getAuthenticatedUserResponse,
+  );
+  when(
+    octokitWrapper.getIssueComments(
+      anyString(),
+      anyString(),
+      anyNumber(),
+      anyNumber(),
+      anyNumber(),
+    ),
+  ).thenResolve(GitHubReposInvokerConstants.createIssueCommentsResponse(0, 0));
+  when(
+    octokitWrapper.getReviewComments(
+      anyString(),
+      anyString(),
+      anyNumber(),
+      anyNumber(),
+      anyNumber(),
+    ),
+  ).thenResolve(GitHubReposInvokerConstants.createReviewCommentsResponse(0, 0));
 
   const runnerInvoker: RunnerInvoker = mock(RunnerInvoker);
   stubLocalization(runnerInvoker);

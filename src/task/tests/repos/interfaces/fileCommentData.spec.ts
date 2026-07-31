@@ -22,6 +22,28 @@ describe("fileCommentData.ts", (): void => {
       assert.equal(result.content, "Content");
       assert.equal(result.status, CommentThreadStatus.Unknown);
       assert.equal(result.fileName, "file.ts");
+      assert.equal(result.authorId, null);
+      assert.equal(result.authorType, null);
+    });
+
+    it("should set the correct data when the author details are specified", (): void => {
+      // Act
+      const result: FileCommentData = new FileCommentData(
+        12345,
+        "Content",
+        "file.ts",
+        CommentThreadStatus.Active,
+        54321,
+        "User",
+      );
+
+      // Assert
+      assert.equal(result.id, 12345);
+      assert.equal(result.content, "Content");
+      assert.equal(result.status, CommentThreadStatus.Active);
+      assert.equal(result.fileName, "file.ts");
+      assert.equal(result.authorId, 54321);
+      assert.equal(result.authorType, "User");
     });
 
     it("should set the correct data when the status is specified", (): void => {

@@ -91,6 +91,7 @@
     "metrics.codeMetricsCalculator.noPullRequest": "ms-resource:loc.messages.metrics.codeMetricsCalculator.noPullRequest",
     "metrics.codeMetricsCalculator.noPullRequestIdAzureDevOps": "ms-resource:loc.messages.metrics.codeMetricsCalculator.noPullRequestIdAzureDevOps",
     "metrics.codeMetricsCalculator.noPullRequestIdGitHub": "ms-resource:loc.messages.metrics.codeMetricsCalculator.noPullRequestIdGitHub",
+    "metrics.codeMetricsCalculator.tooManyCommentMutations": "ms-resource:loc.messages.metrics.codeMetricsCalculator.tooManyCommentMutations",
     "metrics.codeMetricsCalculator.unsupportedProvider": "ms-resource:loc.messages.metrics.codeMetricsCalculator.unsupportedProvider",
     "metrics.inputs.adjustingAlwaysCloseComment": "ms-resource:loc.messages.metrics.inputs.adjustingAlwaysCloseComment",
     "metrics.inputs.adjustingBaseSize": "ms-resource:loc.messages.metrics.inputs.adjustingBaseSize",
@@ -113,6 +114,8 @@
     "pullRequests.pullRequestComments.commentFooter": "ms-resource:loc.messages.pullRequests.pullRequestComments.commentFooter",
     "pullRequests.pullRequestComments.commentTitle": "ms-resource:loc.messages.pullRequests.pullRequestComments.commentTitle",
     "pullRequests.pullRequestComments.largePullRequestComment": "ms-resource:loc.messages.pullRequests.pullRequestComments.largePullRequestComment",
+    "pullRequests.pullRequestComments.multipleMetricsComments": "ms-resource:loc.messages.pullRequests.pullRequestComments.multipleMetricsComments",
+    "pullRequests.pullRequestComments.multipleNoReviewRequiredComments": "ms-resource:loc.messages.pullRequests.pullRequestComments.multipleNoReviewRequiredComments",
     "pullRequests.pullRequestComments.noReviewRequiredComment": "ms-resource:loc.messages.pullRequests.pullRequestComments.noReviewRequiredComment",
     "pullRequests.pullRequestComments.smallPullRequestComment": "ms-resource:loc.messages.pullRequests.pullRequestComments.smallPullRequestComment",
     "pullRequests.pullRequestComments.tableIgnoredCode": "ms-resource:loc.messages.pullRequests.pullRequestComments.tableIgnoredCode",
@@ -128,6 +131,8 @@
     "repos.baseReposInvoker.resourceNotFound": "ms-resource:loc.messages.repos.baseReposInvoker.resourceNotFound",
     "repos.gitHubReposInvoker.insufficientGitHubAccessTokenPermissions": "ms-resource:loc.messages.repos.gitHubReposInvoker.insufficientGitHubAccessTokenPermissions",
     "repos.gitHubReposInvoker.noGitHubAccessToken": "ms-resource:loc.messages.repos.gitHubReposInvoker.noGitHubAccessToken",
+    "repos.gitHubReposInvoker.tooManyComments": "ms-resource:loc.messages.repos.gitHubReposInvoker.tooManyComments",
+    "repos.gitHubReposInvoker.unidentifiablePrincipal": "ms-resource:loc.messages.repos.gitHubReposInvoker.unidentifiablePrincipal",
     "repos.tokenManager.incorrectAuthorizationScheme": "ms-resource:loc.messages.repos.tokenManager.incorrectAuthorizationScheme"
   }
 }

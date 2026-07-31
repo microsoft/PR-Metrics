@@ -3,11 +3,23 @@
  * Licensed under the MIT License.
  */
 
+import type GetAuthenticatedUserResponse from "../../src/wrappers/octokitInterfaces/getAuthenticatedUserResponse.js";
 import type GetIssueCommentsResponse from "../../src/wrappers/octokitInterfaces/getIssueCommentsResponse.js";
 import type GetPullResponse from "../../src/wrappers/octokitInterfaces/getPullResponse.js";
 import type GetReviewCommentsResponse from "../../src/wrappers/octokitInterfaces/getReviewCommentsResponse.js";
+import type GraphQlViewerResponseInterface from "../../src/wrappers/octokitInterfaces/graphQlViewerResponseInterface.js";
 import type ListCommitsResponse from "../../src/wrappers/octokitInterfaces/listCommitsResponse.js";
 import { httpStatusCodes } from "../../src/utilities/httpStatusCodes.js";
+
+/**
+ * The numeric ID of the principal associated with the access token in use.
+ */
+export const authenticatedUserId = 1000;
+
+/**
+ * The numeric ID of a principal other than the one associated with the access token in use.
+ */
+export const foreignUserId = 2000;
 
 /* eslint-disable @typescript-eslint/naming-convention -- Required for alignment with Octokit. */
 
@@ -509,8 +521,8 @@ export const getIssueCommentsResponse: GetIssueCommentsResponse = {
         gists_url: "",
         gravatar_id: "",
         html_url: "",
-        id: 0,
-        login: "",
+        id: authenticatedUserId,
+        login: "pr-metrics",
         node_id: "",
         organizations_url: "",
         received_events_url: "",
@@ -526,6 +538,58 @@ export const getIssueCommentsResponse: GetIssueCommentsResponse = {
   headers: {},
   status: httpStatusCodes.ok,
   url: "",
+};
+
+/**
+ * A mock response for the Octokit API call to get the authenticated user.
+ */
+export const getAuthenticatedUserResponse: GetAuthenticatedUserResponse = {
+  data: {
+    avatar_url: "",
+    bio: null,
+    blog: null,
+    company: null,
+    created_at: "",
+    email: null,
+    events_url: "",
+    followers: 0,
+    followers_url: "",
+    following: 0,
+    following_url: "",
+    gists_url: "",
+    gravatar_id: null,
+    hireable: null,
+    html_url: "",
+    id: authenticatedUserId,
+    location: null,
+    login: "pr-metrics",
+    name: null,
+    node_id: "",
+    organizations_url: "",
+    public_gists: 0,
+    public_repos: 0,
+    received_events_url: "",
+    repos_url: "",
+    site_admin: false,
+    starred_url: "",
+    subscriptions_url: "",
+    type: "User",
+    updated_at: "",
+    url: "",
+  },
+  headers: {},
+  status: httpStatusCodes.ok,
+  url: "",
+};
+
+/**
+ * A mock response for the Octokit GraphQL API call to get the authenticated viewer.
+ */
+export const graphQlViewerResponse: GraphQlViewerResponseInterface = {
+  viewer: {
+    databaseId: authenticatedUserId,
+    login: "pr-metrics",
+  },
 };
 
 /**
@@ -587,8 +651,8 @@ export const getReviewCommentsResponse: GetReviewCommentsResponse = {
         gists_url: "",
         gravatar_id: "",
         html_url: "",
-        id: 0,
-        login: "",
+        id: authenticatedUserId,
+        login: "pr-metrics",
         node_id: "",
         organizations_url: "",
         received_events_url: "",
@@ -596,7 +660,7 @@ export const getReviewCommentsResponse: GetReviewCommentsResponse = {
         site_admin: false,
         starred_url: "",
         subscriptions_url: "",
-        type: "",
+        type: "User",
         url: "",
       },
     },
@@ -607,3 +671,66 @@ export const getReviewCommentsResponse: GetReviewCommentsResponse = {
 };
 
 /* eslint-enable @typescript-eslint/naming-convention */
+
+/**
+ * Creates a mock response containing the specified number of issue comments.
+ * @param count The number of comments to include within the response.
+ * @param firstId The ID to assign to the first comment within the response.
+ * @returns The mock response.
+ */
+export const createIssueCommentsResponse = (
+  count: number,
+  firstId: number,
+): GetIssueCommentsResponse => {
+  const template: GetIssueCommentsResponse["data"][number] | undefined =
+    getIssueCommentsResponse.data[0];
+  if (typeof template === "undefined") {
+    throw new Error("getIssueCommentsResponse.data[0] is undefined.");
+  }
+
+  const result: GetIssueCommentsResponse = structuredClone(
+    getIssueCommentsResponse,
+  );
+  result.data = [];
+  for (let index = 0; index < count; index += 1) {
+    const comment: GetIssueCommentsResponse["data"][number] =
+      structuredClone(template);
+    comment.id = firstId + index;
+    comment.body = `Comment ${String(comment.id)}`;
+    result.data.push(comment);
+  }
+
+  return result;
+};
+
+/**
+ * Creates a mock response containing the specified number of review comments.
+ * @param count The number of comments to include within the response.
+ * @param firstId The ID to assign to the first comment within the response.
+ * @returns The mock response.
+ */
+export const createReviewCommentsResponse = (
+  count: number,
+  firstId: number,
+): GetReviewCommentsResponse => {
+  const template: GetReviewCommentsResponse["data"][number] | undefined =
+    getReviewCommentsResponse.data[0];
+  if (typeof template === "undefined") {
+    throw new Error("getReviewCommentsResponse.data[0] is undefined.");
+  }
+
+  const result: GetReviewCommentsResponse = structuredClone(
+    getReviewCommentsResponse,
+  );
+  result.data = [];
+  for (let index = 0; index < count; index += 1) {
+    const comment: GetReviewCommentsResponse["data"][number] =
+      structuredClone(template);
+    comment.id = firstId + index;
+    comment.body = `Comment ${String(comment.id)}`;
+    comment.path = `file${String(comment.id)}.ts`;
+    result.data.push(comment);
+  }
+
+  return result;
+};

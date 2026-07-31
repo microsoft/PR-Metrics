@@ -3,7 +3,15 @@
  * Licensed under the MIT License.
  */
 
-import { instance, mock, when } from "ts-mockito";
+import { instance, mock, verify, when } from "ts-mockito";
+import {
+  localize,
+  stubLocalization,
+} from "../testUtilities/stubLocalization.js";
+import {
+  metricsCommentMarker,
+  noReviewRequiredCommentMarker,
+} from "../../src/utilities/constants.js";
 import CodeMetrics from "../../src/metrics/codeMetrics.js";
 import CodeMetricsData from "../../src/metrics/codeMetricsData.js";
 import CommentData from "../../src/repos/interfaces/commentData.js";
@@ -18,9 +26,11 @@ import type PullRequestCommentsData from "../../src/pullRequests/pullRequestComm
 import ReposInvoker from "../../src/repos/reposInvoker.js";
 import RunnerInvoker from "../../src/runners/runnerInvoker.js";
 import assert from "node:assert/strict";
-import { stubLocalization } from "../testUtilities/stubLocalization.js";
 
 describe("pullRequestComments.ts", (): void => {
+  const authenticatedUserId = 1000;
+  const foreignUserId = 2000;
+  const noReviewRequiredContent = "❗ **This file doesn't require review.**";
   let complexGitPullRequestComments: CommentData;
   let codeMetrics: CodeMetrics;
   let inputs: Inputs;
@@ -85,7 +95,10 @@ describe("pullRequestComments.ts", (): void => {
       const result: string = pullRequestComments.noReviewRequiredComment;
 
       // Assert
-      assert.equal(result, "❗ **This file doesn't require review.**");
+      assert.equal(
+        result,
+        "❗ **This file doesn't require review.**\n<!-- pr-metrics:no-review:v1 -->",
+      );
     });
   });
 
@@ -506,6 +519,467 @@ describe("pullRequestComments.ts", (): void => {
       assert.deepEqual(result.filesNotRequiringReview, ["file.ts"]);
       assert.deepEqual(result.commentThreadsRequiringDeletion, []);
     });
+
+    it("should match the metrics comment when it contains the marker and is owned", async (): Promise<void> => {
+      // Arrange
+      const comments: CommentData = new CommentData();
+      comments.authenticatedUserId = authenticatedUserId;
+      comments.pullRequestComments.push(
+        new PullRequestCommentData(
+          20,
+          `Metrics\n${metricsCommentMarker}`,
+          CommentThreadStatus.Active,
+          authenticatedUserId,
+          "Bot",
+        ),
+      );
+      when(reposInvoker.getComments()).thenResolve(comments);
+      const pullRequestComments: PullRequestComments = new PullRequestComments(
+        instance(codeMetrics),
+        instance(inputs),
+        instance(logger),
+        instance(reposInvoker),
+        instance(runnerInvoker),
+      );
+
+      // Act
+      const result: PullRequestCommentsData =
+        await pullRequestComments.getCommentData();
+
+      // Assert
+      assert.equal(result.metricsCommentThreadId, 20);
+      assert.equal(
+        result.metricsCommentContent,
+        `Metrics\n${metricsCommentMarker}`,
+      );
+      assert.equal(result.isMetricsCommentAmbiguous, false);
+    });
+
+    it("should match a legacy metrics comment without a marker when it is owned", async (): Promise<void> => {
+      // Arrange
+      const comments: CommentData = new CommentData();
+      comments.authenticatedUserId = authenticatedUserId;
+      comments.pullRequestComments.push(
+        new PullRequestCommentData(
+          20,
+          "# PR Metrics\n",
+          CommentThreadStatus.Active,
+          authenticatedUserId,
+          "User",
+        ),
+      );
+      when(reposInvoker.getComments()).thenResolve(comments);
+      const pullRequestComments: PullRequestComments = new PullRequestComments(
+        instance(codeMetrics),
+        instance(inputs),
+        instance(logger),
+        instance(reposInvoker),
+        instance(runnerInvoker),
+      );
+
+      // Act
+      const result: PullRequestCommentsData =
+        await pullRequestComments.getCommentData();
+
+      // Assert
+      assert.equal(result.metricsCommentThreadId, 20);
+      assert.equal(result.metricsCommentContent, "# PR Metrics\n");
+    });
+
+    {
+      interface TestCaseType {
+        authorId: number | null;
+        authorType: string | null;
+        description: string;
+      }
+
+      const testCases: TestCaseType[] = [
+        {
+          authorId: foreignUserId,
+          authorType: "User",
+          description: "another user",
+        },
+        {
+          authorId: foreignUserId,
+          authorType: "Bot",
+          description: "another bot",
+        },
+        {
+          authorId: null,
+          authorType: null,
+          description: "no associated user",
+        },
+      ];
+
+      testCases.forEach(
+        ({ authorId, authorType, description }: TestCaseType): void => {
+          it(`should ignore a spoofed metrics comment created by ${description}`, async (): Promise<void> => {
+            // Arrange
+            const comments: CommentData = new CommentData();
+            comments.authenticatedUserId = authenticatedUserId;
+            comments.pullRequestComments.push(
+              new PullRequestCommentData(
+                20,
+                `# PR Metrics\n${metricsCommentMarker}`,
+                CommentThreadStatus.Active,
+                authorId,
+                authorType,
+              ),
+            );
+            when(reposInvoker.getComments()).thenResolve(comments);
+            const pullRequestComments: PullRequestComments =
+              new PullRequestComments(
+                instance(codeMetrics),
+                instance(inputs),
+                instance(logger),
+                instance(reposInvoker),
+                instance(runnerInvoker),
+              );
+
+            // Act
+            const result: PullRequestCommentsData =
+              await pullRequestComments.getCommentData();
+
+            // Assert
+            assert.equal(result.metricsCommentThreadId, null);
+            assert.equal(result.metricsCommentContent, null);
+            assert.equal(result.metricsCommentThreadStatus, null);
+            assert.equal(result.isMetricsCommentAmbiguous, false);
+          });
+        },
+      );
+    }
+
+    it("should ignore a legacy metrics comment created by another principal", async (): Promise<void> => {
+      // Arrange
+      const comments: CommentData = new CommentData();
+      comments.authenticatedUserId = authenticatedUserId;
+      comments.pullRequestComments.push(
+        new PullRequestCommentData(
+          20,
+          "# PR Metrics\n",
+          CommentThreadStatus.Active,
+          foreignUserId,
+          "User",
+        ),
+      );
+      when(reposInvoker.getComments()).thenResolve(comments);
+      const pullRequestComments: PullRequestComments = new PullRequestComments(
+        instance(codeMetrics),
+        instance(inputs),
+        instance(logger),
+        instance(reposInvoker),
+        instance(runnerInvoker),
+      );
+
+      // Act
+      const result: PullRequestCommentsData =
+        await pullRequestComments.getCommentData();
+
+      // Assert
+      assert.equal(result.metricsCommentThreadId, null);
+      assert.equal(result.metricsCommentContent, null);
+    });
+
+    it("should treat comments as owned when the authenticated principal is unknown", async (): Promise<void> => {
+      // Arrange
+      const comments: CommentData = new CommentData();
+      comments.pullRequestComments.push(
+        new PullRequestCommentData(20, "# PR Metrics\n"),
+      );
+      when(reposInvoker.getComments()).thenResolve(comments);
+      const pullRequestComments: PullRequestComments = new PullRequestComments(
+        instance(codeMetrics),
+        instance(inputs),
+        instance(logger),
+        instance(reposInvoker),
+        instance(runnerInvoker),
+      );
+
+      // Act
+      const result: PullRequestCommentsData =
+        await pullRequestComments.getCommentData();
+
+      // Assert
+      assert.equal(result.metricsCommentThreadId, 20);
+      assert.equal(result.metricsCommentContent, "# PR Metrics\n");
+    });
+
+    it("should skip the metrics comment when multiple owned comments are present", async (): Promise<void> => {
+      // Arrange
+      const comments: CommentData = new CommentData();
+      comments.authenticatedUserId = authenticatedUserId;
+      comments.pullRequestComments.push(
+        new PullRequestCommentData(
+          20,
+          "# PR Metrics\n",
+          CommentThreadStatus.Active,
+          authenticatedUserId,
+          "Bot",
+        ),
+        new PullRequestCommentData(
+          21,
+          `# PR Metrics\n${metricsCommentMarker}`,
+          CommentThreadStatus.Active,
+          authenticatedUserId,
+          "Bot",
+        ),
+      );
+      when(reposInvoker.getComments()).thenResolve(comments);
+      const pullRequestComments: PullRequestComments = new PullRequestComments(
+        instance(codeMetrics),
+        instance(inputs),
+        instance(logger),
+        instance(reposInvoker),
+        instance(runnerInvoker),
+      );
+
+      // Act
+      const result: PullRequestCommentsData =
+        await pullRequestComments.getCommentData();
+
+      // Assert
+      assert.equal(result.metricsCommentThreadId, null);
+      assert.equal(result.metricsCommentContent, null);
+      assert.equal(result.metricsCommentThreadStatus, null);
+      assert.equal(result.isMetricsCommentAmbiguous, true);
+      verify(
+        logger.logWarning(
+          localize(
+            "pullRequests.pullRequestComments.multipleMetricsComments",
+            "2",
+          ),
+        ),
+      ).once();
+    });
+
+    it("should match the no review required comment when it contains the marker and is owned", async (): Promise<void> => {
+      // Arrange
+      const comments: CommentData = new CommentData();
+      comments.authenticatedUserId = authenticatedUserId;
+      comments.fileComments.push(
+        new FileCommentData(
+          30,
+          `${noReviewRequiredContent}\n${noReviewRequiredCommentMarker}`,
+          "file1.ts",
+          CommentThreadStatus.Active,
+          authenticatedUserId,
+          "Bot",
+        ),
+      );
+      when(reposInvoker.getComments()).thenResolve(comments);
+      when(codeMetrics.getFilesNotRequiringReview()).thenResolve([
+        "file1.ts",
+        "file2.ts",
+      ]);
+      const pullRequestComments: PullRequestComments = new PullRequestComments(
+        instance(codeMetrics),
+        instance(inputs),
+        instance(logger),
+        instance(reposInvoker),
+        instance(runnerInvoker),
+      );
+
+      // Act
+      const result: PullRequestCommentsData =
+        await pullRequestComments.getCommentData();
+
+      // Assert
+      assert.deepEqual(result.filesNotRequiringReview, ["file2.ts"]);
+      assert.deepEqual(result.commentThreadsRequiringDeletion, []);
+    });
+
+    it("should ignore a spoofed no review required comment created by another principal", async (): Promise<void> => {
+      // Arrange
+      const comments: CommentData = new CommentData();
+      comments.authenticatedUserId = authenticatedUserId;
+      comments.fileComments.push(
+        new FileCommentData(
+          30,
+          `${noReviewRequiredContent}\n${noReviewRequiredCommentMarker}`,
+          "file1.ts",
+          CommentThreadStatus.Active,
+          foreignUserId,
+          "User",
+        ),
+      );
+      when(reposInvoker.getComments()).thenResolve(comments);
+      when(codeMetrics.getFilesNotRequiringReview()).thenResolve([
+        "file1.ts",
+        "file2.ts",
+      ]);
+      const pullRequestComments: PullRequestComments = new PullRequestComments(
+        instance(codeMetrics),
+        instance(inputs),
+        instance(logger),
+        instance(reposInvoker),
+        instance(runnerInvoker),
+      );
+
+      // Act
+      const result: PullRequestCommentsData =
+        await pullRequestComments.getCommentData();
+
+      // Assert
+      assert.deepEqual(result.filesNotRequiringReview, [
+        "file1.ts",
+        "file2.ts",
+      ]);
+      assert.deepEqual(result.commentThreadsRequiringDeletion, []);
+    });
+
+    it("should not delete a no review required comment created by another principal", async (): Promise<void> => {
+      // Arrange
+      const comments: CommentData = new CommentData();
+      comments.authenticatedUserId = authenticatedUserId;
+      comments.fileComments.push(
+        new FileCommentData(
+          30,
+          noReviewRequiredContent,
+          "file1.ts",
+          CommentThreadStatus.Active,
+          foreignUserId,
+          "User",
+        ),
+      );
+      when(reposInvoker.getComments()).thenResolve(comments);
+      const pullRequestComments: PullRequestComments = new PullRequestComments(
+        instance(codeMetrics),
+        instance(inputs),
+        instance(logger),
+        instance(reposInvoker),
+        instance(runnerInvoker),
+      );
+
+      // Act
+      const result: PullRequestCommentsData =
+        await pullRequestComments.getCommentData();
+
+      // Assert
+      assert.deepEqual(result.commentThreadsRequiringDeletion, []);
+    });
+
+    it("should skip files with multiple owned no review required comments", async (): Promise<void> => {
+      // Arrange
+      const comments: CommentData = new CommentData();
+      comments.authenticatedUserId = authenticatedUserId;
+      comments.fileComments.push(
+        new FileCommentData(
+          30,
+          noReviewRequiredContent,
+          "file1.ts",
+          CommentThreadStatus.Active,
+          authenticatedUserId,
+          "Bot",
+        ),
+        new FileCommentData(
+          31,
+          `${noReviewRequiredContent}\n${noReviewRequiredCommentMarker}`,
+          "file1.ts",
+          CommentThreadStatus.Active,
+          authenticatedUserId,
+          "Bot",
+        ),
+      );
+      when(reposInvoker.getComments()).thenResolve(comments);
+      when(codeMetrics.getFilesNotRequiringReview()).thenResolve([
+        "file1.ts",
+        "file2.ts",
+      ]);
+      const pullRequestComments: PullRequestComments = new PullRequestComments(
+        instance(codeMetrics),
+        instance(inputs),
+        instance(logger),
+        instance(reposInvoker),
+        instance(runnerInvoker),
+      );
+
+      // Act
+      const result: PullRequestCommentsData =
+        await pullRequestComments.getCommentData();
+
+      // Assert
+      assert.deepEqual(result.filesNotRequiringReview, ["file2.ts"]);
+      assert.deepEqual(result.commentThreadsRequiringDeletion, []);
+      verify(
+        logger.logWarning(
+          localize(
+            "pullRequests.pullRequestComments.multipleNoReviewRequiredComments",
+            "file1.ts",
+            "2",
+          ),
+        ),
+      ).once();
+    });
+    it("should skip deleting files with multiple owned no review required comments", async (): Promise<void> => {
+      // Arrange
+      const comments: CommentData = new CommentData();
+      comments.authenticatedUserId = authenticatedUserId;
+      comments.fileComments.push(
+        new FileCommentData(
+          30,
+          noReviewRequiredContent,
+          "file1.ts",
+          CommentThreadStatus.Active,
+          authenticatedUserId,
+          "Bot",
+        ),
+        new FileCommentData(
+          31,
+          noReviewRequiredContent,
+          "file1.ts",
+          CommentThreadStatus.Active,
+          authenticatedUserId,
+          "Bot",
+        ),
+      );
+      when(reposInvoker.getComments()).thenResolve(comments);
+      const pullRequestComments: PullRequestComments = new PullRequestComments(
+        instance(codeMetrics),
+        instance(inputs),
+        instance(logger),
+        instance(reposInvoker),
+        instance(runnerInvoker),
+      );
+
+      // Act
+      const result: PullRequestCommentsData =
+        await pullRequestComments.getCommentData();
+
+      // Assert
+      assert.deepEqual(result.commentThreadsRequiringDeletion, []);
+    });
+
+    it("should delete an owned no review required comment when the file requires review", async (): Promise<void> => {
+      // Arrange
+      const comments: CommentData = new CommentData();
+      comments.authenticatedUserId = authenticatedUserId;
+      comments.fileComments.push(
+        new FileCommentData(
+          30,
+          `${noReviewRequiredContent}\n${noReviewRequiredCommentMarker}`,
+          "file1.ts",
+          CommentThreadStatus.Active,
+          authenticatedUserId,
+          "Bot",
+        ),
+      );
+      when(reposInvoker.getComments()).thenResolve(comments);
+      const pullRequestComments: PullRequestComments = new PullRequestComments(
+        instance(codeMetrics),
+        instance(inputs),
+        instance(logger),
+        instance(reposInvoker),
+        instance(runnerInvoker),
+      );
+
+      // Act
+      const result: PullRequestCommentsData =
+        await pullRequestComments.getCommentData();
+
+      // Assert
+      assert.deepEqual(result.commentThreadsRequiringDeletion, [30]);
+    });
   });
 
   describe("getMetricsComment()", (): void => {
@@ -550,7 +1024,8 @@ describe("pullRequestComments.ts", (): void => {
               `Ignored Code|${code[3].toLocaleString() === "0" ? "-" : code[3].toLocaleString()}\n` +
               `**Total**|**${code[4].toLocaleString() === "0" ? "-" : code[4].toLocaleString()}**\n` +
               "\n" +
-              "[Metrics computed by PR Metrics. Add it to your Azure DevOps and GitHub PRs!](https://aka.ms/PRMetrics/Comment)",
+              "[Metrics computed by PR Metrics. Add it to your Azure DevOps and GitHub PRs!](https://aka.ms/PRMetrics/Comment)\n" +
+              "<!-- pr-metrics:metrics:v1 -->",
           );
         });
       });
@@ -591,7 +1066,8 @@ describe("pullRequestComments.ts", (): void => {
               `Ignored Code|${(1000).toLocaleString()}\n` +
               `**Total**|**${(3000).toLocaleString()}**\n` +
               "\n" +
-              "[Metrics computed by PR Metrics. Add it to your Azure DevOps and GitHub PRs!](https://aka.ms/PRMetrics/Comment)",
+              "[Metrics computed by PR Metrics. Add it to your Azure DevOps and GitHub PRs!](https://aka.ms/PRMetrics/Comment)\n" +
+              "<!-- pr-metrics:metrics:v1 -->",
           );
         });
       });
@@ -625,7 +1101,8 @@ describe("pullRequestComments.ts", (): void => {
           `Ignored Code|${(1000).toLocaleString()}\n` +
           `**Total**|**${(3000).toLocaleString()}**\n` +
           "\n" +
-          "[Metrics computed by PR Metrics. Add it to your Azure DevOps and GitHub PRs!](https://aka.ms/PRMetrics/Comment)",
+          "[Metrics computed by PR Metrics. Add it to your Azure DevOps and GitHub PRs!](https://aka.ms/PRMetrics/Comment)\n" +
+          "<!-- pr-metrics:metrics:v1 -->",
       );
     });
 
@@ -656,7 +1133,8 @@ describe("pullRequestComments.ts", (): void => {
           `Ignored Code|${(1000).toLocaleString()}\n` +
           `**Total**|**${(3000).toLocaleString()}**\n` +
           "\n" +
-          "[Metrics computed by PR Metrics. Add it to your Azure DevOps and GitHub PRs!](https://aka.ms/PRMetrics/Comment)",
+          "[Metrics computed by PR Metrics. Add it to your Azure DevOps and GitHub PRs!](https://aka.ms/PRMetrics/Comment)\n" +
+          "<!-- pr-metrics:metrics:v1 -->",
       );
     });
   });

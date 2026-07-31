@@ -17,6 +17,20 @@ describe("commentData.ts", (): void => {
       // Assert
       assert.equal(result.pullRequestComments.length, 0);
       assert.equal(result.fileComments.length, 0);
+      assert.equal(result.authenticatedUserId, null);
+    });
+  });
+
+  describe("authenticatedUserId", (): void => {
+    it("should set the correct data", (): void => {
+      // Arrange
+      const result: CommentData = new CommentData();
+
+      // Act
+      result.authenticatedUserId = 12345;
+
+      // Assert
+      assert.equal(result.authenticatedUserId, 12345);
     });
   });
 

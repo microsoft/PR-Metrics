@@ -25,6 +25,12 @@ export default class PullRequestCommentsData {
   public metricsCommentThreadStatus: CommentThreadStatus | null = null;
 
   /**
+   * A value indicating whether multiple metrics comments owned by the current principal were located, in which case
+   * no metrics comment will be created or updated.
+   */
+  public isMetricsCommentAmbiguous = false;
+
+  /**
    * The collection of files not requiring review to which to add a comment.
    */
   public filesNotRequiringReview: string[];

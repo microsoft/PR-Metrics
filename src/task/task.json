@@ -91,6 +91,7 @@
     "metrics.codeMetricsCalculator.noPullRequest": "The build is not running against a pull request.",
     "metrics.codeMetricsCalculator.noPullRequestIdAzureDevOps": "Could not determine the Pull Request ID.",
     "metrics.codeMetricsCalculator.noPullRequestIdGitHub": "Could not determine the Pull Request ID. Ensure 'pull_request' is the pipeline trigger.",
+    "metrics.codeMetricsCalculator.tooManyCommentMutations": "PR Metrics attempted to modify %s comments, which exceeds the maximum of %s. No comments were modified.",
     "metrics.codeMetricsCalculator.unsupportedProvider": "The build is running against a pull request from '%s', which is not a supported provider.",
     "metrics.inputs.adjustingAlwaysCloseComment": "Adjusting the always-close-comment mode input to 'false'.",
     "metrics.inputs.adjustingBaseSize": "Adjusting the base size input to '%s'.",
@@ -113,6 +114,8 @@
     "pullRequests.pullRequestComments.commentFooter": "[Metrics computed by PR Metrics. Add it to your Azure DevOps and GitHub PRs!](https://aka.ms/PRMetrics/Comment)",
     "pullRequests.pullRequestComments.commentTitle": "# PR Metrics",
     "pullRequests.pullRequestComments.largePullRequestComment": "❌ **Try to keep pull requests smaller than %s lines of new product code by following the [Single Responsibility Principle (SRP)](https://aka.ms/PRMetrics/SRP).**",
+    "pullRequests.pullRequestComments.multipleMetricsComments": "Multiple PR Metrics comments (%s) were found within the pull request, so the comment will not be modified. Remove all but one PR Metrics comment.",
+    "pullRequests.pullRequestComments.multipleNoReviewRequiredComments": "Multiple PR Metrics comments were found for file '%s'. The %s comments will not be modified.",
     "pullRequests.pullRequestComments.noReviewRequiredComment": "❗ **This file doesn't require review.**",
     "pullRequests.pullRequestComments.smallPullRequestComment": "✔ **Thanks for keeping your pull request small.**",
     "pullRequests.pullRequestComments.tableIgnoredCode": "Ignored Code",
@@ -128,6 +131,8 @@
     "repos.baseReposInvoker.resourceNotFound": "The resource could not be found. Verify the repository and pull request exist.",
     "repos.gitHubReposInvoker.insufficientGitHubAccessTokenPermissions": "Could not access the resources. Ensure the 'PR_Metrics_Access_Token' secret environment variable has Read and Write access to pull requests (or access to 'repos' if using a Classic PAT).",
     "repos.gitHubReposInvoker.noGitHubAccessToken": "Could not access the Personal Access Token (PAT). Add 'PR_Metrics_Access_Token' as a secret environment variable with Read and Write access to Pull Requests (or access to 'repos' if using a Classic PAT, or write access to 'pull-requests' and 'statuses' if specified within the workflow YAML).",
+    "repos.gitHubReposInvoker.tooManyComments": "The pull request contains more than %s comments, which exceeds the maximum that PR Metrics can process. No comments were modified.",
+    "repos.gitHubReposInvoker.unidentifiablePrincipal": "Could not determine the identity associated with the access token, which is required for modifying comments. Ensure the 'PR_Metrics_Access_Token' secret environment variable is valid.",
     "repos.tokenManager.incorrectAuthorizationScheme": "Authorization scheme of workload identity federation '%s' must be 'WorkloadIdentityFederation' instead of '%s'."
   }
 }

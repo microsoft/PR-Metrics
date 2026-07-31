@@ -6,9 +6,11 @@
 import type CreateIssueCommentResponse from "./octokitInterfaces/createIssueCommentResponse.js";
 import type CreateReviewCommentResponse from "./octokitInterfaces/createReviewCommentResponse.js";
 import type DeleteReviewCommentResponse from "./octokitInterfaces/deleteReviewCommentResponse.js";
+import type GetAuthenticatedUserResponse from "./octokitInterfaces/getAuthenticatedUserResponse.js";
 import type GetIssueCommentsResponse from "./octokitInterfaces/getIssueCommentsResponse.js";
 import type GetPullResponse from "./octokitInterfaces/getPullResponse.js";
 import type GetReviewCommentsResponse from "./octokitInterfaces/getReviewCommentsResponse.js";
+import type GraphQlViewerResponseInterface from "./octokitInterfaces/graphQlViewerResponseInterface.js";
 import type ListCommitsResponse from "./octokitInterfaces/listCommitsResponse.js";
 import { Octokit } from "@octokit/rest";
 import type OctokitGitDiffParser from "../git/octokitGitDiffParser.js";
@@ -111,20 +113,45 @@ export default class OctokitWrapper {
   }
 
   /**
+   * Gets the principal associated with the access token in use.
+   * @returns The response from the API call.
+   */
+  public async getAuthenticatedUser(): Promise<GetAuthenticatedUserResponse> {
+    return this.octokit.rest.users.getAuthenticated();
+  }
+
+  /**
+   * Gets the principal associated with the access token in use via the GraphQL API. This is used when the REST API
+   * is unavailable to the access token, which is the case for GitHub App installation access tokens.
+   * @returns The response from the API call.
+   */
+  public async getAuthenticatedViewer(): Promise<GraphQlViewerResponseInterface> {
+    return this.octokit.graphql<GraphQlViewerResponseInterface>(
+      "query { viewer { databaseId login } }",
+    );
+  }
+
+  /**
    * Gets the comments associated with a pull request.
    * @param owner The repo owner.
    * @param repo The repo name.
    * @param pullRequestId The numeric ID of the pull request.
+   * @param page The comment page number.
+   * @param perPage The number of comments to return per page.
    * @returns The response from the API call.
    */
   public async getIssueComments(
     owner: string,
     repo: string,
     pullRequestId: number,
+    page: number,
+    perPage: number,
   ): Promise<GetIssueCommentsResponse> {
     return this.octokit.rest.issues.listComments({
       issue_number: pullRequestId,
       owner,
+      page,
+      per_page: perPage,
       repo,
     });
   }
@@ -134,15 +161,21 @@ export default class OctokitWrapper {
    * @param owner The repo owner.
    * @param repo The repo name.
    * @param pullRequestId The numeric ID of the pull request.
+   * @param page The comment page number.
+   * @param perPage The number of comments to return per page.
    * @returns The response from the API call.
    */
   public async getReviewComments(
     owner: string,
     repo: string,
     pullRequestId: number,
+    page: number,
+    perPage: number,
   ): Promise<GetReviewCommentsResponse> {
     return this.octokit.rest.pulls.listReviewComments({
       owner,
+      page,
+      per_page: perPage,
       pull_number: pullRequestId,
       repo,
     });

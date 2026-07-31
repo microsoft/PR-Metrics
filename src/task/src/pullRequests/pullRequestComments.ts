@@ -3,6 +3,10 @@
  * Licensed under the MIT License.
  */
 
+import {
+  metricsCommentMarker,
+  noReviewRequiredCommentMarker,
+} from "../utilities/constants.js";
 import type CodeMetrics from "../metrics/codeMetrics.js";
 import type CodeMetricsData from "../metrics/codeMetricsData.js";
 import type CommentData from "../repos/interfaces/commentData.js";
@@ -54,9 +58,47 @@ export default class PullRequestComments {
   public get noReviewRequiredComment(): string {
     this._logger.logDebug("* PullRequestComments.noReviewRequiredComment");
 
-    return this._runnerInvoker.loc(
+    return `${this._runnerInvoker.loc(
       "pullRequests.pullRequestComments.noReviewRequiredComment",
-    );
+    )}\n${noReviewRequiredCommentMarker}`;
+  }
+
+  private static isOwnedComment(
+    comment: PullRequestComment,
+    authenticatedUserId: number | null,
+  ): boolean {
+    /*
+     * Where the repository provider does not expose the author of a comment, ownership cannot be determined and the
+     * content-based matching used prior to the introduction of ownership checks is retained.
+     */
+    if (authenticatedUserId === null) {
+      return true;
+    }
+
+    return comment.authorId === authenticatedUserId;
+  }
+
+  private static removeFileFromReviewLists(
+    result: PullRequestCommentsData,
+    fileName: string,
+  ): boolean {
+    const notFound = -1;
+    let removed = false;
+
+    const fileIndex: number = result.filesNotRequiringReview.indexOf(fileName);
+    if (fileIndex !== notFound) {
+      result.filesNotRequiringReview.splice(fileIndex, 1);
+      removed = true;
+    }
+
+    const deletedFileIndex: number =
+      result.deletedFilesNotRequiringReview.indexOf(fileName);
+    if (deletedFileIndex !== notFound) {
+      result.deletedFilesNotRequiringReview.splice(deletedFileIndex, 1);
+      removed = true;
+    }
+
+    return removed;
   }
 
   /**
@@ -77,15 +119,9 @@ export default class PullRequestComments {
 
     const comments: CommentData = await this._reposInvoker.getComments();
 
-    // If the current comment thread is not applied to a specified file, check if it is the metrics comment thread.
-    for (const comment of comments.pullRequestComments) {
-      result = this.getMetricsCommentData(result, comment);
-    }
-
-    // If the current comment thread is not applied to a specified file, check if it is the metrics comment thread.
-    for (const comment of comments.fileComments) {
-      result = this.getFilesRequiringCommentUpdates(result, comment);
-    }
+    // Only comments created by the principal associated with the access token in use are considered.
+    result = this.getMetricsCommentData(result, comments);
+    result = this.getFilesRequiringCommentUpdates(result, comments);
 
     return result;
   }
@@ -140,6 +176,7 @@ export default class PullRequestComments {
       ),
       "\n",
       this._runnerInvoker.loc("pullRequests.pullRequestComments.commentFooter"),
+      `\n${metricsCommentMarker}`,
     ];
 
     return parts.join("");
@@ -170,15 +207,32 @@ export default class PullRequestComments {
 
   private getMetricsCommentData(
     result: PullRequestCommentsData,
-    comment: PullRequestComment,
+    comments: CommentData,
   ): PullRequestCommentsData {
     this._logger.logDebug("* PullRequestComments.getMetricsCommentData()");
 
-    if (
-      !comment.content.startsWith(
-        `${this._runnerInvoker.loc("pullRequests.pullRequestComments.commentTitle")}\n`,
-      )
-    ) {
+    const matchingComments: PullRequestComment[] =
+      comments.pullRequestComments.filter(
+        (comment: PullRequestComment): boolean =>
+          PullRequestComments.isOwnedComment(
+            comment,
+            comments.authenticatedUserId,
+          ) && this.isMetricsComment(comment.content),
+      );
+
+    if (matchingComments.length > 1) {
+      this._logger.logWarning(
+        this._runnerInvoker.loc(
+          "pullRequests.pullRequestComments.multipleMetricsComments",
+          matchingComments.length.toLocaleString(),
+        ),
+      );
+      result.isMetricsCommentAmbiguous = true;
+      return result;
+    }
+
+    const [comment] = matchingComments;
+    if (typeof comment === "undefined") {
       return result;
     }
 
@@ -190,35 +244,82 @@ export default class PullRequestComments {
 
   private getFilesRequiringCommentUpdates(
     result: PullRequestCommentsData,
-    comment: FileCommentData,
+    comments: CommentData,
   ): PullRequestCommentsData {
     this._logger.logDebug(
       "* PullRequestComments.getFilesRequiringCommentUpdates()",
     );
 
-    if (comment.content !== this.noReviewRequiredComment) {
-      return result;
-    }
-
-    const notFound = -1;
-
-    const fileIndex: number = result.filesNotRequiringReview.indexOf(
-      comment.fileName,
+    const matchingComments: FileCommentData[] = comments.fileComments.filter(
+      (comment: FileCommentData): boolean =>
+        PullRequestComments.isOwnedComment(
+          comment,
+          comments.authenticatedUserId,
+        ) && this.isNoReviewRequiredComment(comment.content),
     );
-    if (fileIndex !== notFound) {
-      result.filesNotRequiringReview.splice(fileIndex, 1);
-      return result;
+
+    const commentsByFile: Map<string, FileCommentData> = new Map<
+      string,
+      FileCommentData
+    >();
+    const duplicateFiles: Set<string> = new Set<string>();
+    for (const comment of matchingComments) {
+      if (commentsByFile.has(comment.fileName)) {
+        duplicateFiles.add(comment.fileName);
+      } else {
+        commentsByFile.set(comment.fileName, comment);
+      }
     }
 
-    const deletedFileIndex: number =
-      result.deletedFilesNotRequiringReview.indexOf(comment.fileName);
-    if (deletedFileIndex !== notFound) {
-      result.deletedFilesNotRequiringReview.splice(deletedFileIndex, 1);
-      return result;
+    for (const [fileName, comment] of commentsByFile) {
+      const isFilePresent: boolean =
+        PullRequestComments.removeFileFromReviewLists(result, fileName);
+
+      if (duplicateFiles.has(fileName)) {
+        const commentCount: string = matchingComments
+          .filter(
+            (value: FileCommentData): boolean => value.fileName === fileName,
+          )
+          .length.toLocaleString();
+        this._logger.logWarning(
+          this._runnerInvoker.loc(
+            "pullRequests.pullRequestComments.multipleNoReviewRequiredComments",
+            fileName,
+            commentCount,
+          ),
+        );
+        continue;
+      }
+
+      if (!isFilePresent) {
+        result.commentThreadsRequiringDeletion.push(comment.id);
+      }
     }
 
-    result.commentThreadsRequiringDeletion.push(comment.id);
     return result;
+  }
+
+  private isMetricsComment(content: string): boolean {
+    this._logger.logDebug("* PullRequestComments.isMetricsComment()");
+
+    return (
+      content.includes(metricsCommentMarker) ||
+      content.startsWith(
+        `${this._runnerInvoker.loc("pullRequests.pullRequestComments.commentTitle")}\n`,
+      )
+    );
+  }
+
+  private isNoReviewRequiredComment(content: string): boolean {
+    this._logger.logDebug("* PullRequestComments.isNoReviewRequiredComment()");
+
+    return (
+      content.includes(noReviewRequiredCommentMarker) ||
+      content ===
+        this._runnerInvoker.loc(
+          "pullRequests.pullRequestComments.noReviewRequiredComment",
+        )
+    );
   }
 
   private async addCommentSizeStatus(): Promise<string> {

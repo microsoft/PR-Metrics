@@ -3,7 +3,12 @@
  * Licensed under the MIT License.
  */
 
+import { any, anyNumber } from "../testUtilities/mockito.js";
 import { instance, mock, verify, when } from "ts-mockito";
+import {
+  localize,
+  stubLocalization,
+} from "../testUtilities/stubLocalization.js";
 import CodeMetricsCalculator from "../../src/metrics/codeMetricsCalculator.js";
 import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces.js";
 import GitInvoker from "../../src/git/gitInvoker.js";
@@ -14,8 +19,9 @@ import PullRequestCommentsData from "../../src/pullRequests/pullRequestCommentsD
 import ReposInvoker from "../../src/repos/reposInvoker.js";
 import RunnerInvoker from "../../src/runners/runnerInvoker.js";
 import assert from "node:assert/strict";
+import { maxCommentMutations } from "../../src/utilities/constants.js";
 import { stubEnv } from "../testUtilities/stubEnv.js";
-import { stubLocalization } from "../testUtilities/stubLocalization.js";
+import { toThrowAsync } from "../testUtilities/assertExtensions.js";
 
 describe("codeMetricsCalculator.ts", (): void => {
   let gitInvoker: GitInvoker;
@@ -600,6 +606,237 @@ describe("codeMetricsCalculator.ts", (): void => {
       // Assert
       verify(reposInvoker.deleteCommentThread(1)).once();
       verify(reposInvoker.deleteCommentThread(2)).once();
+    });
+
+    it("should not update the metrics comment when the content and status are unchanged", async (): Promise<void> => {
+      // Arrange
+      const commentData: PullRequestCommentsData = new PullRequestCommentsData(
+        [],
+        [],
+      );
+      commentData.metricsCommentThreadId = 1;
+      commentData.metricsCommentContent = "Description";
+      commentData.metricsCommentThreadStatus = CommentThreadStatus.Active;
+      when(pullRequestComments.getCommentData()).thenResolve(commentData);
+      when(pullRequestComments.getMetricsComment()).thenResolve("Description");
+      when(pullRequestComments.getMetricsCommentStatus()).thenResolve(
+        CommentThreadStatus.Active,
+      );
+      const codeMetricsCalculator: CodeMetricsCalculator =
+        new CodeMetricsCalculator(
+          instance(gitInvoker),
+          instance(logger),
+          instance(pullRequest),
+          instance(pullRequestComments),
+          instance(reposInvoker),
+          instance(runnerInvoker),
+        );
+
+      // Act
+      await codeMetricsCalculator.updateComments();
+
+      // Assert
+      verify(reposInvoker.updateComment(anyNumber(), any(), any())).never();
+      verify(reposInvoker.createComment(any(), any(), any())).never();
+    });
+
+    it("should update the metrics comment when only the status is changed", async (): Promise<void> => {
+      // Arrange
+      const commentData: PullRequestCommentsData = new PullRequestCommentsData(
+        [],
+        [],
+      );
+      commentData.metricsCommentThreadId = 1;
+      commentData.metricsCommentContent = "Description";
+      commentData.metricsCommentThreadStatus = CommentThreadStatus.Active;
+      when(pullRequestComments.getCommentData()).thenResolve(commentData);
+      when(pullRequestComments.getMetricsComment()).thenResolve("Description");
+      when(pullRequestComments.getMetricsCommentStatus()).thenResolve(
+        CommentThreadStatus.Closed,
+      );
+      const codeMetricsCalculator: CodeMetricsCalculator =
+        new CodeMetricsCalculator(
+          instance(gitInvoker),
+          instance(logger),
+          instance(pullRequest),
+          instance(pullRequestComments),
+          instance(reposInvoker),
+          instance(runnerInvoker),
+        );
+
+      // Act
+      await codeMetricsCalculator.updateComments();
+
+      // Assert
+      verify(
+        reposInvoker.updateComment(1, null, CommentThreadStatus.Closed),
+      ).once();
+    });
+
+    it("should skip the metrics comment when multiple owned comments are present", async (): Promise<void> => {
+      // Arrange
+      const commentData: PullRequestCommentsData = new PullRequestCommentsData(
+        [],
+        [],
+      );
+      commentData.isMetricsCommentAmbiguous = true;
+      when(pullRequestComments.getCommentData()).thenResolve(commentData);
+      when(pullRequestComments.getMetricsComment()).thenResolve("Description");
+      when(pullRequestComments.getMetricsCommentStatus()).thenResolve(
+        CommentThreadStatus.Active,
+      );
+      const codeMetricsCalculator: CodeMetricsCalculator =
+        new CodeMetricsCalculator(
+          instance(gitInvoker),
+          instance(logger),
+          instance(pullRequest),
+          instance(pullRequestComments),
+          instance(reposInvoker),
+          instance(runnerInvoker),
+        );
+
+      // Act
+      await codeMetricsCalculator.updateComments();
+
+      // Assert
+      verify(reposInvoker.createComment(any(), any(), any())).never();
+      verify(reposInvoker.updateComment(anyNumber(), any(), any())).never();
+    });
+
+    it("should deduplicate the comment mutations", async (): Promise<void> => {
+      // Arrange
+      const commentData: PullRequestCommentsData = new PullRequestCommentsData(
+        ["file1.ts", "file1.ts"],
+        ["file2.ts", "file2.ts"],
+      );
+      commentData.metricsCommentThreadId = 1;
+      commentData.commentThreadsRequiringDeletion.push(2, 2, 3);
+      when(pullRequestComments.getCommentData()).thenResolve(commentData);
+      when(pullRequestComments.noReviewRequiredComment).thenReturn(
+        "No Review Required",
+      );
+      const codeMetricsCalculator: CodeMetricsCalculator =
+        new CodeMetricsCalculator(
+          instance(gitInvoker),
+          instance(logger),
+          instance(pullRequest),
+          instance(pullRequestComments),
+          instance(reposInvoker),
+          instance(runnerInvoker),
+        );
+
+      // Act
+      await codeMetricsCalculator.updateComments();
+
+      // Assert
+      verify(reposInvoker.deleteCommentThread(2)).once();
+      verify(reposInvoker.deleteCommentThread(3)).once();
+      verify(
+        reposInvoker.createComment(
+          "No Review Required",
+          "file1.ts",
+          CommentThreadStatus.Closed,
+          false,
+        ),
+      ).once();
+      verify(
+        reposInvoker.createComment(
+          "No Review Required",
+          "file2.ts",
+          CommentThreadStatus.Closed,
+          true,
+        ),
+      ).once();
+    });
+
+    it("should throw and perform no mutations when the mutation budget is exceeded", async (): Promise<void> => {
+      // Arrange
+      const files: string[] = [];
+      for (let index = 0; index <= maxCommentMutations; index += 1) {
+        files.push(`file${String(index)}.ts`);
+      }
+
+      const commentData: PullRequestCommentsData = new PullRequestCommentsData(
+        files,
+        [],
+      );
+      commentData.metricsCommentThreadId = 1;
+      when(pullRequestComments.getCommentData()).thenResolve(commentData);
+      when(pullRequestComments.noReviewRequiredComment).thenReturn(
+        "No Review Required",
+      );
+      const codeMetricsCalculator: CodeMetricsCalculator =
+        new CodeMetricsCalculator(
+          instance(gitInvoker),
+          instance(logger),
+          instance(pullRequest),
+          instance(pullRequestComments),
+          instance(reposInvoker),
+          instance(runnerInvoker),
+        );
+
+      // Act
+      const func: () => Promise<void> = async (): Promise<void> =>
+        codeMetricsCalculator.updateComments();
+
+      // Assert
+      await toThrowAsync(
+        func,
+        localize(
+          "metrics.codeMetricsCalculator.tooManyCommentMutations",
+          files.length.toLocaleString(),
+          maxCommentMutations.toLocaleString(),
+        ),
+      );
+      verify(reposInvoker.createComment(any(), any(), any(), any())).never();
+      verify(reposInvoker.createComment(any(), any(), any())).never();
+      verify(reposInvoker.updateComment(anyNumber(), any(), any())).never();
+      verify(reposInvoker.deleteCommentThread(anyNumber())).never();
+    });
+
+    it("should not retry a comment creation that fails", async (): Promise<void> => {
+      // Arrange
+      const commentData: PullRequestCommentsData = new PullRequestCommentsData(
+        ["file1.ts"],
+        [],
+      );
+      commentData.metricsCommentThreadId = 1;
+      when(pullRequestComments.getCommentData()).thenResolve(commentData);
+      when(pullRequestComments.noReviewRequiredComment).thenReturn(
+        "No Review Required",
+      );
+      when(
+        reposInvoker.createComment(
+          "No Review Required",
+          "file1.ts",
+          CommentThreadStatus.Closed,
+          false,
+        ),
+      ).thenReject(new Error("Error"));
+      const codeMetricsCalculator: CodeMetricsCalculator =
+        new CodeMetricsCalculator(
+          instance(gitInvoker),
+          instance(logger),
+          instance(pullRequest),
+          instance(pullRequestComments),
+          instance(reposInvoker),
+          instance(runnerInvoker),
+        );
+
+      // Act
+      const func: () => Promise<void> = async (): Promise<void> =>
+        codeMetricsCalculator.updateComments();
+
+      // Assert
+      await toThrowAsync(func, "Error");
+      verify(
+        reposInvoker.createComment(
+          "No Review Required",
+          "file1.ts",
+          CommentThreadStatus.Closed,
+          false,
+        ),
+      ).once();
     });
   });
 });

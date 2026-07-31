@@ -4,17 +4,25 @@
  */
 
 import * as Validator from "../utilities/validator.js";
-import { decimalRadix, userAgent } from "../utilities/constants.js";
+import {
+  commentsPageSize,
+  decimalRadix,
+  maxCommentPages,
+  userAgent,
+} from "../utilities/constants.js";
 import BaseReposInvoker from "./baseReposInvoker.js";
 import CommentData from "./interfaces/commentData.js";
+import { CommentThreadStatus } from "azure-devops-node-api/interfaces/GitInterfaces.js";
 import type CreateIssueCommentResponse from "../wrappers/octokitInterfaces/createIssueCommentResponse.js";
 import type CreateReviewCommentResponse from "../wrappers/octokitInterfaces/createReviewCommentResponse.js";
 import type DeleteReviewCommentResponse from "../wrappers/octokitInterfaces/deleteReviewCommentResponse.js";
 import FileCommentData from "./interfaces/fileCommentData.js";
+import type GetAuthenticatedUserResponse from "../wrappers/octokitInterfaces/getAuthenticatedUserResponse.js";
 import type GetIssueCommentsResponse from "../wrappers/octokitInterfaces/getIssueCommentsResponse.js";
 import type GetPullResponse from "../wrappers/octokitInterfaces/getPullResponse.js";
 import type GetReviewCommentsResponse from "../wrappers/octokitInterfaces/getReviewCommentsResponse.js";
 import type GitInvoker from "../git/gitInvoker.js";
+import type GraphQlViewerResponseInterface from "../wrappers/octokitInterfaces/graphQlViewerResponseInterface.js";
 import type ListCommitsResponse from "../wrappers/octokitInterfaces/listCommitsResponse.js";
 import type Logger from "../utilities/logger.js";
 import type { OctokitOptions } from "@octokit/core";
@@ -41,6 +49,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
   private _repo = "";
   private _pullRequestId = 0;
   private _commitId = "";
+  private _authenticatedUserId: number | null = null;
 
   /**
    * Initializes a new instance of the `GitHubReposInvoker` class.
@@ -107,28 +116,21 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
 
     this.initialize();
 
-    let pullRequestComments: GetIssueCommentsResponse | null = null;
-    let fileComments: GetReviewCommentsResponse | null = null;
-    await Promise.all([
-      this.invokeApiCall(async (): Promise<void> => {
-        pullRequestComments = await this._octokitWrapper.getIssueComments(
-          this._owner,
-          this._repo,
-          this._pullRequestId,
-        );
-        this._logger.logDebug(JSON.stringify(pullRequestComments));
-      }),
-      this.invokeApiCall(async (): Promise<void> => {
-        fileComments = await this._octokitWrapper.getReviewComments(
-          this._owner,
-          this._repo,
-          this._pullRequestId,
-        );
-        this._logger.logDebug(JSON.stringify(fileComments));
-      }),
+    const [authenticatedUserId, pullRequestComments, fileComments]: [
+      number,
+      GetIssueCommentsResponse["data"],
+      GetReviewCommentsResponse["data"],
+    ] = await Promise.all([
+      this.getAuthenticatedUserId(),
+      this.getAllPullRequestComments(),
+      this.getAllFileComments(),
     ]);
 
-    return this.convertPullRequestComments(pullRequestComments, fileComments);
+    return this.convertPullRequestComments(
+      authenticatedUserId,
+      pullRequestComments,
+      fileComments,
+    );
   }
 
   public async setTitleAndDescription(
@@ -372,33 +374,150 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
   }
 
   private convertPullRequestComments(
-    pullRequestComments: GetIssueCommentsResponse | null,
-    fileComments: GetReviewCommentsResponse | null,
+    authenticatedUserId: number,
+    pullRequestComments: GetIssueCommentsResponse["data"],
+    fileComments: GetReviewCommentsResponse["data"],
   ): CommentData {
     this._logger.logDebug("* GitHubReposInvoker.convertPullRequestComments()");
 
     const result: CommentData = new CommentData();
+    result.authenticatedUserId = authenticatedUserId;
 
-    if (pullRequestComments !== null) {
-      for (const value of pullRequestComments.data) {
-        const content: string | undefined = value.body;
-        if (typeof content !== "undefined") {
-          result.pullRequestComments.push(
-            new PullRequestCommentData(value.id, content),
-          );
-        }
+    for (const value of pullRequestComments) {
+      const content: string | undefined = value.body;
+      if (typeof content !== "undefined") {
+        result.pullRequestComments.push(
+          new PullRequestCommentData(
+            value.id,
+            content,
+            CommentThreadStatus.Unknown,
+            value.user?.id ?? null,
+            value.user?.type ?? null,
+          ),
+        );
       }
     }
 
-    if (fileComments !== null) {
-      for (const value of fileComments.data) {
-        const content: string = value.body;
-        const file: string = value.path;
-        result.fileComments.push(new FileCommentData(value.id, content, file));
-      }
+    for (const value of fileComments) {
+      const content: string = value.body;
+      const file: string = value.path;
+      result.fileComments.push(
+        new FileCommentData(
+          value.id,
+          content,
+          file,
+          CommentThreadStatus.Unknown,
+          value.user.id,
+          value.user.type,
+        ),
+      );
     }
 
     return result;
+  }
+
+  private async getAllPullRequestComments(): Promise<
+    GetIssueCommentsResponse["data"]
+  > {
+    this._logger.logDebug("* GitHubReposInvoker.getAllPullRequestComments()");
+
+    return this.getAllComments(
+      async (page: number): Promise<GetIssueCommentsResponse> =>
+        this._octokitWrapper.getIssueComments(
+          this._owner,
+          this._repo,
+          this._pullRequestId,
+          page,
+          commentsPageSize,
+        ),
+    );
+  }
+
+  private async getAllFileComments(): Promise<
+    GetReviewCommentsResponse["data"]
+  > {
+    this._logger.logDebug("* GitHubReposInvoker.getAllFileComments()");
+
+    return this.getAllComments(
+      async (page: number): Promise<GetReviewCommentsResponse> =>
+        this._octokitWrapper.getReviewComments(
+          this._owner,
+          this._repo,
+          this._pullRequestId,
+          page,
+          commentsPageSize,
+        ),
+    );
+  }
+
+  private async getAllComments<Comment>(
+    action: (page: number) => Promise<{ data: Comment[] }>,
+  ): Promise<Comment[]> {
+    this._logger.logDebug("* GitHubReposInvoker.getAllComments()");
+
+    const result: Comment[] = [];
+
+    /* eslint-disable no-await-in-loop -- Each page must be read before determining whether a further page exists. */
+    for (let page = 1; page <= maxCommentPages; page += 1) {
+      const response: { data: Comment[] } = await this.invokeApiCall(
+        async (): Promise<{ data: Comment[] }> => action(page),
+      );
+      this._logger.logDebug(JSON.stringify(response));
+      result.push(...response.data);
+
+      if (response.data.length < commentsPageSize) {
+        return result;
+      }
+    }
+    /* eslint-enable no-await-in-loop */
+
+    throw new Error(
+      this._runnerInvoker.loc(
+        "repos.gitHubReposInvoker.tooManyComments",
+        (commentsPageSize * maxCommentPages).toLocaleString(),
+      ),
+    );
+  }
+
+  private async getAuthenticatedUserId(): Promise<number> {
+    this._logger.logDebug("* GitHubReposInvoker.getAuthenticatedUserId()");
+
+    if (this._authenticatedUserId !== null) {
+      return this._authenticatedUserId;
+    }
+
+    let userId: number | null;
+    try {
+      const response: GetAuthenticatedUserResponse =
+        await this._octokitWrapper.getAuthenticatedUser();
+      userId = response.data.id;
+    } catch {
+      /*
+       * The REST users API is unavailable to GitHub App installation access tokens, which includes the GITHUB_TOKEN
+       * used within GitHub Actions. The GraphQL viewer query is therefore used as a fallback, as it resolves the
+       * bot principal associated with such tokens.
+       */
+      this._logger.logDebug(
+        "The authenticated principal could not be read via the REST APIs. Falling back to the GraphQL APIs.",
+      );
+      const viewer: GraphQlViewerResponseInterface = await this.invokeApiCall(
+        async (): Promise<GraphQlViewerResponseInterface> =>
+          this._octokitWrapper.getAuthenticatedViewer(),
+      );
+      this._logger.logDebug(JSON.stringify(viewer));
+      userId = viewer.viewer.databaseId;
+    }
+
+    if (userId === null) {
+      throw new Error(
+        this._runnerInvoker.loc(
+          "repos.gitHubReposInvoker.unidentifiablePrincipal",
+        ),
+      );
+    }
+
+    this._authenticatedUserId = userId;
+    return userId;
   }
 
   private async getCommitId(): Promise<void> {

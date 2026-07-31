@@ -21,6 +21,8 @@ describe("pullRequestCommentData.ts", (): void => {
         assert.equal(result.id, 12345);
         assert.equal(result.content, "Content");
         assert.equal(result.status, CommentThreadStatus.Unknown);
+        assert.equal(result.authorId, null);
+        assert.equal(result.authorType, null);
       });
 
       it("should set the correct data when the status is specified", (): void => {
@@ -35,6 +37,26 @@ describe("pullRequestCommentData.ts", (): void => {
         assert.equal(result.id, 12345);
         assert.equal(result.content, "Content");
         assert.equal(result.status, CommentThreadStatus.Active);
+        assert.equal(result.authorId, null);
+        assert.equal(result.authorType, null);
+      });
+
+      it("should set the correct data when the author details are specified", (): void => {
+        // Act
+        const result: PullRequestCommentData = new PullRequestCommentData(
+          12345,
+          "Content",
+          CommentThreadStatus.Active,
+          54321,
+          "Bot",
+        );
+
+        // Assert
+        assert.equal(result.id, 12345);
+        assert.equal(result.content, "Content");
+        assert.equal(result.status, CommentThreadStatus.Active);
+        assert.equal(result.authorId, 54321);
+        assert.equal(result.authorType, "Bot");
       });
     });
   });
