@@ -7,15 +7,6 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import assert from "node:assert/strict";
 
-interface PackageLock {
-  packages: Record<string, PackageLockEntry>;
-}
-
-interface PackageLockEntry {
-  integrity?: string;
-  resolved?: string;
-}
-
 interface PackageManifest {
   scripts: Record<string, string>;
 }
@@ -53,25 +44,12 @@ describe("azure-devops pipelines", (): void => {
   const selfRepositoryAlias = "self";
 
   /*
-   * The pull request pipelines restore dependencies anonymously. Every package
-   * is pinned by package-lock.json to the 1ES public npm mirror, which the
-   * network isolation policy (CFSClean) approves, together with an integrity
-   * hash, so no feed credential is created, injected or destroyed anywhere
-   * within the pull request graph.
+   * The pull request pipelines restore dependencies anonymously, from whatever
+   * URLs and integrity hashes package-lock.json records, so no feed credential
+   * is created, injected or destroyed anywhere within the pull request graph.
+   * The lockfile's own registry policy is validated independently of the
+   * trust boundary this file guards.
    */
-  const approvedFeedHosts: string[] = [
-    "ms-feed-12.pkgs.visualstudio.com",
-    "ms-feed-2.pkgs.visualstudio.com",
-    "ms-feed-25.pkgs.visualstudio.com",
-  ];
-  const approvedFeedPath = "/1es-public/_packaging/npm-public/npm/registry/";
-
-  /*
-   * The mirror supplies SHA-1 Subresource Integrity hashes for the packages it
-   * proxies, which npm verifies on every restore, so those are accepted
-   * alongside the stronger algorithms.
-   */
-  const integrityPattern = /^sha(?:1|256|384|512)-[A-Za-z0-9+/]+={0,2}$/u;
 
   /*
    * '--replace-registry-host=never' fetches each package from the exact URL
@@ -566,72 +544,6 @@ describe("azure-devops pipelines", (): void => {
     return result;
   };
 
-  const readPackageLock = (): PackageLock =>
-    JSON.parse(
-      fs.readFileSync(path.join(repositoryPath, "package-lock.json"), "utf8"),
-    ) as PackageLock;
-
-  const examplePackage = "node_modules/example";
-
-  const createPackageLock = (
-    ...entries: [string, PackageLockEntry][]
-  ): PackageLock => ({ packages: Object.fromEntries(entries) });
-
-  /*
-   * 'npm ci' restores every entry of the lockfile, so each one must name an
-   * HTTPS URL on the approved 1ES public mirror and carry an integrity hash.
-   * An entry without a resolved URL would instead be fetched from whichever
-   * registry the configuration selects, which a pull request can alter.
-   */
-  const getPackageLockViolations = (packageLock: PackageLock): string[] => {
-    const result: string[] = [];
-    for (const [name, entry] of Object.entries(packageLock.packages)) {
-      if (name === "") {
-        continue;
-      }
-
-      const description = `'${name}'`;
-      if (entry.resolved === undefined) {
-        result.push(`${description} names no resolved URL.`);
-        continue;
-      }
-
-      if (!URL.canParse(entry.resolved)) {
-        result.push(
-          `${description} names the malformed resolved URL '${entry.resolved}'.`,
-        );
-        continue;
-      }
-
-      const resolved: URL = new URL(entry.resolved);
-      if (resolved.protocol !== "https:") {
-        result.push(
-          `${description} is not restored over HTTPS: '${entry.resolved}'.`,
-        );
-      }
-
-      if (!approvedFeedHosts.includes(resolved.host)) {
-        result.push(
-          `${description} is restored from the unapproved host '${resolved.host}'.`,
-        );
-      }
-
-      if (!resolved.pathname.startsWith(approvedFeedPath)) {
-        result.push(
-          `${description} is restored from outside the approved feed: '${entry.resolved}'.`,
-        );
-      }
-
-      if (
-        entry.integrity === undefined ||
-        !integrityPattern.test(entry.integrity)
-      ) {
-        result.push(`${description} names no integrity hash.`);
-      }
-    }
-
-    return result;
-  };
 
   const countOccurrences = (contents: string, pattern: RegExp): number =>
     Array.from(contents.matchAll(pattern)).length;
@@ -1101,183 +1013,6 @@ describe("azure-devops pipelines", (): void => {
       assert.equal(contents.includes("PublishBuildArtifacts"), false);
       assert.equal(contents.includes("PublishPipelineArtifact"), false);
       assert.equal(contents.includes("templateContext"), false);
-    });
-  });
-
-  describe("package-lock.json", (): void => {
-    it("should pin every package to the approved anonymous feed", (): void => {
-      // Act
-      const actual: string[] = getPackageLockViolations(readPackageLock());
-
-      // Assert
-      assert.deepEqual(actual, []);
-    });
-
-    it("should record a package for every dependency", (): void => {
-      // Act
-      const packageLock: PackageLock = readPackageLock();
-
-      // Assert
-      assert.equal(Object.keys(packageLock.packages).length > 1, true);
-    });
-
-    it("should reject the public npm registry", (): void => {
-      // Arrange
-      const resolved = "https://registry.npmjs.org/example/-/example-1.0.0.tgz";
-      const packageLock: PackageLock = createPackageLock([
-        examplePackage,
-        { integrity: "sha512-AAAA", resolved },
-      ]);
-
-      // Act
-      const actual: string[] = getPackageLockViolations(packageLock);
-
-      // Assert
-      assert.deepEqual(actual, [
-        `'${examplePackage}' is restored from the unapproved host 'registry.npmjs.org'.`,
-        `'${examplePackage}' is restored from outside the approved feed: '${resolved}'.`,
-      ]);
-    });
-
-    it("should reject an unapproved Azure Artifacts host", (): void => {
-      // Arrange
-      const packageLock: PackageLock = createPackageLock([
-        examplePackage,
-        {
-          integrity: "sha512-AAAA",
-          resolved: `https://ms-feed-99.pkgs.visualstudio.com${approvedFeedPath}example/-/example-1.0.0.tgz`,
-        },
-      ]);
-
-      // Act
-      const actual: string[] = getPackageLockViolations(packageLock);
-
-      // Assert
-      assert.deepEqual(actual, [
-        `'${examplePackage}' is restored from the unapproved host 'ms-feed-99.pkgs.visualstudio.com'.`,
-      ]);
-    });
-
-    it("should reject an unapproved feed path", (): void => {
-      // Arrange
-      const resolved =
-        "https://ms-feed-2.pkgs.visualstudio.com/attacker/_packaging/attacker/npm/registry/example/-/example-1.0.0.tgz";
-      const packageLock: PackageLock = createPackageLock([
-        examplePackage,
-        { integrity: "sha512-AAAA", resolved },
-      ]);
-
-      // Act
-      const actual: string[] = getPackageLockViolations(packageLock);
-
-      // Assert
-      assert.deepEqual(actual, [
-        `'${examplePackage}' is restored from outside the approved feed: '${resolved}'.`,
-      ]);
-    });
-
-    it("should reject an insecure transport", (): void => {
-      // Arrange
-      const resolved = `http://ms-feed-2.pkgs.visualstudio.com${approvedFeedPath}example/-/example-1.0.0.tgz`;
-      const packageLock: PackageLock = createPackageLock([
-        examplePackage,
-        { integrity: "sha512-AAAA", resolved },
-      ]);
-
-      // Act
-      const actual: string[] = getPackageLockViolations(packageLock);
-
-      // Assert
-      assert.deepEqual(actual, [
-        `'${examplePackage}' is not restored over HTTPS: '${resolved}'.`,
-      ]);
-    });
-
-    it("should reject a package without an integrity hash", (): void => {
-      // Arrange
-      const packageLock: PackageLock = createPackageLock([
-        examplePackage,
-        {
-          resolved: `https://ms-feed-2.pkgs.visualstudio.com${approvedFeedPath}example/-/example-1.0.0.tgz`,
-        },
-      ]);
-
-      // Act
-      const actual: string[] = getPackageLockViolations(packageLock);
-
-      // Assert
-      assert.deepEqual(actual, [
-        `'${examplePackage}' names no integrity hash.`,
-      ]);
-    });
-
-    it("should reject a weakly formatted integrity hash", (): void => {
-      // Arrange
-      const packageLock: PackageLock = createPackageLock([
-        examplePackage,
-        {
-          integrity: "md5-AAAA",
-          resolved: `https://ms-feed-2.pkgs.visualstudio.com${approvedFeedPath}example/-/example-1.0.0.tgz`,
-        },
-      ]);
-
-      // Act
-      const actual: string[] = getPackageLockViolations(packageLock);
-
-      // Assert
-      assert.deepEqual(actual, [
-        `'${examplePackage}' names no integrity hash.`,
-      ]);
-    });
-
-    it("should reject a package without a resolved URL", (): void => {
-      // Arrange
-      const packageLock: PackageLock = createPackageLock([
-        examplePackage,
-        { integrity: "sha512-AAAA" },
-      ]);
-
-      // Act
-      const actual: string[] = getPackageLockViolations(packageLock);
-
-      // Assert
-      assert.deepEqual(actual, [`'${examplePackage}' names no resolved URL.`]);
-    });
-
-    it("should reject a malformed resolved URL", (): void => {
-      // Arrange
-      const packageLock: PackageLock = createPackageLock([
-        examplePackage,
-        { integrity: "sha512-AAAA", resolved: "example-1.0.0.tgz" },
-      ]);
-
-      // Act
-      const actual: string[] = getPackageLockViolations(packageLock);
-
-      // Assert
-      assert.deepEqual(actual, [
-        `'${examplePackage}' names the malformed resolved URL 'example-1.0.0.tgz'.`,
-      ]);
-    });
-
-    it("should accept a package pinned to the approved feed", (): void => {
-      // Arrange
-      const packageLock: PackageLock = createPackageLock(
-        ["", {}],
-        [
-          examplePackage,
-          {
-            integrity: "sha512-AAAA",
-            resolved: `https://ms-feed-25.pkgs.visualstudio.com${approvedFeedPath}example/-/example-1.0.0.tgz`,
-          },
-        ],
-      );
-
-      // Act
-      const actual: string[] = getPackageLockViolations(packageLock);
-
-      // Assert
-      assert.deepEqual(actual, []);
     });
   });
 

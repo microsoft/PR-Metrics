@@ -73,10 +73,9 @@ control. The `.gitignore` file excludes common environment file patterns
   pipelines build untrusted pull request code, so they reference no variable
   groups, service connections, key vaults, App tokens or package feed
   credentials, and they perform no task deployment. Dependencies are restored
-  anonymously: every resolved URL in `package-lock.json` is pinned, with an
-  integrity hash, to the anonymous 1ES public npm mirror (`ms-feed-2`,
-  `ms-feed-12` and `ms-feed-25` under `1es-public/_packaging/npm-public`), which
-  the network isolation policy (CFSClean) approves. Each job restores with
+  anonymously, using whatever URLs and integrity hashes `package-lock.json`
+  already records – the lockfile's own registry policy is out of scope here.
+  Each job restores with
   `npm ci --ignore-scripts --no-audit --replace-registry-host=never`, so npm
   fetches each package from the exact lockfile URL – no registry configuration,
   including one a pull request adds to `.npmrc`, can redirect the restore – npm
@@ -89,8 +88,8 @@ control. The `.gitignore` file excludes common environment file patterns
   [`azurePipelinesTrustBoundary.spec.ts`][azurepipelinestrustboundary], which
   walks the template graph, resolves `@self` qualified references as local,
   rejects undeclared repository aliases, pins the full alias, type, name and ref
-  of every remote template resource, pins the exact step order of every job, and
-  verifies every lockfile URL against the approved feed.
+  of every remote template resource, and pins the exact step order of every
+  job.
 - **`GITHUB_TOKEN`**: Automatically provisioned by GitHub for each workflow
   run. Each workflow sets `permissions: {}` at the top level, granting no
   permissions by default; individual jobs request only the minimum permissions
