@@ -75,6 +75,8 @@ describe("gitHubReposInvoker.ts", (): void => {
     {
       const testCases: readonly string[] = [
         "https://github.com/microsoft",
+        "https://github.com",
+        "https:/github.com/microsoft/PR-Metrics",
         "not-a-valid-url",
         "http://github.com/microsoft/PR-Metrics",
         "https://github.com:8443/microsoft/PR-Metrics",
@@ -85,9 +87,16 @@ describe("gitHubReposInvoker.ts", (): void => {
         "https://github.com/./PR-Metrics",
         "https://github.com/microsoft/.",
         "https://github.com/microsoft/.git",
+        "https://github.com/microsoft/..git",
+        "https://github.com/microsoft/...git",
+        "https://github.com/micro%2Fsoft/PR-Metrics",
         "https://github.com/microsoft%2FPR-Metrics",
+        "https://github.com/microsoft/%E0%A4%A",
+        "https://github.com/microsoft/PR%5CMetrics",
         "https://github.com/microsoft%5CPR-Metrics",
         "https://github.com/microsoft/../PR-Metrics",
+        "https://github.com\\attacker/microsoft/PR-Metrics",
+        "https://organization.githubenterprise.com\\attacker/microsoft/PR-Metrics",
       ];
 
       testCases.forEach((value: string): void => {

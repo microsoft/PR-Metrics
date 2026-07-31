@@ -17,7 +17,6 @@ const pending: PendingChange[] = [];
  * from being restored mid-suite and leaking into unrelated tests.
  */
 const managedEnvVars: readonly string[] = [
-  "BUILD_REPOSITORY_NAME",
   "BUILD_REPOSITORY_ID",
   "BUILD_REPOSITORY_URI",
   "BUILD_REPOSITORY_PROVIDER",

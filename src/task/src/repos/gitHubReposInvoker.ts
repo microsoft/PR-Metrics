@@ -355,6 +355,10 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
   private parseAzureDevOpsTargetRepository(
     targetRepositoryUri: string,
   ): ParsedAzureDevOpsTargetRepository {
+    if (targetRepositoryUri.includes("\\")) {
+      this.throwInvalidAzureRepositoryUri(targetRepositoryUri);
+    }
+
     let parsedUrl: URL;
     try {
       parsedUrl = new URL(targetRepositoryUri);
@@ -363,10 +367,10 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     }
 
     this.validateAzureDevOpsTargetUrl(parsedUrl, targetRepositoryUri);
-    const [owner, rawRepo]: [string, string] =
-      this.getAzureDevOpsTargetPathSegments(targetRepositoryUri);
+    const [owner, repoSegment]: [string, string] =
+      this.getAzureDevOpsTargetPathSegments(parsedUrl, targetRepositoryUri);
     const repo: string = this.normalizeAzureDevOpsTargetRepo(
-      rawRepo,
+      repoSegment,
       targetRepositoryUri,
     );
 
@@ -401,10 +405,12 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
   }
 
   private getAzureDevOpsTargetPathSegments(
+    parsedUrl: URL,
     targetRepositoryUri: string,
   ): [string, string] {
-    const rawPath: string = this.getRawPath(targetRepositoryUri);
-    if (/%2f|%5c/iu.test(rawPath) || rawPath.includes("\\")) {
+    const rawPath: string =
+      this.getRawAzureDevOpsTargetPath(targetRepositoryUri);
+    if (rawPath !== parsedUrl.pathname) {
       this.throwInvalidAzureRepositoryUri(targetRepositoryUri);
     }
 
@@ -416,40 +422,73 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
       this.throwInvalidAzureRepositoryUri(targetRepositoryUri);
     }
 
-    const [, owner, rawRepo] = pathSegments as [string, string, string];
-    if (
-      owner === "" ||
-      rawRepo === "" ||
-      owner === "." ||
-      owner === ".." ||
-      rawRepo === "." ||
-      rawRepo === ".."
-    ) {
-      this.throwInvalidAzureRepositoryUri(targetRepositoryUri);
-    }
+    const [, rawOwner, rawRepo] = pathSegments as [string, string, string];
+    const owner: string = this.parseAzureDevOpsTargetPathSegment(
+      rawOwner,
+      targetRepositoryUri,
+    );
+    const repo: string = this.parseAzureDevOpsTargetPathSegment(
+      rawRepo,
+      targetRepositoryUri,
+    );
 
-    return [owner, rawRepo];
+    return [owner, repo];
   }
 
   private normalizeAzureDevOpsTargetRepo(
-    rawRepo: string,
+    repoSegment: string,
     targetRepositoryUri: string,
   ): string {
-    const repo: string = rawRepo.endsWith(".git")
-      ? rawRepo.substring(0, rawRepo.length - ".git".length)
-      : rawRepo;
-    if (repo === "") {
+    const repo: string = repoSegment.endsWith(".git")
+      ? repoSegment.substring(0, repoSegment.length - ".git".length)
+      : repoSegment;
+    if (repo === "" || repo === "." || repo === "..") {
       this.throwInvalidAzureRepositoryUri(targetRepositoryUri);
     }
 
     return repo;
   }
 
-  private getRawPath(targetRepositoryUri: string): string {
-    return targetRepositoryUri.replace(
-      /^[A-Za-z][A-Za-z0-9+.-]*:\/\/[^/]+/u,
-      "",
+  private getRawAzureDevOpsTargetPath(targetRepositoryUri: string): string {
+    const schemeSeparatorIndex: number = targetRepositoryUri.indexOf("://");
+    if (schemeSeparatorIndex < 0) {
+      this.throwInvalidAzureRepositoryUri(targetRepositoryUri);
+    }
+
+    const pathIndex: number = targetRepositoryUri.indexOf(
+      "/",
+      schemeSeparatorIndex + "://".length,
     );
+    if (pathIndex < 0) {
+      this.throwInvalidAzureRepositoryUri(targetRepositoryUri);
+    }
+
+    return targetRepositoryUri.substring(pathIndex);
+  }
+
+  private parseAzureDevOpsTargetPathSegment(
+    rawSegment: string,
+    targetRepositoryUri: string,
+  ): string {
+    let decodedSegment: string;
+    try {
+      decodedSegment = decodeURIComponent(rawSegment);
+    } catch {
+      this.throwInvalidAzureRepositoryUri(targetRepositoryUri);
+    }
+
+    if (
+      rawSegment === "" ||
+      decodedSegment === "" ||
+      decodedSegment === "." ||
+      decodedSegment === ".." ||
+      decodedSegment.includes("/") ||
+      decodedSegment.includes("\\")
+    ) {
+      this.throwInvalidAzureRepositoryUri(targetRepositoryUri);
+    }
+
+    return decodedSegment;
   }
 
   private throwInvalidAzureRepositoryUri(targetRepositoryUri: string): never {

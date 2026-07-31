@@ -33,7 +33,6 @@ export interface GitHubReposInvokerMocks {
 export const createGitHubReposInvokerMocks = (): GitHubReposInvokerMocks => {
   stubEnv(
     ["PR_METRICS_ACCESS_TOKEN", "PAT"],
-    ["BUILD_REPOSITORY_NAME", "microsoft/PR-Metrics"],
     ["BUILD_REPOSITORY_URI", "https://github.com/microsoft/PR-Metrics"],
     [
       "SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI",
