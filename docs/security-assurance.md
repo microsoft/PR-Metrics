@@ -49,16 +49,17 @@ graph TD
   not extend to every credential in the pipeline: Azure Pipelines workload
   identity federation is an additional, opt-in authentication path, not a
   replacement for the environment-variable transport above, since its output
-  is still assigned to `PR_METRICS_ACCESS_TOKEN`. Within that flow, only the
-  federated OIDC assertion is passed as an `az login --federated-token`
-  argument; the resulting Azure access token is instead returned on
-  `az account get-access-token`'s stdout before being masked and stored (see
+  is still assigned to `PR_METRICS_ACCESS_TOKEN`. Within that flow, the
+  federated OIDC assertion is exchanged for an access token by posting it, as
+  an HTTPS form body, directly to the fixed Microsoft Entra public cloud v2
+  token endpoint; no `az` (or other) subprocess is invoked, and no Azure CLI
+  sign-in state or token cache is ever created (see
   [Secrets Management][secretsmanagement] and
-  [Workload Identity Federation][workloadidentityfederation]). Runner masking
-  redacts registered secret values from logs, but does not remove the
-  federated assertion from the OS process table or process memory, nor does
-  it clear the Azure CLI's own local sign-in state and token cache, which
-  persist independently of what appears in argv. Gitleaks scanning prevents
+  [Workload Identity Federation][workloadidentityfederation]). The HTTPS
+  response body is parsed in process before being masked and stored. Runner
+  masking redacts registered secret values from logs, but does not remove the
+  federated assertion or the resulting access token from the OS process table,
+  process memory, or environment variables. Gitleaks scanning prevents
   accidental secret commits.
 - **API injection via PR metadata** (Medium): Pull request title and comment
   content constructed from validated metrics data, not raw external input.
@@ -108,10 +109,12 @@ Top 10 and CWE/SANS Top 25) are addressed:
   environment-variable transport but is workflow-scoped and reaches the task
   only when explicitly mapped into `PR_METRICS_ACCESS_TOKEN`. Workload
   identity federation in Azure Pipelines is an additional path used to
-  populate that same environment variable: only the federated OIDC assertion
-  is passed as an `az` CLI argument, while the resulting Azure access token
-  is returned on stdout and the Azure CLI separately retains its own local
-  token cache, as described in [Secrets Management][secretsmanagement].
+  populate that same environment variable: the federated OIDC assertion is
+  exchanged for an access token by posting it, as an HTTPS form body, directly
+  to the fixed Microsoft Entra public cloud v2 token endpoint, in process and
+  without invoking any subprocess; the resulting access token is parsed from
+  the HTTPS response and masked before being stored, and no Azure CLI token
+  cache is ever created, as described in [Secrets Management][secretsmanagement].
 - **Sensitive Data Exposure (CWE-200)**: Debug logging does not output sensitive
   values. Gitleaks scanning in CI prevents accidental credential commits.
 - **Security Misconfiguration (CWE-16)**: Secure defaults are enforced. The task

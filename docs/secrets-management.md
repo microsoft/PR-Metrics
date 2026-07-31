@@ -104,19 +104,22 @@ exposure:
   alongside, not instead of, the environment-variable transport above, since
   its output is ultimately still written into the `PR_METRICS_ACCESS_TOKEN`
   environment variable. Within that flow, `TokenManager.getAccessToken()`
-  passes only the federated OIDC assertion as an argument to
-  `az login --federated-token`, so that assertion appears in that process's
-  argv and memory for its lifetime. The resulting Azure access token is not
-  passed as a CLI argument: it is returned on the stdout of
-  `az account get-access-token`, masked via the runner's `setSecret()`, and
-  then assigned to `PR_METRICS_ACCESS_TOKEN`. Independently of what appears in
-  argv, the Azure CLI also persists its own local sign-in state and token
-  cache on disk once `az login` succeeds. Other tooling invoked by the
+  exchanges the federated OIDC assertion for an access token by posting it, as
+  an HTTPS form body, directly to the fixed Microsoft Entra public cloud v2
+  token endpoint (`https://login.microsoftonline.com`); no `az` (or other)
+  subprocess is invoked, and no Azure CLI sign-in state or token cache is ever
+  created. The HTTPS response body is parsed in process, and the resulting
+  access token is masked via the runner's `setSecret()` before being assigned
+  to `PR_METRICS_ACCESS_TOKEN`. The federated assertion and the resulting
+  access token nonetheless both exist as plaintext in the task process's own
+  memory, and the access token persists as an environment variable once
+  assigned – the same exposure surface that already applies to `GITHUB_TOKEN`
+  and the GitHub App installation token above. Other tooling invoked by the
   pipelines, such as `tfx`, may also accept tokens via command-line arguments.
   Runner masking (GitHub Actions `setSecret` / Azure Pipelines
   `##vso[task.setvariable issecret=true]`) redacts registered values from logs
   and console output, but it does not remove them from the OS process table,
-  process memory, or any local credential cache, including the Azure CLI's.
+  process memory, or environment variables.
 - CI/CD pipeline logs are configured to mask secret values automatically.
 - The [security assessment][securityassessment] identifies access token
   exposure as a tracked threat with specific mitigations.

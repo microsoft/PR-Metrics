@@ -72,14 +72,16 @@ pull requests or repository contents within the token's permission scope.
   federation is an additional, opt-in authentication path for Azure Pipelines,
   not a replacement for the environment-variable transport above, since its
   output still ends up in `PR_METRICS_ACCESS_TOKEN`. Within that flow,
-  `TokenManager.getAccessToken()` (`tokenManager.ts`) passes only the
-  federated OIDC assertion as an argument to `az login --federated-token`, so
-  that assertion appears in that process's argv and memory for its lifetime.
-  The resulting Azure access token is not passed as a CLI argument: it is
-  returned on the stdout of `az account get-access-token`, masked via the
-  runner's `setSecret()`, and then assigned to `PR_METRICS_ACCESS_TOKEN`.
-  Independently of what appears in argv, the Azure CLI also persists its own
-  local sign-in state and token cache on disk once `az login` succeeds. See
+  `TokenManager.getAccessToken()` (`tokenManager.ts`) exchanges the federated
+  OIDC assertion for an access token by posting it, as an HTTPS form body,
+  directly to the fixed Microsoft Entra public cloud v2 token endpoint
+  (`https://login.microsoftonline.com`); no `az` (or other) subprocess is
+  invoked, and no Azure CLI sign-in state or token cache is ever created. The
+  HTTPS response body is parsed in process, and the resulting access token is
+  masked via the runner's `setSecret()` before being assigned to
+  `PR_METRICS_ACCESS_TOKEN`. The federated assertion and the resulting access
+  token nonetheless both exist as plaintext in the task process's own memory,
+  and the access token persists as an environment variable once assigned. See
   [Secrets Management][secretsmanagement] and
   [Workload Identity Federation][workloadidentityfederation] for the
   authoritative description of this flow.
