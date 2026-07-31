@@ -41,6 +41,4 @@ extends:
         enableExclusions: true
         exclusionPatterns: "*.js"
     stages:
-      - template: template.yml
-        parameters:
-          testInstance: true
+      - template: pr-validation-template.yml

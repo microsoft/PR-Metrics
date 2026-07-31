@@ -1,0 +1,136 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+
+---
+# This template is reachable from the pull request pipelines, which build code
+# from untrusted branches and forks. It must therefore remain credential-free:
+# no variable groups, service connections, authenticated package feeds, GitHub
+# App tokens, key vaults or Azure DevOps task deployments belong here. The
+# repository .npmrc is used unmodified, so dependencies are restored from the
+# public registry with install scripts disabled. Privileged operations live in
+# template.yml, which is only reachable from prod.yml.
+
+stages:
+  - stage: Build
+    displayName: Build
+    jobs:
+      - job: Prerequisites
+        displayName: Prerequisites
+        pool:
+          name: Azure-Pipelines-1ESPT-ExDShared-StaticIP
+          os: linux
+          image: ubuntu-latest
+        steps:
+          - checkout: self
+            displayName: Checkout
+            persistCredentials: false
+
+          - task: UseNode@1
+            displayName: Install Node.js
+            inputs:
+              version: 24.13.0
+
+          - task: Npm@1
+            displayName: npm – Install Dependencies
+            inputs:
+              command: custom
+              customCommand: ci --ignore-scripts
+
+          - task: Npm@1
+            displayName: npm – Lint
+            inputs:
+              command: custom
+              customCommand: run lint
+
+          - task: Npm@1
+            displayName: npm – Build
+            inputs:
+              command: custom
+              customCommand: run build
+
+      - job: PRMetrics_Ubuntu
+        displayName: PR Metrics – Ubuntu
+        pool:
+          name: Azure-Pipelines-1ESPT-ExDShared-StaticIP
+          os: linux
+          image: ubuntu-latest
+        steps:
+          - checkout: self
+            displayName: Checkout
+            persistCredentials: false
+
+          - task: UseNode@1
+            displayName: Install Node.js
+            inputs:
+              version: 24.13.0
+
+          - task: Npm@1
+            displayName: npm – Install Dependencies
+            inputs:
+              command: custom
+              customCommand: ci --ignore-scripts
+
+          - task: Npm@1
+            displayName: npm – Test
+            inputs:
+              command: custom
+              customCommand: run test:fast
+
+      - job: PRMetrics_Windows
+        displayName: PR Metrics – Windows
+        pool:
+          name: Azure-Pipelines-1ESPT-ExDShared-StaticIP
+          os: windows
+          image: windows-latest
+        steps:
+          - checkout: self
+            displayName: Checkout
+            persistCredentials: false
+
+          - task: UseNode@1
+            displayName: Install Node.js
+            inputs:
+              version: 24.13.0
+
+          - task: Npm@1
+            displayName: npm – Install Dependencies
+            inputs:
+              command: custom
+              customCommand: ci --ignore-scripts
+
+          - task: Npm@1
+            displayName: npm – Test
+            inputs:
+              command: custom
+              customCommand: run test:fast
+
+      - job: Validation
+        displayName: Validation
+        pool:
+          name: Azure-Pipelines-1ESPT-ExDShared-StaticIP
+          os: windows
+          image: windows-latest
+        steps:
+          - checkout: self
+            displayName: Checkout
+            persistCredentials: false
+
+          - task: ComponentGovernanceComponentDetection@0
+            displayName: Component Detection
+
+          - task: PoliCheck@2
+            displayName: PoliCheck
+            inputs:
+              targetType: F
+              optionsFC: 1
+              optionsUEPATH: $(Build.SourcesDirectory)/.github/azure-devops/PoliCheckExclusions.xml
+
+          - task: PublishSecurityAnalysisLogs@3
+            displayName: Guardian – Publish Artifacts
+
+          - task: PostAnalysis@2
+            displayName: Guardian – Perform Analysis
+            inputs:
+              GdnBreakPolicyMinSev: Note
+              GdnBreakGdnToolGosecSeverity: Default
+              GdnBreakPolicy: M365

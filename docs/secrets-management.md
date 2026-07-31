@@ -16,11 +16,11 @@ pipelines.
   Vault – the App private key lives in the vault as a non-exportable key and is
   never exported – then exchanged for the installation token. GitHub Actions
   workflows mint it through the `mint-github-app-token` composite action
-  (`azure/login` OIDC, then Key Vault signing); the Azure DevOps pipeline mints
-  it through the shared `New-GitHubAppToken.ps1` under its workload identity
-  federation service connection. Each job requests only the permissions it needs
-  – for example, `contents: write` for branch pushes or `pull-requests: write`
-  for PR comments.
+  (`azure/login` OIDC, then Key Vault signing); the Azure DevOps production
+  pipeline mints it through the shared `New-GitHubAppToken.ps1` under its
+  workload identity federation service connection. Each job requests only the
+  permissions it needs – for example, `contents: write` for branch pushes or
+  `pull-requests: write` for PR comments.
 - **App signing key (Azure Key Vault)**: The App's RSA private key, imported
   into the `PRMetrics-KeyVault` Azure Key Vault as a non-exportable key named
   `github-app-signing-key`. Key Vault performs the RS256 signing of the App JWT,
@@ -31,7 +31,7 @@ pipelines.
 - **`PR_METRICS_ACCESS_TOKEN`**: Access token passed to the PR Metrics action.
   Environment variable scoped to the workflow/job run; populated with the
   short-lived App installation token described above, in both GitHub Actions and
-  the Azure DevOps test pipeline.
+  the Azure DevOps production pipeline.
 - **ESRP service connection**: Code signing for Azure DevOps marketplace
   releases. Azure DevOps pipeline-scoped.
 
@@ -62,6 +62,14 @@ control. The `.gitignore` file excludes common environment file patterns
 - **Azure DevOps Secrets**: Scoped to specific pipelines and service
   connections. Access is restricted by Azure DevOps project-level role-based
   access controls.
+- **Azure DevOps pull request pipelines**: `pr.yml` and `pr-test.yml` extend
+  `pr-validation-template.yml`, which is credential-free. These pipelines build
+  untrusted pull request code, so they reference no variable groups, service
+  connections, authenticated feeds, key vaults or App tokens, and they perform
+  no task deployment. Privileged operations are reachable only from `prod.yml`
+  and `release.yml`, neither of which is pull request triggered. Enforcement is
+  automated by
+  [`azurePipelinesTrustBoundary.spec.ts`][azurepipelinestrustboundary].
 - **`GITHUB_TOKEN`**: Automatically provisioned by GitHub for each workflow
   run. Each workflow sets `permissions: {}` at the top level, granting no
   permissions by default; individual jobs request only the minimum permissions
@@ -95,6 +103,7 @@ exposure:
 - The [security assessment][securityassessment] identifies access token
   exposure as a tracked threat with specific mitigations.
 
+[azurepipelinestrustboundary]: ../src/task/tests/security/azurePipelinesTrustBoundary.spec.ts
 [gitleaks]: https://github.com/gitleaks/gitleaks
 [securityassessment]: security-assessment.md
 [superlinter]: https://github.com/super-linter/super-linter
