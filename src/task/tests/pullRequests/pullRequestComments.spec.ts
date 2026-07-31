@@ -693,6 +693,35 @@ describe("pullRequestComments.ts", (): void => {
       assert.equal(result.metricsCommentContent, "# PR Metrics\n");
     });
 
+    it("should ignore a third-party Azure DevOps comment that merely contains the metrics marker", async (): Promise<void> => {
+      // Arrange
+      const comments: CommentData = new CommentData();
+      comments.pullRequestComments.push(
+        new PullRequestCommentData(
+          20,
+          `Unrelated discussion mentioning ${metricsCommentMarker} in passing.`,
+        ),
+      );
+      when(reposInvoker.getComments()).thenResolve(comments);
+      const pullRequestComments: PullRequestComments = new PullRequestComments(
+        instance(codeMetrics),
+        instance(inputs),
+        instance(logger),
+        instance(reposInvoker),
+        instance(runnerInvoker),
+      );
+
+      // Act
+      const result: PullRequestCommentsData =
+        await pullRequestComments.getCommentData();
+
+      // Assert
+      assert.equal(result.metricsCommentThreadId, null);
+      assert.equal(result.metricsCommentContent, null);
+      assert.equal(result.metricsCommentThreadStatus, null);
+      assert.equal(result.isMetricsCommentAmbiguous, false);
+    });
+
     it("should skip the metrics comment when multiple owned comments are present", async (): Promise<void> => {
       // Arrange
       const comments: CommentData = new CommentData();
@@ -957,6 +986,101 @@ describe("pullRequestComments.ts", (): void => {
 
       // Assert
       assert.deepEqual(result.commentThreadsRequiringDeletion, [30]);
+    });
+
+    it("should ignore a third-party Azure DevOps comment that merely contains the no review required marker", async (): Promise<void> => {
+      // Arrange
+      const comments: CommentData = new CommentData();
+      comments.fileComments.push(
+        new FileCommentData(
+          30,
+          `Unrelated discussion mentioning ${noReviewRequiredCommentMarker} in passing.`,
+          "file1.ts",
+        ),
+      );
+      when(reposInvoker.getComments()).thenResolve(comments);
+      when(codeMetrics.getFilesNotRequiringReview()).thenResolve([
+        "file1.ts",
+        "file2.ts",
+      ]);
+      const pullRequestComments: PullRequestComments = new PullRequestComments(
+        instance(codeMetrics),
+        instance(inputs),
+        instance(logger),
+        instance(reposInvoker),
+        instance(runnerInvoker),
+      );
+
+      // Act
+      const result: PullRequestCommentsData =
+        await pullRequestComments.getCommentData();
+
+      // Assert
+      assert.deepEqual(result.filesNotRequiringReview, [
+        "file1.ts",
+        "file2.ts",
+      ]);
+      assert.deepEqual(result.commentThreadsRequiringDeletion, []);
+    });
+
+    it("should recognize the generated marked body via exact equality on Azure DevOps", async (): Promise<void> => {
+      // Arrange
+      const comments: CommentData = new CommentData();
+      comments.fileComments.push(
+        new FileCommentData(
+          30,
+          `${noReviewRequiredContent}\n${noReviewRequiredCommentMarker}`,
+          "file1.ts",
+        ),
+      );
+      when(reposInvoker.getComments()).thenResolve(comments);
+      when(codeMetrics.getFilesNotRequiringReview()).thenResolve([
+        "file1.ts",
+        "file2.ts",
+      ]);
+      const pullRequestComments: PullRequestComments = new PullRequestComments(
+        instance(codeMetrics),
+        instance(inputs),
+        instance(logger),
+        instance(reposInvoker),
+        instance(runnerInvoker),
+      );
+
+      // Act
+      const result: PullRequestCommentsData =
+        await pullRequestComments.getCommentData();
+
+      // Assert
+      assert.deepEqual(result.filesNotRequiringReview, ["file2.ts"]);
+      assert.deepEqual(result.commentThreadsRequiringDeletion, []);
+    });
+
+    it("should recognize the legacy visible body via exact equality on Azure DevOps", async (): Promise<void> => {
+      // Arrange
+      const comments: CommentData = new CommentData();
+      comments.fileComments.push(
+        new FileCommentData(30, noReviewRequiredContent, "file1.ts"),
+      );
+      when(reposInvoker.getComments()).thenResolve(comments);
+      when(codeMetrics.getFilesNotRequiringReview()).thenResolve([
+        "file1.ts",
+        "file2.ts",
+      ]);
+      const pullRequestComments: PullRequestComments = new PullRequestComments(
+        instance(codeMetrics),
+        instance(inputs),
+        instance(logger),
+        instance(reposInvoker),
+        instance(runnerInvoker),
+      );
+
+      // Act
+      const result: PullRequestCommentsData =
+        await pullRequestComments.getCommentData();
+
+      // Assert
+      assert.deepEqual(result.filesNotRequiringReview, ["file2.ts"]);
+      assert.deepEqual(result.commentThreadsRequiringDeletion, []);
     });
   });
 
