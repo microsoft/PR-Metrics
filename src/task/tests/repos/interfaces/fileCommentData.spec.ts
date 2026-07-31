@@ -23,7 +23,6 @@ describe("fileCommentData.ts", (): void => {
       assert.equal(result.status, CommentThreadStatus.Unknown);
       assert.equal(result.fileName, "file.ts");
       assert.equal(result.authorId, null);
-      assert.equal(result.authorType, null);
     });
 
     it("should set the correct data when the author details are specified", (): void => {
@@ -34,7 +33,6 @@ describe("fileCommentData.ts", (): void => {
         "file.ts",
         CommentThreadStatus.Active,
         54321,
-        "User",
       );
 
       // Assert
@@ -43,7 +41,6 @@ describe("fileCommentData.ts", (): void => {
       assert.equal(result.status, CommentThreadStatus.Active);
       assert.equal(result.fileName, "file.ts");
       assert.equal(result.authorId, 54321);
-      assert.equal(result.authorType, "User");
     });
 
     it("should set the correct data when the status is specified", (): void => {

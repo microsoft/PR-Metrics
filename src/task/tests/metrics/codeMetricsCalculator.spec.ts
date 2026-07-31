@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import { any, anyNumber } from "../testUtilities/mockito.js";
+import { any, anyNumber, anyString } from "../testUtilities/mockito.js";
 import { instance, mock, verify, when } from "ts-mockito";
 import {
   localize,
@@ -749,15 +749,173 @@ describe("codeMetricsCalculator.ts", (): void => {
       ).once();
     });
 
-    it("should throw and perform no mutations when the mutation budget is exceeded", async (): Promise<void> => {
+    it("should create comments for as many files as the mutation budget permits", async (): Promise<void> => {
       // Arrange
+      const excessFileCount = 5;
+      const permittedFileCount: number = maxCommentMutations - 1;
       const files: string[] = [];
-      for (let index = 0; index <= maxCommentMutations; index += 1) {
+      for (
+        let index = 0;
+        index < permittedFileCount + excessFileCount;
+        index += 1
+      ) {
         files.push(`file${String(index)}.ts`);
       }
 
       const commentData: PullRequestCommentsData = new PullRequestCommentsData(
         files,
+        [],
+      );
+      when(pullRequestComments.getCommentData()).thenResolve(commentData);
+      when(pullRequestComments.getMetricsComment()).thenResolve("Description");
+      when(pullRequestComments.getMetricsCommentStatus()).thenResolve(
+        CommentThreadStatus.Active,
+      );
+      when(pullRequestComments.noReviewRequiredComment).thenReturn(
+        "No Review Required",
+      );
+      const codeMetricsCalculator: CodeMetricsCalculator =
+        new CodeMetricsCalculator(
+          instance(gitInvoker),
+          instance(logger),
+          instance(pullRequest),
+          instance(pullRequestComments),
+          instance(reposInvoker),
+          instance(runnerInvoker),
+        );
+
+      // Act
+      await codeMetricsCalculator.updateComments();
+
+      // Assert
+      verify(
+        reposInvoker.createComment(
+          "Description",
+          null,
+          CommentThreadStatus.Active,
+        ),
+      ).once();
+      for (let index = 0; index < permittedFileCount; index += 1) {
+        verify(
+          reposInvoker.createComment(
+            "No Review Required",
+            `file${String(index)}.ts`,
+            CommentThreadStatus.Closed,
+            false,
+          ),
+        ).once();
+      }
+
+      for (
+        let index = permittedFileCount;
+        index < files.length;
+        index += 1
+      ) {
+        verify(
+          reposInvoker.createComment(
+            "No Review Required",
+            `file${String(index)}.ts`,
+            CommentThreadStatus.Closed,
+            false,
+          ),
+        ).never();
+      }
+
+      verify(
+        logger.logWarning(
+          localize(
+            "metrics.codeMetricsCalculator.skippedCommentMutations",
+            excessFileCount.toLocaleString(),
+            maxCommentMutations.toLocaleString(),
+          ),
+        ),
+      ).once();
+    });
+
+    it("should perform no more than the maximum number of comment mutations", async (): Promise<void> => {
+      // Arrange
+      const deletionCount = 10;
+      const files: string[] = [];
+      for (let index = 0; index < maxCommentMutations * 2; index += 1) {
+        files.push(`file${String(index)}.ts`);
+      }
+
+      const commentData: PullRequestCommentsData = new PullRequestCommentsData(
+        files,
+        [],
+      );
+      commentData.metricsCommentThreadId = 1;
+      commentData.metricsCommentContent = "Old Description";
+      for (let index = 0; index < deletionCount; index += 1) {
+        commentData.commentThreadsRequiringDeletion.push(index + 1);
+      }
+
+      when(pullRequestComments.getCommentData()).thenResolve(commentData);
+      when(pullRequestComments.getMetricsComment()).thenResolve("Description");
+      when(pullRequestComments.getMetricsCommentStatus()).thenResolve(
+        CommentThreadStatus.Active,
+      );
+      when(pullRequestComments.noReviewRequiredComment).thenReturn(
+        "No Review Required",
+      );
+
+      let mutationCount = 0;
+      const incrementMutationCount = (): void => {
+        mutationCount += 1;
+      };
+
+      when(reposInvoker.createComment(any(), any(), any())).thenCall(
+        incrementMutationCount,
+      );
+      when(reposInvoker.createComment(any(), any(), any(), any())).thenCall(
+        incrementMutationCount,
+      );
+      when(reposInvoker.updateComment(any(), any(), any())).thenCall(
+        incrementMutationCount,
+      );
+      when(reposInvoker.deleteCommentThread(any())).thenCall(
+        incrementMutationCount,
+      );
+      const codeMetricsCalculator: CodeMetricsCalculator =
+        new CodeMetricsCalculator(
+          instance(gitInvoker),
+          instance(logger),
+          instance(pullRequest),
+          instance(pullRequestComments),
+          instance(reposInvoker),
+          instance(runnerInvoker),
+        );
+
+      // Act
+      await codeMetricsCalculator.updateComments();
+
+      // Assert
+      assert.equal(mutationCount, maxCommentMutations);
+      verify(
+        reposInvoker.updateComment(1, "Description", CommentThreadStatus.Active),
+      ).once();
+      for (let index = 0; index < deletionCount; index += 1) {
+        verify(reposInvoker.deleteCommentThread(index + 1)).once();
+      }
+
+      verify(
+        logger.logWarning(
+          localize(
+            "metrics.codeMetricsCalculator.skippedCommentMutations",
+            (
+              files.length -
+              (maxCommentMutations - deletionCount - 1)
+            ).toLocaleString(),
+            maxCommentMutations.toLocaleString(),
+          ),
+        ),
+      ).once();
+    });
+
+    it("should not warn when the comment mutations fit within the budget", async (): Promise<void> => {
+      // Arrange
+      const commentData: PullRequestCommentsData = new PullRequestCommentsData(
+        ["file1.ts"],
         [],
       );
       commentData.metricsCommentThreadId = 1;
@@ -776,22 +934,10 @@ describe("codeMetricsCalculator.ts", (): void => {
         );
 
       // Act
-      const func: () => Promise<void> = async (): Promise<void> =>
-        codeMetricsCalculator.updateComments();
+      await codeMetricsCalculator.updateComments();
 
       // Assert
-      await toThrowAsync(
-        func,
-        localize(
-          "metrics.codeMetricsCalculator.tooManyCommentMutations",
-          files.length.toLocaleString(),
-          maxCommentMutations.toLocaleString(),
-        ),
-      );
-      verify(reposInvoker.createComment(any(), any(), any(), any())).never();
-      verify(reposInvoker.createComment(any(), any(), any())).never();
-      verify(reposInvoker.updateComment(anyNumber(), any(), any())).never();
-      verify(reposInvoker.deleteCommentThread(anyNumber())).never();
+      verify(logger.logWarning(anyString())).never();
     });
 
     it("should not retry a comment creation that fails", async (): Promise<void> => {

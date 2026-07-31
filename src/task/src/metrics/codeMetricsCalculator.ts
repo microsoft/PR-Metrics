@@ -157,18 +157,6 @@ export default class CodeMetricsCalculator {
     const mutations: CommentMutationInterface[] =
       await this.buildCommentMutations(commentData);
 
-    if (mutations.length > maxCommentMutations) {
-      const mutationCount: string = mutations.length.toLocaleString();
-      const maximumMutationCount: string = maxCommentMutations.toLocaleString();
-      throw new Error(
-        this._runnerInvoker.loc(
-          "metrics.codeMetricsCalculator.tooManyCommentMutations",
-          mutationCount,
-          maximumMutationCount,
-        ),
-      );
-    }
-
     await this.performCommentMutations(mutations);
   }
 
@@ -177,7 +165,7 @@ export default class CodeMetricsCalculator {
   ): Promise<CommentMutationInterface[]> {
     this._logger.logDebug("* CodeMetricsCalculator.buildCommentMutations()");
 
-    const result: Map<string, CommentMutationInterface> = new Map<
+    const required: Map<string, CommentMutationInterface> = new Map<
       string,
       CommentMutationInterface
     >();
@@ -185,31 +173,80 @@ export default class CodeMetricsCalculator {
     const metricsCommentMutation: CommentMutationInterface | null =
       await this.getMetricsCommentMutation(commentData);
     if (metricsCommentMutation !== null) {
-      result.set("metrics", metricsCommentMutation);
+      required.set("metrics", metricsCommentMutation);
     }
 
     for (const commentThreadId of commentData.commentThreadsRequiringDeletion) {
-      result.set(`delete:${String(commentThreadId)}`, {
+      required.set(`delete:${String(commentThreadId)}`, {
         commentThreadId,
         operation: "delete",
       });
     }
 
+    const creations: Map<string, CommentMutationInterface> = new Map<
+      string,
+      CommentMutationInterface
+    >();
+
     for (const fileName of commentData.filesNotRequiringReview) {
-      result.set(
+      creations.set(
         `create:${fileName}`,
         this.getNoReviewRequiredCommentMutation(fileName, false),
       );
     }
 
     for (const fileName of commentData.deletedFilesNotRequiringReview) {
-      result.set(
+      creations.set(
         `create:${fileName}`,
         this.getNoReviewRequiredCommentMutation(fileName, true),
       );
     }
 
-    return Array.from(result.values());
+    return this.applyCommentMutationBudget(
+      Array.from(required.values()),
+      Array.from(creations.values()),
+    );
+  }
+
+  private applyCommentMutationBudget(
+    required: CommentMutationInterface[],
+    creations: CommentMutationInterface[],
+  ): CommentMutationInterface[] {
+    this._logger.logDebug(
+      "* CodeMetricsCalculator.applyCommentMutationBudget()",
+    );
+
+    /*
+     * The metrics comment mutation is added to the plan first, followed by the deletion of the comments that are no
+     * longer applicable, so that these mutations are retained in preference to the creation of new comments on the
+     * files not requiring review. The latter are then added in a deterministic order until the budget is exhausted.
+     */
+    const retainedRequired: CommentMutationInterface[] = required.slice(
+      0,
+      maxCommentMutations,
+    );
+    const retainedCreations: CommentMutationInterface[] = creations.slice(
+      0,
+      maxCommentMutations - retainedRequired.length,
+    );
+
+    const skippedCount: number =
+      required.length -
+      retainedRequired.length +
+      (creations.length - retainedCreations.length);
+    if (skippedCount > 0) {
+      const skippedMutationCount: string = skippedCount.toLocaleString();
+      const maximumMutationCount: string = maxCommentMutations.toLocaleString();
+      this._logger.logWarning(
+        this._runnerInvoker.loc(
+          "metrics.codeMetricsCalculator.skippedCommentMutations",
+          skippedMutationCount,
+          maximumMutationCount,
+        ),
+      );
+    }
+
+    return [...retainedRequired, ...retainedCreations];
   }
 
   private async getMetricsCommentMutation(

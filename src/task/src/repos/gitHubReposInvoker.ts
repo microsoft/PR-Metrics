@@ -392,7 +392,6 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
             content,
             CommentThreadStatus.Unknown,
             value.user?.id ?? null,
-            value.user?.type ?? null,
           ),
         );
       }
@@ -408,7 +407,6 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
           file,
           CommentThreadStatus.Unknown,
           value.user.id,
-          value.user.type,
         ),
       );
     }
@@ -486,27 +484,14 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
       return this._authenticatedUserId;
     }
 
-    let userId: number | null;
-    try {
-      const response: GetAuthenticatedUserResponse =
-        await this._octokitWrapper.getAuthenticatedUser();
-      userId = response.data.id;
-    } catch {
-      /*
-       * The REST users API is unavailable to GitHub App installation access tokens, which includes the GITHUB_TOKEN
-       * used within GitHub Actions. The GraphQL viewer query is therefore used as a fallback, as it resolves the
-       * bot principal associated with such tokens.
-       */
-      this._logger.logDebug(
-        "The authenticated principal could not be read via the REST APIs. Falling back to the GraphQL APIs.",
-      );
-      const viewer: GraphQlViewerResponseInterface = await this.invokeApiCall(
-        async (): Promise<GraphQlViewerResponseInterface> =>
-          this._octokitWrapper.getAuthenticatedViewer(),
-      );
-      this._logger.logDebug(JSON.stringify(viewer));
-      userId = viewer.viewer.databaseId;
-    }
+    /*
+     * The GraphQL viewer query is attempted first as the REST users API is unavailable to GitHub App installation
+     * access tokens, which includes the GITHUB_TOKEN used within GitHub Actions. Invoking the REST API first would
+     * therefore result in a logged authorization failure during every default GitHub Actions run. The REST API is
+     * retained as a fallback for the token types for which the GraphQL API is unavailable.
+     */
+    let userId: number | null = await this.getAuthenticatedUserIdViaGraphQl();
+    userId ??= await this.getAuthenticatedUserIdViaRest();
 
     if (userId === null) {
       throw new Error(
@@ -518,6 +503,43 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
 
     this._authenticatedUserId = userId;
     return userId;
+  }
+
+  private async getAuthenticatedUserIdViaGraphQl(): Promise<number | null> {
+    this._logger.logDebug(
+      "* GitHubReposInvoker.getAuthenticatedUserIdViaGraphQl()",
+    );
+
+    try {
+      const viewer: GraphQlViewerResponseInterface =
+        await this._octokitWrapper.getAuthenticatedViewer();
+      this._logger.logDebug(JSON.stringify(viewer));
+      return viewer.viewer.databaseId;
+    } catch {
+      // The error is deliberately not logged, as it can include the access token used for the request.
+      this._logger.logDebug(
+        "The authenticated principal could not be read via the GraphQL APIs. Falling back to the REST APIs.",
+      );
+      return null;
+    }
+  }
+
+  private async getAuthenticatedUserIdViaRest(): Promise<number | null> {
+    this._logger.logDebug(
+      "* GitHubReposInvoker.getAuthenticatedUserIdViaRest()",
+    );
+
+    try {
+      const response: GetAuthenticatedUserResponse =
+        await this._octokitWrapper.getAuthenticatedUser();
+      return response.data.id;
+    } catch {
+      // The error is deliberately not logged, as it can include the access token used for the request.
+      this._logger.logDebug(
+        "The authenticated principal could not be read via the REST APIs.",
+      );
+      return null;
+    }
   }
 
   private async getCommitId(): Promise<void> {

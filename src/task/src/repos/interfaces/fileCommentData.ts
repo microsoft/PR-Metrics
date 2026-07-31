@@ -22,7 +22,6 @@ export default class FileCommentData extends PullRequestCommentData {
    * @param fileName The optional full file name and path associated with the comment.
    * @param status The optional status associated with the comment.
    * @param authorId The optional numeric ID of the principal who created the comment.
-   * @param authorType The optional type of the principal who created the comment.
    */
   public constructor(
     id: number,
@@ -30,9 +29,8 @@ export default class FileCommentData extends PullRequestCommentData {
     fileName: string,
     status?: CommentThreadStatus,
     authorId?: number | null,
-    authorType?: string | null,
   ) {
-    super(id, content, status, authorId, authorType);
+    super(id, content, status, authorId);
 
     this.fileName = fileName;
   }

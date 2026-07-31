@@ -80,7 +80,6 @@ describe("gitHubReposInvoker.ts", (): void => {
         result.pullRequestComments[0].authorId,
         GitHubReposInvokerConstants.authenticatedUserId,
       );
-      assert.equal(result.pullRequestComments[0].authorType, "User");
       assert.equal(result.fileComments.length, 0);
       assert.equal(
         result.authenticatedUserId,
@@ -139,7 +138,6 @@ describe("gitHubReposInvoker.ts", (): void => {
         result.fileComments[0].authorId,
         GitHubReposInvokerConstants.authenticatedUserId,
       );
-      assert.equal(result.fileComments[0].authorType, "User");
       verify(octokitWrapper.initialize(any())).once();
       verify(
         octokitWrapper.getIssueComments(
@@ -256,7 +254,6 @@ describe("gitHubReposInvoker.ts", (): void => {
       }
 
       user.id = GitHubReposInvokerConstants.foreignUserId;
-      user.type = "Bot";
       when(
         octokitWrapper.getIssueComments(
           anyString(),
@@ -281,7 +278,6 @@ describe("gitHubReposInvoker.ts", (): void => {
         result.pullRequestComments[0]?.authorId,
         GitHubReposInvokerConstants.foreignUserId,
       );
-      assert.equal(result.pullRequestComments[0].authorType, "Bot");
       assert.equal(
         result.authenticatedUserId,
         GitHubReposInvokerConstants.authenticatedUserId,
@@ -318,7 +314,6 @@ describe("gitHubReposInvoker.ts", (): void => {
 
       // Assert
       assert.equal(result.pullRequestComments[0]?.authorId, null);
-      assert.equal(result.pullRequestComments[0].authorType, null);
     });
 
     it("should read a single page when fewer comments than the page size are present", async (): Promise<void> => {
@@ -518,12 +513,18 @@ describe("gitHubReposInvoker.ts", (): void => {
         gitHubReposInvoker.getComments();
 
       // Assert
-      await toThrowAsync(
+      const error: Error = await toThrowAsync(
         func,
         localize(
           "repos.gitHubReposInvoker.tooManyComments",
           (commentsPageSize * maxCommentPages).toLocaleString(),
         ),
+      );
+      assert.ok(
+        error.message.includes(
+          `at least ${(commentsPageSize * maxCommentPages).toLocaleString()} comments`,
+        ),
+        error.message,
       );
       verify(
         octokitWrapper.getIssueComments(
@@ -634,13 +635,31 @@ describe("gitHubReposInvoker.ts", (): void => {
       );
     });
 
-    it("should use the GraphQL viewer when the REST API cannot identify the principal", async (): Promise<void> => {
+    it("should resolve the principal via the GraphQL APIs without invoking the REST APIs", async (): Promise<void> => {
       // Arrange
-      when(octokitWrapper.getAuthenticatedUser()).thenReject(
-        new Error("Resource not accessible by integration"),
+      const gitHubReposInvoker: GitHubReposInvoker = createSut(
+        gitInvoker,
+        logger,
+        octokitWrapper,
+        runnerInvoker,
       );
-      when(octokitWrapper.getAuthenticatedViewer()).thenResolve(
-        GitHubReposInvokerConstants.graphQlViewerResponse,
+
+      // Act
+      const result: CommentData = await gitHubReposInvoker.getComments();
+
+      // Assert
+      assert.equal(
+        result.authenticatedUserId,
+        GitHubReposInvokerConstants.authenticatedUserId,
+      );
+      verify(octokitWrapper.getAuthenticatedViewer()).once();
+      verify(octokitWrapper.getAuthenticatedUser()).never();
+    });
+
+    it("should use the REST APIs when the GraphQL APIs cannot identify the principal", async (): Promise<void> => {
+      // Arrange
+      when(octokitWrapper.getAuthenticatedViewer()).thenReject(
+        new Error("Resource not accessible by personal access token"),
       );
       const gitHubReposInvoker: GitHubReposInvoker = createSut(
         gitInvoker,
@@ -658,6 +677,32 @@ describe("gitHubReposInvoker.ts", (): void => {
         GitHubReposInvokerConstants.authenticatedUserId,
       );
       verify(octokitWrapper.getAuthenticatedViewer()).once();
+      verify(octokitWrapper.getAuthenticatedUser()).once();
+    });
+
+    it("should use the REST APIs when the GraphQL viewer has no database ID", async (): Promise<void> => {
+      // Arrange
+      const viewerResponse: GraphQlViewerResponseInterface = structuredClone(
+        GitHubReposInvokerConstants.graphQlViewerResponse,
+      );
+      viewerResponse.viewer.databaseId = null;
+      when(octokitWrapper.getAuthenticatedViewer()).thenResolve(viewerResponse);
+      const gitHubReposInvoker: GitHubReposInvoker = createSut(
+        gitInvoker,
+        logger,
+        octokitWrapper,
+        runnerInvoker,
+      );
+
+      // Act
+      const result: CommentData = await gitHubReposInvoker.getComments();
+
+      // Assert
+      assert.equal(
+        result.authenticatedUserId,
+        GitHubReposInvokerConstants.authenticatedUserId,
+      );
+      verify(octokitWrapper.getAuthenticatedUser()).once();
     });
 
     it("should throw when the principal cannot be identified", async (): Promise<void> => {
@@ -666,10 +711,10 @@ describe("gitHubReposInvoker.ts", (): void => {
         GitHubReposInvokerConstants.graphQlViewerResponse,
       );
       viewerResponse.viewer.databaseId = null;
+      when(octokitWrapper.getAuthenticatedViewer()).thenResolve(viewerResponse);
       when(octokitWrapper.getAuthenticatedUser()).thenReject(
         new Error("Resource not accessible by integration"),
       );
-      when(octokitWrapper.getAuthenticatedViewer()).thenResolve(viewerResponse);
       const gitHubReposInvoker: GitHubReposInvoker = createSut(
         gitInvoker,
         logger,
@@ -706,7 +751,8 @@ describe("gitHubReposInvoker.ts", (): void => {
         result.authenticatedUserId,
         GitHubReposInvokerConstants.authenticatedUserId,
       );
-      verify(octokitWrapper.getAuthenticatedUser()).once();
+      verify(octokitWrapper.getAuthenticatedViewer()).once();
+      verify(octokitWrapper.getAuthenticatedUser()).never();
     });
 
     it("should return no comments when the pull request has none", async (): Promise<void> => {

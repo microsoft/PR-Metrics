@@ -530,7 +530,6 @@ describe("pullRequestComments.ts", (): void => {
           `Metrics\n${metricsCommentMarker}`,
           CommentThreadStatus.Active,
           authenticatedUserId,
-          "Bot",
         ),
       );
       when(reposInvoker.getComments()).thenResolve(comments);
@@ -565,7 +564,6 @@ describe("pullRequestComments.ts", (): void => {
           "# PR Metrics\n",
           CommentThreadStatus.Active,
           authenticatedUserId,
-          "User",
         ),
       );
       when(reposInvoker.getComments()).thenResolve(comments);
@@ -589,30 +587,22 @@ describe("pullRequestComments.ts", (): void => {
     {
       interface TestCaseType {
         authorId: number | null;
-        authorType: string | null;
         description: string;
       }
 
       const testCases: TestCaseType[] = [
         {
           authorId: foreignUserId,
-          authorType: "User",
-          description: "another user",
-        },
-        {
-          authorId: foreignUserId,
-          authorType: "Bot",
-          description: "another bot",
+          description: "another principal",
         },
         {
           authorId: null,
-          authorType: null,
           description: "no associated user",
         },
       ];
 
       testCases.forEach(
-        ({ authorId, authorType, description }: TestCaseType): void => {
+        ({ authorId, description }: TestCaseType): void => {
           it(`should ignore a spoofed metrics comment created by ${description}`, async (): Promise<void> => {
             // Arrange
             const comments: CommentData = new CommentData();
@@ -623,7 +613,6 @@ describe("pullRequestComments.ts", (): void => {
                 `# PR Metrics\n${metricsCommentMarker}`,
                 CommentThreadStatus.Active,
                 authorId,
-                authorType,
               ),
             );
             when(reposInvoker.getComments()).thenResolve(comments);
@@ -660,7 +649,6 @@ describe("pullRequestComments.ts", (): void => {
           "# PR Metrics\n",
           CommentThreadStatus.Active,
           foreignUserId,
-          "User",
         ),
       );
       when(reposInvoker.getComments()).thenResolve(comments);
@@ -715,14 +703,12 @@ describe("pullRequestComments.ts", (): void => {
           "# PR Metrics\n",
           CommentThreadStatus.Active,
           authenticatedUserId,
-          "Bot",
         ),
         new PullRequestCommentData(
           21,
           `# PR Metrics\n${metricsCommentMarker}`,
           CommentThreadStatus.Active,
           authenticatedUserId,
-          "Bot",
         ),
       );
       when(reposInvoker.getComments()).thenResolve(comments);
@@ -764,7 +750,6 @@ describe("pullRequestComments.ts", (): void => {
           "file1.ts",
           CommentThreadStatus.Active,
           authenticatedUserId,
-          "Bot",
         ),
       );
       when(reposInvoker.getComments()).thenResolve(comments);
@@ -800,7 +785,6 @@ describe("pullRequestComments.ts", (): void => {
           "file1.ts",
           CommentThreadStatus.Active,
           foreignUserId,
-          "User",
         ),
       );
       when(reposInvoker.getComments()).thenResolve(comments);
@@ -839,7 +823,6 @@ describe("pullRequestComments.ts", (): void => {
           "file1.ts",
           CommentThreadStatus.Active,
           foreignUserId,
-          "User",
         ),
       );
       when(reposInvoker.getComments()).thenResolve(comments);
@@ -870,7 +853,6 @@ describe("pullRequestComments.ts", (): void => {
           "file1.ts",
           CommentThreadStatus.Active,
           authenticatedUserId,
-          "Bot",
         ),
         new FileCommentData(
           31,
@@ -878,7 +860,6 @@ describe("pullRequestComments.ts", (): void => {
           "file1.ts",
           CommentThreadStatus.Active,
           authenticatedUserId,
-          "Bot",
         ),
       );
       when(reposInvoker.getComments()).thenResolve(comments);
@@ -922,7 +903,6 @@ describe("pullRequestComments.ts", (): void => {
           "file1.ts",
           CommentThreadStatus.Active,
           authenticatedUserId,
-          "Bot",
         ),
         new FileCommentData(
           31,
@@ -930,7 +910,6 @@ describe("pullRequestComments.ts", (): void => {
           "file1.ts",
           CommentThreadStatus.Active,
           authenticatedUserId,
-          "Bot",
         ),
       );
       when(reposInvoker.getComments()).thenResolve(comments);
@@ -961,7 +940,6 @@ describe("pullRequestComments.ts", (): void => {
           "file1.ts",
           CommentThreadStatus.Active,
           authenticatedUserId,
-          "Bot",
         ),
       );
       when(reposInvoker.getComments()).thenResolve(comments);

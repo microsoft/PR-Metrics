@@ -66,6 +66,9 @@ export const createGitHubReposInvokerMocks = (): GitHubReposInvokerMocks => {
       anyNumber(),
     ),
   ).thenResolve(GitHubReposInvokerConstants.listCommitsResponse);
+  when(octokitWrapper.getAuthenticatedViewer()).thenResolve(
+    GitHubReposInvokerConstants.graphQlViewerResponse,
+  );
   when(octokitWrapper.getAuthenticatedUser()).thenResolve(
     GitHubReposInvokerConstants.getAuthenticatedUserResponse,
   );

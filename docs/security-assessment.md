@@ -96,7 +96,10 @@ behavior.
   to modify or delete that comment.
 - Comment reads are paginated with a bounded number of pages, and the number of
   comment creations, updates, and deletions performed during a single run is
-  capped, with the run failing before any modification if the cap is exceeded.
+  capped. The complete set of modifications is planned before the first write,
+  with the metrics comment and the removal of obsolete comments retained in
+  preference to the creation of new comments on files not requiring review, and
+  a warning reporting the number of skipped modifications.
 - Git diff output is parsed using `--numstat` format, which produces
   structured numeric output (additions, deletions, filename), reducing the
   attack surface from arbitrary diff content.
