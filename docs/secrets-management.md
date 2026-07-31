@@ -35,11 +35,11 @@ pipelines.
 - **ESRP service connection**: Code signing for Azure DevOps marketplace
   releases. Azure DevOps pipeline-scoped.
 - **Office Azure Artifacts feed token**: Build identity token that
-  `npmAuthenticate@0` writes into a temporary npm configuration so dependencies
-  can be restored from the approved feed required by the network isolation
-  policy. No variable group or service connection is involved. In the pull
-  request pipelines the configuration lives under `$(Agent.TempDirectory)`,
-  outside the checkout, and is deleted immediately after the restore.
+  `npmAuthenticate@0` writes into the npm configuration of the production and
+  release pipelines (`template.yml` and `release.yml`) so their dependencies can
+  be restored from the Office feed. No variable group or service connection is
+  involved. The pull request pipelines hold no feed credential at all; they
+  restore anonymously, as described under [Access Control](#access-control).
 
 ## Storage
 
@@ -69,28 +69,29 @@ control. The `.gitignore` file excludes common environment file patterns
   connections. Access is restricted by Azure DevOps project-level role-based
   access controls.
 - **Azure DevOps pull request pipelines**: `pr.yml` and `pr-test.yml` extend
-  `pr-validation-template.yml`, which holds no standing credentials. These
+  `pr-validation-template.yml`, which holds no credentials whatsoever. These
   pipelines build untrusted pull request code, so they reference no variable
-  groups, service connections, key vaults or App tokens, and they perform no
-  task deployment. The sole credential is the build identity token that
-  `npmAuthenticate@0` writes for the approved Office Azure Artifacts feed, which
-  the network isolation policy (CFSClean) requires for dependency restore. It is
-  confined to a restore boundary that each agent job repeats independently: the
-  YAML generates a temporary npm configuration under `$(Agent.TempDirectory)`
-  and never inside the checkout; `npmAuthenticate@0` adds a path scoped
-  `//<feed>/:_authToken` entry for that feed alone, so the credential cannot be
-  replayed against another host; only
-  `npm ci --ignore-scripts --no-audit --userconfig <temporary>` runs while the
-  credential exists, so no pull request controlled `package.json` script
-  executes; and a step running on every outcome then deletes the temporary
-  configuration. Only `npm run lint` and `npm run test:fast` run afterwards, and
-  neither reinstalls dependencies, so no nested `npm ci` can resurrect the feed.
-  Privileged operations remain reachable only from `prod.yml` and `release.yml`,
-  neither of which is pull request triggered. Enforcement is automated by
+  groups, service connections, key vaults, App tokens or package feed
+  credentials, and they perform no task deployment. Dependencies are restored
+  anonymously: every resolved URL in `package-lock.json` is pinned, with an
+  integrity hash, to the anonymous 1ES public npm mirror (`ms-feed-2`,
+  `ms-feed-12` and `ms-feed-25` under `1es-public/_packaging/npm-public`), which
+  the network isolation policy (CFSClean) approves. Each job restores with
+  `npm ci --ignore-scripts --no-audit --replace-registry-host=never`, so npm
+  fetches each package from the exact lockfile URL – no registry configuration,
+  including one a pull request adds to `.npmrc`, can redirect the restore – npm
+  contacts no audit endpoint, no `package.json` script executes during the
+  restore, and each package is verified against its integrity hash. Only
+  `npm run lint` and `npm run test:fast` run afterwards, and neither reinstalls
+  dependencies, so no nested `npm ci` can reach an unpinned registry. Privileged
+  operations remain reachable only from `prod.yml` and `release.yml`, neither of
+  which is pull request triggered. Enforcement is automated by
   [`azurePipelinesTrustBoundary.spec.ts`][azurepipelinestrustboundary], which
   walks the template graph, resolves `@self` qualified references as local,
-  rejects undeclared repository aliases, and pins the exact step order of every
-  job.- **`GITHUB_TOKEN`**: Automatically provisioned by GitHub for each workflow
+  rejects undeclared repository aliases, pins the full alias, type, name and ref
+  of every remote template resource, pins the exact step order of every job, and
+  verifies every lockfile URL against the approved feed.
+- **`GITHUB_TOKEN`**: Automatically provisioned by GitHub for each workflow
   run. Each workflow sets `permissions: {}` at the top level, granting no
   permissions by default; individual jobs request only the minimum permissions
   required.
