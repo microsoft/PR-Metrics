@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig.json",
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": true,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "removeComments": true,
+    "rootDir": "./src",
+    "skipLibCheck": true,
+    "strict": true,
+    "types": ["node"]
+  },
+  "exclude": ["debug/**/*", "dist/**/*", "tests/**/*", "**/node_modules"],
+  "extends": "@tsconfig/node24/tsconfig.json"
+}

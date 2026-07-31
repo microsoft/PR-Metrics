@@ -25,32 +25,13 @@ jobs:
   update-code:
     name: Update Code
     runs-on: ubuntu-latest
-    environment: production
     permissions:
       contents: read
-      id-token: write
     steps:
-      - name: Checkout – Action
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-          sparse-checkout: .github/actions
-
-      - name: App Token – Mint
-        id: app-token
-        uses: ./.github/actions/mint-github-app-token
-        with:
-          azure-client-id: ${{ vars.AZURE_CLIENT_ID }}
-          azure-tenant-id: ${{ vars.AZURE_TENANT_ID }}
-          azure-subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-          permissions: '{"contents":"write"}'
-
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-          ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref_name }}
-          token: ${{ steps.app-token.outputs.token }}
 
       - name: Install Node.js
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
@@ -75,23 +56,16 @@ jobs:
       - name: npm – Build Package
         run: npm run build:package
 
-      - if: github.ref_name != 'main'
-        name: Git – Add Changed Files
-        run: git add -A
+      - name: npm – Build Actions
+        run: npm run build:actions
 
+      # Pull request content is untrusted, so nothing is committed from this
+      # job. Any difference is reported for the contributor to resolve locally.
       - if: github.ref_name != 'main'
-        name: Git – Test for Changes
-        id: git-test-for-changes
-        run: .github/workflow-scripts/Test-Changes.ps1
-
-      - if: github.ref_name != 'main' && steps.git-test-for-changes.outputs.CHANGES_PRESENT == 'True'
-        name: Git – Commit & Push (Signed)
-        uses: grafana/github-api-commit-action@b1d81091e8480dd11fcea8bc1f0ab977a0376ca5 # v1.0.0
-        with:
-          commit-message: "chore: fix linting, update dist folder"
-          create-branch-on-remote: true
-          stage-all-files: true
-          token: ${{ steps.app-token.outputs.token }}
+        name: Git – Assert No Changes
+        run: >-
+          .github/workflow-scripts/Assert-NoChanges.ps1
+          -Remediation "Run 'npm ci', 'npm run lint', 'npm run build:package', and 'npm run build:actions' locally, then commit the resulting changes."
 
   build:
     name: Build
@@ -208,7 +182,7 @@ jobs:
           azure-client-id: ${{ vars.AZURE_CLIENT_ID }}
           azure-tenant-id: ${{ vars.AZURE_TENANT_ID }}
           azure-subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-          permissions: '{"contents":"write","statuses":"write"}'
+          permissions: '{"statuses":"write"}'
 
       - name: Super-Linter
         uses: super-linter/super-linter@4ce20838b8ab83717e78138c5b3a1407148e0918 # v8.7.0
@@ -233,42 +207,14 @@ jobs:
           VALIDATE_PYTHON_BLACK: false
           VALIDATE_TYPESCRIPT_ES: false
 
+      # Pull request content is untrusted, so the fixes applied by Super-Linter
+      # are never committed. Any difference is reported for the contributor to
+      # resolve locally.
       - if: github.ref_name != 'main'
-        name: Git – Test for Changes
-        id: git-test-for-changes
-        run: .github/workflow-scripts/Test-Changes.ps1
-
-      # Super-Linter must operate on the commit, but changes must be pushed to
-      # the branch. To facilitate this, the changes are stashed, the branch is
-      # checked out, and the changes are applied back.
-      - if: github.ref_name != 'main' && steps.git-test-for-changes.outputs.CHANGES_PRESENT == 'True'
-        name: Git – Stash Changes
-        run: git stash --include-untracked
-
-      - if: github.ref_name != 'main' && steps.git-test-for-changes.outputs.CHANGES_PRESENT == 'True'
-        name: Git – Checkout PR Branch
-        run: |-
-          git fetch origin $Env:HEAD_REF
-          git checkout $Env:HEAD_REF
-        env:
-          HEAD_REF: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref_name }}
-
-      - if: github.ref_name != 'main' && steps.git-test-for-changes.outputs.CHANGES_PRESENT == 'True'
-        name: Git – Apply Stashed Changes
-        run: git stash pop
-
-      - if: github.ref_name != 'main' && steps.git-test-for-changes.outputs.CHANGES_PRESENT == 'True'
-        name: Git – Add Changed Files
-        run: git add -A
-
-      - if: github.ref_name != 'main' && steps.git-test-for-changes.outputs.CHANGES_PRESENT == 'True'
-        name: Git – Commit & Push (Signed)
-        uses: grafana/github-api-commit-action@b1d81091e8480dd11fcea8bc1f0ab977a0376ca5 # v1.0.0
-        with:
-          commit-message: "chore: fix linting"
-          create-branch-on-remote: true
-          stage-all-files: true
-          token: ${{ steps.app-token.outputs.token }}
+        name: Git – Assert No Changes
+        run: >-
+          .github/workflow-scripts/Assert-NoChanges.ps1
+          -Remediation "Apply the formatting fixes reported below locally, then commit the resulting changes."
 
   dependabot:
     name: Dependabot

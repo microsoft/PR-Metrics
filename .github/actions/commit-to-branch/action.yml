@@ -1,0 +1,48 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+
+---
+name: Commit to Branch
+description: >-
+  Creates a signed, server authored commit from the contents of the Git index
+  via the GitHub GraphQL API, so file names are never interpreted as commands.
+
+inputs:
+  branch:
+    description: >-
+      The branch to which to commit, excluding the 'refs/heads/' prefix.
+    required: true
+  commit-message:
+    description: The commit message headline.
+    required: true
+  create-branch:
+    description: >-
+      Whether the branch may be created from the checked out commit when it does
+      not yet exist.
+    required: false
+    default: "false"
+  repository:
+    description: The repository in 'owner/repository' format.
+    required: false
+    default: ${{ github.repository }}
+  stage-all:
+    description: >-
+      Whether all working tree changes should be staged before the Git index is
+      read.
+    required: false
+    default: "false"
+  token:
+    description: >-
+      The token with which to authenticate, which requires write access to
+      repository contents.
+    required: true
+
+outputs:
+  commit-sha:
+    description: The object ID of the created commit, or an empty string when no commit was created.
+  committed:
+    description: Whether a commit was created.
+
+runs:
+  using: node24
+  main: dist/index.mjs

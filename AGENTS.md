@@ -61,14 +61,27 @@ The codebase uses a unique dual-platform architecture with dependency injection:
 npm run build:debug    # Builds with source maps for debugging
 npm run build:release  # Production build with minification
 npm run build:package  # Creates dist/ for GitHub Action
+npm run build:actions  # Creates the .github/actions/*/dist bundles
 npm run lint           # ESLint with autofix (strict TypeScript rules)
 npm run test:fast      # Quick test run during development
+npm run test:actions   # Tests the repository-owned GitHub Actions
 ```
+
+### Repository-Owned Actions
+
+`.github/actions/commit-to-branch/` is a TypeScript GitHub Action, bundled with
+`ncc` into a committed `dist/index.mjs`. It creates signed, server-authored
+commits from the Git index via the GraphQL `createCommitOnBranch` mutation, and
+is used only by `release-initiate.yml`. Pull request validation jobs never
+commit: they regenerate content and fail via
+`.github/workflow-scripts/Assert-NoChanges.ps1` when the worktree differs.
 
 ### File Structure Conventions
 
 - **Production**: `src/task/src/` - Main source code
 - **Tests**: `src/task/tests/` - Mirror source structure for test files
+- **Actions**: `.github/actions/<name>/src/` with tests in
+  `.github/actions/<name>/tests/`
 - **Interfaces**: Separate `.d.ts` files for all major interfaces
 - **Build Outputs**: `debug/`, `release/` (git-ignored), `dist/` (committed for
   GitHub Action)

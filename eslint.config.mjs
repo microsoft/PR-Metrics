@@ -26,6 +26,8 @@ export default tseslint.config(
       parserOptions: {
         ecmaVersion: 2017,
         project: [
+          "./.github/actions/commit-to-branch/tsconfig.json",
+          "./.github/actions/commit-to-branch/tsconfig.test.json",
           "./src/task/tsconfig.json",
           "./src/task/tsconfig.test.json",
         ],
