@@ -658,7 +658,7 @@ THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH RE
 
 The following npm package may be included in this product:
 
- - minimatch@10.2.5
+ - minimatch@10.2.6
 
 This package contains the following license:
 
@@ -1438,7 +1438,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 The following npm package may be included in this product:
 
- - undici@6.27.0
+ - undici@6.28.0
 
 This package contains the following license:
 
@@ -1511,7 +1511,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 The following npm package may be included in this product:
 
- - brace-expansion@5.0.8
+ - brace-expansion@5.0.9
 
 This package contains the following license:
 
