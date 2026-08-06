@@ -89,9 +89,6 @@
     "typescript": "6.0.3",
     "typescript-eslint": "8.65.0"
   },
-  "overrides": {
-    "minimatch": "^10.2.6"
-  },
   "ts-standard": {
     "ignore": [
       "dist"
