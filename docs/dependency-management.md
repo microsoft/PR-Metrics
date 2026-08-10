@@ -28,21 +28,21 @@ and development dependencies (required only for building, testing, and linting).
 
 ## Obtaining
 
-Dependencies are obtained via `npm install`. The repository-root
-[`.npmrc`][npmrc] file is the effective configuration for `npm install` and
-`npm ci` run from the repository root, and for any pipeline that does not
-override it: it configures the registry as the Microsoft Package Feed Proxy
-(`https://packagefeedproxy.microsoft.io/npm/`), not
-[the public npm registry][npmregistry] directly. The proxy fronts and serves
-packages from the public npm ecosystem, so `npm install` and `npm ci` behave
-the same as they would against npmjs.org. Other tracked `.npmrc` files exist
-for narrower purposes, such as [`src/task/.npmrc`][srctasknpmrc], and are
-outside the scope of this section.
+Dependencies are obtained via `npm install`. The checked-in npm configuration
+files ([`.npmrc`][npmrc] at the repository root and
+[`src/task/.npmrc`][srctasknpmrc]) both configure the registry as the Microsoft
+Package Feed Proxy (`https://packagefeedproxy.microsoft.io/npm/`), not
+[the public npm registry][npmregistry] directly. The repository-root file is
+the effective configuration for `npm install` and `npm ci` run from the
+repository root, while the `src/task/` file keeps task-local npm operations on
+the same proxy. The proxy fronts and serves packages from the public npm
+ecosystem, so `npm install` and `npm ci` behave the same as they would against
+npmjs.org.
 
 Active pipeline npm restores do not directly configure `registry.npmjs.org`
 either. The GitHub Actions workflows (`build.yml`, `release-initiate.yml`, and
-`release-publish.yml`) run `npm ci` using the root proxy configuration as-is,
-while the [Azure Pipelines build and release templates][azuredevopstemplate]
+`release-publish.yml`) run `npm ci` using the checked-in proxy configuration as
+is, while the [Azure Pipelines build and release templates][azuredevopstemplate]
 overwrite the working `.npmrc` at runtime to point at an explicit Office npm
 feed (`https://pkgs.dev.azure.com/office/_packaging/Office/npm/registry/`)
 instead of the proxy. All communication with the proxy and the Office feed
