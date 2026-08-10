@@ -24,6 +24,11 @@ merely be considered a guideline for influencing optimal PR behavior.
 The task can be built using `npm run build` from the repository root.
 `npm run clean` can be used to clean the build outputs.
 
+`npm install`, `npm ci`, and other npm commands automatically use the registry
+configured in the checked-in [`.npmrc`][npmrc] (the Microsoft Package Feed
+Proxy). No manual registry configuration or rewriting is required; see
+[Dependency Management][dependencymanagement] for details.
+
 The code formatting complies with strict [ESLint][eslint] TypeScript rules. The
 formatting can be checked and automatically fixed by running `npm run lint`
 from the repository root. [TypeDoc][typedoc] comments are present on public
@@ -120,6 +125,7 @@ outputted by default irrespective of the value of the `system.debug` variable.
 [azurepipelinesrunnerinvoker]: ../src/task/src/runners/azurePipelinesRunnerInvoker.ts
 [azurereposinvoker]: ../src/task/src/repos/azureReposInvoker.ts
 [contributing]: ../.github/CONTRIBUTING.md
+[dependencymanagement]: dependency-management.md
 [depinjection]: https://en.wikipedia.org/wiki/Dependency_injection
 [eslint]: https://eslint.org/
 [githubreposinvoker]: ../src/task/src/repos/gitHubReposInvoker.ts
@@ -127,6 +133,7 @@ outputted by default irrespective of the value of the `system.debug` variable.
 [manualtesting]: ../src/task/tests/manualTests/Instructions.md
 [mocha]: https://mochajs.org/
 [npm]: https://www.npmjs.com/
+[npmrc]: https://github.com/microsoft/PR-Metrics/blob/main/.npmrc
 [octokit]: https://github.com/octokit
 [reposfolder]: ../src/task/src/repos/
 [reposinvoker]: ../src/task/src/repos/reposInvoker.ts

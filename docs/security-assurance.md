@@ -39,8 +39,10 @@ graph TD
 - **Malicious input injection** (Medium): All inputs validated with type
   checking, range validation, and safe defaults ([`inputs.ts`][inputs]).
 - **Supply chain compromise** (High): Releases include build provenance
-  attestation (SLSA) and cosign signatures. Dependencies monitored via
-  Dependabot.
+  attestation (SLSA) and cosign signatures. GitHub Actions workflow
+  dependencies are monitored via Dependabot; npm dependencies are updated
+  through the release workflow and tracked internally via Component
+  Governance and GitHub security alerts.
 - **Credential exposure** (High): Authentication tokens provided via environment
   variables only. Gitleaks scanning prevents accidental secret commits.
 - **API injection via PR metadata** (Medium): Pull request title and comment
@@ -48,8 +50,11 @@ graph TD
 - **Unauthorized API access** (Medium): Minimum required permissions enforced
   (`pull-requests: write`, `statuses: write`). Principle of least privilege
   applied.
-- **Dependency vulnerabilities** (Medium): Dependabot monitors all dependencies.
-  CodeQL scans for known vulnerability patterns on every pull request.
+- **Dependency vulnerabilities** (Medium): Dependabot monitors GitHub Actions
+  workflow dependencies on a quarterly schedule. npm dependencies are updated
+  during the release process and tracked internally via Component Governance
+  and GitHub security alerts. CodeQL scans for known vulnerability patterns on
+  every pull request.
 - **Code quality defects** (Medium): 100% test coverage enforced via
   [c8 configuration][c8rc]. ESLint with 150+ strict rules. CodeQL security
   analysis on each pull request.
@@ -92,8 +97,10 @@ Top 10 and CWE/SANS Top 25) are addressed:
 - **Security Misconfiguration (CWE-16)**: Secure defaults are enforced. The task
   does not require complex security configuration from pipeline operators.
 - **Using Components with Known Vulnerabilities (CWE-1035)**: Dependabot
-  monitors all dependencies. CodeQL scans for known vulnerability patterns.
-  Automated dependency updates are enabled via the CI/CD pipeline.
+  monitors GitHub Actions workflow dependencies. CodeQL scans for known
+  vulnerability patterns. GitHub Actions dependency updates are automated via
+  Dependabot; npm dependency updates are performed during the release
+  workflow and are not automated by Dependabot.
 - **Insufficient Logging and Monitoring (CWE-778)**: The task provides
   comprehensive debug logging when `system.debug` is enabled, including full
   method call traces for diagnostic purposes.

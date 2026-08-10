@@ -28,24 +28,29 @@ and development dependencies (required only for building, testing, and linting).
 
 ## Obtaining
 
-Dependencies are obtained from the [npm public registry][npmregistry] via
-`npm install`. The [`.npmrc`][npmrc] file configures that registry, which is
-the registry developers and the default tooling use. All communication with
-the registry uses HTTPS.
+Dependencies are obtained via `npm install`. The [`.npmrc`][npmrc] file
+configures the registry as the Microsoft Package Feed Proxy
+(`https://packagefeedproxy.microsoft.io/npm/`), not
+[the public npm registry][npmregistry] directly. The proxy fronts and serves
+packages from the public npm ecosystem, so `npm install` and `npm ci` behave
+the same as they would against npmjs.org, while all pipeline and developer
+traffic is mediated through the Microsoft-managed proxy rather than
+connecting directly to `registry.npmjs.org`. All communication with the proxy
+uses HTTPS.
 
 During CI/CD builds, `npm ci` resolves dependencies from the lockfile, ensuring
 reproducible builds.
 
-The committed [`package-lock.json`][packagelockjson] deliberately differs from
-`.npmrc`: every `resolved` URL names the anonymous 1ES public npm mirror
-(`ms-feed-2`, `ms-feed-12`, and `ms-feed-25` under
-`1es-public/_packaging/npm-public`) rather than the public registry. Azure
-production and release pipelines temporarily replace the repository `.npmrc`
-with an authenticated Office feed, but `npm ci` still fetches each package from
-the exact mirror URL recorded in the lockfile. The mirror proxies the same npm
-packages, and every package remains verified against its integrity hash, so
-the developer `.npmrc` and the Azure feeds still resolve identical content.
-This difference is deliberate policy rather than a misconfiguration.
+Because the proxy fronts multiple backend hosts, the `resolved` URLs recorded
+in [`package-lock.json`][packagelockjson] may reference rotating Microsoft
+backend tarball hosts (matching the proxy's shard-based routing behavior)
+rather than a single, fixed hostname. This is expected behavior of the proxy,
+not a misconfiguration: the recorded host does not need to match the
+`.npmrc` registry hostname, and it must not be normalized or rewritten to a
+single shard. Reproducibility and integrity are instead guaranteed by the
+exact pinned versions and `integrity` hashes recorded for each package (see
+[Tracking](#tracking)), which are verified on every install regardless of
+which backend host served the tarball.
 
 ## Tracking
 
@@ -57,45 +62,21 @@ This difference is deliberate policy rather than a misconfiguration.
 
 ## Updating
 
-Dependencies are updated through two mechanisms:
+Dependencies are updated through two distinct processes:
 
 - **GitHub Actions dependencies**: [Dependabot][dependabot] monitors GitHub
   Actions workflow dependencies and opens pull requests on a quarterly schedule.
+  Dependabot is not configured for npm dependencies in this repository (see
+  [`dependabot.yml`][dependabot]).
 - **npm dependencies**: During the release process, the
   [`release-initiate.yml`][releaseinitiate] workflow runs
   [npm-check-updates][npmcheckupdates] (`ncu`) to update all npm packages to
   their latest compatible versions. The updated `package.json` and
-  `package-lock.json` are committed as part of the release pull request, after
-  the lockfile registry is normalized back to the approved mirror as described
-  below. [Component Governance][componentgovernance] tracks every npm
-  dependency internally within the Azure DevOps pipelines, so no npm-specific
-  [Dependabot][dependabot] configuration is required.
-
-## Registry Normalization
-
-`npm update` and `ncu` regenerate the lockfile `resolved` URLs against the
-registry `.npmrc` names, so a dependency update would otherwise replace the
-1ES public mirror with the public registry and strand the Azure DevOps
-production and release pipelines behind the CFSClean network isolation policy.
-
-The [`normalize-package-lock-registry.mjs`][normalizescript] script restores
-the policy. It rewrites only `https://registry.npmjs.org/` prefixes to the
-approved anonymous mirror prefix, preserves each package suffix, integrity
-hash, key ordering, and the surrounding file structure, and fails on any other
-host, protocol, or path rather than silently passing it through. It rewrites a
-repository file only and requires no credentials.
-
-The [`release-initiate.yml`][releaseinitiate] workflow runs the script
-immediately after `npm run update:dependencies` and before the dependency
-update is committed. Run it manually after any local `npm install` or
-`npm update` that alters the lockfile:
-
-```bash
-node scripts/normalize-package-lock-registry.mjs
-```
-
-The policy and the script are both covered by tests under
-[`src/task/tests/security`][securitytests].
+  `package-lock.json` are committed as part of the release pull request. npm
+  dependency updates outside of this workflow, along with known
+  vulnerabilities, are tracked internally through
+  [Component Governance][componentgovernance] and GitHub security alerts
+  rather than through Dependabot pull requests.
 
 ## Security Scanning
 
@@ -103,9 +84,6 @@ The policy and the script are both covered by tests under
   security vulnerabilities on every pull request.
 - [Dependabot alerts][dependabotalerts] notify the maintainers of known
   vulnerabilities in dependencies.
-- [Component Governance][componentgovernance] performs internal npm dependency
-  detection in the Azure DevOps pipelines, independently of the mirror host
-  recorded for the anonymous restore.
 - [Gitleaks][gitleaks] scans for accidentally committed secrets via
   [Super-Linter][superlinter].
 
@@ -116,7 +94,6 @@ The policy and the script are both covered by tests under
 [dependabotalerts]: https://docs.github.com/code-security/dependabot/dependabot-alerts/about-dependabot-alerts
 [gitleaks]: https://github.com/gitleaks/gitleaks
 [nodejs]: https://nodejs.org/
-[normalizescript]: https://github.com/microsoft/PR-Metrics/blob/main/scripts/normalize-package-lock-registry.mjs
 [npm]: https://www.npmjs.com/
 [npmcheckupdates]: https://www.npmjs.com/package/npm-check-updates
 [npmrc]: https://github.com/microsoft/PR-Metrics/blob/main/.npmrc
@@ -125,6 +102,5 @@ The policy and the script are both covered by tests under
 [packagejson]: https://github.com/microsoft/PR-Metrics/blob/main/package.json
 [packagelockjson]: https://github.com/microsoft/PR-Metrics/blob/main/package-lock.json
 [releaseinitiate]: https://github.com/microsoft/PR-Metrics/blob/main/.github/workflows/release-initiate.yml
-[securitytests]: https://github.com/microsoft/PR-Metrics/blob/main/src/task/tests/security
 [superlinter]: https://github.com/super-linter/super-linter
 [typescript]: https://www.typescriptlang.org/
