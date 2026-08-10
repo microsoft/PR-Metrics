@@ -24,9 +24,12 @@ merely be considered a guideline for influencing optimal PR behavior.
 The task can be built using `npm run build` from the repository root.
 `npm run clean` can be used to clean the build outputs.
 
-`npm install`, `npm ci`, and other npm commands automatically use the registry
-configured in the checked-in [`.npmrc`][npmrc] (the Microsoft Package Feed
-Proxy). No manual registry configuration or rewriting is required; see
+`npm install`, `npm ci`, and other npm commands run from the repository root
+use the registry configured in the checked-in repository-root
+[`.npmrc`][npmrc] (the Microsoft Package Feed Proxy). No manual registry
+configuration is required for local development, though some CI/CD pipelines
+override this configuration at runtime with an explicit Office npm feed
+instead of using the proxy directly; see
 [Dependency Management][dependencymanagement] for details.
 
 The code formatting complies with strict [ESLint][eslint] TypeScript rules. The
