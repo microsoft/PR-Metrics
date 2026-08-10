@@ -83,10 +83,12 @@ Dependencies are updated through two distinct processes:
   configured for npm in this repository. Instead, routine npm version updates
   occur during the release process, where the
   [`release-initiate.yml`][releaseinitiate] workflow runs
-  [npm-check-updates][npmcheckupdates] (`ncu`) to update all npm packages to
-  their latest compatible versions. The updated `package.json` and
-  `package-lock.json` are committed as part of the release pull request. Known
-  npm vulnerabilities are also tracked internally through
+  [npm-check-updates][npmcheckupdates] (`ncu -u --peer --reject @types/node`)
+  to update direct dependencies toward the latest available versions, subject
+  to peer-dependency filtering and the explicit `@types/node` exclusion, and
+  then `npm update` to refresh transitive dependencies. The updated
+  `package.json` and `package-lock.json` are committed as part of the release
+  pull request. Known npm vulnerabilities are also tracked internally through
   [Component Governance][componentgovernance]. Separately from scheduled
   version updates, [Dependabot alerts][dependabotalerts] and
   [Dependabot security updates][dependabotsecurityupdates] continue to cover
