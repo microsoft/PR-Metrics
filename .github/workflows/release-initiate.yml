@@ -74,12 +74,13 @@ jobs:
         run: git add -A
 
       - name: Git – Commit & Push (Signed)
-        uses: grafana/github-api-commit-action@b1d81091e8480dd11fcea8bc1f0ab977a0376ca5 # v1.0.0
-        with:
-          commit-message: "feat: release v${{ env.version }}"
-          create-branch-on-remote: true
-          stage-all-files: true
-          token: ${{ steps.app-token.outputs.token }}
+        run: >-
+          .github/workflow-scripts/New-SignedCommit.ps1
+          -Message $env:COMMIT_MESSAGE
+          -CreateBranchOnRemote
+        env:
+          COMMIT_MESSAGE: "feat: release v${{ env.version }}"
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
 
       - name: Git – Sync Local with Remote
         run: |-
@@ -127,12 +128,13 @@ jobs:
         run: npm run update:dependencies
 
       - name: Git – Commit & Push (Signed)
-        uses: grafana/github-api-commit-action@b1d81091e8480dd11fcea8bc1f0ab977a0376ca5 # v1.0.0
-        with:
-          commit-message: "chore: update dependencies"
-          create-branch-on-remote: true
-          stage-all-files: true
-          token: ${{ steps.app-token.outputs.token }}
+        run: >-
+          .github/workflow-scripts/New-SignedCommit.ps1
+          -Message $env:COMMIT_MESSAGE
+          -CreateBranchOnRemote
+        env:
+          COMMIT_MESSAGE: "chore: update dependencies"
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
 
       - name: Git – Sync Local with Remote
         run: |-

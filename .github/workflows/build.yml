@@ -86,12 +86,10 @@ jobs:
 
       - if: github.ref_name != 'main' && steps.git-test-for-changes.outputs.CHANGES_PRESENT == 'True'
         name: Git – Commit & Push (Signed)
-        uses: grafana/github-api-commit-action@b1d81091e8480dd11fcea8bc1f0ab977a0376ca5 # v1.0.0
-        with:
-          commit-message: "chore: fix linting, update dist folder"
-          create-branch-on-remote: true
-          stage-all-files: true
-          token: ${{ steps.app-token.outputs.token }}
+        run: .github/workflow-scripts/New-SignedCommit.ps1 -Message $env:COMMIT_MESSAGE
+        env:
+          COMMIT_MESSAGE: "chore: fix linting, update dist folder"
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
 
   build:
     name: Build
@@ -263,12 +261,10 @@ jobs:
 
       - if: github.ref_name != 'main' && steps.git-test-for-changes.outputs.CHANGES_PRESENT == 'True'
         name: Git – Commit & Push (Signed)
-        uses: grafana/github-api-commit-action@b1d81091e8480dd11fcea8bc1f0ab977a0376ca5 # v1.0.0
-        with:
-          commit-message: "chore: fix linting"
-          create-branch-on-remote: true
-          stage-all-files: true
-          token: ${{ steps.app-token.outputs.token }}
+        run: .github/workflow-scripts/New-SignedCommit.ps1 -Message $env:COMMIT_MESSAGE
+        env:
+          COMMIT_MESSAGE: "chore: fix linting"
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
 
   dependabot:
     name: Dependabot
