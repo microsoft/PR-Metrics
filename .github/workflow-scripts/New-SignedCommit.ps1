@@ -12,15 +12,22 @@
         structured GraphQL variable within a JSON request file, and the token is read from the 'GH_TOKEN' environment
         variable by the GitHub CLI rather than being passed on the command line.
 
+        The remote branch is read exactly once and the staged changes are applied atop the commit that was read, so a
+        commit created concurrently by another job is retained rather than reverted. The read commit is sent as
+        'expectedHeadOid', so a branch update between the read and the mutation fails the mutation. The commit is
+        never forced and a stale head is never retried, meaning such a conflict fails the run rather than silently
+        overwriting the remote branch.
+
     .PARAMETER Message
         The headline of the commit message.
 
     .PARAMETER CreateBranchOnRemote
-        Creates the branch on the remote at the local HEAD commit when the branch does not already exist.
+        Creates the branch on the remote at the local HEAD commit when the branch does not already exist. Without this
+        switch, a branch that is missing from the remote fails the run.
 
     .PARAMETER PayloadOutputPath
-        Writes the GraphQL request that would create the commit to the specified path and returns without contacting
-        GitHub. This exists for testing and is never used by a workflow.
+        Writes the GraphQL request that would create the commit to the specified path and returns without creating the
+        commit. This exists for testing and is never used by a workflow.
 #>
 
 #Requires -Version 7.0
@@ -335,23 +342,6 @@ foreach ($change in $changes)
     }
 }
 
-$commitVariables = [ordered]@{
-    input = [ordered]@{
-        branch          = [ordered]@{ repositoryNameWithOwner = $nameWithOwner; branchName = $branch }
-        expectedHeadOid = $headObjectId
-        fileChanges     = [ordered]@{ additions = $additions; deletions = $deletions }
-        message         = [ordered]@{ headline = $Message }
-    }
-}
-
-if (-not [string]::IsNullOrWhiteSpace($PayloadOutputPath))
-{
-    $payload = [ordered]@{ query = $createCommitMutation; variables = $commitVariables }
-    Set-Content -Path $PayloadOutputPath -Value (ConvertTo-Json -InputObject $payload -Depth 10) -Encoding utf8NoBOM -NoNewline
-    Write-Output -InputObject "Wrote a request for $($additions.Count) addition(s) and $($deletions.Count) deletion(s)."
-    return
-}
-
 $null = Get-RequiredEnvironmentVariable -Name 'GH_TOKEN'
 $branchVariables = [ordered]@{
     owner         = $repositoryParts[0]
@@ -364,13 +354,19 @@ if ($null -eq $repositoryNode)
     throw "The repository '$nameWithOwner' could not be read via the GitHub GraphQL API."
 }
 
-$remoteObjectId = $null
+# The remote branch is read once and the commit that was read becomes the expected head, so the staged changes are
+# applied atop any commit that another job has already pushed rather than reverting it.
+$expectedHeadObjectId = $null
 if ($null -ne $repositoryNode.ref)
 {
-    $remoteObjectId = $repositoryNode.ref.target.oid
+    $expectedHeadObjectId = $repositoryNode.ref.target.oid
+    if ($expectedHeadObjectId -notmatch $objectIdExpression)
+    {
+        throw "The remote branch '$branch' returned the malformed commit ID '$expectedHeadObjectId'."
+    }
 }
 
-if ($null -eq $remoteObjectId)
+if ($null -eq $expectedHeadObjectId)
 {
     if (-not $CreateBranchOnRemote)
     {
@@ -385,16 +381,28 @@ if ($null -eq $remoteObjectId)
         }
     }
     $null = Invoke-GitHubGraphQl -Query $createBranchMutation -Variables $createBranchVariables
-    $remoteObjectId = $headObjectId
+    $expectedHeadObjectId = $headObjectId
     Write-Output -InputObject "Created the branch '$branch' on the remote."
 }
 
-# The commit is never forced and a stale head is never retried, so a concurrent update fails the run instead of
-# silently overwriting the remote branch.
-if ($remoteObjectId -ne $headObjectId)
-{
-    throw "The remote branch '$branch' is at '$remoteObjectId' rather than the local commit '$headObjectId', so no commit was created."
+$commitVariables = [ordered]@{
+    input = [ordered]@{
+        branch          = [ordered]@{ repositoryNameWithOwner = $nameWithOwner; branchName = $branch }
+        expectedHeadOid = $expectedHeadObjectId
+        fileChanges     = [ordered]@{ additions = $additions; deletions = $deletions }
+        message         = [ordered]@{ headline = $Message }
+    }
 }
 
+if (-not [string]::IsNullOrWhiteSpace($PayloadOutputPath))
+{
+    $payload = [ordered]@{ query = $createCommitMutation; variables = $commitVariables }
+    Set-Content -Path $PayloadOutputPath -Value (ConvertTo-Json -InputObject $payload -Depth 10) -Encoding utf8NoBOM -NoNewline
+    Write-Output -InputObject "Wrote a request for $($additions.Count) addition(s) and $($deletions.Count) deletion(s)."
+    return
+}
+
+# The commit is neither forced nor retried, so a branch update after the read fails the mutation via
+# 'expectedHeadOid' instead of overwriting the remote branch.
 $commit = (Invoke-GitHubGraphQl -Query $createCommitMutation -Variables $commitVariables).data.createCommitOnBranch.commit
 Write-Output -InputObject "Created commit '$($commit.oid)' with $($additions.Count) addition(s) and $($deletions.Count) deletion(s)."

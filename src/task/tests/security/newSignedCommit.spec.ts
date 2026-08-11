@@ -31,10 +31,23 @@ interface CommitPayloadInterface {
   };
 }
 
+interface GraphQlRequestInterface {
+  readonly query: string;
+  readonly variables: {
+    readonly input?: {
+      readonly name: string;
+      readonly oid: string;
+      readonly repositoryId: string;
+    };
+    readonly qualifiedName?: string;
+  };
+}
+
 interface ScenarioInterface {
   readonly headObjectId: string;
   readonly payload: CommitPayloadInterface | null;
   readonly repositoryPath: string;
+  readonly requests: GraphQlRequestInterface[];
   readonly result: SpawnSyncReturns<string>;
 }
 
@@ -43,6 +56,8 @@ describe("New-SignedCommit.ps1", (): void => {
   const commitMessage = "chore: fix linting";
   const nameWithOwner = "microsoft/PR-Metrics";
   const branchName = "test-branch";
+  const remoteObjectId = "0123456789abcdef0123456789abcdef01234567";
+  const separator = "REQUEST-SEPARATOR";
 
   const findRepositoryRoot = (): string => {
     let candidate: string = import.meta.dirname;
@@ -86,10 +101,57 @@ describe("New-SignedCommit.ps1", (): void => {
     return result.stdout.trim();
   };
 
+  // The GitHub CLI is replaced on the path so that the requests are observed without contacting GitHub.
+  const writeFakeGitHubCli = (
+    name: string,
+    branchObjectId: string | null,
+  ): string => {
+    const binaryPath: string = path.join(scratchPath, `${name}-cli`);
+    fs.mkdirSync(binaryPath, { recursive: true });
+    const reference: string =
+      branchObjectId === null
+        ? "null"
+        : `{"target":{"oid":"${branchObjectId}"}}`;
+    fs.writeFileSync(
+      path.join(binaryPath, "response.json"),
+      `{"data":{"repository":{"id":"R_1","ref":${reference}},"createRef":{"ref":{"name":"created"}}}}`,
+    );
+    if (process.platform === "win32") {
+      fs.writeFileSync(
+        path.join(binaryPath, "gh.cmd"),
+        `@echo off\r\necho ${separator}>> "%~dp0requests.log"\r\ntype "%~4" >> "%~dp0requests.log"\r\ntype "%~dp0response.json"\r\n`,
+      );
+    } else {
+      const scriptPath: string = path.join(binaryPath, "gh");
+      fs.writeFileSync(
+        scriptPath,
+        `#!/bin/sh\necho ${separator} >> "$(dirname "$0")/requests.log"\ncat "$4" >> "$(dirname "$0")/requests.log"\ncat "$(dirname "$0")/response.json"\n`,
+      );
+      fs.chmodSync(scriptPath, 0o755);
+    }
+
+    return binaryPath;
+  };
+
+  const readRequests = (binaryPath: string): GraphQlRequestInterface[] =>
+    fs.existsSync(path.join(binaryPath, "requests.log"))
+      ? fs
+          .readFileSync(path.join(binaryPath, "requests.log"), "utf8")
+          .split(separator)
+          .map((entry: string): string => entry.trim())
+          .filter((entry: string): boolean => entry !== "")
+          .map(
+            (entry: string): GraphQlRequestInterface =>
+              JSON.parse(entry) as GraphQlRequestInterface,
+          )
+      : [];
+
   // The scenarios run while the suite is defined, so the Mocha timeout does not apply to Git and PowerShell.
   const runScenario = (
     name: string,
     stage: (repositoryPath: string) => void,
+    branchObjectId: string | null = remoteObjectId,
+    createBranchOnRemote = false,
   ): ScenarioInterface => {
     const repositoryPath: string = path.join(scratchPath, name);
     fs.mkdirSync(repositoryPath, { recursive: true });
@@ -103,12 +165,17 @@ describe("New-SignedCommit.ps1", (): void => {
     runGit(repositoryPath, "commit", "--quiet", "--message=Initial");
     stage(repositoryPath);
 
+    const binaryPath: string = writeFakeGitHubCli(name, branchObjectId);
     const payloadPath: string = path.join(repositoryPath, "payload.json");
-    const environment: Record<string, string | undefined> = {
-      ...process.env,
-    };
-    environment.GH_TOKEN = "";
+    const environment: Record<string, string | undefined> = Object.fromEntries(
+      Object.entries(process.env).filter(
+        ([key]: [string, string | undefined]): boolean =>
+          key.toUpperCase() !== "PATH",
+      ),
+    );
+    environment.GH_TOKEN = "fake-token";
     environment.GITHUB_REPOSITORY = nameWithOwner;
+    environment.PATH = `${binaryPath}${path.delimiter}${process.env.PATH ?? ""}`;
     const result: SpawnSyncReturns<string> = spawnSync(
       "pwsh",
       [
@@ -120,6 +187,7 @@ describe("New-SignedCommit.ps1", (): void => {
         commitMessage,
         "-PayloadOutputPath",
         payloadPath,
+        ...(createBranchOnRemote ? ["-CreateBranchOnRemote"] : []),
       ],
       { cwd: repositoryPath, encoding: "utf8", env: environment },
     );
@@ -131,6 +199,7 @@ describe("New-SignedCommit.ps1", (): void => {
           ) as CommitPayloadInterface)
         : null,
       repositoryPath,
+      requests: readRequests(binaryPath),
       result,
     };
   };
@@ -191,6 +260,20 @@ describe("New-SignedCommit.ps1", (): void => {
     (repositoryPath: string): void => {
       fs.writeFileSync(path.join(repositoryPath, "modified.txt"), "original\n");
     },
+  );
+  const stageAddition = (repositoryPath: string): void => {
+    fs.writeFileSync(path.join(repositoryPath, "added.txt"), "added\n");
+  };
+  const creationScenario: ScenarioInterface = runScenario(
+    "creation",
+    stageAddition,
+    null,
+    true,
+  );
+  const missingBranchScenario: ScenarioInterface = runScenario(
+    "missing-branch",
+    stageAddition,
+    null,
   );
 
   after((): void => {
@@ -263,6 +346,7 @@ describe("New-SignedCommit.ps1", (): void => {
   it("should encode the staged content of every change", (): void => {
     // Arrange
     const payload: CommitPayloadInterface | null = contentScenario.payload;
+    const [branchRequest] = contentScenario.requests;
 
     // Assert
     assert.ok(payload);
@@ -284,10 +368,8 @@ describe("New-SignedCommit.ps1", (): void => {
     assert.deepEqual(payload.variables.input.fileChanges.deletions, [
       { path: "deleted.txt" },
     ]);
-    assert.equal(
-      payload.variables.input.expectedHeadOid,
-      contentScenario.headObjectId,
-    );
+    assert.equal(payload.variables.input.expectedHeadOid, remoteObjectId);
+    assert.notEqual(remoteObjectId, contentScenario.headObjectId);
     assert.equal(payload.variables.input.branch.branchName, branchName);
     assert.equal(
       payload.variables.input.branch.repositoryNameWithOwner,
@@ -296,6 +378,45 @@ describe("New-SignedCommit.ps1", (): void => {
     assert.equal(payload.variables.input.message.headline, commitMessage);
     assert.equal(
       payload.query.includes("createCommitOnBranch(input: $input)"),
+      true,
+    );
+    assert.equal(contentScenario.requests.length, 1);
+    assert.ok(branchRequest);
+    assert.equal(
+      branchRequest.variables.qualifiedName,
+      `refs/heads/${branchName}`,
+    );
+  });
+
+  it("should create a missing branch at the local commit", (): void => {
+    // Arrange
+    const [, createBranchRequest] = creationScenario.requests;
+
+    // Assert
+    assert.equal(creationScenario.result.status, 0);
+    assert.equal(creationScenario.requests.length, 2);
+    assert.ok(createBranchRequest);
+    assert.equal(createBranchRequest.query.includes("createRef"), true);
+    assert.deepEqual(createBranchRequest.variables.input, {
+      name: `refs/heads/${branchName}`,
+      oid: creationScenario.headObjectId,
+      repositoryId: "R_1",
+    });
+    assert.equal(
+      creationScenario.payload?.variables.input.expectedHeadOid,
+      creationScenario.headObjectId,
+    );
+  });
+
+  it("should fail when the branch is missing from the remote", (): void => {
+    // Assert
+    assert.notEqual(missingBranchScenario.result.status, 0);
+    assert.equal(missingBranchScenario.payload, null);
+    assert.equal(missingBranchScenario.requests.length, 1);
+    assert.equal(
+      missingBranchScenario.result.stderr.includes(
+        "does not exist on the remote",
+      ),
       true,
     );
   });
