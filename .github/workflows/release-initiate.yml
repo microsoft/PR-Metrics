@@ -22,19 +22,10 @@ jobs:
       contents: read
       id-token: write
     steps:
-      # Releases are only ever initiated from the trusted main branch, as the
-      # job holds write access to repository contents.
-      - if: github.ref != 'refs/heads/main'
-        name: Guard – Verify Main Branch
-        run: |-
-          Write-Output -InputObject "::error::Releases can only be initiated from the 'main' branch."
-          exit 1
-
       - name: Checkout – Action
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-          ref: main
           sparse-checkout: .github/actions
 
       - name: App Token – Mint
@@ -50,7 +41,6 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-          ref: main
           token: ${{ steps.app-token.outputs.token }}
 
       - name: gh – Log Version
@@ -80,13 +70,15 @@ jobs:
       - name: Git – Create Branch
         run: git checkout -b release/v$env:version
 
+      - name: Git – Add Changed Files
+        run: git add -A
+
       - name: Git – Commit & Push (Signed)
-        uses: ./.github/actions/commit-to-branch
+        uses: grafana/github-api-commit-action@b1d81091e8480dd11fcea8bc1f0ab977a0376ca5 # v1.0.0
         with:
-          branch: release/v${{ env.version }}
           commit-message: "feat: release v${{ env.version }}"
-          create-branch: true
-          stage-all: true
+          create-branch-on-remote: true
+          stage-all-files: true
           token: ${{ steps.app-token.outputs.token }}
 
       - name: Git – Sync Local with Remote
@@ -135,11 +127,11 @@ jobs:
         run: npm run update:dependencies
 
       - name: Git – Commit & Push (Signed)
-        uses: ./.github/actions/commit-to-branch
+        uses: grafana/github-api-commit-action@b1d81091e8480dd11fcea8bc1f0ab977a0376ca5 # v1.0.0
         with:
-          branch: release/v${{ env.version }}
           commit-message: "chore: update dependencies"
-          stage-all: true
+          create-branch-on-remote: true
+          stage-all-files: true
           token: ${{ steps.app-token.outputs.token }}
 
       - name: Git – Sync Local with Remote

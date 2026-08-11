@@ -120,17 +120,16 @@ most recently. Do not change the value itself.
 
 1. Preserve formatting: trailing newlines, comment spacing, and two-space
    indentation.
-1. Before committing, integrate the remote branch. The release workflow commits
-   to this branch, so the local branch can fall behind. Run `git fetch`, then
-   fast-forward or rebase onto `origin/release/vX.Y.Z`, preserving any unrelated
-   working-tree changes. Stage only the files this agent changed.
+1. Before committing, integrate the remote branch. While you work, the `Build`
+   workflow may auto-commit linting and `dist` updates to this branch, so the
+   local branch can fall behind. Run `git fetch`, then fast-forward or rebase
+   onto `origin/release/vX.Y.Z`, preserving any unrelated working-tree changes.
+   Stage only the files this agent changed.
 1. Commit with the message `chore: refresh CI pins`.
 1. Push to the release pull request branch with a plain fast-forward push –
    never `--force`. Confirm exactly one new commit is added.
 1. No manual verification is required. The `Build` workflow reruns on the push
-   and re-lints the modified files; any failure surfaces there. The workflow
-   never commits fixes back, so resolve any reported difference locally and push
-   again.
+   and re-lints the modified files; any failure surfaces there.
 
 [ado-tasks]: https://learn.microsoft.com/azure/devops/pipelines/tasks/reference/
 [ado-tasks-repo]: https://github.com/microsoft/azure-pipelines-tasks

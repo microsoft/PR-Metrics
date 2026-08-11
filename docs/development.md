@@ -98,34 +98,6 @@ Test validation and static analysis will be automatically performed whenever a
 PR is opened against the `main` branch. These validations must succeed for the
 PR to be merged.
 
-### Generated Content
-
-The `dist` folder, the license files, and the `commit-to-branch` action bundle
-are generated and committed. The `Update Code` and `Validate – Linter` jobs
-regenerate this content and fail when it differs from what was committed,
-without ever committing to the pull request branch. This keeps untrusted pull
-request content away from any workflow that holds write access to the
-repository. When either job reports a difference, run the following from the
-repository root, then commit the result:
-
-```batchfile
-npm ci
-npm run lint
-npm run build:package
-npm run build:actions
-```
-
-### Release Automation
-
-Release commits are created by the repository-owned
-[`commit-to-branch`][committobranch] action, which runs only from the trusted
-`main` branch. The action reads the staged changes from the Git index using
-NUL delimited output, reads each blob by its object ID, and sends the result to
-the GitHub GraphQL `createCommitOnBranch` mutation as structured variables.
-File names are therefore never interpreted as commands, and the resulting
-commits are signed by GitHub. The bundle is built with `npm run build:actions`
-and its tests are run with `npm run test:actions`.
-
 ### Manual Test Cases
 
 Unfortunately, it is difficult to automatically test everything as the task runs
@@ -147,7 +119,6 @@ outputted by default irrespective of the value of the `system.debug` variable.
 [aaa]: https://automationpanda.com/2020/07/07/arrange-act-assert-a-pattern-for-writing-good-tests/
 [azurepipelinesrunnerinvoker]: ../src/task/src/runners/azurePipelinesRunnerInvoker.ts
 [azurereposinvoker]: ../src/task/src/repos/azureReposInvoker.ts
-[committobranch]: ../.github/actions/commit-to-branch
 [contributing]: ../.github/CONTRIBUTING.md
 [depinjection]: https://en.wikipedia.org/wiki/Dependency_injection
 [eslint]: https://eslint.org/
