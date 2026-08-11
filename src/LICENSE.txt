@@ -986,7 +986,7 @@ MIT
 
 The following npm package may be included in this product:
 
- - adm-zip@0.5.18
+ - adm-zip@0.6.0
 
 This package contains the following license:
 
@@ -1046,7 +1046,7 @@ SOFTWARE.
 
 The following npm package may be included in this product:
 
- - brace-expansion@1.1.16
+ - brace-expansion@1.1.18
 
 This package contains the following license:
 
@@ -1402,7 +1402,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 The following npm package may be included in this product:
 
- - undici@6.27.0
+ - undici@6.28.0
 
 This package contains the following license:
 
@@ -2071,7 +2071,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 The following npm package may be included in this product:
 
- - azure-pipelines-task-lib@5.277.0
+ - azure-pipelines-task-lib@5.278.0
 
 This package contains the following license:
 
