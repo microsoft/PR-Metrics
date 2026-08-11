@@ -35,12 +35,20 @@ interface GraphQlRequestInterface {
   readonly query: string;
   readonly variables: {
     readonly input?: {
-      readonly name: string;
-      readonly oid: string;
-      readonly repositoryId: string;
+      readonly expectedHeadOid?: string;
+      readonly name?: string;
+      readonly oid?: string;
+      readonly repositoryId?: string;
     };
     readonly qualifiedName?: string;
   };
+}
+
+interface ScenarioOptionsInterface {
+  readonly branchObjectId?: string | null;
+  readonly commitObjectId?: string | null;
+  readonly createBranchOnRemote?: boolean;
+  readonly writeRequestOnly?: boolean;
 }
 
 interface ScenarioInterface {
@@ -57,6 +65,8 @@ describe("New-SignedCommit.ps1", (): void => {
   const nameWithOwner = "microsoft/PR-Metrics";
   const branchName = "test-branch";
   const remoteObjectId = "0123456789abcdef0123456789abcdef01234567";
+  const createdObjectId = "89abcdef0123456789abcdef0123456789abcdef";
+  const repositoryId = "R_1";
   const separator = "REQUEST-SEPARATOR";
 
   const findRepositoryRoot = (): string => {
@@ -101,10 +111,11 @@ describe("New-SignedCommit.ps1", (): void => {
     return result.stdout.trim();
   };
 
-  // The GitHub CLI is replaced on the path so that the requests are observed without contacting GitHub.
+  // The GitHub CLI is replaced on the path so that the requests are observed and answered without contacting GitHub.
   const writeFakeGitHubCli = (
     name: string,
     branchObjectId: string | null,
+    commitObjectId: string | null,
   ): string => {
     const binaryPath: string = path.join(scratchPath, `${name}-cli`);
     fs.mkdirSync(binaryPath, { recursive: true });
@@ -113,24 +124,49 @@ describe("New-SignedCommit.ps1", (): void => {
         ? "null"
         : `{"target":{"oid":"${branchObjectId}"}}`;
     fs.writeFileSync(
-      path.join(binaryPath, "response.json"),
-      `{"data":{"repository":{"id":"R_1","ref":${reference}},"createRef":{"ref":{"name":"created"}}}}`,
+      path.join(binaryPath, "query.json"),
+      `{"data":{"repository":{"id":"${repositoryId}","ref":${reference}}}}`,
     );
+    fs.writeFileSync(
+      path.join(binaryPath, "createRef.json"),
+      `{"data":{"createRef":{"ref":{"name":"refs/heads/${branchName}"}}}}`,
+    );
+
+    // A missing response file makes the fake CLI exit non-zero, which simulates a failed request.
+    if (commitObjectId !== null) {
+      fs.writeFileSync(
+        path.join(binaryPath, "commit.json"),
+        `{"data":{"createCommitOnBranch":{"commit":{"oid":"${commitObjectId}"}}}}`,
+      );
+    }
+
     if (process.platform === "win32") {
       fs.writeFileSync(
         path.join(binaryPath, "gh.cmd"),
-        `@echo off\r\necho ${separator}>> "%~dp0requests.log"\r\ntype "%~4" >> "%~dp0requests.log"\r\ntype "%~dp0response.json"\r\n`,
+        `@echo off\r\nset STAGE=query\r\nfindstr /c:"createRef" "%~4" >nul && set STAGE=createRef\r\nfindstr /c:"createCommitOnBranch" "%~4" >nul && set STAGE=commit\r\necho ${separator}>> "%~dp0requests.log"\r\ntype "%~4" >> "%~dp0requests.log"\r\nif not exist "%~dp0%STAGE%.json" exit /b 1\r\ntype "%~dp0%STAGE%.json"\r\n`,
       );
     } else {
       const scriptPath: string = path.join(binaryPath, "gh");
       fs.writeFileSync(
         scriptPath,
-        `#!/bin/sh\necho ${separator} >> "$(dirname "$0")/requests.log"\ncat "$4" >> "$(dirname "$0")/requests.log"\ncat "$(dirname "$0")/response.json"\n`,
+        `#!/bin/sh\ndirectory="$(dirname "$0")"\nstage=query\ngrep -q createRef "$4" && stage=createRef\ngrep -q createCommitOnBranch "$4" && stage=commit\necho ${separator} >> "$directory/requests.log"\ncat "$4" >> "$directory/requests.log"\n[ -f "$directory/$stage.json" ] || exit 1\ncat "$directory/$stage.json"\n`,
       );
       fs.chmodSync(scriptPath, 0o755);
     }
 
     return binaryPath;
+  };
+
+  const getStage = (request: GraphQlRequestInterface): string => {
+    if (request.query.includes("createCommitOnBranch")) {
+      return "commit";
+    }
+
+    if (request.query.includes("createRef")) {
+      return "createRef";
+    }
+
+    return "query";
   };
 
   const readRequests = (binaryPath: string): GraphQlRequestInterface[] =>
@@ -150,9 +186,14 @@ describe("New-SignedCommit.ps1", (): void => {
   const runScenario = (
     name: string,
     stage: (repositoryPath: string) => void,
-    branchObjectId: string | null = remoteObjectId,
-    createBranchOnRemote = false,
+    options: ScenarioOptionsInterface = {},
   ): ScenarioInterface => {
+    const {
+      branchObjectId = remoteObjectId,
+      commitObjectId = createdObjectId,
+      createBranchOnRemote = false,
+      writeRequestOnly = true,
+    } = options;
     const repositoryPath: string = path.join(scratchPath, name);
     fs.mkdirSync(repositoryPath, { recursive: true });
     runGit(repositoryPath, "init", "--quiet", `--initial-branch=${branchName}`);
@@ -165,7 +206,11 @@ describe("New-SignedCommit.ps1", (): void => {
     runGit(repositoryPath, "commit", "--quiet", "--message=Initial");
     stage(repositoryPath);
 
-    const binaryPath: string = writeFakeGitHubCli(name, branchObjectId);
+    const binaryPath: string = writeFakeGitHubCli(
+      name,
+      branchObjectId,
+      commitObjectId,
+    );
     const payloadPath: string = path.join(repositoryPath, "payload.json");
     const environment: Record<string, string | undefined> = Object.fromEntries(
       Object.entries(process.env).filter(
@@ -185,8 +230,7 @@ describe("New-SignedCommit.ps1", (): void => {
         helperPath,
         "-Message",
         commitMessage,
-        "-PayloadOutputPath",
-        payloadPath,
+        ...(writeRequestOnly ? ["-PayloadOutputPath", payloadPath] : []),
         ...(createBranchOnRemote ? ["-CreateBranchOnRemote"] : []),
       ],
       { cwd: repositoryPath, encoding: "utf8", env: environment },
@@ -205,7 +249,7 @@ describe("New-SignedCommit.ps1", (): void => {
   };
 
   const hostileNames: string[] = [
-    "hostile $(Get-Content pwned).txt",
+    "hostile $(New-Item pwned).txt",
     "hostile `whoami` && echo.txt",
     "hostile '; rm -rf . ;'.txt",
     "hostile ünïcödé 🙂.txt",
@@ -264,16 +308,34 @@ describe("New-SignedCommit.ps1", (): void => {
   const stageAddition = (repositoryPath: string): void => {
     fs.writeFileSync(path.join(repositoryPath, "added.txt"), "added\n");
   };
+  const commitScenario: ScenarioInterface = runScenario(
+    "commit",
+    stageAddition,
+    { writeRequestOnly: false },
+  );
   const creationScenario: ScenarioInterface = runScenario(
     "creation",
     stageAddition,
-    null,
-    true,
+    {
+      branchObjectId: null,
+      createBranchOnRemote: true,
+      writeRequestOnly: false,
+    },
+  );
+  const previewCreationScenario: ScenarioInterface = runScenario(
+    "preview-creation",
+    stageAddition,
+    { branchObjectId: null, createBranchOnRemote: true },
   );
   const missingBranchScenario: ScenarioInterface = runScenario(
     "missing-branch",
     stageAddition,
-    null,
+    { branchObjectId: null },
+  );
+  const failureScenario: ScenarioInterface = runScenario(
+    "failure",
+    stageAddition,
+    { commitObjectId: null, writeRequestOnly: false },
   );
 
   after((): void => {
@@ -380,7 +442,7 @@ describe("New-SignedCommit.ps1", (): void => {
       payload.query.includes("createCommitOnBranch(input: $input)"),
       true,
     );
-    assert.equal(contentScenario.requests.length, 1);
+    assert.deepEqual(contentScenario.requests.map(getStage), ["query"]);
     assert.ok(branchRequest);
     assert.equal(
       branchRequest.variables.qualifiedName,
@@ -388,23 +450,100 @@ describe("New-SignedCommit.ps1", (): void => {
     );
   });
 
-  it("should create a missing branch at the local commit", (): void => {
+  it("should create the branch and the commit in order when the branch is missing", (): void => {
     // Arrange
-    const [, createBranchRequest] = creationScenario.requests;
+    const [queryRequest, createBranchRequest, commitRequest] =
+      creationScenario.requests;
 
     // Assert
     assert.equal(creationScenario.result.status, 0);
-    assert.equal(creationScenario.requests.length, 2);
-    assert.ok(createBranchRequest);
-    assert.equal(createBranchRequest.query.includes("createRef"), true);
-    assert.deepEqual(createBranchRequest.variables.input, {
+    assert.deepEqual(creationScenario.requests.map(getStage), [
+      "query",
+      "createRef",
+      "commit",
+    ]);
+    assert.equal(
+      queryRequest?.variables.qualifiedName,
+      `refs/heads/${branchName}`,
+    );
+    assert.deepEqual(createBranchRequest?.variables.input, {
       name: `refs/heads/${branchName}`,
       oid: creationScenario.headObjectId,
-      repositoryId: "R_1",
+      repositoryId,
     });
     assert.equal(
-      creationScenario.payload?.variables.input.expectedHeadOid,
+      commitRequest?.variables.input?.expectedHeadOid,
       creationScenario.headObjectId,
+    );
+    assert.equal(
+      creationScenario.result.stdout.includes(
+        `Created the branch '${branchName}' on the remote.`,
+      ),
+      true,
+    );
+    assert.equal(
+      creationScenario.result.stdout.includes(
+        `Created commit '${createdObjectId}' with 1 addition(s) and 0 deletion(s).`,
+      ),
+      true,
+    );
+  });
+
+  it("should commit atop the remote head that was read", (): void => {
+    // Arrange
+    const [queryRequest, commitRequest] = commitScenario.requests;
+
+    // Assert
+    assert.equal(commitScenario.result.status, 0);
+    assert.deepEqual(commitScenario.requests.map(getStage), [
+      "query",
+      "commit",
+    ]);
+    assert.equal(
+      queryRequest?.variables.qualifiedName,
+      `refs/heads/${branchName}`,
+    );
+    assert.equal(
+      commitRequest?.variables.input?.expectedHeadOid,
+      remoteObjectId,
+    );
+    assert.notEqual(remoteObjectId, commitScenario.headObjectId);
+    assert.equal(
+      commitScenario.result.stdout.includes(
+        `Created commit '${createdObjectId}' with 1 addition(s) and 0 deletion(s).`,
+      ),
+      true,
+    );
+  });
+
+  it("should fail when the GitHub CLI reports an error", (): void => {
+    // Assert
+    assert.notEqual(failureScenario.result.status, 0);
+    assert.deepEqual(failureScenario.requests.map(getStage), [
+      "query",
+      "commit",
+    ]);
+    assert.equal(
+      failureScenario.result.stderr.includes(
+        "The GitHub GraphQL API request failed with exit code 1.",
+      ),
+      true,
+    );
+  });
+
+  it("should change nothing on the remote when a request is written", (): void => {
+    // Assert
+    assert.equal(previewCreationScenario.result.status, 0);
+    assert.deepEqual(previewCreationScenario.requests.map(getStage), ["query"]);
+    assert.equal(
+      previewCreationScenario.payload?.variables.input.expectedHeadOid,
+      previewCreationScenario.headObjectId,
+    );
+    assert.equal(
+      previewCreationScenario.result.stdout.includes(
+        `The branch '${branchName}' would be created on the remote.`,
+      ),
+      true,
     );
   });
 
@@ -412,7 +551,7 @@ describe("New-SignedCommit.ps1", (): void => {
     // Assert
     assert.notEqual(missingBranchScenario.result.status, 0);
     assert.equal(missingBranchScenario.payload, null);
-    assert.equal(missingBranchScenario.requests.length, 1);
+    assert.deepEqual(missingBranchScenario.requests.map(getStage), ["query"]);
     assert.equal(
       missingBranchScenario.result.stderr.includes(
         "does not exist on the remote",
@@ -448,6 +587,8 @@ describe("New-SignedCommit.ps1", (): void => {
       paths.sort(compareBytes),
       [...hostileNames].sort(compareBytes),
     );
+
+    // The first hostile name creates 'pwned' if a path is ever evaluated rather than treated as data.
     assert.equal(
       fs.existsSync(path.join(hostileScenario.repositoryPath, "pwned")),
       false,

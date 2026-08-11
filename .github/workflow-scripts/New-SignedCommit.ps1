@@ -3,14 +3,16 @@
 
 <#
     .SYNOPSIS
-        Creates a signed commit containing the staged changes on the current branch.
+        Stages the working tree and creates a signed commit containing the staged changes on the current branch.
 
     .DESCRIPTION
-        The staged changes are read from the Git index as raw bytes and the content of each change is read from the
-        staged blob, so file names are never interpreted as commands and the working tree is never read. The commit is
-        created by GitHub via the GraphQL 'createCommitOnBranch' mutation, which signs it. Every value is sent as a
-        structured GraphQL variable within a JSON request file, and the token is read from the 'GH_TOKEN' environment
-        variable by the GitHub CLI rather than being passed on the command line.
+        Every working tree change is staged via 'git add -A', which is the only modification that is made locally.
+        The staged changes are then read from the Git index as raw bytes and the content of each change is read from
+        the staged blob, so file names are never interpreted as commands and the content that is committed is always
+        the content that was staged. The commit is created by GitHub via the GraphQL 'createCommitOnBranch' mutation,
+        which signs it. Every value is sent as a structured GraphQL variable within a JSON request file, and the token
+        is read from the 'GH_TOKEN' environment variable by the GitHub CLI rather than being passed on the command
+        line.
 
         The remote branch is read exactly once and the staged changes are applied atop the commit that was read, so a
         commit created concurrently by another job is retained rather than reverted. The read commit is sent as
@@ -26,8 +28,9 @@
         switch, a branch that is missing from the remote fails the run.
 
     .PARAMETER PayloadOutputPath
-        Writes the GraphQL request that would create the commit to the specified path and returns without creating the
-        commit. This exists for testing and is never used by a workflow.
+        Writes the GraphQL request that would create the commit to the specified path and returns without changing
+        anything on the remote, so neither the branch nor the commit is created. This exists for testing and is never
+        used by a workflow.
 #>
 
 #Requires -Version 7.0
@@ -51,6 +54,7 @@ $utf8 = [System.Text.UTF8Encoding]::new($false, $true)
 $recordExpression = '^:(?<sourceMode>[0-7]{6}) (?<destinationMode>[0-7]{6}) (?<sourceObjectId>[0-9a-f]{40}|[0-9a-f]{64}) (?<destinationObjectId>[0-9a-f]{40}|[0-9a-f]{64}) (?<status>[A-Z][0-9]*)$'
 $objectIdExpression = '^(?:[0-9a-f]{40}|[0-9a-f]{64})$'
 $regularFileMode = '100644'
+$isPreview = -not [string]::IsNullOrWhiteSpace($PayloadOutputPath)
 
 $branchQuery = 'query ($owner: String!, $name: String!, $qualifiedName: String!) { repository(owner: $owner, name: $name) { id ref(qualifiedName: $qualifiedName) { target { oid } } } }'
 $createBranchMutation = 'mutation ($input: CreateRefInput!) { createRef(input: $input) { ref { name } } }'
@@ -373,16 +377,24 @@ if ($null -eq $expectedHeadObjectId)
         throw "The branch '$branch' does not exist on the remote."
     }
 
-    $createBranchVariables = [ordered]@{
-        input = [ordered]@{
-            repositoryId = $repositoryNode.id
-            name         = "refs/heads/$branch"
-            oid          = $headObjectId
-        }
-    }
-    $null = Invoke-GitHubGraphQl -Query $createBranchMutation -Variables $createBranchVariables
     $expectedHeadObjectId = $headObjectId
-    Write-Output -InputObject "Created the branch '$branch' on the remote."
+    if ($isPreview)
+    {
+        # Only the request is written, so the branch is described at the local HEAD rather than created.
+        Write-Output -InputObject "The branch '$branch' would be created on the remote."
+    }
+    else
+    {
+        $createBranchVariables = [ordered]@{
+            input = [ordered]@{
+                repositoryId = $repositoryNode.id
+                name         = "refs/heads/$branch"
+                oid          = $headObjectId
+            }
+        }
+        $null = Invoke-GitHubGraphQl -Query $createBranchMutation -Variables $createBranchVariables
+        Write-Output -InputObject "Created the branch '$branch' on the remote."
+    }
 }
 
 $commitVariables = [ordered]@{
@@ -394,7 +406,7 @@ $commitVariables = [ordered]@{
     }
 }
 
-if (-not [string]::IsNullOrWhiteSpace($PayloadOutputPath))
+if ($isPreview)
 {
     $payload = [ordered]@{ query = $createCommitMutation; variables = $commitVariables }
     Set-Content -Path $PayloadOutputPath -Value (ConvertTo-Json -InputObject $payload -Depth 10) -Encoding utf8NoBOM -NoNewline
