@@ -544,7 +544,6 @@ describe("azure-devops pipelines", (): void => {
     return result;
   };
 
-
   const countOccurrences = (contents: string, pattern: RegExp): number =>
     Array.from(contents.matchAll(pattern)).length;
 
