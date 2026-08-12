@@ -1,6 +1,8 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT License.
 
+Set-StrictMode -Version Latest
+
 $inputFile = './third-party-licenses.txt'
 $outputFile = 'src/LICENSE.txt'
 $marker = 'This file was generated with'

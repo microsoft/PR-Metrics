@@ -12,6 +12,8 @@ param(
     [int]$Patch
 )
 
+Set-StrictMode -Version Latest
+
 $version = "$Major.$Minor.$Patch"
 
 function Update-FileContent

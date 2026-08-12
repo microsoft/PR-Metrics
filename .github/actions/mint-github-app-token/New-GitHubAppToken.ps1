@@ -10,6 +10,7 @@
 # must hold 'Key Vault Crypto User' on the vault. Configuration is read from the
 # environment, and the token is published in the form the host CI understands.
 
+Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
 $apiUrl = 'https://api.github.com'
