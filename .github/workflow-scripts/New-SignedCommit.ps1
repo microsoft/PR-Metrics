@@ -14,11 +14,10 @@
         is read from the 'GH_TOKEN' environment variable by the GitHub CLI rather than being passed on the command
         line.
 
-        The remote branch is read exactly once and the staged changes are applied atop the commit that was read, so a
-        commit created concurrently by another job is retained rather than reverted. The read commit is sent as
-        'expectedHeadOid', so a branch update between the read and the mutation fails the mutation. The commit is
-        never forced and a stale head is never retried, meaning such a conflict fails the run rather than silently
-        overwriting the remote branch.
+        The remote branch is read exactly once and must match the local HEAD before a commit is created. The read
+        commit is sent as 'expectedHeadOid', so a branch update between the read and the mutation fails the mutation.
+        The commit is never forced and a stale head is never retried, meaning such a conflict fails the run rather
+        than silently overwriting the remote branch.
 
     .PARAMETER Message
         The headline of the commit message.
@@ -350,8 +349,7 @@ if ($null -eq $repositoryNode)
     throw "The repository '$nameWithOwner' could not be read via the GitHub GraphQL API."
 }
 
-# The remote branch is read once and the commit that was read becomes the expected head, so the staged changes are
-# applied atop any commit that another job has already pushed rather than reverting it.
+# The remote branch is read once and must match the local base commit before any remote mutation.
 $expectedHeadObjectId = $null
 if ($null -ne $repositoryNode.ref)
 {
@@ -359,6 +357,11 @@ if ($null -ne $repositoryNode.ref)
     if ($expectedHeadObjectId -notmatch $objectIdExpression)
     {
         throw "The remote branch '$branch' returned the malformed commit ID '$expectedHeadObjectId'."
+    }
+
+    if ($expectedHeadObjectId -ne $headObjectId)
+    {
+        throw "The remote branch '$branch' at '$expectedHeadObjectId' differs from the local HEAD '$headObjectId'."
     }
 }
 
