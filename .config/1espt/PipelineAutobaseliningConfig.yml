@@ -28,9 +28,9 @@ pipelines:
     retail:
       source:
         eslint:
-          lastModifiedDate: 2025-06-17
+          lastModifiedDate: 2026-08-12
         armory:
-          lastModifiedDate: 2025-06-17
+          lastModifiedDate: 2026-08-12
         credscan:
           lastModifiedDate: 2025-07-01
     usedNonDefaultBranch: true
