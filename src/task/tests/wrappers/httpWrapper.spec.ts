@@ -17,6 +17,47 @@ type FetchFunction = (
   init?: FetchInit,
 ) => Promise<Response>;
 
+interface ProxyConfiguration {
+  proxyBypassHosts?: string[];
+  proxyFormattedUrl: string;
+  proxyPassword?: string;
+  proxyUrl: string;
+  proxyUsername?: string;
+}
+
+interface ProxyRequestOptions {
+  proxy?: {
+    proxyBypassHosts?: string[];
+    proxyPassword?: string;
+    proxyUrl: string;
+    proxyUsername?: string;
+  };
+  socketTimeout?: number;
+}
+
+interface ProxyResponse {
+  message: {
+    statusCode?: number;
+  };
+  readBody: () => Promise<string>;
+}
+
+interface ProxyClient {
+  post: (
+    requestUrl: string,
+    data: string,
+    additionalHeaders?: Record<string, string>,
+  ) => Promise<ProxyResponse>;
+}
+
+type GetProxyConfiguration = (
+  requestUrl: string,
+) => ProxyConfiguration | null;
+
+type CreateProxyClient = (
+  requestOptions: ProxyRequestOptions,
+) => ProxyClient;
+
 describe("httpWrapper.ts", (): void => {
   const originalFetch: typeof fetch = globalThis.fetch;
   // eslint-disable-next-line @typescript-eslint/unbound-method -- `AbortSignal.timeout` is a static factory that does not use `this`.
@@ -41,7 +82,7 @@ describe("httpWrapper.ts", (): void => {
   };
 
   beforeEach((): void => {
-    httpWrapper = new HttpWrapper();
+    httpWrapper = new HttpWrapper((): null => null);
     fetchCallCount = 0;
     capturedInput = null;
     capturedInit = null;
@@ -59,7 +100,66 @@ describe("httpWrapper.ts", (): void => {
   });
 
   describe("postForm()", (): void => {
-    it("sends the expected URL, method, headers, body, and timeout", async (): Promise<void> => {
+    it("passes an applicable Azure Pipelines proxy configuration to the proxy-aware client", async (): Promise<void> => {
+      // Arrange
+      const tokenUrl =
+        "https://login.microsoftonline.com/TenantId/oauth2/v2.0/token";
+      const proxyConfiguration: ProxyConfiguration = {
+        proxyBypassHosts: [".*\\.internal\\.example$"],
+        proxyFormattedUrl: "http://ProxyUser:ProxyPassword@proxy.example:8080",
+        proxyPassword: "ProxyPassword",
+        proxyUrl: "http://proxy.example:8080",
+        proxyUsername: "ProxyUser",
+      };
+      const captured: {
+        requestOptions?: ProxyRequestOptions;
+      } = {};
+      const getProxyConfiguration: GetProxyConfiguration = (
+        requestUrl: string,
+      ): ProxyConfiguration | null =>
+        requestUrl === tokenUrl ? proxyConfiguration : null;
+      const proxyClient: ProxyClient = {
+        post: async (): Promise<ProxyResponse> =>
+          Promise.resolve({
+            message: {
+              statusCode: 200,
+            },
+            readBody: async (): Promise<string> =>
+              Promise.resolve(JSON.stringify({ access_token: "AccessToken" })),
+          }),
+      };
+      const createProxyClient: CreateProxyClient = (
+        requestOptions: ProxyRequestOptions,
+      ): ProxyClient => {
+        captured.requestOptions = requestOptions;
+        return proxyClient;
+      };
+      httpWrapper = new HttpWrapper(
+        getProxyConfiguration,
+        createProxyClient,
+      );
+      const form: URLSearchParams = new URLSearchParams();
+      stubFetch(
+        async (): Promise<Response> =>
+          Promise.resolve(
+            new Response(JSON.stringify({ access_token: "AccessToken" }), {
+              status: 200,
+            }),
+          ),
+      );
+
+      // Act
+      const result: string = await httpWrapper.postForm(tokenUrl, form);
+
+      // Assert
+      assert.equal(result, "AccessToken");
+      assert.equal(fetchCallCount, 0);
+      assert.ok(captured.requestOptions);
+      assert.equal(captured.requestOptions.proxy, proxyConfiguration);
+      assert.equal(captured.requestOptions.socketTimeout, httpTimeoutMs);
+    });
+
+    it("uses native fetch with the expected request when no Azure Pipelines proxy applies", async (): Promise<void> => {
       // Arrange
       const form: URLSearchParams = new URLSearchParams();
       form.set("client_id", "ClientId");
@@ -291,6 +391,7 @@ describe("httpWrapper.ts", (): void => {
         "HTTP POST request to 'https://login.microsoftonline.com/x' failed before a response was received (TimeoutError).",
       );
       assert.equal(error.message.includes("SuperSecretAssertion"), false);
+      assert.equal(String(error.cause).includes("SuperSecretAssertion"), false);
     });
   });
 });
