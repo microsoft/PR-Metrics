@@ -34,7 +34,7 @@
 [CmdletBinding()]
 param(
     [Parameter(Mandatory)]
-    [ValidateNotNullOrEmpty()]
+    [ValidateNotNullOrWhiteSpace()]
     [string]$Message,
 
     [switch]$CreateBranchOnRemote
