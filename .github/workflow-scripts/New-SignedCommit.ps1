@@ -27,10 +27,6 @@
         Creates the branch on the remote at the local HEAD commit when the branch does not already exist. Without this
         switch, a branch that is missing from the remote fails the run.
 
-    .PARAMETER PayloadOutputPath
-        Writes the GraphQL request that would create the commit to the specified path and returns without changing
-        anything on the remote, so neither the branch nor the commit is created. This exists for testing and is never
-        used by a workflow.
 #>
 
 #Requires -Version 7.0
@@ -41,12 +37,10 @@ param(
     [ValidateNotNullOrEmpty()]
     [string]$Message,
 
-    [switch]$CreateBranchOnRemote,
-
-    [string]$PayloadOutputPath = ''
+    [switch]$CreateBranchOnRemote
 )
 
-Set-StrictMode -Version 3.0
+Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
 # Decoding is strict, so any value that is not valid UTF-8 fails the commit instead of being silently corrupted.
@@ -54,8 +48,6 @@ $utf8 = [System.Text.UTF8Encoding]::new($false, $true)
 $recordExpression = '^:(?<sourceMode>[0-7]{6}) (?<destinationMode>[0-7]{6}) (?<sourceObjectId>[0-9a-f]{40}|[0-9a-f]{64}) (?<destinationObjectId>[0-9a-f]{40}|[0-9a-f]{64}) (?<status>[A-Z][0-9]*)$'
 $objectIdExpression = '^(?:[0-9a-f]{40}|[0-9a-f]{64})$'
 $regularFileMode = '100644'
-$isPreview = -not [string]::IsNullOrWhiteSpace($PayloadOutputPath)
-
 $branchQuery = 'query ($owner: String!, $name: String!, $qualifiedName: String!) { repository(owner: $owner, name: $name) { id ref(qualifiedName: $qualifiedName) { target { oid } } } }'
 $createBranchMutation = 'mutation ($input: CreateRefInput!) { createRef(input: $input) { ref { name } } }'
 $createCommitMutation = 'mutation ($input: CreateCommitOnBranchInput!) { createCommitOnBranch(input: $input) { commit { oid } } }'
@@ -378,23 +370,15 @@ if ($null -eq $expectedHeadObjectId)
     }
 
     $expectedHeadObjectId = $headObjectId
-    if ($isPreview)
-    {
-        # Only the request is written, so the branch is described at the local HEAD rather than created.
-        Write-Output -InputObject "The branch '$branch' would be created on the remote."
-    }
-    else
-    {
-        $createBranchVariables = [ordered]@{
-            input = [ordered]@{
-                repositoryId = $repositoryNode.id
-                name         = "refs/heads/$branch"
-                oid          = $headObjectId
-            }
+    $createBranchVariables = [ordered]@{
+        input = [ordered]@{
+            repositoryId = $repositoryNode.id
+            name         = "refs/heads/$branch"
+            oid          = $headObjectId
         }
-        $null = Invoke-GitHubGraphQl -Query $createBranchMutation -Variables $createBranchVariables
-        Write-Output -InputObject "Created the branch '$branch' on the remote."
     }
+    $null = Invoke-GitHubGraphQl -Query $createBranchMutation -Variables $createBranchVariables
+    Write-Output -InputObject "Created the branch '$branch' on the remote."
 }
 
 $commitVariables = [ordered]@{
@@ -404,14 +388,6 @@ $commitVariables = [ordered]@{
         fileChanges     = [ordered]@{ additions = $additions; deletions = $deletions }
         message         = [ordered]@{ headline = $Message }
     }
-}
-
-if ($isPreview)
-{
-    $payload = [ordered]@{ query = $createCommitMutation; variables = $commitVariables }
-    Set-Content -Path $PayloadOutputPath -Value (ConvertTo-Json -InputObject $payload -Depth 10) -Encoding utf8NoBOM -NoNewline
-    Write-Output -InputObject "Wrote a request for $($additions.Count) addition(s) and $($deletions.Count) deletion(s)."
-    return
 }
 
 # The commit is neither forced nor retried, so a branch update after the read fails the mutation via
