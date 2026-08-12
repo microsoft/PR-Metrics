@@ -195,7 +195,10 @@ describe("New-SignedCommit.ps1 remote head validation", (): void => {
       createBranchScenario.requests;
 
     assert.equal(createBranchScenario.result.status, 0);
-    assert.equal(createBranchRequest?.variables.input?.oid, createBranchScenario.headObjectId);
+    assert.equal(
+      createBranchRequest?.variables.input?.oid,
+      createBranchScenario.headObjectId,
+    );
     assert.equal(
       commitRequest?.variables.input?.expectedHeadOid,
       createBranchScenario.headObjectId,
