@@ -108,9 +108,9 @@ describe("tokenManager.ts", (): void => {
     when(
       runnerInvoker.getEndpointAuthorizationParameter("Id", "tenantid"),
     ).thenReturn(tenantId);
-    when(runnerInvoker.getEndpointDataParameter("Id", "environment")).thenReturn(
-      "AzureCloud",
-    );
+    when(
+      runnerInvoker.getEndpointDataParameter("Id", "environment"),
+    ).thenReturn("AzureCloud");
     when(
       runnerInvoker.getEndpointAuthorization("SYSTEMVSSCONNECTION"),
     ).thenReturn({
@@ -439,7 +439,9 @@ describe("tokenManager.ts", (): void => {
         when(
           runnerInvoker.getEndpointDataParameter("Id", "environment"),
         ).thenReturn(environment);
-        when(httpWrapper.postForm(anyString(), any<URLSearchParams>())).thenCall(
+        when(
+          httpWrapper.postForm(anyString(), any<URLSearchParams>()),
+        ).thenCall(
           async (url: string, form: URLSearchParams): Promise<string> => {
             actualUrl = url;
             actualFormString = form.toString();
@@ -452,10 +454,7 @@ describe("tokenManager.ts", (): void => {
         await tokenManager.getToken();
 
         // Assert
-        assert.equal(
-          actualUrl,
-          `${authority}/${tenantId}/oauth2/v2.0/token`,
-        );
+        assert.equal(actualUrl, `${authority}/${tenantId}/oauth2/v2.0/token`);
         assert.equal(actualFormString, expectedForm().toString());
         verify(runnerInvoker.exec(anyString(), any<string[]>())).never();
       });
@@ -478,29 +477,35 @@ describe("tokenManager.ts", (): void => {
     // Assert
     verify(httpWrapper.postForm(anyString(), any<URLSearchParams>())).never();
     verify(
-      runnerInvoker.exec("az", deepEqual([
-        "login",
-        "--service-principal",
-        "-u",
-        servicePrincipalId,
-        "--tenant",
-        tenantId,
-        "--allow-no-subscriptions",
-        "--federated-token",
-        "OidcToken",
-      ])),
+      runnerInvoker.exec(
+        "az",
+        deepEqual([
+          "login",
+          "--service-principal",
+          "-u",
+          servicePrincipalId,
+          "--tenant",
+          tenantId,
+          "--allow-no-subscriptions",
+          "--federated-token",
+          "OidcToken",
+        ]),
+      ),
     ).once();
     verify(
-      runnerInvoker.exec("az", deepEqual([
-        "account",
-        "get-access-token",
-        "--query",
-        "accessToken",
-        "--resource",
-        "499b84ac-1321-427f-aa17-267ca6975798",
-        "-o",
-        "tsv",
-      ])),
+      runnerInvoker.exec(
+        "az",
+        deepEqual([
+          "account",
+          "get-access-token",
+          "--query",
+          "accessToken",
+          "--resource",
+          "499b84ac-1321-427f-aa17-267ca6975798",
+          "-o",
+          "tsv",
+        ]),
+      ),
     ).once();
   });
 
@@ -559,7 +564,9 @@ describe("tokenManager.ts", (): void => {
 
         // Assert
         await AssertExtensions.toThrowAsync(func, expectedErrorMessage);
-        verify(httpWrapper.postForm(anyString(), any<URLSearchParams>())).never();
+        verify(
+          httpWrapper.postForm(anyString(), any<URLSearchParams>()),
+        ).never();
       });
     });
   }
@@ -597,9 +604,9 @@ describe("tokenManager.ts", (): void => {
     verify(runnerInvoker.setSecret("OidcToken")).calledBefore(
       httpWrapper.postForm(anyString(), any<URLSearchParams>()),
     );
-    verify(httpWrapper.postForm(anyString(), any<URLSearchParams>())).calledBefore(
-      runnerInvoker.setSecret("AccessToken"),
-    );
+    verify(
+      httpWrapper.postForm(anyString(), any<URLSearchParams>()),
+    ).calledBefore(runnerInvoker.setSecret("AccessToken"));
   });
 
   it("sets PR_METRICS_ACCESS_TOKEN", async (): Promise<void> => {

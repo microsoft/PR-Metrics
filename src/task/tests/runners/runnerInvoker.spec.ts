@@ -367,8 +367,10 @@ describe("runnerInvoker.ts", (): void => {
         ).thenReturn("VALUE");
 
         // Act
-        const result: string | null =
-          runnerInvoker.getEndpointDataParameter("id", "key");
+        const result: string | null = runnerInvoker.getEndpointDataParameter(
+          "id",
+          "key",
+        );
 
         // Assert
         assert.equal(result, "VALUE");

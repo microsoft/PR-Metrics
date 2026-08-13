@@ -190,14 +190,10 @@ export default class HttpWrapper {
       proxy: proxyConfiguration,
       socketTimeout: httpTimeoutMs,
     });
-    const response: FormPostResponse = await client.post(
-      url,
-      form.toString(),
-      {
-        // eslint-disable-next-line @typescript-eslint/naming-convention -- Required for alignment with the HTTP header.
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-    );
+    const response: FormPostResponse = await client.post(url, form.toString(), {
+      // eslint-disable-next-line @typescript-eslint/naming-convention -- Required for alignment with the HTTP header.
+      "Content-Type": "application/x-www-form-urlencoded",
+    });
     return {
       readBody: async (): Promise<string> => response.readBody(),
       status: response.message.statusCode,

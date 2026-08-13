@@ -50,18 +50,15 @@ interface ProxyClient {
   ) => Promise<ProxyResponse>;
 }
 
-type GetProxyConfiguration = (
-  requestUrl: string,
-) => ProxyConfiguration | null;
+type GetProxyConfiguration = (requestUrl: string) => ProxyConfiguration | null;
 
-type CreateProxyClient = (
-  requestOptions: ProxyRequestOptions,
-) => ProxyClient;
+type CreateProxyClient = (requestOptions: ProxyRequestOptions) => ProxyClient;
 
 describe("httpWrapper.ts", (): void => {
   const originalFetch: typeof fetch = globalThis.fetch;
   // eslint-disable-next-line @typescript-eslint/unbound-method -- `AbortSignal.timeout` is a static factory that does not use `this`.
-  const originalAbortSignalTimeout: typeof AbortSignal.timeout = AbortSignal.timeout;
+  const originalAbortSignalTimeout: typeof AbortSignal.timeout =
+    AbortSignal.timeout;
 
   let httpWrapper: HttpWrapper;
   let fetchCallCount: number;
@@ -88,10 +85,10 @@ describe("httpWrapper.ts", (): void => {
     capturedInit = null;
     capturedTimeoutMs = null;
 
-    AbortSignal.timeout = ((ms: number): AbortSignal => {
+    AbortSignal.timeout = (ms: number): AbortSignal => {
       capturedTimeoutMs = ms;
       return originalAbortSignalTimeout(ms);
-    });
+    };
   });
 
   afterEach((): void => {
@@ -134,10 +131,7 @@ describe("httpWrapper.ts", (): void => {
         captured.requestOptions = requestOptions;
         return proxyClient;
       };
-      httpWrapper = new HttpWrapper(
-        getProxyConfiguration,
-        createProxyClient,
-      );
+      httpWrapper = new HttpWrapper(getProxyConfiguration, createProxyClient);
       const form: URLSearchParams = new URLSearchParams();
       stubFetch(
         async (): Promise<Response> =>
