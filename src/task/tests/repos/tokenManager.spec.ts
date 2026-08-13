@@ -604,6 +604,23 @@ describe("tokenManager.ts", (): void => {
       verify(fileSystemWrapper.rm(isolatedConfigDirectoryA)).once();
     });
 
+    it("cleans up the isolated Azure CLI configuration directory when token masking fails", async (): Promise<void> => {
+      // Arrange
+      when(runnerInvoker.setSecret("AccessToken")).thenThrow(
+        new Error("Masking Error"),
+      );
+      const tokenManager: TokenManager = createTokenManager();
+
+      // Act
+      const func: () => Promise<string | null> = async () =>
+        tokenManager.getToken();
+
+      // Assert
+      await AssertExtensions.toThrowAsync(func, "Masking Error");
+      assert.equal(typeof process.env.PR_METRICS_ACCESS_TOKEN, "undefined");
+      verify(fileSystemWrapper.rm(isolatedConfigDirectoryA)).once();
+    });
+
     it("fails token acquisition when cleanup fails after a successful authentication", async (): Promise<void> => {
       // Arrange
       when(fileSystemWrapper.rm(isolatedConfigDirectoryA)).thenReject(

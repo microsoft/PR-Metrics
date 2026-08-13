@@ -62,12 +62,12 @@ describe("fileSystemWrapper.ts", (): void => {
     it("returns false for a path that refers to a file", async (): Promise<void> => {
       // Arrange
       const fileSystemWrapper: FileSystemWrapper = new FileSystemWrapper();
-      const filePath: string = path.join(
-        os.tmpdir(),
-        `pr-metrics-file-${String(Date.now())}.tmp`,
+      const directoryPath: string = await fsPromises.mkdtemp(
+        path.join(os.tmpdir(), "pr-metrics-file-"),
       );
+      createdPaths.push(directoryPath);
+      const filePath: string = path.join(directoryPath, "file.tmp");
       await fsPromises.writeFile(filePath, "");
-      createdPaths.push(filePath);
 
       // Act
       const result: boolean = await fileSystemWrapper.directoryExists(filePath);

@@ -151,6 +151,7 @@ export default class TokenManager {
         federatedToken,
         isolatedEnvironment,
       );
+      this._runnerInvoker.setSecret(accessToken);
     } catch (authenticationError: unknown) {
       await this.cleanUpIsolatedAzureCliConfigDirectoryAfterFailure(
         isolatedConfigDirectory,
@@ -159,8 +160,6 @@ export default class TokenManager {
         ? authenticationError
         : new Error(String(authenticationError));
     }
-
-    this._runnerInvoker.setSecret(accessToken);
 
     // Cleanup failure after a successful authentication is treated as a security failure: the token is not released.
     await this.cleanUpIsolatedAzureCliConfigDirectoryAfterSuccess(
