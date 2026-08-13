@@ -105,8 +105,16 @@ manipulation.
 
 **Mitigations**:
 
-- The `package-lock.json` file pins exact dependency versions, preventing
-  unexpected updates.
+- The `package-lock.json` file pins exact dependency versions and integrity
+  hashes, preventing unexpected updates. The checked-in `.npmrc` files use the
+  Microsoft Package Feed Proxy for root and task-local npm commands; Azure
+  Pipelines builds override this at runtime with an explicit Office npm feed
+  instead. Neither active pipeline path resolves dependencies by directly
+  configuring `registry.npmjs.org`. The rotating backend tarball hosts recorded
+  in `package-lock.json` are not treated as a fixed trust boundary; the pinned
+  version and integrity hash for each package are the actual integrity controls,
+  verified on every install regardless of which backend host serves the tarball
+  (see [Dependency Management][dependencymanagement]).
 - [CodeQL][codeql] analyzes the codebase for security vulnerabilities on every
   pull request.
 - Dependencies are updated through a controlled process during releases, using
@@ -178,6 +186,7 @@ are added, when the threat landscape changes, or at least annually.
 [actionsexec]: https://github.com/actions/toolkit/tree/main/packages/exec
 [azurepipelinestasksdk]: https://github.com/microsoft/azure-pipelines-task-lib
 [codeql]: https://codeql.github.com/
+[dependencymanagement]: dependency-management.md
 [gitleaks]: https://github.com/gitleaks/gitleaks
 [npmcheckupdates]: https://www.npmjs.com/package/npm-check-updates
 [prmetrics]: https://github.com/microsoft/PR-Metrics
