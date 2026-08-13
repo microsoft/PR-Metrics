@@ -29,9 +29,8 @@ interface PackageJsonInterface {
 
 describe("azure-pipelines-task-lib minimatch compatibility", (): void => {
   const require = createRequire(import.meta.url);
-  const taskLibPackageJsonPath: string = require.resolve(
-    "azure-pipelines-task-lib/package.json",
-  );
+  const taskLibPackageJsonPath: string =
+    require.resolve("azure-pipelines-task-lib/package.json");
   const taskLibRequire = createRequire(taskLibPackageJsonPath);
   const taskLibMinimatchPackageJson = taskLibRequire(
     "minimatch/package.json",
