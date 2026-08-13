@@ -72,11 +72,14 @@ describe("tokenManager.ts", (): void => {
     );
 
   const captureExecOptions = (callIndex: number): ExecOptions | undefined => {
-    const [, , options]: [string, string[], ExecOptions | undefined] =
-      capture<string, string[], ExecOptions | undefined>(
-        // eslint-disable-next-line @typescript-eslint/unbound-method -- ts-mockito requires the raw mocked method reference to correlate captured call history.
-        runnerInvoker.exec,
-      ).byCallIndex(callIndex);
+    const [, , options]: [string, string[], ExecOptions | undefined] = capture<
+      string,
+      string[],
+      ExecOptions | undefined
+    >(
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- ts-mockito requires the raw mocked method reference to correlate captured call history.
+      runnerInvoker.exec,
+    ).byCallIndex(callIndex);
     return options;
   };
 
@@ -647,7 +650,9 @@ describe("tokenManager.ts", (): void => {
         secondFunc,
         "Azure CLI authentication succeeded, but the isolated configuration state could not be cleaned up, so the access token cannot be trusted: Cleanup Error",
       );
-      verify(runnerInvoker.exec("az", deepEqual(loginArguments), any())).twice();
+      verify(
+        runnerInvoker.exec("az", deepEqual(loginArguments), any()),
+      ).twice();
       verify(runnerInvoker.setSecret("AccessToken")).twice();
     });
 
@@ -719,9 +724,7 @@ describe("tokenManager.ts", (): void => {
     it("throws an Error when Azure sign in rejects with a non-Error value", async (): Promise<void> => {
       // Arrange
       const tokenManager: TokenManager = createTokenManager();
-      when(
-        runnerInvoker.exec("az", deepEqual(loginArguments), any()),
-      ).thenCall(
+      when(runnerInvoker.exec("az", deepEqual(loginArguments), any())).thenCall(
         async (): Promise<ExecOutput> =>
           // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors -- Intentionally testing defensive handling of a non-Error rejection value.
           Promise.reject("Non-Error Rejection"),
