@@ -163,6 +163,27 @@ describe("gitHubRunnerInvoker.js", (): void => {
     });
   });
 
+  describe("getEndpointDataParameter()", (): void => {
+    it("should result in an exception", (): void => {
+      // Arrange
+      const gitHubRunnerInvoker: GitHubRunnerInvoker = new GitHubRunnerInvoker(
+        instance(azurePipelinesRunnerWrapper),
+        instance(consoleWrapper),
+        instance(gitHubRunnerWrapper),
+      );
+
+      // Act
+      const func: () => string | null = () =>
+        gitHubRunnerInvoker.getEndpointDataParameter();
+
+      // Assert
+      assert.throws(
+        func,
+        Error("getEndpointDataParameter() unavailable in GitHub."),
+      );
+    });
+  });
+
   describe("locInitialize()", (): void => {
     it("should succeed", (): void => {
       // Arrange

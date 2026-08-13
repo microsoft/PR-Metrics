@@ -74,6 +74,10 @@ export default class RunnerInvoker implements RunnerInvokerInterface {
     return this.runner.getEndpointAuthorizationParameter(id, key);
   }
 
+  public getEndpointDataParameter(id: string, key: string): string | null {
+    return this.runner.getEndpointDataParameter(id, key);
+  }
+
   public locInitialize(folder: string): void {
     if (this._localizationInitialized) {
       throw new Error(

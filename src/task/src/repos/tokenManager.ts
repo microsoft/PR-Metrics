@@ -10,6 +10,7 @@ import {
 } from "../utilities/validator.js";
 import type AzureDevOpsApiWrapper from "../wrappers/azureDevOpsApiWrapper.js";
 import type { EndpointAuthorization } from "../runners/endpointAuthorization.js";
+import type ExecOutput from "../runners/execOutput.js";
 import type HttpWrapper from "../wrappers/httpWrapper.js";
 import type { IRequestHandler } from "azure-devops-node-api/interfaces/common/VsoBaseInterfaces.js";
 import type { ITaskApi } from "azure-devops-node-api/TaskApi.js";
@@ -19,9 +20,13 @@ import type { TaskHubOidcToken } from "azure-devops-node-api/interfaces/TaskAgen
 import type { WebApi } from "azure-devops-node-api";
 
 /**
- * The Microsoft Entra public cloud authority. Sovereign cloud authorities are not supported.
+ * The allowlisted Microsoft Entra authorities for supported Azure cloud environments.
  */
-const microsoftEntraPublicCloudAuthority = "https://login.microsoftonline.com";
+const microsoftEntraAuthorities: ReadonlyMap<string, string> = new Map([
+  ["AzureCloud", "https://login.microsoftonline.com"],
+  ["AzureChinaCloud", "https://login.partner.microsoftonline.cn"],
+  ["AzureUSGovernment", "https://login.microsoftonline.us"],
+]);
 
 /**
  * The Microsoft Entra resource ID for Azure DevOps, as documented at
@@ -36,8 +41,8 @@ const azureDevOpsResourceId = "499b84ac-1321-427f-aa17-267ca6975798";
  *
  * Access tokens are acquired by exchanging the workload identity federation's OIDC assertion directly with the
  * Microsoft Entra OAuth 2.0 v2 token endpoint over HTTPS – the assertion is never passed to a subprocess and no
- * Azure CLI state is created. Only the Microsoft Entra public cloud authority is supported; sovereign clouds are
- * out of scope.
+ * Azure CLI state is created. Recognized Azure cloud environments are exchanged directly. Other environments fall
+ * back to Azure CLI to retain compatibility without accepting a service connection-supplied authority.
  */
 export default class TokenManager {
   private readonly _azureDevOpsApiWrapper: AzureDevOpsApiWrapper;
@@ -142,12 +147,28 @@ export default class TokenManager {
     );
     this._runnerInvoker.setSecret(federatedToken);
 
+    const environment: string | null =
+      this._runnerInvoker.getEndpointDataParameter(
+        workloadIdentityFederation,
+        "environment",
+      );
+    const authority: string | undefined = microsoftEntraAuthorities.get(
+      environment ?? "",
+    );
+    if (typeof authority !== "string") {
+      return this.getAccessTokenWithAzureCli(
+        servicePrincipalId,
+        tenantId,
+        federatedToken,
+      );
+    }
+
     /*
-     * Exchange the federated assertion directly with the Microsoft Entra OAuth 2.0 v2 token endpoint for the
-     * validated tenant. The tenant ID is path-encoded even though `validateGuid()` already restricts it to GUID
-     * characters, so that this remains safe if that validation is ever loosened.
+     * Exchange the federated assertion directly with the allowlisted Microsoft Entra OAuth 2.0 v2 token endpoint
+     * for the validated tenant. The tenant ID is path-encoded even though `validateGuid()` already restricts it to
+     * GUID characters, so that this remains safe if that validation is ever loosened.
      */
-    const tokenEndpoint = `${microsoftEntraPublicCloudAuthority}/${encodeURIComponent(tenantId)}/oauth2/v2.0/token`;
+    const tokenEndpoint = `${authority}/${encodeURIComponent(tenantId)}/oauth2/v2.0/token`;
 
     const form: URLSearchParams = new URLSearchParams();
     form.set("client_id", servicePrincipalId);
@@ -163,6 +184,48 @@ export default class TokenManager {
       tokenEndpoint,
       form,
     );
+    this._runnerInvoker.setSecret(accessToken);
+    return accessToken;
+  }
+
+  private async getAccessTokenWithAzureCli(
+    servicePrincipalId: string,
+    tenantId: string,
+    federatedToken: string,
+  ): Promise<string> {
+    const signInResult: ExecOutput = await this._runnerInvoker.exec("az", [
+      "login",
+      "--service-principal",
+      "-u",
+      servicePrincipalId,
+      "--tenant",
+      tenantId,
+      "--allow-no-subscriptions",
+      "--federated-token",
+      federatedToken,
+    ]);
+    if (signInResult.exitCode !== 0) {
+      throw new Error("Azure CLI workload identity sign-in failed.");
+    }
+
+    const accessTokenResult: ExecOutput = await this._runnerInvoker.exec("az", [
+      "account",
+      "get-access-token",
+      "--query",
+      "accessToken",
+      "--resource",
+      azureDevOpsResourceId,
+      "-o",
+      "tsv",
+    ]);
+    if (accessTokenResult.exitCode !== 0) {
+      throw new Error("Azure CLI access token acquisition failed.");
+    }
+
+    const accessToken: string = accessTokenResult.stdout.trim();
+    if (accessToken.length === 0) {
+      throw new Error("Azure CLI returned an empty access token.");
+    }
     this._runnerInvoker.setSecret(accessToken);
     return accessToken;
   }

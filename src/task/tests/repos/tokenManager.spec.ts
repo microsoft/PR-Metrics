@@ -33,8 +33,6 @@ describe("tokenManager.ts", (): void => {
   // Fabricated GUIDs for testing. These are not real identifiers.
   const servicePrincipalId = "a1b2c3d4-e5f6-7890-abcd-ef1234567890";
   const tenantId = "98765432-abcd-ef01-2345-678901234567";
-  const expectedTokenEndpoint = `https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/token`;
-
   const expectedForm = (): URLSearchParams => {
     const form: URLSearchParams = new URLSearchParams();
     form.set("client_id", servicePrincipalId);
@@ -110,6 +108,9 @@ describe("tokenManager.ts", (): void => {
     when(
       runnerInvoker.getEndpointAuthorizationParameter("Id", "tenantid"),
     ).thenReturn(tenantId);
+    when(runnerInvoker.getEndpointDataParameter("Id", "environment")).thenReturn(
+      "AzureCloud",
+    );
     when(
       runnerInvoker.getEndpointAuthorization("SYSTEMVSSCONNECTION"),
     ).thenReturn({
@@ -424,25 +425,165 @@ describe("tokenManager.ts", (): void => {
     verify(runnerInvoker.exec(anyString(), any<string[]>())).never();
   });
 
-  it("exchanges the federated assertion directly with the Microsoft Entra public cloud token endpoint", async (): Promise<void> => {
+  {
+    const cloudAuthorities: [string, string][] = [
+      ["AzureCloud", "https://login.microsoftonline.com"],
+      ["AzureUSGovernment", "https://login.microsoftonline.us"],
+      ["AzureChinaCloud", "https://login.partner.microsoftonline.cn"],
+    ];
+    cloudAuthorities.forEach(([environment, authority]): void => {
+      it(`exchanges the federated assertion directly with the ${environment} token endpoint`, async (): Promise<void> => {
+        // Arrange
+        let actualUrl: string | null = null;
+        let actualFormString: string | null = null;
+        when(
+          runnerInvoker.getEndpointDataParameter("Id", "environment"),
+        ).thenReturn(environment);
+        when(httpWrapper.postForm(anyString(), any<URLSearchParams>())).thenCall(
+          async (url: string, form: URLSearchParams): Promise<string> => {
+            actualUrl = url;
+            actualFormString = form.toString();
+            return Promise.resolve("AccessToken");
+          },
+        );
+        const tokenManager: TokenManager = createTokenManager();
+
+        // Act
+        await tokenManager.getToken();
+
+        // Assert
+        assert.equal(
+          actualUrl,
+          `${authority}/${tenantId}/oauth2/v2.0/token`,
+        );
+        assert.equal(actualFormString, expectedForm().toString());
+        verify(runnerInvoker.exec(anyString(), any<string[]>())).never();
+      });
+    });
+  }
+
+  it("uses Azure CLI when the service connection cloud is unknown", async (): Promise<void> => {
     // Arrange
-    let actualUrl: string | null = null;
-    let actualFormString: string | null = null;
-    when(httpWrapper.postForm(anyString(), any<URLSearchParams>())).thenCall(
-      async (url: string, form: URLSearchParams): Promise<string> => {
-        actualUrl = url;
-        actualFormString = form.toString();
-        return Promise.resolve("AccessToken");
-      },
-    );
     const tokenManager: TokenManager = createTokenManager();
+    when(
+      runnerInvoker.getEndpointDataParameter("Id", "environment"),
+    ).thenReturn("AzureCustomCloud");
+    when(runnerInvoker.exec("az", any<string[]>()))
+      .thenResolve({ exitCode: 0, stderr: "", stdout: "" })
+      .thenResolve({ exitCode: 0, stderr: "", stdout: "AccessToken\n" });
 
     // Act
     await tokenManager.getToken();
 
     // Assert
-    assert.equal(actualUrl, expectedTokenEndpoint);
-    assert.equal(actualFormString, expectedForm().toString());
+    verify(httpWrapper.postForm(anyString(), any<URLSearchParams>())).never();
+    verify(
+      runnerInvoker.exec("az", deepEqual([
+        "login",
+        "--service-principal",
+        "-u",
+        servicePrincipalId,
+        "--tenant",
+        tenantId,
+        "--allow-no-subscriptions",
+        "--federated-token",
+        "OidcToken",
+      ])),
+    ).once();
+    verify(
+      runnerInvoker.exec("az", deepEqual([
+        "account",
+        "get-access-token",
+        "--query",
+        "accessToken",
+        "--resource",
+        "499b84ac-1321-427f-aa17-267ca6975798",
+        "-o",
+        "tsv",
+      ])),
+    ).once();
+  });
+
+  it("uses Azure CLI when the service connection cloud is unavailable", async (): Promise<void> => {
+    // Arrange
+    const tokenManager: TokenManager = createTokenManager();
+    when(
+      runnerInvoker.getEndpointDataParameter("Id", "environment"),
+    ).thenReturn(null);
+    when(runnerInvoker.exec("az", any<string[]>()))
+      .thenResolve({ exitCode: 0, stderr: "", stdout: "" })
+      .thenResolve({ exitCode: 0, stderr: "", stdout: "AccessToken\n" });
+
+    // Act
+    await tokenManager.getToken();
+
+    // Assert
+    verify(httpWrapper.postForm(anyString(), any<URLSearchParams>())).never();
+    verify(runnerInvoker.exec("az", any<string[]>())).twice();
+  });
+
+  {
+    const testCases: [string, string, string][] = [
+      [
+        "sign-in",
+        "Azure CLI sign-in failed",
+        "Azure CLI workload identity sign-in failed.",
+      ],
+      [
+        "access-token",
+        "Azure CLI access token failed",
+        "Azure CLI access token acquisition failed.",
+      ],
+    ];
+    testCases.forEach(([operation, stderr, expectedErrorMessage]): void => {
+      it(`throws the ${operation} failure from Azure CLI fallback`, async (): Promise<void> => {
+        // Arrange
+        const tokenManager: TokenManager = createTokenManager();
+        when(
+          runnerInvoker.getEndpointDataParameter("Id", "environment"),
+        ).thenReturn("AzureCustomCloud");
+        when(runnerInvoker.exec("az", any<string[]>())).thenResolve({
+          exitCode: 1,
+          stderr,
+          stdout: "",
+        });
+        if (operation === "access-token") {
+          when(runnerInvoker.exec("az", any<string[]>()))
+            .thenResolve({ exitCode: 0, stderr: "", stdout: "" })
+            .thenResolve({ exitCode: 1, stderr, stdout: "" });
+        }
+
+        // Act
+        const func: () => Promise<string | null> = async () =>
+          tokenManager.getToken();
+
+        // Assert
+        await AssertExtensions.toThrowAsync(func, expectedErrorMessage);
+        verify(httpWrapper.postForm(anyString(), any<URLSearchParams>())).never();
+      });
+    });
+  }
+
+  it("rejects empty access token output from Azure CLI fallback", async (): Promise<void> => {
+    // Arrange
+    const tokenManager: TokenManager = createTokenManager();
+    when(
+      runnerInvoker.getEndpointDataParameter("Id", "environment"),
+    ).thenReturn("AzureCustomCloud");
+    when(runnerInvoker.exec("az", any<string[]>()))
+      .thenResolve({ exitCode: 0, stderr: "", stdout: "" })
+      .thenResolve({ exitCode: 0, stderr: "", stdout: "  \n" });
+
+    // Act
+    const func: () => Promise<string | null> = async () =>
+      tokenManager.getToken();
+
+    // Assert
+    await AssertExtensions.toThrowAsync(
+      func,
+      "Azure CLI returned an empty access token.",
+    );
+    verify(runnerInvoker.setSecret("")).never();
   });
 
   it("masks the federated assertion before transmission and the access token immediately after receipt", async (): Promise<void> => {

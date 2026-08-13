@@ -95,6 +95,21 @@ export default class AzurePipelinesRunnerWrapper {
   }
 
   /**
+   * Gets the endpoint data value for a service endpoint with the specified key.
+   * @param id The name of the service endpoint.
+   * @param key The key to find in the endpoint data.
+   * @param optional A value indicating whether the endpoint data is optional.
+   * @returns The endpoint data value or `null` if the value was not found.
+   */
+  public getEndpointDataParameter(
+    id: string,
+    key: string,
+    optional: boolean,
+  ): string | null {
+    return taskLib.getEndpointDataParameter(id, key, optional) ?? null;
+  }
+
+  /**
    * Registers a value with the logger, so the value will be masked from the logs. Multi-line secrets are disallowed.
    * @param value The value to register.
    */

@@ -48,6 +48,14 @@ export default interface RunnerInvokerInterface {
   getEndpointAuthorizationParameter: (id: string, key: string) => string | null;
 
   /**
+   * Gets the endpoint data value for a service endpoint with the specified key.
+   * @param id The name of the service endpoint.
+   * @param key The key to find in the endpoint data.
+   * @returns The endpoint data value or `null` if the value was not found.
+   */
+  getEndpointDataParameter: (id: string, key: string) => string | null;
+
+  /**
    * Initializes the mechanism for getting localized strings from the JSON resource file.
    * @param folder The folder in which the localized resources are stored.
    */

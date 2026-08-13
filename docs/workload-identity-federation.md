@@ -10,10 +10,11 @@ Identity.
 Pipelines. PR Metrics running within GitHub Actions do not support workload
 identity federation.**
 
-**The Microsoft Entra public cloud authority (`https://login.microsoftonline.com`)
-is the only authority supported for the access token exchange. Sovereign cloud
-tenants (for example, Azure Government or Azure operated by 21Vianet) are not
-currently supported.**
+PR Metrics exchanges tokens directly for the Azure public cloud, Azure
+Government, and Azure China. It uses source-controlled authority mappings and
+does not trust a service connection URL as an authority. For other, missing,
+custom, or legacy cloud environments, PR Metrics uses Azure CLI to preserve
+compatibility.
 
 Setting up the workload identity federation involves some effort, but it should
 save ongoing maintenance.
@@ -27,9 +28,10 @@ save ongoing maintenance.
 If you don't have sufficient access, you should reach out to the appropriate
 admin and provide them with these instructions.
 
-The PR Metrics task exchanges the workload identity federation's assertion for
-an access token directly over HTTPS, so no additional tooling (such as the
-Azure CLI) needs to be installed on the build agent.
+The PR Metrics task exchanges the workload identity federation assertion for an
+access token directly over HTTPS for Azure public cloud, Azure Government, and
+Azure China. Azure CLI is required on the build agent for other, missing,
+custom, or legacy cloud environments.
 
 ## Instructions
 
@@ -92,7 +94,8 @@ Azure CLI) needs to be installed on the build agent.
 
 1. Finalize the Azure DevOps Service Connection.
    1. On the pane you were previously updating, enter the details as appropriate:
-      - Environment: Azure Cloud
+      - Environment: Select the tenant cloud: Azure Cloud, Azure US Government,
+        or Azure China Cloud.
       - Scope Level: Subscription
       - Subscription ID: Taken from the previously saved "Subscription ID".
       - Subscription Name: Taken from the previously saved "Subscription".
@@ -112,6 +115,10 @@ Azure CLI) needs to be installed on the build agent.
    1. Add any users or organizations that should have access. It is strongly
       advised to limit access to only those who need it, but also to ensure that
       the connection is not lost if a user leaves the organization.
+
+For a custom, legacy, or unavailable service connection environment, configure
+the build agent's Azure CLI for the tenant's cloud. PR Metrics uses Azure CLI
+for those environments.
 
 1. Add the Managed Identity as an Azure DevOps user.
    1. Navigate to your Azure DevOps home, and not that of any project.

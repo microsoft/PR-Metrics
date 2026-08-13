@@ -355,6 +355,29 @@ describe("runnerInvoker.ts", (): void => {
       ).never();
     });
 
+    describe("getEndpointDataParameter()", (): void => {
+      it("should call the Azure Pipelines runner", (): void => {
+        // Arrange
+        const runnerInvoker: RunnerInvoker = new RunnerInvoker(
+          instance(azurePipelinesRunnerInvoker),
+          instance(gitHubRunnerInvoker),
+        );
+        when(
+          azurePipelinesRunnerInvoker.getEndpointDataParameter("id", "key"),
+        ).thenReturn("VALUE");
+
+        // Act
+        const result: string | null =
+          runnerInvoker.getEndpointDataParameter("id", "key");
+
+        // Assert
+        assert.equal(result, "VALUE");
+        verify(
+          azurePipelinesRunnerInvoker.getEndpointDataParameter("id", "key"),
+        ).once();
+      });
+    });
+
     it("should call the underlying method when running on GitHub", (): void => {
       // Arrange
       stubEnv(["GITHUB_ACTION", "PR-Metrics"]);

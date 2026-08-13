@@ -281,7 +281,7 @@ describe("httpWrapper.ts", (): void => {
       stubFetch(
         async (): Promise<Response> =>
           Promise.resolve(
-            new Response(JSON.stringify({ access_token: "" }), {
+            new Response(JSON.stringify({ access_token: " \t\n" }), {
               status: 200,
             }),
           ),

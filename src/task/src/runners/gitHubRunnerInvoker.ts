@@ -80,6 +80,10 @@ export default class GitHubRunnerInvoker implements RunnerInvokerInterface {
     );
   }
 
+  public getEndpointDataParameter(): string | null {
+    throw new Error("getEndpointDataParameter() unavailable in GitHub.");
+  }
+
   public locInitialize(folder: string): void {
     const resourceData: string = fs.readFileSync(
       path.join(folder, "resources.resjson"),

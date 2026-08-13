@@ -154,7 +154,7 @@ export default class HttpWrapper {
         ? Reflect.get(payload, "access_token")
         : null;
     const accessToken: string | null =
-      typeof accessTokenValue === "string" ? accessTokenValue : null;
+      typeof accessTokenValue === "string" ? accessTokenValue.trim() : null;
     if (accessToken === null || accessToken.length === 0) {
       throw new Error(
         `HTTP POST request to '${url}' did not return a valid access token.`,

@@ -82,6 +82,14 @@ export default class AzurePipelinesRunnerInvoker implements RunnerInvokerInterfa
     );
   }
 
+  public getEndpointDataParameter(id: string, key: string): string | null {
+    return this._azurePipelinesRunnerWrapper.getEndpointDataParameter(
+      id,
+      key,
+      true,
+    );
+  }
+
   public locInitialize(folder: string): void {
     this._azurePipelinesRunnerWrapper.setResourcePath(
       path.join(folder, "task.json"),

@@ -188,6 +188,27 @@ describe("azurePipelinesRunnerInvoker.ts", (): void => {
     });
   });
 
+  describe("getEndpointDataParameter()", (): void => {
+    it("should call the underlying method", (): void => {
+      // Arrange
+      const azurePipelinesRunnerInvoker: AzurePipelinesRunnerInvoker =
+        new AzurePipelinesRunnerInvoker(instance(azurePipelinesRunnerWrapper));
+      when(
+        azurePipelinesRunnerWrapper.getEndpointDataParameter("id", "key", true),
+      ).thenReturn("VALUE");
+
+      // Act
+      const result: string | null =
+        azurePipelinesRunnerInvoker.getEndpointDataParameter("id", "key");
+
+      // Assert
+      assert.equal(result, "VALUE");
+      verify(
+        azurePipelinesRunnerWrapper.getEndpointDataParameter("id", "key", true),
+      ).once();
+    });
+  });
+
   describe("locInitialize()", (): void => {
     it("should call the underlying method", (): void => {
       // Arrange
