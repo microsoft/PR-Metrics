@@ -79,5 +79,7 @@ export interface CommentDeletionInterface {
  * A type representing a single modification to the comments within a pull request.
  */
 type CommentMutationInterface =
-  CommentCreationInterface | CommentDeletionInterface | CommentUpdateInterface;
+  | CommentCreationInterface
+  | CommentDeletionInterface
+  | CommentUpdateInterface;
 export default CommentMutationInterface;

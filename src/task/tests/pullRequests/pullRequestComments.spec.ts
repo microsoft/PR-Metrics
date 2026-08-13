@@ -601,42 +601,40 @@ describe("pullRequestComments.ts", (): void => {
         },
       ];
 
-      testCases.forEach(
-        ({ authorId, description }: TestCaseType): void => {
-          it(`should ignore a spoofed metrics comment created by ${description}`, async (): Promise<void> => {
-            // Arrange
-            const comments: CommentData = new CommentData();
-            comments.authenticatedUserId = authenticatedUserId;
-            comments.pullRequestComments.push(
-              new PullRequestCommentData(
-                20,
-                `# PR Metrics\n${metricsCommentMarker}`,
-                CommentThreadStatus.Active,
-                authorId,
-              ),
+      testCases.forEach(({ authorId, description }: TestCaseType): void => {
+        it(`should ignore a spoofed metrics comment created by ${description}`, async (): Promise<void> => {
+          // Arrange
+          const comments: CommentData = new CommentData();
+          comments.authenticatedUserId = authenticatedUserId;
+          comments.pullRequestComments.push(
+            new PullRequestCommentData(
+              20,
+              `# PR Metrics\n${metricsCommentMarker}`,
+              CommentThreadStatus.Active,
+              authorId,
+            ),
+          );
+          when(reposInvoker.getComments()).thenResolve(comments);
+          const pullRequestComments: PullRequestComments =
+            new PullRequestComments(
+              instance(codeMetrics),
+              instance(inputs),
+              instance(logger),
+              instance(reposInvoker),
+              instance(runnerInvoker),
             );
-            when(reposInvoker.getComments()).thenResolve(comments);
-            const pullRequestComments: PullRequestComments =
-              new PullRequestComments(
-                instance(codeMetrics),
-                instance(inputs),
-                instance(logger),
-                instance(reposInvoker),
-                instance(runnerInvoker),
-              );
 
-            // Act
-            const result: PullRequestCommentsData =
-              await pullRequestComments.getCommentData();
+          // Act
+          const result: PullRequestCommentsData =
+            await pullRequestComments.getCommentData();
 
-            // Assert
-            assert.equal(result.metricsCommentThreadId, null);
-            assert.equal(result.metricsCommentContent, null);
-            assert.equal(result.metricsCommentThreadStatus, null);
-            assert.equal(result.isMetricsCommentAmbiguous, false);
-          });
-        },
-      );
+          // Assert
+          assert.equal(result.metricsCommentThreadId, null);
+          assert.equal(result.metricsCommentContent, null);
+          assert.equal(result.metricsCommentThreadStatus, null);
+          assert.equal(result.isMetricsCommentAmbiguous, false);
+        });
+      });
     }
 
     it("should ignore a legacy metrics comment created by another principal", async (): Promise<void> => {

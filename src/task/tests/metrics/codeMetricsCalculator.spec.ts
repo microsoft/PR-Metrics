@@ -806,11 +806,7 @@ describe("codeMetricsCalculator.ts", (): void => {
         ).once();
       }
 
-      for (
-        let index = permittedFileCount;
-        index < files.length;
-        index += 1
-      ) {
+      for (let index = permittedFileCount; index < files.length; index += 1) {
         verify(
           reposInvoker.createComment(
             "No Review Required",
@@ -892,7 +888,11 @@ describe("codeMetricsCalculator.ts", (): void => {
       // Assert
       assert.equal(mutationCount, maxCommentMutations);
       verify(
-        reposInvoker.updateComment(1, "Description", CommentThreadStatus.Active),
+        reposInvoker.updateComment(
+          1,
+          "Description",
+          CommentThreadStatus.Active,
+        ),
       ).once();
       for (let index = 0; index < deletionCount; index += 1) {
         verify(reposInvoker.deleteCommentThread(index + 1)).once();
