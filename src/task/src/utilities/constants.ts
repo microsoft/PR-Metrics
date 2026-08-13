@@ -56,4 +56,4 @@ export const noReviewRequiredCommentMarker = "<!-- pr-metrics:no-review:v1 -->";
 /**
  * The user agent string used for GitHub API requests.
  */
-export const userAgent = "PRMetrics/v1.7.16";
+export const userAgent = "PRMetrics/v1.7.17";
