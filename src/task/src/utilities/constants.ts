@@ -42,4 +42,4 @@ export const azureCliConfigDirectoryCleanupRetryDelayMs = 200;
 /**
  * The user agent string used for GitHub API requests.
  */
-export const userAgent = "PRMetrics/v1.7.16";
+export const userAgent = "PRMetrics/v1.7.17";

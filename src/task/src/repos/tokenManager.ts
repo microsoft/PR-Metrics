@@ -160,12 +160,13 @@ export default class TokenManager {
         : new Error(String(authenticationError));
     }
 
+    this._runnerInvoker.setSecret(accessToken);
+
     // Cleanup failure after a successful authentication is treated as a security failure: the token is not released.
     await this.cleanUpIsolatedAzureCliConfigDirectoryAfterSuccess(
       isolatedConfigDirectory,
     );
 
-    this._runnerInvoker.setSecret(accessToken);
     return accessToken;
   }
 

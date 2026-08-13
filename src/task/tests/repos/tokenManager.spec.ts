@@ -621,6 +621,7 @@ describe("tokenManager.ts", (): void => {
         "Azure CLI authentication succeeded, but the isolated configuration state could not be cleaned up, so the access token cannot be trusted: Cleanup Error",
       );
       assert.equal(typeof process.env.PR_METRICS_ACCESS_TOKEN, "undefined");
+      verify(runnerInvoker.setSecret("AccessToken")).once();
 
       // A subsequent call must retry authentication, proving `_previouslyInvoked` was not set.
       const secondFunc: () => Promise<string | null> = async () =>
@@ -630,6 +631,7 @@ describe("tokenManager.ts", (): void => {
         "Azure CLI authentication succeeded, but the isolated configuration state could not be cleaned up, so the access token cannot be trusted: Cleanup Error",
       );
       verify(runnerInvoker.exec("az", deepEqual(loginArguments), any())).twice();
+      verify(runnerInvoker.setSecret("AccessToken")).twice();
     });
 
     it("throws an error when Azure sign in fails", async (): Promise<void> => {
