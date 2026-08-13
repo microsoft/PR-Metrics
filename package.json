@@ -2,7 +2,7 @@
   "$schema": "https://json.schemastore.org/package.json",
   "name": "prmetrics",
   "publisher": "ms-omex",
-  "version": "1.7.16",
+  "version": "1.7.17",
   "description": "Augments pull request titles to let reviewers quickly determine PR size and test coverage.",
   "main": "dist/index.mjs",
   "type": "module",
@@ -64,7 +64,7 @@
     "@octokit/request-error": "7.1.0",
     "@octokit/rest": "22.0.1",
     "azure-devops-node-api": "15.1.2",
-    "azure-pipelines-task-lib": "5.277.0",
+    "azure-pipelines-task-lib": "5.278.0",
     "parse-git-diff": "0.0.20",
     "picomatch": "4.0.5"
   },
@@ -75,20 +75,20 @@
     "@types/mocha": "10.0.10",
     "@types/node": "24.13.3",
     "@types/picomatch": "4.0.3",
-    "@typescript-eslint/parser": "8.64.0",
+    "@typescript-eslint/parser": "8.65.0",
     "@vercel/ncc": "0.44.1",
     "c8": "12.0.0",
-    "eslint": "10.7.0",
+    "eslint": "10.8.0",
     "fast-check": "4.9.0",
     "generate-license-file": "4.2.1",
-    "globals": "17.7.0",
+    "globals": "17.8.0",
     "mocha": "11.7.6",
-    "npm-check-updates": "22.2.9",
+    "npm-check-updates": "23.0.0",
     "tfx-cli": "0.23.4",
     "ts-mockito": "2.6.1",
     "typedoc": "0.28.20",
     "typescript": "6.0.3",
-    "typescript-eslint": "8.64.0"
+    "typescript-eslint": "8.65.0"
   },
   "ts-standard": {
     "ignore": [
