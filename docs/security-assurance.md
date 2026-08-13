@@ -39,12 +39,12 @@ graph TD
 - **Malicious input injection** (Medium): All inputs validated with type
   checking, range validation, and safe defaults ([`inputs.ts`][inputs]).
 - **Supply chain compromise** (High): Releases include build provenance
-  attestation (SLSA) and cosign signatures. Scheduled Dependabot version
-  updates are configured only for GitHub Actions workflow dependencies; npm
-  dependencies receive routine version updates through the release workflow
-  instead. Dependabot alerts and security updates separately cover npm
-  vulnerabilities and may open npm security pull requests, and known issues
-  are also tracked internally via Component Governance.
+  attestation (SLSA) and cosign signatures. Scheduled Dependabot version updates
+  are configured only for GitHub Actions workflow dependencies; npm dependencies
+  receive routine version updates through the release workflow instead.
+  Dependabot alerts and security updates separately cover npm vulnerabilities
+  and may open npm security pull requests, and known issues are also tracked
+  internally.
 - **Credential exposure** (High): Authentication tokens provided via environment
   variables only. Gitleaks scanning prevents accidental secret commits.
 - **API injection via PR metadata** (Medium): Pull request title and comment
@@ -52,13 +52,13 @@ graph TD
 - **Unauthorized API access** (Medium): Minimum required permissions enforced
   (`pull-requests: write`, `statuses: write`). Principle of least privilege
   applied.
-- **Dependency vulnerabilities** (Medium): Scheduled Dependabot version
-  updates monitor GitHub Actions workflow dependencies on a quarterly
-  schedule; npm dependencies receive routine version updates during the
-  release process instead. Dependabot alerts and security updates separately
-  cover npm vulnerabilities and may open npm security pull requests, and known
-  issues are tracked internally via Component Governance. CodeQL scans for
-  known vulnerability patterns on every pull request.
+- **Dependency vulnerabilities** (Medium): Scheduled Dependabot version updates
+  monitor GitHub Actions workflow dependencies on a quarterly schedule; npm
+  dependencies receive routine version updates during the release process
+  instead. Dependabot alerts and security updates separately cover npm
+  vulnerabilities and may open npm security pull requests, and known issues are
+  tracked internally. CodeQL scans for known vulnerability patterns on every
+  pull request.
 - **Code quality defects** (Medium): 100% test coverage enforced via
   [c8 configuration][c8rc]. ESLint with 150+ strict rules. CodeQL security
   analysis on each pull request.
@@ -104,8 +104,8 @@ Top 10 and CWE/SANS Top 25) are addressed:
   Dependabot version updates are automated only for GitHub Actions workflow
   dependencies; npm dependencies receive routine version updates during the
   release workflow instead, while Dependabot alerts and security updates
-  continue to cover npm vulnerabilities and may open npm security pull
-  requests. CodeQL scans for known vulnerability patterns.
+  continue to cover npm vulnerabilities and may open npm security pull requests.
+  CodeQL scans for known vulnerability patterns.
 - **Insufficient Logging and Monitoring (CWE-778)**: The task provides
   comprehensive debug logging when `system.debug` is enabled, including full
   method call traces for diagnostic purposes.

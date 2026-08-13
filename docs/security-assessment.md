@@ -110,11 +110,11 @@ manipulation.
   Microsoft Package Feed Proxy for root and task-local npm commands; Azure
   Pipelines builds override this at runtime with an explicit Office npm feed
   instead. Neither active pipeline path resolves dependencies by directly
-  configuring `registry.npmjs.org`. The rotating backend tarball hosts
-  recorded in `package-lock.json` are not treated as a fixed trust boundary;
-  the pinned version and integrity hash for each package are the actual
-  integrity controls, verified on every install regardless of which backend
-  host serves the tarball (see [Dependency Management][dependencymanagement]).
+  configuring `registry.npmjs.org`. The rotating backend tarball hosts recorded
+  in `package-lock.json` are not treated as a fixed trust boundary; the pinned
+  version and integrity hash for each package are the actual integrity controls,
+  verified on every install regardless of which backend host serves the tarball
+  (see [Dependency Management][dependencymanagement]).
 - [CodeQL][codeql] analyzes the codebase for security vulnerabilities on every
   pull request.
 - Dependencies are updated through a controlled process during releases, using
