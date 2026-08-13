@@ -24,7 +24,9 @@ const getJobSection = (contents: string, jobName: string): string => {
   );
 
   const jobLines: string[] =
-    endIndex === -1 ? lines.slice(startIndex) : lines.slice(startIndex, endIndex);
+    endIndex === -1
+      ? lines.slice(startIndex)
+      : lines.slice(startIndex, endIndex);
 
   return `${jobLines.join("\n")}\n`;
 };
@@ -54,7 +56,10 @@ describe(".github/workflows/build.yml dependabot job", (): void => {
       dependabotJob.includes(".github/actions/mint-github-app-token"),
       false,
     );
-    assert.equal(dependabotJob.includes("steps.app-token.outputs.token"), false);
+    assert.equal(
+      dependabotJob.includes("steps.app-token.outputs.token"),
+      false,
+    );
     assert.equal(dependabotJob.includes("gh pr review --approve"), false);
     assert.equal(dependabotJob.includes("        run: gh --version"), true);
   });
