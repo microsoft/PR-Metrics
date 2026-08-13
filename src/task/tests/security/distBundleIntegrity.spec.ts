@@ -255,8 +255,8 @@ describe("committed dist bundle integrity", (): void => {
         "name: Git – Verify Bundle Reproducibility",
       );
       const diffStepLines: string[] = jobLines.slice(diffStepStart);
-      const exitCodeChecks: number = diffStepLines.filter((line: string): boolean =>
-        line.includes("$LASTEXITCODE"),
+      const exitCodeChecks: number = diffStepLines.filter(
+        (line: string): boolean => line.includes("$LASTEXITCODE"),
       ).length;
 
       assert.equal(exitCodeChecks >= 2, true);

@@ -42,14 +42,15 @@ const writePackageJson = (
 };
 
 const createLocalActionDist = (targetPath: string): void => {
-  fs.mkdirSync(path.join(targetPath, ".github", "actions", "local-action", "dist"), {
-    recursive: true,
-  });
+  fs.mkdirSync(
+    path.join(targetPath, ".github", "actions", "local-action", "dist"),
+    {
+      recursive: true,
+    },
+  );
 };
 
-const runScript = (
-  targetPath: string,
-): { output: string; status: number } => {
+const runScript = (targetPath: string): { output: string; status: number } => {
   try {
     const output: string = execFileSync(
       process.execPath,
