@@ -1,16 +1,26 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT License.
 
+Set-StrictMode -Version Latest
+
 $filePath = 'src/LICENSE.txt'
 
 $lines = Get-Content -Path $filePath
-# .LineNumber is 1-based, so $separatorIndex naturally points one past the separator in 0-based indexing.
-$separatorIndex = ($lines | Select-String -Pattern '^-+$' | Select-Object -Skip 1 -First 1).LineNumber
-if ($null -eq $separatorIndex)
+$separatorLineNumbers = @(
+    for ($index = 0; $index -lt $lines.Count; $index++)
+    {
+        if ($lines[$index] -match '^-+$')
+        {
+            $index + 1
+        }
+    }
+)
+if ($separatorLineNumbers.Count -lt 2)
 {
     throw 'No separator line.'
 }
 
+$separatorIndex = $separatorLineNumbers[1]
 $remainingLines = $lines[$separatorIndex..($lines.Count - 1)]
 $nonBlankLines = $remainingLines | Where-Object { -not [string]::IsNullOrWhiteSpace($_) }
 if (@($nonBlankLines).Count -eq 0)
