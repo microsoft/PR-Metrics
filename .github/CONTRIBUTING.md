@@ -34,11 +34,18 @@ development, `npm run test:fast` skips the full reinstallation step.
 
 Test validation is automatically performed whenever a pull request is opened
 against the `main` branch. The [`build.yml`][buildyml] workflow runs the full
-test suite as part of the `Build` job. Additionally:
+test suite and read-only ESLint validation as part of the `Build` job.
+Additionally:
 
 - **CodeQL** performs static analysis for security vulnerabilities.
-- **Super-Linter** validates code style, formatting, and secret scanning.
-- **PR Metrics** runs against itself in the `Test GitHub Action` job.
+- **Super-Linter** validates code style, formatting, and secret scanning for
+  trusted branches.
+- **PR Metrics** runs against itself in the `Test GitHub Action` job for trusted
+  branches.
+
+Pull requests from forks run only jobs that do not need protected credentials or
+write access. Maintainers must first copy reviewed fork changes to a branch in
+this repository if the trusted-branch checks are required.
 
 All automated checks must pass before a pull request can be merged.
 

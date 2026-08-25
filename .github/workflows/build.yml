@@ -24,6 +24,7 @@ defaults:
 jobs:
   update-code:
     name: Update Code
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     environment: production
     permissions:
@@ -111,6 +112,9 @@ jobs:
       - name: npm – Install Dependencies
         run: npm ci
 
+      - name: npm – Lint
+        run: npm run lint -- --no-fix
+
       - name: npm – Clean
         run: npm run clean
 
@@ -132,6 +136,7 @@ jobs:
 
   test-github-action:
     name: Test GitHub Action
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     environment: production
     permissions:
@@ -189,6 +194,7 @@ jobs:
 
   validate-linter:
     name: Validate – Linter
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     environment: production
     permissions:
