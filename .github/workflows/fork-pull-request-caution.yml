@@ -1,0 +1,38 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+
+---
+name: Fork Pull Request Caution
+
+on:
+  pull_request_target:
+    branches:
+      - main
+    types:
+      - opened
+
+permissions: {}
+
+defaults:
+  run:
+    shell: pwsh
+
+jobs:
+  caution:
+    if: github.event.pull_request.head.repo.full_name != github.repository
+    name: Add Review Caution
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - name: PR – Add Review Caution
+        run: |-
+          $body = @'
+          > This pull request comes from a fork. Automated PR Metrics updates, generated-file updates, and Super-Linter checks are disabled for fork pull requests.
+          >
+          > Please review this change with extra care. Check generated files, formatting, and PR size/coverage metadata before merge.
+          '@
+          gh pr comment $Env:PR_URL --body $body
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_URL: ${{ github.event.pull_request.html_url }}

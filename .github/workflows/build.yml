@@ -23,6 +23,7 @@ defaults:
 
 jobs:
   update-code:
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     name: Update Code
     runs-on: ubuntu-latest
     environment: production
@@ -131,6 +132,7 @@ jobs:
           path: ${{ github.workspace }}/ms-omex.PRMetrics.vsix
 
   test-github-action:
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     name: Test GitHub Action
     runs-on: ubuntu-latest
     environment: production
@@ -188,6 +190,7 @@ jobs:
           category: TypeScript
 
   validate-linter:
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     name: Validate – Linter
     runs-on: ubuntu-latest
     environment: production
@@ -271,6 +274,7 @@ jobs:
           token: ${{ steps.app-token.outputs.token }}
 
   dependabot:
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     name: Dependabot
     runs-on: ubuntu-latest
     environment: production
