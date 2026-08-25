@@ -5,7 +5,8 @@
 name: Fork Pull Request Caution
 
 on:
-  pull_request_target:
+  # This workflow never checks out or executes pull request code.
+  pull_request_target: # zizmor: ignore[dangerous-triggers]
     branches:
       - main
     types:
