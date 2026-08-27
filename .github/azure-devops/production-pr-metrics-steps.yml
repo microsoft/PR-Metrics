@@ -1,0 +1,30 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+
+---
+steps:
+  - checkout: self
+    displayName: Checkout
+    fetchDepth: 0
+    persistCredentials: false
+
+  - task: AzureCLI@3
+    displayName: App Token – Mint
+    inputs:
+      connectionType: azureRM
+      azureSubscription: PR Metrics
+      scriptType: pscore
+      scriptLocation: scriptPath
+      scriptPath: .github/actions/mint-github-app-token/New-GitHubAppToken.ps1
+    env:
+      GITHUB_APP_PERMISSIONS: '{"pull_requests":"write"}'
+
+  - task: PRMetrics@1
+    displayName: PR Metrics
+    env:
+      PR_METRICS_ACCESS_TOKEN: $(GitHubAppToken)
+    inputs:
+      file-matching-patterns: |
+        **/*
+        !dist/*
+        !package-lock.json

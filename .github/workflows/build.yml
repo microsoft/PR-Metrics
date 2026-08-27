@@ -22,36 +22,59 @@ defaults:
     shell: pwsh
 
 jobs:
-  update-code:
-    name: Update Code
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+  pr-metrics:
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+    name: PR Metrics
     runs-on: ubuntu-latest
     environment: production
     permissions:
       contents: read
       id-token: write
     steps:
-      - name: Checkout – Action
+      - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          fetch-depth: 0
           persist-credentials: false
-          sparse-checkout: .github/actions
 
       - name: App Token – Mint
         id: app-token
-        uses: ./.github/actions/mint-github-app-token
+        uses: microsoft/PR-Metrics/.github/actions/mint-github-app-token@0959437740572519916a08b3609e67ffa435f8dd # v1.7.17
         with:
           azure-client-id: ${{ vars.AZURE_CLIENT_ID }}
           azure-tenant-id: ${{ vars.AZURE_TENANT_ID }}
           azure-subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-          permissions: '{"contents":"write"}'
+          permissions: '{"pull_requests":"write"}'
 
+      - name: PR Metrics
+        uses: microsoft/PR-Metrics@0959437740572519916a08b3609e67ffa435f8dd # v1.7.17
+        env:
+          PR_METRICS_ACCESS_TOKEN: ${{ steps.app-token.outputs.token }}
+        with:
+          file-matching-patterns: |
+            **/*
+            !dist/*
+            !package-lock.json
+
+  update-code:
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    name: Update Code
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      changes-present: ${{ steps.git-test-for-changes.outputs.CHANGES_PRESENT }}
+    steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          fetch-depth: 0
           persist-credentials: false
           ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref_name }}
-          token: ${{ steps.app-token.outputs.token }}
+
+      - if: github.event_name == 'pull_request'
+        name: Git – Fetch Pull Request Merge Ref
+        run: git fetch --no-tags origin "+$env:GITHUB_REF`:$env:GITHUB_REF"
 
       - name: Install Node.js
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
@@ -76,23 +99,180 @@ jobs:
       - name: npm – Build Package
         run: npm run build:package
 
-      - if: github.ref_name != 'main'
-        name: Git – Add Changed Files
-        run: git add -A
+      - name: Super-Linter
+        uses: super-linter/super-linter@4ce20838b8ab83717e78138c5b3a1407148e0918 # v8.7.0
+        env:
+          FILTER_REGEX_EXCLUDE: .*dist/.*
+          FIX_JSON_PRETTIER: true
+          FIX_MARKDOWN_PRETTIER: true
+          FIX_MARKDOWN: true
+          FIX_NATURAL_LANGUAGE: true
+          FIX_TYPESCRIPT_PRETTIER: true
+          FIX_YAML_PRETTIER: true
+          GITHUB_TOKEN: ${{ github.token }}
+          GITLEAKS_CONFIG_FILE: gitleaks.toml
+          MARKDOWN_CONFIG_FILE: ../../.markdownlint.json
+          MULTI_STATUS: false
+          SAVE_SUPER_LINTER_SUMMARY: false
+          SPELL_CODESPELL_CONFIG_FILE: .codespellrc
+          # Disable linters that conflict with other linters or are not enforced.
+          VALIDATE_BIOME_FORMAT: false
+          VALIDATE_BIOME_LINT: false
+          VALIDATE_GIT_COMMITLINT: false
+          VALIDATE_JSON: false
+          VALIDATE_PYTHON_BLACK: false
+          VALIDATE_TYPESCRIPT_ES: false
 
-      - if: github.ref_name != 'main'
-        name: Git – Test for Changes
+      - name: Git – Create Changes Patch
         id: git-test-for-changes
-        run: .github/workflow-scripts/Test-Changes.ps1
+        run: |-
+          git add -A
+          $changesPresent = [bool](git diff --cached --name-only)
+          "CHANGES_PRESENT=$($changesPresent.ToString())" >> $Env:GITHUB_OUTPUT
+          if ($changesPresent)
+          {
+              New-Item -ItemType Directory -Path 'generated' | Out-Null
+              git diff --cached --binary --output='generated/generated-changes.patch'
+          }
 
-      - if: github.ref_name != 'main' && steps.git-test-for-changes.outputs.CHANGES_PRESENT == 'True'
-        name: Git – Commit & Push (Signed)
-        uses: grafana/github-api-commit-action@b1d81091e8480dd11fcea8bc1f0ab977a0376ca5 # v1.0.0
+      - if: github.event_name == 'pull_request' && steps.git-test-for-changes.outputs.CHANGES_PRESENT == 'True'
+        name: Git – Upload Changes Patch
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          commit-message: "chore: fix linting, update dist folder"
-          create-branch-on-remote: true
-          stage-all-files: true
-          token: ${{ steps.app-token.outputs.token }}
+          name: generated-changes
+          if-no-files-found: error
+          path: generated/generated-changes.patch
+          retention-days: 1
+
+  commit-changes:
+    if: >-
+      github.event_name == 'pull_request' &&
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      needs.update-code.outputs.changes-present == 'True'
+    name: Commit Changes
+    needs: update-code
+    runs-on: ubuntu-latest
+    environment: production
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Git – Create Local Branch
+        run: git switch --create "$env:HEAD_REF"
+        env:
+          HEAD_REF: ${{ github.head_ref }}
+
+      - name: Git – Download Changes Patch
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: generated-changes
+          path: ${{ runner.temp }}/generated-changes
+
+      - name: Git – Apply Changes Patch
+        run: git apply --index '${{ runner.temp }}/generated-changes/generated-changes.patch'
+
+      - name: Git – Verify Pull Request Head
+        run: |-
+          $remoteHead = (git ls-remote origin "refs/heads/$env:HEAD_REF").Split()[0]
+          if ($remoteHead -ne $env:EXPECTED_HEAD)
+          {
+              throw "The pull request branch changed from '$env:EXPECTED_HEAD' to '$remoteHead'. Re-run the workflow before committing generated changes."
+          }
+        env:
+          EXPECTED_HEAD: ${{ github.event.pull_request.head.sha }}
+          HEAD_REF: ${{ github.head_ref }}
+
+      - name: App Token – Mint
+        id: app-token
+        uses: microsoft/PR-Metrics/.github/actions/mint-github-app-token@0959437740572519916a08b3609e67ffa435f8dd # v1.7.17
+        with:
+          azure-client-id: ${{ vars.AZURE_CLIENT_ID }}
+          azure-tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          azure-subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+          permissions: '{"contents":"write"}'
+
+      - name: Git – Commit & Push (Signed)
+        run: |-
+          $additions = [System.Collections.Generic.List[object]]::new()
+          $deletions = [System.Collections.Generic.List[object]]::new()
+
+          foreach ($change in git diff --cached --no-renames --name-status)
+          {
+              $status, $path = $change -split "`t", 2
+              switch ($status)
+              {
+                  'A'
+                  {
+                      $additions.Add(@{
+                          path = $path
+                          contents = [System.Convert]::ToBase64String(
+                              [System.IO.File]::ReadAllBytes($path)
+                          )
+                      })
+                  }
+                  'M'
+                  {
+                      $additions.Add(@{
+                          path = $path
+                          contents = [System.Convert]::ToBase64String(
+                              [System.IO.File]::ReadAllBytes($path)
+                          )
+                      })
+                  }
+                  'D'
+                  {
+                      $deletions.Add(@{ path = $path })
+                  }
+                  default
+                  {
+                      throw "Unsupported staged change '$status' for '$path'."
+                  }
+              }
+          }
+
+          $payload = @{
+              query = @'
+          mutation($input: CreateCommitOnBranchInput!) {
+            createCommitOnBranch(input: $input) {
+              commit {
+                url
+              }
+            }
+          }
+          '@
+              variables = @{
+                  input = @{
+                      branch = @{
+                          repositoryNameWithOwner = $env:GITHUB_REPOSITORY
+                          branchName = $env:HEAD_REF
+                      }
+                      message = @{
+                          headline = 'chore: fix linting, update dist folder'
+                      }
+                      expectedHeadOid = $env:EXPECTED_HEAD
+                      fileChanges = @{
+                          additions = $additions
+                          deletions = $deletions
+                      }
+                  }
+              }
+          } | ConvertTo-Json -Compress -Depth 10
+
+          $payload | gh api graphql --input -
+          if ($LASTEXITCODE -ne 0)
+          {
+              throw "Could not commit generated changes to '$env:HEAD_REF'."
+          }
+        env:
+          EXPECTED_HEAD: ${{ github.event.pull_request.head.sha }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          HEAD_REF: ${{ github.head_ref }}
 
   build:
     name: Build
@@ -134,40 +314,6 @@ jobs:
           name: PRMetrics
           path: ${{ github.workspace }}/ms-omex.PRMetrics.vsix
 
-  test-github-action:
-    name: Test GitHub Action
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
-    runs-on: ubuntu-latest
-    environment: production
-    permissions:
-      contents: read
-      id-token: write
-    steps:
-      - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          fetch-depth: 0
-          persist-credentials: false
-
-      - name: App Token – Mint
-        id: app-token
-        uses: ./.github/actions/mint-github-app-token
-        with:
-          azure-client-id: ${{ vars.AZURE_CLIENT_ID }}
-          azure-tenant-id: ${{ vars.AZURE_TENANT_ID }}
-          azure-subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-          permissions: '{"pull_requests":"write"}'
-
-      - name: PR Metrics
-        uses: ./
-        env:
-          PR_METRICS_ACCESS_TOKEN: ${{ steps.app-token.outputs.token }}
-        with:
-          file-matching-patterns: |
-            **/*
-            !dist/*
-            !package-lock.json
-
   validate:
     name: Validate
     runs-on: ubuntu-latest
@@ -192,91 +338,11 @@ jobs:
         with:
           category: TypeScript
 
-  validate-linter:
-    name: Validate – Linter
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
-    runs-on: ubuntu-latest
-    environment: production
-    permissions:
-      contents: read
-      id-token: write
-    steps:
-      - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          fetch-depth: 0
-          persist-credentials: false
-
-      - name: App Token – Mint
-        id: app-token
-        uses: ./.github/actions/mint-github-app-token
-        with:
-          azure-client-id: ${{ vars.AZURE_CLIENT_ID }}
-          azure-tenant-id: ${{ vars.AZURE_TENANT_ID }}
-          azure-subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-          permissions: '{"contents":"write","statuses":"write"}'
-
-      - name: Super-Linter
-        uses: super-linter/super-linter@4ce20838b8ab83717e78138c5b3a1407148e0918 # v8.7.0
-        env:
-          FILTER_REGEX_EXCLUDE: .*dist/.*
-          FIX_JSON_PRETTIER: true
-          FIX_MARKDOWN_PRETTIER: true
-          FIX_MARKDOWN: true
-          FIX_NATURAL_LANGUAGE: true
-          FIX_TYPESCRIPT_PRETTIER: true
-          FIX_YAML_PRETTIER: true
-          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
-          GITLEAKS_CONFIG_FILE: gitleaks.toml
-          MARKDOWN_CONFIG_FILE: ../../.markdownlint.json
-          SAVE_SUPER_LINTER_SUMMARY: true
-          SPELL_CODESPELL_CONFIG_FILE: .codespellrc
-          # Disable linters that conflict with other linters or are not enforced.
-          VALIDATE_BIOME_FORMAT: false
-          VALIDATE_BIOME_LINT: false
-          VALIDATE_GIT_COMMITLINT: false
-          VALIDATE_JSON: false
-          VALIDATE_PYTHON_BLACK: false
-          VALIDATE_TYPESCRIPT_ES: false
-
-      - if: github.ref_name != 'main'
-        name: Git – Test for Changes
-        id: git-test-for-changes
-        run: .github/workflow-scripts/Test-Changes.ps1
-
-      # Super-Linter must operate on the commit, but changes must be pushed to
-      # the branch. To facilitate this, the changes are stashed, the branch is
-      # checked out, and the changes are applied back.
-      - if: github.ref_name != 'main' && steps.git-test-for-changes.outputs.CHANGES_PRESENT == 'True'
-        name: Git – Stash Changes
-        run: git stash --include-untracked
-
-      - if: github.ref_name != 'main' && steps.git-test-for-changes.outputs.CHANGES_PRESENT == 'True'
-        name: Git – Checkout PR Branch
-        run: |-
-          git fetch origin $Env:HEAD_REF
-          git checkout $Env:HEAD_REF
-        env:
-          HEAD_REF: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref_name }}
-
-      - if: github.ref_name != 'main' && steps.git-test-for-changes.outputs.CHANGES_PRESENT == 'True'
-        name: Git – Apply Stashed Changes
-        run: git stash pop
-
-      - if: github.ref_name != 'main' && steps.git-test-for-changes.outputs.CHANGES_PRESENT == 'True'
-        name: Git – Add Changed Files
-        run: git add -A
-
-      - if: github.ref_name != 'main' && steps.git-test-for-changes.outputs.CHANGES_PRESENT == 'True'
-        name: Git – Commit & Push (Signed)
-        uses: grafana/github-api-commit-action@b1d81091e8480dd11fcea8bc1f0ab977a0376ca5 # v1.0.0
-        with:
-          commit-message: "chore: fix linting"
-          create-branch-on-remote: true
-          stage-all-files: true
-          token: ${{ steps.app-token.outputs.token }}
-
   dependabot:
+    if: >-
+      github.event_name == 'pull_request' &&
+      github.event.pull_request.user.login == 'dependabot[bot]' &&
+      github.event.pull_request.head.repo.full_name == github.repository
     name: Dependabot
     runs-on: ubuntu-latest
     environment: production
@@ -287,25 +353,16 @@ jobs:
       - name: gh – Log Version
         run: gh --version
 
-      - if: github.event.pull_request.user.login == 'dependabot[bot]'
-        name: Checkout – Action
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-          sparse-checkout: .github/actions
-
-      - if: github.event.pull_request.user.login == 'dependabot[bot]'
-        name: App Token – Mint
+      - name: App Token – Mint
         id: app-token
-        uses: ./.github/actions/mint-github-app-token
+        uses: microsoft/PR-Metrics/.github/actions/mint-github-app-token@0959437740572519916a08b3609e67ffa435f8dd # v1.7.17
         with:
           azure-client-id: ${{ vars.AZURE_CLIENT_ID }}
           azure-tenant-id: ${{ vars.AZURE_TENANT_ID }}
           azure-subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
           permissions: '{"pull_requests":"write"}'
 
-      - if: github.event.pull_request.user.login == 'dependabot[bot]'
-        name: Auto-Approve
+      - name: Auto-Approve
         run: gh pr review --approve "$env:PR_URL"
         env:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
