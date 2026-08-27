@@ -3,23 +3,49 @@
 
 ---
 parameters:
-  - name: testInstance
+  - name: production
     type: boolean
     default: false
 
 stages:
   - stage: Build
     displayName: Build
+    ${{ if parameters.production }}:
+      condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
     jobs:
       - job: Prerequisites
         displayName: Prerequisites
-        ${{ if parameters.testInstance }}:
-          pool: server
+        ${{ if not(parameters.production) }}:
+          pool:
+            name: Azure-Pipelines-1ESPT-ExDShared-StaticIP
+            os: linux
+            image: ubuntu-latest
           steps:
-            - task: Delay@1
-              displayName: Wait for Deployment
+            - checkout: self
+              displayName: Checkout
+              persistCredentials: false
+
+            - task: UseNode@1
+              displayName: Install Node.js
               inputs:
-                delayForMinutes: 5
+                version: 24.13.0
+
+            - task: Npm@1
+              displayName: npm – Install Dependencies
+              inputs:
+                command: ci
+
+            - task: Npm@1
+              displayName: npm – Lint
+              inputs:
+                command: custom
+                customCommand: run lint -- --no-fix
+
+            - task: Npm@1
+              displayName: npm – Build
+              inputs:
+                command: custom
+                customCommand: run build
         ${{ else }}:
           pool:
             name: Azure-Pipelines-1ESPT-ExDShared-StaticIP
@@ -88,36 +114,14 @@ stages:
           name: Azure-Pipelines-1ESPT-ExDShared-StaticIP
           os: linux
           image: ubuntu-latest
-        variables:
-          - name: System.Debug
-            value: true
-          - group: PR Metrics
-        steps:
-          - checkout: self
-            displayName: Checkout
-            fetchDepth: 0
-            persistCredentials: false
-
-          - task: AzureCLI@3
-            displayName: App Token – Mint
-            inputs:
-              connectionType: azureRM
-              azureSubscription: PR Metrics
-              scriptType: pscore
-              scriptLocation: scriptPath
-              scriptPath: .github/actions/mint-github-app-token/New-GitHubAppToken.ps1
-            env:
-              GITHUB_APP_PERMISSIONS: '{"pull_requests":"write"}'
-
-          - task: PRMetrics@1
-            displayName: PR Metrics
-            env:
-              PR_METRICS_ACCESS_TOKEN: $(GitHubAppToken)
-            inputs:
-              file-matching-patterns: |
-                **/*
-                !dist/*
-                !package-lock.json
+        ${{ if parameters.production }}:
+          variables:
+            - group: PR Metrics
+          steps:
+            - template: production-pr-metrics-steps.yml
+        ${{ else }}:
+          steps:
+            - template: test-steps.yml
 
       - job: PRMetrics_Windows
         displayName: PR Metrics – Windows
@@ -126,36 +130,14 @@ stages:
           name: Azure-Pipelines-1ESPT-ExDShared-StaticIP
           os: windows
           image: windows-latest
-        variables:
-          - name: System.Debug
-            value: true
-          - group: PR Metrics
-        steps:
-          - checkout: self
-            displayName: Checkout
-            fetchDepth: 0
-            persistCredentials: false
-
-          - task: AzureCLI@3
-            displayName: App Token – Mint
-            inputs:
-              connectionType: azureRM
-              azureSubscription: PR Metrics
-              scriptType: pscore
-              scriptLocation: scriptPath
-              scriptPath: .github/actions/mint-github-app-token/New-GitHubAppToken.ps1
-            env:
-              GITHUB_APP_PERMISSIONS: '{"pull_requests":"write"}'
-
-          - task: PRMetrics@1
-            displayName: PR Metrics
-            env:
-              PR_METRICS_ACCESS_TOKEN: $(GitHubAppToken)
-            inputs:
-              file-matching-patterns: |
-                **/*
-                !dist/*
-                !package-lock.json
+        ${{ if parameters.production }}:
+          variables:
+            - group: PR Metrics
+          steps:
+            - template: production-pr-metrics-steps.yml
+        ${{ else }}:
+          steps:
+            - template: test-steps.yml
 
       - job: Validation
         displayName: Validation

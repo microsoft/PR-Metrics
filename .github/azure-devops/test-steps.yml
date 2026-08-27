@@ -1,0 +1,24 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+
+---
+steps:
+  - checkout: self
+    displayName: Checkout
+    persistCredentials: false
+
+  - task: UseNode@1
+    displayName: Install Node.js
+    inputs:
+      version: 24.13.0
+
+  - task: Npm@1
+    displayName: npm – Install Dependencies
+    inputs:
+      command: ci
+
+  - task: Npm@1
+    displayName: npm – Test
+    inputs:
+      command: custom
+      customCommand: run test:fast
