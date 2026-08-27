@@ -48,18 +48,11 @@ instead of the proxy. All communication with the proxy and the Office feed uses
 HTTPS.
 
 During CI/CD builds, `npm ci` resolves dependencies from the lockfile, ensuring
-reproducible builds.
-
-Because the proxy and Office feed each front multiple backend hosts, the
-`resolved` URLs recorded in [`package-lock.json`][packagelockjson] may reference
-rotating Microsoft backend tarball hosts (matching the shard-based routing
-behavior expected of these feeds) rather than a single, fixed hostname. This is
-expected behavior, not a misconfiguration: the recorded host does not need to
-match the registry hostname configured in the repository-root `.npmrc`, and it
-must not be normalized or rewritten to a single shard. Reproducibility and
-integrity are instead guaranteed by the exact pinned versions and `integrity`
-hashes recorded for each package (see [Tracking](#tracking)), which are verified
-on every install regardless of which backend host served the tarball.
+reproducible builds. Both checked-in `.npmrc` files set
+`omit-lockfile-registry-resolved=true`, so the lockfile does not record registry
+tarball URLs. Reproducibility and integrity are guaranteed by the exact pinned
+versions and `integrity` hashes recorded for each package (see
+[Tracking](#tracking)), which npm verifies on every install.
 
 ## Tracking
 
