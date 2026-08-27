@@ -176,10 +176,19 @@ if ($env:GITHUB_ACTIONS -eq 'true')
 }
 elseif (-not [string]::IsNullOrWhiteSpace($env:TF_BUILD))
 {
-    Write-Output -InputObject "##vso[task.setvariable variable=KeyVaultAccessToken;issecret=true]$vaultAccessToken"
+    Write-Output -InputObject "##vso[task.setsecret]$vaultAccessToken"
 }
 
 $jwt = Get-JsonWebToken -ClientId $clientId -VaultName $vaultName -KeyName $keyName -VaultAccessToken $vaultAccessToken
+
+if ($env:GITHUB_ACTIONS -eq 'true')
+{
+    Write-Output -InputObject "::add-mask::$jwt"
+}
+elseif (-not [string]::IsNullOrWhiteSpace($env:TF_BUILD))
+{
+    Write-Output -InputObject "##vso[task.setsecret]$jwt"
+}
 
 $installation = Invoke-GitHubApi -Uri "$apiUrl/repos/$owner/$repositoryName/installation" -Jwt $jwt -Method 'Get'
 if ($null -eq $installation.id)
