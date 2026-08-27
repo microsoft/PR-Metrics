@@ -15,6 +15,7 @@ defaults:
 
 jobs:
   release:
+    if: github.ref == 'refs/heads/main'
     name: Release
     runs-on: ubuntu-latest
     environment: production
