@@ -102,6 +102,7 @@ jobs:
       - name: Super-Linter
         uses: super-linter/super-linter@4ce20838b8ab83717e78138c5b3a1407148e0918 # v8.7.0
         env:
+          ENABLE_GITHUB_PULL_REQUEST_SUMMARY_COMMENT: false
           FILTER_REGEX_EXCLUDE: .*dist/.*
           FIX_JSON_PRETTIER: true
           FIX_MARKDOWN_PRETTIER: true
@@ -337,6 +338,38 @@ jobs:
         uses: github/codeql-action/analyze@5595ccaf912efad79be6eef63a5619ff05969be3 # v4.37.6
         with:
           category: TypeScript
+
+  validate-linter:
+    name: Validate – Linter
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Super-Linter
+        uses: super-linter/super-linter@4ce20838b8ab83717e78138c5b3a1407148e0918 # v8.7.0
+        env:
+          ENABLE_GITHUB_PULL_REQUEST_SUMMARY_COMMENT: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository }}
+          FILTER_REGEX_EXCLUDE: .*dist/.*
+          GITHUB_TOKEN: ${{ github.token }}
+          GITLEAKS_CONFIG_FILE: gitleaks.toml
+          MARKDOWN_CONFIG_FILE: ../../.markdownlint.json
+          MULTI_STATUS: false
+          SAVE_SUPER_LINTER_SUMMARY: false
+          SPELL_CODESPELL_CONFIG_FILE: .codespellrc
+          # Disable linters that conflict with other linters or are not enforced.
+          VALIDATE_BIOME_FORMAT: false
+          VALIDATE_BIOME_LINT: false
+          VALIDATE_GIT_COMMITLINT: false
+          VALIDATE_JSON: false
+          VALIDATE_PYTHON_BLACK: false
+          VALIDATE_TYPESCRIPT_ES: false
 
   dependabot:
     if: >-
