@@ -113,7 +113,7 @@ jobs:
           GITLEAKS_CONFIG_FILE: gitleaks.toml
           MARKDOWN_CONFIG_FILE: ../../.markdownlint.json
           MULTI_STATUS: false
-          SAVE_SUPER_LINTER_SUMMARY: true
+          SAVE_SUPER_LINTER_SUMMARY: false
           SPELL_CODESPELL_CONFIG_FILE: .codespellrc
           # Disable linters that conflict with other linters or are not enforced.
           VALIDATE_BIOME_FORMAT: false
