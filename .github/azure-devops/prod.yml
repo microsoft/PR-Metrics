@@ -60,3 +60,5 @@ extends:
                 condition: ne(variables['Build.SourceBranchName'], 'main')
 
       - template: template.yml
+        parameters:
+          production: true

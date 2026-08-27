@@ -1,1 +1,4 @@
 * @microsoft/omex
+/.github/actions/ @microsoft/omex-admin
+/.github/azure-devops/ @microsoft/omex-admin
+/.github/workflows/ @microsoft/omex-admin
