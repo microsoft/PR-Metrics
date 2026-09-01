@@ -97,7 +97,7 @@ jobs:
         run: npm run lint
 
       - name: npm – Build Package
-        run: npm run build:package
+        run: npm run build:package:no-install
 
       - name: Super-Linter
         uses: super-linter/super-linter@4ce20838b8ab83717e78138c5b3a1407148e0918 # v8.7.0
@@ -126,15 +126,7 @@ jobs:
 
       - name: Git – Create Changes Patch
         id: git-test-for-changes
-        run: |-
-          git add -A
-          $changesPresent = [bool](git diff --cached --name-only)
-          "CHANGES_PRESENT=$($changesPresent.ToString())" >> $Env:GITHUB_OUTPUT
-          if ($changesPresent)
-          {
-              New-Item -ItemType Directory -Path 'generated' | Out-Null
-              git diff --cached --binary --output='generated/generated-changes.patch'
-          }
+        run: .github/workflow-scripts/New-GeneratedChangesPatch.ps1
 
       - if: github.event_name == 'pull_request' && steps.git-test-for-changes.outputs.CHANGES_PRESENT == 'True'
         name: Git – Upload Changes Patch
@@ -146,50 +138,61 @@ jobs:
           retention-days: 1
 
   commit-changes:
-    if: >-
-      github.event_name == 'pull_request' &&
-      github.event.pull_request.head.repo.full_name == github.repository &&
-      needs.update-code.outputs.changes-present == 'True'
+    if: always()
     name: Commit Changes
     needs: update-code
     runs-on: ubuntu-latest
-    environment: production
+    environment: >-
+      ${{
+        github.event_name == 'pull_request' &&
+        github.event.pull_request.head.repo.full_name == github.repository &&
+        needs.update-code.result == 'success' &&
+        needs.update-code.outputs.changes-present == 'True' &&
+        'production' ||
+        ''
+      }}
     permissions:
       contents: read
       id-token: write
+    env:
+      RUN_AUTOMATION: >-
+        ${{
+          github.event_name == 'pull_request' &&
+          github.event.pull_request.head.repo.full_name == github.repository &&
+          needs.update-code.result == 'success' &&
+          needs.update-code.outputs.changes-present == 'True'
+        }}
     steps:
-      - name: Checkout
+      - name: Commit Changes – Check Applicability
+        run: >-
+          Write-Output -InputObject "Run automation: $env:RUN_AUTOMATION"
+
+      - if: env.RUN_AUTOMATION == 'true'
+        name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
           ref: ${{ github.event.pull_request.head.sha }}
 
-      - name: Git – Create Local Branch
+      - if: env.RUN_AUTOMATION == 'true'
+        name: Git – Create Local Branch
         run: git switch --create "$env:HEAD_REF"
         env:
           HEAD_REF: ${{ github.head_ref }}
 
-      - name: Git – Download Changes Patch
+      - if: env.RUN_AUTOMATION == 'true'
+        name: Git – Download Changes Patch
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: generated-changes
           path: ${{ runner.temp }}/generated-changes
 
-      - name: Git – Apply Changes Patch
+      - if: env.RUN_AUTOMATION == 'true'
+        name: Git – Apply Changes Patch
         run: git apply --index '${{ runner.temp }}/generated-changes/generated-changes.patch'
 
-      - name: Git – Verify Pull Request Head
-        run: |-
-          $remoteHead = (git ls-remote origin "refs/heads/$env:HEAD_REF").Split()[0]
-          if ($remoteHead -ne $env:EXPECTED_HEAD)
-          {
-              throw "The pull request branch changed from '$env:EXPECTED_HEAD' to '$remoteHead'. Re-run the workflow before committing generated changes."
-          }
-        env:
-          EXPECTED_HEAD: ${{ github.event.pull_request.head.sha }}
-          HEAD_REF: ${{ github.head_ref }}
-
-      - name: App Token – Mint
+      - if: env.RUN_AUTOMATION == 'true'
+        name: App Token – Mint
         id: app-token
         uses: microsoft/PR-Metrics/.github/actions/mint-github-app-token@0959437740572519916a08b3609e67ffa435f8dd # v1.7.17
         with:
@@ -198,7 +201,10 @@ jobs:
           azure-subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
           permissions: '{"contents":"write"}'
 
-      - name: Git – Commit & Push (Signed)
+      - if: env.RUN_AUTOMATION == 'true'
+        name: Git – Commit & Push (Signed)
+        # Do not move this into the checked-out pull request. This step receives a
+        # repository-write token and must not execute pull request code.
         run: |-
           $additions = [System.Collections.Generic.List[object]]::new()
           $deletions = [System.Collections.Generic.List[object]]::new()
@@ -296,14 +302,11 @@ jobs:
       - name: npm – Lint
         run: npm run lint -- --no-fix
 
-      - name: npm – Clean
-        run: npm run clean
-
       - name: npm – Build
-        run: npm run build
+        run: npm run build:no-install
 
       - name: npm – Test
-        run: npm run test
+        run: npm run test:no-install
 
       - name: Release – Create
         run: npx tfx-cli extension create --manifest-globs vss-extension.json --output-path ../ms-omex.PRMetrics.vsix
@@ -345,6 +348,7 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
+      statuses: write
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -360,7 +364,7 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
           GITLEAKS_CONFIG_FILE: gitleaks.toml
           MARKDOWN_CONFIG_FILE: ../../.markdownlint.json
-          MULTI_STATUS: false
+          MULTI_STATUS: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
           SAVE_SUPER_LINTER_SUMMARY: false
           SPELL_CODESPELL_CONFIG_FILE: .codespellrc
           # Disable linters that conflict with other linters or are not enforced.
@@ -371,22 +375,34 @@ jobs:
           VALIDATE_PYTHON_BLACK: false
           VALIDATE_TYPESCRIPT_ES: false
 
-  dependabot:
-    if: >-
-      github.event_name == 'pull_request' &&
-      github.event.pull_request.user.login == 'dependabot[bot]' &&
-      github.event.pull_request.head.repo.full_name == github.repository
-    name: Dependabot
+  dependabot-automation:
+    name: Dependabot – Automation
     runs-on: ubuntu-latest
-    environment: production
+    environment: >-
+      ${{
+        github.event_name == 'pull_request' &&
+        github.event.pull_request.user.login == 'dependabot[bot]' &&
+        github.event.pull_request.head.repo.full_name == github.repository &&
+        'production' ||
+        ''
+      }}
     permissions:
       contents: read
       id-token: write
+    env:
+      RUN_AUTOMATION: >-
+        ${{
+          github.event_name == 'pull_request' &&
+          github.event.pull_request.user.login == 'dependabot[bot]' &&
+          github.event.pull_request.head.repo.full_name == github.repository
+        }}
     steps:
-      - name: gh – Log Version
-        run: gh --version
+      - name: Dependabot – Check Applicability
+        run: >-
+          Write-Output -InputObject "Run automation: $env:RUN_AUTOMATION"
 
-      - name: App Token – Mint
+      - if: env.RUN_AUTOMATION == 'true'
+        name: App Token – Mint
         id: app-token
         uses: microsoft/PR-Metrics/.github/actions/mint-github-app-token@0959437740572519916a08b3609e67ffa435f8dd # v1.7.17
         with:
@@ -395,7 +411,8 @@ jobs:
           azure-subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
           permissions: '{"pull_requests":"write"}'
 
-      - name: Auto-Approve
+      - if: env.RUN_AUTOMATION == 'true'
+        name: Auto-Approve
         run: gh pr review --approve "$env:PR_URL"
         env:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}

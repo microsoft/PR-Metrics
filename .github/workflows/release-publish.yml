@@ -43,16 +43,10 @@ jobs:
           azure-subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
           permissions: '{"contents":"write","discussions":"write"}'
 
-      - name: gh – Log Version
-        run: gh --version
-
       - name: Install Node.js
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 24.13.0
-
-      - name: npm – Install Dependencies
-        run: npm ci
 
       - name: npm – Build Release
         run: npm run build:release
