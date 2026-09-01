@@ -10,9 +10,6 @@ on:
       - main
     paths:
       - .github/release-publish-trigger.txt
-  pull_request:
-    branches:
-      - main
   workflow_dispatch: null
 
 permissions: {}

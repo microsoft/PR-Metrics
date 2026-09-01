@@ -5,9 +5,6 @@
 name: Release – Initiate
 
 on:
-  pull_request:
-    branches:
-      - main
   workflow_dispatch: null
 
 permissions: {}
