@@ -5,6 +5,9 @@
 name: Release – Initiate
 
 on:
+  pull_request:
+    branches:
+      - main
   workflow_dispatch: null
 
 permissions: {}
@@ -42,10 +45,6 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-          token: ${{ steps.app-token.outputs.token }}
-
-      - name: gh – Log Version
-        run: gh --version
 
       - name: Version Number – Read
         run: |-
@@ -71,9 +70,8 @@ jobs:
       - name: Git – Create Branch
         run: git checkout -b release/v$env:version
 
-      - name: Git – Add Changed Files
-        run: git add -A
-
+      # stage-all-files replaces a separate git add. create-branch-on-remote
+      # pushes the new branch before the signed GraphQL commit is created.
       - name: Git – Commit & Push (Signed)
         uses: grafana/github-api-commit-action@b1d81091e8480dd11fcea8bc1f0ab977a0376ca5 # v1.0.0
         with:
@@ -82,6 +80,8 @@ jobs:
           stage-all-files: true
           token: ${{ steps.app-token.outputs.token }}
 
+      # The API commit updates the remote only. Sync it locally before generating
+      # dependency changes on top of the release-version commit.
       - name: Git – Sync Local with Remote
         run: |-
           git fetch origin release/v$env:version
@@ -131,11 +131,5 @@ jobs:
         uses: grafana/github-api-commit-action@b1d81091e8480dd11fcea8bc1f0ab977a0376ca5 # v1.0.0
         with:
           commit-message: "chore: update dependencies"
-          create-branch-on-remote: true
           stage-all-files: true
           token: ${{ steps.app-token.outputs.token }}
-
-      - name: Git – Sync Local with Remote
-        run: |-
-          git fetch origin release/v$env:version
-          git reset --hard origin/release/v$env:version
