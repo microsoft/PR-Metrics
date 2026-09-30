@@ -29,7 +29,7 @@ stages:
               displayName: Install Node.js
               inputs:
                 versionSource: spec
-                version: 24.13.0
+                version: 24.18.1
 
             - task: Npm@1
               displayName: npm – Install Dependencies
@@ -63,7 +63,7 @@ stages:
               displayName: Install Node.js
               inputs:
                 versionSource: spec
-                version: 24.13.0
+                version: 24.18.1
 
             - bash: |
                 {

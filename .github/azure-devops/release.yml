@@ -73,7 +73,7 @@ extends:
                 displayName: Install Node.js
                 inputs:
                   versionSource: spec
-                  version: 24.13.0
+                  version: 24.18.1
 
               - bash: |
                   {
