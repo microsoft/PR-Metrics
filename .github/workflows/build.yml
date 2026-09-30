@@ -330,7 +330,7 @@ jobs:
           persist-credentials: false
 
       - name: CodeQL – Initialize
-        uses: github/codeql-action/init@5595ccaf912efad79be6eef63a5619ff05969be3 # v4.37.6
+        uses: github/codeql-action/init@2892aa5e19bbd11bc0cff5427e3b750a04d9e3c2 # v4.38.2
         with:
           build-mode: none
           config-file: .github/linters/codeql.yml
@@ -338,7 +338,7 @@ jobs:
           queries: code-quality,code-scanning,security-and-quality,security-experimental,security-extended
 
       - name: CodeQL – Analyze
-        uses: github/codeql-action/analyze@5595ccaf912efad79be6eef63a5619ff05969be3 # v4.37.6
+        uses: github/codeql-action/analyze@2892aa5e19bbd11bc0cff5427e3b750a04d9e3c2 # v4.38.2
         with:
           category: TypeScript
 

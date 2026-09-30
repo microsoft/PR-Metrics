@@ -12,7 +12,7 @@ import { instance } from "ts-mockito";
  * @param mock The mock object to resolve.
  * @returns The resolvable instance.
  */
-export const resolvableInstance = <Type extends NonNullable<unknown>>(
+export const resolvableInstance = <Type extends object>(
   mock: Type,
 ): Type =>
   new Proxy(instance(mock), {

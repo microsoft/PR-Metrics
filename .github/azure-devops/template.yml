@@ -28,6 +28,7 @@ stages:
             - task: UseNode@1
               displayName: Install Node.js
               inputs:
+                versionSource: spec
                 version: 24.13.0
 
             - task: Npm@1
@@ -61,6 +62,7 @@ stages:
             - task: UseNode@1
               displayName: Install Node.js
               inputs:
+                versionSource: spec
                 version: 24.13.0
 
             - bash: |
