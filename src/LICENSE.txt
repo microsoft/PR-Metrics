@@ -465,28 +465,6 @@ Apache License
 
 The following npm package may be included in this product:
 
- - utf8-byte-length@1.0.5
-
-This package contains the following license:
-
-DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
-                    Version 2, December 2004
-
- Copyright (C) 2004 Sam Hocevar <sam@hocevar.net>
-
- Everyone is permitted to copy and distribute verbatim or modified
- copies of this license document, and changing it is allowed as long
- as the name is changed.
-
-            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
-   TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
-
-  0. You just DO WHAT THE FUCK YOU WANT TO.
-
------------
-
-The following npm package may be included in this product:
-
  - balanced-match@1.0.2
 
 This package contains the following license:
@@ -609,7 +587,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 The following npm package may be included in this product:
 
- - content-type@2.0.0
+ - content-type@3.1.1
 
 This package contains the following license:
 
@@ -724,7 +702,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 The following npm package may be included in this product:
 
- - qs@6.15.3
+ - qs@6.16.0
 
 This package contains the following license:
 
@@ -821,7 +799,7 @@ THE SOFTWARE.
 
 The following npm package may be included in this product:
 
- - fastq@1.20.1
+ - fastq@1.20.3
 
 This package contains the following license:
 
@@ -841,11 +819,12 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 -----------
 
-The following npm package may be included in this product:
+The following npm packages may be included in this product:
 
  - @octokit/openapi-types@27.0.0
+ - @octokit/openapi-types@29.0.1
 
-This package contains the following license:
+These packages each contain the following license:
 
 Copyright (c) GitHub 2025 - Licensed as MIT.
 
@@ -964,6 +943,22 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 The following npm package may be included in this product:
 
+ - utf8-byte-length@1.0.5
+
+This package contains the following license:
+
+Copyright 2023 Carl Xiong & Parsha Pourkhomami
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+-----------
+
+The following npm package may be included in this product:
+
  - nodejs-file-downloader@4.13.0
 
 This package contains the following license:
@@ -981,36 +976,6 @@ The following npm packages may be included in this product:
 These packages each contain the following license:
 
 MIT
-
------------
-
-The following npm package may be included in this product:
-
- - adm-zip@0.6.0
-
-This package contains the following license:
-
-MIT License
-
-Copyright (c) 2012 Another-D-Mention Software and other contributors
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
 
 -----------
 
@@ -1046,7 +1011,7 @@ SOFTWARE.
 
 The following npm package may be included in this product:
 
- - brace-expansion@1.1.18
+ - brace-expansion@1.1.21
 
 This package contains the following license:
 
@@ -1227,7 +1192,7 @@ SOFTWARE.
 
 The following npm package may be included in this product:
 
- - json-with-bigint@3.5.10
+ - json-with-bigint@3.5.12
 
 This package contains the following license:
 
@@ -1402,7 +1367,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 The following npm package may be included in this product:
 
- - undici@6.28.0
+ - undici@6.28.1
 
 This package contains the following license:
 
@@ -1478,6 +1443,7 @@ The following npm packages may be included in this product:
  - @octokit/plugin-paginate-rest@14.0.0
  - @octokit/plugin-rest-endpoint-methods@17.0.0
  - @octokit/types@16.0.0
+ - @octokit/types@18.0.0
 
 These packages each contain the following license:
 
@@ -1640,9 +1606,9 @@ THE SOFTWARE.
 
 The following npm packages may be included in this product:
 
- - @octokit/endpoint@11.0.3
- - @octokit/graphql@9.0.3
- - @octokit/request@10.0.11
+ - @octokit/endpoint@11.0.5
+ - @octokit/graphql@9.0.5
+ - @octokit/request@10.0.16
 
 These packages each contain the following license:
 
@@ -1673,8 +1639,8 @@ THE SOFTWARE.
 The following npm packages may be included in this product:
 
  - @octokit/auth-token@6.0.0
- - @octokit/core@7.0.6
- - @octokit/request-error@7.1.0
+ - @octokit/core@7.0.8
+ - @octokit/request-error@7.1.2
 
 These packages each contain the following license:
 
@@ -1918,7 +1884,7 @@ THE SOFTWARE.
 The following npm packages may be included in this product:
 
  - picomatch@2.3.2
- - picomatch@4.0.5
+ - picomatch@4.0.7
 
 These packages each contain the following license:
 
@@ -2071,7 +2037,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 The following npm package may be included in this product:
 
- - azure-pipelines-task-lib@5.278.0
+ - azure-pipelines-task-lib@5.281.0
 
 This package contains the following license:
 
@@ -2221,7 +2187,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 The following npm package may be included in this product:
 
- - typed-rest-client@2.1.0
+ - typed-rest-client@3.1.2
 
 This package contains the following license:
 
@@ -2269,7 +2235,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 The following npm package may be included in this product:
 
- - azure-devops-node-api@15.1.2
+ - azure-devops-node-api@17.0.1
 
 This package contains the following license:
 
