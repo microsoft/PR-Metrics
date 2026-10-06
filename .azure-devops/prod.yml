@@ -32,8 +32,6 @@ extends:
         name: Azure-Pipelines-1ESPT-ExDShared-StaticIP
         os: windows
         image: windows-latest
-      credscan:
-        suppressionsFile: $(Build.SourcesDirectory)\.azure-devops\CredScanSuppressions.json
       eslint:
         environmentsEs2017: true
         environmentsMocha: true
