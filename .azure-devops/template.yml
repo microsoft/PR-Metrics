@@ -156,7 +156,7 @@ stages:
             inputs:
               targetType: F
               optionsFC: 1
-              optionsUEPATH: $(Build.SourcesDirectory)/.github/azure-devops/PoliCheckExclusions.xml
+              optionsUEPATH: $(Build.SourcesDirectory)/.azure-devops/PoliCheckExclusions.xml
 
           - task: PublishSecurityAnalysisLogs@3
             displayName: Guardian – Publish Artifacts

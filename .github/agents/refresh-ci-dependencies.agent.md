@@ -32,7 +32,7 @@ Edit only these files:
 - `.github/workflows/build.yml`
 - `.github/workflows/release-initiate.yml`
 - `.github/workflows/release-publish.yml`
-- `.github/azure-devops/*.yml`
+- `.azure-devops/*.yml`
 - `package.json`
 - `.nvmrc`
 
@@ -66,7 +66,7 @@ If the tag points to an annotated tag object, dereference it with a second
 
 ## Azure DevOps Task Versions
 
-In `.github/azure-devops/*.yml`, tasks are pinned by major version as
+In `.azure-devops/*.yml`, tasks are pinned by major version as
 `task: TaskName@N` – for example, `Npm@1`, `UseNode@1`, or `EsrpCodeSigning@6`.
 Only the major version is declared; the latest minor or patch resolves at
 runtime. For built-in tasks, confirm the latest major from the `Tasks/` folders
@@ -95,7 +95,7 @@ any divergence. Locate every occurrence:
 
 - `.github/workflows/build.yml`, `release-initiate.yml`, and
   `release-publish.yml` – `node-version: X.Y.Z` under `actions/setup-node`.
-- `.github/azure-devops/*.yml` – `UseNode@1` with `version: X.Y.Z`.
+- `.azure-devops/*.yml` – `UseNode@1` with `version: X.Y.Z`.
 - `package.json` – `engines.node`.
 - `.nvmrc`, if present.
 

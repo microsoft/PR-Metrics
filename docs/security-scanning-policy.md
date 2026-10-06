@@ -136,7 +136,7 @@ and assessed.
 [codeql]: https://codeql.github.com/
 [componentgovernance]: https://docs.opensource.microsoft.com/tools/cg/
 [credscan]: https://secdevtools.azurewebsites.net/helpcredscan.html
-[credscansuppressions]: https://github.com/microsoft/PR-Metrics/blob/main/.github/azure-devops/CredScanSuppressions.json
+[credscansuppressions]: https://github.com/microsoft/PR-Metrics/blob/main/.azure-devops/CredScanSuppressions.json
 [dependabotalerts]: https://docs.github.com/code-security/dependabot/dependabot-alerts/about-dependabot-alerts
 [eslint]: https://eslint.org/
 [githubsecurityadvisories]: https://github.com/microsoft/PR-Metrics/security/advisories
