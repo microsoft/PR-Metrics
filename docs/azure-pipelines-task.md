@@ -37,6 +37,26 @@ after code check out is complete. Running the task early in the build process
 allows for the title to be updated quickly, avoiding the need for engineers to
 wait a long time for the title update.
 
+## Automatic PR Labels
+
+Every supported PR run updates labels without new inputs. This applies to Azure Repos, GitHub, and GitHub Enterprise repositories built through Azure Pipelines. The repository provider determines which label API is used.
+
+One size label is maintained: `pr-metrics:XS`, `pr-metrics:S`, `pr-metrics:M`, `pr-metrics:L`, `pr-metrics:XL`, `pr-metrics:2XL`, and larger numbered XL sizes. It matches the existing title size.
+
+| Metric Result | Labels For A Medium PR |
+| --- | --- |
+| Tests sufficient | `pr-metrics:M`, `pr-metrics:tests-sufficient` |
+| Tests insufficient | `pr-metrics:M`, `pr-metrics:tests-insufficient` |
+| Checking disabled (`TestFactor: 0`) | `pr-metrics:M` |
+
+The test-status labels are mutually exclusive. They describe added test lines relative to added product-code lines under the configured test factor. They do not establish measured coverage, test quality, or execution results. With checking enabled, zero added product-code lines produce the sufficient result.
+
+Stale managed size and test-status labels are removed. Other labels, including `pr-metrics:manual`, stay unchanged. Label names are compared without case sensitivity. Azure Repos uses native PR labels/tags; do not use GitHub label-search syntax for Azure filtering.
+
+**Permissions And Rollout:** Azure tokens require 'Code' > 'Read & write'; existing comments also require 'Pull Request Threads' > 'Read & write'. For GitHub repositories, retain pull request write access (`pull-requests: write` for a GitHub Actions token). Read-only tokens cannot perform these updates. Label API failures now make the task report failure; label updates cannot be disabled separately.
+
+Serialise builds that update the same PR. Additions and removals are separate API requests, not an atomic replacement. A later successful run resolves labels left by a partial failure.
+
 ## YAML
 
 The default input values are expected to be appropriate for most builds.

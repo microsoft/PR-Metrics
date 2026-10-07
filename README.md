@@ -49,6 +49,42 @@ If no PR description is provided, the description will be set to:
 
 > :x: **Add a description.**
 
+## Automatic PR Labels
+
+Every supported PR run also updates native labels on GitHub and Azure Repos. This requires no new configuration and cannot be disabled separately. Existing title and comment behaviour is unchanged.
+
+PR Metrics maintains one size label: `pr-metrics:XS`, `pr-metrics:S`, `pr-metrics:M`, `pr-metrics:L`, `pr-metrics:XL`, `pr-metrics:2XL`, and larger numbered XL sizes. Size uses the same added product-code lines, exclusions, and thresholds as the title.
+
+| Metric Result | Labels For A Medium PR |
+| --- | --- |
+| Tests sufficient | `pr-metrics:M`, `pr-metrics:tests-sufficient` |
+| Tests insufficient | `pr-metrics:M`, `pr-metrics:tests-insufficient` |
+| Test checking disabled (`test-factor: 0`) | `pr-metrics:M` |
+
+The two test-status labels are mutually exclusive. They describe the configured ratio of added test lines to added product-code lines, not measured test coverage, test quality, or test execution results. With checking enabled, zero added product-code lines produce the sufficient result.
+
+PR Metrics removes stale labels only from the stated size family and the two test-status names. It preserves unrelated labels, including `bug`, `size:XL`, and `pr-metrics:manual`. Name comparisons are case-insensitive. On GitHub, missing repository label definitions are created with colour `ededed`; existing definitions and colours are retained.
+
+Use GitHub search to find PRs with a specific label:
+
+```text
+is:pr is:open label:"pr-metrics:XL"
+is:pr is:open label:"pr-metrics:tests-sufficient"
+is:pr is:open label:"pr-metrics:tests-insufficient"
+```
+
+Azure Repos displays these names as native PR labels/tags. Its filtering is not equivalent to GitHub search.
+
+**Rollout:** Label updates apply to every supported PR run that passes the existing skip and stop checks. Label API failures, including insufficient permissions, now cause the task to report failure. Read-only tokens cannot update labels. Retain `pull-requests: write` for GitHub and the Azure permissions documented in the [Azure Pipelines task instructions][azurepipelinestask]. Fork workflows can receive read-only tokens; do not use an elevated fork trigger to bypass this restriction.
+
+Label updates add missing labels before removing stale labels. They use separate API requests and are not atomic. A later successful run resolves a partial update. Serialise runs for each PR to prevent competing updates. For GitHub Actions, set workflow or job concurrency:
+
+```yaml
+concurrency:
+  group: pr-metrics-${{ github.repository }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+```
+
 ## Inputs
 
 You will need to set the environment variable `PR_Metrics_Access_Token` to a

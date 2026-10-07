@@ -91,6 +91,24 @@ export default class ReposInvoker implements ReposInvokerInterface {
     return this.reposInvoker.getComments();
   }
 
+  public async getLabels(): Promise<string[]> {
+    this._logger.logDebug("* ReposInvoker.getLabels()");
+
+    return this.reposInvoker.getLabels();
+  }
+
+  public async addLabels(names: string[]): Promise<void> {
+    this._logger.logDebug("* ReposInvoker.addLabels()");
+
+    return this.reposInvoker.addLabels(names);
+  }
+
+  public async removeLabel(name: string): Promise<void> {
+    this._logger.logDebug("* ReposInvoker.removeLabel()");
+
+    return this.reposInvoker.removeLabel(name);
+  }
+
   public async setTitleAndDescription(
     title: string | null,
     description: string | null,

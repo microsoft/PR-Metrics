@@ -55,6 +55,12 @@ export default abstract class BaseReposInvoker implements ReposInvokerInterface 
 
   public abstract getComments(): Promise<CommentData>;
 
+  public abstract getLabels(): Promise<string[]>;
+
+  public abstract addLabels(names: string[]): Promise<void>;
+
+  public abstract removeLabel(name: string): Promise<void>;
+
   public abstract setTitleAndDescription(
     title: string | null,
     description: string | null,

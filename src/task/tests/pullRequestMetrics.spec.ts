@@ -12,6 +12,7 @@ import CodeMetricsCalculator from "../src/metrics/codeMetricsCalculator.js";
 import Logger from "../src/utilities/logger.js";
 import PullRequestMetrics from "../src/pullRequestMetrics.js";
 import RunnerInvoker from "../src/runners/runnerInvoker.js";
+import { any } from "./testUtilities/mockito.js";
 
 describe("pullRequestMetrics.ts", (): void => {
   let codeMetricsCalculator: CodeMetricsCalculator;
@@ -42,6 +43,7 @@ describe("pullRequestMetrics.ts", (): void => {
       // Assert
       verify(runnerInvoker.locInitialize("Folder")).once();
       verify(runnerInvoker.setStatusSkipped("Skip")).once();
+      verify(codeMetricsCalculator.updateLabels()).never();
     });
 
     it("should fail when receiving a stop flag", async (): Promise<void> => {
@@ -59,6 +61,7 @@ describe("pullRequestMetrics.ts", (): void => {
       // Assert
       verify(runnerInvoker.locInitialize("Folder")).once();
       verify(runnerInvoker.setStatusFailed("Stop")).once();
+      verify(codeMetricsCalculator.updateLabels()).never();
     });
 
     it("should succeed when no skip or stop flag is received", async (): Promise<void> => {
@@ -76,11 +79,29 @@ describe("pullRequestMetrics.ts", (): void => {
       verify(runnerInvoker.locInitialize("Folder")).once();
       verify(codeMetricsCalculator.updateDetails()).once();
       verify(codeMetricsCalculator.updateComments()).once();
+      verify(codeMetricsCalculator.updateLabels()).once();
       verify(
         runnerInvoker.setStatusSucceeded(
           localize("pullRequestMetrics.succeeded"),
         ),
       ).once();
+    });
+
+    it("should fail and log when label synchronization rejects", async (): Promise<void> => {
+      const error: Error = new Error("Labels failed");
+      when(codeMetricsCalculator.updateLabels()).thenReject(error);
+      const sut: PullRequestMetrics = new PullRequestMetrics(
+        instance(codeMetricsCalculator),
+        instance(logger),
+        instance(runnerInvoker),
+      );
+
+      await sut.run("Folder");
+
+      verify(logger.logErrorObject(error)).once();
+      verify(logger.replay()).once();
+      verify(runnerInvoker.setStatusFailed("Labels failed")).once();
+      verify(runnerInvoker.setStatusSucceeded(any())).never();
     });
 
     it("should catch and log errors", async (): Promise<void> => {
