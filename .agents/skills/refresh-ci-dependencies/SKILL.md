@@ -1,25 +1,20 @@
 ---
-name: Refresh CI Dependencies
+name: refresh-ci-dependencies
 description: >-
-  Refresh pinned CI/CD dependencies – SHA-pinned GitHub Actions and Azure DevOps
-  task versions – and audit Node.js runtime consistency on the branch of an open
-  release pull request.
-tools:
-  - read
-  - edit
-  - search
-  - execute
-  - web
+  Refresh SHA-pinned GitHub Actions and Azure DevOps task versions, and audit
+  Node.js runtime consistency on an open release pull request branch.
+  Run only with /refresh-ci-dependencies.
 disable-model-invocation: true
 ---
-
-# Refresh CI Dependencies
 
 Refresh the pinned versions in this repository's GitHub Actions workflows and
 Azure DevOps pipelines, and enforce Node.js runtime consistency across them. Run
 this on the branch of the open release pull request, before it is merged.
 
 ## Context
+
+Run only when the user invokes `/refresh-ci-dependencies`. Do not run
+automatically or in response to a general dependency update request.
 
 Run from the `release/vX.Y.Z` branch of the open release pull request. That pull
 request is created by the `Release – Initiate` workflow, carries the `release`
@@ -124,7 +119,7 @@ most recently. Do not change the value itself.
    workflow may auto-commit linting and `dist` updates to this branch, so the
    local branch can fall behind. Run `git fetch`, then fast-forward or rebase
    onto `origin/release/vX.Y.Z`, preserving any unrelated working-tree changes.
-   Stage only the files this agent changed.
+   Stage only the files this skill changed.
 1. Commit with the message `chore: refresh CI pins`.
 1. Push to the release pull request branch with a plain fast-forward push –
    never `--force`. Confirm exactly one new commit is added.
