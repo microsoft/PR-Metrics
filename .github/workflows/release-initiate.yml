@@ -98,13 +98,19 @@ jobs:
           $body = @'
           **Action required before merging**
 
-          Check out this branch, then run the GitHub Copilot CLI agent:
+          Check out this release branch, then start GitHub Copilot CLI from the repository root:
 
           ```bash
-          copilot --agent refresh-ci-dependencies --prompt "Refresh the pinned CI/CD dependencies on this release branch."
+          copilot
           ```
 
-          This updates SHA-pinned GitHub Actions, Azure DevOps task versions, and Node.js runtime consistency – the pins the automated dependency updates do not cover – then commits and pushes to this branch. See `.github/agents/refresh-ci-dependencies.agent.md`.
+          In the interactive session, run this slash-command:
+
+          ```text
+          /refresh-ci-dependencies
+          ```
+
+          The skill updates SHA-pinned GitHub Actions and supported Azure DevOps task versions, and checks Node.js runtime consistency without upgrading Node.js. It then commits and pushes to this branch. These checks cover pins that automated dependency updates do not cover. See `.agents/skills/refresh-ci-dependencies/SKILL.md`. The skill runs only when you invoke the slash-command.
           '@
           gh pr comment "release/v$env:version" --body $body
         env:
