@@ -63,8 +63,9 @@ export default class PullRequestLabels {
     );
     const stale: string[] = current.filter(
       (name: string): boolean =>
-        /^pr-metrics:(?:XS|S|M|L|XL|(?:[2-9]|[1-9][0-9]+)XL|tests-(?:sufficient|insufficient))$/iu.test(name) &&
-        !desiredNames.has(name.toLowerCase()),
+        /^pr-metrics:(?:XS|S|M|L|XL|(?:[2-9]|[1-9][0-9]+)XL|tests-(?:sufficient|insufficient))$/iu.test(
+          name,
+        ) && !desiredNames.has(name.toLowerCase()),
     );
 
     if (missing.length > 0) {

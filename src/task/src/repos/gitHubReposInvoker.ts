@@ -317,13 +317,21 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
       await this._octokitWrapper.getLabel(this._owner, this._repo, name);
       return;
     } catch (error: unknown) {
-      if (!(error instanceof RequestError) || error.status !== httpStatusCodes.notFound) {
+      if (
+        !(error instanceof RequestError) ||
+        error.status !== httpStatusCodes.notFound
+      ) {
         throw error;
       }
     }
 
     try {
-      await this._octokitWrapper.createLabel(this._owner, this._repo, name, "ededed");
+      await this._octokitWrapper.createLabel(
+        this._owner,
+        this._repo,
+        name,
+        "ededed",
+      );
     } catch (error: unknown) {
       if (
         !(error instanceof RequestError) ||

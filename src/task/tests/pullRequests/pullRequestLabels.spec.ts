@@ -44,8 +44,14 @@ describe("pullRequestLabels.ts", (): void => {
   });
 
   [
-    { expected: ["pr-metrics:M", "pr-metrics:tests-sufficient"], sufficient: true },
-    { expected: ["pr-metrics:M", "pr-metrics:tests-insufficient"], sufficient: false },
+    {
+      expected: ["pr-metrics:M", "pr-metrics:tests-sufficient"],
+      sufficient: true,
+    },
+    {
+      expected: ["pr-metrics:M", "pr-metrics:tests-insufficient"],
+      sufficient: false,
+    },
     { expected: ["pr-metrics:M"], sufficient: null },
   ].forEach((testCase): void => {
     [
@@ -56,7 +62,9 @@ describe("pullRequestLabels.ts", (): void => {
     ].forEach((initial: string[]): void => {
       it(`should converge from '${initial.join(",")}' when test sufficiency is '${String(testCase.sufficient)}'`, async (): Promise<void> => {
         labels = [...initial];
-        when(codeMetrics.isSufficientlyTested()).thenResolve(testCase.sufficient);
+        when(codeMetrics.isSufficientlyTested()).thenResolve(
+          testCase.sufficient,
+        );
 
         await sut.updateLabels();
         await sut.updateLabels();
@@ -68,27 +76,51 @@ describe("pullRequestLabels.ts", (): void => {
     });
   });
 
-  ["XS", "S", "M", "L", "XL", "2XL", "10XL", "123XL"].forEach((size: string): void => {
-    it(`should use the metric size '${size}' without parsing a title`, async (): Promise<void> => {
-      when(codeMetrics.getSize()).thenResolve(size);
+  ["XS", "S", "M", "L", "XL", "2XL", "10XL", "123XL"].forEach(
+    (size: string): void => {
+      it(`should use the metric size '${size}' without parsing a title`, async (): Promise<void> => {
+        when(codeMetrics.getSize()).thenResolve(size);
 
-      await sut.updateLabels();
+        await sut.updateLabels();
 
-      assert.deepEqual(labels, [`pr-metrics:${size}`, "pr-metrics:tests-insufficient"]);
-    });
-  });
+        assert.deepEqual(labels, [
+          `pr-metrics:${size}`,
+          "pr-metrics:tests-insufficient",
+        ]);
+      });
+    },
+  );
 
   it("should remove stale size labels and preserve unrelated labels", async (): Promise<void> => {
     const unrelated: string[] = [
-      "bug", "size:XL", "pr-metrics:manual", "pr-metrics:0XL",
-      "pr-metrics:1XL", "pr-metrics:01XL", "pr-metrics:2XL-extra",
-      "pr-metrics:tests-sufficient-extra", "other:pr-metrics:XL",
+      "bug",
+      "size:XL",
+      "pr-metrics:manual",
+      "pr-metrics:0XL",
+      "pr-metrics:1XL",
+      "pr-metrics:01XL",
+      "pr-metrics:2XL-extra",
+      "pr-metrics:tests-sufficient-extra",
+      "other:pr-metrics:XL",
     ];
-    labels = [...unrelated, "pr-metrics:XS", "pr-metrics:S", "pr-metrics:L", "pr-metrics:XL", "pr-metrics:2XL", "pr-metrics:10XL", "pr-metrics:123XL"];
+    labels = [
+      ...unrelated,
+      "pr-metrics:XS",
+      "pr-metrics:S",
+      "pr-metrics:L",
+      "pr-metrics:XL",
+      "pr-metrics:2XL",
+      "pr-metrics:10XL",
+      "pr-metrics:123XL",
+    ];
 
     await sut.updateLabels();
 
-    assert.deepEqual(labels, [...unrelated, "pr-metrics:M", "pr-metrics:tests-insufficient"]);
+    assert.deepEqual(labels, [
+      ...unrelated,
+      "pr-metrics:M",
+      "pr-metrics:tests-insufficient",
+    ]);
   });
 
   it("should make no mutations when desired labels exist with different casing", async (): Promise<void> => {
@@ -97,7 +129,11 @@ describe("pullRequestLabels.ts", (): void => {
     await sut.updateLabels();
 
     assert.deepEqual(operations, []);
-    assert.deepEqual(labels, ["PR-METRICS:m", "pr-metrics:TESTS-INSUFFICIENT", "bug"]);
+    assert.deepEqual(labels, [
+      "PR-METRICS:m",
+      "pr-metrics:TESTS-INSUFFICIENT",
+      "bug",
+    ]);
     verify(reposInvoker.getLabels()).once();
   });
 
@@ -114,13 +150,20 @@ describe("pullRequestLabels.ts", (): void => {
   });
 
   it("should remove disabled test labels without adding an existing size label", async (): Promise<void> => {
-    labels = ["pr-metrics:M", "pr-metrics:tests-sufficient", "pr-metrics:tests-insufficient"];
+    labels = [
+      "pr-metrics:M",
+      "pr-metrics:tests-sufficient",
+      "pr-metrics:tests-insufficient",
+    ];
     when(codeMetrics.isSufficientlyTested()).thenResolve(null);
 
     await sut.updateLabels();
 
     assert.deepEqual(labels, ["pr-metrics:M"]);
-    assert.deepEqual(operations, ["remove pr-metrics:tests-sufficient", "remove pr-metrics:tests-insufficient"]);
+    assert.deepEqual(operations, [
+      "remove pr-metrics:tests-sufficient",
+      "remove pr-metrics:tests-insufficient",
+    ]);
   });
 
   it("should not remove labels after an addition fails", async (): Promise<void> => {
@@ -137,15 +180,23 @@ describe("pullRequestLabels.ts", (): void => {
   it("should stop after a partial removal failure and converge on a later run", async (): Promise<void> => {
     labels = ["pr-metrics:XL", "pr-metrics:tests-sufficient", "pr-metrics:2XL"];
     const error: Error = new Error("Removal failed");
-    when(reposInvoker.removeLabel("pr-metrics:tests-sufficient"))
-      .thenReject(error);
+    when(reposInvoker.removeLabel("pr-metrics:tests-sufficient")).thenReject(
+      error,
+    );
 
     await assert.rejects(sut.updateLabels(), error);
-    assert.deepEqual(labels, ["pr-metrics:tests-sufficient", "pr-metrics:2XL", "pr-metrics:M", "pr-metrics:tests-insufficient"]);
+    assert.deepEqual(labels, [
+      "pr-metrics:tests-sufficient",
+      "pr-metrics:2XL",
+      "pr-metrics:M",
+      "pr-metrics:tests-insufficient",
+    ]);
     verify(reposInvoker.removeLabel("pr-metrics:2XL")).never();
-    when(reposInvoker.removeLabel("pr-metrics:tests-sufficient")).thenCall((name: string): void => {
-      labels = labels.filter((label: string): boolean => label !== name);
-    });
+    when(reposInvoker.removeLabel("pr-metrics:tests-sufficient")).thenCall(
+      (name: string): void => {
+        labels = labels.filter((label: string): boolean => label !== name);
+      },
+    );
     await sut.updateLabels();
 
     assert.deepEqual(labels, ["pr-metrics:M", "pr-metrics:tests-insufficient"]);

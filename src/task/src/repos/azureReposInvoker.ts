@@ -367,15 +367,14 @@ export default class AzureReposInvoker extends BaseReposInvoker {
     this._logger.logDebug("* AzureReposInvoker.deleteCommentThread()");
 
     const gitApiPromise: Promise<IGitApi> = this.getGitApi();
-    await this.invokeApiCall(
-      async (): Promise<void> =>
-        (await gitApiPromise).deleteComment(
-          this._repositoryId,
-          this._pullRequestId,
-          commentThreadId,
-          1,
-          this._project,
-        ),
+    await this.invokeApiCall(async (): Promise<void> =>
+      (await gitApiPromise).deleteComment(
+        this._repositoryId,
+        this._pullRequestId,
+        commentThreadId,
+        1,
+        this._project,
+      ),
     );
   }
 

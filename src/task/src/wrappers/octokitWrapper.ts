@@ -174,7 +174,11 @@ export default class OctokitWrapper {
    * @param repo The repo name.
    * @param name The label name.
    */
-  public async getLabel(owner: string, repo: string, name: string): Promise<void> {
+  public async getLabel(
+    owner: string,
+    repo: string,
+    name: string,
+  ): Promise<void> {
     await this.octokit.rest.issues.getLabel({ name, owner, repo });
   }
 

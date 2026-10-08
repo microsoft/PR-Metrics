@@ -27,34 +27,39 @@ describe("reposInvoker.ts", (): void => {
   });
 
   describe("labels", (): void => {
-    ["Actions", "TfsGit", "GitHub", "GitHubEnterprise"].forEach((provider: string): void => {
-      it(`should route all label operations to the repository provider '${provider}'`, async (): Promise<void> => {
-        stubEnv(
-          ["GITHUB_ACTION", provider === "Actions" ? "PR-Metrics" : undefined],
-          ["BUILD_REPOSITORY_PROVIDER", provider],
-        );
-        const selected: AzureReposInvoker | GitHubReposInvoker =
-          provider === "TfsGit" ? azureReposInvoker : gitHubReposInvoker;
-        const other: AzureReposInvoker | GitHubReposInvoker =
-          provider === "TfsGit" ? gitHubReposInvoker : azureReposInvoker;
-        when(selected.getLabels()).thenResolve(["bug"]);
-        const sut: ReposInvoker = new ReposInvoker(
-          instance(azureReposInvoker),
-          instance(gitHubReposInvoker),
-          instance(logger),
-        );
+    ["Actions", "TfsGit", "GitHub", "GitHubEnterprise"].forEach(
+      (provider: string): void => {
+        it(`should route all label operations to the repository provider '${provider}'`, async (): Promise<void> => {
+          stubEnv(
+            [
+              "GITHUB_ACTION",
+              provider === "Actions" ? "PR-Metrics" : undefined,
+            ],
+            ["BUILD_REPOSITORY_PROVIDER", provider],
+          );
+          const selected: AzureReposInvoker | GitHubReposInvoker =
+            provider === "TfsGit" ? azureReposInvoker : gitHubReposInvoker;
+          const other: AzureReposInvoker | GitHubReposInvoker =
+            provider === "TfsGit" ? gitHubReposInvoker : azureReposInvoker;
+          when(selected.getLabels()).thenResolve(["bug"]);
+          const sut: ReposInvoker = new ReposInvoker(
+            instance(azureReposInvoker),
+            instance(gitHubReposInvoker),
+            instance(logger),
+          );
 
-        assert.deepEqual(await sut.getLabels(), ["bug"]);
-        await sut.addLabels(["pr-metrics:M"]);
-        await sut.removeLabel("pr-metrics:XL");
+          assert.deepEqual(await sut.getLabels(), ["bug"]);
+          await sut.addLabels(["pr-metrics:M"]);
+          await sut.removeLabel("pr-metrics:XL");
 
-        verify(selected.addLabels(deepEqual(["pr-metrics:M"]))).once();
-        verify(selected.removeLabel("pr-metrics:XL")).once();
-        verify(other.getLabels()).never();
-        verify(other.addLabels(deepEqual(["pr-metrics:M"]))).never();
-        verify(other.removeLabel("pr-metrics:XL")).never();
-      });
-    });
+          verify(selected.addLabels(deepEqual(["pr-metrics:M"]))).once();
+          verify(selected.removeLabel("pr-metrics:XL")).once();
+          verify(other.getLabels()).never();
+          verify(other.addLabels(deepEqual(["pr-metrics:M"]))).never();
+          verify(other.removeLabel("pr-metrics:XL")).never();
+        });
+      },
+    );
   });
 
   describe("isAccessTokenAvailable()", (): void => {

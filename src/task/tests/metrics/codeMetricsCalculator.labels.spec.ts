@@ -45,18 +45,26 @@ describe("automatic PR labels integration", (): void => {
     const logger: Logger = mock(Logger);
     const runnerInvoker: RunnerInvoker = mock(RunnerInvoker);
     stubLocalization(runnerInvoker);
-    when(runnerInvoker.getInput(deepEqual(["Test", "Factor"])))
-      .thenReturn(testCase.factor ?? null);
-    when(runnerInvoker.getInput(deepEqual(["File", "Matching", "Patterns"])))
-      .thenReturn(testCase.patterns ?? null);
-    const inputs: Inputs = new Inputs(instance(logger), instance(runnerInvoker));
+    when(runnerInvoker.getInput(deepEqual(["Test", "Factor"]))).thenReturn(
+      testCase.factor ?? null,
+    );
+    when(
+      runnerInvoker.getInput(deepEqual(["File", "Matching", "Patterns"])),
+    ).thenReturn(testCase.patterns ?? null);
+    const inputs: Inputs = new Inputs(
+      instance(logger),
+      instance(runnerInvoker),
+    );
     const gitInvoker: GitInvoker = mock(GitInvoker);
     when(gitInvoker.isGitRepo()).thenResolve(true);
     when(gitInvoker.isPullRequestIdAvailable()).thenReturn(true);
     when(gitInvoker.isGitHistoryAvailable()).thenResolve(true);
     when(gitInvoker.getDiffSummary()).thenResolve(testCase.diff);
     const codeMetrics: CodeMetrics = new CodeMetrics(
-      instance(gitInvoker), inputs, instance(logger), instance(runnerInvoker),
+      instance(gitInvoker),
+      inputs,
+      instance(logger),
+      instance(runnerInvoker),
     );
     const azure: AzureReposInvoker = mock(AzureReposInvoker);
     const github: GitHubReposInvoker = mock(GitHubReposInvoker);
@@ -65,8 +73,10 @@ describe("automatic PR labels integration", (): void => {
     const other: AzureReposInvoker | GitHubReposInvoker =
       provider === "TfsGit" ? github : azure;
     let labels: string[] = [
-      "bug", "pr-metrics:10XL",
-      "pr-metrics:tests-sufficient", "pr-metrics:tests-insufficient",
+      "bug",
+      "pr-metrics:10XL",
+      "pr-metrics:tests-sufficient",
+      "pr-metrics:tests-insufficient",
     ];
     let title: string | null = null;
     const comments: string[] = [];
@@ -83,37 +93,62 @@ describe("automatic PR labels integration", (): void => {
     when(selected.removeLabel(any())).thenCall((name: string): void => {
       labels = labels.filter((label: string): boolean => label !== name);
     });
-    when(selected.setTitleAndDescription(any(), any())).thenCall((updatedTitle: string | null): void => {
-      title = updatedTitle;
-    });
-    when(selected.createComment(any(), any(), any(), any())).thenCall((content: string): void => {
-      comments.push(content);
-    });
+    when(selected.setTitleAndDescription(any(), any())).thenCall(
+      (updatedTitle: string | null): void => {
+        title = updatedTitle;
+      },
+    );
+    when(selected.createComment(any(), any(), any(), any())).thenCall(
+      (content: string): void => {
+        comments.push(content);
+      },
+    );
     const reposInvoker: ReposInvoker = new ReposInvoker(
-      instance(azure), instance(github), instance(logger),
+      instance(azure),
+      instance(github),
+      instance(logger),
     );
     const pullRequest: PullRequest = new PullRequest(
-      codeMetrics, instance(logger), instance(runnerInvoker),
+      codeMetrics,
+      instance(logger),
+      instance(runnerInvoker),
     );
     const pullRequestComments: PullRequestComments = new PullRequestComments(
-      codeMetrics, inputs, instance(logger), reposInvoker, instance(runnerInvoker),
+      codeMetrics,
+      inputs,
+      instance(logger),
+      reposInvoker,
+      instance(runnerInvoker),
     );
     const pullRequestLabels: PullRequestLabels = new PullRequestLabels(
-      codeMetrics, instance(logger), reposInvoker,
+      codeMetrics,
+      instance(logger),
+      reposInvoker,
     );
     const calculator: CodeMetricsCalculator = new CodeMetricsCalculator(
-      instance(gitInvoker), instance(logger), pullRequest, pullRequestComments,
-      pullRequestLabels, reposInvoker, instance(runnerInvoker),
+      instance(gitInvoker),
+      instance(logger),
+      pullRequest,
+      pullRequestComments,
+      pullRequestLabels,
+      reposInvoker,
+      instance(runnerInvoker),
     );
     const sut: PullRequestMetrics = new PullRequestMetrics(
-      calculator, instance(logger), instance(runnerInvoker),
+      calculator,
+      instance(logger),
+      instance(runnerInvoker),
     );
 
     await sut.run("Folder");
 
     assert.deepEqual(labels.toSorted(), ["bug", ...testCase.labels].toSorted());
     assert.equal(title, testCase.title);
-    assert.ok(comments.some((content: string): boolean => content.startsWith("# PR Metrics")));
+    assert.ok(
+      comments.some((content: string): boolean =>
+        content.startsWith("# PR Metrics"),
+      ),
+    );
     verify(gitInvoker.getDiffSummary()).once();
     verify(runnerInvoker.setStatusSucceeded(any())).once();
     verify(runnerInvoker.setStatusFailed(any())).never();
@@ -121,22 +156,90 @@ describe("automatic PR labels integration", (): void => {
   };
 
   const boundaryCases: TestCase[] = [
-    { diff: "199\t0\tfile.ts", labels: ["pr-metrics:XS", "pr-metrics:tests-insufficient"], title: "XS⚠️ ◾ Add feature" },
-    { diff: "200\t0\tfile.ts", labels: ["pr-metrics:S", "pr-metrics:tests-insufficient"], title: "S⚠️ ◾ Add feature" },
-    { diff: "399\t0\tfile.ts", labels: ["pr-metrics:S", "pr-metrics:tests-insufficient"], title: "S⚠️ ◾ Add feature" },
-    { diff: "400\t0\tfile.ts", labels: ["pr-metrics:M", "pr-metrics:tests-insufficient"], title: "M⚠️ ◾ Add feature" },
-    { diff: "799\t0\tfile.ts", labels: ["pr-metrics:M", "pr-metrics:tests-insufficient"], title: "M⚠️ ◾ Add feature" },
-    { diff: "800\t0\tfile.ts", labels: ["pr-metrics:L", "pr-metrics:tests-insufficient"], title: "L⚠️ ◾ Add feature" },
-    { diff: "1599\t0\tfile.ts", labels: ["pr-metrics:L", "pr-metrics:tests-insufficient"], title: "L⚠️ ◾ Add feature" },
-    { diff: "1600\t0\tfile.ts", labels: ["pr-metrics:XL", "pr-metrics:tests-insufficient"], title: "XL⚠️ ◾ Add feature" },
-    { diff: "3199\t0\tfile.ts", labels: ["pr-metrics:XL", "pr-metrics:tests-insufficient"], title: "XL⚠️ ◾ Add feature" },
-    { diff: "3200\t0\tfile.ts", labels: ["pr-metrics:2XL", "pr-metrics:tests-insufficient"], title: "2XL⚠️ ◾ Add feature" },
-    { diff: "100\t0\tfile.ts\n99\t0\ttest.ts", factor: "1", labels: ["pr-metrics:XS", "pr-metrics:tests-insufficient"], title: "XS⚠️ ◾ Add feature" },
-    { diff: "100\t0\tfile.ts\n100\t0\ttest.ts", factor: "1", labels: ["pr-metrics:XS", "pr-metrics:tests-sufficient"], title: "XS✔ ◾ Add feature" },
-    { diff: "400\t0\tfile.ts", factor: "0", labels: ["pr-metrics:M"], title: "M ◾ Add feature" },
-    { diff: "100\t0\ttest.ts", labels: ["pr-metrics:XS", "pr-metrics:tests-sufficient"], title: "XS✔ ◾ Add feature" },
-    { diff: "0\t100\tfile.ts", labels: ["pr-metrics:XS", "pr-metrics:tests-sufficient"], title: "XS✔ ◾ Add feature" },
-    { diff: "400\t0\texcluded.ts", labels: ["pr-metrics:XS", "pr-metrics:tests-sufficient"], patterns: "**/*\n!excluded.ts", title: "XS✔ ◾ Add feature" },
+    {
+      diff: "199\t0\tfile.ts",
+      labels: ["pr-metrics:XS", "pr-metrics:tests-insufficient"],
+      title: "XS⚠️ ◾ Add feature",
+    },
+    {
+      diff: "200\t0\tfile.ts",
+      labels: ["pr-metrics:S", "pr-metrics:tests-insufficient"],
+      title: "S⚠️ ◾ Add feature",
+    },
+    {
+      diff: "399\t0\tfile.ts",
+      labels: ["pr-metrics:S", "pr-metrics:tests-insufficient"],
+      title: "S⚠️ ◾ Add feature",
+    },
+    {
+      diff: "400\t0\tfile.ts",
+      labels: ["pr-metrics:M", "pr-metrics:tests-insufficient"],
+      title: "M⚠️ ◾ Add feature",
+    },
+    {
+      diff: "799\t0\tfile.ts",
+      labels: ["pr-metrics:M", "pr-metrics:tests-insufficient"],
+      title: "M⚠️ ◾ Add feature",
+    },
+    {
+      diff: "800\t0\tfile.ts",
+      labels: ["pr-metrics:L", "pr-metrics:tests-insufficient"],
+      title: "L⚠️ ◾ Add feature",
+    },
+    {
+      diff: "1599\t0\tfile.ts",
+      labels: ["pr-metrics:L", "pr-metrics:tests-insufficient"],
+      title: "L⚠️ ◾ Add feature",
+    },
+    {
+      diff: "1600\t0\tfile.ts",
+      labels: ["pr-metrics:XL", "pr-metrics:tests-insufficient"],
+      title: "XL⚠️ ◾ Add feature",
+    },
+    {
+      diff: "3199\t0\tfile.ts",
+      labels: ["pr-metrics:XL", "pr-metrics:tests-insufficient"],
+      title: "XL⚠️ ◾ Add feature",
+    },
+    {
+      diff: "3200\t0\tfile.ts",
+      labels: ["pr-metrics:2XL", "pr-metrics:tests-insufficient"],
+      title: "2XL⚠️ ◾ Add feature",
+    },
+    {
+      diff: "100\t0\tfile.ts\n99\t0\ttest.ts",
+      factor: "1",
+      labels: ["pr-metrics:XS", "pr-metrics:tests-insufficient"],
+      title: "XS⚠️ ◾ Add feature",
+    },
+    {
+      diff: "100\t0\tfile.ts\n100\t0\ttest.ts",
+      factor: "1",
+      labels: ["pr-metrics:XS", "pr-metrics:tests-sufficient"],
+      title: "XS✔ ◾ Add feature",
+    },
+    {
+      diff: "400\t0\tfile.ts",
+      factor: "0",
+      labels: ["pr-metrics:M"],
+      title: "M ◾ Add feature",
+    },
+    {
+      diff: "100\t0\ttest.ts",
+      labels: ["pr-metrics:XS", "pr-metrics:tests-sufficient"],
+      title: "XS✔ ◾ Add feature",
+    },
+    {
+      diff: "0\t100\tfile.ts",
+      labels: ["pr-metrics:XS", "pr-metrics:tests-sufficient"],
+      title: "XS✔ ◾ Add feature",
+    },
+    {
+      diff: "400\t0\texcluded.ts",
+      labels: ["pr-metrics:XS", "pr-metrics:tests-sufficient"],
+      patterns: "**/*\n!excluded.ts",
+      title: "XS✔ ◾ Add feature",
+    },
   ];
 
   boundaryCases.forEach((testCase: TestCase): void => {
@@ -147,11 +250,14 @@ describe("automatic PR labels integration", (): void => {
 
   ["TfsGit", "GitHub", "GitHubEnterprise"].forEach((provider: string): void => {
     it(`should automatically update labels, title, and comments for '${provider}' in Azure Pipelines`, async (): Promise<void> => {
-      await runMetrics({
-        diff: "400\t0\tfile.ts\n400\t0\ttest.ts",
-        labels: ["pr-metrics:M", "pr-metrics:tests-sufficient"],
-        title: "M✔ ◾ Add feature",
-      }, provider);
+      await runMetrics(
+        {
+          diff: "400\t0\tfile.ts\n400\t0\ttest.ts",
+          labels: ["pr-metrics:M", "pr-metrics:tests-sufficient"],
+          title: "M✔ ◾ Add feature",
+        },
+        provider,
+      );
     });
   });
 });

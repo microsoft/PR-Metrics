@@ -36,8 +36,9 @@ describe("gitHubReposInvoker.ts labels", (): void => {
   });
 
   it("should return all PR label names without changing labels", async (): Promise<void> => {
-    when(mocks.octokitWrapper.getLabels("microsoft", "PR-Metrics", 12345))
-      .thenResolve(["bug", "pr-metrics:M"]);
+    when(
+      mocks.octokitWrapper.getLabels("microsoft", "PR-Metrics", 12345),
+    ).thenResolve(["bug", "pr-metrics:M"]);
 
     assert.deepEqual(await sut.getLabels(), ["bug", "pr-metrics:M"]);
     verify(mocks.octokitWrapper.addLabels(any(), any(), any(), any())).never();
@@ -46,10 +47,27 @@ describe("gitHubReposInvoker.ts labels", (): void => {
   it("should preserve existing definitions and add PR associations", async (): Promise<void> => {
     await sut.addLabels(["pr-metrics:M", "pr-metrics:tests-sufficient"]);
 
-    verify(mocks.octokitWrapper.getLabel("microsoft", "PR-Metrics", "pr-metrics:M")).once();
-    verify(mocks.octokitWrapper.getLabel("microsoft", "PR-Metrics", "pr-metrics:tests-sufficient")).once();
-    verify(mocks.octokitWrapper.createLabel(any(), any(), any(), any())).never();
-    verify(mocks.octokitWrapper.addLabels("microsoft", "PR-Metrics", 12345, deepEqual(["pr-metrics:M", "pr-metrics:tests-sufficient"]))).once();
+    verify(
+      mocks.octokitWrapper.getLabel("microsoft", "PR-Metrics", "pr-metrics:M"),
+    ).once();
+    verify(
+      mocks.octokitWrapper.getLabel(
+        "microsoft",
+        "PR-Metrics",
+        "pr-metrics:tests-sufficient",
+      ),
+    ).once();
+    verify(
+      mocks.octokitWrapper.createLabel(any(), any(), any(), any()),
+    ).never();
+    verify(
+      mocks.octokitWrapper.addLabels(
+        "microsoft",
+        "PR-Metrics",
+        12345,
+        deepEqual(["pr-metrics:M", "pr-metrics:tests-sufficient"]),
+      ),
+    ).once();
   });
 
   it("should not initialize or mutate for an empty addition", async (): Promise<void> => {
@@ -60,27 +78,62 @@ describe("gitHubReposInvoker.ts labels", (): void => {
   });
 
   it("should create a missing definition before adding its association", async (): Promise<void> => {
-    when(mocks.octokitWrapper.getLabel("microsoft", "PR-Metrics", "pr-metrics:M"))
-      .thenThrow(requestError("Not Found", httpStatusCodes.notFound));
+    when(
+      mocks.octokitWrapper.getLabel("microsoft", "PR-Metrics", "pr-metrics:M"),
+    ).thenThrow(requestError("Not Found", httpStatusCodes.notFound));
 
     await sut.addLabels(["pr-metrics:M"]);
 
-    verify(mocks.octokitWrapper.createLabel("microsoft", "PR-Metrics", "pr-metrics:M", "ededed")).calledBefore(
-      mocks.octokitWrapper.addLabels("microsoft", "PR-Metrics", 12345, deepEqual(["pr-metrics:M"])),
+    verify(
+      mocks.octokitWrapper.createLabel(
+        "microsoft",
+        "PR-Metrics",
+        "pr-metrics:M",
+        "ededed",
+      ),
+    ).calledBefore(
+      mocks.octokitWrapper.addLabels(
+        "microsoft",
+        "PR-Metrics",
+        12345,
+        deepEqual(["pr-metrics:M"]),
+      ),
     );
   });
 
   it("should confirm a concurrently created definition before adding it", async (): Promise<void> => {
-    when(mocks.octokitWrapper.getLabel("microsoft", "PR-Metrics", "pr-metrics:M"))
+    when(
+      mocks.octokitWrapper.getLabel("microsoft", "PR-Metrics", "pr-metrics:M"),
+    )
       .thenReject(requestError("Not Found", httpStatusCodes.notFound))
       .thenResolve();
-    when(mocks.octokitWrapper.createLabel("microsoft", "PR-Metrics", "pr-metrics:M", "ededed"))
-      .thenReject(requestError('Validation Failed: {"resource":"Label","code":"already_exists"}', httpStatusCodes.unprocessableEntity));
+    when(
+      mocks.octokitWrapper.createLabel(
+        "microsoft",
+        "PR-Metrics",
+        "pr-metrics:M",
+        "ededed",
+      ),
+    ).thenReject(
+      requestError(
+        'Validation Failed: {"resource":"Label","code":"already_exists"}',
+        httpStatusCodes.unprocessableEntity,
+      ),
+    );
 
     await sut.addLabels(["pr-metrics:M"]);
 
-    verify(mocks.octokitWrapper.getLabel("microsoft", "PR-Metrics", "pr-metrics:M")).twice();
-    verify(mocks.octokitWrapper.addLabels("microsoft", "PR-Metrics", 12345, deepEqual(["pr-metrics:M"]))).once();
+    verify(
+      mocks.octokitWrapper.getLabel("microsoft", "PR-Metrics", "pr-metrics:M"),
+    ).twice();
+    verify(
+      mocks.octokitWrapper.addLabels(
+        "microsoft",
+        "PR-Metrics",
+        12345,
+        deepEqual(["pr-metrics:M"]),
+      ),
+    ).once();
   });
 
   [
@@ -89,63 +142,130 @@ describe("gitHubReposInvoker.ts labels", (): void => {
     requestError("Validation failed", httpStatusCodes.unprocessableEntity),
   ].forEach((error: Error): void => {
     it(`should propagate creation failure '${error.message}' without adding an association`, async (): Promise<void> => {
-      when(mocks.octokitWrapper.getLabel("microsoft", "PR-Metrics", "pr-metrics:M"))
-        .thenReject(requestError("Not Found", httpStatusCodes.notFound));
-      when(mocks.octokitWrapper.createLabel("microsoft", "PR-Metrics", "pr-metrics:M", "ededed")).thenReject(error);
+      when(
+        mocks.octokitWrapper.getLabel(
+          "microsoft",
+          "PR-Metrics",
+          "pr-metrics:M",
+        ),
+      ).thenReject(requestError("Not Found", httpStatusCodes.notFound));
+      when(
+        mocks.octokitWrapper.createLabel(
+          "microsoft",
+          "PR-Metrics",
+          "pr-metrics:M",
+          "ededed",
+        ),
+      ).thenReject(error);
 
-      await assert.rejects(sut.addLabels(["pr-metrics:M"]), (actual: unknown): boolean => actual === error);
-      verify(mocks.octokitWrapper.addLabels(any(), any(), any(), any())).never();
-      verify(mocks.octokitWrapper.getLabel("microsoft", "PR-Metrics", "pr-metrics:M")).once();
+      await assert.rejects(
+        sut.addLabels(["pr-metrics:M"]),
+        (actual: unknown): boolean => actual === error,
+      );
+      verify(
+        mocks.octokitWrapper.addLabels(any(), any(), any(), any()),
+      ).never();
+      verify(
+        mocks.octokitWrapper.getLabel(
+          "microsoft",
+          "PR-Metrics",
+          "pr-metrics:M",
+        ),
+      ).once();
     });
   });
 
   it("should fail when a creation conflict cannot be confirmed", async (): Promise<void> => {
-    when(mocks.octokitWrapper.getLabel("microsoft", "PR-Metrics", "pr-metrics:M"))
-      .thenReject(requestError("Not Found", httpStatusCodes.notFound));
-    when(mocks.octokitWrapper.createLabel("microsoft", "PR-Metrics", "pr-metrics:M", "ededed"))
-      .thenReject(requestError("already_exists", httpStatusCodes.unprocessableEntity));
+    when(
+      mocks.octokitWrapper.getLabel("microsoft", "PR-Metrics", "pr-metrics:M"),
+    ).thenReject(requestError("Not Found", httpStatusCodes.notFound));
+    when(
+      mocks.octokitWrapper.createLabel(
+        "microsoft",
+        "PR-Metrics",
+        "pr-metrics:M",
+        "ededed",
+      ),
+    ).thenReject(
+      requestError("already_exists", httpStatusCodes.unprocessableEntity),
+    );
 
-    await assert.rejects(sut.addLabels(["pr-metrics:M"]), /The resource could not be found/u);
+    await assert.rejects(
+      sut.addLabels(["pr-metrics:M"]),
+      /The resource could not be found/u,
+    );
     verify(mocks.octokitWrapper.addLabels(any(), any(), any(), any())).never();
   });
 
   it("should remove only the named PR association", async (): Promise<void> => {
     await sut.removeLabel("pr-metrics:XL");
 
-    verify(mocks.octokitWrapper.removeLabel("microsoft", "PR-Metrics", 12345, "pr-metrics:XL")).once();
+    verify(
+      mocks.octokitWrapper.removeLabel(
+        "microsoft",
+        "PR-Metrics",
+        12345,
+        "pr-metrics:XL",
+      ),
+    ).once();
   });
 
-  [httpStatusCodes.unauthorized, httpStatusCodes.forbidden, httpStatusCodes.notFound].forEach((status: number): void => {
-    ["list", "definition", "add", "remove"].forEach((operation: string): void => {
-      it(`should map ${operation} failure ${String(status)} through existing error handling`, async (): Promise<void> => {
-        const error: ErrorWithStatus = new ErrorWithStatus("API failed");
-        error.status = status;
-        when(mocks.octokitWrapper.getLabels(any(), any(), any())).thenReject(error);
-        when(mocks.octokitWrapper.addLabels(any(), any(), any(), any())).thenReject(error);
-        when(mocks.octokitWrapper.removeLabel(any(), any(), any(), any())).thenReject(error);
-        if (operation === "definition") {
-          when(mocks.octokitWrapper.getLabel(any(), any(), any())).thenReject(error);
-        }
-        let action: Promise<unknown>;
-        if (operation === "list") {
-          action = sut.getLabels();
-        } else if (operation === "remove") {
-          action = sut.removeLabel("pr-metrics:M");
-        } else {
-          action = sut.addLabels(["pr-metrics:M"]);
-        }
+  [
+    httpStatusCodes.unauthorized,
+    httpStatusCodes.forbidden,
+    httpStatusCodes.notFound,
+  ].forEach((status: number): void => {
+    ["list", "definition", "add", "remove"].forEach(
+      (operation: string): void => {
+        it(`should map ${operation} failure ${String(status)} through existing error handling`, async (): Promise<void> => {
+          const error: ErrorWithStatus = new ErrorWithStatus("API failed");
+          error.status = status;
+          when(mocks.octokitWrapper.getLabels(any(), any(), any())).thenReject(
+            error,
+          );
+          when(
+            mocks.octokitWrapper.addLabels(any(), any(), any(), any()),
+          ).thenReject(error);
+          when(
+            mocks.octokitWrapper.removeLabel(any(), any(), any(), any()),
+          ).thenReject(error);
+          if (operation === "definition") {
+            when(mocks.octokitWrapper.getLabel(any(), any(), any())).thenReject(
+              error,
+            );
+          }
+          let action: Promise<unknown>;
+          if (operation === "list") {
+            action = sut.getLabels();
+          } else if (operation === "remove") {
+            action = sut.removeLabel("pr-metrics:M");
+          } else {
+            action = sut.addLabels(["pr-metrics:M"]);
+          }
 
-        await assert.rejects(action, status === httpStatusCodes.notFound ? /The resource could not be found/u : /Could not access the resources/u);
-        assert.equal(error.internalMessage, "API failed");
-      });
-    });
+          await assert.rejects(
+            action,
+            status === httpStatusCodes.notFound
+              ? /The resource could not be found/u
+              : /Could not access the resources/u,
+          );
+          assert.equal(error.internalMessage, "API failed");
+        });
+      },
+    );
   });
 
   it("should propagate an SDK permission failure when looking up a definition", async (): Promise<void> => {
-    when(mocks.octokitWrapper.getLabel("microsoft", "PR-Metrics", "pr-metrics:M"))
-      .thenReject(requestError("Forbidden", httpStatusCodes.forbidden));
+    when(
+      mocks.octokitWrapper.getLabel("microsoft", "PR-Metrics", "pr-metrics:M"),
+    ).thenReject(requestError("Forbidden", httpStatusCodes.forbidden));
 
-    await assert.rejects(sut.addLabels(["pr-metrics:M"]), /Could not access the resources/u);
-    verify(mocks.octokitWrapper.createLabel(any(), any(), any(), any())).never();
+    await assert.rejects(
+      sut.addLabels(["pr-metrics:M"]),
+      /Could not access the resources/u,
+    );
+    verify(
+      mocks.octokitWrapper.createLabel(any(), any(), any(), any()),
+    ).never();
   });
 });
