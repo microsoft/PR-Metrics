@@ -159,12 +159,13 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     this._logger.logDebug("* GitHubReposInvoker.getLabels()");
     this.initialize();
 
-    return this.invokeApiCall(async (): Promise<string[]> =>
-      this._octokitWrapper.getLabels(
-        this._owner,
-        this._repo,
-        this._pullRequestId,
-      ),
+    return this.invokeApiCall(
+      async (): Promise<string[]> =>
+        this._octokitWrapper.getLabels(
+          this._owner,
+          this._repo,
+          this._pullRequestId,
+        ),
     );
   }
 
@@ -194,13 +195,14 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     this._logger.logDebug("* GitHubReposInvoker.removeLabel()");
     this.initialize();
 
-    await this.invokeApiCall(async (): Promise<void> =>
-      this._octokitWrapper.removeLabel(
-        this._owner,
-        this._repo,
-        this._pullRequestId,
-        name,
-      ),
+    await this.invokeApiCall(
+      async (): Promise<void> =>
+        this._octokitWrapper.removeLabel(
+          this._owner,
+          this._repo,
+          this._pullRequestId,
+          name,
+        ),
     );
   }
 
