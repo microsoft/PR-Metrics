@@ -95,14 +95,13 @@ All changes to the codebase are automatically evaluated by:
   `security-experimental`, and `security-extended` query sets.
 - **Super-Linter**: Runs ESLint, Gitleaks, and additional linters on every pull
   request.
-- **CredScan**: Runs in Azure DevOps pipelines with a suppressions file for
-  known non-sensitive patterns.
+- **CredScan**: Runs in Azure DevOps pipelines without repository-specific
+  suppressions.
 - **Guardian PostAnalysis**: Enforces the Microsoft 365 security policy in Azure
   DevOps pipelines.
 
 Findings declared as non-exploitable are suppressed with documented
 justification in the relevant configuration files (e.g.,
-[`CredScanSuppressions.json`][credscansuppressions],
 [`gitleaks.toml`][gitleakstoml]).
 
 ## Vulnerability Exploitability Exchange
@@ -136,7 +135,6 @@ and assessed.
 [codeql]: https://codeql.github.com/
 [componentgovernance]: https://docs.opensource.microsoft.com/tools/cg/
 [credscan]: https://secdevtools.azurewebsites.net/helpcredscan.html
-[credscansuppressions]: https://github.com/microsoft/PR-Metrics/blob/main/.github/azure-devops/CredScanSuppressions.json
 [dependabotalerts]: https://docs.github.com/code-security/dependabot/dependabot-alerts/about-dependabot-alerts
 [eslint]: https://eslint.org/
 [githubsecurityadvisories]: https://github.com/microsoft/PR-Metrics/security/advisories
