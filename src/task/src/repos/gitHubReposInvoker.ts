@@ -159,13 +159,12 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     this._logger.logDebug("* GitHubReposInvoker.getLabels()");
     this.initialize();
 
-    return this.invokeApiCall(
-      async (): Promise<string[]> =>
-        this._octokitWrapper.getLabels(
-          this._owner,
-          this._repo,
-          this._pullRequestId,
-        ),
+    return this.invokeApiCall(async (): Promise<string[]> =>
+      this._octokitWrapper.getLabels(
+        this._owner,
+        this._repo,
+        this._pullRequestId,
+      ),
     );
   }
 
@@ -195,14 +194,13 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     this._logger.logDebug("* GitHubReposInvoker.removeLabel()");
     this.initialize();
 
-    await this.invokeApiCall(
-      async (): Promise<void> =>
-        this._octokitWrapper.removeLabel(
-          this._owner,
-          this._repo,
-          this._pullRequestId,
-          name,
-        ),
+    await this.invokeApiCall(async (): Promise<void> =>
+      this._octokitWrapper.removeLabel(
+        this._owner,
+        this._repo,
+        this._pullRequestId,
+        name,
+      ),
     );
   }
 
@@ -337,8 +335,26 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     } catch (error: unknown) {
       if (
         !(error instanceof RequestError) ||
-        error.status !== httpStatusCodes.unprocessableEntity ||
-        !error.message.includes("already_exists")
+        error.status !== httpStatusCodes.unprocessableEntity
+      ) {
+        throw error;
+      }
+
+      const data: unknown = error.response?.data;
+      if (
+        typeof data !== "object" ||
+        data === null ||
+        !("errors" in data) ||
+        !Array.isArray(data.errors) ||
+        !data.errors.some(
+          (validationError: unknown): boolean =>
+            typeof validationError === "object" &&
+            validationError !== null &&
+            "resource" in validationError &&
+            validationError.resource === "Label" &&
+            "code" in validationError &&
+            validationError.code === "already_exists",
+        )
       ) {
         throw error;
       }

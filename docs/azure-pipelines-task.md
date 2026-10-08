@@ -72,6 +72,10 @@ for a GitHub Actions token). Read-only tokens cannot perform these updates.
 Label API failures now make the task report failure; label updates cannot be
 disabled separately.
 
+GitHub's [label endpoints][githublabelpermissions] accept pull request write
+access for label creation and updates. Additional `issues: write` permission is
+not required.
+
 Serialise builds that update the same PR. Additions and removals are separate
 API requests, not an atomic replacement. A later successful run resolves labels
 left by a partial failure.
@@ -166,6 +170,7 @@ when a smaller PR or increased test coverage is suggested. If the
 prevent it blocking automatic closure of the PR.
 
 [addingtask]: https://docs.microsoft.com/azure/devops/pipelines/customize-pipeline
+[githublabelpermissions]: https://docs.github.com/rest/issues/labels
 [githubpat]: https://docs.github.com/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token
 [githubsecret]: https://docs.github.com/actions/reference/encrypted-secrets
 [squashmerge]: https://learn.microsoft.com/azure/devops/repos/git/merging-with-squash

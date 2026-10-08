@@ -98,6 +98,10 @@ permissions documented in the [Azure Pipelines task
 instructions][azurepipelinestask]. Fork workflows can receive read-only tokens;
 do not use an elevated fork trigger to bypass this restriction.
 
+GitHub's [label endpoints][github-label-permissions] accept pull request write
+access for label creation and updates. Additional `issues: write` permission is
+not required.
+
 Label updates add missing labels before removing stale labels. They use separate
 API requests and are not atomic. A later successful run resolves a partial
 update. Serialise runs for each PR to prevent competing updates. For GitHub
@@ -283,6 +287,7 @@ any additional questions or comments.
 [codeofconductfaq]: https://opensource.microsoft.com/codeofconduct/faq/
 [contributing]: .github/CONTRIBUTING.md
 [defaultcodefileextensions]: docs/default-code-file-extensions.md
+[github-label-permissions]: https://docs.github.com/rest/issues/labels
 [github-token-pemissions]: https://docs.github.com/actions/security-guides/automatic-token-authentication#permissions-for-the-github_token
 [githubpat]: https://docs.github.com/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token
 [globs]: https://en.wikipedia.org/wiki/Glob_(programming)

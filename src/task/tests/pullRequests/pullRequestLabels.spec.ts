@@ -102,6 +102,8 @@ describe("pullRequestLabels.ts", (): void => {
       "pr-metrics:2XL-extra",
       "pr-metrics:tests-sufficient-extra",
       "other:pr-metrics:XL",
+      "pr-metrics:\u017f",
+      "pr-metrics:tests-\u017fufficient",
     ];
     labels = [
       ...unrelated,

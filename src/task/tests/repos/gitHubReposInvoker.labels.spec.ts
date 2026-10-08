@@ -16,9 +16,17 @@ import { any } from "../testUtilities/mockito.js";
 import assert from "node:assert/strict";
 import { httpStatusCodes } from "../../src/utilities/httpStatusCodes.js";
 
-const requestError = (message: string, status: number): RequestError =>
+const requestError = (
+  message: string,
+  status: number,
+  data?: unknown,
+): RequestError =>
   new RequestError(message, status, {
     request: { headers: {}, method: "GET", url: "/labels" },
+    response:
+      data === undefined
+        ? undefined
+        : { data, headers: {}, status, url: "/labels" },
   });
 
 describe("gitHubReposInvoker.ts labels", (): void => {
@@ -115,10 +123,10 @@ describe("gitHubReposInvoker.ts labels", (): void => {
         "ededed",
       ),
     ).thenReject(
-      requestError(
-        'Validation Failed: {"resource":"Label","code":"already_exists"}',
-        httpStatusCodes.unprocessableEntity,
-      ),
+      requestError("Validation Failed", httpStatusCodes.unprocessableEntity, {
+        errors: [{ code: "already_exists", field: "name", resource: "Label" }],
+        message: "Validation Failed",
+      }),
     );
 
     await sut.addLabels(["pr-metrics:M"]);
@@ -140,6 +148,31 @@ describe("gitHubReposInvoker.ts labels", (): void => {
     new Error("Creation failed"),
     requestError("Forbidden", httpStatusCodes.forbidden),
     requestError("Validation failed", httpStatusCodes.unprocessableEntity),
+    requestError("already_exists", httpStatusCodes.unprocessableEntity),
+    ...[
+      null,
+      "already_exists",
+      {},
+      { errors: null },
+      { errors: [] },
+      {
+        errors: [
+          null,
+          "already_exists",
+          {},
+          { code: "already_exists" },
+          { code: "already_exists", resource: "Issue" },
+          { resource: "Label" },
+          { code: "invalid", resource: "Label" },
+        ],
+      },
+    ].map((data: unknown): RequestError =>
+      requestError(
+        "Validation Failed",
+        httpStatusCodes.unprocessableEntity,
+        data,
+      ),
+    ),
   ].forEach((error: Error): void => {
     it(`should propagate creation failure '${error.message}' without adding an association`, async (): Promise<void> => {
       when(
@@ -187,7 +220,9 @@ describe("gitHubReposInvoker.ts labels", (): void => {
         "ededed",
       ),
     ).thenReject(
-      requestError("already_exists", httpStatusCodes.unprocessableEntity),
+      requestError("Validation Failed", httpStatusCodes.unprocessableEntity, {
+        errors: [{ code: "already_exists", field: "name", resource: "Label" }],
+      }),
     );
 
     await assert.rejects(
