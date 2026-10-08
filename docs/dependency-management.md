@@ -96,7 +96,7 @@ Dependencies are updated through two distinct processes:
 - [Gitleaks][gitleaks] scans for accidentally committed secrets via
   [Super-Linter][superlinter].
 
-[azuredevopstemplate]: https://github.com/microsoft/PR-Metrics/blob/main/.github/azure-devops/template.yml
+[azuredevopstemplate]: https://github.com/microsoft/PR-Metrics/blob/main/.azure-devops/template.yml
 [azurepipelinestasksdk]: https://github.com/microsoft/azure-pipelines-task-lib
 [codeql]: https://codeql.github.com/
 [dependabot]: https://github.com/microsoft/PR-Metrics/blob/main/.github/dependabot.yml
