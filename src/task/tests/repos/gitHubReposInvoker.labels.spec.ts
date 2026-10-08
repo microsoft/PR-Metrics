@@ -166,12 +166,13 @@ describe("gitHubReposInvoker.ts labels", (): void => {
           { code: "invalid", resource: "Label" },
         ],
       },
-    ].map((data: unknown): RequestError =>
-      requestError(
-        "Validation Failed",
-        httpStatusCodes.unprocessableEntity,
-        data,
-      ),
+    ].map(
+      (data: unknown): RequestError =>
+        requestError(
+          "Validation Failed",
+          httpStatusCodes.unprocessableEntity,
+          data,
+        ),
     ),
   ].forEach((error: Error): void => {
     it(`should propagate creation failure '${error.message}' without adding an association`, async (): Promise<void> => {
