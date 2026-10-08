@@ -155,6 +155,57 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     });
   }
 
+  public async getLabels(): Promise<string[]> {
+    this._logger.logDebug("* GitHubReposInvoker.getLabels()");
+    this.initialize();
+
+    return this.invokeApiCall(
+      async (): Promise<string[]> =>
+        this._octokitWrapper.getLabels(
+          this._owner,
+          this._repo,
+          this._pullRequestId,
+        ),
+    );
+  }
+
+  public async addLabels(names: string[]): Promise<void> {
+    this._logger.logDebug("* GitHubReposInvoker.addLabels()");
+    if (names.length === 0) {
+      return;
+    }
+
+    this.initialize();
+    await this.invokeApiCall(async (): Promise<void> => {
+      /* eslint-disable no-await-in-loop -- Ensure definitions exist before adding associations; serialize label creation. */
+      for (const name of names) {
+        await this.ensureLabelExists(name);
+      }
+      /* eslint-enable no-await-in-loop */
+      await this._octokitWrapper.addLabels(
+        this._owner,
+        this._repo,
+        this._pullRequestId,
+        names,
+      );
+    });
+  }
+
+  public async removeLabel(name: string): Promise<void> {
+    this._logger.logDebug("* GitHubReposInvoker.removeLabel()");
+    this.initialize();
+
+    await this.invokeApiCall(
+      async (): Promise<void> =>
+        this._octokitWrapper.removeLabel(
+          this._owner,
+          this._repo,
+          this._pullRequestId,
+          name,
+        ),
+    );
+  }
+
   public async createComment(
     content: string,
     fileName: string | null,
@@ -261,6 +312,58 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
       ),
       this._runnerInvoker.loc("repos.baseReposInvoker.resourceNotFound"),
     );
+  }
+
+  private async ensureLabelExists(name: string): Promise<void> {
+    try {
+      await this._octokitWrapper.getLabel(this._owner, this._repo, name);
+      return;
+    } catch (error: unknown) {
+      if (
+        !(error instanceof RequestError) ||
+        error.status !== httpStatusCodes.notFound
+      ) {
+        throw error;
+      }
+    }
+
+    try {
+      await this._octokitWrapper.createLabel(
+        this._owner,
+        this._repo,
+        name,
+        "ededed",
+      );
+    } catch (error: unknown) {
+      if (
+        !(error instanceof RequestError) ||
+        error.status !== httpStatusCodes.unprocessableEntity
+      ) {
+        throw error;
+      }
+
+      const data: unknown = error.response?.data;
+      if (
+        typeof data !== "object" ||
+        data === null ||
+        !("errors" in data) ||
+        !Array.isArray(data.errors) ||
+        !data.errors.some(
+          (validationError: unknown): boolean =>
+            typeof validationError === "object" &&
+            validationError !== null &&
+            "resource" in validationError &&
+            validationError.resource === "Label" &&
+            "code" in validationError &&
+            validationError.code === "already_exists",
+        )
+      ) {
+        throw error;
+      }
+
+      // Confirm a concurrent creation; other validation failures remain errors.
+      await this._octokitWrapper.getLabel(this._owner, this._repo, name);
+    }
   }
 
   private initialize(): void {

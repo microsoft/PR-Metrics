@@ -149,6 +149,98 @@ export default class OctokitWrapper {
   }
 
   /**
+   * Gets all label names associated with a pull request.
+   * @param owner The repo owner.
+   * @param repo The repo name.
+   * @param pullRequestId The pull request ID.
+   * @returns All label names, across all pages.
+   */
+  public async getLabels(
+    owner: string,
+    repo: string,
+    pullRequestId: number,
+  ): Promise<string[]> {
+    const pageSize = 100;
+    const labels = await this.octokit.paginate(
+      this.octokit.rest.issues.listLabelsOnIssue,
+      { issue_number: pullRequestId, owner, page: 1, per_page: pageSize, repo },
+    );
+    return labels.map((label): string => label.name);
+  }
+
+  /**
+   * Checks that a repository label definition exists.
+   * @param owner The repo owner.
+   * @param repo The repo name.
+   * @param name The label name.
+   */
+  public async getLabel(
+    owner: string,
+    repo: string,
+    name: string,
+  ): Promise<void> {
+    await this.octokit.rest.issues.getLabel({ name, owner, repo });
+  }
+
+  /**
+   * Creates a repository label definition.
+   * @param owner The repo owner.
+   * @param repo The repo name.
+   * @param name The label name.
+   * @param color The hexadecimal label color.
+   */
+  public async createLabel(
+    owner: string,
+    repo: string,
+    name: string,
+    color: string,
+  ): Promise<void> {
+    await this.octokit.rest.issues.createLabel({ color, name, owner, repo });
+  }
+
+  /**
+   * Adds labels without replacing existing pull request labels.
+   * @param owner The repo owner.
+   * @param repo The repo name.
+   * @param pullRequestId The pull request ID.
+   * @param names The label names.
+   */
+  public async addLabels(
+    owner: string,
+    repo: string,
+    pullRequestId: number,
+    names: string[],
+  ): Promise<void> {
+    await this.octokit.rest.issues.addLabels({
+      issue_number: pullRequestId,
+      labels: names,
+      owner,
+      repo,
+    });
+  }
+
+  /**
+   * Removes one label association from a pull request.
+   * @param owner The repo owner.
+   * @param repo The repo name.
+   * @param pullRequestId The pull request ID.
+   * @param name The label name.
+   */
+  public async removeLabel(
+    owner: string,
+    repo: string,
+    pullRequestId: number,
+    name: string,
+  ): Promise<void> {
+    await this.octokit.rest.issues.removeLabel({
+      issue_number: pullRequestId,
+      name,
+      owner,
+      repo,
+    });
+  }
+
+  /**
    * Creates a comment associated with a pull request.
    * @param owner The repo owner.
    * @param repo The repo name.

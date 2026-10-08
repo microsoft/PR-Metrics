@@ -15,8 +15,8 @@ complement the unit tests to provide a high level of coverage.
 
    > Files from the left-hand navigation. Click the drop down with the
    > repository name at the top of the page and select "New Repository". Leave
-   > "Add a Readme" checked to create a main branch but do not add a `.gitignore`
-   > file.
+   > "Add a Readme" checked to create a main branch but do not add a
+   > `.gitignore` file.
 
 1. Copy the contents of the `step1` subfolder to the root of your repository,
    preserving the folder tree.
@@ -113,23 +113,23 @@ complement the unit tests to provide a high level of coverage.
 1. If everything is set up correctly, you should see the four pipelines you
    added earlier queued to run.
 1. Verify that the pipeline corresponding to
-   `pipelines/pipeline-insufficient-access.yaml` fails with the error
-   message "Could not access the resources. Ensure the 'PR_Metrics_Access_Token'
-   secret environment variable has access to 'Code' > 'Read & write' and 'Pull
-   Request Threads' > 'Read & write'."
+   `pipelines/pipeline-insufficient-access.yaml` fails with the error message
+   "Could not access the resources. Ensure the 'PR_Metrics_Access_Token' secret
+   environment variable has access to 'Code' > 'Read & write' and 'Pull Request
+   Threads' > 'Read & write'."
 1. Verify that the pipeline corresponding to
-   `pipelines/pipeline-insufficient-history.yaml` fails with the error
-   message "Could not access sufficient Git history. Disable 'fetchDepth' (YAML)
-   or 'Shallow fetch' under the build process phase settings (classic). Or set
-   the threshold sufficiently high."
+   `pipelines/pipeline-insufficient-history.yaml` fails with the error message
+   "Could not access sufficient Git history. Disable 'fetchDepth' (YAML) or
+   'Shallow fetch' under the build process phase settings (classic). Or set the
+   threshold sufficiently high."
 1. Verify that the pipeline corresponding to `pipelines/pipeline-no-auth.yaml`
    fails with the error message "Could not access the Personal Access Token
    (PAT). Add 'PR_Metrics_Access_Token' as an environment variable (YAML) or
    enable 'Allow scripts to access Personal Access Token (PAT)' under the build
    process phase settings (classic)."
 1. Verify that the pipeline corresponding to
-   `pipelines/pipeline-no-sources.yaml` fails with the error message "No
-   Git repository present. Remove 'checkout: none' (YAML) or disable 'Don't sync
+   `pipelines/pipeline-no-sources.yaml` fails with the error message "No Git
+   repository present. Remove 'checkout: none' (YAML) or disable 'Don't sync
    sources' under the build process phase settings (classic)."
 1. Verify that the pipeline corresponding to `pipelines/pipeline.yaml` succeeds.
 1. Verify that the title of the PR is prefixed with "XS:heavy_check_mark:
@@ -190,8 +190,8 @@ complement the unit tests to provide a high level of coverage.
 1. Next to the build, click "Re-queue".
 1. Verify that the pipeline corresponding to `pipelines/pipeline.yaml` succeeds.
 1. Verify that your description is retained.
-1. Verify that the title of the PR is now prefixed with
-   "L :black_small_square:".
+1. Verify that the title of the PR is now prefixed with "L
+   :black_small_square:".
 1. Verify that the metrics comment still has with the following details:
    - :x: Try to keep pull requests smaller than 4 lines of new product code by
      following the Single Responsibility Principle (SRP).
@@ -218,8 +218,8 @@ complement the unit tests to provide a high level of coverage.
    comment will remain for `linesToAdd.ts`, but the automatic comment to which
    you replied should be deleted.
 1. Verify that your description is retained.
-1. Verify that the title of the PR is still prefixed with
-   "L :black_small_square:".
+1. Verify that the title of the PR is still prefixed with "L
+   :black_small_square:".
 1. Verify that the metrics comment has been updated with the following details:
    - :x: Try to keep pull requests smaller than 4 lines of new product code by
      following the Single Responsibility Principle (SRP).
@@ -229,5 +229,42 @@ complement the unit tests to provide a high level of coverage.
    - Ignored: 48
    - Total: 93
 1. Verify that the aforementioned metrics comment is active.
+
+## Automatic Label Checks
+
+Run these checks with the local build in a test GitHub repository and an Azure
+Repos repository. Also check a GitHub repository built through Azure Pipelines
+and each supported Azure DevOps Server environment. Serialise runs for each PR.
+
+1. Run with default inputs and no label configuration. Check that the PR has one
+   `pr-metrics:` size label that matches the title and one correct test-status
+   label.
+1. For Step 4 above, expect `pr-metrics:XS` and `pr-metrics:tests-sufficient`.
+   For Step 6, expect `pr-metrics:L` and `pr-metrics:tests-insufficient`. The
+   old size and test-status labels must be removed.
+1. Add `bug`, `size:XL`, and `pr-metrics:manual`. Rerun and check that all three
+   remain.
+1. Increase added test lines until the configured test factor is met. Check that
+   `pr-metrics:tests-sufficient` replaces `pr-metrics:tests-insufficient`.
+   Reduce test lines and check the reverse transition.
+1. Add both test-status labels, then rerun. Check that only the correct one
+   remains.
+1. Set the test factor to `0`, as in Step 7. Check that both test-status labels
+   are removed and the size label remains.
+1. Rerun without changes. Check that labels are unchanged and no label mutation
+   requests occur.
+1. On GitHub, start without the managed repository label definitions. Check that
+   the necessary definitions are created with colour `ededed`. Set a custom
+   colour, rerun, and check that it is retained.
+1. On GitHub, add enough unrelated PR labels to require a second API page. Check
+   that all unrelated labels remain and stale managed labels on the second page
+   are removed.
+1. Run with a token that cannot write labels. Check that the error is logged and
+   the task reports failure.
+1. Rerun with write permissions after a partial failure. Check that labels
+   converge to the current size and test status.
+1. Run outside a PR, with an unsupported provider, or without the required Git
+   history. Check that the existing skip or stop behaviour occurs without label
+   updates.
 
 [tfxcli]: https://github.com/Microsoft/tfs-cli

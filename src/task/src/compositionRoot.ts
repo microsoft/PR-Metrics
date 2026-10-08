@@ -21,6 +21,7 @@ import OctokitGitDiffParser from "./git/octokitGitDiffParser.js";
 import OctokitWrapper from "./wrappers/octokitWrapper.js";
 import PullRequest from "./pullRequests/pullRequest.js";
 import PullRequestComments from "./pullRequests/pullRequestComments.js";
+import PullRequestLabels from "./pullRequests/pullRequestLabels.js";
 import PullRequestMetrics from "./pullRequestMetrics.js";
 import ReposInvoker from "./repos/reposInvoker.js";
 import RunnerInvoker from "./runners/runnerInvoker.js";
@@ -114,6 +115,12 @@ const createPullRequestMetrics = (): PullRequestMetrics => {
     runnerInvoker,
   );
 
+  const pullRequestLabels: PullRequestLabels = new PullRequestLabels(
+    codeMetrics,
+    logger,
+    reposInvoker,
+  );
+
   // Orchestration.
   const codeMetricsCalculator: CodeMetricsCalculator =
     new CodeMetricsCalculator(
@@ -121,6 +128,7 @@ const createPullRequestMetrics = (): PullRequestMetrics => {
       logger,
       pullRequest,
       pullRequestComments,
+      pullRequestLabels,
       reposInvoker,
       runnerInvoker,
     );

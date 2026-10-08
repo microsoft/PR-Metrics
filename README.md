@@ -8,8 +8,8 @@ PR Metrics is a both a GitHub Action and [Azure DevOps Pipelines][azuredevops]
 task for adding size and test coverage indicators to the start of each Pull
 Request title.
 
-The Azure Pipelines task can be downloaded from the
-[Visual Studio Marketplace][vsmarketplace].
+The Azure Pipelines task can be downloaded from the [Visual Studio
+Marketplace][vsmarketplace].
 
 For example, a PR with the title "Adding code" could become either:
 
@@ -49,14 +49,78 @@ If no PR description is provided, the description will be set to:
 
 > :x: **Add a description.**
 
+## Automatic PR Labels
+
+Every supported PR run also updates native labels on GitHub and Azure Repos.
+This requires no new configuration and cannot be disabled separately. Existing
+title and comment behaviour is unchanged.
+
+PR Metrics maintains one size label: `pr-metrics:XS`, `pr-metrics:S`,
+`pr-metrics:M`, `pr-metrics:L`, `pr-metrics:XL`, `pr-metrics:2XL`, and larger
+numbered XL sizes. Size uses the same added product-code lines, exclusions, and
+thresholds as the title.
+
+| Metric Result      | Labels For A Medium PR                          |
+| ------------------ | ----------------------------------------------- |
+| Tests sufficient   | `pr-metrics:M`, `pr-metrics:tests-sufficient`   |
+| Tests insufficient | `pr-metrics:M`, `pr-metrics:tests-insufficient` |
+| Checking disabled  | `pr-metrics:M`                                  |
+
+Set `test-factor: 0` to disable test checking.
+
+The two test-status labels are mutually exclusive. They describe the configured
+ratio of added test lines to added product-code lines, not measured test
+coverage, test quality, or test execution results. With checking enabled, zero
+added product-code lines produce the sufficient result.
+
+PR Metrics removes stale labels only from the stated size family and the two
+test-status names. It preserves unrelated labels, including `bug`, `size:XL`,
+and `pr-metrics:manual`. Name comparisons are case-insensitive. On GitHub,
+missing repository label definitions are created with colour `ededed`; existing
+definitions and colours are retained.
+
+Use GitHub search to find PRs with a specific label:
+
+```text
+is:pr is:open label:"pr-metrics:XL"
+is:pr is:open label:"pr-metrics:tests-sufficient"
+is:pr is:open label:"pr-metrics:tests-insufficient"
+```
+
+Azure Repos displays these names as native PR labels/tags. Its filtering is not
+equivalent to GitHub search.
+
+**Rollout:** Label updates apply to every supported PR run that passes the
+existing skip and stop checks. Label API failures, including insufficient
+permissions, now cause the task to report failure. Read-only tokens cannot
+update labels. Retain `pull-requests: write` for GitHub and the Azure
+permissions documented in the [Azure Pipelines task
+instructions][azurepipelinestask]. Fork workflows can receive read-only tokens;
+do not use an elevated fork trigger to bypass this restriction.
+
+GitHub's [label endpoints][github-label-permissions] accept pull request write
+access for label creation and updates. Additional `issues: write` permission is
+not required.
+
+Label updates add missing labels before removing stale labels. They use separate
+API requests and are not atomic. A later successful run resolves a partial
+update. Serialise runs for each PR to prevent competing updates. For GitHub
+Actions, set workflow or job concurrency:
+
+```yaml
+concurrency:
+  group: pr-metrics-${{ github.repository }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+```
+
 ## Inputs
 
 You will need to set the environment variable `PR_Metrics_Access_Token` to a
 Personal Access Token (PAT) with at least Read and Write access to pull
 requests. If you are using a Classic PAT, it will need at least the 'repos'
-scope. Instructions on creating a new PAT can be found
-[in the GitHub documentation][githubpat]. Alternatively, you can use the
-in-built `GITHUB_TOKEN`.
+scope. Instructions on creating a new PAT can be found [in the GitHub
+documentation][githubpat]. Alternatively, you can use the in-built
+`GITHUB_TOKEN`.
 
 If using `GITHUB_TOKEN`, the following permissions are required:
 
@@ -164,8 +228,8 @@ information, including the Pull Request ID, is available to PR Metrics.
 `pull_request_target` will not work as insufficient information is available
 when using this trigger.**
 
-For instructions on using the action within Azure Pipelines, see the
-[Azure Pipelines task documentation][azurepipelinestask].
+For instructions on using the action within Azure Pipelines, see the [Azure
+Pipelines task documentation][azurepipelinestask].
 
 ## Git History
 
@@ -197,8 +261,8 @@ For security vulnerability reporting, see the [security policy][security].
 
 ## Troubleshooting
 
-For steps on troubleshooting any issues encountered, see the
-[troubleshooting guide][troubleshooting].
+For steps on troubleshooting any issues encountered, see the [troubleshooting
+guide][troubleshooting].
 
 ## Contributing
 
@@ -212,11 +276,10 @@ organization. Additional source code released by the OMEX team can be located at
 
 ## Code of Conduct
 
-This project has adopted the
-[Microsoft Open Source Code of Conduct][codeofconduct]. For more information,
-see the [Code of Conduct FAQ][codeofconductfaq] or contact
-[opencode@microsoft.com][opencodeemail] with any additional questions or
-comments.
+This project has adopted the [Microsoft Open Source Code of
+Conduct][codeofconduct]. For more information, see the [Code of Conduct
+FAQ][codeofconductfaq] or contact [opencode@microsoft.com][opencodeemail] with
+any additional questions or comments.
 
 [azuredevops]: https://azure.microsoft.com/services/devops/
 [azurepipelinestask]: docs/azure-pipelines-task.md
@@ -224,6 +287,7 @@ comments.
 [codeofconductfaq]: https://opensource.microsoft.com/codeofconduct/faq/
 [contributing]: .github/CONTRIBUTING.md
 [defaultcodefileextensions]: docs/default-code-file-extensions.md
+[github-label-permissions]: https://docs.github.com/rest/issues/labels
 [github-token-pemissions]: https://docs.github.com/actions/security-guides/automatic-token-authentication#permissions-for-the-github_token
 [githubpat]: https://docs.github.com/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token
 [globs]: https://en.wikipedia.org/wiki/Glob_(programming)

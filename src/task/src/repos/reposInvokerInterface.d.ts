@@ -30,6 +30,23 @@ export default interface ReposInvokerInterface {
   getComments: () => Promise<CommentData>;
 
   /**
+   * Gets the label names associated with the current pull request.
+   */
+  getLabels: () => Promise<string[]>;
+
+  /**
+   * Adds labels without replacing existing pull request labels.
+   * @param names The label names.
+   */
+  addLabels: (names: string[]) => Promise<void>;
+
+  /**
+   * Removes one label association, not its repository definition.
+   * @param name The label name.
+   */
+  removeLabel: (name: string) => Promise<void>;
+
+  /**
    * Updates the title and description for the current pull request.
    * @param title The new title.
    * @param description The new description.

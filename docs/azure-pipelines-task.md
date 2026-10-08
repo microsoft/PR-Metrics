@@ -1,14 +1,14 @@
 # Azure Pipelines Task
 
-The task can be added to a pipeline as detailed
-[in the Azure Pipelines documentation][addingtask].
+The task can be added to a pipeline as detailed [in the Azure Pipelines
+documentation][addingtask].
 
 The Azure Pipelines task can run against Azure or GitHub repositories.
 
 For Azure repositories, the task will require access to the PR resources. The
 recommended solution is to use workload identity federation as this is more
-maintainable and secure. For more information, see the
-[workload identity federation instructions][workloadidentityfederation].
+maintainable and secure. For more information, see the [workload identity
+federation instructions][workloadidentityfederation].
 
 Alternatively, you can use Personal Access Tokens (PATs). For this, you can try
 remapping `System.AccessToken` to `PR_Metrics_Access_Token` using
@@ -19,9 +19,9 @@ env:
 ```
 
 However, the scope of `System.AccessToken` may be limited by your system
-administrator. In this case, you will need to create a new Personal Access
-Token (PAT) with scopes 'Code' > 'Read & write' and 'Pull Request Threads' >
-'Read & write', which you can then map to `PR_Metrics_Access_Token`.
+administrator. In this case, you will need to create a new Personal Access Token
+(PAT) with scopes 'Code' > 'Read & write' and 'Pull Request Threads' > 'Read &
+write', which you can then map to `PR_Metrics_Access_Token`.
 
 For GitHub repositories, you will need to create a PAT according to the
 instructions [in the GitHub documentation][githubpat] with at least Read and
@@ -36,6 +36,49 @@ It is recommended to run the task as one of the first operations in your build,
 after code check out is complete. Running the task early in the build process
 allows for the title to be updated quickly, avoiding the need for engineers to
 wait a long time for the title update.
+
+## Automatic PR Labels
+
+Every supported PR run updates labels without new inputs. This applies to Azure
+Repos, GitHub, and GitHub Enterprise repositories built through Azure Pipelines.
+The repository provider determines which label API is used.
+
+One size label is maintained: `pr-metrics:XS`, `pr-metrics:S`, `pr-metrics:M`,
+`pr-metrics:L`, `pr-metrics:XL`, `pr-metrics:2XL`, and larger numbered XL sizes.
+It matches the existing title size.
+
+| Metric Result      | Labels For A Medium PR                          |
+| ------------------ | ----------------------------------------------- |
+| Tests sufficient   | `pr-metrics:M`, `pr-metrics:tests-sufficient`   |
+| Tests insufficient | `pr-metrics:M`, `pr-metrics:tests-insufficient` |
+| Checking disabled  | `pr-metrics:M`                                  |
+
+Set `TestFactor: 0` to disable test checking.
+
+The test-status labels are mutually exclusive. They describe added test lines
+relative to added product-code lines under the configured test factor. They do
+not establish measured coverage, test quality, or execution results. With
+checking enabled, zero added product-code lines produce the sufficient result.
+
+Stale managed size and test-status labels are removed. Other labels, including
+`pr-metrics:manual`, stay unchanged. Label names are compared without case
+sensitivity. Azure Repos uses native PR labels/tags; do not use GitHub
+label-search syntax for Azure filtering.
+
+**Permissions And Rollout:** Azure tokens require 'Code' > 'Read & write';
+existing comments also require 'Pull Request Threads' > 'Read & write'. For
+GitHub repositories, retain pull request write access (`pull-requests: write`
+for a GitHub Actions token). Read-only tokens cannot perform these updates.
+Label API failures now make the task report failure; label updates cannot be
+disabled separately.
+
+GitHub's [label endpoints][githublabelpermissions] accept pull request write
+access for label creation and updates. Additional `issues: write` permission is
+not required.
+
+Serialise builds that update the same PR. Additions and removals are separate
+API requests, not an atomic replacement. A later successful run resolves labels
+left by a partial failure.
 
 ## YAML
 
@@ -127,6 +170,7 @@ when a smaller PR or increased test coverage is suggested. If the
 prevent it blocking automatic closure of the PR.
 
 [addingtask]: https://docs.microsoft.com/azure/devops/pipelines/customize-pipeline
+[githublabelpermissions]: https://docs.github.com/rest/issues/labels
 [githubpat]: https://docs.github.com/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token
 [githubsecret]: https://docs.github.com/actions/reference/encrypted-secrets
 [squashmerge]: https://learn.microsoft.com/azure/devops/repos/git/merging-with-squash

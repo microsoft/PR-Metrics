@@ -24,6 +24,7 @@ import type PullRequestDetailsInterface from "./interfaces/pullRequestDetailsInt
 import type RunnerInvoker from "../runners/runnerInvoker.js";
 import type TokenManager from "./tokenManager.js";
 import type { WebApi } from "azure-devops-node-api";
+import type { WebApiTagDefinition } from "azure-devops-node-api/interfaces/CoreInterfaces.js";
 
 /**
  * A class for invoking Azure Repos functionality.
@@ -205,6 +206,62 @@ export default class AzureReposInvoker extends BaseReposInvoker {
         ),
     );
     this._logger.logDebug(JSON.stringify(result));
+  }
+
+  public async getLabels(): Promise<string[]> {
+    this._logger.logDebug("* AzureReposInvoker.getLabels()");
+    const gitApiPromise: Promise<IGitApi> = this.getGitApi();
+    const labels: WebApiTagDefinition[] = await this.invokeApiCall(
+      async (): Promise<WebApiTagDefinition[]> =>
+        (await gitApiPromise).getPullRequestLabels(
+          this._repositoryId,
+          this._pullRequestId,
+          this._project,
+        ),
+    );
+    return labels.map((label: WebApiTagDefinition): string =>
+      Validator.validateString(
+        label.name,
+        "label.name",
+        "AzureReposInvoker.getLabels()",
+      ),
+    );
+  }
+
+  public async addLabels(names: string[]): Promise<void> {
+    this._logger.logDebug("* AzureReposInvoker.addLabels()");
+    if (names.length === 0) {
+      return;
+    }
+
+    const gitApiPromise: Promise<IGitApi> = this.getGitApi();
+    await this.invokeApiCall(async (): Promise<void> => {
+      const gitApi: IGitApi = await gitApiPromise;
+      /* eslint-disable no-await-in-loop -- Serialize label creation and stop at the first failure. */
+      for (const name of names) {
+        await gitApi.createPullRequestLabel(
+          { name },
+          this._repositoryId,
+          this._pullRequestId,
+          this._project,
+        );
+      }
+      /* eslint-enable no-await-in-loop */
+    });
+  }
+
+  public async removeLabel(name: string): Promise<void> {
+    this._logger.logDebug("* AzureReposInvoker.removeLabel()");
+    const gitApiPromise: Promise<IGitApi> = this.getGitApi();
+    await this.invokeApiCall(
+      async (): Promise<void> =>
+        (await gitApiPromise).deletePullRequestLabels(
+          this._repositoryId,
+          this._pullRequestId,
+          name,
+          this._project,
+        ),
+    );
   }
 
   public async createComment(
