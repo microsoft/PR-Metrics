@@ -39,7 +39,7 @@ jobs:
 
       - name: App Token – Mint
         id: app-token
-        uses: microsoft/PR-Metrics/.github/actions/mint-github-app-token@0959437740572519916a08b3609e67ffa435f8dd # v1.7.17
+        uses: microsoft/PR-Metrics/.github/actions/mint-github-app-token@ac92804a3a0c8b711ca02dd9956ac6a7f2a1d2ca # v1.7.18
         with:
           azure-client-id: ${{ vars.AZURE_CLIENT_ID }}
           azure-tenant-id: ${{ vars.AZURE_TENANT_ID }}
@@ -194,7 +194,7 @@ jobs:
       - if: env.RUN_AUTOMATION == 'true'
         name: App Token – Mint
         id: app-token
-        uses: microsoft/PR-Metrics/.github/actions/mint-github-app-token@0959437740572519916a08b3609e67ffa435f8dd # v1.7.17
+        uses: microsoft/PR-Metrics/.github/actions/mint-github-app-token@ac92804a3a0c8b711ca02dd9956ac6a7f2a1d2ca # v1.7.18
         with:
           azure-client-id: ${{ vars.AZURE_CLIENT_ID }}
           azure-tenant-id: ${{ vars.AZURE_TENANT_ID }}
@@ -404,7 +404,7 @@ jobs:
       - if: env.RUN_AUTOMATION == 'true'
         name: App Token – Mint
         id: app-token
-        uses: microsoft/PR-Metrics/.github/actions/mint-github-app-token@0959437740572519916a08b3609e67ffa435f8dd # v1.7.17
+        uses: microsoft/PR-Metrics/.github/actions/mint-github-app-token@ac92804a3a0c8b711ca02dd9956ac6a7f2a1d2ca # v1.7.18
         with:
           azure-client-id: ${{ vars.AZURE_CLIENT_ID }}
           azure-tenant-id: ${{ vars.AZURE_TENANT_ID }}
