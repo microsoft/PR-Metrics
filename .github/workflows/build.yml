@@ -47,7 +47,7 @@ jobs:
           permissions: '{"pull_requests":"write"}'
 
       - name: PR Metrics
-        uses: microsoft/PR-Metrics@0959437740572519916a08b3609e67ffa435f8dd # v1.7.17
+        uses: microsoft/PR-Metrics@ac92804a3a0c8b711ca02dd9956ac6a7f2a1d2ca # v1.7.18
         env:
           PR_METRICS_ACCESS_TOKEN: ${{ steps.app-token.outputs.token }}
         with:
