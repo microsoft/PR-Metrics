@@ -135,20 +135,19 @@ describe("octokitGitDiffParser.ts", (): void => {
       );
       when(
         httpWrapper.getUrl("https://github.com/microsoft/PR-Metrics"),
-      ).thenCall(
-        async (): Promise<string> =>
-          Promise.resolve(
-            "diff --git a/oldFile.ts b/file.ts\n" +
-              "similarity index 99%\n" +
-              "rename from oldFile.ts\n" +
-              "rename to file.ts\n" +
-              "index b2985bb0..54d73d2a 100754\n" +
-              "--- a/oldFile.ts\n" +
-              "+++ b/file.ts\n" +
-              "@@ -11,2 +11,3 @@ Line 1\n" +
-              "+Line 2\n" +
-              " Line 3",
-          ),
+      ).thenCall(async (): Promise<string> =>
+        Promise.resolve(
+          "diff --git a/oldFile.ts b/file.ts\n" +
+            "similarity index 99%\n" +
+            "rename from oldFile.ts\n" +
+            "rename to file.ts\n" +
+            "index b2985bb0..54d73d2a 100754\n" +
+            "--- a/oldFile.ts\n" +
+            "+++ b/file.ts\n" +
+            "@@ -11,2 +11,3 @@ Line 1\n" +
+            "+Line 2\n" +
+            " Line 3",
+        ),
       );
       const octokitGitDiffParser: OctokitGitDiffParser =
         new OctokitGitDiffParser(instance(httpWrapper), instance(logger));
@@ -177,14 +176,13 @@ describe("octokitGitDiffParser.ts", (): void => {
       );
       when(
         httpWrapper.getUrl("https://github.com/microsoft/PR-Metrics"),
-      ).thenCall(
-        async (): Promise<string> =>
-          Promise.resolve(
-            "diff --git a/oldFile.ts b/file.ts\n" +
-              "similarity index 100%\n" +
-              "rename from oldFile.ts\n" +
-              "rename to file.ts",
-          ),
+      ).thenCall(async (): Promise<string> =>
+        Promise.resolve(
+          "diff --git a/oldFile.ts b/file.ts\n" +
+            "similarity index 100%\n" +
+            "rename from oldFile.ts\n" +
+            "rename to file.ts",
+        ),
       );
       const octokitGitDiffParser: OctokitGitDiffParser =
         new OctokitGitDiffParser(instance(httpWrapper), instance(logger));
@@ -213,18 +211,17 @@ describe("octokitGitDiffParser.ts", (): void => {
       );
       when(
         httpWrapper.getUrl("https://github.com/microsoft/PR-Metrics"),
-      ).thenCall(
-        async (): Promise<string> =>
-          Promise.resolve(
-            "diff --git a/file.ts b/file.ts\n" +
-              "new file mode 100754\n" +
-              "index 00000000..8318c87e\n" +
-              "--- /dev/null\n" +
-              "+++ b/file.ts\n" +
-              "@@ -0,0 +1 @@\n" +
-              "+Line 1\n" +
-              "\\ No newline at end of file",
-          ),
+      ).thenCall(async (): Promise<string> =>
+        Promise.resolve(
+          "diff --git a/file.ts b/file.ts\n" +
+            "new file mode 100754\n" +
+            "index 00000000..8318c87e\n" +
+            "--- /dev/null\n" +
+            "+++ b/file.ts\n" +
+            "@@ -0,0 +1 @@\n" +
+            "+Line 1\n" +
+            "\\ No newline at end of file",
+        ),
       );
       const octokitGitDiffParser: OctokitGitDiffParser =
         new OctokitGitDiffParser(instance(httpWrapper), instance(logger));
@@ -253,17 +250,16 @@ describe("octokitGitDiffParser.ts", (): void => {
       );
       when(
         httpWrapper.getUrl("https://github.com/microsoft/PR-Metrics"),
-      ).thenCall(
-        async (): Promise<string> =>
-          Promise.resolve(
-            "diff --git a/file.ts b/file.ts\n" +
-              "deleted file mode 100754\n" +
-              "index 68adfef0..00000000\n" +
-              "--- a/file.ts\n" +
-              "+++ /dev/null\n" +
-              "@@ -1,1 +0,0 @@\n" +
-              "-Line 1",
-          ),
+      ).thenCall(async (): Promise<string> =>
+        Promise.resolve(
+          "diff --git a/file.ts b/file.ts\n" +
+            "deleted file mode 100754\n" +
+            "index 68adfef0..00000000\n" +
+            "--- a/file.ts\n" +
+            "+++ /dev/null\n" +
+            "@@ -1,1 +0,0 @@\n" +
+            "-Line 1",
+        ),
       );
       const octokitGitDiffParser: OctokitGitDiffParser =
         new OctokitGitDiffParser(instance(httpWrapper), instance(logger));
@@ -297,14 +293,13 @@ describe("octokitGitDiffParser.ts", (): void => {
       );
       when(
         httpWrapper.getUrl("https://github.com/microsoft/PR-Metrics"),
-      ).thenCall(
-        async (): Promise<string> =>
-          Promise.resolve(
-            "diff --git a/file.png b/file.png\n" +
-              "new file mode 100644\n" +
-              "index 00000000..8318c87e\n" +
-              "Binary files /dev/null and b/file.png differ",
-          ),
+      ).thenCall(async (): Promise<string> =>
+        Promise.resolve(
+          "diff --git a/file.png b/file.png\n" +
+            "new file mode 100644\n" +
+            "index 00000000..8318c87e\n" +
+            "Binary files /dev/null and b/file.png differ",
+        ),
       );
       const octokitGitDiffParser: OctokitGitDiffParser =
         new OctokitGitDiffParser(instance(httpWrapper), instance(logger));
@@ -338,13 +333,12 @@ describe("octokitGitDiffParser.ts", (): void => {
       );
       when(
         httpWrapper.getUrl("https://github.com/microsoft/PR-Metrics"),
-      ).thenCall(
-        async (): Promise<string> =>
-          Promise.resolve(
-            "diff --git a/file.png b/file.png\n" +
-              "index fec24ae2..86ffe12a 100644\n" +
-              "Binary files a/file.png and b/file.png differ",
-          ),
+      ).thenCall(async (): Promise<string> =>
+        Promise.resolve(
+          "diff --git a/file.png b/file.png\n" +
+            "index fec24ae2..86ffe12a 100644\n" +
+            "Binary files a/file.png and b/file.png differ",
+        ),
       );
       const octokitGitDiffParser: OctokitGitDiffParser =
         new OctokitGitDiffParser(instance(httpWrapper), instance(logger));
@@ -378,16 +372,15 @@ describe("octokitGitDiffParser.ts", (): void => {
       );
       when(
         httpWrapper.getUrl("https://github.com/microsoft/PR-Metrics"),
-      ).thenCall(
-        async (): Promise<string> =>
-          Promise.resolve(
-            "diff --git a/oldFile.png b/file.png\n" +
-              "similarity index 99%\n" +
-              "rename from oldFile.png\n" +
-              "rename to file.png\n" +
-              "index fec24ae2..86ffe12a 100644\n" +
-              "Binary files a/oldFile.png and b/file.png differ",
-          ),
+      ).thenCall(async (): Promise<string> =>
+        Promise.resolve(
+          "diff --git a/oldFile.png b/file.png\n" +
+            "similarity index 99%\n" +
+            "rename from oldFile.png\n" +
+            "rename to file.png\n" +
+            "index fec24ae2..86ffe12a 100644\n" +
+            "Binary files a/oldFile.png and b/file.png differ",
+        ),
       );
       const octokitGitDiffParser: OctokitGitDiffParser =
         new OctokitGitDiffParser(instance(httpWrapper), instance(logger));
@@ -421,17 +414,16 @@ describe("octokitGitDiffParser.ts", (): void => {
       );
       when(
         httpWrapper.getUrl("https://github.com/microsoft/PR-Metrics"),
-      ).thenCall(
-        async (): Promise<string> =>
-          Promise.resolve(
-            "diff --git oldFile.ts file.ts\n" +
-              "index 6b76988..47f1131b 100646\n" +
-              "--- oldFile.ts\n" +
-              "+++ file.ts\n" +
-              "@@ -11,2 +11,3 @@ Line 1\n" +
-              "+Line 2\n" +
-              " Line 3",
-          ),
+      ).thenCall(async (): Promise<string> =>
+        Promise.resolve(
+          "diff --git oldFile.ts file.ts\n" +
+            "index 6b76988..47f1131b 100646\n" +
+            "--- oldFile.ts\n" +
+            "+++ file.ts\n" +
+            "@@ -11,2 +11,3 @@ Line 1\n" +
+            "+Line 2\n" +
+            " Line 3",
+        ),
       );
       const octokitGitDiffParser: OctokitGitDiffParser =
         new OctokitGitDiffParser(instance(httpWrapper), instance(logger));
@@ -469,17 +461,16 @@ describe("octokitGitDiffParser.ts", (): void => {
       );
       when(
         httpWrapper.getUrl("https://github.com/microsoft/PR-Metrics"),
-      ).thenCall(
-        async (): Promise<string> =>
-          Promise.resolve(
-            "diff --git oldFile.ts file.ts\n" +
-              "index 6b76988..47f1131b 100646\n" +
-              "--- oldFile.ts\n" +
-              "+++ file.ts\n" +
-              "@@ -11,2 +11,3 @@ Line 1\n" +
-              "+Line 2\n" +
-              " Line 3",
-          ),
+      ).thenCall(async (): Promise<string> =>
+        Promise.resolve(
+          "diff --git oldFile.ts file.ts\n" +
+            "index 6b76988..47f1131b 100646\n" +
+            "--- oldFile.ts\n" +
+            "+++ file.ts\n" +
+            "@@ -11,2 +11,3 @@ Line 1\n" +
+            "+Line 2\n" +
+            " Line 3",
+        ),
       );
       const octokitGitDiffParser: OctokitGitDiffParser =
         new OctokitGitDiffParser(instance(httpWrapper), instance(logger));
