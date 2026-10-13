@@ -1,14 +1,14 @@
 # Azure Pipelines Task
 
-The task can be added to a pipeline as detailed [in the Azure Pipelines
-documentation][addingtask].
+The task can be added to a pipeline as detailed
+[in the Azure Pipelines documentation][addingtask].
 
 The Azure Pipelines task can run against Azure or GitHub repositories.
 
 For Azure repositories, the task will require access to the PR resources. The
 recommended solution is to use workload identity federation as this is more
-maintainable and secure. For more information, see the [workload identity
-federation instructions][workloadidentityfederation].
+maintainable and secure. For more information, see the
+[workload identity federation instructions][workloadidentityfederation].
 
 Alternatively, you can use Personal Access Tokens (PATs). For this, you can try
 remapping `System.AccessToken` to `PR_Metrics_Access_Token` using
@@ -56,27 +56,18 @@ It matches the existing title size.
 Set `TestFactor: 0` to disable test checking.
 
 The test-status labels are mutually exclusive. They describe added test lines
-relative to added product-code lines under the configured test factor. They do
-not establish measured coverage, test quality, or execution results. With
-checking enabled, zero added product-code lines produce the sufficient result.
+relative to added product-code lines under the configured test factor.
 
-Stale managed size and test-status labels are removed. Other labels, including
-`pr-metrics:manual`, stay unchanged. Label names are compared without case
-sensitivity. Azure Repos uses native PR labels/tags; do not use GitHub
-label-search syntax for Azure filtering.
-
-**Permissions And Rollout:** Azure tokens require 'Code' > 'Read & write';
-existing comments also require 'Pull Request Threads' > 'Read & write'. For
-GitHub repositories, retain pull request write access (`pull-requests: write`
-for a GitHub Actions token). Read-only tokens cannot perform these updates.
-Label API failures now make the task report failure; label updates cannot be
-disabled separately.
+Stale managed size and test-status labels are removed. Other labels stay
+unchanged. Label names are compared without case sensitivity. Azure Repos uses
+native PR labels/tags; do not use GitHub label-search syntax for Azure
+filtering.
 
 GitHub's [label endpoints][githublabelpermissions] accept pull request write
 access for label creation and updates. Additional `issues: write` permission is
 not required.
 
-Serialise builds that update the same PR. Additions and removals are separate
+Serialize builds that update the same PR. Additions and removals are separate
 API requests, not an atomic replacement. A later successful run resolves labels
 left by a partial failure.
 

@@ -88,6 +88,7 @@ describe("pullRequestMetrics.ts", (): void => {
     });
 
     it("should fail and log when label synchronization rejects", async (): Promise<void> => {
+      // Arrange
       const error: Error = new Error("Labels failed");
       when(codeMetricsCalculator.updateLabels()).thenReject(error);
       const sut: PullRequestMetrics = new PullRequestMetrics(
@@ -96,8 +97,10 @@ describe("pullRequestMetrics.ts", (): void => {
         instance(runnerInvoker),
       );
 
+      // Act
       await sut.run("Folder");
 
+      // Assert
       verify(logger.logErrorObject(error)).once();
       verify(logger.replay()).once();
       verify(runnerInvoker.setStatusFailed("Labels failed")).once();

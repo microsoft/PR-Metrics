@@ -237,16 +237,20 @@ export default class AzureReposInvoker extends BaseReposInvoker {
     const gitApiPromise: Promise<IGitApi> = this.getGitApi();
     await this.invokeApiCall(async (): Promise<void> => {
       const gitApi: IGitApi = await gitApiPromise;
-      /* eslint-disable no-await-in-loop -- Serialize label creation and stop at the first failure. */
+      let labelCreation: Promise<unknown> = Promise.resolve();
       for (const name of names) {
-        await gitApi.createPullRequestLabel(
-          { name },
-          this._repositoryId,
-          this._pullRequestId,
-          this._project,
+        labelCreation = labelCreation.then(
+          async (): Promise<WebApiTagDefinition> =>
+            gitApi.createPullRequestLabel(
+              { name },
+              this._repositoryId,
+              this._pullRequestId,
+              this._project,
+            ),
         );
       }
-      /* eslint-enable no-await-in-loop */
+
+      await labelCreation;
     });
   }
 

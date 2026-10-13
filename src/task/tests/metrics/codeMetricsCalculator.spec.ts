@@ -51,6 +51,7 @@ describe("codeMetricsCalculator.ts", (): void => {
 
   describe("updateLabels()", (): void => {
     it("should propagate a label synchronization failure", async (): Promise<void> => {
+      // Arrange
       const error: Error = new Error("Labels failed");
       when(pullRequestLabels.updateLabels()).thenReject(error);
       const sut: CodeMetricsCalculator = new CodeMetricsCalculator(
@@ -63,7 +64,11 @@ describe("codeMetricsCalculator.ts", (): void => {
         instance(runnerInvoker),
       );
 
-      await assert.rejects(sut.updateLabels(), error);
+      // Act
+      const result: Promise<void> = sut.updateLabels();
+
+      // Assert
+      await assert.rejects(result, error);
     });
   });
 
@@ -76,7 +81,6 @@ describe("codeMetricsCalculator.ts", (): void => {
           instance(logger),
           instance(pullRequest),
           instance(pullRequestComments),
-
           instance(pullRequestLabels),
           instance(reposInvoker),
           instance(runnerInvoker),
@@ -98,7 +102,6 @@ describe("codeMetricsCalculator.ts", (): void => {
           instance(logger),
           instance(pullRequest),
           instance(pullRequestComments),
-
           instance(pullRequestLabels),
           instance(reposInvoker),
           instance(runnerInvoker),
@@ -120,7 +123,6 @@ describe("codeMetricsCalculator.ts", (): void => {
           instance(logger),
           instance(pullRequest),
           instance(pullRequestComments),
-
           instance(pullRequestLabels),
           instance(reposInvoker),
           instance(runnerInvoker),
@@ -146,7 +148,6 @@ describe("codeMetricsCalculator.ts", (): void => {
           instance(logger),
           instance(pullRequest),
           instance(pullRequestComments),
-
           instance(pullRequestLabels),
           instance(reposInvoker),
           instance(runnerInvoker),
@@ -170,7 +171,6 @@ describe("codeMetricsCalculator.ts", (): void => {
           instance(logger),
           instance(pullRequest),
           instance(pullRequestComments),
-
           instance(pullRequestLabels),
           instance(reposInvoker),
           instance(runnerInvoker),
@@ -192,7 +192,6 @@ describe("codeMetricsCalculator.ts", (): void => {
           instance(logger),
           instance(pullRequest),
           instance(pullRequestComments),
-
           instance(pullRequestLabels),
           instance(reposInvoker),
           instance(runnerInvoker),
@@ -218,7 +217,6 @@ describe("codeMetricsCalculator.ts", (): void => {
           instance(logger),
           instance(pullRequest),
           instance(pullRequestComments),
-
           instance(pullRequestLabels),
           instance(reposInvoker),
           instance(runnerInvoker),
@@ -243,7 +241,6 @@ describe("codeMetricsCalculator.ts", (): void => {
           instance(logger),
           instance(pullRequest),
           instance(pullRequestComments),
-
           instance(pullRequestLabels),
           instance(reposInvoker),
           instance(runnerInvoker),
@@ -266,7 +263,6 @@ describe("codeMetricsCalculator.ts", (): void => {
           instance(logger),
           instance(pullRequest),
           instance(pullRequestComments),
-
           instance(pullRequestLabels),
           instance(reposInvoker),
           instance(runnerInvoker),
@@ -291,7 +287,6 @@ describe("codeMetricsCalculator.ts", (): void => {
           instance(logger),
           instance(pullRequest),
           instance(pullRequestComments),
-
           instance(pullRequestLabels),
           instance(reposInvoker),
           instance(runnerInvoker),
@@ -317,7 +312,6 @@ describe("codeMetricsCalculator.ts", (): void => {
           instance(logger),
           instance(pullRequest),
           instance(pullRequestComments),
-
           instance(pullRequestLabels),
           instance(reposInvoker),
           instance(runnerInvoker),
@@ -351,7 +345,6 @@ describe("codeMetricsCalculator.ts", (): void => {
           instance(logger),
           instance(pullRequest),
           instance(pullRequestComments),
-
           instance(pullRequestLabels),
           instance(reposInvoker),
           instance(runnerInvoker),
@@ -382,7 +375,6 @@ describe("codeMetricsCalculator.ts", (): void => {
           instance(logger),
           instance(pullRequest),
           instance(pullRequestComments),
-
           instance(pullRequestLabels),
           instance(reposInvoker),
           instance(runnerInvoker),
@@ -415,7 +407,6 @@ describe("codeMetricsCalculator.ts", (): void => {
           instance(logger),
           instance(pullRequest),
           instance(pullRequestComments),
-
           instance(pullRequestLabels),
           instance(reposInvoker),
           instance(runnerInvoker),
@@ -445,7 +436,6 @@ describe("codeMetricsCalculator.ts", (): void => {
           instance(logger),
           instance(pullRequest),
           instance(pullRequestComments),
-
           instance(pullRequestLabels),
           instance(reposInvoker),
           instance(runnerInvoker),
@@ -481,7 +471,6 @@ describe("codeMetricsCalculator.ts", (): void => {
           instance(logger),
           instance(pullRequest),
           instance(pullRequestComments),
-
           instance(pullRequestLabels),
           instance(reposInvoker),
           instance(runnerInvoker),
@@ -551,7 +540,6 @@ describe("codeMetricsCalculator.ts", (): void => {
                 instance(logger),
                 instance(pullRequest),
                 instance(pullRequestComments),
-
                 instance(pullRequestLabels),
                 instance(reposInvoker),
                 instance(runnerInvoker),
@@ -602,7 +590,6 @@ describe("codeMetricsCalculator.ts", (): void => {
                 instance(logger),
                 instance(pullRequest),
                 instance(pullRequestComments),
-
                 instance(pullRequestLabels),
                 instance(reposInvoker),
                 instance(runnerInvoker),
@@ -647,7 +634,6 @@ describe("codeMetricsCalculator.ts", (): void => {
           instance(logger),
           instance(pullRequest),
           instance(pullRequestComments),
-
           instance(pullRequestLabels),
           instance(reposInvoker),
           instance(runnerInvoker),

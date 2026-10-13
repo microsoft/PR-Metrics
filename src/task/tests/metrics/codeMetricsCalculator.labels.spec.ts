@@ -32,10 +32,10 @@ describe("automatic PR labels integration", (): void => {
     patterns?: string;
   }
 
-  const runMetrics = async (
+  const arrangeMetrics = (
     testCase: TestCase,
     provider: string,
-  ): Promise<void> => {
+  ): { assertResults: () => void; sut: PullRequestMetrics } => {
     stubEnv(
       ["GITHUB_ACTION", provider === "Actions" ? "PR-Metrics" : undefined],
       ["GITHUB_BASE_REF", "main"],
@@ -140,19 +140,25 @@ describe("automatic PR labels integration", (): void => {
       instance(runnerInvoker),
     );
 
-    await sut.run("Folder");
-
-    assert.deepEqual(labels.toSorted(), ["bug", ...testCase.labels].toSorted());
-    assert.equal(title, testCase.title);
-    assert.ok(
-      comments.some((content: string): boolean =>
-        content.startsWith("# PR Metrics"),
-      ),
-    );
-    verify(gitInvoker.getDiffSummary()).once();
-    verify(runnerInvoker.setStatusSucceeded(any())).once();
-    verify(runnerInvoker.setStatusFailed(any())).never();
-    verify(other.getLabels()).never();
+    return {
+      assertResults: (): void => {
+        assert.deepEqual(
+          labels.toSorted(),
+          ["bug", ...testCase.labels].toSorted(),
+        );
+        assert.equal(title, testCase.title);
+        assert.ok(
+          comments.some((content: string): boolean =>
+            content.startsWith("# PR Metrics"),
+          ),
+        );
+        verify(gitInvoker.getDiffSummary()).once();
+        verify(runnerInvoker.setStatusSucceeded(any())).once();
+        verify(runnerInvoker.setStatusFailed(any())).never();
+        verify(other.getLabels()).never();
+      },
+      sut,
+    };
   };
 
   const boundaryCases: TestCase[] = [
@@ -244,13 +250,21 @@ describe("automatic PR labels integration", (): void => {
 
   boundaryCases.forEach((testCase: TestCase): void => {
     it(`should match labels to title '${testCase.title}' for diff '${testCase.diff}'`, async (): Promise<void> => {
-      await runMetrics(testCase, "Actions");
+      // Arrange
+      const { assertResults, sut } = arrangeMetrics(testCase, "Actions");
+
+      // Act
+      await sut.run("Folder");
+
+      // Assert
+      assertResults();
     });
   });
 
   ["TfsGit", "GitHub", "GitHubEnterprise"].forEach((provider: string): void => {
     it(`should automatically update labels, title, and comments for '${provider}' in Azure Pipelines`, async (): Promise<void> => {
-      await runMetrics(
+      // Arrange
+      const { assertResults, sut } = arrangeMetrics(
         {
           diff: "400\t0\tfile.ts\n400\t0\ttest.ts",
           labels: ["pr-metrics:M", "pr-metrics:tests-sufficient"],
@@ -258,6 +272,12 @@ describe("automatic PR labels integration", (): void => {
         },
         provider,
       );
+
+      // Act
+      await sut.run("Folder");
+
+      // Assert
+      assertResults();
     });
   });
 });

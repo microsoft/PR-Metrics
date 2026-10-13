@@ -177,11 +177,14 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
 
     this.initialize();
     await this.invokeApiCall(async (): Promise<void> => {
-      /* eslint-disable no-await-in-loop -- Ensure definitions exist before adding associations; serialize label creation. */
+      let labelCreation: Promise<void> = Promise.resolve();
       for (const name of names) {
-        await this.ensureLabelExists(name);
+        labelCreation = labelCreation.then(
+          async (): Promise<void> => this.ensureLabelExists(name),
+        );
       }
-      /* eslint-enable no-await-in-loop */
+
+      await labelCreation;
       await this._octokitWrapper.addLabels(
         this._owner,
         this._repo,

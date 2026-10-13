@@ -30,6 +30,7 @@ describe("reposInvoker.ts", (): void => {
     ["Actions", "TfsGit", "GitHub", "GitHubEnterprise"].forEach(
       (provider: string): void => {
         it(`should route all label operations to the repository provider '${provider}'`, async (): Promise<void> => {
+          // Arrange
           stubEnv(
             [
               "GITHUB_ACTION",
@@ -48,10 +49,13 @@ describe("reposInvoker.ts", (): void => {
             instance(logger),
           );
 
-          assert.deepEqual(await sut.getLabels(), ["bug"]);
+          // Act
+          const labels: string[] = await sut.getLabels();
           await sut.addLabels(["pr-metrics:M"]);
           await sut.removeLabel("pr-metrics:XL");
 
+          // Assert
+          assert.deepEqual(labels, ["bug"]);
           verify(selected.addLabels(deepEqual(["pr-metrics:M"]))).once();
           verify(selected.removeLabel("pr-metrics:XL")).once();
           verify(other.getLabels()).never();

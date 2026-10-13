@@ -14,6 +14,7 @@ type FetchOptions = Parameters<typeof globalThis.fetch>[1];
 
 describe("octokitWrapper.ts labels", (): void => {
   it("should paginate and send native label requests without replacing labels", async (): Promise<void> => {
+    // Arrange
     const requests: { url: string; options: FetchOptions }[] = [];
     const sut: OctokitWrapper = new OctokitWrapper(
       instance(mock(OctokitGitDiffParser)),
@@ -79,12 +80,14 @@ describe("octokitWrapper.ts labels", (): void => {
       },
     });
 
+    // Act
     const labels: string[] = await sut.getLabels("owner", "repo", 42);
     await sut.getLabel("owner", "repo", "pr-metrics:M");
     await sut.createLabel("owner", "repo", "pr-metrics:M", "ededed");
     await sut.addLabels("owner", "repo", 42, ["pr-metrics:M"]);
     await sut.removeLabel("owner", "repo", 42, "pr-metrics:XL");
 
+    // Assert
     assert.equal(labels.length, pageSize + 1);
     assert.equal(labels[0], "label-0");
     assert.equal(labels[pageSize], "pr-metrics:M");

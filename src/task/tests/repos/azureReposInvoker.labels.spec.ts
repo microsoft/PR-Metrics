@@ -11,6 +11,7 @@ import {
 import { deepEqual, verify, when } from "ts-mockito";
 import type AzureReposInvoker from "../../src/repos/azureReposInvoker.js";
 import ErrorWithStatus from "../wrappers/errorWithStatus.js";
+import type { WebApiTagDefinition } from "azure-devops-node-api/interfaces/CoreInterfaces.js";
 import { any } from "../testUtilities/mockito.js";
 import assert from "node:assert/strict";
 import { httpStatusCodes } from "../../src/utilities/httpStatusCodes.js";
@@ -31,35 +32,55 @@ describe("azureReposInvoker.ts labels", (): void => {
   });
 
   it("should return all native PR labels", async (): Promise<void> => {
+    // Arrange
     when(
       mocks.gitApi.getPullRequestLabels("RepoID", 10, "Project"),
     ).thenResolve([{ name: "bug" }, { name: "pr-metrics:M" }]);
 
-    assert.deepEqual(await sut.getLabels(), ["bug", "pr-metrics:M"]);
+    // Act
+    const labels: string[] = await sut.getLabels();
+
+    // Assert
+    assert.deepEqual(labels, ["bug", "pr-metrics:M"]);
     verify(mocks.gitApi.getPullRequestLabels("RepoID", 10, "Project")).once();
   });
 
   it("should return an empty list when no labels exist", async (): Promise<void> => {
+    // Arrange
     when(
       mocks.gitApi.getPullRequestLabels("RepoID", 10, "Project"),
     ).thenResolve([]);
 
-    assert.deepEqual(await sut.getLabels(), []);
+    // Act
+    const labels: string[] = await sut.getLabels();
+
+    // Assert
+    assert.deepEqual(labels, []);
   });
 
   [undefined, ""].forEach((name: string | undefined): void => {
     it(`should reject an invalid returned label name '${String(name)}'`, async (): Promise<void> => {
+      // Arrange
       when(
         mocks.gitApi.getPullRequestLabels("RepoID", 10, "Project"),
       ).thenResolve([{ name }]);
 
-      await assert.rejects(sut.getLabels(), /is invalid, null, or undefined/u);
+      // Act
+      const labels: Promise<string[]> = sut.getLabels();
+
+      // Assert
+      await assert.rejects(labels, /is invalid, null, or undefined/u);
     });
   });
 
   it("should add each label by name without replacing others", async (): Promise<void> => {
-    await sut.addLabels(["pr-metrics:M", "pr-metrics:tests-sufficient"]);
+    // Arrange
+    const names: string[] = ["pr-metrics:M", "pr-metrics:tests-sufficient"];
 
+    // Act
+    await sut.addLabels(names);
+
+    // Assert
     verify(
       mocks.gitApi.createPullRequestLabel(
         deepEqual({ name: "pr-metrics:M" }),
@@ -79,8 +100,13 @@ describe("azureReposInvoker.ts labels", (): void => {
   });
 
   it("should not initialize for an empty addition", async (): Promise<void> => {
-    await sut.addLabels([]);
+    // Arrange
+    const names: string[] = [];
 
+    // Act
+    await sut.addLabels(names);
+
+    // Assert
     verify(
       mocks.azureDevOpsApiWrapper.getPersonalAccessTokenHandler(any()),
     ).never();
@@ -90,8 +116,13 @@ describe("azureReposInvoker.ts labels", (): void => {
   });
 
   it("should remove only the named PR association", async (): Promise<void> => {
-    await sut.removeLabel("pr-metrics:XL");
+    // Arrange
+    const name = "pr-metrics:XL";
 
+    // Act
+    await sut.removeLabel(name);
+
+    // Assert
     verify(
       mocks.gitApi.deletePullRequestLabels(
         "RepoID",
@@ -109,6 +140,7 @@ describe("azureReposInvoker.ts labels", (): void => {
   ].forEach((status: number): void => {
     ["list", "add", "remove"].forEach((operation: string): void => {
       it(`should map ${operation} failure ${String(status)} through existing error handling`, async (): Promise<void> => {
+        // Arrange
         const error: ErrorWithStatus = new ErrorWithStatus("API failed");
         error.statusCode = status;
         when(mocks.gitApi.getPullRequestLabels(any(), any(), any())).thenReject(
@@ -121,6 +153,7 @@ describe("azureReposInvoker.ts labels", (): void => {
           mocks.gitApi.deletePullRequestLabels(any(), any(), any(), any()),
         ).thenReject(error);
 
+        // Act
         let action: Promise<unknown>;
         if (operation === "list") {
           action = sut.getLabels();
@@ -129,6 +162,7 @@ describe("azureReposInvoker.ts labels", (): void => {
         } else {
           action = sut.removeLabel("pr-metrics:M");
         }
+        // Assert
         await assert.rejects(
           action,
           status === httpStatusCodes.notFound
@@ -141,6 +175,7 @@ describe("azureReposInvoker.ts labels", (): void => {
   });
 
   it("should stop adding labels after an API failure", async (): Promise<void> => {
+    // Arrange
     const error: Error = new Error("Creation failed");
     when(
       mocks.gitApi.createPullRequestLabel(
@@ -151,10 +186,14 @@ describe("azureReposInvoker.ts labels", (): void => {
       ),
     ).thenReject(error);
 
-    await assert.rejects(
-      sut.addLabels(["pr-metrics:M", "pr-metrics:tests-sufficient"]),
-      error,
-    );
+    // Act
+    const addition: Promise<void> = sut.addLabels([
+      "pr-metrics:M",
+      "pr-metrics:tests-sufficient",
+    ]);
+
+    // Assert
+    await assert.rejects(addition, error);
     verify(
       mocks.gitApi.createPullRequestLabel(
         deepEqual({ name: "pr-metrics:tests-sufficient" }),
@@ -163,5 +202,56 @@ describe("azureReposInvoker.ts labels", (): void => {
         "Project",
       ),
     ).never();
+  });
+
+  it("should wait for the last label creation before completing", async (): Promise<void> => {
+    // Arrange
+    const creation = Promise.withResolvers<WebApiTagDefinition>();
+    const started = Promise.withResolvers<undefined>();
+    let completed = false;
+    when(
+      mocks.gitApi.createPullRequestLabel(
+        deepEqual({ name: "pr-metrics:tests-sufficient" }),
+        "RepoID",
+        10,
+        "Project",
+      ),
+    ).thenCall(async (): Promise<WebApiTagDefinition> => {
+      started.resolve(undefined);
+      return creation.promise;
+    });
+
+    // Act
+    const addition: Promise<void> = sut
+      .addLabels(["pr-metrics:M", "pr-metrics:tests-sufficient"])
+      .then((): void => {
+        completed = true;
+      });
+    await started.promise;
+
+    // Assert
+    assert.equal(completed, false);
+    verify(
+      mocks.gitApi.createPullRequestLabel(
+        deepEqual({ name: "pr-metrics:M" }),
+        "RepoID",
+        10,
+        "Project",
+      ),
+    ).calledBefore(
+      mocks.gitApi.createPullRequestLabel(
+        deepEqual({ name: "pr-metrics:tests-sufficient" }),
+        "RepoID",
+        10,
+        "Project",
+      ),
+    );
+
+    // Act
+    creation.resolve({ name: "pr-metrics:tests-sufficient" });
+    await addition;
+
+    // Assert
+    assert.equal(completed, true);
   });
 });
