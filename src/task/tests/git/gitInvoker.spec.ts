@@ -51,13 +51,12 @@ describe("gitInvoker.ts", (): void => {
           "origin/develop...pull/12345/merge",
         ]),
       ),
-    ).thenCall(
-      async (): Promise<ExecOutput> =>
-        Promise.resolve({
-          exitCode: 0,
-          stderr: "",
-          stdout: "1\t2\tFile.txt",
-        }),
+    ).thenCall(async (): Promise<ExecOutput> =>
+      Promise.resolve({
+        exitCode: 0,
+        stderr: "",
+        stdout: "1\t2\tFile.txt",
+      }),
     );
   });
 
@@ -332,13 +331,12 @@ describe("gitInvoker.ts", (): void => {
               "git",
               deepEqual(["rev-parse", "--is-inside-work-tree"]),
             ),
-          ).thenCall(
-            async (): Promise<ExecOutput> =>
-              Promise.resolve({
-                exitCode: 0,
-                stderr: "",
-                stdout: response,
-              }),
+          ).thenCall(async (): Promise<ExecOutput> =>
+            Promise.resolve({
+              exitCode: 0,
+              stderr: "",
+              stdout: response,
+            }),
           );
           const gitInvoker: GitInvoker = new GitInvoker(
             instance(logger),
@@ -361,13 +359,12 @@ describe("gitInvoker.ts", (): void => {
           "git",
           deepEqual(["rev-parse", "--is-inside-work-tree"]),
         ),
-      ).thenCall(
-        async (): Promise<ExecOutput> =>
-          Promise.resolve({
-            exitCode: 1,
-            stderr: "Failure",
-            stdout: "",
-          }),
+      ).thenCall(async (): Promise<ExecOutput> =>
+        Promise.resolve({
+          exitCode: 1,
+          stderr: "Failure",
+          stdout: "",
+        }),
       );
       const gitInvoker: GitInvoker = new GitInvoker(
         instance(logger),
@@ -639,14 +636,13 @@ describe("gitInvoker.ts", (): void => {
             "origin/develop...pull/12345/merge",
           ]),
         ),
-      ).thenCall(
-        async (): Promise<ExecOutput> =>
-          Promise.resolve({
-            exitCode: 1,
-            stderr:
-              "fatal: ambiguous argument 'origin/develop...pull/12345/merge': unknown revision or path not in the working tree.\n",
-            stdout: "",
-          }),
+      ).thenCall(async (): Promise<ExecOutput> =>
+        Promise.resolve({
+          exitCode: 1,
+          stderr:
+            "fatal: ambiguous argument 'origin/develop...pull/12345/merge': unknown revision or path not in the working tree.\n",
+          stdout: "",
+        }),
       );
       const gitInvoker: GitInvoker = new GitInvoker(
         instance(logger),
@@ -791,13 +787,12 @@ describe("gitInvoker.ts", (): void => {
             "origin/develop...pull/12345/merge",
           ]),
         ),
-      ).thenCall(
-        async (): Promise<ExecOutput> =>
-          Promise.resolve({
-            exitCode: 1,
-            stderr: "Failure",
-            stdout: "",
-          }),
+      ).thenCall(async (): Promise<ExecOutput> =>
+        Promise.resolve({
+          exitCode: 1,
+          stderr: "Failure",
+          stdout: "",
+        }),
       );
       const gitInvoker: GitInvoker = new GitInvoker(
         instance(logger),
