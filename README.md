@@ -59,7 +59,7 @@ numbered XL sizes. Size uses the same added product-code lines, exclusions, and
 thresholds as the title.
 
 | Metric Result      | Labels For A Medium PR                          |
-|--------------------|-------------------------------------------------|
+| ------------------ | ----------------------------------------------- |
 | Tests sufficient   | `pr-metrics:M`, `pr-metrics:tests-sufficient`   |
 | Tests insufficient | `pr-metrics:M`, `pr-metrics:tests-insufficient` |
 | Checking disabled  | `pr-metrics:M`                                  |

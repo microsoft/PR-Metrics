@@ -159,13 +159,12 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     this._logger.logDebug("* GitHubReposInvoker.getLabels()");
     this.initialize();
 
-    return this.invokeApiCall(
-      async (): Promise<string[]> =>
-        this._octokitWrapper.getLabels(
-          this._owner,
-          this._repo,
-          this._pullRequestId,
-        ),
+    return this.invokeApiCall(async (): Promise<string[]> =>
+      this._octokitWrapper.getLabels(
+        this._owner,
+        this._repo,
+        this._pullRequestId,
+      ),
     );
   }
 
@@ -179,8 +178,8 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     await this.invokeApiCall(async (): Promise<void> => {
       let labelCreation: Promise<void> = Promise.resolve();
       for (const name of names) {
-        labelCreation = labelCreation.then(
-          async (): Promise<void> => this.ensureLabelExists(name),
+        labelCreation = labelCreation.then(async (): Promise<void> =>
+          this.ensureLabelExists(name),
         );
       }
 
@@ -198,14 +197,13 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
     this._logger.logDebug("* GitHubReposInvoker.removeLabel()");
     this.initialize();
 
-    await this.invokeApiCall(
-      async (): Promise<void> =>
-        this._octokitWrapper.removeLabel(
-          this._owner,
-          this._repo,
-          this._pullRequestId,
-          name,
-        ),
+    await this.invokeApiCall(async (): Promise<void> =>
+      this._octokitWrapper.removeLabel(
+        this._owner,
+        this._repo,
+        this._pullRequestId,
+        name,
+      ),
     );
   }
 

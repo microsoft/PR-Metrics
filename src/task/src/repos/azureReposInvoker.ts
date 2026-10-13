@@ -257,14 +257,13 @@ export default class AzureReposInvoker extends BaseReposInvoker {
   public async removeLabel(name: string): Promise<void> {
     this._logger.logDebug("* AzureReposInvoker.removeLabel()");
     const gitApiPromise: Promise<IGitApi> = this.getGitApi();
-    await this.invokeApiCall(
-      async (): Promise<void> =>
-        (await gitApiPromise).deletePullRequestLabels(
-          this._repositoryId,
-          this._pullRequestId,
-          name,
-          this._project,
-        ),
+    await this.invokeApiCall(async (): Promise<void> =>
+      (await gitApiPromise).deletePullRequestLabels(
+        this._repositoryId,
+        this._pullRequestId,
+        name,
+        this._project,
+      ),
     );
   }
 
@@ -372,15 +371,14 @@ export default class AzureReposInvoker extends BaseReposInvoker {
     this._logger.logDebug("* AzureReposInvoker.deleteCommentThread()");
 
     const gitApiPromise: Promise<IGitApi> = this.getGitApi();
-    await this.invokeApiCall(
-      async (): Promise<void> =>
-        (await gitApiPromise).deleteComment(
-          this._repositoryId,
-          this._pullRequestId,
-          commentThreadId,
-          1,
-          this._project,
-        ),
+    await this.invokeApiCall(async (): Promise<void> =>
+      (await gitApiPromise).deleteComment(
+        this._repositoryId,
+        this._pullRequestId,
+        commentThreadId,
+        1,
+        this._project,
+      ),
     );
   }
 
