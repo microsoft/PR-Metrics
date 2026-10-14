@@ -61,6 +61,10 @@ export default class PullRequestLabels {
     const missing: string[] = desired.filter(
       (name: string): boolean => !currentNames.has(name.toLowerCase()),
     );
+
+    // Match only complete PR Metrics size and test-status labels after lowercasing.
+    // Sizes are XS, S, M, L, XL, or an integer >= 2 followed by XL, with no leading zeros.
+    // Preserve other labels, including unknown pr-metrics: names.
     const stale: string[] = current.filter(
       (name: string): boolean =>
         /^pr-metrics:(?:xs|s|m|l|xl|(?:[2-9]|[1-9][0-9]+)xl|tests-(?:sufficient|insufficient))$/u.test(
