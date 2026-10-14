@@ -31,7 +31,7 @@ jobs:
 
       - name: App Token – Mint
         id: app-token
-        uses: $/.github/actions/mint-github-app-token
+        uses: ./.github/actions/mint-github-app-token # zizmor: ignore[self-repository]
         with:
           azure-client-id: ${{ vars.AZURE_CLIENT_ID }}
           azure-tenant-id: ${{ vars.AZURE_TENANT_ID }}

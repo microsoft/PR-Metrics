@@ -10,6 +10,7 @@ import type PullRequest from "../pullRequests/pullRequest.js";
 import type PullRequestComments from "../pullRequests/pullRequestComments.js";
 import type PullRequestCommentsData from "../pullRequests/pullRequestCommentsData.js";
 import type PullRequestDetailsInterface from "../repos/interfaces/pullRequestDetailsInterface.js";
+import type PullRequestLabels from "../pullRequests/pullRequestLabels.js";
 import type ReposInvoker from "../repos/reposInvoker.js";
 import RunnerInvoker from "../runners/runnerInvoker.js";
 
@@ -21,6 +22,7 @@ export default class CodeMetricsCalculator {
   private readonly _logger: Logger;
   private readonly _pullRequest: PullRequest;
   private readonly _pullRequestComments: PullRequestComments;
+  private readonly _pullRequestLabels: PullRequestLabels;
   private readonly _reposInvoker: ReposInvoker;
   private readonly _runnerInvoker: RunnerInvoker;
 
@@ -30,6 +32,7 @@ export default class CodeMetricsCalculator {
    * @param logger The logger.
    * @param pullRequest The pull request modification logic.
    * @param pullRequestComments The pull request comments modification logic.
+   * @param pullRequestLabels The pull request labels modification logic.
    * @param reposInvoker The repos invoker logic.
    * @param runnerInvoker The runner invoker logic.
    */
@@ -38,6 +41,7 @@ export default class CodeMetricsCalculator {
     logger: Logger,
     pullRequest: PullRequest,
     pullRequestComments: PullRequestComments,
+    pullRequestLabels: PullRequestLabels,
     reposInvoker: ReposInvoker,
     runnerInvoker: RunnerInvoker,
   ) {
@@ -45,6 +49,7 @@ export default class CodeMetricsCalculator {
     this._logger = logger;
     this._pullRequest = pullRequest;
     this._pullRequestComments = pullRequestComments;
+    this._pullRequestLabels = pullRequestLabels;
     this._reposInvoker = reposInvoker;
     this._runnerInvoker = runnerInvoker;
   }
@@ -168,6 +173,16 @@ export default class CodeMetricsCalculator {
       await this.updateNoReviewRequiredComment(fileName, true);
     }
     /* eslint-enable no-await-in-loop */
+  }
+
+  /**
+   * Updates the pull request labels.
+   * @returns A promise for awaiting completion.
+   */
+  public async updateLabels(): Promise<void> {
+    this._logger.logDebug("* CodeMetricsCalculator.updateLabels()");
+
+    await this._pullRequestLabels.updateLabels();
   }
 
   private async updateMetricsComment(

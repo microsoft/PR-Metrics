@@ -11,6 +11,7 @@ import Logger from "../../src/utilities/logger.js";
 import PullRequest from "../../src/pullRequests/pullRequest.js";
 import PullRequestComments from "../../src/pullRequests/pullRequestComments.js";
 import PullRequestCommentsData from "../../src/pullRequests/pullRequestCommentsData.js";
+import PullRequestLabels from "../../src/pullRequests/pullRequestLabels.js";
 import ReposInvoker from "../../src/repos/reposInvoker.js";
 import RunnerInvoker from "../../src/runners/runnerInvoker.js";
 import assert from "node:assert/strict";
@@ -22,6 +23,7 @@ describe("codeMetricsCalculator.ts", (): void => {
   let logger: Logger;
   let pullRequest: PullRequest;
   let pullRequestComments: PullRequestComments;
+  let pullRequestLabels: PullRequestLabels;
   let reposInvoker: ReposInvoker;
   let runnerInvoker: RunnerInvoker;
 
@@ -41,9 +43,33 @@ describe("codeMetricsCalculator.ts", (): void => {
     when(pullRequest.isSupportedProvider).thenReturn(true);
 
     pullRequestComments = mock(PullRequestComments);
+    pullRequestLabels = mock(PullRequestLabels);
 
     runnerInvoker = mock(RunnerInvoker);
     stubLocalization(runnerInvoker);
+  });
+
+  describe("updateLabels()", (): void => {
+    it("should propagate a label synchronization failure", async (): Promise<void> => {
+      // Arrange
+      const error: Error = new Error("Labels failed");
+      when(pullRequestLabels.updateLabels()).thenReject(error);
+      const sut: CodeMetricsCalculator = new CodeMetricsCalculator(
+        instance(gitInvoker),
+        instance(logger),
+        instance(pullRequest),
+        instance(pullRequestComments),
+        instance(pullRequestLabels),
+        instance(reposInvoker),
+        instance(runnerInvoker),
+      );
+
+      // Act
+      const result: Promise<void> = sut.updateLabels();
+
+      // Assert
+      await assert.rejects(result, error);
+    });
   });
 
   describe("shouldSkipWithUnsupportedProvider", (): void => {
@@ -55,6 +81,7 @@ describe("codeMetricsCalculator.ts", (): void => {
           instance(logger),
           instance(pullRequest),
           instance(pullRequestComments),
+          instance(pullRequestLabels),
           instance(reposInvoker),
           instance(runnerInvoker),
         );
@@ -75,6 +102,7 @@ describe("codeMetricsCalculator.ts", (): void => {
           instance(logger),
           instance(pullRequest),
           instance(pullRequestComments),
+          instance(pullRequestLabels),
           instance(reposInvoker),
           instance(runnerInvoker),
         );
@@ -95,6 +123,7 @@ describe("codeMetricsCalculator.ts", (): void => {
           instance(logger),
           instance(pullRequest),
           instance(pullRequestComments),
+          instance(pullRequestLabels),
           instance(reposInvoker),
           instance(runnerInvoker),
         );
@@ -119,6 +148,7 @@ describe("codeMetricsCalculator.ts", (): void => {
           instance(logger),
           instance(pullRequest),
           instance(pullRequestComments),
+          instance(pullRequestLabels),
           instance(reposInvoker),
           instance(runnerInvoker),
         );
@@ -141,6 +171,7 @@ describe("codeMetricsCalculator.ts", (): void => {
           instance(logger),
           instance(pullRequest),
           instance(pullRequestComments),
+          instance(pullRequestLabels),
           instance(reposInvoker),
           instance(runnerInvoker),
         );
@@ -161,6 +192,7 @@ describe("codeMetricsCalculator.ts", (): void => {
           instance(logger),
           instance(pullRequest),
           instance(pullRequestComments),
+          instance(pullRequestLabels),
           instance(reposInvoker),
           instance(runnerInvoker),
         );
@@ -185,6 +217,7 @@ describe("codeMetricsCalculator.ts", (): void => {
           instance(logger),
           instance(pullRequest),
           instance(pullRequestComments),
+          instance(pullRequestLabels),
           instance(reposInvoker),
           instance(runnerInvoker),
         );
@@ -208,6 +241,7 @@ describe("codeMetricsCalculator.ts", (): void => {
           instance(logger),
           instance(pullRequest),
           instance(pullRequestComments),
+          instance(pullRequestLabels),
           instance(reposInvoker),
           instance(runnerInvoker),
         );
@@ -229,6 +263,7 @@ describe("codeMetricsCalculator.ts", (): void => {
           instance(logger),
           instance(pullRequest),
           instance(pullRequestComments),
+          instance(pullRequestLabels),
           instance(reposInvoker),
           instance(runnerInvoker),
         );
@@ -252,6 +287,7 @@ describe("codeMetricsCalculator.ts", (): void => {
           instance(logger),
           instance(pullRequest),
           instance(pullRequestComments),
+          instance(pullRequestLabels),
           instance(reposInvoker),
           instance(runnerInvoker),
         );
@@ -276,6 +312,7 @@ describe("codeMetricsCalculator.ts", (): void => {
           instance(logger),
           instance(pullRequest),
           instance(pullRequestComments),
+          instance(pullRequestLabels),
           instance(reposInvoker),
           instance(runnerInvoker),
         );
@@ -308,6 +345,7 @@ describe("codeMetricsCalculator.ts", (): void => {
           instance(logger),
           instance(pullRequest),
           instance(pullRequestComments),
+          instance(pullRequestLabels),
           instance(reposInvoker),
           instance(runnerInvoker),
         );
@@ -337,6 +375,7 @@ describe("codeMetricsCalculator.ts", (): void => {
           instance(logger),
           instance(pullRequest),
           instance(pullRequestComments),
+          instance(pullRequestLabels),
           instance(reposInvoker),
           instance(runnerInvoker),
         );
@@ -368,6 +407,7 @@ describe("codeMetricsCalculator.ts", (): void => {
           instance(logger),
           instance(pullRequest),
           instance(pullRequestComments),
+          instance(pullRequestLabels),
           instance(reposInvoker),
           instance(runnerInvoker),
         );
@@ -396,6 +436,7 @@ describe("codeMetricsCalculator.ts", (): void => {
           instance(logger),
           instance(pullRequest),
           instance(pullRequestComments),
+          instance(pullRequestLabels),
           instance(reposInvoker),
           instance(runnerInvoker),
         );
@@ -430,6 +471,7 @@ describe("codeMetricsCalculator.ts", (): void => {
           instance(logger),
           instance(pullRequest),
           instance(pullRequestComments),
+          instance(pullRequestLabels),
           instance(reposInvoker),
           instance(runnerInvoker),
         );
@@ -498,6 +540,7 @@ describe("codeMetricsCalculator.ts", (): void => {
                 instance(logger),
                 instance(pullRequest),
                 instance(pullRequestComments),
+                instance(pullRequestLabels),
                 instance(reposInvoker),
                 instance(runnerInvoker),
               );
@@ -547,6 +590,7 @@ describe("codeMetricsCalculator.ts", (): void => {
                 instance(logger),
                 instance(pullRequest),
                 instance(pullRequestComments),
+                instance(pullRequestLabels),
                 instance(reposInvoker),
                 instance(runnerInvoker),
               );
@@ -590,6 +634,7 @@ describe("codeMetricsCalculator.ts", (): void => {
           instance(logger),
           instance(pullRequest),
           instance(pullRequestComments),
+          instance(pullRequestLabels),
           instance(reposInvoker),
           instance(runnerInvoker),
         );

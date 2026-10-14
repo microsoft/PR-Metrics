@@ -49,6 +49,50 @@ If no PR description is provided, the description will be set to:
 
 > :x: **Add a description.**
 
+## Automatic PR Labels
+
+Every supported PR run also updates native labels on GitHub and Azure Repos.
+
+PR Metrics maintains one size label: `pr-metrics:XS`, `pr-metrics:S`,
+`pr-metrics:M`, `pr-metrics:L`, `pr-metrics:XL`, `pr-metrics:2XL`, and larger
+numbered XL sizes. Size uses the same added product-code lines, exclusions, and
+thresholds as the title.
+
+| Metric Result      | Labels For A Medium PR                          |
+| ------------------ | ----------------------------------------------- |
+| Tests sufficient   | `pr-metrics:M`, `pr-metrics:tests-sufficient`   |
+| Tests insufficient | `pr-metrics:M`, `pr-metrics:tests-insufficient` |
+| Checking disabled  | `pr-metrics:M`                                  |
+
+Set `test-factor: 0` to disable test checking.
+
+PR Metrics removes stale labels only from the stated size family and the two
+test-status names. Name comparisons are case-insensitive. On GitHub, missing
+repository label definitions are created with color `ededed`; existing
+definitions and colors are retained.
+
+Use GitHub search to find PRs with a specific label:
+
+```text
+is:pr is:open label:"pr-metrics:XL"
+is:pr is:open label:"pr-metrics:tests-sufficient"
+is:pr is:open label:"pr-metrics:tests-insufficient"
+```
+
+Azure Repos displays these names as native PR labels/tags. Its filtering is not
+equivalent to GitHub search.
+
+Label updates add missing labels before removing stale labels. They use separate
+API requests and are not atomic. A later successful run resolves a partial
+update. Serialize runs for each PR to prevent competing updates. For GitHub
+Actions, set workflow or job concurrency:
+
+```yaml
+concurrency:
+  group: pr-metrics-${{ github.repository }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+```
+
 ## Inputs
 
 You will need to set the environment variable `PR_Metrics_Access_Token` to a
