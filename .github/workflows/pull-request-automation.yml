@@ -1,0 +1,114 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+
+---
+name: Pull Request Automation
+
+on:
+  pull_request_target:
+    branches:
+      - main
+    types:
+      - opened
+      - reopened
+      - synchronize
+
+permissions: {}
+
+defaults:
+  run:
+    shell: pwsh
+
+# Restrict the production environment to main. Do not allow refs/pull/*/merge.
+# This workflow runs base-branch code only, never PR code or build artifacts.
+jobs:
+  pr-metrics:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    name: PR Metrics
+    runs-on: ubuntu-latest
+    environment: production
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout Trusted Base
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+          ref: ${{ github.event.pull_request.base.sha }}
+
+      - name: Install Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24.18.1
+
+      - name: Fetch Pull Request Data
+        run: |-
+          git fetch --no-tags origin "+refs/pull/$env:PR_NUMBER/merge:refs/remotes/pull/$env:PR_NUMBER/merge"
+          if ($LASTEXITCODE -ne 0)
+          {
+              throw 'Could not fetch the pull request merge ref.'
+          }
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+
+      - name: App Token – Mint
+        id: app-token
+        uses: microsoft/PR-Metrics/.github/actions/mint-github-app-token@ac92804a3a0c8b711ca02dd9956ac6a7f2a1d2ca # v1.7.18
+        with:
+          azure-client-id: ${{ vars.AZURE_CLIENT_ID }}
+          azure-tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          azure-subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+          permissions: '{"pull_requests":"write"}'
+
+      - name: PR Metrics
+        # The trusted bundle needs a PR ref. The fetched PR data is never executed.
+        run: |-
+          $env:GITHUB_REF = "refs/pull/$env:PR_NUMBER/merge"
+          node dist/index.mjs
+          if ($LASTEXITCODE -ne 0)
+          {
+              throw 'PR Metrics failed.'
+          }
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_METRICS_ACCESS_TOKEN: ${{ steps.app-token.outputs.token }}
+          INPUT_FILE-MATCHING-PATTERNS: |
+            **/*
+            !dist/*
+            !package-lock.json
+
+  dependabot-automation:
+    if: >-
+      github.actor == 'dependabot[bot]' &&
+      github.triggering_actor == 'dependabot[bot]' &&
+      github.event.pull_request.user.login == 'dependabot[bot]' &&
+      github.event.pull_request.head.repo.full_name == github.repository
+    name: Dependabot – Automation
+    runs-on: ubuntu-latest
+    environment: production
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout Trusted Base
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          ref: ${{ github.event.pull_request.base.sha }}
+          sparse-checkout: .github/workflow-scripts
+
+      - name: App Token – Mint
+        id: app-token
+        uses: microsoft/PR-Metrics/.github/actions/mint-github-app-token@ac92804a3a0c8b711ca02dd9956ac6a7f2a1d2ca # v1.7.18
+        with:
+          azure-client-id: ${{ vars.AZURE_CLIENT_ID }}
+          azure-tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          azure-subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+          permissions: '{"pull_requests":"write"}'
+
+      - name: Approve Verified Dependabot Head
+        run: .github/workflow-scripts/Approve-DependabotPullRequest.ps1
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}

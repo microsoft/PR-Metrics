@@ -4,8 +4,6 @@
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
-$outputPath = 'generated/generated-changes.patch'
-
 git add -A
 if ($LASTEXITCODE -ne 0)
 {
@@ -24,12 +22,10 @@ if ($LASTEXITCODE -ne 1)
     throw 'Could not test for generated changes.'
 }
 
-$outputDirectory = Split-Path -Path $outputPath -Parent
-$null = New-Item -ItemType Directory -Path $outputDirectory -Force
-git diff --cached --binary --output=$outputPath
+git diff --cached --stat
 if ($LASTEXITCODE -ne 0)
 {
-    throw 'Could not create the generated changes patch.'
+    throw 'Could not list generated changes.'
 }
 
 'CHANGES_PRESENT=True' >> $Env:GITHUB_OUTPUT

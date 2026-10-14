@@ -435,37 +435,37 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
   private initializeForAzureDevOps(): string {
     this._logger.logDebug("* GitHubReposInvoker.initializeForAzureDevOps()");
 
-    const sourceRepositoryUri: string = Validator.validateVariable(
-      "SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI",
+    const targetRepositoryUri: string = Validator.validateVariable(
+      "BUILD_REPOSITORY_URI",
       "GitHubReposInvoker.initializeForAzureDevOps()",
     );
 
     let parsedUrl: URL;
     try {
-      parsedUrl = new URL(sourceRepositoryUri);
+      parsedUrl = new URL(targetRepositoryUri);
     } catch {
-      throw new Error(
-        `SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI '${sourceRepositoryUri}' is in an unexpected format.`,
-      );
+      throw new Error("BUILD_REPOSITORY_URI is in an unexpected format.");
     }
 
-    const pathSegments: string[] = parsedUrl.pathname
-      .split("/")
-      .filter(Boolean);
-    const owner: string | undefined = pathSegments[0];
-    const repo: string | undefined = pathSegments[1];
-    if (typeof owner === "undefined" || typeof repo === "undefined") {
-      throw new Error(
-        `SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI '${sourceRepositoryUri}' is in an unexpected format.`,
-      );
+    const pathSegments: string[] = parsedUrl.pathname.split("/");
+    const owner: string | undefined = pathSegments[1];
+    const repo: string | undefined = pathSegments[2]?.replace(/\.git$/u, "");
+    if (
+      parsedUrl.protocol !== "https:" ||
+      parsedUrl.username !== "" ||
+      parsedUrl.password !== "" ||
+      parsedUrl.search !== "" ||
+      parsedUrl.hash !== "" ||
+      !/^\/[A-Za-z0-9-]+\/[A-Za-z0-9_.-]+\/?$/u.test(parsedUrl.pathname) ||
+      typeof owner === "undefined" ||
+      typeof repo === "undefined" ||
+      repo === ""
+    ) {
+      throw new Error("BUILD_REPOSITORY_URI is in an unexpected format.");
     }
 
     this._owner = owner;
     this._repo = repo;
-
-    if (this._repo.endsWith(".git")) {
-      this._repo = this._repo.substring(0, this._repo.length - ".git".length);
-    }
 
     // Handle GitHub Enterprise invocations.
     if (parsedUrl.hostname !== "github.com") {

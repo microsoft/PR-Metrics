@@ -19,6 +19,7 @@ const pending: PendingChange[] = [];
 const managedEnvVars: readonly string[] = [
   "BUILD_REPOSITORY_ID",
   "BUILD_REPOSITORY_PROVIDER",
+  "BUILD_REPOSITORY_URI",
   "GITHUB_ACTION",
   "GITHUB_API_URL",
   "GITHUB_BASE_REF",
