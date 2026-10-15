@@ -1,81 +1,128 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT License.
 
+param
+(
+    [Parameter(Mandatory = $true)]
+    [ValidateRange(1, [long]::MaxValue)]
+    [long] $PullRequestNumber,
+
+    [Parameter(Mandatory = $true)]
+    [ValidatePattern('^[0-9a-f]{40}$')]
+    [string] $HeadSha
+)
+
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
-if ($env:GITHUB_EVENT_NAME -cne 'pull_request_target')
+if ($env:GITHUB_REF -cne 'refs/heads/main')
 {
-    throw 'Approval requires a trusted pull_request_target workflow.'
+    throw 'Approval must run from main.'
 }
 
-if ($env:GITHUB_ACTOR -cne 'dependabot[bot]' -or
-    $env:GITHUB_TRIGGERING_ACTOR -cne 'dependabot[bot]')
+if ($env:GITHUB_EVENT_NAME -cnotin @('schedule', 'workflow_dispatch'))
 {
-    throw 'Only Dependabot events and Dependabot reruns can be approved.'
+    throw 'Approval requires a scheduled or manual workflow.'
 }
 
-$githubEvent = Get-Content -Path $env:GITHUB_EVENT_PATH -Raw | ConvertFrom-Json
 $repository = $env:GITHUB_REPOSITORY
-$number = [string] $githubEvent.number
-$headSha = $githubEvent.pull_request.head.sha
-if ($repository -cne $githubEvent.repository.full_name -or
-    $repository -cnotmatch '^[A-Za-z0-9-]+/[A-Za-z0-9_.-]+$' -or
-    $number -notmatch '^[1-9][0-9]*$' -or
-    $headSha -cnotmatch '^[0-9a-f]{40}$')
+$repositoryId = $env:GITHUB_REPOSITORY_ID
+if ($repository -cnotmatch '^[A-Za-z0-9-]+/[A-Za-z0-9_.-]+$' -or
+    $repositoryId -notmatch '^[1-9][0-9]*$' -or
+    $HeadSha -cnotmatch '^[0-9a-f]{40}$')
 {
-    throw 'The pull request event has invalid repository or head metadata.'
+    throw 'The workflow has invalid repository or head metadata.'
 }
 
-if ($githubEvent.pull_request.user.login -cne 'dependabot[bot]')
+function Get-DependabotPullRequest
 {
-    throw 'Only Dependabot pull requests can be approved.'
+    $pullJson = gh api "repos/$repository/pulls/$PullRequestNumber"
+    if ($LASTEXITCODE -ne 0)
+    {
+        throw 'Could not retrieve the pull request.'
+    }
+
+    $pull = $pullJson | ConvertFrom-Json
+    if ($pull.number -ne $PullRequestNumber -or
+        $pull.user.id -ne 49699333 -or
+        $pull.user.login -cne 'dependabot[bot]' -or
+        $pull.state -cne 'open')
+    {
+        throw 'Only Dependabot open pull requests can be approved.'
+    }
+
+    if ($null -eq $pull.head.repo -or $null -eq $pull.base.repo -or
+        [string] $pull.head.repo.id -cne $repositoryId -or
+        [string] $pull.base.repo.id -cne $repositoryId -or
+        $pull.base.ref -cne 'main')
+    {
+        throw 'The pull request must use the workflow repository and target main.'
+    }
+
+    if ($pull.head.sha -cne $HeadSha)
+    {
+        throw 'The pull request head has changed since it was selected.'
+    }
+
+    return $pull
 }
 
-$pullJson = gh api "repos/$repository/pulls/$number"
+$pull = Get-DependabotPullRequest
+if ($pull.commits -lt 1 -or $pull.commits -gt 250)
+{
+    throw 'Could not verify the complete pull request commit history.'
+}
+
+$commitJson = gh api "repos/$repository/pulls/$PullRequestNumber/commits?per_page=100" --paginate --slurp
 if ($LASTEXITCODE -ne 0)
 {
-    throw 'Could not retrieve the pull request.'
+    throw 'Could not retrieve the pull request commits.'
 }
 
-$pull = $pullJson | ConvertFrom-Json
-if ($pull.user.login -cne 'dependabot[bot]' -or $pull.state -cne 'open')
+$commits = @($commitJson | ConvertFrom-Json | ForEach-Object -Process { $_ })
+if ($commits.Count -ne $pull.commits -or
+    @($commits.sha | Sort-Object -Unique).Count -ne $commits.Count -or
+    $commits.sha -cnotcontains $HeadSha)
 {
-    throw 'Only Dependabot open pull requests can be approved.'
+    throw 'Could not verify the complete pull request commit history.'
 }
 
-if ($githubEvent.pull_request.head.repo.id -ne $githubEvent.repository.id -or
-    $githubEvent.pull_request.base.repo.id -ne $githubEvent.repository.id -or
-    $pull.head.repo.id -ne $githubEvent.repository.id -or
-    $pull.base.repo.id -ne $githubEvent.repository.id)
+foreach ($commit in $commits)
 {
-    throw 'The pull request must use the workflow repository for both branches.'
+    if ($commit.sha -cnotmatch '^[0-9a-f]{40}$' -or
+        $null -eq $commit.author -or $null -eq $commit.committer -or
+        $commit.author.id -ne 49699333 -or
+        $commit.author.login -cne 'dependabot[bot]' -or
+        $commit.committer.login -cne 'web-flow' -or
+        $commit.commit.verification.verified -isnot [bool] -or
+        -not $commit.commit.verification.verified -or
+        $commit.commit.verification.reason -cne 'valid')
+    {
+        throw 'All pull request commits must be verified GitHub-signed Dependabot commits.'
+    }
 }
 
-if ($pull.head.sha -cne $headSha)
-{
-    throw 'The pull request head has changed since the Dependabot event.'
-}
-
-$commitJson = gh api "repos/$repository/commits/$headSha"
+$reviewsJson = gh api "repos/$repository/pulls/$PullRequestNumber/reviews?per_page=100" --paginate --slurp
 if ($LASTEXITCODE -ne 0)
 {
-    throw 'Could not retrieve the pull request head commit.'
+    throw 'Could not retrieve the pull request reviews.'
 }
 
-$commit = $commitJson | ConvertFrom-Json
-if ($commit.sha -cne $headSha -or
-    $commit.author.login -cne 'dependabot[bot]' -or
-    $commit.committer.login -cne 'web-flow' -or
-    $commit.commit.verification.verified -ne $true -or
-    $commit.commit.verification.reason -cne 'valid')
+$reviews = @($reviewsJson | ConvertFrom-Json | ForEach-Object -Process {
+        $_
+    })
+if ($reviews | Where-Object -FilterScript {
+        $_.user.id -eq 288118622 -and $_.state -ceq 'APPROVED' -and $_.commit_id -ceq $HeadSha
+    })
 {
-    throw 'The head commit must be a verified GitHub-signed Dependabot commit.'
+    Write-Information -MessageData "PR #$PullRequestNumber already has an App approval for this head." -InformationAction Continue
+    return
 }
 
-gh api "repos/$repository/pulls/$number/reviews" --method POST `
-    -f event=APPROVE -f "commit_id=$headSha"
+$null = Get-DependabotPullRequest
+gh api "repos/$repository/pulls/$PullRequestNumber/reviews" --method POST `
+    -f event=APPROVE -f "commit_id=$HeadSha"
 if ($LASTEXITCODE -ne 0)
 {
-    throw 'Could not approve the verified Dependabot commit.'
+    throw 'Could not approve the verified Dependabot commits.'
 }

@@ -74,10 +74,7 @@ describe("gitHubReposInvoker.ts", (): void => {
 
     it("GetTitleAndDescription_WhenTargetRepositoryPathIsIncomplete_Throws", async (): Promise<void> => {
       // Arrange
-      stubEnv([
-        "BUILD_REPOSITORY_URI",
-        "https://github.com/microsoft",
-      ]);
+      stubEnv(["BUILD_REPOSITORY_URI", "https://github.com/microsoft"]);
       const gitHubReposInvoker: GitHubReposInvoker = createSut(
         gitInvoker,
         logger,
