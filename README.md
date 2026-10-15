@@ -1,5 +1,7 @@
 # PR Metrics
 
+<!-- Test PR: intentionally unnecessary change. -->
+
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new?hide_repo_select=true&repo=309438703)
 
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/11987/badge)](https://www.bestpractices.dev/projects/11987)
