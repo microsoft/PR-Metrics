@@ -13,19 +13,21 @@ if ($LASTEXITCODE -ne 0)
 }
 
 git diff --cached --quiet
-if ($LASTEXITCODE -eq 0)
-{
-    'CHANGES_PRESENT=False' >> $Env:GITHUB_OUTPUT
-    return
-}
-
-if ($LASTEXITCODE -ne 1)
+$diffExitCode = $LASTEXITCODE
+if ($diffExitCode -notin @(0, 1))
 {
     throw 'Could not test for generated changes.'
 }
 
 $outputDirectory = Split-Path -Path $outputPath -Parent
 $null = New-Item -ItemType Directory -Path $outputDirectory -Force
+if ($diffExitCode -eq 0)
+{
+    [System.IO.File]::WriteAllBytes((Join-Path -Path (Get-Location).Path -ChildPath $outputPath), [byte[]]@())
+    'CHANGES_PRESENT=False' >> $Env:GITHUB_OUTPUT
+    return
+}
+
 git diff --cached --binary --output=$outputPath
 if ($LASTEXITCODE -ne 0)
 {

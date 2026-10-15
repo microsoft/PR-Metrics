@@ -41,16 +41,127 @@ describe("gitHubReposInvoker.ts", (): void => {
 
   describe("getTitleAndDescription()", (): void => {
     {
+      const testCases: string[] = [
+        "https://github.com/other/fork",
+        "https://attacker.invalid/other/fork",
+      ];
+
+      testCases.forEach((sourceUri: string): void => {
+        it(`should use the target repository when the source repository URI is '${sourceUri}' and the task is running on Azure Pipelines`, async (): Promise<void> => {
+          // Arrange
+          stubEnv(
+            ["BUILD_REPOSITORY_URI", "https://github.com/target/project"],
+            ["SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI", sourceUri],
+          );
+          when(octokitWrapper.initialize(any())).thenCall(
+            (options: OctokitOptions): void => {
+              assert.equal(options.auth, "PAT");
+              assert.equal(options.baseUrl, "");
+            },
+          );
+          const gitHubReposInvoker: GitHubReposInvoker = createSut(
+            gitInvoker,
+            logger,
+            octokitWrapper,
+            runnerInvoker,
+          );
+
+          // Act
+          await gitHubReposInvoker.getTitleAndDescription();
+
+          // Assert
+          verify(octokitWrapper.initialize(any())).once();
+          verify(octokitWrapper.getPull("target", "project", 12345)).once();
+        });
+      });
+    }
+
+    {
+      const testCases: string[] = [
+        "http://github.com/target/project",
+        "https://user:secret@github.com/target/project",
+        "https://user@github.com/target/project",
+        "https://:secret@github.com/target/project",
+        "https://github.com/target/project?query=value",
+        "https://github.com/target/project#fragment",
+        "https://github.com/target/project/extra",
+        "https://github.com/target/.git",
+        "https://github.com//project",
+        "https://github.com/target",
+        "https://github.com/",
+        "https://github.com/target/pro%2fject",
+        "not-a-valid-url",
+      ];
+
+      testCases.forEach((targetUri: string): void => {
+        it(`should throw before client initialization when BUILD_REPOSITORY_URI is set to '${targetUri}' and the task is running on Azure Pipelines`, async (): Promise<void> => {
+          // Arrange
+          stubEnv(["BUILD_REPOSITORY_URI", targetUri]);
+          const gitHubReposInvoker: GitHubReposInvoker = createSut(
+            gitInvoker,
+            logger,
+            octokitWrapper,
+            runnerInvoker,
+          );
+
+          // Act
+          const func: () => Promise<PullRequestDetailsInterface> = async () =>
+            gitHubReposInvoker.getTitleAndDescription();
+
+          // Assert
+          await AssertExtensions.toThrowAsync(
+            func,
+            "BUILD_REPOSITORY_URI is in an unexpected format.",
+          );
+          verify(octokitWrapper.initialize(any())).never();
+          verify(
+            octokitWrapper.getPull(anyString(), anyString(), anyNumber()),
+          ).never();
+        });
+      });
+    }
+
+    it("should use the target origin when the Enterprise repository URI has a port and '.git' suffix", async (): Promise<void> => {
+      // Arrange
+      stubEnv([
+        "BUILD_REPOSITORY_URI",
+        "https://git.example.test:8443/target/project.git/",
+      ]);
+      when(octokitWrapper.initialize(any())).thenCall(
+        (options: OctokitOptions): void => {
+          assert.equal(options.auth, "PAT");
+          assert.equal(options.baseUrl, "https://git.example.test:8443/api/v3");
+        },
+      );
+      const gitHubReposInvoker: GitHubReposInvoker = createSut(
+        gitInvoker,
+        logger,
+        octokitWrapper,
+        runnerInvoker,
+      );
+
+      // Act
+      await gitHubReposInvoker.getTitleAndDescription();
+
+      // Assert
+      verify(octokitWrapper.getPull("target", "project", 12345)).once();
+    });
+
+    {
       const testCases: (string | undefined)[] = [undefined, ""];
 
       testCases.forEach((variable: string | undefined): void => {
-        it(`should throw when SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI is set to the invalid value '${String(variable)}' and the task is running on Azure Pipelines`, async (): Promise<void> => {
+        it(`should throw when BUILD_REPOSITORY_URI is set to the invalid value '${String(variable)}' and the task is running on Azure Pipelines`, async (): Promise<void> => {
           // Arrange
           if (typeof variable === "undefined") {
-            stubEnv(["SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI", undefined]);
+            stubEnv(["BUILD_REPOSITORY_URI", undefined]);
           } else {
-            stubEnv(["SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI", variable]);
+            stubEnv(["BUILD_REPOSITORY_URI", variable]);
           }
+          stubEnv([
+            "SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI",
+            "https://github.com/other/fork",
+          ]);
 
           const gitHubReposInvoker: GitHubReposInvoker = createSut(
             gitInvoker,
@@ -66,16 +177,18 @@ describe("gitHubReposInvoker.ts", (): void => {
           // Assert
           await AssertExtensions.toThrowAsync(
             func,
-            `'SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI', accessed within 'GitHubReposInvoker.initializeForAzureDevOps()', is invalid, null, or undefined '${String(variable)}'.`,
+            `'BUILD_REPOSITORY_URI', accessed within 'GitHubReposInvoker.initializeForAzureDevOps()', is invalid, null, or undefined '${String(variable)}'.`,
           );
+          verify(octokitWrapper.initialize(any())).never();
+          verify(octokitWrapper.getPull(anyString(), anyString(), anyNumber())).never();
         });
       });
     }
 
-    it("should throw when SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI is set to an invalid URL and the task is running on Azure Pipelines", async (): Promise<void> => {
+    it("should throw when BUILD_REPOSITORY_URI is set to an invalid URL and the task is running on Azure Pipelines", async (): Promise<void> => {
       // Arrange
       stubEnv([
-        "SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI",
+        "BUILD_REPOSITORY_URI",
         "https://github.com/microsoft",
       ]);
       const gitHubReposInvoker: GitHubReposInvoker = createSut(
@@ -92,13 +205,13 @@ describe("gitHubReposInvoker.ts", (): void => {
       // Assert
       await AssertExtensions.toThrowAsync(
         func,
-        "SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI 'https://github.com/microsoft' is in an unexpected format.",
+        "BUILD_REPOSITORY_URI is in an unexpected format.",
       );
     });
 
-    it("should throw when SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI is set to a non-parseable URL and the task is running on Azure Pipelines", async (): Promise<void> => {
+    it("should throw when BUILD_REPOSITORY_URI is set to a non-parseable URL and the task is running on Azure Pipelines", async (): Promise<void> => {
       // Arrange
-      stubEnv(["SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI", "not-a-valid-url"]);
+      stubEnv(["BUILD_REPOSITORY_URI", "not-a-valid-url"]);
       const gitHubReposInvoker: GitHubReposInvoker = createSut(
         gitInvoker,
         logger,
@@ -113,7 +226,7 @@ describe("gitHubReposInvoker.ts", (): void => {
       // Assert
       await AssertExtensions.toThrowAsync(
         func,
-        "SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI 'not-a-valid-url' is in an unexpected format.",
+        "BUILD_REPOSITORY_URI is in an unexpected format.",
       );
     });
 
@@ -320,7 +433,7 @@ describe("gitHubReposInvoker.ts", (): void => {
     it("should succeed when the inputs are valid and the URL ends with '.git'", async (): Promise<void> => {
       // Arrange
       stubEnv([
-        "SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI",
+        "BUILD_REPOSITORY_URI",
         "https://github.com/microsoft/PR-Metrics.git",
       ]);
       when(octokitWrapper.initialize(any())).thenCall(
@@ -355,7 +468,7 @@ describe("gitHubReposInvoker.ts", (): void => {
     it("should succeed when the inputs are valid and GitHub Enterprise is in use", async (): Promise<void> => {
       // Arrange
       stubEnv([
-        "SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI",
+        "BUILD_REPOSITORY_URI",
         "https://organization.githubenterprise.com/microsoft/PR-Metrics",
       ]);
       when(octokitWrapper.initialize(any())).thenCall(

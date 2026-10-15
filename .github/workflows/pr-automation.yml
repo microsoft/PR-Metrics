@@ -1,0 +1,186 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+
+---
+name: Pull Request Automation
+
+on:
+  workflow_run:
+    workflows:
+      - Build
+    types:
+      - completed
+
+permissions: {}
+
+concurrency:
+  group: pr-automation-${{ github.event.workflow_run.head_repository.id }}-${{ github.event.workflow_run.head_branch }}
+  cancel-in-progress: false
+
+defaults:
+  run:
+    shell: pwsh
+
+env:
+  SOURCE_RUN_ID: ${{ github.event.workflow_run.id }}
+  SOURCE_RUN_ATTEMPT: ${{ github.event.workflow_run.run_attempt }}
+
+jobs:
+  prepare:
+    name: Validate Automation
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      pull-requests: read
+      statuses: write
+    outputs:
+      applicable: ${{ steps.prepare.outputs.applicable }}
+      patch-ready: ${{ steps.prepare.outputs.patch-ready }}
+      has-changes: ${{ steps.prepare.outputs.has-changes }}
+    steps:
+      - name: Checkout Trusted Controller
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          ref: ${{ github.workflow_sha }}
+
+      - name: Validate Source and Download Data
+        id: prepare
+        run: .github/workflow-scripts/PullRequestAutomation.ps1 -Mode Prepare
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - if: steps.prepare.outputs.patch-ready == 'true'
+        name: Upload Validated Patch Data
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: trusted-patch-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/pr-metrics-patch/generated-changes.patch
+          if-no-files-found: error
+          retention-days: 1
+
+  generate:
+    if: needs.prepare.outputs.applicable == 'true' && needs.prepare.outputs.patch-ready == 'true' && needs.prepare.outputs.has-changes == 'true'
+    name: Generate Changes
+    needs: prepare
+    runs-on: ubuntu-latest
+    environment: production
+    permissions:
+      actions: read
+      contents: read
+      id-token: write
+      pull-requests: read
+    outputs:
+      generated-sha: ${{ steps.generate.outputs.generated-sha }}
+    steps:
+      - name: Checkout Trusted Controller
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          ref: ${{ github.workflow_sha }}
+
+      - name: Download Validated Patch Data
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: trusted-patch-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/pr-metrics-patch
+
+      - name: App Token – Mint
+        id: app-token
+        uses: ./.github/actions/mint-github-app-token
+        with:
+          azure-client-id: ${{ vars.AZURE_CLIENT_ID }}
+          azure-tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          azure-subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+          permissions: '{"contents":"write"}'
+
+      - name: Commit Data and Record Provenance
+        id: generate
+        run: .github/workflow-scripts/PullRequestAutomation.ps1 -Mode Generate
+        env:
+          GH_TOKEN: ${{ github.token }}
+          AUTOMATION_TOKEN: ${{ steps.app-token.outputs.token }}
+
+      - if: steps.generate.outputs.generated-sha != ''
+        name: Publish Generated Commit Provenance
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: pr-metrics-generated-${{ steps.generate.outputs.generated-sha }}
+          path: ${{ steps.generate.outputs.provenance-path }}
+          if-no-files-found: error
+
+  approve:
+    if: always() && needs.prepare.result == 'success' && needs.prepare.outputs.applicable == 'true' && (needs.generate.result == 'success' || needs.generate.result == 'skipped')
+    name: Review Dependabot Update
+    needs:
+      - prepare
+      - generate
+    runs-on: ubuntu-latest
+    environment: production
+    permissions:
+      actions: read
+      contents: read
+      id-token: write
+      pull-requests: read
+    env:
+      GENERATED_SHA: ${{ needs.generate.outputs.generated-sha }}
+    steps:
+      - name: Checkout Trusted Controller
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          ref: ${{ github.workflow_sha }}
+
+      - name: Verify Complete Commit Origin
+        id: eligibility
+        run: .github/workflow-scripts/PullRequestAutomation.ps1 -Mode Evaluate
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - if: steps.eligibility.outputs.eligible == 'true'
+        name: App Token – Mint
+        id: app-token
+        uses: ./.github/actions/mint-github-app-token
+        with:
+          azure-client-id: ${{ vars.AZURE_CLIENT_ID }}
+          azure-tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          azure-subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+          permissions: '{"pull_requests":"write"}'
+
+      - if: steps.eligibility.outputs.eligible == 'true'
+        name: Approve Exact Validated SHA
+        run: .github/workflow-scripts/PullRequestAutomation.ps1 -Mode Approve
+        env:
+          GH_TOKEN: ${{ github.token }}
+          AUTOMATION_TOKEN: ${{ steps.app-token.outputs.token }}
+
+  complete:
+    if: always()
+    name: Report Automation Results
+    needs:
+      - prepare
+      - generate
+      - approve
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      statuses: write
+    steps:
+      - name: Checkout Trusted Controller
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          ref: ${{ github.workflow_sha }}
+
+      - name: Publish Actual Source-SHA Results
+        run: .github/workflow-scripts/PullRequestAutomation.ps1 -Mode Complete
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PREPARE_RESULT: ${{ needs.prepare.result }}
+          APPLICABLE: ${{ needs.prepare.outputs.applicable }}
+          PATCH_READY: ${{ needs.prepare.outputs.patch-ready }}
+          HAS_CHANGES: ${{ needs.prepare.outputs.has-changes }}
+          GENERATE_RESULT: ${{ needs.generate.result }}
+          APPROVE_RESULT: ${{ needs.approve.result }}
