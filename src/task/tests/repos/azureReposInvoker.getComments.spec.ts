@@ -98,7 +98,11 @@ describe("azureReposInvoker.ts", (): void => {
     it("should return the result when called with a pull request comment whose thread context is undefined", async (): Promise<void> => {
       // Arrange
       when(gitApi.getThreads("RepoID", 10, "Project")).thenResolve([
-        { comments: [{ content: "Content" }], id: 1, status: 1 },
+        {
+          comments: [{ content: "Content" }],
+          id: 1,
+          status: CommentThreadStatus.Active,
+        },
       ]);
       const azureReposInvoker: AzureReposInvoker = createSut(
         azureDevOpsApiWrapper,
@@ -136,7 +140,7 @@ describe("azureReposInvoker.ts", (): void => {
         {
           comments: [{ content: "Content" }],
           id: 1,
-          status: 1,
+          status: CommentThreadStatus.Active,
           threadContext: null as unknown as undefined,
         },
       ]);
@@ -176,7 +180,7 @@ describe("azureReposInvoker.ts", (): void => {
         {
           comments: [{ content: "Content" }],
           id: 1,
-          status: 1,
+          status: CommentThreadStatus.Active,
           threadContext: { filePath: "/file.ts" },
         },
       ]);
@@ -211,11 +215,15 @@ describe("azureReposInvoker.ts", (): void => {
     it("should return the result when called with both a pull request and file comment", async (): Promise<void> => {
       // Arrange
       when(gitApi.getThreads("RepoID", 10, "Project")).thenResolve([
-        { comments: [{ content: "PR Content" }], id: 1, status: 1 },
+        {
+          comments: [{ content: "PR Content" }],
+          id: 1,
+          status: CommentThreadStatus.Active,
+        },
         {
           comments: [{ content: "File Content" }],
           id: 2,
-          status: 1,
+          status: CommentThreadStatus.Active,
           threadContext: { filePath: "/file.ts" },
         },
       ]);
@@ -256,7 +264,11 @@ describe("azureReposInvoker.ts", (): void => {
     it("should return the result when called multiple times", async (): Promise<void> => {
       // Arrange
       when(gitApi.getThreads("RepoID", 10, "Project")).thenResolve([
-        { comments: [{ content: "Content" }], id: 1, status: 1 },
+        {
+          comments: [{ content: "Content" }],
+          id: 1,
+          status: CommentThreadStatus.Active,
+        },
       ]);
       const azureReposInvoker: AzureReposInvoker = createSut(
         azureDevOpsApiWrapper,
@@ -292,7 +304,10 @@ describe("azureReposInvoker.ts", (): void => {
     it("should throw when provided with a payload with no ID", async (): Promise<void> => {
       // Arrange
       when(gitApi.getThreads("RepoID", 10, "Project")).thenResolve([
-        { comments: [{ content: "Content" }], status: 1 },
+        {
+          comments: [{ content: "Content" }],
+          status: CommentThreadStatus.Active,
+        },
       ]);
       const azureReposInvoker: AzureReposInvoker = createSut(
         azureDevOpsApiWrapper,
@@ -370,26 +385,30 @@ describe("azureReposInvoker.ts", (): void => {
 
     {
       const testCases: GitPullRequestCommentThread[] = [
-        { id: 1, status: 1 },
-        { comments: [], id: 1, status: 1 },
-        { comments: [{}], id: 1, status: 1 },
-        { comments: [{ content: "" }], id: 1, status: 1 },
+        { id: 1, status: CommentThreadStatus.Active },
+        { comments: [], id: 1, status: CommentThreadStatus.Active },
+        { comments: [{}], id: 1, status: CommentThreadStatus.Active },
+        {
+          comments: [{ content: "" }],
+          id: 1,
+          status: CommentThreadStatus.Active,
+        },
         {
           comments: [{ content: "Content" }],
           id: 1,
-          status: 1,
+          status: CommentThreadStatus.Active,
           threadContext: {},
         },
         {
           comments: [{ content: "Content" }],
           id: 1,
-          status: 1,
+          status: CommentThreadStatus.Active,
           threadContext: { filePath: "" },
         },
         {
           comments: [{ content: "Content" }],
           id: 1,
-          status: 1,
+          status: CommentThreadStatus.Active,
           threadContext: { filePath: "/" },
         },
       ];
@@ -399,11 +418,15 @@ describe("azureReposInvoker.ts", (): void => {
           // Arrange
           const getThreadsResult: GitPullRequestCommentThread[] = [
             commentThread,
-            { comments: [{ content: "PR Content" }], id: 2, status: 1 },
+            {
+              comments: [{ content: "PR Content" }],
+              id: 2,
+              status: CommentThreadStatus.Active,
+            },
             {
               comments: [{ content: "File Content" }],
               id: 3,
-              status: 1,
+              status: CommentThreadStatus.Active,
               threadContext: { filePath: "/file.ts" },
             },
           ];
