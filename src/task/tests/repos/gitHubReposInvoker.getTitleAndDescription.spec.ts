@@ -121,6 +121,32 @@ describe("gitHubReposInvoker.ts", (): void => {
       });
     }
 
+    it("should use a managed-user-owned target repository when running on Azure Pipelines", async (): Promise<void> => {
+      // Arrange
+      stubEnv(["BUILD_REPOSITORY_URI", "https://github.com/mona_acme/project"]);
+      const gitHubReposInvoker: GitHubReposInvoker = createSut(
+        gitInvoker,
+        logger,
+        octokitWrapper,
+        runnerInvoker,
+      );
+
+      // Act
+      const result: PullRequestDetailsInterface =
+        await gitHubReposInvoker.getTitleAndDescription();
+
+      // Assert
+      assert.equal(
+        result.title,
+        GitHubReposInvokerConstants.getPullResponse.data.title,
+      );
+      assert.equal(
+        result.description,
+        GitHubReposInvokerConstants.getPullResponse.data.body,
+      );
+      verify(octokitWrapper.getPull("mona_acme", "project", 12345)).once();
+    });
+
     it("should use the target origin when the Enterprise repository URI has a port and '.git' suffix", async (): Promise<void> => {
       // Arrange
       stubEnv([

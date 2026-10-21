@@ -456,7 +456,7 @@ export default class GitHubReposInvoker extends BaseReposInvoker {
       parsedUrl.password !== "" ||
       parsedUrl.search !== "" ||
       parsedUrl.hash !== "" ||
-      !/^\/[a-z\d-]+\/[a-z\d._-]+\/?$/iu.test(parsedUrl.pathname)
+      !/^\/[a-z\d_-]+\/[a-z\d._-]+\/?$/iu.test(parsedUrl.pathname)
     ) {
       throw new Error("BUILD_REPOSITORY_URI is in an unexpected format.");
     }

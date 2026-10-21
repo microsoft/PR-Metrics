@@ -49,11 +49,10 @@ jobs:
 
       - name: PR Metrics
         # Run the candidate package built in this checkout.
-        uses: ./ # zizmor: ignore[self-repository]
+        run: node dist/index.mjs
         env:
           PR_METRICS_ACCESS_TOKEN: ${{ github.token }}
-        with:
-          file-matching-patterns: |
+          INPUT_FILE-MATCHING-PATTERNS: |
             **/*
             !dist/*
             !package-lock.json

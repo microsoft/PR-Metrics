@@ -89,8 +89,8 @@ jobs:
 
       - name: App Token – Mint
         id: app-token
-        # Use the controller action checked out at github.workflow_sha.
-        uses: ./.github/actions/mint-github-app-token # zizmor: ignore[self-repository]
+        # Use the controller action from the workflow's own revision.
+        uses: $/.github/actions/mint-github-app-token
         with:
           azure-client-id: ${{ vars.AZURE_CLIENT_ID }}
           azure-tenant-id: ${{ vars.AZURE_TENANT_ID }}
@@ -143,8 +143,8 @@ jobs:
       - if: steps.eligibility.outputs.eligible == 'true'
         name: App Token – Mint
         id: app-token
-        # Use the controller action checked out at github.workflow_sha.
-        uses: ./.github/actions/mint-github-app-token # zizmor: ignore[self-repository]
+        # Use the controller action from the workflow's own revision.
+        uses: $/.github/actions/mint-github-app-token
         with:
           azure-client-id: ${{ vars.AZURE_CLIENT_ID }}
           azure-tenant-id: ${{ vars.AZURE_TENANT_ID }}
