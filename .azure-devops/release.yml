@@ -3,9 +3,12 @@
 
 ---
 trigger:
-  tags:
+  branches:
     include:
-      - v*
+      - main
+  paths:
+    include:
+      - .github/release-publish-trigger.txt
 
 pr: none
 
@@ -41,6 +44,7 @@ extends:
     stages:
       - stage: Release
         displayName: Release
+        condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'), ne(variables['Build.Reason'], 'PullRequest'))
         jobs:
           - job: Checks
             pool:
@@ -48,15 +52,15 @@ extends:
               os: linux
               image: ubuntu-latest
             steps:
-              - checkout: none
+              - checkout: self
                 displayName: Checkout
+                persistCredentials: false
 
-              - bash: exit 1
-                displayName: Terminate on Non-Release
-                # Releases are performed on tags, which begin with 'v'.
-                condition: not(startsWith(variables['Build.SourceBranchName'], 'v'))
+              - pwsh: ./.azure-devops/Assert-Release.ps1
+                displayName: Validate Release
 
           - job: Release
+            dependsOn: Checks
             pool:
               name: Azure-Pipelines-1ESPT-ExDShared-StaticIP
               os: linux
@@ -66,6 +70,7 @@ extends:
             steps:
               - checkout: self
                 displayName: Checkout
+                persistCredentials: false
 
               - task: UseNode@1
                 displayName: Install Node.js
