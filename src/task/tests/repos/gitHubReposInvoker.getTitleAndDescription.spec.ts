@@ -180,17 +180,16 @@ describe("gitHubReposInvoker.ts", (): void => {
             `'BUILD_REPOSITORY_URI', accessed within 'GitHubReposInvoker.initializeForAzureDevOps()', is invalid, null, or undefined '${String(variable)}'.`,
           );
           verify(octokitWrapper.initialize(any())).never();
-          verify(octokitWrapper.getPull(anyString(), anyString(), anyNumber())).never();
+          verify(
+            octokitWrapper.getPull(anyString(), anyString(), anyNumber()),
+          ).never();
         });
       });
     }
 
     it("should throw when BUILD_REPOSITORY_URI is set to an invalid URL and the task is running on Azure Pipelines", async (): Promise<void> => {
       // Arrange
-      stubEnv([
-        "BUILD_REPOSITORY_URI",
-        "https://github.com/microsoft",
-      ]);
+      stubEnv(["BUILD_REPOSITORY_URI", "https://github.com/microsoft"]);
       const gitHubReposInvoker: GitHubReposInvoker = createSut(
         gitInvoker,
         logger,
