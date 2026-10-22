@@ -34,3 +34,14 @@ pipelines:
         credscan:
           lastModifiedDate: 2025-07-01
     usedNonDefaultBranch: true
+  29242:
+    retail:
+      source:
+        eslint:
+          lastModifiedDate: 2026-10-22
+        bandit:
+          lastModifiedDate: 2026-10-22
+        psscriptanalyzer:
+          lastModifiedDate: 2026-10-22
+        armory:
+          lastModifiedDate: 2026-10-22
