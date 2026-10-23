@@ -53,16 +53,16 @@ If no PR description is provided, the description will be set to:
 
 Every supported PR run also updates native labels on GitHub and Azure Repos.
 
-PR Metrics maintains one size label: `pr-metrics:XS`, `pr-metrics:S`,
-`pr-metrics:M`, `pr-metrics:L`, `pr-metrics:XL`, `pr-metrics:2XL`, and larger
+PR Metrics maintains one size label: `pr-metrics-XS`, `pr-metrics-S`,
+`pr-metrics-M`, `pr-metrics-L`, `pr-metrics-XL`, `pr-metrics-2XL`, and larger
 numbered XL sizes. Size uses the same added product-code lines, exclusions, and
 thresholds as the title.
 
 | Metric Result      | Labels For A Medium PR                          |
 | ------------------ | ----------------------------------------------- |
-| Tests sufficient   | `pr-metrics:M`, `pr-metrics:tests-sufficient`   |
-| Tests insufficient | `pr-metrics:M`, `pr-metrics:tests-insufficient` |
-| Checking disabled  | `pr-metrics:M`                                  |
+| Tests sufficient   | `pr-metrics-M`, `pr-metrics-tests-sufficient`   |
+| Tests insufficient | `pr-metrics-M`, `pr-metrics-tests-insufficient` |
+| Checking disabled  | `pr-metrics-M`                                  |
 
 Set `test-factor: 0` to disable test checking.
 
@@ -74,9 +74,9 @@ definitions and colors are retained.
 Use GitHub search to find PRs with a specific label:
 
 ```text
-is:pr is:open label:"pr-metrics:XL"
-is:pr is:open label:"pr-metrics:tests-sufficient"
-is:pr is:open label:"pr-metrics:tests-insufficient"
+is:pr is:open label:"pr-metrics-XL"
+is:pr is:open label:"pr-metrics-tests-sufficient"
+is:pr is:open label:"pr-metrics-tests-insufficient"
 ```
 
 Azure Repos displays these names as native PR labels/tags. Its filtering is not
@@ -173,7 +173,7 @@ The default input values are expected to be appropriate for most builds.
 Therefore, the following YAML definition is recommended:
 
 ```yaml
-uses: microsoft/PR-Metrics@v1.8.1
+uses: microsoft/PR-Metrics@v1.8.2
 name: PR Metrics
 env:
   PR_METRICS_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -183,7 +183,7 @@ continue-on-error: true
 If you wish to modify the inputs, YAML akin the to the following can be used:
 
 ```yaml
-uses: microsoft/PR-Metrics@v1.8.1
+uses: microsoft/PR-Metrics@v1.8.2
 name: PR Metrics
 env:
   PR_METRICS_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}

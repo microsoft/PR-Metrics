@@ -74,9 +74,9 @@ describe("automatic PR labels integration", (): void => {
       provider === "TfsGit" ? github : azure;
     let labels: string[] = [
       "bug",
-      "pr-metrics:10XL",
-      "pr-metrics:tests-sufficient",
-      "pr-metrics:tests-insufficient",
+      "pr-metrics-10XL",
+      "pr-metrics-tests-sufficient",
+      "pr-metrics-tests-insufficient",
     ];
     let title: string | null = null;
     const comments: string[] = [];
@@ -164,85 +164,85 @@ describe("automatic PR labels integration", (): void => {
   const boundaryCases: TestCase[] = [
     {
       diff: "199\t0\tfile.ts",
-      labels: ["pr-metrics:XS", "pr-metrics:tests-insufficient"],
+      labels: ["pr-metrics-XS", "pr-metrics-tests-insufficient"],
       title: "XS⚠️ ◾ Add feature",
     },
     {
       diff: "200\t0\tfile.ts",
-      labels: ["pr-metrics:S", "pr-metrics:tests-insufficient"],
+      labels: ["pr-metrics-S", "pr-metrics-tests-insufficient"],
       title: "S⚠️ ◾ Add feature",
     },
     {
       diff: "399\t0\tfile.ts",
-      labels: ["pr-metrics:S", "pr-metrics:tests-insufficient"],
+      labels: ["pr-metrics-S", "pr-metrics-tests-insufficient"],
       title: "S⚠️ ◾ Add feature",
     },
     {
       diff: "400\t0\tfile.ts",
-      labels: ["pr-metrics:M", "pr-metrics:tests-insufficient"],
+      labels: ["pr-metrics-M", "pr-metrics-tests-insufficient"],
       title: "M⚠️ ◾ Add feature",
     },
     {
       diff: "799\t0\tfile.ts",
-      labels: ["pr-metrics:M", "pr-metrics:tests-insufficient"],
+      labels: ["pr-metrics-M", "pr-metrics-tests-insufficient"],
       title: "M⚠️ ◾ Add feature",
     },
     {
       diff: "800\t0\tfile.ts",
-      labels: ["pr-metrics:L", "pr-metrics:tests-insufficient"],
+      labels: ["pr-metrics-L", "pr-metrics-tests-insufficient"],
       title: "L⚠️ ◾ Add feature",
     },
     {
       diff: "1599\t0\tfile.ts",
-      labels: ["pr-metrics:L", "pr-metrics:tests-insufficient"],
+      labels: ["pr-metrics-L", "pr-metrics-tests-insufficient"],
       title: "L⚠️ ◾ Add feature",
     },
     {
       diff: "1600\t0\tfile.ts",
-      labels: ["pr-metrics:XL", "pr-metrics:tests-insufficient"],
+      labels: ["pr-metrics-XL", "pr-metrics-tests-insufficient"],
       title: "XL⚠️ ◾ Add feature",
     },
     {
       diff: "3199\t0\tfile.ts",
-      labels: ["pr-metrics:XL", "pr-metrics:tests-insufficient"],
+      labels: ["pr-metrics-XL", "pr-metrics-tests-insufficient"],
       title: "XL⚠️ ◾ Add feature",
     },
     {
       diff: "3200\t0\tfile.ts",
-      labels: ["pr-metrics:2XL", "pr-metrics:tests-insufficient"],
+      labels: ["pr-metrics-2XL", "pr-metrics-tests-insufficient"],
       title: "2XL⚠️ ◾ Add feature",
     },
     {
       diff: "100\t0\tfile.ts\n99\t0\ttest.ts",
       factor: "1",
-      labels: ["pr-metrics:XS", "pr-metrics:tests-insufficient"],
+      labels: ["pr-metrics-XS", "pr-metrics-tests-insufficient"],
       title: "XS⚠️ ◾ Add feature",
     },
     {
       diff: "100\t0\tfile.ts\n100\t0\ttest.ts",
       factor: "1",
-      labels: ["pr-metrics:XS", "pr-metrics:tests-sufficient"],
+      labels: ["pr-metrics-XS", "pr-metrics-tests-sufficient"],
       title: "XS✔ ◾ Add feature",
     },
     {
       diff: "400\t0\tfile.ts",
       factor: "0",
-      labels: ["pr-metrics:M"],
+      labels: ["pr-metrics-M"],
       title: "M ◾ Add feature",
     },
     {
       diff: "100\t0\ttest.ts",
-      labels: ["pr-metrics:XS", "pr-metrics:tests-sufficient"],
+      labels: ["pr-metrics-XS", "pr-metrics-tests-sufficient"],
       title: "XS✔ ◾ Add feature",
     },
     {
       diff: "0\t100\tfile.ts",
-      labels: ["pr-metrics:XS", "pr-metrics:tests-sufficient"],
+      labels: ["pr-metrics-XS", "pr-metrics-tests-sufficient"],
       title: "XS✔ ◾ Add feature",
     },
     {
       diff: "400\t0\texcluded.ts",
-      labels: ["pr-metrics:XS", "pr-metrics:tests-sufficient"],
+      labels: ["pr-metrics-XS", "pr-metrics-tests-sufficient"],
       patterns: "**/*\n!excluded.ts",
       title: "XS✔ ◾ Add feature",
     },
@@ -267,7 +267,7 @@ describe("automatic PR labels integration", (): void => {
       const { assertResults, sut } = arrangeMetrics(
         {
           diff: "400\t0\tfile.ts\n400\t0\ttest.ts",
-          labels: ["pr-metrics:M", "pr-metrics:tests-sufficient"],
+          labels: ["pr-metrics-M", "pr-metrics-tests-sufficient"],
           title: "M✔ ◾ Add feature",
         },
         provider,
