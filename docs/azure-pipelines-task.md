@@ -43,15 +43,15 @@ Every supported PR run updates labels without new inputs. This applies to Azure
 Repos, GitHub, and GitHub Enterprise repositories built through Azure Pipelines.
 The repository provider determines which label API is used.
 
-One size label is maintained: `pr-metrics:XS`, `pr-metrics:S`, `pr-metrics:M`,
-`pr-metrics:L`, `pr-metrics:XL`, `pr-metrics:2XL`, and larger numbered XL sizes.
+One size label is maintained: `pr-metrics-XS`, `pr-metrics-S`, `pr-metrics-M`,
+`pr-metrics-L`, `pr-metrics-XL`, `pr-metrics-2XL`, and larger numbered XL sizes.
 It matches the existing title size.
 
 | Metric Result      | Labels For A Medium PR                          |
 | ------------------ | ----------------------------------------------- |
-| Tests sufficient   | `pr-metrics:M`, `pr-metrics:tests-sufficient`   |
-| Tests insufficient | `pr-metrics:M`, `pr-metrics:tests-insufficient` |
-| Checking disabled  | `pr-metrics:M`                                  |
+| Tests sufficient   | `pr-metrics-M`, `pr-metrics-tests-sufficient`   |
+| Tests insufficient | `pr-metrics-M`, `pr-metrics-tests-insufficient` |
+| Checking disabled  | `pr-metrics-M`                                  |
 
 Set `TestFactor: 0` to disable test checking.
 

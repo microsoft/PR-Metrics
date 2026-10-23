@@ -42,12 +42,12 @@ export default class PullRequestLabels {
       this._codeMetrics.getSize(),
       this._codeMetrics.isSufficientlyTested(),
     ]);
-    const desired: string[] = [`pr-metrics:${size}`];
+    const desired: string[] = [`pr-metrics-${size}`];
     if (sufficientlyTested !== null) {
       desired.push(
         sufficientlyTested
-          ? "pr-metrics:tests-sufficient"
-          : "pr-metrics:tests-insufficient",
+          ? "pr-metrics-tests-sufficient"
+          : "pr-metrics-tests-insufficient",
       );
     }
 
@@ -64,10 +64,10 @@ export default class PullRequestLabels {
 
     // Match only complete PR Metrics size and test-status labels after lowercasing.
     // Sizes are XS, S, M, L, XL, or an integer >= 2 followed by XL, with no leading zeros.
-    // Preserve other labels, including unknown pr-metrics: names.
+    // Preserve other labels, including unknown pr-metrics- names.
     const stale: string[] = current.filter(
       (name: string): boolean =>
-        /^pr-metrics:(?:xs|s|m|l|xl|(?:[2-9]|[1-9][0-9]+)xl|tests-(?:sufficient|insufficient))$/u.test(
+        /^pr-metrics-(?:xs|s|m|l|xl|(?:[2-9]|[1-9][0-9]+)xl|tests-(?:sufficient|insufficient))$/u.test(
           name.toLowerCase(),
         ) && !desiredNames.has(name.toLowerCase()),
     );

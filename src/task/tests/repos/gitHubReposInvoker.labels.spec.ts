@@ -47,32 +47,32 @@ describe("gitHubReposInvoker.ts labels", (): void => {
     // Arrange
     when(
       mocks.octokitWrapper.getLabels("microsoft", "PR-Metrics", 12345),
-    ).thenResolve(["bug", "pr-metrics:M"]);
+    ).thenResolve(["bug", "pr-metrics-M"]);
 
     // Act
     const labels: string[] = await sut.getLabels();
 
     // Assert
-    assert.deepEqual(labels, ["bug", "pr-metrics:M"]);
+    assert.deepEqual(labels, ["bug", "pr-metrics-M"]);
     verify(mocks.octokitWrapper.addLabels(any(), any(), any(), any())).never();
   });
 
   it("should preserve existing definitions and add PR associations", async (): Promise<void> => {
     // Arrange
-    const names: string[] = ["pr-metrics:M", "pr-metrics:tests-sufficient"];
+    const names: string[] = ["pr-metrics-M", "pr-metrics-tests-sufficient"];
 
     // Act
     await sut.addLabels(names);
 
     // Assert
     verify(
-      mocks.octokitWrapper.getLabel("microsoft", "PR-Metrics", "pr-metrics:M"),
+      mocks.octokitWrapper.getLabel("microsoft", "PR-Metrics", "pr-metrics-M"),
     ).once();
     verify(
       mocks.octokitWrapper.getLabel(
         "microsoft",
         "PR-Metrics",
-        "pr-metrics:tests-sufficient",
+        "pr-metrics-tests-sufficient",
       ),
     ).once();
     verify(
@@ -83,7 +83,7 @@ describe("gitHubReposInvoker.ts labels", (): void => {
         "microsoft",
         "PR-Metrics",
         12345,
-        deepEqual(["pr-metrics:M", "pr-metrics:tests-sufficient"]),
+        deepEqual(["pr-metrics-M", "pr-metrics-tests-sufficient"]),
       ),
     ).once();
   });
@@ -103,18 +103,18 @@ describe("gitHubReposInvoker.ts labels", (): void => {
   it("should create a missing definition before adding its association", async (): Promise<void> => {
     // Arrange
     when(
-      mocks.octokitWrapper.getLabel("microsoft", "PR-Metrics", "pr-metrics:M"),
+      mocks.octokitWrapper.getLabel("microsoft", "PR-Metrics", "pr-metrics-M"),
     ).thenThrow(requestError("Not Found", httpStatusCodes.notFound));
 
     // Act
-    await sut.addLabels(["pr-metrics:M"]);
+    await sut.addLabels(["pr-metrics-M"]);
 
     // Assert
     verify(
       mocks.octokitWrapper.createLabel(
         "microsoft",
         "PR-Metrics",
-        "pr-metrics:M",
+        "pr-metrics-M",
         "ededed",
       ),
     ).calledBefore(
@@ -122,7 +122,7 @@ describe("gitHubReposInvoker.ts labels", (): void => {
         "microsoft",
         "PR-Metrics",
         12345,
-        deepEqual(["pr-metrics:M"]),
+        deepEqual(["pr-metrics-M"]),
       ),
     );
   });
@@ -130,7 +130,7 @@ describe("gitHubReposInvoker.ts labels", (): void => {
   it("should confirm a concurrently created definition before adding it", async (): Promise<void> => {
     // Arrange
     when(
-      mocks.octokitWrapper.getLabel("microsoft", "PR-Metrics", "pr-metrics:M"),
+      mocks.octokitWrapper.getLabel("microsoft", "PR-Metrics", "pr-metrics-M"),
     )
       .thenReject(requestError("Not Found", httpStatusCodes.notFound))
       .thenResolve();
@@ -138,7 +138,7 @@ describe("gitHubReposInvoker.ts labels", (): void => {
       mocks.octokitWrapper.createLabel(
         "microsoft",
         "PR-Metrics",
-        "pr-metrics:M",
+        "pr-metrics-M",
         "ededed",
       ),
     ).thenReject(
@@ -149,18 +149,18 @@ describe("gitHubReposInvoker.ts labels", (): void => {
     );
 
     // Act
-    await sut.addLabels(["pr-metrics:M"]);
+    await sut.addLabels(["pr-metrics-M"]);
 
     // Assert
     verify(
-      mocks.octokitWrapper.getLabel("microsoft", "PR-Metrics", "pr-metrics:M"),
+      mocks.octokitWrapper.getLabel("microsoft", "PR-Metrics", "pr-metrics-M"),
     ).twice();
     verify(
       mocks.octokitWrapper.addLabels(
         "microsoft",
         "PR-Metrics",
         12345,
-        deepEqual(["pr-metrics:M"]),
+        deepEqual(["pr-metrics-M"]),
       ),
     ).once();
   });
@@ -201,20 +201,20 @@ describe("gitHubReposInvoker.ts labels", (): void => {
         mocks.octokitWrapper.getLabel(
           "microsoft",
           "PR-Metrics",
-          "pr-metrics:M",
+          "pr-metrics-M",
         ),
       ).thenReject(requestError("Not Found", httpStatusCodes.notFound));
       when(
         mocks.octokitWrapper.createLabel(
           "microsoft",
           "PR-Metrics",
-          "pr-metrics:M",
+          "pr-metrics-M",
           "ededed",
         ),
       ).thenReject(error);
 
       // Act
-      const addition: Promise<void> = sut.addLabels(["pr-metrics:M"]);
+      const addition: Promise<void> = sut.addLabels(["pr-metrics-M"]);
 
       // Assert
       await assert.rejects(
@@ -228,7 +228,7 @@ describe("gitHubReposInvoker.ts labels", (): void => {
         mocks.octokitWrapper.getLabel(
           "microsoft",
           "PR-Metrics",
-          "pr-metrics:M",
+          "pr-metrics-M",
         ),
       ).once();
     });
@@ -237,13 +237,13 @@ describe("gitHubReposInvoker.ts labels", (): void => {
   it("should fail when a creation conflict cannot be confirmed", async (): Promise<void> => {
     // Arrange
     when(
-      mocks.octokitWrapper.getLabel("microsoft", "PR-Metrics", "pr-metrics:M"),
+      mocks.octokitWrapper.getLabel("microsoft", "PR-Metrics", "pr-metrics-M"),
     ).thenReject(requestError("Not Found", httpStatusCodes.notFound));
     when(
       mocks.octokitWrapper.createLabel(
         "microsoft",
         "PR-Metrics",
-        "pr-metrics:M",
+        "pr-metrics-M",
         "ededed",
       ),
     ).thenReject(
@@ -253,7 +253,7 @@ describe("gitHubReposInvoker.ts labels", (): void => {
     );
 
     // Act
-    const addition: Promise<void> = sut.addLabels(["pr-metrics:M"]);
+    const addition: Promise<void> = sut.addLabels(["pr-metrics-M"]);
 
     // Assert
     await assert.rejects(addition, /The resource could not be found/u);
@@ -262,7 +262,7 @@ describe("gitHubReposInvoker.ts labels", (): void => {
 
   it("should remove only the named PR association", async (): Promise<void> => {
     // Arrange
-    const name = "pr-metrics:XL";
+    const name = "pr-metrics-XL";
 
     // Act
     await sut.removeLabel(name);
@@ -273,7 +273,7 @@ describe("gitHubReposInvoker.ts labels", (): void => {
         "microsoft",
         "PR-Metrics",
         12345,
-        "pr-metrics:XL",
+        "pr-metrics-XL",
       ),
     ).once();
   });
@@ -308,9 +308,9 @@ describe("gitHubReposInvoker.ts labels", (): void => {
           if (operation === "list") {
             action = sut.getLabels();
           } else if (operation === "remove") {
-            action = sut.removeLabel("pr-metrics:M");
+            action = sut.removeLabel("pr-metrics-M");
           } else {
-            action = sut.addLabels(["pr-metrics:M"]);
+            action = sut.addLabels(["pr-metrics-M"]);
           }
 
           // Assert
@@ -329,11 +329,11 @@ describe("gitHubReposInvoker.ts labels", (): void => {
   it("should propagate an SDK permission failure when looking up a definition", async (): Promise<void> => {
     // Arrange
     when(
-      mocks.octokitWrapper.getLabel("microsoft", "PR-Metrics", "pr-metrics:M"),
+      mocks.octokitWrapper.getLabel("microsoft", "PR-Metrics", "pr-metrics-M"),
     ).thenReject(requestError("Forbidden", httpStatusCodes.forbidden));
 
     // Act
-    const addition: Promise<void> = sut.addLabels(["pr-metrics:M"]);
+    const addition: Promise<void> = sut.addLabels(["pr-metrics-M"]);
 
     // Assert
     await assert.rejects(addition, /Could not access the resources/u);
@@ -347,7 +347,7 @@ describe("gitHubReposInvoker.ts labels", (): void => {
     const definition = Promise.withResolvers<undefined>();
     const started = Promise.withResolvers<undefined>();
     when(
-      mocks.octokitWrapper.getLabel("microsoft", "PR-Metrics", "pr-metrics:M"),
+      mocks.octokitWrapper.getLabel("microsoft", "PR-Metrics", "pr-metrics-M"),
     ).thenCall(async (): Promise<void> => {
       started.resolve(undefined);
       return definition.promise;
@@ -355,8 +355,8 @@ describe("gitHubReposInvoker.ts labels", (): void => {
 
     // Act
     const addition: Promise<void> = sut.addLabels([
-      "pr-metrics:M",
-      "pr-metrics:tests-sufficient",
+      "pr-metrics-M",
+      "pr-metrics-tests-sufficient",
     ]);
     await started.promise;
 
@@ -365,7 +365,7 @@ describe("gitHubReposInvoker.ts labels", (): void => {
       mocks.octokitWrapper.getLabel(
         "microsoft",
         "PR-Metrics",
-        "pr-metrics:tests-sufficient",
+        "pr-metrics-tests-sufficient",
       ),
     ).never();
     verify(mocks.octokitWrapper.addLabels(any(), any(), any(), any())).never();
@@ -379,14 +379,14 @@ describe("gitHubReposInvoker.ts labels", (): void => {
       mocks.octokitWrapper.getLabel(
         "microsoft",
         "PR-Metrics",
-        "pr-metrics:tests-sufficient",
+        "pr-metrics-tests-sufficient",
       ),
     ).calledBefore(
       mocks.octokitWrapper.addLabels(
         "microsoft",
         "PR-Metrics",
         12345,
-        deepEqual(["pr-metrics:M", "pr-metrics:tests-sufficient"]),
+        deepEqual(["pr-metrics-M", "pr-metrics-tests-sufficient"]),
       ),
     );
   });
@@ -395,13 +395,13 @@ describe("gitHubReposInvoker.ts labels", (): void => {
     // Arrange
     const error: Error = new Error("Definition lookup failed");
     when(
-      mocks.octokitWrapper.getLabel("microsoft", "PR-Metrics", "pr-metrics:M"),
+      mocks.octokitWrapper.getLabel("microsoft", "PR-Metrics", "pr-metrics-M"),
     ).thenReject(error);
 
     // Act
     const addition: Promise<void> = sut.addLabels([
-      "pr-metrics:M",
-      "pr-metrics:tests-sufficient",
+      "pr-metrics-M",
+      "pr-metrics-tests-sufficient",
     ]);
 
     // Assert
@@ -410,7 +410,7 @@ describe("gitHubReposInvoker.ts labels", (): void => {
       mocks.octokitWrapper.getLabel(
         "microsoft",
         "PR-Metrics",
-        "pr-metrics:tests-sufficient",
+        "pr-metrics-tests-sufficient",
       ),
     ).never();
     verify(mocks.octokitWrapper.addLabels(any(), any(), any(), any())).never();

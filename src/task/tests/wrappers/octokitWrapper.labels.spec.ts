@@ -66,9 +66,9 @@ describe("octokitWrapper.ts labels", (): void => {
                         default: false,
                         description: null,
                         id: 101,
-                        name: "pr-metrics:M",
+                        name: "pr-metrics-M",
                         node_id: "node-101",
-                        url: "https://api.github.com/repos/owner/repo/labels/pr-metrics%3AM",
+                        url: "https://api.github.com/repos/owner/repo/labels/pr-metrics-M",
                       },
                     ]
                   : {},
@@ -82,15 +82,15 @@ describe("octokitWrapper.ts labels", (): void => {
 
     // Act
     const labels: string[] = await sut.getLabels("owner", "repo", 42);
-    await sut.getLabel("owner", "repo", "pr-metrics:M");
-    await sut.createLabel("owner", "repo", "pr-metrics:M", "ededed");
-    await sut.addLabels("owner", "repo", 42, ["pr-metrics:M"]);
-    await sut.removeLabel("owner", "repo", 42, "pr-metrics:XL");
+    await sut.getLabel("owner", "repo", "pr-metrics-M");
+    await sut.createLabel("owner", "repo", "pr-metrics-M", "ededed");
+    await sut.addLabels("owner", "repo", 42, ["pr-metrics-M"]);
+    await sut.removeLabel("owner", "repo", 42, "pr-metrics-XL");
 
     // Assert
     assert.equal(labels.length, pageSize + 1);
     assert.equal(labels[0], "label-0");
-    assert.equal(labels[pageSize], "pr-metrics:M");
+    assert.equal(labels[pageSize], "pr-metrics-M");
     assert.deepEqual(
       requests.map(
         (request): string => `${request.options?.method ?? ""} ${request.url}`,
@@ -98,10 +98,10 @@ describe("octokitWrapper.ts labels", (): void => {
       [
         "GET https://api.github.com/repos/owner/repo/issues/42/labels?page=1&per_page=100",
         "GET https://api.github.com/repos/owner/repo/issues/42/labels?per_page=100&page=2",
-        "GET https://api.github.com/repos/owner/repo/labels/pr-metrics%3AM",
+        "GET https://api.github.com/repos/owner/repo/labels/pr-metrics-M",
         "POST https://api.github.com/repos/owner/repo/labels",
         "POST https://api.github.com/repos/owner/repo/issues/42/labels",
-        "DELETE https://api.github.com/repos/owner/repo/issues/42/labels/pr-metrics%3AXL",
+        "DELETE https://api.github.com/repos/owner/repo/issues/42/labels/pr-metrics-XL",
       ],
     );
     const definitionBody = requests[3]?.options?.body;
@@ -110,8 +110,8 @@ describe("octokitWrapper.ts labels", (): void => {
     assert.ok(typeof associationBody === "string");
     assert.deepEqual(JSON.parse(definitionBody), {
       color: "ededed",
-      name: "pr-metrics:M",
+      name: "pr-metrics-M",
     });
-    assert.deepEqual(JSON.parse(associationBody), { labels: ["pr-metrics:M"] });
+    assert.deepEqual(JSON.parse(associationBody), { labels: ["pr-metrics-M"] });
   });
 });

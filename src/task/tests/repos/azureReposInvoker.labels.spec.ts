@@ -35,13 +35,13 @@ describe("azureReposInvoker.ts labels", (): void => {
     // Arrange
     when(
       mocks.gitApi.getPullRequestLabels("RepoID", 10, "Project"),
-    ).thenResolve([{ name: "bug" }, { name: "pr-metrics:M" }]);
+    ).thenResolve([{ name: "bug" }, { name: "pr-metrics-M" }]);
 
     // Act
     const labels: string[] = await sut.getLabels();
 
     // Assert
-    assert.deepEqual(labels, ["bug", "pr-metrics:M"]);
+    assert.deepEqual(labels, ["bug", "pr-metrics-M"]);
     verify(mocks.gitApi.getPullRequestLabels("RepoID", 10, "Project")).once();
   });
 
@@ -75,7 +75,7 @@ describe("azureReposInvoker.ts labels", (): void => {
 
   it("should add each label by name without replacing others", async (): Promise<void> => {
     // Arrange
-    const names: string[] = ["pr-metrics:M", "pr-metrics:tests-sufficient"];
+    const names: string[] = ["pr-metrics-M", "pr-metrics-tests-sufficient"];
 
     // Act
     await sut.addLabels(names);
@@ -83,7 +83,7 @@ describe("azureReposInvoker.ts labels", (): void => {
     // Assert
     verify(
       mocks.gitApi.createPullRequestLabel(
-        deepEqual({ name: "pr-metrics:M" }),
+        deepEqual({ name: "pr-metrics-M" }),
         "RepoID",
         10,
         "Project",
@@ -91,7 +91,7 @@ describe("azureReposInvoker.ts labels", (): void => {
     ).once();
     verify(
       mocks.gitApi.createPullRequestLabel(
-        deepEqual({ name: "pr-metrics:tests-sufficient" }),
+        deepEqual({ name: "pr-metrics-tests-sufficient" }),
         "RepoID",
         10,
         "Project",
@@ -117,7 +117,7 @@ describe("azureReposInvoker.ts labels", (): void => {
 
   it("should remove only the named PR association", async (): Promise<void> => {
     // Arrange
-    const name = "pr-metrics:XL";
+    const name = "pr-metrics-XL";
 
     // Act
     await sut.removeLabel(name);
@@ -127,7 +127,7 @@ describe("azureReposInvoker.ts labels", (): void => {
       mocks.gitApi.deletePullRequestLabels(
         "RepoID",
         10,
-        "pr-metrics:XL",
+        "pr-metrics-XL",
         "Project",
       ),
     ).once();
@@ -158,9 +158,9 @@ describe("azureReposInvoker.ts labels", (): void => {
         if (operation === "list") {
           action = sut.getLabels();
         } else if (operation === "add") {
-          action = sut.addLabels(["pr-metrics:M"]);
+          action = sut.addLabels(["pr-metrics-M"]);
         } else {
-          action = sut.removeLabel("pr-metrics:M");
+          action = sut.removeLabel("pr-metrics-M");
         }
         // Assert
         await assert.rejects(
@@ -179,7 +179,7 @@ describe("azureReposInvoker.ts labels", (): void => {
     const error: Error = new Error("Creation failed");
     when(
       mocks.gitApi.createPullRequestLabel(
-        deepEqual({ name: "pr-metrics:M" }),
+        deepEqual({ name: "pr-metrics-M" }),
         "RepoID",
         10,
         "Project",
@@ -188,15 +188,15 @@ describe("azureReposInvoker.ts labels", (): void => {
 
     // Act
     const addition: Promise<void> = sut.addLabels([
-      "pr-metrics:M",
-      "pr-metrics:tests-sufficient",
+      "pr-metrics-M",
+      "pr-metrics-tests-sufficient",
     ]);
 
     // Assert
     await assert.rejects(addition, error);
     verify(
       mocks.gitApi.createPullRequestLabel(
-        deepEqual({ name: "pr-metrics:tests-sufficient" }),
+        deepEqual({ name: "pr-metrics-tests-sufficient" }),
         "RepoID",
         10,
         "Project",
@@ -211,7 +211,7 @@ describe("azureReposInvoker.ts labels", (): void => {
     let completed = false;
     when(
       mocks.gitApi.createPullRequestLabel(
-        deepEqual({ name: "pr-metrics:tests-sufficient" }),
+        deepEqual({ name: "pr-metrics-tests-sufficient" }),
         "RepoID",
         10,
         "Project",
@@ -223,7 +223,7 @@ describe("azureReposInvoker.ts labels", (): void => {
 
     // Act
     const addition: Promise<void> = sut
-      .addLabels(["pr-metrics:M", "pr-metrics:tests-sufficient"])
+      .addLabels(["pr-metrics-M", "pr-metrics-tests-sufficient"])
       .then((): void => {
         completed = true;
       });
@@ -233,14 +233,14 @@ describe("azureReposInvoker.ts labels", (): void => {
     assert.equal(completed, false);
     verify(
       mocks.gitApi.createPullRequestLabel(
-        deepEqual({ name: "pr-metrics:M" }),
+        deepEqual({ name: "pr-metrics-M" }),
         "RepoID",
         10,
         "Project",
       ),
     ).calledBefore(
       mocks.gitApi.createPullRequestLabel(
-        deepEqual({ name: "pr-metrics:tests-sufficient" }),
+        deepEqual({ name: "pr-metrics-tests-sufficient" }),
         "RepoID",
         10,
         "Project",
@@ -248,7 +248,7 @@ describe("azureReposInvoker.ts labels", (): void => {
     );
 
     // Act
-    creation.resolve({ name: "pr-metrics:tests-sufficient" });
+    creation.resolve({ name: "pr-metrics-tests-sufficient" });
     await addition;
 
     // Assert

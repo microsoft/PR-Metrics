@@ -51,16 +51,16 @@ describe("reposInvoker.ts", (): void => {
 
           // Act
           const labels: string[] = await sut.getLabels();
-          await sut.addLabels(["pr-metrics:M"]);
-          await sut.removeLabel("pr-metrics:XL");
+          await sut.addLabels(["pr-metrics-M"]);
+          await sut.removeLabel("pr-metrics-XL");
 
           // Assert
           assert.deepEqual(labels, ["bug"]);
-          verify(selected.addLabels(deepEqual(["pr-metrics:M"]))).once();
-          verify(selected.removeLabel("pr-metrics:XL")).once();
+          verify(selected.addLabels(deepEqual(["pr-metrics-M"]))).once();
+          verify(selected.removeLabel("pr-metrics-XL")).once();
           verify(other.getLabels()).never();
-          verify(other.addLabels(deepEqual(["pr-metrics:M"]))).never();
-          verify(other.removeLabel("pr-metrics:XL")).never();
+          verify(other.addLabels(deepEqual(["pr-metrics-M"]))).never();
+          verify(other.removeLabel("pr-metrics-XL")).never();
         });
       },
     );
