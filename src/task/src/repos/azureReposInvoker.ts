@@ -257,14 +257,32 @@ export default class AzureReposInvoker extends BaseReposInvoker {
   public async removeLabel(name: string): Promise<void> {
     this._logger.logDebug("* AzureReposInvoker.removeLabel()");
     const gitApiPromise: Promise<IGitApi> = this.getGitApi();
-    await this.invokeApiCall(async (): Promise<void> =>
-      (await gitApiPromise).deletePullRequestLabels(
+    await this.invokeApiCall(async (): Promise<void> => {
+      const gitApi: IGitApi = await gitApiPromise;
+      const labels: WebApiTagDefinition[] = await gitApi.getPullRequestLabels(
         this._repositoryId,
         this._pullRequestId,
-        name,
         this._project,
-      ),
-    );
+      );
+      const label: WebApiTagDefinition | undefined = labels.find(
+        (candidate: WebApiTagDefinition): boolean => candidate.name === name,
+      );
+      if (typeof label === "undefined") {
+        return;
+      }
+
+      const id: string = Validator.validateString(
+        label.id,
+        "label.id",
+        "AzureReposInvoker.removeLabel()",
+      );
+      await gitApi.deletePullRequestLabels(
+        this._repositoryId,
+        this._pullRequestId,
+        id,
+        this._project,
+      );
+    });
   }
 
   public async createComment(
