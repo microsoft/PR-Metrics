@@ -118,7 +118,9 @@ describe("azureReposInvoker.ts labels", (): void => {
   it("should remove only the named PR association", async (): Promise<void> => {
     // Arrange
     const name = "pr-metrics:XL";
-    when(mocks.gitApi.getPullRequestLabels("RepoID", 10, "Project")).thenResolve([
+    when(
+      mocks.gitApi.getPullRequestLabels("RepoID", 10, "Project"),
+    ).thenResolve([
       { id: "12", name },
       { id: "13", name: "bug" },
     ]);
@@ -137,7 +139,9 @@ describe("azureReposInvoker.ts labels", (): void => {
 
   it("should delete a stale colon-containing label by its ID", async (): Promise<void> => {
     // Arrange
-    when(mocks.gitApi.getPullRequestLabels("RepoID", 10, "Project")).thenResolve([
+    when(
+      mocks.gitApi.getPullRequestLabels("RepoID", 10, "Project"),
+    ).thenResolve([
       { id: "42", name: "pr-metrics:S" },
       { id: "43", name: "pr-metrics:M" },
     ]);
@@ -150,27 +154,39 @@ describe("azureReposInvoker.ts labels", (): void => {
       mocks.gitApi.deletePullRequestLabels("RepoID", 10, "42", "Project"),
     ).once();
     verify(
-      mocks.gitApi.deletePullRequestLabels("RepoID", 10, "pr-metrics:S", "Project"),
+      mocks.gitApi.deletePullRequestLabels(
+        "RepoID",
+        10,
+        "pr-metrics:S",
+        "Project",
+      ),
     ).never();
   });
 
   it("should skip deletion when a stale label disappears before removal", async (): Promise<void> => {
-    when(mocks.gitApi.getPullRequestLabels("RepoID", 10, "Project")).thenResolve([
-      { id: "43", name: "pr-metrics:M" },
-    ]);
+    when(
+      mocks.gitApi.getPullRequestLabels("RepoID", 10, "Project"),
+    ).thenResolve([{ id: "43", name: "pr-metrics:M" }]);
 
     await sut.removeLabel("pr-metrics:S");
 
-    verify(mocks.gitApi.deletePullRequestLabels(any(), any(), any(), any())).never();
+    verify(
+      mocks.gitApi.deletePullRequestLabels(any(), any(), any(), any()),
+    ).never();
   });
 
   it("should reject a matching label without an ID rather than deleting by name", async (): Promise<void> => {
-    when(mocks.gitApi.getPullRequestLabels("RepoID", 10, "Project")).thenResolve([
-      { name: "pr-metrics:S" },
-    ]);
+    when(
+      mocks.gitApi.getPullRequestLabels("RepoID", 10, "Project"),
+    ).thenResolve([{ name: "pr-metrics:S" }]);
 
-    await assert.rejects(sut.removeLabel("pr-metrics:S"), /is invalid, null, or undefined/u);
-    verify(mocks.gitApi.deletePullRequestLabels(any(), any(), any(), any())).never();
+    await assert.rejects(
+      sut.removeLabel("pr-metrics:S"),
+      /is invalid, null, or undefined/u,
+    );
+    verify(
+      mocks.gitApi.deletePullRequestLabels(any(), any(), any(), any()),
+    ).never();
   });
 
   [
