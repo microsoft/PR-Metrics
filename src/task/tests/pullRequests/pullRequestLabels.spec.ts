@@ -131,11 +131,7 @@ describe("pullRequestLabels.ts", (): void => {
       "PR-METRICS:xl",
       "PR-METRICS:TESTS-SUFFICIENT",
     ];
-    labels = [
-      ...existing,
-      "pr-metrics-S",
-      "pr-metrics-tests-sufficient",
-    ];
+    labels = [...existing, "pr-metrics-S", "pr-metrics-tests-sufficient"];
 
     // Act
     await sut.updateLabels();
