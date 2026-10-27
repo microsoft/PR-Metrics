@@ -26,4 +26,4 @@ export const maxPatternCount = 200;
 /**
  * The user agent string used for GitHub API requests.
  */
-export const userAgent = "PRMetrics/v1.8.2";
+export const userAgent = "PRMetrics/v1.8.3";
