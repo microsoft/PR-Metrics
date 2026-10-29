@@ -9,6 +9,8 @@ updates:
     directories:
       - /
       - /.github/actions/mint-github-app-token
+    exclude-paths:
+      - .github/workflows/*.lock.yml
     open-pull-requests-limit: 100
     groups:
       codeql-action:

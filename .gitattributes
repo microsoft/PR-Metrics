@@ -1,0 +1,6 @@
+.github/aw/actions-lock.json linguist-generated=true
+.github/workflows/*.lock.yml linguist-generated=true
+dist/exec-child.js linguist-generated=true
+dist/index.mjs linguist-generated=true
+dist/lib.json linguist-generated=true
+dist/resources.resjson linguist-generated=true
