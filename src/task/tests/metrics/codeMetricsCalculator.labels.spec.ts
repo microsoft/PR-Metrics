@@ -110,6 +110,7 @@ describe("automatic PR labels integration", (): void => {
     );
     const pullRequest: PullRequest = new PullRequest(
       codeMetrics,
+      inputs,
       instance(logger),
       instance(runnerInvoker),
     );

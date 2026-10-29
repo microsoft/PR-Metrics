@@ -37,6 +37,12 @@
       "helpMarkDown": "The lines of test code expected for each line of product code. This check can be disabled by setting the value to '0'. If left blank, a default of '1.0' will be used."
     },
     {
+      "name": "UpdateTitle",
+      "label": "Update title?",
+      "type": "string",
+      "helpMarkDown": "If set to 'false', the PR title will not be updated with the size and test indicators. If left blank, a default of 'true' will be used."
+    },
+    {
       "name": "AlwaysCloseComment",
       "label": "Always close comment?",
       "type": "string",
@@ -99,7 +105,9 @@
     "metrics.inputs.adjustingGrowthRate": "Adjusting the growth rate input to '%s'.",
     "metrics.inputs.adjustingTestFactor": "Adjusting the test factor input to '%s'.",
     "metrics.inputs.adjustingTestMatchingPatterns": "Adjusting the test matching patterns input to '%s'.",
+    "metrics.inputs.adjustingUpdateTitle": "Adjusting the update-title mode input to 'true'.",
     "metrics.inputs.disablingTestFactor": "Disabling the test factor validation.",
+    "metrics.inputs.disablingUpdateTitle": "Disabling the update-title mode.",
     "metrics.inputs.settingAlwaysCloseComment": "Setting the always-close-comment mode input to 'true'.",
     "metrics.inputs.settingBaseSize": "Setting the base size input to '%s'.",
     "metrics.inputs.settingCodeFileExtensions": "Setting the code file extensions input to '%s'.",

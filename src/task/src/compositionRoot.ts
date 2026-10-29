@@ -104,6 +104,7 @@ const createPullRequestMetrics = (): PullRequestMetrics => {
   // Pull request layer.
   const pullRequest: PullRequest = new PullRequest(
     codeMetrics,
+    inputs,
     logger,
     runnerInvoker,
   );

@@ -23,6 +23,7 @@ interface InputOverrides {
   readonly growthRate?: string;
   readonly testFactor?: string;
   readonly testMatchingPatterns?: string;
+  readonly updateTitle?: string;
 }
 
 const createInputs = (overrides: InputOverrides = {}): Inputs => {
@@ -38,6 +39,9 @@ const createInputs = (overrides: InputOverrides = {}): Inputs => {
   );
   when(runnerInvoker.getInput(deepEqual(["Test", "Factor"]))).thenReturn(
     overrides.testFactor ?? null,
+  );
+  when(runnerInvoker.getInput(deepEqual(["Update", "Title"]))).thenReturn(
+    overrides.updateTitle ?? null,
   );
   when(
     runnerInvoker.getInput(deepEqual(["Always", "Close", "Comment"])),
@@ -180,6 +184,33 @@ describe("inputs.ts", (): void => {
               assert.equal(inputs.testFactor, InputsDefault.testFactor);
             },
           ),
+          { numRuns },
+        );
+      });
+    });
+
+    describe("updateTitle", (): void => {
+      it("should use the default for any string other than 'false'", (): void => {
+        fc.assert(
+          fc.property(
+            fc
+              .string({ maxLength: 10 })
+              .filter((value: string) => value.toLowerCase() !== "false"),
+            (value: string) => {
+              const inputs: Inputs = createInputs({ updateTitle: value });
+              assert.equal(inputs.updateTitle, InputsDefault.updateTitle);
+            },
+          ),
+          { numRuns },
+        );
+      });
+
+      it("should disable for any casing of 'false'", (): void => {
+        fc.assert(
+          fc.property(fc.mixedCase(fc.constant("false")), (value: string) => {
+            const inputs: Inputs = createInputs({ updateTitle: value });
+            assert.equal(inputs.updateTitle, false);
+          }),
           { numRuns },
         );
       });
