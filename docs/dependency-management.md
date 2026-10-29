@@ -62,7 +62,7 @@ versions and `integrity` hashes recorded for each package (see
   versions of all direct and transitive dependencies. This file is committed to
   version control to ensure deterministic builds.
 - **[`.github/workflows/actions.lock`][actionslock]**: Locks GitHub Actions and
-  their transitive action dependencies. Build verifies this native workflow
+  their transitive action dependencies. The build verifies this native workflow
   dependency lockfile with `gh actions-lock --verify`.
 
 ## Updating
@@ -96,6 +96,13 @@ versions on the existing release pull request. It also checks Node.js runtime
 consistency without upgrading the runtime. Its file allowlist includes the
 current PR automation workflow and `.azure-devops` pipelines.
 
+It also refreshes its own Copilot CLI, agentic compiler, and native lockfile
+generator pins. Generator versions stay consistent across the workflow, Build,
+and the installation examples below. Self-updates change dependency pins and
+generated output, not the workflow's instructions, permissions, billing, or
+signing controls. These changes remain on the release pull request and require
+the existing review and merge approvals.
+
 The workflow requires exactly one open, same-repository release pull request
 targeting `main`. PR title indicators do not affect selection. If no unique
 release pull request exists, the workflow reports the reason without making
@@ -105,23 +112,9 @@ changes. To retry it, run the workflow from `main`:
 gh workflow run update-ci-dependencies.lock.yml --ref main
 ```
 
-Copilot inference uses the built-in `GITHUB_TOKEN` with
-`copilot-requests: write`, so usage is billed to the organization rather than a
-personal token. An organization administrator must enable **Copilot CLI** and
-**Allow use of Copilot CLI billed to the organization** in Copilot policy
-settings. Enterprise policies must also permit this use. See
-[Copilot CLI organization billing][copilotbilling]. A personal
-`COPILOT_GITHUB_TOKEN` is not required.
-
-The agent has read-only repository access and no production signing access.
-The trusted safe-output job uses the `production` environment and the
-existing Azure OIDC/Key Vault signing action. The `microsoft-pr-metrics` App and
-its repository installation must grant `contents: write`,
-`pull_requests: write`, and **`workflows: write`**. The workflow explicitly
-requests these installation-token permissions. If an App permission changes, an
-installation owner must accept the change before the first run. The existing
-contents permission alone cannot update workflow files. No App private key is
-stored in GitHub.
+The agent has read-only repository access and no production signing access. The
+trusted safe-output job uses the `production` environment and the existing Azure
+OIDC/Key Vault signing action.
 
 The compiler currently requires a versioned action reference rather than the
 native `$/` syntax. The AI workflow therefore pins the trusted signing action
@@ -144,8 +137,13 @@ gh extension install github/gh-aw --pin v1.0.1
 gh extension install github/gh-actions-lock --pin v0.4.0
 ```
 
-After changing the agentic workflow source, compile it first. After changing
-any action references, regenerate the native dependency lockfile:
+The automated refresh installs the selected pinned generators in its agent
+environment. Copilot CLI updates also pin the SHA-256 digest of the release's
+`SHA256SUMS.txt` asset, obtained from GitHub release metadata. The workflow
+reports failures without publishing partial updates.
+
+After changing the agentic workflow source, compile it first. After changing any
+action references, regenerate the native dependency lockfile:
 
 ```bash
 gh aw compile update-ci-dependencies
@@ -158,10 +156,10 @@ with `gh aw compile update-ci-dependencies --approve`. Keep action changes and
 their lockfile updates in the same commit. Dependabot also updates matching
 lockfile entries when it updates an action in a locked workflow.
 
-Dependabot excludes generated `.github/workflows/*.lock.yml` files. To
-refresh compiler-managed action pins, add `--force-refresh-action-pins` to the
-compile command above. Commit any `.github/aw/actions-lock.json` changes with
-the regenerated files.
+Dependabot excludes generated `.github/workflows/*.lock.yml` files. To refresh
+compiler-managed action pins, add `--force-refresh-action-pins` to the compile
+command above. Commit any `.github/aw/actions-lock.json` changes with the
+regenerated files.
 
 Build recompiles the agentic workflow and rejects stale generated output.
 Super-Linter excludes the generated `.lock.yml`; the compiler validates its
@@ -183,7 +181,6 @@ schema and action pins instead.
 [azuredevopstemplate]: https://github.com/microsoft/PR-Metrics/blob/main/.azure-devops/template.yml
 [azurepipelinestasksdk]: https://github.com/microsoft/azure-pipelines-task-lib
 [codeql]: https://codeql.github.com/
-[copilotbilling]: https://docs.github.com/copilot/how-tos/copilot-cli/use-copilot-cli-in-actions
 [dependabot]: https://github.com/microsoft/PR-Metrics/blob/main/.github/dependabot.yml
 [dependabotalerts]: https://docs.github.com/code-security/dependabot/dependabot-alerts/about-dependabot-alerts
 [dependabotsecurityupdates]: https://docs.github.com/code-security/dependabot/dependabot-security-updates/about-dependabot-security-updates
