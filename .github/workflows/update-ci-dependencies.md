@@ -227,15 +227,15 @@ compiler-managed runtimes in the generated agentic workflow.
 ## Workflow Tool Versions
 
 Refresh the pinned stable releases of `github/copilot-cli` and `github/gh-aw`.
-Check their release notes for compatibility. Do not
-use drafts, prereleases, branches, or an unversioned `latest` reference.
+Check their release notes for compatibility. Do not use drafts, prereleases,
+branches, or an unversioned `latest` reference.
 
 In this workflow's source, change only `engine.version`,
-`engine.checksums-sha256`, and the compiler `--pin` value in `steps`. Do
-not change its instructions, triggers, permissions, network rules, tool
-allowlist, credentials, signing action, or safe-output policy. Keep the
-generator pins identical here, in `.github/workflows/build.yml`, and in the
-installation examples in `docs/dependency-management.md`.
+`engine.checksums-sha256`, and the compiler `--pin` value in `steps`. Do not
+change its instructions, triggers, permissions, network rules, tool allowlist,
+credentials, signing action, or safe-output policy. Keep the generator pins
+identical here, in `.github/workflows/build.yml`, and in the installation
+examples in `docs/dependency-management.md`.
 
 For Copilot CLI, obtain the `SHA256SUMS.txt` asset's `digest` from the selected
 release's GitHub API metadata:

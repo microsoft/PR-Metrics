@@ -93,12 +93,12 @@ versions on the existing release pull request. It also checks Node.js runtime
 consistency without upgrading the runtime. Its file allowlist includes the
 current PR automation workflow and `.azure-devops` pipelines.
 
-It also refreshes its own Copilot CLI and agentic compiler pins.
-Compiler versions stay consistent across the workflow, Build,
-and the installation examples below. Self-updates change dependency pins and
-generated output, not the workflow's instructions, permissions, billing, or
-signing controls. These changes remain on the release pull request and require
-the existing review and merge approvals.
+It also refreshes its own Copilot CLI and agentic compiler pins. Compiler
+versions stay consistent across the workflow, Build, and the installation
+examples below. Self-updates change dependency pins and generated output, not
+the workflow's instructions, permissions, billing, or signing controls. These
+changes remain on the release pull request and require the existing review and
+merge approvals.
 
 The workflow requires exactly one open, same-repository release pull request
 targeting `main`. PR title indicators do not affect selection. If no unique
@@ -112,11 +112,6 @@ gh workflow run update-ci-dependencies.lock.yml --ref main
 The agent has read-only repository access and no production signing access. The
 trusted safe-output job uses the `production` environment and the existing Azure
 OIDC/Key Vault signing action.
-
-The AI workflow pins the trusted signing action
-to a repository commit. Update that reference and recompile if the shared
-signing implementation changes. The other workflows use `./` references after
-checking out trusted repository code.
 
 ### Agentic Workflow Compilation
 
