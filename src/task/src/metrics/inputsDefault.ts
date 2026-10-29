@@ -19,6 +19,11 @@ export const growthRate = 2.0;
 export const testFactor = 1.0;
 
 /**
+ * The default value for updating the pull request title with the size and test indicators.
+ */
+export const updateTitle = true;
+
+/**
  * The default value for always close the size and test comment, instead of leaving it open when requiring attention.
  */
 export const alwaysCloseComment = false;

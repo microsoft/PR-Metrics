@@ -12,8 +12,10 @@ import {
   adjustingGrowthRateResource,
   adjustingTestFactorResource,
   adjustingTestMatchingPatternsResource,
+  adjustingUpdateTitle,
   createInputsMocks,
   createSut,
+  disablingUpdateTitle,
   settingAlwaysCloseComment,
   settingBaseSizeResource,
   settingCodeFileExtensionsResource,
@@ -46,6 +48,7 @@ describe("inputs.ts", (): void => {
         assert.equal(inputs.baseSize, InputsDefault.baseSize);
         assert.equal(inputs.growthRate, InputsDefault.growthRate);
         assert.equal(inputs.testFactor, InputsDefault.testFactor);
+        assert.equal(inputs.updateTitle, InputsDefault.updateTitle);
         assert.equal(
           inputs.alwaysCloseComment,
           InputsDefault.alwaysCloseComment,
@@ -66,6 +69,7 @@ describe("inputs.ts", (): void => {
         verify(logger.logInfo(adjustingBaseSizeResource)).once();
         verify(logger.logInfo(adjustingGrowthRateResource)).once();
         verify(logger.logInfo(adjustingTestFactorResource)).once();
+        verify(logger.logInfo(adjustingUpdateTitle)).once();
         verify(logger.logInfo(adjustingFileMatchingPatternsResource)).once();
         verify(logger.logInfo(adjustingTestMatchingPatternsResource)).once();
         verify(logger.logInfo(adjustingCodeFileExtensionsResource)).once();
@@ -81,6 +85,9 @@ describe("inputs.ts", (): void => {
         );
         when(runnerInvoker.getInput(deepEqual(["Test", "Factor"]))).thenReturn(
           "2.7",
+        );
+        when(runnerInvoker.getInput(deepEqual(["Update", "Title"]))).thenReturn(
+          "false",
         );
         when(
           runnerInvoker.getInput(deepEqual(["Always", "Close", "Comment"])),
@@ -102,6 +109,7 @@ describe("inputs.ts", (): void => {
         assert.equal(inputs.baseSize, 5.0);
         assert.equal(inputs.growthRate, 4.4);
         assert.equal(inputs.testFactor, 2.7);
+        assert.equal(inputs.updateTitle, false);
         assert.deepEqual(inputs.alwaysCloseComment, true);
         assert.deepEqual(inputs.fileMatchingPatterns, ["aa", "bb"]);
         assert.deepEqual(inputs.testMatchingPatterns, ["cc", "dd"]);
@@ -110,6 +118,7 @@ describe("inputs.ts", (): void => {
           new Set<string>(["js", "ts"]),
         );
         verify(logger.logInfo(settingAlwaysCloseComment)).once();
+        verify(logger.logInfo(disablingUpdateTitle)).once();
         verify(
           logger.logInfo(settingBaseSizeResource((5).toLocaleString())),
         ).once();

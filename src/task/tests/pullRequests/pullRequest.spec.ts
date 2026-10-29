@@ -3,8 +3,9 @@
  * Licensed under the MIT License.
  */
 
-import { instance, mock, when } from "ts-mockito";
+import { instance, mock, verify, when } from "ts-mockito";
 import CodeMetrics from "../../src/metrics/codeMetrics.js";
+import Inputs from "../../src/metrics/inputs.js";
 import Logger from "../../src/utilities/logger.js";
 import PullRequest from "../../src/pullRequests/pullRequest.js";
 import RunnerInvoker from "../../src/runners/runnerInvoker.js";
@@ -14,12 +15,16 @@ import { stubLocalization } from "../testUtilities/stubLocalization.js";
 
 describe("pullRequest.ts", (): void => {
   let codeMetrics: CodeMetrics;
+  let inputs: Inputs;
   let logger: Logger;
   let runnerInvoker: RunnerInvoker;
 
   beforeEach((): void => {
     codeMetrics = mock(CodeMetrics);
     when(codeMetrics.getSizeIndicator()).thenResolve("S✔");
+
+    inputs = mock(Inputs);
+    when(inputs.updateTitle).thenReturn(true);
 
     logger = mock(Logger);
 
@@ -34,6 +39,7 @@ describe("pullRequest.ts", (): void => {
       stubEnv(["GITHUB_BASE_REF", "develop"]);
       const pullRequest: PullRequest = new PullRequest(
         instance(codeMetrics),
+        instance(inputs),
         instance(logger),
         instance(runnerInvoker),
       );
@@ -51,6 +57,7 @@ describe("pullRequest.ts", (): void => {
       stubEnv(["GITHUB_BASE_REF", ""]);
       const pullRequest: PullRequest = new PullRequest(
         instance(codeMetrics),
+        instance(inputs),
         instance(logger),
         instance(runnerInvoker),
       );
@@ -67,6 +74,7 @@ describe("pullRequest.ts", (): void => {
       stubEnv(["SYSTEM_PULLREQUEST_PULLREQUESTID", "refs/heads/develop"]);
       const pullRequest: PullRequest = new PullRequest(
         instance(codeMetrics),
+        instance(inputs),
         instance(logger),
         instance(runnerInvoker),
       );
@@ -83,6 +91,7 @@ describe("pullRequest.ts", (): void => {
       stubEnv(["SYSTEM_PULLREQUEST_PULLREQUESTID", undefined]);
       const pullRequest: PullRequest = new PullRequest(
         instance(codeMetrics),
+        instance(inputs),
         instance(logger),
         instance(runnerInvoker),
       );
@@ -101,6 +110,7 @@ describe("pullRequest.ts", (): void => {
       stubEnv(["GITHUB_ACTION", "PR-Metrics"]);
       const pullRequest: PullRequest = new PullRequest(
         instance(codeMetrics),
+        instance(inputs),
         instance(logger),
         instance(runnerInvoker),
       );
@@ -117,6 +127,7 @@ describe("pullRequest.ts", (): void => {
       stubEnv(["BUILD_REPOSITORY_PROVIDER", undefined]);
       const pullRequest: PullRequest = new PullRequest(
         instance(codeMetrics),
+        instance(inputs),
         instance(logger),
         instance(runnerInvoker),
       );
@@ -143,6 +154,7 @@ describe("pullRequest.ts", (): void => {
           stubEnv(["BUILD_REPOSITORY_PROVIDER", provider]);
           const pullRequest: PullRequest = new PullRequest(
             instance(codeMetrics),
+            instance(inputs),
             instance(logger),
             instance(runnerInvoker),
           );
@@ -161,6 +173,7 @@ describe("pullRequest.ts", (): void => {
       stubEnv(["BUILD_REPOSITORY_PROVIDER", "Other"]);
       const pullRequest: PullRequest = new PullRequest(
         instance(codeMetrics),
+        instance(inputs),
         instance(logger),
         instance(runnerInvoker),
       );
@@ -178,6 +191,7 @@ describe("pullRequest.ts", (): void => {
       // Arrange
       const pullRequest: PullRequest = new PullRequest(
         instance(codeMetrics),
+        instance(inputs),
         instance(logger),
         instance(runnerInvoker),
       );
@@ -198,6 +212,7 @@ describe("pullRequest.ts", (): void => {
           // Arrange
           const pullRequest: PullRequest = new PullRequest(
             instance(codeMetrics),
+            instance(inputs),
             instance(logger),
             instance(runnerInvoker),
           );
@@ -214,10 +229,29 @@ describe("pullRequest.ts", (): void => {
   });
 
   describe("getUpdatedTitle()", (): void => {
+    it("should return null when the update-title mode is disabled", async (): Promise<void> => {
+      // Arrange
+      when(inputs.updateTitle).thenReturn(false);
+      const pullRequest: PullRequest = new PullRequest(
+        instance(codeMetrics),
+        instance(inputs),
+        instance(logger),
+        instance(runnerInvoker),
+      );
+
+      // Act
+      const result: string | null = await pullRequest.getUpdatedTitle("Title");
+
+      // Assert
+      assert.equal(result, null);
+      verify(codeMetrics.getSizeIndicator()).never();
+    });
+
     it("should return null when the current title is set to the expected title", async (): Promise<void> => {
       // Arrange
       const pullRequest: PullRequest = new PullRequest(
         instance(codeMetrics),
+        instance(inputs),
         instance(logger),
         instance(runnerInvoker),
       );
@@ -246,6 +280,7 @@ describe("pullRequest.ts", (): void => {
           // Arrange
           const pullRequest: PullRequest = new PullRequest(
             instance(codeMetrics),
+            instance(inputs),
             instance(logger),
             instance(runnerInvoker),
           );
@@ -291,6 +326,7 @@ describe("pullRequest.ts", (): void => {
           when(codeMetrics.getSizeIndicator()).thenResolve("PREFIX");
           const pullRequest: PullRequest = new PullRequest(
             instance(codeMetrics),
+            instance(inputs),
             instance(logger),
             instance(runnerInvoker),
           );

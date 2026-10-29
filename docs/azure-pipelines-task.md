@@ -97,6 +97,7 @@ steps:
       BaseSize: 200
       GrowthRate: 2.0
       TestFactor: 1.0
+      UpdateTitle: true
       AlwaysCloseComment: true
       FileMatchingPatterns: |
         **/*
@@ -153,6 +154,15 @@ Git history.
 To avoid this, it is recommended to only use commit types that squash the Git
 history such as ["squash merge" or "rebase and fast-forward"][squashmerge].
 
+## Update Title
+
+By default, the PR title is updated with the size and test indicators. If the
+`UpdateTitle` option is set to `false`, the title is left unchanged, while the
+comment, labels and other functionality remain unchanged. This is useful when
+squash merging with commit message conventions, such as
+[Conventional Commits][conventionalcommits], which the title prefix would
+otherwise break.
+
 ## Always Close Comment
 
 By default, the comment is left open if it requires further attention, such as
@@ -161,6 +171,7 @@ when a smaller PR or increased test coverage is suggested. If the
 prevent it blocking automatic closure of the PR.
 
 [addingtask]: https://docs.microsoft.com/azure/devops/pipelines/customize-pipeline
+[conventionalcommits]: https://www.conventionalcommits.org
 [githublabelpermissions]: https://docs.github.com/rest/issues/labels
 [githubpat]: https://docs.github.com/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token
 [githubsecret]: https://docs.github.com/actions/reference/encrypted-secrets

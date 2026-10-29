@@ -40,8 +40,14 @@ export const adjustingCodeFileExtensionsResource = localize(
   "metrics.inputs.adjustingCodeFileExtensions",
   JSON.stringify(InputsDefault.codeFileExtensions),
 );
+export const adjustingUpdateTitle = localize(
+  "metrics.inputs.adjustingUpdateTitle",
+);
 export const disablingTestFactorResource = localize(
   "metrics.inputs.disablingTestFactor",
+);
+export const disablingUpdateTitle = localize(
+  "metrics.inputs.disablingUpdateTitle",
 );
 export const settingAlwaysCloseComment = localize(
   "metrics.inputs.settingAlwaysCloseComment",
@@ -78,6 +84,7 @@ export const createInputsMocks = (): InputsMocks => {
   when(runnerInvoker.getInput(deepEqual(["Base", "Size"]))).thenReturn("");
   when(runnerInvoker.getInput(deepEqual(["Growth", "Rate"]))).thenReturn("");
   when(runnerInvoker.getInput(deepEqual(["Test", "Factor"]))).thenReturn("");
+  when(runnerInvoker.getInput(deepEqual(["Update", "Title"]))).thenReturn("");
   when(
     runnerInvoker.getInput(deepEqual(["Always", "Close", "Comment"])),
   ).thenReturn("");
