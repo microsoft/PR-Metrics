@@ -37,6 +37,12 @@
       "helpMarkDown": "ms-resource:loc.input.helpMarkDown.testFactor"
     },
     {
+      "name": "UpdateTitle",
+      "label": "ms-resource:loc.input.label.updateTitle",
+      "type": "string",
+      "helpMarkDown": "ms-resource:loc.input.helpMarkDown.updateTitle"
+    },
+    {
       "name": "AlwaysCloseComment",
       "label": "ms-resource:loc.input.label.alwaysCloseComment",
       "type": "string",
@@ -99,7 +105,9 @@
     "metrics.inputs.adjustingGrowthRate": "ms-resource:loc.messages.metrics.inputs.adjustingGrowthRate",
     "metrics.inputs.adjustingTestFactor": "ms-resource:loc.messages.metrics.inputs.adjustingTestFactor",
     "metrics.inputs.adjustingTestMatchingPatterns": "ms-resource:loc.messages.metrics.inputs.adjustingTestMatchingPatterns",
+    "metrics.inputs.adjustingUpdateTitle": "ms-resource:loc.messages.metrics.inputs.adjustingUpdateTitle",
     "metrics.inputs.disablingTestFactor": "ms-resource:loc.messages.metrics.inputs.disablingTestFactor",
+    "metrics.inputs.disablingUpdateTitle": "ms-resource:loc.messages.metrics.inputs.disablingUpdateTitle",
     "metrics.inputs.settingAlwaysCloseComment": "ms-resource:loc.messages.metrics.inputs.settingAlwaysCloseComment",
     "metrics.inputs.settingBaseSize": "ms-resource:loc.messages.metrics.inputs.settingBaseSize",
     "metrics.inputs.settingCodeFileExtensions": "ms-resource:loc.messages.metrics.inputs.settingCodeFileExtensions",

@@ -5,6 +5,7 @@
 
 import * as Validator from "../utilities/validator.js";
 import type CodeMetrics from "../metrics/codeMetrics.js";
+import type Inputs from "../metrics/inputs.js";
 import type Logger from "../utilities/logger.js";
 import RunnerInvoker from "../runners/runnerInvoker.js";
 
@@ -13,21 +14,25 @@ import RunnerInvoker from "../runners/runnerInvoker.js";
  */
 export default class PullRequest {
   private readonly _codeMetrics: CodeMetrics;
+  private readonly _inputs: Inputs;
   private readonly _logger: Logger;
   private readonly _runnerInvoker: RunnerInvoker;
 
   /**
    * Initializes a new instance of the `PullRequest` class.
    * @param codeMetrics The code metrics calculation logic.
+   * @param inputs The inputs passed to the task.
    * @param logger The logger.
    * @param runnerInvoker The runner invoker logic.
    */
   public constructor(
     codeMetrics: CodeMetrics,
+    inputs: Inputs,
     logger: Logger,
     runnerInvoker: RunnerInvoker,
   ) {
     this._codeMetrics = codeMetrics;
+    this._inputs = inputs;
     this._logger = logger;
     this._runnerInvoker = runnerInvoker;
   }
@@ -97,6 +102,10 @@ export default class PullRequest {
    */
   public async getUpdatedTitle(currentTitle: string): Promise<string | null> {
     this._logger.logDebug("* PullRequest.getUpdatedTitle()");
+
+    if (!this._inputs.updateTitle) {
+      return null;
+    }
 
     const sizeIndicator: string = await this._codeMetrics.getSizeIndicator();
     if (

@@ -19,6 +19,7 @@ export default class Inputs {
   private _baseSize = 0;
   private _growthRate = 0;
   private _testFactor: number | null = 0;
+  private _updateTitle = true;
   private _alwaysCloseComment = false;
   private _fileMatchingPatterns: string[] = [];
   private _testMatchingPatterns: string[] = [];
@@ -65,6 +66,17 @@ export default class Inputs {
 
     this.initialize();
     return this._testFactor;
+  }
+
+  /**
+   * Gets the value indicating whether to update the pull request title with the size and test indicators.
+   * @returns The value indicating whether to update the title.
+   */
+  public get updateTitle(): boolean {
+    this._logger.logDebug("* Inputs.updateTitle");
+
+    this.initialize();
+    return this._updateTitle;
   }
 
   /**
@@ -136,6 +148,12 @@ export default class Inputs {
       "Factor",
     ]);
     this.initializeTestFactor(testFactor);
+
+    const updateTitle: string | null = this._runnerInvoker.getInput([
+      "Update",
+      "Title",
+    ]);
+    this.initializeUpdateTitle(updateTitle);
 
     const alwaysCloseComment: string | null = this._runnerInvoker.getInput([
       "Always",
@@ -288,6 +306,23 @@ export default class Inputs {
 
     adjustingMessage(defaultValue.toLocaleString());
     setter(defaultValue);
+  }
+
+  private initializeUpdateTitle(updateTitle: string | null): void {
+    this._logger.logDebug("* Inputs.initializeUpdateTitle()");
+
+    if (updateTitle?.toLowerCase() === "false") {
+      this._updateTitle = false;
+      this._logger.logInfo(
+        this._runnerInvoker.loc("metrics.inputs.disablingUpdateTitle"),
+      );
+      return;
+    }
+
+    this._logger.logInfo(
+      this._runnerInvoker.loc("metrics.inputs.adjustingUpdateTitle"),
+    );
+    this._updateTitle = InputsDefault.updateTitle;
   }
 
   private initializeAlwaysCloseComment(
