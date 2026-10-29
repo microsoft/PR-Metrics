@@ -158,6 +158,11 @@ with `gh aw compile update-ci-dependencies --approve`. Keep action changes and
 their lockfile updates in the same commit. Dependabot also updates matching
 lockfile entries when it updates an action in a locked workflow.
 
+Dependabot excludes generated `.github/workflows/*.lock.yml` files. To
+refresh compiler-managed action pins, add `--force-refresh-action-pins` to the
+compile command above. Commit any `.github/aw/actions-lock.json` changes with
+the regenerated files.
+
 Build recompiles the agentic workflow and rejects stale generated output.
 Super-Linter excludes the generated `.lock.yml`; the compiler validates its
 schema and action pins instead.
