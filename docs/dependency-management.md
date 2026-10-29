@@ -114,14 +114,14 @@ settings. Enterprise policies must also permit this use. See
 `COPILOT_GITHUB_TOKEN` is not required.
 
 The agent has read-only repository access and no production signing access.
-Only the trusted safe-output job uses the `production` environment and the
+The trusted safe-output job uses the `production` environment and the
 existing Azure OIDC/Key Vault signing action. The `microsoft-pr-metrics` App and
 its repository installation must grant `contents: write`,
 `pull_requests: write`, and **`workflows: write`**. The workflow explicitly
-requests these installation-token permissions. An App owner must add and an
-installation owner must accept the workflow permission before the first run;
-the existing contents permission alone cannot update workflow files. No App
-private key is stored in GitHub.
+requests these installation-token permissions. If an App permission changes, an
+installation owner must accept the change before the first run. The existing
+contents permission alone cannot update workflow files. No App private key is
+stored in GitHub.
 
 The compiler currently requires a versioned action reference rather than the
 native `$/` syntax. The AI workflow therefore pins the trusted signing action
