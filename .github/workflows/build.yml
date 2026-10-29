@@ -104,7 +104,7 @@ jobs:
         uses: super-linter/super-linter@2da136927bd4a73596db63044b504547c62cb854 # v9.0.0
         env:
           ENABLE_GITHUB_PULL_REQUEST_SUMMARY_COMMENT: false
-          FILTER_REGEX_EXCLUDE: .*dist/.*
+          FILTER_REGEX_EXCLUDE: .*(dist/|\.github/workflows/.*\.lock\.yml).*
           FIX_JSON_PRETTIER: true
           FIX_MARKDOWN_PRETTIER: true
           FIX_MARKDOWN: true
@@ -141,12 +141,27 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
-    permissions: {}
+    permissions:
+      contents: read
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+
+      - name: Agentic Workflow – Verify
+        shell: bash
+        run: |
+          gh extension install github/gh-aw --pin v1.0.1
+          gh aw compile update-ci-dependencies --validate --no-check-update
+          git diff --exit-code -- .github/workflows/update-ci-dependencies.lock.yml .github/aw/actions-lock.json
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Workflow Lockfile – Verify
+        run: gh extension install github/gh-actions-lock --pin v0.4.0 && gh actions-lock --verify
+        env:
+          GH_TOKEN: ${{ github.token }}
 
       - name: Install Node.js
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
@@ -217,7 +232,7 @@ jobs:
         uses: super-linter/super-linter@2da136927bd4a73596db63044b504547c62cb854 # v9.0.0
         env:
           ENABLE_GITHUB_PULL_REQUEST_SUMMARY_COMMENT: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository }}
-          FILTER_REGEX_EXCLUDE: .*dist/.*
+          FILTER_REGEX_EXCLUDE: .*(dist/|\.github/workflows/.*\.lock\.yml).*
           GITHUB_TOKEN: ${{ github.token }}
           GITLEAKS_CONFIG_FILE: gitleaks.toml
           MARKDOWN_CONFIG_FILE: ../../.markdownlint.json
