@@ -48,7 +48,7 @@ jobs:
             --no-custom-instructions \
             --no-ask-user \
             --disable-builtin-mcps \
-            --deny-tool '*' \
+            --available-tools \
             --trust-folder \
             | tee copilot-org-billing-response.txt
 
