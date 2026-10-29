@@ -23,9 +23,16 @@ jobs:
       contents: read
       id-token: write
     steps:
+      - name: Checkout Trusted Action
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          ref: ${{ github.workflow_sha }}
+          sparse-checkout: .github/actions
+
       - name: App Token – Mint
         id: app-token
-        uses: $/.github/actions/mint-github-app-token
+        uses: ./.github/actions/mint-github-app-token # zizmor: ignore[self-repository]
         with:
           azure-client-id: ${{ vars.AZURE_CLIENT_ID }}
           azure-tenant-id: ${{ vars.AZURE_TENANT_ID }}

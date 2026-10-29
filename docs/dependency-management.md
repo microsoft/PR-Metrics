@@ -61,9 +61,6 @@ versions and `integrity` hashes recorded for each package (see
 - **[`package-lock.json`][packagelockjson]**: Records the exact resolved
   versions of all direct and transitive dependencies. This file is committed to
   version control to ensure deterministic builds.
-- **[`.github/workflows/actions.lock`][actionslock]**: Locks GitHub Actions and
-  their transitive action dependencies. The build verifies this native workflow
-  dependency lockfile with `gh actions-lock --verify`.
 
 ## Updating
 
@@ -96,8 +93,8 @@ versions on the existing release pull request. It also checks Node.js runtime
 consistency without upgrading the runtime. Its file allowlist includes the
 current PR automation workflow and `.azure-devops` pipelines.
 
-It also refreshes its own Copilot CLI, agentic compiler, and native lockfile
-generator pins. Generator versions stay consistent across the workflow, Build,
+It also refreshes its own Copilot CLI and agentic compiler pins.
+Compiler versions stay consistent across the workflow, Build,
 and the installation examples below. Self-updates change dependency pins and
 generated output, not the workflow's instructions, permissions, billing, or
 signing controls. These changes remain on the release pull request and require
@@ -116,45 +113,36 @@ The agent has read-only repository access and no production signing access. The
 trusted safe-output job uses the `production` environment and the existing Azure
 OIDC/Key Vault signing action.
 
-The compiler currently requires a versioned action reference rather than the
-native `$/` syntax. The AI workflow therefore pins the trusted signing action
+The AI workflow pins the trusted signing action
 to a repository commit. Update that reference and recompile if the shared
-signing implementation changes. The other workflows use `$/` to select the
-action from their own workflow revision.
+signing implementation changes. The other workflows use `./` references after
+checking out trusted repository code.
 
-### Workflow Lockfiles
+### Agentic Workflow Compilation
 
-The native [Actions workflow dependency lockfile][workflowlockfiles],
-`.github/workflows/actions.lock`, is distinct from the generated agentic
-workflow, `update-ci-dependencies.lock.yml`. Both are committed. The latter is
-compiled from `update-ci-dependencies.md`; do not edit either generated file by
-hand.
+The generated agentic workflow, `update-ci-dependencies.lock.yml`, is compiled
+from `update-ci-dependencies.md`. It is an executable workflow, not a native
+Actions dependency lockfile. Do not edit the generated workflow by hand.
 
-Install the pinned generators once:
+Install the pinned compiler once:
 
 ```bash
 gh extension install github/gh-aw --pin v1.0.1
-gh extension install github/gh-actions-lock --pin v0.4.0
 ```
 
-The automated refresh installs the selected pinned generators in its agent
+The automated refresh installs the selected pinned compiler in its agent
 environment. Copilot CLI updates also pin the SHA-256 digest of the release's
 `SHA256SUMS.txt` asset, obtained from GitHub release metadata. The workflow
 reports failures without publishing partial updates.
 
-After changing the agentic workflow source, compile it first. After changing any
-action references, regenerate the native dependency lockfile:
+After changing the agentic workflow source, compile it:
 
 ```bash
 gh aw compile update-ci-dependencies
-gh actions-lock --no-narrow --no-interactive
-gh actions-lock --verify
 ```
 
 Review any new actions or secrets before approving compiler manifest changes
-with `gh aw compile update-ci-dependencies --approve`. Keep action changes and
-their lockfile updates in the same commit. Dependabot also updates matching
-lockfile entries when it updates an action in a locked workflow.
+with `gh aw compile update-ci-dependencies --approve`.
 
 Dependabot excludes generated `.github/workflows/*.lock.yml` files. To refresh
 compiler-managed action pins, add `--force-refresh-action-pins` to the compile
@@ -177,7 +165,6 @@ schema and action pins instead.
 - [Gitleaks][gitleaks] scans for accidentally committed secrets via
   [Super-Linter][superlinter].
 
-[actionslock]: https://github.com/microsoft/PR-Metrics/blob/main/.github/workflows/actions.lock
 [azuredevopstemplate]: https://github.com/microsoft/PR-Metrics/blob/main/.azure-devops/template.yml
 [azurepipelinestasksdk]: https://github.com/microsoft/azure-pipelines-task-lib
 [codeql]: https://codeql.github.com/
@@ -198,4 +185,3 @@ schema and action pins instead.
 [superlinter]: https://github.com/super-linter/super-linter
 [typescript]: https://www.typescriptlang.org/
 [updatecidependencies]: https://github.com/microsoft/PR-Metrics/blob/main/.github/workflows/update-ci-dependencies.md
-[workflowlockfiles]: https://docs.github.com/actions/concepts/security/workflow-dependency-lockfiles

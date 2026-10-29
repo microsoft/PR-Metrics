@@ -51,9 +51,6 @@ tools:
     - gh pr view *
     - gh aw compile update-ci-dependencies *
     - gh extension install github/gh-aw *
-    - gh extension install github/gh-actions-lock *
-    - gh actions-lock
-    - gh actions-lock *
     - jq *
     - curl *
 
@@ -76,7 +73,6 @@ steps:
   - name: Install Workflow Maintenance Tools
     run: |
       gh extension install github/gh-aw --pin v1.0.1
-      gh extension install github/gh-actions-lock --pin v0.4.0
     env:
       GH_TOKEN: ${{ github.token }}
 
@@ -96,7 +92,6 @@ safe-outputs:
       - .github/workflows/release-publish.yml
       - .github/workflows/update-ci-dependencies.md
       - .github/workflows/update-ci-dependencies.lock.yml
-      - .github/workflows/actions.lock
       - .github/aw/actions-lock.json
       - .github/actions/mint-github-app-token/action.yml
       - .azure-devops/*.yml
@@ -157,7 +152,6 @@ Edit only these files:
 - `.github/workflows/update-ci-dependencies.md`, only the tool pins described
   below
 - `.github/workflows/update-ci-dependencies.lock.yml`, using its compiler
-- `.github/workflows/actions.lock`, using its generator
 - `.github/aw/actions-lock.json`, using the compiler
 - `.github/actions/mint-github-app-token/action.yml`
 - `.azure-devops/*.yml`
@@ -192,8 +186,8 @@ gh api 'repos/<owner>/<repo>/releases?per_page=100' --paginate --jq '.[] | selec
 If a tag refers to an annotated tag object, dereference it through the Git tags
 API until you reach a commit. Never use a tag-object SHA as an action pin.
 
-Preserve `$/` references to this repository's actions. Do not replace them with
-`./` references or change the trusted signing action's implementation. Leave
+Preserve `./` references to this repository's actions and their trusted checkout
+steps. Do not change the trusted signing action's implementation. Leave
 deliberately moving 1ES template `release` references unchanged.
 
 ## Azure DevOps Task Versions
@@ -232,12 +226,12 @@ compiler-managed runtimes in the generated agentic workflow.
 
 ## Workflow Tool Versions
 
-Refresh the pinned stable releases of `github/copilot-cli`, `github/gh-aw`, and
-`github/gh-actions-lock`. Check their release notes for compatibility. Do not
+Refresh the pinned stable releases of `github/copilot-cli` and `github/gh-aw`.
+Check their release notes for compatibility. Do not
 use drafts, prereleases, branches, or an unversioned `latest` reference.
 
 In this workflow's source, change only `engine.version`,
-`engine.checksums-sha256`, and the two generator `--pin` values in `steps`. Do
+`engine.checksums-sha256`, and the compiler `--pin` value in `steps`. Do
 not change its instructions, triggers, permissions, network rules, tool
 allowlist, credentials, signing action, or safe-output policy. Keep the
 generator pins identical here, in `.github/workflows/build.yml`, and in the
@@ -261,10 +255,9 @@ them, even if the setup step installed an earlier version:
 
 ```bash
 gh extension install github/gh-aw --pin <compiler-version> --force
-gh extension install github/gh-actions-lock --pin <lockfile-tool-version> --force
 ```
 
-Compile the workflow before regenerating the native dependency lockfile:
+Compile the workflow after updating its source or compiler pin:
 
 ```bash
 gh aw compile update-ci-dependencies --validate --no-check-update --force-refresh-action-pins --force-refresh-container-pins
@@ -276,30 +269,13 @@ validation to bypass a required policy change. If installation, compilation, or
 validation fails, or the compiler requires new capabilities or approval, report
 the actual reason through `noop` and do not publish partial changes.
 
-## Regenerate the Actions Lockfile
-
-After compiling the agentic workflow and updating action references, regenerate
-the native GitHub Actions dependency lockfile, including transitive
-dependencies:
-
-```bash
-gh actions-lock --no-narrow --no-interactive
-gh actions-lock --verify
-```
-
-Keep the generated `.github/workflows/actions.lock` in the same change as the
-action updates, compiled workflow, and `.github/aw/actions-lock.json`. If
-lockfile generation or verification fails, report the actual reason through
-`noop` and do not publish partial changes.
-
 ## Publish the Changes
 
 Preserve formatting, trailing newlines, and unrelated changes. Before
 publishing, fetch the remote release branch again. Build automation can add
 generated commits while you work. Integrate its latest head without discarding
 those commits. If the workflow source or generator pins changed, reinstall the
-matching generators and compile again. Regenerate the native Actions lockfile
-last if action inputs or the compiled workflow changed. Never force-push.
+matching compiler and compile again. Never force-push.
 
 Use `push_to_pull_request_branch` to publish only the scoped changes to the
 selected release pull request, with commit message `chore: refresh CI pins`. Do

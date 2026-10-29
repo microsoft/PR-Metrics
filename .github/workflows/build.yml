@@ -158,11 +158,6 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
 
-      - name: Workflow Lockfile – Verify
-        run: gh extension install github/gh-actions-lock --pin v0.4.0 && gh actions-lock --verify
-        env:
-          GH_TOKEN: ${{ github.token }}
-
       - name: Install Node.js
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
