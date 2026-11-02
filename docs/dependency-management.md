@@ -64,7 +64,7 @@ versions and `integrity` hashes recorded for each package (see
 
 ## Updating
 
-Dependencies are updated through two distinct processes:
+Dependencies are updated through these processes:
 
 - **GitHub Actions dependencies**: Scheduled [Dependabot][dependabot] version
   updates are configured only for this ecosystem: Dependabot monitors GitHub
@@ -83,6 +83,70 @@ Dependencies are updated through two distinct processes:
   [Dependabot alerts][dependabotalerts] and
   [Dependabot security updates][dependabotsecurityupdates] continue to cover npm
   vulnerabilities and may open npm pull requests to remediate them.
+
+### CI Dependency Refresh
+
+The [Update CI Dependencies agentic workflow][updatecidependencies] runs after a
+successful `Release – Initiate` run on `main`, after the npm dependency commits
+are complete. It updates action pins and supported Azure DevOps task major
+versions on the existing release pull request. It also checks Node.js runtime
+consistency without upgrading the runtime. Its file allowlist includes the
+current PR automation workflow and `.azure-devops` pipelines.
+
+It also refreshes its own Copilot CLI and agentic compiler pins. Compiler
+versions stay consistent across the workflow, Build, and the installation
+examples below. Self-updates change dependency pins and generated output, not
+the workflow's instructions, permissions, billing, or signing controls. These
+changes remain on the release pull request and require the existing review and
+merge approvals.
+
+The workflow requires exactly one open, same-repository release pull request
+targeting `main`. PR title indicators do not affect selection. If no unique
+release pull request exists, the workflow reports the reason without making
+changes. To retry it, run the workflow from `main`:
+
+```bash
+gh workflow run update-ci-dependencies.lock.yml --ref main
+```
+
+The agent has read-only repository access and no production signing access. The
+trusted safe-output job uses the `production` environment and the existing Azure
+OIDC/Key Vault signing action.
+
+### Agentic Workflow Compilation
+
+The generated agentic workflow, `update-ci-dependencies.lock.yml`, is compiled
+from `update-ci-dependencies.md`. It is an executable workflow, not a native
+Actions dependency lockfile. Do not edit the generated workflow by hand.
+
+Install the pinned compiler once:
+
+```bash
+gh extension install github/gh-aw --pin v1.0.1
+```
+
+The automated refresh installs the selected pinned compiler in its agent
+environment. Copilot CLI updates also pin the SHA-256 digest of the release's
+`SHA256SUMS.txt` asset, obtained from GitHub release metadata. The workflow
+reports failures without publishing partial updates.
+
+After changing the agentic workflow source, compile it:
+
+```bash
+gh aw compile update-ci-dependencies
+```
+
+Review any new actions or secrets before approving compiler manifest changes
+with `gh aw compile update-ci-dependencies --approve`.
+
+Dependabot excludes generated `.github/workflows/*.lock.yml` files. To refresh
+compiler-managed action pins, add `--force-refresh-action-pins` to the compile
+command above. Commit any `.github/aw/actions-lock.json` changes with the
+regenerated files.
+
+Build recompiles the agentic workflow and rejects stale generated output.
+Super-Linter excludes the generated `.lock.yml`; the compiler validates its
+schema and action pins instead.
 
 ## Security Scanning
 
@@ -115,3 +179,4 @@ Dependencies are updated through two distinct processes:
 [srctasknpmrc]: https://github.com/microsoft/PR-Metrics/blob/main/src/task/.npmrc
 [superlinter]: https://github.com/super-linter/super-linter
 [typescript]: https://www.typescriptlang.org/
+[updatecidependencies]: https://github.com/microsoft/PR-Metrics/blob/main/.github/workflows/update-ci-dependencies.md
