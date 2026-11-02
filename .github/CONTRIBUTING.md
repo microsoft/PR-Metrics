@@ -65,8 +65,11 @@ and head-check helpers take the validated context, not a separate commit SHA.
 `PullRequest.head.sha` is the captured expected PR head; `Run.head_sha` remains
 the original source-run SHA. Preserve this distinction and the fresh head checks
 before and after writes. Patch processing uses a temporary bare repository.
-There is no separate pipeline regression runner; the existing task tests and CI
-checks remain unchanged.
+
+Partial reruns can reuse a successful `Update Code` job from an earlier attempt.
+Compare the job's start time with each attempt's start time to identify the
+artifact's producing attempt. Preserve the original source-run context and all
+source and artifact provenance checks.
 
 ### Interpreting Results
 
