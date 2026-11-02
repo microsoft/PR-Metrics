@@ -199,7 +199,12 @@ function Get-PullRequestAutomationContext
 
     $producer = @($jobs | Where-Object -Property name -CEQ -Value 'Update Code')
     $producerAttempt = $RunAttempt
-    for ($previousAttempt = $RunAttempt - 1; $producer.Count -eq 0 -and $previousAttempt -gt 0; $previousAttempt--)
+    $producerRun = $source.Run
+
+    # Partial reruns can list earlier successful jobs under the latest attempt.
+    for ($previousAttempt = $RunAttempt - 1; $previousAttempt -gt 0 -and
+        ($producer.Count -eq 0 -or ($producer.Count -eq 1 -and $producer[0].conclusion -ceq 'success' -and
+        [DateTimeOffset] $producer[0].started_at -lt [DateTimeOffset] $producerRun.run_started_at)); $previousAttempt--)
     {
         $previousSource = Get-AutomationSource -RunId $RunId -RunAttempt $previousAttempt
         if (-not $previousSource.Valid -or $previousSource.Run.head_sha -cne $source.Run.head_sha -or
@@ -216,6 +221,7 @@ function Get-PullRequestAutomationContext
 
         $producer = @($previousJobs | Where-Object -Property name -CEQ -Value 'Update Code')
         $producerAttempt = $previousAttempt
+        $producerRun = $previousSource.Run
     }
 
     $associations = @(Get-AutomationPage -Path "repos/$env:GITHUB_REPOSITORY/commits/$($source.Run.head_sha)/pulls")

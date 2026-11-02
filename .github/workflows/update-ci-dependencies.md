@@ -33,8 +33,8 @@ concurrency:
 
 engine:
   id: copilot
-  version: "1.0.103"
-  checksums-sha256: 26cd3e4b32cde498e4961fb4d48e7b85d7859fc69af1a645a19201fdd577bdb2
+  version: "1.0.105"
+  checksums-sha256: 1c3c3f505229401c3e56ba9e0a45acef02e563da09e6a857a975d9187fdd46da
 
 network:
   allowed:
