@@ -100,6 +100,7 @@ export const getPullResponse: GetPullResponse = {
         git_tags_url: "",
         git_url: "",
         has_discussions: true,
+        // eslint-disable-next-line @typescript-eslint/no-deprecated -- Required by the Octokit response type.
         has_downloads: true,
         has_issues: true,
         has_pages: false,
@@ -237,6 +238,7 @@ export const getPullResponse: GetPullResponse = {
         git_tags_url: "",
         git_url: "",
         has_discussions: true,
+        // eslint-disable-next-line @typescript-eslint/no-deprecated -- Required by the Octokit response type.
         has_downloads: true,
         has_issues: true,
         has_pages: false,

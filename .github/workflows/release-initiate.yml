@@ -44,6 +44,11 @@ jobs:
         with:
           persist-credentials: false
 
+      - name: Install Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24.18.1
+
       - name: Version Number – Read
         run: |-
           $release = Get-Content -Path '.github/release-version.json' -Raw | ConvertFrom-Json
@@ -93,11 +98,6 @@ jobs:
           --label "release"
         env:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
-
-      - name: Install Node.js
-        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version: 24.18.1
 
       - name: npm – Install Dependencies
         run: npm ci

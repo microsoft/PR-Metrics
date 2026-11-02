@@ -57,7 +57,12 @@ Update-FileContent -Path 'README.md' -Replacements @(
 )
 
 # Package and extension manifests.
-Update-FileContent -Path 'package.json' -Replacements @($versionJsonReplacement)
+npm version $version --allow-same-version --no-git-tag-version --ignore-scripts
+if ($LASTEXITCODE -ne 0)
+{
+    throw 'Failed to update package and lockfile versions.'
+}
+
 Update-FileContent -Path 'src/vss-extension.json' -Replacements @($versionJsonReplacement)
 
 # Azure DevOps task definitions.
